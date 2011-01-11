@@ -385,5 +385,60 @@ namespace BizHawk.MultiClient
             Global.Sound.StartSound();
             Application.Idle += Application_Idle;
         }
+
+        private void powerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
