@@ -400,11 +400,13 @@ namespace BizHawk.MultiClient
         {
             if (EmulatorPaused == true)
             {
+                Global.Sound.StartSound;
                 EmulatorPaused = false;
                 pauseToolStripMenuItem.Checked = false;
             }
             else
             {
+                Global.Sound.StopSound;
                 EmulatorPaused = true;
                 pauseToolStripMenuItem.Checked = true;
             }
