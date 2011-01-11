@@ -398,7 +398,16 @@ namespace BizHawk.MultiClient
 
         private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (EmulatorPaused == true)
+            {
+                EmulatorPaused = false;
+                pauseToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                EmulatorPaused = true;
+                pauseToolStripMenuItem.Checked = true;
+            }
         }
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
