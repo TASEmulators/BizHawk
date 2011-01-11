@@ -31,7 +31,7 @@ namespace BizHawk.MultiClient
             renderTarget.Dock = DockStyle.Fill;
             renderTarget.BackColor = Color.Black;
             Controls.Add(renderTarget);
-            Database.LoadDatabase("d:/gamedb.txt");
+            Database.LoadDatabase("gamedb.txt");
 
 			if (Global.Direct3D != null)
 			{
