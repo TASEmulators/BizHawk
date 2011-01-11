@@ -1,0 +1,20 @@
+﻿======= Sega MasterSystem Compatibility Issues =======
+
+* CodeMasters games don't work:
+   + CodeMasters games use a custom mapper (implemented now).
+   + CodeMasters games use alternate video mode, not implemented.
+   + Games are: Cosmic Spacehead, Fantastic Dizzy, Micro Machines
+
+* F16 Fighting Falcon uses old SG-1000 video mode, and doesn't work on a GG/Genesis either.
+
+That said.. I will fix CodeMasters games and F16 Fighting Falcon eventually, and add full
+SG-1000 support, it's just not the high priority currently.
+
+* Raster effects are sometimes on the wrong line... but it's correct 99% of the time... :|
+  Update: I think this is a timing issue resulting in latching/rendering at the wrong part 
+  of a scanline. I should play with this timing.
+
+======= Game Gear compatibility issues =======
+
+* Axe Battler is broken.
+* "SEGA" logo audio sample plays at low rate in Sonic & Tails.
