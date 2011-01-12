@@ -91,6 +91,22 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot10ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveToCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,6 +134,7 @@
             this.toolStripMenuItem1,
             this.saveStateToolStripMenuItem,
             this.loadStateToolStripMenuItem,
+            this.saveSlotToolStripMenuItem,
             this.saveNamedStateToolStripMenuItem,
             this.loadNamedStateToolStripMenuItem,
             this.toolStripMenuItem2,
@@ -600,6 +617,131 @@
             this.screenshotF12ToolStripMenuItem.Text = "Screenshot";
             this.screenshotF12ToolStripMenuItem.Click += new System.EventHandler(this.screenshotF12ToolStripMenuItem_Click);
             // 
+            // saveSlotToolStripMenuItem
+            // 
+            this.saveSlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectSlot10ToolStripMenuItem,
+            this.selectSlot1ToolStripMenuItem,
+            this.selectSlot2ToolStripMenuItem,
+            this.selectSlot3ToolStripMenuItem,
+            this.selectSlot4ToolStripMenuItem,
+            this.selectSlot5ToolStripMenuItem,
+            this.selectSlot6ToolStripMenuItem,
+            this.selectSlot7ToolStripMenuItem,
+            this.selectSlot8ToolStripMenuItem,
+            this.selectSlot9ToolStripMenuItem,
+            this.previousSlotToolStripMenuItem,
+            this.nextSlotToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.saveToCurrentSlotToolStripMenuItem,
+            this.loadCurrentSlotToolStripMenuItem});
+            this.saveSlotToolStripMenuItem.Name = "saveSlotToolStripMenuItem";
+            this.saveSlotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.saveSlotToolStripMenuItem.Text = "SaveSlot";
+            // 
+            // selectSlot1ToolStripMenuItem
+            // 
+            this.selectSlot1ToolStripMenuItem.Name = "selectSlot1ToolStripMenuItem";
+            this.selectSlot1ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot1ToolStripMenuItem.Text = "Select Slot 1";
+            this.selectSlot1ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot1ToolStripMenuItem_Click);
+            // 
+            // selectSlot2ToolStripMenuItem
+            // 
+            this.selectSlot2ToolStripMenuItem.Name = "selectSlot2ToolStripMenuItem";
+            this.selectSlot2ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot2ToolStripMenuItem.Text = "Select Slot 2";
+            this.selectSlot2ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot2ToolStripMenuItem_Click);
+            // 
+            // selectSlot3ToolStripMenuItem
+            // 
+            this.selectSlot3ToolStripMenuItem.Name = "selectSlot3ToolStripMenuItem";
+            this.selectSlot3ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot3ToolStripMenuItem.Text = "Select Slot 3";
+            this.selectSlot3ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot3ToolStripMenuItem_Click);
+            // 
+            // selectSlot4ToolStripMenuItem
+            // 
+            this.selectSlot4ToolStripMenuItem.Name = "selectSlot4ToolStripMenuItem";
+            this.selectSlot4ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot4ToolStripMenuItem.Text = "Select Slot 4";
+            this.selectSlot4ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot4ToolStripMenuItem_Click);
+            // 
+            // selectSlot5ToolStripMenuItem
+            // 
+            this.selectSlot5ToolStripMenuItem.Name = "selectSlot5ToolStripMenuItem";
+            this.selectSlot5ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot5ToolStripMenuItem.Text = "Select Slot 5";
+            this.selectSlot5ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot5ToolStripMenuItem_Click);
+            // 
+            // selectSlot6ToolStripMenuItem
+            // 
+            this.selectSlot6ToolStripMenuItem.Name = "selectSlot6ToolStripMenuItem";
+            this.selectSlot6ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot6ToolStripMenuItem.Text = "Select Slot 6";
+            this.selectSlot6ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot6ToolStripMenuItem_Click);
+            // 
+            // selectSlot7ToolStripMenuItem
+            // 
+            this.selectSlot7ToolStripMenuItem.Name = "selectSlot7ToolStripMenuItem";
+            this.selectSlot7ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot7ToolStripMenuItem.Text = "Select Slot 7";
+            this.selectSlot7ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot7ToolStripMenuItem_Click);
+            // 
+            // selectSlot8ToolStripMenuItem
+            // 
+            this.selectSlot8ToolStripMenuItem.Name = "selectSlot8ToolStripMenuItem";
+            this.selectSlot8ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot8ToolStripMenuItem.Text = "Select Slot 8";
+            this.selectSlot8ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot8ToolStripMenuItem_Click);
+            // 
+            // selectSlot9ToolStripMenuItem
+            // 
+            this.selectSlot9ToolStripMenuItem.Name = "selectSlot9ToolStripMenuItem";
+            this.selectSlot9ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot9ToolStripMenuItem.Text = "Select Slot 9";
+            this.selectSlot9ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot9ToolStripMenuItem_Click);
+            // 
+            // selectSlot10ToolStripMenuItem
+            // 
+            this.selectSlot10ToolStripMenuItem.Name = "selectSlot10ToolStripMenuItem";
+            this.selectSlot10ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot10ToolStripMenuItem.Text = "Select Slot 0";
+            this.selectSlot10ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot10ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(180, 6);
+            // 
+            // saveToCurrentSlotToolStripMenuItem
+            // 
+            this.saveToCurrentSlotToolStripMenuItem.Name = "saveToCurrentSlotToolStripMenuItem";
+            this.saveToCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveToCurrentSlotToolStripMenuItem.Text = "Save to Current Slot";
+            this.saveToCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.saveToCurrentSlotToolStripMenuItem_Click);
+            // 
+            // loadCurrentSlotToolStripMenuItem
+            // 
+            this.loadCurrentSlotToolStripMenuItem.Name = "loadCurrentSlotToolStripMenuItem";
+            this.loadCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.loadCurrentSlotToolStripMenuItem.Text = "Load Current Slot";
+            this.loadCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.loadCurrentSlotToolStripMenuItem_Click);
+            // 
+            // previousSlotToolStripMenuItem
+            // 
+            this.previousSlotToolStripMenuItem.Name = "previousSlotToolStripMenuItem";
+            this.previousSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.previousSlotToolStripMenuItem.Text = "Previous Slot";
+            this.previousSlotToolStripMenuItem.Click += new System.EventHandler(this.previousSlotToolStripMenuItem_Click);
+            // 
+            // nextSlotToolStripMenuItem
+            // 
+            this.nextSlotToolStripMenuItem.Name = "nextSlotToolStripMenuItem";
+            this.nextSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.nextSlotToolStripMenuItem.Text = "Next Slot";
+            this.nextSlotToolStripMenuItem.Click += new System.EventHandler(this.nextSlotToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -681,6 +823,22 @@
         private System.Windows.Forms.ToolStripMenuItem autoloadMostRecentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem screenshotF12ToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem saveSlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot6ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot7ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot8ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot9ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectSlot10ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previousSlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nextSlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem saveToCurrentSlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadCurrentSlotToolStripMenuItem;
     }
 }
 

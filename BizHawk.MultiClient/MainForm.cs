@@ -14,7 +14,9 @@ namespace BizHawk.MultiClient
     {
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
-        
+
+        private int SaveSlot = 0;   //Saveslot sytem
+
         private bool EmulatorPaused = false;
 
         public MainForm(string[] args)
@@ -455,6 +457,96 @@ namespace BizHawk.MultiClient
         private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TakeScreenshot();
+        }
+
+        private void SaveSlotSelectedMessage()
+        {
+            Global.RenderPanel.AddMessage("Slot " + SaveSlot + " selected.");
+        }
+
+        private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 1;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 2;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 3;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 4;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot5ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 5;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot6ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 6;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot7ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 7;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot8ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 8;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot9ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 9;
+            SaveSlotSelectedMessage();
+        }
+
+        private void selectSlot10ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveSlot = 0;
+            SaveSlotSelectedMessage();
+        }
+
+        private void previousSlotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SaveSlot == 0) SaveSlot = 9;       //Wrap to end of slot list
+            else if (SaveSlot > 9) SaveSlot = 9;  //Meh, just in case
+            else SaveSlot--;
+            SaveSlotSelectedMessage();
+        }
+
+        private void nextSlotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
+            else SaveSlot++;
+            SaveSlotSelectedMessage();
+        }
+
+        private void saveToCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveState("QuickSave" + SaveSlot.ToString());
+        }
+
+        private void loadCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadState("QuickSave" + SaveSlot.ToString());
         }
     }
 }
