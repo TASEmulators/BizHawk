@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void ProcessFrameInterrupt()
         {
-            if (Vdp.ScanLine == 193)
+            if (Vdp.ScanLine == Vdp.BufferHeight+1)
                 Vdp.StatusByte |= 0x80;
 
             if ((Vdp.StatusByte & 0x80) != 0 && Vdp.EnableFrameInterrupts)
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void ProcessLineInterrupt()
         {
-            if (Vdp.ScanLine <= 192)
+            if (Vdp.ScanLine <= Vdp.BufferHeight)
             {
                 if (lineIntLinesRemaining-- <= 0)
                 {
@@ -236,12 +236,11 @@ namespace BizHawk.Emulation.Consoles.Sega
                 ProcessFrameInterrupt();
                 ProcessLineInterrupt();
 
-                if (Vdp.ScanLine < 192)
-                    Vdp.RenderCurrentScanline(render);
+                Vdp.RenderCurrentScanline(render);
 
                 Cpu.ExecuteCycles(IPeriod);
 
-                if (Vdp.ScanLine == 192)
+                if (Vdp.ScanLine == scanlinesPerFrame-1)
                     Vdp.RenderBlankingRegions();
             }
             PSG.EndFrame(Cpu.TotalExecutedCycles);

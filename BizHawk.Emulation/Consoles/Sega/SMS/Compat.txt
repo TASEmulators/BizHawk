@@ -1,9 +1,10 @@
 ﻿======= Sega MasterSystem Compatibility Issues =======
 
-* CodeMasters games don't work:
-   + CodeMasters games use a custom mapper (implemented now).
-   + CodeMasters games use alternate video mode, not implemented.
-   + Games are: Cosmic Spacehead, Fantastic Dizzy, Micro Machines
+* CodeMasters games use a custom mapper and special video modes (both implemented)
+   + Cosmic Spacehead and Micro Machines are playable but suffer from a graphic glitch on the
+     top part of the frame. In my defense, Kega, Cogwheel, and other emulators do the precise
+     same thing.
+   + Fantastic Dizzy crashes shortly after starting a new game. Investigating.
 
 * F16 Fighting Falcon uses old SG-1000 video mode, and doesn't work on a GG/Genesis either.
 
