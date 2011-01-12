@@ -390,7 +390,7 @@ namespace BizHawk.MultiClient
 
         private void powerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Global.Emulator.HardReset();
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
