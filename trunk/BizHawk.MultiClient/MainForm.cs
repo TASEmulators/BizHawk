@@ -451,5 +451,10 @@ namespace BizHawk.MultiClient
         {
 
         }
+
+        private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TakeScreenshot();
+        }
     }
 }
