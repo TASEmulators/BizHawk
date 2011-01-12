@@ -5,6 +5,8 @@ namespace BizHawk
 {
     public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider
     {
+        private static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
+
         private int[] frameBuffer = new int[256 * 192];
         private Random rand = new Random();
         public IVideoProvider VideoProvider { get { return this; } }
@@ -17,7 +19,7 @@ namespace BizHawk
                 frameBuffer[i] = Colors.Luminosity((byte)rand.Next());
         }
         public void HardReset() { }
-        public ControllerDefinition ControllerDefinition { get { return null; } }
+        public ControllerDefinition ControllerDefinition { get { return NullController; } }
         public IController Controller { get; set; }
         public int Frame { get; set; }
         public byte[] SaveRam { get { return new byte[0]; } }
