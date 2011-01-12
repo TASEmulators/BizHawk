@@ -554,5 +554,13 @@ namespace BizHawk.MultiClient
             CloseGame();
             Global.Emulator = new NullEmulator();
         }
+
+        private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+                resetToolStripMenuItem.Enabled = true;
+            else
+                resetToolStripMenuItem.Enabled = false;
+        }
     }
 }
