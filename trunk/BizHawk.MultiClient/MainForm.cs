@@ -395,7 +395,7 @@ namespace BizHawk.MultiClient
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
@@ -547,6 +547,12 @@ namespace BizHawk.MultiClient
         private void loadCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadState("QuickSave" + SaveSlot.ToString());
+        }
+
+        private void closeROMToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CloseGame();
+            Global.Emulator = new NullEmulator();
         }
     }
 }

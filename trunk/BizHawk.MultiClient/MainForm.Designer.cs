@@ -107,6 +107,7 @@
             this.loadCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previousSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nextSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -130,6 +131,7 @@
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openROMToolStripMenuItem,
             this.recentROMToolStripMenuItem,
+            this.closeROMToolStripMenuItem,
             this.advancedLoadToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveStateToolStripMenuItem,
@@ -742,6 +744,13 @@
             this.nextSlotToolStripMenuItem.Text = "Next Slot";
             this.nextSlotToolStripMenuItem.Click += new System.EventHandler(this.nextSlotToolStripMenuItem_Click);
             // 
+            // closeROMToolStripMenuItem
+            // 
+            this.closeROMToolStripMenuItem.Name = "closeROMToolStripMenuItem";
+            this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.closeROMToolStripMenuItem.Text = "&Close ROM";
+            this.closeROMToolStripMenuItem.Click += new System.EventHandler(this.closeROMToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -839,6 +848,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem saveToCurrentSlotToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadCurrentSlotToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem closeROMToolStripMenuItem;
     }
 }
 
