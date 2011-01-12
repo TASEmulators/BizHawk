@@ -432,6 +432,7 @@
             this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
             this.emulationToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.emulationToolStripMenuItem.Text = "&Emulation";
+            this.emulationToolStripMenuItem.DropDownOpened += new System.EventHandler(this.emulationToolStripMenuItem_DropDownOpened);
             // 
             // pauseToolStripMenuItem
             // 
