@@ -29,4 +29,6 @@ namespace BizHawk
         void LoadStateBinary(BinaryReader reader);
         byte[] SaveStateBinary();
     }
+
+    public enum DisplayType { NTSC, PAL }
 }

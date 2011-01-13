@@ -10,19 +10,18 @@ using BizHawk.Emulation.Sound;
   VDP:
   + Double Size Sprites
   + HCounter
-  + Possibly work on VDP tests, but they don't really affect games.
-  - Other video modes / CodeMasters 224 lines / old SG-1000 video modes.
+  + Old TMS video modes (SG-1000)
   
   GENERAL:
   + Debug some GameGear game issues.
   + Port 3F emulation (Japanese BIOS)
   + Try to clean up the organization of the source code. 
+  + SG-1000 support
 
 **********************************************************/
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    public enum DisplayType { NTSC, PAL }
     
     public sealed partial class SMS : IEmulator
     {
@@ -59,7 +58,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         private byte Port02 = 0xFF;
         private byte Port3F = 0xFF;
 
-        private int framesPerSecond;
         private int scanlinesPerFrame;
 
         private DisplayType displayType;
@@ -69,15 +67,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             set
             {
                 displayType = value;
-                if (displayType == DisplayType.NTSC)
-                {
-                    framesPerSecond = 60;
-                    scanlinesPerFrame = 262;
-                } else // PAL
-                {
-                    framesPerSecond = 50;
-                    scanlinesPerFrame = 313;
-                }
+                scanlinesPerFrame = displayType == DisplayType.NTSC ? 262 : 313;
             }
         }
 
@@ -85,7 +75,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void Init()
         {
-            DisplayType = DisplayType.NTSC;
             if (Controller == null)
                 Controller = NullController.GetNullController();
 
@@ -93,21 +82,23 @@ namespace BizHawk.Emulation.Consoles.Sega
             Cpu.ReadHardware = ReadPort;
             Cpu.WriteHardware = WritePort;
 
-            Vdp = new VDP(IsGameGear ? VdpMode.GameGear : VdpMode.SMS);
+            Vdp = new VDP(IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
             PSG = new SN76489();
             YM2413 = new YM2413();
             SoundMixer = new SoundMixer(PSG, YM2413);
 
+            if (HasYM2413 && Options.Contains("WhenFMDisablePSG"))
+                SoundMixer.DisableSource(PSG);
+
             ActiveSoundProvider = PSG;
             HardReset();
-            //PSG.StereoPanning = 0xDA;
         }
 
         public void HardReset()
         {
             Cpu.Reset();
             Cpu.RegisterSP = 0xDFF0;
-            Vdp = new VDP(Vdp.VdpMode);
+            Vdp = new VDP(Vdp.VdpMode, DisplayType);
             PSG.Reset();
             YM2413.Reset();
             SystemRam = new byte[0x2000];
@@ -123,26 +114,17 @@ namespace BizHawk.Emulation.Consoles.Sega
             RomData = game.GetRomData();
             RomBanks = (byte)(RomData.Length/BankSize);
             Options = game.GetOptions();
+            DisplayType = DisplayType.NTSC;
             foreach (string option in Options)
             {
                 var args = option.Split('=');
                 if (option == "FM") HasYM2413 = true;
                 else if (args[0] == "IPeriod") IPeriod = int.Parse(args[1]);
                 else if (args[0] == "Japan") Region = "Japan";
+                else if (args[0] == "PAL") DisplayType = DisplayType.PAL;
             }
 
             Init();
-
-            // In Outrun FM mode, when you start a race, the PSG noise channel is left on until a "wheel squeeling"
-            // sound effect occurs, and this happens again every "extended play" checkpoint. Every emulator I have tested
-            // does this; if it's a bug, it is a bug that no emulator gets right.
-            // In any case, it is annoying, so this turns it off.
-            // My view is that because I believe it to be a game bug (not an emulation bug), this doesn't count as a game-specific hack :)
-
-            if (HasYM2413 && game.Name.StartsWith("OutRun", StringComparison.InvariantCultureIgnoreCase))
-                SoundMixer.DisableSource(PSG);
-
-            // TODO: at some point we need a proper Game Library construct with various metadata about emulation hints and options for games and roms.
         }
 
         public byte ReadPort(ushort port)
