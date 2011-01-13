@@ -121,7 +121,7 @@ FF614EB3	 	Aztec Adventure	SMS
 9EFC7A9F	F	Aztec Adventure (2x overdump) (h) [B]	SMS	
 DD4861F5	F	Aztec Adventure (2x overdump) (h) [C]	SMS	
 E5FF50D8	 	Back to the Future Part II	SMS	
-2D48C1D3	 	Back to the Future Part III	SMS	
+2D48C1D3	 	Back to the Future Part III	SMS		PAL
 35D84DC2	 	Baku Baku Animal (BR)	SMS	
 655FB1F4	 	Bank Panic	SMS	
 B7834C0F	F	Bank Panic (f)	SMS	F
@@ -235,7 +235,7 @@ BFEE193C	D	Code 38 - Volume I [French/NoPSG]	SMS	L.I.N. - http://membres.lycos.f
 13AC9023	 	Cool Spot	SMS		
 CC92058A	B	Cool Spot (bad byte)	SMS	2FC0E=00	
 43600BB1	D	Copyright Violation	SMS	Heliophobe	
-29822980	 	Cosmic Spacehead	SMS		CMMapper
+29822980	 	Cosmic Spacehead	SMS		CMMapper;PAL
 0299BDA4	D	Crappy	SMS	Memetic	
 1350E4F8	 	"Cyber Shinobi, The"	SMS		
 C576C058	T	"Cyber Shinobi, The (FR)"	SMS	Terminus Traduction; v1.00
@@ -308,9 +308,9 @@ EAEBF323	 	F-16 Fighter	SMS
 7CE06FCE	 	F-16 Fighting Falcon (JP)	SMS		
 184C23B7	 	F-16 Fighting Falcon (US)	SMS		
 7ABC70E9	 	Family Games (Party Games) (JP)	SMS		
-B9664AE1	 	Fantastic Dizzy	SMS		CMMapper
-711E2CF9	B	Fantastic Dizzy (two bad bytes)	SMS		CMMapper
-C888222B	 	Fantastic Dizzy [SMS-GG]	SMS		CMMapper
+B9664AE1	 	Fantastic Dizzy	SMS		CMMapper;PAL
+711E2CF9	B	Fantastic Dizzy (two bad bytes)	SMS		CMMapper;PAL
+C888222B	 	Fantastic Dizzy [SMS-GG]	SMS		CMMapper;PAL
 65D7E4E0	 	Fantasy Zone	SMS		
 82A38EF8	O	Fantasy Zone (2x overdump)	SMS		
 9F31FD04	F	Fantasy Zone (2x overdump) (h) [A]	SMS		
@@ -594,9 +594,9 @@ D7416B83	 	Mercs	SMS
 2B86BCD7	O	Mickey's Ultimate Challenge (BR) (2x overdump) [A]	SMS		
 7E811F8D	O	Mickey's Ultimate Challenge (BR) (2x overdump) [B]	SMS		
 80F94F99	B	Mickey's Ultimate Challenge (BR) (309 bad bytes)	SMS		
-A577CE46	 	Micro Machines	SMS		CMMapper
-D8EEED93	B	Micro Machines (2 bad bytes)	SMS		CMMapper
-58FA27C6	V	Micro Machines (bad dump - pages 1 2 4 & 1)	SMS	Very bad	CMMapper
+A577CE46	 	Micro Machines	SMS		CMMapper;PAL
+D8EEED93	B	Micro Machines (2 bad bytes)	SMS		CMMapper;PAL
+58FA27C6	V	Micro Machines (bad dump - pages 1 2 4 & 1)	SMS	Very bad	CMMapper;PAL
 F85446B0	H	Micro Machines [Sega mapper hack] [A]	SMS	Micro Machines by Mike G; allows it to be played with a standard mapper	
 3648E5E4	H	Micro Machines [Sega mapper hack] [B]	SMS	Micro Machines by nop.nop; allows it to be played with a standard mapper	
 54BA742A	H	Micro Machines [Sega mapper hack] [C]	SMS	Micro Machines by nop.nop; allows it to be played with a standard mapper; also passes Codemasters checksum	
