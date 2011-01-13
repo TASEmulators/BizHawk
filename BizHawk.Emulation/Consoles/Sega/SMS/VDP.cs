@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.Sega
     }
 
     /// <summary>
-    /// Emulates the Texas Instruments TMS9918 VDP.
+    /// Emulates the Texas Instruments TMS9918(A) VDP.
     /// </summary>
     public sealed partial class VDP : IVideoProvider
     {
@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public int[] FrameBuffer = new int[256*192];
         public int[] GameGearFrameBuffer = new int[160*144];
+
+        private DisplayType DisplayType = DisplayType.NTSC;
 
         // preprocessed state assist stuff.
         public int[] Palette = new int[32];
@@ -79,11 +81,12 @@ namespace BizHawk.Emulation.Consoles.Sega
         private byte[] ScanlinePriorityBuffer = new byte[256];
         private byte[] SpriteCollisionBuffer = new byte[256];
 
-        public VDP(VdpMode mode)
+        public VDP(VdpMode mode, DisplayType displayType)
         {
             this.mode = mode;
             if (mode == VdpMode.SMS) CRAM = new byte[32];
             if (mode == VdpMode.GameGear) CRAM = new byte[64];
+            DisplayType = displayType;
         }
 
         public byte ReadVram()
@@ -105,7 +108,16 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public byte ReadVLineCounter()
         {
-            return FrameHeight == 240 ? VLineCounterTableNTSC240[ScanLine] : VLineCounterTableNTSC192[ScanLine];
+            if (DisplayType == DisplayType.NTSC)
+            {
+                if (FrameHeight == 240)
+                    return VLineCounterTableNTSC240[ScanLine];
+                return VLineCounterTableNTSC192[ScanLine];
+            } else { // PAL
+                if (FrameHeight == 240)
+                    return VLineCounterTablePAL240[ScanLine];
+                return VLineCounterTablePAL192[ScanLine];
+            }
         }
 
         public void WriteVdpRegister(byte value)

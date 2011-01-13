@@ -35,15 +35,21 @@ namespace BizHawk
                 while (reader.EndOfStream == false)
                 {
                     string line = reader.ReadLine();
-                    if (line.Trim().Length == 0) continue;
-                    string[] items = line.Split('\t');
-                    
-                    var Game = new GameInfo();
-                    Game.CRC32 = Int32.Parse(items[0], NumberStyles.HexNumber);
-                    Game.Name = items[2];
-                    Game.System = items[3];
-                    Game.MetaData = items.Length >= 6 ? items[5] : null;
-                    db[Game.CRC32] = Game;
+                    try
+                    {
+                        if (line.Trim().Length == 0) continue;
+                        string[] items = line.Split('\t');
+
+                        var Game = new GameInfo();
+                        Game.CRC32 = Int32.Parse(items[0], NumberStyles.HexNumber);
+                        Game.Name = items[2];
+                        Game.System = items[3];
+                        Game.MetaData = items.Length >= 6 ? items[5] : null;
+                        db[Game.CRC32] = Game;
+                    } catch (Exception e)
+                    {
+                        Console.WriteLine("Error parsing database entry: "+line);
+                    }
                 }
             }
         }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.CPUs.Z80 
+﻿namespace BizHawk.Emulation.CPUs.Z80 
 {
     public partial class Z80A
     {

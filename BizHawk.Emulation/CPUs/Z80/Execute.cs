@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.CPUs.Z80
 					totalExecutedCycles += 4; pendingCycles -= 4;
 				} else {
 					++RegR;
-//System.Console.WriteLine(State());
 
 					switch (ReadMemory(RegPC.Word++)) 
                     {
