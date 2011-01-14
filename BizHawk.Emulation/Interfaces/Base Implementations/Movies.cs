@@ -23,14 +23,14 @@ namespace BizHawk
             get { return baseController.Type; }
         }
 
-        public bool this[string name]
+        public bool this[string button]
         {
-            get { return baseController[name]; }
+            get { return baseController[button]; }
         }
 
-        public bool IsPressed(string name)
+        public bool IsPressed(string button)
         {
-            return baseController[name];
+            return baseController[button];
         }
 
         public float GetFloat(string name)
@@ -41,6 +41,11 @@ namespace BizHawk
         public void UnpressButton(string name)
         {
             baseController.UnpressButton(name);
+        }
+
+        public void ForceButton(string button)
+        {
+            baseController.ForceButton(button);
         }
 
         private int frame;
@@ -71,6 +76,16 @@ namespace BizHawk
             writer.Seek(frame*2, SeekOrigin.Begin);
             writer.Write((ushort)encodedValue);
         }
+
+        public void SetSticky(string button, bool sticky)
+        {
+            baseController.SetSticky(button, sticky);
+        }
+
+        public bool IsSticky(string button)
+        {
+            return baseController.IsSticky(button);
+        }
     }
 
     public class InputPlayback : IController
@@ -92,19 +107,19 @@ namespace BizHawk
             get { return def; }
         }
 
-        public bool this[string name]
+        public bool this[string button]
         {
-            get { return IsPressed(name); }
+            get { return IsPressed(button); }
         }
 
-        public bool IsPressed(string name)
+        public bool IsPressed(string button)
         {
             if (FrameNumber >= input.Length)
                 return false;
 
             for (int i = 0; i < def.BoolButtons.Count; i++)
             {
-                if (def.BoolButtons[i] == name)
+                if (def.BoolButtons[i] == button)
                 {
                     return (input[FrameNumber] & (1 << i)) != 0;
                 }
@@ -118,6 +133,9 @@ namespace BizHawk
         }
 
         public void UnpressButton(string name) {}
+        public void ForceButton(string button) { }
+        public void SetSticky(string button, bool sticky) { }
+        public bool IsSticky(string button) { return false; }
         public int FrameNumber { get; set; }
 
         public bool MovieEnded { get { return FrameNumber >= input.Length; } }

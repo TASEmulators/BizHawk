@@ -13,10 +13,15 @@ namespace BizHawk
     {
         ControllerDefinition Type { get; }
 
-        bool this[string name] { get; }
-        bool IsPressed(string name);
+        bool this[string button] { get; }
+        bool IsPressed(string button);
         float GetFloat(string name);
-        void UnpressButton(string name);
+
+        void SetSticky(string button, bool sticky);
+        bool IsSticky(string button);
+        
+        void UnpressButton(string button);
+        void ForceButton(string button);
 
         int FrameNumber { get; set; }
     }
