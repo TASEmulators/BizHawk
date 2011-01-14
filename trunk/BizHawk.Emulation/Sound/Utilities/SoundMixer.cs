@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Sound
 {
