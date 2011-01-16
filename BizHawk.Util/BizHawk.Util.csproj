@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -102,19 +102,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="7z\arch\Test.bzip2.7z" />
-    <None Include="7z\arch\Test.lzma.7z" />
-    <None Include="7z\arch\Test.lzma2.7z" />
-    <None Include="7z\arch\Test.ppmd.7z" />
-    <None Include="7z\arch\Test.rar" />
-    <None Include="7z\arch\Test.tar" />
-    <None Include="7z\arch\Test.txt.bz2" />
-    <None Include="7z\arch\Test.txt.gz" />
-    <None Include="7z\arch\Test.txt.xz" />
-    <None Include="7z\arch\Test.zip" />
+    <EmbeddedResource Include="7z\arch\Test.bzip2.7z" />
+    <EmbeddedResource Include="7z\arch\Test.lzma.7z" />
+    <EmbeddedResource Include="7z\arch\Test.lzma2.7z" />
+    <EmbeddedResource Include="7z\arch\Test.ppmd.7z" />
+    <EmbeddedResource Include="7z\arch\Test.rar" />
+    <EmbeddedResource Include="7z\arch\Test.tar" />
+    <EmbeddedResource Include="7z\arch\Test.txt.bz2" />
+    <EmbeddedResource Include="7z\arch\Test.txt.gz" />
+    <EmbeddedResource Include="7z\arch\Test.txt.xz" />
+    <EmbeddedResource Include="7z\arch\Test.zip" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="7z\arch\Test.txt" />
+    <EmbeddedResource Include="7z\arch\Test.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
