@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Sound
 
         public HuC6280PSG()
         {
+            Waves.InitWaves();
             for (int i=0; i<8; i++)
                 Channels[i] = new PSGChannel();
         }
@@ -164,11 +165,9 @@ namespace BizHawk.Emulation.Sound
             {
                 wave = Waves.NoiseWave;
                 freq = channel.NoiseFreq;
-                leftVol /= 2;
-                rightVol /= 2;
             }
 
-            float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/512f : freq);
+            float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/(float)channel.Wave.Length : freq);
             float moveThroughWaveRate = wave.Length / adjustedWaveLengthInSamples;
 
             int end = start + len;
@@ -177,10 +176,7 @@ namespace BizHawk.Emulation.Sound
                 channel.SampleOffset %= wave.Length;
                 short value = channel.DDA ? channel.DDAValue : wave[(int) channel.SampleOffset];
 
-                float left = ((value * LogScale[channel.Volume] / 255f / 6f) * (leftVol / 15f));
-
-                if (left>32768f || left <-32768f) Console.WriteLine("HEY BAD THINGS");
-                samples[i++] += (short) left;
+                samples[i++] += (short)((value * LogScale[channel.Volume] / 255f / 6f) * (leftVol / 15f));
                 samples[i++] += (short)((value * LogScale[channel.Volume] / 255f / 6f) * (rightVol / 15f));
 
                 channel.SampleOffset += moveThroughWaveRate;

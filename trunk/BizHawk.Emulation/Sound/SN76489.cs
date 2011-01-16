@@ -3,14 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
-// Emulates a Texas Instruments SN76489. This is found in:
-//  + Sega 8-bit consoles (SMS/MarkIII/Game Gear/SG-1000/SC-3000/etc)
-//  + In the Genesis/MegaDrive as a 2ndary sound source
-//  + Some arcade hardware
-
-// The Game Gear version is enhanced to support stereo output.
-// TODO at this time, I dont know if some arcades need a different PsgBase value or if it is constant.
-// TODO the noise channel emulation is not perfect.
+// Emulates a Texas Instruments SN76489
 // TODO the freq->note translation should be moved to a separate utility class.
 
 namespace BizHawk.Emulation.Sound
@@ -35,7 +28,7 @@ namespace BizHawk.Emulation.Sound
             {
                 if (Volume == 0) return;
 
-                float adjustedWaveLengthInSamples = SampleRate / (Noise ? (Frequency / 512f) : Frequency);
+                float adjustedWaveLengthInSamples = SampleRate / (Noise ? (Frequency / (float)Wave.Length) : Frequency);
                 float moveThroughWaveRate = Wave.Length / adjustedWaveLengthInSamples;
 
                 int end = start + len;
@@ -62,6 +55,7 @@ namespace BizHawk.Emulation.Sound
 
         public SN76489()
         {
+            Waves.InitWaves();
             for (int i=0; i<4; i++)
             {
                 Channels[i] = new Channel();
@@ -112,7 +106,25 @@ namespace BizHawk.Emulation.Sound
             commands.Enqueue(new QueuedCommand {Value = value, Time = cycles-frameStartTime});
         }
 
-        public void WritePsgDataImmediate(byte value)
+        private void UpdateNoiseType(int value)
+        {
+            Channels[3].NoiseType = (byte)(value & 0x07);
+            switch (Channels[3].NoiseType & 3)
+            {
+                case 0: Channels[3].Frequency = PsgBase / 16; break;
+                case 1: Channels[3].Frequency = PsgBase / 32; break;
+                case 2: Channels[3].Frequency = PsgBase / 64; break;
+                case 3: Channels[3].Frequency = Channels[2].Frequency; break;
+            }
+            var newWave = (value & 4) == 0 ? Waves.PeriodicWave16 : Waves.NoiseWave;
+            if (newWave != Channels[3].Wave)
+            {
+                Channels[3].Wave = newWave;
+                Channels[3].WaveOffset = 0f;
+            }
+        }
+
+        private void WritePsgDataImmediate(byte value)
         {
             switch (value & 0xF0)
             {
@@ -123,14 +135,7 @@ namespace BizHawk.Emulation.Sound
                     break;
                 case 0xE0:
                     PsgLatch = value;
-                    Channels[3].NoiseType = (byte) (value & 0x03);
-                    switch (Channels[3].NoiseType)
-                    {
-                        case 0: Channels[3].Frequency = PsgBase/16; break;
-                        case 1: Channels[3].Frequency = PsgBase/32; break;
-                        case 2: Channels[3].Frequency = PsgBase/64; break;
-                        case 3: Channels[3].Frequency = Channels[2].Frequency; break;
-                    }
+                    UpdateNoiseType(value);
                     break;
                 case 0x90:
                     Channels[0].Volume = (byte)(~value & 15);
@@ -156,7 +161,7 @@ namespace BizHawk.Emulation.Sound
                         if (f > 15000)
                             f = 0; // upper bound of playable frequency
                         Channels[channel].Frequency = (ushort) f;
-                        if (Channels[3].NoiseType == 3 && channel == 2)
+                        if ((Channels[3].NoiseType & 3) == 3 && channel == 2)
                             Channels[3].Frequency = (ushort) f;
                     } else { // volume latched
                         Channels[channel].Volume = (byte)(~value & 15);
@@ -244,6 +249,7 @@ namespace BizHawk.Emulation.Sound
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
+            UpdateNoiseType(Channels[3].NoiseType);
         }
 
         public void SaveStateBinary(BinaryWriter writer)
@@ -271,7 +277,7 @@ namespace BizHawk.Emulation.Sound
             Channels[1].Frequency = reader.ReadUInt16();
             Channels[2].Frequency = reader.ReadUInt16();
             Channels[3].Frequency = reader.ReadUInt16();
-            Channels[3].NoiseType = reader.ReadByte();
+            UpdateNoiseType(reader.ReadByte());
             PsgLatch = reader.ReadByte();
             StereoPanning = reader.ReadByte();
         }

@@ -254,6 +254,8 @@ namespace BizHawk.MultiClient
             {
                 Global.ClientControls.UnpressButton("Emulator Pause");
                 EmulatorPaused = !EmulatorPaused;
+                if (EmulatorPaused) Global.Sound.StopSound();
+                else Global.Sound.StartSound();
             }
 
             if (EmulatorPaused == false || Global.ClientControls["Frame Advance"])
