@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     break;
 case CR:
 //if (Registers[CR] == 0)
-Log.Note("CPU", "****************** WRITE TO CR: {0:X}", Registers[CR]);
+//Log.Note("CPU", "****************** WRITE TO CR: {0:X}", Registers[CR]);
 break;
                 case BXR:
                     Registers[BXR] &= 0x3FF;
@@ -132,7 +132,7 @@ break;
                 case BYR:
                     Registers[BYR] &= 0x1FF;
                     BackgroundY = Registers[BYR];
-                    Console.WriteLine("Updating BYR to {0} at scanline {1}", BackgroundY, ScanLine);
+                    //Console.WriteLine("Updating BYR to {0} at scanline {1}", BackgroundY, ScanLine);
                     break;
                 case HDR: // Horizontal Display Register - update framebuffer size
                     FrameWidth = RequestedFrameWidth;

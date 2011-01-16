@@ -8,12 +8,10 @@ using BizHawk.Emulation.Sound;
 /*****************************************************
 
   VDP:
-  + Double Size Sprites
   + HCounter
   + Old TMS video modes (SG-1000)
   
   GENERAL:
-  + Debug some GameGear game issues.
   + Port 3F emulation (Japanese BIOS)
   + Try to clean up the organization of the source code. 
   + SG-1000 support
@@ -82,7 +80,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Cpu.ReadHardware = ReadPort;
             Cpu.WriteHardware = WritePort;
 
-            Vdp = new VDP(IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+            Vdp = new VDP(Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
             PSG = new SN76489();
             YM2413 = new YM2413();
             SoundMixer = new SoundMixer(PSG, YM2413);
@@ -98,7 +96,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             Cpu.Reset();
             Cpu.RegisterSP = 0xDFF0;
-            Vdp = new VDP(Vdp.VdpMode, DisplayType);
+            Vdp = new VDP(Cpu, Vdp.VdpMode, DisplayType);
             PSG.Reset();
             YM2413.Reset();
             SystemRam = new byte[0x2000];
@@ -140,8 +138,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x06: return 0xFF;
                 case 0x7E: return Vdp.ReadVLineCounter();
                 case 0x7F: break; // hline counter TODO
-                case 0xBE: return Vdp.ReadVram();
-                case 0xBF: Cpu.Interrupt = false; return Vdp.ReadVdpStatus();
+                case 0xBE: return Vdp.ReadData();
+                case 0xBF: return Vdp.ReadVdpStatus();
                 case 0xC0:
                 case 0xDC: return ReadControls1();
                 case 0xC1: 
@@ -169,40 +167,11 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x7F: PSG.WritePsgData(value, Cpu.TotalExecutedCycles); break;
                 case 0xBE: Vdp.WriteVdpData(value); break;
                 case 0xBD:
-                case 0xBF: Vdp.WriteVdpRegister(value); break;
+                case 0xBF: Vdp.WriteVdpControl(value); break;
                 case 0xF0: if (HasYM2413) YM2413.RegisterLatch = value; break;
                 case 0xF1: if (HasYM2413) YM2413.Write(value); break;
                 case 0xF2: if (HasYM2413) YM2413.DetectionValue = value; break;
             }
-        }
-
-        private int lineIntLinesRemaining; 
-
-        private void ProcessFrameInterrupt()
-        {
-            if (Vdp.ScanLine == Vdp.BufferHeight+1)
-                Vdp.StatusByte |= 0x80;
-
-            if ((Vdp.StatusByte & 0x80) != 0 && Vdp.EnableFrameInterrupts)
-                Cpu.Interrupt = true;
-        }
-
-        private void ProcessLineInterrupt()
-        {
-            if (Vdp.ScanLine <= Vdp.BufferHeight)
-            {
-                if (lineIntLinesRemaining-- <= 0)
-                {
-                    if (Vdp.EnableLineInterrupts)
-                    {
-                        Cpu.Interrupt = true;
-                    }
-                    lineIntLinesRemaining = Vdp.Registers[0x0A];
-                }
-                return;
-            }
-            // else we're outside the active display period
-            lineIntLinesRemaining = Vdp.Registers[0x0A];
         }
 
         public void FrameAdvance(bool render)
@@ -213,18 +182,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (IsGameGear == false)
                 Cpu.NonMaskableInterrupt = Controller["Pause"];
 
-            for (Vdp.ScanLine = 0; Vdp.ScanLine < scanlinesPerFrame; Vdp.ScanLine++)
-            {
-                ProcessFrameInterrupt();
-                ProcessLineInterrupt();
-
-                Vdp.RenderCurrentScanline(render);
-
-                Cpu.ExecuteCycles(IPeriod);
-
-                if (Vdp.ScanLine == scanlinesPerFrame-1)
-                    Vdp.RenderBlankingRegions();
-            }
+            Vdp.ExecFrame(render);
             PSG.EndFrame(Cpu.TotalExecutedCycles);
         }
 

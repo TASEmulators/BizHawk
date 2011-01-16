@@ -1,25 +1,14 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using BizHawk.Emulation.CPUs.Z80;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    public enum VdpCommand
-    {
-        VramRead,
-        VramWrite,
-        RegisterWrite,
-        CramWrite
-    }
-    
-    public enum VdpMode
-    {
-        SMS,
-        GameGear
-    }
+    public enum VdpMode { SMS, GameGear }
 
     /// <summary>
-    /// Emulates the Texas Instruments TMS9918(A) VDP.
+    /// Emulates the Texas Instruments TMS9918 VDP.
     /// </summary>
     public sealed partial class VDP : IVideoProvider
     {
@@ -29,80 +18,79 @@ namespace BizHawk.Emulation.Consoles.Sega
         public byte[] Registers = new byte[] { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
         public byte StatusByte;
 
-        private bool vdpWaitingForLatchByte = true;
-        private byte vdpLatch;
-        private byte vdpBuffer;
-        private ushort vdpAddress;
+        private bool VdpWaitingForLatchByte = true;
+        private byte VdpLatch;
+        private byte VdpBuffer;
+        private ushort VdpAddress;
         private VdpCommand vdpCommand;
-        private ushort vdpAddressClamp;
+
+        private bool VIntPending;
+        private bool HIntPending;
 
         private VdpMode mode;
         public VdpMode VdpMode { get { return mode; } }
+        private DisplayType DisplayType = DisplayType.NTSC;
+        private Z80A Cpu;
 
         public int ScanLine;
-
         private int FrameHeight = 192;
-
         public int[] FrameBuffer = new int[256*192];
         public int[] GameGearFrameBuffer = new int[160*144];
 
-        private DisplayType DisplayType = DisplayType.NTSC;
-
-        // preprocessed state assist stuff.
-        public int[] Palette = new int[32];
-
-        private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
-        private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
-
+        public bool Mode2Bit                { get { return (Registers[0] & 2) > 0; } }
+        public bool Mode4Bit                { get { return (Registers[0] & 4) > 0; } }
         public bool ShiftSpritesLeft8Pixels { get { return (Registers[0] & 8) > 0; } }
         public bool EnableLineInterrupts    { get { return (Registers[0] & 16) > 0; } }
         public bool LeftBlanking            { get { return (Registers[0] & 32) > 0; } }
         public bool HorizScrollLock         { get { return (Registers[0] & 64) > 0; } }
         public bool VerticalScrollLock      { get { return (Registers[0] & 128) > 0; } }
-        public bool DisplayOn               { get { return (Registers[1] & 64) > 0; } }
-        public bool EnableFrameInterrupts   { get { return (Registers[1] & 32) > 0; } }
+        public bool EnableDoubledSprites    { get { return (Registers[1] & 1) > 0; } }
         public bool Enable8x16Sprites       { get { return (Registers[1] & 2) > 0; } }
-        public byte BackdropColor           { get { return (byte) (16 + (Registers[7] & 15)); } }
+        public bool EnableFrameInterrupts   { get { return (Registers[1] & 32) > 0; } }
+        public bool DisplayOn               { get { return (Registers[1] & 64) > 0; } }
         public int SpriteAttributeTableBase { get { return ((Registers[5] >> 1) << 8) & 0x3FFF; } }
         public int SpriteTileBase           { get { return (Registers[6] & 4) > 0 ? 256: 0; } }
-        
-        public int NameTableBase 
-        { 
-            get
-            {
-                if (FrameHeight == 192) 
-                    return 1024 * (Registers[2] & 0x0E);
-                return (1024 * (Registers[2] & 0x0C)) + 0x0700;
-            } 
-        }
+        public byte BackdropColor           { get { return (byte)(16 + (Registers[7] & 15)); } }
 
+        private int NameTableBase;
+        
+        // preprocessed state assist stuff.
+        public int[] Palette = new int[32];
         public byte[] PatternBuffer = new byte[0x8000];
 
         private byte[] ScanlinePriorityBuffer = new byte[256];
         private byte[] SpriteCollisionBuffer = new byte[256];
 
-        public VDP(VdpMode mode, DisplayType displayType)
+        private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
+        private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
+
+        public VDP(Z80A cpu, VdpMode mode, DisplayType displayType)
         {
+            Cpu = cpu;
             this.mode = mode;
             if (mode == VdpMode.SMS) CRAM = new byte[32];
             if (mode == VdpMode.GameGear) CRAM = new byte[64];
             DisplayType = displayType;
+            NameTableBase = CalcNameTableBase();
         }
 
-        public byte ReadVram()
+        public byte ReadData()
         {
-            vdpWaitingForLatchByte = true;
-            byte value = vdpBuffer;
-            vdpBuffer = VRAM[vdpAddress & vdpAddressClamp];
-            vdpAddress++;
+            VdpWaitingForLatchByte = true;
+            byte value = VdpBuffer;
+            VdpBuffer = VRAM[VdpAddress & 0x3FFF];
+            VdpAddress++;
             return value;
         }
 
         public byte ReadVdpStatus()
         {
-            vdpWaitingForLatchByte = true;
+            VdpWaitingForLatchByte = true;
             byte returnValue = StatusByte;
             StatusByte &= 0x1F;
+            HIntPending = false;
+            VIntPending = false;
+            Cpu.Interrupt = false;
             return returnValue;
         }
 
@@ -120,63 +108,57 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        public void WriteVdpRegister(byte value)
+        public void WriteVdpControl(byte value)
         {
-            if (vdpWaitingForLatchByte)
+            if (VdpWaitingForLatchByte)
             {
-                vdpLatch = value;
-                vdpWaitingForLatchByte = false;
-                vdpAddress = (ushort)((vdpAddress & 0xFF00) | value);
+                VdpLatch = value;
+                VdpWaitingForLatchByte = false;
+                VdpAddress = (ushort)((VdpAddress & 0xFF00) | value);
                 return;
             }
 
-            vdpWaitingForLatchByte = true;
+            VdpWaitingForLatchByte = true;
+            VdpAddress = (ushort)(((value & 63) << 8) | VdpLatch);
             switch (value & 0xC0)
             {
                 case 0x00: // read VRAM
                     vdpCommand = VdpCommand.VramRead;
-                    vdpAddressClamp = 0x3FFF;
-                    vdpAddress = (ushort)(((value & 63) << 8) | vdpLatch);
-                    vdpBuffer = VRAM[vdpAddress & vdpAddressClamp];
-                    vdpAddress++;
+                    VdpBuffer = VRAM[VdpAddress & 0x3FFF];
+                    VdpAddress++;
                     break;
                 case 0x40: // write VRAM
                     vdpCommand = VdpCommand.VramWrite;
-                    vdpAddressClamp = 0x3FFF;
-                    vdpAddress = (ushort)(((value & 63) << 8) | vdpLatch);
                     break;
                 case 0x80: // VDP register write
+                    vdpCommand = VdpCommand.RegisterWrite;
                     int reg = value & 0x0F;
-                    Registers[reg] = vdpLatch;
-                    if (reg == 1 || reg == 2)
-                        CheckVideoMode();
+                    WriteRegister(reg, VdpLatch);
                     break;
                 case 0xC0: // write CRAM / modify palette
                     vdpCommand = VdpCommand.CramWrite;
-                    vdpAddressClamp = (byte) (mode == VdpMode.SMS ? 0x1F : 0x3F);
-                    vdpAddress = (ushort)(((value & 63) << 8) | vdpLatch);
                     break;
             }
         }
 
         public void WriteVdpData(byte value)
         {
-            vdpWaitingForLatchByte = true;
-            vdpBuffer = value;
+            VdpWaitingForLatchByte = true;
+            VdpBuffer = value;
             if (vdpCommand == VdpCommand.CramWrite)
             {
                 // Write Palette / CRAM
-                CRAM[vdpAddress & vdpAddressClamp] = value;
-                vdpAddress++;
+                int mask = VdpMode == VdpMode.SMS ? 0x1F : 0x3F;
+                CRAM[VdpAddress & mask] = value;
                 UpdatePrecomputedPalette();
             }
             else
             {
                 // Write VRAM and update pre-computed pattern buffer. 
-                UpdatePatternBuffer((ushort)(vdpAddress & vdpAddressClamp), value);
-                VRAM[vdpAddress & vdpAddressClamp] = value;
-                vdpAddress++;
+                UpdatePatternBuffer((ushort)(VdpAddress & 0x3FFF), value);
+                VRAM[VdpAddress & 0x3FFF] = value;
             }
+            VdpAddress++;
         }
 
         public void UpdatePrecomputedPalette()
@@ -191,8 +173,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     byte b = SMSPalXlatTable[(value & 0x30) >> 4];
                     Palette[i] = Colors.ARGB(r, g, b);
                 }
-            } else // GameGear
-            { 
+            } else { // GameGear
                 for (int i=0; i<32; i++)
                 {
                     ushort value = (ushort) ((CRAM[(i*2) + 1] << 8) | CRAM[(i*2) + 0]);
@@ -204,9 +185,16 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
+        public int CalcNameTableBase()
+        { 
+            if (FrameHeight == 192) 
+                return 1024 * (Registers[2] & 0x0E);
+            return (1024 * (Registers[2] & 0x0C)) + 0x0700;
+        }
+
         private void CheckVideoMode()
         {
-            if ((Registers[0] & 6) == 6) // if Mode4 and Mode2 set, then check extension modes
+            if (Mode4Bit && Mode2Bit) // if Mode4 and Mode2 set, then check extension modes
             {
                 switch (Registers[1] & 0x18)
                 {
@@ -214,31 +202,58 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x18: // 192-line mode
                         if (FrameHeight != 192)
                         {
+                            Console.WriteLine("Change video mode to 192-line Mode4");
                             FrameHeight = 192;
                             FrameBuffer = new int[256*192];
+                            NameTableBase = CalcNameTableBase();
                         }
                         break;
                     case 0x10: // 224-line mode
                         if (FrameHeight != 224)
                         {
+                            Console.WriteLine("Change video mode to 224-line Mode4");
                             FrameHeight = 224;
                             FrameBuffer = new int[256*224];
+                            NameTableBase = CalcNameTableBase();
                         }
                         break;
                     case 0x08: // 240-line mode
                         if (FrameHeight != 240)
                         {
+                            Console.WriteLine("Change video mode to 240-line Mode4");
                             FrameHeight = 240;
                             FrameBuffer = new int[256 * 240];
+                            NameTableBase = CalcNameTableBase();
                         }
                         break;
                 }
             } else { // default to standard 192-line mode4
                 if (FrameHeight != 192)
                 {
+                    Console.WriteLine("Change video mode to 192-line Mode4");
                     FrameHeight = 192;
                     FrameBuffer = new int[256*192];
+                    NameTableBase = CalcNameTableBase();
                 }
+            }
+        }
+
+        private void WriteRegister(int reg, byte data)
+        {
+            Registers[reg] = data;
+            switch(reg)
+            {
+                case 0: // Mode Control Register 1
+                    CheckVideoMode();
+                    Cpu.Interrupt = (EnableLineInterrupts && HIntPending);
+                    break;
+                case 1: // Mode Control Register 2
+                    CheckVideoMode();
+                    Cpu.Interrupt = (EnableFrameInterrupts && VIntPending);
+                    break;
+                case 2: // Name Table Base Address
+                    NameTableBase = CalcNameTableBase();
+                    break;
             }
         }
 
@@ -259,6 +274,53 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
+        private int lineIntLinesRemaining;
+
+        private void ProcessFrameInterrupt()
+        {
+            if (ScanLine == FrameHeight + 1)
+            {
+                StatusByte |= 0x80;
+                VIntPending = true;
+            }
+
+            if (VIntPending && EnableFrameInterrupts)
+                Cpu.Interrupt = true;
+        }
+
+        private void ProcessLineInterrupt()
+        {
+            if (ScanLine <= FrameHeight)
+            {
+                if (lineIntLinesRemaining-- <= 0)
+                {
+                    HIntPending = true;
+                    if (EnableLineInterrupts)
+                        Cpu.Interrupt = true;
+                    lineIntLinesRemaining = Registers[0x0A];
+                }
+                return;
+            }
+            // else we're outside the active display period
+            lineIntLinesRemaining = Registers[0x0A];
+        }
+
+        public void ExecFrame(bool render)
+        {
+            int scanlinesPerFrame = DisplayType == DisplayType.NTSC ? 262 : 313;
+            for (ScanLine = 0; ScanLine < scanlinesPerFrame; ScanLine++)
+            {
+                RenderCurrentScanline(render);
+
+                ProcessFrameInterrupt();
+                ProcessLineInterrupt();
+
+                Cpu.ExecuteCycles(228);
+
+                if (ScanLine == scanlinesPerFrame - 1)
+                    RenderBlankingRegions();
+            }
+        }
         internal void RenderCurrentScanline(bool render)
         {
             if (ScanLine >= FrameHeight)
@@ -266,202 +328,21 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             // TODO: make frameskip actually skip rendering
             RenderBackgroundCurrentLine();
-            RenderSpritesCurrentLine();
-        }
-
-        internal void RenderBackgroundCurrentLine()
-        {
-            if (DisplayOn == false)
-            {
-                for (int x = 0; x < 256; x++)
-                    FrameBuffer[(ScanLine*256) + x] = BackdropColor;
-                return;
-            }
-
-            // Clear the priority buffer for this scanline
-            for (int p = 0; p < 256; p++)
-                ScanlinePriorityBuffer[p] = 0;
-
-            int mapBase = NameTableBase;
-
-            int vertOffset = ScanLine + Registers[9];
-            if (FrameHeight == 192)
-            {
-                if (vertOffset >= 224)
-                    vertOffset -= 224;
-            } else
-            {
-                if (vertOffset >= 256)
-                    vertOffset -= 256;
-            }
-            byte horzOffset = (HorizScrollLock && ScanLine < 16) ? (byte) 0 : Registers[8];
-
-            int yTile = vertOffset/8;
-
-            for (int xTile = 0; xTile<32; xTile++)
-            {
-                if (xTile == 24 && VerticalScrollLock)
-                {
-                    vertOffset = ScanLine;
-                    yTile = vertOffset/8;
-                }
-                
-                byte PaletteBase = 0;
-                int tileInfo = VRAM[mapBase+((yTile*32) + xTile)*2] | (VRAM[mapBase+(((yTile*32) + xTile)*2) + 1]<<8);
-                int tileNo = tileInfo & 0x01FF;
-                if ((tileInfo & 0x800) != 0) 
-                    PaletteBase = 16;
-                bool Priority = (tileInfo & 0x1000) != 0;
-                bool VFlip = (tileInfo & 0x400) != 0;
-                bool HFlip = (tileInfo & 0x200) != 0;
-
-                int yOfs = vertOffset & 7;
-                if (VFlip) 
-                    yOfs = 7 - yOfs;
-
-                if (HFlip == false)
-                {
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase];
-                    
-                    if (Priority)
-                    {
-                        horzOffset -= 8;
-                        for (int k = 0; k < 8; k++)
-                        {
-                            if (PatternBuffer[(tileNo * 64) + (yOfs * 8) + k] != 0)
-                                ScanlinePriorityBuffer[horzOffset] = 1;
-                            horzOffset++;
-                        }
-                    }
-                }
-                else // Flipped Horizontally
-                {
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase];
-
-                    if (Priority)
-                    {
-                        horzOffset -= 8;
-                        for (int k = 7; k >= 0; k--)
-                        {
-                            if (PatternBuffer[(tileNo * 64) + (yOfs * 8) + k] != 0)
-                                ScanlinePriorityBuffer[horzOffset] = 1;
-                            horzOffset++;
-                        }
-                    }
-                }
-            }
-        }
-
-        internal void RenderSpritesCurrentLine()
-        {
-            if (DisplayOn == false) return;
-            int SpriteBase = SpriteAttributeTableBase;
-            int SpriteHeight = Enable8x16Sprites ? 16 : 8;
-
-            // Clear the sprite collision buffer for this scanline
-            for (int c = 0; c < 256; c++)
-                SpriteCollisionBuffer[c] = 0;
-
-            // 208 is a special terminator sprite (in 192-line mode). Lets find it...
-            int TerminalSprite = 64;
-            if (FrameHeight == 192)
-                for (int i = 0; i < 64; i++)
-                {
-                    if (VRAM[SpriteBase + i] == 208)
-                    {
-                        TerminalSprite = i;
-                        break;
-                    }
-                }
             
-            // Loop through these sprites and render the current scanline
-            int SpritesDrawnThisScanline = 0;
-            for (int i = TerminalSprite - 1; i >= 0; i--)
-            {
-                if (SpritesDrawnThisScanline >= 8)
-                    StatusByte |= 0x40; // Set Overflow bit
-
-                int x = VRAM[SpriteBase + 0x80 + (i*2)];
-                if (ShiftSpritesLeft8Pixels)
-                    x -= 8;
-
-                int y = VRAM[SpriteBase + i] + 1;
-                if (y >= (Enable8x16Sprites ? 240 : 248)) y -= 256;
-                 
-                if (y+SpriteHeight<=ScanLine || y > ScanLine)
-                    continue;
-
-                int tileNo = VRAM[SpriteBase + 0x80 + (i*2) + 1];
-                if (Enable8x16Sprites) 
-                    tileNo &= 0xFE;
-                tileNo += SpriteTileBase;
-
-                int ys = ScanLine - y;
-                
-                for (int xs = 0; xs<8 && x+xs < 256; xs++)
-                {
-                    byte color = PatternBuffer[(tileNo*64) + (ys*8) + xs];
-                    if (color != 0 && x+xs >= 0 && ScanlinePriorityBuffer[x + xs] == 0)
-                    {
-                        FrameBuffer[(ys + y)*256 + x + xs] = Palette[(color + 16)];
-                        if (SpriteCollisionBuffer[x + xs] != 0)
-                            StatusByte |= 0x20; // Set Collision bit
-                        SpriteCollisionBuffer[x + xs] = 1;
-                    }
-                }
-                SpritesDrawnThisScanline++;
-            }
-        }
-
-        /// <summary>
-        /// Performs render buffer blanking. This includes the left-column blanking as well as Game Gear blanking if requested.
-        /// Should be called at the end of the frame.
-        /// </summary>
-        public void RenderBlankingRegions()
-        {
-            int blankingColor = Palette[BackdropColor];
-
-            if (LeftBlanking)
-            {
-                for (int y=0; y<FrameHeight; y++)
-                {
-                    for (int x=0; x<8; x++)
-                        FrameBuffer[(y*256) + x] = blankingColor;
-                }
-            }
-
-            if (mode == VdpMode.GameGear)
-            {
-                for (int y = 0; y < 144; y++)
-                    for (int x = 0; x < 160; x++)
-                        GameGearFrameBuffer[(y*160) + x] = FrameBuffer[((y + 24)*256) + x + 48];
-            }
+            if (EnableDoubledSprites)
+                RenderSpritesCurrentLineDoubleSize();
+            else
+                RenderSpritesCurrentLine();
         }
 
         public void SaveStateText(TextWriter writer)
         {
             writer.WriteLine("[VDP]");
-            writer.WriteLine("Mode " + Enum.GetName(typeof(VdpMode), VdpMode));
             writer.WriteLine("StatusByte {0:X2}", StatusByte);
-            writer.WriteLine("WaitingForLatchByte {0}", vdpWaitingForLatchByte);
-            writer.WriteLine("Latch {0:X2}", vdpLatch);
-            writer.WriteLine("ReadBuffer {0:X2}", vdpBuffer);
-            writer.WriteLine("VdpAddress {0:X4}", vdpAddress);
-            writer.WriteLine("VdpAddressMask {0:X2}", vdpAddressClamp);
+            writer.WriteLine("WaitingForLatchByte {0}", VdpWaitingForLatchByte);
+            writer.WriteLine("Latch {0:X2}", VdpLatch);
+            writer.WriteLine("ReadBuffer {0:X2}", VdpBuffer);
+            writer.WriteLine("VdpAddress {0:X4}", VdpAddress);
             writer.WriteLine("Command " + Enum.GetName(typeof(VdpCommand), vdpCommand));
 
             writer.Write("Registers ");
@@ -485,15 +366,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 if (args[0] == "StatusByte")
                     StatusByte = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "WaitingForLatchByte")
-                    vdpWaitingForLatchByte = bool.Parse(args[1]);
+                    VdpWaitingForLatchByte = bool.Parse(args[1]);
                 else if (args[0] == "Latch")
-                    vdpLatch = byte.Parse(args[1], NumberStyles.HexNumber);
+                    VdpLatch = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "ReadBuffer")
-                    vdpBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+                    VdpBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "VdpAddress")
-                    vdpAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "VdpAddressMask")
-                    vdpAddressClamp = ushort.Parse(args[1], NumberStyles.HexNumber);
+                    VdpAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "Command")
                     vdpCommand = (VdpCommand) Enum.Parse(typeof (VdpCommand), args[1]);
                 else if (args[0] == "Registers")
@@ -513,17 +392,17 @@ namespace BizHawk.Emulation.Consoles.Sega
                 else 
                     Console.WriteLine("Skipping unrecognized identifier "+args[0]);
             }
-            CheckVideoMode();
+            for (int i=0; i<Registers.Length; i++)
+                WriteRegister(i, Registers[i]);
         }
 
         public void SaveStateBinary(BinaryWriter writer)
         {
             writer.Write(StatusByte);
-            writer.Write(vdpWaitingForLatchByte);
-            writer.Write(vdpLatch);
-            writer.Write(vdpBuffer);
-            writer.Write(vdpAddress);
-            writer.Write(vdpAddressClamp);
+            writer.Write(VdpWaitingForLatchByte);
+            writer.Write(VdpLatch);
+            writer.Write(VdpBuffer);
+            writer.Write(VdpAddress);
             writer.Write((byte)vdpCommand);
             writer.Write(Registers);
             writer.Write(CRAM);
@@ -533,11 +412,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         public void LoadStateBinary(BinaryReader reader)
         {
             StatusByte = reader.ReadByte();
-            vdpWaitingForLatchByte = reader.ReadBoolean();
-            vdpLatch = reader.ReadByte();
-            vdpBuffer = reader.ReadByte();
-            vdpAddress = reader.ReadUInt16();
-            vdpAddressClamp = reader.ReadUInt16();
+            VdpWaitingForLatchByte = reader.ReadBoolean();
+            VdpLatch = reader.ReadByte();
+            VdpBuffer = reader.ReadByte();
+            VdpAddress = reader.ReadUInt16();
             vdpCommand = (VdpCommand) Enum.ToObject(typeof(VdpCommand), reader.ReadByte());
             Registers = reader.ReadBytes(Registers.Length);
             CRAM = reader.ReadBytes(CRAM.Length);
@@ -545,7 +423,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             UpdatePrecomputedPalette();
             for (ushort i = 0; i < VRAM.Length; i++)
                 UpdatePatternBuffer(i, VRAM[i]);
-            CheckVideoMode();
+            for (int i = 0; i < Registers.Length; i++)
+                WriteRegister(i, Registers[i]);
         }
 
         public int[] GetVideoBuffer()
@@ -566,6 +445,14 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int BackgroundColor
         {
             get { return Palette[BackdropColor]; }
+        }
+
+        enum VdpCommand
+        {
+            VramRead,
+            VramWrite,
+            RegisterWrite,
+            CramWrite
         }
     }
 }

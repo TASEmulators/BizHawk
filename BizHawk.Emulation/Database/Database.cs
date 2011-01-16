@@ -46,7 +46,7 @@ namespace BizHawk
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
                         db[Game.CRC32] = Game;
-                    } catch (Exception e)
+                    } catch (Exception)
                     {
                         Console.WriteLine("Error parsing database entry: "+line);
                     }
