@@ -221,8 +221,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private void InitializeScanLine(int scanline)
         {
             // Clear priority buffer
-            for (int i = 0; i < FrameWidth; i++)
-                PriorityBuffer[i] = 0;
+            Array.Clear(PriorityBuffer, 0, FrameWidth);
 
             // Initialize scanline to background color
             for (int i = 0; i < FrameWidth; i++)
@@ -272,8 +271,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 return;
 
             // clear inter-sprite priority buffer
-            for (int i = 0; i < FrameWidth; i++)
-                InterSpritePriorityBuffer[i] = 0;
+            Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
 
             for (int i = 0; i < 64; i++)
             {

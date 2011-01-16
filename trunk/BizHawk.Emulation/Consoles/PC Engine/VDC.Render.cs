@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Consoles.TurboGrafx
+﻿using System;
+
+namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     // This rendering code is only used for TurboGrafx/TurboCD Mode.
     // In SuperGrafx mode, separate rendering functions in the VPC class are used.
@@ -104,9 +106,7 @@
 
         private void RenderBackgroundScanline()
         {
-            // clear priority buffer
-            for (int i = 0; i < FrameWidth; i++)
-                PriorityBuffer[i] = 0;
+            Array.Clear(PriorityBuffer, 0, FrameWidth);
 
             if (BackgroundEnabled == false)
             {
@@ -153,9 +153,7 @@
             if (SpritesEnabled == false)
                 return;
 
-            // clear inter-sprite priority buffer
-            for (int i = 0; i < FrameWidth; i++)
-                InterSpritePriorityBuffer[i] = 0;
+            Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
 
             for (int i = 0; i < 64; i++)
             {
