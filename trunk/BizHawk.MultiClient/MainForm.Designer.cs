@@ -37,7 +37,6 @@
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadMostRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.advancedLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,7 +131,6 @@
             this.openROMToolStripMenuItem,
             this.recentROMToolStripMenuItem,
             this.closeROMToolStripMenuItem,
-            this.advancedLoadToolStripMenuItem,
             this.toolStripMenuItem1,
             this.saveStateToolStripMenuItem,
             this.loadStateToolStripMenuItem,
@@ -199,12 +197,6 @@
             this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.closeROMToolStripMenuItem.Text = "&Close ROM";
             this.closeROMToolStripMenuItem.Click += new System.EventHandler(this.closeROMToolStripMenuItem_Click);
-            // 
-            // advancedLoadToolStripMenuItem
-            // 
-            this.advancedLoadToolStripMenuItem.Name = "advancedLoadToolStripMenuItem";
-            this.advancedLoadToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.advancedLoadToolStripMenuItem.Text = "Advanced Load";
             // 
             // toolStripMenuItem1
             // 
@@ -586,26 +578,26 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -830,7 +822,6 @@
         private System.Windows.Forms.ToolStripMenuItem displayLagCounterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem luaConsoleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recentROMToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem advancedLoadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
