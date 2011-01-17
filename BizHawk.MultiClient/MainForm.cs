@@ -153,6 +153,14 @@ namespace BizHawk.MultiClient
             LoadRom(filePaths[0]);
         }
 
+        bool IsNullEmulator()
+        {
+            if (Global.Emulator is NullEmulator)
+                return true;
+            else
+                return false;
+        }
+
         private void LoadRom(string path)
         {
             var file = new FileInfo(path);
@@ -563,6 +571,15 @@ namespace BizHawk.MultiClient
 
         private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
+            if (IsNullEmulator())
+            {
+                powerToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                powerToolStripMenuItem.Enabled = true;
+            }
+
             if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
                 resetToolStripMenuItem.Enabled = true;
             else
@@ -595,10 +612,20 @@ namespace BizHawk.MultiClient
 
         private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            if (Global.Emulator is NullEmulator)
+            if (IsNullEmulator())
+            {
                 closeROMToolStripMenuItem.Enabled = false;
+                screenshotF12ToolStripMenuItem.Enabled = false;
+                saveToCurrentSlotToolStripMenuItem.Enabled = false;
+                loadCurrentSlotToolStripMenuItem.Enabled = false;
+            }
             else
+            {
                 closeROMToolStripMenuItem.Enabled = true;
+                screenshotF12ToolStripMenuItem.Enabled = true;
+                saveToCurrentSlotToolStripMenuItem.Enabled = true;
+                loadCurrentSlotToolStripMenuItem.Enabled = true;
+            }
             
             if (AutoLoadMostRecentRom == true)
                 autoloadMostRecentToolStripMenuItem.Checked = true;
