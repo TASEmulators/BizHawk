@@ -166,6 +166,7 @@
             this.recentROMToolStripMenuItem.Name = "recentROMToolStripMenuItem";
             this.recentROMToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.recentROMToolStripMenuItem.Text = "Recent ROM";
+            this.recentROMToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentROMToolStripMenuItem_DropDownOpened);
             // 
             // noneToolStripMenuItem
             // 

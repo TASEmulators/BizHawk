@@ -29,6 +29,11 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
+        public int Length()
+        {
+            return recentlist.Count;
+        }
+
         public void Add(string newFile)
         {
             for (int x = 0; x < recentlist.Count; x++)

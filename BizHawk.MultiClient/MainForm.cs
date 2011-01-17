@@ -352,6 +352,7 @@ namespace BizHawk.MultiClient
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
             LoadRom(file.FullName);
+            RecentRoms.Add(file.FullName);
         }
 
         private void toolStripMenuItem4_Click(object sender, EventArgs e)  { SaveState("QuickSave1"); }
@@ -571,7 +572,6 @@ namespace BizHawk.MultiClient
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RecentRoms.Clear();
-            //TODO: clear out the recent menu? Or perhaps it should always be updated on menu open
         }
 
         private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
@@ -594,6 +594,28 @@ namespace BizHawk.MultiClient
                 autoloadMostRecentToolStripMenuItem.Checked = true;
             else
                 autoloadMostRecentToolStripMenuItem.Checked = false;
+        }
+
+        private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+           //Clear out recent Roms list
+           //repopulate it with an up to date list
+            recentROMToolStripMenuItem.DropDownItems.Clear();
+            if (RecentRoms.IsEmpty())
+            {
+                recentROMToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < RecentRoms.Length(); x++)
+                {
+                    recentROMToolStripMenuItem.DropDownItems.Add(RecentRoms.GetRecentFileByPosition(x));
+                }
+            }
+            recentROMToolStripMenuItem.DropDownItems.Add("Clear");
+            
+            //MenuItem recent1 = new MenuItem("test");
+            //recentROMToolStripMenuItem.DropDownItems.Add("testme");
         }
     }
 }
