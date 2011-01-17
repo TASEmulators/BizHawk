@@ -44,6 +44,8 @@ namespace BizHawk.MultiClient
                 }
             }
             recentlist.Add(newFile);
+            if (recentlist.Count > MAX_RECENT_FILES)
+                recentlist.Remove(recentlist[0]);
         }
 
         public bool Remove(string newFile)
