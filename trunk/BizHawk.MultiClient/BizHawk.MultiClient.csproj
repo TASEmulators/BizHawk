@@ -103,6 +103,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="RecentFiles.cs" />
     <Compile Include="RenderPanel.cs" />
     <Compile Include="Rewind.cs">
       <SubType>Form</SubType>
