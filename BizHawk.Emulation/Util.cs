@@ -235,5 +235,19 @@ namespace BizHawk
                     return j + 1;
             return 0;
         }
+
+		/// <summary>
+		/// conerts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
+		/// </summary>
+		public static string BytesToHexString(byte[] bytes)
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (byte b in bytes)
+				sb.AppendFormat("{0:X2}", b);
+			return sb.ToString();
+		}
+
     }
+
+
 }

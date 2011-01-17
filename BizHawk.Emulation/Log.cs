@@ -54,8 +54,8 @@ namespace BizHawk
 
         // ============== Default Logger Action ==============
 
-        private static bool LogToConsole;
-        private static bool LogToFile;
+        private static bool LogToConsole = false;
+		private static bool LogToFile = false;
 
         private static string LogFilename = "bizhawk.txt";
         private static StreamWriter writer;
