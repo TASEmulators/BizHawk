@@ -9,3 +9,4 @@
 
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
+* GG Turrican homebrew not starting correctly
