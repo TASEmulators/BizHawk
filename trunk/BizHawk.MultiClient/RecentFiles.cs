@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
             List<string> temp = new List<string>();
             for (int x = 0; x < recentlist.Count; x++)
             {
-                temp.Add = recentlist[x].Substring(0, length);
+                temp.Add(recentlist[x].Substring(0, length));
             }
             return temp;
         }
