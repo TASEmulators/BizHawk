@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         private byte VdpBuffer;
         private ushort VdpAddress;
         private VdpCommand vdpCommand;
+        private int TmsMode = 4;
 
         private bool VIntPending;
         private bool HIntPending;
@@ -37,7 +38,9 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int[] FrameBuffer = new int[256*192];
         public int[] GameGearFrameBuffer = new int[160*144];
 
+        public bool Mode1Bit                { get { return (Registers[1] & 16) > 0;} }
         public bool Mode2Bit                { get { return (Registers[0] & 2) > 0; } }
+        public bool Mode3Bit                { get { return (Registers[1] & 8) > 0; } }
         public bool Mode4Bit                { get { return (Registers[0] & 4) > 0; } }
         public bool ShiftSpritesLeft8Pixels { get { return (Registers[0] & 8) > 0; } }
         public bool EnableLineInterrupts    { get { return (Registers[0] & 16) > 0; } }
@@ -53,6 +56,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         public byte BackdropColor           { get { return (byte)(16 + (Registers[7] & 15)); } }
 
         private int NameTableBase;
+        private int ColorTableBase;
+        private int PatternGeneratorBase;
+        private int SpritePatternGeneratorBase;
+        private int mystery_pn;
         
         // preprocessed state assist stuff.
         public int[] Palette = new int[32];
@@ -194,8 +201,33 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void CheckVideoMode()
         {
-            if (Mode4Bit && Mode2Bit) // if Mode4 and Mode2 set, then check extension modes
+            if (Mode4Bit == false) // check old TMS modes
             {
+                if (Mode1Bit)
+                {
+                    Console.WriteLine("set mode 1....");
+                    TmsMode = 1;
+                }
+                else if (Mode2Bit)
+                {
+                    Console.WriteLine("set mode 2....");
+                    TmsMode = 2;
+                }
+                else if (Mode3Bit)
+                {
+                    Console.WriteLine("set mode 3....");
+                    TmsMode = 3;
+                }
+                else
+                {
+                    Console.WriteLine("set mode 0....");
+                    TmsMode = 0;
+                }
+            }
+
+            else if (Mode4Bit && Mode2Bit) // if Mode4 and Mode2 set, then check extension modes
+            {
+                TmsMode = 4;
                 switch (Registers[1] & 0x18)
                 {
                     case 0x00:
@@ -227,7 +259,10 @@ namespace BizHawk.Emulation.Consoles.Sega
                         }
                         break;
                 }
-            } else { // default to standard 192-line mode4
+            } 
+            
+            else { // default to standard 192-line mode4
+                TmsMode = 4;
                 if (FrameHeight != 192)
                 {
                     Console.WriteLine("Change video mode to 192-line Mode4");
@@ -253,6 +288,19 @@ namespace BizHawk.Emulation.Consoles.Sega
                     break;
                 case 2: // Name Table Base Address
                     NameTableBase = CalcNameTableBase();
+                    mystery_pn = (Registers[2] << 10) & 0x3C00;
+                    break;
+                case 3: // Color Table Base Address
+                    ColorTableBase = (Registers[3] << 6) & 0x3FC0;
+                    break;
+                case 4: // Pattern Generator Base Address
+                    PatternGeneratorBase = (Registers[4] << 11) & 0x3800;
+                    break;
+                case 5: // Sprite Attribute Table Base Address
+                    // ??? should I move from my property to precalculated?
+                    break;
+                case 6: // Sprite Pattern Generator Base Adderss 
+                    SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
                     break;
             }
         }
@@ -326,13 +374,18 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (ScanLine >= FrameHeight)
                 return;
 
-            // TODO: make frameskip actually skip rendering
-            RenderBackgroundCurrentLine();
-            
-            if (EnableDoubledSprites)
-                RenderSpritesCurrentLineDoubleSize();
-            else
-                RenderSpritesCurrentLine();
+            if (TmsMode == 4)
+            {
+                // TODO: make frameskip actually skip rendering
+                RenderBackgroundCurrentLine();
+
+                if (EnableDoubledSprites)
+                    RenderSpritesCurrentLineDoubleSize();
+                else
+                    RenderSpritesCurrentLine();
+            } else if (TmsMode == 0) {
+                RenderBackgroundM0();
+            }
         }
 
         public void SaveStateText(TextWriter writer)
