@@ -595,6 +595,11 @@ namespace BizHawk.MultiClient
 
         private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
+            if (Global.Emulator is NullEmulator)
+                closeROMToolStripMenuItem.Enabled = false;
+            else
+                closeROMToolStripMenuItem.Enabled = true;
+            
             if (AutoLoadMostRecentRom == true)
                 autoloadMostRecentToolStripMenuItem.Checked = true;
             else
