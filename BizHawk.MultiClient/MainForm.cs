@@ -618,6 +618,29 @@ namespace BizHawk.MultiClient
                 screenshotF12ToolStripMenuItem.Enabled = false;
                 saveToCurrentSlotToolStripMenuItem.Enabled = false;
                 loadCurrentSlotToolStripMenuItem.Enabled = false;
+                loadNamedStateToolStripMenuItem.Enabled = false;
+                saveNamedStateToolStripMenuItem.Enabled = false;
+                savestate1toolStripMenuItem.Enabled = false;
+                savestate2toolStripMenuItem.Enabled = false;
+                savestate3toolStripMenuItem.Enabled = false;
+                savestate4toolStripMenuItem.Enabled = false;
+                savestate5toolStripMenuItem.Enabled = false;
+                savestate6toolStripMenuItem.Enabled = false;
+                savestate7toolStripMenuItem.Enabled = false;
+                savestate8toolStripMenuItem.Enabled = false;
+                savestate9toolStripMenuItem.Enabled = false;
+                savestate0toolStripMenuItem.Enabled = false;
+                loadstate1toolStripMenuItem.Enabled = false;
+                loadstate2toolStripMenuItem.Enabled = false;
+                loadstate3toolStripMenuItem.Enabled = false;
+                loadstate4toolStripMenuItem.Enabled = false;
+                loadstate5toolStripMenuItem.Enabled = false;
+                loadstate6toolStripMenuItem.Enabled = false;
+                loadstate7toolStripMenuItem.Enabled = false;
+                loadstate8toolStripMenuItem.Enabled = false;
+                loadstate9toolStripMenuItem.Enabled = false;
+                loadstate0toolStripMenuItem.Enabled = false;
+
             }
             else
             {
@@ -625,6 +648,28 @@ namespace BizHawk.MultiClient
                 screenshotF12ToolStripMenuItem.Enabled = true;
                 saveToCurrentSlotToolStripMenuItem.Enabled = true;
                 loadCurrentSlotToolStripMenuItem.Enabled = true;
+                loadNamedStateToolStripMenuItem.Enabled = true;
+                saveNamedStateToolStripMenuItem.Enabled = true;
+                savestate1toolStripMenuItem.Enabled = true;
+                savestate2toolStripMenuItem.Enabled = true;
+                savestate3toolStripMenuItem.Enabled = true;
+                savestate4toolStripMenuItem.Enabled = true;
+                savestate5toolStripMenuItem.Enabled = true;
+                savestate6toolStripMenuItem.Enabled = true;
+                savestate7toolStripMenuItem.Enabled = true;
+                savestate8toolStripMenuItem.Enabled = true;
+                savestate9toolStripMenuItem.Enabled = true;
+                savestate0toolStripMenuItem.Enabled = true;
+                loadstate1toolStripMenuItem.Enabled = true;
+                loadstate2toolStripMenuItem.Enabled = true;
+                loadstate3toolStripMenuItem.Enabled = true;
+                loadstate4toolStripMenuItem.Enabled = true;
+                loadstate5toolStripMenuItem.Enabled = true;
+                loadstate6toolStripMenuItem.Enabled = true;
+                loadstate7toolStripMenuItem.Enabled = true;
+                loadstate8toolStripMenuItem.Enabled = true;
+                loadstate9toolStripMenuItem.Enabled = true;
+                loadstate0toolStripMenuItem.Enabled = true;
             }
             
             if (AutoLoadMostRecentRom == true)
