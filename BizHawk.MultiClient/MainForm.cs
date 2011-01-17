@@ -14,6 +14,8 @@ namespace BizHawk.MultiClient
     {
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
+        private RecentFiles RecentRoms = new RecentFiles(8);
+        private bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
 
         private int SaveSlot = 0;   //Saveslot sytem
 
@@ -564,6 +566,34 @@ namespace BizHawk.MultiClient
                 resetToolStripMenuItem.Enabled = true;
             else
                 resetToolStripMenuItem.Enabled = false;
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RecentRoms.Clear();
+            //TODO: clear out the recent menu? Or perhaps it should always be updated on menu open
+        }
+
+        private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AutoLoadMostRecentRom == true)
+            {
+                autoloadMostRecentToolStripMenuItem.Checked = false;
+                AutoLoadMostRecentRom = false;
+            }
+            else
+            {
+                autoloadMostRecentToolStripMenuItem.Checked = true;
+                AutoLoadMostRecentRom = true;
+            }         
+        }
+
+        private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (AutoLoadMostRecentRom == true)
+                autoloadMostRecentToolStripMenuItem.Checked = true;
+            else
+                autoloadMostRecentToolStripMenuItem.Checked = false;
         }
     }
 }

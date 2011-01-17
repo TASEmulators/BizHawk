@@ -36,6 +36,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadMostRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.advancedLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,9 +61,27 @@
             this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem22 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot10ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectSlot9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nextSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.saveToCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveNamedStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadNamedStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,25 +108,6 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectSlot10ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.saveToCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadCurrentSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.previousSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nextSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -146,6 +146,7 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "&File";
+            this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpened);
             // 
             // openROMToolStripMenuItem
             // 
@@ -182,12 +183,21 @@
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             this.clearToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // autoloadMostRecentToolStripMenuItem
             // 
             this.autoloadMostRecentToolStripMenuItem.Name = "autoloadMostRecentToolStripMenuItem";
             this.autoloadMostRecentToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.autoloadMostRecentToolStripMenuItem.Text = "Autoload Most Recent";
+            this.autoloadMostRecentToolStripMenuItem.Click += new System.EventHandler(this.autoloadMostRecentToolStripMenuItem_Click);
+            // 
+            // closeROMToolStripMenuItem
+            // 
+            this.closeROMToolStripMenuItem.Name = "closeROMToolStripMenuItem";
+            this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.closeROMToolStripMenuItem.Text = "&Close ROM";
+            this.closeROMToolStripMenuItem.Click += new System.EventHandler(this.closeROMToolStripMenuItem_Click);
             // 
             // advancedLoadToolStripMenuItem
             // 
@@ -221,7 +231,7 @@
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
             this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F1)));
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem4.Text = "1";
             this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
             // 
@@ -229,7 +239,7 @@
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
             this.toolStripMenuItem5.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem5.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem5.Text = "2";
             this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
             // 
@@ -237,7 +247,7 @@
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
             this.toolStripMenuItem6.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F3)));
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem6.Text = "3";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItem6_Click);
             // 
@@ -245,7 +255,7 @@
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
             this.toolStripMenuItem7.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem7.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem7.Text = "4";
             this.toolStripMenuItem7.Click += new System.EventHandler(this.toolStripMenuItem7_Click);
             // 
@@ -253,7 +263,7 @@
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
             this.toolStripMenuItem8.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem8.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem8.Text = "5";
             this.toolStripMenuItem8.Click += new System.EventHandler(this.toolStripMenuItem8_Click);
             // 
@@ -261,7 +271,7 @@
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
             this.toolStripMenuItem9.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F6)));
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem9.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem9.Text = "6";
             this.toolStripMenuItem9.Click += new System.EventHandler(this.toolStripMenuItem9_Click);
             // 
@@ -269,7 +279,7 @@
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
             this.toolStripMenuItem10.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F7)));
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem10.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem10.Text = "7";
             this.toolStripMenuItem10.Click += new System.EventHandler(this.toolStripMenuItem10_Click);
             // 
@@ -277,7 +287,7 @@
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
             this.toolStripMenuItem11.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F8)));
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem11.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem11.Text = "8";
             this.toolStripMenuItem11.Click += new System.EventHandler(this.toolStripMenuItem11_Click);
             // 
@@ -285,7 +295,7 @@
             // 
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
             this.toolStripMenuItem12.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F9)));
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem12.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem12.Text = "9";
             this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem12_Click);
             // 
@@ -293,7 +303,7 @@
             // 
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
             this.toolStripMenuItem13.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F10)));
-            this.toolStripMenuItem13.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem13.Size = new System.Drawing.Size(146, 22);
             this.toolStripMenuItem13.Text = "0";
             this.toolStripMenuItem13.Click += new System.EventHandler(this.toolStripMenuItem13_Click);
             // 
@@ -394,6 +404,131 @@
             this.toolStripMenuItem23.Text = "0";
             this.toolStripMenuItem23.Click += new System.EventHandler(this.toolStripMenuItem23_Click);
             // 
+            // saveSlotToolStripMenuItem
+            // 
+            this.saveSlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectSlot10ToolStripMenuItem,
+            this.selectSlot1ToolStripMenuItem,
+            this.selectSlot2ToolStripMenuItem,
+            this.selectSlot3ToolStripMenuItem,
+            this.selectSlot4ToolStripMenuItem,
+            this.selectSlot5ToolStripMenuItem,
+            this.selectSlot6ToolStripMenuItem,
+            this.selectSlot7ToolStripMenuItem,
+            this.selectSlot8ToolStripMenuItem,
+            this.selectSlot9ToolStripMenuItem,
+            this.previousSlotToolStripMenuItem,
+            this.nextSlotToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.saveToCurrentSlotToolStripMenuItem,
+            this.loadCurrentSlotToolStripMenuItem});
+            this.saveSlotToolStripMenuItem.Name = "saveSlotToolStripMenuItem";
+            this.saveSlotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.saveSlotToolStripMenuItem.Text = "SaveSlot";
+            // 
+            // selectSlot10ToolStripMenuItem
+            // 
+            this.selectSlot10ToolStripMenuItem.Name = "selectSlot10ToolStripMenuItem";
+            this.selectSlot10ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot10ToolStripMenuItem.Text = "Select Slot 0";
+            this.selectSlot10ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot10ToolStripMenuItem_Click);
+            // 
+            // selectSlot1ToolStripMenuItem
+            // 
+            this.selectSlot1ToolStripMenuItem.Name = "selectSlot1ToolStripMenuItem";
+            this.selectSlot1ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot1ToolStripMenuItem.Text = "Select Slot 1";
+            this.selectSlot1ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot1ToolStripMenuItem_Click);
+            // 
+            // selectSlot2ToolStripMenuItem
+            // 
+            this.selectSlot2ToolStripMenuItem.Name = "selectSlot2ToolStripMenuItem";
+            this.selectSlot2ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot2ToolStripMenuItem.Text = "Select Slot 2";
+            this.selectSlot2ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot2ToolStripMenuItem_Click);
+            // 
+            // selectSlot3ToolStripMenuItem
+            // 
+            this.selectSlot3ToolStripMenuItem.Name = "selectSlot3ToolStripMenuItem";
+            this.selectSlot3ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot3ToolStripMenuItem.Text = "Select Slot 3";
+            this.selectSlot3ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot3ToolStripMenuItem_Click);
+            // 
+            // selectSlot4ToolStripMenuItem
+            // 
+            this.selectSlot4ToolStripMenuItem.Name = "selectSlot4ToolStripMenuItem";
+            this.selectSlot4ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot4ToolStripMenuItem.Text = "Select Slot 4";
+            this.selectSlot4ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot4ToolStripMenuItem_Click);
+            // 
+            // selectSlot5ToolStripMenuItem
+            // 
+            this.selectSlot5ToolStripMenuItem.Name = "selectSlot5ToolStripMenuItem";
+            this.selectSlot5ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot5ToolStripMenuItem.Text = "Select Slot 5";
+            this.selectSlot5ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot5ToolStripMenuItem_Click);
+            // 
+            // selectSlot6ToolStripMenuItem
+            // 
+            this.selectSlot6ToolStripMenuItem.Name = "selectSlot6ToolStripMenuItem";
+            this.selectSlot6ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot6ToolStripMenuItem.Text = "Select Slot 6";
+            this.selectSlot6ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot6ToolStripMenuItem_Click);
+            // 
+            // selectSlot7ToolStripMenuItem
+            // 
+            this.selectSlot7ToolStripMenuItem.Name = "selectSlot7ToolStripMenuItem";
+            this.selectSlot7ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot7ToolStripMenuItem.Text = "Select Slot 7";
+            this.selectSlot7ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot7ToolStripMenuItem_Click);
+            // 
+            // selectSlot8ToolStripMenuItem
+            // 
+            this.selectSlot8ToolStripMenuItem.Name = "selectSlot8ToolStripMenuItem";
+            this.selectSlot8ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot8ToolStripMenuItem.Text = "Select Slot 8";
+            this.selectSlot8ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot8ToolStripMenuItem_Click);
+            // 
+            // selectSlot9ToolStripMenuItem
+            // 
+            this.selectSlot9ToolStripMenuItem.Name = "selectSlot9ToolStripMenuItem";
+            this.selectSlot9ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.selectSlot9ToolStripMenuItem.Text = "Select Slot 9";
+            this.selectSlot9ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot9ToolStripMenuItem_Click);
+            // 
+            // previousSlotToolStripMenuItem
+            // 
+            this.previousSlotToolStripMenuItem.Name = "previousSlotToolStripMenuItem";
+            this.previousSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.previousSlotToolStripMenuItem.Text = "Previous Slot";
+            this.previousSlotToolStripMenuItem.Click += new System.EventHandler(this.previousSlotToolStripMenuItem_Click);
+            // 
+            // nextSlotToolStripMenuItem
+            // 
+            this.nextSlotToolStripMenuItem.Name = "nextSlotToolStripMenuItem";
+            this.nextSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.nextSlotToolStripMenuItem.Text = "Next Slot";
+            this.nextSlotToolStripMenuItem.Click += new System.EventHandler(this.nextSlotToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(180, 6);
+            // 
+            // saveToCurrentSlotToolStripMenuItem
+            // 
+            this.saveToCurrentSlotToolStripMenuItem.Name = "saveToCurrentSlotToolStripMenuItem";
+            this.saveToCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.saveToCurrentSlotToolStripMenuItem.Text = "Save to Current Slot";
+            this.saveToCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.saveToCurrentSlotToolStripMenuItem_Click);
+            // 
+            // loadCurrentSlotToolStripMenuItem
+            // 
+            this.loadCurrentSlotToolStripMenuItem.Name = "loadCurrentSlotToolStripMenuItem";
+            this.loadCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.loadCurrentSlotToolStripMenuItem.Text = "Load Current Slot";
+            this.loadCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.loadCurrentSlotToolStripMenuItem_Click);
+            // 
             // saveNamedStateToolStripMenuItem
             // 
             this.saveNamedStateToolStripMenuItem.Name = "saveNamedStateToolStripMenuItem";
@@ -413,6 +548,19 @@
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(209, 6);
+            // 
+            // screenshotF12ToolStripMenuItem
+            // 
+            this.screenshotF12ToolStripMenuItem.Name = "screenshotF12ToolStripMenuItem";
+            this.screenshotF12ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
+            this.screenshotF12ToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.screenshotF12ToolStripMenuItem.Text = "Screenshot";
+            this.screenshotF12ToolStripMenuItem.Click += new System.EventHandler(this.screenshotF12ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(209, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -437,26 +585,26 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -606,151 +754,6 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(209, 6);
-            // 
-            // screenshotF12ToolStripMenuItem
-            // 
-            this.screenshotF12ToolStripMenuItem.Name = "screenshotF12ToolStripMenuItem";
-            this.screenshotF12ToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F12;
-            this.screenshotF12ToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.screenshotF12ToolStripMenuItem.Text = "Screenshot";
-            this.screenshotF12ToolStripMenuItem.Click += new System.EventHandler(this.screenshotF12ToolStripMenuItem_Click);
-            // 
-            // saveSlotToolStripMenuItem
-            // 
-            this.saveSlotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectSlot10ToolStripMenuItem,
-            this.selectSlot1ToolStripMenuItem,
-            this.selectSlot2ToolStripMenuItem,
-            this.selectSlot3ToolStripMenuItem,
-            this.selectSlot4ToolStripMenuItem,
-            this.selectSlot5ToolStripMenuItem,
-            this.selectSlot6ToolStripMenuItem,
-            this.selectSlot7ToolStripMenuItem,
-            this.selectSlot8ToolStripMenuItem,
-            this.selectSlot9ToolStripMenuItem,
-            this.previousSlotToolStripMenuItem,
-            this.nextSlotToolStripMenuItem,
-            this.toolStripSeparator5,
-            this.saveToCurrentSlotToolStripMenuItem,
-            this.loadCurrentSlotToolStripMenuItem});
-            this.saveSlotToolStripMenuItem.Name = "saveSlotToolStripMenuItem";
-            this.saveSlotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.saveSlotToolStripMenuItem.Text = "SaveSlot";
-            // 
-            // selectSlot1ToolStripMenuItem
-            // 
-            this.selectSlot1ToolStripMenuItem.Name = "selectSlot1ToolStripMenuItem";
-            this.selectSlot1ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot1ToolStripMenuItem.Text = "Select Slot 1";
-            this.selectSlot1ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot1ToolStripMenuItem_Click);
-            // 
-            // selectSlot2ToolStripMenuItem
-            // 
-            this.selectSlot2ToolStripMenuItem.Name = "selectSlot2ToolStripMenuItem";
-            this.selectSlot2ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot2ToolStripMenuItem.Text = "Select Slot 2";
-            this.selectSlot2ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot2ToolStripMenuItem_Click);
-            // 
-            // selectSlot3ToolStripMenuItem
-            // 
-            this.selectSlot3ToolStripMenuItem.Name = "selectSlot3ToolStripMenuItem";
-            this.selectSlot3ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot3ToolStripMenuItem.Text = "Select Slot 3";
-            this.selectSlot3ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot3ToolStripMenuItem_Click);
-            // 
-            // selectSlot4ToolStripMenuItem
-            // 
-            this.selectSlot4ToolStripMenuItem.Name = "selectSlot4ToolStripMenuItem";
-            this.selectSlot4ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot4ToolStripMenuItem.Text = "Select Slot 4";
-            this.selectSlot4ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot4ToolStripMenuItem_Click);
-            // 
-            // selectSlot5ToolStripMenuItem
-            // 
-            this.selectSlot5ToolStripMenuItem.Name = "selectSlot5ToolStripMenuItem";
-            this.selectSlot5ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot5ToolStripMenuItem.Text = "Select Slot 5";
-            this.selectSlot5ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot5ToolStripMenuItem_Click);
-            // 
-            // selectSlot6ToolStripMenuItem
-            // 
-            this.selectSlot6ToolStripMenuItem.Name = "selectSlot6ToolStripMenuItem";
-            this.selectSlot6ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot6ToolStripMenuItem.Text = "Select Slot 6";
-            this.selectSlot6ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot6ToolStripMenuItem_Click);
-            // 
-            // selectSlot7ToolStripMenuItem
-            // 
-            this.selectSlot7ToolStripMenuItem.Name = "selectSlot7ToolStripMenuItem";
-            this.selectSlot7ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot7ToolStripMenuItem.Text = "Select Slot 7";
-            this.selectSlot7ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot7ToolStripMenuItem_Click);
-            // 
-            // selectSlot8ToolStripMenuItem
-            // 
-            this.selectSlot8ToolStripMenuItem.Name = "selectSlot8ToolStripMenuItem";
-            this.selectSlot8ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot8ToolStripMenuItem.Text = "Select Slot 8";
-            this.selectSlot8ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot8ToolStripMenuItem_Click);
-            // 
-            // selectSlot9ToolStripMenuItem
-            // 
-            this.selectSlot9ToolStripMenuItem.Name = "selectSlot9ToolStripMenuItem";
-            this.selectSlot9ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot9ToolStripMenuItem.Text = "Select Slot 9";
-            this.selectSlot9ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot9ToolStripMenuItem_Click);
-            // 
-            // selectSlot10ToolStripMenuItem
-            // 
-            this.selectSlot10ToolStripMenuItem.Name = "selectSlot10ToolStripMenuItem";
-            this.selectSlot10ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.selectSlot10ToolStripMenuItem.Text = "Select Slot 0";
-            this.selectSlot10ToolStripMenuItem.Click += new System.EventHandler(this.selectSlot10ToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(180, 6);
-            // 
-            // saveToCurrentSlotToolStripMenuItem
-            // 
-            this.saveToCurrentSlotToolStripMenuItem.Name = "saveToCurrentSlotToolStripMenuItem";
-            this.saveToCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.saveToCurrentSlotToolStripMenuItem.Text = "Save to Current Slot";
-            this.saveToCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.saveToCurrentSlotToolStripMenuItem_Click);
-            // 
-            // loadCurrentSlotToolStripMenuItem
-            // 
-            this.loadCurrentSlotToolStripMenuItem.Name = "loadCurrentSlotToolStripMenuItem";
-            this.loadCurrentSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.loadCurrentSlotToolStripMenuItem.Text = "Load Current Slot";
-            this.loadCurrentSlotToolStripMenuItem.Click += new System.EventHandler(this.loadCurrentSlotToolStripMenuItem_Click);
-            // 
-            // previousSlotToolStripMenuItem
-            // 
-            this.previousSlotToolStripMenuItem.Name = "previousSlotToolStripMenuItem";
-            this.previousSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.previousSlotToolStripMenuItem.Text = "Previous Slot";
-            this.previousSlotToolStripMenuItem.Click += new System.EventHandler(this.previousSlotToolStripMenuItem_Click);
-            // 
-            // nextSlotToolStripMenuItem
-            // 
-            this.nextSlotToolStripMenuItem.Name = "nextSlotToolStripMenuItem";
-            this.nextSlotToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
-            this.nextSlotToolStripMenuItem.Text = "Next Slot";
-            this.nextSlotToolStripMenuItem.Click += new System.EventHandler(this.nextSlotToolStripMenuItem_Click);
-            // 
-            // closeROMToolStripMenuItem
-            // 
-            this.closeROMToolStripMenuItem.Name = "closeROMToolStripMenuItem";
-            this.closeROMToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
-            this.closeROMToolStripMenuItem.Text = "&Close ROM";
-            this.closeROMToolStripMenuItem.Click += new System.EventHandler(this.closeROMToolStripMenuItem_Click);
             // 
             // MainForm
             // 

@@ -10,18 +10,18 @@ namespace BizHawk.MultiClient
         private int MAX_RECENT_FILES;       //Maximum number of files
         private List<string> recentlist;    //List of recent files
 
-        RecentFiles(int max)
+        public RecentFiles(int max)
         {
             recentlist = new List<string>();  
             MAX_RECENT_FILES = max;
         }
         
-        void Clear()
+        public void Clear()
         {
             recentlist.Clear();
         }
 
-        bool IsEmpty()
+        public bool IsEmpty()
         {
             if (recentlist.Count == 0)
                 return true;
@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
-        void Add(string newFile)
+        public void Add(string newFile)
         {
             for (int x = 0; x < recentlist.Count; x++)
             {
@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
             recentlist.Add(newFile);
         }
 
-        bool Remove(string newFile)
+        public bool Remove(string newFile)
         {
             bool removed = false;
             for (int x = 0; x < recentlist.Count; x++)
@@ -57,12 +57,12 @@ namespace BizHawk.MultiClient
             return removed;
         }
 
-        List<string> GetRecentList()
+        public List<string> GetRecentList()
         {
             return recentlist;
         }
 
-        List<string> GetRecentListTruncated(int length)
+        public List<string> GetRecentListTruncated(int length)
         {
             //iterate through list, truncating each item to length, and return the result in a List<string>
             List<string> temp = new List<string>();
@@ -73,7 +73,7 @@ namespace BizHawk.MultiClient
             return temp;
         }
 
-        string GetRecentFileByPosition(int position)
+        public string GetRecentFileByPosition(int position)
         {
             return recentlist[position];
         }
