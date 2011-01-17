@@ -39,27 +39,27 @@
             this.closeROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.saveStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem13 = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate1toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate2toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate3toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate4toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate5toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate6toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate7toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate8toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate9toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.savestate0toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadStateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem17 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem18 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem19 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem20 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem21 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem22 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate1toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate2toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate3toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate4toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate5toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate6toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate7toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate8toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate9toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadstate10toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveSlotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectSlot10ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectSlot1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -206,196 +206,196 @@
             // saveStateToolStripMenuItem
             // 
             this.saveStateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5,
-            this.toolStripMenuItem6,
-            this.toolStripMenuItem7,
-            this.toolStripMenuItem8,
-            this.toolStripMenuItem9,
-            this.toolStripMenuItem10,
-            this.toolStripMenuItem11,
-            this.toolStripMenuItem12,
-            this.toolStripMenuItem13});
+            this.savestate1toolStripMenuItem,
+            this.savestate2toolStripMenuItem,
+            this.savestate3toolStripMenuItem,
+            this.savestate4toolStripMenuItem,
+            this.savestate5toolStripMenuItem,
+            this.savestate6toolStripMenuItem,
+            this.savestate7toolStripMenuItem,
+            this.savestate8toolStripMenuItem,
+            this.savestate9toolStripMenuItem,
+            this.savestate0toolStripMenuItem});
             this.saveStateToolStripMenuItem.Name = "saveStateToolStripMenuItem";
             this.saveStateToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.saveStateToolStripMenuItem.Text = "Save State";
             // 
-            // toolStripMenuItem4
+            // savestate1toolStripMenuItem
             // 
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F1)));
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem4.Text = "1";
-            this.toolStripMenuItem4.Click += new System.EventHandler(this.toolStripMenuItem4_Click);
+            this.savestate1toolStripMenuItem.Name = "savestate1toolStripMenuItem";
+            this.savestate1toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F1)));
+            this.savestate1toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate1toolStripMenuItem.Text = "1";
+            this.savestate1toolStripMenuItem.Click += new System.EventHandler(this.savestate1toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem5
+            // savestate2toolStripMenuItem
             // 
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem5.Text = "2";
-            this.toolStripMenuItem5.Click += new System.EventHandler(this.toolStripMenuItem5_Click);
+            this.savestate2toolStripMenuItem.Name = "savestate2toolStripMenuItem";
+            this.savestate2toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F2)));
+            this.savestate2toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate2toolStripMenuItem.Text = "2";
+            this.savestate2toolStripMenuItem.Click += new System.EventHandler(this.savestate2toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem6
+            // savestate3toolStripMenuItem
             // 
-            this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F3)));
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem6.Text = "3";
-            this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItem6_Click);
+            this.savestate3toolStripMenuItem.Name = "savestate3toolStripMenuItem";
+            this.savestate3toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F3)));
+            this.savestate3toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate3toolStripMenuItem.Text = "3";
+            this.savestate3toolStripMenuItem.Click += new System.EventHandler(this.savestate3toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem7
+            // savestate4toolStripMenuItem
             // 
-            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem7.Text = "4";
-            this.toolStripMenuItem7.Click += new System.EventHandler(this.toolStripMenuItem7_Click);
+            this.savestate4toolStripMenuItem.Name = "savestate4toolStripMenuItem";
+            this.savestate4toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
+            this.savestate4toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate4toolStripMenuItem.Text = "4";
+            this.savestate4toolStripMenuItem.Click += new System.EventHandler(this.savestate4toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem8
+            // savestate5toolStripMenuItem
             // 
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem8.Text = "5";
-            this.toolStripMenuItem8.Click += new System.EventHandler(this.toolStripMenuItem8_Click);
+            this.savestate5toolStripMenuItem.Name = "savestate5toolStripMenuItem";
+            this.savestate5toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F5)));
+            this.savestate5toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate5toolStripMenuItem.Text = "5";
+            this.savestate5toolStripMenuItem.Click += new System.EventHandler(this.savestate5toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem9
+            // savestate6toolStripMenuItem
             // 
-            this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F6)));
-            this.toolStripMenuItem9.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem9.Text = "6";
-            this.toolStripMenuItem9.Click += new System.EventHandler(this.toolStripMenuItem9_Click);
+            this.savestate6toolStripMenuItem.Name = "savestate6toolStripMenuItem";
+            this.savestate6toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F6)));
+            this.savestate6toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate6toolStripMenuItem.Text = "6";
+            this.savestate6toolStripMenuItem.Click += new System.EventHandler(this.savestate6toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem10
+            // savestate7toolStripMenuItem
             // 
-            this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F7)));
-            this.toolStripMenuItem10.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem10.Text = "7";
-            this.toolStripMenuItem10.Click += new System.EventHandler(this.toolStripMenuItem10_Click);
+            this.savestate7toolStripMenuItem.Name = "savestate7toolStripMenuItem";
+            this.savestate7toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F7)));
+            this.savestate7toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate7toolStripMenuItem.Text = "7";
+            this.savestate7toolStripMenuItem.Click += new System.EventHandler(this.savestate7toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem11
+            // savestate8toolStripMenuItem
             // 
-            this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F8)));
-            this.toolStripMenuItem11.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem11.Text = "8";
-            this.toolStripMenuItem11.Click += new System.EventHandler(this.toolStripMenuItem11_Click);
+            this.savestate8toolStripMenuItem.Name = "savestate8toolStripMenuItem";
+            this.savestate8toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F8)));
+            this.savestate8toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate8toolStripMenuItem.Text = "8";
+            this.savestate8toolStripMenuItem.Click += new System.EventHandler(this.savestate8toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem12
+            // savestate9toolStripMenuItem
             // 
-            this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F9)));
-            this.toolStripMenuItem12.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem12.Text = "9";
-            this.toolStripMenuItem12.Click += new System.EventHandler(this.toolStripMenuItem12_Click);
+            this.savestate9toolStripMenuItem.Name = "savestate9toolStripMenuItem";
+            this.savestate9toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F9)));
+            this.savestate9toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate9toolStripMenuItem.Text = "9";
+            this.savestate9toolStripMenuItem.Click += new System.EventHandler(this.savestate9toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem13
+            // savestate0toolStripMenuItem
             // 
-            this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F10)));
-            this.toolStripMenuItem13.Size = new System.Drawing.Size(146, 22);
-            this.toolStripMenuItem13.Text = "0";
-            this.toolStripMenuItem13.Click += new System.EventHandler(this.toolStripMenuItem13_Click);
+            this.savestate0toolStripMenuItem.Name = "savestate0toolStripMenuItem";
+            this.savestate0toolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F10)));
+            this.savestate0toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.savestate0toolStripMenuItem.Text = "0";
+            this.savestate0toolStripMenuItem.Click += new System.EventHandler(this.savestate0toolStripMenuItem_Click);
             // 
             // loadStateToolStripMenuItem
             // 
             this.loadStateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem14,
-            this.toolStripMenuItem15,
-            this.toolStripMenuItem16,
-            this.toolStripMenuItem17,
-            this.toolStripMenuItem18,
-            this.toolStripMenuItem19,
-            this.toolStripMenuItem20,
-            this.toolStripMenuItem21,
-            this.toolStripMenuItem22,
-            this.toolStripMenuItem23});
+            this.loadstate1toolStripMenuItem,
+            this.loadstate2toolStripMenuItem,
+            this.loadstate3toolStripMenuItem,
+            this.loadstate4toolStripMenuItem,
+            this.loadstate5toolStripMenuItem,
+            this.loadstate6toolStripMenuItem,
+            this.loadstate7toolStripMenuItem,
+            this.loadstate8toolStripMenuItem,
+            this.loadstate9toolStripMenuItem,
+            this.loadstate10toolStripMenuItem});
             this.loadStateToolStripMenuItem.Name = "loadStateToolStripMenuItem";
             this.loadStateToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.loadStateToolStripMenuItem.Text = "Load State";
             // 
-            // toolStripMenuItem14
+            // loadstate1toolStripMenuItem
             // 
-            this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.toolStripMenuItem14.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem14.Text = "1";
-            this.toolStripMenuItem14.Click += new System.EventHandler(this.toolStripMenuItem14_Click);
+            this.loadstate1toolStripMenuItem.Name = "loadstate1toolStripMenuItem";
+            this.loadstate1toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.loadstate1toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate1toolStripMenuItem.Text = "1";
+            this.loadstate1toolStripMenuItem.Click += new System.EventHandler(this.loadstate1toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem15
+            // loadstate2toolStripMenuItem
             // 
-            this.toolStripMenuItem15.Name = "toolStripMenuItem15";
-            this.toolStripMenuItem15.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.toolStripMenuItem15.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem15.Text = "2";
-            this.toolStripMenuItem15.Click += new System.EventHandler(this.toolStripMenuItem15_Click);
+            this.loadstate2toolStripMenuItem.Name = "loadstate2toolStripMenuItem";
+            this.loadstate2toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
+            this.loadstate2toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate2toolStripMenuItem.Text = "2";
+            this.loadstate2toolStripMenuItem.Click += new System.EventHandler(this.loadstate2toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem16
+            // loadstate3toolStripMenuItem
             // 
-            this.toolStripMenuItem16.Name = "toolStripMenuItem16";
-            this.toolStripMenuItem16.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.toolStripMenuItem16.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem16.Text = "3";
-            this.toolStripMenuItem16.Click += new System.EventHandler(this.toolStripMenuItem16_Click);
+            this.loadstate3toolStripMenuItem.Name = "loadstate3toolStripMenuItem";
+            this.loadstate3toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.loadstate3toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate3toolStripMenuItem.Text = "3";
+            this.loadstate3toolStripMenuItem.Click += new System.EventHandler(this.loadstate3toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem17
+            // loadstate4toolStripMenuItem
             // 
-            this.toolStripMenuItem17.Name = "toolStripMenuItem17";
-            this.toolStripMenuItem17.ShortcutKeys = System.Windows.Forms.Keys.F4;
-            this.toolStripMenuItem17.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem17.Text = "4";
-            this.toolStripMenuItem17.Click += new System.EventHandler(this.toolStripMenuItem17_Click);
+            this.loadstate4toolStripMenuItem.Name = "loadstate4toolStripMenuItem";
+            this.loadstate4toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.loadstate4toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate4toolStripMenuItem.Text = "4";
+            this.loadstate4toolStripMenuItem.Click += new System.EventHandler(this.loadstate4toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem18
+            // loadstate5toolStripMenuItem
             // 
-            this.toolStripMenuItem18.Name = "toolStripMenuItem18";
-            this.toolStripMenuItem18.ShortcutKeys = System.Windows.Forms.Keys.F5;
-            this.toolStripMenuItem18.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem18.Text = "5";
-            this.toolStripMenuItem18.Click += new System.EventHandler(this.toolStripMenuItem18_Click);
+            this.loadstate5toolStripMenuItem.Name = "loadstate5toolStripMenuItem";
+            this.loadstate5toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.loadstate5toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate5toolStripMenuItem.Text = "5";
+            this.loadstate5toolStripMenuItem.Click += new System.EventHandler(this.loadstate5toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem19
+            // loadstate6toolStripMenuItem
             // 
-            this.toolStripMenuItem19.Name = "toolStripMenuItem19";
-            this.toolStripMenuItem19.ShortcutKeys = System.Windows.Forms.Keys.F6;
-            this.toolStripMenuItem19.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem19.Text = "6";
-            this.toolStripMenuItem19.Click += new System.EventHandler(this.toolStripMenuItem19_Click);
+            this.loadstate6toolStripMenuItem.Name = "loadstate6toolStripMenuItem";
+            this.loadstate6toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
+            this.loadstate6toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate6toolStripMenuItem.Text = "6";
+            this.loadstate6toolStripMenuItem.Click += new System.EventHandler(this.loadstate6toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem20
+            // loadstate7toolStripMenuItem
             // 
-            this.toolStripMenuItem20.Name = "toolStripMenuItem20";
-            this.toolStripMenuItem20.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.toolStripMenuItem20.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem20.Text = "7";
-            this.toolStripMenuItem20.Click += new System.EventHandler(this.toolStripMenuItem20_Click);
+            this.loadstate7toolStripMenuItem.Name = "loadstate7toolStripMenuItem";
+            this.loadstate7toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.loadstate7toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate7toolStripMenuItem.Text = "7";
+            this.loadstate7toolStripMenuItem.Click += new System.EventHandler(this.loadstate7toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem21
+            // loadstate8toolStripMenuItem
             // 
-            this.toolStripMenuItem21.Name = "toolStripMenuItem21";
-            this.toolStripMenuItem21.ShortcutKeys = System.Windows.Forms.Keys.F8;
-            this.toolStripMenuItem21.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem21.Text = "8";
-            this.toolStripMenuItem21.Click += new System.EventHandler(this.toolStripMenuItem21_Click);
+            this.loadstate8toolStripMenuItem.Name = "loadstate8toolStripMenuItem";
+            this.loadstate8toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
+            this.loadstate8toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate8toolStripMenuItem.Text = "8";
+            this.loadstate8toolStripMenuItem.Click += new System.EventHandler(this.loadstate8toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem22
+            // loadstate9toolStripMenuItem
             // 
-            this.toolStripMenuItem22.Name = "toolStripMenuItem22";
-            this.toolStripMenuItem22.ShortcutKeys = System.Windows.Forms.Keys.F9;
-            this.toolStripMenuItem22.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem22.Text = "9";
-            this.toolStripMenuItem22.Click += new System.EventHandler(this.toolStripMenuItem22_Click);
+            this.loadstate9toolStripMenuItem.Name = "loadstate9toolStripMenuItem";
+            this.loadstate9toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F9;
+            this.loadstate9toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate9toolStripMenuItem.Text = "9";
+            this.loadstate9toolStripMenuItem.Click += new System.EventHandler(this.loadstate9toolStripMenuItem_Click);
             // 
-            // toolStripMenuItem23
+            // loadstate10toolStripMenuItem
             // 
-            this.toolStripMenuItem23.Name = "toolStripMenuItem23";
-            this.toolStripMenuItem23.ShortcutKeys = System.Windows.Forms.Keys.F10;
-            this.toolStripMenuItem23.Size = new System.Drawing.Size(116, 22);
-            this.toolStripMenuItem23.Text = "0";
-            this.toolStripMenuItem23.Click += new System.EventHandler(this.toolStripMenuItem23_Click);
+            this.loadstate10toolStripMenuItem.Name = "loadstate10toolStripMenuItem";
+            this.loadstate10toolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
+            this.loadstate10toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadstate10toolStripMenuItem.Text = "0";
+            this.loadstate10toolStripMenuItem.Click += new System.EventHandler(this.loadstate0toolStripMenuItem_Click);
             // 
             // saveSlotToolStripMenuItem
             // 
@@ -578,26 +578,26 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -772,28 +772,28 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveStateToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem9;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem10;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem11;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem12;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem13;
+        private System.Windows.Forms.ToolStripMenuItem savestate1toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate2toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate3toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate4toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate5toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate6toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate7toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate8toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate9toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem savestate0toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadStateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem14;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem15;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem16;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem17;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem18;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem19;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem20;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem21;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem22;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem23;
+        private System.Windows.Forms.ToolStripMenuItem loadstate1toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate2toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate3toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate4toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate5toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate6toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate7toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate8toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate9toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadstate10toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveNamedStateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadNamedStateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emulationToolStripMenuItem;

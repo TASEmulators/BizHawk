@@ -363,27 +363,27 @@ namespace BizHawk.MultiClient
             RecentRoms.Add(file.FullName);
         }
 
-        private void toolStripMenuItem4_Click(object sender, EventArgs e)  { SaveState("QuickSave1"); }
-        private void toolStripMenuItem5_Click(object sender, EventArgs e)  { SaveState("QuickSave2"); }
-        private void toolStripMenuItem6_Click(object sender, EventArgs e)  { SaveState("QuickSave3"); }
-        private void toolStripMenuItem7_Click(object sender, EventArgs e)  { SaveState("QuickSave4"); }
-        private void toolStripMenuItem8_Click(object sender, EventArgs e)  { SaveState("QuickSave5"); }
-        private void toolStripMenuItem9_Click(object sender, EventArgs e)  { SaveState("QuickSave6"); }
-        private void toolStripMenuItem10_Click(object sender, EventArgs e) { SaveState("QuickSave7"); }
-        private void toolStripMenuItem11_Click(object sender, EventArgs e) { SaveState("QuickSave8"); }
-        private void toolStripMenuItem12_Click(object sender, EventArgs e) { SaveState("QuickSave9"); }
-        private void toolStripMenuItem13_Click(object sender, EventArgs e) { SaveState("QuickSave0"); }
+        private void savestate1toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave1"); }
+        private void savestate2toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave2"); }
+        private void savestate3toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave3"); }
+        private void savestate4toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave4"); }
+        private void savestate5toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave5"); }
+        private void savestate6toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave6"); }
+        private void savestate7toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave7"); }
+        private void savestate8toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave8"); }
+        private void savestate9toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave9"); }
+        private void savestate0toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave0"); }
 
-        private void toolStripMenuItem14_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
-        private void toolStripMenuItem15_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
-        private void toolStripMenuItem16_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
-        private void toolStripMenuItem17_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
-        private void toolStripMenuItem18_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
-        private void toolStripMenuItem19_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
-        private void toolStripMenuItem20_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
-        private void toolStripMenuItem21_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
-        private void toolStripMenuItem22_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
-        private void toolStripMenuItem23_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
+        private void loadstate1toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
+        private void loadstate2toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
+        private void loadstate3toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
+        private void loadstate4toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
+        private void loadstate5toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
+        private void loadstate6toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
+        private void loadstate7toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
+        private void loadstate8toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
+        private void loadstate9toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
+        private void loadstate0toolStripMenuItem_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
 
         private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
