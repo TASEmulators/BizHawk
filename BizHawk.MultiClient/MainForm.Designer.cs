@@ -183,14 +183,14 @@
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             this.clearToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
+            this.clearToolStripMenuItem.Text = "&Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
             // 
             // autoloadMostRecentToolStripMenuItem
             // 
             this.autoloadMostRecentToolStripMenuItem.Name = "autoloadMostRecentToolStripMenuItem";
             this.autoloadMostRecentToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.autoloadMostRecentToolStripMenuItem.Text = "Autoload Most Recent";
+            this.autoloadMostRecentToolStripMenuItem.Text = "&Autoload Most Recent";
             this.autoloadMostRecentToolStripMenuItem.Click += new System.EventHandler(this.autoloadMostRecentToolStripMenuItem_Click);
             // 
             // closeROMToolStripMenuItem
