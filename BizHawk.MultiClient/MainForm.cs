@@ -609,13 +609,10 @@ namespace BizHawk.MultiClient
             {
                 for (int x = 0; x < RecentRoms.Length(); x++)
                 {
-                    recentROMToolStripMenuItem.DropDownItems.Add(RecentRoms.GetRecentFileByPosition(x));
+                    recentROMToolStripMenuItem.DropDownItems.Add(RecentRoms.GetRecentFileByPosition(x)); //TODO: truncate this to a nice size
                 }
             }
             recentROMToolStripMenuItem.DropDownItems.Add("Clear");
-            
-            //MenuItem recent1 = new MenuItem("test");
-            //recentROMToolStripMenuItem.DropDownItems.Add("testme");
         }
     }
 }
