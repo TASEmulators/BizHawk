@@ -574,7 +574,7 @@ namespace BizHawk.MultiClient
             RecentRoms.Clear();
         }
 
-        private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UpdateAutoLoadRecentRom()
         {
             if (AutoLoadMostRecentRom == true)
             {
@@ -586,6 +586,11 @@ namespace BizHawk.MultiClient
                 autoloadMostRecentToolStripMenuItem.Checked = true;
                 AutoLoadMostRecentRom = true;
             }         
+        }
+
+        private void autoloadMostRecentToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateAutoLoadRecentRom();
         }
 
         private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -601,6 +606,7 @@ namespace BizHawk.MultiClient
            //Clear out recent Roms list
            //repopulate it with an up to date list
             recentROMToolStripMenuItem.DropDownItems.Clear();
+
             if (RecentRoms.IsEmpty())
             {
                 recentROMToolStripMenuItem.DropDownItems.Add("None");
@@ -616,7 +622,22 @@ namespace BizHawk.MultiClient
                     recentROMToolStripMenuItem.DropDownItems.Add(item); //TODO: truncate this to a nice size
                 }
             }
-            recentROMToolStripMenuItem.DropDownItems.Add("Clear");
+            
+            recentROMToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => RecentRoms.Clear();
+            recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Autoload Most Recent";
+            auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
+            if (AutoLoadMostRecentRom == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentROMToolStripMenuItem.DropDownItems.Add(auto);
         }
     }
 }
