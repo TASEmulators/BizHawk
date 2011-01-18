@@ -75,8 +75,10 @@ namespace BizHawk.MultiClient
 
             Application.Idle += Application_Idle;
 
-			if(args.Length != 0)
-				LoadRom(args[0]);
+            if (args.Length != 0)
+                LoadRom(args[0]);
+            else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
+                LoadRom(Global.Config.RecentRoms.GetRecentFileByPosition(0));
         }
 
         public static ControllerDefinition ClientControlsDef = new ControllerDefinition
