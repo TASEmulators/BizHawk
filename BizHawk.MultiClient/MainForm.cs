@@ -78,7 +78,18 @@ namespace BizHawk.MultiClient
             if (args.Length != 0)
                 LoadRom(args[0]);
             else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
-                LoadRom(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+                LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+        }
+
+        private void LoadRomFromRecent(string rom)
+        {
+            bool r = LoadRom(rom);
+            if (!r)
+            {
+                DialogResult result = MessageBox.Show("Could not open " + rom + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    Global.Config.RecentRoms.Remove(rom);
+            }
         }
 
         public static ControllerDefinition ClientControlsDef = new ControllerDefinition
@@ -161,10 +172,10 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
-        private void LoadRom(string path)
+        private bool LoadRom(string path)
         {
             var file = new FileInfo(path);
-            if (file.Exists == false) return;
+            if (file.Exists == false) return false;
 
             CloseGame();
 
@@ -201,6 +212,7 @@ namespace BizHawk.MultiClient
             Global.Config.RecentRoms.Add(file.FullName);
             if (File.Exists(game.SaveRamPath))
                 LoadSaveRam();
+            return true;
         }
 
         private void LoadSaveRam()
@@ -694,7 +706,7 @@ namespace BizHawk.MultiClient
                     string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
                     var item = new ToolStripMenuItem();
                     item.Text = path;
-                    item.Click += (o, ev) => LoadRom(path);
+                    item.Click += (o, ev) => LoadRomFromRecent(path);
                     recentROMToolStripMenuItem.DropDownItems.Add(item); //TODO: truncate this to a nice size
                 }
             }
