@@ -349,7 +349,7 @@ namespace BizHawk.MultiClient
         {
             var ofd = new OpenFileDialog();
             ofd.InitialDirectory = Global.Config.LastRomPath;
-            ofd.Filter = "Rom Files|*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP|Master System|*.SMS;*.GG;*.ZIP|PC Engine|*.PCE;*.SG;*.SGX;*.ZIP|Gameboy|*.GB;*.ZIP|All Files|*.*";
+            ofd.Filter = "Rom Files|*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|Master System|*.SMS;*.GG;*.ZIP;*.7z|PC Engine|*.PCE;*.SG;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
             ofd.RestoreDirectory = true;
 
             Global.Sound.StopSound();
