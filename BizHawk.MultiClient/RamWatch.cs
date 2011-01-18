@@ -11,6 +11,8 @@ namespace BizHawk.MultiClient
 {
     public partial class RamWatch : Form
     {
+        List<Watch> watchList = new List<Watch>();   
+        
         public RamWatch()
         {
             InitializeComponent();
@@ -108,6 +110,16 @@ namespace BizHawk.MultiClient
         private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MoveDown();
+        }
+
+        private void RamWatch_Load(object sender, EventArgs e)
+        {
+            Watch watch1 = new Watch();
+            watch1.notes = "Test";
+
+            ListViewItem item1 = new ListViewItem(watch1.address.ToString(), 0);
+            WatchListView.Items.Add(item1);
+            
         }
     }
 }

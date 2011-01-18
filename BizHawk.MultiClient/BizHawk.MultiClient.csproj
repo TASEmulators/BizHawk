@@ -123,6 +123,7 @@
     <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
+    <Compile Include="Watch.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
