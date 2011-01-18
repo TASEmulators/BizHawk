@@ -5,6 +5,7 @@
         // General Client Settings
         public bool SoundEnabled = true;
         public string LastRomPath = ".";
+        public bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
 
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab";

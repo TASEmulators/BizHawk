@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
         private RecentFiles RecentRoms = new RecentFiles(8);
-        private bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
+        
 
         private int SaveSlot = 0;   //Saveslot sytem
 
@@ -593,15 +593,15 @@ namespace BizHawk.MultiClient
 
         private void UpdateAutoLoadRecentRom()
         {
-            if (AutoLoadMostRecentRom == true)
+            if (Global.Config.AutoLoadMostRecentRom == true)
             {
                 autoloadMostRecentToolStripMenuItem.Checked = false;
-                AutoLoadMostRecentRom = false;
+                Global.Config.AutoLoadMostRecentRom = false;
             }
             else
             {
                 autoloadMostRecentToolStripMenuItem.Checked = true;
-                AutoLoadMostRecentRom = true;
+                Global.Config.AutoLoadMostRecentRom = true;
             }         
         }
 
@@ -672,7 +672,7 @@ namespace BizHawk.MultiClient
                 loadstate0toolStripMenuItem.Enabled = true;
             }
             
-            if (AutoLoadMostRecentRom == true)
+            if (Global.Config.AutoLoadMostRecentRom == true)
                 autoloadMostRecentToolStripMenuItem.Checked = true;
             else
                 autoloadMostRecentToolStripMenuItem.Checked = false;
@@ -710,7 +710,7 @@ namespace BizHawk.MultiClient
             var auto = new ToolStripMenuItem();
             auto.Text = "&Autoload Most Recent";
             auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
-            if (AutoLoadMostRecentRom == true)
+            if (Global.Config.AutoLoadMostRecentRom == true)
                 auto.Checked = true;
             else
                 auto.Checked = false;
