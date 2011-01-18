@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.MultiClient
 {
-    class RecentFiles
+    public class RecentFiles : IConfigSerializable
     {
         private int MAX_RECENT_FILES;       //Maximum number of files
         private List<string> recentlist;    //List of recent files
 
+        public RecentFiles() : this(8) {} 
         public RecentFiles(int max)
         {
             recentlist = new List<string>();  
@@ -83,6 +82,27 @@ namespace BizHawk.MultiClient
         public string GetRecentFileByPosition(int position)
         {
             return recentlist[position];
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.Append(MAX_RECENT_FILES);
+            sb.Append("@");
+            foreach (string file in recentlist)
+                sb.AppendFormat("\"{0}\"|", file);
+            return sb.ToString();
+        }
+
+        public void Deserialize(string str)
+        {
+                var sections = str.Split('@');
+                MAX_RECENT_FILES = int.Parse(sections[0]);
+                var files = sections[1].Split('|');
+                recentlist.Clear();
+                foreach (string file in files)
+                    if (string.IsNullOrEmpty(file) == false)
+                        recentlist.Add(file.Replace("\"", ""));
         }
     }
 }

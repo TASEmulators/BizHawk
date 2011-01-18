@@ -14,8 +14,6 @@ namespace BizHawk.MultiClient
     {
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
-        private RecentFiles RecentRoms = new RecentFiles(8);
-        
 
         private int SaveSlot = 0;   //Saveslot sytem
 
@@ -198,7 +196,7 @@ namespace BizHawk.MultiClient
             Global.Emulator.LoadGame(game);
             Text = game.Name;
             ResetRewindBuffer();
-            RecentRoms.Add(file.FullName);
+            Global.Config.RecentRoms.Add(file.FullName);
             if (File.Exists(game.SaveRamPath))
                 LoadSaveRam();
         }
@@ -587,7 +585,7 @@ namespace BizHawk.MultiClient
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RecentRoms.Clear();
+            Global.Config.RecentRoms.Clear();
         }
 
         private void UpdateAutoLoadRecentRom()
@@ -683,15 +681,15 @@ namespace BizHawk.MultiClient
            //repopulate it with an up to date list
             recentROMToolStripMenuItem.DropDownItems.Clear();
 
-            if (RecentRoms.IsEmpty())
+            if (Global.Config.RecentRoms.IsEmpty())
             {
                 recentROMToolStripMenuItem.DropDownItems.Add("None");
             }
             else
             {
-                for (int x = 0; x < RecentRoms.Length(); x++)
+                for (int x = 0; x < Global.Config.RecentRoms.Length(); x++)
                 {
-                    string path = RecentRoms.GetRecentFileByPosition(x);
+                    string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
                     var item = new ToolStripMenuItem();
                     item.Text = path;
                     item.Click += (o, ev) => LoadRom(path);
@@ -703,7 +701,7 @@ namespace BizHawk.MultiClient
 
             var clearitem = new ToolStripMenuItem();
             clearitem.Text = "&Clear";
-            clearitem.Click += (o, ev) => RecentRoms.Clear();
+            clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
             recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
 
             var auto = new ToolStripMenuItem();
