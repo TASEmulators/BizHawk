@@ -184,6 +184,7 @@ namespace BizHawk.MultiClient
 
             switch(game.System)
             {
+                case "SG":
                 case "SMS": 
                     Global.Emulator = new SMS();
                     Global.Emulator.Controller = Global.SMSControls;
@@ -361,7 +362,7 @@ namespace BizHawk.MultiClient
         {
             var ofd = new OpenFileDialog();
             ofd.InitialDirectory = Global.Config.LastRomPath;
-            ofd.Filter = "Rom Files|*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|Master System|*.SMS;*.GG;*.ZIP;*.7z|PC Engine|*.PCE;*.SG;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
+            ofd.Filter = "Rom Files|*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
             ofd.RestoreDirectory = true;
 
             Global.Sound.StopSound();
