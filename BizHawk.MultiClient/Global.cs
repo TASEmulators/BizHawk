@@ -17,5 +17,6 @@ namespace BizHawk.MultiClient
         public static IController SMSControls;
         public static IController PCEControls;
         public static IController GenControls;
+		public static IController TI83Controls;
     }
 }

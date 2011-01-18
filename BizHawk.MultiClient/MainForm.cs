@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BizHawk.Core;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
+using BizHawk.Emulation.Consoles.Calculator;
 
 namespace BizHawk.MultiClient
 {
@@ -151,6 +152,34 @@ namespace BizHawk.MultiClient
             genControls.BindMulti("P1 C", Global.Config.GenP1C);
             genControls.BindMulti("P1 Start", Global.Config.GenP1Start);
             Global.GenControls = genControls;
+
+			
+			var TI83Controls = new Controller(TI83.TI83Controller);
+			TI83Controls.BindMulti("0", "D0"); //numpad 4,8,6,2 (up/down/left/right) dont work in slimdx!! wtf!!
+			TI83Controls.BindMulti("1", "D1");
+			TI83Controls.BindMulti("2", "D2");
+			TI83Controls.BindMulti("3", "D3");
+			TI83Controls.BindMulti("4", "D4");
+			TI83Controls.BindMulti("5", "D5");
+			TI83Controls.BindMulti("6", "D6");
+			TI83Controls.BindMulti("7", "D7");
+			TI83Controls.BindMulti("8", "D8");
+			TI83Controls.BindMulti("9", "D9");
+			TI83Controls.BindMulti("ON", "Space");
+			TI83Controls.BindMulti("ENTER", "NumberPadEnter");
+			TI83Controls.BindMulti("DOWN", "DownArrow");
+			TI83Controls.BindMulti("LEFT", "LeftArrow");
+			TI83Controls.BindMulti("RIGHT", "RightArrow");
+			TI83Controls.BindMulti("UP", "UpArrow");
+			TI83Controls.BindMulti("PLUS", "NumberPadPlus");
+			TI83Controls.BindMulti("MINUS", "NumberPadMinus");
+			TI83Controls.BindMulti("MULTIPLY", "NumberPadStar");
+			TI83Controls.BindMulti("DIVIDE", "NumberPadSlash");
+			TI83Controls.BindMulti("CLEAR", "Escape");
+			TI83Controls.BindMulti("DOT", "NumberPadPeriod");
+			
+			Global.TI83Controls = TI83Controls;
+			
         }
 
         private static void FormDragEnter(object sender, DragEventArgs e)
@@ -219,6 +248,10 @@ namespace BizHawk.MultiClient
                     Global.Emulator = new Genesis(false);//TODO
                     Global.Emulator.Controller = Global.GenControls;
                     break;
+				case "TI83":
+					Global.Emulator = new TI83();
+					Global.Emulator.Controller = Global.TI83Controls;
+					break;
             }
 
             Global.Emulator.LoadGame(game);
