@@ -50,11 +50,14 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.WatchListView = new System.Windows.Forms.ListView();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
+            this.Address = new System.Windows.Forms.ColumnHeader();
+            this.Value = new System.Windows.Forms.ColumnHeader();
+            this.Notes = new System.Windows.Forms.ColumnHeader();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -227,16 +230,20 @@
             this.moveDownToolStripMenuItem.Text = "Move &Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
             // 
-            // listView1
+            // WatchListView
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.Location = new System.Drawing.Point(27, 39);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(307, 360);
-            this.listView1.TabIndex = 1;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Address,
+            this.Value,
+            this.Notes});
+            this.WatchListView.Location = new System.Drawing.Point(34, 52);
+            this.WatchListView.Name = "WatchListView";
+            this.WatchListView.Size = new System.Drawing.Size(307, 403);
+            this.WatchListView.TabIndex = 1;
+            this.WatchListView.UseCompatibleStateImageBehavior = false;
             // 
             // toolStrip1
             // 
@@ -277,17 +284,31 @@
             this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton3.Text = "toolStripButton3";
             // 
+            // Address
+            // 
+            this.Address.Text = "Address";
+            // 
+            // Value
+            // 
+            this.Value.Text = "Value";
+            this.Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Notes
+            // 
+            this.Notes.Text = "Notes";
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(375, 422);
+            this.ClientSize = new System.Drawing.Size(375, 467);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.WatchListView);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "RamWatch";
             this.Text = "Ram Watch";
+            this.Load += new System.EventHandler(this.RamWatch_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
@@ -313,7 +334,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView WatchListView;
         private System.Windows.Forms.ToolStripMenuItem newWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeWatchToolStripMenuItem;
@@ -325,5 +346,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
+        private System.Windows.Forms.ColumnHeader Address;
+        private System.Windows.Forms.ColumnHeader Value;
+        private System.Windows.Forms.ColumnHeader Notes;
     }
 }
