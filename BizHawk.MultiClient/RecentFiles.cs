@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
                     recentlist.Remove(newFile); //intentionally keeps iterating after this to remove duplicate instances, though those should never exist in the first place
                 }
             }
-            recentlist.Add(newFile);
+            recentlist.Insert(0, newFile);
             if (recentlist.Count > MAX_RECENT_FILES)
                 recentlist.Remove(recentlist[0]);
         }
@@ -58,8 +58,7 @@ namespace BizHawk.MultiClient
                     removed = true;
                 }
 
-            }
-            recentlist.Add(newFile);           
+            }       
             return removed;
         }
 
