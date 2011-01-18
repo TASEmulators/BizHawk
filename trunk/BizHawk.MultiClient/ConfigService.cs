@@ -3,6 +3,11 @@ using System.IO;
 
 namespace BizHawk.MultiClient
 {
+    public interface IConfigSerializable
+    {
+        void Deserialize(string str);
+    }
+
     public static class ConfigService
     {
         public static T Load<T>(string filepath) where T : new()
@@ -50,6 +55,16 @@ namespace BizHawk.MultiClient
                             field.SetValue(config, bool.Parse(value));
                         else if (fieldType == typeof(char))
                             field.SetValue(config, char.Parse(value));
+                        else
+                        {
+                            var iface = fieldType.GetInterface("IConfigSerializable");
+                            if (iface != null)
+                            {
+                                IConfigSerializable i = (IConfigSerializable) Activator.CreateInstance(fieldType);
+                                i.Deserialize(value);
+                                field.SetValue(config, i);
+                            }
+                        }
                     }
                     catch { } // If anything fails to parse, just move on / use defaults, don't crash.
                 }
