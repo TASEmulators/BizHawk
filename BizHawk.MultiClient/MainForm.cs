@@ -715,5 +715,11 @@ namespace BizHawk.MultiClient
                 auto.Checked = false;
             recentROMToolStripMenuItem.DropDownItems.Add(auto);
         }
+
+        private void rAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RamWatch RamWatch1 = new RamWatch();
+            RamWatch1.Show();
+        }
     }
 }
