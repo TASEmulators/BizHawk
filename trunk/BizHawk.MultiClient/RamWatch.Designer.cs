@@ -58,6 +58,7 @@
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Notes = new System.Windows.Forms.ColumnHeader();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -69,7 +70,7 @@
             this.watchesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(375, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(485, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -241,7 +242,7 @@
             this.Notes});
             this.WatchListView.Location = new System.Drawing.Point(34, 52);
             this.WatchListView.Name = "WatchListView";
-            this.WatchListView.Size = new System.Drawing.Size(307, 403);
+            this.WatchListView.Size = new System.Drawing.Size(232, 403);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             // 
@@ -253,7 +254,7 @@
             this.toolStripButton3});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(375, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(485, 25);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -297,11 +298,20 @@
             // 
             this.Notes.Text = "Notes";
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(311, 88);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(120, 95);
+            this.listBox1.TabIndex = 3;
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(375, 467);
+            this.ClientSize = new System.Drawing.Size(485, 467);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.WatchListView);
             this.Controls.Add(this.menuStrip1);
@@ -349,5 +359,6 @@
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Notes;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }

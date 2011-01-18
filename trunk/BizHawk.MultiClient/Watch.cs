@@ -16,23 +16,23 @@ namespace BizHawk.MultiClient
             value = 0;
             type = atype.BYTE;
             signed = asigned.SIGNED;
-            endian = false;
+            bigendian = false;
             notes = "";
         }
-        public Watch(int Address, int Value, atype Type, asigned Signed, bool Endian, string Notes)
+        public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
         {
             address = Address;
             value = Value;
             type = Type;
             signed = Signed;
-            endian = Endian;
+            bigendian = BigEndian;
             notes = Notes;
         }
         public int address { get; set; }   
         public int value { get; set; }         //Current value
         public atype type { get; set; }        //Address type (byte, word, dword, etc
         public asigned signed { get; set; }    //Signed/Unsigned?
-        public bool endian { get; set; }
+        public bool bigendian { get; set; }
         public string notes { get; set; }      //User notes
     }
 }
