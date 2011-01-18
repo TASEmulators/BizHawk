@@ -198,7 +198,7 @@ namespace BizHawk.MultiClient
             Global.Emulator.LoadGame(game);
             Text = game.Name;
             ResetRewindBuffer();
-
+            RecentRoms.Add(file.FullName);
             if (File.Exists(game.SaveRamPath))
                 LoadSaveRam();
         }
@@ -360,7 +360,6 @@ namespace BizHawk.MultiClient
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
             LoadRom(file.FullName);
-            RecentRoms.Add(file.FullName);
         }
 
         private void savestate1toolStripMenuItem_Click(object sender, EventArgs e)  { SaveState("QuickSave1"); }
