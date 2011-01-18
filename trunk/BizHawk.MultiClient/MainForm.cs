@@ -172,6 +172,20 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
+        private string DisplayNameForSystem(string system)
+        {
+            switch (system)
+            {
+                case "SG":  return "SG-1000";
+                case "SMS": return "Sega Master System";
+                case "GG":  return "Game Gear";
+                case "PCE": return "TurboGrafx-16";
+                case "SGX": return "SuperGrafx";
+                case "GEN": return "Genesis";
+            }
+            return "";
+        }
+
         private bool LoadRom(string path)
         {
             var file = new FileInfo(path);
@@ -208,7 +222,7 @@ namespace BizHawk.MultiClient
             }
 
             Global.Emulator.LoadGame(game);
-            Text = game.Name;
+            Text = DisplayNameForSystem(game.System) + " - " + game.Name;
             ResetRewindBuffer();
             Global.Config.RecentRoms.Add(file.FullName);
             if (File.Exists(game.SaveRamPath))
@@ -579,6 +593,7 @@ namespace BizHawk.MultiClient
         {
             CloseGame();
             Global.Emulator = new NullEmulator();
+            Text = "BizHawk";
         }
 
         private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
