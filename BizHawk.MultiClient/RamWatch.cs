@@ -42,6 +42,21 @@ namespace BizHawk.MultiClient
             return count;
         }
 
+        private void LoadWatchFromRecent(string file)
+        {
+            bool r = LoadWatchFile(file);
+            if (!r)
+            {
+                DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    Global.Config.RecentWatches.Remove(file);
+            }
+
+            //Debug
+            for (int x = 0; x < watchList.Count; x++)
+                TempDisplayWatchInTempList(watchList[x]);
+        }
+
         bool LoadWatchFile(string path)
         {
             int y, z;
@@ -98,8 +113,10 @@ namespace BizHawk.MultiClient
                     watchList.Add(w);
                 }
 
+                Global.Config.RecentWatches.Add(file.FullName);
+
                 //Update the number of watches
-                listBox1.Items.Clear();
+                listBox1.Items.Clear(); //Debug
                 WatchCountLabel.Text = count.ToString() + " watches";
             }
 
@@ -178,16 +195,7 @@ namespace BizHawk.MultiClient
 
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.AutoLoadRamWatch == true)
-            {
-                Global.Config.AutoLoadRamWatch = false;
-                autoLoadToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                Global.Config.AutoLoadRamWatch = true;
-                autoLoadToolStripMenuItem.Checked = true;
-            }
+            UpdateAutoLoadRamWatch();
         }
 
         private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -252,6 +260,58 @@ namespace BizHawk.MultiClient
                 autoLoadToolStripMenuItem.Checked = true;
             else
                 autoLoadToolStripMenuItem.Checked = false;
+        }
+
+        private void UpdateAutoLoadRamWatch()
+        {
+            if (Global.Config.AutoLoadRamWatch == true)
+            {
+                Global.Config.AutoLoadRamWatch = false;
+                autoLoadToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                Global.Config.AutoLoadRamWatch = true;
+                autoLoadToolStripMenuItem.Checked = true;
+            }
+        }
+        private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            //Clear out recent Roms list
+            //repopulate it with an up to date list
+            recentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Global.Config.RecentWatches.IsEmpty())
+            {
+                recentToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < Global.Config.RecentWatches.Length(); x++)
+                {
+                    string path = Global.Config.RecentWatches.GetRecentFileByPosition(x);
+                    var item = new ToolStripMenuItem();
+                    item.Text = path;
+                    item.Click += (o, ev) => LoadWatchFromRecent(path);
+                    recentToolStripMenuItem.DropDownItems.Add(item); //TODO: truncate this to a nice size
+                }
+            }
+
+            recentToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
+            recentToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Auto-Load";
+            auto.Click += (o, ev) => UpdateAutoLoadRamWatch();
+            if (Global.Config.AutoLoadRamWatch == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentToolStripMenuItem.DropDownItems.Add(auto);
         }
     }
 }
