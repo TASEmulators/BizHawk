@@ -1,4 +1,4 @@
-﻿using System;
+ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -211,6 +211,7 @@ namespace BizHawk.MultiClient
                 case "PCE": return "TurboGrafx-16";
                 case "SGX": return "SuperGrafx";
                 case "GEN": return "Genesis";
+                case "TI83": return "TI-83";
             }
             return "";
         }
