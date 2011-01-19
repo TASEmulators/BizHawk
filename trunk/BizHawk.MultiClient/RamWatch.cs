@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
             return count;
         }
 
-        private void LoadWatchFromRecent(string file)
+        public void LoadWatchFromRecent(string file)
         {
             bool r = LoadWatchFile(file);
             if (!r)
