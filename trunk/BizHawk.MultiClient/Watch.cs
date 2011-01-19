@@ -53,6 +53,21 @@ namespace BizHawk.MultiClient
             }
         }
 
+        public char GetTypeByChar()
+        {
+            switch (type)
+            {
+                case atype.BYTE:
+                    return 'b';
+                case atype.WORD:
+                    return 'w';
+                case atype.DWORD:
+                    return 'd';
+                default:
+                    return 'b'; //Just in case
+            }
+        }
+
         public bool SetSignedByChar(char c) //s = signed, u = unsigned, h = hex
         {
             switch (c)
@@ -68,6 +83,21 @@ namespace BizHawk.MultiClient
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        public char GetSignedByChar()
+        {
+            switch (signed)
+            {
+                case asigned.SIGNED:
+                return 's';
+                case asigned.UNSIGNED:
+                return 'u';
+                case asigned.HEX:
+                return 'h';
+                default:
+                return 's'; //Just in case
             }
         }
     }

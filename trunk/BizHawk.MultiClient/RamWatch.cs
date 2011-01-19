@@ -55,6 +55,35 @@ namespace BizHawk.MultiClient
             watchList.Clear();
             DisplayWatchList();
         }
+        
+        private  bool SaveWatchFile(string path)
+        {
+            var file = new FileInfo(path);
+            //if (file.Exists == true) //TODO: prompt to overwrite
+
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                string str = "";
+                
+                for (int x = 0; x < watchList.Count; x++)
+                {
+                    str += watchList[x].address.ToString() + "\t";  //TODO: Make hex
+                    str += watchList[x].GetTypeByChar().ToString() + "\t";
+                    str += watchList[x].GetSignedByChar().ToString() + "\t";
+
+                    if (watchList[x].bigendian == true)
+                        str += "1\t";
+                    else
+                        str += "0\t";
+
+                    str += watchList[x].notes + "\n";
+                }
+
+                sw.WriteLine(str);
+            }
+
+            return true;
+        }
 
         bool LoadWatchFile(string path, bool append)
         {
@@ -188,9 +217,28 @@ namespace BizHawk.MultiClient
 
         }
 
+        private FileInfo GetSaveFileFromUser()
+        {
+            var sfd = new SaveFileDialog();
+            sfd.InitialDirectory = Global.Config.LastRomPath;
+            sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            sfd.RestoreDirectory = true;
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(sfd.FileName);
+            Global.Config.LastRomPath = file.DirectoryName;
+            return file;
+        }
+
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var file = GetSaveFileFromUser();
+            if (file != null)
+                SaveWatchFile(file.FullName);
+            //TODO: inform the user (with using an annoying message box)
         }
 
         private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
