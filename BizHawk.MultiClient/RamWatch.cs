@@ -39,7 +39,7 @@ namespace BizHawk.MultiClient
 
         public void LoadWatchFromRecent(string file)
         {
-            bool r = LoadWatchFile(file);
+            bool r = LoadWatchFile(file, false);
             if (!r)
             {
                 DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
             DisplayWatchList();
         }
 
-        bool LoadWatchFile(string path)
+        bool LoadWatchFile(string path, bool append)
         {
             int y, z;
             var file = new FileInfo(path);
@@ -67,7 +67,10 @@ namespace BizHawk.MultiClient
                 int count = 0;
                 string s = "";
                 string temp = "";
-                watchList.Clear();  //Wipe existing list and read from file
+                
+                if (append == false)
+                    watchList.Clear();  //Wipe existing list and read from file
+                
                 while ((s = sr.ReadLine()) != null)
                 {
                     //parse each line and add to watchList
@@ -155,7 +158,7 @@ namespace BizHawk.MultiClient
             NewWatchList();
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private FileInfo GetFileFromUser()
         {
             var ofd = new OpenFileDialog();
             ofd.InitialDirectory = Global.Config.LastRomPath;
@@ -166,10 +169,17 @@ namespace BizHawk.MultiClient
             var result = ofd.ShowDialog();
             Global.Sound.StartSound();
             if (result != DialogResult.OK)
-                return;
+                return null;
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
-            LoadWatchFile(file.FullName);
+            return file;
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var file = GetFileFromUser();
+            if (file != null)
+                LoadWatchFile(file.FullName, false);
             DisplayWatchList();
         }
 
@@ -185,7 +195,10 @@ namespace BizHawk.MultiClient
 
         private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var file = GetFileFromUser();
+            if (file != null)
+                LoadWatchFile(file.FullName, true);
+            DisplayWatchList();
         }
 
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -304,6 +317,36 @@ namespace BizHawk.MultiClient
             else
                 auto.Checked = false;
             recentToolStripMenuItem.DropDownItems.Add(auto);
+        }
+
+        private void WatchListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            // Determine if label is changed by checking for null.
+            if (e.Label == null)
+            return;
+
+   // ASCIIEncoding is used to determine if a number character has been entered.
+   ASCIIEncoding AE = new ASCIIEncoding();
+   // Convert the new label to a character array.
+   char[] temp = e.Label.ToCharArray();
+
+   // Check each character in the new label to determine if it is a number.
+   for(int x=0; x < temp.Length; x++)
+   {
+      // Encode the character from the character array to its ASCII code.
+      byte[] bc = AE.GetBytes(temp[x].ToString());
+
+      // Determine if the ASCII code is within the valid range of numerical values.
+      if(bc[0] > 47 && bc[0] < 58)
+      {
+         // Cancel the event and return the lable to its original state.
+         e.CancelEdit = true;
+         // Display a MessageBox alerting the user that numbers are not allowed.
+         MessageBox.Show ("The text for the item cannot contain numerical values.");
+         // Break out of the loop and exit.
+         return;
+      }
+   }
         }
     }
 }

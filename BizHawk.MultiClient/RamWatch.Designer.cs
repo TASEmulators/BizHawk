@@ -238,17 +238,21 @@
             this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.WatchListView.AutoArrange = false;
             this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
             this.Notes});
+            this.WatchListView.FullRowSelect = true;
             this.WatchListView.GridLines = true;
+            this.WatchListView.LabelEdit = true;
             this.WatchListView.Location = new System.Drawing.Point(25, 76);
             this.WatchListView.Name = "WatchListView";
             this.WatchListView.Size = new System.Drawing.Size(314, 324);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.View = System.Windows.Forms.View.Details;
+            this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
             // 
             // Address
             // 
