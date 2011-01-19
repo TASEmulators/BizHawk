@@ -49,6 +49,13 @@ namespace BizHawk.MultiClient
             DisplayWatchList();
         }
 
+        private void NewWatchList()
+        {
+            //TODO: ask to save changes if necessary
+            watchList.Clear();
+            DisplayWatchList();
+        }
+
         bool LoadWatchFile(string path)
         {
             int y, z;
@@ -145,7 +152,7 @@ namespace BizHawk.MultiClient
 
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            NewWatchList();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
