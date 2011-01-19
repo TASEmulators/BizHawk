@@ -80,6 +80,8 @@ namespace BizHawk.MultiClient
                 {
                     case "SMS": return "SMS/SaveRAM/" + Name + ".SaveRAM";
                     case "GG":  return "Game Gear/SaveRAM/" + Name + ".SaveRAM";
+                    case "SG":  return "SG-1000/SaveRAM/" + Name + ".SaveRAM";
+                    case "SGX": return "TurboGrafx/SaveRAM/" + Name + ".SaveRAM";
                     case "PCE": return "TurboGrafx/SaveRAM/" + Name + ".SaveRAM";
                     case "GB":  return "Gameboy/SaveRAM/" + Name + ".SaveRAM";
                     case "GEN": return "Genesis/SaveRAM/" + Name + ".SaveRAM";
@@ -97,7 +99,9 @@ namespace BizHawk.MultiClient
                 {
                     case "SMS": return "SMS/State/" + Name;
                     case "GG":  return "Game Gear/State/" + Name;
+                    case "SG":  return "SG-1000/State/" + Name;
                     case "PCE": return "TurboGrafx/State/" + Name;
+                    case "SGX": return "TurboGrafx/State/" + Name;
                     case "GB":  return "Gameboy/State/" + Name;
                     case "GEN": return "Genesis/State/" + Name;
                     case "NES": return "NES/State/" + Name;
@@ -115,7 +119,9 @@ namespace BizHawk.MultiClient
                 {
                     case "SMS": return "SMS/Movie/" + Name;
                     case "GG":  return "Game Gear/Movie/" + Name;
+                    case "SG":  return "SG-1000/Movie/" + Name;
                     case "PCE": return "TurboGrafx/Movie/" + Name;
+                    case "SGX": return "TurboGrafx/Movie/" + Name;
                     case "GB":  return "Gameboy/Movie/" + Name;
                     case "GEN": return "Genesis/Movie/" + Name;
                     case "NES": return "NES/Movie/" + Name;
@@ -132,7 +138,9 @@ namespace BizHawk.MultiClient
                 {
                     case "SMS": return "SMS/Screenshot/" + Name;
                     case "GG":  return "Game Gear/Screenshot/" + Name;
+                    case "SG":  return "SG-1000/Screenshot/" + Name;
                     case "PCE": return "TurboGrafx/Screenshot/" + Name;
+                    case "SGX": return "TurboGrafx/Screenshot/" + Name;
                     case "GB":  return "Gameboy/Screenshot/" + Name;
                     case "GEN": return "Genesis/Screenshot/" + Name;
                     case "NES": return "NES/Screenshot/" + Name;
