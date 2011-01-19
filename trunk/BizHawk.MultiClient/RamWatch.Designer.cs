@@ -59,6 +59,7 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.WatchCountLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -233,16 +234,15 @@
             // 
             // WatchListView
             // 
-            this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
             this.Notes});
-            this.WatchListView.Location = new System.Drawing.Point(34, 52);
+            this.WatchListView.Location = new System.Drawing.Point(34, 76);
             this.WatchListView.Name = "WatchListView";
-            this.WatchListView.Size = new System.Drawing.Size(232, 403);
+            this.WatchListView.Size = new System.Drawing.Size(232, 436);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             // 
@@ -300,17 +300,29 @@
             // 
             // listBox1
             // 
+            this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(311, 88);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(120, 355);
             this.listBox1.TabIndex = 3;
             // 
+            // WatchCountLabel
+            // 
+            this.WatchCountLabel.AutoSize = true;
+            this.WatchCountLabel.Location = new System.Drawing.Point(34, 57);
+            this.WatchCountLabel.Name = "WatchCountLabel";
+            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
+            this.WatchCountLabel.TabIndex = 4;
+            this.WatchCountLabel.Text = "0 watches";
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(485, 467);
+            this.ClientSize = new System.Drawing.Size(485, 524);
+            this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.WatchListView);
@@ -360,5 +372,6 @@
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Notes;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Label WatchCountLabel;
     }
 }
