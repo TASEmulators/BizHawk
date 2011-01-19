@@ -13,22 +13,17 @@ namespace BizHawk.MultiClient
 {
     public partial class RamWatch : Form
     {
-        //TODO: Recent files & autoload
+        //TODO: 
+        //Recent files & autoload
         //Keep track of changes to watch list in order to prompt the user to save changes
-        //TODO: implement separator feature
+        //implement separator feature
+        //Display address as hex
 
         List<Watch> watchList = new List<Watch>();   
         
         public RamWatch()
         {
             InitializeComponent();
-        }
-
-        //Debug
-        void TempDisplayWatchInTempList(Watch watch)
-        {
-            string temp = watch.address + " " + watch.value + " " + watch.notes;
-            listBox1.Items.Add(temp);
         }
 
         public int HowMany(string str, char c)  //Shouldn't something like this exist already? Counts how many times c in in str
@@ -51,10 +46,7 @@ namespace BizHawk.MultiClient
                 if (result == DialogResult.Yes)
                     Global.Config.RecentWatches.Remove(file);
             }
-
-            //Debug
-            for (int x = 0; x < watchList.Count; x++)
-                TempDisplayWatchInTempList(watchList[x]);
+            DisplayWatchList();
         }
 
         bool LoadWatchFile(string path)
@@ -116,7 +108,6 @@ namespace BizHawk.MultiClient
                 Global.Config.RecentWatches.Add(file.FullName);
 
                 //Update the number of watches
-                listBox1.Items.Clear(); //Debug
                 WatchCountLabel.Text = count.ToString() + " watches";
             }
 
@@ -172,10 +163,7 @@ namespace BizHawk.MultiClient
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
             LoadWatchFile(file.FullName);
-
-            //Debug
-            for (int x = 0; x < watchList.Count; x++)
-                TempDisplayWatchInTempList(watchList[x]);
+            DisplayWatchList();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -233,25 +221,22 @@ namespace BizHawk.MultiClient
             MoveDown();
         }
 
+        private void DisplayWatchList()
+        {
+            WatchListView.Items.Clear();
+            for (int x = 0; x < watchList.Count; x++)
+            {
+                ListViewItem item = new ListViewItem(watchList[x].address.ToString());
+                item.SubItems.Add(watchList[x].value.ToString());
+                item.SubItems.Add(watchList[x].notes);
+                WatchListView.Items.Add(item);
+            }
+            
+        }
+
         private void RamWatch_Load(object sender, EventArgs e)
         {
-            //TODO: Debug
-            Watch watch1 = new Watch();
-            watch1.notes = "Test1";
-            watchList.Add(watch1);
-                               
-            ListViewItem item1 = new ListViewItem(watch1.address.ToString(), 0);
-            WatchListView.Items.Add(item1);
 
-            item1 = new ListViewItem(watch1.value.ToString(), 0);
-            WatchListView.Items.Add(item1);
-
-            item1 = new ListViewItem(watch1.notes, 0);
-            WatchListView.Items.Add(item1);
-
-            //Debug
-            for (int x = 0; x < watchList.Count; x++)
-                TempDisplayWatchInTempList(watchList[x]);
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
