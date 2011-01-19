@@ -1,4 +1,4 @@
- using System;
+﻿ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -80,6 +80,9 @@ namespace BizHawk.MultiClient
                 LoadRom(args[0]);
             else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
                 LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+
+            if (Global.Config.AutoLoadRamWatch)
+                LoadRamWatch();
         }
 
         private void LoadRomFromRecent(string rom)
@@ -778,10 +781,15 @@ namespace BizHawk.MultiClient
             recentROMToolStripMenuItem.DropDownItems.Add(auto);
         }
 
-        private void rAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadRamWatch() //TODO: accept a filename parameter and feed it to ram watch for loading
         {
             RamWatch RamWatch1 = new RamWatch();
             RamWatch1.Show();
+        }
+
+        private void RAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadRamWatch();
         }
     }
 }

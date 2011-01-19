@@ -178,7 +178,16 @@ namespace BizHawk.MultiClient
 
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Global.Config.AutoLoadRamWatch == true)
+            {
+                Global.Config.AutoLoadRamWatch = false;
+                autoLoadToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                Global.Config.AutoLoadRamWatch = true;
+                autoLoadToolStripMenuItem.Checked = true;
+            }
         }
 
         private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,6 +244,14 @@ namespace BizHawk.MultiClient
             //Debug
             for (int x = 0; x < watchList.Count; x++)
                 TempDisplayWatchInTempList(watchList[x]);
+        }
+
+        private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Global.Config.AutoLoadRamWatch == true)
+                autoLoadToolStripMenuItem.Checked = true;
+            else
+                autoLoadToolStripMenuItem.Checked = false;
         }
     }
 }

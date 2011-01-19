@@ -92,6 +92,7 @@
             this.filesToolStripMenuItem.Name = "filesToolStripMenuItem";
             this.filesToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.filesToolStripMenuItem.Text = "&Files";
+            this.filesToolStripMenuItem.DropDownOpened += new System.EventHandler(this.filesToolStripMenuItem_DropDownOpened);
             // 
             // newListToolStripMenuItem
             // 
