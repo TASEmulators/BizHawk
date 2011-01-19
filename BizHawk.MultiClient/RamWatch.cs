@@ -50,6 +50,7 @@ namespace BizHawk.MultiClient
 
             using (StreamReader sr = file.OpenText())
             {
+                int count = 0;
                 string s = "";
                 string temp = "";
                 watchList.Clear();  //Wipe existing list and read from file
@@ -70,7 +71,7 @@ namespace BizHawk.MultiClient
                     }
                     else if (z != 4) 
                         continue;   //If not 4, something is wrong with this line, ignore it
-
+                    count++;
                     Watch w = new Watch();
 
                     temp = s.Substring(0, s.IndexOf('\t'));
@@ -95,11 +96,11 @@ namespace BizHawk.MultiClient
                     w.notes =  s.Substring(2, s.Length - 2);   //User notes
 
                     watchList.Add(w);
-
-                    //Debug
-                    for (int x = 0; x < watchList.Count; x++)
-                        TempDisplayWatchInTempList(watchList[x]);
                 }
+
+                //Update the number of watches
+                listBox1.Items.Clear();
+                WatchCountLabel.Text = count.ToString() + " watches";
             }
 
             return true;
@@ -154,6 +155,10 @@ namespace BizHawk.MultiClient
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
             LoadWatchFile(file.FullName);
+
+            //Debug
+            for (int x = 0; x < watchList.Count; x++)
+                TempDisplayWatchInTempList(watchList[x]);
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -213,17 +218,11 @@ namespace BizHawk.MultiClient
 
         private void RamWatch_Load(object sender, EventArgs e)
         {
+            //TODO: Debug
             Watch watch1 = new Watch();
             watch1.notes = "Test1";
             watchList.Add(watch1);
-
-            Watch watch2 = new Watch(0x00FF, 256, atype.BYTE, asigned.SIGNED, true, "This is a test");
-            Watch watch3 = new Watch(0x00FE, 256, atype.BYTE, asigned.SIGNED, true, "This is a test too");
-            Watch watch4 = new Watch(0x00FD, 256, atype.BYTE, asigned.SIGNED, true, "Stuff");
-            watchList.Add(watch2);
-            watchList.Add(watch3);
-            watchList.Add(watch4);
-            
+                               
             ListViewItem item1 = new ListViewItem(watch1.address.ToString(), 0);
             WatchListView.Items.Add(item1);
 
