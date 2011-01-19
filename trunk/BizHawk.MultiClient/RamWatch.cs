@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -14,6 +15,7 @@ namespace BizHawk.MultiClient
     {
         //TODO: Recent files & autoload
         //Keep track of changes to watch list in order to prompt the user to save changes
+        //TODO: implement separator feature
 
         List<Watch> watchList = new List<Watch>();   
         
@@ -22,6 +24,7 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        //Debug
         void TempDisplayWatchInTempList(Watch watch)
         {
             string temp = watch.address + " " + watch.value + " " + watch.notes;
@@ -41,6 +44,7 @@ namespace BizHawk.MultiClient
 
         bool LoadWatchFile(string path)
         {
+            int y, z;
             var file = new FileInfo(path);
             if (file.Exists == false) return false;
 
@@ -57,11 +61,11 @@ namespace BizHawk.MultiClient
                     //Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
                     if (s.Length < 5) continue;
                     
-                    int z = HowMany(s, '\t');
+                    z = HowMany(s, '\t');
                     if (z == 5)
                     {
                         //If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
-                        int y = s.IndexOf('\t') + 1;
+                        y = s.IndexOf('\t') + 1;
                         s = s.Substring(y, s.Length - y - 1);   //5 digit value representing the watch position number
                     }
                     else if (z != 4) 
@@ -70,9 +74,31 @@ namespace BizHawk.MultiClient
                     Watch w = new Watch();
 
                     temp = s.Substring(0, s.IndexOf('\t'));
+                    w.address = int.Parse(temp, NumberStyles.HexNumber);
 
-                    //w.address = int.Parse(temp);
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y - 1);   //Type
+                    w.SetTypeByChar(s[0]);
 
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y - 1);   //Signed
+                    w.SetSignedByChar(s[0]);
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y - 1);   //Endian
+                    y = Int16.Parse(s[0].ToString());
+                    if (y == 0)
+                        w.bigendian = false;
+                    else
+                        w.bigendian = true;
+                                        
+                    w.notes =  s.Substring(2, s.Length - 2);   //User notes
+
+                    watchList.Add(w);
+
+                    //Debug
+                    for (int x = 0; x < watchList.Count; x++)
+                        TempDisplayWatchInTempList(watchList[x]);
                 }
             }
 
@@ -207,6 +233,7 @@ namespace BizHawk.MultiClient
             item1 = new ListViewItem(watch1.notes, 0);
             WatchListView.Items.Add(item1);
 
+            //Debug
             for (int x = 0; x < watchList.Count; x++)
                 TempDisplayWatchInTempList(watchList[x]);
         }

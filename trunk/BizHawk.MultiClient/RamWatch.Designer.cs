@@ -51,13 +51,13 @@
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WatchListView = new System.Windows.Forms.ListView();
+            this.Address = new System.Windows.Forms.ColumnHeader();
+            this.Value = new System.Windows.Forms.ColumnHeader();
+            this.Notes = new System.Windows.Forms.ColumnHeader();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
-            this.Address = new System.Windows.Forms.ColumnHeader();
-            this.Value = new System.Windows.Forms.ColumnHeader();
-            this.Notes = new System.Windows.Forms.ColumnHeader();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -246,6 +246,19 @@
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             // 
+            // Address
+            // 
+            this.Address.Text = "Address";
+            // 
+            // Value
+            // 
+            this.Value.Text = "Value";
+            this.Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // Notes
+            // 
+            this.Notes.Text = "Notes";
+            // 
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -285,25 +298,12 @@
             this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton3.Text = "toolStripButton3";
             // 
-            // Address
-            // 
-            this.Address.Text = "Address";
-            // 
-            // Value
-            // 
-            this.Value.Text = "Value";
-            this.Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // Notes
-            // 
-            this.Notes.Text = "Notes";
-            // 
             // listBox1
             // 
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(311, 88);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(120, 95);
+            this.listBox1.Size = new System.Drawing.Size(120, 355);
             this.listBox1.TabIndex = 3;
             // 
             // RamWatch
