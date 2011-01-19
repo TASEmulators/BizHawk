@@ -708,7 +708,7 @@
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
             this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
-            this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.rAMWatchToolStripMenuItem_Click);
+            this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 

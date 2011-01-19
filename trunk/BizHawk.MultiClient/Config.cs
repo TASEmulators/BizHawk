@@ -8,6 +8,10 @@
         public bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
         public RecentFiles RecentRoms = new RecentFiles(8);
 
+        // RamWatch Settings
+        public bool AutoLoadRamWatch = false;
+        public RecentFiles RecentWatches = new RecentFiles(8);
+
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab";
         public string FastForwardBinding = "J1 B6";
