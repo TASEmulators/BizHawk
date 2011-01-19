@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             if (DisplayOn == false) return;
             int SpriteBase = SpriteAttributeTableBase;
-            int SpriteHeight = Enable8x16Sprites ? 16 : 8;
+            int SpriteHeight = EnableLargeSprites ? 16 : 8;
 
             // Clear the sprite collision buffer for this scanline
             Array.Clear(SpriteCollisionBuffer, 0, 256);
@@ -136,13 +136,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     x -= 8;
 
                 int y = VRAM[SpriteBase + i] + 1;
-                if (y >= (Enable8x16Sprites ? 240 : 248)) y -= 256;
+                if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
 
                 if (y + SpriteHeight <= ScanLine || y > ScanLine)
                     continue;
 
                 int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
-                if (Enable8x16Sprites)
+                if (EnableLargeSprites)
                     tileNo &= 0xFE;
                 tileNo += SpriteTileBase;
 
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             if (DisplayOn == false) return;
             int SpriteBase = SpriteAttributeTableBase;
-            int SpriteHeight = Enable8x16Sprites ? 16 : 8;
+            int SpriteHeight = EnableLargeSprites ? 16 : 8;
 
             // Clear the sprite collision buffer for this scanline
             Array.Clear(SpriteCollisionBuffer, 0, 256); 
@@ -196,13 +196,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     x -= 8;
 
                 int y = VRAM[SpriteBase + i] + 1;
-                if (y >= (Enable8x16Sprites ? 240 : 248)) y -= 256;
+                if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
 
                 if (y + (SpriteHeight*2) <= ScanLine || y > ScanLine)
                     continue;
 
                 int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
-                if (Enable8x16Sprites)
+                if (EnableLargeSprites)
                     tileNo &= 0xFE;
                 tileNo += SpriteTileBase;
 

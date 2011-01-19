@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool HorizScrollLock         { get { return (Registers[0] & 64) > 0; } }
         public bool VerticalScrollLock      { get { return (Registers[0] & 128) > 0; } }
         public bool EnableDoubledSprites    { get { return (Registers[1] & 1) > 0; } }
-        public bool Enable8x16Sprites       { get { return (Registers[1] & 2) > 0; } }
+        public bool EnableLargeSprites      { get { return (Registers[1] & 2) > 0; } }
         public bool EnableFrameInterrupts   { get { return (Registers[1] & 32) > 0; } }
         public bool DisplayOn               { get { return (Registers[1] & 64) > 0; } }
         public int SpriteAttributeTableBase { get { return ((Registers[5] >> 1) << 8) & 0x3FFF; } }
@@ -59,7 +59,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         private int ColorTableBase;
         private int PatternGeneratorBase;
         private int SpritePatternGeneratorBase;
-        private int mystery_pn;
+        private int TmsPatternNameTableBase;
+        private int TmsSpriteAttributeBase;
         
         // preprocessed state assist stuff.
         public int[] Palette = new int[32];
@@ -288,7 +289,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     break;
                 case 2: // Name Table Base Address
                     NameTableBase = CalcNameTableBase();
-                    mystery_pn = (Registers[2] << 10) & 0x3C00;
+                    TmsPatternNameTableBase = (Registers[2] << 10) & 0x3C00;
                     break;
                 case 3: // Color Table Base Address
                     ColorTableBase = (Registers[3] << 6) & 0x3FC0;
@@ -298,6 +299,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     break;
                 case 5: // Sprite Attribute Table Base Address
                     // ??? should I move from my property to precalculated?
+                    TmsSpriteAttributeBase = (Registers[5] << 7) & 0x3F80;
                     break;
                 case 6: // Sprite Pattern Generator Base Adderss 
                     SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
@@ -369,6 +371,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     RenderBlankingRegions();
             }
         }
+
         internal void RenderCurrentScanline(bool render)
         {
             if (ScanLine >= FrameHeight)
@@ -383,6 +386,9 @@ namespace BizHawk.Emulation.Consoles.Sega
                     RenderSpritesCurrentLineDoubleSize();
                 else
                     RenderSpritesCurrentLine();
+            } else if (TmsMode == 2) {
+                RenderBackgroundM2();
+                RenderTmsSprites();
             } else if (TmsMode == 0) {
                 RenderBackgroundM0();
             }
