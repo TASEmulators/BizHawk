@@ -13,6 +13,8 @@
         public RecentFiles RecentWatches = new RecentFiles(8);
         public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamWatchWndy = -1;
+        public int RamWatchWidth = -1;  //Negative numbers will be ignored
+        public int RamWatchHeight = -1; 
 
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab";

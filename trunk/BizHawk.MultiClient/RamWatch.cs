@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
         //implement separator feature
         //Display address as hex
         //Since window is resizable, save window size
-        //Fix window position setting, shoudl it be set in a specific event?
 
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
@@ -309,6 +308,14 @@ namespace BizHawk.MultiClient
         {
             if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
                 this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+
+            if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
+            {
+                //this.Right = this.Left + Global.Config.RamWatchWidth;
+                //this.Bottom = this.Top + Global.Config.RamWatchHeight;
+                this.Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+
+            }
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -414,6 +421,12 @@ namespace BizHawk.MultiClient
         {
             Global.Config.RamWatchWndx = this.Location.X;
             Global.Config.RamWatchWndy = this.Location.Y;
+        }
+
+        private void RamWatch_Resize(object sender, EventArgs e)
+        {
+            Global.Config.RamWatchWidth = this.Right - this.Left;
+            Global.Config.RamWatchHeight = this.Bottom - this.Top;
         }
     }
 }
