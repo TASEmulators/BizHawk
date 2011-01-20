@@ -19,7 +19,8 @@ namespace BizHawk.MultiClient
         //implement separator feature
         //Display address as hex
         //Since window is resizable, save window size
-
+        int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+        int defaultHeight;
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
 
@@ -306,6 +307,9 @@ namespace BizHawk.MultiClient
 
         private void RamWatch_Load(object sender, EventArgs e)
         {
+            defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+            defaultHeight = this.Size.Height;
+
             if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
                 this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
 
@@ -427,6 +431,11 @@ namespace BizHawk.MultiClient
         {
             Global.Config.RamWatchWidth = this.Right - this.Left;
             Global.Config.RamWatchHeight = this.Bottom - this.Top;
+        }
+
+        private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
         }
     }
 }

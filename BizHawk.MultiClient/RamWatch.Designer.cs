@@ -60,6 +60,8 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
+            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -85,6 +87,8 @@
             this.appendFileToolStripMenuItem,
             this.recentToolStripMenuItem,
             this.toolStripSeparator1,
+            this.restoreWindowSizeToolStripMenuItem,
+            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.filesToolStripMenuItem.Name = "filesToolStripMenuItem";
             this.filesToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
@@ -323,6 +327,18 @@
             this.WatchCountLabel.TabIndex = 4;
             this.WatchCountLabel.Text = "0 watches";
             // 
+            // restoreWindowSizeToolStripMenuItem
+            // 
+            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -381,5 +397,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
