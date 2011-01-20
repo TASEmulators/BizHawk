@@ -220,7 +220,7 @@ namespace BizHawk.MultiClient
         {
             if (string.Compare(currentWatchFile, "") == 0) return;
 
-            SaveWatchFile(currentWatchFileFile);    //TODO: only do this if changes have been made
+            SaveWatchFile(currentWatchFile);    //TODO: only do this if changes have been made
         }
 
         private FileInfo GetSaveFileFromUser()
@@ -258,11 +258,6 @@ namespace BizHawk.MultiClient
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             UpdateAutoLoadRamWatch();
-        }
-
-        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void newWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -310,6 +305,12 @@ namespace BizHawk.MultiClient
 
         private void RamWatch_Load(object sender, EventArgs e)
         {
+            if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+            {
+                this.Left = Global.Config.RamWatchWndx;
+                this.Top = Global.Config.RamWatchWndy;
+            }
+                //this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
 
         }
 
@@ -410,6 +411,12 @@ namespace BizHawk.MultiClient
          return;
       }
    }
+        }
+
+        private void RamWatch_LocationChanged(object sender, EventArgs e)
+        {
+            Global.Config.RamWatchWndx = this.Location.X;
+            Global.Config.RamWatchWndy = this.Location.Y;
         }
     }
 }
