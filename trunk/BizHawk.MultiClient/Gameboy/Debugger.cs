@@ -10,16 +10,22 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Core;
 
-namespace VgMuseum.Gameboy
+namespace BizHawk.Emulation.Consoles.Gameboy
 {
-	public partial class Debugger : Form
+	public partial class Debugger : Form, Gameboy.IDebuggerAPI
 	{
 		readonly Gameboy gb;
 		public Debugger(Gameboy gb)
 		{
 			this.gb = gb;
+			gb.DebuggerAPI = this;
 			InitializeComponent();
 			Refresh();
+		}
+
+		void Gameboy.IDebuggerAPI.DoEvents()
+		{
+			System.Windows.Forms.Application.DoEvents();
 		}
 
 		private void viewDisassembly_Paint(object sender, PaintEventArgs e)
@@ -30,7 +36,7 @@ namespace VgMuseum.Gameboy
 			for (int i = 0; i < 16; i++)
 			{
 				ushort size;
-				string str = VgMuseum.Z80GB.Disassembler.DAsm(addr, gb.Cpu.ReadMemory, out size);
+				string str = BizHawk.Emulation.CPUs.Z80GB.Disassembler.DAsm(addr, gb.Cpu.ReadMemory, out size);
 				addr += size;
 				sb.AppendLine(str);
 			}

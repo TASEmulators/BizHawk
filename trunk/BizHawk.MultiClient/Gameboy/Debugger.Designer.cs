@@ -1,6 +1,6 @@
 ﻿using BizHawk.Core;
 
-namespace VgMuseum.Gameboy
+namespace BizHawk.Emulation.Consoles.Gameboy
 {
 	partial class Debugger
 	{
