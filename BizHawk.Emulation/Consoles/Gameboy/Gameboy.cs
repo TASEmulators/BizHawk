@@ -6,6 +6,12 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 {
     public partial class Gameboy : IEmulator
     {
+		public interface IDebuggerAPI
+		{
+			void DoEvents();
+		}
+		public IDebuggerAPI DebuggerAPI;
+
 		public enum ECartType
 		{
 			ROM_ONLY = 0x00,
@@ -207,7 +213,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				sanity++;
 				if (sanity == 100000)
 				{
-					//System.Windows.Forms.Application.DoEvents();
+					if(DebuggerAPI != null) DebuggerAPI.DoEvents();
 					if (DebugBreak) break;
 					sanity = 0;
 				}
@@ -267,6 +273,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			Mapper = new MemoryMapper(this);
 			CartFlags.GBC = Rom[0x0143] == 0x80;
 			CartFlags.SGB = Rom[0x0146] == 0x03;
+
+			HardReset();
         }
 
 		public bool BootFromBios = true;
@@ -626,17 +634,17 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public void FrameAdvance(bool render)
         {
-            Cpu.ExecuteCycles(4096);
+            //Cpu.ExecuteCycles(4096);
         }
 
         public IVideoProvider VideoProvider
         {
-            get { throw new NotImplementedException(); }
+			get { return new NullEmulator(); }
         }
 
         public ISoundProvider SoundProvider
         {
-            get { throw new NotImplementedException(); }
+			get { return new NullEmulator(); }
         }
 
         public int Frame
@@ -653,11 +661,11 @@ namespace BizHawk.Emulation.Consoles.Gameboy
         {
             get
             {
-                throw new NotImplementedException();
+				return false;
             }
             set
             {
-                throw new NotImplementedException();
+                
             }
         }
 
@@ -673,7 +681,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
         public void SaveStateBinary(System.IO.BinaryWriter writer)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void LoadStateBinary(System.IO.BinaryReader reader)
@@ -683,7 +691,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
         public byte[] SaveStateBinary()
         {
-            throw new NotImplementedException();
+			return new byte[0];
         }
 
 		public void RenderOBJLine(int line, byte[] output, bool limit)

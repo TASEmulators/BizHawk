@@ -8,6 +8,7 @@ using BizHawk.Core;
 using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Consoles.Gameboy;
 
 namespace BizHawk.MultiClient
 {
@@ -215,6 +216,7 @@ namespace BizHawk.MultiClient
                 case "SGX": return "SuperGrafx";
                 case "GEN": return "Genesis";
                 case "TI83": return "TI-83";
+				case "GB": return "Game Boy";
             }
             return "";
         }
@@ -256,6 +258,9 @@ namespace BizHawk.MultiClient
 					Global.Emulator = new TI83();
 					Global.Emulator.Controller = Global.TI83Controls;
 					break;
+				case "GB":
+            		Global.Emulator = new Gameboy();
+            		break;
             }
 
             Global.Emulator.LoadGame(game);
@@ -264,7 +269,12 @@ namespace BizHawk.MultiClient
             Global.Config.RecentRoms.Add(file.FullName);
             if (File.Exists(game.SaveRamPath))
                 LoadSaveRam();
-            return true;
+
+			if (game.System == "GB")
+			{
+				new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
+			}
+        	return true;
         }
 
         private void LoadSaveRam()

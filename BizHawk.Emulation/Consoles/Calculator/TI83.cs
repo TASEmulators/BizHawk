@@ -331,13 +331,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		}
 		public IVideoProvider VideoProvider { get { return new MyVideoProvider(this); } }
 
-		class MySoundProvider : ISoundProvider
-		{
-			public void GetSamples(short[] samples)
-			{
-			}
-		}
-		public ISoundProvider SoundProvider { get { return new MySoundProvider(); } }
+
+		public ISoundProvider SoundProvider { get { return new NullEmulator(); } }
 
 		public static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition
