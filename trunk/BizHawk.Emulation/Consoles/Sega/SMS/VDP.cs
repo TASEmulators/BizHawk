@@ -204,26 +204,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             if (Mode4Bit == false) // check old TMS modes
             {
-                if (Mode1Bit)
-                {
-                    Console.WriteLine("set mode 1....");
-                    TmsMode = 1;
-                }
-                else if (Mode2Bit)
-                {
-                    Console.WriteLine("set mode 2....");
-                    TmsMode = 2;
-                }
-                else if (Mode3Bit)
-                {
-                    Console.WriteLine("set mode 3....");
-                    TmsMode = 3;
-                }
-                else
-                {
-                    Console.WriteLine("set mode 0....");
-                    TmsMode = 0;
-                }
+                     if (Mode1Bit) TmsMode = 1;
+                else if (Mode2Bit) TmsMode = 2;
+                else if (Mode3Bit) TmsMode = 3; 
+                else               TmsMode = 0;
             }
 
             else if (Mode4Bit && Mode2Bit) // if Mode4 and Mode2 set, then check extension modes
@@ -235,7 +219,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x18: // 192-line mode
                         if (FrameHeight != 192)
                         {
-                            Console.WriteLine("Change video mode to 192-line Mode4");
                             FrameHeight = 192;
                             FrameBuffer = new int[256*192];
                             NameTableBase = CalcNameTableBase();
@@ -244,7 +227,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x10: // 224-line mode
                         if (FrameHeight != 224)
                         {
-                            Console.WriteLine("Change video mode to 224-line Mode4");
                             FrameHeight = 224;
                             FrameBuffer = new int[256*224];
                             NameTableBase = CalcNameTableBase();
@@ -253,7 +235,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x08: // 240-line mode
                         if (FrameHeight != 240)
                         {
-                            Console.WriteLine("Change video mode to 240-line Mode4");
                             FrameHeight = 240;
                             FrameBuffer = new int[256 * 240];
                             NameTableBase = CalcNameTableBase();
@@ -266,7 +247,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                 TmsMode = 4;
                 if (FrameHeight != 192)
                 {
-                    Console.WriteLine("Change video mode to 192-line Mode4");
                     FrameHeight = 192;
                     FrameBuffer = new int[256*192];
                     NameTableBase = CalcNameTableBase();
@@ -391,6 +371,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 RenderTmsSprites();
             } else if (TmsMode == 0) {
                 RenderBackgroundM0();
+                RenderTmsSprites();
             }
         }
 

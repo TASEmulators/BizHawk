@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (DisplayOn == false)
             {
                 for (int x = 0; x < 256; x++)
-                    FrameBuffer[(ScanLine * 256) + x] = BackdropColor;
+                    FrameBuffer[(ScanLine*256) + x] = Palette[BackdropColor];
                 return;
             }
 
