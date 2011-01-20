@@ -14,11 +14,10 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Recent files & autoload
         //Keep track of changes to watch list in order to prompt the user to save changes, also use this to enable/disable things like quick save
         //implement separator feature
-        //Display address as hex
-        //Since window is resizable, save window size
+        //Display value differently based on signed or hex, endian, type
+        //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -71,7 +70,7 @@ namespace BizHawk.MultiClient
                 
                 for (int x = 0; x < watchList.Count; x++)
                 {
-                    str += watchList[x].address.ToString() + "\t";  //TODO: Make hex
+                    str += string.Format("{0:X4}", watchList[x].address) + "\t";
                     str += watchList[x].GetTypeByChar().ToString() + "\t";
                     str += watchList[x].GetSignedByChar().ToString() + "\t";
 
@@ -297,7 +296,7 @@ namespace BizHawk.MultiClient
             WatchListView.Items.Clear();
             for (int x = 0; x < watchList.Count; x++)
             {
-                ListViewItem item = new ListViewItem(watchList[x].address.ToString());
+                ListViewItem item = new ListViewItem(String.Format("{0:X4}", watchList[x].address));
                 item.SubItems.Add(watchList[x].value.ToString());
                 item.SubItems.Add(watchList[x].notes);
                 WatchListView.Items.Add(item);
@@ -436,6 +435,13 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+        }
+
+        private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //TODO: debug/testing
+            ListView.SelectedIndexCollection i = this.WatchListView.SelectedIndices;
+            i = WatchListView.SelectedIndices;
         }
     }
 }
