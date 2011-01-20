@@ -113,7 +113,7 @@ namespace BizHawk.MultiClient
                     {
                         //If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
                         y = s.IndexOf('\t') + 1;
-                        s = s.Substring(y, s.Length - y - 1);   //5 digit value representing the watch position number
+                        s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
                     }
                     else if (z != 4) 
                         continue;   //If not 4, something is wrong with this line, ignore it
@@ -124,15 +124,15 @@ namespace BizHawk.MultiClient
                     w.address = int.Parse(temp, NumberStyles.HexNumber);
 
                     y = s.IndexOf('\t') + 1;
-                    s = s.Substring(y, s.Length - y - 1);   //Type
+                    s = s.Substring(y, s.Length - y);   //Type
                     w.SetTypeByChar(s[0]);
 
                     y = s.IndexOf('\t') + 1;
-                    s = s.Substring(y, s.Length - y - 1);   //Signed
+                    s = s.Substring(y, s.Length - y);   //Signed
                     w.SetSignedByChar(s[0]);
 
                     y = s.IndexOf('\t') + 1;
-                    s = s.Substring(y, s.Length - y - 1);   //Endian
+                    s = s.Substring(y, s.Length - y);   //Endian
                     y = Int16.Parse(s[0].ToString());
                     if (y == 0)
                         w.bigendian = false;
