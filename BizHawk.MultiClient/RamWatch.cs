@@ -160,6 +160,8 @@ namespace BizHawk.MultiClient
 
         void AddNewWatch()
         {
+            RamWatchNewWatch r = new RamWatchNewWatch();
+            r.ShowDialog();
         }
 
         void EditWatch()
