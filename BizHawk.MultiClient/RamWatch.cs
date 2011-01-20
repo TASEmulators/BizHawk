@@ -15,12 +15,13 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Recent files & autoload
-        //Keep track of changes to watch list in order to prompt the user to save changes
+        //Keep track of changes to watch list in order to prompt the user to save changes, also use this to enable/disable things like quick save
         //implement separator feature
         //Display address as hex
 
-        List<Watch> watchList = new List<Watch>();   
-        
+        List<Watch> watchList = new List<Watch>();
+        string currentWatchFile = "";
+
         public RamWatch()
         {
             InitializeComponent();
@@ -54,6 +55,7 @@ namespace BizHawk.MultiClient
             //TODO: ask to save changes if necessary
             watchList.Clear();
             DisplayWatchList();
+            currentWatchFile = "";
         }
         
         private  bool SaveWatchFile(string path)
@@ -93,6 +95,8 @@ namespace BizHawk.MultiClient
 
             using (StreamReader sr = file.OpenText())
             {
+                currentWatchFile = path;
+
                 int count = 0;
                 string s = "";
                 string temp = "";
@@ -214,7 +218,9 @@ namespace BizHawk.MultiClient
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (string.Compare(currentWatchFile, "") == 0) return;
 
+            SaveWatchFile(currentWatchFileFile);    //TODO: only do this if changes have been made
         }
 
         private FileInfo GetSaveFileFromUser()
@@ -313,6 +319,15 @@ namespace BizHawk.MultiClient
                 autoLoadToolStripMenuItem.Checked = true;
             else
                 autoLoadToolStripMenuItem.Checked = false;
+
+            if (string.Compare(currentWatchFile, "") == 0)
+            {
+                saveToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                saveToolStripMenuItem.Enabled = true;
+            }
         }
 
         private void UpdateAutoLoadRamWatch()
