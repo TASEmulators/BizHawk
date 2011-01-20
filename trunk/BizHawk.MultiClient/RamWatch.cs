@@ -18,6 +18,8 @@ namespace BizHawk.MultiClient
         //Keep track of changes to watch list in order to prompt the user to save changes, also use this to enable/disable things like quick save
         //implement separator feature
         //Display address as hex
+        //Since window is resizable, save window size
+        //Fix window position setting, shoudl it be set in a specific event?
 
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
@@ -306,12 +308,7 @@ namespace BizHawk.MultiClient
         private void RamWatch_Load(object sender, EventArgs e)
         {
             if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
-            {
-                this.Left = Global.Config.RamWatchWndx;
-                this.Top = Global.Config.RamWatchWndy;
-            }
-                //this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
-
+                this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
