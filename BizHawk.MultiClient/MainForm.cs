@@ -157,7 +157,6 @@ namespace BizHawk.MultiClient
             genControls.BindMulti("P1 Start", Global.Config.GenP1Start);
             Global.GenControls = genControls;
 
-			
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", "D0"); //numpad 4,8,6,2 (up/down/left/right) dont work in slimdx!! wtf!!
 			TI83Controls.BindMulti("1", "D1");
@@ -181,9 +180,7 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("DIVIDE", "NumberPadSlash");
 			TI83Controls.BindMulti("CLEAR", "Escape");
 			TI83Controls.BindMulti("DOT", "NumberPadPeriod");
-			
 			Global.TI83Controls = TI83Controls;
-			
         }
 
         private static void FormDragEnter(object sender, DragEventArgs e)

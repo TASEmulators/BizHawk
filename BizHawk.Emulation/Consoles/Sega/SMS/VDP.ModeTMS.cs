@@ -28,18 +28,27 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void RenderBackgroundM0()
         {
+            if (DisplayOn == false)
+            {
+                Array.Clear(FrameBuffer, ScanLine * 256, 256);
+                return;
+            }
+
             int yc = ScanLine/8;
             int yofs = ScanLine%8;
             int FrameBufferOffset = ScanLine*256;
             int PatternNameOffset = TmsPatternNameTableBase + (yc*32);
-             
+            int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+ 
             for (int xc=0; xc<32; xc++)
             {
                 int pn = VRAM[PatternNameOffset++];
                 int pv = VRAM[PatternGeneratorBase + (pn*8) + yofs];
                 int colorEntry = VRAM[ColorTableBase + (pn/8)];
-                int fgColor = PaletteTMS9918[(colorEntry >> 4 & 0x0F)];
-                int bgColor = PaletteTMS9918[(colorEntry & 0x0F)];
+                int fgIndex = (colorEntry >> 4) & 0x0F;
+                int bgIndex = colorEntry & 0x0F;
+                int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+                int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
                 
                 FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
                 FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
@@ -54,20 +63,29 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void RenderBackgroundM2()
         {
+            if (DisplayOn == false)
+            {
+                Array.Clear(FrameBuffer, ScanLine * 256, 256);
+                return;
+            }
+
             int yrow = ScanLine/8;
             int yofs = ScanLine%8;
             int FrameBufferOffset = ScanLine*256;
             int PatternNameOffset = TmsPatternNameTableBase + (yrow*32);
             int PatternGeneratorOffset = (((Registers[4] & 4) << 11) & 0x2000);// +((yrow / 8) * 0x100);
             int ColorOffset = (ColorTableBase & 0x2000);// +((yrow / 8) * 0x100);
+            int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
 
             for (int xc=0; xc<32; xc++)
             {
-                int pn = VRAM[PatternNameOffset++];
+                int pn = VRAM[PatternNameOffset++] + ((yrow/8)*0x100);
                 int pv = VRAM[PatternGeneratorOffset + (pn * 8) + yofs];
                 int colorEntry = VRAM[ColorOffset + (pn * 8) + yofs];
-                int fgColor = PaletteTMS9918[(colorEntry >> 4 & 0x0F)];
-                int bgColor = PaletteTMS9918[(colorEntry & 0x0F)];
+                int fgIndex = (colorEntry >> 4) & 0x0F;
+                int bgIndex = colorEntry & 0x0F;
+                int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+                int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
                 
                 FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
                 FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
@@ -82,6 +100,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private void RenderTmsSprites()
         {
+            if (DisplayOn == false) return;
+
             Array.Clear(ScanlinePriorityBuffer, 0, 256);
             Array.Clear(SpriteCollisionBuffer, 0, 256);
 
@@ -129,10 +149,13 @@ namespace BizHawk.Emulation.Consoles.Sega
 
                     if ((pv & (1 << (7 - (xp & 7)))) > 0)
                     {
-                        if (Color != 0)
-                            FrameBuffer[(ScanLine * 256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+                        // todo sprite collision
+                        if (Color != 0 && ScanlinePriorityBuffer[x+xp] == 0)
+                        {
+                            ScanlinePriorityBuffer[x + xp] = 1;
+                            FrameBuffer[(ScanLine*256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+                        }
                     }
-                    
                 }
             }
         }

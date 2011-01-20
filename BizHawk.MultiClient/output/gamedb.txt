@@ -300,8 +300,8 @@ DFA2AE07	V	Enduro Racer (corrupted)	SMS	Insert hex byte $0D at offset $B3A1 to f
 5D5C50B3	 	Enduro Racer (JP)	SMS	
 C4BB1676	 	E-SWAT [A]	SMS	
 C10FCE39	 	E-SWAT [B]	SMS	
-8813514B	 	"Excellent Dizzy Collection, The [Proto]"	SMS	
-AA140C9C	 	"Excellent Dizzy Collection, The [SMS-GG]"	SMS	
+8813514B	 	Excellent Dizzy Collection, The [Proto]	SMS		CMMapper,PAL
+AA140C9C	 	Excellent Dizzy Collection, The [SMS-GG]	SMS		CMMapper,PAL
 EC788661	 	F1	SMS		
 8AB10CB4	V	F1 (first 128KB only)	SMS		
 EAEBF323	 	F-16 Fighter	SMS		
@@ -1899,12 +1899,12 @@ F397F041	 	Zoop [A]	GG	Product code 88830 (Europe?)
 3247FF8B	 	Zoop [B]	GG	Product code 139048 (US?)
 590F9C54	D	Zoop'em Up	GG	
 
-26ECD094	 	"Black Onyx, The (JP)"	SG	
+26ECD094	 	The Black Onyx	SG	
 D8A87095	 	Bank Panic	SG	
 EA0F2691	 	Bomb Jack	SG	
 0B4BCA74	 	Borderline	SG
 BE7ED0EB	 	C_So! (JP)	SG
-092F29D6	 	"Castle, The (JP)"	SG
+092F29D6	 	The Castle	SG
 D37BDA49	 	Chack'n Pop	SG
 5970A12B	 	Champion Baseball	SG
 62B21E31	 	Champion Billiards	SG

@@ -2,11 +2,31 @@
 
 * CodeMasters games use a custom mapper and special video modes (both implemented)
    + Fantastic Dizzy crashes shortly after starting a new game. Investigating.
-
-* F16 Fighting Falcon uses old SG-1000 video mode.
+   + Excellent Dizzy Collection doesn't boot.
 
 ======= Game Gear compatibility issues =======
 
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
 * GG Turrican homebrew not starting correctly
+
+======= SG-1000 compatibility checklist =======
+
+Following games are untested (don't have the rom)
+
+	Bomb Jack
+	C_So!
+	Champion Kendou
+	Home Mahjong
+	Mahjong
+	Othello
+	Pachinko
+	Serizawa Hachidan no Tsumeshogi
+	Terebi Oekaki
+
+Following games have issues:
+
+The Castle      dies
+Guzzler (JP)	crashes the core :O
+Monaco GP       graphics are whacked up - wonder if it uses an undoc mode?
+Q-Bert          crash core ? :o
