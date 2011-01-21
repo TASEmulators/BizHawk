@@ -794,6 +794,7 @@ namespace BizHawk.MultiClient
 
         private void LoadRamWatch() //TODO: accept a filename parameter and feed it to ram watch for loading
         {
+            RamWatch1 = new RamWatch();
             if (Global.Config.AutoLoadRamWatch)
                 RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
             RamWatch1.Show();
