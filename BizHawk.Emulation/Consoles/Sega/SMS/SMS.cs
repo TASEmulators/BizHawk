@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Controller = NullController.GetNullController();
 
             Cpu = new Z80A();
+            Cpu.RegisterSP = 0xDFF0;
             Cpu.ReadHardware = ReadPort;
             Cpu.WriteHardware = WritePort;
 
@@ -81,28 +82,15 @@ namespace BizHawk.Emulation.Consoles.Sega
             PSG = new SN76489();
             YM2413 = new YM2413();
             SoundMixer = new SoundMixer(PSG, YM2413);
-
             if (HasYM2413 && Options.Contains("WhenFMDisablePSG"))
                 SoundMixer.DisableSource(PSG);
-
             ActiveSoundProvider = PSG;
-            HardReset();
-        }
 
-        public void HardReset()
-        {
-            Cpu.Reset();
-            Cpu.RegisterSP = 0xDFF0;
-            Vdp = new VDP(Cpu, Vdp.VdpMode, DisplayType);
-            PSG.Reset();
-            YM2413.Reset();
             SystemRam = new byte[0x2000];
-
             if (Options.Contains("CMMapper") == false)
                 InitSegaMapper();
             else
                 InitCodeMastersMapper();
-
             SetupMemoryDomains();
         }
 
