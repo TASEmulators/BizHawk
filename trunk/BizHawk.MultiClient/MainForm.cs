@@ -91,9 +91,11 @@ namespace BizHawk.MultiClient
             bool r = LoadRom(rom);
             if (!r)
             {
+                Global.Sound.StopSound();
                 DialogResult result = MessageBox.Show("Could not open " + rom + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                 if (result == DialogResult.Yes)
                     Global.Config.RecentRoms.Remove(rom);
+                Global.Sound.StartSound();
             }
         }
 
@@ -615,7 +617,7 @@ namespace BizHawk.MultiClient
         private void previousSlotToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (SaveSlot == 0) SaveSlot = 9;       //Wrap to end of slot list
-            else if (SaveSlot > 9) SaveSlot = 9;  //Meh, just in case
+            else if (SaveSlot > 9) SaveSlot = 9;   //Meh, just in case
             else SaveSlot--;
             SaveSlotSelectedMessage();
         }
@@ -771,7 +773,7 @@ namespace BizHawk.MultiClient
                     var item = new ToolStripMenuItem();
                     item.Text = path;
                     item.Click += (o, ev) => LoadRomFromRecent(path);
-                    recentROMToolStripMenuItem.DropDownItems.Add(item); //TODO: truncate this to a nice size
+                    recentROMToolStripMenuItem.DropDownItems.Add(item);
                 }
             }
             
@@ -792,7 +794,7 @@ namespace BizHawk.MultiClient
             recentROMToolStripMenuItem.DropDownItems.Add(auto);
         }
 
-        private void LoadRamWatch() //TODO: accept a filename parameter and feed it to ram watch for loading
+        private void LoadRamWatch()
         {
             RamWatch1 = new RamWatch();
             if (Global.Config.AutoLoadRamWatch)

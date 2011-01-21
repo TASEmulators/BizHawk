@@ -116,7 +116,6 @@ namespace BizHawk.MultiClient
         private  bool SaveWatchFile(string path)
         {
             var file = new FileInfo(path);
-            //if (file.Exists == true) //TODO: prompt to overwrite
 
             using (StreamWriter sw = new StreamWriter(path))
             {
