@@ -334,7 +334,7 @@ namespace BizHawk.MultiClient
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close();
+            this.Hide();
         }
 
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
