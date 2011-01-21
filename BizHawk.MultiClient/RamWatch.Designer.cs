@@ -290,7 +290,6 @@
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.View = System.Windows.Forms.View.Details;
             this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
-            this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
             // 
             // Address
             // 

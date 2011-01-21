@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
-        public int HowMany(string str, char c)  //Shouldn't something like this exist already? Counts how many times c in in str
+        public int HowMany(string str, char c)
         {
             int count = 0;
             for (int x = 0; x < str.Length; x++)
@@ -586,13 +586,6 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
-        }
-
-        private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //TODO: debug/testing
-            ListView.SelectedIndexCollection i = this.WatchListView.SelectedIndices;
-            i = WatchListView.SelectedIndices;
         }
 
         private void newToolStripButton_Click(object sender, EventArgs e)
