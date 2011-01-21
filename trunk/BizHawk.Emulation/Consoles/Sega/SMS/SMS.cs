@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,14 +8,10 @@ using BizHawk.Emulation.Sound;
 
 /*****************************************************
 
-  VDP:
+  TODO: 
   + HCounter
-  + Old TMS video modes (SG-1000)
-  
-  GENERAL:
   + Port 3F emulation (Japanese BIOS)
   + Try to clean up the organization of the source code. 
-  + SG-1000 support
 
 **********************************************************/
 
@@ -105,6 +102,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                 InitSegaMapper();
             else
                 InitCodeMastersMapper();
+
+            SetupMemoryDomains();
         }
 
         public void LoadGame(IGame game)
@@ -333,5 +332,29 @@ namespace BizHawk.Emulation.Consoles.Sega
         }
 
         private readonly string[] validRegions = {"Export", "Japan"};
+
+        private IList<MemoryDomain> memoryDomains;
+
+        private void SetupMemoryDomains()
+        {
+            var domains = new List<MemoryDomain>(3);
+            var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, Endian.Little, 
+                addr => SystemRam[addr & RamSizeMask], 
+                (addr, value) => SystemRam[addr & RamSizeMask] = value);
+            var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, Endian.Little, 
+                addr => Vdp.VRAM[addr & 0x3FFF], 
+                (addr, value) => Vdp.VRAM[addr & 0x3FFF] = value);
+            var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, Endian.Little, 
+                addr => SaveRAM[addr%SaveRAM.Length], 
+                (addr, value) => { SaveRAM[addr%SaveRAM.Length]=value; SaveRamModified=true;});
+
+            domains.Add(MainMemoryDomain);
+            domains.Add(VRamDomain);
+            domains.Add(SaveRamDomain);
+            memoryDomains = domains.AsReadOnly();
+        }
+
+        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
     }
 }

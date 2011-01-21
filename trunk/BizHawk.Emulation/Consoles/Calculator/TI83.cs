@@ -1,7 +1,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using BizHawk.Emulation.CPUs.Z80;
 
@@ -440,5 +439,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		{
 			return new byte[0];
 		}
-	}
+
+        public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
+        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } } 
+    }
 }

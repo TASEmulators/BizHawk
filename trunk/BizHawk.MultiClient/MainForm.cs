@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
     {
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
-
+        private string CurrentlyOpenRom;
         private int SaveSlot = 0;   //Saveslot sytem
 
         private bool EmulatorPaused = false;
@@ -271,6 +271,8 @@ namespace BizHawk.MultiClient
 			{
 				new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 			}
+
+            CurrentlyOpenRom = path;
         	return true;
         }
 
@@ -315,7 +317,7 @@ namespace BizHawk.MultiClient
             if (Global.ClientControls["Hard Reset"])
             {
                 Global.ClientControls.UnpressButton("Hard Reset");
-                Global.Emulator.HardReset();
+                LoadRom(CurrentlyOpenRom);
             }
 
             if (Global.ClientControls["Fast Forward"])
@@ -473,7 +475,7 @@ namespace BizHawk.MultiClient
 
         private void powerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Global.Emulator.HardReset();
+            LoadRom(CurrentlyOpenRom);
         }
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e)

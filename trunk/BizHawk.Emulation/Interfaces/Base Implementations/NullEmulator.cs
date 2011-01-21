@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BizHawk
@@ -35,5 +36,8 @@ namespace BizHawk
         public int BufferHeight { get { return 192; } }
         public int BackgroundColor { get { return 0; } }
         public void GetSamples(short[] samples) { }
+
+        public IList<MemoryDomain> MemoryDomains { get { return new List<MemoryDomain>(0); } }
+        public MemoryDomain MainMemory { get { return null; } }
     }
 }
