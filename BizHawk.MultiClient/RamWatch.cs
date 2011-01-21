@@ -218,7 +218,6 @@ namespace BizHawk.MultiClient
         void MoveUp()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            //int x = indexes[0];
             Watch temp = new Watch();
 
             foreach (int index in indexes)
@@ -226,6 +225,7 @@ namespace BizHawk.MultiClient
                 temp = watchList[index];
                 watchList.Remove(watchList[index]);
                 watchList.Insert(index - 1, temp);
+                //TODO: flag changes
             }
             DisplayWatchList();
            //TODO: Set highlighted items to be what the user had selected (in their new position)
@@ -233,6 +233,22 @@ namespace BizHawk.MultiClient
 
         void MoveDown()
         {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            Watch temp = new Watch();
+
+            foreach (int index in indexes)
+            {
+                temp = watchList[index];
+                
+                if (index < watchList.Count - 1)
+                {
+                    watchList.Remove(watchList[index]);
+                    watchList.Insert(index + 1, temp);
+                }
+                //TODO: flag changes //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
+            }
+            DisplayWatchList();
+            //TODO: Set highlighted items to be what the user had selected (in their new position)
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
