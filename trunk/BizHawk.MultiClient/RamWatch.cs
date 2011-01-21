@@ -176,6 +176,14 @@ namespace BizHawk.MultiClient
 
         void RemoveWatch()
         {
+            //TODO: flag that changes have been made
+            //TODO: why can't the user selected multiple indices even though mutliselect is set to true?
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            foreach (int index in indexes)
+            {
+                watchList.Remove(watchList[index]);
+            }
+            DisplayWatchList();
         }
 
         void DuplicateWatch()
