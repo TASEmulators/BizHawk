@@ -29,12 +29,12 @@ namespace BizHawk.MultiClient
 
         public void UpdateValues()
         {
-            if (Global.Emulator is NullEmulator) return;
             for (int x = 0; x < watchList.Count; x++)
             {
                 watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
                 //TODO: readbytes based on type, size, endian values
             }
+            DisplayWatchList();            
         }
 
         public RamWatch()
@@ -424,7 +424,7 @@ namespace BizHawk.MultiClient
             MoveDown();
         }
 
-        private void DisplayWatchList()
+        public void DisplayWatchList()
         {
             WatchListView.Items.Clear();
             for (int x = 0; x < watchList.Count; x++)
@@ -434,7 +434,6 @@ namespace BizHawk.MultiClient
                 item.SubItems.Add(watchList[x].notes);
                 WatchListView.Items.Add(item);
             }
-            UpdateValues();
         }
 
         private void RamWatch_Load(object sender, EventArgs e)
@@ -572,6 +571,11 @@ namespace BizHawk.MultiClient
             //TODO: debug/testing
             ListView.SelectedIndexCollection i = this.WatchListView.SelectedIndices;
             i = WatchListView.SelectedIndices;
+        }
+
+        private void RamWatch_Paint(object sender, PaintEventArgs e)
+        {
+            UpdateValues();
         }
     }
 }

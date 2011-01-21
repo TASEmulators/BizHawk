@@ -42,6 +42,8 @@
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,8 +62,6 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
-            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -174,6 +174,18 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(201, 6);
+            // 
+            // restoreWindowSizeToolStripMenuItem
+            // 
+            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -328,18 +340,6 @@
             this.WatchCountLabel.TabIndex = 4;
             this.WatchCountLabel.Text = "0 watches";
             // 
-            // restoreWindowSizeToolStripMenuItem
-            // 
-            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
-            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
-            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,6 +354,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Ram Watch";
             this.Load += new System.EventHandler(this.RamWatch_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.RamWatch_Paint);
             this.Resize += new System.EventHandler(this.RamWatch_Resize);
             this.LocationChanged += new System.EventHandler(this.RamWatch_LocationChanged);
             this.menuStrip1.ResumeLayout(false);
