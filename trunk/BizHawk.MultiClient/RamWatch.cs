@@ -70,15 +70,21 @@ namespace BizHawk.MultiClient
 
         public void LoadWatchFromRecent(string file)
         {
-            bool r = LoadWatchFile(file, false);
-            if (!r)
+            bool z = true;
+            if (changes) z = AskSave();
+
+            if (z)
             {
-                DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-                if (result == DialogResult.Yes)
-                    Global.Config.RecentWatches.Remove(file);
+                bool r = LoadWatchFile(file, false);
+                if (!r)
+                {
+                    DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (result == DialogResult.Yes)
+                        Global.Config.RecentWatches.Remove(file);
+                }
+                DisplayWatchList();
+                changes = false;
             }
-            DisplayWatchList();
-            changes = false;
         }
 
         private void NewWatchList()
@@ -86,7 +92,7 @@ namespace BizHawk.MultiClient
             bool result = true;
             if (changes) result = AskSave();
 
-            if (AskSave() == true)
+            if (result == true)
             {
                 watchList.Clear();
                 DisplayWatchList();
@@ -293,7 +299,6 @@ namespace BizHawk.MultiClient
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewWatchList();
-            //TODO: prompt to save changes if necessary;
         }
 
         private FileInfo GetFileFromUser()
@@ -317,8 +322,15 @@ namespace BizHawk.MultiClient
         {
             var file = GetFileFromUser();
             if (file != null)
-                LoadWatchFile(file.FullName, false);
-            DisplayWatchList();
+            {
+                bool r = true;
+                if (changes) r = AskSave();
+                if (r)
+                {
+                    LoadWatchFile(file.FullName, false);
+                    DisplayWatchList();
+                }
+            }
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
