@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.CPUs.M68K;
 using BizHawk.Emulation.CPUs.Z80;
@@ -187,5 +188,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             return new byte[0];
         }
+
+        public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
+        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
     }
 }

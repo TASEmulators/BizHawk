@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace BizHawk
 {
@@ -12,7 +14,6 @@ namespace BizHawk
 
         void LoadGame(IGame game);
         void FrameAdvance(bool render);
-        void HardReset();
         
         int Frame { get; }
         bool DeterministicEmulation { get; set; }
@@ -28,7 +29,37 @@ namespace BizHawk
         void SaveStateBinary(BinaryWriter writer);
         void LoadStateBinary(BinaryReader reader);
         byte[] SaveStateBinary();
+
+        // ----- Client Debugging API stuff -----
+        IList<MemoryDomain> MemoryDomains { get; }
+        MemoryDomain MainMemory { get; }
     }
+
+    public class MemoryDomain
+    {
+        private readonly string Name;
+        private readonly int Size;
+        private readonly Endian Endian;
+
+        public readonly Func<int, byte> PeekByte;
+        public readonly Action<int, byte> PokeByte;
+
+        public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
+        {
+            Name = name;
+            Size = size;
+            Endian = endian;
+            PeekByte = peekByte;
+            PokeByte = pokeByte;
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+    
+    public enum Endian { Big, Little, Unknown }
 
     public enum DisplayType { NTSC, PAL }
 }

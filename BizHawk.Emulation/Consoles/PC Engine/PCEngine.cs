@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using BizHawk.Emulation.CPUs.H6280;
@@ -104,6 +105,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 RomPages = RomData.Length / 8192;
             }
             Cpu.ResetPC();
+            SetupMemoryDomains();
         }
 
         public int Frame { get; set; }
@@ -275,5 +277,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.Close();
             return buf;
         }
+
+        private void SetupMemoryDomains()
+        {
+            var domains = new List<MemoryDomain>(1);
+            var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, Endian.Little,
+                addr => Ram[addr & 0x7FFF],
+                (addr, value) => Ram[addr & 0x7FFF] = value);
+            domains.Add(MainMemoryDomain);
+            memoryDomains = domains.AsReadOnly();
+        }
+
+        private IList<MemoryDomain> memoryDomains;
+        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
     }
 }
