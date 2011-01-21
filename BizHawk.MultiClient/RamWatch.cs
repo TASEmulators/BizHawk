@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Keep track of changes to watch list in order to prompt the user to save changes, also use this to enable/disable things like quick save
         //implement separator feature
         //Display value differently based on signed or hex, endian, type
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
@@ -24,6 +23,7 @@ namespace BizHawk.MultiClient
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
+        bool changes = false;
 
         public RamWatch()
         {
@@ -51,6 +51,7 @@ namespace BizHawk.MultiClient
                     Global.Config.RecentWatches.Remove(file);
             }
             DisplayWatchList();
+            changes = false;
         }
 
         private void NewWatchList()
@@ -59,6 +60,7 @@ namespace BizHawk.MultiClient
             watchList.Clear();
             DisplayWatchList();
             currentWatchFile = "";
+            changes = false;
         }
         
         private  bool SaveWatchFile(string path)
@@ -86,7 +88,7 @@ namespace BizHawk.MultiClient
 
                 sw.WriteLine(str);
             }
-
+            changes = false;
             return true;
         }
 
@@ -152,7 +154,7 @@ namespace BizHawk.MultiClient
                 }
 
                 Global.Config.RecentWatches.Add(file.FullName);
-
+                changes = false;
                 //Update the number of watches
                 WatchCountLabel.Text = count.ToString() + " watches";
             }
@@ -182,7 +184,7 @@ namespace BizHawk.MultiClient
 
             if (r.userSelected == true)
             {
-                //TODO: changes have been made, flag it
+                changes = true;
                 watchList[x] = r.watch;
                 DisplayWatchList();
             }
@@ -190,7 +192,7 @@ namespace BizHawk.MultiClient
 
         void RemoveWatch()
         {
-            //TODO: flag that changes have been made
+            changes = true;
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             foreach (int index in indexes)
             {
@@ -209,7 +211,7 @@ namespace BizHawk.MultiClient
 
             if (r.userSelected == true)
             {
-                //TODO: changes have been made, flag it
+                changes = true;
                 watchList.Add(watchList[x]);
                 DisplayWatchList();
             }
@@ -225,7 +227,7 @@ namespace BizHawk.MultiClient
                 temp = watchList[index];
                 watchList.Remove(watchList[index]);
                 watchList.Insert(index - 1, temp);
-                //TODO: flag changes
+                changes = true; //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
             }
             DisplayWatchList();
            //TODO: Set highlighted items to be what the user had selected (in their new position)
@@ -245,7 +247,7 @@ namespace BizHawk.MultiClient
                     watchList.Remove(watchList[index]);
                     watchList.Insert(index + 1, temp);
                 }
-                //TODO: flag changes //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
+                changes = true; //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
             }
             DisplayWatchList();
             //TODO: Set highlighted items to be what the user had selected (in their new position)
@@ -259,6 +261,7 @@ namespace BizHawk.MultiClient
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewWatchList();
+            //TODO: prompt to save changes if necessary;
         }
 
         private FileInfo GetFileFromUser()
@@ -290,7 +293,8 @@ namespace BizHawk.MultiClient
         {
             if (string.Compare(currentWatchFile, "") == 0) return;
 
-            SaveWatchFile(currentWatchFile);    //TODO: only do this if changes have been made
+            if (changes)
+                SaveWatchFile(currentWatchFile);
         }
 
         private FileInfo GetSaveFileFromUser()
@@ -323,6 +327,7 @@ namespace BizHawk.MultiClient
             if (file != null)
                 LoadWatchFile(file.FullName, true);
             DisplayWatchList();
+            changes = true;
         }
 
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -369,8 +374,7 @@ namespace BizHawk.MultiClient
                 item.SubItems.Add(watchList[x].value.ToString());
                 item.SubItems.Add(watchList[x].notes);
                 WatchListView.Items.Add(item);
-            }
-            
+            }          
         }
 
         private void RamWatch_Load(object sender, EventArgs e)
@@ -383,10 +387,7 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
             {
-                //this.Right = this.Left + Global.Config.RamWatchWidth;
-                //this.Bottom = this.Top + Global.Config.RamWatchHeight;
                 this.Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
-
             }
         }
 
@@ -397,7 +398,7 @@ namespace BizHawk.MultiClient
             else
                 autoLoadToolStripMenuItem.Checked = false;
 
-            if (string.Compare(currentWatchFile, "") == 0)
+            if (string.Compare(currentWatchFile, "") == 0 || !changes)
             {
                 saveToolStripMenuItem.Enabled = false;
             }
