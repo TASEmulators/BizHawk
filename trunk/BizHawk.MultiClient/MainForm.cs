@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
         private int SaveSlot = 0;   //Saveslot sytem
 
         private bool EmulatorPaused = false;
+        RamWatch RamWatch1 = new RamWatch();
 
         public MainForm(string[] args)
         {
@@ -350,6 +351,7 @@ namespace BizHawk.MultiClient
             }
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Global.RenderPanel.Render(Global.Emulator.VideoProvider);
+            RamWatch1.UpdateValues();
         }
 
         private bool wasMaximized = false;
@@ -792,7 +794,6 @@ namespace BizHawk.MultiClient
 
         private void LoadRamWatch() //TODO: accept a filename parameter and feed it to ram watch for loading
         {
-            RamWatch RamWatch1 = new RamWatch();
             if (Global.Config.AutoLoadRamWatch)
                 RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
             RamWatch1.Show();
