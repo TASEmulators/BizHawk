@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.MultiClient
 {
     //Data structure for a watch item in the Ram Watch Dialog
-    public enum atype { BYTE, WORD, DWORD };   //TODO: more custom types too like 12.4 and 24.12 fixed point
+    public enum atype { BYTE, WORD, DWORD, SEPARATOR };   //TODO: more custom types too like 12.4 and 24.12 fixed point
     public enum asigned { SIGNED, UNSIGNED, HEX };
     public class Watch
     {
@@ -48,6 +48,9 @@ namespace BizHawk.MultiClient
                 case 'd':
                     type = atype.DWORD;
                     return true;
+                case 'S':
+                    type = atype.SEPARATOR;
+                    return true;
                 default:
                     return false;
             }
@@ -63,6 +66,8 @@ namespace BizHawk.MultiClient
                     return 'w';
                 case atype.DWORD:
                     return 'd';
+                case atype.SEPARATOR:
+                    return 'S';
                 default:
                     return 'b'; //Just in case
             }
