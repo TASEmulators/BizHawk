@@ -209,14 +209,20 @@ namespace BizHawk.MultiClient
             return true;
         }
 
-        void AddNewWatch()
+        private Point GetPromptPoint()
         {
+
             Point p = new Point(WatchListView.Location.X, WatchListView.Location.Y);
             Point q = new Point();
             q = PointToScreen(p);
+            return q;
+        }
+
+        void AddNewWatch()
+        {
             
             RamWatchNewWatch r = new RamWatchNewWatch();
-            r.location = q;
+            r.location = GetPromptPoint();
                         
             r.ShowDialog();
             if (r.userSelected == true)
@@ -229,7 +235,10 @@ namespace BizHawk.MultiClient
         void EditWatch()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+                                
             RamWatchNewWatch r = new RamWatchNewWatch();
+            r.location = GetPromptPoint();
+
             int x = indexes[0];
             r.SetToEditWatch(watchList[x], "Edit Watch");
             r.ShowDialog();
@@ -257,6 +266,7 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             RamWatchNewWatch r = new RamWatchNewWatch();
+            r.location = GetPromptPoint();
             int x = indexes[0];
             r.SetToEditWatch(watchList[x], "Duplicate Watch");
             r.ShowDialog();
@@ -279,7 +289,7 @@ namespace BizHawk.MultiClient
                 temp = watchList[index];
                 watchList.Remove(watchList[index]);
                 watchList.Insert(index - 1, temp);
-                changes = true; //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
+                changes = true; //Note: here it will get flagged many times redundantly potentially, but this avoids it being flag falsely when the user did not select an index
             }
             DisplayWatchList();
            //TODO: Set highlighted items to be what the user had selected (in their new position)
