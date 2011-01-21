@@ -37,9 +37,9 @@ namespace BizHawk
 
     public class MemoryDomain
     {
-        private readonly string Name;
-        private readonly int Size;
-        private readonly Endian Endian;
+        public readonly string Name;
+        public readonly int Size;
+        public readonly Endian Endian;
 
         public readonly Func<int, byte> PeekByte;
         public readonly Action<int, byte> PokeByte;
