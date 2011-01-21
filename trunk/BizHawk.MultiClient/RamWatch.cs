@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
         //TODO: Call AskSave in main client X function
         //Address can be changed, when that event is triggered, open the edit watch dialog
         //Append sets the currentWatach file to the new file rather than the old!
+        //Save as displays the old file in the message label instead of the new one
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -31,6 +32,7 @@ namespace BizHawk.MultiClient
         {
             for (int x = 0; x < watchList.Count; x++)
             {
+                if (watchList[x].type == atype.SEPARATOR) continue;
                 watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
                 //TODO: readbytes based on type, size, endian values
             }
@@ -464,10 +466,22 @@ namespace BizHawk.MultiClient
             WatchListView.Items.Clear();
             for (int x = 0; x < watchList.Count; x++)
             {
-                ListViewItem item = new ListViewItem(String.Format("{0:X4}", watchList[x].address));
-                item.SubItems.Add(watchList[x].value.ToString());
-                item.SubItems.Add(watchList[x].notes);
-                WatchListView.Items.Add(item);
+                if (watchList[x].type == atype.SEPARATOR)
+                {
+                    ListViewItem item = new ListViewItem("");
+                    item.SubItems.Add("");
+                    item.SubItems.Add("");
+                    item.BackColor = this.BackColor;
+                    WatchListView.Items.Add(item);
+                }
+                else
+                {
+                    ListViewItem item = new ListViewItem(String.Format("{0:X4}", watchList[x].address));
+                    item.SubItems.Add(watchList[x].value.ToString());
+                    item.SubItems.Add(watchList[x].notes);
+                    WatchListView.Items.Add(item);
+                }
+                
             }
         }
 
