@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -160,9 +160,11 @@
     <EmbeddedResource Include="images\BuilderDialog_delete.bmp" />
     <EmbeddedResource Include="images\BuilderDialog_movedown.bmp" />
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
-    <EmbeddedResource Include="images\FindHS.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\FindHS.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
