@@ -211,11 +211,16 @@ namespace BizHawk.MultiClient
 
         void AddNewWatch()
         {
+            Point p = new Point(WatchListView.Location.X, WatchListView.Location.Y);
+            Point q = new Point();
+            q = PointToScreen(p);
+            
             RamWatchNewWatch r = new RamWatchNewWatch();
+            r.location = q;
+                        
             r.ShowDialog();
             if (r.userSelected == true)
             {
-                //TODO: check for duplicates before adding? All parameters would have to match, otherwise it should be allowed
                 watchList.Add(r.watch);
                 DisplayWatchList();
             }

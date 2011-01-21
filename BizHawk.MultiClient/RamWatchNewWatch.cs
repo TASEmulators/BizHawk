@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
         public Watch watch = new Watch();
         public bool userSelected = false;
         public bool customSetup = false;
+        public Point location = new Point();
 
         public RamWatchNewWatch()
         {
@@ -88,6 +89,8 @@ namespace BizHawk.MultiClient
                 else
                     LittleEndianRadio.Checked = true;
             }
+            if (location.X > 0 && location.Y > 0)
+                this.Location = location;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
