@@ -51,16 +51,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             Type = type;
             Controller = NullController.GetNullController();
-            Init();
-        }
-
-        private void Init()
-        {
             Cpu = new HuC6280();
             VCE = new VCE();
             VDC1 = new VDC(Cpu, VCE);
             PSG = new HuC6280PSG();
-            
+
             if (TurboGrafx || TurboCD)
             {
                 Ram = new byte[0x2000];
@@ -79,7 +74,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteVDC = VDC1.WriteVDC;
             }
         }
-        
+
         public void LoadGame(IGame game)
         {
             if (game.GetRomData().Length == 0x60000)
@@ -122,12 +117,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VDC1.ExecFrame(render);
 
             PSG.EndFrame(Cpu.TotalExecutedCycles);
-        }
-
-        public void HardReset()
-        {
-            Init();
-            Cpu.ResetPC();
         }
 
         public IVideoProvider VideoProvider

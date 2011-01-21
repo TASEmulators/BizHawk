@@ -142,11 +142,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int Frame { get; set; }
         public bool DeterministicEmulation { get; set; }
 
-        public void HardReset()
-        {
-            throw new NotImplementedException();
-        }
-
         public byte[] SaveRam
         {
             get { throw new NotImplementedException(); }
