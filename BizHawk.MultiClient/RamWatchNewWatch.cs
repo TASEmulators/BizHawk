@@ -14,21 +14,16 @@ namespace BizHawk.MultiClient
     {
         public Watch watch = new Watch();
         public bool userSelected = false;
+        public bool customSetup = false;
 
         public RamWatchNewWatch()
         {
             InitializeComponent();
         }
 
-        public void SetToEditWatch(Watch w, string message)
+        private void SetTypeRadio(atype a)
         {
-            //Sets this dialog to Edit Watch and receives default values
-            this.Text = message;
-            
-            AddressBox.Text = string.Format("{0:X4}", w.address);
-            NotesBox.Text = w.notes;
-
-            switch (w.type)
+            switch (a)
             {
                 case atype.BYTE:
                     Byte1Radio.Checked = true;
@@ -42,8 +37,11 @@ namespace BizHawk.MultiClient
                 default:
                     break;
             }
+        }
 
-            switch (w.signed)
+        private void SetSignedRadio(asigned a)
+        {
+            switch (a)
             {
                 case asigned.SIGNED:
                     SignedRadio.Checked = true;
@@ -57,7 +55,20 @@ namespace BizHawk.MultiClient
                 default:
                     break;
             }
+        }
 
+        public void SetToEditWatch(Watch w, string message)
+        {
+            //Sets this dialog to Edit Watch and receives default values
+            this.Text = message;
+            customSetup = true;
+
+            AddressBox.Text = string.Format("{0:X4}", w.address);
+            NotesBox.Text = w.notes;
+
+            SetTypeRadio(w.type);
+            SetSignedRadio(w.signed);
+           
             if (w.bigendian == true)
                 BigEndianRadio.Checked = true;
             else
@@ -66,7 +77,17 @@ namespace BizHawk.MultiClient
 
         private void RamWatchNewWatch_Load(object sender, EventArgs e)
         {
+            if (!customSetup)
+            {
+                Watch w = new Watch();
+                SetTypeRadio(w.type);
+                SetSignedRadio(w.signed);
 
+                if (w.bigendian == true)
+                    BigEndianRadio.Checked = true;
+                else
+                    LittleEndianRadio.Checked = true;
+            }
         }
 
         private void Cancel_Click(object sender, EventArgs e)
