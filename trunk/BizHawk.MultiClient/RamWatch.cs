@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
         //Make Edit/Add/Duplicate Watch windows appear in relation to the listview box
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
-        //TODO: RaWatchNewWatch dialog - when setting defaults for the edit watch - declare a new watch and use its values (so that it can set to defaults even if the watch class defaults change)
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
