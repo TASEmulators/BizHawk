@@ -241,6 +241,8 @@
             this.Controls.Add(this.AddressBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "RamWatchNewWatch";
             this.Text = "New Watch";
             this.Load += new System.EventHandler(this.RamWatchNewWatch_Load);
