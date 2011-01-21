@@ -20,6 +20,50 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        public void SetEditToEditWatch(Watch w)
+        {
+            //Sets this dialog to Edit Watch and receives default values
+            this.Text = "Edit Watch";
+            
+            AddressBox.Text = string.Format("{0:X4}", w.address);
+            NotesBox.Text = w.notes;
+
+            switch (w.type)
+            {
+                case atype.BYTE:
+                    Byte1Radio.Checked = true;
+                    break;
+                case atype.WORD:
+                    Byte2Radio.Checked = true;
+                    break;
+                case atype.DWORD:
+                    Byte4Radio.Checked = true;
+                    break;
+                default:
+                    break;
+            }
+
+            switch (w.signed)
+            {
+                case asigned.SIGNED:
+                    SignedRadio.Checked = true;
+                    break;
+                case asigned.UNSIGNED:
+                    UnsignedRadio.Checked = true;
+                    break;
+                case asigned.HEX:
+                    HexRadio.Checked = true;
+                    break;
+                default:
+                    break;
+            }
+
+            if (w.bigendian == true)
+                BigEndianRadio.Checked = true;
+            else
+                LittleEndianRadio.Checked = true;
+        }
+
         private void RamWatchNewWatch_Load(object sender, EventArgs e)
         {
 
