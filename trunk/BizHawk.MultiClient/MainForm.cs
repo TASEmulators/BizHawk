@@ -802,5 +802,10 @@ namespace BizHawk.MultiClient
         {
             LoadRamWatch();
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
