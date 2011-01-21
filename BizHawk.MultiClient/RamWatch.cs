@@ -162,6 +162,12 @@ namespace BizHawk.MultiClient
         {
             RamWatchNewWatch r = new RamWatchNewWatch();
             r.ShowDialog();
+            if (r.userSelected == true)
+            {
+                //TODO: check for duplicates before adding? All parameters would have to match, otherwise it should be allowed
+                watchList.Add(r.watch);
+                DisplayWatchList();
+            }
         }
 
         void EditWatch()

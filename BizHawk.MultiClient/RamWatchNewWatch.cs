@@ -6,11 +6,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
     public partial class RamWatchNewWatch : Form
     {
+        public Watch watch = new Watch();
+        public bool userSelected = false;
+
         public RamWatchNewWatch()
         {
             InitializeComponent();
@@ -21,18 +25,40 @@ namespace BizHawk.MultiClient
 
         }
 
-        private void DataSizeBox_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void Cancel_Click(object sender, EventArgs e)
         {
+            userSelected = false;
             this.Close();
         }
 
         private void OK_Click(object sender, EventArgs e)
         {
+            //Put user settings in the watch file
+            userSelected = true;
+
+            watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+
+            if (SignedRadio.Checked)
+                watch.signed = asigned.SIGNED;
+            else if (UnsignedRadio.Checked)
+                watch.signed = asigned.UNSIGNED;
+            else if (HexRadio.Checked)
+                watch.signed = asigned.HEX;
+
+            if (Byte1Radio.Checked)
+                watch.type = atype.BYTE;
+            else if (Byte2Radio.Checked)
+                watch.type = atype.WORD;
+            else if (Byte4Radio.Checked)
+                watch.type = atype.DWORD;
+
+            if (BigEndianRadio.Checked)
+                watch.bigendian = true;
+            else if (LittleEndianRadio.Checked)
+                watch.bigendian = false;
+
+            watch.notes = NotesBox.Text;
+
             this.Close();
         }
     }

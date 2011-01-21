@@ -33,16 +33,16 @@
             this.AddressBox = new System.Windows.Forms.TextBox();
             this.NotesBox = new System.Windows.Forms.TextBox();
             this.DataTypeGroupBox = new System.Windows.Forms.GroupBox();
-            this.SignedRadio = new System.Windows.Forms.RadioButton();
-            this.UnsignedRadio = new System.Windows.Forms.RadioButton();
             this.HexRadio = new System.Windows.Forms.RadioButton();
+            this.UnsignedRadio = new System.Windows.Forms.RadioButton();
+            this.SignedRadio = new System.Windows.Forms.RadioButton();
             this.DataSizeBox = new System.Windows.Forms.GroupBox();
-            this.Byte1Radio = new System.Windows.Forms.RadioButton();
-            this.Byte2Radio = new System.Windows.Forms.RadioButton();
             this.Byte4Radio = new System.Windows.Forms.RadioButton();
+            this.Byte2Radio = new System.Windows.Forms.RadioButton();
+            this.Byte1Radio = new System.Windows.Forms.RadioButton();
             this.EndianBox = new System.Windows.Forms.GroupBox();
-            this.BigEndianRadio = new System.Windows.Forms.RadioButton();
             this.LittleEndianRadio = new System.Windows.Forms.RadioButton();
+            this.BigEndianRadio = new System.Windows.Forms.RadioButton();
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
             this.DataTypeGroupBox.SuspendLayout();
@@ -53,16 +53,16 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 23);
+            this.label1.Location = new System.Drawing.Point(9, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.Size = new System.Drawing.Size(48, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Address";
+            this.label1.Text = "Address:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 54);
+            this.label2.Location = new System.Drawing.Point(19, 36);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 1;
@@ -70,7 +70,7 @@
             // 
             // AddressBox
             // 
-            this.AddressBox.Location = new System.Drawing.Point(65, 23);
+            this.AddressBox.Location = new System.Drawing.Point(60, 6);
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.Size = new System.Drawing.Size(100, 20);
             this.AddressBox.TabIndex = 2;
@@ -78,7 +78,7 @@
             // 
             // NotesBox
             // 
-            this.NotesBox.Location = new System.Drawing.Point(65, 54);
+            this.NotesBox.Location = new System.Drawing.Point(60, 33);
             this.NotesBox.Name = "NotesBox";
             this.NotesBox.Size = new System.Drawing.Size(100, 20);
             this.NotesBox.TabIndex = 3;
@@ -88,28 +88,28 @@
             this.DataTypeGroupBox.Controls.Add(this.HexRadio);
             this.DataTypeGroupBox.Controls.Add(this.UnsignedRadio);
             this.DataTypeGroupBox.Controls.Add(this.SignedRadio);
-            this.DataTypeGroupBox.Location = new System.Drawing.Point(16, 85);
+            this.DataTypeGroupBox.Location = new System.Drawing.Point(12, 67);
             this.DataTypeGroupBox.Name = "DataTypeGroupBox";
-            this.DataTypeGroupBox.Size = new System.Drawing.Size(113, 111);
+            this.DataTypeGroupBox.Size = new System.Drawing.Size(95, 79);
             this.DataTypeGroupBox.TabIndex = 4;
             this.DataTypeGroupBox.TabStop = false;
             this.DataTypeGroupBox.Text = "Data Type";
             // 
-            // SignedRadio
+            // HexRadio
             // 
-            this.SignedRadio.AutoSize = true;
-            this.SignedRadio.Location = new System.Drawing.Point(8, 19);
-            this.SignedRadio.Name = "SignedRadio";
-            this.SignedRadio.Size = new System.Drawing.Size(58, 17);
-            this.SignedRadio.TabIndex = 0;
-            this.SignedRadio.Text = "Signed";
-            this.SignedRadio.UseVisualStyleBackColor = true;
+            this.HexRadio.AutoSize = true;
+            this.HexRadio.Location = new System.Drawing.Point(4, 51);
+            this.HexRadio.Name = "HexRadio";
+            this.HexRadio.Size = new System.Drawing.Size(86, 17);
+            this.HexRadio.TabIndex = 2;
+            this.HexRadio.Text = "Hexadecimal";
+            this.HexRadio.UseVisualStyleBackColor = true;
             // 
             // UnsignedRadio
             // 
             this.UnsignedRadio.AutoSize = true;
             this.UnsignedRadio.Checked = true;
-            this.UnsignedRadio.Location = new System.Drawing.Point(8, 42);
+            this.UnsignedRadio.Location = new System.Drawing.Point(4, 34);
             this.UnsignedRadio.Name = "UnsignedRadio";
             this.UnsignedRadio.Size = new System.Drawing.Size(70, 17);
             this.UnsignedRadio.TabIndex = 1;
@@ -117,34 +117,53 @@
             this.UnsignedRadio.Text = "Unsigned";
             this.UnsignedRadio.UseVisualStyleBackColor = true;
             // 
-            // HexRadio
+            // SignedRadio
             // 
-            this.HexRadio.AutoSize = true;
-            this.HexRadio.Location = new System.Drawing.Point(6, 65);
-            this.HexRadio.Name = "HexRadio";
-            this.HexRadio.Size = new System.Drawing.Size(86, 17);
-            this.HexRadio.TabIndex = 2;
-            this.HexRadio.Text = "Hexadecimal";
-            this.HexRadio.UseVisualStyleBackColor = true;
+            this.SignedRadio.AutoSize = true;
+            this.SignedRadio.Location = new System.Drawing.Point(4, 17);
+            this.SignedRadio.Name = "SignedRadio";
+            this.SignedRadio.Size = new System.Drawing.Size(58, 17);
+            this.SignedRadio.TabIndex = 0;
+            this.SignedRadio.Text = "Signed";
+            this.SignedRadio.UseVisualStyleBackColor = true;
             // 
             // DataSizeBox
             // 
             this.DataSizeBox.Controls.Add(this.Byte4Radio);
             this.DataSizeBox.Controls.Add(this.Byte2Radio);
             this.DataSizeBox.Controls.Add(this.Byte1Radio);
-            this.DataSizeBox.Location = new System.Drawing.Point(163, 85);
+            this.DataSizeBox.Location = new System.Drawing.Point(115, 67);
             this.DataSizeBox.Name = "DataSizeBox";
-            this.DataSizeBox.Size = new System.Drawing.Size(98, 100);
+            this.DataSizeBox.Size = new System.Drawing.Size(83, 79);
             this.DataSizeBox.TabIndex = 5;
             this.DataSizeBox.TabStop = false;
             this.DataSizeBox.Text = "Data Size:";
-            this.DataSizeBox.Enter += new System.EventHandler(this.DataSizeBox_Enter);
+            // 
+            // Byte4Radio
+            // 
+            this.Byte4Radio.AutoSize = true;
+            this.Byte4Radio.Location = new System.Drawing.Point(5, 51);
+            this.Byte4Radio.Name = "Byte4Radio";
+            this.Byte4Radio.Size = new System.Drawing.Size(60, 17);
+            this.Byte4Radio.TabIndex = 2;
+            this.Byte4Radio.Text = "4 Bytes";
+            this.Byte4Radio.UseVisualStyleBackColor = true;
+            // 
+            // Byte2Radio
+            // 
+            this.Byte2Radio.AutoSize = true;
+            this.Byte2Radio.Location = new System.Drawing.Point(5, 34);
+            this.Byte2Radio.Name = "Byte2Radio";
+            this.Byte2Radio.Size = new System.Drawing.Size(60, 17);
+            this.Byte2Radio.TabIndex = 1;
+            this.Byte2Radio.Text = "2 Bytes";
+            this.Byte2Radio.UseVisualStyleBackColor = true;
             // 
             // Byte1Radio
             // 
             this.Byte1Radio.AutoSize = true;
             this.Byte1Radio.Checked = true;
-            this.Byte1Radio.Location = new System.Drawing.Point(6, 19);
+            this.Byte1Radio.Location = new System.Drawing.Point(5, 17);
             this.Byte1Radio.Name = "Byte1Radio";
             this.Byte1Radio.Size = new System.Drawing.Size(55, 17);
             this.Byte1Radio.TabIndex = 0;
@@ -152,42 +171,32 @@
             this.Byte1Radio.Text = "1 Byte";
             this.Byte1Radio.UseVisualStyleBackColor = true;
             // 
-            // Byte2Radio
-            // 
-            this.Byte2Radio.AutoSize = true;
-            this.Byte2Radio.Location = new System.Drawing.Point(6, 42);
-            this.Byte2Radio.Name = "Byte2Radio";
-            this.Byte2Radio.Size = new System.Drawing.Size(60, 17);
-            this.Byte2Radio.TabIndex = 1;
-            this.Byte2Radio.Text = "2 Bytes";
-            this.Byte2Radio.UseVisualStyleBackColor = true;
-            // 
-            // Byte4Radio
-            // 
-            this.Byte4Radio.AutoSize = true;
-            this.Byte4Radio.Location = new System.Drawing.Point(6, 65);
-            this.Byte4Radio.Name = "Byte4Radio";
-            this.Byte4Radio.Size = new System.Drawing.Size(60, 17);
-            this.Byte4Radio.TabIndex = 2;
-            this.Byte4Radio.Text = "4 Bytes";
-            this.Byte4Radio.UseVisualStyleBackColor = true;
-            // 
             // EndianBox
             // 
             this.EndianBox.Controls.Add(this.LittleEndianRadio);
             this.EndianBox.Controls.Add(this.BigEndianRadio);
-            this.EndianBox.Location = new System.Drawing.Point(16, 216);
+            this.EndianBox.Location = new System.Drawing.Point(12, 152);
             this.EndianBox.Name = "EndianBox";
-            this.EndianBox.Size = new System.Drawing.Size(200, 100);
+            this.EndianBox.Size = new System.Drawing.Size(117, 55);
             this.EndianBox.TabIndex = 6;
             this.EndianBox.TabStop = false;
             this.EndianBox.Text = "Endian";
+            // 
+            // LittleEndianRadio
+            // 
+            this.LittleEndianRadio.AutoSize = true;
+            this.LittleEndianRadio.Location = new System.Drawing.Point(4, 35);
+            this.LittleEndianRadio.Name = "LittleEndianRadio";
+            this.LittleEndianRadio.Size = new System.Drawing.Size(83, 17);
+            this.LittleEndianRadio.TabIndex = 1;
+            this.LittleEndianRadio.Text = "Little Endian";
+            this.LittleEndianRadio.UseVisualStyleBackColor = true;
             // 
             // BigEndianRadio
             // 
             this.BigEndianRadio.AutoSize = true;
             this.BigEndianRadio.Checked = true;
-            this.BigEndianRadio.Location = new System.Drawing.Point(15, 19);
+            this.BigEndianRadio.Location = new System.Drawing.Point(4, 18);
             this.BigEndianRadio.Name = "BigEndianRadio";
             this.BigEndianRadio.Size = new System.Drawing.Size(76, 17);
             this.BigEndianRadio.TabIndex = 0;
@@ -195,19 +204,9 @@
             this.BigEndianRadio.Text = "Big Endian";
             this.BigEndianRadio.UseVisualStyleBackColor = true;
             // 
-            // LittleEndianRadio
-            // 
-            this.LittleEndianRadio.AutoSize = true;
-            this.LittleEndianRadio.Location = new System.Drawing.Point(15, 42);
-            this.LittleEndianRadio.Name = "LittleEndianRadio";
-            this.LittleEndianRadio.Size = new System.Drawing.Size(83, 17);
-            this.LittleEndianRadio.TabIndex = 1;
-            this.LittleEndianRadio.Text = "Little Endian";
-            this.LittleEndianRadio.UseVisualStyleBackColor = true;
-            // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(54, 322);
+            this.OK.Location = new System.Drawing.Point(12, 222);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 7;
@@ -218,7 +217,7 @@
             // Cancel
             // 
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(169, 321);
+            this.Cancel.Location = new System.Drawing.Point(123, 222);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 8;
@@ -232,7 +231,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(379, 376);
+            this.ClientSize = new System.Drawing.Size(213, 258);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
             this.Controls.Add(this.EndianBox);
