@@ -217,6 +217,18 @@ namespace BizHawk.MultiClient
 
         void MoveUp()
         {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            //int x = indexes[0];
+            Watch temp = new Watch();
+
+            foreach (int index in indexes)
+            {
+                temp = watchList[index];
+                watchList.Remove(watchList[index]);
+                watchList.Insert(index - 1, temp);
+            }
+            DisplayWatchList();
+           //TODO: Set highlighted items to be what the user had selected (in their new position)
         }
 
         void MoveDown()
