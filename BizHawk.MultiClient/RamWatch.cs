@@ -408,7 +408,10 @@ namespace BizHawk.MultiClient
         {
             var file = GetSaveFileFromUser();
             if (file != null)
+            {
                 SaveWatchFile(file.FullName);
+                currentWatchFile = file.FullName;
+            }
             MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
         }
 
