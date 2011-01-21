@@ -172,6 +172,19 @@ namespace BizHawk.MultiClient
 
         void EditWatch()
         {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            RamWatchNewWatch r = new RamWatchNewWatch();
+            int x = indexes[0];
+            r.SetToEditWatch( watchList[x] );
+            r.ShowDialog();
+
+            if (r.userSelected == true)
+            {
+                //TODO: check if edited watch is an exact duplicate and prevent?
+                //TODO: changes have been made, flag it
+                watchList[x] = r.watch;
+                DisplayWatchList();
+            }
         }
 
         void RemoveWatch()
