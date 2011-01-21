@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Display value differently based on signed or hex, endian, type
+        //Display value - implement signed vs unsigned
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
@@ -480,11 +480,31 @@ namespace BizHawk.MultiClient
                 else
                 {
                     ListViewItem item = new ListViewItem(String.Format("{0:X4}", watchList[x].address));
-                    item.SubItems.Add(watchList[x].value.ToString());
+                    
+                    if (watchList[x].signed == asigned.HEX)
+                    {
+                        switch (watchList[x].type)
+                        {
+                            case atype.BYTE:
+                                item.SubItems.Add(string.Format("{0:X2}", watchList[x].value));
+                                break;
+                            case atype.WORD:
+                                item.SubItems.Add(string.Format("{0:X4}", watchList[x].value));
+                                break;
+                            case atype.DWORD:
+                                item.SubItems.Add(string.Format("{0:X8}", watchList[x].value));
+                                break;
+                            default:    //if not one of these, don't display hex
+                                item.SubItems.Add(watchList[x].value.ToString());   
+                                break;
+                        }
+                    }
+                    else
+                        item.SubItems.Add(watchList[x].value.ToString());
+                    
                     item.SubItems.Add(watchList[x].notes);
                     WatchListView.Items.Add(item);
-                }
-                
+                } 
             }
         }
 
