@@ -20,10 +20,10 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
-        public void SetToEditWatch(Watch w)
+        public void SetToEditWatch(Watch w, string message)
         {
             //Sets this dialog to Edit Watch and receives default values
-            this.Text = "Edit Watch";
+            this.Text = message;
             
             AddressBox.Text = string.Format("{0:X4}", w.address);
             NotesBox.Text = w.notes;

@@ -18,6 +18,8 @@ namespace BizHawk.MultiClient
         //implement separator feature
         //Display value differently based on signed or hex, endian, type
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
+        //Make Edit/Add/Duplicate Watch windows appear in relation to the listview box
+        //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -175,12 +177,11 @@ namespace BizHawk.MultiClient
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             RamWatchNewWatch r = new RamWatchNewWatch();
             int x = indexes[0];
-            r.SetToEditWatch( watchList[x] );
+            r.SetToEditWatch(watchList[x], "Edit Watch");
             r.ShowDialog();
 
             if (r.userSelected == true)
             {
-                //TODO: check if edited watch is an exact duplicate and prevent?
                 //TODO: changes have been made, flag it
                 watchList[x] = r.watch;
                 DisplayWatchList();
@@ -190,7 +191,6 @@ namespace BizHawk.MultiClient
         void RemoveWatch()
         {
             //TODO: flag that changes have been made
-            //TODO: why can't the user selected multiple indices even though mutliselect is set to true?
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             foreach (int index in indexes)
             {
@@ -201,6 +201,18 @@ namespace BizHawk.MultiClient
 
         void DuplicateWatch()
         {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            RamWatchNewWatch r = new RamWatchNewWatch();
+            int x = indexes[0];
+            r.SetToEditWatch(watchList[x], "Duplicate Watch");
+            r.ShowDialog();
+
+            if (r.userSelected == true)
+            {
+                //TODO: changes have been made, flag it
+                watchList.Add(watchList[x]);
+                DisplayWatchList();
+            }
         }
 
         void MoveUp()
