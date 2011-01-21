@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //implement separator feature
         //Display value differently based on signed or hex, endian, type
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
@@ -639,6 +638,24 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private void InsertSeparator()
+        {
+            Watch w = new Watch();
+            w.type = atype.SEPARATOR;
+
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            int x;
+            if (indexes.Count > 0)
+            {
+                x = indexes[0];
+                if (indexes[0] > 0)
+                    watchList.Insert(indexes[0], w);
+            }
+            else
+                watchList.Add(w);
+            DisplayWatchList();
+        }
+
         private void cutToolStripButton_Click(object sender, EventArgs e)
         {
             RemoveWatch();
@@ -667,6 +684,16 @@ namespace BizHawk.MultiClient
         private void DuplicateWatchToolStripButton_Click(object sender, EventArgs e)
         {
             DuplicateWatch();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            InsertSeparator();
+        }
+
+        private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InsertSeparator();
         }
     }
 }

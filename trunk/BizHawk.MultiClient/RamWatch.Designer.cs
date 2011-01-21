@@ -71,6 +71,8 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
+            this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -211,6 +213,7 @@
             this.editWatchToolStripMenuItem,
             this.removeWatchToolStripMenuItem,
             this.duplicateWatchToolStripMenuItem,
+            this.insertSeparatorToolStripMenuItem,
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem});
@@ -317,6 +320,7 @@
             this.EditWatchToolStripButton1,
             this.cutToolStripButton,
             this.DuplicateWatchToolStripButton,
+            this.toolStripButton1,
             this.toolStripSeparator5,
             this.MoveUpStripButton1,
             this.MoveDownStripButton1});
@@ -447,6 +451,25 @@
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
             // 
+            // insertSeparatorToolStripMenuItem
+            // 
+            this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
+            this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
+            this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "-";
+            this.toolStripButton1.ToolTipText = "Insert Separator";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -518,5 +541,7 @@
         private System.Windows.Forms.ToolStripButton EditWatchToolStripButton1;
         private System.Windows.Forms.ToolStripButton DuplicateWatchToolStripButton;
         private System.Windows.Forms.Label MessageLabel;
+        private System.Windows.Forms.ToolStripMenuItem insertSeparatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
     }
 }
