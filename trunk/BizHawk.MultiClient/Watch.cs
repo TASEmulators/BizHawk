@@ -6,9 +6,9 @@ using System.Text;
 namespace BizHawk.MultiClient
 {
     //Data structure for a watch item in the Ram Watch Dialog
-    enum atype { BYTE, WORD, DWORD };   //TODO: more custom types too like 12.4 and 24.12 fixed point
-    enum asigned { SIGNED, UNSIGNED, HEX };
-    class Watch
+    public enum atype { BYTE, WORD, DWORD };   //TODO: more custom types too like 12.4 and 24.12 fixed point
+    public enum asigned { SIGNED, UNSIGNED, HEX };
+    public class Watch
     {
         public Watch()
         {
