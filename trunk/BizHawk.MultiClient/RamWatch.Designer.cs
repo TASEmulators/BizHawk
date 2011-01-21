@@ -58,18 +58,18 @@
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Notes = new System.Windows.Forms.ColumnHeader();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.WatchCountLabel = new System.Windows.Forms.Label();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.NewWatchStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MoveUpStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.WatchCountLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -220,47 +220,53 @@
             // newWatchToolStripMenuItem
             // 
             this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
-            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.newWatchToolStripMenuItem.Text = "&New Watch";
             this.newWatchToolStripMenuItem.Click += new System.EventHandler(this.newWatchToolStripMenuItem_Click);
             // 
             // editWatchToolStripMenuItem
             // 
             this.editWatchToolStripMenuItem.Name = "editWatchToolStripMenuItem";
-            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.editWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.editWatchToolStripMenuItem.Text = "&Edit Watch";
             this.editWatchToolStripMenuItem.Click += new System.EventHandler(this.editWatchToolStripMenuItem_Click);
             // 
             // removeWatchToolStripMenuItem
             // 
             this.removeWatchToolStripMenuItem.Name = "removeWatchToolStripMenuItem";
-            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.removeWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.removeWatchToolStripMenuItem.Text = "&Remove Watch";
             this.removeWatchToolStripMenuItem.Click += new System.EventHandler(this.removeWatchToolStripMenuItem_Click);
             // 
             // duplicateWatchToolStripMenuItem
             // 
             this.duplicateWatchToolStripMenuItem.Name = "duplicateWatchToolStripMenuItem";
-            this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.duplicateWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.duplicateWatchToolStripMenuItem.Text = "&Duplicate Watch";
             this.duplicateWatchToolStripMenuItem.Click += new System.EventHandler(this.duplicateWatchToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(160, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
             // 
             // moveUpToolStripMenuItem
             // 
             this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.moveUpToolStripMenuItem.Text = "Move &Up";
             this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
             // 
             // moveDownToolStripMenuItem
             // 
             this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.moveDownToolStripMenuItem.Text = "Move &Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
             // 
@@ -320,15 +326,6 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // WatchCountLabel
-            // 
-            this.WatchCountLabel.AutoSize = true;
-            this.WatchCountLabel.Location = new System.Drawing.Point(22, 57);
-            this.WatchCountLabel.Name = "WatchCountLabel";
-            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
-            this.WatchCountLabel.TabIndex = 4;
-            this.WatchCountLabel.Text = "0 watches";
-            // 
             // newToolStripButton
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -364,6 +361,27 @@
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
+            // NewWatchStripButton1
+            // 
+            this.NewWatchStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NewWatchStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("NewWatchStripButton1.Image")));
+            this.NewWatchStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NewWatchStripButton1.Name = "NewWatchStripButton1";
+            this.NewWatchStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.NewWatchStripButton1.Text = "New Watch";
+            this.NewWatchStripButton1.ToolTipText = "New Watch";
+            this.NewWatchStripButton1.Click += new System.EventHandler(this.NewWatchStripButton1_Click);
+            // 
+            // EditWatchToolStripButton1
+            // 
+            this.EditWatchToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.EditWatchToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("EditWatchToolStripButton1.Image")));
+            this.EditWatchToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.EditWatchToolStripButton1.Name = "EditWatchToolStripButton1";
+            this.EditWatchToolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.EditWatchToolStripButton1.Text = "Edit Watch";
+            this.EditWatchToolStripButton1.Click += new System.EventHandler(this.EditWatchToolStripButton1_Click);
+            // 
             // cutToolStripButton
             // 
             this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -375,16 +393,20 @@
             this.cutToolStripButton.ToolTipText = "Remove Watch";
             this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
-            // NewWatchStripButton1
+            // DuplicateWatchToolStripButton
             // 
-            this.NewWatchStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.NewWatchStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("NewWatchStripButton1.Image")));
-            this.NewWatchStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NewWatchStripButton1.Name = "NewWatchStripButton1";
-            this.NewWatchStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.NewWatchStripButton1.Text = "New Watch";
-            this.NewWatchStripButton1.ToolTipText = "New Watch";
-            this.NewWatchStripButton1.Click += new System.EventHandler(this.NewWatchStripButton1_Click);
+            this.DuplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.DuplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateWatchToolStripButton.Image")));
+            this.DuplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DuplicateWatchToolStripButton.Name = "DuplicateWatchToolStripButton";
+            this.DuplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.DuplicateWatchToolStripButton.Text = "Duplicate Watch";
+            this.DuplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchToolStripButton_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
             // MoveUpStripButton1
             // 
@@ -406,30 +428,14 @@
             this.MoveDownStripButton1.Text = "Move Down";
             this.MoveDownStripButton1.Click += new System.EventHandler(this.MoveDownStripButton1_Click);
             // 
-            // toolStripSeparator5
+            // WatchCountLabel
             // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // EditWatchToolStripButton1
-            // 
-            this.EditWatchToolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.EditWatchToolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("EditWatchToolStripButton1.Image")));
-            this.EditWatchToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.EditWatchToolStripButton1.Name = "EditWatchToolStripButton1";
-            this.EditWatchToolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.EditWatchToolStripButton1.Text = "Edit Watch";
-            this.EditWatchToolStripButton1.Click += new System.EventHandler(this.EditWatchToolStripButton1_Click);
-            // 
-            // DuplicateWatchToolStripButton
-            // 
-            this.DuplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.DuplicateWatchToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("DuplicateWatchToolStripButton.Image")));
-            this.DuplicateWatchToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DuplicateWatchToolStripButton.Name = "DuplicateWatchToolStripButton";
-            this.DuplicateWatchToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.DuplicateWatchToolStripButton.Text = "Duplicate Watch";
-            this.DuplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchToolStripButton_Click);
+            this.WatchCountLabel.AutoSize = true;
+            this.WatchCountLabel.Location = new System.Drawing.Point(22, 57);
+            this.WatchCountLabel.Name = "WatchCountLabel";
+            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
+            this.WatchCountLabel.TabIndex = 4;
+            this.WatchCountLabel.Text = "0 watches";
             // 
             // RamWatch
             // 

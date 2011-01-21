@@ -17,9 +17,9 @@ namespace BizHawk.MultiClient
         //implement separator feature
         //Display value differently based on signed or hex, endian, type
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
-        //Make Edit/Add/Duplicate Watch windows appear in relation to the listview box
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
+        //Address can be changed, when that event is triggered, open the edit watch dialog
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();

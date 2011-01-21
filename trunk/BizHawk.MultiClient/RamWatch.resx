@@ -168,14 +168,6 @@
         Cv71r/4OTrQ4xWMwWlcAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="cutToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAF5JREFUOE/NkkEK
-        ACAIBPv/pyuDAkHXiS4FXUK2cbS1X06fIN0OAApr1+O+Ikh+VIVgyoiEtncMOJoLP04hcZI6fyIIHdA2
-        FHY5BdKznAYJMGk6BK4z2Hhdcr1YadwAMzKIeOBQHJIAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="NewWatchStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -192,22 +184,6 @@
         RK5CYII=
 </value>
   </data>
-  <data name="MoveUpStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAEdJREFUOE9jYBj0
-        4MCBA//JdiRU83+yDIFpBtoOcgFphqBrJskQXJqJMoSQZqIMgYU4RWEAMmQYGADzBsgrZCUkspMv3TUC
-        AGYzbEaI9u+YAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="MoveDownStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAElJREFUOE9jYBje
-        4MCBA/9hmGSfgjQCNcExlE+8OUPUAHRnI4cB0eFByBCiAhOXIURphsUTxbEAMghmCEk2o6cUijQTn+wo
-        UAkAY/VsRlvaylwAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="EditWatchToolStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -219,6 +195,14 @@
         1t2DI3WAP7oGoSYE3kwSPQofljcqm/kxjK4SCH0OXSMetItsUC26wZuOVptYhI0eEOuz1YI2gZnKBdpr
         6iR9V2jkKOkBQpeiCryhFFr4eioft16iU7qNho4h1Dc00QOqlRuwpSSa+UawuZXdByIZsPoUaOmWwrUf
         owcOozlwZeto7ZXDuXvCfHV/+dGfqqrf44qgu28AAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="cutToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAF5JREFUOE/NkkEK
+        ACAIBPv/pyuDAkHXiS4FXUK2cbS1X06fIN0OAApr1+O+Ikh+VIVgyoiEtncMOJoLP04hcZI6fyIIHdA2
+        FHY5BdKznAYJMGk6BK4z2Hhdcr1YadwAMzKIeOBQHJIAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="DuplicateWatchToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -234,6 +218,22 @@
         6auUqlU/KwBZJV4skWUuvMmYV8b+Ls6jQQ81DfryO3KtfUoA/p3810G37T3VJ3TlARdvukhldjANeemx
         z2B8MS0mq80GyySHj98rD2jQOpXbtgrVNprRnO2h5lQX1Sc7leYODh27W3nN9/WZDnroDx0A5wwhdtmt
         AAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="MoveUpStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAEdJREFUOE9jYBj0
+        4MCBA//JdiRU83+yDIFpBtoOcgFphqBrJskQXJqJMoSQZqIMgYU4RWEAMmQYGADzBsgrZCUkspMv3TUC
+        AGYzbEaI9u+YAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="MoveDownStripButton1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAElJREFUOE9jYBje
+        4MCBA/9hmGSfgjQCNcExlE+8OUPUAHRnI4cB0eFByBCiAhOXIURphsUTxbEAMghmCEk2o6cUijQTn+wo
+        UAkAY/VsRlvaylwAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
