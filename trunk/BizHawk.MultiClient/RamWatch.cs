@@ -19,8 +19,8 @@ namespace BizHawk.MultiClient
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Address can be changed, when that event is triggered, open the edit watch dialog
-        //Save as displays the old file in the message label instead of the new one
         //Import images into resource file
+        //Multiselect is enabled but only one row can be highlighted by the user
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
