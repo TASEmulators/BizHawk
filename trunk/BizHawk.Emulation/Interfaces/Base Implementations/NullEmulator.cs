@@ -12,6 +12,12 @@ namespace BizHawk
         private Random rand = new Random();
         public IVideoProvider VideoProvider { get { return this; } }
         public ISoundProvider SoundProvider { get { return this; } }
+        public NullEmulator()
+        {
+            var domains = new List<MemoryDomain>(1);
+            domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr=>0, (a,v)=> { }));
+            memoryDomains = domains.AsReadOnly();
+        }
         public void LoadGame(IGame game) { }
         public void FrameAdvance(bool render)
         {
@@ -19,7 +25,6 @@ namespace BizHawk
             for (int i = 0; i < 256 * 192; i++)
                 frameBuffer[i] = Colors.Luminosity((byte)rand.Next());
         }
-        public void HardReset() { }
         public ControllerDefinition ControllerDefinition { get { return NullController; } }
         public IController Controller { get; set; }
         public int Frame { get; set; }
@@ -36,8 +41,8 @@ namespace BizHawk
         public int BufferHeight { get { return 192; } }
         public int BackgroundColor { get { return 0; } }
         public void GetSamples(short[] samples) { }
-
-        public IList<MemoryDomain> MemoryDomains { get { return new List<MemoryDomain>(0); } }
-        public MemoryDomain MainMemory { get { return null; } }
+        private IList<MemoryDomain> memoryDomains;
+        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
     }
 }
