@@ -19,6 +19,8 @@ namespace BizHawk.MultiClient
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         //Make Edit/Add/Duplicate Watch windows appear in relation to the listview box
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
+        //TODO: Call AskSave in main client close function
+        //TODO: make so that only 1 instance of ram watch can be open at once (so that ask save can be reliable, as well as the watch button in ram search dialogs
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -41,6 +43,31 @@ namespace BizHawk.MultiClient
             return count;
         }
 
+        public bool AskSave()
+        {
+            if (changes)
+            {
+                DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+
+                if (result == DialogResult.Yes)
+                {
+                    //TOOD: Do quicksave if filename, else save as
+                    if (string.Compare(currentWatchFile, "") == 0)
+                    {
+                        SaveAs();
+                    }
+                    else
+                        SaveWatchFile(currentWatchFile);
+                    return true;
+                }
+                else if (result == DialogResult.No)
+                    return true;
+                else if (result == DialogResult.Cancel)
+                    return false;
+            }
+            return true;
+        }
+
         public void LoadWatchFromRecent(string file)
         {
             bool r = LoadWatchFile(file, false);
@@ -56,11 +83,16 @@ namespace BizHawk.MultiClient
 
         private void NewWatchList()
         {
-            //TODO: ask to save changes if necessary
-            watchList.Clear();
-            DisplayWatchList();
-            currentWatchFile = "";
-            changes = false;
+            bool result = true;
+            if (changes) result = AskSave();
+
+            if (AskSave() == true)
+            {
+                watchList.Clear();
+                DisplayWatchList();
+                currentWatchFile = "";
+                changes = false;
+            }
         }
         
         private  bool SaveWatchFile(string path)
@@ -313,12 +345,17 @@ namespace BizHawk.MultiClient
             return file;
         }
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveAs()
         {
             var file = GetSaveFileFromUser();
             if (file != null)
                 SaveWatchFile(file.FullName);
             //TODO: inform the user (with using an annoying message box)
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveAs();
         }
 
         private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
