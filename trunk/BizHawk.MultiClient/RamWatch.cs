@@ -19,8 +19,8 @@ namespace BizHawk.MultiClient
         //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         //Make Edit/Add/Duplicate Watch windows appear in relation to the listview box
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
-        //TODO: Call AskSave in main client close function
-        //TODO: make so that only 1 instance of ram watch can be open at once (so that ask save can be reliable, as well as the watch button in ram search dialogs
+        //TODO: Call AskSave in main client X function
+        //TODO: RaWatchNewWatch dialog - when setting defaults for the edit watch - declare a new watch and use its values (so that it can set to defaults even if the watch class defaults change)
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -571,11 +571,6 @@ namespace BizHawk.MultiClient
             //TODO: debug/testing
             ListView.SelectedIndexCollection i = this.WatchListView.SelectedIndices;
             i = WatchListView.SelectedIndices;
-        }
-
-        private void RamWatch_Paint(object sender, PaintEventArgs e)
-        {
-            UpdateValues();
         }
     }
 }

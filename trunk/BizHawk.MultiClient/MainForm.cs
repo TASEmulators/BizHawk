@@ -26,7 +26,6 @@ namespace BizHawk.MultiClient
         {
             Global.MainForm = this;
             Global.Config = ConfigService.Load<Config>("config.ini");
-
             InitializeComponent();
 
 			if (Global.Direct3D != null)
@@ -351,7 +350,7 @@ namespace BizHawk.MultiClient
             }
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Global.RenderPanel.Render(Global.Emulator.VideoProvider);
-            RamWatch1.UpdateValues();
+            //RamWatch1.UpdateValues();  //TODO: Create framecounter object, run this in the SetFrameCount() method of this object
         }
 
         private bool wasMaximized = false;
@@ -417,7 +416,8 @@ namespace BizHawk.MultiClient
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Close();
+            if (RamWatch1.AskSave())
+                Close();
         }
 
         private void openROMToolStripMenuItem_Click(object sender, EventArgs e)

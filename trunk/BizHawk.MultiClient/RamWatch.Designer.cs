@@ -354,7 +354,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Ram Watch";
             this.Load += new System.EventHandler(this.RamWatch_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.RamWatch_Paint);
             this.Resize += new System.EventHandler(this.RamWatch_Resize);
             this.LocationChanged += new System.EventHandler(this.RamWatch_LocationChanged);
             this.menuStrip1.ResumeLayout(false);
