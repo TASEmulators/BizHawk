@@ -606,5 +606,30 @@ namespace BizHawk.MultiClient
         {
             RemoveWatch();
         }
+
+        private void NewWatchStripButton1_Click(object sender, EventArgs e)
+        {
+            AddNewWatch();
+        }
+
+        private void MoveUpStripButton1_Click(object sender, EventArgs e)
+        {
+            MoveUp();
+        }
+
+        private void MoveDownStripButton1_Click(object sender, EventArgs e)
+        {
+            MoveDown();
+        }
+
+        private void EditWatchToolStripButton1_Click(object sender, EventArgs e)
+        {
+            EditWatch();
+        }
+
+        private void DuplicateWatchToolStripButton_Click(object sender, EventArgs e)
+        {
+            DuplicateWatch();
+        }
     }
 }
