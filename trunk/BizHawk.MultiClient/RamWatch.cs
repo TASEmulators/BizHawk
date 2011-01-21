@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Address can be changed, when that event is triggered, open the edit watch dialog
+        //Append sets the currentWatach file to the new file rather than the old!
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -107,6 +108,7 @@ namespace BizHawk.MultiClient
                 DisplayWatchList();
                 currentWatchFile = "";
                 changes = false;
+                MessageLabel.Text = "";
             }
         }
         
@@ -202,6 +204,7 @@ namespace BizHawk.MultiClient
 
                 Global.Config.RecentWatches.Add(file.FullName);
                 changes = false;
+                MessageLabel.Text = Path.GetFileName(file.FullName);
                 //Update the number of watches
                 WatchCountLabel.Text = count.ToString() + " watches";
             }
@@ -232,6 +235,12 @@ namespace BizHawk.MultiClient
             }
         }
 
+        void Changes()
+        {
+            changes = true;
+            MessageLabel.Text = Path.GetFileName(currentWatchFile) + " *";
+        }
+
         void EditWatch()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
@@ -245,7 +254,7 @@ namespace BizHawk.MultiClient
 
             if (r.userSelected == true)
             {
-                changes = true;
+                Changes();
                 watchList[x] = r.watch;
                 DisplayWatchList();
             }
@@ -253,7 +262,7 @@ namespace BizHawk.MultiClient
 
         void RemoveWatch()
         {
-            changes = true;
+            Changes();
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             foreach (int index in indexes)
             {
@@ -273,7 +282,7 @@ namespace BizHawk.MultiClient
 
             if (r.userSelected == true)
             {
-                changes = true;
+                Changes();
                 watchList.Add(watchList[x]);
                 DisplayWatchList();
             }
@@ -289,7 +298,10 @@ namespace BizHawk.MultiClient
                 temp = watchList[index];
                 watchList.Remove(watchList[index]);
                 watchList.Insert(index - 1, temp);
-                changes = true; //Note: here it will get flagged many times redundantly potentially, but this avoids it being flag falsely when the user did not select an index
+                
+                //Note: here it will get flagged many times redundantly potentially, 
+                //but this avoids it being flag falsely when the user did not select an index
+                Changes();
             }
             DisplayWatchList();
            //TODO: Set highlighted items to be what the user had selected (in their new position)
@@ -309,7 +321,10 @@ namespace BizHawk.MultiClient
                     watchList.Remove(watchList[index]);
                     watchList.Insert(index + 1, temp);
                 }
-                changes = true; //Note: here it will get flagged many times redundantly potnetially, but this avoids it being flag falsely when the user did not select an index
+
+                //Note: here it will get flagged many times redundantly potnetially, 
+                //but this avoids it being flag falsely when the user did not select an index
+                Changes(); 
             }
             DisplayWatchList();
             //TODO: Set highlighted items to be what the user had selected (in their new position)
@@ -392,7 +407,7 @@ namespace BizHawk.MultiClient
             var file = GetSaveFileFromUser();
             if (file != null)
                 SaveWatchFile(file.FullName);
-            //TODO: inform the user (with using an annoying message box)
+            MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -406,7 +421,7 @@ namespace BizHawk.MultiClient
             if (file != null)
                 LoadWatchFile(file.FullName, true);
             DisplayWatchList();
-            changes = true;
+            Changes();
         }
 
         private void autoLoadToolStripMenuItem_Click(object sender, EventArgs e)

@@ -70,6 +70,7 @@
             this.MoveUpStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
+            this.MessageLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -221,7 +222,7 @@
             // 
             this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
             this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.newWatchToolStripMenuItem.Text = "&New Watch";
             this.newWatchToolStripMenuItem.Click += new System.EventHandler(this.newWatchToolStripMenuItem_Click);
             // 
@@ -229,7 +230,7 @@
             // 
             this.editWatchToolStripMenuItem.Name = "editWatchToolStripMenuItem";
             this.editWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.editWatchToolStripMenuItem.Text = "&Edit Watch";
             this.editWatchToolStripMenuItem.Click += new System.EventHandler(this.editWatchToolStripMenuItem_Click);
             // 
@@ -237,7 +238,7 @@
             // 
             this.removeWatchToolStripMenuItem.Name = "removeWatchToolStripMenuItem";
             this.removeWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.removeWatchToolStripMenuItem.Text = "&Remove Watch";
             this.removeWatchToolStripMenuItem.Click += new System.EventHandler(this.removeWatchToolStripMenuItem_Click);
             // 
@@ -252,7 +253,7 @@
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(199, 6);
             // 
             // moveUpToolStripMenuItem
             // 
@@ -285,7 +286,7 @@
             this.WatchListView.LabelEdit = true;
             this.WatchListView.Location = new System.Drawing.Point(25, 76);
             this.WatchListView.Name = "WatchListView";
-            this.WatchListView.Size = new System.Drawing.Size(314, 324);
+            this.WatchListView.Size = new System.Drawing.Size(314, 327);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -436,11 +437,22 @@
             this.WatchCountLabel.TabIndex = 4;
             this.WatchCountLabel.Text = "0 watches";
             // 
+            // MessageLabel
+            // 
+            this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MessageLabel.AutoSize = true;
+            this.MessageLabel.Location = new System.Drawing.Point(28, 408);
+            this.MessageLabel.Name = "MessageLabel";
+            this.MessageLabel.Size = new System.Drawing.Size(187, 13);
+            this.MessageLabel.TabIndex = 5;
+            this.MessageLabel.Text = "                                                            ";
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 412);
+            this.ClientSize = new System.Drawing.Size(364, 424);
+            this.Controls.Add(this.MessageLabel);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.WatchListView);
@@ -505,5 +517,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripButton EditWatchToolStripButton1;
         private System.Windows.Forms.ToolStripButton DuplicateWatchToolStripButton;
+        private System.Windows.Forms.Label MessageLabel;
     }
 }
