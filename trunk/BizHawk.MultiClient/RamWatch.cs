@@ -327,8 +327,9 @@ namespace BizHawk.MultiClient
             return file;
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenWatchFile()
         {
+
             var file = GetFileFromUser();
             if (file != null)
             {
@@ -340,6 +341,11 @@ namespace BizHawk.MultiClient
                     DisplayWatchList();
                 }
             }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenWatchFile();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -520,6 +526,7 @@ namespace BizHawk.MultiClient
 
         private void WatchListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
+        /*
             // Determine if label is changed by checking for null.
             if (e.Label == null)
             return;
@@ -546,6 +553,7 @@ namespace BizHawk.MultiClient
          return;
       }
    }
+            */
         }
 
         private void RamWatch_LocationChanged(object sender, EventArgs e)
@@ -570,6 +578,33 @@ namespace BizHawk.MultiClient
             //TODO: debug/testing
             ListView.SelectedIndexCollection i = this.WatchListView.SelectedIndices;
             i = WatchListView.SelectedIndices;
+        }
+
+        private void newToolStripButton_Click(object sender, EventArgs e)
+        {
+            NewWatchList();
+        }
+
+        private void openToolStripButton_Click(object sender, EventArgs e)
+        {
+            OpenWatchFile();
+        }
+
+        private void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (changes)
+            {
+                SaveWatchFile(currentWatchFile);
+            }
+            else
+            {
+                SaveAs();
+            }
+        }
+
+        private void cutToolStripButton_Click(object sender, EventArgs e)
+        {
+            RemoveWatch();
         }
     }
 }
