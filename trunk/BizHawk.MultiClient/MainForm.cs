@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
 
         private bool EmulatorPaused = false;
         RamWatch RamWatch1 = new RamWatch();
+        RamSearch RamSearch1 = new RamSearch();
 
         public MainForm(string[] args)
         {
@@ -810,6 +811,13 @@ namespace BizHawk.MultiClient
         private void MainForm_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RamSearch1 = new RamSearch();
+            //TODO: autoload
+            RamSearch1.Show();
         }
     }
 }
