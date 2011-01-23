@@ -94,5 +94,12 @@ namespace BizHawk.MultiClient.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap poke {
+            get {
+                object obj = ResourceManager.GetObject("poke", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

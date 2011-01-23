@@ -176,6 +176,9 @@
   <ItemGroup>
     <None Include="images\FindHS.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="images\poke.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

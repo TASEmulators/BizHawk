@@ -73,6 +73,8 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
+            this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -214,6 +216,7 @@
             this.removeWatchToolStripMenuItem,
             this.duplicateWatchToolStripMenuItem,
             this.insertSeparatorToolStripMenuItem,
+            this.pokeAddressToolStripMenuItem,
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem});
@@ -328,6 +331,7 @@
             this.EditWatchToolStripButton1,
             this.cutToolStripButton,
             this.DuplicateWatchToolStripButton,
+            this.PoketoolStripButton2,
             this.toolStripButton1,
             this.toolStripSeparator5,
             this.MoveUpStripButton1,
@@ -470,6 +474,25 @@
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
             // 
+            // PoketoolStripButton2
+            // 
+            this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PoketoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+            this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PoketoolStripButton2.Name = "PoketoolStripButton2";
+            this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.PoketoolStripButton2.Text = "toolStripButton2";
+            this.PoketoolStripButton2.ToolTipText = "Poke address";
+            this.PoketoolStripButton2.Click += new System.EventHandler(this.PoketoolStripButton2_Click);
+            // 
+            // pokeAddressToolStripMenuItem
+            // 
+            this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
+            this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.pokeAddressToolStripMenuItem.Text = "Poke Address";
+            this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
+            // 
             // RamWatch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -543,5 +566,7 @@
         private System.Windows.Forms.Label MessageLabel;
         private System.Windows.Forms.ToolStripMenuItem insertSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton PoketoolStripButton2;
+        private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
     }
 }
