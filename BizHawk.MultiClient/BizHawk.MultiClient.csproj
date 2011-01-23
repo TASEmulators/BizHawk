@@ -102,11 +102,11 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="RamWatch.resx">
+    <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="RamWatchNewWatch.resx">
+    <EmbeddedResource Include="tools\RamWatchNewWatch.resx">
       <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -124,16 +124,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RamWatch.cs">
+    <Compile Include="tools\RamWatch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RamWatch.Designer.cs">
+    <Compile Include="tools\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
-    <Compile Include="RamWatchNewWatch.cs">
+    <Compile Include="tools\RamWatchNewWatch.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RamWatchNewWatch.Designer.cs">
+    <Compile Include="tools\RamWatchNewWatch.Designer.cs">
       <DependentUpon>RamWatchNewWatch.cs</DependentUpon>
     </Compile>
     <Compile Include="RecentFiles.cs" />
@@ -144,7 +144,7 @@
     <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
-    <Compile Include="Watch.cs" />
+    <Compile Include="tools\Watch.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
