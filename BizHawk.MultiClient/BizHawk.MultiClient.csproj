@@ -124,6 +124,12 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="tools\RamSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\RamSearch.Designer.cs">
+      <DependentUpon>RamSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\RamWatch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,10 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="tools\RamSearch.resx">
+      <DependentUpon>RamSearch.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="images\FindHS.png" />
