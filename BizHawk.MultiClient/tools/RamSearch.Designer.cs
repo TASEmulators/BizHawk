@@ -30,16 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.SearchListBox = new System.Windows.Forms.ListBox();
+            this.TotalSearchLabel = new System.Windows.Forms.Label();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.SearchListBox = new System.Windows.Forms.ListBox();
-            this.TotalSearchLabel = new System.Windows.Forms.Label();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +59,33 @@
             this.toolStrip1.Size = new System.Drawing.Size(378, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // SearchListBox
+            // 
+            this.SearchListBox.FormattingEnabled = true;
+            this.SearchListBox.Location = new System.Drawing.Point(12, 52);
+            this.SearchListBox.Name = "SearchListBox";
+            this.SearchListBox.Size = new System.Drawing.Size(150, 394);
+            this.SearchListBox.TabIndex = 1;
+            // 
+            // TotalSearchLabel
+            // 
+            this.TotalSearchLabel.AutoSize = true;
+            this.TotalSearchLabel.Location = new System.Drawing.Point(13, 33);
+            this.TotalSearchLabel.Name = "TotalSearchLabel";
+            this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
+            this.TotalSearchLabel.TabIndex = 2;
+            this.TotalSearchLabel.Text = "0 addresses";
             // 
             // newToolStripButton
             // 
@@ -90,11 +117,6 @@
             this.saveToolStripButton.Text = "&Save";
             this.saveToolStripButton.ToolTipText = "Save Watch List";
             // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
             // cutToolStripButton
             // 
             this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -104,11 +126,6 @@
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.cutToolStripButton.Text = "C&ut";
             this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // WatchtoolStripButton1
             // 
@@ -122,28 +139,11 @@
             // PoketoolStripButton1
             // 
             this.PoketoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PoketoolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("PoketoolStripButton1.Image")));
+            this.PoketoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
             this.PoketoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.PoketoolStripButton1.Name = "PoketoolStripButton1";
             this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.PoketoolStripButton1.Text = "Poke";
-            // 
-            // SearchListBox
-            // 
-            this.SearchListBox.FormattingEnabled = true;
-            this.SearchListBox.Location = new System.Drawing.Point(12, 52);
-            this.SearchListBox.Name = "SearchListBox";
-            this.SearchListBox.Size = new System.Drawing.Size(150, 394);
-            this.SearchListBox.TabIndex = 1;
-            // 
-            // TotalSearchLabel
-            // 
-            this.TotalSearchLabel.AutoSize = true;
-            this.TotalSearchLabel.Location = new System.Drawing.Point(13, 33);
-            this.TotalSearchLabel.Name = "TotalSearchLabel";
-            this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
-            this.TotalSearchLabel.TabIndex = 2;
-            this.TotalSearchLabel.Text = "0 addresses";
             // 
             // RamSearch
             // 
