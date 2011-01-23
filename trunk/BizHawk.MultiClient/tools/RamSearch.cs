@@ -30,7 +30,7 @@ namespace BizHawk.MultiClient
 
             for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
             {
-                Wat
+
             }
         }
 
