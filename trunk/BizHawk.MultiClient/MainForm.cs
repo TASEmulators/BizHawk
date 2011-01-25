@@ -27,15 +27,18 @@ namespace BizHawk.MultiClient
         {
             Global.MainForm = this;
             Global.Config = ConfigService.Load<Config>("config.ini");
-            InitializeComponent();
 
-			if (Global.Direct3D != null)
-				renderTarget = new ViewportPanel();
-			else renderTarget = retainedPanel = new RetainedViewportPanel();
+            if (Global.Direct3D != null)
+                renderTarget = new ViewportPanel();
+            else renderTarget = retainedPanel = new RetainedViewportPanel();
 
             renderTarget.Dock = DockStyle.Fill;
             renderTarget.BackColor = Color.Black;
             Controls.Add(renderTarget);
+
+            InitializeComponent();
+
+			
             Database.LoadDatabase("gamedb.txt");
 
 			if (Global.Direct3D != null)
@@ -313,7 +316,7 @@ namespace BizHawk.MultiClient
 
             if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
             {
-                Rewind();
+                Rewind(Global.ClientControls["Fast Forward"] ? 3 : 1);
                 return;
             }
    
@@ -818,6 +821,19 @@ namespace BizHawk.MultiClient
             RamSearch1 = new RamSearch();
             //TODO: autoload
             RamSearch1.Show();
+        }
+
+        public void SignalFrameBufferResized()
+        {
+            var video = Global.Emulator.VideoProvider;
+
+            int targetZoom = 3;
+
+            int borderWidth = this.Size.Width - renderTarget.Size.Width;
+            int borderHeight = this.Size.Height - renderTarget.Size.Height;
+
+            ClientSize = new Size((video.BufferWidth*targetZoom) + borderWidth, (video.BufferHeight*targetZoom + borderHeight));
+            this.Invalidate();
         }
     }
 }

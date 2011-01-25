@@ -148,14 +148,17 @@ namespace BizHawk.MultiClient
             Global.Emulator.LoadStateBinary(new BinaryReader(output));
         }
 
-        private void Rewind()
+        private void Rewind(int frames)
         {
-            if (RewindBuf.Count == 0)
-                return;
-            if (LastState.Length < 0x10000)
-                Rewind64K();
-            else
-                RewindLarge();
+            for (int i = 0; i < frames; i++)
+            {
+                if (RewindBuf.Count == 0)
+                    return;
+                if (LastState.Length < 0x10000)
+                    Rewind64K();
+                else
+                    RewindLarge();
+            }
 
             Global.Emulator.FrameAdvance(true);
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
