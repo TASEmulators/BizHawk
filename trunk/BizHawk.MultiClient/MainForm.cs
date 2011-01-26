@@ -355,7 +355,7 @@ namespace BizHawk.MultiClient
                     Global.ClientControls.UnpressButton("Frame Advance");
             }
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
-            Global.RenderPanel.Render(Global.Emulator.VideoProvider);
+            Render();
             //RamWatch1.UpdateValues();  //TODO: Create framecounter object, run this in the SetFrameCount() method of this object
         }
 
@@ -823,17 +823,53 @@ namespace BizHawk.MultiClient
             RamSearch1.Show();
         }
 
-        public void SignalFrameBufferResized()
+        private int lastWidth = -1;
+        private int lastHeight = -1;
+
+
+        private void Render()
         {
             var video = Global.Emulator.VideoProvider;
+            if (video.BufferHeight != lastHeight || video.BufferWidth != lastWidth)
+            {
+                lastWidth = video.BufferWidth;
+                lastHeight = video.BufferHeight;
+                FrameBufferResized();
+                Global.RenderPanel.Resized = true;
+            }
 
-            int targetZoom = 3;
+            Global.RenderPanel.Render(Global.Emulator.VideoProvider);
+        }
 
-            int borderWidth = this.Size.Width - renderTarget.Size.Width;
-            int borderHeight = this.Size.Height - renderTarget.Size.Height;
+        private void FrameBufferResized()
+        {
+            var video = Global.Emulator.VideoProvider;
+            int zoom = Global.Config.TargetZoomFactor;
+            var area = Screen.FromControl(this).WorkingArea;
 
-            ClientSize = new Size((video.BufferWidth*targetZoom) + borderWidth, (video.BufferHeight*targetZoom + borderHeight));
-            this.Invalidate();
+            int borderWidth = Size.Width - renderTarget.Size.Width;
+            int borderHeight = Size.Height - renderTarget.Size.Height;
+
+            // start at target zoom and work way down until we find acceptable zoom
+            for (; zoom >= 1; zoom--)
+            {
+                if ((((video.BufferWidth * zoom) + borderWidth) < area.Width) && (((video.BufferHeight * zoom) + borderHeight) < area.Height))
+                    break;
+            }
+
+            // Change size
+            Size = new Size((video.BufferWidth*zoom) + borderWidth, (video.BufferHeight*zoom + borderHeight));
+            PerformLayout();
+
+            // Is window off the screen at this size?
+            if (area.Contains(Bounds) == false)
+            {
+                if (Bounds.Right > area.Right) // Window is off the right edge
+                    Location = new Point(area.Right - Size.Width, Location.Y);
+
+                if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
+                    Location = new Point(Location.X, area.Bottom - Size.Height);
+            }
         }
     }
 }

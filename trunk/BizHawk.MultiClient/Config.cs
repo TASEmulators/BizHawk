@@ -4,6 +4,7 @@
     {
         // General Client Settings
         public bool SoundEnabled = true;
+        public int TargetZoomFactor = 2;
         public string LastRomPath = ".";
         public bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
         public RecentFiles RecentRoms = new RecentFiles(8);
