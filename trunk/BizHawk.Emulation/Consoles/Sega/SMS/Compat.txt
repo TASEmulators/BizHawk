@@ -27,6 +27,4 @@ Following games are untested (don't have the rom)
 Following games have issues:
 
 The Castle      dies
-Guzzler (JP)	crashes the core :O
 Monaco GP       graphics are whacked up - wonder if it uses an undoc mode?
-Q-Bert          crash core ? :o

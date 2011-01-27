@@ -155,7 +155,7 @@ F9DBB533	 	BMX Trial - Alex Kidd (JP)	SMS
 1D43A351	D	Bock's Birthday 2002	SMS	Maxim
 C07CB738	D	Bock's Birthday 2003	SMS	Maxim
 31A5CA6A	D	Bock's Birthday 2004	SMS	Maxim
-F0F53C64	D	Bock's Birthday 2006	SMS	Charles MacDonald
+F0F53C64	D	Bock's Birthday 2006	SMS	Charles MacDonald	FM
 B80A74A1	D	Bock's Birthday 2007	SMS	Maxim
 3084CF11	 	Bomber Raid	SMS	
 09D39A66	F	Bomber Raid (f)	SMS	F

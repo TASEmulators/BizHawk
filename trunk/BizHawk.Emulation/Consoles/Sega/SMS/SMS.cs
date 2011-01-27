@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int Frame { get; set; }
         private byte Port01 = 0xFF;
         private byte Port02 = 0xFF;
+        private byte Port3E = 0xAF;
         private byte Port3F = 0xFF;
 
         private int scanlinesPerFrame;
@@ -97,6 +98,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         public void LoadGame(IGame game)
         {
             RomData = game.GetRomData();
+            if (RomData.Length % BankSize != 0)
+                Array.Resize(ref RomData, ((RomData.Length/BankSize) + 1)*BankSize);
             RomBanks = (byte)(RomData.Length/BankSize);
             Options = game.GetOptions();
             DisplayType = DisplayType.NTSC;
