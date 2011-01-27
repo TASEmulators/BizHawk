@@ -38,7 +38,16 @@ namespace BizHawk.MultiClient
 
             InitializeComponent();
 
-			
+            switch(Global.Config.TargetZoomFactor)
+            {
+                case 1: x1MenuItem.Checked = true; break;
+                case 2: x2MenuItem.Checked = true; break;
+                case 3: x3MenuItem.Checked = true; break;
+                case 4: x4MenuItem.Checked = true; break;
+                case 5: x5MenuItem.Checked = true; break;
+                case 10:mzMenuItem.Checked = true; break;
+            }
+		
             Database.LoadDatabase("gamedb.txt");
 
 			if (Global.Direct3D != null)
@@ -835,7 +844,6 @@ namespace BizHawk.MultiClient
                 lastWidth = video.BufferWidth;
                 lastHeight = video.BufferHeight;
                 FrameBufferResized();
-                Global.RenderPanel.Resized = true;
             }
 
             Global.RenderPanel.Render(Global.Emulator.VideoProvider);
@@ -860,6 +868,7 @@ namespace BizHawk.MultiClient
             // Change size
             Size = new Size((video.BufferWidth*zoom) + borderWidth, (video.BufferHeight*zoom + borderHeight));
             PerformLayout();
+            Global.RenderPanel.Resized = true;
 
             // Is window off the screen at this size?
             if (area.Contains(Bounds) == false)
@@ -870,6 +879,25 @@ namespace BizHawk.MultiClient
                 if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
                     Location = new Point(Location.X, area.Bottom - Size.Height);
             }
+        }
+
+        private void zoomMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sender == x1MenuItem) Global.Config.TargetZoomFactor = 1;
+            if (sender == x2MenuItem) Global.Config.TargetZoomFactor = 2;
+            if (sender == x3MenuItem) Global.Config.TargetZoomFactor = 3;
+            if (sender == x4MenuItem) Global.Config.TargetZoomFactor = 4;
+            if (sender == x5MenuItem) Global.Config.TargetZoomFactor = 5;
+            if (sender == mzMenuItem) Global.Config.TargetZoomFactor = 10;
+
+            x1MenuItem.Checked = Global.Config.TargetZoomFactor == 1;
+            x2MenuItem.Checked = Global.Config.TargetZoomFactor == 2;
+            x3MenuItem.Checked = Global.Config.TargetZoomFactor == 3;
+            x4MenuItem.Checked = Global.Config.TargetZoomFactor == 4;
+            x5MenuItem.Checked = Global.Config.TargetZoomFactor == 5;
+            mzMenuItem.Checked = Global.Config.TargetZoomFactor == 10;
+            
+            FrameBufferResized();
         }
     }
 }
