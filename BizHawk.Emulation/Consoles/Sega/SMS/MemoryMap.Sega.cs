@@ -77,5 +77,50 @@
             WriteMemory(0xFFFE, 1);
             WriteMemory(0xFFFF, 2);
         }
+
+        // Mapper when loading a BIOS as a ROM
+
+        private bool BiosMapped { get { return (Port3E & 0x08) == 0; } }
+
+        private byte ReadMemoryBIOS(ushort address)
+        {
+            if (BiosMapped == false && address < BankSize * 3) 
+                return 0x00;
+
+            if (address < 1024)
+                return RomData[address];
+            if (address < BankSize)
+                return RomData[(RomBank0 * BankSize) + address];
+            if (address < BankSize * 2)
+                return RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
+            if (address < BankSize * 3)
+                return RomData[(RomBank2 * BankSize) + (address & BankSizeMask)];
+            
+            return SystemRam[address & RamSizeMask];
+        }
+
+        private void WriteMemoryBIOS(ushort address, byte value)
+        {
+            if (address >= 0xC000)
+                SystemRam[address & RamSizeMask] = value;
+
+            if (address >= 0xFFFC)
+            {
+                     if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
+                else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);
+                else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
+                return;
+            }
+        }
+
+        private void InitBiosMapper()
+        {
+            Cpu.ReadMemory = ReadMemoryBIOS;
+            Cpu.WriteMemory = WriteMemoryBIOS;
+            WriteMemory(0xFFFC, 0);
+            WriteMemory(0xFFFD, 0);
+            WriteMemory(0xFFFE, 1);
+            WriteMemory(0xFFFF, 2);
+        }
     }
 }

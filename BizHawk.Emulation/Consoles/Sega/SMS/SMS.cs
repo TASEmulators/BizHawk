@@ -10,14 +10,13 @@ using BizHawk.Emulation.Sound;
 
   TODO: 
   + HCounter
-  + Port 3F emulation (Japanese BIOS)
   + Try to clean up the organization of the source code. 
+  + Fix remaining broken games
 
 **********************************************************/
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    
     public sealed partial class SMS : IEmulator
     {
         // Constants
@@ -54,19 +53,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         private byte Port3E = 0xAF;
         private byte Port3F = 0xFF;
 
-        private int scanlinesPerFrame;
-
-        private DisplayType displayType;
-        public DisplayType DisplayType
-        {
-            get { return displayType; }
-            set
-            {
-                displayType = value;
-                scanlinesPerFrame = displayType == DisplayType.NTSC ? 262 : 313;
-            }
-        }
-
+        public DisplayType DisplayType { get; set; }
         public bool DeterministicEmulation { get; set; }
 
         public void Init()
@@ -82,16 +69,22 @@ namespace BizHawk.Emulation.Consoles.Sega
             Vdp = new VDP(Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
             PSG = new SN76489();
             YM2413 = new YM2413();
-            SoundMixer = new SoundMixer(PSG, YM2413);
+            SoundMixer = new SoundMixer(YM2413, PSG);
             if (HasYM2413 && Options.Contains("WhenFMDisablePSG"))
                 SoundMixer.DisableSource(PSG);
-            ActiveSoundProvider = PSG;
+            ActiveSoundProvider = HasYM2413 ? (ISoundProvider) SoundMixer : PSG;
 
             SystemRam = new byte[0x2000];
             if (Options.Contains("CMMapper") == false)
                 InitSegaMapper();
             else
                 InitCodeMastersMapper();
+
+            if (Options.Contains("BIOS"))
+            {
+                Port3E = 0xF7; // Disable cartridge, enable BIOS rom
+                InitBiosMapper();
+            }
             SetupMemoryDomains();
         }
 
@@ -126,6 +119,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x04: return 0xFF;
                 case 0x05: return 0x00;
                 case 0x06: return 0xFF;
+                case 0x3E: return Port3E;
                 case 0x7E: return Vdp.ReadVLineCounter();
                 case 0x7F: break; // hline counter TODO
                 case 0xBE: return Vdp.ReadData();
@@ -134,13 +128,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0xDC: return ReadControls1();
                 case 0xC1: 
                 case 0xDD: return ReadControls2();
-                case 0xF2: 
-                    if (HasYM2413)
-                    {
-                        ActiveSoundProvider = SoundMixer;
-                        return YM2413.DetectionValue; 
-                    }
-                    break;
+                case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte) 0xFF;
             }
             return 0xFF;
         }
@@ -152,6 +140,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 case 0x01: Port01 = value; break;
                 case 0x02: Port02 = value; break;
                 case 0x06: PSG.StereoPanning = value; break;
+                case 0x3E: Port3E = value; break;
                 case 0x3F: Port3F = value; break;
                 case 0x7E:
                 case 0x7F: PSG.WritePsgData(value, Cpu.TotalExecutedCycles); break;
