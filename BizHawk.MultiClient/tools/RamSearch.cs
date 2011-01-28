@@ -58,5 +58,91 @@ namespace BizHawk.MultiClient
                 hackyAutoLoadToolStripMenuItem.Checked = true;
             }
         }
+
+        private void OpenSearchFile()
+        {
+
+        }
+
+        private void SaveAs()
+        {
+
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenSearchFile();
+        }
+
+        private void openToolStripButton_Click(object sender, EventArgs e)
+        {
+            OpenSearchFile();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveAs();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
+        private void SpecificValueRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SpecificValueRadio.Checked)
+            {
+                SpecificValueBox.Enabled = true;
+                SpecificAddressBox.Enabled = false;
+                NumberOfChangesBox.Enabled = false;
+            }
+        }
+
+        private void PreviousValueRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (PreviousValueRadio.Checked)
+            {
+                SpecificValueBox.Enabled = false;
+                SpecificAddressBox.Enabled = false;
+                NumberOfChangesBox.Enabled = false;
+            }
+        }
+
+        private void SpecificAddressRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (SpecificAddressRadio.Checked)
+            {
+                SpecificValueBox.Enabled = false;
+                SpecificAddressBox.Enabled = true;
+                NumberOfChangesBox.Enabled = false;
+            }
+        }
+
+        private void NumberOfChangesRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (NumberOfChangesRadio.Checked)
+            {
+                SpecificValueBox.Enabled = false;
+                SpecificAddressBox.Enabled = false;
+                NumberOfChangesBox.Enabled = true;
+            }
+        }
+
+        private void DifferentByRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DifferentByRadio.Checked)
+                DifferentByBox.Enabled = true;
+            else
+                DifferentByBox.Enabled = false;
+        }
+
+        private void ModuloRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ModuloRadio.Checked)
+                ModuloBox.Enabled = true;
+            else
+                ModuloBox.Enabled = false;
+        }
     }
 }
