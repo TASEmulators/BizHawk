@@ -44,5 +44,19 @@ namespace BizHawk.MultiClient
                 str = " addresses";
             TotalSearchLabel.Text = x.ToString() + str;
         }
+
+        private void hackyAutoLoadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Global.Config.AutoLoadRamSearch == true)
+            {
+                Global.Config.AutoLoadRamSearch = false;
+                hackyAutoLoadToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                Global.Config.AutoLoadRamSearch = true;
+                hackyAutoLoadToolStripMenuItem.Checked = true;
+            }
+        }
     }
 }

@@ -48,7 +48,11 @@
             this.Previous = new System.Windows.Forms.ColumnHeader();
             this.Changes = new System.Windows.Forms.ColumnHeader();
             this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hackyAutoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
@@ -66,7 +70,7 @@
             this.UndotoolStripButton,
             this.NewSearchtoolStripButton,
             this.ClearChangeCountstoolStripButton});
-            this.SearchtoolStrip1.Location = new System.Drawing.Point(0, 0);
+            this.SearchtoolStrip1.Location = new System.Drawing.Point(0, 24);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
             this.SearchtoolStrip1.Size = new System.Drawing.Size(378, 25);
             this.SearchtoolStrip1.TabIndex = 0;
@@ -225,6 +229,31 @@
             this.ClearChangeCountstoolStripButton.Text = "C";
             this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(378, 24);
+            this.menuStrip1.TabIndex = 4;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hackyAutoLoadToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Text = "&File";
+            // 
+            // hackyAutoLoadToolStripMenuItem
+            // 
+            this.hackyAutoLoadToolStripMenuItem.Name = "hackyAutoLoadToolStripMenuItem";
+            this.hackyAutoLoadToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.hackyAutoLoadToolStripMenuItem.Text = "HackyAutoLoad";
+            this.hackyAutoLoadToolStripMenuItem.Click += new System.EventHandler(this.hackyAutoLoadToolStripMenuItem_Click);
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -233,12 +262,16 @@
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.TotalSearchLabel);
             this.Controls.Add(this.SearchtoolStrip1);
+            this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "RamSearch";
             this.Text = "Ram Search";
             this.Load += new System.EventHandler(this.RamSearch_Load);
             this.SearchtoolStrip1.ResumeLayout(false);
             this.SearchtoolStrip1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -265,5 +298,8 @@
         private System.Windows.Forms.ToolStripButton UndotoolStripButton;
         private System.Windows.Forms.ToolStripButton NewSearchtoolStripButton;
         private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hackyAutoLoadToolStripMenuItem;
     }
 }
