@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BizHawk
@@ -10,9 +11,11 @@ namespace BizHawk
     {
         public byte[] RomData;
         private string name;
-        private string[] options;
+        private List<string> options;
 
         private const int BankSize = 16384;
+
+        // TODO bleh, just make this a minimal SMD implementation. Its good to have SMD support in base emu lib, but it doesn't need to be extravagent.
 
         // TODO we need a consistent interface for these ROM loader implementations, that easily supports loading direct files, or from Content.
         // TODO also should support Name-set, and some other crap.
@@ -20,9 +23,7 @@ namespace BizHawk
         public SmdGame(string path, params string[] options)
         {
             name = Path.GetFileNameWithoutExtension(path).Replace('_', ' ');
-            this.options = options;
-            if (this.options == null)
-                this.options = new string[0];
+            this.options = new List<string>(options);
 
             using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
@@ -69,7 +70,7 @@ namespace BizHawk
             return RomData;
         }
 
-        public string[] GetOptions()
+        public IList<string> GetOptions()
         {
             return options;
         }

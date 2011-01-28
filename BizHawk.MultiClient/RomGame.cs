@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
@@ -8,7 +9,7 @@ namespace BizHawk.MultiClient
         public string System;
 
         private string name;
-        private string[] options = new string[0];
+        private List<string> options;
         private const int BankSize = 4096;
 
         public RomGame(string path) : this(path, null){}
@@ -35,7 +36,7 @@ namespace BizHawk.MultiClient
                 var info = Database.GetGameInfo(RomData, file.FullName);
                 name = info.Name;
                 System = info.System;
-                options = info.GetOptions();
+                options = new List<string>(info.GetOptions());
             }
 
             if (patch != null)
@@ -45,6 +46,11 @@ namespace BizHawk.MultiClient
                     IPS.Patch(RomData, stream);
                 }    
             }
+        }
+
+        public void AddOptions(params string[] options)
+        {
+            this.options.AddRange(options);
         }
 
         private byte[] DeInterleaveSMD(byte[] source)
@@ -69,7 +75,7 @@ namespace BizHawk.MultiClient
         }
 
         public byte[] GetRomData() { return RomData; }
-        public string[] GetOptions() { return options; }
+        public IList<string> GetOptions() { return options; }
         public string Name { get { return name; } }
 
         public string SaveRamPath

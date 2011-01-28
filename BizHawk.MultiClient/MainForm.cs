@@ -47,6 +47,8 @@ namespace BizHawk.MultiClient
                 case 5: x5MenuItem.Checked = true; break;
                 case 10:mzMenuItem.Checked = true; break;
             }
+            if (Global.Config.SmsEnableFM) enableFMChipToolStripMenuItem.Checked = true; 
+            if (Global.Config.SmsAllowOverlock) overclockWhenKnownSafeToolStripMenuItem.Checked = true;
 		
             Database.LoadDatabase("gamedb.txt");
 
@@ -251,10 +253,13 @@ namespace BizHawk.MultiClient
                 case "SMS": 
                     Global.Emulator = new SMS();
                     Global.Emulator.Controller = Global.SMSControls;
+                    if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
+                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverlock");
                     break;
                 case "GG":
                     Global.Emulator = new SMS { IsGameGear = true };
                     Global.Emulator.Controller = Global.SMSControls;
+                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverlock");
                     break;
                 case "PCE":
                     Global.Emulator = new PCEngine(NecSystemType.TurboGrafx);
@@ -904,6 +909,32 @@ namespace BizHawk.MultiClient
             mzMenuItem.Checked = Global.Config.TargetZoomFactor == 10;
             
             FrameBufferResized();
+        }
+
+        private void enableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (enableFMChipToolStripMenuItem.Checked)
+            {
+                enableFMChipToolStripMenuItem.Checked = false;
+                Global.Config.SmsEnableFM = false;
+            } else {
+                enableFMChipToolStripMenuItem.Checked = true;
+                Global.Config.SmsEnableFM = true;
+            }
+        }
+
+        private void overclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (overclockWhenKnownSafeToolStripMenuItem.Checked)
+            {
+                overclockWhenKnownSafeToolStripMenuItem.Checked = false;
+                Global.Config.SmsAllowOverlock = false;
+            }
+            else
+            {
+                overclockWhenKnownSafeToolStripMenuItem.Checked = true;
+                Global.Config.SmsAllowOverlock = true;
+            }
         }
     }
 }

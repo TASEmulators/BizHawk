@@ -96,6 +96,7 @@
             this.x3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.x4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.x5MenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mzMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.displayFPSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.displayFrameCounterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,7 +114,10 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.mzMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.sega8bitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableFMChipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.overclockWhenKnownSafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -587,7 +591,9 @@
             this.pauseToolStripMenuItem,
             this.toolStripSeparator1,
             this.powerToolStripMenuItem,
-            this.resetToolStripMenuItem});
+            this.resetToolStripMenuItem,
+            this.toolStripSeparator8,
+            this.sega8bitToolStripMenuItem});
             this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
             this.emulationToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.emulationToolStripMenuItem.Text = "&Emulation";
@@ -643,42 +649,49 @@
             this.mzMenuItem});
             this.windowSizeMenuItem.Name = "windowSizeMenuItem";
             this.windowSizeMenuItem.Size = new System.Drawing.Size(191, 22);
-            this.windowSizeMenuItem.Text = "Window Size";
+            this.windowSizeMenuItem.Text = "&Window Size";
             // 
             // x1MenuItem
             // 
             this.x1MenuItem.Name = "x1MenuItem";
             this.x1MenuItem.Size = new System.Drawing.Size(152, 22);
-            this.x1MenuItem.Text = "1x";
+            this.x1MenuItem.Text = "&1x";
             this.x1MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x2MenuItem
             // 
             this.x2MenuItem.Name = "x2MenuItem";
             this.x2MenuItem.Size = new System.Drawing.Size(152, 22);
-            this.x2MenuItem.Text = "2x";
+            this.x2MenuItem.Text = "&2x";
             this.x2MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x3MenuItem
             // 
             this.x3MenuItem.Name = "x3MenuItem";
             this.x3MenuItem.Size = new System.Drawing.Size(152, 22);
-            this.x3MenuItem.Text = "3x";
+            this.x3MenuItem.Text = "&3x";
             this.x3MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x4MenuItem
             // 
             this.x4MenuItem.Name = "x4MenuItem";
             this.x4MenuItem.Size = new System.Drawing.Size(152, 22);
-            this.x4MenuItem.Text = "4x";
+            this.x4MenuItem.Text = "&4x";
             this.x4MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x5MenuItem
             // 
             this.x5MenuItem.Name = "x5MenuItem";
             this.x5MenuItem.Size = new System.Drawing.Size(152, 22);
-            this.x5MenuItem.Text = "5x";
+            this.x5MenuItem.Text = "&5x";
             this.x5MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
+            // 
+            // mzMenuItem
+            // 
+            this.mzMenuItem.Name = "mzMenuItem";
+            this.mzMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.mzMenuItem.Text = "&Max";
+            this.mzMenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -730,7 +743,7 @@
             // 
             this.controllersToolStripMenuItem.Enabled = false;
             this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.controllersToolStripMenuItem.Text = "&Controllers";
             this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
             // 
@@ -738,7 +751,7 @@
             // 
             this.hotkeysToolStripMenuItem.Enabled = false;
             this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hotkeysToolStripMenuItem.Text = "&Hotkeys";
             this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
             // 
@@ -802,7 +815,7 @@
             // 
             this.helpToolStripMenuItem1.Enabled = false;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
             this.helpToolStripMenuItem1.Text = "&Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
@@ -810,16 +823,37 @@
             // 
             this.aboutToolStripMenuItem.Enabled = false;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // mzMenuItem
+            // toolStripSeparator8
             // 
-            this.mzMenuItem.Name = "maxZoomMenuItem";
-            this.mzMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.mzMenuItem.Text = "Max";
-            this.mzMenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+            // 
+            // sega8bitToolStripMenuItem
+            // 
+            this.sega8bitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableFMChipToolStripMenuItem,
+            this.overclockWhenKnownSafeToolStripMenuItem});
+            this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
+            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
+            // 
+            // enableFMChipToolStripMenuItem
+            // 
+            this.enableFMChipToolStripMenuItem.Name = "enableFMChipToolStripMenuItem";
+            this.enableFMChipToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.enableFMChipToolStripMenuItem.Text = "Enable FM Chip";
+            this.enableFMChipToolStripMenuItem.Click += new System.EventHandler(this.enableFMChipToolStripMenuItem_Click);
+            // 
+            // overclockWhenKnownSafeToolStripMenuItem
+            // 
+            this.overclockWhenKnownSafeToolStripMenuItem.Name = "overclockWhenKnownSafeToolStripMenuItem";
+            this.overclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.overclockWhenKnownSafeToolStripMenuItem.Text = "Overclock when Known Safe";
+            this.overclockWhenKnownSafeToolStripMenuItem.Click += new System.EventHandler(this.overclockWhenKnownSafeToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -928,6 +962,10 @@
         private System.Windows.Forms.ToolStripMenuItem x4MenuItem;
         private System.Windows.Forms.ToolStripMenuItem x5MenuItem;
         private System.Windows.Forms.ToolStripMenuItem mzMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem sega8bitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableFMChipToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem overclockWhenKnownSafeToolStripMenuItem;
     }
 }
 
