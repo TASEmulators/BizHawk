@@ -52,7 +52,7 @@ B33817AE	T	Alex Kidd in Miracle World [v1] (FR) [A]	SMS	Floflo
 1BE4314A	T	Alex Kidd in Miracle World [v1] (FR) [C]	SMS	Terminus Traduction; v1.0
 5BCD77ED	T	Alex Kidd in Miracle World [v1] (IT)	SMS	
 2C08872B	H	Alex Kidd in Miracle World [Playpal hack]	SMS	Alex Kidd in Miracle World [v1]; hacked to make it compatible with the PlayPal/Coleco hardware
-CF4A09EA	I	Alex Kidd in Miracle World [BIOS]	SMS	
+CF4A09EA	I	Alex Kidd in Miracle World [BIOS]	SMS		BIOS
 5C4CA816	H	Alex Kidd in Miracle World [BIOS] [Game hack]	SMS	Alex Kidd in Miracle World [BIOS]; hacked to skip the BIOS checks and boot to the game
 9C5BAD91	I	Alex Kidd in Miracle World [BIOS] (KR)	SMS	
 08C9EC91	 	Alex Kidd no Miracle World (JP)	SMS	
@@ -462,7 +462,7 @@ A77F996F	F	Hang On (BR) [A] (h)	SMS
 1C5059F0	 	Hang On & Astro Warrior (US)	SMS	
 E167A561	 	Hang On & Safari Hunt	SMS	
 C5083000	V	Hang On & Safari Hunt (bad dump)	SMS	Blank 16KB from 1C000 to fix
-91E93385	I	Hang On & Safari Hunt [BIOS]	SMS	
+91E93385	I	Hang On & Safari Hunt [BIOS]	SMS		BIOS	
 BC05774F	D	Happy 10!	SMS	blind_io; SMS Power Sega 8-bit Coding Competition 2007 entry
 07C39BA4	D	Happy Looser	SMS	Zoop (Bock); Y2Kode entry
 922954C6	B	Happy Looser (7 bad bytes)	SMS	
@@ -902,7 +902,7 @@ E4CD2EDD	D	SMS APA Demo [v0.02]	SMS	Haroldo O. Pinheiro
 5AD6EDAC	H	SMS BIOS (US v1.3) [Hack]	SMS	SMS BIOS (US v1.3) to make it play the snail game when loaded as a ROM
 0072ED54	I	SMS BIOS (US v1.3)	SMS	
 AD31C5FF	D	SMS Boot Loader	SMS	Bock; v0.9
-48D44A13	I	SMS Japanese (v2.1) [BIOS]	SMS	
+48D44A13	I	SMS Japanese (v2.1) [BIOS]	SMS		BIOS;FM
 1A15DFCC	I	SMS Prototype (M404) [BIOS]	SMS	
 EE2C29BA	I	SMS Store Display Unit [BIOS] (non-functional)	SMS	Different memory map; v1.3
 97B89878	D	SMS Cast	SMS	Bock
@@ -946,7 +946,7 @@ B519E833	 	Sonic The Hedgehog	SMS
 CD1BAC10	F	Sonic The Hedgehog (f)	SMS	F
 246564E6	V	Sonic The Hedgehog (bad dump)	SMS	Very bad
 48806FF7	T	Sonic The Hedgehog (FR)	SMS	Terminus Traduction; v1.00
-81C3476B	I	Sonic The Hedgehog [BIOS]	SMS	
+81C3476B	I	Sonic The Hedgehog [BIOS]	SMS		BIOS
 4B3C7752	H	Sonic 1 Sprite Hack	SMS	Sonic The Hedgehog by Ambil
 5B3B922C	 	Sonic The Hedgehog 2 [v0]	SMS	
 CD85F7C5	F	Sonic The Hedgehog 2 [v0] (f)	SMS	F
