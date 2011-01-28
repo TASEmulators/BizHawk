@@ -53,11 +53,21 @@
             this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+            this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bytesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.toolStrip2.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
@@ -224,7 +234,7 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(206, 125);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(206, 100);
             this.toolStripContainer1.Location = new System.Drawing.Point(243, 58);
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.Size = new System.Drawing.Size(206, 175);
@@ -235,6 +245,7 @@
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.SearchtoolStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip2);
             // 
             // toolStrip1
             // 
@@ -287,6 +298,79 @@
             this.ClearChangeCountstoolStripButton.Text = "C";
             this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
             // 
+            // toolStrip2
+            // 
+            this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DataSizetoolStripSplitButton1,
+            this.DataTypetoolStripSplitButton1});
+            this.toolStrip2.Location = new System.Drawing.Point(3, 50);
+            this.toolStrip2.Name = "toolStrip2";
+            this.toolStrip2.Size = new System.Drawing.Size(151, 25);
+            this.toolStrip2.TabIndex = 2;
+            // 
+            // DataSizetoolStripSplitButton1
+            // 
+            this.DataSizetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DataSizetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.byteToolStripMenuItem,
+            this.bytesToolStripMenuItem,
+            this.bytesToolStripMenuItem1});
+            this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
+            this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
+            this.DataSizetoolStripSplitButton1.Size = new System.Drawing.Size(68, 22);
+            this.DataSizetoolStripSplitButton1.Text = "Data Size";
+            // 
+            // byteToolStripMenuItem
+            // 
+            this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
+            this.byteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byteToolStripMenuItem.Text = "1 Byte";
+            // 
+            // bytesToolStripMenuItem
+            // 
+            this.bytesToolStripMenuItem.Name = "bytesToolStripMenuItem";
+            this.bytesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bytesToolStripMenuItem.Text = "2 Bytes";
+            // 
+            // bytesToolStripMenuItem1
+            // 
+            this.bytesToolStripMenuItem1.Name = "bytesToolStripMenuItem1";
+            this.bytesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.bytesToolStripMenuItem1.Text = "4 Bytes";
+            // 
+            // DataTypetoolStripSplitButton1
+            // 
+            this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.signedToolStripMenuItem,
+            this.unsignedToolStripMenuItem,
+            this.hexadecimalToolStripMenuItem});
+            this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
+            this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DataTypetoolStripSplitButton1.Name = "DataTypetoolStripSplitButton1";
+            this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(73, 22);
+            this.DataTypetoolStripSplitButton1.Text = "Data Type";
+            // 
+            // signedToolStripMenuItem
+            // 
+            this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
+            this.signedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.signedToolStripMenuItem.Text = "Signed";
+            // 
+            // unsignedToolStripMenuItem
+            // 
+            this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
+            this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unsignedToolStripMenuItem.Text = "Unsigned";
+            // 
+            // hexadecimalToolStripMenuItem
+            // 
+            this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
+            this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -311,6 +395,8 @@
             this.toolStripContainer1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.toolStrip2.ResumeLayout(false);
+            this.toolStrip2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -342,5 +428,14 @@
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
         private System.Windows.Forms.ToolStripButton UndotoolStripButton;
+        private System.Windows.Forms.ToolStrip toolStrip2;
+        private System.Windows.Forms.ToolStripSplitButton DataSizetoolStripSplitButton1;
+        private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bytesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem bytesToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSplitButton DataTypetoolStripSplitButton1;
+        private System.Windows.Forms.ToolStripMenuItem signedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unsignedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hexadecimalToolStripMenuItem;
     }
 }
