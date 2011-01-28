@@ -38,25 +38,31 @@
             this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.TotalSearchLabel = new System.Windows.Forms.Label();
             this.listView1 = new System.Windows.Forms.ListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Previous = new System.Windows.Forms.ColumnHeader();
             this.Changes = new System.Windows.Forms.ColumnHeader();
-            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hackyAutoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
             // 
+            this.SearchtoolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.SearchtoolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
@@ -65,14 +71,10 @@
             this.cutToolStripButton,
             this.WatchtoolStripButton1,
             this.PoketoolStripButton1,
-            this.toolStripSeparator1,
-            this.toolStripButton1,
-            this.UndotoolStripButton,
-            this.NewSearchtoolStripButton,
-            this.ClearChangeCountstoolStripButton});
-            this.SearchtoolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStripSeparator1});
+            this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(378, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(160, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -144,33 +146,6 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
-            // 
-            // UndotoolStripButton
-            // 
-            this.UndotoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.UndotoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
-            this.UndotoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.UndotoolStripButton.Name = "UndotoolStripButton";
-            this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.UndotoolStripButton.Text = "Undo Search";
-            // 
-            // NewSearchtoolStripButton
-            // 
-            this.NewSearchtoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.NewSearchtoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-            this.NewSearchtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NewSearchtoolStripButton.Name = "NewSearchtoolStripButton";
-            this.NewSearchtoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.NewSearchtoolStripButton.Text = "New Search";
-            // 
             // TotalSearchLabel
             // 
             this.TotalSearchLabel.AutoSize = true;
@@ -182,9 +157,8 @@
             // 
             // listView1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -218,24 +192,13 @@
             this.Changes.Text = "Changes";
             this.Changes.Width = 55;
             // 
-            // ClearChangeCountstoolStripButton
-            // 
-            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
-            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
-            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.ClearChangeCountstoolStripButton.Text = "C";
-            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(378, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(449, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -254,14 +217,84 @@
             this.hackyAutoLoadToolStripMenuItem.Text = "HackyAutoLoad";
             this.hackyAutoLoadToolStripMenuItem.Click += new System.EventHandler(this.hackyAutoLoadToolStripMenuItem_Click);
             // 
+            // toolStripContainer1
+            // 
+            this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(206, 125);
+            this.toolStripContainer1.Location = new System.Drawing.Point(243, 58);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(206, 175);
+            this.toolStripContainer1.TabIndex = 5;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            // 
+            // toolStripContainer1.TopToolStripPanel
+            // 
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.SearchtoolStrip1);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewSearchtoolStripButton,
+            this.toolStripButton1,
+            this.ClearChangeCountstoolStripButton,
+            this.UndotoolStripButton});
+            this.toolStrip1.Location = new System.Drawing.Point(3, 25);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
+            this.toolStrip1.TabIndex = 1;
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "toolStripButton1";
+            // 
+            // UndotoolStripButton
+            // 
+            this.UndotoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.UndotoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+            this.UndotoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.UndotoolStripButton.Name = "UndotoolStripButton";
+            this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.UndotoolStripButton.Text = "Undo Search";
+            // 
+            // NewSearchtoolStripButton
+            // 
+            this.NewSearchtoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NewSearchtoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+            this.NewSearchtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NewSearchtoolStripButton.Name = "NewSearchtoolStripButton";
+            this.NewSearchtoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.NewSearchtoolStripButton.Text = "New Search";
+            // 
+            // ClearChangeCountstoolStripButton
+            // 
+            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
+            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
+            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.ClearChangeCountstoolStripButton.Text = "C";
+            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(378, 461);
+            this.ClientSize = new System.Drawing.Size(449, 461);
+            this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.TotalSearchLabel);
-            this.Controls.Add(this.SearchtoolStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -272,6 +305,12 @@
             this.SearchtoolStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.TopToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -294,12 +333,14 @@
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Previous;
         private System.Windows.Forms.ColumnHeader Changes;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
-        private System.Windows.Forms.ToolStripButton UndotoolStripButton;
-        private System.Windows.Forms.ToolStripButton NewSearchtoolStripButton;
-        private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hackyAutoLoadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton NewSearchtoolStripButton;
+        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
+        private System.Windows.Forms.ToolStripButton UndotoolStripButton;
     }
 }
