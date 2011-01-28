@@ -7,13 +7,13 @@ A581402E	D	64-Color Palette Test Program	SMS	Charles MacDonald
 3658F3E0	 	Action Fighter	SMS			
 5B3920CB	F	Action Fighter (f)	SMS	F		
 D91B340D	 	Action Fighter (JP)	SMS			
-72420F38	 	"Addams Family, The"	SMS			
+72420F38	 	The Addams Family	SMS			
 ECF491CF	 	Aerial Assault	SMS			
-1C951F8E	 	After Burner	SMS			
-FC79B585	B	After Burner (eight bad bytes)	SMS			
-4D0F5E0C	F	After Burner (f)	SMS	F		
-978C2927	F	After Burner (h) [A]	SMS			
-99A33506	F	After Burner (h) [B]	SMS			
+1C951F8E	 	After Burner	SMS		FM	
+FC79B585	B	After Burner (eight bad bytes)	SMS		FM	
+4D0F5E0C	F	After Burner (f)	SMS	F	FM	
+978C2927	F	After Burner (h) [A]	SMS		FM	
+99A33506	F	After Burner (h) [B]	SMS		FM	
 8B43D21D	 	Air Rescue	SMS	
 7337ABB7	V	Air Rescue (bad dump) (PT)	SMS	Translation patch applied to bad dump
 8B4CA9E4	V	Air Rescue (bad dump) [A]	SMS	Very bad
@@ -25,8 +25,8 @@ D8C4165B	 	Aleste (JP)	SMS
 90118E13	F	Aleste (JP) (h)	SMS	
 013C0A94	 	Alex Kidd - High Tech World	SMS	
 29220201	T	Alex Kidd - High Tech World (DE)	SMS	Star-Trans; v1.00
-C13896D5	 	Alex Kidd - The Lost Stars	SMS	
-2210F389	V	Alex Kidd - The Lost Stars (bad dump)	SMS	Very bad
+C13896D5	 	Alex Kidd - The Lost Stars	SMS		FM
+2210F389	V	Alex Kidd - The Lost Stars (bad dump)	SMS	Very bad	FM
 17A40E29	 	Alex Kidd in Miracle World [v0] (US)	SMS	
 4213FA16	T	Alex Kidd in Miracle World [v0] (IT)	SMS	
 A29995A7	T	Alex Kidd in Miracle World [v0] (FR)	SMS	Terminus Traduction; v1.0
@@ -60,20 +60,20 @@ D2417ED7	 	Alex Kidd in Shinobi World	SMS
 2CD7DEC7	B	Alex Kidd in Shinobi World (bad byte)	SMS	
 99B590D5	B	Alex Kidd in Shinobi World (four bad bytes)	SMS	
 587E41D5	T	Alex Kidd in Shinobi World (FR)	SMS	Terminus Traduction; v1.00
-82038AD4	 	Alf	SMS	"US, BR"
+82038AD4	 	Alf	SMS	US, BR
 B618B144	 	Alien 3	SMS	
 7F30F793	 	Alien Storm	SMS	
 62A2846F	F	Alien Storm (h) [A]	SMS	
 BFF6E8FE	F	Alien Storm (h) [B]	SMS	
-5CBFE997	 	Alien Syndrome	SMS	
-4CC11DF9	 	Alien Syndrome (JP)	SMS	
-412D9A6B	F	Alien Syndrome (h) [A]	SMS	
-E558A867	F	Alien Syndrome (h) [B]	SMS	
-A6ECB30D	F	Alien Syndrome (h) [C]	SMS	
-BBA2FE98	 	Altered Beast	SMS	
-A6308D64	F	Altered Beast (h) [A]	SMS	
-F327D0A5	F	Altered Beast (h) [B]	SMS	
-B093CBCF	F	Altered Beast (h) [C]	SMS	
+5CBFE997	 	Alien Syndrome	SMS		FM
+4CC11DF9	 	Alien Syndrome (JP)	SMS		FM	
+412D9A6B	F	Alien Syndrome (h) [A]	SMS		FM	
+E558A867	F	Alien Syndrome (h) [B]	SMS		FM	
+A6ECB30D	F	Alien Syndrome (h) [C]	SMS		FM	
+BBA2FE98	 	Altered Beast	SMS		FM
+A6308D64	F	Altered Beast (h) [A]	SMS		FM	
+F327D0A5	F	Altered Beast (h) [B]	SMS		FM	
+B093CBCF	F	Altered Beast (h) [C]	SMS		FM	
 1AE2A97D	H	Altered Beast [Playpal hack]	SMS	Altered Beast; Hacked to make it compatible with the PlayPal/Coleco hardware
 7B27202F	 	American Baseball	SMS	
 3727D8B2	 	American Pro Football	SMS	
@@ -83,11 +83,11 @@ FFF63B0B	 	Anmitsu Hime (JP)	SMS
 CA270F40	D	AntiISDA Warrior [v1.00]	SMS	Ventzislav Tzvetkov - http://drhirudo.hit.bg
 7408EF2F	D	AntiISDA Warrior [v1.01]	SMS	Ventzislav Tzvetkov - http://drhirudo.hit.bg
 B3E5986E	D	AntiISDA Warrior [v1.02]	SMS	Ventzislav Tzvetkov - http://drhirudo.hit.bg
-6E387C78	D	"aPLib test [v1.0, data]"	SMS	Maxim
-5A1C00CB	D	"aPLib test [v1.0, whole file]"	SMS	Maxim
-107E0607	D	"aPLib test [v1.1, data]"	SMS	Maxim
-CBDFFA42	D	"aPLib test [v1.1, whole file]"	SMS	Maxim
-2F5BC9C4	D	"aPLib test [v1.1, VRAM]"	SMS	Maxim
+6E387C78	D	aPLib test [v1.0, data]	SMS	Maxim
+5A1C00CB	D	aPLib test [v1.0, whole file]	SMS	Maxim
+107E0607	D	aPLib test [v1.1, data]	SMS	Maxim
+CBDFFA42	D	aPLib test [v1.1, whole file]	SMS	Maxim
+2F5BC9C4	D	aPLib test [v1.1, VRAM]	SMS	Maxim
 E4163163	 	Arcade Smash Hits	SMS	
 BAE75805	 	Argos no Juujiken (JP)	SMS	
 32DA4B0D	H	Argos no Juujiken (JP) [Hack]	SMS	Argos no Juujiken (JP); Pirate hack removing copyright screens
@@ -115,11 +115,11 @@ CA558CA8	F	Astro Warrior & Pit Pot (2x overdump) (h)	SMS
 F9BB9125	B	Astro Warrior & Pit Pot (bad byte)	SMS	
 6A9EAEF7	O	Astro Warrior & Pit Pot (bad byte) (2x overdump)	SMS	
 F922D39A	F	Astro Warrior & Pit Pot (h)	SMS	
-FF614EB3	 	Aztec Adventure	SMS	
-884A18B9	O	Aztec Adventure (2x overdump)	SMS	
-95D86B45	F	Aztec Adventure (2x overdump) (h) [A]	SMS	
-9EFC7A9F	F	Aztec Adventure (2x overdump) (h) [B]	SMS	
-DD4861F5	F	Aztec Adventure (2x overdump) (h) [C]	SMS	
+FF614EB3	 	Aztec Adventure	SMS		FM
+884A18B9	O	Aztec Adventure (2x overdump)	SMS		FM
+95D86B45	F	Aztec Adventure (2x overdump) (h) [A]	SMS		FM
+9EFC7A9F	F	Aztec Adventure (2x overdump) (h) [B]	SMS		FM
+DD4861F5	F	Aztec Adventure (2x overdump) (h) [C]	SMS		FM
 E5FF50D8	 	Back to the Future Part II	SMS	
 2D48C1D3	 	Back to the Future Part III	SMS		PAL
 35D84DC2	 	Baku Baku Animal (BR)	SMS	
@@ -146,21 +146,21 @@ DA3A2F57	 	Black Belt	SMS
 8D39B5E7	F	Black Belt (2x overdump) (h) [A]	SMS	
 8231C5E6	F	Black Belt (2x overdump) (h) [B]	SMS	
 CE8DAE8D	F	Black Belt (2x overdump) (h) [C]	SMS	
-8ECD201C	 	Blade Eagle 3-D	SMS	
-FBF96C81	T	Blade Eagle 3-D (BR)	SMS	
+8ECD201C	 	Blade Eagle 3-D	SMS		FM
+FBF96C81	T	Blade Eagle 3-D (BR)	SMS		FM
 2734A9B4	D	blockhead	SMS	proppy & tet; v1.00
 6994770D	D	blockhead [beta 1]	SMS	proppy & tet; v1.00 14/7/2004
 79A1D911	D	blockhead [beta 2]	SMS	proppy & tet; v1.00 26/9/2004
-F9DBB533	 	BMX Trial - Alex Kidd (JP)	SMS	
+F9DBB533	 	BMX Trial - Alex Kidd (JP)	SMS		FM
 1D43A351	D	Bock's Birthday 2002	SMS	Maxim
 C07CB738	D	Bock's Birthday 2003	SMS	Maxim
 31A5CA6A	D	Bock's Birthday 2004	SMS	Maxim
 F0F53C64	D	Bock's Birthday 2006	SMS	Charles MacDonald	FM
 B80A74A1	D	Bock's Birthday 2007	SMS	Maxim
-3084CF11	 	Bomber Raid	SMS	
-09D39A66	F	Bomber Raid (f)	SMS	F
-8A3ED944	B	Bomber Raid (two bad bytes)	SMS	
-D3223DD4	T	Bomber Raid (FR)	SMS	Terminus Traduction; v1.00
+3084CF11	 	Bomber Raid	SMS		FM
+09D39A66	F	Bomber Raid (f)	SMS	F	FM
+8A3ED944	B	Bomber Raid (two bad bytes)	SMS		FM
+D3223DD4	T	Bomber Raid (FR)	SMS	Terminus Traduction; v1.00	FM
 CAEA8002	 	Bonanza Bros.	SMS	
 D778F3FE	F	Bonanza Bros. (h)	SMS	
 B3768A7A	 	Bonkers Wax Up! (BR)	SMS	
@@ -169,20 +169,20 @@ B3768A7A	 	Bonkers Wax Up! (BR)	SMS
 E843BA7E	 	Bubble Bobble	SMS	
 F7294EE1	T	Bubble Bobble (FR)	SMS	
 B0FC4577	 	Buggy Run	SMS	
-AC6009A7	 	California Games	SMS	
-7735AD99	F	California Games (f)	SMS	F
-13D49D42	B	California Games (93 bad bytes)	SMS	
-B3B5D047	T	California Games (BR)	SMS	
-C0E25D62	 	California Games II	SMS	
+AC6009A7	 	California Games	SMS		FM
+7735AD99	F	California Games (f)	SMS	F	FM
+13D49D42	B	California Games (93 bad bytes)	SMS		FM
+B3B5D047	T	California Games (BR)	SMS		FM
+C0E25D62	 	California Games II	SMS
 5F5D13AF	B	California Games II (bad byte)	SMS	
 EEAD16C7	D	Canyon Racer	SMS	Haroldo O. Pinheiro; v0.01 alpha
-A4852757	 	Captain Silver	SMS	
-74DC9B53	F	Captain Silver (f)	SMS	F
-87BF8A47	B	Captain Silver (bad byte)	SMS	
-B81F6FA5	 	Captain Silver (US)	SMS	
-3CFF6E80	 	Casino Games	SMS	
-E239ED95	B	Casino Games (45 bad bytes)	SMS	
-F964F356	B	Casino Games (bad byte)	SMS	
+A4852757	 	Captain Silver	SMS		FM
+74DC9B53	F	Captain Silver (f)	SMS	F	FM
+87BF8A47	B	Captain Silver (bad byte)	SMS		FM
+B81F6FA5	 	Captain Silver (US)	SMS		FM
+3CFF6E80	 	Casino Games	SMS		FM
+E239ED95	B	Casino Games (45 bad bytes)	SMS		FM
+F964F356	B	Casino Games (bad byte)	SMS		FM
 31FFD7C3	 	Castelo Ra-Tim-Bum (BR)	SMS	
 DCD38617	B	Castelo Ra-Tim-Bum (BR) (four bad bytes)	SMS	
 953F42E1	 	Castle of Illusion - Starring Mickey Mouse	SMS	
@@ -223,9 +223,9 @@ E421E466	 	Chouon Senshi Borgman (JP)	SMS
 DD0E2927	 	Chuck Rock	SMS
 C30E690A	 	Chuck Rock II - Son of Chuck	SMS
 87783C04	 	Chuck Rock II - Son of Chuck (BR)	SMS		
-E7F62E6D	 	Cloud Master	SMS		
-13D762EB	B	Cloud Master (4 bad bytes)	SMS		
-84E45C25	T	Cloud Master (FR)	SMS	Terminus Traduction; v1.0	
+E7F62E6D	 	Cloud Master	SMS		FM
+13D762EB	B	Cloud Master (4 bad bytes)	SMS		FM
+84E45C25	T	Cloud Master (FR)	SMS	Terminus Traduction; v1.0		FM
 BFEE193C	D	Code 38 - Volume I [French/NoPSG]	SMS	L.I.N. - http://membres.lycos.fr/pin26/lin/	
 79482586	I	Coleco handheld compilation	SMS		
 5C19E8A5	D	Color Check	SMS	Dave	
@@ -237,13 +237,13 @@ CC92058A	B	Cool Spot (bad byte)	SMS	2FC0E=00
 43600BB1	D	Copyright Violation	SMS	Heliophobe	
 29822980	 	Cosmic Spacehead	SMS		CMMapper;PAL
 0299BDA4	D	Crappy	SMS	Memetic	
-1350E4F8	 	"Cyber Shinobi, The"	SMS		
-C576C058	T	"Cyber Shinobi, The (FR)"	SMS	Terminus Traduction; v1.00
-908E7524	 	Cyborg Hunter	SMS	
-391B6C0E	F	Cyborg Hunter (f)	SMS	F
-903AAD36	T	Cyborg Hunter (BR)	SMS	
-BDD034EE	T	Cyborg Hunter (IT)	SMS	
-0F2E4F1E	T	Cyborg Hunter (FR)	SMS	Terminus Traduction; v1.00
+1350E4F8	 	The Cyber Shinobi	SMS		
+C576C058	T	The Cyber Shinobi (FR)	SMS	Terminus Traduction; v1.00
+908E7524	 	Cyborg Hunter	SMS		FM
+391B6C0E	F	Cyborg Hunter (f)	SMS	F	FM
+903AAD36	T	Cyborg Hunter (BR)	SMS		FM
+BDD034EE	T	Cyborg Hunter (IT)	SMS		FM
+0F2E4F1E	T	Cyborg Hunter (FR)	SMS	Terminus Traduction; v1.00	FM
 7694ED1C	D	Cycle Counter	SMS	FluBBa
 71ABEF27	 	Daffy Duck in Hollywood	SMS	
 FCEFD481	D	Damiana (v1)	SMS	Heliophobe; Y2Kode entry; accidentally has a very short level
@@ -262,17 +262,17 @@ D1341667	D	Digger Ball	SMS	Aypok & PlayGeneration; SMS Power Sega 8-bit Coding C
 8F03B610	D	Digger Ball [no explosions]	SMS	Aypok & PlayGeneration; hardware compatibility version; SMS Power Sega 8-bit Coding Competition 2007 entry
 C4CA6878	D	Digger Chan	SMS	Aypok; SMS Power Sega 8-bit Coding Competition 2006 entry
 EA5C3A6F	 	Dinobasher - Starring Bignose the Caveman [Proto]	SMS	
-32F4B791	 	"Dinosaur Dooley, The (KR)"	SMS	
+32F4B791	 	The Dinosaur Dooley (KR)	SMS	
 89B79E77	 	Dodgeball King (KR)	SMS	
 A672D27C	O	Dodgeball King (KR) (80KB overdump)	SMS	
-A55D89F3	 	Double Dragon	SMS	
-B8CFFA0F	F	Double Dragon (h) [A]	SMS	
-3010152A	F	Double Dragon (h) [B]	SMS	
-6CC2E967	F	Double Dragon (h) (f) [A]	SMS	
-C154F62C	F	Double Dragon (h) (f) [B]	SMS	
-F85961EC	O	Double Dragon (f)	SMS	
-E730BB27	B	Double Dragon (bad byte)	SMS	
-FAA2C8DB	F	Double Dragon (bad byte) (h)	SMS	
+A55D89F3	 	Double Dragon	SMS		FM
+B8CFFA0F	F	Double Dragon (h) [A]	SMS		FM
+3010152A	F	Double Dragon (h) [B]	SMS		FM
+6CC2E967	F	Double Dragon (h) (f) [A]	SMS		FM
+C154F62C	F	Double Dragon (h) (f) [B]	SMS		FM
+F85961EC	O	Double Dragon (f)	SMS		FM
+E730BB27	B	Double Dragon (bad byte)	SMS		FM
+FAA2C8DB	F	Double Dragon (bad byte) (h)	SMS		FM
 3B79D63E	V	Double Dragon (bad dump)	SMS	Blank areas
 8370F6CD	 	Double Hawk	SMS	
 52D9EAF1	B	Double Hawk (eight bad bytes)	SMS	
@@ -318,14 +318,14 @@ C555260D	F	Fantasy Zone (2x overdump) (h) [B]	SMS
 B6523C5B	H	Fantasy Zone [Playpal hack]	SMS	Fantasy Zone; hacked to make it compatible with the PlayPal/Coleco hardware	
 0FFBCAA3	 	Fantasy Zone [v0] (JP)	SMS		
 F46264FE	 	Fantasy Zone [v1] [Proto]	SMS		
-B8B141F9	 	Fantasy Zone II	SMS	
-A5233205	F	Fantasy Zone II (h) [A]	SMS	
-1C89CE6A	F	Fantasy Zone II (h) [B]	SMS	
-F7EAF75A	B	Fantasy Zone II (bad byte)	SMS	
-C722FB42	 	Fantasy Zone II (JP)	SMS	
-D29889AD	 	Fantasy Zone - The Maze	SMS	
-483394F9	O	Fantasy Zone - The Maze (2x overdump)	SMS	
-55A1E705	F	Fantasy Zone - The Maze (2x overdump) (h)	SMS	
+B8B141F9	 	Fantasy Zone II	SMS		FM
+A5233205	F	Fantasy Zone II (h) [A]	SMS		FM
+1C89CE6A	F	Fantasy Zone II (h) [B]	SMS		FM
+F7EAF75A	B	Fantasy Zone II (bad byte)	SMS		FM
+C722FB42	 	Fantasy Zone II (JP)	SMS		FM
+D29889AD	 	Fantasy Zone - The Maze	SMS		FM
+483394F9	O	Fantasy Zone - The Maze (2x overdump)	SMS		FM
+55A1E705	F	Fantasy Zone - The Maze (2x overdump) (h)	SMS		FM
 BE8A3D4C	H	Fantasy Zone - The Maze [Playpal hack]	SMS	Fantasy Zone - The Maze; hacked to make it compatible with the PlayPal/Coleco hardware
 CCB2CAB4	H	Felipe em Acao	SMS	Teddy Boy
 BF6C2E37	 	Ferias Frustradas do Pica Pau (BR)	SMS	
@@ -334,8 +334,8 @@ BF6C2E37	 	Ferias Frustradas do Pica Pau (BR)	SMS
 86D6384E	T	Final Bubble Bobble (ES)	SMS	PKT
 F6AD7B1D	 	Fire & Forget II	SMS	
 8B24A640	 	Fire & Ice (BR)	SMS	
-BE31D63F	 	"Flash, The"	SMS	
-CA5C78A5	 	"Flintstones, The"	SMS	
+BE31D63F	 	The Flash	SMS	
+CA5C78A5	 	The Flintstones	SMS	
 38C53916	 	Forgotten Worlds	SMS	
 69E612D2	D	Frog demo [beta 1]	SMS	Eric Shen
 AA0D0D60	D	Frog demo [beta 2]	SMS	Eric Shen
@@ -350,13 +350,13 @@ E6795C53	 	Fushigi no Oshiro Pit Pot (JP)	SMS
 5D08E823	H	Fushigi no Oshiro Pit Pot (JP) [Hack]	SMS	Fushigi no Oshiro Pit Pot (JP)
 8B40F6BF	 	Gaegujangi Ggachi (KR)	SMS	
 3EC5E627	 	Gain Ground	SMS	
-A6FA42D0	 	Galactic Protector (JP)	SMS		
+A6FA42D0	 	Galactic Protector (JP)	SMS		FM
 A4AC35D8	 	Galaxy Force	SMS		FM
 6C827520	 	Galaxy Force (US)	SMS		FM
-2DD930F8	V	Galaxy Force (US) (first 128KB only)	SMS		
-1820C8AC	B	Galaxy Force (US) (7 bad bytes)	SMS		
-1890F407	 	Game Box Serie Esportes Radicais (BR)	SMS		
-5F643283	 	Game Box Serie Esportes (BR)	SMS	"3 roms merged, only the first is playable"	
+2DD930F8	V	Galaxy Force (US) (first 128KB only)	SMS		FM	
+1820C8AC	B	Galaxy Force (US) (7 bad bytes)	SMS		FM
+1890F407	 	Game Box Serie Esportes Radicais (BR)	SMS		FM	
+5F643283	 	Game Box Serie Esportes (BR)	SMS	3 roms merged, only the first is playable		FM
 5FC74D2A	 	Gangster Town	SMS		
 94483815	F	Gangster Town (f)	SMS	F	
 D9190956	 	Gauntlet	SMS		
@@ -385,11 +385,11 @@ DABCC054	H	Ghost House (JP) [Hack]	SMS	Ghost House (JP)
 D0A1EE1D	F	Ghouls'n Ghosts (h) [B]	SMS	
 DB48B5EC	T	Ghouls'n Ghosts (BR)	SMS	Guto of www.emubrazil.tk
 ABB6DE54	V	Ghouls'n Ghosts (bad - 10KB missing)	SMS	
-B746A6F5	 	Global Defense	SMS	
-91A0FC4E	 	Global Defense [Proto]	SMS	
-68646B7B	O	Global Defense (2x overdump)	SMS	
-75F61887	F	Global Defense (2x overdump) (h)	SMS	
-87E45583	V	Global Defense (54KB mising)	SMS	
+B746A6F5	 	Global Defense	SMS		FM
+91A0FC4E	 	Global Defense [Proto]	SMS		FM
+68646B7B	O	Global Defense (2x overdump)	SMS		FM
+75F61887	F	Global Defense (2x overdump) (h)	SMS		FM
+87E45583	V	Global Defense (54KB mising)	SMS		FM
 B89CC547	H	Global Defense [Playpal hack]	SMS	Global Defense; hacked to make it compatible with the PlayPal/Coleco hardware
 B67CEB76	 	Global Gladiators	SMS	
 8DAE576E	O	Global Gladiators (2x overdump)	SMS	
@@ -414,13 +414,13 @@ F424AD15	T	Golden Axe Warrior (BR) [C]	SMS
 21DB20AE	T	Golden Axe Warrior (DE)	SMS	Trans-Nation; v0.82
 472D1CE4	T	Golden Axe Warrior (FR)	SMS	Haruney
 A53677B3	T	Golden Axe Warrior (ES)	SMS	PKT
-48651325	 	Golfamania	SMS	
-5DABFDC3	 	Golfamania [Proto]	SMS	
-A51376FE	 	Golvellius - Valley of Doom	SMS	
-7EF6E2F6	F	Golvellius - Valley of Doom (f)	SMS	F
-00196EBA	T	Golvellius - Valley of Doom (BR)	SMS	Star-Trans
-359141EF	T	Golvellius - Valley of Doom (DE)	SMS	Star-Trans; version 1.00
-11E19FB1	T	Golvellius - Valley of Doom (FR)	SMS	Floflo
+48651325	 	Golfamania	SMS		FM
+5DABFDC3	 	Golfamania [Proto]	SMS		FM
+A51376FE	 	Golvellius - Valley of Doom	SMS		FM
+7EF6E2F6	F	Golvellius - Valley of Doom (f)	SMS	F	FM
+00196EBA	T	Golvellius - Valley of Doom (BR)	SMS	Star-Trans	FM
+359141EF	T	Golvellius - Valley of Doom (DE)	SMS	Star-Trans; version 1.00	FM
+11E19FB1	T	Golvellius - Valley of Doom (FR)	SMS	Floflo	FM
 E02FC973	D	Good Advice	SMS	Heliophobe
 EC2DA554	 	GP Rider	SMS	
 10ED6B57	 	Great Baseball	SMS	
@@ -430,14 +430,14 @@ C1E699DB	H	Great Baseball [JP] (JP) [Hack]	SMS
 2055825F	 	Great Football	SMS	
 08A1C711	O	Great Football (2x overdump)	SMS	
 1533B4ED	F	Great Football (2x overdump) (h)	SMS	
-98E4AE4A	 	Great Golf	SMS
-1D2165A4	O	Great Golf (2x overdump)	SMS
-00B31658	F	Great Golf (2x overdump) (h) [A]	SMS
-92C0A30D	F	Great Golf (2x overdump) (h) [B]	SMS
-9AC4B0AC	O	Great Golf (57KB overdump)	SMS
-94B4E09A	F	Great Golf (57KB overdump) (h)	SMS
-6586BD1F	 	Great Golf [JP] (JP)	SMS
-4847BC91	 	Great Golf [Proto] (JP)	SMS
+98E4AE4A	 	Great Golf	SMS		FM
+1D2165A4	O	Great Golf (2x overdump)	SMS		FM
+00B31658	F	Great Golf (2x overdump) (h) [A]	SMS		FM
+92C0A30D	F	Great Golf (2x overdump) (h) [B]	SMS		FM
+9AC4B0AC	O	Great Golf (57KB overdump)	SMS		FM
+94B4E09A	F	Great Golf (57KB overdump) (h)	SMS		FM
+6586BD1F	 	Great Golf [JP] (JP)	SMS		FM
+4847BC91	 	Great Golf [Proto] (JP)	SMS		FM
 0CB7E21F	 	Great Ice Hockey	SMS
 946B8C4A	O	Great Ice Hockey (2x overdump)	SMS
 0ED170C9	 	Great Soccer	SMS
@@ -480,13 +480,13 @@ C9DBF936	 	Home Alone	SMS
 9CED34A7	 	Hook [Proto]	SMS	
 6C2745F7	B	Hook [Proto] (bad byte)	SMS	
 95256919	T	Hook [Proto] (BR)	SMS	
-955A009E	 	Hoshi wo Sagashite... (JP)	SMS	
-F352FFA8	D	"Image-Music-,Works"	SMS	Peder Johansen
+955A009E	 	Hoshi wo Sagashite... (JP)	SMS		FM
+F352FFA8	D	Image-Music-Works	SMS	Peder Johansen
 64D6AF3B	 	Impossible Mission	SMS	
 C129903B	F	Impossible Mission (f)	SMS	F
 53450D7A	B	Impossible Mission (2 bad bytes)	SMS	
-B4584DDE	 	"Incredible Crash Dummies, The"	SMS	
-BE9A7071	 	"Incredible Hulk, The"	SMS	
+B4584DDE	 	The Incredible Crash Dummies	SMS	
+BE9A7071	 	The Incredible Hulk	SMS	
 8AEB574B	 	Indiana Jones and the Last Crusade	SMS	
 54CC8DD0	D	Interactive Sprite Test	SMS	Charles MacDonald
 191C3113	D	Interactive Sprite Test 2	SMS	Charles MacDonald
@@ -505,21 +505,21 @@ E05E3D2B	V	Jornada do Mymo (bad - last 108KB missing)	SMS
 BBC237C0	H	Jornada do Mymo [A]	SMS	Psycho Fox
 5D6DEC5E	H	Jornada do Mymo [B]	SMS	Psycho Fox
 16C217C9	H	Jornada do Mymo II	SMS	Psycho Fox
-695A9A15	 	"Jungle Book, The"	SMS	
-E959E820	B	"Jungle Book, The (bad byte)"	SMS	
-DCA0C49E	T	"Jungle Book, The (BR)"	SMS	www.emubrazil.tk
+695A9A15	 	The Jungle Book	SMS	
+E959E820	B	The Jungle Book (bad byte)	SMS	
+DCA0C49E	T	The Jungle Book (BR)	SMS	www.emubrazil.tk
 B7621BAD	V	Junk data 1	SMS	
 EAEF28EA	V	Junk data 2	SMS	
 0667ED9F	 	Jurassic Park	SMS	
-516ED32E	 	Kenseiden	SMS	
-4CFCA0D2	F	Kenseiden (h) [A]	SMS	
-041F678F	F	Kenseiden (h) [B]	SMS	
-4918D6C0	T	Kenseiden (BR)	SMS	
-548AA53C	F	Kenseiden (BR) (h)	SMS	
-A28218FE	T	Kenseiden (FR)	SMS	Terminus Traduction
-BF106B02	F	Kenseiden (h) [A] (FR)	SMS	
-F7F3AC5F	F	Kenseiden (h) [B] (FR)	SMS	
-05EA5353	 	Kenseiden (JP)	SMS	
+516ED32E	 	Kenseiden	SMS		FM
+4CFCA0D2	F	Kenseiden (h) [A]	SMS		FM
+041F678F	F	Kenseiden (h) [B]	SMS		FM
+4918D6C0	T	Kenseiden (BR)	SMS		FM
+548AA53C	F	Kenseiden (BR) (h)	SMS		FM
+A28218FE	T	Kenseiden (FR)	SMS	Terminus Traduction	FM
+BF106B02	F	Kenseiden (h) [A] (FR)	SMS		FM
+F7F3AC5F	F	Kenseiden (h) [B] (FR)	SMS		FM
+05EA5353	 	Kenseiden (JP)	SMS		FM
 F8D33BC4	 	King's Quest - Quest for the Crown (US)	SMS	
 C12A4B37	B	King's Quest - Quest for the Crown (US) (two bad bytes)	SMS	
 b7fe0a9d	 	King's Quest - Quest for the Crown [Proto] (US)	SMS	
@@ -543,18 +543,18 @@ DC322662	O	Laser Ghost (f)	SMS
 F369B2D8	 	Lemmings	SMS	
 2C61ED88	 	Lemmings [Proto]	SMS	
 CB09F355	 	Line of Fire	SMS	
-C352C7EB	 	"Lion King, The"	SMS	
+C352C7EB	 	The Lion King	SMS	
 AA7D6F45	 	Lord of Sword (JP)	SMS	
-E8511B08	 	Lord of The Sword	SMS	
-F5C368F4	F	Lord of The Sword (h) [A]	SMS	
-257B617D	F	Lord of The Sword (h) [B]	SMS	
-2C3FA788	V	Lord of the Sword (bad dump)	SMS	
-3D87705B	F	Lord of the Sword (bad dump) (h)	SMS	
-F77517EB	V	Lord of the Sword (first 34 bytes missing)	SMS	SMS Checker doesn't know how to insert bytes
+E8511B08	 	Lord of The Sword	SMS		FM
+F5C368F4	F	Lord of The Sword (h) [A]	SMS		FM
+257B617D	F	Lord of The Sword (h) [B]	SMS		FM
+2C3FA788	V	Lord of the Sword (bad dump)	SMS		FM
+3D87705B	F	Lord of the Sword (bad dump) (h)	SMS		FM
+F77517EB	V	Lord of the Sword (first 34 bytes missing)	SMS	SMS Checker doesn't know how to insert bytes	FM
 323F357F	 	Loretta no Shouzou (JP)	SMS	
-A1710F13	 	"Lucky Dime Caper, The - Starring Donald Duck"	SMS	
-D79E51A8	T	"Lucky Dime Caper, The - Starring Donald Duck (BR)"	SMS	
-7F6D0DF6	 	"Lucky Dime Caper, The - Starring Donald Duck [Proto]"	SMS	
+A1710F13	 	The Lucky Dime Caper - Starring Donald Duck	SMS	
+D79E51A8	T	The Lucky Dime Caper - Starring Donald Duck (BR)	SMS	
+7F6D0DF6	 	The Lucky Dime Caper - Starring Donald Duck [Proto]	SMS	
 55C88828	H	Magali no Castelo do Dragao	SMS	Monica no Castelo do Dragao
 1232A774	I	Magic Drive Plus BIOS (non-functional)	SMS	
 BCFBFC67	 	Mahjong Sengoku Jidai (JP)	SMS	
@@ -582,12 +582,12 @@ B936F761	H	Master Zelda [RHW]	SMS	Teddy Boy
 D1B9112E	O	Masters Of Combat (2x overdump)	SMS	
 22F2C541	B	Masters of Combat (2 bad bytes)	SMS	
 6AD0B71D	V	Masters of Combat (bad - 10KB missing)	SMS	
-31B8040B	 	Maze Hunter 3-D	SMS	
-CD16DB0A	V	Maze Hunter 3-D (bad - 54KB missing)	SMS	
+31B8040B	 	Maze Hunter 3-D	SMS		FM
+CD16DB0A	V	Maze Hunter 3-D (bad - 54KB missing)	SMS		FM
 871562B0	 	Maze Walker (JP)	SMS	
 4FCC473B	D	Mega Drive 6-Button Controller Test	SMS	Charles MacDonald
 9EF355D7	D	MegaMania SMS	SMS	Haroldo Pinheiro
-29BC7FAD	 	Megumi Rescue (JP)	SMS	
+29BC7FAD	 	Megumi Rescue (JP)	SMS		FM
 D7416B83	 	Mercs	SMS	
 5F09A842	B	Mercs (2 bad bytes)	SMS	
 25051DD5	 	Mickey's Ultimate Challenge (BR)	SMS		
@@ -601,20 +601,20 @@ F85446B0	H	Micro Machines [Sega mapper hack] [A]	SMS	Micro Machines by Mike G; a
 3648E5E4	H	Micro Machines [Sega mapper hack] [B]	SMS	Micro Machines by nop.nop; allows it to be played with a standard mapper	
 54BA742A	H	Micro Machines [Sega mapper hack] [C]	SMS	Micro Machines by nop.nop; allows it to be played with a standard mapper; also passes Codemasters checksum	
 07C5B540	H	Micro Machines [Sega mapper hack] [D]	SMS	Micro Machines by nop.nop; allows it to be played with a standard mapper; also passes Codemasters checksum and Sega checksum	
-0E333B6E	 	Miracle Warriors - Seal of the Dark Lord	SMS		
-EBC2BFA1	B	Miracle Warriors - Seal of the Dark Lord (bad byte)	SMS		
-4139AE0C	O	Miracle Warriors - Seal of the Dark Lord (f) [A]	SMS		
-41BF3D56	F	Miracle Warriors - Seal of the Dark Lord (f) [B]	SMS	F	
-F14A8546	F	Miracle Warriors - Seal of the Dark Lord (h) (f)	SMS		
-ED9FD67D	T	Miracle Warriors - Seal Of The Dark Lord (DE)	SMS	Azelistic; v0.95b
+0E333B6E	 	Miracle Warriors - Seal of the Dark Lord	SMS		FM
+EBC2BFA1	B	Miracle Warriors - Seal of the Dark Lord (bad byte)	SMS		FM
+4139AE0C	O	Miracle Warriors - Seal of the Dark Lord (f) [A]	SMS		FM
+41BF3D56	F	Miracle Warriors - Seal of the Dark Lord (f) [B]	SMS	F	FM
+F14A8546	F	Miracle Warriors - Seal of the Dark Lord (h) (f)	SMS		FM
+ED9FD67D	T	Miracle Warriors - Seal Of The Dark Lord (DE)	SMS	Azelistic; v0.95b	FM
 FBE5CFBB	 	Missile Defense 3-D	SMS	
 E79BB689	 	Missile Defense 3-D [BIOS]	SMS	
 458390E7	H	Monica 3 [A]	SMS	Wonder Boy in Monster World
 693C63D5	H	Monica 3 [B]	SMS	Wonder Boy in Monster World
-01D67C0B	 	Monica no Castelo do Dragao (BR)	SMS	
-FAC09AF4	B	Monica no Castelo do Dragao (BR) (57 bad bytes)	SMS	
+01D67C0B	 	Monica no Castelo do Dragao (BR)	SMS		FM
+FAC09AF4	B	Monica no Castelo do Dragao (BR) (57 bad bytes)	SMS		FM
 69538469	 	Monopoly [A]	SMS	V1
-026D94A4	 	Monopoly [B]	SMS	"V1, very different to [A]"
+026D94A4	 	Monopoly [B]	SMS	V1, very different to [A]
 82FDA895	 	Montezuma's Revenge - Featuring Panama Joe (US)	SMS	
 56CC906B	 	Moonwalker (Michael Jackson's)	SMS	
 9C4F03AC	B	Moonwalker (Michael Jackson's) (32 bad bytes)	SMS	
@@ -626,7 +626,7 @@ FAC09AF4	B	Monica no Castelo do Dragao (BR) (57 bad bytes)	SMS
 9ED8341A	B	Mortal Kombat II (bad byte)	SMS	
 395AE757	 	Mortal Kombat 3 (BR)	SMS	
 3CD816C6	 	Ms. Pac-Man	SMS	
-F0898A69	D	Music Module [beta]	SMS	"Scott Jacko; ""plays like garbage"""
+F0898A69	D	Music Module [beta]	SMS	
 62F0C23D	 	My Hero	SMS	
 99985AD9	O	My Hero (2x overdump)	SMS	
 144CFA14	O	My Hero (4x overdump)	SMS	
@@ -635,9 +635,9 @@ F0898A69	D	Music Module [beta]	SMS	"Scott Jacko; ""plays like garbage"""
 EF3CC146	F	My Hero (8x overdump) (h) [B]	SMS	
 A06D065C	D	NanoWars 8k	SMS	Haroldo O. Pinheiro; v0.7
 02BD3A57	H	Natal do Mymo	SMS	Psycho Fox
-5B5F9106	 	Nekyuu Kousien (JP)	SMS	
-C660FF34	 	"NewZealand Story, The"	SMS	
-FBC66CBF	B	"NewZealand Story, The (bad byte)"	SMS	
+5B5F9106	 	Nekyuu Kousien (JP)	SMS		FM
+C660FF34	 	The New Zealand Story	SMS	
+FBC66CBF	B	The New Zealand Story (bad byte)	SMS	
 82AE5ACD	D	Nine Pixels	SMS	Heliophobe; SMS Power Sega 8-bit Coding Competition 2006 entry
 1B1D8CC2	 	Ninja Gaiden	SMS	
 C28E542F	T	Ninja Gaiden (DE)	SMS	Star-Trans; v1.00
@@ -658,16 +658,16 @@ CE97EFE8	B	Olympic Gold [SMS-GG] [B] (four bad bytes)	SMS
 BEA27D5C	 	Opa Opa (JP)	SMS	
 205CAAE8	 	Operation Wolf	SMS	
 23283F37	T	Operation Wolf (FR)	SMS	
-82EF2A7D	 	"Ottifants, The"	SMS	
-5589D8D2	 	Out Run	SMS	
-04FA0682	F	Out Run (bad byte) (h) [A]	SMS	
-CA99CEFA	F	Out Run (bad byte) (h) [B]	SMS	
-1968757E	B	Out Run (bad byte) [A]	SMS	
-D70BBD06	B	Out Run (bad byte) [B]	SMS	
-DC0860E7	F	Out Run (f)	SMS	F
-481BAB2E	F	Out Run (h)	SMS	
-D6F43DDA	 	Out Run 3-D	SMS	
-77936A83	V	Out Run 3-D (corrupted)	SMS	First 12KB is data from Out Run Europa [GG]
+82EF2A7D	 	The Ottifants	SMS	
+5589D8D2	 	Out Run	SMS		FM;WhenFMDisablePSG
+04FA0682	F	Out Run (bad byte) (h) [A]	SMS		FM;WhenFMDisablePSG
+CA99CEFA	F	Out Run (bad byte) (h) [B]	SMS		FM;WhenFMDisablePSG
+1968757E	B	Out Run (bad byte) [A]	SMS		FM;WhenFMDisablePSG
+D70BBD06	B	Out Run (bad byte) [B]	SMS		FM;WhenFMDisablePSG
+DC0860E7	F	Out Run (f)	SMS	F	FM;WhenFMDisablePSG
+481BAB2E	F	Out Run (h)	SMS		FM;WhenFMDisablePSG
+D6F43DDA	 	Out Run 3-D	SMS		FM
+77936A83	V	Out Run 3-D (corrupted)	SMS	First 12KB is data from Out Run Europa [GG]	FM
 3932ADBC	 	Out Run Europa	SMS	
 F037EC00	 	Out Run Europa [SMS-GG]	SMS	
 2AA12D7E	B	Out Run Europa [SMS-GG] (four bad bytes)	SMS	
@@ -690,14 +690,14 @@ C0E1EBC4	B	Paperboy (two bad bytes)	SMS
 327A0B4C	 	Paperboy (US)	SMS	
 04A8A442	F	Paperboy (US) (f)	SMS	F
 36F04D14	B	Paperboy (US) (two bad bytes)	SMS	
-E030E66C	 	Parlour Games	SMS	
-6C2F6330	F	Parlour Games (f)	SMS	F
+E030E66C	 	Parlour Games	SMS		FM
+6C2F6330	F	Parlour Games (f)	SMS	F	FM
 9AEFE664	 	Pat Riley Basketball [Proto]	SMS	
 592B8297	D	Pause Test	SMS	FluBBa
 85060847	D	Paws	SMS	An!mal; SMS Power Sega 8-bit Coding Competition 2006 entry
-F97E9875	 	Penguin Land	SMS	
-F6552DA8	O	Penguin Land (4x overdump)	SMS	
-2BCDB8FA	 	Penguin Land (JP)	SMS	
+F97E9875	 	Penguin Land	SMS		FM
+F6552DA8	O	Penguin Land (4x overdump)	SMS		FM
+2BCDB8FA	 	Penguin Land (JP)	SMS		FM
 B9A3EBB7	H	Penguin Land [Playpal hack]	SMS	Penguin Land; hacked to make it compatible with the PlayPal/Coleco hardware
 95B9EA95	 	PGA TOUR Golf	SMS	
 E4A65E79	 	Phantasy Star [v2]	SMS	
@@ -711,12 +711,12 @@ E80EE900	F	Phantasy Star [v3] (h) (f)	SMS	H128
 56BD28D8	T	Phantasy Star [v3] (FR)	SMS	Floflo
 43390E72	T	Phantasy Star [v2] (DE)	SMS	Trans-Nation; v0.95
 A721A1DC	T	Phantasy Star [v3] (DE)	SMS	Trans-Nation; v0.95
-6605D36A	 	Phantasy Star (JP)	SMS	
-EEFE22DE	V	Phantasy Star (JP) (broken half-translation)	SMS	
+6605D36A	 	Phantasy Star (JP)	SMS		FM
+EEFE22DE	V	Phantasy Star (JP) (broken half-translation)	SMS		FM
 747E83B5	 	Phantasy Star (KR)	SMS	
 3CA83C04	H	Phantasy Star [HK01]	SMS	Phantasy Star; hacked to more closely match the original Japanese version
 A13637A2	H	Phantasy Star [Pat Johnson]	SMS	Phantasy Star; hacked to display slightly different text in a few places
-07301F83	 	Phantasy Star [Megadrive] (JP)	SMS	
+07301F83	 	Phantasy Star [Megadrive] (JP)	SMS
 CB72A916	D	Picross [V1.00]	SMS	Maxim; SMS Power Sega 8-bit Coding Competition 2007 entry
 1F0D38C1	D	Picross [V1.01]	SMS	Maxim
 283712A9	B	Pit-Fighter (bad byte)	SMS	
@@ -743,12 +743,12 @@ BDFB09F6	H	Pop Breaker (JP) [GG2SMS] [v1.10]	SMS	Game Gear Pop Breaker (JP) by C
 C7A1FDEF	 	Populous	SMS	
 C7C906EA	O	Populous (f)	SMS	
 4A9B4ECB	F	Populous (h) (f)	SMS	
-ABD48AD2	 	Poseidon Wars 3-D	SMS	
-4077EFD9	 	Power Strike	SMS	
-F94616C4	F	Power Strike (h)	SMS	
-514E7ABE	O	Power Strike (2x overdump)	SMS	
-4CDC0942	F	Power Strike (2x overdump) (h) [A]	SMS	
-37DD9196	F	Power Strike (2x overdump) (h) [B]	SMS	
+ABD48AD2	 	Poseidon Wars 3-D	SMS		FM
+4077EFD9	 	Power Strike	SMS		FM
+F94616C4	F	Power Strike (h)	SMS		FM
+514E7ABE	O	Power Strike (2x overdump)	SMS		FM
+4CDC0942	F	Power Strike (2x overdump) (h) [A]	SMS		FM
+37DD9196	F	Power Strike (2x overdump) (h) [B]	SMS		FM
 A109A6FE	 	Power Strike II	SMS	
 673C68B8	B	Power Strike II (eight bad bytes)	SMS	
 979263D8	H	Power Strike II [GG2SMS]	SMS	Game Gear Power Strike II by Chris Covell; v1.00
@@ -797,16 +797,16 @@ C172A22C	 	Rainbow Islands	SMS
 00EC173A	 	Rainbow Islands (BR)	SMS	
 BBDA65F0	 	Rambo - First Blood Part II	SMS	
 DA5A7013	 	Rambo III	SMS	
-42FC47EE	 	Rampage	SMS	
-5F6E3412	F	Rampage (h) [A]	SMS	
-EA1AFE22	F	Rampage (h) [B]	SMS	
+42FC47EE	 	Rampage	SMS		FM
+5F6E3412	F	Rampage (h) [A]	SMS		FM
+EA1AFE22	F	Rampage (h) [B]	SMS		FM
 426E5C8A	 	Rampart	SMS	
 FD1FFF2A	B	Rampart (two bad bytes)	SMS	
-C547EB1B	 	Rastan	SMS	
-DD117862	F	Rastan (f)	SMS	F
-89684379	O	Rastan (2x overdump)	SMS	
-796C76B4	B	Rastan (bad byte)	SMS	
-9C76FB3A	 	Rastan Saga [SMS-GG] (JP)	SMS	
+C547EB1B	 	Rastan	SMS		FM
+DD117862	F	Rastan (f)	SMS	F	FM
+89684379	O	Rastan (2x overdump)	SMS		FM
+796C76B4	B	Rastan (bad byte)	SMS		FM
+9C76FB3A	 	Rastan Saga [SMS-GG] (JP)	SMS		FM
 C264580F	D	Raster Effect Test	SMS	Charles MacDonald
 6D94BB0E	 	Reggie Jackson Baseball (US)	SMS	
 53CB13C1	D	River Strike [v0.01 alpha]	SMS	Haroldo O. Pinheiro
@@ -817,8 +817,8 @@ C264580F	D	Raster Effect Test	SMS	Charles MacDonald
 F42E145C	 	Quest for the Shaven Yak Starring Ren Hoek & Stimpy (BR)	SMS	
 3BE7F641	 	Renegade	SMS	
 E3EC5B2D	T	Renegade (BR)	SMS	
-79AC8E7F	 	Rescue Mission	SMS	
-BB039219	F	Rescue Mission (f)	SMS	F
+79AC8E7F	 	Rescue Mission	SMS		FM
+BB039219	F	Rescue Mission (f)	SMS	F	FM
 B876FC74	 	Road Rash	SMS	
 6FE5BBC3	H	Road Rash [pointless hack]	SMS	Road Rash; some undisplayed text has been removed from the start of the rom
 55B950FA	D	RobbyIE [v0.30]	SMS	Ventzislav Tzvetkov - http://drhirudo.hit.bg
@@ -839,11 +839,11 @@ C7F3DA07	H	Rodrigo 2 em - Mate o Papai Noel - Versao de Natal	SMS	Teddy Boy
 947DB11A	H	Rodrigo O Resgate [B]	SMS	Wonder Boy
 715E4E4C	O	Rodrigo O Resgate [B] (6416 bytes oversize)	SMS	
 583A6390	D	Rope Jump	SMS	Peder Johansen
-BB54B6B0	 	R-Type	SMS	
-7510BCE3	T	R-Type (BR) [A]	SMS	
-A3C80EE3	T	R-Type (BR) [B]	SMS	Emuboarding emunow.cjb.net
-304D8019	F	R-Type (h)	SMS	
-10B7FC20	F	R-Type (f)	SMS	F
+BB54B6B0	 	R-Type	SMS		FM
+7510BCE3	T	R-Type (BR) [A]	SMS		FM
+A3C80EE3	T	R-Type (BR) [B]	SMS	Emuboarding emunow.cjb.net	FM
+304D8019	F	R-Type (h)	SMS		FM
+10B7FC20	F	R-Type (f)	SMS	F	FM
 1FDAE719	 	Running Battle	SMS	
 0B015EC6	B	Running Battle (2 bad bytes)	SMS	
 66388128	 	Sagaia	SMS	
@@ -857,8 +857,8 @@ CB5D369B	B	Sagaia (bad byte)	SMS
 9A608327	 	Sapo Xule Vs Os Invasores do Brejo (BR)	SMS	
 16249E19	 	Satellite 7 (JP)	SMS	
 87B9ECB8	H	Satellite 7 (JP) [Hack]	SMS	
-9A8B28EC	 	Scramble Spirits	SMS	
-5DD789A2	V	Scramble Spirits (bad dump)	SMS	
+9A8B28EC	 	Scramble Spirits	SMS		FM
+5DD789A2	V	Scramble Spirits (bad dump)	SMS		FM
 6841CE1D	D	Scroll Test Program	SMS	Charles MacDonald
 00529114	 	Secret Command	SMS	
 6E5F8A27	O	Secret Command (2x overdump)	SMS	
@@ -876,16 +876,14 @@ F8176918	 	Sensible Soccer	SMS
 1575581D	 	Shadow of the Beast	SMS	
 3793C01A	 	Shadow Dancer - The Secret Of Shinobi	SMS	
 4135AE1D	B	Shadow Dancer - The Secret Of Shinobi (73 bad bytes)	SMS	
-AAB67EC3	 	Shanghai	SMS	
-8D3D6BFF	O	Shanghai (2x overdump)	SMS	
-0C6FAC4E	 	Shinobi	SMS	
-E1FFF1BB	 	Shinobi (JP)	SMS	
-11FDDFB2	F	Shinobi (h) [A]	SMS	
-813C5C2E	F	Shinobi (h) [B]	SMS	
-483BD1C8	B	Shinobi (two bad bytes)	SMS	
-B2F41AD6	B	Shinobi (5 bad bytes)	SMS	
-A09E1DF1	E	Shinobi (5 bad bytes) (change unzipped extension to sms.gz and decompress)	SMS	sms.gz
-4BFD45F0	F	Shinobi (5 bad bytes) (change unzipped extension to sms.gz and decompress) (h)	SMS	H128
+AAB67EC3	 	Shanghai	SMS		FM
+8D3D6BFF	O	Shanghai (2x overdump)	SMS		FM
+0C6FAC4E	 	Shinobi	SMS		FM
+E1FFF1BB	 	Shinobi (JP)	SMS		FM
+11FDDFB2	F	Shinobi (h) [A]	SMS		FM
+813C5C2E	F	Shinobi (h) [B]	SMS		FM
+483BD1C8	B	Shinobi (two bad bytes)	SMS		FM
+B2F41AD6	B	Shinobi (5 bad bytes)	SMS		FM
 4B051022	 	Shooting Gallery	SMS	
 5F40660D	D	Simple Sprite Demo - Release 2	SMS	Heliophobe
 ABDF3923	 	Sitio do Picapau Amarelo (BR)	SMS	
@@ -928,14 +926,14 @@ B20CC036	D	SMSC's TWO01 (non-functional)	SMS	SMSC
 297EFB87	D	SMSPower 7 [v1.00]	SMS	Heliophobe
 C2106268	D	SMSPower 7 [v1.01]	SMS	Heliophobe
 72506A85	D	SMSPower 7 [v1.03]	SMS	Heliophobe
-3E63768A	 	"Smurfs, The"	SMS	
-97E5BB7D	 	"Smurfs Travel the World, The"	SMS	
+3E63768A	 	The Smurfs	SMS	
+97E5BB7D	 	The Smurfs Travel the World	SMS	
 304FE02B	D	Snail Music Demo [A]	SMS	Eric Quinn
 79BEE042	D	Snail Music Demo [B]	SMS	Eric Quinn
 E2E2CC24	D	SokoMaster	SMS	Haroldo O. Pinheiro; v1.00; SMS Power Sega 8-bit Coding Competition 2007 entry
 ED9A19B6	T	Soldados do Tempo (BR) [A]	SMS	Emunow
 FF0F9323	T	Soldados do Tempo (BR) [B]	SMS	CBT
-11645549	 	Solomon no Kagi - Oujo Rihita no Namida (JP)	SMS	
+11645549	 	Solomon no Kagi - Oujo Rihita no Namida (JP)	SMS		FM
 96B3F29E	 	Sonic Blast (BR)	SMS	
 AEDF3BDF	 	Sonic Chaos	SMS	
 FB14F1CF	B	Sonic Chaos (bad byte)	SMS	
@@ -965,8 +963,8 @@ CA1D3752	 	Space Harrier [50 Hz]	SMS
 47BD2006	V	Space Harrier [50 Hz] (bad dump)	SMS	
 D78F44AE	F	Space Harrier [50 Hz] (h) [A]	SMS	
 F63E2DD4	F	Space Harrier [50 Hz] (h) [B]	SMS	
-6BD5C2BF	 	Space Harrier 3-D	SMS	
-156948F9	 	Space Harrier 3D (JP)	SMS	
+6BD5C2BF	 	Space Harrier 3-D	SMS		FM
+156948F9	 	Space Harrier 3D (JP)	SMS		FM
 33FDEA7A	D	SpaceOddity v.00	SMS	Proppy & Tet
 5ED9495B	D	SpaceOddity v.01	SMS	Proppy & Tet
 9039DB33	D	SpaceOddity v.02	SMS	Proppy & Tet
@@ -996,9 +994,9 @@ FA8E4CA0	 	Special Criminal Investigation - S.C.I.	SMS
 A57CAD18	 	Speedball [Image Works]	SMS	
 5CCC1A65	 	Speedball [Virgin]	SMS	
 0C7366A0	 	Speedball 2	SMS	
-4752CAE7	 	SpellCaster	SMS	
-A0587800	T	SpellCaster (FR) [A]	SMS	Terminus Traduction
-9B1F566E	T	SpellCaster (FR) [B]	SMS	Terminus Traduction; v1.0
+4752CAE7	 	SpellCaster	SMS		FM
+A0587800	T	SpellCaster (FR) [A]	SMS	Terminus Traduction	FM
+9B1F566E	T	SpellCaster (FR) [B]	SMS	Terminus Traduction; v1.0	FM
 EBE45388	 	Spider-Man - Return of the Sinister Six	SMS	
 908FF25C	 	Spider-Man - vs. The Kingpin	SMS	
 E42E4998	 	Sports Pad Football (US)	SMS	
@@ -1009,7 +1007,7 @@ FFCF390E	D	Sprite Multiplex Demo	SMS	Charles MacDonald; v1.00
 BDF2209C	D	Sprite Overflow Test Program	SMS	Charles MacDonald; v1.00
 BD274327	D	SpriTest	SMS	Mic; v0.01
 78D7FAAB	 	Spy vs Spy	SMS	
-B87E1B2B	 	Spy vs Spy [Display Unit]	SMS	"The same as the card version, but with extra data to pad it to 256KB."
+B87E1B2B	 	Spy vs Spy [Display Unit]	SMS	The same as the card version, but with extra data to pad it to 256KB.
 D41B9A08	 	Spy vs Spy (JP)	SMS	
 A71BC542	 	Spy vs Spy (JP) [Hack]	SMS	
 D4B8F66D	 	Star Wars	SMS	
@@ -1053,7 +1051,7 @@ AB260100	V	Super Futebol (BR) (bad dump)	SMS	Needs redump
 3EF12BAA	 	Super Monaco GP (US)	SMS	
 E890331D	 	Super Monaco GP II (Ayrton Senna's)	SMS	
 54F68C2A	 	Super Off Road	SMS	
-7E0EF8CB	 	Super Racing (JP)	SMS	
+7E0EF8CB	 	Super Racing (JP)	SMS		FM
 1D6244EE	 	Super Space Invaders	SMS	
 E0B1AFF8	 	Super Smash T.V.	SMS	
 914514E3	 	Super Tennis	SMS	
@@ -1083,31 +1081,31 @@ E57A9865	F	Teddy Boy (f)	SMS	F
 316727DD	 	Teddy Boy Blues (JP)	SMS	
 9DFA67EE	H	Teddy Boy Blues (JP) [Hack]	SMS	
 D7508041	 	Teddy Boy Blues [EP-MyCard] (JP)	SMS	
-1A390B93	 	Tennis Ace	SMS	
-8132AB2C	 	Tensai Bakabon (JP)	SMS	
-EDC5C012	 	"Terminator, The"	SMS	
+1A390B93	 	Tennis Ace	SMS		FM
+8132AB2C	 	Tensai Bakabon (JP)	SMS		FM
+EDC5C012	 	The Terminator	SMS	
 AC56104F	 	Terminator 2 - Judgment Day	SMS	
 93CA8152	 	T2 - The Arcade Game	SMS	
 A3E97D04	D	Tetracycline [v1]	SMS	Heliophobe
 983E17E4	D	Tetracycline [v2]	SMS	Heliophobe
 FD603AEA	D	Tetracycline [v3]	SMS	Heliophobe
 A0BF829B	D	Tetracycline [v4]	SMS	Heliophobe
-66A15BD9	 	"Ninja, The"	SMS	
-3398242A	O	"Ninja, The (2x overdump)"	SMS	
-CF9F0A7F	F	"Ninja, The (2x overdump) (f)"	SMS	F
-2E0A57D6	F	"Ninja, The (2x overdump) (h) [A]"	SMS	
-EA47C173	F	"Ninja, The (2x overdump) (h) [B]"	SMS	
-320313EC	 	"Ninja, The (JP)"	SMS	
-DA9BE8F0	 	"Pro Yakyuu Pennant Race, The (JP)"	SMS	
-8640E7E8	 	"Three Dragon Story, The (KR)"	SMS	
-AE920E4B	 	Thunder Blade	SMS	
-B3007DB7	F	Thunder Blade (h) [A]	SMS	
-6E28B137	F	Thunder Blade (h) [B]	SMS	
-C0CE19B1	 	Thunder Blade (JP)	SMS	
-51BD14BE	 	Time Soldiers	SMS	
-443419A4	B	Time Soldiers (bad byte)	SMS	
-4C2F6742	F	Time Soldiers (h) [A]	SMS	
-23EDEDAB	F	Time Soldiers (h) [B]	SMS	
+66A15BD9	 	The Ninja	SMS	
+3398242A	O	The Ninja (2x overdump)	SMS	
+CF9F0A7F	F	The Ninja (2x overdump) (f)	SMS	F
+2E0A57D6	F	The Ninja (2x overdump) (h) [A]	SMS	
+EA47C173	F	The Ninja (2x overdump) (h) [B]	SMS	
+320313EC	 	The Ninja (JP)	SMS	
+DA9BE8F0	 	The Pro Yakyuu Pennant Race (JP)	SMS	
+8640E7E8	 	The Three Dragon Story (KR)	SMS	
+AE920E4B	 	Thunder Blade	SMS		FM
+B3007DB7	F	Thunder Blade (h) [A]	SMS		FM
+6E28B137	F	Thunder Blade (h) [B]	SMS		FM
+C0CE19B1	 	Thunder Blade (JP)	SMS		FM
+51BD14BE	 	Time Soldiers	SMS		FM
+443419A4	B	Time Soldiers (bad byte)	SMS		FM
+4C2F6742	F	Time Soldiers (h) [A]	SMS		FM
+23EDEDAB	F	Time Soldiers (h) [B]	SMS		FM
 FFFA5C6C	D	TMS9918 Color Test	SMS	Charles MacDonald
 BF7B7285	 	Tom and Jerry - The Movie	SMS	
 A2FF09B9	B	Tom and Jerry - The Movie (bad byte)	SMS	
@@ -1126,15 +1124,15 @@ FCB6D993	F	Transbot (8x overdump) (h) [B]	SMS
 7D2C17D2	H	Treinamento do Mymo [A]	SMS	Psycho Fox
 E94784F2	H	Treinamento do Mymo [B]	SMS	Psycho Fox
 E5374022	 	Trivial Pursuit - Genus Edition	SMS	
-22CCA9BB	 	Turma da Monica em - O Resgate (BR)	SMS	
+22CCA9BB	 	Turma da Monica em - O Resgate (BR)	SMS		FM
 E1714A88	 	TV Colosso (As Aventuras da) (BR)	SMS	
 DFCFF7F8	D	twentythree vs ten	SMS	opius; SMS Power Sega 8-bit Coding Competition 2007 entry
 4E9CC98F	D	Ultima 3 SMS v20060513	SMS	Haroldo Pinheiro
 03E49A73	D	Ultima 3 SMS v20060604	SMS	Haroldo Pinheiro
-B52D60C8	 	Ultima IV	SMS	
-38E34D45	F	Ultima IV (f)	SMS	F
-19D64680	T	Ultima IV (DE)	SMS	
-DE9F8517	 	Ultima IV [Proto]	SMS	
+B52D60C8	 	Ultima IV	SMS		FM
+38E34D45	F	Ultima IV (f)	SMS	F	FM
+19D64680	T	Ultima IV (DE)	SMS		FM
+DE9F8517	 	Ultima IV [Proto]	SMS		FM
 15668CA4	 	Ultimate Soccer	SMS	
 7840D45C	B	Ultimate Soccer (bad byte)	SMS	
 046EBC1B	D	Unite Centrale de Huit Bits	SMS	Comic Bakery
@@ -1145,8 +1143,8 @@ DE9F8517	 	Ultima IV [Proto]	SMS
 39540619	B	Vampire (bad byte)	SMS	
 720B6973	T	Vampire (FR)	SMS	Terminus Traduction; v1.00
 D6FB6417	D	Video Mode Test Program	SMS	Charles MacDonald
-DFB0B161	 	Vigilante	SMS	
-A986542B	T	Vigilante (FR)	SMS	Terminus Traduction; v1.00
+DFB0B161	 	Vigilante	SMS		FM
+A986542B	T	Vigilante (FR)	SMS	Terminus Traduction; v1.00	FM
 AD300BD9	D	VIK 01	SMS	L.I.N. - http://membres.lycos.fr/pin26/lin/
 57F1545B	 	Virtua Fighter Animation (BR)	SMS	
 CCD47D88	D	VRAM Write Test Program (unknown version)	SMS	Charles MacDonald
@@ -1167,17 +1165,17 @@ EC7CF033	O	Wonder Boy (2x overdump)	SMS
 F374ECBA	F	Wonder Boy (2x overdump) (f)	SMS	F
 F1EE83CF	F	Wonder Boy (2x overdump) (h) [A]	SMS	
 9C7A70F5	F	Wonder Boy (2x overdump) (h) [B]	SMS	
-679E1676	 	Wonder Boy III - The Dragon's Trap	SMS	
-C999F353	F	Wonder Boy III - The Dragon's Trap (f)	SMS	F
-79EC738B	T	Wonder Boy III - The Dragon's Trap (FR)	SMS	
-42012B7D	T	Wonder Boy III - The Dragon's Trap (SE)	SMS	Metalhead?
-CA500A43	H	Wonder Boy III DC	SMS	Wonder Boy III
-8CBEF0C1	 	Wonder Boy in Monster Land	SMS	
-60568652	F	Wonder Boy in Monster Land (f) [A]	SMS	F
-488983B4	F	Wonder Boy in Monster Land (f) [B]	SMS	F
-43933407	T	Wonder Boy in Monster Land (FR)	SMS	Crispysix for MacroTrads
-9D98FE7F	T	Wonder Boy in Monster Land (ES)	SMS	Fran
-7522CF0A	H	Wonder Boy in Monster Land [Hack]	SMS	Wonder Boy in Monster Land giving joypad pause access
+679E1676	 	Wonder Boy III - The Dragon's Trap	SMS		FM
+C999F353	F	Wonder Boy III - The Dragon's Trap (f)	SMS	F	FM
+79EC738B	T	Wonder Boy III - The Dragon's Trap (FR)	SMS		FM
+42012B7D	T	Wonder Boy III - The Dragon's Trap (SE)	SMS	Metalhead?	FM
+CA500A43	H	Wonder Boy III DC	SMS	Wonder Boy III	FM
+8CBEF0C1	 	Wonder Boy in Monster Land	SMS		FM
+60568652	F	Wonder Boy in Monster Land (f) [A]	SMS	F	FM
+488983B4	F	Wonder Boy in Monster Land (f) [B]	SMS	F	FM
+43933407	T	Wonder Boy in Monster Land (FR)	SMS	Crispysix for MacroTrads	FM
+9D98FE7F	T	Wonder Boy in Monster Land (ES)	SMS	Fran	FM
+7522CF0A	H	Wonder Boy in Monster Land [Hack]	SMS	Wonder Boy in Monster Land giving joypad pause access	FM
 7D7CE80B	 	Wonder Boy in Monster World	SMS	
 5C87B0AE	T	Wonder Boy in Monster World (FR)	SMS	MacroTrads
 81BFF9BB	 	Wonder Boy in Monster World [Proto]	SMS	
@@ -1207,11 +1205,11 @@ B1B230DF	F	WWF Wrestlemania Steel Cage Challenge [SMS-GG] (f)	SMS	F
 EC726C0D	 	Xenon 2 - Megablast [Virgin]	SMS	
 F13E118D	B	Xenon 2 - Megablast [Virgin] (bad byte)	SMS	
 3E1387F6	 	X-Men - Mojo World (BR)	SMS	
-B33E2827	 	Y's - The Vanished Omens	SMS	
-20A9E45D	F	Y's - The Vanished Omens (f)	SMS	
-3F06DD76	B	Y's - The Vanished Omens (bad byte)	SMS	
-AFD29460	T	Y's - The Vanished Omens (FR)	SMS	Crispysix
-32759751	 	Ys (JP)	SMS	
+B33E2827	 	Y's - The Vanished Omens	SMS		FM
+20A9E45D	F	Y's - The Vanished Omens (f)	SMS		FM
+3F06DD76	B	Y's - The Vanished Omens (bad byte)	SMS		FM
+AFD29460	T	Y's - The Vanished Omens (FR)	SMS	Crispysix	FM
+32759751	 	Ys (JP)	SMS		FM
 B2B67FD9	D	Z80 Instruction Exerciser v0.10	SMS	Various
 38E4B272	D	Z80 Instruction Exerciser v0.12	SMS	Various
 05F471DE	D	Z80 Instruction Exerciser v0.12 (SCDC console)	SMS	Various
@@ -1232,8 +1230,8 @@ CE61185D	D	Z88DK Sound Test [B]	SMS	Haroldo O. Pinheiro
 4A444668	D	Z88DK Test [B]	SMS	Haroldo O. Pinheiro
 B20AD645	D	Z88DK Test [C]	SMS	Haroldo O. Pinheiro
 CCC71D75	D	Z88DK Test [D]	SMS	Haroldo O. Pinheiro
-A3EF13CB	 	Zaxxon 3-D	SMS	
-bba74147	 	Zaxxon 3-D [Proto]	SMS	
+A3EF13CB	 	Zaxxon 3-D	SMS		FM
+bba74147	 	Zaxxon 3-D [Proto]	SMS		FM
 60C19645	 	Zillion	SMS	
 5718762C	 	Zillion (US)	SMS	
 EE298F31	F	Zillion (US) (h)	SMS	
@@ -1248,11 +1246,11 @@ B12CC8EC	F	Zillion (US) (2x overdump) (h) [A]	SMS
 E51F3D1B	T	Zillion (FR)	SMS	Terminus Traduction; v1.00
 DABC7C0E	T	Zillion (BR)	SMS	
 3DF9BC7D	F	Zillion (BR) (2x overdump) (h)	SMS	
-2F2E3BC9	 	Zillion II - The Tri Formation	SMS	
-3328B900	O	Zillion II - The Tri Formation (2x overdump)	SMS	
-2EBACAFC	F	Zillion II - The Tri Formation (2x overdump) (h) [A]	SMS	
-04A97B3C	F	Zillion II - The Tri Formation (2x overdump) (h) [B]	SMS	
-F0F81241	B	Zillion II - The Tri Formation (bad byte)	SMS	
+2F2E3BC9	 	Zillion II - The Tri Formation	SMS		FM
+3328B900	O	Zillion II - The Tri Formation (2x overdump)	SMS		FM
+2EBACAFC	F	Zillion II - The Tri Formation (2x overdump) (h) [A]	SMS		FM
+04A97B3C	F	Zillion II - The Tri Formation (2x overdump) (h) [B]	SMS		FM
+F0F81241	B	Zillion II - The Tri Formation (bad byte)	SMS		FM
 9D9D0A5F	 	Zool	SMS	
 A463DDFA	D	Zoom Effect #1 1	SMS	Charles MacDonald
 B97E110A	D	Zoom Effect #1 2	SMS	Charles MacDonald
@@ -1260,8 +1258,8 @@ B97E110A	D	Zoom Effect #1 2	SMS	Charles MacDonald
 
 F85A8CE8	 	5 in 1 Fun Pak	GG	
 1D17D2A0	 	Aa Harimanada (JP)	GG	
-1D01F999	 	"Addams Family, The"	GG	
-BB4F23FF	 	"Adventures of Batman & Robin, The"	GG	
+1D01F999	 	The Addams Family	GG	
+BB4F23FF	 	The Adventures of Batman & Robin	GG	
 899515D0	 	Aerial Assault [v0] (bad byte)	GG	
 3E549B7A	 	Aerial Assault [v0]	GG	
 04FE6DDE	 	Aerial Assault [v1]	GG	
@@ -1315,7 +1313,7 @@ CB3CD075	 	Battletoads [A] Product code 2436	GG
 817CC0CA	 	Battletoads [B]	GG	Product code 97018
 A6BF865E	 	Beavis and Butt-head [A]	GG	
 3858F14F	 	Beavis and Butt-head [B]	GG	
-A4BB9FFB	 	"Berenstain Bears', The - Camping Adventure (US)"	GG	
+A4BB9FFB	 	The Berenstain Bears - Camping Adventure (US)	GG	
 325B1797	 	Berlin no Kabe - The Berlin Wall (JP)	GG	
 BFCEBA5F	 	Bonkers Wax Up!	GG	
 69EBE5FA	 	Bram Stoker's Dracula	GG	
@@ -1333,7 +1331,7 @@ DFC7ADC8	 	Chakan	GG
 05C3F2DF	D	Charles Doty's Text Demo [A]	GG	Charles Doty
 27DF7B01	O	Charles Doty's Text Demo [B] (one byte too large)	GG	
 D250DB57	D	Charles Doty's Text Demo [B]	GG	Charles Doty
-DA811BA6	 	"Chessmaster, The"	GG	
+DA811BA6	 	The Chessmaster	GG	
 6B0FCEC3	 	Chicago Syndicate	GG	
 C2E8A692	 	Choplifter III	GG	
 191B1ED8	 	Chuck Rock	GG	
@@ -1341,7 +1339,7 @@ B1D01697	O	Chuck Rock [trained - infinite lives] (1 byte too long)	GG
 D495C31D	H	Chuck Rock [trained - infinite lives]	GG	Chuck Rock by MuMbLy/MYSTIC'1995
 656708BF	 	Chuck Rock II - Son of Chuck [Sega]	GG	
 A6F0485A	V	Chuck Rock II - Son of Chuck [Sega] (corrupted)	GG	First 18KB is data from another file
-3FCC28C9	 	Chuck Rock II - Son of Chuck [Tengen]	GG	"Has a different, low quality, intro screen"
+3FCC28C9	 	Chuck Rock II - Son of Chuck [Tengen]	GG	Has a different, low quality, intro screen
 BF75B153	 	Cliffhanger	GG	
 D228A467	 	Clutch Hitter	GG	
 C7598B81	 	Coca Cola Kid (JP)	GG	
@@ -1477,8 +1475,8 @@ F53CED2E	 	Hook	GG
 056CAE74	 	Hyper Chou Pro Yakyuu '92 (JP)	GG	
 9F64C2BB	 	Ichidant~R GG (Puzzle & Action) (JP)	GG	
 DAB0F265	 	In the Wake of Vampire (JP)	GG	
-087FC247	 	"Incredible Crash Dummies, The"	GG	
-D7055F88	 	"Incredible Hulk, The"	GG	
+087FC247	 	The Incredible Crash Dummies	GG	
+D7055F88	 	The Incredible Hulk	GG	
 B875226B	 	Indiana Jones and the Last Crusade	GG	
 8C048325	B	Indiana Jones and the Last Crusade (bad byte)	GG	
 51AD2E27	B	Indiana Jones and the Last Crusade (bad byte) [trained - infinite lives]	GG	
@@ -1497,8 +1495,8 @@ D7820C21	 	Jeopardy!	GG
 4A98678B	 	Joe Montana Football (JP)	GG
 04D23FC4	 	Judge Dredd	GG
 A8EF36A7	 	Junction	GG
-90100884	 	"Jungle Book, The (Walt Disney's Classic)"	GG
-30C09F31	 	"Jungle Book, The (Walt Disney's Classic) (US)"	GG
+90100884	 	The Jungle Book	GG
+30C09F31	 	The Jungle Book (US)	GG
 BD6F2321	 	Jurassic Park	GG
 2F536AE3	 	Jurassic Park (JP)	GG
 937FD52B	 	Kaitou Saint Tail (JP)	GG
@@ -1520,22 +1518,22 @@ FE12A92F	 	Legend of Illusion (JP)	GG
 0FDE7BAA	 	Lemmings	GG	
 B316221E	B	Lemmings (362 bad bytes)	GG	
 51548F61	 	Lemmings [Proto]	GG	
-9808D7B3	 	"Lion King, The (Disney's) (US)"	GG	
-90D40776	H	"Lion King, The (Disney's) (US) [trained - infinite lives]"	GG	Lion King (US) by MuMbLy/MYSTIC'1995
-0CD9C20B	 	"Lion King, The (Disney's)"	GG	
-040512CE	H	"Lion King, The (Disney's) [trained - infinite lives]"	GG	Lion King by MuMbLy/MYSTIC'1995
-8D1597F5	 	"Lost World, The - Jurassic Park (US)"	GG	
-07A7815A	 	"Lucky Dime Caper, The"	GG	
+9808D7B3	 	The Lion King (US)	GG	
+90D40776	H	The Lion King (US) [trained - infinite lives]	GG	Lion King (US) by MuMbLy/MYSTIC'1995
+0CD9C20B	 	The Lion King	GG	
+040512CE	H	The Lion King [trained - infinite lives]	GG	Lion King by MuMbLy/MYSTIC'1995
+8D1597F5	 	The Lost World - Jurassic Park (US)	GG	
+07A7815A	 	The Lucky Dime Caper	GG	
 58459EDD	 	Lunar - Sanpo-suru Gakuen (JP)	GG	
 208F0F87	T	Lunar - Strolling School (EN) [incomplete] [v1]	GG	
 8C390953	B	Lunar - Strolling School (EN) [incomplete] [v1] (bad byte)	GG	
 4A934DB5	T	Lunar - Strolling School (EN) [incomplete] [v2]	GG	
 EAF5732A	T	Lunar - Strolling School (EN) [incomplete] [v3]	GG	
 2AE16CBC	T	Lunar - Strolling School (EN) [incomplete] [v4]	GG	
-44E9CCAD	T	Lunar - Strolling School (EN) [Naflign] [v0.17]	GG	"Rebecca Capowski, Nyef and Naflign"
-4F7FE5FA	T	Lunar - Strolling School (EN) [Naflign] [beta 1]	GG	"Rebecca Capowski, Nyef and Naflign"
-2D6F9B05	T	Lunar - Strolling School (EN) [Naflign] [beta 2]	GG	"Rebecca Capowski, Nyef and Naflign"
-C77A28A1	T	Lunar - Strolling School (EN) [Naflign] [beta 3]	GG	"Rebecca Capowski, Nyef and Naflign"
+44E9CCAD	T	Lunar - Strolling School (EN) [Naflign] [v0.17]	GG	Rebecca Capowski, Nyef and Naflign
+4F7FE5FA	T	Lunar - Strolling School (EN) [Naflign] [beta 1]	GG	Rebecca Capowski, Nyef and Naflign
+2D6F9B05	T	Lunar - Strolling School (EN) [Naflign] [beta 2]	GG	Rebecca Capowski, Nyef and Naflign
+C77A28A1	T	Lunar - Strolling School (EN) [Naflign] [beta 3]	GG	Rebecca Capowski, Nyef and Naflign
 EADA9B81	T	Lunar - Strolling School (BR) [incomplete] [v1]	GG	
 5A558DA5	T	Lunar - Strolling School (BR) [incomplete] [v2]	GG	
 87B8B612	 	Mac Donald - Ronald in the Magical World	GG	
@@ -1616,7 +1614,7 @@ C3056E15	 	Ninku (JP)	GG
 06247DD2	 	Ninku 2 ~Tenkuryu-e no Michi~ (JP)	GG	
 9140F239	 	Ninku Gaiden - Hiroyuki Daikatsugeki (JP)	GG	
 4ED45BDA	 	Nomo's World Series Baseball (JP)	GG	
-1E673168	 	"Ottifants, The"	GG	
+1E673168	 	The Ottifants	GG	
 4753C309	 	Out Run	GG	
 D58CB27C	B	Out Run (26 bad bytes)	GG	
 9273EE2C	 	Pac-Attack	GG	
@@ -1671,7 +1669,7 @@ E783DAF8	 	Poker Face Paul's Poker	GG
 2A34B5C7	 	Primal Rage	GG	
 2DA8E943	 	Pro Yakyuu GG League (JP)	GG	
 A1A19135	 	Pro Yakyuu GG League '94 (JP)	GG	
-6D3A10D3	 	"Pro Yakyuu '91, The (JP)"	GG	
+6D3A10D3	 	The Pro Yakyuu '91 (JP)	GG	
 AFCC7828	 	Psychic World [A]	GG	v0
 E1109230	O	Psychic World [A] (4x overdump)	GG	
 73779B22	 	Psychic World [B]	GG	v1
@@ -1681,7 +1679,7 @@ ECC301DD	 	Putt & Putter	GG
 D173A06F	 	Puzlow Kids	GG
 8E54EE04	 	Puzzle Bobble (JP)	GG
 6C451EE1	 	Quest for the Shaven Yak Starring Ren Hoek & Stimpy	GG
-736CDB76	 	"Quiz Gear Fight!!, The (JP)"	GG
+736CDB76	 	The Quiz Gear Fight!! (JP)	GG
 6DC3295E	 	R.B.I. Baseball '94 (US)	GG
 EF39F257	B	R.B.I. Baseball '94 (US) (2 bad bytes)	GG
 03E9C607	 	Revenge of Drancon	GG
@@ -1736,7 +1734,7 @@ C2D8FE07	B	Shinobi II - The Silent Fury (bad byte)	GG
 6A603EED	 	Side Pocket (US)	GG	
 786DD67B	 	Skweek (JP)	GG	
 4DC6F555	 	Slider	GG	
-354E1CBD	 	"Smurfs, The"	GG	
+354E1CBD	 	The Smurfs	GG	
 5AAC063F	D	SMSC's GAMEGEAR (non-functional)	GG	SMSC
 0F3E3840	 	Sokoban World (JP)	GG	
 F6F24B75	 	Solitaire Fun Pak	GG	
@@ -1813,7 +1811,7 @@ DFE38E24	 	Super Space Invaders	GG
 58E56238	T	Sylvan Tale (EN) [1.00] (music patch)	GG	Aeon Genesis
 947C2921	T	Sylvan Tale (EN) [1.01]	GG	Aeon Genesis
 5D803486	T	Sylvan Tale (EN) [1.01] (music patch)	GG	Aeon Genesis
-D6880A56	T	Sylvan Tale (FR)	GG	"Asmodeath; v0.9, music patch"
+D6880A56	T	Sylvan Tale (FR)	GG	Asmodeath; v0.9, music patch
 DB22F3CF	T	Tails a Patrula do Ceu (BR)	GG	
 5BB6E5D6	 	Tails Adventures	GG	
 CB591501	B	Tails Adventures (3 bad bytes)	GG	
@@ -1834,7 +1832,7 @@ EEBAD66B	 	Taz in Escape From Mars	GG
 183C0BCC	V	Taz-Mania [wrongly patched]	GG	Someone applied a trainer for Taz in Escape from Mars to the wrong file
 DE466796	 	Tempo Jr.	GG	
 DD6D2E34	 	Tengen World Cup Soccer	GG	
-C029A5FD	 	"Terminator, The"	GG	
+C029A5FD	 	The Terminator	GG	
 1BD15773	 	Terminator 2 - Judgment Day	GG	
 9479C83A	 	T2 - The Arcade Game	GG	
 6DAAD1A1	B	T2 - The Arcade Game (409 bad bytes)	GG	
@@ -2113,7 +2111,7 @@ C0CB5ADD		Kiki Kai Kai	PCE
 BF52788E		King of Casino	PCE
 0F1B59B4		Klax	PCE
 61B80005		Knight Rider Special	PCE
-B552C906		"Kung Fu, The"	PCE
+B552C906		The Kung Fu	PCE
 09509315		Kyuukyoku Tiger	PCE
 C6F764EC		Lady Sword	PCE
 C28B0D8A		Legend of Hero Tonma	PCE

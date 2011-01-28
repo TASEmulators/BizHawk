@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
 
@@ -12,6 +11,7 @@ using BizHawk.Emulation.Sound;
   + HCounter
   + Try to clean up the organization of the source code. 
   + Fix remaining broken games
+  + SMS Fake Stereo Separation
 
 **********************************************************/
 
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public byte[] RomData;
         public byte RomBank0, RomBank1, RomBank2;
         public byte RomBanks;
-        public string[] Options;
+        public IList<string> Options;
 
         // SaveRAM
         public byte[] SaveRAM = new byte[BankSize*2];
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             ActiveSoundProvider = HasYM2413 ? (ISoundProvider) SoundMixer : PSG;
 
             SystemRam = new byte[0x2000];
-            if (Options.Contains("CMMapper") == false)
+            if (Options.Contains("CMMapper") == false)  
                 InitSegaMapper();
             else
                 InitCodeMastersMapper();
@@ -99,11 +99,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             foreach (string option in Options)
             {
                 var args = option.Split('=');
-                if (option == "FM") HasYM2413 = true;
-                else if (args[0] == "IPeriod") IPeriod = int.Parse(args[1]);
+                if (args[0] == "IPeriod") IPeriod = int.Parse(args[1]);
                 else if (args[0] == "Japan") Region = "Japan";
                 else if (args[0] == "PAL") DisplayType = DisplayType.PAL;
             }
+
+            if (Options.Contains("NotInDatabase") || (Options.Contains("FM") && Options.Contains("UseFM")))
+                HasYM2413 = true;
 
             Init();
         }

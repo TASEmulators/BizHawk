@@ -24,11 +24,13 @@
         public string HardResetBinding = "LeftShift+Tab";
         public string FastForwardBinding = "J1 B6";
         public string RewindBinding = "J1 B5";
-        public string EmulatorPauseBinding = "LeftControl+Space";
+        public string EmulatorPauseBinding = "Pause";
         public string FrameAdvanceBinding = "F";
         public string ScreenshotBinding = "F12";
 
         // SMS / GameGear Settings
+        public bool SmsEnableFM = true;
+        public bool SmsAllowOverlock = false;
         public string SmsReset = "Tab";
         public string SmsPause = "J1 B10, Space";
         public string SmsP1Up = "J1 Up, UpArrow";
