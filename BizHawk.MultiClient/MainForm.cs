@@ -97,6 +97,8 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.AutoLoadRamWatch)
                 LoadRamWatch();
+            if (Global.Config.AutoLoadRamSearch)
+                LoadRamSearch();
         }
 
         private void LoadRomFromRecent(string rom)
@@ -815,6 +817,12 @@ namespace BizHawk.MultiClient
             RamWatch1.Show();
         }
 
+        private void LoadRamSearch()
+        {
+            RamSearch1 = new RamSearch();
+            RamSearch1.Show();
+        }
+
         private void RAMWatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadRamWatch();
@@ -827,9 +835,7 @@ namespace BizHawk.MultiClient
 
         private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RamSearch1 = new RamSearch();
-            //TODO: autoload
-            RamSearch1.Show();
+            LoadRamSearch();
         }
 
         private int lastWidth = -1;

@@ -17,6 +17,9 @@
         public int RamWatchWidth = -1;  //Negative numbers will be ignored
         public int RamWatchHeight = -1; 
 
+        // RamSearch Settings
+        public bool AutoLoadRamSearch = false;
+
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab";
         public string FastForwardBinding = "J1 B6";
