@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 
         private void InputConfig_Load(object sender, EventArgs e)
         {
-
+            //Determine the System currently loaded, and set that one up first, if null emulator set, what is the default?
         }
 
         private void OK_Click(object sender, EventArgs e)
