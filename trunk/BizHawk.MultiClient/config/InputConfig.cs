@@ -21,8 +21,43 @@ namespace BizHawk.MultiClient
         {
             this.Text = ControllerStr + "SMS / GG / SG-1000";
 
-            Button Up = new Button();
-            Button Down = new Button();
+            Label UpLabel = new Label();
+            UpLabel.Text = "Up";
+            UpLabel.Location = new Point(8, 20);
+            TextBox Up = new TextBox();
+            Up.Location = new Point(48, 20);
+
+
+            Label DownLabel = new Label();
+            DownLabel.Text = "Down";
+            DownLabel.Location = new Point(8, 44);
+            TextBox Down = new TextBox();
+            Down.Location = new Point(48, 44);
+
+            Label LeftLabel = new Label();
+            LeftLabel.Text = "Left";
+            LeftLabel.Location = new Point(8, 68);
+            TextBox Left = new TextBox();
+            Left.Location = new Point(48, 68);
+
+            Label RightLabel = new Label();
+            RightLabel.Text = "Right";
+            RightLabel.Location = new Point(8, 92);
+            TextBox Right = new TextBox();
+            Right.Location = new Point(48, 92);
+            
+
+            ButtonsGroupBox.Controls.Add(Up);
+            ButtonsGroupBox.Controls.Add(UpLabel);
+            ButtonsGroupBox.Controls.Add(Down);
+            ButtonsGroupBox.Controls.Add(DownLabel);
+            ButtonsGroupBox.Controls.Add(Left);
+            ButtonsGroupBox.Controls.Add(LeftLabel);
+            ButtonsGroupBox.Controls.Add(Right);
+            ButtonsGroupBox.Controls.Add(RightLabel);
+
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
+
         }
 
         private void DoPCE()
