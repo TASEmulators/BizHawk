@@ -119,7 +119,8 @@ namespace BizHawk.MultiClient
         public static ControllerDefinition ClientControlsDef = new ControllerDefinition
         {
             Name = "Emulator Frontend Controls",
-            BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", "Emulator Pause", "Frame Advance", "Screenshot" }
+            BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", 
+                "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen" }
         };
 
         private void InitControls()
@@ -132,6 +133,7 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
             controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
             controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
+            controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
             Global.ClientControls = controls;
 
             var smsControls = new Controller(SMS.SmsController);
@@ -361,6 +363,12 @@ namespace BizHawk.MultiClient
                 EmulatorPaused = !EmulatorPaused;
                 if (EmulatorPaused) Global.Sound.StopSound();
                 else Global.Sound.StartSound();
+            }
+
+            if (Global.ClientControls["Toggle Fullscreen"])
+            {
+                Global.ClientControls.UnpressButton("Toggle Fullscreen");
+                ToggleFullscreen();
             }
 
             if (EmulatorPaused == false || Global.ClientControls["Frame Advance"])
@@ -846,8 +854,7 @@ namespace BizHawk.MultiClient
 
         private int lastWidth = -1;
         private int lastHeight = -1;
-
-
+               
         private void Render()
         {
             var video = Global.Emulator.VideoProvider;
@@ -890,6 +897,31 @@ namespace BizHawk.MultiClient
 
                 if (Bounds.Bottom > area.Bottom) // Window is off the bottom edge
                     Location = new Point(Location.X, area.Bottom - Size.Height);
+            }
+        }
+
+        private bool InFullscreen = false;
+        private Point WindowedLocation;
+
+        public void ToggleFullscreen()
+        {
+            if (InFullscreen == false)
+            {
+                WindowedLocation = Location;
+                FormBorderStyle = FormBorderStyle.None;
+                WindowState = FormWindowState.Maximized;
+                MainMenuStrip.Visible = false;
+                PerformLayout();
+                Global.RenderPanel.Resized = true;
+                InFullscreen = true;
+            } else {
+                FormBorderStyle = FormBorderStyle.FixedSingle;
+                WindowState = FormWindowState.Normal;
+                MainMenuStrip.Visible = true;
+                Location = WindowedLocation;
+                PerformLayout();
+                FrameBufferResized();
+                InFullscreen = false;
             }
         }
 

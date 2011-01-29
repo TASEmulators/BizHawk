@@ -156,6 +156,7 @@ namespace BizHawk.MultiClient
         {
             d3d = direct3D;
             backingControl = control;
+		    control.DoubleClick += (o, e) => Global.MainForm.ToggleFullscreen();
         }
 
         private void DestroyDevice()
@@ -223,13 +224,9 @@ namespace BizHawk.MultiClient
             Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
 
             // figure out scaling factor
-            int widthScale = backingControl.Size.Width / video.BufferWidth;
-            int heightScale = backingControl.Size.Height / video.BufferHeight;
-            int finalScale = Math.Min(widthScale, heightScale);
-
-            // center position
-            int xpos = (backingControl.Size.Width / 2) - (video.BufferWidth / 2);
-            int ypos = (backingControl.Size.Height / 2) - (video.BufferHeight / 2);
+            float widthScale = (float) backingControl.Size.Width /  video.BufferWidth;
+            float heightScale = (float) backingControl.Size.Height / video.BufferHeight;
+            float finalScale = Math.Min(widthScale, heightScale);
 
             Device.BeginScene();
 
