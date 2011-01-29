@@ -71,7 +71,7 @@
             // 
             this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 68);
             this.ButtonsGroupBox.Name = "ButtonsGroupBox";
-            this.ButtonsGroupBox.Size = new System.Drawing.Size(240, 216);
+            this.ButtonsGroupBox.Size = new System.Drawing.Size(240, 239);
             this.ButtonsGroupBox.TabIndex = 2;
             this.ButtonsGroupBox.TabStop = false;
             this.ButtonsGroupBox.Text = "Buttons";
@@ -146,14 +146,16 @@
             // 
             this.SystemComboBox.FormattingEnabled = true;
             this.SystemComboBox.Items.AddRange(new object[] {
-            "SMS / GG",
-            "SG-1000",
-            "PC Engine",
-            "Gameboy"});
+            "SMS / GG / SG-1000",
+            "PC Engine / SGX",
+            "Gameboy",
+            "Sega Genesis",
+            "TI-83"});
             this.SystemComboBox.Location = new System.Drawing.Point(6, 19);
             this.SystemComboBox.Name = "SystemComboBox";
             this.SystemComboBox.Size = new System.Drawing.Size(146, 21);
             this.SystemComboBox.TabIndex = 2;
+            this.SystemComboBox.SelectedIndexChanged += new System.EventHandler(this.SystemComboBox_SelectedIndexChanged);
             // 
             // InputConfig
             // 
