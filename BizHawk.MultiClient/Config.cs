@@ -27,6 +27,7 @@
         public string EmulatorPauseBinding = "Pause";
         public string FrameAdvanceBinding = "F";
         public string ScreenshotBinding = "F12";
+        public string ToggleFullscreenBinding = "LeftAlt+Return, RightAlt+Return";
 
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
