@@ -536,7 +536,8 @@ namespace BizHawk.MultiClient
 
         private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            InputConfig i = new InputConfig();
+            i.ShowDialog();
         }
 
         private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
