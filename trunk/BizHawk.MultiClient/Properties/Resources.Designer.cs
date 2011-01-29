@@ -88,6 +88,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap GBController {
+            get {
+                object obj = ResourceManager.GetObject("GBController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap InserSeparator {
             get {
                 object obj = ResourceManager.GetObject("InserSeparator", resourceCulture);

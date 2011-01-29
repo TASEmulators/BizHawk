@@ -45,7 +45,18 @@ namespace BizHawk.MultiClient
             RightLabel.Location = new Point(8, 92);
             TextBox Right = new TextBox();
             Right.Location = new Point(48, 92);
-            
+
+            Label IButtonLabel = new Label();
+            IButtonLabel.Text = "I";
+            IButtonLabel.Location = new Point(8, 140);
+            TextBox IButton = new TextBox();
+            IButton.Location = new Point(48, 140);
+
+            Label IIButtonLabel = new Label();
+            IIButtonLabel.Text = "II";
+            IIButtonLabel.Location = new Point(8, 164);
+            TextBox IIButton = new TextBox();
+            IIButton.Location = new Point(48, 164);
 
             ButtonsGroupBox.Controls.Add(Up);
             ButtonsGroupBox.Controls.Add(UpLabel);
@@ -55,6 +66,11 @@ namespace BizHawk.MultiClient
             ButtonsGroupBox.Controls.Add(LeftLabel);
             ButtonsGroupBox.Controls.Add(Right);
             ButtonsGroupBox.Controls.Add(RightLabel);
+            ButtonsGroupBox.Controls.Add(IButton);
+            ButtonsGroupBox.Controls.Add(IButtonLabel);
+            ButtonsGroupBox.Controls.Add(IIButton);
+            ButtonsGroupBox.Controls.Add(IIButtonLabel);
+            
 
             ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
 
@@ -78,6 +94,7 @@ namespace BizHawk.MultiClient
         private void DoGameBoy()
         {
             this.Text = ControllerStr + "Gameboy";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
         }
 
         private void InputConfig_Load(object sender, EventArgs e)
