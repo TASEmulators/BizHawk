@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
         private void DoSMS()
         {
             this.Text = ControllerStr + "SMS / GG / SG-1000";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
 
             Label UpLabel = new Label();
             UpLabel.Text = "Up";
@@ -70,10 +71,6 @@ namespace BizHawk.MultiClient
             ButtonsGroupBox.Controls.Add(IButtonLabel);
             ButtonsGroupBox.Controls.Add(IIButton);
             ButtonsGroupBox.Controls.Add(IIButtonLabel);
-            
-
-            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
-
         }
 
         private void DoPCE()
@@ -85,6 +82,7 @@ namespace BizHawk.MultiClient
         private void DoGen()
         {
             this.Text = ControllerStr + "Sega Genesis";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
         }
 
         private void DoTI83()
