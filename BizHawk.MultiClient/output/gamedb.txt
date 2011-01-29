@@ -1165,7 +1165,7 @@ EC7CF033	O	Wonder Boy (2x overdump)	SMS
 F374ECBA	F	Wonder Boy (2x overdump) (f)	SMS	F
 F1EE83CF	F	Wonder Boy (2x overdump) (h) [A]	SMS	
 9C7A70F5	F	Wonder Boy (2x overdump) (h) [B]	SMS	
-679E1676	 	Wonder Boy III - The Dragon's Trap	SMS		FM
+679E1676	 	Wonder Boy III - The Dragon's Trap	SMS		FM;PatchBytes=25B:00,25C:00
 C999F353	F	Wonder Boy III - The Dragon's Trap (f)	SMS	F	FM
 79EC738B	T	Wonder Boy III - The Dragon's Trap (FR)	SMS		FM
 42012B7D	T	Wonder Boy III - The Dragon's Trap (SE)	SMS	Metalhead?	FM

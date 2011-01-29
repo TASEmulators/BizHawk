@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -37,6 +38,7 @@ namespace BizHawk.MultiClient
                 name = info.Name;
                 System = info.System;
                 options = new List<string>(info.GetOptions());
+                CheckForPatchOptions();
             }
 
             if (patch != null)
@@ -72,6 +74,27 @@ namespace BizHawk.MultiClient
                 }
             }
             return output;
+        }
+
+        private void CheckForPatchOptions()
+        {
+            try
+            {
+                foreach (var opt in options)
+                {
+                    if (opt.StartsWith("PatchBytes"))
+                    {
+                        var split1 = opt.Split('=');
+                        foreach (var val in split1[1].Split(','))
+                        {
+                            var split3 = val.Split(':');
+                            int offset = int.Parse(split3[0], NumberStyles.HexNumber);
+                            byte value = byte.Parse(split3[1], NumberStyles.HexNumber);
+                            RomData[offset] = value;
+                        }
+                    }
+                }
+            } catch (Exception) { } // No need for errors in patching to propagate.
         }
 
         public byte[] GetRomData() { return RomData; }
