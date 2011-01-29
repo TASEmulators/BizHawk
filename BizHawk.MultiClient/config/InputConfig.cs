@@ -79,6 +79,7 @@ namespace BizHawk.MultiClient
         private void DoPCE()
         {
             this.Text = ControllerStr + "PCEjin / SGX";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
         }
 
         private void DoGen()
