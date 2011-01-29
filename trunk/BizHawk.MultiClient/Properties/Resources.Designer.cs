@@ -102,6 +102,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap PCEngineController {
+            get {
+                object obj = ResourceManager.GetObject("PCEngineController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap poke {
             get {
                 object obj = ResourceManager.GetObject("poke", resourceCulture);
