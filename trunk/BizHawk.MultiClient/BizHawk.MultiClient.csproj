@@ -58,6 +58,12 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="ConfigService.cs" />
+    <Compile Include="config\InputConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\InputConfig.designer.cs">
+      <DependentUpon>InputConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,6 +169,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="config\InputConfig.resx">
+      <DependentUpon>InputConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="images\BuilderDialog_delete.bmp" />
     <EmbeddedResource Include="images\BuilderDialog_movedown.bmp" />
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
