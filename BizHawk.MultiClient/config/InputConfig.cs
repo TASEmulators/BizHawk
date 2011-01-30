@@ -21,12 +21,14 @@ namespace BizHawk.MultiClient
         {
             this.Text = ControllerStr + "SMS / GG / SG-1000";
             ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
+            SystemComboBox.SelectedIndex = 0;
 
             Label UpLabel = new Label();
             UpLabel.Text = "Up";
             UpLabel.Location = new Point(8, 20);
             TextBox Up = new TextBox();
             Up.Location = new Point(48, 20);
+            Up.Text = Global.Config.SmsP1Up;
 
 
             Label DownLabel = new Label();
@@ -34,30 +36,35 @@ namespace BizHawk.MultiClient
             DownLabel.Location = new Point(8, 44);
             TextBox Down = new TextBox();
             Down.Location = new Point(48, 44);
+            Down.Text = Global.Config.SmsP1Down;
 
             Label LeftLabel = new Label();
             LeftLabel.Text = "Left";
             LeftLabel.Location = new Point(8, 68);
             TextBox Left = new TextBox();
             Left.Location = new Point(48, 68);
+            Left.Text = Global.Config.SmsP1Left;
 
             Label RightLabel = new Label();
             RightLabel.Text = "Right";
             RightLabel.Location = new Point(8, 92);
             TextBox Right = new TextBox();
             Right.Location = new Point(48, 92);
+            Right.Text = Global.Config.SmsP1Right;
 
             Label IButtonLabel = new Label();
             IButtonLabel.Text = "I";
             IButtonLabel.Location = new Point(8, 140);
             TextBox IButton = new TextBox();
             IButton.Location = new Point(48, 140);
+            IButton.Text = Global.Config.SmsP1B1;
 
             Label IIButtonLabel = new Label();
             IIButtonLabel.Text = "II";
             IIButtonLabel.Location = new Point(8, 164);
             TextBox IIButton = new TextBox();
             IIButton.Location = new Point(48, 164);
+            IIButton.Text = Global.Config.SmsP1B2;
 
             ButtonsGroupBox.Controls.Add(Up);
             ButtonsGroupBox.Controls.Add(UpLabel);
@@ -99,6 +106,7 @@ namespace BizHawk.MultiClient
         private void InputConfig_Load(object sender, EventArgs e)
         {
             //Determine the System currently loaded, and set that one up first, if null emulator set, what is the default?
+            ControllComboBox.SelectedIndex = 0;
             if (!(Global.Emulator is NullEmulator))
             {
                 switch (Global.Game.System)
