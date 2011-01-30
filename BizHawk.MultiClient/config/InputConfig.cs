@@ -17,6 +17,13 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        private string TruncateButtonMapping(string button)
+        {
+            //all config button mappings have the name followed by a comma & space, then key mapping, remove up through the space
+            int x = button.LastIndexOf(',') + 2;
+            return button.Substring(x, button.Length - x);
+        }
+
         private void DoSMS()
         {
             this.Text = ControllerStr + "SMS / GG / SG-1000";
@@ -28,7 +35,7 @@ namespace BizHawk.MultiClient
             UpLabel.Location = new Point(8, 20);
             TextBox Up = new TextBox();
             Up.Location = new Point(48, 20);
-            Up.Text = Global.Config.SmsP1Up;
+            Up.Text = TruncateButtonMapping(Global.Config.SmsP1Up);
 
 
             Label DownLabel = new Label();
@@ -36,35 +43,35 @@ namespace BizHawk.MultiClient
             DownLabel.Location = new Point(8, 44);
             TextBox Down = new TextBox();
             Down.Location = new Point(48, 44);
-            Down.Text = Global.Config.SmsP1Down;
+            Down.Text = TruncateButtonMapping(Global.Config.SmsP1Down);
 
             Label LeftLabel = new Label();
             LeftLabel.Text = "Left";
             LeftLabel.Location = new Point(8, 68);
             TextBox Left = new TextBox();
             Left.Location = new Point(48, 68);
-            Left.Text = Global.Config.SmsP1Left;
+            Left.Text = TruncateButtonMapping(Global.Config.SmsP1Left);
 
             Label RightLabel = new Label();
             RightLabel.Text = "Right";
             RightLabel.Location = new Point(8, 92);
             TextBox Right = new TextBox();
             Right.Location = new Point(48, 92);
-            Right.Text = Global.Config.SmsP1Right;
+            Right.Text = TruncateButtonMapping(Global.Config.SmsP1Right);
 
             Label IButtonLabel = new Label();
             IButtonLabel.Text = "I";
             IButtonLabel.Location = new Point(8, 140);
             TextBox IButton = new TextBox();
             IButton.Location = new Point(48, 140);
-            IButton.Text = Global.Config.SmsP1B1;
+            IButton.Text = TruncateButtonMapping(Global.Config.SmsP1B1);
 
             Label IIButtonLabel = new Label();
             IIButtonLabel.Text = "II";
             IIButtonLabel.Location = new Point(8, 164);
             TextBox IIButton = new TextBox();
             IIButton.Location = new Point(48, 164);
-            IIButton.Text = Global.Config.SmsP1B2;
+            IIButton.Text = TruncateButtonMapping(Global.Config.SmsP1B2);
 
             ButtonsGroupBox.Controls.Add(Up);
             ButtonsGroupBox.Controls.Add(UpLabel);
