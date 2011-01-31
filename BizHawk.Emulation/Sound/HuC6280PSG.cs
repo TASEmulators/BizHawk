@@ -167,7 +167,8 @@ namespace BizHawk.Emulation.Sound
                 freq = channel.NoiseFreq;
             }
 
-            float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/(float)channel.Wave.Length : freq);
+
+            float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/(float)(channel.Wave.Length*128) : freq);
             float moveThroughWaveRate = wave.Length / adjustedWaveLengthInSamples;
 
             int end = start + len;
