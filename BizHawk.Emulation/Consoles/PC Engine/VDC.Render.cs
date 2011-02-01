@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
            register at certain sync points and incremented every scanline. 
            Its values range from 0 - $1FF.
          + RCRCount is the current offset into the RCR register. It is reset to $40 
-           on the first active display line of, and incremented every line. Its effective
+           on the first active display line, and incremented every line. Its effective
            range is $40 - $146.
          
         */
@@ -39,6 +39,18 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             latchedDisplayStartLine = DisplayStartLine;
             ActiveLine = 0 - latchedDisplayStartLine;
             ScanLine = 0;
+
+            int HDS = (Registers[HSR] >> 8) & 0x7F;
+            int HDE = (Registers[HDR] >> 8) & 0x7F;
+            int hblankCycles = (HDS + HDE + 2) * 8;
+            //hblankCycles -= 2;
+
+            switch (vce.DotClock)
+            {
+                case 0: hblankCycles = (hblankCycles * 4) / 3; break;
+                case 1: break;
+                case 2: hblankCycles = (hblankCycles*2)/3; break;
+            }
 
             for (; ScanLine < 262;)
             {
@@ -69,12 +81,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     StatusByte |= StatusVerticalBlanking;
                     cpu.IRQ1Assert = true;
                 }
-                cpu.Execute(82);
+                cpu.Execute(hblankCycles);
 
                 if (InActiveDisplay && render)
                     RenderScanLine();
 
-                cpu.Execute(373);
+                cpu.Execute(455-hblankCycles);
 
                 ScanLine++;
                 ActiveLine++;

@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public ushort VceAddress;
         public ushort[] VceData = new ushort[512];
         public int[] Palette = new int[512];
+        public byte DotClock;
 
         public void WriteVCE(int port, byte value)
         {
@@ -17,6 +18,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             switch (port)
             {
                 case 0: // Control Port. Doesn't control anything we care about...
+                    DotClock = (byte) (value & 3);
+                    if (DotClock == 3) 
+                        DotClock = 2;
                     break;
                 case 2: // Address LSB
                     VceAddress &= 0xFF00;
@@ -72,6 +76,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             writer.WriteLine("[VCE]");
             writer.WriteLine("VceAddress {0:X4}", VceAddress);
+            writer.WriteLine("DotClock {0}", DotClock);
             writer.Write("VceData ");
             VceData.SaveAsHex(writer);
             writer.WriteLine("[/VCE]\n");
@@ -86,6 +91,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (args[0] == "[/VCE]") break;
                 if (args[0] == "VceAddress")
                     VceAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "DotClock")
+                    DotClock = byte.Parse(args[1]);
                 else if (args[0] == "VceData")
                     VceData.ReadFromHex(args[1]);
                 else
@@ -99,6 +106,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void SaveStateBinary(BinaryWriter writer)
         {
             writer.Write(VceAddress);
+            writer.Write(DotClock);
             for (int i = 0; i < VceData.Length; i++)
                 writer.Write(VceData[i]);
         }
@@ -106,6 +114,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void LoadStateBinary(BinaryReader reader)
         {
             VceAddress = reader.ReadUInt16();
+            DotClock = reader.ReadByte();
             for (int i = 0; i < VceData.Length; i++)
             {
                 VceData[i] = reader.ReadUInt16();
