@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void FrameAdvance(bool render)
         {
-            Controller.FrameNumber = Frame++;
+            Controller.UpdateControls(Frame++);
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
             if (IsGameGear == false)

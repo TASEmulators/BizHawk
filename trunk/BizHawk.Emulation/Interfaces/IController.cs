@@ -23,6 +23,6 @@ namespace BizHawk
         void UnpressButton(string button);
         void ForceButton(string button);
 
-        int FrameNumber { get; set; }
+        void UpdateControls(int frame);
     }
 }
