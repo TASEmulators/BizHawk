@@ -70,23 +70,42 @@ namespace BizHawk.MultiClient
             }
         }
 
+		static int circularDist(int from, int to, int size)
+		{
+			if(size == 0)
+				return 0;
+			int diff = (to - from);
+			while(diff < 0)
+				diff += size;
+			return diff;
+		}
+
+		int soundoffset;
+		int SNDDXGetAudioSpace()
+		{
+			int playcursor = DSoundBuffer.CurrentPlayPosition;
+			int writecursor = DSoundBuffer.CurrentWritePosition;
+
+			int curToWrite = circularDist(soundoffset, writecursor, BufferSize);
+			int curToPlay = circularDist(soundoffset, playcursor, BufferSize);
+
+			if(curToWrite < curToPlay)
+				return 0; // in-between the two cursors. we shouldn't write anything during this time.
+
+			return curToPlay / 4;
+		}
+
         public void UpdateSound(ISoundProvider soundProvider)
         {
             if (SoundEnabled == false || disposed)
                 return;
 
-            int PlayPos = DSoundBuffer.CurrentPlayPosition / 2;
-            int WritePos = SoundBufferPosition / 2;
-            int TargetPos = PlayPos + 2204;
-
-            int samplesNeeded = TargetPos - WritePos;
-            if (samplesNeeded < 0)
-                samplesNeeded += 8820;
-
-            if (samplesNeeded >= 8820)
-                samplesNeeded -= 8820;
+			int samplesNeeded = SNDDXGetAudioSpace()*2;
+			if (samplesNeeded == 0)
+				return;
 
             short[] samples = new short[samplesNeeded];
+			//Console.WriteLine(samplesNeeded/2);
 
             if (soundProvider != null && Muted == false)
             {
@@ -94,17 +113,21 @@ namespace BizHawk.MultiClient
                 semisync.GetSamples(samples);
             }
 
-            for (int i = 0; i < samples.Length; i++)
-            {
-                short s = samples[i];
-                SoundBuffer[SoundBufferPosition++] = (byte)(s & 0xFF);
-                SoundBuffer[SoundBufferPosition++] = (byte)(s >> 8);
+			int cursor = soundoffset;
+			for (int i = 0; i < samples.Length; i++)
+			{
+				short s = samples[i];
+				SoundBuffer[cursor++] = (byte)(s & 0xFF);
+				SoundBuffer[cursor++] = (byte)(s >> 8);
 
-                if (SoundBufferPosition >= SoundBuffer.Length)
-                    SoundBufferPosition = 0;
-            }
+				if (cursor >= SoundBuffer.Length)
+					cursor = 0;
+			}
 
             DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
+
+			soundoffset += samplesNeeded * 2;
+			soundoffset %= BufferSize;
         }
     }
 }
