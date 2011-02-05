@@ -88,25 +88,18 @@ namespace BizHawk.MultiClient
         }
 
         private int frameNumber;
-        public int FrameNumber
-        {
-            get
-            {
-                return frameNumber;
-            }
-            set
-            {
-                if (value != frameNumber)
-                {
-                    // update
-                    unpressedButtons.RemoveAll(button => IsPressedActually(button) == false);
-                    forcePressedButtons.RemoveAll(button => removeFromForcePressedButtons.Contains(button));
-                    removeFromForcePressedButtons.Clear();
-                }
-                frameNumber = value;
-            }
-        }
 
+        public void UpdateControls(int frame)
+        {
+            if (frame != frameNumber)
+            {
+                // update
+                unpressedButtons.RemoveAll(button => IsPressedActually(button) == false);
+                forcePressedButtons.RemoveAll(button => removeFromForcePressedButtons.Contains(button));
+                removeFromForcePressedButtons.Clear();
+            }
+            frameNumber = frame;
+        }
 
         public void SetSticky(string button, bool sticky)
         {

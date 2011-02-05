@@ -49,17 +49,14 @@ namespace BizHawk
         }
 
         private int frame;
-        public int FrameNumber
+
+        public void UpdateControls(int frame)
         {
-            get { return frame; }
-            set
+            if (this.frame != frame)
             {
-                if (frame != value)
-                {
-                    frame = value;
-                    RecordFrame();
-                } 
-                baseController.FrameNumber = value;
+                this.frame = frame;
+                baseController.UpdateControls(frame);
+                RecordFrame();
             }
         }
 
@@ -92,6 +89,7 @@ namespace BizHawk
     {
         private ControllerDefinition def;
         private int[] input;
+        private int frame;
 
         public InputPlayback(ControllerDefinition controllerDefinition, BinaryReader reader)
         {
@@ -114,17 +112,22 @@ namespace BizHawk
 
         public bool IsPressed(string button)
         {
-            if (FrameNumber >= input.Length)
+            if (frame >= input.Length)
                 return false;
 
             for (int i = 0; i < def.BoolButtons.Count; i++)
             {
                 if (def.BoolButtons[i] == button)
                 {
-                    return (input[FrameNumber] & (1 << i)) != 0;
+                    return (input[frame] & (1 << i)) != 0;
                 }
             }
             return false;
+        }
+
+        public void UpdateControls(int frame)
+        {
+            this.frame = frame;
         }
 
         public float GetFloat(string name)
@@ -136,8 +139,7 @@ namespace BizHawk
         public void ForceButton(string button) { }
         public void SetSticky(string button, bool sticky) { }
         public bool IsSticky(string button) { return false; }
-        public int FrameNumber { get; set; }
-
-        public bool MovieEnded { get { return FrameNumber >= input.Length; } }
+        
+        public bool MovieEnded { get { return frame >= input.Length; } }
     }
 }

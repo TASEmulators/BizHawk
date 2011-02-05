@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void FrameAdvance(bool render)
         {
-            Controller.FrameNumber = Frame++;
+            Controller.UpdateControls(Frame++);
             //Log.Note("CPU","======== FRAME {0} =========",Frame);
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 

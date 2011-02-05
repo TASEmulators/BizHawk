@@ -12,19 +12,6 @@
 
 ======= SG-1000 compatibility checklist =======
 
-Following games are untested (don't have the rom)
-
-	Bomb Jack
-	C_So!
-	Champion Kendou
-	Home Mahjong
-	Mahjong
-	Othello
-	Pachinko
-	Serizawa Hachidan no Tsumeshogi
-	Terebi Oekaki
-
-Following games have issues:
-
-The Castle      dies
-Monaco GP       graphics are whacked up - wonder if it uses an undoc mode?
+The Castle      Dies, mapper issue
+Othello         Doesnt boot
+Terebi Oekaki   Req Graphic Board peripheral
