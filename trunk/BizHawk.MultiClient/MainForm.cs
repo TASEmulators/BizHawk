@@ -92,10 +92,25 @@ namespace BizHawk.MultiClient
 
             Application.Idle += Application_Idle;
 
-            if (args.Length != 0)
-                LoadRom(args[0]);
+			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
+			string cmdRom = null;
+			string cmdLoadState = null;
+			for (int i = 0; i < args.Length; i++)
+			{
+				string arg = args[i].ToLower();
+				if (arg.StartsWith("--load-slot="))
+					cmdLoadState = arg.Substring(arg.IndexOf('=')+1);
+				else
+					cmdRom = arg;
+			}
+
+			if(cmdRom != null)
+				LoadRom(cmdRom);
             else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
                 LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+
+			if(cmdLoadState != null)
+				LoadState("QuickSave" + cmdLoadState);
 
             if (Global.Config.AutoLoadRamWatch)
                 LoadRamWatch();
