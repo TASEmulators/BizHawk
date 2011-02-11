@@ -395,7 +395,7 @@ namespace BizHawk.MultiClient
             }
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Render();
-            //RamWatch1.UpdateValues();  //TODO: Create framecounter object, run this in the SetFrameCount() method of this object
+            //RamWatch1.UpdateValues();  //TODO: This should update only once per frame
         }
 
         private bool wasMaximized = false;
@@ -983,6 +983,28 @@ namespace BizHawk.MultiClient
                 overclockWhenKnownSafeToolStripMenuItem.Checked = true;
                 Global.Config.SmsAllowOverlock = true;
             }
+        }
+
+        private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PlayMovie p = new PlayMovie();
+            p.ShowDialog();
+        }
+
+        private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RecordMovie r = new RecordMovie();
+            r.ShowDialog();
+        }
+
+        private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -118,6 +118,12 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.movieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recordMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.playFromBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,6 +153,7 @@
             this.loadStateToolStripMenuItem,
             this.saveSlotToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.movieToolStripMenuItem,
             this.screenshotF12ToolStripMenuItem,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
@@ -602,33 +609,33 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(141, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
             // 
             // sega8bitToolStripMenuItem
             // 
@@ -636,7 +643,7 @@
             this.enableFMChipToolStripMenuItem,
             this.overclockWhenKnownSafeToolStripMenuItem});
             this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
-            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
             // 
             // enableFMChipToolStripMenuItem
@@ -682,42 +689,42 @@
             // x1MenuItem
             // 
             this.x1MenuItem.Name = "x1MenuItem";
-            this.x1MenuItem.Size = new System.Drawing.Size(105, 22);
+            this.x1MenuItem.Size = new System.Drawing.Size(152, 22);
             this.x1MenuItem.Text = "&1x";
             this.x1MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x2MenuItem
             // 
             this.x2MenuItem.Name = "x2MenuItem";
-            this.x2MenuItem.Size = new System.Drawing.Size(105, 22);
+            this.x2MenuItem.Size = new System.Drawing.Size(152, 22);
             this.x2MenuItem.Text = "&2x";
             this.x2MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x3MenuItem
             // 
             this.x3MenuItem.Name = "x3MenuItem";
-            this.x3MenuItem.Size = new System.Drawing.Size(105, 22);
+            this.x3MenuItem.Size = new System.Drawing.Size(152, 22);
             this.x3MenuItem.Text = "&3x";
             this.x3MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x4MenuItem
             // 
             this.x4MenuItem.Name = "x4MenuItem";
-            this.x4MenuItem.Size = new System.Drawing.Size(105, 22);
+            this.x4MenuItem.Size = new System.Drawing.Size(152, 22);
             this.x4MenuItem.Text = "&4x";
             this.x4MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // x5MenuItem
             // 
             this.x5MenuItem.Name = "x5MenuItem";
-            this.x5MenuItem.Size = new System.Drawing.Size(105, 22);
+            this.x5MenuItem.Size = new System.Drawing.Size(152, 22);
             this.x5MenuItem.Text = "&5x";
             this.x5MenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
             // mzMenuItem
             // 
             this.mzMenuItem.Name = "mzMenuItem";
-            this.mzMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.mzMenuItem.Size = new System.Drawing.Size(152, 22);
             this.mzMenuItem.Text = "&Max";
             this.mzMenuItem.Click += new System.EventHandler(this.zoomMenuItem_Click);
             // 
@@ -797,14 +804,14 @@
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
@@ -812,21 +819,21 @@
             // 
             this.debuggerToolStripMenuItem.Enabled = false;
             this.debuggerToolStripMenuItem.Name = "debuggerToolStripMenuItem";
-            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.debuggerToolStripMenuItem.Text = "&Debugger";
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Enabled = false;
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             // 
             // luaConsoleToolStripMenuItem
             // 
             this.luaConsoleToolStripMenuItem.Enabled = false;
             this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.luaConsoleToolStripMenuItem.Text = "Lua Console";
             // 
             // helpToolStripMenuItem
@@ -853,6 +860,52 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // movieToolStripMenuItem
+            // 
+            this.movieToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.recentToolStripMenuItem,
+            this.recordMovieToolStripMenuItem,
+            this.playMovieToolStripMenuItem,
+            this.stopMovieToolStripMenuItem,
+            this.playFromBeginningToolStripMenuItem});
+            this.movieToolStripMenuItem.Name = "movieToolStripMenuItem";
+            this.movieToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.movieToolStripMenuItem.Text = "Movie";
+            // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            // 
+            // recordMovieToolStripMenuItem
+            // 
+            this.recordMovieToolStripMenuItem.Name = "recordMovieToolStripMenuItem";
+            this.recordMovieToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.recordMovieToolStripMenuItem.Text = "&Record Movie...";
+            this.recordMovieToolStripMenuItem.Click += new System.EventHandler(this.recordMovieToolStripMenuItem_Click);
+            // 
+            // playMovieToolStripMenuItem
+            // 
+            this.playMovieToolStripMenuItem.Name = "playMovieToolStripMenuItem";
+            this.playMovieToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.playMovieToolStripMenuItem.Text = "&Play Movie...";
+            this.playMovieToolStripMenuItem.Click += new System.EventHandler(this.playMovieToolStripMenuItem_Click);
+            // 
+            // stopMovieToolStripMenuItem
+            // 
+            this.stopMovieToolStripMenuItem.Name = "stopMovieToolStripMenuItem";
+            this.stopMovieToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.stopMovieToolStripMenuItem.Text = "Stop Movie";
+            this.stopMovieToolStripMenuItem.Click += new System.EventHandler(this.stopMovieToolStripMenuItem_Click);
+            // 
+            // playFromBeginningToolStripMenuItem
+            // 
+            this.playFromBeginningToolStripMenuItem.Name = "playFromBeginningToolStripMenuItem";
+            this.playFromBeginningToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.playFromBeginningToolStripMenuItem.Text = "Play from Beginning";
+            this.playFromBeginningToolStripMenuItem.Click += new System.EventHandler(this.playFromBeginningToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -965,6 +1018,12 @@
         private System.Windows.Forms.ToolStripMenuItem sega8bitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableFMChipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem overclockWhenKnownSafeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem movieToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem recordMovieToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playMovieToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playFromBeginningToolStripMenuItem;
     }
 }
 
