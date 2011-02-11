@@ -987,7 +987,8 @@ namespace BizHawk.MultiClient
 
         private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            RecordMovie r = new RecordMovie();
+            r.ShowDialog();
         }
 
         private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
@@ -998,8 +999,7 @@ namespace BizHawk.MultiClient
 
         private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RecordMovie r = new RecordMovie();
-            r.ShowDialog();
+
         }
 
         private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
