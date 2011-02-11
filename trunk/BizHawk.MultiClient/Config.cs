@@ -20,6 +20,9 @@
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
 
+        //Movie Settings
+        public RecentFiles RecentMovies = new RecentFiles(8);
+
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab";
         public string FastForwardBinding = "J1 B6";
