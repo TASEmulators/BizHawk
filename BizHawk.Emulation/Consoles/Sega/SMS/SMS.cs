@@ -80,6 +80,16 @@ namespace BizHawk.Emulation.Consoles.Sega
             else
                 InitCodeMastersMapper();
 
+            if (Options.Contains("ForceStereo"))
+            {
+                byte stereoByte = 0xAD;
+                if (Options.ContainsStartsWith("StereoByte"))
+                {
+                    stereoByte = byte.Parse(Options.GetOptionValue("StereoByte"));
+                }
+                PSG.StereoPanning = stereoByte;
+            }
+
             if (Options.Contains("BIOS"))
             {
                 Port3E = 0xF7; // Disable cartridge, enable BIOS rom

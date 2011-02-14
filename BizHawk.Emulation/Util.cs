@@ -98,7 +98,7 @@ namespace BizHawk
             }
             return true;
         }
-
+        
         public static bool In(this int i, params int[] options)
         {
             foreach (int j in options)
@@ -115,6 +115,31 @@ namespace BizHawk
                 if (i == j) return true;
             }
             return false;
+        }
+
+        public static bool ContainsStartsWith(this IEnumerable<string> options, string str)
+        {
+            foreach (string opt in options)
+            {
+                if (opt.StartsWith(str)) return true;
+            }
+            return false;
+        }
+
+        public static string GetOptionValue(this IEnumerable<string> options, string str)
+        {
+            try
+            {
+                foreach (string opt in options)
+                {
+                    if (opt.StartsWith(str))
+                    {
+                        return opt.Split('=')[1];
+                    }
+                }
+            }
+            catch (Exception) { }
+            return null;
         }
 
         public static bool IsValidRomExtentsion(this string str, params string[] romExtensions)

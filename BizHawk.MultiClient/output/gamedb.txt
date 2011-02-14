@@ -25,7 +25,7 @@ D8C4165B	 	Aleste (JP)	SMS
 90118E13	F	Aleste (JP) (h)	SMS	
 013C0A94	 	Alex Kidd - High Tech World	SMS	
 29220201	T	Alex Kidd - High Tech World (DE)	SMS	Star-Trans; v1.00
-C13896D5	 	Alex Kidd - The Lost Stars	SMS		FM
+C13896D5	 	Alex Kidd - The Lost Stars	SMS		FM;StereoByte=233
 2210F389	V	Alex Kidd - The Lost Stars (bad dump)	SMS	Very bad	FM
 17A40E29	 	Alex Kidd in Miracle World [v0] (US)	SMS	
 4213FA16	T	Alex Kidd in Miracle World [v0] (IT)	SMS	
@@ -204,7 +204,7 @@ B9DB4282	 	Castle of Illusion - Starring Mickey Mouse (US)	SMS
 46340C41	 	Cheese Cat-astrophe	SMS	
 72D5ED7F	B	Cheese Cat-astrophe (bad byte)	SMS	
 4BF77EC9	V	Cheese Cat-astrophe (bad - last 82KB missing)	SMS	
-4A21C15F	 	Choplifter	SMS	
+4A21C15F	 	Choplifter	SMS		StereoByte=203
 8C02D693	O	Choplifter (2x overdump)	SMS	
 9190A56F	F	Choplifter (2x overdump) (h) [A]	SMS
 3F188EDD	F	Choplifter (2x overdump) (h) [B]	SMS
@@ -406,14 +406,14 @@ C08132FB	 	Golden Axe	SMS
 CCEDF9EE	F	Golden Axe (bad byte) (h)	SMS	
 1EEC7ABC	B	Golden Axe (two bad bytes)	SMS	
 95F54C15	F	Golden Axe (two bad bytes) (h)	SMS	
-C7DED988	 	Golden Axe Warrior	SMS	
-88FAD145	F	Golden Axe Warrior (f)	SMS	F
-68F58DF7	T	Golden Axe Warrior (BR) [A]	SMS	Emuboarding
-8872F23F	T	Golden Axe Warrior (BR) [B]	SMS	ALVS
-F424AD15	T	Golden Axe Warrior (BR) [C]	SMS	
-21DB20AE	T	Golden Axe Warrior (DE)	SMS	Trans-Nation; v0.82
-472D1CE4	T	Golden Axe Warrior (FR)	SMS	Haruney
-A53677B3	T	Golden Axe Warrior (ES)	SMS	PKT
+C7DED988	 	Golden Axe Warrior	SMS		StereoByte=233
+88FAD145	F	Golden Axe Warrior (f)	SMS	F	StereoByte=233
+68F58DF7	T	Golden Axe Warrior (BR) [A]	SMS	Emuboarding	StereoByte=233
+8872F23F	T	Golden Axe Warrior (BR) [B]	SMS	ALVS	StereoByte=233
+F424AD15	T	Golden Axe Warrior (BR) [C]	SMS		StereoByte=233	
+21DB20AE	T	Golden Axe Warrior (DE)	SMS	Trans-Nation; v0.82	StereoByte=233
+472D1CE4	T	Golden Axe Warrior (FR)	SMS	Haruney	StereoByte=233
+A53677B3	T	Golden Axe Warrior (ES)	SMS	PKT	StereoByte=233
 48651325	 	Golfamania	SMS		FM
 5DABFDC3	 	Golfamania [Proto]	SMS		FM
 A51376FE	 	Golvellius - Valley of Doom	SMS		FM
@@ -695,25 +695,25 @@ E030E66C	 	Parlour Games	SMS		FM
 9AEFE664	 	Pat Riley Basketball [Proto]	SMS	
 592B8297	D	Pause Test	SMS	FluBBa
 85060847	D	Paws	SMS	An!mal; SMS Power Sega 8-bit Coding Competition 2006 entry
-F97E9875	 	Penguin Land	SMS		FM
-F6552DA8	O	Penguin Land (4x overdump)	SMS		FM
-2BCDB8FA	 	Penguin Land (JP)	SMS		FM
+F97E9875	 	Penguin Land	SMS		FM;StereoByte=237
+F6552DA8	O	Penguin Land (4x overdump)	SMS		FM;StereoByte=237
+2BCDB8FA	 	Penguin Land (JP)	SMS		FM;StereoByte=237
 B9A3EBB7	H	Penguin Land [Playpal hack]	SMS	Penguin Land; hacked to make it compatible with the PlayPal/Coleco hardware
 95B9EA95	 	PGA TOUR Golf	SMS	
-E4A65E79	 	Phantasy Star [v2]	SMS	
-00BEF1D7	 	Phantasy Star [v3]	SMS	
-A1541944	B	Phantasy Star [v3] (bad byte)	SMS	
+E4A65E79	 	Phantasy Star [v2]	SMS		StereoByte=218
+00BEF1D7	 	Phantasy Star [v3]	SMS		StereoByte=218
+A1541944	B	Phantasy Star [v3] (bad byte)	SMS		StereoByte=218
 7F4F28C6	V	Phantasy Star [v3] (bad dump)	SMS	Very bad
-73F91638	O	Phantasy Star [v3] (f) [A]	SMS	
-EA64F003	F	Phantasy Star [v3] (f) [B]	SMS	F
-E80EE900	F	Phantasy Star [v3] (h) (f)	SMS	H128
-75971BEF	 	Phantasy Star (BR)	SMS	
-56BD28D8	T	Phantasy Star [v3] (FR)	SMS	Floflo
-43390E72	T	Phantasy Star [v2] (DE)	SMS	Trans-Nation; v0.95
-A721A1DC	T	Phantasy Star [v3] (DE)	SMS	Trans-Nation; v0.95
-6605D36A	 	Phantasy Star (JP)	SMS		FM
-EEFE22DE	V	Phantasy Star (JP) (broken half-translation)	SMS		FM
-747E83B5	 	Phantasy Star (KR)	SMS	
+73F91638	O	Phantasy Star [v3] (f) [A]	SMS		StereoByte=218
+EA64F003	F	Phantasy Star [v3] (f) [B]	SMS	F	StereoByte=218
+E80EE900	F	Phantasy Star [v3] (h) (f)	SMS	H128	StereoByte=218
+75971BEF	 	Phantasy Star (BR)	SMS		StereoByte=218
+56BD28D8	T	Phantasy Star [v3] (FR)	SMS	Floflo	StereoByte=218
+43390E72	T	Phantasy Star [v2] (DE)	SMS	Trans-Nation; v0.95	StereoByte=218
+A721A1DC	T	Phantasy Star [v3] (DE)	SMS	Trans-Nation; v0.95	StereoByte=218
+6605D36A	 	Phantasy Star (JP)	SMS		FM;StereoByte=218
+EEFE22DE	V	Phantasy Star (JP) (broken half-translation)	SMS		FM;StereoByte=218
+747E83B5	 	Phantasy Star (KR)	SMS		StereoByte=218
 3CA83C04	H	Phantasy Star [HK01]	SMS	Phantasy Star; hacked to more closely match the original Japanese version
 A13637A2	H	Phantasy Star [Pat Johnson]	SMS	Phantasy Star; hacked to display slightly different text in a few places
 07301F83	 	Phantasy Star [Megadrive] (JP)	SMS
@@ -802,7 +802,7 @@ DA5A7013	 	Rambo III	SMS
 EA1AFE22	F	Rampage (h) [B]	SMS		FM
 426E5C8A	 	Rampart	SMS	
 FD1FFF2A	B	Rampart (two bad bytes)	SMS	
-C547EB1B	 	Rastan	SMS		FM
+C547EB1B	 	Rastan	SMS		FM;StereoByte=203
 DD117862	F	Rastan (f)	SMS	F	FM
 89684379	O	Rastan (2x overdump)	SMS		FM
 796C76B4	B	Rastan (bad byte)	SMS		FM
@@ -1205,11 +1205,11 @@ B1B230DF	F	WWF Wrestlemania Steel Cage Challenge [SMS-GG] (f)	SMS	F
 EC726C0D	 	Xenon 2 - Megablast [Virgin]	SMS	
 F13E118D	B	Xenon 2 - Megablast [Virgin] (bad byte)	SMS	
 3E1387F6	 	X-Men - Mojo World (BR)	SMS	
-B33E2827	 	Y's - The Vanished Omens	SMS		FM
-20A9E45D	F	Y's - The Vanished Omens (f)	SMS		FM
-3F06DD76	B	Y's - The Vanished Omens (bad byte)	SMS		FM
-AFD29460	T	Y's - The Vanished Omens (FR)	SMS	Crispysix	FM
-32759751	 	Ys (JP)	SMS		FM
+B33E2827	 	Y's - The Vanished Omens	SMS		FM;StereoByte=203
+20A9E45D	F	Y's - The Vanished Omens (f)	SMS		FM;StereoByte=203
+3F06DD76	B	Y's - The Vanished Omens (bad byte)	SMS		FM;StereoByte=203
+AFD29460	T	Y's - The Vanished Omens (FR)	SMS	Crispysix	FM;StereoByte=203
+32759751	 	Ys (JP)	SMS		FM;StereoByte=203
 B2B67FD9	D	Z80 Instruction Exerciser v0.10	SMS	Various
 38E4B272	D	Z80 Instruction Exerciser v0.12	SMS	Various
 05F471DE	D	Z80 Instruction Exerciser v0.12 (SCDC console)	SMS	Various

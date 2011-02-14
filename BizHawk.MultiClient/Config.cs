@@ -35,6 +35,7 @@
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
         public bool SmsAllowOverlock = false;
+        public bool SmsForceStereoSeparation = false;
         public string SmsReset = "Tab";
         public string SmsPause = "J1 B10, Space";
         public string SmsP1Up = "J1 Up, UpArrow";
