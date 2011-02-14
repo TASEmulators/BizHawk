@@ -49,6 +49,7 @@ namespace BizHawk.MultiClient
             }
             if (Global.Config.SmsEnableFM) enableFMChipToolStripMenuItem.Checked = true; 
             if (Global.Config.SmsAllowOverlock) overclockWhenKnownSafeToolStripMenuItem.Checked = true;
+            if (Global.Config.SmsForceStereoSeparation) forceStereoSeparationToolStripMenuItem.Checked = true;
 		
             Database.LoadDatabase("gamedb.txt");
 
@@ -272,6 +273,7 @@ namespace BizHawk.MultiClient
                     Global.Emulator.Controller = Global.SMSControls;
                     if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
                     if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverlock");
+                    if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
                     break;
                 case "GG":
                     Global.Emulator = new SMS { IsGameGear = true };
@@ -376,8 +378,8 @@ namespace BizHawk.MultiClient
             {
                 Global.ClientControls.UnpressButton("Emulator Pause");
                 EmulatorPaused = !EmulatorPaused;
-                if (EmulatorPaused) Global.Sound.StopSound();
-                else Global.Sound.StartSound();
+                //if (EmulatorPaused) Global.Sound.StopSound();
+                //else Global.Sound.StartSound();
             }
 
             if (Global.ClientControls["Toggle Fullscreen"])
@@ -982,6 +984,21 @@ namespace BizHawk.MultiClient
             {
                 overclockWhenKnownSafeToolStripMenuItem.Checked = true;
                 Global.Config.SmsAllowOverlock = true;
+            }
+        }
+
+
+        private void forceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (forceStereoSeparationToolStripMenuItem.Checked)
+            {
+                forceStereoSeparationToolStripMenuItem.Checked = false;
+                Global.Config.SmsForceStereoSeparation = false;
+            }
+            else
+            {
+                forceStereoSeparationToolStripMenuItem.Checked = true;
+                Global.Config.SmsForceStereoSeparation = true;
             }
         }
 
