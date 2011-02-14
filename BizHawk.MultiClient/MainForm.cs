@@ -272,13 +272,13 @@ namespace BizHawk.MultiClient
                     Global.Emulator = new SMS();
                     Global.Emulator.Controller = Global.SMSControls;
                     if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
-                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverlock");
+                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
                     if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
                     break;
                 case "GG":
                     Global.Emulator = new SMS { IsGameGear = true };
                     Global.Emulator.Controller = Global.SMSControls;
-                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverlock");
+                    if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
                     break;
                 case "PCE":
                     Global.Emulator = new PCEngine(NecSystemType.TurboGrafx);

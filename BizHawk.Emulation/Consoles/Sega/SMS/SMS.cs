@@ -43,9 +43,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public YM2413 YM2413;
         public SoundMixer SoundMixer;
         public bool IsGameGear = false;
-
         public bool HasYM2413 = false;
-        public int IPeriod = 228;
 
         public int Frame { get; set; }
         private byte Port01 = 0xFF;
@@ -90,6 +88,9 @@ namespace BizHawk.Emulation.Consoles.Sega
                 PSG.StereoPanning = stereoByte;
             }
 
+            if (Options.Contains("AllowOverclock") && Options.Contains("OverclockSafe"))
+                Vdp.IPeriod = 512;
+
             if (Options.Contains("BIOS"))
             {
                 Port3E = 0xF7; // Disable cartridge, enable BIOS rom
@@ -109,8 +110,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             foreach (string option in Options)
             {
                 var args = option.Split('=');
-                if (args[0] == "IPeriod") IPeriod = int.Parse(args[1]);
-                else if (args[0] == "Japan") Region = "Japan";
+                if (args[0] == "Japan") Region = "Japan";
                 else if (args[0] == "PAL") DisplayType = DisplayType.PAL;
             }
 
@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (HasYM2413)
             {
                 writer.Write("FMRegs " );
-                YM2413.opll.reg.SaveAsHex(writer);
+                   YM2413.opll.reg.SaveAsHex(writer);
             }
             writer.WriteLine("[/SMS]");
         }

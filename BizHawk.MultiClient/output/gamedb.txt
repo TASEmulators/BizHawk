@@ -744,14 +744,14 @@ C7A1FDEF	 	Populous	SMS
 C7C906EA	O	Populous (f)	SMS	
 4A9B4ECB	F	Populous (h) (f)	SMS	
 ABD48AD2	 	Poseidon Wars 3-D	SMS		FM
-4077EFD9	 	Power Strike	SMS		FM
-F94616C4	F	Power Strike (h)	SMS		FM
-514E7ABE	O	Power Strike (2x overdump)	SMS		FM
-4CDC0942	F	Power Strike (2x overdump) (h) [A]	SMS		FM
-37DD9196	F	Power Strike (2x overdump) (h) [B]	SMS		FM
-A109A6FE	 	Power Strike II	SMS	
-673C68B8	B	Power Strike II (eight bad bytes)	SMS	
-979263D8	H	Power Strike II [GG2SMS]	SMS	Game Gear Power Strike II by Chris Covell; v1.00
+4077EFD9	 	Power Strike	SMS		FM;OverclockSafe
+F94616C4	F	Power Strike (h)	SMS		FM;OverclockSafe
+514E7ABE	O	Power Strike (2x overdump)	SMS		FM;OverclockSafe
+4CDC0942	F	Power Strike (2x overdump) (h) [A]	SMS		FM;OverclockSafe
+37DD9196	F	Power Strike (2x overdump) (h) [B]	SMS		FM;OverclockSafe
+A109A6FE	 	Power Strike II	SMS		OverclockSafe
+673C68B8	B	Power Strike II (eight bad bytes)	SMS		OverclockSafe
+979263D8	H	Power Strike II [GG2SMS]	SMS	Game Gear Power Strike II by Chris Covell; v1.00	OverclockSafe
 0047B615	 	Predator 2	SMS	
 518D8547	V	Predator 2 (bad - 42KB missing)	SMS	
 E5F789B9	 	Predator 2 [SMS-GG]	SMS	
@@ -839,7 +839,7 @@ C7F3DA07	H	Rodrigo 2 em - Mate o Papai Noel - Versao de Natal	SMS	Teddy Boy
 947DB11A	H	Rodrigo O Resgate [B]	SMS	Wonder Boy
 715E4E4C	O	Rodrigo O Resgate [B] (6416 bytes oversize)	SMS	
 583A6390	D	Rope Jump	SMS	Peder Johansen
-BB54B6B0	 	R-Type	SMS		FM
+BB54B6B0	 	R-Type	SMS		FM;OverclockSafe
 7510BCE3	T	R-Type (BR) [A]	SMS		FM
 A3C80EE3	T	R-Type (BR) [B]	SMS	Emuboarding emunow.cjb.net	FM
 304D8019	F	R-Type (h)	SMS		FM
@@ -1440,7 +1440,7 @@ CD53F3AF	 	Garfield - Caught in the Act (US)	GG
 A0530664	 	Gear Stadium Heiseiban (JP)	GG	
 E9A2EFB4	 	Gear Works (US)	GG	
 58B44585	 	George Foreman's KO Boxing	GG	
-1B80A75B	 	GG Aleste (JP)	GG	
+1B80A75B	 	GG Aleste (JP)	GG		OverclockSafe
 0EBEA9D4	I	GG BIOS	GG	Found in revision 2 hardware and Majesco Game Gears.
 E2E209C4	D	GG Hicolor Demo v1.00	GG	Chris Covell
 1882C8D7	D	GG Hicolor Demo v1.05	GG	Chris Covell
