@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public VdpMode VdpMode { get { return mode; } }
         private DisplayType DisplayType = DisplayType.NTSC;
         private Z80A Cpu;
+        public int IPeriod = 228;
 
         public int ScanLine;
         private int FrameHeight = 192;
@@ -345,7 +346,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 ProcessFrameInterrupt();
                 ProcessLineInterrupt();
 
-                Cpu.ExecuteCycles(228);
+                Cpu.ExecuteCycles(IPeriod);
 
                 if (ScanLine == scanlinesPerFrame - 1)
                     RenderBlankingRegions();
