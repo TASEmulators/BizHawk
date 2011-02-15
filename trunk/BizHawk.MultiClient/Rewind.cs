@@ -160,7 +160,7 @@ namespace BizHawk.MultiClient
                     RewindLarge();
             }
 
-            Global.Emulator.FrameAdvance(true);
+            DoFrameAdvance();
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Render();
         }
