@@ -107,6 +107,18 @@ namespace BizHawk.MultiClient
                 LoadRamSearch();
         }
 
+        private void PauseEmulator()
+        {
+            EmulatorPaused = true;
+            Global.Sound.StopSound();
+        }
+
+        private void UnpauseEmulator()
+        {
+            EmulatorPaused = false;
+            Global.Sound.StartSound();
+        }
+
         private void LoadRomFromRecent(string rom)
         {
             bool r = LoadRom(rom);
@@ -365,7 +377,7 @@ namespace BizHawk.MultiClient
                 if (FrameAdvanceDelay == 60)
                 {
                     if (EmulatorPaused == false)
-                        EmulatorPaused = true;
+                        PauseEmulator();
                     Global.Emulator.FrameAdvance(true);
                     FrameAdvanceDelay--;
                 }
@@ -486,9 +498,10 @@ namespace BizHawk.MultiClient
             if (Global.ClientControls["Emulator Pause"])
             {
                 Global.ClientControls.UnpressButton("Emulator Pause");
-                EmulatorPaused = !EmulatorPaused;
-                //if (EmulatorPaused) Global.Sound.StopSound();
-                //else Global.Sound.StartSound();
+                if (EmulatorPaused)
+                    UnpauseEmulator();
+                else
+                    PauseEmulator();
             }
 
             if (Global.ClientControls["Toggle Fullscreen"])
@@ -638,15 +651,9 @@ namespace BizHawk.MultiClient
         private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (EmulatorPaused == true)
-            {
-                Global.Sound.StartSound();
-                EmulatorPaused = false;
-            }
+                UnpauseEmulator();
             else
-            {
-                Global.Sound.StopSound();
-                EmulatorPaused = true;
-            }
+                PauseEmulator();
         }
 
         private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1162,12 +1169,11 @@ namespace BizHawk.MultiClient
         {
             if (Global.Config.PauseWhenMenuActivated)
             {
-                Global.Sound.StopSound();
                 if (EmulatorPaused)
                     wasPaused = true;
                 else
                     wasPaused = false;
-                EmulatorPaused = true;
+                PauseEmulator();
             }
         }
 
@@ -1175,8 +1181,7 @@ namespace BizHawk.MultiClient
         {
             if (!wasPaused)
             {
-                Global.Sound.StartSound();
-                EmulatorPaused = false;
+                UnpauseEmulator();
             }
         }
 
