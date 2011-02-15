@@ -1192,7 +1192,8 @@ namespace BizHawk.MultiClient
 
         private void soundToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            SoundConfig s = new SoundConfig();
+            s.ShowDialog();
         }
     }
 }

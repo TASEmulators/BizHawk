@@ -3,7 +3,6 @@
     public class Config
     {
         // General Client Settings
-        public bool SoundEnabled = true;
         public int TargetZoomFactor = 2;
         public string LastRomPath = ".";
         public bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
@@ -15,6 +14,10 @@
         public bool DisplayFrameCounter = false;
         public bool DisplayLagCounter = false;
         public bool DisplayInput = false;
+
+        // Sound options
+        public bool SoundEnabled = true;
+        public bool MuteFrameAdvance = true;
 
         // RamWatch Settings
         public bool AutoLoadRamWatch = false;
