@@ -138,6 +138,8 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
             controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
             controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
+            controls.BindMulti("Quick Save State", Global.Config.QuickSave);
+            controls.BindMulti("Quick Load State", Global.Config.QuickLoad);
             Global.ClientControls = controls;
 
             var smsControls = new Controller(SMS.SmsController);
@@ -352,6 +354,18 @@ namespace BizHawk.MultiClient
                 return;
             }
    
+            if (Global.ClientControls["Quick Save State"])
+            {
+                if (!IsNullEmulator())
+                    SaveState("QuickSave" + SaveSlot.ToString());
+            }
+
+            if (Global.ClientControls["Quick Load State"])
+            {
+                if (!IsNullEmulator())
+                    LoadState("QuickSave" + SaveSlot.ToString());
+            }
+            
             if (Global.ClientControls["Hard Reset"])
             {
                 Global.ClientControls.UnpressButton("Hard Reset");
