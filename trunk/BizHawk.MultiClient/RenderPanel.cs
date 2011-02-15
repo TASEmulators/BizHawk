@@ -243,6 +243,16 @@ namespace BizHawk.MultiClient
             Device.Present(Present.DoNotWait);
         }
 
+        /// <summary>
+        /// Display all screen info objects like fps, frame counter, lag counter, and input display
+        /// </summary>
+        public void DrawScreenInfo()
+        {
+            //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
+            if (Global.Config.DisplayFrameCounter)
+                MessageFont.DrawString(null, Global.Emulator.Frame.ToString(), 1, 1, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
+        }
+
         private List<UIMessage> messages = new List<UIMessage>(5);
 
         public void AddMessage(string message)
@@ -253,7 +263,7 @@ namespace BizHawk.MultiClient
         private void DrawMessages()
         {
             messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-
+            DrawScreenInfo();
             int line = 1;
             for (int i=messages.Count - 1; i>=0; i--, line++)
             {

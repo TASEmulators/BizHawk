@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
 					cmdRom = arg;
 			}
 
-			if(cmdRom != null)
+			if(cmdRom != null) //Commandline should always override auto-load
 				LoadRom(cmdRom);
             else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
                 LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
@@ -330,8 +330,17 @@ namespace BizHawk.MultiClient
         [System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
+        /// <summary>
+        /// Handles the display of information like frame counter, lag counter, and input
+        /// </summary>
+        private void DisplayInfo()
+        {
+            //Global.RenderPanel.AddMessage(Global.Emulator.Frame.ToString());
+        }
+
         public void GameTick()
         {
+            DisplayInfo();
             Input.Update();
             if (ActiveForm != null)
                 ScreenSaver.ResetTimerPeriodically();
@@ -559,22 +568,34 @@ namespace BizHawk.MultiClient
 
         private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Global.Config.DisplayFPS == true)
+                Global.Config.DisplayFPS = false;
+            else
+                Global.Config.DisplayFPS = true;
         }
 
         private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Global.Config.DisplayFrameCounter == true)
+                Global.Config.DisplayFrameCounter = false;
+            else
+                Global.Config.DisplayFrameCounter = true;
         }
 
         private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Global.Config.DisplayInput == true)
+                Global.Config.DisplayInput = false;
+            else
+                Global.Config.DisplayInput = true;
         }
 
         private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (Global.Config.DisplayLagCounter == true)
+                Global.Config.DisplayLagCounter = false;
+            else
+                Global.Config.DisplayLagCounter = true;
         }
 
         private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -985,6 +1006,26 @@ namespace BizHawk.MultiClient
 
         private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
+            if (Global.Config.DisplayFPS == true)
+                displayFPSToolStripMenuItem.Checked = true;
+            else
+                displayFPSToolStripMenuItem.Checked = false;
+
+            if (Global.Config.DisplayFrameCounter == true)
+                displayFrameCounterToolStripMenuItem.Checked = true;
+            else
+                displayFrameCounterToolStripMenuItem.Checked = false;
+
+            if (Global.Config.DisplayLagCounter == true)
+                displayLagCounterToolStripMenuItem.Checked = true;
+            else
+                displayLagCounterToolStripMenuItem.Checked = false;
+
+            if (Global.Config.DisplayInput == true)
+                displayInputToolStripMenuItem.Checked = true;
+            else
+                displayInputToolStripMenuItem.Checked = false;
+            
             x1MenuItem.Checked = false;
             x2MenuItem.Checked = false;
             x3MenuItem.Checked = false;

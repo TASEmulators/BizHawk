@@ -125,6 +125,9 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.gUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pauseWhenMenuActivatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -656,33 +659,33 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(141, 6);
             // 
             // sega8bitToolStripMenuItem
             // 
@@ -691,7 +694,7 @@
             this.overclockWhenKnownSafeToolStripMenuItem,
             this.forceStereoSeparationToolStripMenuItem});
             this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
-            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
             // 
             // enableFMChipToolStripMenuItem
@@ -722,8 +725,8 @@
             this.toolStripSeparator2,
             this.displayFPSToolStripMenuItem,
             this.displayFrameCounterToolStripMenuItem,
-            this.displayInputToolStripMenuItem,
-            this.displayLagCounterToolStripMenuItem});
+            this.displayLagCounterToolStripMenuItem,
+            this.displayInputToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -791,7 +794,6 @@
             // 
             // displayFPSToolStripMenuItem
             // 
-            this.displayFPSToolStripMenuItem.Enabled = false;
             this.displayFPSToolStripMenuItem.Name = "displayFPSToolStripMenuItem";
             this.displayFPSToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.displayFPSToolStripMenuItem.Text = "Display FPS";
@@ -799,7 +801,6 @@
             // 
             // displayFrameCounterToolStripMenuItem
             // 
-            this.displayFrameCounterToolStripMenuItem.Enabled = false;
             this.displayFrameCounterToolStripMenuItem.Name = "displayFrameCounterToolStripMenuItem";
             this.displayFrameCounterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.displayFrameCounterToolStripMenuItem.Text = "Display FrameCounter";
@@ -807,7 +808,6 @@
             // 
             // displayInputToolStripMenuItem
             // 
-            this.displayInputToolStripMenuItem.Enabled = false;
             this.displayInputToolStripMenuItem.Name = "displayInputToolStripMenuItem";
             this.displayInputToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.displayInputToolStripMenuItem.Text = "Display Input";
@@ -815,7 +815,6 @@
             // 
             // displayLagCounterToolStripMenuItem
             // 
-            this.displayLagCounterToolStripMenuItem.Enabled = false;
             this.displayLagCounterToolStripMenuItem.Name = "displayLagCounterToolStripMenuItem";
             this.displayLagCounterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.displayLagCounterToolStripMenuItem.Text = "Display Lag Counter";
@@ -825,7 +824,9 @@
             // 
             this.configToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.controllersToolStripMenuItem,
-            this.hotkeysToolStripMenuItem});
+            this.hotkeysToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.gUIToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.configToolStripMenuItem.Text = "&Config";
@@ -833,7 +834,7 @@
             // controllersToolStripMenuItem
             // 
             this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.controllersToolStripMenuItem.Text = "&Controllers";
             this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
             // 
@@ -841,7 +842,7 @@
             // 
             this.hotkeysToolStripMenuItem.Enabled = false;
             this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hotkeysToolStripMenuItem.Text = "&Hotkeys";
             this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
             // 
@@ -916,6 +917,25 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+            // 
+            // gUIToolStripMenuItem
+            // 
+            this.gUIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pauseWhenMenuActivatedToolStripMenuItem});
+            this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
+            this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.gUIToolStripMenuItem.Text = "GUI";
+            // 
+            // pauseWhenMenuActivatedToolStripMenuItem
+            // 
+            this.pauseWhenMenuActivatedToolStripMenuItem.Name = "pauseWhenMenuActivatedToolStripMenuItem";
+            this.pauseWhenMenuActivatedToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.pauseWhenMenuActivatedToolStripMenuItem.Text = "Pause when menu activated";
             // 
             // MainForm
             // 
@@ -1034,6 +1054,9 @@
         private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem playFromBeginningToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem forceStereoSeparationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem gUIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
     }
 }
 
