@@ -107,13 +107,17 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             if (DisplayType == DisplayType.NTSC)
             {
-                if (FrameHeight == 240)
-                    return VLineCounterTableNTSC240[ScanLine];
-                return VLineCounterTableNTSC192[ScanLine];
+                if (FrameHeight == 192)
+                    return VLineCounterTableNTSC192[ScanLine];
+                if (FrameHeight == 224)
+                    return VLineCounterTableNTSC224[ScanLine];
+                return VLineCounterTableNTSC240[ScanLine];
             } else { // PAL
-                if (FrameHeight == 240)
-                    return VLineCounterTablePAL240[ScanLine];
-                return VLineCounterTablePAL192[ScanLine];
+                if (FrameHeight == 192)
+                    return VLineCounterTablePAL192[ScanLine];
+                if (FrameHeight == 224)
+                    return VLineCounterTablePAL224[ScanLine];
+                return VLineCounterTablePAL240[ScanLine];
             }
         }
 

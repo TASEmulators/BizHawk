@@ -242,9 +242,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (mode == VdpMode.GameGear)
             {
+                int yStart = (FrameHeight - 144)/2;
                 for (int y = 0; y < 144; y++)
                     for (int x = 0; x < 160; x++)
-                        GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + 24) * 256) + x + 48];
+                        GameGearFrameBuffer[(y * 160) + x] = FrameBuffer[((y + yStart) * 256) + x + 48];
             }
         }
     }
