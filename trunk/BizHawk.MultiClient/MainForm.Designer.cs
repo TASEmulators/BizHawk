@@ -128,6 +128,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.soundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -828,6 +829,7 @@
             this.controllersToolStripMenuItem,
             this.hotkeysToolStripMenuItem,
             this.toolStripSeparator9,
+            this.soundToolStripMenuItem,
             this.gUIToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
             this.configToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
@@ -940,6 +942,13 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // soundToolStripMenuItem
+            // 
+            this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
+            this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.soundToolStripMenuItem.Text = "&Sound";
+            this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1061,6 +1070,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem gUIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem;
     }
 }
 

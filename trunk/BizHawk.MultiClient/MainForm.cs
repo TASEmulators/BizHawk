@@ -1189,5 +1189,10 @@ namespace BizHawk.MultiClient
         {
             Global.Config.PauseWhenMenuActivated ^= true;
         }
+
+        private void soundToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
