@@ -11,6 +11,9 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
+    /// <summary>
+    /// A winform designed to display ram address values of the user's choice
+    /// </summary>
     public partial class RamWatch : Form
     {
         //TODO: 

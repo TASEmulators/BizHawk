@@ -37,19 +37,6 @@ namespace BizHawk.MultiClient
             Controls.Add(renderTarget);
 
             InitializeComponent();
-
-            switch(Global.Config.TargetZoomFactor)
-            {
-                case 1: x1MenuItem.Checked = true; break;
-                case 2: x2MenuItem.Checked = true; break;
-                case 3: x3MenuItem.Checked = true; break;
-                case 4: x4MenuItem.Checked = true; break;
-                case 5: x5MenuItem.Checked = true; break;
-                case 10:mzMenuItem.Checked = true; break;
-            }
-            if (Global.Config.SmsEnableFM) enableFMChipToolStripMenuItem.Checked = true; 
-            if (Global.Config.SmsAllowOverlock) overclockWhenKnownSafeToolStripMenuItem.Checked = true;
-            if (Global.Config.SmsForceStereoSeparation) forceStereoSeparationToolStripMenuItem.Checked = true;
 		
             Database.LoadDatabase("gamedb.txt");
 
@@ -707,6 +694,16 @@ namespace BizHawk.MultiClient
                 resetToolStripMenuItem.Enabled = true;
             else
                 resetToolStripMenuItem.Enabled = false;
+
+            if (Global.Config.SmsAllowOverlock)
+                overclockWhenKnownSafeToolStripMenuItem.Checked = true;
+            else
+                overclockWhenKnownSafeToolStripMenuItem.Checked = false;
+
+            if (Global.Config.SmsForceStereoSeparation)
+                forceStereoSeparationToolStripMenuItem.Checked = true;
+            else
+                forceStereoSeparationToolStripMenuItem.Checked = false;
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -861,8 +858,11 @@ namespace BizHawk.MultiClient
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
-        }
+            if (Global.Config.SmsEnableFM)
+                enableFMChipToolStripMenuItem.Checked = true;
+            else
+                enableFMChipToolStripMenuItem.Checked = false;
+        } 
 
         private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1022,6 +1022,24 @@ namespace BizHawk.MultiClient
         private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            x1MenuItem.Checked = false;
+            x2MenuItem.Checked = false;
+            x3MenuItem.Checked = false;
+            x4MenuItem.Checked = false;
+            x5MenuItem.Checked = false;
+            switch (Global.Config.TargetZoomFactor)
+            {
+                case 1: x1MenuItem.Checked = true; break;
+                case 2: x2MenuItem.Checked = true; break;
+                case 3: x3MenuItem.Checked = true; break;
+                case 4: x4MenuItem.Checked = true; break;
+                case 5: x5MenuItem.Checked = true; break;
+                case 10: mzMenuItem.Checked = true; break;
+            }
         }
     }
 }

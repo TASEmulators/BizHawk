@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
+    /// <summary>
+    /// A winform designed to search through ram values
+    /// </summary>
     public partial class RamSearch : Form
     {
         //TODO:
