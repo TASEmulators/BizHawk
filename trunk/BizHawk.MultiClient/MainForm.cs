@@ -681,29 +681,12 @@ namespace BizHawk.MultiClient
 
         private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            if (IsNullEmulator())
-            {
-                powerToolStripMenuItem.Enabled = false;
-            }
-            else
-            {
-                powerToolStripMenuItem.Enabled = true;
-            }
+            powerToolStripMenuItem.Enabled = !IsNullEmulator();
+            resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
 
-            if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
-                resetToolStripMenuItem.Enabled = true;
-            else
-                resetToolStripMenuItem.Enabled = false;
-
-            if (Global.Config.SmsAllowOverlock)
-                overclockWhenKnownSafeToolStripMenuItem.Checked = true;
-            else
-                overclockWhenKnownSafeToolStripMenuItem.Checked = false;
-
-            if (Global.Config.SmsForceStereoSeparation)
-                forceStereoSeparationToolStripMenuItem.Checked = true;
-            else
-                forceStereoSeparationToolStripMenuItem.Checked = false;
+            enableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
+            overclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
+            forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -855,14 +838,6 @@ namespace BizHawk.MultiClient
         {
             LoadRamWatch();
         }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-            if (Global.Config.SmsEnableFM)
-                enableFMChipToolStripMenuItem.Checked = true;
-            else
-                enableFMChipToolStripMenuItem.Checked = false;
-        } 
 
         private void rAMSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
