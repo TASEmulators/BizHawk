@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
         private string CurrentlyOpenRom;
         private int SaveSlot = 0;   //Saveslot sytem
         private bool wasPaused = false; //For handling automatic pausing when entering the menu
-
+        private int FrameAdvanceDelay = 0;
         private bool EmulatorPaused = false;
         RamWatch RamWatch1 = new RamWatch();
         RamSearch RamSearch1 = new RamSearch();
@@ -344,20 +344,44 @@ namespace BizHawk.MultiClient
         [System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
-        /// <summary>
-        /// Handles the display of information like frame counter, lag counter, and input
-        /// </summary>
-        private void DisplayInfo()
-        {
-            //Global.RenderPanel.AddMessage(Global.Emulator.Frame.ToString());
-        }
-
         public void GameTick()
         {
-            DisplayInfo();
             Input.Update();
             if (ActiveForm != null)
                 ScreenSaver.ResetTimerPeriodically();
+
+            if (EmulatorPaused == false)
+            {
+                CaptureRewindState();
+                Global.Emulator.FrameAdvance(true);
+            }
+
+            if (!Global.ClientControls.IsPressed("Frame Advance"))
+                FrameAdvanceDelay = 60;
+
+
+            if (Global.ClientControls["Frame Advance"] && FrameAdvanceDelay > 0)
+            {
+                if (FrameAdvanceDelay == 60)
+                {
+                    if (EmulatorPaused == false)
+                        EmulatorPaused = true;
+                    Global.Emulator.FrameAdvance(true);
+                    FrameAdvanceDelay--;
+                }
+                else
+                {
+                    if (FrameAdvanceDelay > 0)
+                        FrameAdvanceDelay--;
+                    if (FrameAdvanceDelay < 0)
+                        FrameAdvanceDelay = 0;
+                }
+            }
+
+            if (Global.ClientControls["Frame Advance"] && FrameAdvanceDelay == 0)
+            {
+                Global.Emulator.FrameAdvance(true);
+            }
 
             if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
             {
@@ -471,20 +495,6 @@ namespace BizHawk.MultiClient
             {
                 Global.ClientControls.UnpressButton("Toggle Fullscreen");
                 ToggleFullscreen();
-            }
-
-            if (EmulatorPaused == false)
-            {
-                CaptureRewindState();
-                Global.Emulator.FrameAdvance(true);
-            }
-
-            if (Global.ClientControls["Frame Advance"])
-            {
-                if (EmulatorPaused == false)
-                    EmulatorPaused = true;
-                Global.Emulator.FrameAdvance(true);
-                Global.ClientControls.UnpressButton("Frame Advance");
             }
 
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
