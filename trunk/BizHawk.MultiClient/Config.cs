@@ -40,6 +40,16 @@
         public string ToggleFullscreenBinding = "LeftAlt+Return, RightAlt+Return";
         public string QuickSave = "I";
         public string QuickLoad = "P";
+        public string SelectSlot0 = "0";
+        public string SelectSlot1 = "1";
+        public string SelectSlot2 = "2";
+        public string SelectSlot3 = "3";
+        public string SelectSlot4 = "4";
+        public string SelectSlot5 = "5";
+        public string SelectSlot6 = "6";
+        public string SelectSlot7 = "7";
+        public string SelectSlot8 = "8";
+        public string SelectSlot9 = "9";
 
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
