@@ -18,6 +18,7 @@ namespace BizHawk.MultiClient
 		private RetainedViewportPanel retainedPanel;
         private string CurrentlyOpenRom;
         private int SaveSlot = 0;   //Saveslot sytem
+        private bool wasPaused = false; //For handling automatic pausing when entering the menu
 
         private bool EmulatorPaused = false;
         RamWatch RamWatch1 = new RamWatch();
@@ -535,13 +536,11 @@ namespace BizHawk.MultiClient
             {
                 Global.Sound.StartSound();
                 EmulatorPaused = false;
-                pauseToolStripMenuItem.Checked = false;
             }
             else
             {
                 Global.Sound.StopSound();
                 EmulatorPaused = true;
-                pauseToolStripMenuItem.Checked = true;
             }
         }
 
@@ -708,6 +707,7 @@ namespace BizHawk.MultiClient
             enableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
             overclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
             forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
+            pauseToolStripMenuItem.Checked = EmulatorPaused;
         }
 
         private void clearToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1006,26 +1006,11 @@ namespace BizHawk.MultiClient
 
         private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            if (Global.Config.DisplayFPS == true)
-                displayFPSToolStripMenuItem.Checked = true;
-            else
-                displayFPSToolStripMenuItem.Checked = false;
-
-            if (Global.Config.DisplayFrameCounter == true)
-                displayFrameCounterToolStripMenuItem.Checked = true;
-            else
-                displayFrameCounterToolStripMenuItem.Checked = false;
-
-            if (Global.Config.DisplayLagCounter == true)
-                displayLagCounterToolStripMenuItem.Checked = true;
-            else
-                displayLagCounterToolStripMenuItem.Checked = false;
-
-            if (Global.Config.DisplayInput == true)
-                displayInputToolStripMenuItem.Checked = true;
-            else
-                displayInputToolStripMenuItem.Checked = false;
-            
+            displayFPSToolStripMenuItem.Checked = Global.Config.DisplayFPS;
+            displayFrameCounterToolStripMenuItem.Checked = Global.Config.DisplayFrameCounter;
+            displayLagCounterToolStripMenuItem.Checked = Global.Config.DisplayLagCounter;
+            displayInputToolStripMenuItem.Checked = Global.Config.DisplayInput;
+                              
             x1MenuItem.Checked = false;
             x2MenuItem.Checked = false;
             x3MenuItem.Checked = false;
@@ -1040,6 +1025,41 @@ namespace BizHawk.MultiClient
                 case 5: x5MenuItem.Checked = true; break;
                 case 10: mzMenuItem.Checked = true; break;
             }
+        }
+
+        private void menuStrip1_MenuActivate(object sender, EventArgs e)
+        {
+            if (Global.Config.PauseWhenMenuActivated)
+            {
+                Global.Sound.StopSound();
+                if (EmulatorPaused)
+                    wasPaused = true;
+                else
+                    wasPaused = false;
+                EmulatorPaused = true;
+            }
+        }
+
+        private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
+        {
+            if (!wasPaused)
+            {
+                Global.Sound.StartSound();
+                EmulatorPaused = false;
+            }
+        }
+
+        private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
+        }
+
+        private void pauseWhenMenuActivatedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (Global.Config.PauseWhenMenuActivated == true)
+                Global.Config.PauseWhenMenuActivated = false;
+            else
+                Global.Config.PauseWhenMenuActivated = true;
         }
     }
 }
