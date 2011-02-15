@@ -5,9 +5,12 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-    //Data structure for a watch item in the Ram Watch Dialog
     public enum atype { BYTE, WORD, DWORD, SEPARATOR };   //TODO: more custom types too like 12.4 and 24.12 fixed point
     public enum asigned { SIGNED, UNSIGNED, HEX };
+
+    /// <summary>
+    /// An object that represent a ram address and related properties
+    /// </summary>
     public class Watch
     {
         public Watch()
