@@ -34,9 +34,9 @@
         public RecentFiles RecentMovies = new RecentFiles(8);
 
         // Client Hotkey Bindings
-        public string HardResetBinding = "LeftShift+Tab";
-        public string FastForwardBinding = "J1 B6";
-        public string RewindBinding = "J1 B5";
+        public string HardResetBinding = "Ctrl+R";
+        public string FastForwardBinding = "J1 B6 Tab";
+        public string RewindBinding = "J1 B5, Shift+R";
         public string EmulatorPauseBinding = "Pause";
         public string FrameAdvanceBinding = "F";
         public string ScreenshotBinding = "F12";
