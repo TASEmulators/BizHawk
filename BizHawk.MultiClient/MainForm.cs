@@ -655,34 +655,22 @@ namespace BizHawk.MultiClient
 
         private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.DisplayFPS == true)
-                Global.Config.DisplayFPS = false;
-            else
-                Global.Config.DisplayFPS = true;
+           Global.Config.DisplayFPS ^= true;
         }
 
         private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.DisplayFrameCounter == true)
-                Global.Config.DisplayFrameCounter = false;
-            else
-                Global.Config.DisplayFrameCounter = true;
+            Global.Config.DisplayFrameCounter ^= true;
         }
 
         private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.DisplayInput == true)
-                Global.Config.DisplayInput = false;
-            else
-                Global.Config.DisplayInput = true;
+            Global.Config.DisplayInput ^= true;
         }
 
         private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.DisplayLagCounter == true)
-                Global.Config.DisplayLagCounter = false;
-            else
-                Global.Config.DisplayLagCounter = true;
+            Global.Config.DisplayLagCounter ^= true;
         }
 
         private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1095,27 +1083,17 @@ namespace BizHawk.MultiClient
 
         private void enableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (enableFMChipToolStripMenuItem.Checked)
-                Global.Config.SmsEnableFM = false;
-            else
-                Global.Config.SmsEnableFM = true;
+            Global.Config.SmsEnableFM ^= true;
         }
 
         private void overclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (overclockWhenKnownSafeToolStripMenuItem.Checked)
-                 Global.Config.SmsAllowOverlock = false;
-            else
-                Global.Config.SmsAllowOverlock = true;
+           Global.Config.SmsAllowOverlock ^= true;
         }
-
 
         private void forceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (forceStereoSeparationToolStripMenuItem.Checked)
-                Global.Config.SmsForceStereoSeparation = false;
-            else
-                Global.Config.SmsForceStereoSeparation = true;
+            Global.Config.SmsForceStereoSeparation ^= true;
         }
 
         private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1192,10 +1170,7 @@ namespace BizHawk.MultiClient
 
         private void pauseWhenMenuActivatedToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Global.Config.PauseWhenMenuActivated == true)
-                Global.Config.PauseWhenMenuActivated = false;
-            else
-                Global.Config.PauseWhenMenuActivated = true;
+            Global.Config.PauseWhenMenuActivated ^= true;
         }
     }
 }
