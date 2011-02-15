@@ -964,42 +964,26 @@ namespace BizHawk.MultiClient
         private void enableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (enableFMChipToolStripMenuItem.Checked)
-            {
-                enableFMChipToolStripMenuItem.Checked = false;
                 Global.Config.SmsEnableFM = false;
-            } else {
-                enableFMChipToolStripMenuItem.Checked = true;
+            else
                 Global.Config.SmsEnableFM = true;
-            }
         }
 
         private void overclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (overclockWhenKnownSafeToolStripMenuItem.Checked)
-            {
-                overclockWhenKnownSafeToolStripMenuItem.Checked = false;
-                Global.Config.SmsAllowOverlock = false;
-            }
+                 Global.Config.SmsAllowOverlock = false;
             else
-            {
-                overclockWhenKnownSafeToolStripMenuItem.Checked = true;
                 Global.Config.SmsAllowOverlock = true;
-            }
         }
 
 
         private void forceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (forceStereoSeparationToolStripMenuItem.Checked)
-            {
-                forceStereoSeparationToolStripMenuItem.Checked = false;
                 Global.Config.SmsForceStereoSeparation = false;
-            }
             else
-            {
-                forceStereoSeparationToolStripMenuItem.Checked = true;
                 Global.Config.SmsForceStereoSeparation = true;
-            }
         }
 
         private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
