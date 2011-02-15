@@ -38,6 +38,8 @@
         public string FrameAdvanceBinding = "F";
         public string ScreenshotBinding = "F12";
         public string ToggleFullscreenBinding = "LeftAlt+Return, RightAlt+Return";
+        public string QuickSave = "I";
+        public string QuickLoad = "P";
 
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
