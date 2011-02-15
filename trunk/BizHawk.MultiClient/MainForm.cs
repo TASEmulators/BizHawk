@@ -809,7 +809,55 @@ namespace BizHawk.MultiClient
                 loadstate9toolStripMenuItem.Enabled = true;
                 loadstate0toolStripMenuItem.Enabled = true;
             }
-            
+
+            selectSlot10ToolStripMenuItem.Checked = false;
+            selectSlot1ToolStripMenuItem.Checked = false;
+            selectSlot2ToolStripMenuItem.Checked = false;
+            selectSlot3ToolStripMenuItem.Checked = false;
+            selectSlot4ToolStripMenuItem.Checked = false;
+            selectSlot5ToolStripMenuItem.Checked = false;
+            selectSlot6ToolStripMenuItem.Checked = false;
+            selectSlot7ToolStripMenuItem.Checked = false;
+            selectSlot8ToolStripMenuItem.Checked = false;
+            selectSlot9ToolStripMenuItem.Checked = false;
+
+            selectSlot1ToolStripMenuItem.Checked = false;
+            switch (SaveSlot)
+            {
+                case 0:
+                    selectSlot10ToolStripMenuItem.Checked = true;
+                    break;
+                case 1:
+                    selectSlot1ToolStripMenuItem.Checked = true;
+                    break;
+                case 2:
+                    selectSlot2ToolStripMenuItem.Checked = true;
+                    break;
+                case 3:
+                    selectSlot3ToolStripMenuItem.Checked = true;
+                    break;
+                case 4:
+                    selectSlot4ToolStripMenuItem.Checked = true;
+                    break;
+                case 5:
+                    selectSlot5ToolStripMenuItem.Checked = true;
+                    break;
+                case 6:
+                    selectSlot6ToolStripMenuItem.Checked = true;
+                    break;
+                case 7:
+                    selectSlot7ToolStripMenuItem.Checked = true;
+                    break;
+                case 8:
+                    selectSlot8ToolStripMenuItem.Checked = true;
+                    break;
+                case 9:
+                    selectSlot9ToolStripMenuItem.Checked = true;
+                    break;
+                default:
+                    break;
+            }
+
             if (Global.Config.AutoLoadMostRecentRom == true)
                 autoloadMostRecentToolStripMenuItem.Checked = true;
             else
