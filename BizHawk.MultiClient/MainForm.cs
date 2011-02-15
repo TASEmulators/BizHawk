@@ -473,13 +473,20 @@ namespace BizHawk.MultiClient
                 ToggleFullscreen();
             }
 
-            if (EmulatorPaused == false || Global.ClientControls["Frame Advance"])
+            if (EmulatorPaused == false)
             {
                 CaptureRewindState();
                 Global.Emulator.FrameAdvance(true);
-                if (EmulatorPaused)
-                    Global.ClientControls.UnpressButton("Frame Advance");
             }
+
+            if (Global.ClientControls["Frame Advance"])
+            {
+                if (EmulatorPaused == false)
+                    EmulatorPaused = true;
+                Global.Emulator.FrameAdvance(true);
+                Global.ClientControls.UnpressButton("Frame Advance");
+            }
+
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Render();
             //RamWatch1.UpdateValues();  //TODO: This should update only once per frame
