@@ -356,6 +356,15 @@ namespace BizHawk.MultiClient
         [System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
         public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
+        /// <summary>
+        /// This functions calls Emulator.FrameAdvance(true) and handles any updates that need to happen on a per frame basis
+        /// </summary>
+        public void DoFrameAdvance()
+        {
+            Global.Emulator.FrameAdvance(true); //TODO: Do these things need to happen on (false) as well? Think about it
+            RamWatch1.UpdateValues();
+        }
+
         public void GameTick()
         {
             Input.Update();
@@ -365,7 +374,7 @@ namespace BizHawk.MultiClient
             if (EmulatorPaused == false)
             {
                 CaptureRewindState();
-                Global.Emulator.FrameAdvance(true);
+                DoFrameAdvance();
             }
 
             if (!Global.ClientControls.IsPressed("Frame Advance"))
@@ -378,7 +387,7 @@ namespace BizHawk.MultiClient
                 {
                     if (EmulatorPaused == false)
                         PauseEmulator();
-                    Global.Emulator.FrameAdvance(true);
+                    DoFrameAdvance();
                     FrameAdvanceDelay--;
                 }
                 else
@@ -392,7 +401,7 @@ namespace BizHawk.MultiClient
 
             if (Global.ClientControls["Frame Advance"] && FrameAdvanceDelay == 0)
             {
-                Global.Emulator.FrameAdvance(true);
+                DoFrameAdvance();
             }
 
             if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
@@ -513,7 +522,6 @@ namespace BizHawk.MultiClient
 
             Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
             Render();
-            //RamWatch1.UpdateValues();  //TODO: This should update only once per frame
         }
 
         private bool wasMaximized = false;
