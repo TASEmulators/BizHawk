@@ -397,6 +397,7 @@ namespace BizHawk.MultiClient
 
             if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
             {
+                //PauseEmulator();
                 Rewind(Global.ClientControls["Fast Forward"] ? 3 : 1);
                 return;
             }
