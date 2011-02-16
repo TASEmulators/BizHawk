@@ -151,12 +151,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 for (int xs = 0; xs < 8 && x + xs < 256; xs++)
                 {
                     byte color = PatternBuffer[(tileNo * 64) + (ys * 8) + xs];
-                    if (color != 0 && x + xs >= 0 && ScanlinePriorityBuffer[x + xs] == 0)
+                    if (color != 0 && x + xs >= 0)
                     {
-                        FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
                         if (SpriteCollisionBuffer[x + xs] != 0)
                             StatusByte |= 0x20; // Set Collision bit
                         SpriteCollisionBuffer[x + xs] = 1;
+                        if (ScanlinePriorityBuffer[x + xs] == 0)
+                            FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
                     }
                 }
                 SpritesDrawnThisScanline++;
