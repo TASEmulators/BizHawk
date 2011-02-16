@@ -39,9 +39,9 @@ namespace BizHawk.MultiClient
             {
                 if (watchList[x].type == atype.SEPARATOR) continue;
                 watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
+                WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
                 //TODO: readbytes based on type, size, endian values
-            }
-            DisplayWatchList();            
+            }          
         }
 
         public RamWatch()
