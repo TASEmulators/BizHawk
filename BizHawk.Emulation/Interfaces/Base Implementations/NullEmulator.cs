@@ -6,6 +6,11 @@ namespace BizHawk
 {
     public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider
     {
+        public string type
+        {
+            get { return "NULL"; }
+        }
+
         private static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
         private int[] frameBuffer = new int[256 * 192];

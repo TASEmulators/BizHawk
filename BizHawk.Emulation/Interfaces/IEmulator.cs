@@ -12,6 +12,8 @@ namespace BizHawk
         ControllerDefinition ControllerDefinition { get; }
         IController Controller { get; set; }
 
+        string type { get; }
+
         void LoadGame(IGame game);
         void FrameAdvance(bool render);
         

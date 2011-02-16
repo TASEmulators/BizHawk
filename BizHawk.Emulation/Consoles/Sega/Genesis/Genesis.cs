@@ -10,6 +10,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public sealed partial class Genesis : IEmulator, IMemoryController
     {
+        public string type
+        {
+            get { return "GEN"; }
+        }
+        
         // ROM
         public byte[] RomData;
 

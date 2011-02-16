@@ -27,6 +27,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
+        public string type
+        {
+            get { return "TI83"; }
+        }
 
     	public byte ReadMemory(ushort addr)
         {

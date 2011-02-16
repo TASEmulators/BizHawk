@@ -2,6 +2,11 @@
 {
     public partial class Gameboy
     {
+        public string type
+        {
+            get { return "GB"; }
+        }
+        
         public static readonly ControllerDefinition GbController = new ControllerDefinition
         {
             Name = "Gameboy Controller",

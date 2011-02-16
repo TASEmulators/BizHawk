@@ -251,6 +251,11 @@ namespace BizHawk.MultiClient
             //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
             if (Global.Config.DisplayFrameCounter)
                 MessageFont.DrawString(null, Global.Emulator.Frame.ToString(), 1, 1, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
+
+            if (Global.Config.DisplayInput)
+            {
+                
+            }
         }
 
         private List<UIMessage> messages = new List<UIMessage>(5);
