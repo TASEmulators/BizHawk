@@ -151,6 +151,13 @@
     <Compile Include="RecordMovie.Designer.cs">
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\InputPrompt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\InputPrompt.Designer.cs">
+      <DependentUpon>InputPrompt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Poke.cs" />
     <Compile Include="tools\RamSearch.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -209,6 +216,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RecordMovie.resx">
       <DependentUpon>RecordMovie.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\InputPrompt.resx">
+      <DependentUpon>InputPrompt.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamSearch.resx">
