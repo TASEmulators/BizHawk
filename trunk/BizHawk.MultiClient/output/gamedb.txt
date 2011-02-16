@@ -300,8 +300,8 @@ DFA2AE07	V	Enduro Racer (corrupted)	SMS	Insert hex byte $0D at offset $B3A1 to f
 5D5C50B3	 	Enduro Racer (JP)	SMS	
 C4BB1676	 	E-SWAT [A]	SMS	
 C10FCE39	 	E-SWAT [B]	SMS	
-8813514B	 	Excellent Dizzy Collection, The [Proto]	SMS		CMMapper,PAL
-AA140C9C	 	Excellent Dizzy Collection, The [SMS-GG]	SMS		CMMapper,PAL
+8813514B	 	Excellent Dizzy Collection, The [Proto]	SMS		CMMapper;PAL
+AA140C9C	 	Excellent Dizzy Collection, The [SMS-GG]	SMS		CMMapper;PAL
 EC788661	 	F1	SMS		
 8AB10CB4	V	F1 (first 128KB only)	SMS		
 EAEBF323	 	F-16 Fighter	SMS		
