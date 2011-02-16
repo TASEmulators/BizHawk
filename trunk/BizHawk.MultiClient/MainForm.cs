@@ -371,6 +371,12 @@ namespace BizHawk.MultiClient
             if (ActiveForm != null)
                 ScreenSaver.ResetTimerPeriodically();
 
+            if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
+            {
+                Rewind(Global.ClientControls["Fast Forward"] ? 3 : 1);
+                return;
+            }
+
             if (EmulatorPaused == false)
             {
                 CaptureRewindState();
@@ -379,7 +385,6 @@ namespace BizHawk.MultiClient
 
             if (!Global.ClientControls.IsPressed("Frame Advance"))
                 FrameAdvanceDelay = 60;
-
 
             if (Global.ClientControls["Frame Advance"] && FrameAdvanceDelay > 0)
             {
@@ -402,13 +407,6 @@ namespace BizHawk.MultiClient
             if (Global.ClientControls["Frame Advance"] && FrameAdvanceDelay == 0)
             {
                 DoFrameAdvance();
-            }
-
-            if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
-            {
-                PauseEmulator();
-                Rewind(Global.ClientControls["Fast Forward"] ? 3 : 1);
-                return;
             }
    
             if (Global.ClientControls["Quick Save State"])

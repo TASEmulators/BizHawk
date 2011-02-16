@@ -27,12 +27,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
-        public string type
-        {
-            get { return "TI83"; }
-        }
-
-    	public byte ReadMemory(ushort addr)
+        public byte ReadMemory(ushort addr)
         {
 			int romPage = romPageLow3Bits | (romPageHighBit << 3);
 			//Console.WriteLine("read memory: {0:X4}", addr);
@@ -444,6 +439,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			return new byte[0];
 		}
 
+        public string SystemId { get { return "TI83"; } }
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } } 
     }

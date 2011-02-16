@@ -12,12 +12,11 @@ namespace BizHawk
         ControllerDefinition ControllerDefinition { get; }
         IController Controller { get; set; }
 
-        string type { get; }
-
         void LoadGame(IGame game);
         void FrameAdvance(bool render);
-        
+
         int Frame { get; }
+        string SystemId { get; }
         bool DeterministicEmulation { get; set; }
 
         byte[] SaveRam { get; }

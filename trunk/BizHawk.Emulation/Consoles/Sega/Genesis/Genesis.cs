@@ -10,11 +10,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public sealed partial class Genesis : IEmulator, IMemoryController
     {
-        public string type
-        {
-            get { return "GEN"; }
-        }
-        
         // ROM
         public byte[] RomData;
 
@@ -146,6 +141,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public int Frame { get; set; }
         public bool DeterministicEmulation { get; set; }
+        public string SystemId { get { return "GEN"; } }
 
         public byte[] SaveRam
         {

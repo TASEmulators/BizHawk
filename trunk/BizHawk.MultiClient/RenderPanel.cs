@@ -255,7 +255,7 @@ namespace BizHawk.MultiClient
             if (Global.Config.DisplayInput)
             {
                 string input = "";
-                if (Global.Emulator.type == "SMS")
+                if (Global.Emulator.SystemId == "SMS")
                 {
                     if (Global.Emulator.Controller.IsPressed("P1 Up"))
                         input += "U";

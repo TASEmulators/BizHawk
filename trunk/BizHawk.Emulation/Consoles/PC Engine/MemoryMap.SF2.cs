@@ -10,11 +10,6 @@
         // However, I believe more fixes will be made in the future, and SF2 works, so this is not
         // currently a priority.
         
-        public string type
-        {
-            get { return "PCE"; }
-        }
-
         private byte SF2MapperLatch;
 
         private byte ReadMemorySF2(ushort addr)
