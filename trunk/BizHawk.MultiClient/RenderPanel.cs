@@ -255,65 +255,16 @@ namespace BizHawk.MultiClient
             if (Global.Config.DisplayInput)
             {
                 string input = "";
-                if (Global.Emulator.SystemId == "SMS")
+                switch (Global.Emulator.SystemId)
                 {
-                    if (Global.Emulator.Controller.IsPressed("P1 Up"))
-                        input += "U";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P1 Down"))
-                        input += "D";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P1 Left"))
-                        input += "L";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P1 Right"))
-                        input += "R";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P1 B1"))
-                        input += "1";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P1 B2"))
-                        input += "2";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 Up"))
-                        input += "U";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 Down"))
-                        input += "D";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 Left"))
-                        input += "L";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 Right"))
-                        input += "R";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 B1"))
-                        input += "1";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("P2 B2"))
-                        input += "2";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("Pause"))
-                        input += "S";
-                    else
-                        input += " ";
-                    if (Global.Emulator.Controller.IsPressed("Reset"))
-                        input += "R";
-                    else
-                        input += " ";
-
+                    case "SMS":
+                        input = MakeSMSInputDisplay();
+                        break;
+                    case "PCE":
+                        input = MakePCEInputDisplay();
+                        break;
+                    default:
+                        break;
 
                 }
 
@@ -351,6 +302,62 @@ namespace BizHawk.MultiClient
                 disposed = true;
                 DestroyDevice();
             }
+        }
+
+        public string MakeSMSInputDisplay()
+        {
+            string input = "";
+            if (Global.Emulator.Controller.IsPressed("P1 Up")) input += "U";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P1 Down")) input += "D";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P1 Left")) input += "L";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P1 Right")) input += "R";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P1 B1")) input += "1";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P1 B2")) input += "2";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 Up")) input += "U";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 Down")) input += "D";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 Left")) input += "L";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 Right")) input += "R";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 B1")) input += "1";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("P2 B2")) input += "2";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Pause")) input += "S";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Reset")) input += "R";
+            else input += " ";
+            return input;
+        }
+
+        public string MakePCEInputDisplay()
+        {
+            string input = "";
+            if (Global.Emulator.Controller.IsPressed("Up")) input += "U";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Down")) input += "D";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Left")) input += "L";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Right")) input += "R";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("I")) input += "1";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("II")) input += "2";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Select")) input += "S";
+            else input += " ";
+            if (Global.Emulator.Controller.IsPressed("Run")) input += "R";
+            else input += " ";
+            return input;
         }
     }
 
