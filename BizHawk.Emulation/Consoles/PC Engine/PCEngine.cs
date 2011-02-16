@@ -128,7 +128,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             get { return PSG; }
         }
-
+ 
+        public string SystemId { get { return "PCE"; } }
         public string Region { get; set; }
         public bool DeterministicEmulation { get; set; }
 

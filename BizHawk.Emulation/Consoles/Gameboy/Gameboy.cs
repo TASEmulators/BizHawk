@@ -842,6 +842,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		}
 
         public bool DeterministicEmulation { get; set; }
+        public string SystemId { get { return "GB"; } }
 
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }

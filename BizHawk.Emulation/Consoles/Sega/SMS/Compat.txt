@@ -1,14 +1,7 @@
-﻿======= Sega MasterSystem Compatibility Issues =======
-
-* CodeMasters games use a custom mapper and special video modes (both implemented)
-   + Fantastic Dizzy crashes shortly after starting a new game. Investigating.
-   + Excellent Dizzy Collection doesn't boot.
-
-======= Game Gear compatibility issues =======
+﻿======= Game Gear compatibility issues =======
 
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
-* GG Turrican homebrew not starting correctly
 
 ======= SG-1000 compatibility checklist =======
 

@@ -13,11 +13,6 @@
                         }
             };
 
-        public string type
-        {
-            get { return "SMS"; }
-        }
-
         public ControllerDefinition ControllerDefinition { get { return SmsController;  } }
         public IController Controller { get; set; }
 

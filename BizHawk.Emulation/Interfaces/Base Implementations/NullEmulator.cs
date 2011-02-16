@@ -6,11 +6,7 @@ namespace BizHawk
 {
     public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider
     {
-        public string type
-        {
-            get { return "NULL"; }
-        }
-
+        public string SystemId { get { return "NULL"; } }
         private static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
         private int[] frameBuffer = new int[256 * 192];
@@ -49,5 +45,7 @@ namespace BizHawk
         private IList<MemoryDomain> memoryDomains;
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+
+
     }
 }

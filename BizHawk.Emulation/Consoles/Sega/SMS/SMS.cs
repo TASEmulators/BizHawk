@@ -11,7 +11,7 @@ using BizHawk.Emulation.Sound;
   + HCounter
   + Try to clean up the organization of the source code. 
   + Fix remaining broken games
-  + SMS Fake Stereo Separation
+  + Lightgun/Paddle/etc if I get really bored  
 
 **********************************************************/
 
@@ -310,6 +310,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private ISoundProvider ActiveSoundProvider;
         public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
+
+        public string SystemId { get { return "SMS"; } }
 
         private string region = "Export";
         public string Region
