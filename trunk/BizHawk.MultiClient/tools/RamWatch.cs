@@ -290,7 +290,7 @@ namespace BizHawk.MultiClient
             if (r.userSelected == true)
             {
                 Changes();
-                watchList.Add(watchList[x]);
+                watchList.Add(watchList[x]); //TODO: Fail, add the userselected watchlist
                 DisplayWatchList();
             }
         }
@@ -732,6 +732,9 @@ namespace BizHawk.MultiClient
 
         private void PokeAddress()
         {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            Poke p = new Poke();
+            p.PokeAddress(watchList[indexes[0]]);
         }
 
         private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
