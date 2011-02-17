@@ -26,7 +26,8 @@ namespace BizHawk.MultiClient
         //Multiselect is enabled but only one row can be highlighted by the user
         //Make it clear that on edit/new/duplicate watch, address is hex
         //Validate address box as legit hex number
-        //Implement PokeAddress()
+        //When using ListView index, validate the user has selected one!
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -733,8 +734,10 @@ namespace BizHawk.MultiClient
         private void PokeAddress()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            Poke p = new Poke();
-            p.PokeAddress(watchList[indexes[0]]);
+            RamPoke p = new RamPoke();
+            p.SetWatchObject(watchList[indexes[0]]);
+            p.location = GetPromptPoint();
+            p.ShowDialog();
         }
 
         private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
