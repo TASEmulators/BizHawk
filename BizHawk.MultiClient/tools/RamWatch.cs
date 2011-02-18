@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Multiselect is enabled but only one row can be highlighted by the user
-        //When using ListView index, validate the user has selected one!
         //DWORD display
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -294,34 +293,41 @@ namespace BizHawk.MultiClient
         void EditWatch()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            EditWatchObject(indexes[0]);
+            if (indexes.Count > 0)
+                EditWatchObject(indexes[0]);
         }
 
         void RemoveWatch()
         {
             Changes();
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            foreach (int index in indexes)
+            if (indexes.Count > 0)
             {
-                watchList.Remove(watchList[index]);
+                foreach (int index in indexes)
+                {
+                    watchList.Remove(watchList[index]);
+                }
+                DisplayWatchList();
             }
-            DisplayWatchList();
         }
 
         void DuplicateWatch()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            RamWatchNewWatch r = new RamWatchNewWatch();
-            r.location = GetPromptPoint();
-            int x = indexes[0];
-            r.SetToEditWatch(watchList[x], "Duplicate Watch");
-            r.ShowDialog();
-
-            if (r.userSelected == true)
+            if (indexes.Count > 0)
             {
-                Changes();
-                watchList.Add(watchList[x]); //TODO: Fail, add the userselected watchlist
-                DisplayWatchList();
+                RamWatchNewWatch r = new RamWatchNewWatch();
+                r.location = GetPromptPoint();
+                int x = indexes[0];
+                r.SetToEditWatch(watchList[x], "Duplicate Watch");
+                r.ShowDialog();
+
+                if (r.userSelected == true)
+                {
+                    Changes();
+                    watchList.Add(watchList[x]); //TODO: Fail, add the userselected watchlist
+                    DisplayWatchList();
+                }
             }
         }
 
@@ -751,7 +757,9 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             RamPoke p = new RamPoke();
-            p.SetWatchObject(watchList[indexes[0]]);
+
+            if (indexes.Count > 0)
+                p.SetWatchObject(watchList[indexes[0]]);
             p.location = GetPromptPoint();
             p.ShowDialog();
         }
@@ -759,6 +767,23 @@ namespace BizHawk.MultiClient
         private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PokeAddress();
+        }
+
+        private void watchesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                editWatchToolStripMenuItem.Enabled = true;
+                duplicateWatchToolStripMenuItem.Enabled = true;
+                removeWatchToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                editWatchToolStripMenuItem.Enabled = false;
+                duplicateWatchToolStripMenuItem.Enabled = false;
+                removeWatchToolStripMenuItem.Enabled = false;
+            }
         }
     }
 }

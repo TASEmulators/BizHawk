@@ -51,6 +51,7 @@
             this.removeWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,14 +68,13 @@
             this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MoveUpStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
-            this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -223,6 +223,7 @@
             this.watchesToolStripMenuItem.Name = "watchesToolStripMenuItem";
             this.watchesToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.watchesToolStripMenuItem.Text = "&Watches";
+            this.watchesToolStripMenuItem.DropDownOpened += new System.EventHandler(this.watchesToolStripMenuItem_DropDownOpened);
             // 
             // newWatchToolStripMenuItem
             // 
@@ -263,6 +264,14 @@
             this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
             this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
             this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
+            // 
+            // pokeAddressToolStripMenuItem
+            // 
+            this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
+            this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.pokeAddressToolStripMenuItem.Text = "Poke Address";
+            this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -419,6 +428,17 @@
             this.DuplicateWatchToolStripButton.Text = "Duplicate Watch";
             this.DuplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchToolStripButton_Click);
             // 
+            // PoketoolStripButton2
+            // 
+            this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PoketoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+            this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PoketoolStripButton2.Name = "PoketoolStripButton2";
+            this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.PoketoolStripButton2.Text = "toolStripButton2";
+            this.PoketoolStripButton2.ToolTipText = "Poke address";
+            this.PoketoolStripButton2.Click += new System.EventHandler(this.PoketoolStripButton2_Click);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -473,25 +493,6 @@
             this.MessageLabel.Size = new System.Drawing.Size(187, 13);
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
-            // 
-            // PoketoolStripButton2
-            // 
-            this.PoketoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PoketoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-            this.PoketoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.PoketoolStripButton2.Name = "PoketoolStripButton2";
-            this.PoketoolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.PoketoolStripButton2.Text = "toolStripButton2";
-            this.PoketoolStripButton2.ToolTipText = "Poke address";
-            this.PoketoolStripButton2.Click += new System.EventHandler(this.PoketoolStripButton2_Click);
-            // 
-            // pokeAddressToolStripMenuItem
-            // 
-            this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
-            this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.pokeAddressToolStripMenuItem.Text = "Poke Address";
-            this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
             // 
             // RamWatch
             // 
