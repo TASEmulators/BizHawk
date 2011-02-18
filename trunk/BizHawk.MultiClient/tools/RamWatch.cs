@@ -777,12 +777,72 @@ namespace BizHawk.MultiClient
                 editWatchToolStripMenuItem.Enabled = true;
                 duplicateWatchToolStripMenuItem.Enabled = true;
                 removeWatchToolStripMenuItem.Enabled = true;
+                moveUpToolStripMenuItem.Enabled = true;
+                moveDownToolStripMenuItem.Enabled = true;
             }
             else
             {
                 editWatchToolStripMenuItem.Enabled = false;
                 duplicateWatchToolStripMenuItem.Enabled = false;
                 removeWatchToolStripMenuItem.Enabled = false;
+                moveUpToolStripMenuItem.Enabled = false;
+                moveDownToolStripMenuItem.Enabled = false;
+            }
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EditWatch();
+        }
+
+        private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveWatch();
+        }
+
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DuplicateWatch();
+        }
+
+        private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PokeAddress();
+        }
+
+        private void insertSeperatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InsertSeparator();
+        }
+
+        private void moveUpToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MoveUp();
+        }
+
+        private void moveDownToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MoveDown();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            if (indexes.Count == 0)
+            {
+                contextMenuStrip1.Items[0].Visible = false;
+                contextMenuStrip1.Items[1].Visible = false;
+                contextMenuStrip1.Items[2].Visible = false;
+                contextMenuStrip1.Items[3].Visible = false;
+                contextMenuStrip1.Items[4].Visible = false;
+                contextMenuStrip1.Items[6].Visible = false;
+                contextMenuStrip1.Items[7].Visible = false;
+
+            }
+            else
+            {
+                for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
+                    contextMenuStrip1.Items[x].Visible = true;
             }
         }
     }
