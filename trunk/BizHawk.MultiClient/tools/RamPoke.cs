@@ -15,7 +15,6 @@ namespace BizHawk.MultiClient
         //TODO:
         //If signed/unsigned/hex radios selected, auto-change the value box
         //Checked signed/u/h value on RamPoke_Load and set value appopriately
-        //Validate address (hex) and value (based on s/u/h setting)
         public Watch watch = new Watch();
         public Point location = new Point();
 
@@ -38,7 +37,11 @@ namespace BizHawk.MultiClient
             else
                 LittleEndianRadio.Checked = true;
             AddressBox.Text = String.Format("{0:X}", watch.address);
+
+            
             ValueBox.Text = watch.value.ToString();
+            
+            
             if (location.X > 0 && location.Y > 0)
                 this.Location = location;
             
@@ -80,25 +83,6 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void RamPokeLoaddddddd(object sender, EventArgs e)
-        {
-           /*
-            if (!customSetup)
-            {
-                Watch w = new Watch();
-                SetTypeRadio(w.type);
-                SetSignedRadio(w.signed);
-
-                if (w.bigendian == true)
-                    BigEndianRadio.Checked = true;
-                else
-                    LittleEndianRadio.Checked = true;
-            }
-            if (location.X > 0 && location.Y > 0)
-                this.Location = location;
-            * */
-        }
-
         private void Cancel_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -108,12 +92,16 @@ namespace BizHawk.MultiClient
         {
             //Put user settings in the watch file
 
-            //TODO, check the user address so this can be used as a generic dialog:
-            //watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
-            //TODO: validate input
+            if (InputValidate.IsValidHexNumber(AddressBox.Text))    //TODO: also validate it is within a valid memory address range!
+                watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+            else
+            {
+                MessageBox.Show("Invalid Address, must be a valid hex number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AddressBox.Focus();
+                AddressBox.SelectAll();
+                return;
+            }
             
-            //TODO: check all the users choices here too
-            /*
             if (SignedRadio.Checked)
                 watch.signed = asigned.SIGNED;
             else if (UnsignedRadio.Checked)
@@ -132,15 +120,71 @@ namespace BizHawk.MultiClient
                 watch.bigendian = true;
             else if (LittleEndianRadio.Checked)
                 watch.bigendian = false;
-             */
 
-            watch.value = int.Parse(ValueBox.Text);
+            switch (watch.signed)
+            {
+                case asigned.UNSIGNED:
+                    if (InputValidate.IsValidUnsignedNumber(ValueBox.Text))
+                    {
+                        watch.value = int.Parse(ValueBox.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid Address, must be a valid number number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ValueBox.Focus();
+                        ValueBox.SelectAll();
+                        return;
+                    }
+                    break;
+                case asigned.SIGNED:
+                    //TODO
+                    break;
+                case asigned.HEX:
+                    if (InputValidate.IsValidHexNumber(ValueBox.Text))
+                    {
+                        watch.value = int.Parse(ValueBox.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid Address, must be a valid hex number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ValueBox.Focus();
+                        ValueBox.SelectAll();
+                        return;
+                    }
+                    break;
+                default:
+                return;
+        }
 
             //TODO: Try/Catch this? Seems destined for failures
-            Global.Emulator.MainMemory.PokeByte(watch.address, (byte)watch.value);
+
+            switch (watch.type)
+            {
+                case atype.BYTE:
+                    Global.Emulator.MainMemory.PokeByte(watch.address, (byte)watch.value);
+                    break;
+                case atype.WORD:
+                    if (watch.bigendian)
+                    {
+                        Global.Emulator.MainMemory.PokeByte(watch.address, (byte)(watch.value / 256));
+                        Global.Emulator.MainMemory.PokeByte(watch.address + 1, (byte)(watch.value % 256));
+                    }
+                    else
+                    {
+                        Global.Emulator.MainMemory.PokeByte(watch.address + 1, (byte)(watch.value / 256));
+                        Global.Emulator.MainMemory.PokeByte(watch.address, (byte)(watch.value % 256));
+                    }
+                    break;
+                case atype.DWORD:
+                    //TODO
+                    break;
+                default:
+                    break;
+            }
+
+            
             //TODO: format value based on watch.type
             OutputLabel.Text = watch.value.ToString() + " written to " + String.Format("{0:X}", watch.address);
         }
-
     }
 }

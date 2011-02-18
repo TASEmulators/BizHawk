@@ -644,7 +644,7 @@ namespace BizHawk.MultiClient
            }
            else
            {
-               MessageBox.Show("Invalid number!");
+               MessageBox.Show("Invalid number!"); //TODO: More parameters and better message
                WatchListView.Items[index].Text = watchList[index].address.ToString(); //TODO: Why doesn't the list view update to the new value? It won't until something else changes
            }
         }
