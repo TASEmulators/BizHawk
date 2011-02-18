@@ -60,6 +60,8 @@ namespace BizHawk.MultiClient
             Closing += (o, e) =>
                {
                    CloseGame();
+                   Global.Config.MainWndx = this.Location.X;
+                   Global.Config.MainWndy = this.Location.Y;
                    ConfigService.Save("config.ini", Global.Config);
                };
 
@@ -105,6 +107,9 @@ namespace BizHawk.MultiClient
                 LoadRamWatch();
             if (Global.Config.AutoLoadRamSearch)
                 LoadRamSearch();
+
+            if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0)
+                this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
         }
 
         private void PauseEmulator()
@@ -1206,6 +1211,11 @@ namespace BizHawk.MultiClient
         {
             SoundConfig s = new SoundConfig();
             s.ShowDialog();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
