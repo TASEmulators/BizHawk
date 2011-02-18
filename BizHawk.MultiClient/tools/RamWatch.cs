@@ -629,34 +629,20 @@ namespace BizHawk.MultiClient
 
         private void WatchListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
         {
-        /*
-            // Determine if label is changed by checking for null.
-            if (e.Label == null)
-            return;
+            if (e.Label == null) //If no change
+                return;
 
-   // ASCIIEncoding is used to determine if a number character has been entered.
-   ASCIIEncoding AE = new ASCIIEncoding();
-   // Convert the new label to a character array.
-   char[] temp = e.Label.ToCharArray();
-
-   // Check each character in the new label to determine if it is a number.
-   for(int x=0; x < temp.Length; x++)
-   {
-      // Encode the character from the character array to its ASCII code.
-      byte[] bc = AE.GetBytes(temp[x].ToString());
-
-      // Determine if the ASCII code is within the valid range of numerical values.
-      if(bc[0] > 47 && bc[0] < 58)
-      {
-         // Cancel the event and return the lable to its original state.
-         e.CancelEdit = true;
-         // Display a MessageBox alerting the user that numbers are not allowed.
-         MessageBox.Show ("The text for the item cannot contain numerical values.");
-         // Break out of the loop and exit.
-         return;
-      }
-   }
-            */
+           char[] temp = e.Label.ToCharArray();
+           if (InputValidate.IsValidUnsignedNumber(temp)) //TODO: 
+           {
+               //TODO: Change address to this new value
+               //TODO: show Edit watch dialog
+           }
+           else
+           {
+               MessageBox.Show("Invalid number!");
+               //TODO: Restore original address value
+           }
         }
 
         private void RamWatch_LocationChanged(object sender, EventArgs e)
