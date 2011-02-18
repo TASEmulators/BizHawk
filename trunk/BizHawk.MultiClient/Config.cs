@@ -9,6 +9,7 @@
         public RecentFiles RecentRoms = new RecentFiles(8);
         public bool PauseWhenMenuActivated = true;
         public bool SaveWindowPosition = true;
+        public bool StartPaused = false;
         public int MainWndx = -1; //Negative numbers will be ignored
         public int MainWndy = -1;
 
