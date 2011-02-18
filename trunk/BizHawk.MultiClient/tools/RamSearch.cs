@@ -18,7 +18,8 @@ namespace BizHawk.MultiClient
         //Save window position & Size
         //Menu Bar
         //Reset window position item
-     
+        int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
+        int defaultHeight;
 
         List<Watch> searchList = new List<Watch>();
 
@@ -29,11 +30,22 @@ namespace BizHawk.MultiClient
 
         private void RamSearch_Load(object sender, EventArgs e)
         {
+            defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+            defaultHeight = this.Size.Height;
+
             SetTotal();
 
             for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
             {
 
+            }
+
+            if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
+                this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
+
+            if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)
+            {
+                this.Size = new System.Drawing.Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
             }
         }
 
@@ -151,7 +163,6 @@ namespace BizHawk.MultiClient
         private void WatchtoolStripButton1_Click(object sender, EventArgs e)
         {
             //TODO: get listview watch object and feed to ram watch
-            //Global.MainForm.RamWatch1 = new RamWatch();
 
             if (!Global.MainForm.RamWatch1.IsDisposed)
                 Global.MainForm.RamWatch1.Focus();
@@ -160,6 +171,23 @@ namespace BizHawk.MultiClient
                 Global.MainForm.RamWatch1 = new RamWatch();
                 Global.MainForm.RamWatch1.Show();
             }
+        }
+
+        private void RamSearch_LocationChanged(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchWndx = this.Location.X;
+            Global.Config.RamSearchWndy = this.Location.Y;
+        }
+
+        private void RamSearch_Resize(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchWidth = this.Right - this.Left;
+            Global.Config.RamSearchHeight = this.Bottom - this.Top;
+        }
+
+        private void restoreOriginalWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
         }
     }
 }

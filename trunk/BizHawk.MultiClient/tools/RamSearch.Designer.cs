@@ -89,6 +89,7 @@
             this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
             this.LessThanRadio = new System.Windows.Forms.RadioButton();
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
+            this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -112,7 +113,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(185, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(154, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -192,8 +193,9 @@
             // 
             // listView1
             // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -243,6 +245,7 @@
             this.openToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.saveToolStripMenuItem,
+            this.restoreOriginalWindowSizeToolStripMenuItem,
             this.hackyAutoLoadToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -290,7 +293,7 @@
             // 
             // toolStripContainer1
             // 
-            this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             // 
             // toolStripContainer1.ContentPanel
@@ -465,6 +468,7 @@
             // 
             // CompareToBox
             // 
+            this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
             this.CompareToBox.Controls.Add(this.SpecificAddressBox);
             this.CompareToBox.Controls.Add(this.SpecificValueBox);
@@ -551,6 +555,7 @@
             // 
             // ComparisonBox
             // 
+            this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ComparisonBox.Controls.Add(this.label1);
             this.ComparisonBox.Controls.Add(this.DifferentByBox);
             this.ComparisonBox.Controls.Add(this.ModuloBox);
@@ -681,6 +686,7 @@
             // 
             // AutoSearchCheckBox
             // 
+            this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AutoSearchCheckBox.AutoSize = true;
             this.AutoSearchCheckBox.Location = new System.Drawing.Point(250, 432);
             this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
@@ -688,6 +694,13 @@
             this.AutoSearchCheckBox.TabIndex = 7;
             this.AutoSearchCheckBox.Text = "Auto Search";
             this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // restoreOriginalWindowSizeToolStripMenuItem
+            // 
+            this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
+            this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreOriginalWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreOriginalWindowSizeToolStripMenuItem_Click);
             // 
             // RamSearch
             // 
@@ -706,6 +719,8 @@
             this.Name = "RamSearch";
             this.Text = "Ram Search";
             this.Load += new System.EventHandler(this.RamSearch_Load);
+            this.Resize += new System.EventHandler(this.RamSearch_Resize);
+            this.LocationChanged += new System.EventHandler(this.RamSearch_LocationChanged);
             this.SearchtoolStrip1.ResumeLayout(false);
             this.SearchtoolStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -789,5 +804,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restoreOriginalWindowSizeToolStripMenuItem;
     }
 }
