@@ -38,7 +38,29 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < watchList.Count; x++)
             {
                 if (watchList[x].type == atype.SEPARATOR) continue;
-                watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
+                switch (watchList[x].type)
+                {
+                    case atype.BYTE:
+                        watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
+                        break;
+                    case atype.WORD:
+                        {
+                            if (watchList[x].bigendian)
+                            {
+                                watchList[x].value = ((Global.Emulator.MainMemory.PeekByte(watchList[x].address)*256) + 
+                                    Global.Emulator.MainMemory.PeekByte((watchList[x+1].address)+1) );
+                            }
+                            else
+                            {
+                                watchList[x].value = (Global.Emulator.MainMemory.PeekByte(watchList[x].address) +
+                                   (Global.Emulator.MainMemory.PeekByte((watchList[x].address)+1)*256) );
+                            }
+                        }
+                        break;
+                    case atype.DWORD:
+                        break;
+                }
+                
                 switch (watchList[x].signed)
                 {
                     case asigned.HEX:
@@ -494,7 +516,7 @@ namespace BizHawk.MultiClient
                 }
                 else
                 {
-                    ListViewItem item = new ListViewItem(String.Format("{0:X4}", watchList[x].address));
+                    ListViewItem item = new ListViewItem(String.Format("{0:X}", watchList[x].address));
                     
                     if (watchList[x].signed == asigned.HEX)
                     {
