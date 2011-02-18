@@ -21,8 +21,8 @@ namespace BizHawk.MultiClient
         private bool wasPaused = false; //For handling automatic pausing when entering the menu
         private int FrameAdvanceDelay = 0;
         private bool EmulatorPaused = false;
-        RamWatch RamWatch1 = new RamWatch();
-        RamSearch RamSearch1 = new RamSearch();
+        public RamWatch RamWatch1 = new RamWatch();
+        public RamSearch RamSearch1 = new RamSearch();
 
         public MainForm(string[] args)
         {
@@ -1014,16 +1014,26 @@ namespace BizHawk.MultiClient
 
         private void LoadRamWatch()
         {
-            RamWatch1 = new RamWatch();
-            if (Global.Config.AutoLoadRamWatch)
-                RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
-            RamWatch1.Show();
+            if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
+            {
+                RamWatch1 = new RamWatch();
+                if (Global.Config.AutoLoadRamWatch)
+                    RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+                RamWatch1.Show();
+            }
+            else
+                RamWatch1.Focus();
         }
 
         private void LoadRamSearch()
         {
-            RamSearch1 = new RamSearch();
-            RamSearch1.Show();
+            if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
+            {
+                RamSearch1 = new RamSearch();
+                RamSearch1.Show();
+            }
+            else
+                RamSearch1.Focus();
         }
 
         private void RAMWatchToolStripMenuItem_Click(object sender, EventArgs e)

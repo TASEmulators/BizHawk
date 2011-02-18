@@ -147,5 +147,19 @@ namespace BizHawk.MultiClient
             else
                 ModuloBox.Enabled = false;
         }
+
+        private void WatchtoolStripButton1_Click(object sender, EventArgs e)
+        {
+            //TODO: get listview watch object and feed to ram watch
+            //Global.MainForm.RamWatch1 = new RamWatch();
+
+            if (!Global.MainForm.RamWatch1.IsDisposed)
+                Global.MainForm.RamWatch1.Focus();
+            else
+            {
+                Global.MainForm.RamWatch1 = new RamWatch();
+                Global.MainForm.RamWatch1.Show();
+            }
+        }
     }
 }
