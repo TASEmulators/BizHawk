@@ -130,6 +130,7 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -884,6 +885,7 @@
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.rAMWatchToolStripMenuItem,
             this.rAMSearchToolStripMenuItem,
+            this.rAMPokeToolStripMenuItem,
             this.debuggerToolStripMenuItem,
             this.hexEditorToolStripMenuItem,
             this.luaConsoleToolStripMenuItem});
@@ -894,14 +896,14 @@
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
@@ -909,21 +911,21 @@
             // 
             this.debuggerToolStripMenuItem.Enabled = false;
             this.debuggerToolStripMenuItem.Name = "debuggerToolStripMenuItem";
-            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.debuggerToolStripMenuItem.Text = "&Debugger";
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Enabled = false;
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             // 
             // luaConsoleToolStripMenuItem
             // 
             this.luaConsoleToolStripMenuItem.Enabled = false;
             this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.luaConsoleToolStripMenuItem.Text = "Lua Console";
             // 
             // helpToolStripMenuItem
@@ -950,6 +952,13 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // rAMPokeToolStripMenuItem
+            // 
+            this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
+            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
+            this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.rAMPokeToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1074,6 +1083,7 @@
         private System.Windows.Forms.ToolStripMenuItem gUIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rAMPokeToolStripMenuItem;
     }
 }
 

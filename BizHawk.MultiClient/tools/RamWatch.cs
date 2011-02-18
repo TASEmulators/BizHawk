@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
         //Make it clear that on edit/new/duplicate watch, address is hex
         //Validate address box as legit hex number
         //When using ListView index, validate the user has selected one!
+        //DWORD display
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
