@@ -131,6 +131,7 @@
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -840,7 +841,7 @@
             // controllersToolStripMenuItem
             // 
             this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.controllersToolStripMenuItem.Text = "&Controllers";
             this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
             // 
@@ -848,28 +849,29 @@
             // 
             this.hotkeysToolStripMenuItem.Enabled = false;
             this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hotkeysToolStripMenuItem.Text = "&Hotkeys";
             this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
             // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(134, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
             // 
             // soundToolStripMenuItem
             // 
             this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
-            this.soundToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.soundToolStripMenuItem.Text = "&Sound";
             this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
             // 
             // gUIToolStripMenuItem
             // 
             this.gUIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pauseWhenMenuActivatedToolStripMenuItem});
+            this.pauseWhenMenuActivatedToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem});
             this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
-            this.gUIToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gUIToolStripMenuItem.Text = "GUI";
             this.gUIToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gUIToolStripMenuItem_DropDownOpened);
             // 
@@ -959,6 +961,13 @@
             this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
             this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.rAMPokeToolStripMenuItem_Click);
+            // 
+            // saveWindowPositionToolStripMenuItem
+            // 
+            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
+            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1084,6 +1093,7 @@
         private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rAMPokeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
     }
 }
 

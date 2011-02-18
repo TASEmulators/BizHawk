@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
         private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
         private string CurrentlyOpenRom;
-        private int SaveSlot = 0;   //Saveslot sytem
+        private int SaveSlot = 0;       //Saveslot sytem
         private bool wasPaused = false; //For handling automatic pausing when entering the menu
         private int FrameAdvanceDelay = 0;
         private bool EmulatorPaused = false;
@@ -60,8 +60,16 @@ namespace BizHawk.MultiClient
             Closing += (o, e) =>
                {
                    CloseGame();
-                   Global.Config.MainWndx = this.Location.X;
-                   Global.Config.MainWndy = this.Location.Y;
+                   if (Global.Config.SaveWindowPosition)
+                   {
+                       Global.Config.MainWndx = this.Location.X;
+                       Global.Config.MainWndy = this.Location.Y;
+                   }
+                   else
+                   {
+                       Global.Config.MainWndx = -1;
+                       Global.Config.MainWndy = -1;
+                   }
                    ConfigService.Save("config.ini", Global.Config);
                };
 
@@ -108,7 +116,7 @@ namespace BizHawk.MultiClient
             if (Global.Config.AutoLoadRamSearch)
                 LoadRamSearch();
 
-            if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0)
+            if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
                 this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
         }
 
@@ -1200,6 +1208,7 @@ namespace BizHawk.MultiClient
         private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
         }
 
         private void pauseWhenMenuActivatedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1222,6 +1231,11 @@ namespace BizHawk.MultiClient
         {
             RamPoke r = new RamPoke();
             r.Show();
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.SaveWindowPosition ^= true;
         }
     }
 }
