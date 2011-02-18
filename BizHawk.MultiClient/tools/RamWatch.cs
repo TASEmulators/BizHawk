@@ -843,5 +843,14 @@ namespace BizHawk.MultiClient
                     contextMenuStrip1.Items[x].Visible = true;
             }
         }
+
+        private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                EditWatch();
+            }
+        }
     }
 }
