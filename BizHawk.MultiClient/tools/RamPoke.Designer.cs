@@ -57,13 +57,13 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 33);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 13);
+            this.label1.Size = new System.Drawing.Size(62, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Address:";
+            this.label1.Text = "Address: 0x";
             // 
             // AddressBox
             // 
-            this.AddressBox.Location = new System.Drawing.Point(60, 30);
+            this.AddressBox.Location = new System.Drawing.Point(68, 30);
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.Size = new System.Drawing.Size(100, 20);
             this.AddressBox.TabIndex = 2;
@@ -231,7 +231,7 @@
             // 
             // ValueBox
             // 
-            this.ValueBox.Location = new System.Drawing.Point(60, 57);
+            this.ValueBox.Location = new System.Drawing.Point(68, 57);
             this.ValueBox.Name = "ValueBox";
             this.ValueBox.Size = new System.Drawing.Size(100, 20);
             this.ValueBox.TabIndex = 11;
