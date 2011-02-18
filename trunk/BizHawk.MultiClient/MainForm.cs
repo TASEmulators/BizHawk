@@ -1217,5 +1217,11 @@ namespace BizHawk.MultiClient
         {
 
         }
+
+        private void rAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RamPoke r = new RamPoke();
+            r.Show();
+        }
     }
 }
