@@ -963,6 +963,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "BizHawk";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
