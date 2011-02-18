@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Address can be changed, when that event is triggered, open the edit watch dialog
-        //Import images into resource file
         //Multiselect is enabled but only one row can be highlighted by the user
         //Make it clear that on edit/new/duplicate watch, address is hex
         //Validate address box as legit hex number
@@ -40,8 +39,18 @@ namespace BizHawk.MultiClient
             {
                 if (watchList[x].type == atype.SEPARATOR) continue;
                 watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
-                WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
-                //TODO: readbytes based on type, size, endian values
+                switch (watchList[x].signed)
+                {
+                    case asigned.HEX:
+                        WatchListView.Items[x].SubItems[1].Text = String.Format("{0:X}", watchList[x].value);
+                        break;
+                    case asigned.SIGNED:
+                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
+                        break;
+                    case asigned.UNSIGNED:
+                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString(); //TODO: unsigned int
+                        break;
+                }
             }          
         }
 
