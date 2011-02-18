@@ -103,8 +103,16 @@ namespace BizHawk.MultiClient
         {
             //Put user settings in the watch file
             userSelected = true;
-
-            watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+            if (InputValidate.IsValidHexNumber(AddressBox.Text))
+                watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+            else
+            {
+                MessageBox.Show("Not a valid address (enter a valid Hex number)", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                AddressBox.Focus();
+                AddressBox.SelectAll();
+                
+                return;
+            }
 
             if (SignedRadio.Checked)
                 watch.signed = asigned.SIGNED;

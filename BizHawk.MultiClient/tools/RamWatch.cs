@@ -19,10 +19,7 @@ namespace BizHawk.MultiClient
         //TODO: 
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
-        //Address can be changed, when that event is triggered, open the edit watch dialog
         //Multiselect is enabled but only one row can be highlighted by the user
-        //Make it clear that on edit/new/duplicate watch, address is hex
-        //Validate address box as legit hex number
         //When using ListView index, validate the user has selected one!
         //DWORD display
 
