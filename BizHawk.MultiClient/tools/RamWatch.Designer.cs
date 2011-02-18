@@ -578,6 +578,7 @@
             // 
             // RamWatch
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(364, 424);
@@ -592,6 +593,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Ram Watch";
             this.Load += new System.EventHandler(this.RamWatch_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragEnter);
             this.Resize += new System.EventHandler(this.RamWatch_Resize);
             this.LocationChanged += new System.EventHandler(this.RamWatch_LocationChanged);
             this.menuStrip1.ResumeLayout(false);

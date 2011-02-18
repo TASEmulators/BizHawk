@@ -17,10 +17,11 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //TODO: Call AskSave in main client X function
+        //Call AskSave in main client X function
         //Multiselect is enabled but only one row can be highlighted by the user
         //DWORD display
         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
+        //DisplayWatches needs to do value display properly like updatevalues, or just run update values
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -851,6 +852,21 @@ namespace BizHawk.MultiClient
             {
                 EditWatch();
             }
+        }
+
+        private void RamWatch_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filePaths[0].Contains(".wch")) //TODO: a less lazy way to check file extension?
+            {
+                LoadWatchFile(filePaths[0], false);
+                DisplayWatchList();
+            }
+        }
+
+        private void RamWatch_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;string[] filePaths = (string[]) e.Data.GetData(DataFormats.FileDrop);
         }
     }
 }
