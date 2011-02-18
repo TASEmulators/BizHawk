@@ -18,7 +18,6 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Call AskSave in main client X function
-        //Multiselect is enabled but only one row can be highlighted by the user
         //DWORD display
         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
@@ -306,7 +305,7 @@ namespace BizHawk.MultiClient
             {
                 foreach (int index in indexes)
                 {
-                    watchList.Remove(watchList[index]);
+                    watchList.Remove(watchList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
                 }
                 DisplayWatchList();
             }
