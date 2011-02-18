@@ -132,6 +132,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startPausedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -869,7 +870,8 @@
             // 
             this.gUIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pauseWhenMenuActivatedToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem});
+            this.saveWindowPositionToolStripMenuItem,
+            this.startPausedToolStripMenuItem});
             this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
             this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gUIToolStripMenuItem.Text = "GUI";
@@ -968,6 +970,13 @@
             this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+            // 
+            // startPausedToolStripMenuItem
+            // 
+            this.startPausedToolStripMenuItem.Name = "startPausedToolStripMenuItem";
+            this.startPausedToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.startPausedToolStripMenuItem.Text = "Start paused";
+            this.startPausedToolStripMenuItem.Click += new System.EventHandler(this.startPausedToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1094,6 +1103,7 @@
         private System.Windows.Forms.ToolStripMenuItem soundToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rAMPokeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem startPausedToolStripMenuItem;
     }
 }
 

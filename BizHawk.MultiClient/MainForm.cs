@@ -118,6 +118,9 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
                 this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+
+            if (Global.Config.StartPaused)
+                PauseEmulator();
         }
 
         private void PauseEmulator()
@@ -1209,6 +1212,7 @@ namespace BizHawk.MultiClient
         {
             pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
+            startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
         }
 
         private void pauseWhenMenuActivatedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1236,6 +1240,11 @@ namespace BizHawk.MultiClient
         private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.SaveWindowPosition ^= true;
+        }
+
+        private void startPausedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.StartPaused ^= true;
         }
     }
 }
