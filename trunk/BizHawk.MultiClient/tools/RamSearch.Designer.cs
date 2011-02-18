@@ -112,7 +112,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(154, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(185, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -170,6 +170,7 @@
             this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
             this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.WatchtoolStripButton1.Text = "toolStripButton1";
+            this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
             // 
             // PoketoolStripButton1
             // 
