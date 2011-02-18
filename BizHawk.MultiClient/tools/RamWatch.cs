@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Multiselect is enabled but only one row can be highlighted by the user
         //DWORD display
@@ -325,7 +324,7 @@ namespace BizHawk.MultiClient
                 if (r.userSelected == true)
                 {
                     Changes();
-                    watchList.Add(watchList[x]); //TODO: Fail, add the userselected watchlist
+                    watchList.Add(r.watch);
                     DisplayWatchList();
                 }
             }
