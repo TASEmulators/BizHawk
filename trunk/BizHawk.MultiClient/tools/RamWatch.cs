@@ -279,23 +279,25 @@ namespace BizHawk.MultiClient
             MessageLabel.Text = Path.GetFileName(currentWatchFile) + " *";
         }
 
-        void EditWatch()
+        void EditWatchObject(int pos)
         {
-            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-                                
             RamWatchNewWatch r = new RamWatchNewWatch();
             r.location = GetPromptPoint();
-
-            int x = indexes[0];
-            r.SetToEditWatch(watchList[x], "Edit Watch");
+            r.SetToEditWatch(watchList[pos], "Edit Watch");
             r.ShowDialog();
 
             if (r.userSelected == true)
             {
                 Changes();
-                watchList[x] = r.watch;
+                watchList[pos] = r.watch;
                 DisplayWatchList();
             }
+        }
+
+        void EditWatch()
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            EditWatchObject(indexes[0]);
         }
 
         void RemoveWatch()
@@ -631,17 +633,18 @@ namespace BizHawk.MultiClient
         {
             if (e.Label == null) //If no change
                 return;
-
-           char[] temp = e.Label.ToCharArray();
-           if (InputValidate.IsValidUnsignedNumber(temp)) //TODO: 
+           string Str = e.Label.ToUpper().Trim();
+           int index = e.Item;
+           
+           if (InputValidate.IsValidHexNumber(Str))
            {
-               //TODO: Change address to this new value
-               //TODO: show Edit watch dialog
+               watchList[e.Item].address = int.Parse(Str, NumberStyles.HexNumber);
+               EditWatchObject(index);
            }
            else
            {
                MessageBox.Show("Invalid number!");
-               //TODO: Restore original address value
+               WatchListView.Items[index].Text = watchList[index].address.ToString(); //TODO: Why doesn't the list view update to the new value? It won't until something else changes
            }
         }
 
