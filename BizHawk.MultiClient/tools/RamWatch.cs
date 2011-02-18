@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
         //TODO: Call AskSave in main client X function
         //Multiselect is enabled but only one row can be highlighted by the user
         //DWORD display
+        //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -342,11 +343,10 @@ namespace BizHawk.MultiClient
                 watchList.Insert(index - 1, temp);
                 
                 //Note: here it will get flagged many times redundantly potentially, 
-                //but this avoids it being flag falsely when the user did not select an index
+                //but this avoids it being flagged falsely when the user did not select an index
                 Changes();
             }
             DisplayWatchList();
-           //TODO: Set highlighted items to be what the user had selected (in their new position)
         }
 
         void MoveDown()
@@ -365,11 +365,10 @@ namespace BizHawk.MultiClient
                 }
 
                 //Note: here it will get flagged many times redundantly potnetially, 
-                //but this avoids it being flag falsely when the user did not select an index
+                //but this avoids it being flagged falsely when the user did not select an index
                 Changes(); 
             }
             DisplayWatchList();
-            //TODO: Set highlighted items to be what the user had selected (in their new position)
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -610,7 +609,7 @@ namespace BizHawk.MultiClient
                     var item = new ToolStripMenuItem();
                     item.Text = path;
                     item.Click += (o, ev) => LoadWatchFromRecent(path);
-                    recentToolStripMenuItem.DropDownItems.Add(item); //TODO: truncate this to a nice size
+                    recentToolStripMenuItem.DropDownItems.Add(item);
                 }
             }
 
