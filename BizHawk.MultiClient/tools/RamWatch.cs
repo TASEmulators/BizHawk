@@ -17,8 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Display value - implement signed vs unsigned
-        //Currently address is 4 digit hex, but at some point it needs to be smart enough to adjust size based on the emulator core used
         //Make a context menu for add/remove/Dup/etc, make the context menu & edit watch windows appear in relation to where they right clicked
         //TODO: Call AskSave in main client X function
         //Address can be changed, when that event is triggered, open the edit watch dialog
@@ -67,10 +65,10 @@ namespace BizHawk.MultiClient
                         WatchListView.Items[x].SubItems[1].Text = String.Format("{0:X}", watchList[x].value);
                         break;
                     case asigned.SIGNED:
-                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
+                        WatchListView.Items[x].SubItems[1].Text = ((sbyte)watchList[x].value).ToString();
                         break;
                     case asigned.UNSIGNED:
-                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString(); //TODO: unsigned int
+                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
                         break;
                 }
             }          
