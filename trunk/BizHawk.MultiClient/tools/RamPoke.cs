@@ -137,7 +137,16 @@ namespace BizHawk.MultiClient
                     }
                     break;
                 case asigned.SIGNED:
-                    //TODO
+                    if (InputValidate.IsValidSignedNumber(ValueBox.Text))
+                    {
+                        watch.value = int.Parse(ValueBox.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid Address, must be a valid number number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ValueBox.Focus();
+                        ValueBox.SelectAll();
+                    }
                     break;
                 case asigned.HEX:
                     if (InputValidate.IsValidHexNumber(ValueBox.Text))
