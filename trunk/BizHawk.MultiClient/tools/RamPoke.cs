@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
         //TODO:
         //If signed/unsigned/hex radios selected, auto-change the value box
         //Checked signed/u/h value on RamPoke_Load and set value appopriately
+        //Validate address (hex) and value (based on s/u/h setting)
         public Watch watch = new Watch();
         public Point location = new Point();
 
