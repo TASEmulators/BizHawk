@@ -177,7 +177,7 @@
             this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
             this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.WatchtoolStripButton1.Text = "toolStripButton1";
+            this.WatchtoolStripButton1.Text = "Watch";
             this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
             // 
             // PoketoolStripButton1
@@ -188,6 +188,7 @@
             this.PoketoolStripButton1.Name = "PoketoolStripButton1";
             this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.PoketoolStripButton1.Text = "Poke";
+            this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
             // 
             // TotalSearchLabel
             // 

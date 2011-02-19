@@ -73,6 +73,12 @@ namespace BizHawk.MultiClient
             }          
         }
 
+        public void AddWatch(Watch w)
+        {
+            watchList.Add(w);
+            DisplayWatchList();
+        }
+
         public RamWatch()
         {
             InitializeComponent();
