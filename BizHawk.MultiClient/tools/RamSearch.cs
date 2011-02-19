@@ -19,6 +19,7 @@ namespace BizHawk.MultiClient
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
+        List<Watch> undoList = new List<Watch>();
 
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
@@ -193,7 +194,8 @@ namespace BizHawk.MultiClient
                     Global.MainForm.RamWatch1 = new RamWatch();
                     Global.MainForm.RamWatch1.Show();
                 }
-                Global.MainForm.RamWatch1.AddWatch(searchList[indexes[0]]);
+                for (int x = 0; x < indexes.Count; x++)
+                    Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
             }
         }
 
@@ -287,6 +289,24 @@ namespace BizHawk.MultiClient
         private void PoketoolStripButton1_Click(object sender, EventArgs e)
         {
             PokeAddress();
+        }
+
+        private void RemoveAddresses()
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                for (int x = 0; x < indexes.Count; x++)
+                {
+                    searchList.Remove(searchList[indexes[x]]);
+                }
+                DisplaySearchList();
+            }
+        }
+
+        private void cutToolStripButton_Click(object sender, EventArgs e)
+        {
+            RemoveAddresses();
         }
     }
 }
