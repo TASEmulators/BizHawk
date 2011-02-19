@@ -379,6 +379,7 @@ namespace BizHawk.MultiClient
         {
             Global.Emulator.FrameAdvance(true); //TODO: Do these things need to happen on (false) as well? Think about it
             RamWatch1.UpdateValues();
+            RamSearch1.UpdateValues();
         }
 
         public void GameTick()
