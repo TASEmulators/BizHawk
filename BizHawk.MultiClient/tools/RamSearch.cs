@@ -15,12 +15,15 @@ namespace BizHawk.MultiClient
     public partial class RamSearch : Form
     {
         //TODO:
-        //Save window position & Size
-        //Menu Bar
+        //Window position gets saved but doesn't load properly
+
+        string systemID = "NULL";
+
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         
+
         List<Watch> searchList = new List<Watch>();
 
         public RamSearch()
@@ -214,6 +217,7 @@ namespace BizHawk.MultiClient
 
         private void StartNewSearch()
         {
+            GetMemoryDomain();
             int startaddress = 0;
             if (Global.Emulator.SystemId == "PCE")
                 startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
@@ -241,6 +245,13 @@ namespace BizHawk.MultiClient
         private void newSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StartNewSearch();
+        }
+
+        private void GetMemoryDomain()
+        {
+            string memoryDomain = "Main memory"; //TODO: multiple memory domains
+            systemID = Global.Emulator.SystemId;
+            MemDomainLabel.Text = systemID + " " + memoryDomain;
         }
     }
 }
