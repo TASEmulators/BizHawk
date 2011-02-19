@@ -18,14 +18,12 @@ namespace BizHawk.MultiClient
         //Window position gets saved but doesn't load properly
 
         string systemID = "NULL";
+        List<Watch> searchList = new List<Watch>();
 
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         
-
-        List<Watch> searchList = new List<Watch>();
-
         public RamSearch()
         {
             InitializeComponent();
@@ -57,7 +55,7 @@ namespace BizHawk.MultiClient
                 bigEndianToolStripMenuItem.Checked = false;
                 littleEndianToolStripMenuItem.Checked = true;
             }
-            SetTotal();
+            
             StartNewSearch();
             
             if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
@@ -71,7 +69,7 @@ namespace BizHawk.MultiClient
 
         private void SetTotal()
         {
-            int x = Global.Emulator.MainMemory.Size;
+            int x = searchList.Count;
             string str;
             if (x == 1)
                 str = " address";
@@ -180,17 +178,28 @@ namespace BizHawk.MultiClient
                 ModuloBox.Enabled = false;
         }
 
+        private void AddToRamWatch()
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+
+            if (indexes.Count > 0)
+            {
+                if (!Global.MainForm.RamWatch1.IsDisposed)
+                {
+                    Global.MainForm.RamWatch1.Focus();
+                }
+                else
+                {
+                    Global.MainForm.RamWatch1 = new RamWatch();
+                    Global.MainForm.RamWatch1.Show();
+                }
+                Global.MainForm.RamWatch1.AddWatch(searchList[indexes[0]]);
+            }
+        }
+
         private void WatchtoolStripButton1_Click(object sender, EventArgs e)
         {
-            //TODO: get listview watch object and feed to ram watch
-
-            if (!Global.MainForm.RamWatch1.IsDisposed)
-                Global.MainForm.RamWatch1.Focus();
-            else
-            {
-                Global.MainForm.RamWatch1 = new RamWatch();
-                Global.MainForm.RamWatch1.Show();
-            }
+            AddToRamWatch();
         }
 
         private void RamSearch_LocationChanged(object sender, EventArgs e)
@@ -227,6 +236,7 @@ namespace BizHawk.MultiClient
                 searchList[x].address = x + startaddress;
                 searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
             }
+            SetTotal();
             DisplaySearchList();
         }
 
@@ -252,6 +262,31 @@ namespace BizHawk.MultiClient
             string memoryDomain = "Main memory"; //TODO: multiple memory domains
             systemID = Global.Emulator.SystemId;
             MemDomainLabel.Text = systemID + " " + memoryDomain;
+        }
+
+        private Point GetPromptPoint()
+        {
+
+            Point p = new Point(SearchListView.Location.X, SearchListView.Location.Y);
+            Point q = new Point();
+            q = PointToScreen(p);
+            return q;
+        }
+
+        private void PokeAddress()
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+            RamPoke p = new RamPoke();
+
+            if (indexes.Count > 0)
+                p.SetWatchObject(searchList[indexes[0]]);
+            p.location = GetPromptPoint();
+            p.ShowDialog();
+        }
+
+        private void PoketoolStripButton1_Click(object sender, EventArgs e)
+        {
+            PokeAddress();
         }
     }
 }
