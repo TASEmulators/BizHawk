@@ -238,7 +238,6 @@ namespace BizHawk.MultiClient
                 searchList[x].address = x + startaddress;
                 searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
             }
-            SetTotal();
             DisplaySearchList();
         }
 
@@ -252,6 +251,7 @@ namespace BizHawk.MultiClient
                 item.SubItems.Add(string.Format("{0:X2}", searchList[x].value));
                 SearchListView.Items.Add(item);
             }
+            SetTotal();
         }
 
         private void newSearchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -298,7 +298,7 @@ namespace BizHawk.MultiClient
             {
                 for (int x = 0; x < indexes.Count; x++)
                 {
-                    searchList.Remove(searchList[indexes[x]]);
+                    searchList.Remove(searchList[indexes[x]-x]);
                 }
                 DisplaySearchList();
             }
