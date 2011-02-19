@@ -13,8 +13,10 @@ namespace BizHawk.MultiClient
     public partial class InputConfig : Form
     {
         const string ControllerStr = "Configure Controllers - ";
-        public static string[] SMSList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
-        public static string[] GenesisList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
+        public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
+        public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II","Run","Select"};
+        public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
+        public static string[] GameboyControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select" };
         private ArrayList Labels;
         private ArrayList TextBoxes;
         private string CurSelectConsole;
@@ -45,6 +47,7 @@ namespace BizHawk.MultiClient
             else
                 return oldmap + ", " + button;
         }
+
         private void DoSMS()
         {
             Label TempLabel;
@@ -53,7 +56,7 @@ namespace BizHawk.MultiClient
             ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
             this.SystemComboBox.SelectedIndex = 0;
             int jpad = this.ControllComboBox.SelectedIndex;
-            string[] ButtonMappings = new string[SMSList.Length];
+            string[] ButtonMappings = new string[SMSControlList.Length];
             ButtonMappings[0] = TruncateButtonMapping(Global.Config.SMSController[jpad].Up);
             ButtonMappings[1] = TruncateButtonMapping(Global.Config.SMSController[jpad].Down);
             ButtonMappings[2] = TruncateButtonMapping(Global.Config.SMSController[jpad].Left);
@@ -63,13 +66,12 @@ namespace BizHawk.MultiClient
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.SmsPause);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.SmsReset);
             Changed = true;
-
             Labels.Clear();
             TextBoxes.Clear();
-            for (int i = 0; i < SMSList.Length; i++)
+            for (int i = 0; i < SMSControlList.Length; i++)
             {
                 TempLabel = new Label();
-                TempLabel.Text = SMSList[i];
+                TempLabel.Text = SMSControlList[i];
                 TempLabel.Location = new Point(8, 20 + (i * 24));
                 Labels.Add(TempLabel);
                 TempTextBox = new InputWidget();
@@ -117,10 +119,72 @@ namespace BizHawk.MultiClient
         }
         private void DoPCE()
         {
+            Label TempLabel;
+            InputWidget TempTextBox;
             this.Text = ControllerStr + "PCEjin / SGX";
-            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;           
+            int jpad = this.ControllComboBox.SelectedIndex;
+            string[] ButtonMappings = new string[PCEControlList.Length];
+            ButtonMappings[0] = TruncateButtonMapping(Global.Config.PCEController[jpad].Up);
+            ButtonMappings[1] = TruncateButtonMapping(Global.Config.PCEController[jpad].Down);
+            ButtonMappings[2] = TruncateButtonMapping(Global.Config.PCEController[jpad].Left);
+            ButtonMappings[3] = TruncateButtonMapping(Global.Config.PCEController[jpad].Right);
+            ButtonMappings[4] = TruncateButtonMapping(Global.Config.PCEController[jpad].I);
+            ButtonMappings[5] = TruncateButtonMapping(Global.Config.PCEController[jpad].II);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.PCEController[jpad].Run);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.PCEController[jpad].Select);
+            Changed = true;
+            Labels.Clear();
+            TextBoxes.Clear();
+            for (int i = 0; i < PCEControlList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = PCEControlList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
         }
-
+        private void UpdatePCE(int prev)
+        {
+            InputWidget TempBox;
+            Label TempLabel;
+            TempBox = TextBoxes[0] as InputWidget;
+            Global.Config.PCEController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
+            TempBox.Dispose();
+            TempBox = TextBoxes[1] as InputWidget;
+            Global.Config.PCEController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
+            TempBox.Dispose();
+            TempBox = TextBoxes[2] as InputWidget;
+            Global.Config.PCEController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
+            TempBox.Dispose();
+            TempBox = TextBoxes[3] as InputWidget;
+            Global.Config.PCEController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
+            TempBox.Dispose();
+            TempBox = TextBoxes[4] as InputWidget;
+            Global.Config.PCEController[prev].I = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
+            TempBox.Dispose();
+            TempBox = TextBoxes[5] as InputWidget;
+            Global.Config.PCEController[prev].II = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
+            TempBox.Dispose();
+            TempBox = TextBoxes[6] as InputWidget;
+            Global.Config.PCEController[prev].Run = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
+            TempBox.Dispose();
+            TempBox = TextBoxes[7] as InputWidget;
+            Global.Config.PCEController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
+            TempBox.Dispose();
+            for (int i = 0; i < 8; i++)
+            {
+                TempLabel = Labels[i] as Label;
+                TempLabel.Dispose();
+            }
+        }
         private void DoGen()
         {
             this.Text = ControllerStr + "Sega Genesis";
@@ -203,7 +267,7 @@ namespace BizHawk.MultiClient
                         UpdateSMS(CurSelectController);
                         break;
                     case "PC Engine / SGX":
-                        //UpdatePCE(CurSelectController);
+                        UpdatePCE(CurSelectController);
                         break;
                     case "Gameboy":
                         //UpdateGB();
