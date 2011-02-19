@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
         public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
         public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II","Run","Select"};
         public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
-        public static string[] GameboyControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select" };
+        public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select" };
         private ArrayList Labels;
         private ArrayList TextBoxes;
         private string CurSelectConsole;
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
             TempBox = TextBoxes[7] as InputWidget;
             Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
             TempBox.Dispose();
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < SMSControlList.Length; i++)
             {
                 TempLabel = Labels[i] as Label;
                 TempLabel.Dispose();
@@ -179,7 +179,7 @@ namespace BizHawk.MultiClient
             TempBox = TextBoxes[7] as InputWidget;
             Global.Config.PCEController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
             TempBox.Dispose();
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < PCEControlList.Length; i++)
             {
                 TempLabel = Labels[i] as Label;
                 TempLabel.Dispose();
@@ -198,10 +198,71 @@ namespace BizHawk.MultiClient
 
         private void DoGameBoy()
         {
+            Label TempLabel;
+            InputWidget TempTextBox;
             this.Text = ControllerStr + "Gameboy";
             ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
+            string[] ButtonMappings = new string[NESControlList.Length];
+            ButtonMappings[0] = TruncateButtonMapping(Global.Config.GameBoyController.Up);
+            ButtonMappings[1] = TruncateButtonMapping(Global.Config.GameBoyController.Down);
+            ButtonMappings[2] = TruncateButtonMapping(Global.Config.GameBoyController.Left);
+            ButtonMappings[3] = TruncateButtonMapping(Global.Config.GameBoyController.Right);
+            ButtonMappings[4] = TruncateButtonMapping(Global.Config.GameBoyController.A);
+            ButtonMappings[5] = TruncateButtonMapping(Global.Config.GameBoyController.B);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.GameBoyController.Start);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.GameBoyController.Select);
+            Changed = true;
+            Labels.Clear();
+            TextBoxes.Clear();
+            for (int i = 0; i < NESControlList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = NESControlList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
         }
-
+        private void UpdateGameBoy()
+        {
+            InputWidget TempBox;
+            Label TempLabel;
+            TempBox = TextBoxes[0] as InputWidget;
+            Global.Config.GameBoyController.Up = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Up);
+            TempBox.Dispose();
+            TempBox = TextBoxes[1] as InputWidget;
+            Global.Config.GameBoyController.Down = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Down);
+            TempBox.Dispose();
+            TempBox = TextBoxes[2] as InputWidget;
+            Global.Config.GameBoyController.Left = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Left);
+            TempBox.Dispose();
+            TempBox = TextBoxes[3] as InputWidget;
+            Global.Config.GameBoyController.Right = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Right);
+            TempBox.Dispose();
+            TempBox = TextBoxes[4] as InputWidget;
+            Global.Config.GameBoyController.A = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.A);
+            TempBox.Dispose();
+            TempBox = TextBoxes[5] as InputWidget;
+            Global.Config.GameBoyController.B = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.B);
+            TempBox.Dispose();
+            TempBox = TextBoxes[6] as InputWidget;
+            Global.Config.GameBoyController.Start = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Start);
+            TempBox.Dispose();
+            TempBox = TextBoxes[7] as InputWidget;
+            Global.Config.GameBoyController.Select = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Select);
+            TempBox.Dispose();
+            for (int i = 0; i < NESControlList.Length; i++)
+            {
+                TempLabel = Labels[i] as Label;
+                TempLabel.Dispose();
+            }
+        }
         private void InputConfig_Load(object sender, EventArgs e)
         {            
             //SystemComboBox = new ComboBox();            
