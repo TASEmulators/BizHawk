@@ -95,8 +95,12 @@
         public string GenP1A = "J1 B1, Z";
         public string GenP1B = "J1 B2, X";
         public string GenP1C = "J1 B9, C";
-        public string GenP1Start = "J1 B10, Return"; 
+        public string GenP1Start = "J1 B10, Return";
+
+        //GameBoy Settings
+        public NESControllerTemplate GameBoyController = new NESControllerTemplate(1);
     }
+
     public class SMSControllerTemplate
     {
         public string Up;
@@ -134,6 +138,28 @@
             I = string.Format("J{0} I", i);
             II = string.Format("J{0} II", i);
             Run = string.Format("J{0} Run", i);
+            Select = string.Format("J{0} Select", i);
+        }
+    }
+    public class NESControllerTemplate
+    {
+        public string Up;
+        public string Down;
+        public string Left;
+        public string Right;
+        public string A;
+        public string B;
+        public string Start;
+        public string Select;
+        public NESControllerTemplate(int i)
+        {
+            Up = string.Format("J{0} Up", i);
+            Down = string.Format("J{0} Down", i);
+            Left = string.Format("J{0} Left", i);
+            Right = string.Format("J{0} Right", i);
+            A = string.Format("J{0} A", i);
+            B = string.Format("J{0} B", i);
+            Start = string.Format("J{0} Start", i);
             Select = string.Format("J{0} Select", i);
         }
     }
