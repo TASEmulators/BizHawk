@@ -120,7 +120,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(187, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(156, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -203,9 +203,8 @@
             // SearchListView
             // 
             this.SearchListView.AllowColumnReorder = true;
-            this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -213,9 +212,9 @@
             this.Changes});
             this.SearchListView.GridLines = true;
             this.SearchListView.LabelEdit = true;
-            this.SearchListView.Location = new System.Drawing.Point(16, 58);
+            this.SearchListView.Location = new System.Drawing.Point(12, 58);
             this.SearchListView.Name = "SearchListView";
-            this.SearchListView.Size = new System.Drawing.Size(221, 391);
+            this.SearchListView.Size = new System.Drawing.Size(236, 391);
             this.SearchListView.TabIndex = 3;
             this.SearchListView.UseCompatibleStateImageBehavior = false;
             this.SearchListView.View = System.Windows.Forms.View.Details;
@@ -247,7 +246,7 @@
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(496, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(482, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -343,10 +342,10 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(241, 2);
-            this.toolStripContainer1.Location = new System.Drawing.Point(243, 32);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(213, 2);
+            this.toolStripContainer1.Location = new System.Drawing.Point(260, 31);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(241, 77);
+            this.toolStripContainer1.Size = new System.Drawing.Size(213, 77);
             this.toolStripContainer1.TabIndex = 5;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -522,9 +521,9 @@
             this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
             this.CompareToBox.Controls.Add(this.SpecificValueRadio);
             this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-            this.CompareToBox.Location = new System.Drawing.Point(243, 116);
+            this.CompareToBox.Location = new System.Drawing.Point(260, 114);
             this.CompareToBox.Name = "CompareToBox";
-            this.CompareToBox.Size = new System.Drawing.Size(241, 111);
+            this.CompareToBox.Size = new System.Drawing.Size(213, 111);
             this.CompareToBox.TabIndex = 0;
             this.CompareToBox.TabStop = false;
             this.CompareToBox.Text = "Compare To / By";
@@ -534,7 +533,7 @@
             this.NumberOfChangesBox.Enabled = false;
             this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 84);
             this.NumberOfChangesBox.Name = "NumberOfChangesBox";
-            this.NumberOfChangesBox.Size = new System.Drawing.Size(100, 20);
+            this.NumberOfChangesBox.Size = new System.Drawing.Size(70, 20);
             this.NumberOfChangesBox.TabIndex = 6;
             // 
             // SpecificAddressBox
@@ -542,7 +541,7 @@
             this.SpecificAddressBox.Enabled = false;
             this.SpecificAddressBox.Location = new System.Drawing.Point(135, 62);
             this.SpecificAddressBox.Name = "SpecificAddressBox";
-            this.SpecificAddressBox.Size = new System.Drawing.Size(100, 20);
+            this.SpecificAddressBox.Size = new System.Drawing.Size(70, 20);
             this.SpecificAddressBox.TabIndex = 5;
             // 
             // SpecificValueBox
@@ -550,7 +549,7 @@
             this.SpecificValueBox.Enabled = false;
             this.SpecificValueBox.Location = new System.Drawing.Point(135, 41);
             this.SpecificValueBox.Name = "SpecificValueBox";
-            this.SpecificValueBox.Size = new System.Drawing.Size(100, 20);
+            this.SpecificValueBox.Size = new System.Drawing.Size(70, 20);
             this.SpecificValueBox.TabIndex = 4;
             // 
             // NumberOfChangesRadio
@@ -613,9 +612,9 @@
             this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
             this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
             this.ComparisonBox.Controls.Add(this.LessThanRadio);
-            this.ComparisonBox.Location = new System.Drawing.Point(243, 233);
+            this.ComparisonBox.Location = new System.Drawing.Point(260, 236);
             this.ComparisonBox.Name = "ComparisonBox";
-            this.ComparisonBox.Size = new System.Drawing.Size(241, 190);
+            this.ComparisonBox.Size = new System.Drawing.Size(213, 190);
             this.ComparisonBox.TabIndex = 6;
             this.ComparisonBox.TabStop = false;
             this.ComparisonBox.Text = "Comparison Operator";
@@ -734,7 +733,7 @@
             // 
             this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AutoSearchCheckBox.AutoSize = true;
-            this.AutoSearchCheckBox.Location = new System.Drawing.Point(250, 432);
+            this.AutoSearchCheckBox.Location = new System.Drawing.Point(260, 432);
             this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
             this.AutoSearchCheckBox.Size = new System.Drawing.Size(85, 17);
             this.AutoSearchCheckBox.TabIndex = 7;
@@ -752,21 +751,19 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.TotalSearchLabel);
             this.panel1.Controls.Add(this.MemDomainLabel);
-            this.panel1.Location = new System.Drawing.Point(16, 31);
+            this.panel1.Location = new System.Drawing.Point(12, 31);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(221, 25);
+            this.panel1.Size = new System.Drawing.Size(236, 25);
             this.panel1.TabIndex = 9;
             // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(496, 461);
+            this.ClientSize = new System.Drawing.Size(482, 461);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.AutoSearchCheckBox);
             this.Controls.Add(this.ComparisonBox);
