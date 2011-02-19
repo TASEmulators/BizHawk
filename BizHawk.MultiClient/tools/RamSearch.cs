@@ -316,18 +316,14 @@ namespace BizHawk.MultiClient
         /// </summary>
         private void SaveUndo()
         {
-            undoList.Clear();
-            for (int x = 0; x < searchList.Count; x++)
-                undoList.Add(searchList[x]);
+            undoList = new List<Watch>(searchList);
         }
 
         private void DoUndo()
         {
             if (undoList.Count > 0)
             {
-                searchList.Clear();
-                for (int x = 0; x < undoList.Count; x++)
-                    searchList.Add(undoList[x]);
+                searchList = new List<Watch>(undoList);
                 undoList.Clear();
                 DisplaySearchList();
             }
