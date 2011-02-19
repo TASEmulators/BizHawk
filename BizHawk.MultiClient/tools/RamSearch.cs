@@ -228,6 +228,8 @@ namespace BizHawk.MultiClient
 
         private void StartNewSearch()
         {
+            searchList.Clear();
+            undoList.Clear();
             GetMemoryDomain();
             int startaddress = 0;
             if (Global.Emulator.SystemId == "PCE")
@@ -236,7 +238,7 @@ namespace BizHawk.MultiClient
             {
                 searchList.Add(new Watch());
                 searchList[x].address = x + startaddress;
-                searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
+                searchList[x].prev = searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
             }
             DisplaySearchList();
         }
