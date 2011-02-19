@@ -21,6 +21,8 @@ namespace BizHawk.MultiClient
             signed = asigned.UNSIGNED;
             bigendian = true;
             notes = "";
+            changecount = 0;
+            prev = 0;
         }
         public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
         {
@@ -30,13 +32,18 @@ namespace BizHawk.MultiClient
             signed = Signed;
             bigendian = BigEndian;
             notes = Notes;
+            changecount = 0;
+            prev = 0;
         }
-        public int address { get; set; }   
+        public int address { get; set; }
         public int value { get; set; }         //Current value
+        public int prev { get; set; }
         public atype type { get; set; }        //Address type (byte, word, dword, etc
         public asigned signed { get; set; }    //Signed/Unsigned?
         public bool bigendian { get; set; }
         public string notes { get; set; }      //User notes
+        public int changecount { get; set; }
+        
 
         public bool SetTypeByChar(char c)     //b = byte, w = word, d = dword
         {
