@@ -20,14 +20,23 @@ namespace BizHawk.MultiClient
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
-
-        int hackyPCEStartAddress = 0x1F0000;
         
         List<Watch> searchList = new List<Watch>();
 
         public RamSearch()
         {
             InitializeComponent();
+        }
+
+        public void UpdateValues()
+        {
+            //TODO: update based on atype
+            for (int x = 0; x < searchList.Count; x++)
+            {
+                searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                //TODO: format based on asigned
+                SearchListView.Items[x].SubItems[1].Text = searchList[x].value.ToString();
+            }
         }
 
         private void RamSearch_Load(object sender, EventArgs e)
