@@ -341,10 +341,14 @@ namespace BizHawk.Emulation.Consoles.Sega
             var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, Endian.Little, 
                 addr => SaveRAM[addr%SaveRAM.Length], 
                 (addr, value) => { SaveRAM[addr%SaveRAM.Length]=value; SaveRamModified=true;});
+            var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+                addr => Cpu.ReadMemory((ushort)addr),
+                (addr, value) => Cpu.WriteMemory((ushort)addr, value));
 
             domains.Add(MainMemoryDomain);
             domains.Add(VRamDomain);
             domains.Add(SaveRamDomain);
+            domains.Add(SystemBusDomain);
             memoryDomains = domains.AsReadOnly();
         }
 
