@@ -196,15 +196,18 @@ namespace BizHawk.MultiClient
             Global.SMSControls = smsControls;
 
             var pceControls = new Controller(PCEngine.PCEngineController);
-            pceControls.BindMulti("Up", Global.Config.PCEUp);
-            pceControls.BindMulti("Down", Global.Config.PCEDown);
-            pceControls.BindMulti("Left", Global.Config.PCELeft);
-            pceControls.BindMulti("Right", Global.Config.PCERight);
+            for (int i = 0; i < 1; i++)
+            {
+                pceControls.BindMulti("Up", Global.Config.PCEController[i].Up);
+                pceControls.BindMulti("Down", Global.Config.PCEController[i].Down);
+                pceControls.BindMulti("Left", Global.Config.PCEController[i].Left);
+                pceControls.BindMulti("Right", Global.Config.PCEController[i].Right);
 
-            pceControls.BindMulti("II", Global.Config.PCEBII);
-            pceControls.BindMulti("I", Global.Config.PCEBI);
-            pceControls.BindMulti("Select", Global.Config.PCESelect);
-            pceControls.BindMulti("Run", Global.Config.PCERun);
+                pceControls.BindMulti("II", Global.Config.PCEController[i].II);
+                pceControls.BindMulti("I", Global.Config.PCEController[i].I);
+                pceControls.BindMulti("Select", Global.Config.PCEController[i].Select);
+                pceControls.BindMulti("Run", Global.Config.PCEController[i].Run);
+            }
             Global.PCEControls = pceControls;
 
             var genControls = new Controller(Genesis.GenesisController);

@@ -6,6 +6,11 @@
         {
             SMSController[0] = new SMSControllerTemplate(1);
             SMSController[1] = new SMSControllerTemplate(2);
+            PCEController[0] = new PCEControllerTemplate(1);
+            PCEController[1] = new PCEControllerTemplate(2);
+            PCEController[2] = new PCEControllerTemplate(3);
+            PCEController[3] = new PCEControllerTemplate(4);
+            PCEController[4] = new PCEControllerTemplate(5);
         }
 
         // General Client Settings
@@ -80,14 +85,7 @@
         public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
         // PCEngine Settings
-        public string PCEUp = "J1 Up, UpArrow";
-        public string PCEDown = "J1 Down, DownArrow";
-        public string PCELeft = "J1 Left, LeftArrow";
-        public string PCERight = "J1 Right, RightArrow";
-        public string PCEBII = "J1 B1, Z";
-        public string PCEBI = "J1 B2, X";
-        public string PCESelect = "J1 B9, Space";
-        public string PCERun = "J1 B10, Return";
+        public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
 
         // Genesis Settings
         public string GenP1Up = "J1 Up, UpArrow";
@@ -115,6 +113,28 @@
             Right = string.Format("J{0} Right", i);
             B1 = string.Format("J{0} B1", i);
             B2 = string.Format("J{0} B2", i);
+        }
+    }
+    public class PCEControllerTemplate
+    {
+        public string Up;
+        public string Down;
+        public string Left;
+        public string Right;
+        public string I;
+        public string II;
+        public string Run;
+        public string Select;
+        public PCEControllerTemplate(int i)
+        {
+            Up = string.Format("J{0} Up", i);
+            Down = string.Format("J{0} Down", i);
+            Left = string.Format("J{0} Left", i);
+            Right = string.Format("J{0} Right", i);
+            I = string.Format("J{0} I", i);
+            II = string.Format("J{0} II", i);
+            Run = string.Format("J{0} Run", i);
+            Select = string.Format("J{0} Select", i);
         }
     }
 
