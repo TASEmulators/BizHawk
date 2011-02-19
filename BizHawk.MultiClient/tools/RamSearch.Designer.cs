@@ -120,7 +120,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(156, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(154, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -365,7 +365,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(104, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -406,6 +406,7 @@
             this.UndotoolStripButton.Name = "UndotoolStripButton";
             this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
             this.UndotoolStripButton.Text = "Undo Search";
+            this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click);
             // 
             // toolStrip2
             // 
@@ -416,7 +417,7 @@
             this.EndiantoolSplitButton});
             this.toolStrip2.Location = new System.Drawing.Point(3, 50);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(208, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(206, 25);
             this.toolStrip2.TabIndex = 2;
             // 
             // DataSizetoolStripSplitButton1

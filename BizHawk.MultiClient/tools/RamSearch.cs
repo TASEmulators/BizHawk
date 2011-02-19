@@ -296,6 +296,7 @@ namespace BizHawk.MultiClient
             ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
             if (indexes.Count > 0)
             {
+                SaveUndo();
                 for (int x = 0; x < indexes.Count; x++)
                 {
                     searchList.Remove(searchList[indexes[x]-x]);
@@ -307,6 +308,34 @@ namespace BizHawk.MultiClient
         private void cutToolStripButton_Click(object sender, EventArgs e)
         {
             RemoveAddresses();
+        }
+
+        /// <summary>
+        /// Saves the current search list to the undo list
+        /// This function should be called before any destructive operation to the list!
+        /// </summary>
+        private void SaveUndo()
+        {
+            undoList.Clear();
+            for (int x = 0; x < searchList.Count; x++)
+                undoList.Add(searchList[x]);
+        }
+
+        private void DoUndo()
+        {
+            if (undoList.Count > 0)
+            {
+                searchList.Clear();
+                for (int x = 0; x < undoList.Count; x++)
+                    searchList.Add(undoList[x]);
+                undoList.Clear();
+                DisplaySearchList();
+            }
+        }
+
+        private void UndotoolStripButton_Click(object sender, EventArgs e)
+        {
+            DoUndo();
         }
     }
 }
