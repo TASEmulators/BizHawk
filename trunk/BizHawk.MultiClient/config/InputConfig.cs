@@ -17,11 +17,15 @@ namespace BizHawk.MultiClient
         public static string[] GenesisList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
         private ArrayList Labels;
         private ArrayList TextBoxes;
+        private string CurSelectConsole;
+        private int CurSelectController;
+        private bool Changed;
         public InputConfig()
         {
             InitializeComponent();
             Labels = new ArrayList();
             TextBoxes = new ArrayList();
+            Changed = false;
         }
 
         private string TruncateButtonMapping(string button)
@@ -58,9 +62,10 @@ namespace BizHawk.MultiClient
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.SMSController[jpad].B2);
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.SmsPause);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.SmsReset);
-
+            Changed = true;
 
             Labels.Clear();
+            TextBoxes.Clear();
             for (int i = 0; i < SMSList.Length; i++)
             {
                 TempLabel = new Label();
@@ -73,6 +78,41 @@ namespace BizHawk.MultiClient
                 TempTextBox.Text = ButtonMappings[i];
                 ButtonsGroupBox.Controls.Add(TempTextBox);
                 ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
+        }
+        private void UpdateSMS(int prev)
+        {
+            InputWidget TempBox;
+            Label TempLabel;
+            TempBox = TextBoxes[0] as InputWidget;            
+            Global.Config.SMSController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Up);
+            TempBox.Dispose();
+            TempBox = TextBoxes[1] as InputWidget;
+            Global.Config.SMSController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Down);
+            TempBox.Dispose();
+            TempBox = TextBoxes[2] as InputWidget;
+            Global.Config.SMSController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Left);
+            TempBox.Dispose();
+            TempBox = TextBoxes[3] as InputWidget;
+            Global.Config.SMSController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Right);
+            TempBox.Dispose();
+            TempBox = TextBoxes[4] as InputWidget;
+            Global.Config.SMSController[prev].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B1);
+            TempBox.Dispose();
+            TempBox = TextBoxes[5] as InputWidget;
+            Global.Config.SMSController[prev].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B2);
+            TempBox.Dispose();
+            TempBox = TextBoxes[6] as InputWidget;
+            Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
+            TempBox.Dispose();
+            TempBox = TextBoxes[7] as InputWidget;
+            Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+            TempBox.Dispose();
+            for (int i = 0; i < 8; i++)
+            {
+                TempLabel = Labels[i] as Label;
+                TempLabel.Dispose();
             }
         }
         private void DoPCE()
@@ -155,6 +195,28 @@ namespace BizHawk.MultiClient
 
         private void SystemComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (Changed)
+            {
+                switch (CurSelectConsole)
+                {
+                    case "SMS / GG / SG-1000":
+                        UpdateSMS(CurSelectController);
+                        break;
+                    case "PC Engine / SGX":
+                        //UpdatePCE(CurSelectController);
+                        break;
+                    case "Gameboy":
+                        //UpdateGB();
+                        break;
+                    case "Sega Genesis":
+                       //UpdateGenesis();
+                        break;
+                    case "TI-83":
+                        //Update TI-83();
+                        break;
+                }
+                Changed = false;
+            }
             int joypads = 0;
             switch (this.SystemComboBox.SelectedItem.ToString())
             {
@@ -179,10 +241,34 @@ namespace BizHawk.MultiClient
             {
                 ControllComboBox.Items.Add(string.Format("Joypad {0}", i + 1));
             }
-            ControllComboBox.SelectedIndex = 0;
+            ControllComboBox.SelectedIndex = 0;            
+            CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
+            CurSelectController = 0;
         }
         private void ControllComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {           
+        {
+            if (Changed)
+            {
+                switch (CurSelectConsole)
+                {
+                    case "SMS / GG / SG-1000":
+                        UpdateSMS(CurSelectController);
+                        break;
+                    case "PC Engine / SGX":
+                        //UpdatePCE(CurSelectController);
+                        break;
+                    case "Gameboy":
+                        //UpdateGB();
+                        break;
+                    case "Sega Genesis":
+                        //UpdateGenesis();
+                        break;
+                    case "TI-83":
+                        //Update TI-83();
+                        break;
+                }
+                Changed = false;
+              }
                 switch (SystemComboBox.SelectedItem.ToString())
                 {
                     case "SMS / GG / SG-1000":
@@ -201,6 +287,7 @@ namespace BizHawk.MultiClient
                         DoTI83();
                         break;
                 }
+                CurSelectController = ControllComboBox.SelectedIndex;
             }
         }
     }
