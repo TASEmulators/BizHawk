@@ -24,6 +24,10 @@ namespace BizHawk.MultiClient
         //When Watch object has a changes member, display in watch list with a reset changes function
         //Ability to watch in different memory domains
 
+        //IDEAS:
+        //show a change count column?
+        //Take advantage of the prev member to show amount changes from prev in a column?
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();

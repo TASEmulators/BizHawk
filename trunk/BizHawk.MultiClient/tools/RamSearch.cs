@@ -249,6 +249,8 @@ namespace BizHawk.MultiClient
                 ListViewItem item = new ListViewItem(String.Format("{0:X}", searchList[x].address));
                 //TODO: if asigned.HeX, switch based on searchList.type
                 item.SubItems.Add(string.Format("{0:X2}", searchList[x].value));
+                item.SubItems.Add(string.Format("{0:X2}", searchList[x].value)); //TODO: implement prev
+                item.SubItems.Add(searchList[x].changecount.ToString());
                 SearchListView.Items.Add(item);
             }
             SetTotal();
