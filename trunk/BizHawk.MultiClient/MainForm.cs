@@ -1255,5 +1255,11 @@ namespace BizHawk.MultiClient
         {
             Global.Config.StartPaused ^= true;
         }
+
+        private void luaConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BizHawk.MultiClient.tools.LuaWindow l = new BizHawk.MultiClient.tools.LuaWindow();
+            l.Show();
+        }
     }
 }
