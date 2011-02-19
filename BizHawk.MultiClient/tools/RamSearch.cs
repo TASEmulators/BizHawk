@@ -21,6 +21,8 @@ namespace BizHawk.MultiClient
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
 
+        int hackyPCEStartAddress = 0x1F0000;
+        
         List<Watch> searchList = new List<Watch>();
 
         public RamSearch()
@@ -203,9 +205,13 @@ namespace BizHawk.MultiClient
 
         private void StartNewSearch()
         {
+            int startaddress = 0;
+            if (Global.Emulator.SystemId == "PCE")
+                startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
             for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
             {
                 searchList.Add(new Watch());
+                searchList[x].address = x + startaddress;
                 searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
             }
             DisplaySearchList();
@@ -226,7 +232,6 @@ namespace BizHawk.MultiClient
         private void newSearchToolStripMenuItem_Click(object sender, EventArgs e)
         {
             StartNewSearch();
-            
         }
     }
 }

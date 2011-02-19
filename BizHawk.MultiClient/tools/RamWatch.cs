@@ -21,6 +21,8 @@ namespace BizHawk.MultiClient
         //DWORD display
         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
+        //When Watch object has a changes member, display in watch list with a reset changes function
+        //Ability to watch in different memory domains
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
