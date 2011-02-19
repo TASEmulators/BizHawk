@@ -33,13 +33,19 @@ namespace BizHawk.MultiClient
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = this.Size.Height;
 
-            SetTotal();
-
-            for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
+            if (Global.Emulator.MainMemory.Endian == Endian.Big)
             {
-
+                bigEndianToolStripMenuItem.Checked = true;
+                littleEndianToolStripMenuItem.Checked = false;
             }
-
+            else
+            {
+                bigEndianToolStripMenuItem.Checked = false;
+                littleEndianToolStripMenuItem.Checked = true;
+            }
+            SetTotal();
+            StartNewSearch();
+            
             if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
                 this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
 
@@ -188,6 +194,39 @@ namespace BizHawk.MultiClient
         private void restoreOriginalWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+        }
+
+        private void NewSearchtoolStripButton_Click(object sender, EventArgs e)
+        {
+            StartNewSearch();
+        }
+
+        private void StartNewSearch()
+        {
+            for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
+            {
+                searchList.Add(new Watch());
+                searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
+            }
+            DisplaySearchList();
+        }
+
+        private void DisplaySearchList()
+        {
+            SearchListView.Items.Clear();
+            for (int x = 0; x < searchList.Count; x++)
+            {
+                ListViewItem item = new ListViewItem(String.Format("{0:X}", searchList[x].address));
+                //TODO: if asigned.HeX, switch based on searchList.type
+                item.SubItems.Add(string.Format("{0:X2}", searchList[x].value));
+                SearchListView.Items.Add(item);
+            }
+        }
+
+        private void newSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartNewSearch();
+            
         }
     }
 }
