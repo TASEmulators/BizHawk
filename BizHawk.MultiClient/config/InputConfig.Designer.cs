@@ -113,8 +113,7 @@
 			// ControllComboBox
 			// 
 			this.ControllComboBox.FormattingEnabled = true;
-			this.ControllComboBox.Items.AddRange(new object[] {
-            "Joypad 1"});            
+            this.ControllComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.ControllComboBox.Location = new System.Drawing.Point(6, 19);
 			this.ControllComboBox.Name = "ControllComboBox";
 			this.ControllComboBox.Size = new System.Drawing.Size(110, 21);
@@ -133,7 +132,7 @@
 			// 
 			// SystemGroupBox
 			// 
-			this.SystemGroupBox.Controls.Add(this.SystemComboBox);
+			this.SystemGroupBox.Controls.Add(this.SystemComboBox);            
 			this.SystemGroupBox.Location = new System.Drawing.Point(258, 12);
 			this.SystemGroupBox.Name = "SystemGroupBox";
 			this.SystemGroupBox.Size = new System.Drawing.Size(158, 50);
@@ -144,6 +143,7 @@
 			// SystemComboBox
 			// 
 			this.SystemComboBox.FormattingEnabled = true;
+            this.SystemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.SystemComboBox.Items.AddRange(new object[] {
             "SMS / GG / SG-1000",
             "PC Engine / SGX",
