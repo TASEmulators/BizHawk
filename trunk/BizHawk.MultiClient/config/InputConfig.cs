@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -12,81 +13,68 @@ namespace BizHawk.MultiClient
     public partial class InputConfig : Form
     {
         const string ControllerStr = "Configure Controllers - ";
+        public static string[] SMSList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
+        public static string[] GenesisList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
+        private ArrayList Labels;
+        private ArrayList TextBoxes;
         public InputConfig()
         {
             InitializeComponent();
+            Labels = new ArrayList();
+            TextBoxes = new ArrayList();
         }
 
         private string TruncateButtonMapping(string button)
         {
             //all config button mappings have the name followed by a comma & space, then key mapping, remove up through the space
-            int x = button.LastIndexOf(',') + 2;
-            return button.Substring(x, button.Length - x);
+            int x = button.LastIndexOf(',');
+            if (x != -1)
+                return button.Substring(x + 2, button.Length - (x + 2));
+            else
+                return "";
         }
-
+        private string AppendButtonMapping(string button, string oldmap)
+        {
+            int x = oldmap.LastIndexOf(',');
+            if (x != -1)
+                return oldmap.Substring(0, x + 2) + button;
+            else
+                return oldmap + ", " + button;
+        }
         private void DoSMS()
         {
+            Label TempLabel;
+            InputWidget TempTextBox;
             this.Text = ControllerStr + "SMS / GG / SG-1000";
             ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
-            SystemComboBox.SelectedIndex = 0;
+            this.SystemComboBox.SelectedIndex = 0;
+            int jpad = this.ControllComboBox.SelectedIndex;
+            string[] ButtonMappings = new string[SMSList.Length];
+            ButtonMappings[0] = TruncateButtonMapping(Global.Config.SMSController[jpad].Up);
+            ButtonMappings[1] = TruncateButtonMapping(Global.Config.SMSController[jpad].Down);
+            ButtonMappings[2] = TruncateButtonMapping(Global.Config.SMSController[jpad].Left);
+            ButtonMappings[3] = TruncateButtonMapping(Global.Config.SMSController[jpad].Right);
+            ButtonMappings[4] = TruncateButtonMapping(Global.Config.SMSController[jpad].B1);
+            ButtonMappings[5] = TruncateButtonMapping(Global.Config.SMSController[jpad].B2);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.SmsPause);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.SmsReset);
 
-            Label UpLabel = new Label();
-            UpLabel.Text = "Up";
-            UpLabel.Location = new Point(8, 20);
-            TextBox Up = new TextBox();
-            Up.Location = new Point(48, 20);
-            Up.Text = TruncateButtonMapping(Global.Config.SmsP1Up);
 
-
-            Label DownLabel = new Label();
-            DownLabel.Text = "Down";
-            DownLabel.Location = new Point(8, 44);
-            TextBox Down = new TextBox();
-            Down.Location = new Point(48, 44);
-            Down.Text = TruncateButtonMapping(Global.Config.SmsP1Down);
-
-            Label LeftLabel = new Label();
-            LeftLabel.Text = "Left";
-            LeftLabel.Location = new Point(8, 68);
-            TextBox Left = new TextBox();
-            Left.Location = new Point(48, 68);
-            Left.Text = TruncateButtonMapping(Global.Config.SmsP1Left);
-
-            Label RightLabel = new Label();
-            RightLabel.Text = "Right";
-            RightLabel.Location = new Point(8, 92);
-            TextBox Right = new TextBox();
-            Right.Location = new Point(48, 92);
-            Right.Text = TruncateButtonMapping(Global.Config.SmsP1Right);
-
-            Label IButtonLabel = new Label();
-            IButtonLabel.Text = "I";
-            IButtonLabel.Location = new Point(8, 140);
-            TextBox IButton = new TextBox();
-            IButton.Location = new Point(48, 140);
-            IButton.Text = TruncateButtonMapping(Global.Config.SmsP1B1);
-
-            Label IIButtonLabel = new Label();
-            IIButtonLabel.Text = "II";
-            IIButtonLabel.Location = new Point(8, 164);
-            TextBox IIButton = new TextBox();
-            IIButton.Location = new Point(48, 164);
-            IIButton.Text = TruncateButtonMapping(Global.Config.SmsP1B2);
-
-            ButtonsGroupBox.Controls.Add(Up);
-            ButtonsGroupBox.Controls.Add(UpLabel);
-            ButtonsGroupBox.Controls.Add(Down);
-            ButtonsGroupBox.Controls.Add(DownLabel);
-            ButtonsGroupBox.Controls.Add(Left);
-            ButtonsGroupBox.Controls.Add(LeftLabel);
-            ButtonsGroupBox.Controls.Add(Right);
-            ButtonsGroupBox.Controls.Add(RightLabel);
-            ButtonsGroupBox.Controls.Add(IButton);
-            ButtonsGroupBox.Controls.Add(IButtonLabel);
-            ButtonsGroupBox.Controls.Add(IIButton);
-            ButtonsGroupBox.Controls.Add(IIButtonLabel);
+            Labels.Clear();
+            for (int i = 0; i < SMSList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = SMSList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
         }
-
         private void DoPCE()
         {
             this.Text = ControllerStr + "PCEjin / SGX";
@@ -111,9 +99,10 @@ namespace BizHawk.MultiClient
         }
 
         private void InputConfig_Load(object sender, EventArgs e)
-        {
-            //Determine the System currently loaded, and set that one up first, if null emulator set, what is the default?
-            ControllComboBox.SelectedIndex = 0;
+        {            
+            //SystemComboBox = new ComboBox();            
+            //Determine the System currently loaded, and set that one up first, if null emulator set, what is the default?            
+            /*
             if (!(Global.Emulator is NullEmulator))
             {
                 switch (Global.Game.System)
@@ -121,28 +110,37 @@ namespace BizHawk.MultiClient
                     case "SMS":
                     case "SG":
                     case "GG":
-                        DoSMS();
+                        joypads = 2;
                         break;
                     case "PCE":
                     case "SGX":
-                        DoPCE();
+                        joypads = 5;
                         break;
                     case "GEN":
-                        DoGen();
+                        joypads = 8;
                         break;
                     case "TI83":
-                        DoTI83();
+                        joypads = 1;
                         break;
                     case "GB":
-                        DoGameBoy();
+                        joypads = 1;
                         break;
                     default:
-                        DoSMS();
+                        joypads = 2;
                         break;
                 }
             }
             else
-                DoSMS();
+            {
+                joypads = 2;
+            }
+
+            ControllComboBox.Items.Clear();
+            for (int i = 0; i < joypads; i++)
+            {
+                ControllComboBox.Items.Add(string.Format("Joypad {0}", i + 1));
+            }
+            ControllComboBox.SelectedIndex = 0;*/
         }
 
         private void OK_Click(object sender, EventArgs e)
@@ -157,24 +155,53 @@ namespace BizHawk.MultiClient
 
         private void SystemComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            switch (SystemComboBox.SelectedItem.ToString())
+            int joypads = 0;
+            switch (this.SystemComboBox.SelectedItem.ToString())
             {
                 case "SMS / GG / SG-1000":
-                    DoSMS();
+                    joypads = 2;
                     break;
                 case "PC Engine / SGX":
-                    DoPCE();
+                    joypads = 5;
                     break;
                 case "Gameboy":
-                    DoGameBoy();
+                    joypads = 1;
                     break;
                 case "Sega Genesis":
-                    DoGen();
+                    joypads = 8;
                     break;
                 case "TI-83":
-                    DoTI83();
-                    break;
+                    joypads = 1;
+                    break;                    
+            }
+            ControllComboBox.Items.Clear();
+            for (int i = 0; i < joypads; i++)
+            {
+                ControllComboBox.Items.Add(string.Format("Joypad {0}", i + 1));
+            }
+            ControllComboBox.SelectedIndex = 0;
+        }
+        private void ControllComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {           
+                switch (SystemComboBox.SelectedItem.ToString())
+                {
+                    case "SMS / GG / SG-1000":
+                        DoSMS();
+                        break;
+                    case "PC Engine / SGX":
+                        DoPCE();
+                        break;
+                    case "Gameboy":
+                        DoGameBoy();
+                        break;
+                    case "Sega Genesis":
+                        DoGen();
+                        break;
+                    case "TI-83":
+                        DoTI83();
+                        break;
+                }
             }
         }
     }
-}
+

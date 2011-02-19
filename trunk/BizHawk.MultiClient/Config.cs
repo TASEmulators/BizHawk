@@ -1,7 +1,13 @@
 ﻿namespace BizHawk.MultiClient
-{
+{    
     public class Config
     {
+        public Config()
+        {
+            SMSController[0] = new SMSControllerTemplate(1);
+            SMSController[1] = new SMSControllerTemplate(2);
+        }
+
         // General Client Settings
         public int TargetZoomFactor = 2;
         public string LastRomPath = ".";
@@ -63,24 +69,15 @@
         public string SelectSlot8 = "8";
         public string SelectSlot9 = "9";
 
+        
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
         public bool SmsAllowOverlock = false;
         public bool SmsForceStereoSeparation = false;
-        public string SmsReset = "Tab";
+
+        public string SmsReset = "Reset, Tab";
         public string SmsPause = "J1 B10, Space";
-        public string SmsP1Up = "J1 Up, UpArrow";
-        public string SmsP1Left = "J1 Left, LeftArrow";
-        public string SmsP1Right = "J1 Right, RightArrow";
-        public string SmsP1Down = "J1 Down, DownArrow";
-        public string SmsP1B1 = "J1 B1, Z";
-        public string SmsP1B2 = "J1 B2, X";
-        public string SmsP2Up = "J2 Up";
-        public string SmsP2Left = "J2 Left";
-        public string SmsP2Right = "J2 Right";
-        public string SmsP2Down = "J2 Down";
-        public string SmsP2B1 = "J2 B1";
-        public string SmsP2B2 = "J2 B2";
+        public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
         // PCEngine Settings
         public string PCEUp = "J1 Up, UpArrow";
@@ -100,6 +97,25 @@
         public string GenP1A = "J1 B1, Z";
         public string GenP1B = "J1 B2, X";
         public string GenP1C = "J1 B9, C";
-        public string GenP1Start = "J1 B10, Return";
+        public string GenP1Start = "J1 B10, Return"; 
     }
+    public class SMSControllerTemplate
+    {
+        public string Up;
+        public string Down;
+        public string Left;
+        public string Right;
+        public string B1;
+        public string B2;
+        public SMSControllerTemplate(int i)
+        {
+            Up = string.Format("J{0} Up", i);
+            Down = string.Format("J{0} Down", i);
+            Left = string.Format("J{0} Left", i);
+            Right = string.Format("J{0} Right", i);
+            B1 = string.Format("J{0} B1", i);
+            B2 = string.Format("J{0} B2", i);
+        }
+    }
+
 }

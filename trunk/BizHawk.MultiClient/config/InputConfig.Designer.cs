@@ -114,13 +114,11 @@
 			// 
 			this.ControllComboBox.FormattingEnabled = true;
 			this.ControllComboBox.Items.AddRange(new object[] {
-            "Joypad 1",
-            "Joypad 2",
-            "Joypad 3",
-            "Joypad 4"});
+            "Joypad 1"});            
 			this.ControllComboBox.Location = new System.Drawing.Point(6, 19);
 			this.ControllComboBox.Name = "ControllComboBox";
 			this.ControllComboBox.Size = new System.Drawing.Size(110, 21);
+            this.ControllComboBox.SelectedIndexChanged += new System.EventHandler(ControllComboBox_SelectedIndexChanged);
 			this.ControllComboBox.TabIndex = 0;
 			// 
 			// AllowLR

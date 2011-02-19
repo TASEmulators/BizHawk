@@ -184,20 +184,15 @@ namespace BizHawk.MultiClient
             var smsControls = new Controller(SMS.SmsController);
             smsControls.BindMulti("Reset", Global.Config.SmsReset);
             smsControls.BindMulti("Pause", Global.Config.SmsPause);
-
-            smsControls.BindMulti("P1 Up", Global.Config.SmsP1Up);
-            smsControls.BindMulti("P1 Left", Global.Config.SmsP1Left);
-            smsControls.BindMulti("P1 Right", Global.Config.SmsP1Right);
-            smsControls.BindMulti("P1 Down", Global.Config.SmsP1Down);
-            smsControls.BindMulti("P1 B1", Global.Config.SmsP1B1);
-            smsControls.BindMulti("P1 B2", Global.Config.SmsP1B2);
-
-            smsControls.BindMulti("P2 Up", Global.Config.SmsP2Up);
-            smsControls.BindMulti("P2 Left", Global.Config.SmsP2Left);
-            smsControls.BindMulti("P2 Right", Global.Config.SmsP2Right);
-            smsControls.BindMulti("P2 Down", Global.Config.SmsP2Down);
-            smsControls.BindMulti("P2 B1", Global.Config.SmsP2B1);
-            smsControls.BindMulti("P2 B2", Global.Config.SmsP2B2);
+            for (int i = 0; i < 2; i++)
+            {
+                smsControls.BindMulti(string.Format("P{0} Up",i+1), Global.Config.SMSController[i].Up);
+                smsControls.BindMulti(string.Format("P{0} Left", i + 1), Global.Config.SMSController[i].Left);
+                smsControls.BindMulti(string.Format("P{0} Right", i + 1), Global.Config.SMSController[i].Right);
+                smsControls.BindMulti(string.Format("P{0} Down", i + 1), Global.Config.SMSController[i].Down);
+                smsControls.BindMulti(string.Format("P{0} B1", i + 1), Global.Config.SMSController[i].B1);
+                smsControls.BindMulti(string.Format("P{0} B2", i + 1), Global.Config.SMSController[i].B2);
+            }
             Global.SMSControls = smsControls;
 
             var pceControls = new Controller(PCEngine.PCEngineController);
