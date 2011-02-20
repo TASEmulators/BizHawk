@@ -224,6 +224,38 @@ namespace BizHawk.MultiClient
             StartNewSearch();
         }
 
+        private asigned GetDataType()
+        {
+            if (unsignedToolStripMenuItem.Checked)
+                return asigned.UNSIGNED;
+            if (signedToolStripMenuItem.Checked)
+                return asigned.SIGNED;
+            if (hexadecimalToolStripMenuItem.Checked)
+                return asigned.HEX;
+
+            return asigned.UNSIGNED;    //Just in case
+        }
+
+        private atype GetDataSize()
+        {
+            if (byteToolStripMenuItem.Checked)
+                return atype.BYTE;
+            if (bytesToolStripMenuItem.Checked)
+                return atype.WORD;
+            if (dWordToolStripMenuItem1.Checked)
+                return atype.DWORD;
+
+            return atype.BYTE;
+        }
+
+        private bool GetBigEndian()
+        {
+            if (bigEndianToolStripMenuItem.Checked)
+                return true;
+            else
+                return false;
+        }
+
         private void StartNewSearch()
         {
             searchList.Clear();
@@ -342,11 +374,11 @@ namespace BizHawk.MultiClient
             }
             if (column == 1)
             {
-                if (unsignedToolStripMenuItem.Checked)
+                if (searchList[index].signed == asigned.UNSIGNED)
                     text = searchList[index].value.ToString();
-                else if (signedToolStripMenuItem.Checked)
+                else if (searchList[index].signed == asigned.SIGNED)
                     text = ((sbyte)searchList[index].value).ToString();
-                else if (hexadecimalToolStripMenuItem.Checked)
+                else if (searchList[index].signed == asigned.HEX)
                     text = searchList[index].value.ToString("X");
 
             }
@@ -726,6 +758,39 @@ namespace BizHawk.MultiClient
             {
                 AddToRamWatch();
             }
+        }
+
+        private void byteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byteToolStripMenuItem.Checked = true;
+            bytesToolStripMenuItem.Checked = false;
+            dWordToolStripMenuItem1.Checked = false;
+        }
+
+        private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byteToolStripMenuItem.Checked = false;
+            bytesToolStripMenuItem.Checked = true;
+            dWordToolStripMenuItem1.Checked = false;
+        }
+
+        private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            byteToolStripMenuItem.Checked = false;
+            bytesToolStripMenuItem.Checked = false;
+            dWordToolStripMenuItem1.Checked = true;
+        }
+
+        private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bigEndianToolStripMenuItem.Checked = true;
+            littleEndianToolStripMenuItem.Checked = false;
+        }
+
+        private void littleEndianToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bigEndianToolStripMenuItem.Checked = false;
+            littleEndianToolStripMenuItem.Checked = true;
         }
     }
 }

@@ -65,7 +65,7 @@
             this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bytesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.dWordToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -426,7 +426,7 @@
             this.EndiantoolSplitButton});
             this.toolStrip2.Location = new System.Drawing.Point(3, 50);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(206, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(208, 25);
             this.toolStrip2.TabIndex = 2;
             // 
             // DataSizetoolStripSplitButton1
@@ -435,8 +435,7 @@
             this.DataSizetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.byteToolStripMenuItem,
             this.bytesToolStripMenuItem,
-            this.bytesToolStripMenuItem1});
-            this.DataSizetoolStripSplitButton1.Enabled = false;
+            this.dWordToolStripMenuItem1});
             this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
             this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
@@ -450,18 +449,21 @@
             this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
             this.byteToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.byteToolStripMenuItem.Text = "1 Byte";
+            this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
             // 
             // bytesToolStripMenuItem
             // 
             this.bytesToolStripMenuItem.Name = "bytesToolStripMenuItem";
             this.bytesToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.bytesToolStripMenuItem.Text = "2 Bytes";
+            this.bytesToolStripMenuItem.Click += new System.EventHandler(this.bytesToolStripMenuItem_Click);
             // 
-            // bytesToolStripMenuItem1
+            // dWordToolStripMenuItem1
             // 
-            this.bytesToolStripMenuItem1.Name = "bytesToolStripMenuItem1";
-            this.bytesToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
-            this.bytesToolStripMenuItem1.Text = "4 Bytes";
+            this.dWordToolStripMenuItem1.Name = "dWordToolStripMenuItem1";
+            this.dWordToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
+            this.dWordToolStripMenuItem1.Text = "4 Bytes";
+            this.dWordToolStripMenuItem1.Click += new System.EventHandler(this.dWordToolStripMenuItem1_Click);
             // 
             // DataTypetoolStripSplitButton1
             // 
@@ -508,7 +510,7 @@
             this.EndiantoolSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("EndiantoolSplitButton.Image")));
             this.EndiantoolSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.EndiantoolSplitButton.Name = "EndiantoolSplitButton";
-            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 22);
+            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 17);
             this.EndiantoolSplitButton.Text = "Endian";
             // 
             // bigEndianToolStripMenuItem
@@ -516,14 +518,16 @@
             this.bigEndianToolStripMenuItem.Checked = true;
             this.bigEndianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bigEndianToolStripMenuItem.Name = "bigEndianToolStripMenuItem";
-            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bigEndianToolStripMenuItem.Text = "Big Endian";
+            this.bigEndianToolStripMenuItem.Click += new System.EventHandler(this.bigEndianToolStripMenuItem_Click);
             // 
             // littleEndianToolStripMenuItem
             // 
             this.littleEndianToolStripMenuItem.Name = "littleEndianToolStripMenuItem";
-            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.littleEndianToolStripMenuItem.Text = "Little Endian";
+            this.littleEndianToolStripMenuItem.Click += new System.EventHandler(this.littleEndianToolStripMenuItem_Click);
             // 
             // CompareToBox
             // 
@@ -843,7 +847,7 @@
         private System.Windows.Forms.ToolStripSplitButton DataSizetoolStripSplitButton1;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bytesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem bytesToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem dWordToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSplitButton DataTypetoolStripSplitButton1;
         private System.Windows.Forms.ToolStripMenuItem signedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unsignedToolStripMenuItem;
