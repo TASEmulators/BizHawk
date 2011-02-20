@@ -64,7 +64,7 @@ namespace BizHawk.MultiClient
             base.OnLostFocus(e);
             BackColor = SystemColors.Window;
         }
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+      /*  protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Tab)
             {
@@ -77,7 +77,7 @@ namespace BizHawk.MultiClient
             else
                 base.ProcessCmdKey(ref msg, keyData);
             return true;                
-        }
+        }*/
     }
 	public class KeyboardBinding : IBinding
 	{

@@ -4,13 +4,13 @@
     {
         public Config()
         {
-            SMSController[0] = new SMSControllerTemplate(1);
-            SMSController[1] = new SMSControllerTemplate(2);
-            PCEController[0] = new PCEControllerTemplate(1);
-            PCEController[1] = new PCEControllerTemplate(2);
-            PCEController[2] = new PCEControllerTemplate(3);
-            PCEController[3] = new PCEControllerTemplate(4);
-            PCEController[4] = new PCEControllerTemplate(5);
+            SMSController[0] = new SMSControllerTemplate(1, true);
+            SMSController[1] = new SMSControllerTemplate(2, false);
+            PCEController[0] = new PCEControllerTemplate(1,true);
+            PCEController[1] = new PCEControllerTemplate(2,false);
+            PCEController[2] = new PCEControllerTemplate(3,false);
+            PCEController[3] = new PCEControllerTemplate(4,false);
+            PCEController[4] = new PCEControllerTemplate(5,false);
         }
 
         // General Client Settings
@@ -133,14 +133,26 @@
         public string Right;
         public string B1;
         public string B2;
-        public SMSControllerTemplate(int i)
+        public SMSControllerTemplate(int i, bool defaults)
         {
-            Up = string.Format("J{0} Up", i);
-            Down = string.Format("J{0} Down", i);
-            Left = string.Format("J{0} Left", i);
-            Right = string.Format("J{0} Right", i);
-            B1 = string.Format("J{0} B1", i);
-            B2 = string.Format("J{0} B2", i);
+            if (!defaults)
+            {
+                Up = string.Format("J{0} Up", i);
+                Down = string.Format("J{0} Down", i);
+                Left = string.Format("J{0} Left", i);
+                Right = string.Format("J{0} Right", i);
+                B1 = string.Format("J{0} B1", i);
+                B2 = string.Format("J{0} B2", i);
+            }
+            else
+            {
+                Up = string.Format("J{0} Up, UpArrow", i);
+                Down = string.Format("J{0} Down, DownArrow", i);
+                Left = string.Format("J{0} Left, LeftArrow", i);
+                Right = string.Format("J{0} Right, RightArrow", i);
+                B1 = string.Format("J{0} B1, Z", i);
+                B2 = string.Format("J{0} B2, X", i);
+            }
         }
     }
     public class PCEControllerTemplate
@@ -153,16 +165,30 @@
         public string II;
         public string Run;
         public string Select;
-        public PCEControllerTemplate(int i)
+        public PCEControllerTemplate(int i, bool defaults)
         {
-            Up = string.Format("J{0} Up", i);
-            Down = string.Format("J{0} Down", i);
-            Left = string.Format("J{0} Left", i);
-            Right = string.Format("J{0} Right", i);
-            I = string.Format("J{0} I", i);
-            II = string.Format("J{0} II", i);
-            Run = string.Format("J{0} Run", i);
-            Select = string.Format("J{0} Select", i);
+            if (!defaults)
+            {
+                Up = string.Format("J{0} Up", i);
+                Down = string.Format("J{0} Down", i);
+                Left = string.Format("J{0} Left", i);
+                Right = string.Format("J{0} Right", i);
+                I = string.Format("J{0} I", i);
+                II = string.Format("J{0} II", i);
+                Run = string.Format("J{0} Run", i);
+                Select = string.Format("J{0} Select", i);
+            }
+            else
+            {
+                Up = string.Format("J{0} Up, UpArrow", i);
+                Down = string.Format("J{0} Down, DownArrow", i);
+                Left = string.Format("J{0} Left, LeftArrow", i);
+                Right = string.Format("J{0} Right, RightArrow", i);
+                I = string.Format("J{0} I, Z", i);
+                II = string.Format("J{0} II, X", i);
+                Run = string.Format("J{0} Run, C", i);
+                Select = string.Format("J{0} Select, V", i);
+            }
         }
     }
     public class NESControllerTemplate
