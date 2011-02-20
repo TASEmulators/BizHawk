@@ -25,7 +25,9 @@ namespace BizHawk.MultiClient
             }
 
             try {
-                Application.Run(new MainForm(args));
+				var mf = new MainForm(args);
+				mf.Show();
+				mf.ProgramRunLoop();
             } catch (Exception e) {
                 MessageBox.Show(e.ToString(), "Oh, no, a terrible thing happened!");
             } finally {

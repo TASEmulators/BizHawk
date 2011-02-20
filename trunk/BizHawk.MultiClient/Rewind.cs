@@ -159,10 +159,6 @@ namespace BizHawk.MultiClient
                 else
                     RewindLarge();
             }
-
-            DoFrameAdvance();
-            Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
-            Render();
         }
 
         public void ResetRewindBuffer()

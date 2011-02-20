@@ -46,6 +46,9 @@ namespace BizHawk.MultiClient
             if (disposed) throw new ObjectDisposedException("Sound");
             if (SoundEnabled == false) return;
 
+			if ((DSoundBuffer.Status & BufferStatus.Playing) != 0)
+				return;
+
             DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
 
             DSoundBuffer.CurrentPlayPosition = 0;
@@ -54,6 +57,8 @@ namespace BizHawk.MultiClient
 
         public void StopSound()
         {
+			if ((DSoundBuffer.Status & BufferStatus.Playing) ==0)
+				return;
             for (int i = 0; i < SoundBuffer.Length; i++)
                 SoundBuffer[i] = 0;
             DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
