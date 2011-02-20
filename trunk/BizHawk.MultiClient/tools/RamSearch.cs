@@ -336,8 +336,7 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index % 2 == 0) color = Color.White; else color = Color.Pink;
-
+            //TODO: make background pink on items that would be removed if search button were clicked
 		}
 
 		private void SearchListView_QueryItemText(int index, int column, out string text)
