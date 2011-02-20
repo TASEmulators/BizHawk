@@ -14,6 +14,12 @@ namespace BizHawk.MultiClient.tools
         public HotkeyWindow()
         {
             InitializeComponent();
+            IDW_FRAMEADVANCE.Text = Global.Config.FrameAdvanceBinding;
+            IDW_PAUSE.Text = Global.Config.EmulatorPauseBinding;
+            IDW_HARDRESET.Text = Global.Config.HardResetBinding;
+            IDW_REWIND.Text = Global.Config.RewindBinding;
+            IDW_FASTFORWARD.Text = Global.Config.FastForwardBinding;
+
             IDW_QuickSave.Text = Global.Config.QuickSave;
             IDW_QuickLoad.Text = Global.Config.QuickLoad;
             //Save States
@@ -58,6 +64,13 @@ namespace BizHawk.MultiClient.tools
 
         private void IDB_SAVE_Click(object sender, EventArgs e)
         {
+
+            Global.Config.FastForwardBinding = IDW_FASTFORWARD.Text;
+            Global.Config.FrameAdvanceBinding = IDW_FRAMEADVANCE.Text;
+            Global.Config.HardResetBinding = IDW_HARDRESET.Text;
+            Global.Config.RewindBinding = IDW_REWIND.Text;
+            Global.Config.EmulatorPauseBinding = IDW_PAUSE.Text;
+
             Global.Config.QuickLoad = IDW_QuickLoad.Text;
             Global.Config.QuickSave = IDW_QuickSave.Text;
 
