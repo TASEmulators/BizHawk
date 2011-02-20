@@ -34,6 +34,11 @@ namespace BizHawk.MultiClient
         string currentWatchFile = "";
         bool changes = false;
 
+        public void DisplayWatchList()
+        {
+            WatchListView.ItemCount = watchList.Count;
+        }
+
         public void UpdateValues()
         {
             for (int x = 0; x < watchList.Count; x++)
@@ -62,20 +67,6 @@ namespace BizHawk.MultiClient
                         break;
                 }
                 WatchListView.Refresh();
-                /*
-                switch (watchList[x].signed)
-                {
-                    case asigned.HEX:
-                        WatchListView.Items[x].SubItems[1].Text = String.Format("{0:X}", watchList[x].value);
-                        break;
-                    case asigned.SIGNED:
-                        WatchListView.Items[x].SubItems[1].Text = ((sbyte)watchList[x].value).ToString();
-                        break;
-                    case asigned.UNSIGNED:
-                        WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
-                        break;
-                }
-                 */
             }          
         }
 
@@ -94,10 +85,53 @@ namespace BizHawk.MultiClient
 
         void WatchListView_QueryItemText(int index, int column, out string text)
         {
+            //TODO: separator background color
             text = "";
-            if (column == 0) text = watchList[index].address.ToString();
-            if (column == 1) text = watchList[index].value.ToString();
-            if (column == 2) text = watchList[index].notes;
+            if (column == 0)
+            {
+                if (watchList[index].type == atype.SEPARATOR)
+                    text = "";
+                else
+                    text = String.Format("{0:X}", watchList[index].address);
+            }
+            if (column == 1)
+            {
+                if (watchList[index].type == atype.SEPARATOR)
+                    text = "";
+                else
+                {
+                    switch (watchList[index].signed)
+                    {
+                        case asigned.HEX:
+                            switch (watchList[index].type)
+                            {
+                                case atype.BYTE:
+                                    text = String.Format("{0:X2}", watchList[index].value);
+                                    break;
+                                case atype.WORD:
+                                    text = String.Format("{0:X4}", watchList[index].value);
+                                    break;
+                                case atype.DWORD:
+                                    text = String.Format("{0:X8}", watchList[index].value);
+                                    break;
+                            }
+                            break;
+                        case asigned.SIGNED:
+                            text = ((sbyte)watchList[index].value).ToString();
+                            break;
+                        case asigned.UNSIGNED:
+                            text = watchList[index].value.ToString();
+                            break;
+                    }
+                }
+            }
+            if (column == 2)
+            {
+                if (watchList[index].type == atype.SEPARATOR)
+                    text = "";
+                else
+                    text = watchList[index].notes;
+            }
         }
 
         public int HowMany(string str, char c)
@@ -525,54 +559,6 @@ namespace BizHawk.MultiClient
         private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MoveDown();
-        }
-
-        public void DisplayWatchList()
-        {
-            WatchListView.ItemCount = watchList.Count;
-            /*
-            WatchListView.Items.Clear();
-            for (int x = 0; x < watchList.Count; x++)
-            {
-                if (watchList[x].type == atype.SEPARATOR)
-                {
-                    ListViewItem item = new ListViewItem("");
-                    item.SubItems.Add("");
-                    item.SubItems.Add("");
-                    item.BackColor = this.BackColor;
-                    WatchListView.Items.Add(item);
-                }
-                else
-                {
-                    ListViewItem item = new ListViewItem(String.Format("{0:X}", watchList[x].address));
-                    
-                    if (watchList[x].signed == asigned.HEX)
-                    {
-                        switch (watchList[x].type)
-                        {
-                            case atype.BYTE:
-                                item.SubItems.Add(string.Format("{0:X2}", watchList[x].value));
-                                break;
-                            case atype.WORD:
-                                item.SubItems.Add(string.Format("{0:X4}", watchList[x].value));
-                                break;
-                            case atype.DWORD:
-                                item.SubItems.Add(string.Format("{0:X8}", watchList[x].value));
-                                break;
-                            default:    //if not one of these, don't display hex
-                                item.SubItems.Add(watchList[x].value.ToString());   
-                                break;
-                        }
-                    }
-                    else
-                        item.SubItems.Add(watchList[x].value.ToString());
-                    
-                    item.SubItems.Add(watchList[x].notes);
-                    WatchListView.Items.Add(item);
-                } 
-            
-            }
-             */
         }
 
         private void RamWatch_Load(object sender, EventArgs e)
