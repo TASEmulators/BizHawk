@@ -28,7 +28,16 @@ namespace BizHawk.MultiClient
         public RamSearch()
         {
             InitializeComponent();
+			SearchListView.QueryItemText += new QueryItemTextHandler(SearchListView_QueryItemText);
+			SearchListView.VirtualMode = true;
         }
+
+		void SearchListView_QueryItemText(int item, int subItem, out string text)
+		{
+			text = "";
+			if (subItem == 1) text = searchList[item].value.ToString();
+			if (subItem == 3) text = searchList[item].changecount.ToString();
+		}
 
         public void UpdateValues()
         {
@@ -41,9 +50,7 @@ namespace BizHawk.MultiClient
                 
                 if (searchList[x].prev != searchList[x].value)
                     searchList[x].changecount++;
-                
-                SearchListView.Items[x].SubItems[1].Text = searchList[x].value.ToString();
-                SearchListView.Items[x].SubItems[3].Text = searchList[x].changecount.ToString();
+  
             }
         }
 
@@ -251,16 +258,7 @@ namespace BizHawk.MultiClient
 
         private void DisplaySearchList()
         {
-            SearchListView.Items.Clear();
-            for (int x = 0; x < searchList.Count; x++)
-            {
-                ListViewItem item = new ListViewItem(String.Format("{0:X}", searchList[x].address));
-                //TODO: if asigned.HeX, switch based on searchList.type
-                item.SubItems.Add(string.Format("{0:X2}", searchList[x].value));
-                item.SubItems.Add(string.Format("{0:X2}", searchList[x].value)); //TODO: implement prev
-                item.SubItems.Add(searchList[x].changecount.ToString());
-                SearchListView.Items.Add(item);
-            }
+			SearchListView.VirtualListSize = searchList.Count;
             SetTotal();
         }
 
