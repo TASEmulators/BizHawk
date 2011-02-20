@@ -61,7 +61,8 @@ namespace BizHawk.MultiClient
                     case atype.DWORD:
                         break;
                 }
-                
+                WatchListView.Refresh();
+                /*
                 switch (watchList[x].signed)
                 {
                     case asigned.HEX:
@@ -74,6 +75,7 @@ namespace BizHawk.MultiClient
                         WatchListView.Items[x].SubItems[1].Text = watchList[x].value.ToString();
                         break;
                 }
+                 */
             }          
         }
 
@@ -86,6 +88,16 @@ namespace BizHawk.MultiClient
         public RamWatch()
         {
             InitializeComponent();
+            WatchListView.QueryItemText += new QueryItemTextHandler(WatchListView_QueryItemText);
+            WatchListView.VirtualMode = true;
+        }
+
+        void WatchListView_QueryItemText(int index, int column, out string text)
+        {
+            text = "";
+            if (column == 0) text = watchList[index].address.ToString();
+            if (column == 1) text = watchList[index].value.ToString();
+            if (column == 2) text = watchList[index].notes;
         }
 
         public int HowMany(string str, char c)
@@ -277,7 +289,7 @@ namespace BizHawk.MultiClient
             if (r.userSelected == true)
             {
                 watchList.Add(r.watch);
-                DisplayWatchList();
+                DisplayWatchList(); //TODO: Do I need these calls?
             }
         }
 
@@ -517,6 +529,8 @@ namespace BizHawk.MultiClient
 
         public void DisplayWatchList()
         {
+            WatchListView.VirtualListSize = watchList.Count;
+            /*
             WatchListView.Items.Clear();
             for (int x = 0; x < watchList.Count; x++)
             {
@@ -556,7 +570,9 @@ namespace BizHawk.MultiClient
                     item.SubItems.Add(watchList[x].notes);
                     WatchListView.Items.Add(item);
                 } 
+            
             }
+             */
         }
 
         private void RamWatch_Load(object sender, EventArgs e)
@@ -878,6 +894,11 @@ namespace BizHawk.MultiClient
         private void RamWatch_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;string[] filePaths = (string[]) e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

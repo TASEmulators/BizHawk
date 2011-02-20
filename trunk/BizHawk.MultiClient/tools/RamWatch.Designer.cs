@@ -56,7 +56,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WatchListView = new System.Windows.Forms.ListView();
+            this.WatchListView = new VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Notes = new System.Windows.Forms.ColumnHeader();
@@ -327,6 +327,7 @@
             this.WatchListView.View = System.Windows.Forms.View.Details;
             this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
             this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
+            this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
             // 
             // Address
             // 
@@ -620,7 +621,7 @@
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ListView WatchListView;
+        VirtualListView WatchListView;
         private System.Windows.Forms.ToolStripMenuItem newWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeWatchToolStripMenuItem;
