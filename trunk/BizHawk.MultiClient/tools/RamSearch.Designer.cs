@@ -38,23 +38,17 @@
             this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.TotalSearchLabel = new System.Windows.Forms.Label();
-            this.SearchListView = new System.Windows.Forms.ListView();
+            this.SearchListView = new VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Previous = new System.Windows.Forms.ColumnHeader();
             this.Changes = new System.Windows.Forms.ColumnHeader();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hackyAutoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -94,8 +88,12 @@
             this.GreaterThanRadio = new System.Windows.Forms.RadioButton();
             this.LessThanRadio = new System.Windows.Forms.RadioButton();
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
-            this.MemDomainLabel = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hackyAutoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -104,7 +102,6 @@
             this.toolStrip2.SuspendLayout();
             this.CompareToBox.SuspendLayout();
             this.ComparisonBox.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
@@ -169,7 +166,6 @@
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.cutToolStripButton.Text = "C&ut";
             this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
-            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
             // WatchtoolStripButton1
             // 
@@ -178,7 +174,7 @@
             this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
             this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.WatchtoolStripButton1.Text = "Watch";
+            this.WatchtoolStripButton1.Text = "toolStripButton1";
             this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
             // 
             // PoketoolStripButton1
@@ -189,12 +185,11 @@
             this.PoketoolStripButton1.Name = "PoketoolStripButton1";
             this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.PoketoolStripButton1.Text = "Poke";
-            this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
             // 
             // TotalSearchLabel
             // 
             this.TotalSearchLabel.AutoSize = true;
-            this.TotalSearchLabel.Location = new System.Drawing.Point(116, 5);
+            this.TotalSearchLabel.Location = new System.Drawing.Point(13, 33);
             this.TotalSearchLabel.Name = "TotalSearchLabel";
             this.TotalSearchLabel.Size = new System.Drawing.Size(64, 13);
             this.TotalSearchLabel.TabIndex = 2;
@@ -203,8 +198,9 @@
             // SearchListView
             // 
             this.SearchListView.AllowColumnReorder = true;
-            this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -212,9 +208,9 @@
             this.Changes});
             this.SearchListView.GridLines = true;
             this.SearchListView.LabelEdit = true;
-            this.SearchListView.Location = new System.Drawing.Point(12, 58);
+            this.SearchListView.Location = new System.Drawing.Point(16, 58);
             this.SearchListView.Name = "SearchListView";
-            this.SearchListView.Size = new System.Drawing.Size(236, 391);
+            this.SearchListView.Size = new System.Drawing.Size(221, 391);
             this.SearchListView.TabIndex = 3;
             this.SearchListView.UseCompatibleStateImageBehavior = false;
             this.SearchListView.View = System.Windows.Forms.View.Details;
@@ -246,7 +242,7 @@
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(482, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(496, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -262,18 +258,6 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "&File";
-            // 
-            // newSearchToolStripMenuItem
-            // 
-            this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-            this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.newSearchToolStripMenuItem.Text = "&New Search";
-            this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.newSearchToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(201, 6);
             // 
             // openToolStripMenuItem
             // 
@@ -307,34 +291,6 @@
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.hackyAutoLoadToolStripMenuItem,
-            this.restoreOriginalWindowSizeToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.optionsToolStripMenuItem.Text = "&Options";
-            // 
-            // hackyAutoLoadToolStripMenuItem
-            // 
-            this.hackyAutoLoadToolStripMenuItem.Name = "hackyAutoLoadToolStripMenuItem";
-            this.hackyAutoLoadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.hackyAutoLoadToolStripMenuItem.Text = "HackyAutoLoad";
-            // 
-            // restoreOriginalWindowSizeToolStripMenuItem
-            // 
-            this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
-            this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-            // 
-            // saveWindowPositionToolStripMenuItem
-            // 
-            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
-            // 
             // toolStripContainer1
             // 
             this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -342,10 +298,10 @@
             // 
             // toolStripContainer1.ContentPanel
             // 
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(213, 2);
-            this.toolStripContainer1.Location = new System.Drawing.Point(260, 31);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(241, 2);
+            this.toolStripContainer1.Location = new System.Drawing.Point(243, 33);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(213, 77);
+            this.toolStripContainer1.Size = new System.Drawing.Size(241, 77);
             this.toolStripContainer1.TabIndex = 5;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -365,7 +321,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -406,7 +362,6 @@
             this.UndotoolStripButton.Name = "UndotoolStripButton";
             this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
             this.UndotoolStripButton.Text = "Undo Search";
-            this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click);
             // 
             // toolStrip2
             // 
@@ -503,13 +458,13 @@
             this.bigEndianToolStripMenuItem.Checked = true;
             this.bigEndianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bigEndianToolStripMenuItem.Name = "bigEndianToolStripMenuItem";
-            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.bigEndianToolStripMenuItem.Text = "Big Endian";
             // 
             // littleEndianToolStripMenuItem
             // 
             this.littleEndianToolStripMenuItem.Name = "littleEndianToolStripMenuItem";
-            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.littleEndianToolStripMenuItem.Text = "Little Endian";
             // 
             // CompareToBox
@@ -522,9 +477,9 @@
             this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
             this.CompareToBox.Controls.Add(this.SpecificValueRadio);
             this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-            this.CompareToBox.Location = new System.Drawing.Point(260, 114);
+            this.CompareToBox.Location = new System.Drawing.Point(243, 116);
             this.CompareToBox.Name = "CompareToBox";
-            this.CompareToBox.Size = new System.Drawing.Size(213, 111);
+            this.CompareToBox.Size = new System.Drawing.Size(241, 111);
             this.CompareToBox.TabIndex = 0;
             this.CompareToBox.TabStop = false;
             this.CompareToBox.Text = "Compare To / By";
@@ -534,7 +489,7 @@
             this.NumberOfChangesBox.Enabled = false;
             this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 84);
             this.NumberOfChangesBox.Name = "NumberOfChangesBox";
-            this.NumberOfChangesBox.Size = new System.Drawing.Size(70, 20);
+            this.NumberOfChangesBox.Size = new System.Drawing.Size(100, 20);
             this.NumberOfChangesBox.TabIndex = 6;
             // 
             // SpecificAddressBox
@@ -542,7 +497,7 @@
             this.SpecificAddressBox.Enabled = false;
             this.SpecificAddressBox.Location = new System.Drawing.Point(135, 62);
             this.SpecificAddressBox.Name = "SpecificAddressBox";
-            this.SpecificAddressBox.Size = new System.Drawing.Size(70, 20);
+            this.SpecificAddressBox.Size = new System.Drawing.Size(100, 20);
             this.SpecificAddressBox.TabIndex = 5;
             // 
             // SpecificValueBox
@@ -550,7 +505,7 @@
             this.SpecificValueBox.Enabled = false;
             this.SpecificValueBox.Location = new System.Drawing.Point(135, 41);
             this.SpecificValueBox.Name = "SpecificValueBox";
-            this.SpecificValueBox.Size = new System.Drawing.Size(70, 20);
+            this.SpecificValueBox.Size = new System.Drawing.Size(100, 20);
             this.SpecificValueBox.TabIndex = 4;
             // 
             // NumberOfChangesRadio
@@ -613,9 +568,9 @@
             this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
             this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
             this.ComparisonBox.Controls.Add(this.LessThanRadio);
-            this.ComparisonBox.Location = new System.Drawing.Point(260, 236);
+            this.ComparisonBox.Location = new System.Drawing.Point(243, 233);
             this.ComparisonBox.Name = "ComparisonBox";
-            this.ComparisonBox.Size = new System.Drawing.Size(213, 190);
+            this.ComparisonBox.Size = new System.Drawing.Size(241, 190);
             this.ComparisonBox.TabIndex = 6;
             this.ComparisonBox.TabStop = false;
             this.ComparisonBox.Text = "Comparison Operator";
@@ -734,43 +689,64 @@
             // 
             this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AutoSearchCheckBox.AutoSize = true;
-            this.AutoSearchCheckBox.Location = new System.Drawing.Point(260, 432);
+            this.AutoSearchCheckBox.Location = new System.Drawing.Point(250, 432);
             this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
             this.AutoSearchCheckBox.Size = new System.Drawing.Size(85, 17);
             this.AutoSearchCheckBox.TabIndex = 7;
             this.AutoSearchCheckBox.Text = "Auto Search";
             this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
             // 
-            // MemDomainLabel
+            // optionsToolStripMenuItem
             // 
-            this.MemDomainLabel.AutoSize = true;
-            this.MemDomainLabel.Location = new System.Drawing.Point(3, 5);
-            this.MemDomainLabel.Name = "MemDomainLabel";
-            this.MemDomainLabel.Size = new System.Drawing.Size(70, 13);
-            this.MemDomainLabel.TabIndex = 8;
-            this.MemDomainLabel.Text = "Main Memory";
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hackyAutoLoadToolStripMenuItem,
+            this.restoreOriginalWindowSizeToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "&Options";
             // 
-            // panel1
+            // saveWindowPositionToolStripMenuItem
             // 
-            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Controls.Add(this.TotalSearchLabel);
-            this.panel1.Controls.Add(this.MemDomainLabel);
-            this.panel1.Location = new System.Drawing.Point(12, 31);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(236, 25);
-            this.panel1.TabIndex = 9;
+            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            // 
+            // restoreOriginalWindowSizeToolStripMenuItem
+            // 
+            this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
+            this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            // 
+            // hackyAutoLoadToolStripMenuItem
+            // 
+            this.hackyAutoLoadToolStripMenuItem.Name = "hackyAutoLoadToolStripMenuItem";
+            this.hackyAutoLoadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.hackyAutoLoadToolStripMenuItem.Text = "HackyAutoLoad";
+            // 
+            // newSearchToolStripMenuItem
+            // 
+            this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
+            this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.newSearchToolStripMenuItem.Text = "&New Search";
+            this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.newSearchToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(201, 6);
             // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(482, 461);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(496, 461);
             this.Controls.Add(this.AutoSearchCheckBox);
             this.Controls.Add(this.ComparisonBox);
             this.Controls.Add(this.CompareToBox);
             this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.SearchListView);
+            this.Controls.Add(this.TotalSearchLabel);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -795,8 +771,6 @@
             this.CompareToBox.PerformLayout();
             this.ComparisonBox.ResumeLayout(false);
             this.ComparisonBox.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -813,7 +787,7 @@
         private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
         private System.Windows.Forms.ToolStripButton PoketoolStripButton1;
         private System.Windows.Forms.Label TotalSearchLabel;
-        private System.Windows.Forms.ListView SearchListView;
+        VirtualListView SearchListView;
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Previous;
@@ -869,7 +843,5 @@
         private System.Windows.Forms.ToolStripMenuItem restoreOriginalWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.Label MemDomainLabel;
-        private System.Windows.Forms.Panel panel1;
     }
 }
