@@ -32,12 +32,12 @@ namespace BizHawk.MultiClient
 			SearchListView.VirtualMode = true;
         }
 
-		void SearchListView_QueryItemText(int item, int subItem, out string text)
+		void SearchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (subItem == 0) text = searchList[item].address.ToString("x");
-			if (subItem == 1) text = searchList[item].value.ToString();
-			if (subItem == 3) text = searchList[item].changecount.ToString();
+			if (column == 0) text = searchList[index].address.ToString("x");
+			if (column == 1) text = searchList[index].value.ToString();
+			if (column == 3) text = searchList[index].changecount.ToString();
 		}
 
         public void UpdateValues()
