@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consoles\Calculator\TI83.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />

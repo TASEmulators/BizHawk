@@ -196,6 +196,11 @@ namespace BizHawk.MultiClient
             this.Text = ControllerStr + "TI-83";
         }
 
+		private void DoNES()
+		{
+			this.Text = ControllerStr + "NES";
+		}
+
         private void DoGameBoy()
         {
             Label TempLabel;
@@ -411,6 +416,9 @@ namespace BizHawk.MultiClient
                     case "TI-83":
                         DoTI83();
                         break;
+					case "NES":
+						DoNES();
+						break;
                 }
                 CurSelectController = ControllComboBox.SelectedIndex;
             }
