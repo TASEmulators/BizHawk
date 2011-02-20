@@ -80,12 +80,18 @@ namespace BizHawk.MultiClient
         {
             InitializeComponent();
             WatchListView.QueryItemText += new QueryItemTextHandler(WatchListView_QueryItemText);
+            WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
             WatchListView.VirtualMode = true;
+        }
+
+        private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
+        {
+            if (watchList[index].type == atype.SEPARATOR)
+                color = this.BackColor;
         }
 
         void WatchListView_QueryItemText(int index, int column, out string text)
         {
-            //TODO: separator background color
             text = "";
             if (column == 0)
             {
