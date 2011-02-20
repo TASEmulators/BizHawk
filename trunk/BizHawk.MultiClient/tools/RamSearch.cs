@@ -250,7 +250,7 @@ namespace BizHawk.MultiClient
 
         private void DisplaySearchList()
         {
-			SearchListView.VirtualListSize = searchList.Count;
+			SearchListView.ItemCount = searchList.Count;
             SetTotal();
         }
 
