@@ -33,6 +33,8 @@ namespace BizHawk.MultiClient
 
         public void BindMulti(string button, string controlString)
         {
+            if (string.IsNullOrEmpty(controlString))
+                return;
             string[] controlbindings = controlString.Split(',');
             foreach (string control in controlbindings)
                 bindings[button].Add(control.Trim());
