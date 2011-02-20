@@ -356,5 +356,23 @@ namespace BizHawk.MultiClient
 		{
 			imageIndex = -1;
 		}
+
+        private void ClearChangeCounts()
+        {
+            SaveUndo();
+            for (int x = 0; x < searchList.Count; x++)
+                searchList[x].changecount = 0;
+            DisplaySearchList();
+        }
+
+        private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
+        {
+            ClearChangeCounts();
+        }
+
+        private void UndotoolStripButton_Click_1(object sender, EventArgs e)
+        {
+            DoUndo();
+        }
     }
 }

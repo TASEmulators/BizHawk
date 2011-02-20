@@ -369,7 +369,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -401,6 +401,7 @@
             this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
             this.ClearChangeCountstoolStripButton.Text = "C";
             this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
+            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
             // 
             // UndotoolStripButton
             // 
@@ -410,6 +411,7 @@
             this.UndotoolStripButton.Name = "UndotoolStripButton";
             this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
             this.UndotoolStripButton.Text = "Undo Search";
+            this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click_1);
             // 
             // toolStrip2
             // 
