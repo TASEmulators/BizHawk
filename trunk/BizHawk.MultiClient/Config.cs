@@ -135,11 +135,13 @@
         public string Right;
         public string B1;
         public string B2;
+        public bool Enabled;
         public SMSControllerTemplate() { }
         public SMSControllerTemplate(bool defaults)
         {
             if (defaults)
             {
+                Enabled = true;
                 Up = "J1 Up, UpArrow";
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
@@ -149,6 +151,7 @@
             }
             else
             {
+                Enabled = false;
                 Up = "";
                 Down = "";
                 Right = "";
@@ -169,11 +172,13 @@
         public string II;
         public string Run;
         public string Select;
+        public bool Enabled;
         public PCEControllerTemplate() { }
         public PCEControllerTemplate(bool defaults)
         {
             if (defaults)
             {
+                Enabled = true;
                 Up = "J1 Up, UpArrow";
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
@@ -185,6 +190,7 @@
             }
             else
             {
+                Enabled = false;
                 Up = "";
                 Down = "";
                 Right = "";
@@ -207,11 +213,13 @@
         public string B;
         public string Start;
         public string Select;
+        public bool Enabled;
         public NESControllerTemplate() { }
         public NESControllerTemplate(bool defaults)
         {
             if (defaults)
             {
+                Enabled = true;
                 Up = "J1 Up, UpArrow";
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
@@ -223,6 +231,7 @@
             }
             else
             {
+                Enabled = false;
                 Up = "";
                 Down = "";
                 Right = "";

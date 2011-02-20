@@ -34,12 +34,10 @@
             this.ButtonsGroupBox = new System.Windows.Forms.GroupBox();
             this.ControllerImage = new System.Windows.Forms.PictureBox();
             this.ControllerSelectGroupBox = new System.Windows.Forms.GroupBox();
-            this.ControllerEnabledCheckbox = new System.Windows.Forms.CheckBox();
+            this.IDX_CONTROLLERENABLED = new System.Windows.Forms.CheckBox();
             this.ControllComboBox = new System.Windows.Forms.ComboBox();
-            this.AllowLR = new System.Windows.Forms.CheckBox();
             this.SystemGroupBox = new System.Windows.Forms.GroupBox();
             this.SystemComboBox = new System.Windows.Forms.ComboBox();
-            this.testInputWidget = new BizHawk.MultiClient.InputWidget();
             ((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
             this.ControllerSelectGroupBox.SuspendLayout();
             this.SystemGroupBox.SuspendLayout();
@@ -82,14 +80,14 @@
             this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.ControllerImage.Location = new System.Drawing.Point(258, 73);
             this.ControllerImage.Name = "ControllerImage";
-            this.ControllerImage.Size = new System.Drawing.Size(165, 156);
+            this.ControllerImage.Size = new System.Drawing.Size(169, 195);
             this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.ControllerImage.TabIndex = 3;
             this.ControllerImage.TabStop = false;
             // 
             // ControllerSelectGroupBox
             // 
-            this.ControllerSelectGroupBox.Controls.Add(this.ControllerEnabledCheckbox);
+            this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
             this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
             this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 12);
             this.ControllerSelectGroupBox.Name = "ControllerSelectGroupBox";
@@ -98,17 +96,17 @@
             this.ControllerSelectGroupBox.TabStop = false;
             this.ControllerSelectGroupBox.Text = "Controller";
             // 
-            // ControllerEnabledCheckbox
+            // IDX_CONTROLLERENABLED
             // 
-            this.ControllerEnabledCheckbox.AutoSize = true;
-            this.ControllerEnabledCheckbox.Checked = true;
-            this.ControllerEnabledCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ControllerEnabledCheckbox.Location = new System.Drawing.Point(143, 23);
-            this.ControllerEnabledCheckbox.Name = "ControllerEnabledCheckbox";
-            this.ControllerEnabledCheckbox.Size = new System.Drawing.Size(65, 17);
-            this.ControllerEnabledCheckbox.TabIndex = 1;
-            this.ControllerEnabledCheckbox.Text = "Enabled";
-            this.ControllerEnabledCheckbox.UseVisualStyleBackColor = true;
+            this.IDX_CONTROLLERENABLED.AutoSize = true;
+            this.IDX_CONTROLLERENABLED.Checked = true;
+            this.IDX_CONTROLLERENABLED.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.IDX_CONTROLLERENABLED.Location = new System.Drawing.Point(143, 23);
+            this.IDX_CONTROLLERENABLED.Name = "IDX_CONTROLLERENABLED";
+            this.IDX_CONTROLLERENABLED.Size = new System.Drawing.Size(65, 17);
+            this.IDX_CONTROLLERENABLED.TabIndex = 1;
+            this.IDX_CONTROLLERENABLED.Text = "Enabled";
+            this.IDX_CONTROLLERENABLED.UseVisualStyleBackColor = true;
             // 
             // ControllComboBox
             // 
@@ -119,16 +117,6 @@
             this.ControllComboBox.Size = new System.Drawing.Size(110, 21);
             this.ControllComboBox.TabIndex = 0;
             this.ControllComboBox.SelectedIndexChanged += new System.EventHandler(this.ControllComboBox_SelectedIndexChanged);
-            // 
-            // AllowLR
-            // 
-            this.AllowLR.AutoSize = true;
-            this.AllowLR.Location = new System.Drawing.Point(260, 260);
-            this.AllowLR.Name = "AllowLR";
-            this.AllowLR.Size = new System.Drawing.Size(156, 17);
-            this.AllowLR.TabIndex = 5;
-            this.AllowLR.Text = "Allow Left+Right/Up+Down";
-            this.AllowLR.UseVisualStyleBackColor = true;
             // 
             // SystemGroupBox
             // 
@@ -157,21 +145,12 @@
             this.SystemComboBox.TabIndex = 2;
             this.SystemComboBox.SelectedIndexChanged += new System.EventHandler(this.SystemComboBox_SelectedIndexChanged);
             // 
-            // testInputWidget
-            // 
-            this.testInputWidget.Location = new System.Drawing.Point(286, 236);
-            this.testInputWidget.Name = "testInputWidget";
-            this.testInputWidget.Size = new System.Drawing.Size(100, 20);
-            this.testInputWidget.TabIndex = 7;
-            // 
             // InputConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(439, 319);
-            this.Controls.Add(this.testInputWidget);
             this.Controls.Add(this.SystemGroupBox);
-            this.Controls.Add(this.AllowLR);
             this.Controls.Add(this.ControllerSelectGroupBox);
             this.Controls.Add(this.ControllerImage);
             this.Controls.Add(this.ButtonsGroupBox);
@@ -189,7 +168,6 @@
             this.ControllerSelectGroupBox.PerformLayout();
             this.SystemGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -201,10 +179,8 @@
         private System.Windows.Forms.PictureBox ControllerImage;
         private System.Windows.Forms.GroupBox ControllerSelectGroupBox;
         private System.Windows.Forms.ComboBox ControllComboBox;
-        private System.Windows.Forms.CheckBox ControllerEnabledCheckbox;
-        private System.Windows.Forms.CheckBox AllowLR;
+        private System.Windows.Forms.CheckBox IDX_CONTROLLERENABLED;
         private System.Windows.Forms.GroupBox SystemGroupBox;
         private System.Windows.Forms.ComboBox SystemComboBox;
-		private InputWidget testInputWidget;
     }
 }
