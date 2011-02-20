@@ -711,7 +711,8 @@ namespace BizHawk.MultiClient
 
         private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            BizHawk.MultiClient.tools.HotkeyWindow h = new BizHawk.MultiClient.tools.HotkeyWindow();
+            h.ShowDialog();
         }
 
         private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)

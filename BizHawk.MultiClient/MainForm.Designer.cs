@@ -848,7 +848,7 @@
             // 
             // hotkeysToolStripMenuItem
             // 
-            this.hotkeysToolStripMenuItem.Enabled = false;
+            this.hotkeysToolStripMenuItem.Enabled = true;
             this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
             this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(171, 24);
             this.hotkeysToolStripMenuItem.Text = "&Hotkeys";

@@ -73,6 +73,30 @@
         public string SelectSlot7 = "7";
         public string SelectSlot8 = "8";
         public string SelectSlot9 = "9";
+        public string SaveSlot0 = "SHIFT+F0";
+        public string SaveSlot1 = "SHIFT+F1";
+        public string SaveSlot2 = "SHIFT+F2";
+        public string SaveSlot3 = "SHIFT+F3";
+        public string SaveSlot4 = "SHIFT+F4";
+        public string SaveSlot5 = "SHIFT+F5";
+        public string SaveSlot6 = "SHIFT+F6";
+        public string SaveSlot7 = "SHIFT+F7";
+        public string SaveSlot8 = "SHIFT+F8";
+        public string SaveSlot9 = "SHIFT+F9";
+        public string LoadSlot0 = "CTRL+F0";
+        public string LoadSlot1 = "CTRL+F1";
+        public string LoadSlot2 = "CTRL+F2";
+        public string LoadSlot3 = "CTRL+F3";
+        public string LoadSlot4 = "CTRL+F4";
+        public string LoadSlot5 = "CTRL+F5";
+        public string LoadSlot6 = "CTRL+F6";
+        public string LoadSlot7 = "CTRL+F7";
+        public string LoadSlot8 = "CTRL+F8";
+        public string LoadSlot9 = "CTRL+F9";
+        
+        
+        
+        
 
         
         // SMS / GameGear Settings
