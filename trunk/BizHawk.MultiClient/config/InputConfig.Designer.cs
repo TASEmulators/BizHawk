@@ -149,7 +149,8 @@
             "PC Engine / SGX",
             "Gameboy",
             "Sega Genesis",
-            "TI-83"});
+            "TI-83",
+            "NES"});
 			this.SystemComboBox.Location = new System.Drawing.Point(6, 19);
 			this.SystemComboBox.Name = "SystemComboBox";
 			this.SystemComboBox.Size = new System.Drawing.Size(146, 21);

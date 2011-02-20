@@ -11,6 +11,10 @@
             PCEController[2] = new PCEControllerTemplate(false);
             PCEController[3] = new PCEControllerTemplate(false);
             PCEController[4] = new PCEControllerTemplate(false);
+            NESController[0] = new NESControllerTemplate(true);
+            NESController[1] = new NESControllerTemplate(false);
+            NESController[2] = new NESControllerTemplate(false);
+            NESController[3] = new NESControllerTemplate(false);
         }
 
         // General Client Settings
@@ -118,7 +122,9 @@
         public string GenP1Start = "J1 B10, Return";
 
         //GameBoy Settings
-        public NESControllerTemplate GameBoyController = new NESControllerTemplate();
+        public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
+
+        public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
     }
 
     public class SMSControllerTemplate
@@ -201,16 +207,31 @@
         public string B;
         public string Start;
         public string Select;
-        public NESControllerTemplate()
+        public NESControllerTemplate() { }
+        public NESControllerTemplate(bool defaults)
         {
-            Up     = "J1 Up";
-            Down   = "J1 Down";
-            Left   = "J1 Left";
-            Right  = "J1 Right";
-            A      = "J1 B1, Z";
-            B      = "J1 B2, X";
-            Start  = "J1 B10, Return";
-            Select = "J1 B9, Space";
+            if (defaults)
+            {
+                Up = "J1 Up, UpArrow";
+                Down = "J1 Down, DownArrow";
+                Left = "J1 Left, LeftArrow";
+                Right = "J1 Right, RightArrow";
+                A = "J1 B1, Z";
+                B = "J1 B2, X";
+                Start = "J1 B10, Return";
+                Select = "J1 B9, Space";
+            }
+            else
+            {
+                Up = "";
+                Down = "";
+                Right = "";
+                Left = "";
+                A = "";
+                B = "";
+                Start = "";
+                Select = "";
+            }
         }
     }
 }

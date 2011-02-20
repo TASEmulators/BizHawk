@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
             if (x != -1)
                 return oldmap.Substring(0, x + 2) + button;
             else
-                return oldmap + ", " + button;
+                return button;
         }
 
         private void DoSMS()
@@ -133,8 +133,7 @@ namespace BizHawk.MultiClient
             ButtonMappings[4] = TruncateButtonMapping(Global.Config.PCEController[jpad].I);
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.PCEController[jpad].II);
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.PCEController[jpad].Run);
-            ButtonMappings[7] = TruncateButtonMapping(Global.Config.PCEController[jpad].Select);
-            Changed = true;
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.PCEController[jpad].Select);         
             Labels.Clear();
             TextBoxes.Clear();
             for (int i = 0; i < PCEControlList.Length; i++)
@@ -200,7 +199,37 @@ namespace BizHawk.MultiClient
 
 		private void DoNES()
 		{
+            Label TempLabel;
+            InputWidget TempTextBox;
 			this.Text = ControllerStr + "NES";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+            int jpad = this.ControllComboBox.SelectedIndex;
+            string[] ButtonMappings = new string[NESControlList.Length];
+            ButtonMappings[0] = TruncateButtonMapping(Global.Config.NESController[jpad].Up);
+            ButtonMappings[1] = TruncateButtonMapping(Global.Config.NESController[jpad].Down);
+            ButtonMappings[2] = TruncateButtonMapping(Global.Config.NESController[jpad].Left);
+            ButtonMappings[3] = TruncateButtonMapping(Global.Config.NESController[jpad].Right);
+            ButtonMappings[4] = TruncateButtonMapping(Global.Config.NESController[jpad].A);
+            ButtonMappings[5] = TruncateButtonMapping(Global.Config.NESController[jpad].B);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
+            Changed = true;
+            Labels.Clear();            
+            TextBoxes.Clear();            
+            for (int i = 0; i < NESControlList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = NESControlList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
 		}
 
         private void DoGameBoy()
@@ -315,7 +344,7 @@ namespace BizHawk.MultiClient
                         UpdatePCE(CurSelectController);
                         break;
                     case "Gameboy":
-                        //UpdateGB();
+                        UpdateGameBoy();
                         break;
                     case "Sega Genesis":
                         //UpdateGenesis();
@@ -346,13 +375,15 @@ namespace BizHawk.MultiClient
                         UpdatePCE(CurSelectController);
                         break;
                     case "Gameboy":
-                        //UpdateGB();
+                        UpdateGameBoy();
                         break;
                     case "Sega Genesis":
                        //UpdateGenesis();
                         break;
                     case "TI-83":
-                        //Update TI-83();
+                        //Update TI-83();                        
+                        break;
+                    case "NES":
                         break;
                 }
                 Changed = false;
@@ -373,8 +404,11 @@ namespace BizHawk.MultiClient
                     joypads = 8;
                     break;
                 case "TI-83":
-                    joypads = 1;
-                    break;                    
+                    joypads = 1;                
+                    break;      
+                case "NES":
+                    joypads = 4;
+                    break;
             }
             ControllComboBox.Items.Clear();
             for (int i = 0; i < joypads; i++)
@@ -395,10 +429,10 @@ namespace BizHawk.MultiClient
                         UpdateSMS(CurSelectController);
                         break;
                     case "PC Engine / SGX":
-                        //UpdatePCE(CurSelectController);
+                        UpdatePCE(CurSelectController);
                         break;
                     case "Gameboy":
-                        //UpdateGB();
+                        UpdateGameBoy();
                         break;
                     case "Sega Genesis":
                         //UpdateGenesis();
