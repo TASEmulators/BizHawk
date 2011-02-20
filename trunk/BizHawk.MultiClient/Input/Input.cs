@@ -30,6 +30,9 @@ namespace BizHawk.MultiClient
 
         private static bool IsPressedSingle(string control)
         {
+            if (string.IsNullOrEmpty(control))
+                return false;
+
             if (control.StartsWith("J1 ")) return GetGamePad(0, control.Substring(3));
             if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
             if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
