@@ -35,6 +35,7 @@ namespace BizHawk.MultiClient
 		void SearchListView_QueryItemText(int item, int subItem, out string text)
 		{
 			text = "";
+			if (subItem == 0) text = searchList[item].address.ToString("x");
 			if (subItem == 1) text = searchList[item].value.ToString();
 			if (subItem == 3) text = searchList[item].changecount.ToString();
 		}
