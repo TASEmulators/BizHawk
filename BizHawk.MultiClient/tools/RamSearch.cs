@@ -264,11 +264,55 @@ namespace BizHawk.MultiClient
             int startaddress = 0;
             if (Global.Emulator.SystemId == "PCE")
                 startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
-            for (int x = 0; x < Global.Emulator.MainMemory.Size; x++)
+            int count = 0;
+            int divisor = 1;
+            switch (GetDataSize())
+            {
+                case atype.WORD:
+                    divisor = 2;
+                    break;
+                case atype.DWORD:
+                    divisor = 4;
+                    break;
+                default:
+                    divisor = 1;
+                    break;
+            }
+            
+            for (int x = 0; x < (Global.Emulator.MainMemory.Size / divisor); x++)
             {
                 searchList.Add(new Watch());
-                searchList[x].address = x + startaddress;
-                searchList[x].prev = searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
+                searchList[x].address = count + startaddress;
+                switch (GetDataSize())
+                {
+                    case atype.BYTE:
+                        searchList[x].prev = searchList[x].value = Global.Emulator.MainMemory.PeekByte(count);
+                        searchList[x].bigendian = GetBigEndian();   //Pointless in 1 byte, but might as well
+                        searchList[x].signed = GetDataType();
+                        searchList[x].type = atype.BYTE;
+                        count++;
+                        break;
+                    case atype.WORD:
+                        if (GetBigEndian())
+                        {
+                            searchList[x].prev = searchList[x].value = ((Global.Emulator.MainMemory.PeekByte(searchList[x].address) * 256) +
+                                    Global.Emulator.MainMemory.PeekByte((searchList[x + 1].address) + 1));
+                        }
+                        else
+                        {
+                            searchList[x].prev = searchList[x].value = (Global.Emulator.MainMemory.PeekByte(searchList[x].address) +
+                                   (Global.Emulator.MainMemory.PeekByte((searchList[x].address) + 1) * 256));
+                        }
+                        searchList[x].bigendian = GetBigEndian();   //Pointless in 1 byte, but might as well
+                        searchList[x].signed = GetDataType();
+                        searchList[x].type = atype.BYTE;
+                        count += 2;
+                        break;
+                    case atype.DWORD:
+                        //TODO
+                        break;
+                }
+                
             }
             OutputLabel.Text = "New search started";
             DisplaySearchList();
