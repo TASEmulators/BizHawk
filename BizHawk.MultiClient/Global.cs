@@ -18,5 +18,6 @@ namespace BizHawk.MultiClient
         public static IController PCEControls;
         public static IController GenControls;
 		public static IController TI83Controls;
+		public static IController NESControls;
     }
 }

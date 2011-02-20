@@ -9,6 +9,7 @@ using BizHawk.Emulation.Consoles.Sega;
 using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Gameboy;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -245,6 +246,15 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("CLEAR", "Escape");
 			TI83Controls.BindMulti("DOT", "NumberPadPeriod");
 			Global.TI83Controls = TI83Controls;
+
+			var NESControls = new Controller(NES.NESController);
+			NESControls.BindMulti("B", "Z");
+			NESControls.BindMulti("A", "X");
+			NESControls.BindMulti("UP", "UpArrow");
+			NESControls.BindMulti("DOWN", "DownArrow");
+			NESControls.BindMulti("LEFT", "LeftArrow");
+			NESControls.BindMulti("RIGHT", "RightArrow");
+			Global.NESControls = NESControls;
         }
 
         private static void FormDragEnter(object sender, DragEventArgs e)
@@ -277,6 +287,7 @@ namespace BizHawk.MultiClient
                 case "SGX": return "SuperGrafx";
                 case "GEN": return "Genesis";
                 case "TI83": return "TI-83";
+				case "NES": return "NES";
 				case "GB": return "Game Boy";
             }
             return "";
@@ -322,6 +333,10 @@ namespace BizHawk.MultiClient
 				case "TI83":
 					Global.Emulator = new TI83();
 					Global.Emulator.Controller = Global.TI83Controls;
+					break;
+				case "NES":
+					Global.Emulator = new NES();
+					Global.Emulator.Controller = Global.NESControls;
 					break;
 				case "GB":
             		Global.Emulator = new Gameboy();
