@@ -219,6 +219,7 @@
             this.SearchListView.UseCompatibleStateImageBehavior = false;
             this.SearchListView.View = System.Windows.Forms.View.Details;
             this.SearchListView.VirtualMode = true;
+            this.SearchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SearchListView_MouseDoubleClick);
             this.SearchListView.QueryItemBkColor += new BizHawk.QueryItemBkColorHandler(this.SearchListView_QueryItemBkColor);
             this.SearchListView.QueryItemIndent += new BizHawk.QueryItemIndentHandler(this.SearchListView_QueryItemIndent);
             this.SearchListView.QueryItemImage += new BizHawk.QueryItemImageHandler(this.SearchListView_QueryItemImage);
