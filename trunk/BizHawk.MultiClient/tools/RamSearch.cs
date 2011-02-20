@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY, MODULUS };
+        public enum SSigned { SIGNED, UNSIGNED, HEX };
 
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
@@ -86,20 +87,6 @@ namespace BizHawk.MultiClient
             else
                 str = " addresses";
             TotalSearchLabel.Text = x.ToString() + str;
-        }
-
-        private void hackyAutoLoadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (Global.Config.AutoLoadRamSearch == true)
-            {
-                Global.Config.AutoLoadRamSearch = false;
-                hackyAutoLoadToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                Global.Config.AutoLoadRamSearch = true;
-                hackyAutoLoadToolStripMenuItem.Checked = true;
-            }
         }
 
         private void OpenSearchFile()
@@ -465,6 +452,41 @@ namespace BizHawk.MultiClient
         private void DoNumberOfChanges()
         {
 
+        }
+
+        private void signedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            unsignedToolStripMenuItem.Checked = false;
+            signedToolStripMenuItem.Checked = true;
+            hexadecimalToolStripMenuItem.Checked = false;
+        }
+                
+        private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            unsignedToolStripMenuItem.Checked = true;
+            signedToolStripMenuItem.Checked = false;
+            hexadecimalToolStripMenuItem.Checked = false;
+        }
+
+        private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            unsignedToolStripMenuItem.Checked = false;
+            signedToolStripMenuItem.Checked = false;
+            hexadecimalToolStripMenuItem.Checked = true;
+        }
+
+        private void hackyAutoLoadToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (Global.Config.AutoLoadRamSearch == true)
+            {
+                Global.Config.AutoLoadRamSearch = false;
+                hackyAutoLoadToolStripMenuItem.Checked = false;
+            }
+            else
+            {
+                Global.Config.AutoLoadRamSearch = true;
+                hackyAutoLoadToolStripMenuItem.Checked = true;
+            }
         }
     }
 }
