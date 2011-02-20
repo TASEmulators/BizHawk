@@ -19,6 +19,8 @@ namespace BizHawk.MultiClient.tools
             IDW_HARDRESET.Text = Global.Config.HardResetBinding;
             IDW_REWIND.Text = Global.Config.RewindBinding;
             IDW_FASTFORWARD.Text = Global.Config.FastForwardBinding;
+            IDW_SCREENSHOT.Text = Global.Config.ScreenshotBinding;
+            IDW_FULLSCREEN.Text = Global.Config.ToggleFullscreenBinding;
 
             IDW_QuickSave.Text = Global.Config.QuickSave;
             IDW_QuickLoad.Text = Global.Config.QuickLoad;
@@ -56,7 +58,6 @@ namespace BizHawk.MultiClient.tools
             IDW_ST8.Text = Global.Config.SelectSlot8;
             IDW_ST9.Text = Global.Config.SelectSlot9;
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -70,6 +71,8 @@ namespace BizHawk.MultiClient.tools
             Global.Config.HardResetBinding = IDW_HARDRESET.Text;
             Global.Config.RewindBinding = IDW_REWIND.Text;
             Global.Config.EmulatorPauseBinding = IDW_PAUSE.Text;
+            Global.Config.ToggleFullscreenBinding = IDW_FULLSCREEN.Text;
+            Global.Config.ScreenshotBinding = IDW_SCREENSHOT.Text;
 
             Global.Config.QuickLoad = IDW_QuickLoad.Text;
             Global.Config.QuickSave = IDW_QuickSave.Text;

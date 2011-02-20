@@ -65,6 +65,7 @@ namespace BizHawk.MultiClient
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.SMSController[jpad].B2);
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.SmsPause);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.SmsReset);
+            IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad].Enabled;
             Changed = true;
             Labels.Clear();
             TextBoxes.Clear();
@@ -111,6 +112,7 @@ namespace BizHawk.MultiClient
             TempBox.Dispose();
             TempBox = TextBoxes[7] as InputWidget;
             Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+            Global.Config.SMSController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
             TempBox.Dispose();
             for (int i = 0; i < SMSControlList.Length; i++)
             {
@@ -134,6 +136,7 @@ namespace BizHawk.MultiClient
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.PCEController[jpad].II);
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.PCEController[jpad].Run);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.PCEController[jpad].Select);
+            IDX_CONTROLLERENABLED.Checked = Global.Config.PCEController[jpad].Enabled;
             Labels.Clear();
             TextBoxes.Clear();
             for (int i = 0; i < PCEControlList.Length; i++)
@@ -180,6 +183,7 @@ namespace BizHawk.MultiClient
             TempBox = TextBoxes[7] as InputWidget;
             Global.Config.PCEController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
             TempBox.Dispose();
+            Global.Config.PCEController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
             for (int i = 0; i < PCEControlList.Length; i++)
             {
                 TempLabel = Labels[i] as Label;
@@ -197,41 +201,6 @@ namespace BizHawk.MultiClient
             this.Text = ControllerStr + "TI-83";
         }
 
-        private void DoNES()
-        {
-            Label TempLabel;
-            InputWidget TempTextBox;
-            this.Text = ControllerStr + "NES";
-            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
-            int jpad = this.ControllComboBox.SelectedIndex;
-            string[] ButtonMappings = new string[NESControlList.Length];
-            ButtonMappings[0] = TruncateButtonMapping(Global.Config.NESController[jpad].Up);
-            ButtonMappings[1] = TruncateButtonMapping(Global.Config.NESController[jpad].Down);
-            ButtonMappings[2] = TruncateButtonMapping(Global.Config.NESController[jpad].Left);
-            ButtonMappings[3] = TruncateButtonMapping(Global.Config.NESController[jpad].Right);
-            ButtonMappings[4] = TruncateButtonMapping(Global.Config.NESController[jpad].A);
-            ButtonMappings[5] = TruncateButtonMapping(Global.Config.NESController[jpad].B);
-            ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
-            ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
-            Changed = true;
-            Labels.Clear();
-            TextBoxes.Clear();
-            for (int i = 0; i < NESControlList.Length; i++)
-            {
-                TempLabel = new Label();
-                TempLabel.Text = NESControlList[i];
-                TempLabel.Location = new Point(8, 20 + (i * 24));
-                Labels.Add(TempLabel);
-                TempTextBox = new InputWidget();
-                TempTextBox.Location = new Point(48, 20 + (i * 24));
-                TextBoxes.Add(TempTextBox);
-                TempTextBox.Text = ButtonMappings[i];
-                ButtonsGroupBox.Controls.Add(TempTextBox);
-                ButtonsGroupBox.Controls.Add(TempLabel);
-            }
-            Changed = true;
-        }
-
         private void DoGameBoy()
         {
             Label TempLabel;
@@ -247,6 +216,7 @@ namespace BizHawk.MultiClient
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.GameBoyController.B);
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.GameBoyController.Start);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.GameBoyController.Select);
+            IDX_CONTROLLERENABLED.Enabled = false;
             Changed = true;
             Labels.Clear();
             TextBoxes.Clear();
@@ -299,6 +269,43 @@ namespace BizHawk.MultiClient
                 TempLabel = Labels[i] as Label;
                 TempLabel.Dispose();
             }
+            IDX_CONTROLLERENABLED.Enabled = true;
+        }
+
+        private void DoNES()
+        {
+            Label TempLabel;
+            InputWidget TempTextBox;
+            this.Text = ControllerStr + "NES";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+            int jpad = this.ControllComboBox.SelectedIndex;
+            string[] ButtonMappings = new string[NESControlList.Length];
+            ButtonMappings[0] = TruncateButtonMapping(Global.Config.NESController[jpad].Up);
+            ButtonMappings[1] = TruncateButtonMapping(Global.Config.NESController[jpad].Down);
+            ButtonMappings[2] = TruncateButtonMapping(Global.Config.NESController[jpad].Left);
+            ButtonMappings[3] = TruncateButtonMapping(Global.Config.NESController[jpad].Right);
+            ButtonMappings[4] = TruncateButtonMapping(Global.Config.NESController[jpad].A);
+            ButtonMappings[5] = TruncateButtonMapping(Global.Config.NESController[jpad].B);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
+            IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
+            Changed = true;
+            Labels.Clear();
+            TextBoxes.Clear();
+            for (int i = 0; i < NESControlList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = NESControlList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
         }
         private void UpdateNES(int prev)
         {
@@ -328,6 +335,8 @@ namespace BizHawk.MultiClient
             TempBox.Dispose();
             TempBox = TextBoxes[7] as InputWidget;
             Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
+            Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+
             TempBox.Dispose();
             for (int i = 0; i < NESControlList.Length; i++)
             {
@@ -365,7 +374,6 @@ namespace BizHawk.MultiClient
                 }
             }
         }
-
         private void OK_Click(object sender, EventArgs e)
         {
             if (Changed)
