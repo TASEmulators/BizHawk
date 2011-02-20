@@ -29,6 +29,7 @@ namespace BizHawk.MultiClient
 			public int FrameAdvanceDelay;
 			public bool runloop_frameProgress;
 			public bool skipnextframe;
+			public bool exit;
 		}
 		MainLoopData mainLoopData = new MainLoopData();
 		public bool EmulatorPaused;
@@ -144,6 +145,12 @@ namespace BizHawk.MultiClient
 			throttle = new Throttle(30);
 		}
 
+		protected override void OnClosed(EventArgs e)
+		{
+			mainLoopData.exit = true;
+			base.OnClosed(e);
+		}
+
 		public void ProgramRunLoop()
 		{
 			for (; ; )
@@ -158,6 +165,8 @@ namespace BizHawk.MultiClient
 				Render();
 
 				CheckMessages();
+				if (mainLoopData.exit)
+					break;
 				Thread.Sleep(0);
 			}
 		}
