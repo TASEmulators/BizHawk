@@ -85,6 +85,7 @@ namespace BizHawk.MultiClient
         }
         private void UpdateSMS(int prev)
         {
+            ButtonsGroupBox.Controls.Clear();
             InputWidget TempBox;
             Label TempLabel;
             TempBox = TextBoxes[0] as InputWidget;            
@@ -153,6 +154,7 @@ namespace BizHawk.MultiClient
         }
         private void UpdatePCE(int prev)
         {
+            ButtonsGroupBox.Controls.Clear();
             InputWidget TempBox;
             Label TempLabel;
             TempBox = TextBoxes[0] as InputWidget;
@@ -217,8 +219,8 @@ namespace BizHawk.MultiClient
             ButtonMappings[6] = TruncateButtonMapping(Global.Config.GameBoyController.Start);
             ButtonMappings[7] = TruncateButtonMapping(Global.Config.GameBoyController.Select);
             Changed = true;
-            Labels.Clear();
-            TextBoxes.Clear();
+            Labels.Clear();            
+            TextBoxes.Clear();            
             for (int i = 0; i < NESControlList.Length; i++)
             {
                 TempLabel = new Label();
@@ -236,6 +238,7 @@ namespace BizHawk.MultiClient
         }
         private void UpdateGameBoy()
         {
+            ButtonsGroupBox.Controls.Clear();
             InputWidget TempBox;
             Label TempLabel;
             TempBox = TextBoxes[0] as InputWidget;
