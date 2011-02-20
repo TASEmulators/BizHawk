@@ -154,7 +154,9 @@ namespace BizHawk.MultiClient
             Name = "Emulator Frontend Controls",
             BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", 
                 "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
-                "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9"}
+                "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
+                "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
+                "LoadSlot7","LoadSlot8","LoadSlot9"}
         };
 
         private void InitControls()
@@ -180,6 +182,26 @@ namespace BizHawk.MultiClient
             controls.BindMulti("SelectSlot7", Global.Config.SelectSlot7);
             controls.BindMulti("SelectSlot8", Global.Config.SelectSlot8);
             controls.BindMulti("SelectSlot9", Global.Config.SelectSlot9);
+            controls.BindMulti("SaveSlot0", Global.Config.SaveSlot0);
+            controls.BindMulti("SaveSlot1", Global.Config.SaveSlot1);
+            controls.BindMulti("SaveSlot2", Global.Config.SaveSlot2);
+            controls.BindMulti("SaveSlot3", Global.Config.SaveSlot3);
+            controls.BindMulti("SaveSlot4", Global.Config.SaveSlot4);
+            controls.BindMulti("SaveSlot5", Global.Config.SaveSlot5);
+            controls.BindMulti("SaveSlot6", Global.Config.SaveSlot6);
+            controls.BindMulti("SaveSlot7", Global.Config.SaveSlot7);
+            controls.BindMulti("SaveSlot8", Global.Config.SaveSlot8);
+            controls.BindMulti("SaveSlot9", Global.Config.SaveSlot9);
+            controls.BindMulti("LoadSlot0", Global.Config.LoadSlot0);
+            controls.BindMulti("LoadSlot1", Global.Config.LoadSlot1);
+            controls.BindMulti("LoadSlot2", Global.Config.LoadSlot2);
+            controls.BindMulti("LoadSlot3", Global.Config.LoadSlot3);
+            controls.BindMulti("LoadSlot4", Global.Config.LoadSlot4);
+            controls.BindMulti("LoadSlot5", Global.Config.LoadSlot5);
+            controls.BindMulti("LoadSlot6", Global.Config.LoadSlot6);
+            controls.BindMulti("LoadSlot7", Global.Config.LoadSlot7);
+            controls.BindMulti("LoadSlot8", Global.Config.LoadSlot8);
+            controls.BindMulti("LoadSlot9", Global.Config.LoadSlot9);
             Global.ClientControls = controls;
 
             var smsControls = new Controller(SMS.SmsController);
@@ -445,75 +467,39 @@ namespace BizHawk.MultiClient
                     SaveState("QuickSave" + SaveSlot.ToString());
                 Global.ClientControls.UnpressButton("Quick Save State");
             }
-
             if (Global.ClientControls["Quick Load State"])
             {
                 if (!IsNullEmulator())
                     LoadState("QuickSave" + SaveSlot.ToString());
                 Global.ClientControls.UnpressButton("Quick Load State");
             }
-
-            if (Global.ClientControls["SelectSlot0"])
+            for (int i = 0; i < 10; i++)
             {
-                SaveSlot = 0;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot0");
+                if (Global.ClientControls["SaveSlot"+i.ToString()])
+                {
+                    if (!IsNullEmulator())
+                        SaveState("QuickSave" + i.ToString());
+                    Global.ClientControls.UnpressButton("SaveSlot"+i.ToString());
+                }
             }
-            if (Global.ClientControls["SelectSlot1"])
+            for (int i = 0; i < 10; i++)
             {
-                SaveSlot = 1;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot1");
+                if (Global.ClientControls["LoadSlot" + i.ToString()])
+                {
+                    if (!IsNullEmulator())
+                        LoadState("QuickSave" + i.ToString());
+                    Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
+                }
             }
-            if (Global.ClientControls["SelectSlot2"])
+            for (int i = 0; i < 10; i++)
             {
-                SaveSlot = 2;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot2");
+                if (Global.ClientControls["SelectSlot" + i.ToString()])
+                {
+                    SaveSlot = i;
+                    SaveSlotSelectedMessage();
+                    Global.ClientControls.UnpressButton("SelectSlot"+i.ToString());
+                }
             }
-            if (Global.ClientControls["SelectSlot3"])
-            {
-                SaveSlot = 3;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot3");
-            }
-            if (Global.ClientControls["SelectSlot4"])
-            {
-                SaveSlot = 4;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot4");
-            }
-            if (Global.ClientControls["SelectSlot5"])
-            {
-                SaveSlot = 5;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot5");
-            }
-            if (Global.ClientControls["SelectSlot6"])
-            {
-                SaveSlot = 6;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot6");
-            }
-            if (Global.ClientControls["SelectSlot7"])
-            {
-                SaveSlot = 7;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot7");
-            }
-            if (Global.ClientControls["SelectSlot8"])
-            {
-                SaveSlot = 8;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot8");
-            }
-            if (Global.ClientControls["SelectSlot9"])
-            {
-                SaveSlot = 9;
-                SaveSlotSelectedMessage();
-                Global.ClientControls.UnpressButton("SelectSlot9");
-            }
-
             if (Global.ClientControls["Hard Reset"])
             {
                 Global.ClientControls.UnpressButton("Hard Reset");
