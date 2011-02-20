@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
         List<Watch> undoList = new List<Watch>();
-        List<Watch> weedOutList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
+        List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY, MODULUS };
@@ -238,6 +238,7 @@ namespace BizHawk.MultiClient
                 searchList[x].address = x + startaddress;
                 searchList[x].prev = searchList[x].value = Global.Emulator.MainMemory.PeekByte(x);
             }
+            OutputLabel.Text = "New search started";
             DisplaySearchList();
         }
 
@@ -385,9 +386,8 @@ namespace BizHawk.MultiClient
 
         private void ReplaceSearchListWithWeedOutList()
         {
-            //TODO: if weedoutlist = 0, prompt user then reset search? Think about this
-            searchList = new List<Watch>(weedOutList);
-            weedOutList.Clear();
+            searchList = new List<Watch>(weededList);
+            weededList.Clear();
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -395,18 +395,13 @@ namespace BizHawk.MultiClient
             if (GenerateWeedOutList())
             {
                 SaveUndo();
-                OutputLabel.Text = (searchList.Count - weedOutList.Count).ToString() + " addresses removed";  //TODO: address if only 1
+                OutputLabel.Text = (searchList.Count - weededList.Count).ToString() + " addresses removed";  //TODO: address if only 1
                 ReplaceSearchListWithWeedOutList();
                 DisplaySearchList();
             }
             //TODO: else notify the user something went wrong?
 
         }
-
-        /// <summary>
-        /// Generates the new search list based on user criteria
-        /// Does not replace the old list
-        /// </summary>
 
         private SCompareTo GetCompareTo()
         {
@@ -480,8 +475,6 @@ namespace BizHawk.MultiClient
             if (!i) return -1;
 
             int x =  int.Parse(SpecificAddressBox.Text.ToUpper().Trim(), NumberStyles.HexNumber);
-            if (x < searchList[0].address || x > searchList[searchList.Count - 1].address) return -1;
-
             return x;
         }
 
@@ -498,26 +491,52 @@ namespace BizHawk.MultiClient
             switch (GetOperator())
             {
                 case SOperator.LESS:
-
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address < address)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATER:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address > address)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.LESSEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address <= address)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATEREQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address >= address)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.EQUAL:
                     for (int x = 0; x < searchList.Count; x++)
                     {
                         if (searchList[x].address == address)
-                            weedOutList.Add(searchList[x]);
+                            weededList.Add(searchList[x]);
                     }
                     break;
                 case SOperator.NOTEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address != address)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.DIFFBY:
+                    //TODO
                     break;
                 case SOperator.MODULUS:
+                    //TODO
                     break;
             }
             return true;

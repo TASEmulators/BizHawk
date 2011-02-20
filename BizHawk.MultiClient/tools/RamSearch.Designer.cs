@@ -660,6 +660,7 @@
             // ModuloRadio
             // 
             this.ModuloRadio.AutoSize = true;
+            this.ModuloRadio.Enabled = false;
             this.ModuloRadio.Location = new System.Drawing.Point(7, 153);
             this.ModuloRadio.Name = "ModuloRadio";
             this.ModuloRadio.Size = new System.Drawing.Size(60, 17);
@@ -672,6 +673,7 @@
             // DifferentByRadio
             // 
             this.DifferentByRadio.AutoSize = true;
+            this.DifferentByRadio.Enabled = false;
             this.DifferentByRadio.Location = new System.Drawing.Point(7, 134);
             this.DifferentByRadio.Name = "DifferentByRadio";
             this.DifferentByRadio.Size = new System.Drawing.Size(83, 17);
