@@ -28,17 +28,7 @@ namespace BizHawk.MultiClient
         public RamSearch()
         {
             InitializeComponent();
-			SearchListView.QueryItemText += new QueryItemTextHandler(SearchListView_QueryItemText);
-			SearchListView.VirtualMode = true;
         }
-
-		void SearchListView_QueryItemText(int index, int column, out string text)
-		{
-			text = "";
-			if (column == 0) text = searchList[index].address.ToString("x");
-			if (column == 1) text = searchList[index].value.ToString();
-			if (column == 3) text = searchList[index].changecount.ToString();
-		}
 
         public void UpdateValues()
         {
@@ -343,5 +333,29 @@ namespace BizHawk.MultiClient
         {
             DoUndo();
         }
+
+		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
+		{
+			if (index % 2 == 0) color = Color.White; else color = Color.Pink;
+
+		}
+
+		private void SearchListView_QueryItemText(int index, int column, out string text)
+		{
+			text = "";
+			if (column == 0) text = searchList[index].address.ToString("x");
+			if (column == 1) text = searchList[index].value.ToString();
+			if (column == 3) text = searchList[index].changecount.ToString();
+		}
+
+		private void SearchListView_QueryItemIndent(int index, out int itemIndent)
+		{
+			itemIndent = 0;
+		}
+
+		private void SearchListView_QueryItemImage(int index, int column, out int imageIndex)
+		{
+			imageIndex = -1;
+		}
     }
 }
