@@ -20,6 +20,10 @@ namespace BizHawk.MultiClient
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
         List<Watch> undoList = new List<Watch>();
+        List<Watch> newSearchList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
+
+        public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
+        public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY, MODULUS };
 
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
@@ -61,7 +65,7 @@ namespace BizHawk.MultiClient
                 bigEndianToolStripMenuItem.Checked = false;
                 littleEndianToolStripMenuItem.Checked = true;
             }
-            
+
             StartNewSearch();
             
             if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
@@ -373,6 +377,94 @@ namespace BizHawk.MultiClient
         private void UndotoolStripButton_Click_1(object sender, EventArgs e)
         {
             DoUndo();
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            GenerateNewSearchList();
+        }
+
+        /// <summary>
+        /// Generates the new search list based on user criteria
+        /// Does not replace the old list
+        /// </summary>
+
+        private SCompareTo GetCompareTo()
+        {
+            if (PreviousValueRadio.Checked)
+                return SCompareTo.PREV;
+            if (SpecificValueRadio.Checked)
+                return SCompareTo.VALUE;
+            if (SpecificAddressRadio.Checked)
+                return SCompareTo.ADDRESS;
+            if (NumberOfChangesRadio.Checked)
+                return SCompareTo.CHANGES;
+            
+            return SCompareTo.PREV; //Just in case
+        }
+
+        private SOperator GetOperator()
+        {
+            if (LessThanRadio.Checked)
+                return SOperator.LESS;
+            if (GreaterThanRadio.Checked)
+                return SOperator.GREATER;
+            if (LessThanOrEqualToRadio.Checked)
+                return SOperator.LESSEQUAL;
+            if (GreaterThanOrEqualToRadio.Checked)
+                return SOperator.GREATEREQUAL;
+            if (EqualToRadio.Checked)
+                return SOperator.EQUAL;
+            if (NotEqualToRadio.Checked)
+                return SOperator.NOTEQUAL;
+            if (DifferentByRadio.Checked)
+                return SOperator.DIFFBY;
+            if (ModuloRadio.Checked)
+                return SOperator.MODULUS;
+
+            return SOperator.LESS; //Just in case
+        }
+        
+        private void GenerateNewSearchList()
+        {
+            //Switch based on user criteria
+            //Generate search list
+            //Use search list to generate a list of flagged address (for displaying pink)
+            switch (GetCompareTo())
+            {
+                case SCompareTo.PREV:
+                    DoPreviousValue();
+                    break;
+                case SCompareTo.VALUE:
+                    DoSpecificValue();
+                    break;
+                case SCompareTo.ADDRESS:
+                    DoSpecificAddress();
+                    break;
+                case SCompareTo.CHANGES:
+                    DoNumberOfChanges();
+                    break;
+            }
+        }
+
+        private void DoPreviousValue()
+        {
+
+        }
+
+        private void DoSpecificValue()
+        {
+
+        }
+
+        private void DoSpecificAddress()
+        {
+
+        }
+
+        private void DoNumberOfChanges()
+        {
+
         }
     }
 }
