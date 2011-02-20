@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -20,7 +22,7 @@ namespace BizHawk.MultiClient
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
         List<Watch> undoList = new List<Watch>();
-        List<Watch> newSearchList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
+        List<Watch> weedOutList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY, MODULUS };
@@ -381,9 +383,21 @@ namespace BizHawk.MultiClient
             DoUndo();
         }
 
+        private void ReplaceSearchListWithWeedOutList()
+        {
+            //TODO: if weedoutlist = 0, prompt user then reset search? Think about this
+            searchList = new List<Watch>(weedOutList);
+            weedOutList.Clear();
+        }
+
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            GenerateNewSearchList();
+            GenerateWeedOutList();
+            SaveUndo();
+            OutputLabel.Text = (searchList.Count - weedOutList.Count).ToString() + " addresses removed";  //TODO: address if only 1
+            ReplaceSearchListWithWeedOutList();
+            DisplaySearchList();
+
         }
 
         /// <summary>
@@ -427,7 +441,7 @@ namespace BizHawk.MultiClient
             return SOperator.LESS; //Just in case
         }
         
-        private void GenerateNewSearchList()
+        private void GenerateWeedOutList()
         {
             //Switch based on user criteria
             //Generate search list
@@ -459,14 +473,56 @@ namespace BizHawk.MultiClient
 
         }
 
+        private int GetSpecificAddress()
+        {
+            bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
+            if (!i) return -1;
+
+            int x =  int.Parse(SpecificAddressBox.Text.ToUpper().Trim(), NumberStyles.HexNumber);
+            if (x < searchList[0].address || x > searchList[searchList.Count - 1].address) return -1;
+
+            return x;
+        }
+
         private void DoSpecificAddress()
         {
+            int address = GetSpecificAddress();
+            if (address < 0)
+            {
+                MessageBox.Show("Missing or invalid address", "Invalid address", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            switch (GetOperator())
+            {
+                case SOperator.LESS:
 
+                    break;
+                case SOperator.GREATER:
+                    break;
+                case SOperator.LESSEQUAL:
+                    break;
+                case SOperator.GREATEREQUAL:
+                    break;
+                case SOperator.EQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address == address)
+                            weedOutList.Add(searchList[x]);
+                    }
+      
+                    break;
+                case SOperator.NOTEQUAL:
+                    break;
+                case SOperator.DIFFBY:
+                    break;
+                case SOperator.MODULUS:
+                    break;
+            }
         }
 
         private void DoNumberOfChanges()
         {
-
+            
         }
 
         private void signedToolStripMenuItem_Click(object sender, EventArgs e)
