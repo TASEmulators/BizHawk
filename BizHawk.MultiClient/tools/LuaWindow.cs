@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient.tools
         {
             OpenFileDialog fdlg = new OpenFileDialog();
             fdlg.Title = "Open Lua Script";
-            fdlg.InitialDirectory = @"c:\"; //Switch this to a better default directory
+            fdlg.InitialDirectory = @".\"; //Switch this to a better default directory
             fdlg.Filter = "Lua files (*.lua)|*.lua|All files (*.*)|*.*";
             fdlg.FilterIndex = 1;
             fdlg.RestoreDirectory = true;
