@@ -263,7 +263,7 @@ namespace BizHawk.MultiClient
         {
             string memoryDomain = "Main memory"; //TODO: multiple memory domains
             systemID = Global.Emulator.SystemId;
-            //MemDomainLabel.Text = systemID + " " + memoryDomain;
+            MemDomainLabel.Text = systemID + " " + memoryDomain;
         }
 
         private Point GetPromptPoint()
