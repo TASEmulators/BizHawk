@@ -110,5 +110,6 @@ namespace BizHawk.MultiClient.tools
 
             this.Close();
         }
+       
     }
 }

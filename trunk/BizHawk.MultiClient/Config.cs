@@ -134,13 +134,22 @@
         {
             if (defaults)
             {
-                Up    = "J1 Up, UpArrow";
-                Down  = "J1 Down, DownArrow";
-                Left  = "J1 Left, LeftArrow";
+                Up = "J1 Up, UpArrow";
+                Down = "J1 Down, DownArrow";
+                Left = "J1 Left, LeftArrow";
                 Right = "J1 Right, RightArrow";
-                B1    = "J1 B1, Z";
-                B2    = "J1 B2, X";
+                B1 = "J1 B1, Z";
+                B2 = "J1 B2, X";
             }
+            else
+            {
+                Up = "";
+                Down = "";
+                Right = "";
+                Left = "";
+                B1 = "";
+                B2 = "";                
+            }                        
         }
     }
 
@@ -159,14 +168,25 @@
         {
             if (defaults)
             {
-                Up     = "J1 Up, UpArrow";
-                Down   = "J1 Down, DownArrow";
-                Left   = "J1 Left, LeftArrow";
-                Right  = "J1 Right, RightArrow";
-                I      = "J1 I, Z";
-                II     = "J1 II, X";
-                Run    = "J1 Run, C";
-                Select = "J1 Select, V";    
+                Up = "J1 Up, UpArrow";
+                Down = "J1 Down, DownArrow";
+                Left = "J1 Left, LeftArrow";
+                Right = "J1 Right, RightArrow";
+                I = "J1 B1, Z";
+                II = "J1 B2, X";
+                Run = "J1 B10, C";
+                Select = "J1 B9, V";
+            }
+            else
+            {
+                Up = "";
+                Down = "";
+                Right = "";
+                Left = "";
+                I = "";
+                II = "";
+                Run = "";
+                Select = "";
             }
         }
     }
