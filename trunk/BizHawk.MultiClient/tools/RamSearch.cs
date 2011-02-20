@@ -392,11 +392,14 @@ namespace BizHawk.MultiClient
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
-            GenerateWeedOutList();
-            SaveUndo();
-            OutputLabel.Text = (searchList.Count - weedOutList.Count).ToString() + " addresses removed";  //TODO: address if only 1
-            ReplaceSearchListWithWeedOutList();
-            DisplaySearchList();
+            if (GenerateWeedOutList())
+            {
+                SaveUndo();
+                OutputLabel.Text = (searchList.Count - weedOutList.Count).ToString() + " addresses removed";  //TODO: address if only 1
+                ReplaceSearchListWithWeedOutList();
+                DisplaySearchList();
+            }
+            //TODO: else notify the user something went wrong?
 
         }
 
@@ -441,7 +444,7 @@ namespace BizHawk.MultiClient
             return SOperator.LESS; //Just in case
         }
         
-        private void GenerateWeedOutList()
+        private bool GenerateWeedOutList()
         {
             //Switch based on user criteria
             //Generate search list
@@ -449,28 +452,26 @@ namespace BizHawk.MultiClient
             switch (GetCompareTo())
             {
                 case SCompareTo.PREV:
-                    DoPreviousValue();
-                    break;
+                    return DoPreviousValue();
                 case SCompareTo.VALUE:
-                    DoSpecificValue();
-                    break;
+                    return DoSpecificValue();
                 case SCompareTo.ADDRESS:
-                    DoSpecificAddress();
-                    break;
+                    return DoSpecificAddress();
                 case SCompareTo.CHANGES:
-                    DoNumberOfChanges();
-                    break;
+                    return DoNumberOfChanges();
+                default:
+                    return false;
             }
         }
 
-        private void DoPreviousValue()
+        private bool DoPreviousValue()
         {
-
+            return false;
         }
 
-        private void DoSpecificValue()
+        private bool DoSpecificValue()
         {
-
+            return false;
         }
 
         private int GetSpecificAddress()
@@ -484,13 +485,15 @@ namespace BizHawk.MultiClient
             return x;
         }
 
-        private void DoSpecificAddress()
+        private bool DoSpecificAddress()
         {
             int address = GetSpecificAddress();
             if (address < 0)
             {
                 MessageBox.Show("Missing or invalid address", "Invalid address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                SpecificAddressBox.Focus();
+                SpecificAddressBox.SelectAll();
+                return false;
             }
             switch (GetOperator())
             {
@@ -509,7 +512,6 @@ namespace BizHawk.MultiClient
                         if (searchList[x].address == address)
                             weedOutList.Add(searchList[x]);
                     }
-      
                     break;
                 case SOperator.NOTEQUAL:
                     break;
@@ -518,11 +520,12 @@ namespace BizHawk.MultiClient
                 case SOperator.MODULUS:
                     break;
             }
+            return true;
         }
 
-        private void DoNumberOfChanges()
+        private bool DoNumberOfChanges()
         {
-            
+            return false;
         }
 
         private void signedToolStripMenuItem_Click(object sender, EventArgs e)
