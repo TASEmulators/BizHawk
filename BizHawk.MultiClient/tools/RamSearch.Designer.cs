@@ -67,8 +67,8 @@
             this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.bytesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
-            this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EndiantoolSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -326,6 +326,7 @@
             this.hackyAutoLoadToolStripMenuItem.Name = "hackyAutoLoadToolStripMenuItem";
             this.hackyAutoLoadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.hackyAutoLoadToolStripMenuItem.Text = "HackyAutoLoad";
+            this.hackyAutoLoadToolStripMenuItem.Click += new System.EventHandler(this.hackyAutoLoadToolStripMenuItem_Click_1);
             // 
             // restoreOriginalWindowSizeToolStripMenuItem
             // 
@@ -369,7 +370,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -463,8 +464,8 @@
             // 
             this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.signedToolStripMenuItem,
             this.unsignedToolStripMenuItem,
+            this.signedToolStripMenuItem,
             this.hexadecimalToolStripMenuItem});
             this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
             this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -472,25 +473,28 @@
             this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(73, 22);
             this.DataTypetoolStripSplitButton1.Text = "Data Type";
             // 
-            // signedToolStripMenuItem
-            // 
-            this.signedToolStripMenuItem.Checked = true;
-            this.signedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
-            this.signedToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
-            this.signedToolStripMenuItem.Text = "Signed";
-            // 
             // unsignedToolStripMenuItem
             // 
+            this.unsignedToolStripMenuItem.Checked = true;
+            this.unsignedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
             this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.unsignedToolStripMenuItem.Text = "Unsigned";
+            this.unsignedToolStripMenuItem.Click += new System.EventHandler(this.unsignedToolStripMenuItem_Click);
+            // 
+            // signedToolStripMenuItem
+            // 
+            this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
+            this.signedToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.signedToolStripMenuItem.Text = "Signed";
+            this.signedToolStripMenuItem.Click += new System.EventHandler(this.signedToolStripMenuItem_Click);
             // 
             // hexadecimalToolStripMenuItem
             // 
             this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
             this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
+            this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
             // 
             // EndiantoolSplitButton
             // 
