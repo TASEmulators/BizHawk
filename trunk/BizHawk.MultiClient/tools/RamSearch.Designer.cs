@@ -95,6 +95,7 @@
             this.LessThanRadio = new System.Windows.Forms.RadioButton();
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
+            this.OutputLabel = new System.Windows.Forms.Label();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -213,7 +214,7 @@
             this.SearchListView.Location = new System.Drawing.Point(9, 58);
             this.SearchListView.Name = "SearchListView";
             this.SearchListView.selectedItem = -1;
-            this.SearchListView.Size = new System.Drawing.Size(223, 391);
+            this.SearchListView.Size = new System.Drawing.Size(223, 365);
             this.SearchListView.TabIndex = 3;
             this.SearchListView.UseCompatibleStateImageBehavior = false;
             this.SearchListView.View = System.Windows.Forms.View.Details;
@@ -434,6 +435,7 @@
             this.byteToolStripMenuItem,
             this.bytesToolStripMenuItem,
             this.bytesToolStripMenuItem1});
+            this.DataSizetoolStripSplitButton1.Enabled = false;
             this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
             this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
@@ -760,11 +762,21 @@
             this.MemDomainLabel.TabIndex = 8;
             this.MemDomainLabel.Text = "Main Memory";
             // 
+            // OutputLabel
+            // 
+            this.OutputLabel.AutoSize = true;
+            this.OutputLabel.Location = new System.Drawing.Point(9, 436);
+            this.OutputLabel.Name = "OutputLabel";
+            this.OutputLabel.Size = new System.Drawing.Size(85, 13);
+            this.OutputLabel.TabIndex = 9;
+            this.OutputLabel.Text = "                          ";
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(472, 461);
+            this.Controls.Add(this.OutputLabel);
             this.Controls.Add(this.MemDomainLabel);
             this.Controls.Add(this.AutoSearchCheckBox);
             this.Controls.Add(this.ComparisonBox);
@@ -869,5 +881,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Label MemDomainLabel;
+        private System.Windows.Forms.Label OutputLabel;
     }
 }
