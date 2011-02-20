@@ -35,9 +35,15 @@ namespace BizHawk.MultiClient
             //TODO: update based on atype
             for (int x = 0; x < searchList.Count; x++)
             {
-                searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                searchList[x].prev = searchList[x].value;
                 //TODO: format based on asigned
+                searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                
+                if (searchList[x].prev != searchList[x].value)
+                    searchList[x].changecount++;
+                
                 SearchListView.Items[x].SubItems[1].Text = searchList[x].value.ToString();
+                SearchListView.Items[x].SubItems[3].Text = searchList[x].changecount.ToString();
             }
         }
 
