@@ -272,10 +272,8 @@ namespace BizHawk.MultiClient
             }
         }
         private void InputConfig_Load(object sender, EventArgs e)
-        {            
-            //SystemComboBox = new ComboBox();            
-            //Determine the System currently loaded, and set that one up first, if null emulator set, what is the default?            
-            /*
+        {
+
             if (!(Global.Emulator is NullEmulator))
             {
                 switch (Global.Game.System)
@@ -283,41 +281,50 @@ namespace BizHawk.MultiClient
                     case "SMS":
                     case "SG":
                     case "GG":
-                        joypads = 2;
+                        this.SystemComboBox.SelectedItem = 0;
                         break;
                     case "PCE":
                     case "SGX":
-                        joypads = 5;
+                        this.SystemComboBox.SelectedItem = 1;
                         break;
                     case "GEN":
-                        joypads = 8;
+                        this.SystemComboBox.SelectedItem = 2;
                         break;
                     case "TI83":
-                        joypads = 1;
+                        this.SystemComboBox.SelectedItem = 3;
                         break;
                     case "GB":
-                        joypads = 1;
+                        this.SystemComboBox.SelectedItem = 4;
                         break;
                     default:
-                        joypads = 2;
                         break;
                 }
-            }
-            else
-            {
-                joypads = 2;
-            }
-
-            ControllComboBox.Items.Clear();
-            for (int i = 0; i < joypads; i++)
-            {
-                ControllComboBox.Items.Add(string.Format("Joypad {0}", i + 1));
-            }
-            ControllComboBox.SelectedIndex = 0;*/
+            }            
         }
 
         private void OK_Click(object sender, EventArgs e)
         {
+            if (Changed)
+            {
+                switch (CurSelectConsole)
+                {
+                    case "SMS / GG / SG-1000":
+                        UpdateSMS(CurSelectController);
+                        break;
+                    case "PC Engine / SGX":
+                        UpdatePCE(CurSelectController);
+                        break;
+                    case "Gameboy":
+                        //UpdateGB();
+                        break;
+                    case "Sega Genesis":
+                        //UpdateGenesis();
+                        break;
+                    case "TI-83":
+                        //Update TI-83();
+                        break;
+                }
+            }
             this.Close();
         }
 
