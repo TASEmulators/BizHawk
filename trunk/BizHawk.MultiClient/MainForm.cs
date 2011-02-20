@@ -686,7 +686,7 @@ namespace BizHawk.MultiClient
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+			new AboutBox().ShowDialog();
         }
 
         private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
