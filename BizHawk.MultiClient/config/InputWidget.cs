@@ -32,12 +32,20 @@ namespace BizHawk.MultiClient
 			if (e.KeyCode == Keys.ControlKey) return;
 			if (e.KeyCode == Keys.ShiftKey) return;
 			if (e.KeyCode == Keys.Menu) return;
-			KeyboardBinding kb = new KeyboardBinding();
-			kb.key = e.KeyCode;
-			kb.modifiers = e.Modifiers;
-			Bindings.Clear();
-			Bindings.Add(kb);
-			UpdateLabel();
+            if (e.KeyCode != Keys.Escape)
+            {
+                KeyboardBinding kb = new KeyboardBinding();
+                kb.key = e.KeyCode;
+                kb.modifiers = e.Modifiers;
+                Bindings.Clear();
+                Bindings.Add(kb);
+                UpdateLabel();
+            }
+            else
+            {
+                Bindings.Clear();
+                UpdateLabel();
+            }
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
