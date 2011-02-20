@@ -461,11 +461,49 @@ namespace BizHawk.MultiClient
 
         private bool DoPreviousValue()
         {
+            switch (GetOperator())
+            {
+                case SOperator.LESS:
+                    break;
+                case SOperator.GREATER:
+                    break;
+                case SOperator.LESSEQUAL:
+                    break;
+                case SOperator.GREATEREQUAL:
+                    break;
+                case SOperator.EQUAL:
+                    break;
+                case SOperator.NOTEQUAL:
+                    break;
+                case SOperator.DIFFBY:
+                    break;
+                case SOperator.MODULUS:
+                    break;
+            }
             return false;
         }
 
         private bool DoSpecificValue()
         {
+            switch (GetOperator())
+            {
+                case SOperator.LESS:
+                    break;
+                case SOperator.GREATER:
+                    break;
+                case SOperator.LESSEQUAL:
+                    break;
+                case SOperator.GREATEREQUAL:
+                    break;
+                case SOperator.EQUAL:
+                    break;
+                case SOperator.NOTEQUAL:
+                    break;
+                case SOperator.DIFFBY:
+                    break;
+                case SOperator.MODULUS:
+                    break;
+            }
             return false;
         }
 
@@ -563,9 +601,87 @@ namespace BizHawk.MultiClient
             return true;
         }
 
+        private int GetSpecificChanges()
+        {
+            bool i = InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text);
+            if (!i) return -1;
+
+            return int.Parse(NumberOfChangesBox.Text.ToUpper().Trim());
+        }
+
         private bool DoNumberOfChanges()
         {
-            return false;
+            int changes = GetSpecificChanges();
+            if (changes < 0)
+            {
+                MessageBox.Show("Missing or invalid number of changes", "Invalid number", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                NumberOfChangesBox.Focus();
+                NumberOfChangesBox.SelectAll();
+                return false;
+            }
+            switch (GetOperator())
+            {
+                case SOperator.LESS:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount < changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.GREATER:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount > changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.LESSEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount <= changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.GREATEREQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount >= changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.EQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount == changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.NOTEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].changecount != changes)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.DIFFBY:
+                    int diff = GetDifferentBy();
+                    if (diff < 0)
+                    {
+                        MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DifferentByBox.Focus();
+                        DifferentByBox.SelectAll();
+                        return false;
+                    }
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].address == changes + diff || searchList[x].address == changes - diff)
+                            weededList.Add(searchList[x]);
+                    }
+                    break;
+                case SOperator.MODULUS:
+                    break;
+            }
+            return true;
         }
 
         private void signedToolStripMenuItem_Click(object sender, EventArgs e)
