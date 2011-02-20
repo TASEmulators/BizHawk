@@ -108,6 +108,7 @@
             this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS1 = new BizHawk.MultiClient.InputWidget();
+            this.label38 = new System.Windows.Forms.Label();
             this.hotkeyTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -584,51 +585,52 @@
             // 
             // IDW_REWIND
             // 
+            this.IDW_REWIND.AcceptsTab = true;
             this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_REWIND.Location = new System.Drawing.Point(92, 107);
             this.IDW_REWIND.Name = "IDW_REWIND";
             this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
             this.IDW_REWIND.TabIndex = 74;
-            this.IDW_REWIND.TabStop = false;
             // 
             // IDW_FASTFORWARD
             // 
+            this.IDW_FASTFORWARD.AcceptsTab = true;
             this.IDW_FASTFORWARD.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_FASTFORWARD.Location = new System.Drawing.Point(92, 81);
             this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
             this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
             this.IDW_FASTFORWARD.TabIndex = 72;
-            this.IDW_FASTFORWARD.TabStop = false;
             // 
             // IDW_HARDRESET
             // 
+            this.IDW_HARDRESET.AcceptsTab = true;
             this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_HARDRESET.Location = new System.Drawing.Point(92, 56);
             this.IDW_HARDRESET.Name = "IDW_HARDRESET";
             this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
             this.IDW_HARDRESET.TabIndex = 70;
-            this.IDW_HARDRESET.TabStop = false;
             // 
             // IDW_PAUSE
             // 
+            this.IDW_PAUSE.AcceptsTab = true;
             this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_PAUSE.Location = new System.Drawing.Point(92, 32);
             this.IDW_PAUSE.Name = "IDW_PAUSE";
             this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
             this.IDW_PAUSE.TabIndex = 68;
-            this.IDW_PAUSE.TabStop = false;
             // 
             // IDW_FRAMEADVANCE
             // 
+            this.IDW_FRAMEADVANCE.AcceptsTab = true;
             this.IDW_FRAMEADVANCE.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(92, 8);
             this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
             this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
             this.IDW_FRAMEADVANCE.TabIndex = 66;
-            this.IDW_FRAMEADVANCE.TabStop = false;
             // 
             // IDW_QuickLoad
             // 
+            this.IDW_QuickLoad.AcceptsTab = true;
             this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_QuickLoad.Location = new System.Drawing.Point(293, 32);
             this.IDW_QuickLoad.Name = "IDW_QuickLoad";
@@ -637,6 +639,7 @@
             // 
             // IDW_QuickSave
             // 
+            this.IDW_QuickSave.AcceptsTab = true;
             this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
             this.IDW_QuickSave.Location = new System.Drawing.Point(293, 8);
             this.IDW_QuickSave.Name = "IDW_QuickSave";
@@ -854,11 +857,21 @@
             this.IDW_SS1.Size = new System.Drawing.Size(100, 20);
             this.IDW_SS1.TabIndex = 61;
             // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(22, 305);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(160, 13);
+            this.label38.TabIndex = 3;
+            this.label38.Text = "* Escape clears a dialog window";
+            // 
             // HotkeyWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(622, 309);
+            this.ClientSize = new System.Drawing.Size(622, 327);
+            this.Controls.Add(this.label38);
             this.Controls.Add(this.IDB_CANCEL);
             this.Controls.Add(this.IDB_SAVE);
             this.Controls.Add(this.hotkeyTabs);
@@ -873,6 +886,7 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -959,5 +973,6 @@
         private System.Windows.Forms.Label label36;
         private InputWidget IDW_REWIND;
         private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label label38;
     }
 }

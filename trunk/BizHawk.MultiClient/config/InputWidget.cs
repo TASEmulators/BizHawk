@@ -5,33 +5,33 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	public class InputWidget : TextBox
-	{
-		public InputWidget()
-		{
-		}
+    public class InputWidget : TextBox
+    {
+        public InputWidget()
+        {
+        }
 
-		public List<IBinding> Bindings = new List<IBinding>();
+        public List<IBinding> Bindings = new List<IBinding>();
 
-		void UpdateLabel()
-		{
-			if (Bindings.Count == 0)
-			{
-				Text = "";
-			}
-			else
-			{
-				Text = Bindings[0].ToString();
-			}
-			Update();
-		}
+        void UpdateLabel()
+        {
+            if (Bindings.Count == 0)
+            {
+                Text = "";
+            }
+            else
+            {
+                Text = Bindings[0].ToString();
+            }
+            Update();
+        }
 
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			e.Handled = true;
-			if (e.KeyCode == Keys.ControlKey) return;
-			if (e.KeyCode == Keys.ShiftKey) return;
-			if (e.KeyCode == Keys.Menu) return;
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            e.Handled = true;
+            if (e.KeyCode == Keys.ControlKey) return;
+            if (e.KeyCode == Keys.ShiftKey) return;
+            if (e.KeyCode == Keys.Menu) return;
             if (e.KeyCode != Keys.Escape)
             {
                 KeyboardBinding kb = new KeyboardBinding();
@@ -46,27 +46,39 @@ namespace BizHawk.MultiClient
                 Bindings.Clear();
                 UpdateLabel();
             }
-		}
+        }
 
-		protected override void OnKeyPress(KeyPressEventArgs e)
-		{
-			e.Handled = true;
-		}
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            e.Handled = true;
+        }
 
-		protected override void OnGotFocus(EventArgs e)
-		{
-			base.OnGotFocus(e);
-			BackColor = Color.Pink;
-		}
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            BackColor = Color.Pink;
+        }
 
-		protected override void OnLostFocus(EventArgs e)
-		{
-			base.OnLostFocus(e);
-			BackColor = SystemColors.Window;
-		}
-
-	}
-
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            BackColor = SystemColors.Window;
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Tab)
+            {
+                KeyboardBinding kb = new KeyboardBinding();
+                kb.key = keyData;              
+                Bindings.Clear();
+                Bindings.Add(kb);
+                UpdateLabel();
+            }
+            else
+                base.ProcessCmdKey(ref msg, keyData);
+            return true;                
+        }
+    }
 	public class KeyboardBinding : IBinding
 	{
 		public override string ToString()
