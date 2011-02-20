@@ -4,13 +4,13 @@
     {
         public Config()
         {
-            SMSController[0] = new SMSControllerTemplate(1, true);
-            SMSController[1] = new SMSControllerTemplate(2, false);
-            PCEController[0] = new PCEControllerTemplate(1,true);
-            PCEController[1] = new PCEControllerTemplate(2,false);
-            PCEController[2] = new PCEControllerTemplate(3,false);
-            PCEController[3] = new PCEControllerTemplate(4,false);
-            PCEController[4] = new PCEControllerTemplate(5,false);
+            SMSController[0] = new SMSControllerTemplate(true);
+            SMSController[1] = new SMSControllerTemplate(false);
+            PCEController[0] = new PCEControllerTemplate(true);
+            PCEController[1] = new PCEControllerTemplate(false);
+            PCEController[2] = new PCEControllerTemplate(false);
+            PCEController[3] = new PCEControllerTemplate(false);
+            PCEController[4] = new PCEControllerTemplate(false);
         }
 
         // General Client Settings
@@ -95,16 +95,12 @@
         public string LoadSlot9 = "F9";
         
         
-        
-        
-
-        
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
         public bool SmsAllowOverlock = false;
         public bool SmsForceStereoSeparation = false;
 
-        public string SmsReset = "Reset, Tab";
+        public string SmsReset = "Tab";
         public string SmsPause = "J1 B10, Space";
         public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
@@ -122,7 +118,7 @@
         public string GenP1Start = "J1 B10, Return";
 
         //GameBoy Settings
-        public NESControllerTemplate GameBoyController = new NESControllerTemplate(1);
+        public NESControllerTemplate GameBoyController = new NESControllerTemplate();
     }
 
     public class SMSControllerTemplate
@@ -133,28 +129,21 @@
         public string Right;
         public string B1;
         public string B2;
-        public SMSControllerTemplate(int i, bool defaults)
+        public SMSControllerTemplate() { }
+        public SMSControllerTemplate(bool defaults)
         {
-            if (!defaults)
+            if (defaults)
             {
-                Up = string.Format("J{0} Up", i);
-                Down = string.Format("J{0} Down", i);
-                Left = string.Format("J{0} Left", i);
-                Right = string.Format("J{0} Right", i);
-                B1 = string.Format("J{0} B1", i);
-                B2 = string.Format("J{0} B2", i);
-            }
-            else
-            {
-                Up = string.Format("J{0} Up, UpArrow", i);
-                Down = string.Format("J{0} Down, DownArrow", i);
-                Left = string.Format("J{0} Left, LeftArrow", i);
-                Right = string.Format("J{0} Right, RightArrow", i);
-                B1 = string.Format("J{0} B1, Z", i);
-                B2 = string.Format("J{0} B2, X", i);
+                Up    = "J1 Up, UpArrow";
+                Down  = "J1 Down, DownArrow";
+                Left  = "J1 Left, LeftArrow";
+                Right = "J1 Right, RightArrow";
+                B1    = "J1 B1, Z";
+                B2    = "J1 B2, X";
             }
         }
     }
+
     public class PCEControllerTemplate
     {
         public string Up;
@@ -165,32 +154,23 @@
         public string II;
         public string Run;
         public string Select;
-        public PCEControllerTemplate(int i, bool defaults)
+        public PCEControllerTemplate() { }
+        public PCEControllerTemplate(bool defaults)
         {
-            if (!defaults)
+            if (defaults)
             {
-                Up = string.Format("J{0} Up", i);
-                Down = string.Format("J{0} Down", i);
-                Left = string.Format("J{0} Left", i);
-                Right = string.Format("J{0} Right", i);
-                I = string.Format("J{0} I", i);
-                II = string.Format("J{0} II", i);
-                Run = string.Format("J{0} Run", i);
-                Select = string.Format("J{0} Select", i);
-            }
-            else
-            {
-                Up = string.Format("J{0} Up, UpArrow", i);
-                Down = string.Format("J{0} Down, DownArrow", i);
-                Left = string.Format("J{0} Left, LeftArrow", i);
-                Right = string.Format("J{0} Right, RightArrow", i);
-                I = string.Format("J{0} I, Z", i);
-                II = string.Format("J{0} II, X", i);
-                Run = string.Format("J{0} Run, C", i);
-                Select = string.Format("J{0} Select, V", i);
+                Up     = "J1 Up, UpArrow";
+                Down   = "J1 Down, DownArrow";
+                Left   = "J1 Left, LeftArrow";
+                Right  = "J1 Right, RightArrow";
+                I      = "J1 I, Z";
+                II     = "J1 II, X";
+                Run    = "J1 Run, C";
+                Select = "J1 Select, V";    
             }
         }
     }
+
     public class NESControllerTemplate
     {
         public string Up;
@@ -201,17 +181,16 @@
         public string B;
         public string Start;
         public string Select;
-        public NESControllerTemplate(int i)
+        public NESControllerTemplate()
         {
-            Up = string.Format("J{0} Up", i);
-            Down = string.Format("J{0} Down", i);
-            Left = string.Format("J{0} Left", i);
-            Right = string.Format("J{0} Right", i);
-            A = string.Format("J{0} A", i);
-            B = string.Format("J{0} B", i);
-            Start = string.Format("J{0} Start", i);
-            Select = string.Format("J{0} Select", i);
+            Up     = "J1 Up";
+            Down   = "J1 Down";
+            Left   = "J1 Left";
+            Right  = "J1 Right";
+            A      = "J1 B1, Z";
+            B      = "J1 B2, X";
+            Start  = "J1 B10, Return";
+            Select = "J1 B9, Space";
         }
     }
-
 }
