@@ -529,7 +529,7 @@ namespace BizHawk.MultiClient
 
         public void DisplayWatchList()
         {
-            WatchListView.VirtualListSize = watchList.Count;
+            WatchListView.ItemCount = watchList.Count;
             /*
             WatchListView.Items.Clear();
             for (int x = 0; x < watchList.Count; x++)
