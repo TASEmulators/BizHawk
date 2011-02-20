@@ -333,9 +333,24 @@ namespace BizHawk.MultiClient
 		private void SearchListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (column == 0) text = searchList[index].address.ToString("x");
-			if (column == 1) text = searchList[index].value.ToString();
-			if (column == 3) text = searchList[index].changecount.ToString();
+            if (column == 0)
+            {
+                text = searchList[index].address.ToString("X");
+            }
+            if (column == 1)
+            {
+                if (unsignedToolStripMenuItem.Checked)
+                    text = searchList[index].value.ToString();
+                else if (signedToolStripMenuItem.Checked)
+                    text = ((sbyte)searchList[index].value).ToString();
+                else if (hexadecimalToolStripMenuItem.Checked)
+                    text = searchList[index].value.ToString("X");
+
+            }
+            if (column == 3)
+            {
+                text = searchList[index].changecount.ToString();
+            }
 		}
 
 		private void SearchListView_QueryItemIndent(int index, out int itemIndent)
