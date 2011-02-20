@@ -72,6 +72,7 @@
             this.IDB_RUN.TabIndex = 4;
             this.IDB_RUN.Text = "Run";
             this.IDB_RUN.UseVisualStyleBackColor = true;
+            this.IDB_RUN.Click += new System.EventHandler(this.IDB_RUN_Click);
             // 
             // IDB_STOP
             // 
