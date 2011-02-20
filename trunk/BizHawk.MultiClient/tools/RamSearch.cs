@@ -474,8 +474,15 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
             if (!i) return -1;
 
-            int x =  int.Parse(SpecificAddressBox.Text.ToUpper().Trim(), NumberStyles.HexNumber);
-            return x;
+            return int.Parse(SpecificAddressBox.Text.ToUpper().Trim(), NumberStyles.HexNumber);
+        }
+
+        private int GetDifferentBy()
+        {
+            bool i = InputValidate.IsValidUnsignedNumber(DifferentByBox.Text);
+            if (!i) return -1;
+
+            return int.Parse(DifferentByBox.Text.ToUpper().Trim());
         }
 
         private bool DoSpecificAddress()
@@ -533,7 +540,21 @@ namespace BizHawk.MultiClient
                     }
                     break;
                 case SOperator.DIFFBY:
-                    //TODO
+                    {
+                        int diff = GetDifferentBy();
+                        if (diff < 0)
+                        {
+                            MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            DifferentByBox.Focus();
+                            DifferentByBox.SelectAll();
+                            return false;
+                        }
+                        for (int x = 0; x < searchList.Count; x++)
+                        {
+                            if (searchList[x].address == address + diff || searchList[x].address == address - diff)
+                                weededList.Add(searchList[x]);
+                        }
+                    }
                     break;
                 case SOperator.MODULUS:
                     //TODO

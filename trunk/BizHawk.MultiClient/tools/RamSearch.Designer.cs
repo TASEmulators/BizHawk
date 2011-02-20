@@ -673,7 +673,6 @@
             // DifferentByRadio
             // 
             this.DifferentByRadio.AutoSize = true;
-            this.DifferentByRadio.Enabled = false;
             this.DifferentByRadio.Location = new System.Drawing.Point(7, 134);
             this.DifferentByRadio.Name = "DifferentByRadio";
             this.DifferentByRadio.Size = new System.Drawing.Size(83, 17);
