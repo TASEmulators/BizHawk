@@ -19,10 +19,12 @@ namespace BizHawk.MultiClient
         {
             Caller = passed.get();
             lua.RegisterFunction("print",this, this.GetType().GetMethod("print"));
-            for (int i = 0; i < MemoryFunctions.Length; i++)
+			lua.NewTable("memory");
+			for (int i = 0; i < MemoryFunctions.Length; i++)
             {
-                lua.RegisterFunction(MemoryFunctions[i], this, this.GetType().GetMethod(MemoryFunctions[i]));
-            }
+                lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod(MemoryFunctions[i]));
+			}
+
         }
         public void DoLuaFile(string File)
         {
