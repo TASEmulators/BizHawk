@@ -602,5 +602,14 @@ namespace BizHawk.MultiClient
                 hackyAutoLoadToolStripMenuItem.Checked = true;
             }
         }
+
+        private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                AddToRamWatch();
+            }
+        }
     }
 }
