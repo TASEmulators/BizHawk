@@ -6,16 +6,22 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using LuaInterface;
 
 namespace BizHawk.MultiClient.tools
 {
     public partial class LuaWindow : Form
-    {        
+    {
+        LuaImplementation LuaImp;
         public LuaWindow()
         {
             InitializeComponent();
+             LuaImp = new LuaImplementation(this);
         }
-
+        public LuaWindow get()
+        {
+            return this;
+        }
         private void IDB_BROWSE_Click(object sender, EventArgs e)
         {
             OpenFileDialog fdlg = new OpenFileDialog();
@@ -29,5 +35,15 @@ namespace BizHawk.MultiClient.tools
                 IDT_SCRIPTFILE.Text = fdlg.FileName;
             }
         }
+        public void AddText(string s)
+        {
+            IDT_OUTPUT.Text += s;
+        }
+
+        private void IDB_RUN_Click(object sender, EventArgs e)
+        {
+            LuaImp.DoLuaFile(IDT_SCRIPTFILE.Text);
+        }
+
     }
 }
