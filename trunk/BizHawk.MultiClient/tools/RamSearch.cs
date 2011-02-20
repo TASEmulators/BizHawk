@@ -52,6 +52,7 @@ namespace BizHawk.MultiClient
                     searchList[x].changecount++;
   
             }
+			SearchListView.Update();
         }
 
         private void RamSearch_Load(object sender, EventArgs e)
