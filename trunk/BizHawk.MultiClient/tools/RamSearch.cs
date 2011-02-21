@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
         //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
+        //Run Trim() and ToUpper() on specific/number/differentby boxes after user enters data, then don't do that when running the Get function
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -544,32 +545,68 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private int GetPreviousValue()
+        private int GetPreviousValue(int pos)
         {
-            return 0;
+            return searchList[pos].prev;    //TODO: return value based on user choice
         }
 
         private bool DoPreviousValue()
         {
-            int previous = GetPreviousValue();
             switch (GetOperator())
             {
                 case SOperator.LESS:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value < GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATER:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value > GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.LESSEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value <= GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATEREQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value >= GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.EQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value == GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.NOTEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value != GetPreviousValue(x))
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.DIFFBY:
+                    int diff = GetDifferentBy();
+                    if (diff < 0) return false;
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value == GetPreviousValue(x) + diff || searchList[x].value == GetPreviousValue(x) - diff)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
             }
-            return false;
+            return true;
         }
 
         private bool DoSpecificValue()
@@ -628,13 +665,7 @@ namespace BizHawk.MultiClient
                     break;
                 case SOperator.DIFFBY:
                     int diff = GetDifferentBy();
-                    if (diff < 0)
-                    {
-                        MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO add all this crap to GetDifferentBy since it is the same everywhere it is used
-                        DifferentByBox.Focus();
-                        DifferentByBox.SelectAll();
-                        return false;
-                    }
+                    if (diff < 0) return false;
                     for (int x = 0; x < searchList.Count; x++)
                     {
                         if (searchList[x].value == value + diff || searchList[x].value == value - diff)
@@ -664,9 +695,15 @@ namespace BizHawk.MultiClient
         private int GetDifferentBy()
         {
             bool i = InputValidate.IsValidUnsignedNumber(DifferentByBox.Text);
-            if (!i) return -1;
-
-            return int.Parse(DifferentByBox.Text.Trim());
+            if (!i)
+            {
+                MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                DifferentByBox.Focus();
+                DifferentByBox.SelectAll();
+                return -1;
+            }
+            else
+                return int.Parse(DifferentByBox.Text.Trim());
         }
 
         private bool DoSpecificAddress()
@@ -726,13 +763,7 @@ namespace BizHawk.MultiClient
                 case SOperator.DIFFBY:
                     {
                         int diff = GetDifferentBy();
-                        if (diff < 0)
-                        {
-                            MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            DifferentByBox.Focus();
-                            DifferentByBox.SelectAll();
-                            return false;
-                        }
+                        if (diff < 0) return false;
                         for (int x = 0; x < searchList.Count; x++)
                         {
                             if (searchList[x].address == address + diff || searchList[x].address == address - diff)
@@ -808,13 +839,7 @@ namespace BizHawk.MultiClient
                     break;
                 case SOperator.DIFFBY:
                     int diff = GetDifferentBy();
-                    if (diff < 0)
-                    {
-                        MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        DifferentByBox.Focus();
-                        DifferentByBox.SelectAll();
-                        return false;
-                    }
+                    if (diff < 0) return false;
                     for (int x = 0; x < searchList.Count; x++)
                     {
                         if (searchList[x].address == changes + diff || searchList[x].address == changes - diff)

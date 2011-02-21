@@ -93,6 +93,7 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -529,6 +530,7 @@
             // CompareToBox
             // 
             this.CompareToBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CompareToBox.Controls.Add(this.label1);
             this.CompareToBox.Controls.Add(this.NumberOfChangesBox);
             this.CompareToBox.Controls.Add(this.SpecificAddressBox);
             this.CompareToBox.Controls.Add(this.SpecificValueBox);
@@ -743,6 +745,15 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(116, 68);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "0x";
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -851,5 +862,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Label MemDomainLabel;
         private System.Windows.Forms.Label OutputLabel;
+        private System.Windows.Forms.Label label1;
     }
 }
