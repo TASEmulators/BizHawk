@@ -140,6 +140,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.SpeedPercent = value;
 			throttle.SetSpeedPercent(value);
+            Global.RenderPanel.AddMessage(value + "% Speed");
 		}
 
 		protected override void OnClosed(EventArgs e)
