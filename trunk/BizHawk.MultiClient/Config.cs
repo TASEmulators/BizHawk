@@ -49,6 +49,7 @@
         // RamWatch Settings
         public bool AutoLoadRamWatch = false;
         public RecentFiles RecentWatches = new RecentFiles(8);
+        public bool RamWatchSaveWindowPosition = true;
         public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamWatchWndy = -1;
         public int RamWatchWidth = -1;  //Negative numbers will be ignored
@@ -56,6 +57,7 @@
 
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
+        public bool RamSearchSaveWindowPosition = true;
         public RecentFiles RecentSearches = new RecentFiles(8);
         public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamSearchWndy = -1;

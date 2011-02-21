@@ -19,9 +19,9 @@ namespace BizHawk.MultiClient
         //TODO:
         //Window position gets saved but doesn't load properly
         //Add to Ram watch fails to open ram watch if it has neve been opened
-        //Doesnt' release handle after saving file, Ram Watch too?
         //Implement Preview search
         //Implement definitions of Previous value
+        //Search Drop down opened event + gray out menu items that depend on a selected address
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -188,14 +188,14 @@ namespace BizHawk.MultiClient
 
             if (indexes.Count > 0)
             {
-                if (!Global.MainForm.RamWatch1.IsDisposed)
-                {
-                    Global.MainForm.RamWatch1.Focus();
-                }
-                else
+                if (!Global.MainForm.RamWatch1.IsHandleCreated || Global.MainForm.RamWatch1.IsDisposed)
                 {
                     Global.MainForm.RamWatch1 = new RamWatch();
                     Global.MainForm.RamWatch1.Show();
+                }
+                else
+                {
+                    Global.MainForm.RamWatch1.Focus();
                 }
                 for (int x = 0; x < indexes.Count; x++)
                     Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
@@ -369,6 +369,7 @@ namespace BizHawk.MultiClient
             if (indexes.Count > 0)
             {
                 SaveUndo();
+                OutputLabel.Text = indexes.Count.ToString() + " addresses removed"; //TODO: address if 1
                 for (int x = 0; x < indexes.Count; x++)
                 {
                     searchList.Remove(searchList[indexes[x]-x]);
@@ -395,6 +396,7 @@ namespace BizHawk.MultiClient
         {
             if (undoList.Count > 0)
             {
+                OutputLabel.Text = (undoList.Count - searchList.Count).ToString() + " addresses restored";   //TODO: address if only 1
                 searchList = new List<Watch>(undoList);
                 undoList.Clear();
                 DisplaySearchList();
@@ -1204,6 +1206,80 @@ namespace BizHawk.MultiClient
         private void includeMisalignedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             includeMisalignedToolStripMenuItem.Checked ^= true;
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchSaveWindowPosition ^= true;            
+        }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
+        }
+
+        private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            DoSearch();
+        }
+
+        private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearChangeCounts();
+        }
+
+        private void undoToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            DoUndo();
+        }
+
+        private void removeSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveAddresses();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (string.Compare(currentSearchFile, "") == 0) return;
+            SaveSearchFile(currentSearchFile);
+        }
+
+        private void addSelectedToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddToRamWatch();
+        }
+
+        private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PokeAddress();
+        }
+
+        private void searchToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (searchList.Count == 0)
+                searchToolStripMenuItem.Enabled = false;
+            else
+                searchToolStripMenuItem.Enabled = true;
+
+            if (undoList.Count == 0)
+                UndotoolStripButton.Enabled = false;
+            else
+                UndotoolStripButton.Enabled = true;
+
+           ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+
+           if (indexes.Count == 0)
+           {
+               removeSelectedToolStripMenuItem.Enabled = false;
+               addSelectedToRamWatchToolStripMenuItem.Enabled = false;
+               pokeAddressToolStripMenuItem.Enabled = false;
+           }
+           else
+           {
+               removeSelectedToolStripMenuItem.Enabled = true;
+               addSelectedToRamWatchToolStripMenuItem.Enabled = true;
+               pokeAddressToolStripMenuItem.Enabled = true;
+           }
         }
     }
 

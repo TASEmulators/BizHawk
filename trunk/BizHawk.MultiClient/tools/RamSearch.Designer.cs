@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
             this.SearchtoolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -56,7 +55,16 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +83,8 @@
             this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EndiantoolSplitButton = new System.Windows.Forms.ToolStripSplitButton();
             this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.littleEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,8 +109,6 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -115,7 +123,6 @@
             // 
             this.SearchtoolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.SearchtoolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripButton,
             this.openToolStripButton,
             this.saveToolStripButton,
             this.toolStripSeparator,
@@ -124,19 +131,9 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(154, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(131, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
-            // 
-            // newToolStripButton
-            // 
-            this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
-            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.newToolStripButton.Name = "newToolStripButton";
-            this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.newToolStripButton.Text = "&New";
-            this.newToolStripButton.ToolTipText = "New Search List";
             // 
             // openToolStripButton
             // 
@@ -158,6 +155,7 @@
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.saveToolStripButton.Text = "&Save";
             this.saveToolStripButton.ToolTipText = "Save Watch List";
+            this.saveToolStripButton.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
@@ -173,6 +171,7 @@
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.cutToolStripButton.Text = "C&ut";
             this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
+            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
             // WatchtoolStripButton1
             // 
@@ -192,6 +191,7 @@
             this.PoketoolStripButton1.Name = "PoketoolStripButton1";
             this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.PoketoolStripButton1.Text = "Poke";
+            this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
             // 
             // TotalSearchLabel
             // 
@@ -254,6 +254,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.searchToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -271,6 +272,7 @@
             this.saveAsToolStripMenuItem,
             this.appendFileToolStripMenuItem,
             this.recentToolStripMenuItem,
+            this.toolStripSeparator4,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
@@ -302,6 +304,7 @@
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.saveToolStripMenuItem.Text = "&Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
@@ -354,6 +357,11 @@
             this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.autoLoadToolStripMenuItem.Text = "Auto-Load";
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(201, 6);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -361,6 +369,68 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.exitToolStripMenuItem.Text = "&Close";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // searchToolStripMenuItem
+            // 
+            this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.searchToolStripMenuItem1,
+            this.clearChangeCountsToolStripMenuItem,
+            this.undoToolStripMenuItem,
+            this.removeSelectedToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.addSelectedToRamWatchToolStripMenuItem,
+            this.pokeAddressToolStripMenuItem});
+            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
+            this.searchToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.searchToolStripMenuItem.Text = "&Search";
+            this.searchToolStripMenuItem.DropDownOpened += new System.EventHandler(this.searchToolStripMenuItem_DropDownOpened);
+            // 
+            // searchToolStripMenuItem1
+            // 
+            this.searchToolStripMenuItem1.Name = "searchToolStripMenuItem1";
+            this.searchToolStripMenuItem1.Size = new System.Drawing.Size(218, 22);
+            this.searchToolStripMenuItem1.Text = "&Search";
+            this.searchToolStripMenuItem1.Click += new System.EventHandler(this.searchToolStripMenuItem1_Click);
+            // 
+            // clearChangeCountsToolStripMenuItem
+            // 
+            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
+            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
+            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
+            // 
+            // undoToolStripMenuItem
+            // 
+            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.undoToolStripMenuItem.Text = "&Undo";
+            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click_1);
+            // 
+            // removeSelectedToolStripMenuItem
+            // 
+            this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
+            this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.removeSelectedToolStripMenuItem.Text = "&Remove selected";
+            this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(215, 6);
+            // 
+            // addSelectedToRamWatchToolStripMenuItem
+            // 
+            this.addSelectedToRamWatchToolStripMenuItem.Name = "addSelectedToRamWatchToolStripMenuItem";
+            this.addSelectedToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.addSelectedToRamWatchToolStripMenuItem.Text = "&Add selected to Ram Watch";
+            this.addSelectedToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addSelectedToRamWatchToolStripMenuItem_Click);
+            // 
+            // pokeAddressToolStripMenuItem
+            // 
+            this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
+            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
+            this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -370,6 +440,7 @@
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
             // restoreOriginalWindowSizeToolStripMenuItem
             // 
@@ -382,6 +453,7 @@
             this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
             this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -413,7 +485,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -467,7 +539,7 @@
             this.EndiantoolSplitButton});
             this.toolStrip2.Location = new System.Drawing.Point(3, 50);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(208, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(206, 25);
             this.toolStrip2.TabIndex = 2;
             // 
             // DataSizetoolStripSplitButton1
@@ -544,6 +616,18 @@
             this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
             this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
+            // 
+            // includeMisalignedToolStripMenuItem
+            // 
+            this.includeMisalignedToolStripMenuItem.Name = "includeMisalignedToolStripMenuItem";
+            this.includeMisalignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.includeMisalignedToolStripMenuItem.Text = "Include mis-aligned";
+            this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click);
+            // 
             // EndiantoolSplitButton
             // 
             this.EndiantoolSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
@@ -553,7 +637,7 @@
             this.EndiantoolSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("EndiantoolSplitButton.Image")));
             this.EndiantoolSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.EndiantoolSplitButton.Name = "EndiantoolSplitButton";
-            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 17);
+            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 22);
             this.EndiantoolSplitButton.Text = "Endian";
             // 
             // bigEndianToolStripMenuItem
@@ -808,18 +892,6 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
-            // 
-            // includeMisalignedToolStripMenuItem
-            // 
-            this.includeMisalignedToolStripMenuItem.Name = "includeMisalignedToolStripMenuItem";
-            this.includeMisalignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.includeMisalignedToolStripMenuItem.Text = "Include mis-aligned";
-            this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click);
-            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -865,7 +937,6 @@
         #endregion
 
         private System.Windows.Forms.ToolStrip SearchtoolStrip1;
-        private System.Windows.Forms.ToolStripButton newToolStripButton;
         private System.Windows.Forms.ToolStripButton openToolStripButton;
         private System.Windows.Forms.ToolStripButton saveToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
@@ -936,5 +1007,14 @@
         private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem includeMisalignedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem clearChangeCountsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem addSelectedToRamWatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
     }
 }
