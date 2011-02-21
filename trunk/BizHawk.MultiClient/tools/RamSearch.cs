@@ -561,26 +561,85 @@ namespace BizHawk.MultiClient
 
         private bool DoSpecificValue()
         {
+            int value = GetSpecificValue();
+            if (value < 0)
+            {
+                MessageBox.Show("Missing or invalid value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                SpecificValueBox.Focus();
+                SpecificValueBox.SelectAll();
+                return false;
+            }
             switch (GetOperator())
             {
                 case SOperator.LESS:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value < value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATER:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value > value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.LESSEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value <= value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.GREATEREQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value >= value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.EQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value == value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.NOTEQUAL:
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value != value)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.DIFFBY:
+                    int diff = GetDifferentBy();
+                    if (diff < 0)
+                    {
+                        MessageBox.Show("Missing or invalid Different By value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error); //TODO add all this crap to GetDifferentBy since it is the same everywhere it is used
+                        DifferentByBox.Focus();
+                        DifferentByBox.SelectAll();
+                        return false;
+                    }
+                    for (int x = 0; x < searchList.Count; x++)
+                    {
+                        if (searchList[x].value == value + diff || searchList[x].value == value - diff)
+                            weededList.Add(searchList[x]);
+                    }
                     break;
                 case SOperator.MODULUS:
                     break;
             }
-            return false;
+            return true;
+        }
+
+        private int GetSpecificValue()
+        {
+            bool i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
+            if (!i) return -1;
+
+            return int.Parse(SpecificValueBox.Text.Trim());
         }
 
         private int GetSpecificAddress()
@@ -596,7 +655,7 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidUnsignedNumber(DifferentByBox.Text);
             if (!i) return -1;
 
-            return int.Parse(DifferentByBox.Text.ToUpper().Trim());
+            return int.Parse(DifferentByBox.Text.Trim());
         }
 
         private bool DoSpecificAddress()
