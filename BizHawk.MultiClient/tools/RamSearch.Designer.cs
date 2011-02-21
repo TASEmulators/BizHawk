@@ -68,6 +68,10 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -131,7 +135,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(131, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(162, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -155,7 +159,7 @@
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.saveToolStripButton.Text = "&Save";
             this.saveToolStripButton.ToolTipText = "Save Watch List";
-            this.saveToolStripButton.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+            this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
@@ -436,7 +440,8 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.restoreOriginalWindowSizeToolStripMenuItem,
-            this.saveWindowPositionToolStripMenuItem});
+            this.saveWindowPositionToolStripMenuItem,
+            this.definePreviousValueToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -445,15 +450,47 @@
             // restoreOriginalWindowSizeToolStripMenuItem
             // 
             this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
-            this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.restoreOriginalWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.restoreOriginalWindowSizeToolStripMenuItem.Text = "Restore Window Size";
             // 
             // saveWindowPositionToolStripMenuItem
             // 
             this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+            // 
+            // definePreviousValueToolStripMenuItem
+            // 
+            this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sinceLastSearchToolStripMenuItem,
+            this.sinceLastChangeToolStripMenuItem,
+            this.sinceLastFrameToolStripMenuItem});
+            this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
+            this.definePreviousValueToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.definePreviousValueToolStripMenuItem.Text = "Define Previous Value As";
+            this.definePreviousValueToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueToolStripMenuItem_DropDownOpened);
+            // 
+            // sinceLastSearchToolStripMenuItem
+            // 
+            this.sinceLastSearchToolStripMenuItem.Name = "sinceLastSearchToolStripMenuItem";
+            this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
+            this.sinceLastSearchToolStripMenuItem.Click += new System.EventHandler(this.sinceLastSearchToolStripMenuItem_Click);
+            // 
+            // sinceLastChangeToolStripMenuItem
+            // 
+            this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
+            this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
+            this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
+            // 
+            // sinceLastFrameToolStripMenuItem
+            // 
+            this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
+            this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
+            this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -485,7 +522,7 @@
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -1016,5 +1053,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem addSelectedToRamWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem definePreviousValueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sinceLastFrameToolStripMenuItem;
     }
 }

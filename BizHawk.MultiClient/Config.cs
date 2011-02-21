@@ -62,7 +62,8 @@
         public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamSearchWndy = -1;
         public int RamSearchWidth = -1;  //Negative numbers will be ignored
-        public int RamSearchHeight = -1; 
+        public int RamSearchHeight = -1;
+        public int RamSearchPreviousAs = 0;
 
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
