@@ -181,14 +181,14 @@ namespace BizHawk.MultiClient
         public void CreateDevice()
         {
             DestroyDevice();
-            Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, CreateFlags.HardwareVertexProcessing,
-                new PresentParameters
+			var pp = new PresentParameters
                 {
                     BackBufferWidth = Math.Max(1, backingControl.ClientSize.Width),
                     BackBufferHeight = Math.Max(1, backingControl.ClientSize.Height),
                     DeviceWindowHandle = backingControl.Handle,
-                    PresentationInterval = PresentInterval.One
-                });
+                    PresentationInterval = Global.Config.DisplayVSync?PresentInterval.One:PresentInterval.Immediate
+                };
+            Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, CreateFlags.HardwareVertexProcessing, pp);
             Sprite = new Sprite(Device);
             Texture = new ImageTexture(Device);
             MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Arial");

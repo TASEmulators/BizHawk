@@ -281,5 +281,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private IList<MemoryDomain> memoryDomains;
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+
+		public object Query(EmulatorQuery query)
+		{
+			switch (query)
+			{
+				case EmulatorQuery.VsyncRate:
+					return 60.0;
+				default:
+					return null;
+			}
+		}
     }
 }

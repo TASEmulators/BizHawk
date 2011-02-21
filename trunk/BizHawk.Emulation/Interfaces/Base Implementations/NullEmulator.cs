@@ -46,6 +46,9 @@ namespace BizHawk
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
-
+		public object Query(EmulatorQuery query)
+		{
+			return null;
+		}
     }
 }

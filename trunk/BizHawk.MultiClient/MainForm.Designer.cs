@@ -123,6 +123,27 @@
 			this.pauseWhenMenuActivatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startPausedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.frameSkipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.miLimitFramerate = new System.Windows.Forms.ToolStripMenuItem();
+			this.miDisplayVsync = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+			this.miAutoMinimizeSkipping = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip0 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip4 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip6 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip7 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip8 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miFrameskip9 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+			this.miSpeed50 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miSpeed75 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miSpeed100 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miSpeed150 = new System.Windows.Forms.ToolStripMenuItem();
+			this.miSpeed200 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rAMWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rAMSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -834,7 +855,8 @@
             this.hotkeysToolStripMenuItem,
             this.toolStripSeparator9,
             this.soundToolStripMenuItem,
-            this.gUIToolStripMenuItem});
+            this.gUIToolStripMenuItem,
+            this.frameSkipToolStripMenuItem});
 			this.configToolStripMenuItem.Name = "configToolStripMenuItem";
 			this.configToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
 			this.configToolStripMenuItem.Text = "&Config";
@@ -842,26 +864,26 @@
 			// controllersToolStripMenuItem
 			// 
 			this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.controllersToolStripMenuItem.Text = "&Controllers";
 			this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
 			// 
 			// hotkeysToolStripMenuItem
 			// 
 			this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.hotkeysToolStripMenuItem.Text = "&Hotkeys";
 			this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(134, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
 			// 
 			// soundToolStripMenuItem
 			// 
 			this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
-			this.soundToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.soundToolStripMenuItem.Text = "&Sound";
 			this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
 			// 
@@ -872,7 +894,7 @@
             this.saveWindowPositionToolStripMenuItem,
             this.startPausedToolStripMenuItem});
 			this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
-			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.gUIToolStripMenuItem.Text = "GUI";
 			this.gUIToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gUIToolStripMenuItem_DropDownOpened);
 			// 
@@ -896,6 +918,170 @@
 			this.startPausedToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
 			this.startPausedToolStripMenuItem.Text = "Start paused";
 			this.startPausedToolStripMenuItem.Click += new System.EventHandler(this.startPausedToolStripMenuItem_Click);
+			// 
+			// frameSkipToolStripMenuItem
+			// 
+			this.frameSkipToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miLimitFramerate,
+            this.miDisplayVsync,
+            this.toolStripMenuItem3,
+            this.miAutoMinimizeSkipping,
+            this.miFrameskip0,
+            this.miFrameskip1,
+            this.miFrameskip2,
+            this.miFrameskip3,
+            this.miFrameskip4,
+            this.miFrameskip5,
+            this.miFrameskip6,
+            this.miFrameskip7,
+            this.miFrameskip8,
+            this.miFrameskip9,
+            this.toolStripMenuItem5,
+            this.miSpeed50,
+            this.miSpeed75,
+            this.miSpeed100,
+            this.miSpeed150,
+            this.miSpeed200});
+			this.frameSkipToolStripMenuItem.Name = "frameSkipToolStripMenuItem";
+			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.frameSkipToolStripMenuItem.Text = "Speed/Skip";
+			this.frameSkipToolStripMenuItem.DropDownOpened += new System.EventHandler(this.frameSkipToolStripMenuItem_DropDownOpened);
+			// 
+			// miLimitFramerate
+			// 
+			this.miLimitFramerate.Name = "miLimitFramerate";
+			this.miLimitFramerate.Size = new System.Drawing.Size(192, 22);
+			this.miLimitFramerate.Text = "Limit Framerate";
+			this.miLimitFramerate.Click += new System.EventHandler(this.miLimitFramerate_Click);
+			// 
+			// miDisplayVsync
+			// 
+			this.miDisplayVsync.Name = "miDisplayVsync";
+			this.miDisplayVsync.Size = new System.Drawing.Size(192, 22);
+			this.miDisplayVsync.Text = "Display VSync";
+			this.miDisplayVsync.Click += new System.EventHandler(this.miDisplayVsync_Click);
+			// 
+			// toolStripMenuItem3
+			// 
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(189, 6);
+			// 
+			// miAutoMinimizeSkipping
+			// 
+			this.miAutoMinimizeSkipping.Name = "miAutoMinimizeSkipping";
+			this.miAutoMinimizeSkipping.Size = new System.Drawing.Size(192, 22);
+			this.miAutoMinimizeSkipping.Text = "Auto-minimize skipping";
+			this.miAutoMinimizeSkipping.Click += new System.EventHandler(this.miAutoMinimizeSkipping_Click);
+			// 
+			// miFrameskip0
+			// 
+			this.miFrameskip0.Name = "miFrameskip0";
+			this.miFrameskip0.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip0.Text = "0 (never skip)";
+			this.miFrameskip0.Click += new System.EventHandler(this.miFrameskip0_Click);
+			// 
+			// miFrameskip1
+			// 
+			this.miFrameskip1.Name = "miFrameskip1";
+			this.miFrameskip1.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip1.Text = "1";
+			this.miFrameskip1.Click += new System.EventHandler(this.miFrameskip1_Click);
+			// 
+			// miFrameskip2
+			// 
+			this.miFrameskip2.Name = "miFrameskip2";
+			this.miFrameskip2.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip2.Text = "2";
+			this.miFrameskip2.Click += new System.EventHandler(this.miFrameskip2_Click);
+			// 
+			// miFrameskip3
+			// 
+			this.miFrameskip3.Name = "miFrameskip3";
+			this.miFrameskip3.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip3.Text = "3";
+			this.miFrameskip3.Click += new System.EventHandler(this.miFrameskip3_Click);
+			// 
+			// miFrameskip4
+			// 
+			this.miFrameskip4.Name = "miFrameskip4";
+			this.miFrameskip4.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip4.Text = "4";
+			this.miFrameskip4.Click += new System.EventHandler(this.miFrameskip4_Click);
+			// 
+			// miFrameskip5
+			// 
+			this.miFrameskip5.Name = "miFrameskip5";
+			this.miFrameskip5.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip5.Text = "5";
+			this.miFrameskip5.Click += new System.EventHandler(this.miFrameskip5_Click);
+			// 
+			// miFrameskip6
+			// 
+			this.miFrameskip6.Name = "miFrameskip6";
+			this.miFrameskip6.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip6.Text = "6";
+			this.miFrameskip6.Click += new System.EventHandler(this.miFrameskip6_Click);
+			// 
+			// miFrameskip7
+			// 
+			this.miFrameskip7.Name = "miFrameskip7";
+			this.miFrameskip7.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip7.Text = "7";
+			this.miFrameskip7.Click += new System.EventHandler(this.miFrameskip7_Click);
+			// 
+			// miFrameskip8
+			// 
+			this.miFrameskip8.Name = "miFrameskip8";
+			this.miFrameskip8.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip8.Text = "8";
+			this.miFrameskip8.Click += new System.EventHandler(this.miFrameskip8_Click);
+			// 
+			// miFrameskip9
+			// 
+			this.miFrameskip9.Name = "miFrameskip9";
+			this.miFrameskip9.Size = new System.Drawing.Size(192, 22);
+			this.miFrameskip9.Text = "9";
+			this.miFrameskip9.Click += new System.EventHandler(this.miFrameskip9_Click);
+			// 
+			// toolStripMenuItem5
+			// 
+			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(189, 6);
+			// 
+			// miSpeed50
+			// 
+			this.miSpeed50.Name = "miSpeed50";
+			this.miSpeed50.Size = new System.Drawing.Size(192, 22);
+			this.miSpeed50.Text = "Speed 50%";
+			this.miSpeed50.Click += new System.EventHandler(this.miSpeed50_Click);
+			// 
+			// miSpeed75
+			// 
+			this.miSpeed75.Name = "miSpeed75";
+			this.miSpeed75.Size = new System.Drawing.Size(192, 22);
+			this.miSpeed75.Text = "Speed 75%";
+			this.miSpeed75.Click += new System.EventHandler(this.miSpeed75_Click);
+			// 
+			// miSpeed100
+			// 
+			this.miSpeed100.Name = "miSpeed100";
+			this.miSpeed100.Size = new System.Drawing.Size(192, 22);
+			this.miSpeed100.Text = "Speed 100%";
+			this.miSpeed100.Click += new System.EventHandler(this.miSpeed100_Click);
+			// 
+			// miSpeed150
+			// 
+			this.miSpeed150.Name = "miSpeed150";
+			this.miSpeed150.Size = new System.Drawing.Size(192, 22);
+			this.miSpeed150.Text = "Speed 150%";
+			this.miSpeed150.Click += new System.EventHandler(this.miSpeed150_Click);
+			// 
+			// miSpeed200
+			// 
+			this.miSpeed200.Name = "miSpeed200";
+			this.miSpeed200.Size = new System.Drawing.Size(192, 22);
+			this.miSpeed200.Text = "Speed 200%";
+			this.miSpeed200.Click += new System.EventHandler(this.miSpeed200_Click);
 			// 
 			// toolsToolStripMenuItem
 			// 
@@ -965,14 +1151,14 @@
 			// 
 			this.helpToolStripMenuItem1.Enabled = false;
 			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
 			this.helpToolStripMenuItem1.Text = "&Help";
 			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
 			// 
 			// aboutToolStripMenuItem
 			// 
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
@@ -1102,6 +1288,27 @@
         private System.Windows.Forms.ToolStripMenuItem rAMPokeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startPausedToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem frameSkipToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem miDisplayVsync;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem miAutoMinimizeSkipping;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip0;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip1;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip2;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip3;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip4;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip5;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip6;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip7;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip8;
+		private System.Windows.Forms.ToolStripMenuItem miFrameskip9;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+		private System.Windows.Forms.ToolStripMenuItem miSpeed50;
+		private System.Windows.Forms.ToolStripMenuItem miSpeed75;
+		private System.Windows.Forms.ToolStripMenuItem miSpeed100;
+		private System.Windows.Forms.ToolStripMenuItem miSpeed150;
+		private System.Windows.Forms.ToolStripMenuItem miSpeed200;
+		private System.Windows.Forms.ToolStripMenuItem miLimitFramerate;
     }
 }
 

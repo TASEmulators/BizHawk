@@ -441,6 +441,12 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
         public string SystemId { get { return "TI83"; } }
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
-        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } } 
+        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
+
+
+		public object Query(EmulatorQuery query)
+		{
+			return null;
+		}
     }
 }
