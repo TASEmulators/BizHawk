@@ -174,24 +174,24 @@
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.noneToolStripMenuItem.Text = "None";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(132, 6);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             // 
             // autoLoadToolStripMenuItem
             // 
             this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.autoLoadToolStripMenuItem.Text = "Auto-Load";
             // 
             // toolStripSeparator1
@@ -323,7 +323,7 @@
             this.WatchListView.Location = new System.Drawing.Point(25, 76);
             this.WatchListView.Name = "WatchListView";
             this.WatchListView.selectedItem = -1;
-            this.WatchListView.Size = new System.Drawing.Size(314, 327);
+            this.WatchListView.Size = new System.Drawing.Size(314, 309);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.View = System.Windows.Forms.View.Details;
@@ -572,7 +572,7 @@
             // 
             this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.MessageLabel.AutoSize = true;
-            this.MessageLabel.Location = new System.Drawing.Point(28, 408);
+            this.MessageLabel.Location = new System.Drawing.Point(28, 390);
             this.MessageLabel.Name = "MessageLabel";
             this.MessageLabel.Size = new System.Drawing.Size(187, 13);
             this.MessageLabel.TabIndex = 5;
@@ -583,7 +583,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(364, 424);
+            this.ClientSize = new System.Drawing.Size(364, 406);
             this.Controls.Add(this.MessageLabel);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
