@@ -71,15 +71,19 @@
             // 
             // AddressBox
             // 
+            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.AddressBox.Location = new System.Drawing.Point(69, 6);
+            this.AddressBox.MaxLength = 8;
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.Size = new System.Drawing.Size(100, 20);
             this.AddressBox.TabIndex = 2;
-            this.AddressBox.Text = "0000";
+            this.AddressBox.Text = "00000000";
+            this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
             // 
             // NotesBox
             // 
             this.NotesBox.Location = new System.Drawing.Point(69, 32);
+            this.NotesBox.MaxLength = 256;
             this.NotesBox.Name = "NotesBox";
             this.NotesBox.Size = new System.Drawing.Size(100, 20);
             this.NotesBox.TabIndex = 3;
