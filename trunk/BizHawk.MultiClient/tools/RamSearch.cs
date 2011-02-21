@@ -21,7 +21,6 @@ namespace BizHawk.MultiClient
         //Add to Ram watch fails to open ram watch if it has neve been opened
         //Doesnt' release handle after saving file, Ram Watch too?
         //Implement Preview search
-        //Implement Check Misaligned (does 2 & 4 byte on each possible address instead of every other (or every 4)
         //Implement definitions of Previous value
 
         string systemID = "NULL";
@@ -272,17 +271,21 @@ namespace BizHawk.MultiClient
                 startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
             int count = 0;
             int divisor = 1;
-            switch (GetDataSize())
+
+            if (!includeMisalignedToolStripMenuItem.Checked)
             {
-                case atype.WORD:
-                    divisor = 2;
-                    break;
-                case atype.DWORD:
-                    divisor = 4;
-                    break;
-                default:
-                    divisor = 1;
-                    break;
+                switch (GetDataSize())
+                {
+                    case atype.WORD:
+                        divisor = 2;
+                        break;
+                    case atype.DWORD:
+                        divisor = 4;
+                        break;
+                    default:
+                        divisor = 1;
+                        break;
+                }
             }
             
             for (int x = 0; x < ((Global.Emulator.MainMemory.Size / divisor)-1); x++)
@@ -294,17 +297,22 @@ namespace BizHawk.MultiClient
                 searchList[x].signed = GetDataType();
                 searchList[x].PeekAddress(Global.Emulator.MainMemory);
                 searchList[x].prev = searchList[x].value;
-                switch (GetDataSize())
+                if (includeMisalignedToolStripMenuItem.Checked)
+                    count++;
+                else
                 {
-                    case atype.BYTE:    //TODO: misaligned option
-                        count++;
-                        break;
-                    case atype.WORD:
-                        count += 2;
-                        break;
-                    case atype.DWORD:
-                        count += 4;
-                        break;
+                    switch (GetDataSize())
+                    {
+                        case atype.BYTE:    //TODO: misaligned option
+                            count++;
+                            break;
+                        case atype.WORD:
+                            count += 2;
+                            break;
+                        case atype.DWORD:
+                            count += 4;
+                            break;
+                    }
                 }
                 
             }
@@ -1191,6 +1199,11 @@ namespace BizHawk.MultiClient
             var file = new FileInfo(ofd.FileName);
             Global.Config.LastRomPath = file.DirectoryName;
             return file;
+        }
+
+        private void includeMisalignedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            includeMisalignedToolStripMenuItem.Checked ^= true;
         }
     }
 
