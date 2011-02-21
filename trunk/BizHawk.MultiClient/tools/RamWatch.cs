@@ -18,7 +18,6 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Call AskSave in main client X function
-        //DWORD display
         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
         //When Watch object has a changes member, display in watch list with a reset changes function
@@ -42,32 +41,8 @@ namespace BizHawk.MultiClient
         public void UpdateValues()
         {
             for (int x = 0; x < watchList.Count; x++)
-            {
-                if (watchList[x].type == atype.SEPARATOR) continue;
-                switch (watchList[x].type)
-                {
-                    case atype.BYTE:
-                        watchList[x].value = Global.Emulator.MainMemory.PeekByte(watchList[x].address);
-                        break;
-                    case atype.WORD:
-                        {
-                            if (watchList[x].bigendian)
-                            {
-                                watchList[x].value = ((Global.Emulator.MainMemory.PeekByte(watchList[x].address)*256) + 
-                                    Global.Emulator.MainMemory.PeekByte((watchList[x+1].address)+1) );
-                            }
-                            else
-                            {
-                                watchList[x].value = (Global.Emulator.MainMemory.PeekByte(watchList[x].address) +
-                                   (Global.Emulator.MainMemory.PeekByte((watchList[x].address)+1)*256) );
-                            }
-                        }
-                        break;
-                    case atype.DWORD:
-                        break;
-                }
-                WatchListView.Refresh();
-            }          
+                watchList[x].PeekAddress(Global.Emulator.MainMemory);
+            WatchListView.Refresh();       
         }
 
         public void AddWatch(Watch w)

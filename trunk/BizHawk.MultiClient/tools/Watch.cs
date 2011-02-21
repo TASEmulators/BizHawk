@@ -115,5 +115,51 @@ namespace BizHawk.MultiClient
                 return 's'; //Just in case
             }
         }
+
+        private void PeekByte(MemoryDomain domain)
+        {
+            value = domain.PeekByte(address);
+        }
+
+        private int PeekWord(MemoryDomain domain, int addr)
+        {
+            int temp = 0;
+            if (bigendian)
+            {
+                temp = ((domain.PeekByte(addr) * 256) +
+                    domain.PeekByte(addr + 1));
+            }
+            else
+            {
+                temp = ((domain.PeekByte(addr) +
+                    domain.PeekByte(addr + 1) * 256));
+            }
+            return temp;
+        }
+
+        private void PeekDWord(MemoryDomain domain)
+        {
+            value = ((PeekWord(domain, address) * 65536) +
+                PeekWord(domain, address + 2));
+        }
+
+        public void PeekAddress(MemoryDomain domain)
+        {
+            if (type == atype.SEPARATOR)
+                return;
+
+            switch(type)
+            {
+                case atype.BYTE:        
+                    PeekByte(domain);
+                    break;
+                case atype.WORD:
+                    value = PeekWord(domain, address);
+                    break;
+                case atype.DWORD:
+                    PeekDWord(domain);
+                    break;
+            }
+        }
     }
 }
