@@ -18,6 +18,13 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Window position gets saved but doesn't load properly
+        //Add to Ram watch fails to open ram watch if it has neve been opened
+        //Implement DWORD start new search
+        //Implement WORD & DWORD in UpdateValues
+        //Implement Auto-Search
+        //Impelment File handling
+        //Implement Preview search
+        //Remove Modulo
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -43,7 +50,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < searchList.Count; x++)
             {
                 searchList[x].prev = searchList[x].value;
-                //TODO: format based on asigned
+
                 searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
                 
                 if (searchList[x].prev != searchList[x].value)
@@ -426,6 +433,15 @@ namespace BizHawk.MultiClient
                     text = searchList[index].value.ToString("X");
 
             }
+            if (column == 2)
+            {
+                if (searchList[index].signed == asigned.UNSIGNED)       //TODO: only use .prev if that is the definition of prev set by user, else use PrevList
+                    text = searchList[index].prev.ToString();
+                else if (searchList[index].signed == asigned.SIGNED)
+                    text = ((sbyte)searchList[index].prev).ToString();
+                else if (searchList[index].signed == asigned.HEX)
+                    text = searchList[index].prev.ToString("X");
+            }
             if (column == 3)
             {
                 text = searchList[index].changecount.ToString();
@@ -466,7 +482,7 @@ namespace BizHawk.MultiClient
             weededList.Clear();
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
+        private void DoSearch()
         {
             if (GenerateWeedOutList())
             {
@@ -476,7 +492,11 @@ namespace BizHawk.MultiClient
                 DisplaySearchList();
             }
             //TODO: else notify the user something went wrong?
+        }
 
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            DoSearch();
         }
 
         private SCompareTo GetCompareTo()
