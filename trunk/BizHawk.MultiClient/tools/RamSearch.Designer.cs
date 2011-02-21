@@ -82,10 +82,7 @@
             this.SpecificValueRadio = new System.Windows.Forms.RadioButton();
             this.PreviousValueRadio = new System.Windows.Forms.RadioButton();
             this.ComparisonBox = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.DifferentByBox = new System.Windows.Forms.TextBox();
-            this.ModuloBox = new System.Windows.Forms.TextBox();
-            this.ModuloRadio = new System.Windows.Forms.RadioButton();
             this.DifferentByRadio = new System.Windows.Forms.RadioButton();
             this.NotEqualToRadio = new System.Windows.Forms.RadioButton();
             this.EqualToRadio = new System.Windows.Forms.RadioButton();
@@ -426,7 +423,7 @@
             this.EndiantoolSplitButton});
             this.toolStrip2.Location = new System.Drawing.Point(3, 50);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(208, 25);
+            this.toolStrip2.Size = new System.Drawing.Size(206, 25);
             this.toolStrip2.TabIndex = 2;
             // 
             // DataSizetoolStripSplitButton1
@@ -510,7 +507,7 @@
             this.EndiantoolSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("EndiantoolSplitButton.Image")));
             this.EndiantoolSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.EndiantoolSplitButton.Name = "EndiantoolSplitButton";
-            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 17);
+            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 22);
             this.EndiantoolSplitButton.Text = "Endian";
             // 
             // bigEndianToolStripMenuItem
@@ -518,14 +515,14 @@
             this.bigEndianToolStripMenuItem.Checked = true;
             this.bigEndianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.bigEndianToolStripMenuItem.Name = "bigEndianToolStripMenuItem";
-            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.bigEndianToolStripMenuItem.Text = "Big Endian";
             this.bigEndianToolStripMenuItem.Click += new System.EventHandler(this.bigEndianToolStripMenuItem_Click);
             // 
             // littleEndianToolStripMenuItem
             // 
             this.littleEndianToolStripMenuItem.Name = "littleEndianToolStripMenuItem";
-            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.littleEndianToolStripMenuItem.Text = "Little Endian";
             this.littleEndianToolStripMenuItem.Click += new System.EventHandler(this.littleEndianToolStripMenuItem_Click);
             // 
@@ -619,10 +616,7 @@
             // ComparisonBox
             // 
             this.ComparisonBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ComparisonBox.Controls.Add(this.label1);
             this.ComparisonBox.Controls.Add(this.DifferentByBox);
-            this.ComparisonBox.Controls.Add(this.ModuloBox);
-            this.ComparisonBox.Controls.Add(this.ModuloRadio);
             this.ComparisonBox.Controls.Add(this.DifferentByRadio);
             this.ComparisonBox.Controls.Add(this.NotEqualToRadio);
             this.ComparisonBox.Controls.Add(this.EqualToRadio);
@@ -632,19 +626,10 @@
             this.ComparisonBox.Controls.Add(this.LessThanRadio);
             this.ComparisonBox.Location = new System.Drawing.Point(250, 233);
             this.ComparisonBox.Name = "ComparisonBox";
-            this.ComparisonBox.Size = new System.Drawing.Size(211, 190);
+            this.ComparisonBox.Size = new System.Drawing.Size(211, 159);
             this.ComparisonBox.TabIndex = 6;
             this.ComparisonBox.TabStop = false;
             this.ComparisonBox.Text = "Comparison Operator";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(115, 156);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(15, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Is";
             // 
             // DifferentByBox
             // 
@@ -653,27 +638,6 @@
             this.DifferentByBox.Name = "DifferentByBox";
             this.DifferentByBox.Size = new System.Drawing.Size(40, 20);
             this.DifferentByBox.TabIndex = 9;
-            // 
-            // ModuloBox
-            // 
-            this.ModuloBox.Enabled = false;
-            this.ModuloBox.Location = new System.Drawing.Point(71, 151);
-            this.ModuloBox.Name = "ModuloBox";
-            this.ModuloBox.Size = new System.Drawing.Size(40, 20);
-            this.ModuloBox.TabIndex = 8;
-            // 
-            // ModuloRadio
-            // 
-            this.ModuloRadio.AutoSize = true;
-            this.ModuloRadio.Enabled = false;
-            this.ModuloRadio.Location = new System.Drawing.Point(7, 153);
-            this.ModuloRadio.Name = "ModuloRadio";
-            this.ModuloRadio.Size = new System.Drawing.Size(60, 17);
-            this.ModuloRadio.TabIndex = 7;
-            this.ModuloRadio.TabStop = true;
-            this.ModuloRadio.Text = "Modulo";
-            this.ModuloRadio.UseVisualStyleBackColor = true;
-            this.ModuloRadio.CheckedChanged += new System.EventHandler(this.ModuloRadio_CheckedChanged);
             // 
             // DifferentByRadio
             // 
@@ -751,13 +715,15 @@
             // AutoSearchCheckBox
             // 
             this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
             this.AutoSearchCheckBox.AutoSize = true;
-            this.AutoSearchCheckBox.Location = new System.Drawing.Point(257, 432);
+            this.AutoSearchCheckBox.Location = new System.Drawing.Point(250, 400);
             this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
-            this.AutoSearchCheckBox.Size = new System.Drawing.Size(85, 17);
+            this.AutoSearchCheckBox.Size = new System.Drawing.Size(76, 23);
             this.AutoSearchCheckBox.TabIndex = 7;
             this.AutoSearchCheckBox.Text = "Auto Search";
             this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
+            this.AutoSearchCheckBox.CheckedChanged += new System.EventHandler(this.AutoSearchCheckBox_CheckedChanged);
             // 
             // MemDomainLabel
             // 
@@ -871,10 +837,7 @@
         private System.Windows.Forms.RadioButton LessThanOrEqualToRadio;
         private System.Windows.Forms.RadioButton GreaterThanRadio;
         private System.Windows.Forms.RadioButton LessThanRadio;
-        private System.Windows.Forms.RadioButton ModuloRadio;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox DifferentByBox;
-        private System.Windows.Forms.TextBox ModuloBox;
         private System.Windows.Forms.CheckBox AutoSearchCheckBox;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;

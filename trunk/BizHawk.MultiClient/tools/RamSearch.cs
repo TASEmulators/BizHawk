@@ -24,7 +24,6 @@ namespace BizHawk.MultiClient
         //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
-        //Remove Modulo
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -32,7 +31,7 @@ namespace BizHawk.MultiClient
         List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
-        public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY, MODULUS };
+        public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
         public enum SSigned { SIGNED, UNSIGNED, HEX };
 
         //Reset window position item
@@ -174,14 +173,6 @@ namespace BizHawk.MultiClient
                 DifferentByBox.Enabled = true;
             else
                 DifferentByBox.Enabled = false;
-        }
-
-        private void ModuloRadio_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ModuloRadio.Checked)
-                ModuloBox.Enabled = true;
-            else
-                ModuloBox.Enabled = false;
         }
 
         private void AddToRamWatch()
@@ -529,8 +520,6 @@ namespace BizHawk.MultiClient
                 return SOperator.NOTEQUAL;
             if (DifferentByRadio.Checked)
                 return SOperator.DIFFBY;
-            if (ModuloRadio.Checked)
-                return SOperator.MODULUS;
 
             return SOperator.LESS; //Just in case
         }
@@ -555,8 +544,14 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private int GetPreviousValue()
+        {
+            return 0;
+        }
+
         private bool DoPreviousValue()
         {
+            int previous = GetPreviousValue();
             switch (GetOperator())
             {
                 case SOperator.LESS:
@@ -572,8 +567,6 @@ namespace BizHawk.MultiClient
                 case SOperator.NOTEQUAL:
                     break;
                 case SOperator.DIFFBY:
-                    break;
-                case SOperator.MODULUS:
                     break;
             }
             return false;
@@ -647,8 +640,6 @@ namespace BizHawk.MultiClient
                         if (searchList[x].value == value + diff || searchList[x].value == value - diff)
                             weededList.Add(searchList[x]);
                     }
-                    break;
-                case SOperator.MODULUS:
                     break;
             }
             return true;
@@ -749,9 +740,6 @@ namespace BizHawk.MultiClient
                         }
                     }
                     break;
-                case SOperator.MODULUS:
-                    //TODO
-                    break;
             }
             return true;
         }
@@ -832,8 +820,6 @@ namespace BizHawk.MultiClient
                         if (searchList[x].address == changes + diff || searchList[x].address == changes - diff)
                             weededList.Add(searchList[x]);
                     }
-                    break;
-                case SOperator.MODULUS:
                     break;
             }
             return true;
@@ -926,6 +912,14 @@ namespace BizHawk.MultiClient
         {
             bigEndianToolStripMenuItem.Checked = false;
             littleEndianToolStripMenuItem.Checked = true;
+        }
+
+        private void AutoSearchCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AutoSearchCheckBox.Checked)
+                AutoSearchCheckBox.BackColor = Color.Pink;
+            else
+                AutoSearchCheckBox.BackColor = this.BackColor;
         }
     }
 }
