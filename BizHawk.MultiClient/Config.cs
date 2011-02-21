@@ -28,6 +28,14 @@
         public int MainWndx = -1; //Negative numbers will be ignored
         public int MainWndy = -1;
 
+		// Run-Control settings
+		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
+		public int FrameSkip = 0;
+		public int SpeedPercent = 100;
+		public bool LimitFramerate = true;
+		public bool AutoMinimizeSkipping = true;
+		public bool DisplayVSync = false;
+
         // Display options
         public bool DisplayFPS = false;
         public bool DisplayFrameCounter = false;

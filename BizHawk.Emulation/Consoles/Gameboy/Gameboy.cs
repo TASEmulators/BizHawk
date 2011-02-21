@@ -846,5 +846,11 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
+
+
+		public object Query(EmulatorQuery query)
+		{
+			return null;
+		}
     }
 }

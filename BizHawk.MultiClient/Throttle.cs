@@ -9,6 +9,97 @@ namespace BizHawk.MultiClient
 {
 	class Throttle
 	{
+		int lastskiprate;
+		int framestoskip;
+		int framesskipped;
+		public bool skipnextframe;
+
+		public bool signal_frameAdvance;
+		public bool signal_fastForward;
+		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
+
+		public int cfg_frameskiprate { get { return Global.Config.FrameSkip; } }
+		public bool cfg_frameLimit { get { return Global.Config.LimitFramerate; } }
+		public bool cfg_autoframeskipenab { get { return Global.Config.AutoMinimizeSkipping; } }
+
+		public void Step(bool allowSleep, int forceFrameSkip)
+		{
+			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
+			int ffSkipRate = (forceFrameSkip < 0) ? 9 : forceFrameSkip;
+
+			if (lastskiprate != skipRate)
+			{
+				lastskiprate = skipRate;
+				framestoskip = 0; // otherwise switches to lower frameskip rates will lag behind
+			}
+
+			if (!skipnextframe || forceFrameSkip == 0 || signal_frameAdvance || (signal_continuousframeAdvancing && !signal_fastForward))
+			{
+				framesskipped = 0;
+
+				if (framestoskip > 0)
+					skipnextframe = true;
+			}
+			else
+			{
+				framestoskip--;
+
+				if (framestoskip < 1)
+					skipnextframe = false;
+				else
+					skipnextframe = true;
+
+				framesskipped++;
+
+				//NDS_SkipNextFrame();
+			}
+
+			if (signal_fastForward)
+			{
+				if (framesskipped < ffSkipRate)
+				{
+					skipnextframe = true;
+					framestoskip = 1;
+				}
+				if (framestoskip < 1)
+					framestoskip += ffSkipRate;
+			}
+			else if ((/*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit) && allowSleep)
+			{
+				SpeedThrottle();
+			}
+
+			if (cfg_autoframeskipenab && cfg_frameskiprate!=0)
+			{
+				if (!signal_frameAdvance && !signal_continuousframeAdvancing)
+				{
+					AutoFrameSkip_NextFrame();
+					if (framestoskip < 1)
+						framestoskip += AutoFrameSkip_GetSkipAmount(0, skipRate);
+				}
+			}
+			else
+			{
+				if (framestoskip < 1)
+					framestoskip += skipRate;
+			}
+
+			if (signal_frameAdvance && allowSleep)
+			{
+				//this logic has been replaced by some logic in steprunloop_core.
+				//really, it should be moved back here somehow later.
+
+				//frameAdvance = false;
+				//emu_halt();
+				//SPU_Pause(1);
+			}
+			//if (execute && emu_paused && !frameAdvance)
+			//{
+			//    // safety net against running out of control in case this ever happens.
+			//    Unpause(); Pause();
+			//}
+		}
+
 		static ulong GetCurTime()
 		{
 			if (tmethod == 1)
@@ -46,11 +137,23 @@ namespace BizHawk.MultiClient
 			tfreq = afsfreq << 16;
 		}
 
-		public Throttle(float desired_fps)
+		public Throttle()
+		{
+		}
+
+		public void SetCoreFps(double desired_fps)
 		{
 			core_desiredfps = (ulong)(65536 * desired_fps);
-			desiredfps = core_desiredfps;
-			desiredspf = 65536.0f / core_desiredfps;
+			SetSpeedPercent(pct);
+		}
+
+		int pct = 100;
+		public void SetSpeedPercent(int percent)
+		{
+			pct = percent;
+			float fraction = percent / 100.0f;
+			desiredfps = (ulong)(core_desiredfps * fraction);
+			desiredspf = 65536.0f / desiredfps;
 			AutoFrameSkip_IgnorePreviousDelay();
 		}
 
@@ -177,5 +280,37 @@ namespace BizHawk.MultiClient
 			return rv;
 		}
 
+
+		void SpeedThrottle()
+		{
+			AutoFrameSkip_BeforeThrottle();
+
+		waiter:
+			if (signal_fastForward)
+				return;
+
+			ulong ttime = GetCurTime();
+
+			if ((ttime - ltime) < (tfreq / desiredfps))
+			{
+				ulong sleepy;
+				sleepy = (tfreq / desiredfps) - (ttime - ltime);
+				sleepy *= 1000;
+				if (tfreq >= 65536)
+					sleepy /= afsfreq;
+				else
+					sleepy = 0;
+				if (sleepy >= 10)
+					Thread.Sleep((int)(sleepy / 2)); // reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+				else if (sleepy > 0) // spin for <1 millisecond waits
+					Thread.Sleep(0);
+					//SwitchToThread(); // limit to other threads on the same CPU core for other short waits
+				goto waiter;
+			}
+			if ((ttime - ltime) >= (tfreq * 4 / desiredfps))
+				ltime = ttime;
+			else
+				ltime += tfreq / desiredfps;
+		}
 	}
 }
