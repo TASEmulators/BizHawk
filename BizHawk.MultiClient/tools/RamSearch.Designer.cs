@@ -74,6 +74,7 @@
             this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.littleEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CompareToBox = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.NumberOfChangesBox = new System.Windows.Forms.TextBox();
             this.SpecificAddressBox = new System.Windows.Forms.TextBox();
             this.SpecificValueBox = new System.Windows.Forms.TextBox();
@@ -93,7 +94,6 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -545,18 +545,30 @@
             this.CompareToBox.TabStop = false;
             this.CompareToBox.Text = "Compare To / By";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(116, 67);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(18, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "0x";
+            // 
             // NumberOfChangesBox
             // 
             this.NumberOfChangesBox.Enabled = false;
-            this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 84);
+            this.NumberOfChangesBox.Location = new System.Drawing.Point(135, 82);
+            this.NumberOfChangesBox.MaxLength = 8;
             this.NumberOfChangesBox.Name = "NumberOfChangesBox";
             this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
             this.NumberOfChangesBox.TabIndex = 6;
             // 
             // SpecificAddressBox
             // 
+            this.SpecificAddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.SpecificAddressBox.Enabled = false;
-            this.SpecificAddressBox.Location = new System.Drawing.Point(135, 62);
+            this.SpecificAddressBox.Location = new System.Drawing.Point(135, 60);
+            this.SpecificAddressBox.MaxLength = 8;
             this.SpecificAddressBox.Name = "SpecificAddressBox";
             this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificAddressBox.TabIndex = 5;
@@ -564,7 +576,8 @@
             // SpecificValueBox
             // 
             this.SpecificValueBox.Enabled = false;
-            this.SpecificValueBox.Location = new System.Drawing.Point(135, 41);
+            this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
+            this.SpecificValueBox.MaxLength = 9;
             this.SpecificValueBox.Name = "SpecificValueBox";
             this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificValueBox.TabIndex = 4;
@@ -636,9 +649,10 @@
             // DifferentByBox
             // 
             this.DifferentByBox.Enabled = false;
-            this.DifferentByBox.Location = new System.Drawing.Point(90, 129);
+            this.DifferentByBox.Location = new System.Drawing.Point(90, 131);
+            this.DifferentByBox.MaxLength = 9;
             this.DifferentByBox.Name = "DifferentByBox";
-            this.DifferentByBox.Size = new System.Drawing.Size(40, 20);
+            this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
             this.DifferentByBox.TabIndex = 9;
             // 
             // DifferentByRadio
@@ -744,15 +758,6 @@
             this.OutputLabel.Size = new System.Drawing.Size(85, 13);
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(116, 68);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(18, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "0x";
             // 
             // RamSearch
             // 

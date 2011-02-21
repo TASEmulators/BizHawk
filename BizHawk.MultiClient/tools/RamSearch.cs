@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
         //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
-        //Run Trim() and ToUpper() on specific/number/differentby boxes after user enters data, then don't do that when running the Get function
+        //Run Trim() on specific/number/differentby boxes after user enters data, then don't do that when running the Get function, do other forms of input validation
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -135,6 +135,8 @@ namespace BizHawk.MultiClient
                 SpecificValueBox.Enabled = true;
                 SpecificAddressBox.Enabled = false;
                 NumberOfChangesBox.Enabled = false;
+                SpecificValueBox.Focus();
+                SpecificValueBox.SelectAll();
             }
         }
 
@@ -155,6 +157,8 @@ namespace BizHawk.MultiClient
                 SpecificValueBox.Enabled = false;
                 SpecificAddressBox.Enabled = true;
                 NumberOfChangesBox.Enabled = false;
+                SpecificAddressBox.Focus();
+                SpecificAddressBox.SelectAll();
             }
         }
 
@@ -165,6 +169,8 @@ namespace BizHawk.MultiClient
                 SpecificValueBox.Enabled = false;
                 SpecificAddressBox.Enabled = false;
                 NumberOfChangesBox.Enabled = true;
+                NumberOfChangesBox.Focus();
+                NumberOfChangesBox.SelectAll();
             }
         }
 
@@ -174,6 +180,8 @@ namespace BizHawk.MultiClient
                 DifferentByBox.Enabled = true;
             else
                 DifferentByBox.Enabled = false;
+            DifferentByBox.Focus();
+            DifferentByBox.SelectAll();
         }
 
         private void AddToRamWatch()
@@ -689,7 +697,7 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
             if (!i) return -1;
 
-            return int.Parse(SpecificAddressBox.Text.ToUpper().Trim(), NumberStyles.HexNumber);
+            return int.Parse(SpecificAddressBox.Text.Trim(), NumberStyles.HexNumber);
         }
 
         private int GetDifferentBy()
