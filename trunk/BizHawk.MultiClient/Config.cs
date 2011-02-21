@@ -48,6 +48,7 @@
 
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
+        public RecentFiles RecentSearches = new RecentFiles(8);
         public int RamSearchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamSearchWndy = -1;
         public int RamSearchWidth = -1;  //Negative numbers will be ignored

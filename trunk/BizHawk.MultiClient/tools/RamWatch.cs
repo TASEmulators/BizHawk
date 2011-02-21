@@ -464,7 +464,6 @@ namespace BizHawk.MultiClient
 
         private void OpenWatchFile()
         {
-
             var file = GetFileFromUser();
             if (file != null)
             {
@@ -600,16 +599,7 @@ namespace BizHawk.MultiClient
 
         private void UpdateAutoLoadRamWatch()
         {
-            if (Global.Config.AutoLoadRamWatch == true)
-            {
-                Global.Config.AutoLoadRamWatch = false;
-                autoLoadToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                Global.Config.AutoLoadRamWatch = true;
-                autoLoadToolStripMenuItem.Checked = true;
-            }
+            autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadRamWatch ^= true;
         }
         private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
@@ -637,7 +627,7 @@ namespace BizHawk.MultiClient
 
             var clearitem = new ToolStripMenuItem();
             clearitem.Text = "&Clear";
-            clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
+            clearitem.Click += (o, ev) => Global.Config.RecentWatches.Clear();
             recentToolStripMenuItem.DropDownItems.Add(clearitem);
 
             var auto = new ToolStripMenuItem();
@@ -886,11 +876,6 @@ namespace BizHawk.MultiClient
         private void RamWatch_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;string[] filePaths = (string[]) e.Data.GetData(DataFormats.FileDrop);
-        }
-
-        private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

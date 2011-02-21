@@ -56,7 +56,7 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.WatchListView = new VirtualListView();
+            this.WatchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Notes = new System.Windows.Forms.ColumnHeader();
@@ -174,24 +174,24 @@
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.noneToolStripMenuItem.Text = "None";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(132, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             // 
             // autoLoadToolStripMenuItem
             // 
             this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.autoLoadToolStripMenuItem.Text = "Auto-Load";
             // 
             // toolStripSeparator1
@@ -318,16 +318,17 @@
             this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
             this.WatchListView.FullRowSelect = true;
             this.WatchListView.GridLines = true;
+            this.WatchListView.ItemCount = 0;
             this.WatchListView.LabelEdit = true;
             this.WatchListView.Location = new System.Drawing.Point(25, 76);
             this.WatchListView.Name = "WatchListView";
+            this.WatchListView.selectedItem = -1;
             this.WatchListView.Size = new System.Drawing.Size(314, 327);
             this.WatchListView.TabIndex = 1;
             this.WatchListView.UseCompatibleStateImageBehavior = false;
             this.WatchListView.View = System.Windows.Forms.View.Details;
             this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
             this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
-            this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
             // 
             // Address
             // 
