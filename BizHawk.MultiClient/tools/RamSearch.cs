@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
         //Window position gets saved but doesn't load properly
         //Add to Ram watch fails to open ram watch if it has neve been opened
         //Implement DWORD start new search & updateValues
-        //Impelment File handling
+        //Doesnt' release handle after saving file, Ram Watch too?
         //Implement Preview search
         //Implement Check Misaligned (does 2 & 4 byte on each possible address instead of every other (or every 4)
         //Implement definitions of Previous value
@@ -37,6 +37,8 @@ namespace BizHawk.MultiClient
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        string currentSearchFile = "";
+        bool changes = false;
         
         public RamSearch()
         {
@@ -123,12 +125,17 @@ namespace BizHawk.MultiClient
 
         private void OpenSearchFile()
         {
-
-        }
-
-        private void SaveAs()
-        {
-
+            var file = GetFileFromUser();
+            if (file != null)
+            {
+                bool r = true;
+                if (changes) r = AskSave();
+                if (r)
+                {
+                    LoadSearchFile(file.FullName, false);
+                    DisplaySearchList();
+                }
+            }
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -914,20 +921,6 @@ namespace BizHawk.MultiClient
             DisplaySearchList();
         }
 
-        private void hackyAutoLoadToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-            if (Global.Config.AutoLoadRamSearch == true)
-            {
-                Global.Config.AutoLoadRamSearch = false;
-                hackyAutoLoadToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                Global.Config.AutoLoadRamSearch = true;
-                hackyAutoLoadToolStripMenuItem.Checked = true;
-            }
-        }
-
         private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
@@ -1025,5 +1018,260 @@ namespace BizHawk.MultiClient
                 t.Show("Must be a valid unsigned decimal value", DifferentByBox, 5000);
             }
         }
+
+        private bool SaveSearchFile(string path)
+        {
+            var file = new FileInfo(path);
+
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                string str = "";
+
+                for (int x = 0; x < searchList.Count; x++)
+                {
+                    str += string.Format("{0:X4}", searchList[x].address) + "\t";
+                    str += searchList[x].GetTypeByChar().ToString() + "\t";
+                    str += searchList[x].GetSignedByChar().ToString() + "\t";
+
+                    if (searchList[x].bigendian == true)
+                        str += "1\t";
+                    else
+                        str += "0\t";
+
+                    str += searchList[x].notes + "\n";
+                }
+
+                sw.WriteLine(str);
+            }
+            changes = false;
+            return true;
+        }
+
+        private FileInfo GetSaveFileFromUser()
+        {
+            var sfd = new SaveFileDialog();
+            sfd.InitialDirectory = Global.Config.LastRomPath;
+            sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            sfd.RestoreDirectory = true;
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(sfd.FileName);
+            Global.Config.LastRomPath = file.DirectoryName;
+            return file;
+        }
+
+        public void SaveAs()
+        {
+            var file = GetSaveFileFromUser();
+            if (file != null)
+            {
+                SaveSearchFile(file.FullName);
+                currentSearchFile = file.FullName;
+            }
+            OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
+        }
+
+        public bool AskSave()
+        {
+            if (changes)
+            {
+                DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+
+                if (result == DialogResult.Yes)
+                {
+                    //TOOD: Do quicksave if filename, else save as
+                    if (string.Compare(currentSearchFile, "") == 0)
+                    {
+                        SaveAs();
+                    }
+                    else
+                        SaveSearchFile(currentSearchFile);
+                    return true;
+                }
+                else if (result == DialogResult.No)
+                    return true;
+                else if (result == DialogResult.Cancel)
+                    return false;
+            }
+            return true;
+        }
+
+
+        private void LoadSearchFromRecent(string file)
+        {
+            bool z = true;
+            if (changes) z = AskSave();
+
+            if (z)
+            {
+                bool r = LoadSearchFile(file, false);
+                if (!r)
+                {
+                    DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                    if (result == DialogResult.Yes)
+                        Global.Config.RecentSearches.Remove(file);
+                }
+                DisplaySearchList();
+                changes = false;
+            }
+        }
+
+        public int HowMany(string str, char c)
+        {
+            int count = 0;
+            for (int x = 0; x < str.Length; x++)
+            {
+                if (str[x] == c)
+                    count++;
+            }
+            return count;
+        }
+
+        bool LoadSearchFile(string path, bool append)
+        {
+            int y, z;
+            var file = new FileInfo(path);
+            if (file.Exists == false) return false;
+
+            using (StreamReader sr = file.OpenText())
+            {
+                if (!append)
+                    currentSearchFile = path;
+
+                int count = 0;
+                string s = "";
+                string temp = "";
+
+                if (append == false)
+                    searchList.Clear();  //Wipe existing list and read from file
+
+                while ((s = sr.ReadLine()) != null)
+                {
+                    //parse each line and add to watchList
+
+                    //.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
+                    //Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
+                    if (s.Length < 5) continue;
+
+                    z = HowMany(s, '\t');
+                    if (z == 5)
+                    {
+                        //If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
+                        y = s.IndexOf('\t') + 1;
+                        s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
+                    }
+                    else if (z != 4)
+                        continue;   //If not 4, something is wrong with this line, ignore it
+                    count++;
+                    Watch w = new Watch();
+
+                    temp = s.Substring(0, s.IndexOf('\t'));
+                    w.address = int.Parse(temp, NumberStyles.HexNumber);
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y);   //Type
+                    w.SetTypeByChar(s[0]);
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y);   //Signed
+                    w.SetSignedByChar(s[0]);
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y);   //Endian
+                    y = Int16.Parse(s[0].ToString());
+                    if (y == 0)
+                        w.bigendian = false;
+                    else
+                        w.bigendian = true;
+
+                    //w.notes = s.Substring(2, s.Length - 2);   //User notes
+
+                    searchList.Add(w);
+                }
+
+                Global.Config.RecentSearches.Add(file.FullName);
+                changes = false;
+                OutputLabel.Text = Path.GetFileName(file.FullName);
+                //Update the number of watches
+                SetTotal();
+            }
+
+            return true;
+        }
+
+        private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            //Clear out recent Roms list
+            //repopulate it with an up to date list
+            recentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Global.Config.RecentSearches.IsEmpty())
+            {
+                recentToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < Global.Config.RecentSearches.Length(); x++)
+                {
+                    string path = Global.Config.RecentSearches.GetRecentFileByPosition(x);
+                    var item = new ToolStripMenuItem();
+                    item.Text = path;
+                    item.Click += (o, ev) => LoadSearchFromRecent(path);
+                    recentToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+
+            recentToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => Global.Config.RecentSearches.Clear();
+            recentToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Auto-Load";
+            auto.Click += (o, ev) => UpdateAutoLoadRamSearch();
+            if (Global.Config.AutoLoadRamSearch == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentToolStripMenuItem.DropDownItems.Add(auto);
+        }
+
+        private void UpdateAutoLoadRamSearch()
+        {
+            autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadRamSearch ^= true;
+        }
+
+        private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var file = GetFileFromUser();
+            if (file != null)
+                LoadSearchFile(file.FullName, true);
+            DisplaySearchList();
+            changes = true;
+        }
+
+        private FileInfo GetFileFromUser()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.InitialDirectory = Global.Config.LastRomPath;
+            ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(ofd.FileName);
+            Global.Config.LastRomPath = file.DirectoryName;
+            return file;
+        }
     }
+
+
 }
