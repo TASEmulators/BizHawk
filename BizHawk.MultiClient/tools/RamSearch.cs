@@ -19,8 +19,8 @@ namespace BizHawk.MultiClient
         //TODO:
         //Window position gets saved but doesn't load properly
         //Add to Ram watch fails to open ram watch if it has neve been opened
-        //Implement DWORD start new search
-        //Implement WORD & DWORD in UpdateValues
+        //Implement DWORD start new search & updateValues
+        //Little endian is bogus in start new search
         //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
@@ -49,8 +49,30 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < searchList.Count; x++)
             {
                 searchList[x].prev = searchList[x].value;
-
-                searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                switch (searchList[x].type)
+                {
+                    case atype.BYTE:
+                        searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                        break;
+                    case atype.WORD:
+                        if (searchList[x].bigendian)
+                        {
+                            searchList[x].value = ((Global.Emulator.MainMemory.PeekByte(searchList[x].address) * 256) +
+                                Global.Emulator.MainMemory.PeekByte((searchList[x].address) + 1));
+                        }
+                        else
+                        {
+                            searchList[x].value = (Global.Emulator.MainMemory.PeekByte(searchList[x].address) +
+                                (Global.Emulator.MainMemory.PeekByte((searchList[x].address) + 1) * 256));
+                        }
+                        break;
+                    case atype.DWORD:
+                        //TODO
+                        break;
+                    default:
+                        searchList[x].value = Global.Emulator.MainMemory.PeekByte(searchList[x].address);
+                        break;
+                }
                 
                 if (searchList[x].prev != searchList[x].value)
                     searchList[x].changecount++;
@@ -302,7 +324,7 @@ namespace BizHawk.MultiClient
                         if (GetBigEndian())
                         {
                             searchList[x].prev = searchList[x].value = ((Global.Emulator.MainMemory.PeekByte(searchList[x].address) * 256) +
-                                    Global.Emulator.MainMemory.PeekByte((searchList[x + 1].address) + 1));
+                                    Global.Emulator.MainMemory.PeekByte((searchList[x].address) + 1));
                         }
                         else
                         {
