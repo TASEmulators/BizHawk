@@ -20,12 +20,18 @@ namespace BizHawk.MultiClient
         //Window position gets saved but doesn't load properly
         //Implement Preview search
         //Implement definitions of Previous value
-        //TODO: multiple memory domains
+        //Multiple memory domains
+        //Option to remove current Ram Watch list from search list
+        //Option to always remove Ram Watch list from search list
+        //Truncate from file in File menu (and toolstrip?)
+        //When a new ROM is loaded - run Start new Search (or just clear list?)
+        //Save Dialog - user cancelling crashes, same for Ram Search
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
         List<Watch> undoList = new List<Watch>();
         List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
+        List<Watch> prevList = new List<Watch>();
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
@@ -468,6 +474,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < searchList.Count; x++)
                 searchList[x].changecount = 0;
             DisplaySearchList();
+            OutputLabel.Text = "Change counts cleared";
         }
 
         private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
@@ -1248,7 +1255,7 @@ namespace BizHawk.MultiClient
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.Compare(currentSearchFile, "") == 0) return;
+            if (string.Compare(currentSearchFile, "") == 0) SaveAs();
             SaveSearchFile(currentSearchFile);
         }
 
@@ -1288,6 +1295,48 @@ namespace BizHawk.MultiClient
                addSelectedToRamWatchToolStripMenuItem.Enabled = true;
                pokeAddressToolStripMenuItem.Enabled = true;
            }
+        }
+
+        private void sinceLastSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchPreviousAs = 0;
+        }
+
+        private void sinceLastChangeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchPreviousAs = 1;
+        }
+
+        private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchPreviousAs = 2;
+        }
+
+        private void definePreviousValueToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            switch (Global.Config.RamSearchPreviousAs)
+            {
+                case 0: //Since last Search
+                    sinceLastSearchToolStripMenuItem.Checked = true;
+                    sinceLastChangeToolStripMenuItem.Checked = false;
+                    sinceLastFrameToolStripMenuItem.Checked = false;
+                    break;
+                case 1: //Since last Change
+                    sinceLastSearchToolStripMenuItem.Checked = false;
+                    sinceLastChangeToolStripMenuItem.Checked = true;
+                    sinceLastFrameToolStripMenuItem.Checked = false;
+                    break;
+                case 2: //Since last Frame
+                    sinceLastSearchToolStripMenuItem.Checked = false;
+                    sinceLastChangeToolStripMenuItem.Checked = true;
+                    sinceLastFrameToolStripMenuItem.Checked = false;
+                    break;
+                default://Default to last search
+                    sinceLastSearchToolStripMenuItem.Checked = true;
+                    sinceLastChangeToolStripMenuItem.Checked = false;
+                    sinceLastFrameToolStripMenuItem.Checked = false;
+                    break;
+            }
         }
     }
 
