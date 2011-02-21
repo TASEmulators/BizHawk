@@ -20,10 +20,10 @@ namespace BizHawk.MultiClient
         //Window position gets saved but doesn't load properly
         //Add to Ram watch fails to open ram watch if it has neve been opened
         //Implement DWORD start new search & updateValues
-        //Little endian is bogus in start new search
-        //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
+        //Implement Check Misaligned (does 2 & 4 byte on each possible address instead of every other (or every 4)
+        //Implement definitions of Previous value
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -78,6 +78,8 @@ namespace BizHawk.MultiClient
                     searchList[x].changecount++;
   
             }
+            if (AutoSearchCheckBox.Checked)
+                DoSearch();
             SearchListView.Refresh();
         }
 
@@ -292,7 +294,7 @@ namespace BizHawk.MultiClient
             int startaddress = 0;
             if (Global.Emulator.SystemId == "PCE")
                 startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
-            int count = 0;
+            int count = 1;
             int divisor = 1;
             switch (GetDataSize())
             {
@@ -307,7 +309,7 @@ namespace BizHawk.MultiClient
                     break;
             }
             
-            for (int x = 0; x < (Global.Emulator.MainMemory.Size / divisor); x++)
+            for (int x = 0; x < ((Global.Emulator.MainMemory.Size / divisor)-1); x++)
             {
                 searchList.Add(new Watch());
                 searchList[x].address = count + startaddress;
