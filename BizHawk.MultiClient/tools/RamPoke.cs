@@ -92,7 +92,7 @@ namespace BizHawk.MultiClient
         {
             //Put user settings in the watch file
 
-            if (InputValidate.IsValidHexNumber(AddressBox.Text))    //TODO: also validate it is within a valid memory address range!
+            if (InputValidate.IsValidHexNumber(AddressBox.Text))
                 watch.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
             else
             {
@@ -162,36 +162,10 @@ namespace BizHawk.MultiClient
                     }
                     break;
                 default:
-                return;
-        }
-
-            //TODO: Try/Catch this? Seems destined for failures
-
-            switch (watch.type)
-            {
-                case atype.BYTE:
-                    Global.Emulator.MainMemory.PokeByte(watch.address, (byte)watch.value);
-                    break;
-                case atype.WORD:
-                    if (watch.bigendian)
-                    {
-                        Global.Emulator.MainMemory.PokeByte(watch.address, (byte)(watch.value / 256));
-                        Global.Emulator.MainMemory.PokeByte(watch.address + 1, (byte)(watch.value % 256));
-                    }
-                    else
-                    {
-                        Global.Emulator.MainMemory.PokeByte(watch.address + 1, (byte)(watch.value / 256));
-                        Global.Emulator.MainMemory.PokeByte(watch.address, (byte)(watch.value % 256));
-                    }
-                    break;
-                case atype.DWORD:
-                    //TODO
-                    break;
-                default:
-                    break;
+                    return;
             }
-
-            
+            watch.PokeAddress(Global.Emulator.MainMemory);
+                       
             //TODO: format value based on watch.type
             OutputLabel.Text = watch.value.ToString() + " written to " + String.Format("{0:X}", watch.address);
         }

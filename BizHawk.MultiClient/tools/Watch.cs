@@ -162,6 +162,43 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private void PokeByte(MemoryDomain domain)
+        {
+            domain.PokeByte(address, (byte)value);
+        }
+
+        private void PokeWord(MemoryDomain domain)
+        {
+            if (bigendian)
+            {
+                domain.PokeByte(address, (byte)(value / 256));
+                domain.PokeByte(address + 1, (byte)(value % 256));
+            }
+            else
+            {
+                domain.PokeByte(address + 1, (byte)(value / 256));
+                domain.PokeByte(address, (byte)(value % 256));
+            }
+        }
+
+        private void PokeDWord(MemoryDomain domain)
+        {
+            if (bigendian)
+            {
+                domain.PokeByte(address, (byte)(value << 6));
+                domain.PokeByte(address + 1, (byte)(value << 4));
+                domain.PokeByte(address + 2, (byte)(value << 2));
+                domain.PokeByte(address + 3, (byte)(value));
+            }
+            else
+            {
+                domain.PokeByte(address + 1, (byte)(value << 6));
+                domain.PokeByte(address, (byte)(value << 4));
+                domain.PokeByte(address + 3, (byte)(value << 2));
+                domain.PokeByte(address + 2, (byte)(value));
+            }
+        }
+
         public void PokeAddress(MemoryDomain domain)
         {
             if (type == atype.SEPARATOR)
@@ -170,10 +207,13 @@ namespace BizHawk.MultiClient
             switch (type)
             {
                 case atype.BYTE:
+                    PokeByte(domain);
                     break;
                 case atype.WORD:
+                    PokeWord(domain);
                     break;
                 case atype.DWORD:
+                    PokeDWord(domain);
                     break;
             }
         }
