@@ -137,5 +137,17 @@ namespace BizHawk.MultiClient
 
             this.Close();
         }
+
+        private void AddressBox_Leave(object sender, EventArgs e)
+        {
+            AddressBox.Text = AddressBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidHexNumber(AddressBox.Text))
+            {
+                AddressBox.Focus();
+                AddressBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("MUst be a valid hexadecimal vaue", AddressBox, 5000);
+            }
+        }
     }
 }
