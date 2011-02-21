@@ -66,27 +66,27 @@ namespace BizHawk.MultiClient
 			}
 
 			Load += (o, e) =>
-				{
-					AllowDrop = true;
-					DragEnter += FormDragEnter;
-					DragDrop += FormDragDrop;
-				};
+			{
+				AllowDrop = true;
+				DragEnter += FormDragEnter;
+				DragDrop += FormDragDrop;
+			};
 
-			Closing += (o, e) =>
+		    Closing += (o, e) =>
+		    {
+			   CloseGame();
+			   if (Global.Config.SaveWindowPosition)
 			   {
-				   CloseGame();
-				   if (Global.Config.SaveWindowPosition)
-				   {
-					   Global.Config.MainWndx = this.Location.X;
-					   Global.Config.MainWndy = this.Location.Y;
-				   }
-				   else
-				   {
-					   Global.Config.MainWndx = -1;
-					   Global.Config.MainWndy = -1;
-				   }
-				   ConfigService.Save("config.ini", Global.Config);
-			   };
+				   Global.Config.MainWndx = this.Location.X;
+				   Global.Config.MainWndy = this.Location.Y;
+			   }
+			   else
+			   {
+				   Global.Config.MainWndx = -1;
+				   Global.Config.MainWndy = -1;
+			   }
+			   ConfigService.Save("config.ini", Global.Config);
+		    };
 
 			ResizeBegin += (o, e) =>
 			{
@@ -1042,6 +1042,18 @@ namespace BizHawk.MultiClient
 			miAutoMinimizeSkipping.Enabled = !miFrameskip0.Checked;
 			if (!miAutoMinimizeSkipping.Enabled) miAutoMinimizeSkipping.Checked = true;
 		}
+
+        private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigService.Save("config.ini", Global.Config);
+            Global.RenderPanel.AddMessage("Saved settings");
+        }
+
+        private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config = ConfigService.Load<Config>("config.ini");
+            Global.RenderPanel.AddMessage("Saved loaded");
+        }
 
 	}
 }
