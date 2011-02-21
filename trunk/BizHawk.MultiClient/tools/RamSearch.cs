@@ -760,11 +760,19 @@ namespace BizHawk.MultiClient
             return true;
         }
 
+        private void ConvertListDataType(asigned s)
+        {
+            for (int x = 0; x < searchList.Count; x++)
+                searchList[x].signed = s;
+        }
+
         private void signedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             unsignedToolStripMenuItem.Checked = false;
             signedToolStripMenuItem.Checked = true;
             hexadecimalToolStripMenuItem.Checked = false;
+            ConvertListDataType(asigned.SIGNED);
+            DisplaySearchList();
         }
                 
         private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -772,6 +780,8 @@ namespace BizHawk.MultiClient
             unsignedToolStripMenuItem.Checked = true;
             signedToolStripMenuItem.Checked = false;
             hexadecimalToolStripMenuItem.Checked = false;
+            ConvertListDataType(asigned.UNSIGNED);
+            DisplaySearchList();
         }
 
         private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -779,6 +789,8 @@ namespace BizHawk.MultiClient
             unsignedToolStripMenuItem.Checked = false;
             signedToolStripMenuItem.Checked = false;
             hexadecimalToolStripMenuItem.Checked = true;
+            ConvertListDataType(asigned.HEX);
+            DisplaySearchList();
         }
 
         private void hackyAutoLoadToolStripMenuItem_Click_1(object sender, EventArgs e)
