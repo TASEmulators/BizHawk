@@ -24,7 +24,6 @@ namespace BizHawk.MultiClient
         //Implement Auto-Search
         //Impelment File handling
         //Implement Preview search
-        //Run Trim() on specific/number/differentby boxes after user enters data, then don't do that when running the Get function, do other forms of input validation
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -689,7 +688,7 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
             if (!i) return -1;
 
-            return int.Parse(SpecificValueBox.Text.Trim());
+            return int.Parse(SpecificValueBox.Text);
         }
 
         private int GetSpecificAddress()
@@ -697,7 +696,7 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
             if (!i) return -1;
 
-            return int.Parse(SpecificAddressBox.Text.Trim(), NumberStyles.HexNumber);
+            return int.Parse(SpecificAddressBox.Text, NumberStyles.HexNumber);
         }
 
         private int GetDifferentBy()
@@ -711,7 +710,7 @@ namespace BizHawk.MultiClient
                 return -1;
             }
             else
-                return int.Parse(DifferentByBox.Text.Trim());
+                return int.Parse(DifferentByBox.Text);
         }
 
         private bool DoSpecificAddress()
@@ -788,7 +787,7 @@ namespace BizHawk.MultiClient
             bool i = InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text);
             if (!i) return -1;
 
-            return int.Parse(NumberOfChangesBox.Text.ToUpper().Trim());
+            return int.Parse(NumberOfChangesBox.Text);
         }
 
         private bool DoNumberOfChanges()
@@ -953,6 +952,54 @@ namespace BizHawk.MultiClient
                 AutoSearchCheckBox.BackColor = Color.Pink;
             else
                 AutoSearchCheckBox.BackColor = this.BackColor;
+        }
+
+        private void SpecificValueBox_Leave(object sender, EventArgs e)
+        {
+            SpecificValueBox.Text = SpecificValueBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidSignedNumber(SpecificValueBox.Text))
+            {
+                SpecificValueBox.Focus();
+                SpecificValueBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid decimal value", SpecificValueBox, 5000);
+            }
+        }
+
+        private void SpecificAddressBox_Leave(object sender, EventArgs e)
+        {
+            SpecificAddressBox.Text = SpecificAddressBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidHexNumber(SpecificAddressBox.Text))
+            {
+                SpecificAddressBox.Focus();
+                SpecificAddressBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid hexadecimal value", SpecificAddressBox, 5000);
+            }
+        }
+
+        private void NumberOfChangesBox_Leave(object sender, EventArgs e)
+        {
+            NumberOfChangesBox.Text = NumberOfChangesBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text))
+            {
+                NumberOfChangesBox.Focus();
+                NumberOfChangesBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid unsigned decimal value", NumberOfChangesBox, 5000);
+            }
+        }
+
+        private void DifferentByBox_Leave(object sender, EventArgs e)
+        {
+            DifferentByBox.Text = DifferentByBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidUnsignedNumber(DifferentByBox.Text))
+            {
+                DifferentByBox.Focus();
+                DifferentByBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid unsigned decimal value", DifferentByBox, 5000);
+            }
         }
     }
 }

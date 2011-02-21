@@ -562,6 +562,7 @@
             this.NumberOfChangesBox.Name = "NumberOfChangesBox";
             this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
             this.NumberOfChangesBox.TabIndex = 6;
+            this.NumberOfChangesBox.Leave += new System.EventHandler(this.NumberOfChangesBox_Leave);
             // 
             // SpecificAddressBox
             // 
@@ -572,6 +573,7 @@
             this.SpecificAddressBox.Name = "SpecificAddressBox";
             this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificAddressBox.TabIndex = 5;
+            this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
             // 
             // SpecificValueBox
             // 
@@ -581,6 +583,7 @@
             this.SpecificValueBox.Name = "SpecificValueBox";
             this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificValueBox.TabIndex = 4;
+            this.SpecificValueBox.Leave += new System.EventHandler(this.SpecificValueBox_Leave);
             // 
             // NumberOfChangesRadio
             // 
@@ -654,6 +657,7 @@
             this.DifferentByBox.Name = "DifferentByBox";
             this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
             this.DifferentByBox.TabIndex = 9;
+            this.DifferentByBox.Leave += new System.EventHandler(this.DifferentByBox_Leave);
             // 
             // DifferentByRadio
             // 
