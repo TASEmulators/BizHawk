@@ -161,5 +161,21 @@ namespace BizHawk.MultiClient
                     break;
             }
         }
+
+        public void PokeAddress(MemoryDomain domain)
+        {
+            if (type == atype.SEPARATOR)
+                return;
+
+            switch (type)
+            {
+                case atype.BYTE:
+                    break;
+                case atype.WORD:
+                    break;
+                case atype.DWORD:
+                    break;
+            }
+        }
     }
 }

@@ -195,5 +195,29 @@ namespace BizHawk.MultiClient
             //TODO: format value based on watch.type
             OutputLabel.Text = watch.value.ToString() + " written to " + String.Format("{0:X}", watch.address);
         }
+
+        private void AddressBox_Leave(object sender, EventArgs e)
+        {
+            AddressBox.Text = AddressBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidHexNumber(AddressBox.Text))
+            {
+                AddressBox.Focus();
+                AddressBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid hexadecimal value", AddressBox, 5000);
+            }
+        }
+
+        private void ValueBox_Leave(object sender, EventArgs e)
+        {
+            ValueBox.Text = ValueBox.Text.Replace(" ", "");
+            if (!InputValidate.IsValidUnsignedNumber(ValueBox.Text))
+            {
+                ValueBox.Focus();
+                ValueBox.SelectAll();
+                ToolTip t = new ToolTip();
+                t.Show("Must be a valid unsigned decimal value", ValueBox, 5000);
+            }
+        }
     }
 }
