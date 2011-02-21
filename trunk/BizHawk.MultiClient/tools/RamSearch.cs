@@ -18,10 +18,9 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Window position gets saved but doesn't load properly
-        //Add to Ram watch fails to open ram watch if it has neve been opened
         //Implement Preview search
         //Implement definitions of Previous value
-        //Search Drop down opened event + gray out menu items that depend on a selected address
+        //TODO: multiple memory domains
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -303,7 +302,7 @@ namespace BizHawk.MultiClient
                 {
                     switch (GetDataSize())
                     {
-                        case atype.BYTE:    //TODO: misaligned option
+                        case atype.BYTE:
                             count++;
                             break;
                         case atype.WORD:
@@ -333,7 +332,7 @@ namespace BizHawk.MultiClient
 
         private void GetMemoryDomain()
         {
-            string memoryDomain = "Main memory"; //TODO: multiple memory domains
+            string memoryDomain = "Main memory";
             systemID = Global.Emulator.SystemId;
             MemDomainLabel.Text = systemID + " " + memoryDomain;
         }
@@ -363,13 +362,21 @@ namespace BizHawk.MultiClient
             PokeAddress();
         }
 
+        private string MakeAddressString(int num)
+        {
+            if (num == 1)
+                return "1 address";
+            else
+                return num.ToString() + " addresses";
+        }
+
         private void RemoveAddresses()
         {
             ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
             if (indexes.Count > 0)
             {
                 SaveUndo();
-                OutputLabel.Text = indexes.Count.ToString() + " addresses removed"; //TODO: address if 1
+                OutputLabel.Text = MakeAddressString(indexes.Count) + " removed";
                 for (int x = 0; x < indexes.Count; x++)
                 {
                     searchList.Remove(searchList[indexes[x]-x]);
@@ -396,7 +403,7 @@ namespace BizHawk.MultiClient
         {
             if (undoList.Count > 0)
             {
-                OutputLabel.Text = (undoList.Count - searchList.Count).ToString() + " addresses restored";   //TODO: address if only 1
+                OutputLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
                 searchList = new List<Watch>(undoList);
                 undoList.Clear();
                 DisplaySearchList();
@@ -432,7 +439,7 @@ namespace BizHawk.MultiClient
             }
             if (column == 2)
             {
-                if (searchList[index].signed == asigned.UNSIGNED)       //TODO: only use .prev if that is the definition of prev set by user, else use PrevList
+                if (searchList[index].signed == asigned.UNSIGNED)
                     text = searchList[index].prev.ToString();
                 else if (searchList[index].signed == asigned.SIGNED)
                     text = ((sbyte)searchList[index].prev).ToString();
@@ -484,11 +491,12 @@ namespace BizHawk.MultiClient
             if (GenerateWeedOutList())
             {
                 SaveUndo();
-                OutputLabel.Text = (searchList.Count - weededList.Count).ToString() + " addresses removed";  //TODO: address if only 1
+                OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
                 ReplaceSearchListWithWeedOutList();
                 DisplaySearchList();
             }
-            //TODO: else notify the user something went wrong?
+            else
+                OutputLabel.Text = "Search failed.";
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
