@@ -181,13 +181,11 @@ namespace BizHawk.MultiClient
 		private void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			Global.Sound.StopSound();
 		}
 
 		private void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
-			Global.Sound.StartSound();
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -620,14 +618,23 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
+			bool genSound = false;
 			if (runFrame)
 			{
 				CaptureRewindState();
+				if (!runloop_frameadvance) genSound = true;
+				else if (!Global.Config.MuteFrameAdvance)
+					genSound = true;
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
-				Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
 			}
+
+			if(genSound)
+				Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
+			else
+				Global.Sound.UpdateSound(new NullEmulator()); //generates silence
+
 		}
 
 		private void TakeScreenshot()
