@@ -63,11 +63,14 @@
             // 
             // AddressBox
             // 
+            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
             this.AddressBox.Location = new System.Drawing.Point(68, 30);
+            this.AddressBox.MaxLength = 8;
             this.AddressBox.Name = "AddressBox";
-            this.AddressBox.Size = new System.Drawing.Size(100, 20);
+            this.AddressBox.Size = new System.Drawing.Size(80, 20);
             this.AddressBox.TabIndex = 2;
             this.AddressBox.Text = "0000";
+            this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
             // 
             // DataTypeGroupBox
             // 
@@ -232,10 +235,12 @@
             // ValueBox
             // 
             this.ValueBox.Location = new System.Drawing.Point(68, 57);
+            this.ValueBox.MaxLength = 9;
             this.ValueBox.Name = "ValueBox";
-            this.ValueBox.Size = new System.Drawing.Size(100, 20);
+            this.ValueBox.Size = new System.Drawing.Size(80, 20);
             this.ValueBox.TabIndex = 11;
             this.ValueBox.Text = "0000";
+            this.ValueBox.Leave += new System.EventHandler(this.ValueBox_Leave);
             // 
             // RamPoke
             // 
