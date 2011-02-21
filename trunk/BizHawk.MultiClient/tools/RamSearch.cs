@@ -37,7 +37,6 @@ namespace BizHawk.MultiClient
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         string currentSearchFile = "";
-        bool changes = false;
         
         public RamSearch()
         {
@@ -103,13 +102,8 @@ namespace BizHawk.MultiClient
             var file = GetFileFromUser();
             if (file != null)
             {
-                bool r = true;
-                if (changes) r = AskSave();
-                if (r)
-                {
-                    LoadSearchFile(file.FullName, false);
-                    DisplaySearchList();
-                }
+                LoadSearchFile(file.FullName, false);
+                DisplaySearchList();
             }
         }
 
@@ -1006,7 +1000,6 @@ namespace BizHawk.MultiClient
 
                 sw.WriteLine(str);
             }
-            changes = false;
             return true;
         }
 
@@ -1037,49 +1030,16 @@ namespace BizHawk.MultiClient
             OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
         }
 
-        public bool AskSave()
-        {
-            if (changes)
-            {
-                DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-
-                if (result == DialogResult.Yes)
-                {
-                    //TOOD: Do quicksave if filename, else save as
-                    if (string.Compare(currentSearchFile, "") == 0)
-                    {
-                        SaveAs();
-                    }
-                    else
-                        SaveSearchFile(currentSearchFile);
-                    return true;
-                }
-                else if (result == DialogResult.No)
-                    return true;
-                else if (result == DialogResult.Cancel)
-                    return false;
-            }
-            return true;
-        }
-
-
         private void LoadSearchFromRecent(string file)
         {
-            bool z = true;
-            if (changes) z = AskSave();
-
-            if (z)
+            bool r = LoadSearchFile(file, false);
+            if (!r)
             {
-                bool r = LoadSearchFile(file, false);
-                if (!r)
-                {
-                    DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-                    if (result == DialogResult.Yes)
-                        Global.Config.RecentSearches.Remove(file);
-                }
-                DisplaySearchList();
-                changes = false;
+                DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    Global.Config.RecentSearches.Remove(file);
             }
+            DisplaySearchList();
         }
 
         public int HowMany(string str, char c)
@@ -1156,7 +1116,6 @@ namespace BizHawk.MultiClient
                 }
 
                 Global.Config.RecentSearches.Add(file.FullName);
-                changes = false;
                 OutputLabel.Text = Path.GetFileName(file.FullName);
                 //Update the number of watches
                 SetTotal();
@@ -1215,7 +1174,6 @@ namespace BizHawk.MultiClient
             if (file != null)
                 LoadSearchFile(file.FullName, true);
             DisplaySearchList();
-            changes = true;
         }
 
         private FileInfo GetFileFromUser()
