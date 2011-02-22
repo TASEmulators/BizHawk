@@ -18,9 +18,6 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Window position gets saved but doesn't load properly
-        //Implement Preview search each frame (perhaps if autosearch is not on?)
-            //Refactor preview search to use prevList
-        //Add Preview toggle to options menu
         //Implement definitions of Previous value
         //Multiple memory domains
         //Option to remove current Ram Watch list from search list
@@ -62,6 +59,8 @@ namespace BizHawk.MultiClient
             }
             if (AutoSearchCheckBox.Checked)
                 DoSearch();
+            else if (Global.Config.RamSearchPreviewMode)
+                DoPreview();
             SearchListView.Refresh();
         }
 
@@ -514,16 +513,20 @@ namespace BizHawk.MultiClient
 
         private void DoPreview()
         {
-            weededList.Clear();     //TODO: use previewList to avoid having to clear this!
-            if (GenerateWeedOutList())
+            if (Global.Config.RamSearchPreviewMode)
             {
-                DisplaySearchList();
-                OutputLabel.Text = MakeAddressString(weededList.Count) + "would be removed";
+                weededList.Clear();
+                if (GenerateWeedOutList())
+                {
+                    DisplaySearchList();
+                    OutputLabel.Text = MakeAddressString(weededList.Count) + "would be removed";
+                }
             }
         }
 
         private void DoSearch()
         {
+            //TODO: if already previewed, don't generate the list again, perhaps a bool?
             if (GenerateWeedOutList())
             {
                 SaveUndo();
@@ -1264,6 +1267,7 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
+            previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
         }
 
         private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1375,6 +1379,11 @@ namespace BizHawk.MultiClient
         private void LessThanRadio_CheckedChanged(object sender, EventArgs e)
         {
             if (!DifferentByRadio.Checked) DoPreview();
+        }
+
+        private void previewModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchPreviewMode ^= true;
         }
     }
 
