@@ -439,7 +439,7 @@ namespace BizHawk.MultiClient
 				else throttle.SetCoreFps(60);
 				SetSpeedPercent(Global.Config.SpeedPercent);
 			}
-
+            RamSearch1.StartNewSearch();
 			CurrentlyOpenRom = path;
 			return true;
 		}
