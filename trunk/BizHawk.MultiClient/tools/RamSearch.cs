@@ -423,6 +423,16 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
+            //if (index % 2 == 0) color = Color.White; else color = Color.Pink;
+
+
+
+            if (weededList.Contains(searchList[index]))
+            {
+                color = Color.Pink;
+            }
+            else
+                color = Color.White;
             //TODO: make background pink on items that would be removed if search button were clicked
 		}
 
@@ -491,6 +501,15 @@ namespace BizHawk.MultiClient
         {
             searchList = new List<Watch>(weededList);
             weededList.Clear();
+        }
+
+        private void DoPreview()
+        {
+            if (GenerateWeedOutList())
+            {
+                DisplaySearchList();
+                OutputLabel.Text = MakeAddressString(weededList.Count) + "would be removed";
+            }
         }
 
         private void DoSearch()
