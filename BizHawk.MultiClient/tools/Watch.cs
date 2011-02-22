@@ -24,6 +24,19 @@ namespace BizHawk.MultiClient
             changecount = 0;
             prev = 0;
         }
+
+        public Watch(Watch w)
+        {
+            address = w.address;
+            value = w.value;
+            type = w.type;
+            signed = w.signed;
+            bigendian = w.bigendian;
+            notes = w.notes;
+            changecount = w.changecount;
+            prev = w.prev;
+        }
+
         public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
         {
             address = Address;

@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
     public partial class RamSearch : Form
     {
         //TODO:
+        //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Implement definitions of Previous value
         //Multiple memory domains
@@ -24,7 +25,10 @@ namespace BizHawk.MultiClient
         //Option to always remove Ram Watch list from search list
         //Truncate from file in File menu (and toolstrip?)
         //When a new ROM is loaded - run Start new Search (or just clear list?)
-        //Save Dialog - user cancelling crashes, same for Ram Search
+        //Save Dialog - user cancelling crashes, same for Ram Watch?
+        //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
+        //Add previous as original value option
+        //Add button to set copy current values to prev
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -329,8 +333,18 @@ namespace BizHawk.MultiClient
                 }
                 
             }
+            MakePreviousList();
+            
             OutputLabel.Text = "New search started";
             DisplaySearchList();
+        }
+
+        private void MakePreviousList()
+        {
+            prevList = new List<Watch>();
+
+            for (int x = 0; x < searchList.Count; x++)
+                prevList.Add(new Watch(searchList[x]));
         }
 
         private void DisplaySearchList()
@@ -431,17 +445,12 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-            //if (index % 2 == 0) color = Color.White; else color = Color.Pink;
-
-
-
             if (weededList.Contains(searchList[index]))
             {
-                color = Color.Pink;
+                color = Color.White;
             }
             else
-                color = Color.White;
-            //TODO: make background pink on items that would be removed if search button were clicked
+                color = Color.Pink;
 		}
 
 		private void SearchListView_QueryItemText(int index, int column, out string text)
@@ -459,16 +468,26 @@ namespace BizHawk.MultiClient
                     text = ((sbyte)searchList[index].value).ToString();
                 else if (searchList[index].signed == asigned.HEX)
                     text = searchList[index].value.ToString("X");
-
             }
             if (column == 2)
             {
                 if (searchList[index].signed == asigned.UNSIGNED)
-                    text = searchList[index].prev.ToString();
+                {
+                    if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
+                        text = searchList[index].prev.ToString();
+                    else
+                        text = prevList[index].value.ToString();
+                        //text = "urmom";
+                        
+                }
                 else if (searchList[index].signed == asigned.SIGNED)
+                {
                     text = ((sbyte)searchList[index].prev).ToString();
+                }
                 else if (searchList[index].signed == asigned.HEX)
+                {
                     text = searchList[index].prev.ToString("X");
+                }
             }
             if (column == 3)
             {
@@ -518,19 +537,19 @@ namespace BizHawk.MultiClient
                 if (GenerateWeedOutList())
                 {
                     DisplaySearchList();
-                    OutputLabel.Text = MakeAddressString(weededList.Count) + "would be removed";
+                    OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
                 }
             }
         }
 
         private void DoSearch()
         {
-            //TODO: if already previewed, don't generate the list again, perhaps a bool?
             if (GenerateWeedOutList())
             {
                 SaveUndo();
                 OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
                 ReplaceSearchListWithWeedOutList();
+                MakePreviousList();
                 DisplaySearchList();
             }
             else
@@ -599,7 +618,10 @@ namespace BizHawk.MultiClient
 
         private int GetPreviousValue(int pos)
         {
-            return searchList[pos].prev;    //TODO: return value based on user choice
+            if (Global.Config.RamSearchPreviousAs == 2) //If Previous frame
+                return searchList[pos].prev;    //TODO: return value based on user choice
+            else
+                return prevList[pos].value;
         }
 
         private bool DoPreviousValue()
