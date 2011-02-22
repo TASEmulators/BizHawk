@@ -66,12 +66,11 @@
             this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -114,6 +113,7 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
+            this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -449,6 +449,31 @@
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
+            // definePreviousValueToolStripMenuItem
+            // 
+            this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.sinceLastSearchToolStripMenuItem,
+            this.originalValueToolStripMenuItem,
+            this.sinceLastFrameToolStripMenuItem});
+            this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
+            this.definePreviousValueToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.definePreviousValueToolStripMenuItem.Text = "Define Previous Value As";
+            this.definePreviousValueToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueToolStripMenuItem_DropDownOpened);
+            // 
+            // sinceLastSearchToolStripMenuItem
+            // 
+            this.sinceLastSearchToolStripMenuItem.Name = "sinceLastSearchToolStripMenuItem";
+            this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
+            this.sinceLastSearchToolStripMenuItem.Click += new System.EventHandler(this.sinceLastSearchToolStripMenuItem_Click);
+            // 
+            // sinceLastFrameToolStripMenuItem
+            // 
+            this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
+            this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
+            this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
+            // 
             // restoreOriginalWindowSizeToolStripMenuItem
             // 
             this.restoreOriginalWindowSizeToolStripMenuItem.Name = "restoreOriginalWindowSizeToolStripMenuItem";
@@ -461,38 +486,6 @@
             this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-            // 
-            // definePreviousValueToolStripMenuItem
-            // 
-            this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.sinceLastSearchToolStripMenuItem,
-            this.sinceLastChangeToolStripMenuItem,
-            this.sinceLastFrameToolStripMenuItem});
-            this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
-            this.definePreviousValueToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.definePreviousValueToolStripMenuItem.Text = "Define Previous Value As";
-            this.definePreviousValueToolStripMenuItem.DropDownOpened += new System.EventHandler(this.definePreviousValueToolStripMenuItem_DropDownOpened);
-            // 
-            // sinceLastSearchToolStripMenuItem
-            // 
-            this.sinceLastSearchToolStripMenuItem.Name = "sinceLastSearchToolStripMenuItem";
-            this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
-            this.sinceLastSearchToolStripMenuItem.Click += new System.EventHandler(this.sinceLastSearchToolStripMenuItem_Click);
-            // 
-            // sinceLastChangeToolStripMenuItem
-            // 
-            this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
-            this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
-            this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
-            // 
-            // sinceLastFrameToolStripMenuItem
-            // 
-            this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
-            this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
-            this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
             // 
             // previewModeToolStripMenuItem
             // 
@@ -848,7 +841,7 @@
             // NotEqualToRadio
             // 
             this.NotEqualToRadio.AutoSize = true;
-            this.NotEqualToRadio.Location = new System.Drawing.Point(7, 114);
+            this.NotEqualToRadio.Location = new System.Drawing.Point(7, 35);
             this.NotEqualToRadio.Name = "NotEqualToRadio";
             this.NotEqualToRadio.Size = new System.Drawing.Size(88, 17);
             this.NotEqualToRadio.TabIndex = 5;
@@ -859,10 +852,12 @@
             // EqualToRadio
             // 
             this.EqualToRadio.AutoSize = true;
-            this.EqualToRadio.Location = new System.Drawing.Point(7, 95);
+            this.EqualToRadio.Checked = true;
+            this.EqualToRadio.Location = new System.Drawing.Point(7, 15);
             this.EqualToRadio.Name = "EqualToRadio";
             this.EqualToRadio.Size = new System.Drawing.Size(68, 17);
             this.EqualToRadio.TabIndex = 4;
+            this.EqualToRadio.TabStop = true;
             this.EqualToRadio.Text = "Equal To";
             this.EqualToRadio.UseVisualStyleBackColor = true;
             this.EqualToRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
@@ -870,7 +865,7 @@
             // GreaterThanOrEqualToRadio
             // 
             this.GreaterThanOrEqualToRadio.AutoSize = true;
-            this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(7, 76);
+            this.GreaterThanOrEqualToRadio.Location = new System.Drawing.Point(7, 113);
             this.GreaterThanOrEqualToRadio.Name = "GreaterThanOrEqualToRadio";
             this.GreaterThanOrEqualToRadio.Size = new System.Drawing.Size(146, 17);
             this.GreaterThanOrEqualToRadio.TabIndex = 3;
@@ -881,7 +876,7 @@
             // LessThanOrEqualToRadio
             // 
             this.LessThanOrEqualToRadio.AutoSize = true;
-            this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(7, 57);
+            this.LessThanOrEqualToRadio.Location = new System.Drawing.Point(7, 93);
             this.LessThanOrEqualToRadio.Name = "LessThanOrEqualToRadio";
             this.LessThanOrEqualToRadio.Size = new System.Drawing.Size(133, 17);
             this.LessThanOrEqualToRadio.TabIndex = 2;
@@ -892,7 +887,7 @@
             // GreaterThanRadio
             // 
             this.GreaterThanRadio.AutoSize = true;
-            this.GreaterThanRadio.Location = new System.Drawing.Point(7, 38);
+            this.GreaterThanRadio.Location = new System.Drawing.Point(7, 74);
             this.GreaterThanRadio.Name = "GreaterThanRadio";
             this.GreaterThanRadio.Size = new System.Drawing.Size(88, 17);
             this.GreaterThanRadio.TabIndex = 1;
@@ -903,12 +898,10 @@
             // LessThanRadio
             // 
             this.LessThanRadio.AutoSize = true;
-            this.LessThanRadio.Checked = true;
-            this.LessThanRadio.Location = new System.Drawing.Point(7, 18);
+            this.LessThanRadio.Location = new System.Drawing.Point(7, 54);
             this.LessThanRadio.Name = "LessThanRadio";
             this.LessThanRadio.Size = new System.Drawing.Size(75, 17);
             this.LessThanRadio.TabIndex = 0;
-            this.LessThanRadio.TabStop = true;
             this.LessThanRadio.Text = "Less Than";
             this.LessThanRadio.UseVisualStyleBackColor = true;
             this.LessThanRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
@@ -943,6 +936,13 @@
             this.OutputLabel.Size = new System.Drawing.Size(85, 13);
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
+            // 
+            // originalValueToolStripMenuItem
+            // 
+            this.originalValueToolStripMenuItem.Name = "originalValueToolStripMenuItem";
+            this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.originalValueToolStripMenuItem.Text = "Original value";
+            this.originalValueToolStripMenuItem.Click += new System.EventHandler(this.originalValueToolStripMenuItem_Click);
             // 
             // RamSearch
             // 
@@ -1070,8 +1070,8 @@
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem definePreviousValueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
     }
 }

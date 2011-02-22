@@ -24,8 +24,9 @@ namespace BizHawk.MultiClient
         //Ability to watch in different memory domains
 
         //IDEAS:
-        //show a change count column?
-        //Take advantage of the prev member to show amount changes from prev in a column?
+        //OPtion to show a change count column
+        //Option to show previous value
+        //Option to show change from previous value
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
