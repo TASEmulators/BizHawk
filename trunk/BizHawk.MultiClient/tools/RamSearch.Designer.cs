@@ -135,7 +135,7 @@
             this.PoketoolStripButton1});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(162, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(131, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -845,6 +845,7 @@
             this.NotEqualToRadio.TabIndex = 5;
             this.NotEqualToRadio.Text = "Not Equal To";
             this.NotEqualToRadio.UseVisualStyleBackColor = true;
+            this.NotEqualToRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // EqualToRadio
             // 
@@ -855,6 +856,7 @@
             this.EqualToRadio.TabIndex = 4;
             this.EqualToRadio.Text = "Equal To";
             this.EqualToRadio.UseVisualStyleBackColor = true;
+            this.EqualToRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // GreaterThanOrEqualToRadio
             // 
@@ -865,6 +867,7 @@
             this.GreaterThanOrEqualToRadio.TabIndex = 3;
             this.GreaterThanOrEqualToRadio.Text = "Greater Than or Equal To";
             this.GreaterThanOrEqualToRadio.UseVisualStyleBackColor = true;
+            this.GreaterThanOrEqualToRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // LessThanOrEqualToRadio
             // 
@@ -875,6 +878,7 @@
             this.LessThanOrEqualToRadio.TabIndex = 2;
             this.LessThanOrEqualToRadio.Text = "Less Than or Equal To";
             this.LessThanOrEqualToRadio.UseVisualStyleBackColor = true;
+            this.LessThanOrEqualToRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // GreaterThanRadio
             // 
@@ -885,6 +889,7 @@
             this.GreaterThanRadio.TabIndex = 1;
             this.GreaterThanRadio.Text = "Greater Than";
             this.GreaterThanRadio.UseVisualStyleBackColor = true;
+            this.GreaterThanRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // LessThanRadio
             // 
@@ -897,6 +902,7 @@
             this.LessThanRadio.TabStop = true;
             this.LessThanRadio.Text = "Less Than";
             this.LessThanRadio.UseVisualStyleBackColor = true;
+            this.LessThanRadio.CheckedChanged += new System.EventHandler(this.LessThanRadio_CheckedChanged);
             // 
             // AutoSearchCheckBox
             // 
