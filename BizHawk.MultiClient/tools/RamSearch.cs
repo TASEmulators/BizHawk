@@ -18,7 +18,9 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Window position gets saved but doesn't load properly
-        //Implement Preview search
+        //Implement Preview search each frame (perhaps if autosearch is not on?)
+            //Refactor preview search to use prevList
+        //Add Preview toggle to options menu
         //Implement definitions of Previous value
         //Multiple memory domains
         //Option to remove current Ram Watch list from search list
@@ -135,6 +137,7 @@ namespace BizHawk.MultiClient
         {
             if (SpecificValueRadio.Checked)
             {
+                if (SpecificValueBox.Text == "") SpecificValueBox.Text = "0";
                 SpecificValueBox.Enabled = true;
                 SpecificAddressBox.Enabled = false;
                 NumberOfChangesBox.Enabled = false;
@@ -157,6 +160,7 @@ namespace BizHawk.MultiClient
         {
             if (SpecificAddressRadio.Checked)
             {
+                if (SpecificAddressBox.Text == "") SpecificAddressBox.Text = "0";
                 SpecificValueBox.Enabled = false;
                 SpecificAddressBox.Enabled = true;
                 NumberOfChangesBox.Enabled = false;
@@ -169,6 +173,7 @@ namespace BizHawk.MultiClient
         {
             if (NumberOfChangesRadio.Checked)
             {
+                if (NumberOfChangesBox.Text == "") NumberOfChangesBox.Text = "0";
                 SpecificValueBox.Enabled = false;
                 SpecificAddressBox.Enabled = false;
                 NumberOfChangesBox.Enabled = true;
@@ -180,7 +185,11 @@ namespace BizHawk.MultiClient
         private void DifferentByRadio_CheckedChanged(object sender, EventArgs e)
         {
             if (DifferentByRadio.Checked)
+            {
+                if (DifferentByBox.Text == "0") DifferentByBox.Text = "0";
                 DifferentByBox.Enabled = true;
+                DoPreview();
+            }
             else
                 DifferentByBox.Enabled = false;
             DifferentByBox.Focus();
@@ -505,6 +514,7 @@ namespace BizHawk.MultiClient
 
         private void DoPreview()
         {
+            weededList.Clear();     //TODO: use previewList to avoid having to clear this!
             if (GenerateWeedOutList())
             {
                 DisplaySearchList();
@@ -717,6 +727,7 @@ namespace BizHawk.MultiClient
 
         private int GetSpecificValue()
         {
+            if (SpecificValueBox.Text == "") return 0;
             bool i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
             if (!i) return -1;
 
@@ -725,6 +736,7 @@ namespace BizHawk.MultiClient
 
         private int GetSpecificAddress()
         {
+            if (SpecificAddressBox.Text == "") return 0;
             bool i = InputValidate.IsValidHexNumber(SpecificAddressBox.Text);
             if (!i) return -1;
 
@@ -733,6 +745,7 @@ namespace BizHawk.MultiClient
 
         private int GetDifferentBy()
         {
+            if (DifferentByBox.Text == "") return 0;
             bool i = InputValidate.IsValidUnsignedNumber(DifferentByBox.Text);
             if (!i)
             {
@@ -816,6 +829,7 @@ namespace BizHawk.MultiClient
 
         private int GetSpecificChanges()
         {
+            if (NumberOfChangesBox.Text == "") return 0;
             bool i = InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text);
             if (!i) return -1;
 
@@ -1356,6 +1370,11 @@ namespace BizHawk.MultiClient
                     sinceLastFrameToolStripMenuItem.Checked = false;
                     break;
             }
+        }
+
+        private void LessThanRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!DifferentByRadio.Checked) DoPreview();
         }
     }
 
