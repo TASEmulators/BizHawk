@@ -114,6 +114,7 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
+            this.TruncateFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -276,6 +277,7 @@
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.appendFileToolStripMenuItem,
+            this.TruncateFromFileToolStripMenuItem,
             this.recentToolStripMenuItem,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
@@ -952,6 +954,13 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
+            // TruncateFromFileToolStripMenuItem
+            // 
+            this.TruncateFromFileToolStripMenuItem.Name = "TruncateFromFileToolStripMenuItem";
+            this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
+            this.TruncateFromFileToolStripMenuItem.Click += new System.EventHandler(this.TruncateFromFileToolStripMenuItem_Click);
+            // 
             // RamSearch
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1081,5 +1090,6 @@
         private System.Windows.Forms.ToolStripMenuItem sinceLastFrameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
     }
 }

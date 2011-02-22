@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
         //Multiple memory domains
         //Option to remove current Ram Watch list from search list
         //Option to always remove Ram Watch list from search list
-        //Truncate from file in File menu (and toolstrip?)
+        //Truncate from file toolstrip button
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
         //Add button to set copy current values to prev
@@ -113,7 +113,7 @@ namespace BizHawk.MultiClient
             var file = GetFileFromUser();
             if (file != null)
             {
-                LoadSearchFile(file.FullName, false);
+                LoadSearchFile(file.FullName, false, false, searchList);
                 DisplaySearchList();
             }
         }
@@ -1110,7 +1110,7 @@ namespace BizHawk.MultiClient
 
         private void LoadSearchFromRecent(string file)
         {
-            bool r = LoadSearchFile(file, false);
+            bool r = LoadSearchFile(file, false, false, searchList);
             if (!r)
             {
                 DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
@@ -1131,7 +1131,7 @@ namespace BizHawk.MultiClient
             return count;
         }
 
-        bool LoadSearchFile(string path, bool append)
+        bool LoadSearchFile(string path, bool append, bool truncate, List<Watch> list)
         {
             int y, z;
             var file = new FileInfo(path);
@@ -1139,15 +1139,15 @@ namespace BizHawk.MultiClient
 
             using (StreamReader sr = file.OpenText())
             {
-                if (!append)
+                if (!append && !truncate)
                     currentSearchFile = path;
 
                 int count = 0;
                 string s = "";
                 string temp = "";
 
-                if (append == false)
-                    searchList.Clear();  //Wipe existing list and read from file
+                if (!append)
+                    list.Clear();  //Wipe existing list and read from file
 
                 while ((s = sr.ReadLine()) != null)
                 {
@@ -1190,13 +1190,16 @@ namespace BizHawk.MultiClient
 
                     //w.notes = s.Substring(2, s.Length - 2);   //User notes
 
-                    searchList.Add(w);
+                    list.Add(w);
                 }
 
-                Global.Config.RecentSearches.Add(file.FullName);
-                OutputLabel.Text = Path.GetFileName(file.FullName);
-                //Update the number of watches
-                SetTotal();
+                if (!append && !truncate)
+                {
+                    Global.Config.RecentSearches.Add(file.FullName);
+                    OutputLabel.Text = Path.GetFileName(file.FullName);
+                    //Update the number of watches
+                    SetTotal();
+                }
             }
 
             return true;
@@ -1250,7 +1253,7 @@ namespace BizHawk.MultiClient
         {
             var file = GetFileFromUser();
             if (file != null)
-                LoadSearchFile(file.FullName, true);
+                LoadSearchFile(file.FullName, true, false, searchList);
             DisplaySearchList();
         }
 
@@ -1455,6 +1458,43 @@ namespace BizHawk.MultiClient
             DoPreview();
         }
 
+        private void TruncateFromFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TruncateFromFile();
+        }
+
+        private void TruncateFromFile()
+        {
+            //TODO: what about byte size? Think about the implications of this
+            var file = GetFileFromUser();
+            if (file != null)
+            {
+                List<Watch> temp = new List<Watch>();
+                LoadSearchFile(file.FullName, false, true, temp);
+                weededList.Clear();
+                bool found = false;
+                for (int x = 0; x < searchList.Count; x++)
+                {
+                    found = false;
+                    for (int y = 0; y < temp.Count; y++)
+                    {
+                        if (searchList[x].address == temp[y].address)
+                        {
+                            found = true;
+                            break;
+                        }
+                        
+                    }
+                    if (!found)
+                        weededList.Add(searchList[x]);
+                }
+                SaveUndo();
+                OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+                ReplaceSearchListWithWeedOutList();
+                if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+                DisplaySearchList();
+            }
+        }
         
     }
 
