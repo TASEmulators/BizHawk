@@ -72,6 +72,7 @@
             this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -439,9 +440,10 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.definePreviousValueToolStripMenuItem,
             this.restoreOriginalWindowSizeToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem,
-            this.definePreviousValueToolStripMenuItem});
+            this.previewModeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -491,6 +493,13 @@
             this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
             this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
+            // 
+            // previewModeToolStripMenuItem
+            // 
+            this.previewModeToolStripMenuItem.Name = "previewModeToolStripMenuItem";
+            this.previewModeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.previewModeToolStripMenuItem.Text = "Preview Mode";
+            this.previewModeToolStripMenuItem.Click += new System.EventHandler(this.previewModeToolStripMenuItem_Click);
             // 
             // toolStripContainer1
             // 
@@ -1063,5 +1072,6 @@
         private System.Windows.Forms.ToolStripMenuItem sinceLastSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sinceLastFrameToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
     }
 }

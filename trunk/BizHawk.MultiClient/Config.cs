@@ -64,6 +64,7 @@
         public int RamSearchWidth = -1;  //Negative numbers will be ignored
         public int RamSearchHeight = -1;
         public int RamSearchPreviousAs = 0;
+        public bool RamSearchPreviewMode = true;
 
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
