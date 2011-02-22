@@ -68,6 +68,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.definePreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -113,7 +114,6 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -467,6 +467,13 @@
             this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
             this.sinceLastSearchToolStripMenuItem.Click += new System.EventHandler(this.sinceLastSearchToolStripMenuItem_Click);
             // 
+            // originalValueToolStripMenuItem
+            // 
+            this.originalValueToolStripMenuItem.Name = "originalValueToolStripMenuItem";
+            this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.originalValueToolStripMenuItem.Text = "Original value";
+            this.originalValueToolStripMenuItem.Click += new System.EventHandler(this.originalValueToolStripMenuItem_Click);
+            // 
             // sinceLastFrameToolStripMenuItem
             // 
             this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
@@ -730,7 +737,9 @@
             this.NumberOfChangesBox.Name = "NumberOfChangesBox";
             this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
             this.NumberOfChangesBox.TabIndex = 6;
+            this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.NumberOfChangesBox_TextChanged);
             this.NumberOfChangesBox.Leave += new System.EventHandler(this.NumberOfChangesBox_Leave);
+            this.NumberOfChangesBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberOfChangesBox_KeyPress);
             // 
             // SpecificAddressBox
             // 
@@ -741,7 +750,9 @@
             this.SpecificAddressBox.Name = "SpecificAddressBox";
             this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificAddressBox.TabIndex = 5;
+            this.SpecificAddressBox.TextChanged += new System.EventHandler(this.SpecificAddressBox_TextChanged);
             this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
+            this.SpecificAddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificAddressBox_KeyPress);
             // 
             // SpecificValueBox
             // 
@@ -751,7 +762,9 @@
             this.SpecificValueBox.Name = "SpecificValueBox";
             this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
             this.SpecificValueBox.TabIndex = 4;
+            this.SpecificValueBox.TextChanged += new System.EventHandler(this.SpecificValueBox_TextChanged);
             this.SpecificValueBox.Leave += new System.EventHandler(this.SpecificValueBox_Leave);
+            this.SpecificValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificValueBox_KeyPress);
             // 
             // NumberOfChangesRadio
             // 
@@ -825,7 +838,9 @@
             this.DifferentByBox.Name = "DifferentByBox";
             this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
             this.DifferentByBox.TabIndex = 9;
+            this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
             this.DifferentByBox.Leave += new System.EventHandler(this.DifferentByBox_Leave);
+            this.DifferentByBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DifferentByBox_KeyPress);
             // 
             // DifferentByRadio
             // 
@@ -936,13 +951,6 @@
             this.OutputLabel.Size = new System.Drawing.Size(85, 13);
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
-            // 
-            // originalValueToolStripMenuItem
-            // 
-            this.originalValueToolStripMenuItem.Name = "originalValueToolStripMenuItem";
-            this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.originalValueToolStripMenuItem.Text = "Original value";
-            this.originalValueToolStripMenuItem.Click += new System.EventHandler(this.originalValueToolStripMenuItem_Click);
             // 
             // RamSearch
             // 

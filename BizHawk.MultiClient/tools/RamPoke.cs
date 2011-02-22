@@ -16,6 +16,7 @@ namespace BizHawk.MultiClient
         //If signed/unsigned/hex radios selected, auto-change the value box
         //Checked signed/u/h value on RamPoke_Load and set value appopriately
         //Memory domain selection
+        //Overhaul input validation of textboxes to be like Ram Search
         public Watch watch = new Watch();
         public Point location = new Point();
 
