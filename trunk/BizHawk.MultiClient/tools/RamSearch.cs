@@ -19,12 +19,10 @@ namespace BizHawk.MultiClient
         //TODO:
         //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
-        //Implement definitions of Previous value
         //Multiple memory domains
         //Option to remove current Ram Watch list from search list
         //Option to always remove Ram Watch list from search list
         //Truncate from file in File menu (and toolstrip?)
-        //When a new ROM is loaded - run Start new Search (or just clear list?)
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
         //Add button to set copy current values to prev
@@ -285,7 +283,7 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
-        private void StartNewSearch()
+        public void StartNewSearch()
         {
             weededList.Clear();
             IsAWeededList = false;
