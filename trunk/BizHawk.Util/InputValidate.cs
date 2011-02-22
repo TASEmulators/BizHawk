@@ -27,6 +27,14 @@ namespace BizHawk
             return true;
         }
 
+        public static bool IsValidUnsignedNumber(char c)
+        {
+            if (c < 47 || c > 58)
+                return false;
+
+            return true;
+        }
+
         /// <summary>
         /// Validates all chars are 0-9 or a dash as the first value
         /// </summary>
@@ -58,6 +66,17 @@ namespace BizHawk
             return true;
         }
 
+        public static bool IsValidSignedNumber(char c)
+        {
+            if (c == 47) return true;
+
+            if (c < 47 || c > 58)
+                return false;
+
+            return true;
+        }
+
+
         /// <summary>
         /// validates is a Hex number 0-9, A-F (must be capital letters)
         /// </summary>
@@ -79,6 +98,24 @@ namespace BizHawk
                 if (bc[0] > 58)
                 {
                     if (bc[0] < 65 || bc[0] > 70) //A-F capital letters only!
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        public static bool IsValidHexNumber(char c)
+        {
+            if (c < 47) return false; //0
+
+            if (c > 58) //9
+            {
+                if (c < 65) //A
+                    return false;
+
+                if (c > 70) //F
+                {
+                    if (c < 97 || c > 102) //a-f
                         return false;
                 }
             }

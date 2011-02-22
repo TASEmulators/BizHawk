@@ -31,6 +31,9 @@ namespace BizHawk.MultiClient
         //Add button to set copy current values to prev
         //ON start new search, a preview of equal to prev value would remove all searches, there's an error here
         //On start new search, don't do preview
+        //On text box leave event, do preview
+        //After search everything goes pink
+        //Limit number of digits in specific value based on data type
         
 
         string systemID = "NULL";
@@ -556,7 +559,7 @@ namespace BizHawk.MultiClient
                 SaveUndo();
                 OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
                 ReplaceSearchListWithWeedOutList();
-                MakePreviousList();
+                if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
                 DisplaySearchList();
             }
             else
@@ -1020,50 +1023,30 @@ namespace BizHawk.MultiClient
 
         private void SpecificValueBox_Leave(object sender, EventArgs e)
         {
-            SpecificValueBox.Text = SpecificValueBox.Text.Replace(" ", "");
-            if (!InputValidate.IsValidSignedNumber(SpecificValueBox.Text))
-            {
-                SpecificValueBox.Focus();
-                SpecificValueBox.SelectAll();
-                ToolTip t = new ToolTip();
-                t.Show("Must be a valid decimal value", SpecificValueBox, 5000);
-            }
+            DoPreview();
         }
 
         private void SpecificAddressBox_Leave(object sender, EventArgs e)
         {
-            SpecificAddressBox.Text = SpecificAddressBox.Text.Replace(" ", "");
-            if (!InputValidate.IsValidHexNumber(SpecificAddressBox.Text))
-            {
-                SpecificAddressBox.Focus();
-                SpecificAddressBox.SelectAll();
-                ToolTip t = new ToolTip();
-                t.Show("Must be a valid hexadecimal value", SpecificAddressBox, 5000);
-            }
+            DoPreview();
         }
 
         private void NumberOfChangesBox_Leave(object sender, EventArgs e)
         {
-            NumberOfChangesBox.Text = NumberOfChangesBox.Text.Replace(" ", "");
-            if (!InputValidate.IsValidUnsignedNumber(NumberOfChangesBox.Text))
-            {
-                NumberOfChangesBox.Focus();
-                NumberOfChangesBox.SelectAll();
-                ToolTip t = new ToolTip();
-                t.Show("Must be a valid unsigned decimal value", NumberOfChangesBox, 5000);
-            }
+            DoPreview();
         }
 
         private void DifferentByBox_Leave(object sender, EventArgs e)
         {
-            DifferentByBox.Text = DifferentByBox.Text.Replace(" ", "");
-            if (!InputValidate.IsValidUnsignedNumber(DifferentByBox.Text))
+            if (!InputValidate.IsValidUnsignedNumber(DifferentByBox.Text))  //Actually the only way this could happen is from putting dashes after the first character
             {
                 DifferentByBox.Focus();
                 DifferentByBox.SelectAll();
                 ToolTip t = new ToolTip();
                 t.Show("Must be a valid unsigned decimal value", DifferentByBox, 5000);
+                return;
             }
+            DoPreview();
         }
 
         private bool SaveSearchFile(string path)
@@ -1413,6 +1396,58 @@ namespace BizHawk.MultiClient
         private void previewModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.RamSearchPreviewMode ^= true;
+        }
+
+        private void SpecificValueBox_TextChanged(object sender, EventArgs e)
+        {
+            DoPreview();
+        }
+
+        private void SpecificValueBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void SpecificAddressBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void NumberOfChangesBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void DifferentByBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void SpecificAddressBox_TextChanged(object sender, EventArgs e)
+        {
+            DoPreview();
+        }
+
+        private void NumberOfChangesBox_TextChanged(object sender, EventArgs e)
+        {
+            DoPreview();
+        }
+
+        private void DifferentByBox_TextChanged(object sender, EventArgs e)
+        {
+            DoPreview();
         }
 
         
