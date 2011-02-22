@@ -29,6 +29,9 @@ namespace BizHawk.MultiClient
         //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
         //Add previous as original value option
         //Add button to set copy current values to prev
+        //ON start new search, a preview of equal to prev value would remove all searches, there's an error here
+        //On start new search, don't do preview
+        
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -476,17 +479,21 @@ namespace BizHawk.MultiClient
                     if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
                         text = searchList[index].prev.ToString();
                     else
-                        text = prevList[index].value.ToString();
-                        //text = "urmom";
-                        
+                        text = prevList[index].value.ToString();     
                 }
                 else if (searchList[index].signed == asigned.SIGNED)
                 {
-                    text = ((sbyte)searchList[index].prev).ToString();
+                    if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
+                        text = ((sbyte)searchList[index].prev).ToString();
+                    else
+                        text = ((sbyte)prevList[index].value).ToString();
                 }
                 else if (searchList[index].signed == asigned.HEX)
                 {
-                    text = searchList[index].prev.ToString("X");
+                    if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
+                        text = searchList[index].prev.ToString("X");
+                    else
+                        text = prevList[index].value.ToString("X");
                 }
             }
             if (column == 3)
@@ -619,7 +626,7 @@ namespace BizHawk.MultiClient
         private int GetPreviousValue(int pos)
         {
             if (Global.Config.RamSearchPreviousAs == 2) //If Previous frame
-                return searchList[pos].prev;    //TODO: return value based on user choice
+                return searchList[pos].prev;
             else
                 return prevList[pos].value;
         }
@@ -1361,14 +1368,14 @@ namespace BizHawk.MultiClient
             Global.Config.RamSearchPreviousAs = 0;
         }
 
-        private void sinceLastChangeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.RamSearchPreviousAs = 1;
-        }
-
         private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.RamSearchPreviousAs = 2;
+        }
+
+        private void originalValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamSearchPreviousAs = 1;
         }
 
         private void definePreviousValueToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1377,22 +1384,22 @@ namespace BizHawk.MultiClient
             {
                 case 0: //Since last Search
                     sinceLastSearchToolStripMenuItem.Checked = true;
-                    sinceLastChangeToolStripMenuItem.Checked = false;
+                    originalValueToolStripMenuItem.Checked = false;
                     sinceLastFrameToolStripMenuItem.Checked = false;
                     break;
-                case 1: //Since last Change
+                case 1: //Original value (since Start new search)
                     sinceLastSearchToolStripMenuItem.Checked = false;
-                    sinceLastChangeToolStripMenuItem.Checked = true;
+                    originalValueToolStripMenuItem.Checked = true;
                     sinceLastFrameToolStripMenuItem.Checked = false;
                     break;
                 case 2: //Since last Frame
                     sinceLastSearchToolStripMenuItem.Checked = false;
-                    sinceLastChangeToolStripMenuItem.Checked = true;
-                    sinceLastFrameToolStripMenuItem.Checked = false;
+                    originalValueToolStripMenuItem.Checked = false;
+                    sinceLastFrameToolStripMenuItem.Checked = true;
                     break;
                 default://Default to last search
                     sinceLastSearchToolStripMenuItem.Checked = true;
-                    sinceLastChangeToolStripMenuItem.Checked = false;
+                    originalValueToolStripMenuItem.Checked = false;
                     sinceLastFrameToolStripMenuItem.Checked = false;
                     break;
             }
@@ -1407,6 +1414,8 @@ namespace BizHawk.MultiClient
         {
             Global.Config.RamSearchPreviewMode ^= true;
         }
+
+        
     }
 
 
