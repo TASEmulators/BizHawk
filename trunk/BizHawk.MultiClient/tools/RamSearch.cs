@@ -27,13 +27,10 @@ namespace BizHawk.MultiClient
         //When a new ROM is loaded - run Start new Search (or just clear list?)
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
-        //Add previous as original value option
         //Add button to set copy current values to prev
-        //ON start new search, a preview of equal to prev value would remove all searches, there's an error here
-        //On start new search, don't do preview
-        //On text box leave event, do preview
         //After search everything goes pink
-        //Limit number of digits in specific value based on data type
+        //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!
+        //8191 addresses? should it be 8192?
         
 
         string systemID = "NULL";
@@ -41,6 +38,7 @@ namespace BizHawk.MultiClient
         List<Watch> undoList = new List<Watch>();
         List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
         List<Watch> prevList = new List<Watch>();
+        private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
@@ -153,6 +151,7 @@ namespace BizHawk.MultiClient
                 SpecificValueBox.Focus();
                 SpecificValueBox.SelectAll();
             }
+            DoPreview();
         }
 
         private void PreviousValueRadio_CheckedChanged(object sender, EventArgs e)
@@ -163,6 +162,7 @@ namespace BizHawk.MultiClient
                 SpecificAddressBox.Enabled = false;
                 NumberOfChangesBox.Enabled = false;
             }
+            DoPreview();
         }
 
         private void SpecificAddressRadio_CheckedChanged(object sender, EventArgs e)
@@ -176,6 +176,7 @@ namespace BizHawk.MultiClient
                 SpecificAddressBox.Focus();
                 SpecificAddressBox.SelectAll();
             }
+            DoPreview();
         }
 
         private void NumberOfChangesRadio_CheckedChanged(object sender, EventArgs e)
@@ -286,6 +287,8 @@ namespace BizHawk.MultiClient
 
         private void StartNewSearch()
         {
+            weededList.Clear();
+            IsAWeededList = false;
             searchList.Clear();
             undoList.Clear();
             GetMemoryDomain();
@@ -451,12 +454,15 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-            if (weededList.Contains(searchList[index]))
+            if (IsAWeededList)
             {
-                color = Color.White;
+                if (!weededList.Contains(searchList[index]))
+                {
+                    color = Color.Pink;
+                }
+                else
+                    color = Color.White;
             }
-            else
-                color = Color.Pink;
 		}
 
 		private void SearchListView_QueryItemText(int index, int column, out string text)
@@ -610,6 +616,7 @@ namespace BizHawk.MultiClient
             //Switch based on user criteria
             //Generate search list
             //Use search list to generate a list of flagged address (for displaying pink)
+            IsAWeededList = true;
             weededList.Clear();
             switch (GetCompareTo())
             {
