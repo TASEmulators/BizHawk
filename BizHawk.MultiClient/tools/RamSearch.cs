@@ -515,7 +515,6 @@ namespace BizHawk.MultiClient
         {
             if (Global.Config.RamSearchPreviewMode)
             {
-                weededList.Clear();
                 if (GenerateWeedOutList())
                 {
                     DisplaySearchList();
@@ -582,6 +581,7 @@ namespace BizHawk.MultiClient
             //Switch based on user criteria
             //Generate search list
             //Use search list to generate a list of flagged address (for displaying pink)
+            weededList.Clear();
             switch (GetCompareTo())
             {
                 case SCompareTo.PREV:
