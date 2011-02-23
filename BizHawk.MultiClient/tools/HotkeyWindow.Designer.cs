@@ -28,8 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
             this.hotkeyTabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label45 = new System.Windows.Forms.Label();
+            this.IDW_FULLSCREEN = new BizHawk.MultiClient.InputWidget();
+            this.IDW_SCREENSHOT = new BizHawk.MultiClient.InputWidget();
+            this.label44 = new System.Windows.Forms.Label();
             this.IDW_REWIND = new BizHawk.MultiClient.InputWidget();
             this.label37 = new System.Windows.Forms.Label();
             this.IDW_FASTFORWARD = new BizHawk.MultiClient.InputWidget();
@@ -119,10 +124,6 @@
             this.IDB_SAVE = new System.Windows.Forms.Button();
             this.IDB_CANCEL = new System.Windows.Forms.Button();
             this.label38 = new System.Windows.Forms.Label();
-            this.label44 = new System.Windows.Forms.Label();
-            this.IDW_SCREENSHOT = new BizHawk.MultiClient.InputWidget();
-            this.IDW_FULLSCREEN = new BizHawk.MultiClient.InputWidget();
-            this.label45 = new System.Windows.Forms.Label();
             this.hotkeyTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -140,6 +141,7 @@
             this.hotkeyTabs.SelectedIndex = 0;
             this.hotkeyTabs.Size = new System.Drawing.Size(598, 290);
             this.hotkeyTabs.TabIndex = 0;
+            this.hotkeyTabs.TabStop = false;
             // 
             // tabPage1
             // 
@@ -168,6 +170,42 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label45
+            // 
+            this.label45.AutoSize = true;
+            this.label45.Location = new System.Drawing.Point(207, 83);
+            this.label45.Name = "label45";
+            this.label45.Size = new System.Drawing.Size(60, 13);
+            this.label45.TabIndex = 79;
+            this.label45.Text = "Full Screen";
+            // 
+            // IDW_FULLSCREEN
+            // 
+            this.IDW_FULLSCREEN.AcceptsTab = true;
+            this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 80);
+            this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
+            this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
+            this.IDW_FULLSCREEN.TabIndex = 78;
+            // 
+            // IDW_SCREENSHOT
+            // 
+            this.IDW_SCREENSHOT.AcceptsTab = true;
+            this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 56);
+            this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
+            this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
+            this.IDW_SCREENSHOT.TabIndex = 76;
+            // 
+            // label44
+            // 
+            this.label44.AutoSize = true;
+            this.label44.Location = new System.Drawing.Point(207, 59);
+            this.label44.Name = "label44";
+            this.label44.Size = new System.Drawing.Size(61, 13);
+            this.label44.TabIndex = 75;
+            this.label44.Text = "Screenshot";
             // 
             // IDW_REWIND
             // 
@@ -962,6 +1000,7 @@
             this.IDB_SAVE.Name = "IDB_SAVE";
             this.IDB_SAVE.Size = new System.Drawing.Size(82, 22);
             this.IDB_SAVE.TabIndex = 1;
+            this.IDB_SAVE.TabStop = false;
             this.IDB_SAVE.Text = "Save";
             this.IDB_SAVE.UseVisualStyleBackColor = true;
             this.IDB_SAVE.Click += new System.EventHandler(this.IDB_SAVE_Click);
@@ -972,6 +1011,7 @@
             this.IDB_CANCEL.Name = "IDB_CANCEL";
             this.IDB_CANCEL.Size = new System.Drawing.Size(80, 22);
             this.IDB_CANCEL.TabIndex = 2;
+            this.IDB_CANCEL.TabStop = false;
             this.IDB_CANCEL.Text = "Cancel";
             this.IDB_CANCEL.UseVisualStyleBackColor = true;
             this.IDB_CANCEL.Click += new System.EventHandler(this.button2_Click);
@@ -981,45 +1021,9 @@
             this.label38.AutoSize = true;
             this.label38.Location = new System.Drawing.Point(22, 305);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(160, 13);
+            this.label38.Size = new System.Drawing.Size(153, 13);
             this.label38.TabIndex = 3;
-            this.label38.Text = "* Escape clears a dialog window";
-            // 
-            // label44
-            // 
-            this.label44.AutoSize = true;
-            this.label44.Location = new System.Drawing.Point(207, 59);
-            this.label44.Name = "label44";
-            this.label44.Size = new System.Drawing.Size(61, 13);
-            this.label44.TabIndex = 75;
-            this.label44.Text = "Screenshot";
-            // 
-            // IDW_SCREENSHOT
-            // 
-            this.IDW_SCREENSHOT.AcceptsTab = true;
-            this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 56);
-            this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
-            this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_SCREENSHOT.TabIndex = 76;
-            // 
-            // IDW_FULLSCREEN
-            // 
-            this.IDW_FULLSCREEN.AcceptsTab = true;
-            this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 80);
-            this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
-            this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FULLSCREEN.TabIndex = 78;
-            // 
-            // label45
-            // 
-            this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(207, 83);
-            this.label45.Name = "label45";
-            this.label45.Size = new System.Drawing.Size(60, 13);
-            this.label45.TabIndex = 79;
-            this.label45.Text = "Full Screen";
+            this.label38.Text = "* Escape clears a key mapping";
             // 
             // HotkeyWindow
             // 
@@ -1031,6 +1035,7 @@
             this.Controls.Add(this.IDB_SAVE);
             this.Controls.Add(this.hotkeyTabs);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "HotkeyWindow";
