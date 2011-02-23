@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
         //Multiple memory domains
         //Option to remove current Ram Watch list from search list
         //Option to always remove Ram Watch list from search list
-        //Truncate from file toolstrip button
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Add button to set copy current values to prev     
         //After search everything goes pink
@@ -1494,6 +1493,11 @@ namespace BizHawk.MultiClient
                 if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
                 DisplaySearchList();
             }
+        }
+
+        private void TruncateFromFiletoolStripButton2_Click(object sender, EventArgs e)
+        {
+            TruncateFromFile();
         }
         
     }

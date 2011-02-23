@@ -50,6 +50,7 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appendFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TruncateFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -114,7 +115,7 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.TruncateFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TruncateFromFiletoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -134,10 +135,11 @@
             this.toolStripSeparator,
             this.cutToolStripButton,
             this.WatchtoolStripButton1,
-            this.PoketoolStripButton1});
+            this.PoketoolStripButton1,
+            this.TruncateFromFiletoolStripButton2});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(131, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(185, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -328,6 +330,13 @@
             this.appendFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.appendFileToolStripMenuItem.Text = "&Append File...";
             this.appendFileToolStripMenuItem.Click += new System.EventHandler(this.appendFileToolStripMenuItem_Click);
+            // 
+            // TruncateFromFileToolStripMenuItem
+            // 
+            this.TruncateFromFileToolStripMenuItem.Name = "TruncateFromFileToolStripMenuItem";
+            this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
+            this.TruncateFromFileToolStripMenuItem.Click += new System.EventHandler(this.TruncateFromFileToolStripMenuItem_Click);
             // 
             // recentToolStripMenuItem
             // 
@@ -954,12 +963,15 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
-            // TruncateFromFileToolStripMenuItem
+            // TruncateFromFiletoolStripButton2
             // 
-            this.TruncateFromFileToolStripMenuItem.Name = "TruncateFromFileToolStripMenuItem";
-            this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
-            this.TruncateFromFileToolStripMenuItem.Click += new System.EventHandler(this.TruncateFromFileToolStripMenuItem_Click);
+            this.TruncateFromFiletoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TruncateFromFiletoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
+            this.TruncateFromFiletoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TruncateFromFiletoolStripButton2.Name = "TruncateFromFiletoolStripButton2";
+            this.TruncateFromFiletoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.TruncateFromFiletoolStripButton2.Text = "Truncate from File";
+            this.TruncateFromFiletoolStripButton2.Click += new System.EventHandler(this.TruncateFromFiletoolStripButton2_Click);
             // 
             // RamSearch
             // 
@@ -1091,5 +1103,6 @@
         private System.Windows.Forms.ToolStripMenuItem previewModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton TruncateFromFiletoolStripButton2;
     }
 }
