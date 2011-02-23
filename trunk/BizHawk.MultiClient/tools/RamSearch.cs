@@ -20,9 +20,6 @@ namespace BizHawk.MultiClient
         //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //Save Dialog - user cancelling crashes, same for Ram Watch?
-        //Add button to set copy current values to prev     
-        //After search everything goes pink
         //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!                   
         //Search equal to previous value, eveyrthing will be pink afterward
 
@@ -1528,7 +1525,28 @@ namespace BizHawk.MultiClient
         {
             Global.Config.AlwaysExludeRamWatch ^= true;
         }
-        
+
+        private void CopyValueToPrev()
+        {
+            for (int x = 0; x < searchList.Count; x++)
+            {
+                prevList[x].value = searchList[x].value;
+                searchList[x].prev = searchList[x].value;
+            }
+            DisplaySearchList();
+            DoPreview();
+        }
+
+        private void SetCurrToPrevtoolStripButton2_Click(object sender, EventArgs e)
+        {
+            CopyValueToPrev();
+        }
+
+        private void copyValueToPrevToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyValueToPrev();
+        }
+
     }
 
 

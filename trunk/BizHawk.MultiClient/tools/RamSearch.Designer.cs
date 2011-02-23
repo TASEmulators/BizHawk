@@ -77,10 +77,12 @@
             this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.SetCurrToPrevtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
@@ -118,7 +120,7 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -414,8 +416,9 @@
             // 
             this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.searchToolStripMenuItem1,
-            this.clearChangeCountsToolStripMenuItem,
             this.undoToolStripMenuItem,
+            this.copyValueToPrevToolStripMenuItem,
+            this.clearChangeCountsToolStripMenuItem,
             this.removeSelectedToolStripMenuItem,
             this.exludeRamWatchListToolStripMenuItem,
             this.toolStripSeparator5,
@@ -545,6 +548,13 @@
             this.previewModeToolStripMenuItem.Text = "Preview Mode";
             this.previewModeToolStripMenuItem.Click += new System.EventHandler(this.previewModeToolStripMenuItem_Click);
             // 
+            // alwaysExludeRamSearchListToolStripMenuItem
+            // 
+            this.alwaysExludeRamSearchListToolStripMenuItem.Name = "alwaysExludeRamSearchListToolStripMenuItem";
+            this.alwaysExludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.alwaysExludeRamSearchListToolStripMenuItem.Text = "Always Exlude Ram Search List";
+            this.alwaysExludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExludeRamSearchListToolStripMenuItem_Click);
+            // 
             // toolStripContainer1
             // 
             this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -571,11 +581,12 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewSearchtoolStripButton,
             this.toolStripButton1,
+            this.SetCurrToPrevtoolStripButton2,
             this.ClearChangeCountstoolStripButton,
             this.UndotoolStripButton});
             this.toolStrip1.Location = new System.Drawing.Point(3, 25);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(102, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(125, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -597,6 +608,16 @@
             this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton1.Text = "Search";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // SetCurrToPrevtoolStripButton2
+            // 
+            this.SetCurrToPrevtoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.SetCurrToPrevtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh;
+            this.SetCurrToPrevtoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.SetCurrToPrevtoolStripButton2.Name = "SetCurrToPrevtoolStripButton2";
+            this.SetCurrToPrevtoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.SetCurrToPrevtoolStripButton2.Text = "Copy Value to Prev";
+            this.SetCurrToPrevtoolStripButton2.Click += new System.EventHandler(this.SetCurrToPrevtoolStripButton2_Click);
             // 
             // ClearChangeCountstoolStripButton
             // 
@@ -996,12 +1017,12 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
-            // alwaysExludeRamSearchListToolStripMenuItem
+            // copyValueToPrevToolStripMenuItem
             // 
-            this.alwaysExludeRamSearchListToolStripMenuItem.Name = "alwaysExludeRamSearchListToolStripMenuItem";
-            this.alwaysExludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.alwaysExludeRamSearchListToolStripMenuItem.Text = "Always Exlude Ram Search List";
-            this.alwaysExludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExludeRamSearchListToolStripMenuItem_Click);
+            this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
+            this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
+            this.copyValueToPrevToolStripMenuItem.Click += new System.EventHandler(this.copyValueToPrevToolStripMenuItem_Click);
             // 
             // RamSearch
             // 
@@ -1137,5 +1158,7 @@
         private System.Windows.Forms.ToolStripButton ExcludeRamWatchtoolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem exludeRamWatchListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alwaysExludeRamSearchListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton SetCurrToPrevtoolStripButton2;
+        private System.Windows.Forms.ToolStripMenuItem copyValueToPrevToolStripMenuItem;
     }
 }

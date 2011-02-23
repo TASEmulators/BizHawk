@@ -313,6 +313,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\ControllerImages\NESController.PNG" />
+    <None Include="images\Refresh.bmp" />
     <None Include="images\TruncateFromRW.png" />
     <None Include="images\TruncateFromFile.png" />
   </ItemGroup>
