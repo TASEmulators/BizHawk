@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
         //TODO:
         //Window position gets saved but doesn't load properly
         //Context Menu - if highlighted items - show Highlight dependent functions
-        //Format address - number of digits based on max value of domain
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -507,7 +506,7 @@ namespace BizHawk.MultiClient
 			text = "";
             if (column == 0)
             {
-                text = searchList[index].address.ToString("X");
+                text = searchList[index].address.ToString("X" + GetNumDigits(Domain.Size-1).ToString());
             }
             if (column == 1)
             {
@@ -1695,6 +1694,18 @@ namespace BizHawk.MultiClient
             DoSearch();
         }
 
+        private int GetNumDigits(Int32 i)
+        {
+            if (i == 0) return 0;
+            if (i < 0x10) return 1;
+            if (i < 0x100) return 2;
+            if (i < 0x1000) return 3;
+            if (i < 0x10000) return 4;
+            if (i < 0x100000) return 5;
+            if (i < 0x1000000) return 6;
+            if (i < 0x10000000) return 7;
+            else return 8;
+        }
     }
 
 
