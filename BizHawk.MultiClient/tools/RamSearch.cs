@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
         //TODO:
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //Search equal to previous value, eveyrthing will be pink afterward
         //Context Menu - if highlighted items - show Highlight dependent functions
 
         string systemID = "NULL";
@@ -537,6 +536,7 @@ namespace BizHawk.MultiClient
         {
             searchList = new List<Watch>(weededList);
             weededList.Clear();
+            IsAWeededList = false;
         }
 
         private void DoPreview()
@@ -1029,6 +1029,7 @@ namespace BizHawk.MultiClient
                         case atype.DWORD:
                             SpecificValueBox.MaxLength = 11;
                             break;
+                        default:
                             SpecificValueBox.MaxLength = 11;
                             break;
                     }
