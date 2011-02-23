@@ -621,7 +621,7 @@ namespace BizHawk.MultiClient
 				if (rewindTodo >= 1)
 				{
 					rewindCredits -= 100 * rewindTodo;
-					Rewind(1 + rewindTodo);
+					Rewind(rewindTodo);
 					suppressCaptureRewind = true;
 					runFrame = true;
 				}
