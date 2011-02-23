@@ -46,6 +46,7 @@ namespace BizHawk.MultiClient
                 Bindings.Clear();
                 UpdateLabel();
             }
+            this.Parent.SelectNextControl(this, true, true, true, true);
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -85,11 +86,11 @@ namespace BizHawk.MultiClient
 		{
 			string str = "";
 			if((modifiers & Keys.Shift)!=0)
-				str += "SHIFT+";
+				str += "SHIFT + ";
 			if ((modifiers & Keys.Control) != 0)
-				str += "CTRL+";
+				str += "CTRL + ";
 			if ((modifiers & Keys.Alt) != 0)
-				str += "ALT+";
+				str += "ALT + ";
 			str += key.ToString();
 			return str;
 		}
