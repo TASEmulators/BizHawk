@@ -68,7 +68,7 @@ namespace BizHawk
 
         public static bool IsValidSignedNumber(char c)
         {
-            if (c == 47) return true;
+            if (c == 45) return true;
 
             if (c < 47 || c > 58)
                 return false;
