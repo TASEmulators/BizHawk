@@ -570,6 +570,7 @@ namespace BizHawk.MultiClient
 			bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
+			bool suppressCaptureRewind = false;
 
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
@@ -615,13 +616,14 @@ namespace BizHawk.MultiClient
 			if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
 			{
 				Rewind(Global.ClientControls["Fast Forward"] ? 4 : 2);
+				suppressCaptureRewind = true;
 				runFrame = true;
 			}
 
 			bool genSound = false;
 			if (runFrame)
 			{
-				CaptureRewindState();
+				if(!suppressCaptureRewind) CaptureRewindState();
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
