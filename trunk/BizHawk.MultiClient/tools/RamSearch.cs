@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
         //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!                   
+        //**Limit number of digits in specific value based on data type       
         //Search equal to previous value, eveyrthing will be pink afterward
 
         string systemID = "NULL";
@@ -335,7 +335,7 @@ namespace BizHawk.MultiClient
             if (Global.Config.AlwaysExludeRamWatch)
                 ExludeRamWatchList();
             MakePreviousList();
-            
+            SetSpecificValueBoxMaxLength();
             OutputLabel.Text = "New search started";
             DisplaySearchList();
         }
@@ -770,15 +770,15 @@ namespace BizHawk.MultiClient
                 case asigned.UNSIGNED:
                     i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
                     if (!i) return -99999999;
-                    return int.Parse(SpecificValueBox.Text);
+                    return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
                 case asigned.SIGNED:
                     i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
                     if (!i) return -99999999;
-                    return int.Parse(SpecificValueBox.Text);
+                    return (int)Int64.Parse(SpecificValueBox.Text);
                 case asigned.HEX:
                     i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
                     if (!i) return -99999999;
-                    return int.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
+                    return (int)Int64.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
             }
             return -99999999; //What are the odds someone wants to search for this value?
         }
@@ -964,6 +964,7 @@ namespace BizHawk.MultiClient
             signedToolStripMenuItem.Checked = true;
             hexadecimalToolStripMenuItem.Checked = false;
             ConvertListDataType(asigned.SIGNED);
+            SetSpecificValueBoxMaxLength();
             DisplaySearchList();
         }
                 
@@ -973,6 +974,7 @@ namespace BizHawk.MultiClient
             signedToolStripMenuItem.Checked = false;
             hexadecimalToolStripMenuItem.Checked = false;
             ConvertListDataType(asigned.UNSIGNED);
+            SetSpecificValueBoxMaxLength();
             DisplaySearchList();
         }
 
@@ -982,6 +984,7 @@ namespace BizHawk.MultiClient
             signedToolStripMenuItem.Checked = false;
             hexadecimalToolStripMenuItem.Checked = true;
             ConvertListDataType(asigned.HEX);
+            SetSpecificValueBoxMaxLength();
             DisplaySearchList();
         }
 
@@ -994,11 +997,72 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private void SetSpecificValueBoxMaxLength()
+        {
+            switch (GetDataType())
+            {
+                case asigned.UNSIGNED:
+                    switch (GetDataSize())
+                    {
+                        case atype.BYTE:
+                            SpecificValueBox.MaxLength = 3;
+                            break;
+                        case atype.WORD:
+                            SpecificValueBox.MaxLength = 5;
+                            break;
+                        case atype.DWORD:
+                            SpecificValueBox.MaxLength = 10;
+                            break;
+                        default:
+                            SpecificValueBox.MaxLength = 10;
+                            break;
+                    }
+                    break;
+                case asigned.SIGNED:
+                    switch (GetDataSize())
+                    {
+                        case atype.BYTE:
+                            SpecificValueBox.MaxLength = 4;
+                            break;
+                        case atype.WORD:
+                            SpecificValueBox.MaxLength = 6;
+                            break;
+                        case atype.DWORD:
+                            SpecificValueBox.MaxLength = 11;
+                            break;
+                            SpecificValueBox.MaxLength = 11;
+                            break;
+                    }
+                    break;
+                case asigned.HEX:
+                    switch (GetDataSize())
+                    {
+                        case atype.BYTE:
+                            SpecificValueBox.MaxLength = 2;
+                            break;
+                        case atype.WORD:
+                            SpecificValueBox.MaxLength = 4;
+                            break;
+                        case atype.DWORD:
+                            SpecificValueBox.MaxLength = 8;
+                            break;
+                        default:
+                            SpecificValueBox.MaxLength = 8;
+                            break;
+                    }
+                    break;
+                default:
+                    SpecificValueBox.MaxLength = 11;
+                    break;
+            }
+        }
+
         private void byteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byteToolStripMenuItem.Checked = true;
             bytesToolStripMenuItem.Checked = false;
             dWordToolStripMenuItem1.Checked = false;
+            SetSpecificValueBoxMaxLength();
         }
 
         private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1006,6 +1070,7 @@ namespace BizHawk.MultiClient
             byteToolStripMenuItem.Checked = false;
             bytesToolStripMenuItem.Checked = true;
             dWordToolStripMenuItem1.Checked = false;
+            SetSpecificValueBoxMaxLength();
         }
 
         private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1013,6 +1078,7 @@ namespace BizHawk.MultiClient
             byteToolStripMenuItem.Checked = false;
             bytesToolStripMenuItem.Checked = false;
             dWordToolStripMenuItem1.Checked = true;
+            SetSpecificValueBoxMaxLength();
         }
 
         private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
