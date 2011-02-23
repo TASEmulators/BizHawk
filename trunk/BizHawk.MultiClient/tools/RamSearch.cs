@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
         //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //Option to always remove Ram Watch list from search list
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Add button to set copy current values to prev     
         //After search everything goes pink
@@ -336,6 +335,8 @@ namespace BizHawk.MultiClient
                 }
                 
             }
+            if (Global.Config.AlwaysExludeRamWatch)
+                ExludeRamWatchList();
             MakePreviousList();
             
             OutputLabel.Text = "New search started";
@@ -1286,6 +1287,7 @@ namespace BizHawk.MultiClient
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
             previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
+            alwaysExludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExludeRamWatch;
         }
 
         private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1520,6 +1522,11 @@ namespace BizHawk.MultiClient
         private void ExcludeRamWatchtoolStripButton2_Click(object sender, EventArgs e)
         {
             ExludeRamWatchList();
+        }
+
+        private void alwaysExludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.AlwaysExludeRamWatch ^= true;
         }
         
     }
