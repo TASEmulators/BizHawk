@@ -24,11 +24,10 @@ namespace BizHawk.MultiClient
         //Option to always remove Ram Watch list from search list
         //Truncate from file toolstrip button
         //Save Dialog - user cancelling crashes, same for Ram Watch?
-        //Weddedlist & undoList are getting references instead of copies, somehow still works but there has to be some failures as a result, fix
-        //Add button to set copy current values to prev
+        //Add button to set copy current values to prev     
         //After search everything goes pink
-        //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!
-        
+        //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!                   
+        //Search equal to previous value, eveyrthing will be pink afterward
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -430,7 +429,9 @@ namespace BizHawk.MultiClient
         /// </summary>
         private void SaveUndo()
         {
-            undoList = new List<Watch>(searchList);
+            undoList.Clear();
+            for (int x = 0; x < searchList.Count; x++)
+                undoList.Add(new Watch(searchList[x]));
         }
 
         private void DoUndo()
@@ -1333,9 +1334,9 @@ namespace BizHawk.MultiClient
                 searchToolStripMenuItem.Enabled = true;
 
             if (undoList.Count == 0)
-                UndotoolStripButton.Enabled = false;
-            else
-                UndotoolStripButton.Enabled = true;
+                undoToolStripMenuItem.Enabled = false;
+             else
+                undoToolStripMenuItem.Enabled = true;
 
            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 
