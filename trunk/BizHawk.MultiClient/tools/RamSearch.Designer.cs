@@ -28,16 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
             this.SearchtoolStrip1 = new System.Windows.Forms.ToolStrip();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.TruncateFromFiletoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.ExcludeRamWatchtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.TotalSearchLabel = new System.Windows.Forms.Label();
             this.SearchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
@@ -62,8 +64,9 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exludeRamWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -81,7 +84,9 @@
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.SetCurrToPrevtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -120,7 +125,10 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -129,6 +137,7 @@
             this.toolStrip2.SuspendLayout();
             this.CompareToBox.SuspendLayout();
             this.ComparisonBox.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
@@ -139,13 +148,14 @@
             this.saveToolStripButton,
             this.toolStripSeparator,
             this.cutToolStripButton,
-            this.WatchtoolStripButton1,
-            this.PoketoolStripButton1,
             this.TruncateFromFiletoolStripButton2,
-            this.ExcludeRamWatchtoolStripButton2});
-            this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.ExcludeRamWatchtoolStripButton2,
+            this.toolStripSeparator8,
+            this.WatchtoolStripButton1,
+            this.PoketoolStripButton1});
+            this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 25);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(177, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(183, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
             // 
@@ -187,6 +197,31 @@
             this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
             this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
+            // TruncateFromFiletoolStripButton2
+            // 
+            this.TruncateFromFiletoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TruncateFromFiletoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
+            this.TruncateFromFiletoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TruncateFromFiletoolStripButton2.Name = "TruncateFromFiletoolStripButton2";
+            this.TruncateFromFiletoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.TruncateFromFiletoolStripButton2.Text = "Eliminate from File";
+            this.TruncateFromFiletoolStripButton2.Click += new System.EventHandler(this.TruncateFromFiletoolStripButton2_Click);
+            // 
+            // ExcludeRamWatchtoolStripButton2
+            // 
+            this.ExcludeRamWatchtoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ExcludeRamWatchtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
+            this.ExcludeRamWatchtoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ExcludeRamWatchtoolStripButton2.Name = "ExcludeRamWatchtoolStripButton2";
+            this.ExcludeRamWatchtoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.ExcludeRamWatchtoolStripButton2.Text = "Elmininate Ram Watch list";
+            this.ExcludeRamWatchtoolStripButton2.Click += new System.EventHandler(this.ExcludeRamWatchtoolStripButton2_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+            // 
             // WatchtoolStripButton1
             // 
             this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -206,26 +241,6 @@
             this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.PoketoolStripButton1.Text = "Poke";
             this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
-            // 
-            // TruncateFromFiletoolStripButton2
-            // 
-            this.TruncateFromFiletoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.TruncateFromFiletoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
-            this.TruncateFromFiletoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TruncateFromFiletoolStripButton2.Name = "TruncateFromFiletoolStripButton2";
-            this.TruncateFromFiletoolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.TruncateFromFiletoolStripButton2.Text = "Truncate from File";
-            this.TruncateFromFiletoolStripButton2.Click += new System.EventHandler(this.TruncateFromFiletoolStripButton2_Click);
-            // 
-            // ExcludeRamWatchtoolStripButton2
-            // 
-            this.ExcludeRamWatchtoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.ExcludeRamWatchtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
-            this.ExcludeRamWatchtoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ExcludeRamWatchtoolStripButton2.Name = "ExcludeRamWatchtoolStripButton2";
-            this.ExcludeRamWatchtoolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.ExcludeRamWatchtoolStripButton2.Text = "Exclude Ram Watch list";
-            this.ExcludeRamWatchtoolStripButton2.Click += new System.EventHandler(this.ExcludeRamWatchtoolStripButton2_Click);
             // 
             // TotalSearchLabel
             // 
@@ -247,6 +262,7 @@
             this.Value,
             this.Previous,
             this.Changes});
+            this.SearchListView.ContextMenuStrip = this.contextMenuStrip1;
             this.SearchListView.GridLines = true;
             this.SearchListView.ItemCount = 0;
             this.SearchListView.LabelEdit = true;
@@ -436,19 +452,26 @@
             this.searchToolStripMenuItem1.Text = "&Search";
             this.searchToolStripMenuItem1.Click += new System.EventHandler(this.searchToolStripMenuItem1_Click);
             // 
-            // clearChangeCountsToolStripMenuItem
-            // 
-            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
-            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
-            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
-            // 
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             this.undoToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.undoToolStripMenuItem.Text = "&Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click_1);
+            // 
+            // copyValueToPrevToolStripMenuItem
+            // 
+            this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
+            this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
+            this.copyValueToPrevToolStripMenuItem.Click += new System.EventHandler(this.copyValueToPrevToolStripMenuItem_Click);
+            // 
+            // clearChangeCountsToolStripMenuItem
+            // 
+            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
+            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
+            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
             // 
             // removeSelectedToolStripMenuItem
             // 
@@ -571,8 +594,8 @@
             // 
             // toolStripContainer1.TopToolStripPanel
             // 
-            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.SearchtoolStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.SearchtoolStrip1);
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip2);
             // 
             // toolStrip1
@@ -580,13 +603,15 @@
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewSearchtoolStripButton,
+            this.toolStripSeparator6,
             this.toolStripButton1,
+            this.toolStripSeparator7,
             this.SetCurrToPrevtoolStripButton2,
             this.ClearChangeCountstoolStripButton,
             this.UndotoolStripButton});
-            this.toolStrip1.Location = new System.Drawing.Point(3, 25);
+            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(125, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(137, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -599,6 +624,11 @@
             this.NewSearchtoolStripButton.Text = "New Search";
             this.NewSearchtoolStripButton.Click += new System.EventHandler(this.NewSearchtoolStripButton_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -608,6 +638,11 @@
             this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
             this.toolStripButton1.Text = "Search";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
             // 
             // SetCurrToPrevtoolStripButton2
             // 
@@ -1017,12 +1052,33 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
-            // copyValueToPrevToolStripMenuItem
+            // contextMenuStrip1
             // 
-            this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
-            this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
-            this.copyValueToPrevToolStripMenuItem.Click += new System.EventHandler(this.copyValueToPrevToolStripMenuItem_Click);
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startNewSearchToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.searchToolStripMenuItem2});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(170, 54);
+            // 
+            // startNewSearchToolStripMenuItem
+            // 
+            this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
+            this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
+            this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(166, 6);
+            // 
+            // searchToolStripMenuItem2
+            // 
+            this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
+            this.searchToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
+            this.searchToolStripMenuItem2.Text = "&Search";
+            this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
             // 
             // RamSearch
             // 
@@ -1061,6 +1117,7 @@
             this.CompareToBox.PerformLayout();
             this.ComparisonBox.ResumeLayout(false);
             this.ComparisonBox.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1160,5 +1217,12 @@
         private System.Windows.Forms.ToolStripMenuItem alwaysExludeRamSearchListToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton SetCurrToPrevtoolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem copyValueToPrevToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem startNewSearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
     }
 }

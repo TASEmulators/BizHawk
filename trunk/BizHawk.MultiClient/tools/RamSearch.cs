@@ -17,11 +17,10 @@ namespace BizHawk.MultiClient
     public partial class RamSearch : Form
     {
         //TODO:
-        //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //**Limit number of digits in specific value based on data type       
         //Search equal to previous value, eveyrthing will be pink afterward
+        //Context Menu - if highlighted items - show Highlight dependent functions
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -1638,6 +1637,16 @@ namespace BizHawk.MultiClient
         private void copyValueToPrevToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CopyValueToPrev();
+        }
+
+        private void startNewSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartNewSearch();
+        }
+
+        private void searchToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            DoSearch();
         }
 
     }
