@@ -697,7 +697,7 @@ namespace BizHawk.MultiClient
         private bool DoSpecificValue()
         {
             int value = GetSpecificValue();
-            if (value < 0)
+            if (value < -99999999)
             {
                 MessageBox.Show("Missing or invalid value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SpecificValueBox.Focus();
@@ -763,24 +763,24 @@ namespace BizHawk.MultiClient
 
         private int GetSpecificValue()
         {
-            if (SpecificValueBox.Text == "") return 0;
+            if (SpecificValueBox.Text == "" || SpecificValueBox.Text == "-") return 0;
             bool i = false;
             switch (GetDataType())
             {
                 case asigned.UNSIGNED:
                     i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
-                    if (!i) return -1;
+                    if (!i) return -99999999;
                     return int.Parse(SpecificValueBox.Text);
                 case asigned.SIGNED:
                     i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
-                    if (!i) return -1;
+                    if (!i) return -99999999;
                     return int.Parse(SpecificValueBox.Text);
                 case asigned.HEX:
                     i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
-                    if (!i) return -1;
+                    if (!i) return -99999999;
                     return int.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
             }
-            return -1;
+            return -99999999; //What are the odds someone wants to search for this value?
         }
 
         private int GetSpecificAddress()
