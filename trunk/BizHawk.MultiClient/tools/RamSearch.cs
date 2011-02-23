@@ -18,8 +18,8 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Window position gets saved but doesn't load properly
-        //Multiple memory domains
         //Context Menu - if highlighted items - show Highlight dependent functions
+        //Format address - number of digits based on max value of domain
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -28,10 +28,12 @@ namespace BizHawk.MultiClient
         List<Watch> prevList = new List<Watch>();
         private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 
+        MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
+
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
         public enum SOperator { LESS, GREATER, LESSEQUAL, GREATEREQUAL, EQUAL, NOTEQUAL, DIFFBY };
         public enum SSigned { SIGNED, UNSIGNED, HEX };
-
+       
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -47,7 +49,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < searchList.Count; x++)
             {
                 searchList[x].prev = searchList[x].value;
-                searchList[x].PeekAddress(Global.Emulator.MainMemory);
+                searchList[x].PeekAddress(Domain);
                                 
                 if (searchList[x].prev != searchList[x].value)
                     searchList[x].changecount++;
@@ -65,7 +67,7 @@ namespace BizHawk.MultiClient
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = this.Size.Height;
 
-            if (Global.Emulator.MainMemory.Endian == Endian.Big)
+            if (Domain.Endian == Endian.Big)
             {
                 bigEndianToolStripMenuItem.Checked = true;
                 littleEndianToolStripMenuItem.Checked = false;
@@ -85,6 +87,49 @@ namespace BizHawk.MultiClient
             {
                 this.Size = new System.Drawing.Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
             }
+
+            SetMemoryDomainMenu();
+        }
+
+        private void SetMemoryDomainMenu()
+        {
+            memoryDomainsToolStripMenuItem.DropDownItems.Clear();
+            if (Global.Emulator.MemoryDomains.Count > 0)
+            {
+                for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+                {
+                    string str = Global.Emulator.MemoryDomains[x].ToString();
+                    var item = new ToolStripMenuItem();
+                    item.Text = str;
+                    {
+                        int z = x;
+                        item.Click += (o, ev) => SetMemoryDomain(z);
+                    }
+                    if (x == 0)
+                    {
+                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
+                        SetMemoryDomain(x);
+                    }
+                    memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+            else
+                memoryDomainsToolStripMenuItem.Enabled = false;
+        }
+
+        public void Restart()
+        {
+            SetMemoryDomainMenu();  //Calls Start New Search
+        }
+
+        private void SetMemoryDomain(int pos)
+        {
+            if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+            {
+                Domain = Global.Emulator.MemoryDomains[pos];
+            }
+            SetPlatformAndMemoryDomainLabel();
+            StartNewSearch();
         }
 
         private void SetTotal()
@@ -273,13 +318,13 @@ namespace BizHawk.MultiClient
                 return false;
         }
 
-        public void StartNewSearch()
+        private void StartNewSearch()
         {
             weededList.Clear();
             IsAWeededList = false;
             searchList.Clear();
             undoList.Clear();
-            GetMemoryDomain();
+            SetPlatformAndMemoryDomainLabel();
             int startaddress = 0;
             if (Global.Emulator.SystemId == "PCE")
                 startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
@@ -302,14 +347,14 @@ namespace BizHawk.MultiClient
                 }
             }
             
-            for (int x = 0; x <= ((Global.Emulator.MainMemory.Size / divisor)-1); x++)
+            for (int x = 0; x <= ((Domain.Size / divisor)-1); x++)
             {
                 searchList.Add(new Watch());
                 searchList[x].address = count + startaddress;
                 searchList[x].type = GetDataSize();
                 searchList[x].bigendian = GetBigEndian();
                 searchList[x].signed = GetDataType();
-                searchList[x].PeekAddress(Global.Emulator.MainMemory);
+                searchList[x].PeekAddress(Domain);
                 searchList[x].prev = searchList[x].value;
                 if (includeMisalignedToolStripMenuItem.Checked)
                     count++;
@@ -357,9 +402,9 @@ namespace BizHawk.MultiClient
             StartNewSearch();
         }
 
-        private void GetMemoryDomain()
+        private void SetPlatformAndMemoryDomainLabel()
         {
-            string memoryDomain = "Main memory";
+            string memoryDomain = Domain.ToString();
             systemID = Global.Emulator.SystemId;
             MemDomainLabel.Text = systemID + " " + memoryDomain;
         }

@@ -343,7 +343,7 @@ namespace BizHawk.MultiClient
 			LoadRom(filePaths[0]);
 		}
 
-		bool IsNullEmulator()
+		public bool IsNullEmulator()
 		{
 			if (Global.Emulator is NullEmulator)
 				return true;
@@ -440,7 +440,7 @@ namespace BizHawk.MultiClient
 				else throttle.SetCoreFps(60);
 				SetSpeedPercent(Global.Config.SpeedPercent);
 			}
-            RamSearch1.StartNewSearch();
+            RamSearch1.Restart();
 			CurrentlyOpenRom = path;
 			return true;
 		}

@@ -250,7 +250,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
-            RamSearch1.StartNewSearch();
+            RamSearch1.Restart();
 			Text = "BizHawk";
 		}
 

@@ -46,6 +46,10 @@
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Previous = new System.Windows.Forms.ColumnHeader();
             this.Changes = new System.Windows.Forms.ColumnHeader();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -125,11 +129,9 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
@@ -137,7 +139,6 @@
             this.toolStrip2.SuspendLayout();
             this.CompareToBox.SuspendLayout();
             this.ComparisonBox.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // SearchtoolStrip1
@@ -300,6 +301,34 @@
             this.Changes.Text = "Changes";
             this.Changes.Width = 55;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startNewSearchToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.searchToolStripMenuItem2});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(170, 54);
+            // 
+            // startNewSearchToolStripMenuItem
+            // 
+            this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
+            this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
+            this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(166, 6);
+            // 
+            // searchToolStripMenuItem2
+            // 
+            this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
+            this.searchToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
+            this.searchToolStripMenuItem2.Text = "&Search";
+            this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
+            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -431,6 +460,7 @@
             // searchToolStripMenuItem
             // 
             this.searchToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.memoryDomainsToolStripMenuItem,
             this.searchToolStripMenuItem1,
             this.undoToolStripMenuItem,
             this.copyValueToPrevToolStripMenuItem,
@@ -1052,33 +1082,11 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
-            // contextMenuStrip1
+            // memoryDomainsToolStripMenuItem
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startNewSearchToolStripMenuItem,
-            this.toolStripSeparator9,
-            this.searchToolStripMenuItem2});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(170, 54);
-            // 
-            // startNewSearchToolStripMenuItem
-            // 
-            this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
-            this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
-            this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
-            this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(166, 6);
-            // 
-            // searchToolStripMenuItem2
-            // 
-            this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
-            this.searchToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
-            this.searchToolStripMenuItem2.Text = "&Search";
-            this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
+            this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
+            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
             // 
             // RamSearch
             // 
@@ -1103,6 +1111,7 @@
             this.LocationChanged += new System.EventHandler(this.RamSearch_LocationChanged);
             this.SearchtoolStrip1.ResumeLayout(false);
             this.SearchtoolStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
@@ -1117,7 +1126,6 @@
             this.CompareToBox.PerformLayout();
             this.ComparisonBox.ResumeLayout(false);
             this.ComparisonBox.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1224,5 +1232,6 @@
         private System.Windows.Forms.ToolStripMenuItem startNewSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem memoryDomainsToolStripMenuItem;
     }
 }
