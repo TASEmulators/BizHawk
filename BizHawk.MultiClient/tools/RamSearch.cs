@@ -28,7 +28,6 @@ namespace BizHawk.MultiClient
         //Add button to set copy current values to prev
         //After search everything goes pink
         //**Limit number of digits in specific value based on data type, allow negative sign if signed values, and hex if hex values!
-        //8191 addresses? should it be 8192?
         
 
         string systemID = "NULL";
@@ -312,7 +311,7 @@ namespace BizHawk.MultiClient
                 }
             }
             
-            for (int x = 0; x < ((Global.Emulator.MainMemory.Size / divisor)-1); x++)
+            for (int x = 0; x <= ((Global.Emulator.MainMemory.Size / divisor)-1); x++)
             {
                 searchList.Add(new Watch());
                 searchList[x].address = count + startaddress;
@@ -1104,8 +1103,8 @@ namespace BizHawk.MultiClient
             {
                 SaveSearchFile(file.FullName);
                 currentSearchFile = file.FullName;
+                OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
             }
-            OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
         }
 
         private void LoadSearchFromRecent(string file)
