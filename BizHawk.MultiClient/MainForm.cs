@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 		public bool EmulatorPaused;
 		bool runloop_frameadvance;
 		Throttle throttle = new Throttle();
+		int rewindCredits;
 
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused = false;
@@ -615,10 +616,19 @@ namespace BizHawk.MultiClient
 
 			if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
 			{
-				Rewind(Global.ClientControls["Fast Forward"] ? 4 : 2);
-				suppressCaptureRewind = true;
-				runFrame = true;
+				rewindCredits += Global.Config.SpeedPercent;
+				int rewindTodo = rewindCredits / 100;
+				if (rewindTodo >= 1)
+				{
+					rewindCredits -= 100 * rewindTodo;
+					Rewind(1 + rewindTodo);
+					suppressCaptureRewind = true;
+					runFrame = true;
+				}
+				else
+					runFrame = false;
 			}
+			else rewindCredits = 0;
 
 			bool genSound = false;
 			if (runFrame)
