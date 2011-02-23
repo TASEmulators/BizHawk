@@ -57,6 +57,15 @@ namespace BizHawk
             PokeByte = pokeByte;
         }
 
+        public MemoryDomain(MemoryDomain domain)
+        {
+            Name = domain.Name;
+            Size = domain.Size;
+            Endian = domain.Endian;
+            PeekByte = domain.PeekByte;
+            PokeByte = domain.PokeByte;
+        }
+
         public override string ToString()
         {
             return Name;
