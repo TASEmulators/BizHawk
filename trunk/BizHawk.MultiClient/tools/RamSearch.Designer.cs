@@ -30,12 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
             this.SearchtoolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.TotalSearchLabel = new System.Windows.Forms.Label();
             this.SearchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
@@ -76,24 +71,7 @@
             this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
-            this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
-            this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dWordToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
-            this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.EndiantoolSplitButton = new System.Windows.Forms.ToolStripSplitButton();
-            this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.littleEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CompareToBox = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.NumberOfChangesBox = new System.Windows.Forms.TextBox();
@@ -115,7 +93,31 @@
             this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.OutputLabel = new System.Windows.Forms.Label();
+            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.TruncateFromFiletoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.ExcludeRamWatchtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dWordToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EndiantoolSplitButton = new System.Windows.Forms.ToolStripSplitButton();
+            this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.littleEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exludeRamWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchtoolStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -136,70 +138,18 @@
             this.cutToolStripButton,
             this.WatchtoolStripButton1,
             this.PoketoolStripButton1,
-            this.TruncateFromFiletoolStripButton2});
+            this.TruncateFromFiletoolStripButton2,
+            this.ExcludeRamWatchtoolStripButton2});
             this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 0);
             this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-            this.SearchtoolStrip1.Size = new System.Drawing.Size(185, 25);
+            this.SearchtoolStrip1.Size = new System.Drawing.Size(208, 25);
             this.SearchtoolStrip1.TabIndex = 0;
             this.SearchtoolStrip1.Text = "Search";
-            // 
-            // openToolStripButton
-            // 
-            this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
-            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.openToolStripButton.Name = "openToolStripButton";
-            this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.openToolStripButton.Text = "&Open";
-            this.openToolStripButton.ToolTipText = "Open Search List";
-            this.openToolStripButton.Click += new System.EventHandler(this.openToolStripButton_Click);
-            // 
-            // saveToolStripButton
-            // 
-            this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
-            this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveToolStripButton.Name = "saveToolStripButton";
-            this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.saveToolStripButton.Text = "&Save";
-            this.saveToolStripButton.ToolTipText = "Save Watch List";
-            this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
-            // cutToolStripButton
-            // 
-            this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
-            this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cutToolStripButton.Name = "cutToolStripButton";
-            this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.cutToolStripButton.Text = "C&ut";
-            this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
-            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
-            // 
-            // WatchtoolStripButton1
-            // 
-            this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
-            this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
-            this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.WatchtoolStripButton1.Text = "toolStripButton1";
-            this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
-            // 
-            // PoketoolStripButton1
-            // 
-            this.PoketoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.PoketoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-            this.PoketoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.PoketoolStripButton1.Name = "PoketoolStripButton1";
-            this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.PoketoolStripButton1.Text = "Poke";
-            this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
             // 
             // TotalSearchLabel
             // 
@@ -393,6 +343,7 @@
             this.clearChangeCountsToolStripMenuItem,
             this.undoToolStripMenuItem,
             this.removeSelectedToolStripMenuItem,
+            this.exludeRamWatchListToolStripMenuItem,
             this.toolStripSeparator5,
             this.addSelectedToRamWatchToolStripMenuItem,
             this.pokeAddressToolStripMenuItem});
@@ -545,48 +496,6 @@
             this.toolStrip1.Size = new System.Drawing.Size(102, 25);
             this.toolStrip1.TabIndex = 1;
             // 
-            // NewSearchtoolStripButton
-            // 
-            this.NewSearchtoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.NewSearchtoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-            this.NewSearchtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.NewSearchtoolStripButton.Name = "NewSearchtoolStripButton";
-            this.NewSearchtoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.NewSearchtoolStripButton.Text = "New Search";
-            this.NewSearchtoolStripButton.Click += new System.EventHandler(this.NewSearchtoolStripButton_Click);
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "Search";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-            // 
-            // ClearChangeCountstoolStripButton
-            // 
-            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
-            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
-            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.ClearChangeCountstoolStripButton.Text = "C";
-            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
-            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
-            // 
-            // UndotoolStripButton
-            // 
-            this.UndotoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.UndotoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
-            this.UndotoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.UndotoolStripButton.Name = "UndotoolStripButton";
-            this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.UndotoolStripButton.Text = "Undo Search";
-            this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click_1);
-            // 
             // toolStrip2
             // 
             this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
@@ -598,120 +507,6 @@
             this.toolStrip2.Name = "toolStrip2";
             this.toolStrip2.Size = new System.Drawing.Size(206, 25);
             this.toolStrip2.TabIndex = 2;
-            // 
-            // DataSizetoolStripSplitButton1
-            // 
-            this.DataSizetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DataSizetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.byteToolStripMenuItem,
-            this.bytesToolStripMenuItem,
-            this.dWordToolStripMenuItem1});
-            this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
-            this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
-            this.DataSizetoolStripSplitButton1.Size = new System.Drawing.Size(68, 22);
-            this.DataSizetoolStripSplitButton1.Text = "Data Size";
-            // 
-            // byteToolStripMenuItem
-            // 
-            this.byteToolStripMenuItem.Checked = true;
-            this.byteToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-            this.byteToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.byteToolStripMenuItem.Text = "1 Byte";
-            this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
-            // 
-            // bytesToolStripMenuItem
-            // 
-            this.bytesToolStripMenuItem.Name = "bytesToolStripMenuItem";
-            this.bytesToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
-            this.bytesToolStripMenuItem.Text = "2 Bytes";
-            this.bytesToolStripMenuItem.Click += new System.EventHandler(this.bytesToolStripMenuItem_Click);
-            // 
-            // dWordToolStripMenuItem1
-            // 
-            this.dWordToolStripMenuItem1.Name = "dWordToolStripMenuItem1";
-            this.dWordToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
-            this.dWordToolStripMenuItem1.Text = "4 Bytes";
-            this.dWordToolStripMenuItem1.Click += new System.EventHandler(this.dWordToolStripMenuItem1_Click);
-            // 
-            // DataTypetoolStripSplitButton1
-            // 
-            this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.unsignedToolStripMenuItem,
-            this.signedToolStripMenuItem,
-            this.hexadecimalToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.includeMisalignedToolStripMenuItem});
-            this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
-            this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.DataTypetoolStripSplitButton1.Name = "DataTypetoolStripSplitButton1";
-            this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(73, 22);
-            this.DataTypetoolStripSplitButton1.Text = "Data Type";
-            // 
-            // unsignedToolStripMenuItem
-            // 
-            this.unsignedToolStripMenuItem.Checked = true;
-            this.unsignedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
-            this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.unsignedToolStripMenuItem.Text = "Unsigned";
-            this.unsignedToolStripMenuItem.Click += new System.EventHandler(this.unsignedToolStripMenuItem_Click);
-            // 
-            // signedToolStripMenuItem
-            // 
-            this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
-            this.signedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.signedToolStripMenuItem.Text = "Signed";
-            this.signedToolStripMenuItem.Click += new System.EventHandler(this.signedToolStripMenuItem_Click);
-            // 
-            // hexadecimalToolStripMenuItem
-            // 
-            this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
-            this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
-            this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
-            // 
-            // includeMisalignedToolStripMenuItem
-            // 
-            this.includeMisalignedToolStripMenuItem.Name = "includeMisalignedToolStripMenuItem";
-            this.includeMisalignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.includeMisalignedToolStripMenuItem.Text = "Include mis-aligned";
-            this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click);
-            // 
-            // EndiantoolSplitButton
-            // 
-            this.EndiantoolSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.EndiantoolSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.bigEndianToolStripMenuItem,
-            this.littleEndianToolStripMenuItem});
-            this.EndiantoolSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("EndiantoolSplitButton.Image")));
-            this.EndiantoolSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.EndiantoolSplitButton.Name = "EndiantoolSplitButton";
-            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 22);
-            this.EndiantoolSplitButton.Text = "Endian";
-            // 
-            // bigEndianToolStripMenuItem
-            // 
-            this.bigEndianToolStripMenuItem.Checked = true;
-            this.bigEndianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.bigEndianToolStripMenuItem.Name = "bigEndianToolStripMenuItem";
-            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.bigEndianToolStripMenuItem.Text = "Big Endian";
-            this.bigEndianToolStripMenuItem.Click += new System.EventHandler(this.bigEndianToolStripMenuItem_Click);
-            // 
-            // littleEndianToolStripMenuItem
-            // 
-            this.littleEndianToolStripMenuItem.Name = "littleEndianToolStripMenuItem";
-            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.littleEndianToolStripMenuItem.Text = "Little Endian";
-            this.littleEndianToolStripMenuItem.Click += new System.EventHandler(this.littleEndianToolStripMenuItem_Click);
             // 
             // CompareToBox
             // 
@@ -963,6 +758,59 @@
             this.OutputLabel.TabIndex = 9;
             this.OutputLabel.Text = "                          ";
             // 
+            // openToolStripButton
+            // 
+            this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
+            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openToolStripButton.Name = "openToolStripButton";
+            this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openToolStripButton.Text = "&Open";
+            this.openToolStripButton.ToolTipText = "Open Search List";
+            this.openToolStripButton.Click += new System.EventHandler(this.openToolStripButton_Click);
+            // 
+            // saveToolStripButton
+            // 
+            this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
+            this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveToolStripButton.Name = "saveToolStripButton";
+            this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.saveToolStripButton.Text = "&Save";
+            this.saveToolStripButton.ToolTipText = "Save Watch List";
+            this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // cutToolStripButton
+            // 
+            this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+            this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cutToolStripButton.Name = "cutToolStripButton";
+            this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.cutToolStripButton.Text = "C&ut";
+            this.cutToolStripButton.ToolTipText = "Eliminate Selected Items";
+            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
+            // 
+            // WatchtoolStripButton1
+            // 
+            this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+            this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
+            this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.WatchtoolStripButton1.Text = "toolStripButton1";
+            this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
+            // 
+            // PoketoolStripButton1
+            // 
+            this.PoketoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PoketoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+            this.PoketoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PoketoolStripButton1.Name = "PoketoolStripButton1";
+            this.PoketoolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.PoketoolStripButton1.Text = "Poke";
+            this.PoketoolStripButton1.Click += new System.EventHandler(this.PoketoolStripButton1_Click);
+            // 
             // TruncateFromFiletoolStripButton2
             // 
             this.TruncateFromFiletoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -972,6 +820,179 @@
             this.TruncateFromFiletoolStripButton2.Size = new System.Drawing.Size(23, 22);
             this.TruncateFromFiletoolStripButton2.Text = "Truncate from File";
             this.TruncateFromFiletoolStripButton2.Click += new System.EventHandler(this.TruncateFromFiletoolStripButton2_Click);
+            // 
+            // ExcludeRamWatchtoolStripButton2
+            // 
+            this.ExcludeRamWatchtoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.ExcludeRamWatchtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
+            this.ExcludeRamWatchtoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ExcludeRamWatchtoolStripButton2.Name = "ExcludeRamWatchtoolStripButton2";
+            this.ExcludeRamWatchtoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.ExcludeRamWatchtoolStripButton2.Text = "Exclude Ram Watch list";
+            this.ExcludeRamWatchtoolStripButton2.Click += new System.EventHandler(this.ExcludeRamWatchtoolStripButton2_Click);
+            // 
+            // NewSearchtoolStripButton
+            // 
+            this.NewSearchtoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.NewSearchtoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+            this.NewSearchtoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NewSearchtoolStripButton.Name = "NewSearchtoolStripButton";
+            this.NewSearchtoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.NewSearchtoolStripButton.Text = "New Search";
+            this.NewSearchtoolStripButton.Click += new System.EventHandler(this.NewSearchtoolStripButton_Click);
+            // 
+            // toolStripButton1
+            // 
+            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton1.Name = "toolStripButton1";
+            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton1.Text = "Search";
+            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // ClearChangeCountstoolStripButton
+            // 
+            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
+            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
+            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.ClearChangeCountstoolStripButton.Text = "C";
+            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
+            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
+            // 
+            // UndotoolStripButton
+            // 
+            this.UndotoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.UndotoolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+            this.UndotoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.UndotoolStripButton.Name = "UndotoolStripButton";
+            this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.UndotoolStripButton.Text = "Undo Search";
+            this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click_1);
+            // 
+            // DataSizetoolStripSplitButton1
+            // 
+            this.DataSizetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DataSizetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.byteToolStripMenuItem,
+            this.bytesToolStripMenuItem,
+            this.dWordToolStripMenuItem1});
+            this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
+            this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
+            this.DataSizetoolStripSplitButton1.Size = new System.Drawing.Size(68, 22);
+            this.DataSizetoolStripSplitButton1.Text = "Data Size";
+            // 
+            // byteToolStripMenuItem
+            // 
+            this.byteToolStripMenuItem.Checked = true;
+            this.byteToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
+            this.byteToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.byteToolStripMenuItem.Text = "1 Byte";
+            this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
+            // 
+            // bytesToolStripMenuItem
+            // 
+            this.bytesToolStripMenuItem.Name = "bytesToolStripMenuItem";
+            this.bytesToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.bytesToolStripMenuItem.Text = "2 Bytes";
+            this.bytesToolStripMenuItem.Click += new System.EventHandler(this.bytesToolStripMenuItem_Click);
+            // 
+            // dWordToolStripMenuItem1
+            // 
+            this.dWordToolStripMenuItem1.Name = "dWordToolStripMenuItem1";
+            this.dWordToolStripMenuItem1.Size = new System.Drawing.Size(121, 22);
+            this.dWordToolStripMenuItem1.Text = "4 Bytes";
+            this.dWordToolStripMenuItem1.Click += new System.EventHandler(this.dWordToolStripMenuItem1_Click);
+            // 
+            // DataTypetoolStripSplitButton1
+            // 
+            this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.unsignedToolStripMenuItem,
+            this.signedToolStripMenuItem,
+            this.hexadecimalToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.includeMisalignedToolStripMenuItem});
+            this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
+            this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.DataTypetoolStripSplitButton1.Name = "DataTypetoolStripSplitButton1";
+            this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(73, 22);
+            this.DataTypetoolStripSplitButton1.Text = "Data Type";
+            // 
+            // unsignedToolStripMenuItem
+            // 
+            this.unsignedToolStripMenuItem.Checked = true;
+            this.unsignedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
+            this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.unsignedToolStripMenuItem.Text = "Unsigned";
+            this.unsignedToolStripMenuItem.Click += new System.EventHandler(this.unsignedToolStripMenuItem_Click);
+            // 
+            // signedToolStripMenuItem
+            // 
+            this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
+            this.signedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.signedToolStripMenuItem.Text = "Signed";
+            this.signedToolStripMenuItem.Click += new System.EventHandler(this.signedToolStripMenuItem_Click);
+            // 
+            // hexadecimalToolStripMenuItem
+            // 
+            this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
+            this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
+            this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(173, 6);
+            // 
+            // includeMisalignedToolStripMenuItem
+            // 
+            this.includeMisalignedToolStripMenuItem.Name = "includeMisalignedToolStripMenuItem";
+            this.includeMisalignedToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.includeMisalignedToolStripMenuItem.Text = "Include mis-aligned";
+            this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click);
+            // 
+            // EndiantoolSplitButton
+            // 
+            this.EndiantoolSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.EndiantoolSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.bigEndianToolStripMenuItem,
+            this.littleEndianToolStripMenuItem});
+            this.EndiantoolSplitButton.Image = ((System.Drawing.Image)(resources.GetObject("EndiantoolSplitButton.Image")));
+            this.EndiantoolSplitButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.EndiantoolSplitButton.Name = "EndiantoolSplitButton";
+            this.EndiantoolSplitButton.Size = new System.Drawing.Size(55, 22);
+            this.EndiantoolSplitButton.Text = "Endian";
+            // 
+            // bigEndianToolStripMenuItem
+            // 
+            this.bigEndianToolStripMenuItem.Checked = true;
+            this.bigEndianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.bigEndianToolStripMenuItem.Name = "bigEndianToolStripMenuItem";
+            this.bigEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.bigEndianToolStripMenuItem.Text = "Big Endian";
+            this.bigEndianToolStripMenuItem.Click += new System.EventHandler(this.bigEndianToolStripMenuItem_Click);
+            // 
+            // littleEndianToolStripMenuItem
+            // 
+            this.littleEndianToolStripMenuItem.Name = "littleEndianToolStripMenuItem";
+            this.littleEndianToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.littleEndianToolStripMenuItem.Text = "Little Endian";
+            this.littleEndianToolStripMenuItem.Click += new System.EventHandler(this.littleEndianToolStripMenuItem_Click);
+            // 
+            // exludeRamWatchListToolStripMenuItem
+            // 
+            this.exludeRamWatchListToolStripMenuItem.Name = "exludeRamWatchListToolStripMenuItem";
+            this.exludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.exludeRamWatchListToolStripMenuItem.Text = "Exlude Ram Watch List";
+            this.exludeRamWatchListToolStripMenuItem.Click += new System.EventHandler(this.exludeRamWatchListToolStripMenuItem_Click);
             // 
             // RamSearch
             // 
@@ -1104,5 +1125,7 @@
         private System.Windows.Forms.ToolStripMenuItem originalValueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton TruncateFromFiletoolStripButton2;
+        private System.Windows.Forms.ToolStripButton ExcludeRamWatchtoolStripButton2;
+        private System.Windows.Forms.ToolStripMenuItem exludeRamWatchListToolStripMenuItem;
     }
 }

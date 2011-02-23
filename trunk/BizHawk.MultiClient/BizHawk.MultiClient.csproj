@@ -313,6 +313,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\ControllerImages\NESController.PNG" />
+    <None Include="images\TruncateFromRW.png" />
     <None Include="images\TruncateFromFile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

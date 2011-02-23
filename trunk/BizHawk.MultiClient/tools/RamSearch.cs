@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
         //DoSearch() - if already previewed, don't generate the list again, perhaps a bool?
         //Window position gets saved but doesn't load properly
         //Multiple memory domains
-        //Option to remove current Ram Watch list from search list
         //Option to always remove Ram Watch list from search list
         //Save Dialog - user cancelling crashes, same for Ram Watch?
         //Add button to set copy current values to prev     
@@ -1462,6 +1461,32 @@ namespace BizHawk.MultiClient
             TruncateFromFile();
         }
 
+        private void DoTruncate(List<Watch> temp)
+        {
+            weededList.Clear();
+            bool found = false;
+            for (int x = 0; x < searchList.Count; x++)
+            {
+                found = false;
+                for (int y = 0; y < temp.Count; y++)
+                {
+                    if (searchList[x].address == temp[y].address)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                }
+                if (!found)
+                    weededList.Add(searchList[x]);
+            }
+            SaveUndo();
+            OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+            ReplaceSearchListWithWeedOutList();
+            if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+            DisplaySearchList();
+        }
+
         private void TruncateFromFile()
         {
             //TODO: what about byte size? Think about the implications of this
@@ -1470,34 +1495,31 @@ namespace BizHawk.MultiClient
             {
                 List<Watch> temp = new List<Watch>();
                 LoadSearchFile(file.FullName, false, true, temp);
-                weededList.Clear();
-                bool found = false;
-                for (int x = 0; x < searchList.Count; x++)
-                {
-                    found = false;
-                    for (int y = 0; y < temp.Count; y++)
-                    {
-                        if (searchList[x].address == temp[y].address)
-                        {
-                            found = true;
-                            break;
-                        }
-                        
-                    }
-                    if (!found)
-                        weededList.Add(searchList[x]);
-                }
-                SaveUndo();
-                OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
-                ReplaceSearchListWithWeedOutList();
-                if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
-                DisplaySearchList();
+                DoTruncate(temp);
             }
+        }
+
+        /// <summary>
+        /// Removes Ram Watch list from the search list
+        /// </summary>
+        private void ExludeRamWatchList()
+        {
+            DoTruncate(Global.MainForm.RamWatch1.GetRamWatchList());
         }
 
         private void TruncateFromFiletoolStripButton2_Click(object sender, EventArgs e)
         {
             TruncateFromFile();
+        }
+
+        private void exludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExludeRamWatchList();
+        }
+
+        private void ExcludeRamWatchtoolStripButton2_Click(object sender, EventArgs e)
+        {
+            ExludeRamWatchList();
         }
         
     }
