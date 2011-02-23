@@ -489,8 +489,8 @@ namespace BizHawk.MultiClient
             {
                 SaveWatchFile(file.FullName);
                 currentWatchFile = file.FullName;
+                MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
             }
-            MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
