@@ -93,12 +93,18 @@ namespace BizHawk
                 byte[] bc = AE.GetBytes(input[x].ToString());
 
                 // Determine if the ASCII code is within the valid range of numerical values.
-                if (bc[0] < 47)
+                if (bc[0] < 47) //0
                     return false;
-                if (bc[0] > 58)
+                if (bc[0] > 58) //9
                 {
-                    if (bc[0] < 65 || bc[0] > 70) //A-F capital letters only!
+                    if (bc[0] < 65) //A
                         return false;
+
+                    if (bc[0] > 70) //F
+                    {
+                        if (bc[0] < 97 || bc[0] > 102) //a-f
+                            return false;
+                    }
                 }
             }
             return true;

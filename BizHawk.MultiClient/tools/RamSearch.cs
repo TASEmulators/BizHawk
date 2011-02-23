@@ -764,10 +764,23 @@ namespace BizHawk.MultiClient
         private int GetSpecificValue()
         {
             if (SpecificValueBox.Text == "") return 0;
-            bool i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
-            if (!i) return -1;
-
-            return int.Parse(SpecificValueBox.Text);
+            bool i = false;
+            switch (GetDataType())
+            {
+                case asigned.UNSIGNED:
+                    i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
+                    if (!i) return -1;
+                    return int.Parse(SpecificValueBox.Text);
+                case asigned.SIGNED:
+                    i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
+                    if (!i) return -1;
+                    return int.Parse(SpecificValueBox.Text);
+                case asigned.HEX:
+                    i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
+                    if (!i) return -1;
+                    return int.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
+            }
+            return -1;
         }
 
         private int GetSpecificAddress()
@@ -1412,8 +1425,22 @@ namespace BizHawk.MultiClient
         {
             if (e.KeyChar == '\b') return;
 
-            if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
-                e.Handled = true;
+            switch (GetDataType())
+            {
+                case asigned.UNSIGNED:
+                    if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+                case asigned.SIGNED:
+                    if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+                case asigned.HEX:
+                    if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+            }
+            
         }
 
         private void SpecificAddressBox_KeyPress(object sender, KeyPressEventArgs e)
