@@ -9,6 +9,7 @@ namespace BizHawk.MultiClient
     {
         public InputWidget()
         {
+            this.ContextMenu = new ContextMenu();
         }
 
         public List<IBinding> Bindings = new List<IBinding>();
