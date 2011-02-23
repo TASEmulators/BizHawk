@@ -10,7 +10,6 @@ using BizHawk.Emulation.Sound;
   TODO: 
   + HCounter
   + Try to clean up the organization of the source code. 
-  + Fix remaining broken games
   + Lightgun/Paddle/etc if I get really bored  
 
 **********************************************************/
@@ -355,9 +354,11 @@ namespace BizHawk.Emulation.Consoles.Sega
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
-
+        // TODO I have concerns about this .Query thing- at least for target fps, but I leave it for now
 		public object Query(EmulatorQuery query)
 		{
+            if (query == EmulatorQuery.VsyncRate)
+                return DisplayType == DisplayType.NTSC ? 60d : 50d;
 			return null;
 		}
     }
