@@ -34,6 +34,15 @@ namespace BizHawk.MultiClient
         string currentWatchFile = "";
         bool changes = false;
 
+        public List<Watch> GetRamWatchList()
+        {
+            List<Watch> w = new List<Watch>();
+            for (int x = 0; x < watchList.Count; x++)
+                w.Add(new Watch(watchList[x]));
+
+            return w;
+        }
+
         public void DisplayWatchList()
         {
             WatchListView.ItemCount = watchList.Count;
