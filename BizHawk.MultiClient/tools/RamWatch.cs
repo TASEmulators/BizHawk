@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
                 //Ability to watch in different memory domains
         //Save column widths in config
-        //Option for Prev to show change (+2 or -2) etc
+        //Column options in context menu
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -130,28 +130,39 @@ namespace BizHawk.MultiClient
                     text = "";
                 else
                 {
-                    switch (watchList[index].signed)
+                    if (Global.Config.RamWatchShowChangeFromPrev)
                     {
-                        case asigned.HEX:
-                            switch (watchList[index].type)
-                            {
-                                case atype.BYTE:
-                                    text = String.Format("{0:X2}", watchList[index].prev);
-                                    break;
-                                case atype.WORD:
-                                    text = String.Format("{0:X4}", watchList[index].prev);
-                                    break;
-                                case atype.DWORD:
-                                    text = String.Format("{0:X8}", watchList[index].prev);
-                                    break;
-                            }
-                            break;
-                        case asigned.SIGNED:
-                            text = ((sbyte)watchList[index].prev).ToString();
-                            break;
-                        case asigned.UNSIGNED:
-                            text = watchList[index].prev.ToString();
-                            break;
+                        int x = watchList[index].value - watchList[index].prev;
+                        if (x < 0)
+                            text = x.ToString();
+                        else
+                            text = "+" + x.ToString();
+                    }
+                    else
+                    {
+                        switch (watchList[index].signed)
+                        {
+                            case asigned.HEX:
+                                switch (watchList[index].type)
+                                {
+                                    case atype.BYTE:
+                                        text = String.Format("{0:X2}", watchList[index].prev);
+                                        break;
+                                    case atype.WORD:
+                                        text = String.Format("{0:X4}", watchList[index].prev);
+                                        break;
+                                    case atype.DWORD:
+                                        text = String.Format("{0:X8}", watchList[index].prev);
+                                        break;
+                                }
+                                break;
+                            case asigned.SIGNED:
+                                text = ((sbyte)watchList[index].prev).ToString();
+                                break;
+                            case asigned.UNSIGNED:
+                                text = watchList[index].prev.ToString();
+                                break;
+                        }
                     }
                 }
             }
@@ -970,6 +981,17 @@ namespace BizHawk.MultiClient
         {
             Global.Config.RamWatchShowPrevColumn ^= true;
             SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
+        }
+
+        private void prevValueShowsChangeAmountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RamWatchShowChangeFromPrev ^= true;
+            DisplayWatchList();
+        }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            prevValueShowsChangeAmountToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeFromPrev;
         }
     }
 }

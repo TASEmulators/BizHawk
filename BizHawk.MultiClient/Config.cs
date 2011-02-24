@@ -56,6 +56,7 @@
         public int RamWatchHeight = -1;
         public bool RamWatchShowChangeColumn = true;
         public bool RamWatchShowPrevColumn = false;
+        public bool RamWatchShowChangeFromPrev = true;
 
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
