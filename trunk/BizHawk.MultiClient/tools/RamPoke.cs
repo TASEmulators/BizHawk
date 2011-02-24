@@ -195,5 +195,46 @@ namespace BizHawk.MultiClient
                 t.Show("Must be a valid unsigned decimal value", ValueBox, 5000);
             }
         }
+
+        private asigned GetDataType()
+        {
+            if (SignedRadio.Checked)
+                return asigned.UNSIGNED;
+            if (UnsignedRadio.Checked)
+                return asigned.SIGNED;
+            if (HexRadio.Checked)
+                return asigned.HEX;
+
+            return asigned.UNSIGNED;    //Just in case
+        }
+
+        private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            switch (GetDataType())
+            {
+                case asigned.UNSIGNED:
+                    if (!InputValidate.IsValidUnsignedNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+                case asigned.SIGNED:
+                    if (!InputValidate.IsValidSignedNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+                case asigned.HEX:
+                    if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                        e.Handled = true;
+                    break;
+            }
+        }
     }
 }
