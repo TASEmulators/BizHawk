@@ -86,6 +86,8 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
+            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -229,6 +231,7 @@
             this.duplicateWatchToolStripMenuItem,
             this.insertSeparatorToolStripMenuItem,
             this.pokeAddressToolStripMenuItem,
+            this.clearChangeCountsToolStripMenuItem,
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem});
@@ -432,6 +435,7 @@
             this.NewWatchStripButton1,
             this.EditWatchToolStripButton1,
             this.cutToolStripButton,
+            this.ClearChangeCountstoolStripButton,
             this.DuplicateWatchToolStripButton,
             this.PoketoolStripButton2,
             this.toolStripButton1,
@@ -587,6 +591,26 @@
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
             // 
+            // ClearChangeCountstoolStripButton
+            // 
+            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
+            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
+            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.ClearChangeCountstoolStripButton.Text = "C";
+            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
+            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
+            // 
+            // clearChangeCountsToolStripMenuItem
+            // 
+            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
+            this.clearChangeCountsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
+            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
+            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
+            // 
             // RamWatch
             // 
             this.AllowDrop = true;
@@ -676,5 +700,7 @@
         private System.Windows.Forms.ToolStripMenuItem insertSeperatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
+        private System.Windows.Forms.ToolStripMenuItem clearChangeCountsToolStripMenuItem;
     }
 }
