@@ -20,8 +20,7 @@ namespace BizHawk.MultiClient
          //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
                 //Ability to watch in different memory domains
-        //Reset Changecounts function
-        //Option to high change counts?
+        //Option to hide change counts?
         //IDEAS:
         //Option to show previous value
         //Option to show change from previous value
@@ -878,6 +877,24 @@ namespace BizHawk.MultiClient
         private void RamWatch_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;string[] filePaths = (string[]) e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void ClearChangeCounts()
+        {
+            for (int x = 0; x < watchList.Count; x++)
+                watchList[x].changecount = 0;
+            DisplayWatchList();
+            MessageLabel.Text = "Change counts cleared";
+        }
+
+        private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
+        {
+            ClearChangeCounts();
+        }
+
+        private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearChangeCounts();
         }
     }
 }
