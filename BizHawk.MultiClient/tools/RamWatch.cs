@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
          //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
                 //Ability to watch in different memory domains
-        //Option to hide change counts?
         //IDEAS:
         //Option to show previous value
         //Option to show change from previous value
@@ -896,6 +895,20 @@ namespace BizHawk.MultiClient
         private void clearChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ClearChangeCounts();
+        }
+
+        private void showChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (showChangeCountsToolStripMenuItem.Checked)
+            {
+                showChangeCountsToolStripMenuItem.Checked = false;
+                WatchListView.Columns[2].Width = 0;
+            }
+            else
+            {
+                showChangeCountsToolStripMenuItem.Checked = true;
+                WatchListView.Columns[2].Width = 60;
+            }
         }
     }
 }
