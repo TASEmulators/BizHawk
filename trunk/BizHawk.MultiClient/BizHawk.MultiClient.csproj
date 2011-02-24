@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -111,6 +111,9 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="movie\Movie.cs" />
+    <Compile Include="movie\MovieHeader.cs" />
+    <Compile Include="movie\MovieLog.cs" />
     <Compile Include="MruStack.cs" />
     <Compile Include="NameStateForm.cs">
       <SubType>Form</SubType>
