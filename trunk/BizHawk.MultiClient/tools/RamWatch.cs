@@ -20,7 +20,6 @@ namespace BizHawk.MultiClient
          //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
                 //Ability to watch in different memory domains
-        //Save column showing in config        
         //Save column widths in config
         //Option for Prev to show change (+2 or -2) etc
 
@@ -610,6 +609,8 @@ namespace BizHawk.MultiClient
             {
                 this.Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
             }
+            SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
+            SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -941,30 +942,34 @@ namespace BizHawk.MultiClient
 
         private void showChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (showChangeCountsToolStripMenuItem.Checked)
-            {
-                showChangeCountsToolStripMenuItem.Checked = false;
-                WatchListView.Columns[3].Width = 0;
-            }
+            Global.Config.RamWatchShowChangeColumn ^= true;
+            SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
+        }
+
+        private void SetChangesColumn(bool show)
+        {
+            Global.Config.RamWatchShowChangeColumn = show;
+            showChangeCountsToolStripMenuItem.Checked = show;
+            if (show)
+                WatchListView.Columns[3].Width = 54;
             else
-            {
-                showChangeCountsToolStripMenuItem.Checked = true;
-                WatchListView.Columns[3].Width = 60;
-            }
+                WatchListView.Columns[3].Width = 0;
+        }
+
+        private void SetPrevColumn(bool show)
+        {
+            Global.Config.RamWatchShowPrevColumn = show;
+            showPreviousValueToolStripMenuItem.Checked = show;
+            if (show)
+                WatchListView.Columns[2].Width = 59;
+            else
+                WatchListView.Columns[2].Width = 0;
         }
 
         private void showPreviousValueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (showPreviousValueToolStripMenuItem.Checked)
-            {
-                showPreviousValueToolStripMenuItem.Checked = false;
-                WatchListView.Columns[2].Width = 0;
-            }
-            else
-            {
-                showPreviousValueToolStripMenuItem.Checked = true;
-                WatchListView.Columns[2].Width = 59;
-            }
+            Global.Config.RamWatchShowPrevColumn ^= true;
+            SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
         }
     }
 }
