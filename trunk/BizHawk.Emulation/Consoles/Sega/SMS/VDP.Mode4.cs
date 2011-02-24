@@ -224,6 +224,65 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
+        internal void ProcessSpriteCollisionForFrameskip()
+        {
+            if (DisplayOn == false) return;
+            int SpriteBase = SpriteAttributeTableBase;
+            int SpriteHeight = EnableLargeSprites ? 16 : 8;
+
+            // Clear the sprite collision buffer for this scanline
+            Array.Clear(SpriteCollisionBuffer, 0, 256);
+
+            // 208 is a special terminator sprite (in 192-line mode). Lets find it...
+            int TerminalSprite = 64;
+            if (FrameHeight == 192)
+                for (int i = 0; i < 64; i++)
+                {
+                    if (VRAM[SpriteBase + i] == 208)
+                    {
+                        TerminalSprite = i;
+                        break;
+                    }
+                }
+
+            // Loop through these sprites and render the current scanline
+            int SpritesDrawnThisScanline = 0;
+            for (int i = TerminalSprite - 1; i >= 0; i--)
+            {
+                if (SpritesDrawnThisScanline >= 8)
+                    StatusByte |= 0x40; // Set Overflow bit
+
+                int x = VRAM[SpriteBase + 0x80 + (i * 2)];
+                if (ShiftSpritesLeft8Pixels)
+                    x -= 8;
+
+                int y = VRAM[SpriteBase + i] + 1;
+                if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
+
+                if (y + SpriteHeight <= ScanLine || y > ScanLine)
+                    continue;
+
+                int tileNo = VRAM[SpriteBase + 0x80 + (i * 2) + 1];
+                if (EnableLargeSprites)
+                    tileNo &= 0xFE;
+                tileNo += SpriteTileBase;
+
+                int ys = ScanLine - y;
+
+                for (int xs = 0; xs < 8 && x + xs < 256; xs++)
+                {
+                    byte color = PatternBuffer[(tileNo * 64) + (ys * 8) + xs];
+                    if (color != 0 && x + xs >= 0)
+                    {
+                        if (SpriteCollisionBuffer[x + xs] != 0)
+                            StatusByte |= 0x20; // Set Collision bit
+                        SpriteCollisionBuffer[x + xs] = 1;
+                    }
+                }
+                SpritesDrawnThisScanline++;
+            }
+        }
+
         /// <summary>
         /// Performs render buffer blanking. This includes the left-column blanking as well as Game Gear blanking if requested.
         /// Should be called at the end of the frame.
