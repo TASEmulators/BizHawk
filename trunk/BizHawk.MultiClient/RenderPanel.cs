@@ -176,6 +176,11 @@ namespace BizHawk.MultiClient
                 MessageFont.Dispose();
                 MessageFont = null;
             }
+            if (Device != null)
+            {
+                Device.Dispose();
+                Device = null;
+            }
         }
 
         public void CreateDevice()
