@@ -20,9 +20,9 @@ namespace BizHawk.MultiClient
          //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
                 //Ability to watch in different memory domains
-        //IDEAS:
-        //Option to show previous value
-        //Option to show change from previous value
+        //Save column showing in config        
+        //Save column widths in config
+        //Option for Prev to show change (+2 or -2) etc
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -87,14 +87,14 @@ namespace BizHawk.MultiClient
         void WatchListView_QueryItemText(int index, int column, out string text)
         {
             text = "";
-            if (column == 0)
+            if (column == 0)    //Address
             {
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
                 else
                     text = String.Format("{0:X}", watchList[index].address);
             }
-            if (column == 1)
+            if (column == 1) //Value
             {
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
@@ -125,11 +125,42 @@ namespace BizHawk.MultiClient
                     }
                 }
             }
-            if (column == 2)
+            if (column == 2) //Prev
+            {
+                if (watchList[index].type == atype.SEPARATOR)
+                    text = "";
+                else
+                {
+                    switch (watchList[index].signed)
+                    {
+                        case asigned.HEX:
+                            switch (watchList[index].type)
+                            {
+                                case atype.BYTE:
+                                    text = String.Format("{0:X2}", watchList[index].prev);
+                                    break;
+                                case atype.WORD:
+                                    text = String.Format("{0:X4}", watchList[index].prev);
+                                    break;
+                                case atype.DWORD:
+                                    text = String.Format("{0:X8}", watchList[index].prev);
+                                    break;
+                            }
+                            break;
+                        case asigned.SIGNED:
+                            text = ((sbyte)watchList[index].prev).ToString();
+                            break;
+                        case asigned.UNSIGNED:
+                            text = watchList[index].prev.ToString();
+                            break;
+                    }
+                }
+            }
+            if (column == 3) //Change Counts
             {
                 text = watchList[index].changecount.ToString();
             }
-            if (column == 3)
+            if (column == 4) //Notes
             {
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
@@ -675,6 +706,17 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+            WatchListView.Columns[0].Width = 59; //Address
+            WatchListView.Columns[1].Width = 59; //Value
+            if (showPreviousValueToolStripMenuItem.Checked)
+                WatchListView.Columns[2].Width = 59; //Prev
+            else
+                WatchListView.Columns[2].Width = 0;
+            if (showChangeCountsToolStripMenuItem.Checked)
+                WatchListView.Columns[3].Width = 54; //Change counts
+            else
+                WatchListView.Columns[3].Width = 0;
+            WatchListView.Columns[4].Width = 150;   //Notes
         }
 
         private void newToolStripButton_Click(object sender, EventArgs e)
@@ -902,12 +944,26 @@ namespace BizHawk.MultiClient
             if (showChangeCountsToolStripMenuItem.Checked)
             {
                 showChangeCountsToolStripMenuItem.Checked = false;
-                WatchListView.Columns[2].Width = 0;
+                WatchListView.Columns[3].Width = 0;
             }
             else
             {
                 showChangeCountsToolStripMenuItem.Checked = true;
-                WatchListView.Columns[2].Width = 60;
+                WatchListView.Columns[3].Width = 60;
+            }
+        }
+
+        private void showPreviousValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (showPreviousValueToolStripMenuItem.Checked)
+            {
+                showPreviousValueToolStripMenuItem.Checked = false;
+                WatchListView.Columns[2].Width = 0;
+            }
+            else
+            {
+                showPreviousValueToolStripMenuItem.Checked = true;
+                WatchListView.Columns[2].Width = 59;
             }
         }
     }
