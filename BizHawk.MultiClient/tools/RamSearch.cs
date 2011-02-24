@@ -1550,7 +1550,6 @@ namespace BizHawk.MultiClient
                         e.Handled = true;
                     break;
             }
-            
         }
 
         private void SpecificAddressBox_KeyPress(object sender, KeyPressEventArgs e)

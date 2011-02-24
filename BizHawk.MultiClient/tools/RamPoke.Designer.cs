@@ -71,6 +71,7 @@
             this.AddressBox.TabIndex = 2;
             this.AddressBox.Text = "0000";
             this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
+            this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
             // 
             // DataTypeGroupBox
             // 
@@ -241,6 +242,7 @@
             this.ValueBox.TabIndex = 11;
             this.ValueBox.Text = "0000";
             this.ValueBox.Leave += new System.EventHandler(this.ValueBox_Leave);
+            this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
             // 
             // RamPoke
             // 
