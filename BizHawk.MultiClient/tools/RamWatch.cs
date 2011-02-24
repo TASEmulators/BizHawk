@@ -17,8 +17,7 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Call AskSave in main client X function
-        //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
+         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
         //When Watch object has a changes member, display in watch list with a reset changes function
         //Ability to watch in different memory domains
@@ -68,6 +67,13 @@ namespace BizHawk.MultiClient
             WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
             WatchListView.VirtualMode = true;
         }
+
+        protected override void  OnClosing(CancelEventArgs e)
+         {
+            if (!AskSave())
+                e.Cancel = true;    
+            base.OnClosing(e);
+         }
 
         private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
         {
@@ -422,7 +428,10 @@ namespace BizHawk.MultiClient
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            if (!AskSave())
+                return;
+
+            this.Close();
         }
 
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
