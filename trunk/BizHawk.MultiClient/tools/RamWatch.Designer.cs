@@ -43,8 +43,6 @@
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +51,7 @@
             this.duplicateWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,6 +77,7 @@
             this.NewWatchStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -86,8 +86,9 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
-            this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -97,7 +98,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.filesToolStripMenuItem,
-            this.watchesToolStripMenuItem});
+            this.watchesToolStripMenuItem,
+            this.optionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(364, 24);
@@ -114,8 +116,6 @@
             this.appendFileToolStripMenuItem,
             this.recentToolStripMenuItem,
             this.toolStripSeparator1,
-            this.restoreWindowSizeToolStripMenuItem,
-            this.toolStripSeparator2,
             this.exitToolStripMenuItem});
             this.filesToolStripMenuItem.Name = "filesToolStripMenuItem";
             this.filesToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
@@ -202,18 +202,6 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(201, 6);
             // 
-            // restoreWindowSizeToolStripMenuItem
-            // 
-            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
-            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
-            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
@@ -244,7 +232,7 @@
             // 
             this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
             this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.newWatchToolStripMenuItem.Text = "&New Watch";
             this.newWatchToolStripMenuItem.Click += new System.EventHandler(this.newWatchToolStripMenuItem_Click);
             // 
@@ -252,7 +240,7 @@
             // 
             this.editWatchToolStripMenuItem.Name = "editWatchToolStripMenuItem";
             this.editWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.editWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.editWatchToolStripMenuItem.Text = "&Edit Watch";
             this.editWatchToolStripMenuItem.Click += new System.EventHandler(this.editWatchToolStripMenuItem_Click);
             // 
@@ -260,7 +248,7 @@
             // 
             this.removeWatchToolStripMenuItem.Name = "removeWatchToolStripMenuItem";
             this.removeWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.removeWatchToolStripMenuItem.Text = "&Remove Watch";
             this.removeWatchToolStripMenuItem.Click += new System.EventHandler(this.removeWatchToolStripMenuItem_Click);
             // 
@@ -268,7 +256,7 @@
             // 
             this.duplicateWatchToolStripMenuItem.Name = "duplicateWatchToolStripMenuItem";
             this.duplicateWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.duplicateWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.duplicateWatchToolStripMenuItem.Text = "&Duplicate Watch";
             this.duplicateWatchToolStripMenuItem.Click += new System.EventHandler(this.duplicateWatchToolStripMenuItem_Click);
             // 
@@ -276,7 +264,7 @@
             // 
             this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
             this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
             this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
             // 
@@ -284,20 +272,28 @@
             // 
             this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
             this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.pokeAddressToolStripMenuItem.Text = "Poke Address";
             this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
+            // 
+            // clearChangeCountsToolStripMenuItem
+            // 
+            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
+            this.clearChangeCountsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
+            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
+            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(199, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(219, 6);
             // 
             // moveUpToolStripMenuItem
             // 
             this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
             this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
-            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.moveUpToolStripMenuItem.Text = "Move &Up";
             this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
             // 
@@ -305,12 +301,13 @@
             // 
             this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
             this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
-            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.moveDownToolStripMenuItem.Text = "Move &Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
             // 
             // WatchListView
             // 
+            this.WatchListView.AllowColumnReorder = true;
             this.WatchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
@@ -515,6 +512,18 @@
             this.cutToolStripButton.ToolTipText = "Remove Watch";
             this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
+            // ClearChangeCountstoolStripButton
+            // 
+            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
+            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
+            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.ClearChangeCountstoolStripButton.Text = "C";
+            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
+            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
+            // 
             // DuplicateWatchToolStripButton
             // 
             this.DuplicateWatchToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -591,25 +600,30 @@
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
             // 
-            // ClearChangeCountstoolStripButton
+            // optionsToolStripMenuItem
             // 
-            this.ClearChangeCountstoolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.ClearChangeCountstoolStripButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ClearChangeCountstoolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("ClearChangeCountstoolStripButton.Image")));
-            this.ClearChangeCountstoolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.ClearChangeCountstoolStripButton.Name = "ClearChangeCountstoolStripButton";
-            this.ClearChangeCountstoolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.ClearChangeCountstoolStripButton.Text = "C";
-            this.ClearChangeCountstoolStripButton.ToolTipText = "Clear Change Counts";
-            this.ClearChangeCountstoolStripButton.Click += new System.EventHandler(this.ClearChangeCountstoolStripButton_Click);
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showChangeCountsToolStripMenuItem,
+            this.restoreWindowSizeToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "&Options";
             // 
-            // clearChangeCountsToolStripMenuItem
+            // showChangeCountsToolStripMenuItem
             // 
-            this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
-            this.clearChangeCountsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.C)));
-            this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
-            this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
+            this.showChangeCountsToolStripMenuItem.Checked = true;
+            this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
+            this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.showChangeCountsToolStripMenuItem.Text = "Show Change Counts";
+            this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
+            // 
+            // restoreWindowSizeToolStripMenuItem
+            // 
+            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // RamWatch
             // 
@@ -620,8 +634,8 @@
             this.Controls.Add(this.MessageLabel);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
-            this.Controls.Add(this.WatchListView);
             this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.WatchListView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "RamWatch";
@@ -673,8 +687,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton newToolStripButton;
         private System.Windows.Forms.ToolStripButton openToolStripButton;
         private System.Windows.Forms.ToolStripButton saveToolStripButton;
@@ -702,5 +714,8 @@
         private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem1;
         private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
         private System.Windows.Forms.ToolStripMenuItem clearChangeCountsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showChangeCountsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
     }
 }
