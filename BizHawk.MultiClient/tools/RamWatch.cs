@@ -19,11 +19,10 @@ namespace BizHawk.MultiClient
         //TODO: 
          //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
         //DisplayWatches needs to do value display properly like updatevalues, or just run update values
-        //When Watch object has a changes member, display in watch list with a reset changes function
-        //Ability to watch in different memory domains
-
+                //Ability to watch in different memory domains
+        //Reset Changecounts function
+        //Option to high change counts?
         //IDEAS:
-        //OPtion to show a change count column
         //Option to show previous value
         //Option to show change from previous value
 
@@ -50,7 +49,12 @@ namespace BizHawk.MultiClient
         public void UpdateValues()
         {
             for (int x = 0; x < watchList.Count; x++)
+            {
+                watchList[x].prev = watchList[x].value;
                 watchList[x].PeekAddress(Global.Emulator.MainMemory);
+                if (watchList[x].value != watchList[x].prev)
+                    watchList[x].changecount++;
+            }
             WatchListView.Refresh();       
         }
 
@@ -123,6 +127,10 @@ namespace BizHawk.MultiClient
                 }
             }
             if (column == 2)
+            {
+                text = watchList[index].changecount.ToString();
+            }
+            if (column == 3)
             {
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
