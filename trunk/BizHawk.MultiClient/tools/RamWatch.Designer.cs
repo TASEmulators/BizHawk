@@ -59,6 +59,7 @@
             this.WatchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
+            this.ChangeCounts = new System.Windows.Forms.ColumnHeader();
             this.Notes = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -314,6 +315,7 @@
             this.WatchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
+            this.ChangeCounts,
             this.Notes});
             this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
             this.WatchListView.FullRowSelect = true;
@@ -338,6 +340,13 @@
             // 
             this.Value.Text = "Value";
             this.Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Value.Width = 59;
+            // 
+            // ChangeCounts
+            // 
+            this.ChangeCounts.Text = "Changes";
+            this.ChangeCounts.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.ChangeCounts.Width = 54;
             // 
             // Notes
             // 
@@ -633,6 +642,7 @@
         private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
+        private System.Windows.Forms.ColumnHeader ChangeCounts;
         private System.Windows.Forms.ColumnHeader Notes;
         private System.Windows.Forms.Label WatchCountLabel;
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
