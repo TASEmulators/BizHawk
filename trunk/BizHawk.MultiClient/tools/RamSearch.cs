@@ -45,6 +45,7 @@ namespace BizHawk.MultiClient
 
         public void UpdateValues()
         {
+            if (!this.IsHandleCreated || this.IsDisposed) return;
             for (int x = 0; x < searchList.Count; x++)
             {
                 searchList[x].prev = searchList[x].value;

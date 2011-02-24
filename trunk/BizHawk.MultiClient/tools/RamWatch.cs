@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 
         public void UpdateValues()
         {
+            if (!this.IsHandleCreated || this.IsDisposed) return;
             for (int x = 0; x < watchList.Count; x++)
             {
                 watchList[x].prev = watchList[x].value;
