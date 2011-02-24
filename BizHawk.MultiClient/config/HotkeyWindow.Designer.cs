@@ -140,7 +140,7 @@
             this.hotkeyTabs.Name = "hotkeyTabs";
             this.hotkeyTabs.SelectedIndex = 0;
             this.hotkeyTabs.Size = new System.Drawing.Size(598, 290);
-            this.hotkeyTabs.TabIndex = 0;
+            this.hotkeyTabs.TabIndex = 97;
             this.hotkeyTabs.TabStop = false;
             // 
             // tabPage1
@@ -177,7 +177,7 @@
             this.label45.Location = new System.Drawing.Point(207, 83);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(60, 13);
-            this.label45.TabIndex = 79;
+            this.label45.TabIndex = 13;
             this.label45.Text = "Full Screen";
             // 
             // IDW_FULLSCREEN
@@ -187,7 +187,7 @@
             this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 80);
             this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
             this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FULLSCREEN.TabIndex = 78;
+            this.IDW_FULLSCREEN.TabIndex = 9;
             // 
             // IDW_SCREENSHOT
             // 
@@ -196,7 +196,7 @@
             this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 56);
             this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
             this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_SCREENSHOT.TabIndex = 76;
+            this.IDW_SCREENSHOT.TabIndex = 8;
             // 
             // label44
             // 
@@ -204,7 +204,7 @@
             this.label44.Location = new System.Drawing.Point(207, 59);
             this.label44.Name = "label44";
             this.label44.Size = new System.Drawing.Size(61, 13);
-            this.label44.TabIndex = 75;
+            this.label44.TabIndex = 12;
             this.label44.Text = "Screenshot";
             // 
             // IDW_REWIND
@@ -214,7 +214,7 @@
             this.IDW_REWIND.Location = new System.Drawing.Point(92, 104);
             this.IDW_REWIND.Name = "IDW_REWIND";
             this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
-            this.IDW_REWIND.TabIndex = 74;
+            this.IDW_REWIND.TabIndex = 5;
             // 
             // label37
             // 
@@ -222,7 +222,7 @@
             this.label37.Location = new System.Drawing.Point(6, 107);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(43, 13);
-            this.label37.TabIndex = 73;
+            this.label37.TabIndex = 4;
             this.label37.Text = "Rewind";
             // 
             // IDW_FASTFORWARD
@@ -232,7 +232,7 @@
             this.IDW_FASTFORWARD.Location = new System.Drawing.Point(92, 80);
             this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
             this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FASTFORWARD.TabIndex = 72;
+            this.IDW_FASTFORWARD.TabIndex = 4;
             // 
             // label36
             // 
@@ -240,7 +240,7 @@
             this.label36.Location = new System.Drawing.Point(6, 83);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(68, 13);
-            this.label36.TabIndex = 71;
+            this.label36.TabIndex = 3;
             this.label36.Text = "Fast Forward";
             // 
             // IDW_HARDRESET
@@ -250,7 +250,7 @@
             this.IDW_HARDRESET.Location = new System.Drawing.Point(92, 56);
             this.IDW_HARDRESET.Name = "IDW_HARDRESET";
             this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
-            this.IDW_HARDRESET.TabIndex = 70;
+            this.IDW_HARDRESET.TabIndex = 3;
             // 
             // label35
             // 
@@ -258,17 +258,17 @@
             this.label35.Location = new System.Drawing.Point(6, 59);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(61, 13);
-            this.label35.TabIndex = 69;
+            this.label35.TabIndex = 2;
             this.label35.Text = "Hard Reset";
             // 
             // IDW_PAUSE
             // 
             this.IDW_PAUSE.AcceptsTab = true;
             this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_PAUSE.Location = new System.Drawing.Point(92, 32);
+            this.IDW_PAUSE.Location = new System.Drawing.Point(92, 33);
             this.IDW_PAUSE.Name = "IDW_PAUSE";
             this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_PAUSE.TabIndex = 68;
+            this.IDW_PAUSE.TabIndex = 2;
             // 
             // label34
             // 
@@ -276,7 +276,7 @@
             this.label34.Location = new System.Drawing.Point(6, 35);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(37, 13);
-            this.label34.TabIndex = 67;
+            this.label34.TabIndex = 1;
             this.label34.Text = "Pause";
             // 
             // IDW_FRAMEADVANCE
@@ -286,7 +286,7 @@
             this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(92, 8);
             this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
             this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FRAMEADVANCE.TabIndex = 66;
+            this.IDW_FRAMEADVANCE.TabIndex = 1;
             // 
             // label33
             // 
@@ -294,7 +294,7 @@
             this.label33.Location = new System.Drawing.Point(207, 11);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(63, 13);
-            this.label33.TabIndex = 65;
+            this.label33.TabIndex = 10;
             this.label33.Text = "Quick Save";
             // 
             // label32
@@ -303,7 +303,7 @@
             this.label32.Location = new System.Drawing.Point(207, 35);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(62, 13);
-            this.label32.TabIndex = 64;
+            this.label32.TabIndex = 11;
             this.label32.Text = "Quick Load";
             // 
             // IDW_QuickLoad
@@ -313,7 +313,7 @@
             this.IDW_QuickLoad.Location = new System.Drawing.Point(293, 32);
             this.IDW_QuickLoad.Name = "IDW_QuickLoad";
             this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
-            this.IDW_QuickLoad.TabIndex = 63;
+            this.IDW_QuickLoad.TabIndex = 7;
             // 
             // label31
             // 
@@ -321,7 +321,7 @@
             this.label31.Location = new System.Drawing.Point(6, 11);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(82, 13);
-            this.label31.TabIndex = 62;
+            this.label31.TabIndex = 0;
             this.label31.Text = "Frame Advance";
             // 
             // IDW_QuickSave
@@ -331,7 +331,7 @@
             this.IDW_QuickSave.Location = new System.Drawing.Point(293, 8);
             this.IDW_QuickSave.Name = "IDW_QuickSave";
             this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
-            this.IDW_QuickSave.TabIndex = 61;
+            this.IDW_QuickSave.TabIndex = 6;
             // 
             // tabPage2
             // 
@@ -999,7 +999,7 @@
             this.IDB_SAVE.Location = new System.Drawing.Point(441, 9);
             this.IDB_SAVE.Name = "IDB_SAVE";
             this.IDB_SAVE.Size = new System.Drawing.Size(82, 22);
-            this.IDB_SAVE.TabIndex = 1;
+            this.IDB_SAVE.TabIndex = 99;
             this.IDB_SAVE.TabStop = false;
             this.IDB_SAVE.Text = "Save";
             this.IDB_SAVE.UseVisualStyleBackColor = true;
@@ -1010,7 +1010,7 @@
             this.IDB_CANCEL.Location = new System.Drawing.Point(528, 9);
             this.IDB_CANCEL.Name = "IDB_CANCEL";
             this.IDB_CANCEL.Size = new System.Drawing.Size(80, 22);
-            this.IDB_CANCEL.TabIndex = 2;
+            this.IDB_CANCEL.TabIndex = 98;
             this.IDB_CANCEL.TabStop = false;
             this.IDB_CANCEL.Text = "Cancel";
             this.IDB_CANCEL.UseVisualStyleBackColor = true;
@@ -1039,7 +1039,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "HotkeyWindow";
-            this.Text = "Configure HotKeys";
+            this.Text = "Configure Hotkeys";
             this.hotkeyTabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
