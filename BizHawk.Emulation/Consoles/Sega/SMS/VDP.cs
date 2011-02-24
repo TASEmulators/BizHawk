@@ -364,17 +364,32 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (TmsMode == 4)
             {
-                // TODO: make frameskip actually skip rendering
+                if (render == false)
+                {
+                    ProcessSpriteCollisionForFrameskip();
+                    return;
+                }
+
                 RenderBackgroundCurrentLine();
 
                 if (EnableDoubledSprites)
                     RenderSpritesCurrentLineDoubleSize();
                 else
                     RenderSpritesCurrentLine();
-            } else if (TmsMode == 2) {
+            }
+            else if (TmsMode == 2) 
+            {
+                if (render == false) 
+                    return;
+
                 RenderBackgroundM2();
                 RenderTmsSprites();
-            } else if (TmsMode == 0) {
+            } 
+            else if (TmsMode == 0) 
+            {
+                if (render == false)
+                    return;
+
                 RenderBackgroundM0();
                 RenderTmsSprites();
             }
