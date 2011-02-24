@@ -13,10 +13,10 @@ namespace BizHawk.MultiClient
     public partial class RamPoke : Form
     {
         //TODO:
-        //If signed/unsigned/hex radios selected, auto-change the value box
+        //If signed/unsigned/hex radios selected, auto-change the value box, and auto limit box length
         //Checked signed/u/h value on RamPoke_Load and set value appopriately
         //Memory domain selection
-        //Overhaul input validation of textboxes to be like Ram Search
+        //Output message, format number of digits appropriately
         public Watch watch = new Watch();
         public Point location = new Point();
 
@@ -123,49 +123,17 @@ namespace BizHawk.MultiClient
             else if (LittleEndianRadio.Checked)
                 watch.bigendian = false;
 
-            switch (watch.signed)
+            int x = GetSpecificValue();
+            if (x == -99999999)
             {
-                case asigned.UNSIGNED:
-                    if (InputValidate.IsValidUnsignedNumber(ValueBox.Text))
-                    {
-                        watch.value = int.Parse(ValueBox.Text);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Invalid Address, must be a valid number number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ValueBox.Focus();
-                        ValueBox.SelectAll();
-                        return;
-                    }
-                    break;
-                case asigned.SIGNED:
-                    if (InputValidate.IsValidSignedNumber(ValueBox.Text))
-                    {
-                        watch.value = int.Parse(ValueBox.Text);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Invalid Address, must be a valid number number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ValueBox.Focus();
-                        ValueBox.SelectAll();
-                    }
-                    break;
-                case asigned.HEX:
-                    if (InputValidate.IsValidHexNumber(ValueBox.Text))
-                    {
-                        watch.value = int.Parse(ValueBox.Text);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Invalid Address, must be a valid hex number", "Invalid Address", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        ValueBox.Focus();
-                        ValueBox.SelectAll();
-                        return;
-                    }
-                    break;
-                default:
-                    return;
+                MessageBox.Show("Missing or invalid value", "Invalid Value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ValueBox.Focus();
+                ValueBox.SelectAll();
+                return;
             }
+            else
+                watch.value = int.Parse(ValueBox.Text);
+
             watch.PokeAddress(Global.Emulator.MainMemory);
                        
             //TODO: format value based on watch.type
@@ -235,6 +203,40 @@ namespace BizHawk.MultiClient
                         e.Handled = true;
                     break;
             }
+        }
+
+        private atype GetDataSize()
+        {
+            if (Byte1Radio.Checked)
+                return atype.BYTE;
+            if (Byte2Radio.Checked)
+                return atype.WORD;
+            if (Byte4Radio.Checked)
+                return atype.DWORD;
+
+            return atype.BYTE;
+        }
+
+        private int GetSpecificValue()
+        {
+            if (ValueBox.Text == "" || ValueBox.Text == "-") return 0;
+            bool i = false;
+            switch (GetDataType())
+            {
+                case asigned.UNSIGNED:
+                    i = InputValidate.IsValidUnsignedNumber(ValueBox.Text);
+                    if (!i) return -99999999;
+                    return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
+                case asigned.SIGNED:
+                    i = InputValidate.IsValidSignedNumber(ValueBox.Text);
+                    if (!i) return -99999999;
+                    return (int)Int64.Parse(ValueBox.Text);
+                case asigned.HEX:
+                    i = InputValidate.IsValidHexNumber(ValueBox.Text);
+                    if (!i) return -99999999;
+                    return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
+            }
+            return -99999999; //What are the odds someone wants to search for this value?
         }
     }
 }
