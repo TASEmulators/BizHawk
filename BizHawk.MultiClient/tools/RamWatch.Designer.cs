@@ -671,8 +671,6 @@
             this.Load += new System.EventHandler(this.RamWatch_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragEnter);
-            this.Resize += new System.EventHandler(this.RamWatch_Resize);
-            this.LocationChanged += new System.EventHandler(this.RamWatch_LocationChanged);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);

@@ -75,19 +75,8 @@ namespace BizHawk.MultiClient
 
 		    Closing += (o, e) =>
 		    {
-			   CloseGame();
-			   if (Global.Config.SaveWindowPosition)
-			   {
-				   Global.Config.MainWndx = this.Location.X;
-				   Global.Config.MainWndy = this.Location.Y;
-			   }
-			   else
-			   {
-				   Global.Config.MainWndx = -1;
-				   Global.Config.MainWndy = -1;
-			   }
-               RamWatch1.SaveConfigSettings();
-			   ConfigService.Save("config.ini", Global.Config);
+                CloseGame();
+                SaveConfig();
 		    };
 
 			ResizeBegin += (o, e) =>
@@ -1068,7 +1057,7 @@ namespace BizHawk.MultiClient
 
         private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConfigService.Save("config.ini", Global.Config);
+            SaveConfig();
             Global.RenderPanel.AddMessage("Saved settings");
         }
 
@@ -1078,6 +1067,21 @@ namespace BizHawk.MultiClient
             Global.RenderPanel.AddMessage("Saved loaded");
         }
 
-
+        private void SaveConfig()
+        {
+            if (Global.Config.SaveWindowPosition)
+            {
+                Global.Config.MainWndx = this.Location.X;
+                Global.Config.MainWndy = this.Location.Y;
+            }
+            else
+            {
+                Global.Config.MainWndx = -1;
+                Global.Config.MainWndy = -1;
+            }
+            if (!RamWatch1.IsDisposed)
+                RamWatch1.SaveConfigSettings();
+            ConfigService.Save("config.ini", Global.Config);
+        }
 	}
 }
