@@ -17,6 +17,11 @@ namespace BizHawk.MultiClient
             
         }
 
+        public void Clear()
+        {
+            MovieRecords.Clear();
+        }
+
         public int GetMovieLength()
         {
             return MovieRecords.Count;

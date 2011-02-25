@@ -128,6 +128,7 @@ namespace BizHawk.MultiClient
 			//p.ShowDialog();
 
             //Hacky testing
+            InputLog.LoadMovie();
             InputLog.WriteMovie();
 		}
 

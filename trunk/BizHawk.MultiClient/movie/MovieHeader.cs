@@ -44,13 +44,20 @@ namespace BizHawk.MultiClient
         /// <param name="value"></param>
         public void AddHeaderLine(string key, string value) //TODO: check for redundancy and return bool?
         {
-            if (!HeaderParams.TryGetValue(key, out value)) //TODO: does a failed attempt mess with value?
+            string temp = value;
+            
+            if (!HeaderParams.TryGetValue(key, out temp)) //TODO: does a failed attempt mess with value?
                 HeaderParams.Add(key, value);
         }
 
         public bool RemoveHeaderLine(string key)
         {
             return HeaderParams.Remove(key);
+        }
+
+        public void Clear()
+        {
+            HeaderParams.Clear();
         }
 
         public string GetHeaderLine(string key)
