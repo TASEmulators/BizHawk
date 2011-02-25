@@ -18,8 +18,7 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Ability to watch in different memory domains
-        //Column options in context menu
-
+ 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();
@@ -937,6 +936,21 @@ namespace BizHawk.MultiClient
                 for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
                     contextMenuStrip1.Items[x].Visible = true;
             }
+
+            if (Global.Config.RamWatchShowChangeColumn)
+                contextMenuStrip1.Items[9].Text = "Hide change counts";
+            else
+                contextMenuStrip1.Items[9].Text = "Show change counts";
+
+            if (Global.Config.RamWatchShowPrevColumn)
+                contextMenuStrip1.Items[10].Text = "Hide previous value";
+            else
+                contextMenuStrip1.Items[10].Text = "Show previous value";
+
+            if (Global.Config.RamWatchShowChangeFromPrev)
+                contextMenuStrip1.Items[11].Text = "Display Previous value as previous";
+            else
+                contextMenuStrip1.Items[11].Text = "Display Previosu value as change amount";
         }
 
         private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -980,6 +994,8 @@ namespace BizHawk.MultiClient
         {
             ClearChangeCounts();
         }
+
+        
 
         private void showChangeCountsToolStripMenuItem_Click(object sender, EventArgs e)
         {
