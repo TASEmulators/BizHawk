@@ -78,6 +78,8 @@ namespace BizHawk.MultiClient
 				else
 					label1.Location = new Point(loc.X + r.Next(5) - 3, loc.Y + r.Next(5) - 3);
 			}
+
+			pictureBox2.Location = new Point((int)(353 + 800 + -800* Math.Abs(Math.Sin(ctr / 18.0))), pictureBox2.Location.Y);
 		}
 	}
 
