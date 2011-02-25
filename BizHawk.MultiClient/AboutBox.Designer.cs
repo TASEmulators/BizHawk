@@ -40,9 +40,11 @@
 			this.mom1 = new System.Windows.Forms.PictureBox();
 			this.mom2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -85,16 +87,16 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(368, 152);
+			this.label4.Location = new System.Drawing.Point(338, 223);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(83, 24);
+			this.label4.Size = new System.Drawing.Size(175, 48);
 			this.label4.TabIndex = 5;
-			this.label4.Text = "(TODO)";
+			this.label4.Text = "(LEVAR BURTON\r\nCAMEO)";
 			// 
 			// HR
 			// 
 			this.HR.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.HR.Location = new System.Drawing.Point(332, 137);
+			this.HR.Location = new System.Drawing.Point(349, 213);
 			this.HR.Name = "HR";
 			this.HR.Size = new System.Drawing.Size(158, 2);
 			this.HR.TabIndex = 4;
@@ -139,11 +141,23 @@
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
 			// 
+			// pictureBox2
+			// 
+			this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+			this.pictureBox2.Location = new System.Drawing.Point(353, 97);
+			this.pictureBox2.Name = "pictureBox2";
+			this.pictureBox2.Size = new System.Drawing.Size(122, 108);
+			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox2.TabIndex = 9;
+			this.pictureBox2.TabStop = false;
+			this.pictureBox2.Visible = false;
+			// 
 			// AboutBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(519, 497);
+			this.Controls.Add(this.pictureBox2);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.mom1);
 			this.Controls.Add(this.mom2);
@@ -158,6 +172,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.mom1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -175,5 +190,6 @@
 		private System.Windows.Forms.PictureBox mom2;
 		private System.Windows.Forms.PictureBox mom1;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.PictureBox pictureBox2;
 	}
 }
