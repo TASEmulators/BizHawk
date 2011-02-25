@@ -150,7 +150,6 @@
 			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.pictureBox2.TabIndex = 9;
 			this.pictureBox2.TabStop = false;
-			this.pictureBox2.Visible = false;
 			// 
 			// AboutBox
 			// 
