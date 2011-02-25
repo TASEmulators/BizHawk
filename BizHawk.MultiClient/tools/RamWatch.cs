@@ -17,10 +17,7 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-         //On Movie UP/Down set highlighted items to be what the user had selected (in their new position)
-        //DisplayWatches needs to do value display properly like updatevalues, or just run update values
-                //Ability to watch in different memory domains
-        //Save column widths in config
+        //Ability to watch in different memory domains
         //Column options in context menu
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -474,7 +471,7 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             Watch temp = new Watch();
-
+            if (indexes[0] == 0) return;
             foreach (int index in indexes)
             {
                 temp = watchList[index];
@@ -485,6 +482,15 @@ namespace BizHawk.MultiClient
                 //but this avoids it being flagged falsely when the user did not select an index
                 Changes();
             }
+            List<int> i = new List<int>();
+            for (int z = 0; z < indexes.Count; z++)
+                i.Add(indexes[z]-1);
+
+            WatchListView.SelectedIndices.Clear();
+            for (int z = 0; z < i.Count; z++)
+                WatchListView.SelectItem(i[z], true);
+
+            
             DisplayWatchList();
         }
 
@@ -499,14 +505,25 @@ namespace BizHawk.MultiClient
                 
                 if (index < watchList.Count - 1)
                 {
+
                     watchList.Remove(watchList[index]);
                     watchList.Insert(index + 1, temp);
+                    
                 }
 
                 //Note: here it will get flagged many times redundantly potnetially, 
                 //but this avoids it being flagged falsely when the user did not select an index
                 Changes(); 
             }
+
+            List<int> i = new List<int>();
+            for (int z = 0; z < indexes.Count; z++)
+                i.Add(indexes[z] + 1);
+
+            WatchListView.SelectedIndices.Clear();
+            for (int z = 0; z < i.Count; z++)
+                WatchListView.SelectItem(i[z], true);
+
             DisplayWatchList();
         }
 
