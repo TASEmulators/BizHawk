@@ -62,39 +62,65 @@ namespace BizHawk.MultiClient
 
         }
 
+        private string ParseHeader(string line, string headerName)
+        {
+            string str;
+            int x = line.LastIndexOf(headerName) + headerName.Length;
+            str = line.Substring(x + 1, line.Length - x - 1);
+            return str;
+        }
+
         private bool LoadText()
         {
             var file = new FileInfo(Filename);
+            
+            if (file.Exists == false)
+                return false;
+            else
+            {
+                Header.Clear();
+                Log.Clear();
+            }
+            
             using (StreamReader sr = file.OpenText())
             {
                 string str = "";
 
                 while ((str = sr.ReadLine()) != null)
                 {
-                    if (str.Contains(MovieHeader.EMULATIONVERSION))
+                    if (str == "")
                     {
-
+                        continue;
+                    }
+                    else if (str.Contains(MovieHeader.EMULATIONVERSION))
+                    {
+                        str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
+                        Header.AddHeaderLine(MovieHeader.EMULATIONVERSION, str);
                     }
                     else if (str.Contains(MovieHeader.MOVIEVERSION))
                     {
-
+                        str = ParseHeader(str, MovieHeader.MOVIEVERSION);
+                        Header.AddHeaderLine(MovieHeader.MOVIEVERSION, str);
                     }
                     else if (str.Contains(MovieHeader.PLATFORM))
                     {
-
+                        str = ParseHeader(str, MovieHeader.PLATFORM);
+                        Header.AddHeaderLine(MovieHeader.PLATFORM, str);
                     }
                     else if (str.Contains(MovieHeader.GAMENAME))
                     {
-
+                        str = ParseHeader(str, MovieHeader.GAMENAME);
+                        Header.AddHeaderLine(MovieHeader.GAMENAME, str);
                     }
                     else if (str[0] == '|')
                     {
-
+                        Log.AddFrame(str);  //TODO: validate proper formatting
                     }
                     else
                     {
-                        //Something has gone wrong here!
+                        //TODO: Something has gone wrong here!
                     }
+                    
                 }
             }
 
