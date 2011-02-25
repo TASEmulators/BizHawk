@@ -103,8 +103,7 @@ namespace BizHawk.MultiClient
             WatchListView.QueryItemText += new QueryItemTextHandler(WatchListView_QueryItemText);
             WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
             WatchListView.VirtualMode = true;
-            Closing += (o, e) => SaveConfigSettings();
-                
+            Closing += (o, e) => SaveConfigSettings(); 
         }
 
         protected override void  OnClosing(CancelEventArgs e)

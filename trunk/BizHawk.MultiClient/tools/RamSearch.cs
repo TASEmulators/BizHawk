@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamSearch : Form
     {
         //TODO:
-        //Window position gets saved but doesn't load properly
         //Context Menu - if highlighted items - show Highlight dependent functions
 
         string systemID = "NULL";
@@ -37,10 +36,19 @@ namespace BizHawk.MultiClient
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         string currentSearchFile = "";
-        
+
+        public void SaveConfigSettings()
+        {
+            Global.Config.RamSearchWndx = this.Location.X;
+            Global.Config.RamSearchWndy = this.Location.Y;
+            Global.Config.RamSearchWidth = this.Right - this.Left;
+            Global.Config.RamSearchHeight = this.Bottom - this.Top;
+        }
+
         public RamSearch()
         {
             InitializeComponent();
+            Closing += (o, e) => SaveConfigSettings();
         }
 
         public void UpdateValues()
@@ -262,18 +270,6 @@ namespace BizHawk.MultiClient
         private void WatchtoolStripButton1_Click(object sender, EventArgs e)
         {
             AddToRamWatch();
-        }
-
-        private void RamSearch_LocationChanged(object sender, EventArgs e)
-        {
-            Global.Config.RamSearchWndx = this.Location.X;
-            Global.Config.RamSearchWndy = this.Location.Y;
-        }
-
-        private void RamSearch_Resize(object sender, EventArgs e)
-        {
-            Global.Config.RamSearchWidth = this.Right - this.Left;
-            Global.Config.RamSearchHeight = this.Bottom - this.Top;
         }
 
         private void restoreOriginalWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)

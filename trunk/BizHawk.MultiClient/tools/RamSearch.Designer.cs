@@ -1107,8 +1107,6 @@
             this.Name = "RamSearch";
             this.Text = "Ram Search";
             this.Load += new System.EventHandler(this.RamSearch_Load);
-            this.Resize += new System.EventHandler(this.RamSearch_Resize);
-            this.LocationChanged += new System.EventHandler(this.RamSearch_LocationChanged);
             this.SearchtoolStrip1.ResumeLayout(false);
             this.SearchtoolStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
