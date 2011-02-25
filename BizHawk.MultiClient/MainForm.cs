@@ -1081,6 +1081,8 @@ namespace BizHawk.MultiClient
             }
             if (!RamWatch1.IsDisposed)
                 RamWatch1.SaveConfigSettings();
+            if (!RamSearch1.IsDisposed)
+                RamSearch1.SaveConfigSettings();
             ConfigService.Save("config.ini", Global.Config);
         }
 	}
