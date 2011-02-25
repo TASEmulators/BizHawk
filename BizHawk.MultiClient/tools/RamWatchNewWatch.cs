@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 {
     public partial class RamWatchNewWatch : Form
     {
+        //TODO: better input validation - Like Ram Search
         public Watch watch = new Watch();
         public bool userSelected = false;
         public bool customSetup = false;

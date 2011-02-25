@@ -124,8 +124,11 @@ namespace BizHawk.MultiClient
 
 		private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PlayMovie p = new PlayMovie();
-			p.ShowDialog();
+			//PlayMovie p = new PlayMovie();
+			//p.ShowDialog();
+
+            //Hacky testing
+            InputLog.WriteMovie();
 		}
 
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)

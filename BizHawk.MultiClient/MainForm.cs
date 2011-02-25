@@ -19,7 +19,10 @@ namespace BizHawk.MultiClient
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		private string CurrentlyOpenRom;
-		
+
+        //TODO: adelikat: can this be the official file extension?
+        Movie InputLog = new Movie("log.tas");   //This movie is always recording while user is playing
+
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
 
