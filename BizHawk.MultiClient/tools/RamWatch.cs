@@ -62,12 +62,46 @@ namespace BizHawk.MultiClient
             DisplayWatchList();
         }
 
+        private void LoadConfigSettings()
+        {
+            defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+            defaultHeight = Size.Height;
+
+            if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+                Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
+
+            if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
+            {
+                Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
+            }
+            SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
+            SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
+            WatchListView.Columns[0].Width = Global.Config.RamWatchAddressWidth;
+            WatchListView.Columns[1].Width = Global.Config.RamWatchValueWidth;
+            WatchListView.Columns[2].Width = Global.Config.RamWatchPrevWidth;
+            WatchListView.Columns[3].Width = Global.Config.RamWatchChangeWidth;
+            WatchListView.Columns[4].Width = Global.Config.RamWatchNotesWidth;
+        }
+
+        public void SaveConfigSettings()
+        {
+            Global.Config.RamWatchAddressWidth = WatchListView.Columns[0].Width;
+            Global.Config.RamWatchValueWidth   = WatchListView.Columns[1].Width;
+            Global.Config.RamWatchPrevWidth    = WatchListView.Columns[2].Width;
+            Global.Config.RamWatchChangeWidth  = WatchListView.Columns[3].Width;
+            Global.Config.RamWatchNotesWidth   = WatchListView.Columns[4].Width;
+
+
+        }
+
         public RamWatch()
         {
             InitializeComponent();
             WatchListView.QueryItemText += new QueryItemTextHandler(WatchListView_QueryItemText);
             WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
             WatchListView.VirtualMode = true;
+            Closing += (o, e) => SaveConfigSettings();
+                
         }
 
         protected override void  OnClosing(CancelEventArgs e)
@@ -610,18 +644,7 @@ namespace BizHawk.MultiClient
 
         private void RamWatch_Load(object sender, EventArgs e)
         {
-            defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-            defaultHeight = this.Size.Height;
-
-            if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
-                this.Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
-
-            if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)
-            {
-                this.Size = new System.Drawing.Size(Global.Config.RamWatchWidth, Global.Config.RamWatchHeight);
-            }
-            SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
-            SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
+            LoadConfigSettings();
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -718,17 +741,17 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
-            WatchListView.Columns[0].Width = 59; //Address
-            WatchListView.Columns[1].Width = 59; //Value
+            WatchListView.Columns[0].Width = Global.Config.RamWatchAddressWidth;
+            WatchListView.Columns[1].Width = Global.Config.RamWatchValueWidth;
             if (showPreviousValueToolStripMenuItem.Checked)
-                WatchListView.Columns[2].Width = 59; //Prev
+                WatchListView.Columns[2].Width = Global.Config.RamWatchPrevWidth;
             else
                 WatchListView.Columns[2].Width = 0;
             if (showChangeCountsToolStripMenuItem.Checked)
-                WatchListView.Columns[3].Width = 54; //Change counts
+                WatchListView.Columns[3].Width = Global.Config.RamWatchChangeWidth;
             else
                 WatchListView.Columns[3].Width = 0;
-            WatchListView.Columns[4].Width = 150;   //Notes
+            WatchListView.Columns[4].Width = Global.Config.RamWatchNotesWidth;
         }
 
         private void newToolStripButton_Click(object sender, EventArgs e)

@@ -59,6 +59,7 @@
             this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.prevValueShowsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WatchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
@@ -91,7 +92,6 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
-            this.prevValueShowsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -313,8 +313,8 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showChangeCountsToolStripMenuItem,
             this.showPreviousValueToolStripMenuItem,
-            this.restoreWindowSizeToolStripMenuItem,
-            this.prevValueShowsChangeAmountToolStripMenuItem});
+            this.prevValueShowsChangeAmountToolStripMenuItem,
+            this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -325,23 +325,30 @@
             this.showChangeCountsToolStripMenuItem.Checked = true;
             this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
-            this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.showChangeCountsToolStripMenuItem.Text = "Show Change Counts";
+            this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.showChangeCountsToolStripMenuItem.Text = "Change Counts";
             this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
             // 
             // showPreviousValueToolStripMenuItem
             // 
             this.showPreviousValueToolStripMenuItem.Name = "showPreviousValueToolStripMenuItem";
-            this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.showPreviousValueToolStripMenuItem.Text = "Show Previous Value";
+            this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.showPreviousValueToolStripMenuItem.Text = "Previous Value";
             this.showPreviousValueToolStripMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
             // 
             // restoreWindowSizeToolStripMenuItem
             // 
             this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
-            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
             this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
+            // 
+            // prevValueShowsChangeAmountToolStripMenuItem
+            // 
+            this.prevValueShowsChangeAmountToolStripMenuItem.Name = "prevValueShowsChangeAmountToolStripMenuItem";
+            this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value  as change";
+            this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
             // 
             // WatchListView
             // 
@@ -644,13 +651,6 @@
             this.MessageLabel.Size = new System.Drawing.Size(187, 13);
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
-            // 
-            // prevValueShowsChangeAmountToolStripMenuItem
-            // 
-            this.prevValueShowsChangeAmountToolStripMenuItem.Name = "prevValueShowsChangeAmountToolStripMenuItem";
-            this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-            this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value - Show change";
-            this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
             // 
             // RamWatch
             // 

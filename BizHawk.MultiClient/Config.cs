@@ -57,6 +57,11 @@
         public bool RamWatchShowChangeColumn = true;
         public bool RamWatchShowPrevColumn = false;
         public bool RamWatchShowChangeFromPrev = true;
+        public int RamWatchAddressWidth = 59;
+        public int RamWatchValueWidth = 59;
+        public int RamWatchPrevWidth = 59;
+        public int RamWatchChangeWidth = 54;
+        public int RamWatchNotesWidth = 130;
 
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
