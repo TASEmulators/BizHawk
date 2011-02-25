@@ -86,6 +86,7 @@ namespace BizHawk.MultiClient
 				   Global.Config.MainWndx = -1;
 				   Global.Config.MainWndy = -1;
 			   }
+               RamWatch1.SaveConfigSettings();
 			   ConfigService.Save("config.ini", Global.Config);
 		    };
 
@@ -135,6 +136,8 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.StartPaused)
 				PauseEmulator();
+
+
 		}
 
 		void SetSpeedPercent(int value)
@@ -1074,6 +1077,7 @@ namespace BizHawk.MultiClient
             Global.Config = ConfigService.Load<Config>("config.ini");
             Global.RenderPanel.AddMessage("Saved loaded");
         }
+
 
 	}
 }
