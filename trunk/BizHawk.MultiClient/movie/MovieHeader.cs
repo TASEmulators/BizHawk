@@ -16,12 +16,17 @@ namespace BizHawk.MultiClient
 
         Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
 
+        public const string EMULATIONVERSION = "EmulationVersion";
+        public const string MOVIEVERSION = "MovieVersion";
+        public const string PLATFORM = "Platform";
+        public const string GAMENAME = "GameName";
+
         public MovieHeader() //All required fields will be set to default values
         {
-            HeaderParams.Add("EmulationVersion", "v1.0.0");
-            HeaderParams.Add("MovieVersion", "v1.0.0");
-            HeaderParams.Add("Platform", "");
-            HeaderParams.Add("GameName", "");
+            HeaderParams.Add(EMULATIONVERSION, "v1.0.0");
+            HeaderParams.Add(MOVIEVERSION, "v1.0.0");
+            HeaderParams.Add(PLATFORM, "");
+            HeaderParams.Add(GAMENAME, "");
         }
 
         public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName)

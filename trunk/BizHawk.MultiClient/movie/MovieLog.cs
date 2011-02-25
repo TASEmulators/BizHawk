@@ -21,5 +21,18 @@ namespace BizHawk.MultiClient
         {
             return MovieRecords.Count;
         }
+
+        public void AddFrame(string frame)
+        {
+            MovieRecords.Add(frame); //Validate the format? Or shoudl the Movie class be resonible for formatting?
+        }
+
+        public string GetFrame(int frameCount) //Frame count is 0 based here, should it be?
+        {
+            if (frameCount >= 0)
+                return MovieRecords[frameCount];
+            else
+                return "";  //TODO: throw an exception?
+        }
     }
 }
