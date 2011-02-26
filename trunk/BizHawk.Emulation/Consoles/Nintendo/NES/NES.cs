@@ -165,5 +165,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			return null;
 		}
+
+        public string GetControllersAsMneumonic()
+        {
+            return "|........|........|0|"; //TODO: implement
+        }
 	}
 }

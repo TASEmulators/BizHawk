@@ -128,13 +128,13 @@ namespace BizHawk.MultiClient
 			//p.ShowDialog();
 
             //Hacky testing
-            InputLog.LoadMovie();
-            InputLog.WriteMovie();
+            //InputLog.LoadMovie();
+            //InputLog.WriteMovie();
 		}
 
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+            InputLog.StopMovie();   //TODO: stop user movie if it exists, and start InputLog logging, else do nothing
 		}
 
 		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)

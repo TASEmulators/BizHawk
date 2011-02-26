@@ -11,6 +11,11 @@
                 }
         };
 
+        public string GetControllersAsMneumonic()
+        {
+            return "|........|0|";
+        }
+
         public ControllerDefinition ControllerDefinition { get { return GbController; } }
         public IController Controller { get; set; }
     }

@@ -6,6 +6,7 @@ using System.IO;
 
 namespace BizHawk.MultiClient
 {
+    public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
     class Movie
     {
         private MovieHeader Header = new MovieHeader();
@@ -14,10 +15,35 @@ namespace BizHawk.MultiClient
         private bool IsText = true;
         private string Filename;
 
+        private MOVIEMODE MovieMode = new MOVIEMODE();
+
         public Movie(string filename)
         {
             Filename = filename;    //TODO: Validate that file is writable
-            Log.AddFrame("|........|0|");
+            MovieMode = MOVIEMODE.PLAY;
+        }
+
+        public void StopMovie()
+        {
+            MovieMode = MOVIEMODE.INACTIVE;
+            WriteMovie();
+        }
+
+        public void StartNewRecording()
+        {
+            MovieMode = MOVIEMODE.RECORD;
+            Log.Clear();
+        }
+
+        public MOVIEMODE GetMovieMode()
+        {
+            return MovieMode;
+        }
+
+        public void GetMneumonic()
+        {
+            if (MovieMode == MOVIEMODE.RECORD)
+                Log.AddFrame(Global.Emulator.GetControllersAsMneumonic());
         }
 
         public void AddMovieRecord()

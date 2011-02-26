@@ -12,6 +12,12 @@
                         }
         };
 
+
+        public string GetControllersAsMneumonic()
+        {
+            return "|........|0|"; //TODO: implement
+        }
+
         public ControllerDefinition ControllerDefinition { get { return GenesisController; } }
         public IController Controller { get; set; }
     }
