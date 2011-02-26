@@ -4,87 +4,64 @@
     {
         // Street Fighter 2 was a 20-megabit HuCard. The PCE has a maximum 8-megabit addressable ROM space.
         // Therefore SF2 had a special mapper to make this work.
-
-        // TODO: need to update SF2 mapper to reflect updates made to the primary mapper
-        // (ie, the IOBuffer)
-        // However, I believe more fixes will be made in the future, and SF2 works, so this is not
-        // currently a priority.
         
         private byte SF2MapperLatch;
 
-        private byte ReadMemorySF2(ushort addr)
+        private byte ReadMemorySF2(int addr)
         {
-            int page = Cpu.MPR[addr >> 13];
-            ushort addr13 = (ushort)(addr & 0x1FFF);
+            if (addr < 0x7FFFF) // read ROM
+                return RomData[addr];
 
-            if (page < 0x40)
+            if (addr < 0xFFFFF) // read ROM
+                return RomData[(addr & 0x7FFFF) + ((SF2MapperLatch + 1) * 0x80000)];
+
+            if (addr >= 0x1F0000 && addr < 0x1F8000) // read RAM
+                return Ram[addr & 0x1FFF];
+
+            if (addr >= 0x1FE000) // hardware page.
             {
-                // read rom.
-                return RomData[(page % RomPages << 13) | (addr13)];
-            }
-            if (page < 0x80)
-            {
-                // read rom with extended SF2 mapper.
-                return RomData[(((page << 13) | addr13) & 0x7FFFF) + ((SF2MapperLatch + 1)*0x80000)];
-            }
-            if (page >= 0xF8 && page <= 0xFB)
-            {
-                // read RAM.
-                return Ram[((page-0xF8) << 13) | addr13];
+                if (addr < 0x1FE400)           return VDC1.ReadVDC(addr & 0x03);
+                if (addr < 0x1FE800)           { Cpu.PendingCycles--; return VCE.ReadVCE((addr & 0x07)); }
+                if (addr < 0x1FE80F)           return IOBuffer;
+                if ((addr & ~1) == 0x1FEC00)   { IOBuffer = (byte) (Cpu.TimerValue | (IOBuffer & 0x80)); return IOBuffer; }
+                if (addr >= 0x1FF000 && 
+                    addr <  0x1FF400)          { IOBuffer = ReadInput(); return IOBuffer; }
+                if ((addr & ~1) == 0x1FF400)   return IOBuffer;
+                if (addr == 0x1FF402)          { IOBuffer = (byte) (Cpu.IRQControlByte  | (IOBuffer & 0xF8)); return IOBuffer; }
+                if (addr == 0x1FF403)          { IOBuffer = (byte) (Cpu.ReadIrqStatus() | (IOBuffer & 0xF8)); return IOBuffer; }
             }
 
-            if (page == 0xFF)
-            {
-                // hardware page.
-                if (addr13 < 0x400) return VDC1.ReadVDC(addr13 & 0x03);
-                if (addr13 < 0x800) return VCE.ReadVCE((addr13 & 0x07));
-                if ((addr13 & ~1) == 0x0C00) return Cpu.TimerValue;
-                if (addr13 >= 0x1000 && addr13 < 0x1400) return ReadInput();
-                if (addr13 == 0x1402) return Cpu.IRQControlByte;
-                if (addr13 == 0x1403) return Cpu.ReadIrqStatus();
-            }
-            Log.Error("MEM", "UNHANDLED READ: [{0:X2}] {1:X4}", page, addr13);
+            Log.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
             return 0xFF;
         }
         
-        private void WriteMemorySF2(ushort addr, byte value)
+        private void WriteMemorySF2(int addr, byte value)
         {
-            int page = Cpu.MPR[addr >> 13];
-            ushort addr13 = (ushort)(addr & 0x1FFF);
-
             if ((addr & 0x1FFC) == 0x1FF0)
             {
                 // Set SF2 pager.
-                SF2MapperLatch = (byte) (addr & 0x03);
+                SF2MapperLatch = (byte)(addr & 0x03);
                 return;
             }
 
-            if (page >= 0xF8 && page <= 0xFB)
-            {
-                // write RAM.
-                Ram[addr13] = value;
-            }
+            if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
+                Ram[addr & 0x1FFF] = value;
 
-            if (page == 0xFF)
+            else if (addr >= 0x1FE000) // hardware page.
             {
-                // hardware page.
-                if (addr13 < 0x400)
-                    VDC1.WriteVDC(addr13 & 3, value);
-                else if (addr13 < 0x800)
-                    VCE.WriteVCE(addr13 & 7, value);
-                else if (addr13 < 0x80A)
-                    PSG.WritePSG(addr13, value, Cpu.TotalExecutedCycles);
-                else if (addr13 == 0x0C00)
-                    Cpu.WriteTimer(value);
-                else if (addr13 == 0x0C01)
-                    Cpu.WriteTimerEnable(value);
-                else if (addr13 >= 0x1000 && addr13 < 0x1400)
-                    WriteInput(value);
-                else if (addr13 == 0x1402)
-                    Cpu.WriteIrqControl(value);
-                else if (addr13 == 0x1403)
-                    Cpu.WriteIrqStatus();
+                     if (addr < 0x1FE400)    VDC1.WriteVDC(addr & 3, value);
+                else if (addr < 0x1FE800)    { Cpu.PendingCycles--; VCE.WriteVCE(addr & 7, value); }
+                else if (addr < 0x1FE80A)    { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
+                else if (addr == 0x1FEC00)   { IOBuffer = value; Cpu.WriteTimer(value); }
+                else if (addr == 0x1FEC01)   { IOBuffer = value; Cpu.WriteTimerEnable(value); }
+                else if (addr >= 0x1FF000 &&
+                         addr < 0x1FF400)    { IOBuffer = value; WriteInput(value); }
+                else if (addr == 0x1FF402)   { IOBuffer = value; Cpu.WriteIrqControl(value); }
+                else if (addr == 0x1FF403)   { IOBuffer = value; Cpu.WriteIrqStatus(); }
+                else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
             }
+            else
+                Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
         }
     }
 }
