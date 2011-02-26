@@ -12,6 +12,12 @@
         public ControllerDefinition ControllerDefinition { get { return PCEngineController;  } }
         public IController Controller { get; set; }
 
+
+        public string GetControllersAsMneumonic()
+        {
+            return "|........|0|"; //TODO: implement
+        }
+
         private byte inputSelector;
         public bool SEL { get { return ((inputSelector & 1) != 0) ;} }
 

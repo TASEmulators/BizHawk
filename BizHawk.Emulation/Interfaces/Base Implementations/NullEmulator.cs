@@ -28,6 +28,9 @@ namespace BizHawk
         }
         public ControllerDefinition ControllerDefinition { get { return NullController; } }
         public IController Controller { get; set; }
+
+        public string GetControllersAsMneumonic() { return "|.|0|"; }
+
         public int Frame { get; set; }
         public byte[] SaveRam { get { return new byte[0]; } }
         public bool DeterministicEmulation { get; set; }

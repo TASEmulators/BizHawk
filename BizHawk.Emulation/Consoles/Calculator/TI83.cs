@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
+        public string GetControllersAsMneumonic() { return "|.|0|"; } //TODO: Implement this
+
         public byte ReadMemory(ushort addr)
         {
 			int romPage = romPageLow3Bits | (romPageHighBit << 3);
