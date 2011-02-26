@@ -15,7 +15,29 @@
 
         public string GetControllersAsMneumonic()
         {
-            return "|........|0|"; //TODO: implement
+            //TODO: Implement all controllers
+            
+            string input = "";
+            if (Controller.IsPressed("Up")) input += "U";
+            else input += " ";
+            if (Controller.IsPressed("Down")) input += "D";
+            else input += " ";
+            if (Controller.IsPressed("Left")) input += "L";
+            else input += " ";
+            if (Controller.IsPressed("Right")) input += "R";
+            else input += " ";
+            if (Controller.IsPressed("I")) input += "1";
+            else input += " ";
+            if (Controller.IsPressed("II")) input += "2";
+            else input += " ";
+            if (Controller.IsPressed("Select")) input += "S";
+            else input += " ";
+            if (Controller.IsPressed("Run")) input += "R";
+            else input += " ";
+
+            input += "|.|"; //TODO: Add commands like reset here
+
+            return input;
         }
 
         private byte inputSelector;

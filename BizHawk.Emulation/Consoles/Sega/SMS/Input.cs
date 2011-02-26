@@ -48,7 +48,7 @@
             input += "|";
 
             if (Controller.IsPressed("Reset")) input += "R";
-            else input += "0";
+            else input += ".";
 
             input += "|";
 
