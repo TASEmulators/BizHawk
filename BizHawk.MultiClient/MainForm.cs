@@ -475,7 +475,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator.FrameAdvance(true); //TODO: Do these things need to happen on (false) as well? Think about it
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
-            InputLog.GetMneumonic(); //TODO: log to input log or user choice, if user choice & playback don't log!
+            InputLog.GetMnemonic(); //TODO: log to input log or user choice, if user choice & playback don't log!
 		}
 
 		public void CheckHotkeys()
@@ -637,7 +637,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
-                InputLog.GetMneumonic();
+                InputLog.GetMnemonic();
 			}
 
 			if(genSound)

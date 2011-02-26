@@ -40,16 +40,18 @@ namespace BizHawk.MultiClient
             return MovieMode;
         }
 
-        public void GetMneumonic()
+        public void GetMnemonic()
         {
             if (MovieMode == MOVIEMODE.RECORD)
                 Log.AddFrame(Global.Emulator.GetControllersAsMnemonic());
         }
 
-        public void AddMovieRecord()
+        //Movie editing tools may like to have something like this
+        public void AddMovieRecord(string record)
         {
             //TODO: validate input
             //Format into string acceptable by MovieLog
+            Log.AddFrame(record);
         }
 
         public void WriteMovie()
