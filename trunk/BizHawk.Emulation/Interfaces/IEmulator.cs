@@ -12,7 +12,7 @@ namespace BizHawk
         ControllerDefinition ControllerDefinition { get; }
         IController Controller { get; set; }
 
-        string GetControllersAsMneumonic();
+        string GetControllersAsMnemonic();
 
         void LoadGame(IGame game);
         void FrameAdvance(bool render);
