@@ -14,7 +14,7 @@
             };
 
 
-        public string GetControllersAsMneumonic()
+        public string GetControllersAsMnemonic()
         {
             string input = "|";
             

@@ -298,7 +298,7 @@ namespace BizHawk.MultiClient
 
         public string MakeInputDisplay()
         {
-            string tmp = Global.Emulator.GetControllersAsMneumonic();
+            string tmp = Global.Emulator.GetControllersAsMnemonic();
             tmp = tmp.Replace(".", " ");
             tmp = tmp.Replace("|", "");
             return tmp;

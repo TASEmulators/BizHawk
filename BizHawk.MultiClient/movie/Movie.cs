@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
         public void GetMneumonic()
         {
             if (MovieMode == MOVIEMODE.RECORD)
-                Log.AddFrame(Global.Emulator.GetControllersAsMneumonic());
+                Log.AddFrame(Global.Emulator.GetControllersAsMnemonic());
         }
 
         public void AddMovieRecord()

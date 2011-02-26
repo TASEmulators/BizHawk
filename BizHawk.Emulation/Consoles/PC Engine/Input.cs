@@ -13,7 +13,7 @@
         public IController Controller { get; set; }
 
 
-        public string GetControllersAsMneumonic()
+        public string GetControllersAsMnemonic()
         {
             //TODO: Implement all controllers
             
