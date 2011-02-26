@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
     {
         // ROM
         public byte[] RomData;
-        public int RomPages;
+        public int RomLength;
 
         // Machine
         public NecSystemType Type;
@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (TurboGrafx || TurboCD)
             {
                 Ram = new byte[0x2000];
-                Cpu.ReadMemory = ReadMemory;
-                Cpu.WriteMemory = WriteMemory;
+                Cpu.ReadMemory21 = ReadMemory;
+                Cpu.WriteMemory21 = WriteMemory;
                 Cpu.WriteVDC = VDC1.WriteVDC;
             }
 
@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VDC2 = new VDC(Cpu, VCE);
                 VPC = new VPC(VDC1, VDC2, VCE, Cpu);
                 Ram = new byte[0x8000];
-                Cpu.ReadMemory = ReadMemorySGX;
-                Cpu.WriteMemory = WriteMemorySGX;
+                Cpu.ReadMemory21 = ReadMemorySGX;
+                Cpu.WriteMemory21 = WriteMemorySGX;
                 Cpu.WriteVDC = VDC1.WriteVDC;
             }
         }
@@ -87,17 +87,17 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     RomData[i] = origRom[i];
                 for (int i = 0; i < 0x60000; i++)
                     RomData[i+0x40000] = origRom[i];
-                RomPages = RomData.Length/8192;
+                RomLength = RomData.Length;
             } else if (game.GetRomData().Length > 1024 * 1024) {
                 // If the rom is bigger than 1 megabyte, switch to Street Fighter 2 mapper
-                Cpu.ReadMemory = ReadMemorySF2;
-                Cpu.WriteMemory = WriteMemorySF2;
+                Cpu.ReadMemory21 = ReadMemorySF2;
+                Cpu.WriteMemory21 = WriteMemorySF2;
                 RomData = game.GetRomData();
-                RomPages = RomData.Length / 8192;
+                RomLength = RomData.Length;
             } else {
                 // normal rom.
                 RomData = game.GetRomData();
-                RomPages = RomData.Length / 8192;
+                RomLength = RomData.Length;
             }
             Cpu.ResetPC();
             SetupMemoryDomains();
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.Write("RAM ");
             Ram.SaveAsHex(writer);
             writer.WriteLine("Frame " + Frame);
-            if (Cpu.ReadMemory == ReadMemorySF2)
+            if (Cpu.ReadMemory21 == ReadMemorySF2)
                 writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
             writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
             writer.WriteLine();
@@ -274,7 +274,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, Endian.Little,
                 addr => Ram[addr & 0x7FFF],
                 (addr, value) => Ram[addr & 0x7FFF] = value);
+            var SystemBusDomain = new MemoryDomain("System Bus", 0x2F0000, Endian.Little,
+                addr => Cpu.ReadMemory21(addr),
+                (addr, value) => Cpu.WriteMemory21(addr, value));
             domains.Add(MainMemoryDomain);
+            domains.Add(SystemBusDomain);
             memoryDomains = domains.AsReadOnly();
         }
 

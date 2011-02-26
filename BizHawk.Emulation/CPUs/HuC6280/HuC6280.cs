@@ -288,9 +288,21 @@ namespace BizHawk.Emulation.CPUs.H6280
 
         // ==== Memory ====
 
-        public Func<ushort, byte> ReadMemory;
-        public Action<ushort, byte> WriteMemory;
+        public Func<int, byte> ReadMemory21;
+        public Action<int, byte> WriteMemory21;
         public Action<int, byte> WriteVDC;
+
+        public byte ReadMemory(ushort address)
+        {
+            byte page = MPR[address >> 13];
+            return ReadMemory21((page << 13) | (address & 0x1FFF));
+        }
+
+        public void WriteMemory(ushort address, byte value)
+        {
+            byte page = MPR[address >> 13];
+            WriteMemory21((page << 13) | (address & 0x1FFF), value);
+        }
 
         private ushort ReadWord(ushort address)
         {

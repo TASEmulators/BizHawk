@@ -61,42 +61,42 @@ namespace BizHawk.Emulation.Sound
             frameStopTime = cycles;
         }
 
-        public void WritePSG(ushort register, byte value, int cycles)
+        public void WritePSG(byte register, byte value, int cycles)
         {
             commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles-frameStartTime });
         }
 
-        public void WritePSGImmediate(ushort register, byte value)
+        public void WritePSGImmediate(int register, byte value)
         {
             switch (register)
             {
-                case 0x800: // Set Voice Latch
+                case 0: // Set Voice Latch
                     VoiceLatch = (byte) (value & 7);
                     break;
-                case 0x801: // Global Volume select;
+                case 1: // Global Volume select;
                     MainVolumeLeft  = (byte) ((value >> 4) & 0x0F);
                     MainVolumeRight = (byte) (value & 0x0F);
                     break;
-                case 0x802: // Frequency LSB
+                case 2: // Frequency LSB
                     Channels[VoiceLatch].Frequency &= 0xFF00;
                     Channels[VoiceLatch].Frequency |= value;
                     break;
-                case 0x803: // Frequency MSB
+                case 3: // Frequency MSB
                     Channels[VoiceLatch].Frequency &= 0x00FF;
                     Channels[VoiceLatch].Frequency |= (ushort)(value << 8);
                     Channels[VoiceLatch].Frequency &= 0x0FFF;
                     break;
-                case 0x804: // Voice Volume
+                case 4: // Voice Volume
                     Channels[VoiceLatch].Volume = (byte) (value & 0x1F);
                     Channels[VoiceLatch].Enabled = (value & 0x80) != 0;
                     Channels[VoiceLatch].DDA = (value & 0x40) != 0;
                     if (Channels[VoiceLatch].Enabled == false && Channels[VoiceLatch].DDA)
                         WaveTableWriteOffset = 0;
                     break;
-                case 0x805: // Panning
+                case 5: // Panning
                     Channels[VoiceLatch].Panning = value;
                     break;
-                case 0x806: // Wave data
+                case 6: // Wave data
                     if (Channels[VoiceLatch].DDA == false)
                     {
                         Channels[VoiceLatch].Wave[WaveTableWriteOffset++] = (short) ((value*2047) - 32767);
@@ -105,16 +105,16 @@ namespace BizHawk.Emulation.Sound
                         Channels[VoiceLatch].DDAValue = (short)((value * 2047) - 32767);
                     }
                     break;
-                case 0x807: // Noise
+                case 7: // Noise
                     Channels[VoiceLatch].NoiseChannel = ((value & 0x80) != 0) && VoiceLatch >= 4;
                     if ((value & 0x1F) == 0x1F)
                         value &= 0xFE;
                     Channels[VoiceLatch].NoiseFreq = (ushort) (PsgBase/(64*(0x1F - (value & 0x1F))));
                     break;
-                case 0x0808: // LFO
+                case 8: // LFO
                     // TODO: implement LFO
                     break;
-                case 0x809: // LFO Control
+                case 9: // LFO Control
                     if ((value & 0x80) == 0 && (value & 3) != 0)
                     {
                         Channels[1].Enabled = false;
@@ -330,7 +330,7 @@ namespace BizHawk.Emulation.Sound
 
         class QueuedCommand
         {
-            public ushort Register;
+            public byte Register;
             public byte Value;
             public int Time;
         }
