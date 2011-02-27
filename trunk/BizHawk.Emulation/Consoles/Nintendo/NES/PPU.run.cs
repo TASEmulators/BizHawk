@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				byte pad;
 			}
 
+			//TODO - check flashing sirens in werewolf
 			int PaletteAdjustPixel(int pixel)
 			{
 				//tack on the deemph bits

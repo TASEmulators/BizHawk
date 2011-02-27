@@ -117,10 +117,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			for (int i = 0; i < 256; i++)
 			{
 				byte db = ReadMemory((ushort)addr);
-				if (i == 1 && db != 0)
-				{
-					int zzz = 9;
-				}
 				WriteMemory(0x2004, db);
 				addr++;
 			}
@@ -180,6 +176,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						int r = emu.palette[pixel, 0];
 						int g = emu.palette[pixel, 1];
 						int b = emu.palette[pixel, 2];
+						Palettes.ApplyDeemphasis(ref r, ref g, ref b, deemph);
 						pixels[i] = (r<<16)|(g<<8)|b;
 						i++;
 					}

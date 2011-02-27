@@ -12,6 +12,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		static class Palettes
 		{
+			static float[] rtmul = { 1.239f, 0.794f, 1.019f, 0.905f, 1.023f, 0.741f, 0.75f };
+			static float[] gtmul = { 0.915f, 1.086f, 0.98f, 1.026f, 0.908f, 0.987f, 0.75f };
+			static float[] btmul = { 0.743f, 0.882f, 0.653f, 1.277f, 0.979f, 0.101f, 0.75f };
+
+			public static void ApplyDeemphasis(ref int r, ref int g, ref int b, int deemph_bits)
+			{
+				if (deemph_bits == 0) return;
+				int d = deemph_bits-1;
+				r = (int)(r * rtmul[d]);
+				g = (int)(g * gtmul[d]);
+				b = (int)(b * btmul[d]);
+				if (r > 0xFF) r = 0xFF;
+				if (g > 0xFF) g = 0xFF;
+				if (b > 0xFF) b = 0xFF;
+			}
 			public static int[,] FCEUX_Standard = new int[,]
 			{
 				{ 0x1D<<2, 0x1D<<2, 0x1D<<2 }, /* Value 0 */
