@@ -320,10 +320,12 @@ namespace BizHawk.MultiClient
 			var NESControls = new Controller(NES.NESController);
 			NESControls.BindMulti("B", "Z");
 			NESControls.BindMulti("A", "X");
-			NESControls.BindMulti("UP", "UpArrow");
-			NESControls.BindMulti("DOWN", "DownArrow");
-			NESControls.BindMulti("LEFT", "LeftArrow");
-			NESControls.BindMulti("RIGHT", "RightArrow");
+			NESControls.BindMulti("Up", "UpArrow");
+			NESControls.BindMulti("Down", "DownArrow");
+			NESControls.BindMulti("Left", "LeftArrow");
+			NESControls.BindMulti("Right", "RightArrow");
+			NESControls.BindMulti("Select", "E");
+			NESControls.BindMulti("Start", "R");
 			Global.NESControls = NESControls;
 		}
 
