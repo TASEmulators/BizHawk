@@ -24,7 +24,7 @@ Gunboat           - Crash / CPU Break (Needs BRAM)
 Hisou Kihei Serd  - Doesn't boot
 Idol Hanafuda Fan Club - Doesn't boot
 Impossamole       - Gfx issues
-Legendary Axe     - Boots with bad gfx corruption - needs a T-flag opcode update
+Legendary Axe     - BYR updated on the wrong line of the screen, but playable.
 Legendary Axe II  - Some gfx issues, but playable now
 Madoo Granzort    - Graphics issues because VPC renderer is not using new frame timing
 MML Demo          - Echo channels are too loud (equal volume!)

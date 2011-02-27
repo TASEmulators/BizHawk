@@ -59,7 +59,7 @@ throw new Exception("break");
                     case 0x01: // ORA (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0x02: // SXY
@@ -85,7 +85,7 @@ throw new Exception("break");
                     case 0x05: // ORA zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0x06: // ASL zp
@@ -94,7 +94,7 @@ throw new Exception("break");
                         FlagC = (value8 & 0x80) != 0;
                         value8 = (byte)(value8 << 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x07: // RMB0 zp
@@ -111,13 +111,13 @@ throw new Exception("break");
                     case 0x09: // ORA #nn
                         value8 = ReadMemory(PC++);
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x0A: // ASL A
                         FlagC = (A & 0x80) != 0;
                         A = (byte) (A << 1);
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x0C: // TSB addr
@@ -132,7 +132,7 @@ throw new Exception("break");
                     case 0x0D: // ORA addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0x0E: // ASL addr
@@ -141,7 +141,7 @@ throw new Exception("break");
                         FlagC = (value8 & 0x80) != 0;
                         value8 = (byte)(value8 << 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x0F: // BBR0
@@ -168,13 +168,13 @@ throw new Exception("break");
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
                             PendingCycles--;
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0x12: // ORA (addr)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0x13: // ST1 #nn
@@ -194,7 +194,7 @@ throw new Exception("break");
                     case 0x15: // ORA zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0x16: // ASL zp,X
@@ -203,7 +203,7 @@ throw new Exception("break");
                         FlagC = (value8 & 0x80) != 0;
                         value8 = (byte)(value8 << 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x17: // RMB1 zp
@@ -223,11 +223,11 @@ throw new Exception("break");
                             PendingCycles--;
                         PC += 2;
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0x1A: // INC A
-                        P = (byte)((P & 0x5D) | TableNZ[++A]);
+                        P = (byte)((P & 0x7D) | TableNZ[++A]);
                         PendingCycles -= 2;
                         break;
                     case 0x1C: // TRB addr
@@ -245,7 +245,7 @@ throw new Exception("break");
                             PendingCycles--;
                         PC += 2;
                         A |= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0x1E: // ASL addr,X
@@ -257,7 +257,7 @@ throw new Exception("break");
                         FlagC = (value8 & 0x80) != 0;
                         value8 = (byte)(value8 << 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x1F: // BBR1
@@ -278,9 +278,17 @@ throw new Exception("break");
                         break;
                     case 0x21: // AND (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x22: // SAX
                         temp8 = A;
@@ -302,9 +310,17 @@ throw new Exception("break");
                         break;
                     case 0x25: // AND zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 4;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 4;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 7;
+                        }
                         break;
                     case 0x26: // ROL zp
                         value16 = (ushort)(ReadMemory(PC++)+0x2000);
@@ -312,7 +328,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 << 1) | (P & 1));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 0x80) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x27: // RMB2 zp
@@ -328,15 +344,23 @@ throw new Exception("break");
                         break;
                     case 0x29: // AND #nn
                         value8 = ReadMemory(PC++);
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 2;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 2;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 5;
+                        }
                         break;
                     case 0x2A: // ROL A
                         temp8 = A;
                         A = (byte)((A << 1) | (P & 1));
                         FlagC = (temp8 & 0x80) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x2C: // BIT addr
@@ -348,9 +372,17 @@ throw new Exception("break");
                         break;
                     case 0x2D: // AND addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x2E: // ROL addr
                         value16 = ReadWord(PC); PC += 2;
@@ -358,7 +390,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 << 1) | (P & 1));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 0x80) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x2F: // BBR2
@@ -384,15 +416,31 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
                             PendingCycles--;
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x32: // AND (addr)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x34: // BIT zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
@@ -403,9 +451,17 @@ throw new Exception("break");
                         break;
                     case 0x35: // AND zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 4;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 4;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 7;
+                        }
                         break;
                     case 0x36: // ROL zp,X
                         value16 = (ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000);
@@ -413,7 +469,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 << 1) | (P & 1));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 0x80) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x37: // RMB3 zp
@@ -432,12 +488,20 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x3A: // DEC A
-                        P = (byte)((P & 0x5D) | TableNZ[--A]);
+                        P = (byte)((P & 0x7D) | TableNZ[--A]);
                         PendingCycles -= 2;
                         break;
                     case 0x3C: // BIT addr,X
@@ -455,9 +519,17 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        A &= value8;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false) { 
+                            A &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            temp8 = ReadMemory((ushort)(0x2000 + X));
+                            temp8 &= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
+                            WriteMemory((ushort)(0x2000 + X), temp8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x3E: // ROL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
@@ -468,7 +540,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 << 1) | (P & 1));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 0x80) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x3F: // BBR3
@@ -490,12 +562,12 @@ throw new Exception("break");
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 7;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 10;
                         }
@@ -531,12 +603,12 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 4;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 7;
                         }
@@ -547,7 +619,7 @@ throw new Exception("break");
                         FlagC = (value8 & 1) != 0;
                         value8 = (byte)(value8 >> 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x47: // RMB4 zp
@@ -565,12 +637,12 @@ throw new Exception("break");
                         value8 = ReadMemory(PC++);
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 2;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 5;
                         }
@@ -578,7 +650,7 @@ throw new Exception("break");
                     case 0x4A: // LSR A
                         FlagC = (A & 1) != 0;
                         A = (byte) (A >> 1);
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x4C: // JMP addr
@@ -589,12 +661,12 @@ throw new Exception("break");
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 5;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 8;
                         }
@@ -605,7 +677,7 @@ throw new Exception("break");
                         FlagC = (value8 & 1) != 0;
                         value8 = (byte)(value8 >> 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x4F: // BBR4
@@ -633,12 +705,12 @@ throw new Exception("break");
                             PendingCycles--;
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 7;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 10;
                         }
@@ -647,12 +719,12 @@ throw new Exception("break");
                         value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 7;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 10;
                         }
@@ -673,12 +745,12 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 4;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 7;
                         }
@@ -689,7 +761,7 @@ throw new Exception("break");
                         FlagC = (value8 & 1) != 0;
                         value8 = (byte)(value8 >> 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x57: // RMB5 zp
@@ -710,12 +782,12 @@ throw new Exception("break");
                         PC += 2;
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 5;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 8;
                         }
@@ -731,12 +803,12 @@ throw new Exception("break");
                         PC += 2;
                         if (FlagT == false) { 
                             A ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[A]);
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
                             PendingCycles -= 5;
                         } else {
                             temp8 = ReadMemory((ushort)(0x2000 + X));
                             temp8 ^= value8;
-                            P = (byte)((P & 0x5D) | TableNZ[temp8]);
+                            P = (byte)((P & 0x7D) | TableNZ[temp8]);
                             WriteMemory((ushort)(0x2000 + X), temp8);
                             PendingCycles -= 8;
                         }
@@ -750,7 +822,7 @@ throw new Exception("break");
                         FlagC = (value8 & 1) != 0;
                         value8 = (byte)(value8 >> 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x5F: // BBR5
@@ -796,7 +868,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 7;
                         break;
                     case 0x62: // CLA
@@ -836,7 +908,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 4;
                         break;
                     case 0x66: // ROR zp
@@ -845,7 +917,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 1) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x67: // RMB6 zp
@@ -857,7 +929,7 @@ throw new Exception("break");
                         break;
                     case 0x68: // PLA
                         A = ReadMemory((ushort)(++S + 0x2100));
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0x69: // ADC #nn
@@ -888,14 +960,14 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 2;
                         break;
                     case 0x6A: // ROR A
                         temp8 = A;
                         A = (byte)((A >> 1) | ((P & 1)<<7));
                         FlagC = (temp8 & 1) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x6C: // JMP
@@ -930,7 +1002,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 5;
                         break;
                     case 0x6E: // ROR addr
@@ -939,7 +1011,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 1) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x6F: // BBR6
@@ -991,7 +1063,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 7;
                         break;
                     case 0x72: // ADC (addr)
@@ -1022,7 +1094,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 7;
                         break;
                     case 0x73: // TII src, dest, len
@@ -1067,7 +1139,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 4;
                         break;
                     case 0x76: // ROR zp,X
@@ -1076,7 +1148,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 1) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0x77: // RMB7 zp
@@ -1121,12 +1193,12 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 5;
                         break;
                     case 0x7A: // PLY
                         Y = ReadMemory((ushort)(++S + 0x2100));
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 4;
                         break;
                     case 0x7C: // JMP
@@ -1164,7 +1236,7 @@ throw new Exception("break");
                             WriteMemory((ushort)(0x2000 + X), source8);
                             PendingCycles -= 3;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[source8]);
+                        P = (byte)((P & 0x7D) | TableNZ[source8]);
                         PendingCycles -= 5;
                         break;
                     case 0x7E: // ROR addr,X
@@ -1176,7 +1248,7 @@ throw new Exception("break");
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
                         WriteMemory(value16, value8);
                         FlagC = (temp8 & 1) != 0;
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0x7F: // BBR7
@@ -1233,7 +1305,7 @@ throw new Exception("break");
                         PendingCycles -= 7;
                         break;
                     case 0x88: // DEY
-                        P = (byte)((P & 0x5D) | TableNZ[--Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[--Y]);
                         PendingCycles -= 2;
                         break;
                     case 0x89: // BIT #nn
@@ -1245,7 +1317,7 @@ throw new Exception("break");
                         break;
                     case 0x8A: // TXA
                         A = X;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x8C: // STY addr
@@ -1326,7 +1398,7 @@ throw new Exception("break");
                         break;
                     case 0x98: // TYA
                         A = Y;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0x99: // STA addr,Y
@@ -1373,17 +1445,17 @@ throw new Exception("break");
                         break;
                     case 0xA0: // LDY #nn
                         Y = ReadMemory(PC++);
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 2;
                         break;
                     case 0xA1: // LDA (addr,X)
                         A = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xA2: // LDX #nn
                         X = ReadMemory(PC++);
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 2;
                         break;
                     case 0xA3: // TST
@@ -1396,17 +1468,17 @@ throw new Exception("break");
                         break;
                     case 0xA4: // LDY zp
                         Y = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 4;
                         break;
                     case 0xA5: // LDA zp
                         A = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0xA6: // LDX zp
                         X = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 4;
                         break;
                     case 0xA7: // SMB2 zp
@@ -1418,32 +1490,32 @@ throw new Exception("break");
                         break;
                     case 0xA8: // TAY
                         Y = A;
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 2;
                         break;
                     case 0xA9: // LDA #nn
                         A = ReadMemory(PC++);
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0xAA: // TAX
                         X = A;
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 2;
                         break;
                     case 0xAC: // LDY addr
                         Y = ReadMemory(ReadWord(PC)); PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 5;
                         break;
                     case 0xAD: // LDA addr
                         A = ReadMemory(ReadWord(PC)); PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xAE: // LDX addr
                         X = ReadMemory(ReadWord(PC)); PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 5;
                         break;
                     case 0xAF: // BBS2
@@ -1469,12 +1541,12 @@ throw new Exception("break");
                         A = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
                             PendingCycles--;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xB2: // LDA (addr)
                         A = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xB3: // TST
@@ -1490,17 +1562,17 @@ throw new Exception("break");
                         break;
                     case 0xB4: // LDY zp,X
                         Y = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 4;
                         break;
                     case 0xB5: // LDA zp,X
                         A = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0xB6: // LDX zp,Y
                         X = ReadMemory((ushort)(((ReadMemory(PC++)+Y)&0xFF)+0x2000));
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 4;
                         break;
                     case 0xB7: // SMB3 zp
@@ -1519,12 +1591,12 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xBA: // TSX
                         X = S;
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 2;
                         break;
                     case 0xBC: // LDY addr,X
@@ -1532,7 +1604,7 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 5;
                         break;
                     case 0xBD: // LDA addr,X
@@ -1540,7 +1612,7 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xBE: // LDX addr,Y
@@ -1548,7 +1620,7 @@ throw new Exception("break");
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
                             PendingCycles--;
                         PC += 2;
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 5;
                         break;
                     case 0xBF: // BBS3
@@ -1564,14 +1636,14 @@ throw new Exception("break");
                         value8 = ReadMemory(PC++);
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 2;
                         break;
                     case 0xC1: // CMP (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 7;
                         break;
                     case 0xC2: // CLY
@@ -1591,21 +1663,21 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 4;
                         break;
                     case 0xC5: // CMP zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 4;
                         break;
                     case 0xC6: // DEC zp
                         value16 = (ushort)(ReadMemory(PC++)+0x2000);
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0xC7: // SMB4 zp
@@ -1616,39 +1688,39 @@ throw new Exception("break");
                         PendingCycles -= 7;
                         break;
                     case 0xC8: // INY
-                        P = (byte)((P & 0x5D) | TableNZ[++Y]);
+                        P = (byte)((P & 0x7D) | TableNZ[++Y]);
                         PendingCycles -= 2;
                         break;
                     case 0xC9: // CMP #nn
                         value8 = ReadMemory(PC++);
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 2;
                         break;
                     case 0xCA: // DEX
-                        P = (byte)((P & 0x5D) | TableNZ[--X]);
+                        P = (byte)((P & 0x7D) | TableNZ[--X]);
                         PendingCycles -= 2;
                         break;
                     case 0xCC: // CPY addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
                     case 0xCD: // CMP addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
                     case 0xCE: // DEC addr
                         value16 = ReadWord(PC); PC += 2;
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0xCF: // BBS4
@@ -1676,14 +1748,14 @@ throw new Exception("break");
                             PendingCycles--;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 7;
                         break;
                     case 0xD2: // CMP (addr)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 7;
                         break;
                     case 0xD3: // TIN src, dest, len
@@ -1702,14 +1774,14 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 4;
                         break;
                     case 0xD6: // DEC zp,X
                         value16 = (ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000);
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0xD7: // SMB5 zp
@@ -1730,7 +1802,7 @@ throw new Exception("break");
                         PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
                     case 0xDA: // PHX
@@ -1744,7 +1816,7 @@ throw new Exception("break");
                         PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
                     case 0xDE: // DEC addr,X
@@ -1754,7 +1826,7 @@ throw new Exception("break");
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0xDF: // BBS5
@@ -1770,7 +1842,7 @@ throw new Exception("break");
                         value8 = ReadMemory(PC++);
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 2;
                         break;
                     case 0xE1: // SBC (addr,X)
@@ -1791,7 +1863,7 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xE3: // TIA src, dest, len
@@ -1811,7 +1883,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 4;
                         break;
                     case 0xE5: // SBC zp
@@ -1832,14 +1904,14 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0xE6: // INC zp
                         value16 = (ushort)(ReadMemory(PC++)+0x2000);
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0xE7: // SMB6 zp
@@ -1850,7 +1922,7 @@ throw new Exception("break");
                         PendingCycles -= 7;
                         break;
                     case 0xE8: // INX
-                        P = (byte)((P & 0x5D) | TableNZ[++X]);
+                        P = (byte)((P & 0x7D) | TableNZ[++X]);
                         PendingCycles -= 2;
                         break;
                     case 0xE9: // SBC #nn
@@ -1871,7 +1943,7 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2;
                         break;
                     case 0xEA: // NOP
@@ -1881,7 +1953,7 @@ throw new Exception("break");
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
-                        P = (byte)((P & 0x5D) | TableNZ[(byte)value16]);
+                        P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
                     case 0xED: // SBC addr
@@ -1902,14 +1974,14 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xEE: // INC addr
                         value16 = ReadWord(PC); PC += 2;
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0xEF: // BBS6
@@ -1951,7 +2023,7 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xF2: // SBC (addr)
@@ -1972,7 +2044,7 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
                     case 0xF3: // TAI src, dest, len
@@ -1991,7 +2063,7 @@ throw new Exception("break");
                     case 0xF4: // SET
                         int a; // TODO remove these extra checks
                         string b = Disassemble(PC, out a);
-                        if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false)
+                        if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false && b.StartsWith("AND") == false)
                             Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
                         FlagT = true;
                         PendingCycles -= 2;
@@ -2014,14 +2086,14 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4;
                         break;
                     case 0xF6: // INC zp,X
                         value16 = (ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000);
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 6;
                         break;
                     case 0xF7: // SMB7 zp
@@ -2056,12 +2128,12 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xFA: // PLX
                         X = ReadMemory((ushort)(++S + 0x2100));
-                        P = (byte)((P & 0x5D) | TableNZ[X]);
+                        P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 4;
                         break;
                     case 0xFD: // SBC addr,X
@@ -2085,7 +2157,7 @@ throw new Exception("break");
                             FlagC = temp >= 0;
                             A = (byte)temp;
                         }
-                        P = (byte)((P & 0x5D) | TableNZ[A]);
+                        P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xFE: // INC addr,X
@@ -2095,7 +2167,7 @@ throw new Exception("break");
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
-                        P = (byte)((P & 0x5D) | TableNZ[value8]);
+                        P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7;
                         break;
                     case 0xFF: // BBS7
