@@ -387,6 +387,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             return "|........|........|0|"; //TODO: implement
         }
 
+        public void SetControllersAsMnemonic(string mnemonic) { return; } //TODO
+
 		public class RomInfo
 		{
 			public int MapperNo, Mirroring, Num_PRG_Banks, Num_CHR_Banks;

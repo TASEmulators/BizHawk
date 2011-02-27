@@ -35,6 +35,12 @@ namespace BizHawk.MultiClient
             Log.Clear();
         }
 
+        public void StartPlayback()
+        {
+            MovieMode = MOVIEMODE.PLAY;
+            //TODO:...something else should be done here
+        }
+
         public MOVIEMODE GetMovieMode()
         {
             return MovieMode;
@@ -44,6 +50,14 @@ namespace BizHawk.MultiClient
         {
             if (MovieMode == MOVIEMODE.RECORD)
                 Log.AddFrame(Global.Emulator.GetControllersAsMnemonic());
+        }
+
+        public string GetInputFrame(int frame)
+        {
+            if (frame < Log.GetMovieLength())
+                return Log.GetFrame(frame);
+            else
+                return "";
         }
 
         //Movie editing tools may like to have something like this
