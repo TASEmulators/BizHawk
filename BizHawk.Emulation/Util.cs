@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -251,6 +252,34 @@ namespace BizHawk
         }
     }
 
+
+
+	//I think this is a little faster with uint than with byte
+	struct Bit
+	{
+		Bit(uint val) { this.val = val; }
+		uint val;
+		public static implicit operator Bit(int rhs) { Debug.Assert((rhs & ~1) == 0); return new Bit((uint)(rhs)); }
+		public static implicit operator Bit(uint rhs) { Debug.Assert((rhs & ~1) == 0); return new Bit((uint)(rhs)); }
+		public static implicit operator Bit(byte rhs) { Debug.Assert((rhs & ~1) == 0); return new Bit((uint)(rhs)); }
+		public static implicit operator Bit(bool rhs) { return new Bit(rhs ? (byte)1 : (byte)0); }
+		public static implicit operator long(Bit rhs) { return (long)rhs.val; }
+		public static implicit operator int(Bit rhs) { return (int)rhs.val; }
+		public static implicit operator uint(Bit rhs) { return (uint)rhs.val; }
+		public static implicit operator byte(Bit rhs) { return (byte)rhs.val; }
+		public static implicit operator bool(Bit rhs) { return rhs.val != 0; }
+		public override string ToString()
+		{
+			return val.ToString();
+		}
+		public static bool operator ==(Bit lhs, Bit rhs) { return lhs.val == rhs.val; }
+		public static bool operator !=(Bit lhs, Bit rhs) { return lhs.val != rhs.val; }
+		public override int GetHashCode() { return val.GetHashCode(); }
+		public override bool Equals(object obj) { return this == (Bit)obj; } //this is probably wrong
+	}
+
+
+
     public static class Util
     {
         public static int SaveRamBytesUsed(byte[] SaveRAM)
@@ -272,7 +301,81 @@ namespace BizHawk
 			return sb.ToString();
 		}
 
-    }
+		public static unsafe int memcmp(void* a, string b, int len)
+		{
+			fixed (byte* bp = System.Text.Encoding.ASCII.GetBytes(b))
+				return memcmp(a, bp, len);
+		}
+
+		public static unsafe int memcmp(void* a, void* b, int len)
+		{
+			byte* ba = (byte*)a;
+			byte* bb = (byte*)b;
+			for (int i = 0; i < len; i++)
+			{
+				byte _a = ba[i];
+				byte _b = bb[i];
+				int c = _a - _b;
+				if (c != 0) return c;
+			}
+			return 0;
+		}
+
+		public static unsafe void memset(void* ptr, int val, int len)
+		{
+			byte* bptr = (byte*)ptr;
+			for (int i = 0; i < len; i++)
+				bptr[i] = (byte)val;
+		}
+
+		public static byte[] ReadAllBytes(Stream stream)
+		{
+			const int BUFF_SIZE = 4096;
+			byte[] buffer = new byte[BUFF_SIZE];
+
+			int bytesRead = 0;
+			var inStream = new BufferedStream(stream);
+			var outStream = new MemoryStream();
+
+			while ((bytesRead = inStream.Read(buffer, 0, BUFF_SIZE)) > 0)
+			{
+				outStream.Write(buffer, 0, bytesRead);
+			}
+
+			return outStream.ToArray();
+		}
+	}
+
+
+	public static class BITREV
+	{
+		public static byte[] byte_8;
+		static BITREV()
+		{
+			make_byte_8();
+		}
+		static void make_byte_8()
+		{
+			int bits = 8;
+			int n = 1 << 8;
+			byte_8 = new byte[n];
+
+			int m = 1;
+			int a = n >> 1;
+			int j = 2;
+
+			byte_8[0] = 0;
+			byte_8[1] = (byte)a;
+
+			while ((--bits) != 0)
+			{
+				m <<= 1;
+				a >>= 1;
+				for (int i = 0; i < m; i++)
+					byte_8[j++] = (byte)(byte_8[i] + a);
+			}
+		}
+	}
 
 
 }

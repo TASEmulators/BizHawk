@@ -329,7 +329,7 @@ namespace M6502
             w.WriteLine("            while (PendingCycles > 0)");
             w.WriteLine("            {");
 
-            w.WriteLine("Console.WriteLine(State());");
+            w.WriteLine("if(debug) Console.WriteLine(State());");
             
             // TODO interrupts, halt state, shit like that
 

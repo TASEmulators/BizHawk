@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,7 +53,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consoles\Calculator\TI83.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
+    <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />

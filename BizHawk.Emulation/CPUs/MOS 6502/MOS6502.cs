@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.CPUs.M6502
             }
         }*/
 
+		public bool debug;
+
         public void Reset()
         {
             A = 0;
@@ -43,7 +45,7 @@ namespace BizHawk.Emulation.CPUs.M6502
         public string State()
         {
             int notused;
-            string a = string.Format("{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused)).PadRight(41);
+            string a = string.Format("{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused)).PadRight(30);
             string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", A, X, Y, P, S, TotalExecutedCycles);
             string val = a + b + "   ";
             if (FlagN) val = val + "N";
@@ -69,6 +71,10 @@ namespace BizHawk.Emulation.CPUs.M6502
         // TODO IRQ, NMI functions
         public bool Interrupt;
         public bool NMI;//
+
+		private const ushort NMIVector = 0xFFFA;
+		private const ushort ResetVector = 0xFFFC;
+		private const ushort BRKVector = 0xFFFE;
 
         // ==== End State ====
 
