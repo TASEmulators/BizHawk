@@ -129,7 +129,8 @@ namespace BizHawk.MultiClient
 			if (Global.Config.StartPaused)
 				PauseEmulator();
 
-
+            InputLog.LoadMovie();   //TODO: Debug
+            InputLog.StartPlayback(); //TODO: Debug
 		}
 
 		void SetSpeedPercent(int value)
@@ -427,7 +428,7 @@ namespace BizHawk.MultiClient
 				new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 			}
 
-            InputLog.StartNewRecording();
+            //InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
 
 			//setup the throttle based on platform's specifications
 			//(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -556,7 +557,10 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
-			bool runFrame = false;
+            if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+                Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame));
+               
+            bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
 			bool suppressCaptureRewind = false;
@@ -628,7 +632,8 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
-                InputLog.GetMnemonic();
+                if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
+                    InputLog.GetMnemonic();
 			}
 
 			if(genSound)

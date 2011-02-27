@@ -18,6 +18,11 @@
             return "|........|0|"; //TODO: implement
         }
 
+        public void SetControllersAsMnemonic(string mnemonic)
+        {
+            //TODO
+        }
+
         public ControllerDefinition ControllerDefinition { get { return GenesisController; } }
         public IController Controller { get; set; }
     }

@@ -11,6 +11,11 @@
                 }
         };
 
+        public void SetControllersAsMnemonic(string mnemonic)
+        {
+            //TODO
+        }
+
         public string GetControllersAsMnemonic()
         {
             return "|........|0|";

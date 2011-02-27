@@ -12,6 +12,10 @@
         public ControllerDefinition ControllerDefinition { get { return PCEngineController;  } }
         public IController Controller { get; set; }
 
+        public void SetControllersAsMnemonic(string mnemonic)
+        {
+            return; //TODO
+        }
 
         public string GetControllersAsMnemonic()
         {

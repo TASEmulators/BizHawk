@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		//-------
 
         public string GetControllersAsMnemonic() { return "|.|0|"; } //TODO: Implement this
+        public void SetControllersAsMnemonic(string mnemonic) { return;/*TODO*/ }
 
         public byte ReadMemory(ushort addr)
         {

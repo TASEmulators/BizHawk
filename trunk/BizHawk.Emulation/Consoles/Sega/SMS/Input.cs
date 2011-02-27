@@ -13,6 +13,42 @@
                         }
             };
 
+        public void SetControllersAsMnemonic(string mnemonic)
+        {
+            if (mnemonic.Length == 0) return;
+
+            if (mnemonic[1] != '.')
+                Controller.ForceButton("P1 Up");
+            if (mnemonic[2] != '.')
+                Controller.ForceButton("P1 Down");
+            if (mnemonic[3] != '.')
+                Controller.ForceButton("P1 Left");
+            if (mnemonic[4] != '.')
+                Controller.ForceButton("P1 Right");
+            if (mnemonic[5] != '.')
+                Controller.ForceButton("P1 B1");
+            if (mnemonic[6] != '.')
+                Controller.ForceButton("P1 B2");
+            if (mnemonic[7] != '.')
+                Controller.ForceButton("P2 Up");
+            if (mnemonic[8] != '.')
+                Controller.ForceButton("P2 Down");
+            if (mnemonic[9] != '.')
+                Controller.ForceButton("P2 Left");
+            if (mnemonic[10] != '.')
+                Controller.ForceButton("P2 Right");
+            if (mnemonic[11] != '.')
+                Controller.ForceButton("P2 B1");
+            if (mnemonic[12] != '.')
+                Controller.ForceButton("P2 B2");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("Pause");
+
+            if (mnemonic[15] != '.' && mnemonic[15] != '0')
+                Controller.ForceButton("Reset");
+
+        }
+
 
         public string GetControllersAsMnemonic()
         {
