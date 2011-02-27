@@ -17,6 +17,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public ushort[] Registers = new ushort[0x20];
         public ushort ReadBuffer;
         public byte StatusByte;
+        private bool DmaRequested;
+        private bool SatDmaRequested;
 
         public ushort IncrementWidth
         {
@@ -160,7 +162,10 @@ break;
                     Console.WriteLine("VCR / END POSITION: "+(Registers[VCR] & 0xFF));
                     break;
                 case LENR: // Initiate DMA transfer
-                    InitiateDMA();
+                    DmaRequested = true;
+                    break;
+                case SATB:
+                    SatDmaRequested = true;
                     break;
             }
         }
@@ -192,9 +197,10 @@ break;
             return 0;
         }
 
-        private void InitiateDMA()
+        private void RunDmaForScanline()
         {
             Console.WriteLine("DOING DMA ********************************************* ");
+            DmaRequested = false;
             int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
             int advanceDest   = (Registers[DCR] & 8) == 0 ? +1 : -1;
 
@@ -205,6 +211,13 @@ break;
                 UpdateSpriteData(Registers[DESR]);
                 Registers[DESR] = (ushort)(Registers[DESR] + advanceDest);
                 Registers[SOUR] = (ushort)(Registers[SOUR] + advanceSource);
+            }
+
+            if ((Registers[DCR] & 2) > 0)
+            {
+                Console.WriteLine("FIRE VRAM-VRAM DMA COMPLETE IRQ");
+                StatusByte |= StatusVramVramDmaComplete;
+                cpu.IRQ1Assert = true;
             }
         }
 
