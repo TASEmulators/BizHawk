@@ -84,6 +84,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		RomInfo romInfo;
 		byte[] ram;
 
+		IPortDevice[] ports;
+
 		//user configuration 
 		int[,] palette; //TBD!!
 
@@ -94,6 +96,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte ReadReg(int addr)
 		{
+			switch (addr)
+			{
+				case 0x4016: 
+				case 0x4017:
+					return read_joyport(addr);
+				default:
+					//Console.WriteLine("read register: {0:x4}", addr);
+					break;
+
+			}
 			return 0xFF;
 		}
 
@@ -104,11 +116,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		
 		void WriteReg(int addr, byte val)
 		{
-			//Console.WriteLine("wrote register: {0:x4} = {1:x2}", addr,val);
 			switch (addr)
 			{
 				case 0x4014: Exec_OAMDma(val); break;
+				case 0x4016:
+					ports[0].Write(val & 1);
+					ports[1].Write(val & 1);
+					break;
+				default:
+					//Console.WriteLine("wrote register: {0:x4} = {1:x2}", addr, val);
+					break;
 			}
+		}
+
+		byte read_joyport(int addr)
+		{
+			//read joystick port
+			//many todos here
+			if (addr == 0x4016)
+			{
+				byte ret = ports[0].Read();
+				return ret;
+			}
+			else return 0;
 		}
 
 		void Exec_OAMDma(byte val)
@@ -195,7 +225,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			new ControllerDefinition
 			{
 				Name = "NES Controls",
-				BoolButtons = { "A","B","SELECT","START","LEFT","UP","DOWN","RIGHT", "RESET" }
+				BoolButtons = { "A","B","Select","Start","Left","Up","Down","Right", "Reset" }
 			};
 
 		public ControllerDefinition ControllerDefinition { get { return NESController; } }
@@ -219,6 +249,64 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.Execute(cycles);
 		}
 
+		interface IPortDevice
+		{
+			void Write(int value);
+			byte Read();
+			void Update();
+		}
+
+		//static INPUTC GPC = { ReadGP, 0, StrobeGP, UpdateGP, 0, 0, LogGP, LoadGP };
+		class JoypadPortDevice : NullPortDevice
+		{
+			int state;
+			NES nes;
+			public JoypadPortDevice(NES nes)
+			{
+				this.nes = nes;
+			}
+			void Strobe()
+			{
+				value = 0;
+				foreach (string str in new string[] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" })
+				{
+					value <<= 1;
+					value |= nes.Controller.IsPressed(str) ? 1 : 0;
+				}
+			}
+			public override void Write(int value)
+			{
+				if (state == 1 && value == 0)
+					Strobe();
+				state = value;
+			}
+			public override byte Read()
+			{
+				int ret = value&1;
+				value >>= 1;
+				return (byte)ret;
+			}
+			public override void Update()
+			{
+
+			}
+			int value;
+		}
+
+		class NullPortDevice : IPortDevice
+		{
+			public virtual void Write(int value)
+			{
+			}
+			public virtual byte Read()
+			{
+				return 0xFF;
+			}
+			public virtual void Update()
+			{
+			}
+		}
+
 		public void HardReset()
 		{
 			cpu = new MOS6502();
@@ -226,6 +314,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.WriteMemory = WriteMemory;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
+			ports = new IPortDevice[2];
+			ports[0] = new JoypadPortDevice(this);
+			ports[1] = new NullPortDevice();
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
 			for (int i = 0; i < 0x800; i++)
