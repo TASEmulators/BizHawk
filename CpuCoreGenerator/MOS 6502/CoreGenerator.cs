@@ -329,10 +329,25 @@ namespace M6502
             w.WriteLine("            while (PendingCycles > 0)");
             w.WriteLine("            {");
 
+			w.WriteLine("            if (NMI)");
+			w.WriteLine("            {");
+			w.WriteLine("				WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));");
+			w.WriteLine("            	WriteMemory((ushort)(S-- + 0x100), (byte)PC);");
+			w.WriteLine("            	byte oldP = P;");
+			w.WriteLine("            	FlagB = false;");
+			w.WriteLine("            	FlagT = true;");
+			w.WriteLine("            	WriteMemory((ushort)(S-- + 0x100), P);");
+			w.WriteLine("            	P = oldP;");
+			w.WriteLine("            	FlagI = true;");
+			w.WriteLine("            	PC = ReadWord(NMIVector);");
+			w.WriteLine("            	PendingCycles -= 7;");
+			w.WriteLine("            	NMI = false;");
+			w.WriteLine("            }");
+			w.WriteLine("");
+
             w.WriteLine("if(debug) Console.WriteLine(State());");
             
-            // TODO interrupts, halt state, shit like that
-
+			w.WriteLine("                ushort this_pc = PC;");
             w.WriteLine("                byte opcode = ReadMemory(PC++);");
             w.WriteLine("                switch (opcode)");
             w.WriteLine("                {");

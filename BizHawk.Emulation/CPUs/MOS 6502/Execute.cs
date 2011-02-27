@@ -17,23 +17,23 @@ namespace BizHawk.Emulation.CPUs.M6502
             PendingCycles += cycles;
             while (PendingCycles > 0)
             {
-				if (NMI)
-				{
-					WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
-					WriteMemory((ushort)(S-- + 0x100), (byte)PC);
-					byte oldP = P;
-					FlagB = false;
-					FlagT = true;
-					WriteMemory((ushort)(S-- + 0x100), P);
-					P = oldP;
-					FlagI = true;
-					PC = ReadWord(NMIVector);
-					PendingCycles -= 7;
-					NMI = false;
-				}
+            if (NMI)
+            {
+				WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
+            	WriteMemory((ushort)(S-- + 0x100), (byte)PC);
+            	byte oldP = P;
+            	FlagB = false;
+            	FlagT = true;
+            	WriteMemory((ushort)(S-- + 0x100), P);
+            	P = oldP;
+            	FlagI = true;
+            	PC = ReadWord(NMIVector);
+            	PendingCycles -= 7;
+            	NMI = false;
+            }
 
 if(debug) Console.WriteLine(State());
-				ushort this_pc = PC;
+                ushort this_pc = PC;
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
@@ -748,10 +748,6 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xAD: // LDA addr
-						if (this_pc == 0x800A)
-						{
-							int zzz = 9;
-						}
                         A = ReadMemory(ReadWord(PC)); PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
