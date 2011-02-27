@@ -6,7 +6,7 @@ namespace HuC6280
     {
         private string SetNZ(string val)
         {
-            return "P = (byte)((P & 0x5D) | TableNZ[" + val + "]);";
+            return "P = (byte)((P & 0x7D) | TableNZ[" + val + "]);";
         }
 
         private void ADC(OpcodeInfo op, TextWriter w)
@@ -46,9 +46,17 @@ namespace HuC6280
         private void AND(OpcodeInfo op, TextWriter w)
         {
             GetValue8(op, w, "value8");
-            w.WriteLine(Spaces + "A &= value8;");
-            w.WriteLine(Spaces + SetNZ("A"));
-            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "if (FlagT == false) { ");
+            w.WriteLine(Spaces + "    A &= value8;");
+            w.WriteLine(Spaces + "    " + SetNZ("A"));
+            w.WriteLine(Spaces + "    PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "} else {");
+            w.WriteLine(Spaces + "    temp8 = ReadMemory((ushort)(0x2000 + X));");
+            w.WriteLine(Spaces + "    temp8 &= value8;");
+            w.WriteLine(Spaces + "    " + SetNZ("temp8"));
+            w.WriteLine(Spaces + "    WriteMemory((ushort)(0x2000 + X), temp8);");
+            w.WriteLine(Spaces + "    PendingCycles -= {0};", op.Cycles + 3);
+            w.WriteLine(Spaces + "}");
         }
 
         private void ASL(OpcodeInfo op, TextWriter w)
@@ -459,7 +467,7 @@ namespace HuC6280
         {
             w.WriteLine("                        int a; // TODO remove these extra checks"); // TODO remove these extra checks
             w.WriteLine("                        string b = Disassemble(PC, out a);");
-            w.WriteLine("                        if (b.StartsWith(\"ADC\") == false && b.StartsWith(\"EOR\") == false)");
+            w.WriteLine("                        if (b.StartsWith(\"ADC\") == false && b.StartsWith(\"EOR\") == false && b.StartsWith(\"AND\") == false)");
             w.WriteLine("                            Console.WriteLine(\"SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}\", b);");
             w.WriteLine(Spaces + "FlagT = true;");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
