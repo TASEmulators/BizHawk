@@ -88,6 +88,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 cpu.Execute(455-hblankCycles);
 
+                if (InActiveDisplay == false && DmaRequested)
+                    RunDmaForScanline();
+
                 ScanLine++;
                 ActiveLine++;
                 RCRCount++;
@@ -107,11 +110,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void UpdateSpriteAttributeTable()
         {
-            if (/*(Registers[DCR] & 0x10) != 0 &&*/ Registers[SATB] <= 0x7F00)
+            if ((SatDmaRequested || (Registers[DCR] & 0x10) != 0) && Registers[SATB] <= 0x7F00)
             {
+                SatDmaRequested = false;
                 for (int i = 0; i < 256; i++)
                 {
                     SpriteAttributeTable[i] = VRAM[Registers[SATB] + i];
+                }
+
+                if ((Registers[DCR] & 1) > 0)
+                {
+                    Console.WriteLine("FIRING SATB DMA COMPLETION IRQ");
+                    StatusByte |= StatusVramSatDmaComplete;
+                    cpu.IRQ1Assert = true;
                 }
             }
         }
@@ -158,7 +169,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private static byte[] heightTable = { 16, 32, 64, 64 };
+        private byte[] heightTable = { 16, 32, 64, 64 };
 
         public void RenderSpritesScanline()
         {

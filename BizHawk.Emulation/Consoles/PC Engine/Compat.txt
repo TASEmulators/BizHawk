@@ -16,7 +16,6 @@ Chouzetsu Rinjin  - Doesnt boot
 Cyber Dodge       - Minor gfx issues
 Davis Cup Tennis  - uh lets just say it doesnt work in creative ways
 Dead Moon         - Minor gfx issues
-Dragon Curse      - Terribly annoying sprite flicker - presumably timing related
 Dragon Egg        - Doesn't boot
 Fighting Run      - Corruption issues
 Final Solider     - Graphics corruption issues
@@ -25,24 +24,25 @@ Gunboat           - Crash / CPU Break (Needs BRAM)
 Hisou Kihei Serd  - Doesn't boot
 Idol Hanafuda Fan Club - Doesn't boot
 Impossamole       - Gfx issues
-Legendary Axe     - Doesn't boot
-Legendary Axe II  - Corruption, freezes in opening sequence
+Legendary Axe     - Boots with bad gfx corruption - needs a T-flag opcode update
+Legendary Axe II  - Some gfx issues, but playable now
 Madoo Granzort    - Graphics issues because VPC renderer is not using new frame timing
-Magical Chase     - Freezes when starting 1st level - waiting for DMA completion IRQ?
 MML Demo          - Echo channels are too loud (equal volume!)
 Naxat Open        - Crashes when you start new game
 New Adventure Island - Minor gfx issues
 Night Creatures   - Some gfx glitches
-Outrun            - 'Sea Wind' sample when selecting music is not playing ...... raster issues, now more annoying than before
+Outrun            - 'Sea Wind' sample when selecting music is not playing, raster issues, music slows when paused
 Populous          - Game freezes on starting new game - *** NEEDS BATTERY SAVERAM ***
 Power Drift       - Timing glitch... starting new game runs slower than it should
 R-Type            - Funky corruption after killing final boss in Stage 8
+Raiden            - Sprites and BG get out of sync with current timing
 Side Arms         - Video timing issue - bottom arms display shouldn't be visible
 Sinistron         - Raster effect errors
 Soldier Blade     - Freezes about 5 minutes in. Always in the same spot, fortunately. I have a savestate.
 Strip Fighter     - Minor gfx glitches (status area)
+Thunder Blade     - After beating the 1st 3d area, game semi-freezes
 Turrican          - Playable, issues with opening sequence
-Valkyrie No Densetsu - Freezes in title sequence
+Valkyrie No Densetsu - Boots now, but with pretty severe issues
 
 
 Stuff I Fixed That's Not In Other Docs:
@@ -55,4 +55,6 @@ Stuff I Fixed That's Not In Other Docs:
     Cross Wiber, Jackie Chan, Jigoku Meguri, New Adventure Island, World Beach volley
   - Actually, I'm not at all convinced there's always a 1-instruction delay on the I-flag.
     But this fixes several games; clearly there are delays in some scenarios. But it's not clear
-    to me that this delay is ALWAYS present.  
+    to me that this delay is ALWAYS present.
++ Writing to the SATB location register of the VDC requests a VRAM->SAT DMA even if the SAT DMA
+  bit is disabled in the DCR.
