@@ -467,17 +467,6 @@ namespace BizHawk.MultiClient
 		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
 		public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
-		/// <summary>
-		/// This functions calls Emulator.FrameAdvance(true) and handles any updates that need to happen on a per frame basis
-		/// </summary>
-		public void DoFrameAdvance() //TODO: rename this and run it once per frame
-		{
-			Global.Emulator.FrameAdvance(true); //TODO: Do these things need to happen on (false) as well? Think about it
-			RamWatch1.UpdateValues();
-			RamSearch1.UpdateValues();
-            InputLog.GetMnemonic(); //TODO: log to input log or user choice, if user choice & playback don't log!
-		}
-
 		public void CheckHotkeys()
 		{
 			if (Global.ClientControls["Quick Save State"])

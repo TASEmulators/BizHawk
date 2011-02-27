@@ -301,10 +301,15 @@ namespace BizHawk.MultiClient
 				else
 					sleepy = 0;
 				if (sleepy >= 10)
-					Thread.Sleep((int)(sleepy / 2)); // reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+				{
+					Thread.Sleep((int) (sleepy/2));
+						// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+				}
 				else if (sleepy > 0) // spin for <1 millisecond waits
+				{
 					Thread.Sleep(0);
-					//SwitchToThread(); // limit to other threads on the same CPU core for other short waits
+				}
+				//SwitchToThread(); // limit to other threads on the same CPU core for other short waits
 				goto waiter;
 			}
 			if ((ttime - ltime) >= (tfreq * 4 / desiredfps))

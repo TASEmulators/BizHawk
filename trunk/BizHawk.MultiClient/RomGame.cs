@@ -23,16 +23,23 @@ namespace BizHawk.MultiClient
                     throw new Exception("The file needs to exist, yo.");
 
                 var stream = file.GetStream();
-                 
-                int header = (int) (stream.Length%BankSize);
-                stream.Position = header;
-                int length = (int) stream.Length - header;
 
-                RomData = new byte[length];
-                stream.Read(RomData, 0, length);
+				if (file.Extension == "NES")
+				{
+					RomData = Util.ReadAllBytes(stream);
+				}
+				else
+				{
+					int header = (int)(stream.Length % BankSize);
+					stream.Position = header;
+					int length = (int)stream.Length - header;
 
-                if (file.Extension == "SMD")
-                    RomData = DeInterleaveSMD(RomData);
+					RomData = new byte[length];
+					stream.Read(RomData, 0, length);
+
+					if (file.Extension == "SMD")
+						RomData = DeInterleaveSMD(RomData);
+				}
 
                 var info = Database.GetGameInfo(RomData, file.FullName);
                 name = info.Name;
