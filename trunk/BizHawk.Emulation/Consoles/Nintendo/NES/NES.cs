@@ -382,12 +382,61 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return null;
 		}
 
-        public string GetControllersAsMnemonic()
+        public void SetControllersAsMnemonic(string mnemonic)
         {
-            return "|........|........|0|"; //TODO: implement
+            if (mnemonic.Length == 0) return;
+
+            if (mnemonic[1] != '.')
+                Controller.ForceButton("Up");
+            if (mnemonic[2] != '.')
+                Controller.ForceButton("Down");
+            if (mnemonic[3] != '.')
+                Controller.ForceButton("Left");
+            if (mnemonic[4] != '.')
+                Controller.ForceButton("Right");
+            if (mnemonic[5] != '.')
+                Controller.ForceButton("B");
+            if (mnemonic[6] != '.')
+                Controller.ForceButton("A");
+            if (mnemonic[7] != '.')
+                Controller.ForceButton("Select");
+            if (mnemonic[8] != '.')
+                Controller.ForceButton("Start");
+
+            if (mnemonic[10] != '.' && mnemonic[10] != '0')
+                Controller.ForceButton("Reset");
         }
 
-        public void SetControllersAsMnemonic(string mnemonic) { return; } //TODO
+        public string GetControllersAsMnemonic()
+        {
+            string input = "|";
+            
+            if (Controller.IsPressed("Up")) input += "U";
+            else input += ".";
+            if (Controller.IsPressed("Down")) input += "D";
+            else input += ".";
+            if (Controller.IsPressed("Left")) input += "L";
+            else input += ".";
+            if (Controller.IsPressed("Right")) input += "R";
+            else input += ".";
+            if (Controller.IsPressed("A")) input += "A";
+            else input += ".";
+            if (Controller.IsPressed("B")) input += "B";
+            else input += ".";
+            if (Controller.IsPressed("Select")) input += "s";
+            else input += ".";
+            if (Controller.IsPressed("Start")) input += "S";
+            else input += ".";
+
+            input += "|";
+
+            if (Controller.IsPressed("Reset")) input += "R";
+            else input += ".";
+
+            input += "|";
+
+            return input;
+        }
 
 		public class RomInfo
 		{
