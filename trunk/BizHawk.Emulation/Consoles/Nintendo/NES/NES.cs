@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//hardware
 		protected MOS6502 cpu;
 		INESBoard board;
-		PPU ppu;
+		public PPU ppu;
 		RomInfo romInfo;
 		byte[] ram;
 
@@ -237,9 +237,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						int pixel = emu.ppu.xbuf[i];
 						int deemph = pixel >> 8;
 						int palentry = pixel & 0xFF;
-						int r = emu.palette[pixel, 0];
-						int g = emu.palette[pixel, 1];
-						int b = emu.palette[pixel, 2];
+						int r = emu.palette[palentry, 0];
+						int g = emu.palette[palentry, 1];
+						int b = emu.palette[palentry, 2];
 						Palettes.ApplyDeemphasis(ref r, ref g, ref b, deemph);
 						pixels[i] = (r<<16)|(g<<8)|b;
 						i++;
@@ -278,9 +278,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ppu.FrameAdvance();
 		}
 
+		int cpu_accumulate;
 		protected void RunCpu(int cycles)
 		{
-			cpu.Execute(cycles);
+			if (ppu.PAL)
+				cycles *= 15;
+			else
+				cycles *= 16;
+
+			cpu_accumulate += cycles;
+			int todo = cpu_accumulate / 48;
+			cpu_accumulate -= todo * 48;
+			if(todo>0)
+				cpu.Execute(todo);
 		}
 
 		interface IPortDevice
@@ -611,6 +621,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "NROM": board = new Boards.NROM(); break;
 					case "UNROM": board = new Boards.UxROM("UNROM"); break;
 					case "UOROM": board = new Boards.UxROM("UOROM"); break;
+					case "CNROM": board = new Boards.CxROM("CNROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");

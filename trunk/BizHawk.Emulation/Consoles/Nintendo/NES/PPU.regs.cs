@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 
-			struct PPUSTATUS
+			public struct PPUSTATUS
 			{
 				public int sl;
 				public int cycle, end_cycle;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//uses the internal counters concept at http://nesdev.icequake.net/PPU%20addressing.txt
 			//TODO - this should be turned into a state machine
-			class PPUREGS
+			public class PPUREGS
 			{
 				PPU ppu;
 				public PPUREGS(PPU ppu)
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
 			Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
 			byte PPUGenLatch;
-			PPUREGS ppur;
+			public PPUREGS ppur;
 			Reg_2000 reg_2000;
 			Reg_2001 reg_2001;
 			byte reg_2003;

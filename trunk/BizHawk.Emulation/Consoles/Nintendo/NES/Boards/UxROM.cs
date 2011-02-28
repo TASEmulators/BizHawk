@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
+	//generally mapper2
+
 	public class UxROM : NES.NESBoardBase
 	{
 		string type;
@@ -29,13 +31,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			int block = addr >> 14;
 			int page = block == 1 ? pagemask : prg;
-			page &= pagemask;
 			int ofs = addr & 0x3FFF;
 			return RomInfo.ROM[(page << 14) | ofs];
 		}
 		public override void WritePRG(int addr, byte value)
 		{
-			prg = value;
+			prg = value & pagemask;
 		}
 
 		public override byte ReadPPU(int addr)
