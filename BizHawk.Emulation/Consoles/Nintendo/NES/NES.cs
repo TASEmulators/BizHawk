@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			public EHeaderType HeaderType;
-			public int PRG_Size = -1, CHR_Size = -1, PRAM_Size = -1;
+			public int PRG_Size = -1, CHR_Size = -1;
+			public int CRAM_Size = -1, NVWRAM_Size = -1, WRAM_Size = -1;
 			public string BoardName;
 			public EMirrorType MirrorType;
 			public bool Battery;
@@ -38,10 +39,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr);
-			byte ReadPRAM(int addr);
+			byte ReadWRAM(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
-			void WritePRAM(int addr, byte value);
+			void WriteWRAM(int addr, byte value);
 			void Initialize(RomInfo romInfo, NES nes);
 		};
 
@@ -82,8 +83,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte ReadPRG(int addr) { return RomInfo.ROM[addr];}
 			public virtual void WritePRG(int addr, byte value) { }
 
-			public virtual void WritePRAM(int addr, byte value) { }
-			public virtual byte ReadPRAM(int addr) { return 0xFF; }
+			public virtual void WriteWRAM(int addr, byte value) { }
+			public virtual byte ReadWRAM(int addr) { return 0xFF; }
 
 
 			public virtual void WritePPU(int addr, byte value)
@@ -533,11 +534,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret.CHR_Size = VROM_size;
 				ret.Battery = (ROM_type & 2) != 0;
 
-				fixed (iNES_HEADER* self = &this) ret.PRAM_Size = self->reserve[0];
+				fixed (iNES_HEADER* self = &this) ret.WRAM_Size = self->reserve[0] * 8;
 				//0 is supposed to mean 1 (for compatibility, as this is an extension to original iNES format)
-				//but we're not worrying about that for now)
+				if (ret.WRAM_Size == 0) ret.WRAM_Size = 8;
 
-				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, PRAM:{4}, bat:{5}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.PRAM_Size, ret.Battery ? 1 : 0);
+				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, CRAM:{4}, WRAM:{5}, NVWRAM:{6}, bat:{7}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.CRAM_Size, ret.WRAM_Size, ret.NVWRAM_Size, ret.Battery ? 1 : 0);
 
 				//fceux calls uppow2(PRG_Banks) here, and also ups the chr size as well
 				//then it does something complicated that i don't understand with making sure it doesnt read too much data
@@ -598,12 +599,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						romInfo.PRG_Size = int.Parse(dict["PRG"]);
 					if (dict.ContainsKey("CHR"))
 						romInfo.CHR_Size = int.Parse(dict["CHR"]);
+					if (dict.ContainsKey("CRAM"))
+						romInfo.CRAM_Size = int.Parse(dict["CRAM"]);
+					if (dict.ContainsKey("bug"))
+						Console.WriteLine("game is known to be BUGGED!!!");
 				}
 
 				//construct board (todo)
 				switch (romInfo.BoardName)
 				{
 					case "NROM": board = new Boards.NROM(); break;
+					case "UNROM": board = new Boards.UxROM("UNROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");

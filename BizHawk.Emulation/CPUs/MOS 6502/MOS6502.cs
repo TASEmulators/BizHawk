@@ -70,11 +70,33 @@ namespace BizHawk.Emulation.CPUs.M6502
 
         // TODO IRQ, NMI functions
         public bool Interrupt;
-        public bool NMI;//
+        public bool NMI;
 
 		private const ushort NMIVector = 0xFFFA;
 		private const ushort ResetVector = 0xFFFC;
 		private const ushort BRKVector = 0xFFFE;
+
+		enum ExceptionType
+		{
+			BRK, NMI
+		}
+
+		void TriggerException(ExceptionType type)
+		{
+			WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
+			WriteMemory((ushort)(S-- + 0x100), (byte)PC);
+			byte oldP = P;
+			FlagB = false;
+			FlagT = true;
+			WriteMemory((ushort)(S-- + 0x100), P);
+			P = oldP;
+			FlagI = true;
+			if(type == ExceptionType.NMI)
+				PC = ReadWord(NMIVector);
+			else
+				PC = ReadWord(BRKVector);
+			PendingCycles -= 7;
+		}
 
         // ==== End State ====
 

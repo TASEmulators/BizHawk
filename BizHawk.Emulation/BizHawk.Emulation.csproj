@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,6 +57,7 @@
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardDetector.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />

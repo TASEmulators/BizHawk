@@ -17,28 +17,20 @@ namespace BizHawk.Emulation.CPUs.M6502
             PendingCycles += cycles;
             while (PendingCycles > 0)
             {
-            if (NMI)
-            {
-				WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
-            	WriteMemory((ushort)(S-- + 0x100), (byte)PC);
-            	byte oldP = P;
-            	FlagB = false;
-            	FlagT = true;
-            	WriteMemory((ushort)(S-- + 0x100), P);
-            	P = oldP;
-            	FlagI = true;
-            	PC = ReadWord(NMIVector);
-            	PendingCycles -= 7;
-            	NMI = false;
-            }
+               if (NMI)
+               {
+                   TriggerException(ExceptionType.NMI);
+                   NMI = false;
+               }
 
-if(debug) Console.WriteLine(State());
+                if(debug) Console.WriteLine(State());
+
                 ushort this_pc = PC;
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
                     case 0x00: // BRK
-throw new Exception("break");
+TriggerException(ExceptionType.BRK);
                         break;
                     case 0x01: // ORA (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));

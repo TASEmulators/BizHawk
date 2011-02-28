@@ -282,6 +282,13 @@ namespace BizHawk
 
     public static class Util
     {
+		public static bool IsPowerOfTwo(int x)
+		{
+			if (x == 0) return true;
+			if (x == 1) return true;
+			return (x & (x - 1)) == 0;
+		}
+
         public static int SaveRamBytesUsed(byte[] SaveRAM)
         {
             for (int j = SaveRAM.Length - 1; j >= 0; j--)
