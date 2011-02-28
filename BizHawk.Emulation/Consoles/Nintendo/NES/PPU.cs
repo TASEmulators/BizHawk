@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		partial class PPU
+		public partial class PPU
 		{
 			//when the ppu issues a write it goes through here and into the game board
 			void ppubus_write(int addr, byte value)
@@ -74,13 +74,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//DON'T LIKE THIS....
 				ppur.status.cycle = (ppur.status.cycle + x) %
 				                       ppur.status.end_cycle;
-
 				nes.RunCpu(x);
 				//pputime -= cputodo<<2;
 			}
 
 			//hack
-			bool PAL = false;
+			public bool PAL = false;
 			bool SPRITELIMIT = true;
 			const int MAXSPRITES = 8;
 

@@ -25,10 +25,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void Read_bgdata(ref BGDataRecord bgdata) {
 				int addr = ppur.get_ntread();
-				if (addr == 0x2043)
-				{
-					int zzz = 9;
-				}
 				bgdata.nt = ppubus_read(addr);
 				runppu(kFetchTime);
 

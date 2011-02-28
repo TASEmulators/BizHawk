@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	public class NROM : NES.NESBoardBase
 	{
-		public virtual void Initialize(NES.RomInfo romInfo, NES nes)
+		public override void Initialize(NES.RomInfo romInfo, NES nes)
 		{
 			base.Initialize(romInfo, nes);
 			Debug.Assert(romInfo.PRG_Size < 3);
