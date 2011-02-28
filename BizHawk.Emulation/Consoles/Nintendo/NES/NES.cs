@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
@@ -89,6 +90,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return (block << 10) | ofs | 0x2000;
 			}
 
+			protected byte HandleNormalPRGConflict(int addr, byte value)
+			{
+				byte old_value = value;
+				value &= ReadPRG(addr);
+				Debug.Assert(old_value == value, "Found a test case of bus conflict. please report.");
+				return value;
+			}
 
 			public virtual byte ReadPRG(int addr) { return RomInfo.ROM[addr];}
 			public virtual void WritePRG(int addr, byte value) { }
@@ -635,16 +643,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "CNROM": board = new Boards.CxROM("CNROM"); break;
 					case "ANROM": board = new Boards.AxROM("ANROM"); break;
 					case "AOROM": board = new Boards.AxROM("AOROM"); break;
+					case "Discrete_74x377": board = new Boards.Discrete_74x377(); break;
+					case "CPROM": board = new Boards.CPROM(); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
-				board.Initialize(romInfo, this);
 
 				//we're going to go ahead and copy these out, just in case we need to pad them alter
 				romInfo.ROM = new byte[romInfo.PRG_Size * 16 * 1024];
 				romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
 				Array.Copy(file, 16, romInfo.ROM, 0, romInfo.ROM.Length);
 				Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
+
+				board.Initialize(romInfo, this);
 			}
 
 			HardReset();

@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				prg_mask = RomInfo.PRG_Size-1;
 			}
 
+			//it is necessary to write during initialization to set the mirroring
 			WritePRG(0, 0);
 		}
 
@@ -54,6 +55,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 		public override void WritePRG(int addr, byte value)
 		{
+			if (bus_conflict)
+			{
+				byte old_value = value;
+				value &= ReadPRG(addr);
+				Debug.Assert(old_value == value, "Found a test case of CxROM bus conflict. please report.");
+			}
 			prg = value & prg_mask;
 			if ((value & 0x10) == 0)
 				SetMirrorType(NES.EMirrorType.OneScreenA);

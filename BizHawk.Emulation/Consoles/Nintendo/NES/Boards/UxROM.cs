@@ -5,6 +5,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	//generally mapper2
 
+	//TODO - simplify logic and handle fewer (known) cases (e.g. no IsPowerOfTwo, but rather hardcoded cases)
+
 	public class UxROM : NES.NESBoardBase
 	{
 		string type;
