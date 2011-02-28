@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 		private string CurrentlyOpenRom;
 
         //TODO: adelikat: can this be the official file extension?
-        Movie InputLog = new Movie("log.tas");   //This movie is always recording while user is playing
+        Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
 
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
@@ -79,6 +79,7 @@ namespace BizHawk.MultiClient
 		    Closing += (o, e) =>
 		    {
                 CloseGame();
+                InputLog.StopMovie();
                 SaveConfig();
 		    };
 
@@ -128,9 +129,6 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.StartPaused)
 				PauseEmulator();
-
-            InputLog.LoadMovie();   //TODO: Debug
-            InputLog.StartPlayback(); //TODO: Debug
 		}
 
 		void SetSpeedPercent(int value)
@@ -427,8 +425,14 @@ namespace BizHawk.MultiClient
 			{
 				new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 			}
-
-            //InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
+            
+            if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
+            else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+            {
+                InputLog.LoadMovie();   //TODO: Debug
+                InputLog.StartPlayback(); //TODO: Debug
+            }
 
 			//setup the throttle based on platform's specifications
 			//(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -1086,6 +1090,12 @@ namespace BizHawk.MultiClient
             if (!RamSearch1.IsDisposed)
                 RamSearch1.SaveConfigSettings();
             ConfigService.Save("config.ini", Global.Config);
+        }
+
+        private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InputLog.StartPlayback(); 
+            LoadRom(CurrentlyOpenRom);
         }
 	}
 }

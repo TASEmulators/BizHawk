@@ -14,30 +14,48 @@
 
         public void SetControllersAsMnemonic(string mnemonic)
         {
-            return; //TODO
+            if (mnemonic.Length == 0) return;
+
+            if (mnemonic[1] != '.')
+                Controller.ForceButton("Up");
+            if (mnemonic[2] != '.')
+                Controller.ForceButton("Down");
+            if (mnemonic[3] != '.')
+                Controller.ForceButton("Left");
+            if (mnemonic[4] != '.')
+                Controller.ForceButton("Right");
+            if (mnemonic[5] != '.')
+                Controller.ForceButton("I");
+            if (mnemonic[6] != '.')
+                Controller.ForceButton("II");
+            if (mnemonic[7] != '.')
+                Controller.ForceButton("Select");
+            if (mnemonic[8] != '.')
+                Controller.ForceButton("Run");
         }
 
         public string GetControllersAsMnemonic()
         {
             //TODO: Implement all controllers
             
-            string input = "";
+            string input = "|";
+
             if (Controller.IsPressed("Up")) input += "U";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("Down")) input += "D";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("Left")) input += "L";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("Right")) input += "R";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("I")) input += "1";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("II")) input += "2";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("Select")) input += "S";
-            else input += " ";
+            else input += ".";
             if (Controller.IsPressed("Run")) input += "R";
-            else input += " ";
+            else input += ".";
 
             input += "|.|"; //TODO: Add commands like reset here
 
