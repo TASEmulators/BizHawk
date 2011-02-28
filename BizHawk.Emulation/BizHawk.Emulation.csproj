@@ -58,6 +58,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\GxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardDetector.cs" />

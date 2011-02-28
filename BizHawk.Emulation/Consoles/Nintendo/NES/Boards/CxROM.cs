@@ -22,12 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		
 		public override void WritePRG(int addr, byte value)
 		{
-			if (bus_conflict)
-			{
-				byte old_value = value;
-				value &= ReadPRG(addr);
-				Debug.Assert(old_value == value,"Found a test case of CxROM bus conflict. please report.");
-			}
+			if (bus_conflict) value = HandleNormalPRGConflict(addr,value);
 			chr = value&chr_mask;
 			//Console.WriteLine("at {0}, set chr={1}", NES.ppu.ppur.status.sl, chr);
 		}

@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 11	4	2	Discrete_74x377
 11	2	4	Discrete_74x377
 13	2	0	CPROM
+66	4	2	GxROM
+66	8	4	GxROM
 ";
 
 		}
