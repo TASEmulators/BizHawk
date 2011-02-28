@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 			if (type == "UNROM") pagemask = 7;
 			else if (type == "UOROM") pagemask = 15;
-			else throw new InvalidOperationException("Invalid UXROM type");
+			else throw new InvalidOperationException("Invalid UxROM type");
 
 			//guess CRAM size (this is a very confident guess!)
 			if (RomInfo.CRAM_Size == -1) RomInfo.CRAM_Size = 8;
