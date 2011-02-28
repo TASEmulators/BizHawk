@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
 			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
-			int ffSkipRate = (forceFrameSkip < 0) ? 9 : forceFrameSkip;
+			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
 
 			if (lastskiprate != skipRate)
 			{
