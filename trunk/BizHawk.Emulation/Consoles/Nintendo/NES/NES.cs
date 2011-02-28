@@ -645,6 +645,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "AOROM": board = new Boards.AxROM("AOROM"); break;
 					case "Discrete_74x377": board = new Boards.Discrete_74x377(); break;
 					case "CPROM": board = new Boards.CPROM(); break;
+					case "GxROM": board = new Boards.GxROM(); break;	
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");

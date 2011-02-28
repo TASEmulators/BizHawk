@@ -55,12 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (bus_conflict)
-			{
-				byte old_value = value;
-				value &= ReadPRG(addr);
-				Debug.Assert(old_value == value, "Found a test case of CxROM bus conflict. please report.");
-			}
+			if (bus_conflict) value = HandleNormalPRGConflict(addr,value);
 			prg = value & prg_mask;
 			if ((value & 0x10) == 0)
 				SetMirrorType(NES.EMirrorType.OneScreenA);
