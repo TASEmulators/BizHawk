@@ -29,11 +29,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private int ActiveLine;
         private int RCRCount;
 
-        // One possible cause of graphics corruption is that I am executing DMAs immediately.
-        // DMAs are only executed when the system is OUTSIDE of the the active display period.
-        // So... that could be a thing.
-        // Although its actually not probably very much of a thing.
-
         public void ExecFrame(bool render)
         {
             latchedDisplayStartLine = DisplayStartLine;
@@ -88,6 +83,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 cpu.Execute(455-hblankCycles);
 
+                if (ScanLine == FrameHeight - 1)
+                    UpdateSpriteAttributeTable();
+
                 if (InActiveDisplay == false && DmaRequested)
                     RunDmaForScanline();
 
@@ -103,9 +101,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             RenderBackgroundScanline();
             RenderSpritesScanline();
-
-            if (ScanLine == FrameHeight - 1)
-                UpdateSpriteAttributeTable();
         }
 
         public void UpdateSpriteAttributeTable()
