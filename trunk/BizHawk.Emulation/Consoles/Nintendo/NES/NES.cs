@@ -16,11 +16,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				None, INes
 			}
 
-			public enum EMirrorType
-			{
-				Vertical, Horizontal, Other
-			}
-
 			public EHeaderType HeaderType;
 			public int PRG_Size = -1, CHR_Size = -1;
 			public int CRAM_Size = -1, NVWRAM_Size = -1, WRAM_Size = -1;
@@ -33,6 +28,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public string MD5;
 
 			public byte[] ROM, VROM;
+		}
+
+		public enum EMirrorType
+		{
+			Vertical, Horizontal,
+			OneScreenA, OneScreenB,
+			//unknown or controlled by the board
+			External
 		}
 
 		public interface INESBoard
@@ -52,12 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				this.RomInfo = romInfo;
 				this.NES = nes;
-				switch (romInfo.MirrorType)
-				{
-					case RomInfo.EMirrorType.Horizontal: SetMirroring(0, 0, 1, 1); break;
-					case RomInfo.EMirrorType.Vertical: SetMirroring(0, 1, 0, 1); break;
-					default: SetMirroring(-1, -1, -1, -1); break; //crash!
-				}
+				SetMirrorType(romInfo.MirrorType);
 			}
 			public RomInfo RomInfo { get; set; }
 			public NES NES { get; set; }
@@ -69,6 +67,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mirroring[1] = b;
 				mirroring[2] = c;
 				mirroring[3] = d;
+			}
+
+			protected void SetMirrorType(EMirrorType mirrorType)
+			{
+				switch (mirrorType)
+				{
+					case EMirrorType.Horizontal: SetMirroring(0, 0, 1, 1); break;
+					case EMirrorType.Vertical: SetMirroring(0, 1, 0, 1); break;
+					case EMirrorType.OneScreenA: SetMirroring(0, 0, 0, 0); break;
+					case EMirrorType.OneScreenB: SetMirroring(1, 1, 1, 1); break;
+					default: SetMirroring(-1, -1, -1, -1); break; //crash!
+				}
 			}
 
 			int ApplyMirroring(int addr)
@@ -535,9 +545,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret.MapperNumber |= (ROM_type2 & 0xF0);
 				int mirroring = (ROM_type&1);
 				if((ROM_type&8)!=0) mirroring=2;
-				if (mirroring == 0) ret.MirrorType = RomInfo.EMirrorType.Horizontal;
-				else if (mirroring == 1) ret.MirrorType = RomInfo.EMirrorType.Vertical;
-				else ret.MirrorType = RomInfo.EMirrorType.Other;
+				if (mirroring == 0) ret.MirrorType = EMirrorType.Horizontal;
+				else if (mirroring == 1) ret.MirrorType = EMirrorType.Vertical;
+				else ret.MirrorType = EMirrorType.External;
 				ret.PRG_Size = ROM_size;
 				if (ret.PRG_Size == 0)
 					ret.PRG_Size = 256;
@@ -602,8 +612,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						romInfo.BoardName = dict["board"];
 					switch (dict["mirror"])
 					{
-						case "V": romInfo.MirrorType = RomInfo.EMirrorType.Vertical; break;
-						case "H": romInfo.MirrorType = RomInfo.EMirrorType.Horizontal; break;
+						case "V": romInfo.MirrorType = EMirrorType.Vertical; break;
+						case "H": romInfo.MirrorType = EMirrorType.Horizontal; break;
+						case "X": romInfo.MirrorType = EMirrorType.External; break;
 					}
 					if (dict.ContainsKey("PRG"))
 						romInfo.PRG_Size = int.Parse(dict["PRG"]);
@@ -622,6 +633,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "UNROM": board = new Boards.UxROM("UNROM"); break;
 					case "UOROM": board = new Boards.UxROM("UOROM"); break;
 					case "CNROM": board = new Boards.CxROM("CNROM"); break;
+					case "ANROM": board = new Boards.AxROM("ANROM"); break;
+					case "AOROM": board = new Boards.AxROM("AOROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
