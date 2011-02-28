@@ -7,6 +7,7 @@ namespace BizHawk.MultiClient
     public class RomGame : IGame
     {
         public byte[] RomData;
+		public byte[] FileData;
         public string System;
 
         private string name;
@@ -24,22 +25,17 @@ namespace BizHawk.MultiClient
 
                 var stream = file.GetStream();
 
-				if (file.Extension == "NES")
-				{
-					RomData = Util.ReadAllBytes(stream);
-				}
-				else
-				{
-					int header = (int)(stream.Length % BankSize);
-					stream.Position = header;
-					int length = (int)stream.Length - header;
+				FileData = Util.ReadAllBytes(stream);
 
-					RomData = new byte[length];
-					stream.Read(RomData, 0, length);
+				int header = (int)(stream.Length % BankSize);
+				stream.Position = header;
+				int length = (int)stream.Length - header;
 
-					if (file.Extension == "SMD")
-						RomData = DeInterleaveSMD(RomData);
-				}
+				RomData = new byte[length];
+				stream.Read(RomData, 0, length);
+
+				if (file.Extension == "SMD")
+					RomData = DeInterleaveSMD(RomData);
 
                 var info = Database.GetGameInfo(RomData, file.FullName);
                 name = info.Name;
@@ -105,6 +101,7 @@ namespace BizHawk.MultiClient
         }
 
         public byte[] GetRomData() { return RomData; }
+		public byte[] GetFileData() { return FileData; }
         public IList<string> GetOptions() { return options; }
         public string Name { get { return name; } }
 

@@ -12,12 +12,13 @@ namespace BizHawk.MultiClient
             try
             {
                 var file = new FileInfo(filepath);
-                using (var reader = file.OpenText())
-                {
-                    var s = new JsonSerializer();
-                    var r = new JsonReader(reader);
-                    config = (T) s.Deserialize(r, typeof (T));
-                }
+				if(file.Exists)
+					using (var reader = file.OpenText())
+					{
+						var s = new JsonSerializer();
+						var r = new JsonReader(reader);
+						config = (T) s.Deserialize(r, typeof (T));
+					}
             }
             catch { }
             return config;

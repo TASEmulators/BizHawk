@@ -13,14 +13,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		partial class PPU
 		{
+			//when the ppu issues a write it goes through here and into the game board
 			void ppubus_write(int addr, byte value)
 			{
 				nes.board.WritePPU(addr, value);
 			}
 
+			//when the ppu issues a read it goes through here and into the game board
 			byte ppubus_read(int addr)
 			{
 				return nes.board.ReadPPU(addr);
+			}
+
+			//boards may not respond to a read, in which case this will get called. please apply mirroring logic beforehand
+			public byte ppu_defaultRead(int addr)
+			{
+				addr &= 0x7FF;
+				return NTARAM[addr];
+			}
+
+			//boards may not respond to a write, in which case this will get called. please apply mirroring logic beforehand
+			public void ppu_defaultWrite(int addr, byte value)
+			{
+				addr &= 0x7FF;
+				NTARAM[addr] = value;
 			}
 
 			enum PPUPHASE {

@@ -8,25 +8,53 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public partial class NES : IEmulator
 	{
+		//the main rom class that contains all information necessary for the board to operate
+		public class RomInfo
+		{
+			public enum EHeaderType
+			{
+				None, INes
+			}
+
+			public enum EMirrorType
+			{
+				Vertical, Horizontal, Other
+			}
+
+			public EHeaderType HeaderType;
+			public int PRG_Size = -1, CHR_Size = -1, PRAM_Size = -1;
+			public string BoardName;
+			public EMirrorType MirrorType;
+			public bool Battery;
+
+			public int MapperNumber; //it annoys me that this junky mapper number is even in here. it might be nice to wrap this class in something else to contain the MapperNumber
+
+			public string MD5;
+
+			public byte[] ROM, VROM;
+		}
+
 		public interface INESBoard
 		{
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr);
+			byte ReadPRAM(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
+			void WritePRAM(int addr, byte value);
 			void Initialize(RomInfo romInfo, NES nes);
 		};
 
 		public abstract class NESBoardBase : INESBoard
 		{
-			public void Initialize(RomInfo romInfo, NES nes)
+			public virtual void Initialize(RomInfo romInfo, NES nes)
 			{
 				this.RomInfo = romInfo;
 				this.NES = nes;
-				switch (romInfo.Mirroring)
+				switch (romInfo.MirrorType)
 				{
-					case 0: SetMirroring(0, 0, 1, 1); break;
-					case 1: SetMirroring(0, 1, 0, 1); break;
+					case RomInfo.EMirrorType.Horizontal: SetMirroring(0, 0, 1, 1); break;
+					case RomInfo.EMirrorType.Vertical: SetMirroring(0, 1, 0, 1); break;
 					default: SetMirroring(-1, -1, -1, -1); break; //crash!
 				}
 			}
@@ -42,9 +70,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mirroring[3] = d;
 			}
 
+			int ApplyMirroring(int addr)
+			{
+				int block = (addr >> 10) & 3;
+				block = mirroring[block];
+				int ofs = addr & 0x3FF;
+				return (block << 10) | ofs | 0x2000;
+			}
+
 
 			public virtual byte ReadPRG(int addr) { return RomInfo.ROM[addr];}
 			public virtual void WritePRG(int addr, byte value) { }
+
+			public virtual void WritePRAM(int addr, byte value) { }
+			public virtual byte ReadPRAM(int addr) { return 0xFF; }
 
 
 			public virtual void WritePPU(int addr, byte value)
@@ -54,10 +93,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					int block = (addr >> 10) & 3;
-					block = mirroring[block];
-					int ofs = addr & 0x3FF;
-					NES.ppu.NTARAM[(block << 10) | ofs] = value;
+					NES.ppu.ppu_defaultWrite(ApplyMirroring(addr), value);
 				}
 			}
 
@@ -69,10 +105,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					int block = (addr >> 10)&3;
-					block = mirroring[block];
-					int ofs = addr & 0x3FF;
-					return NES.ppu.NTARAM[(block << 10) | ofs];
+					return NES.ppu.ppu_defaultRead(ApplyMirroring(addr));
 				}
 			}
 		}
@@ -438,9 +471,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             return input;
         }
 
-		public class RomInfo
+		public class RomHeaderInfo
 		{
-			public int MapperNo, Mirroring, Num_PRG_Banks, Num_CHR_Banks;
+			public int MapperNo, Mirroring, Num_PRG_Banks, Num_CHR_Banks, Num_PRAM_Banks;
+			public bool Battery;
 			public byte[] ROM, VROM;
 		}
 
@@ -486,15 +520,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public RomInfo Analyze()
 			{
 				var ret = new RomInfo();
-				ret.MapperNo = (ROM_type>>4);
-				ret.MapperNo|=(ROM_type2&0xF0);
-				ret.Mirroring = (ROM_type&1);
-				if((ROM_type&8)!=0) ret.Mirroring=2;
-				ret.Num_PRG_Banks = ROM_size;
-				if (ret.Num_PRG_Banks == 0)
-					ret.Num_PRG_Banks = 256;
-				ret.Num_CHR_Banks = VROM_size;
-				
+				ret.MapperNumber = (ROM_type>>4);
+				ret.MapperNumber |= (ROM_type2 & 0xF0);
+				int mirroring = (ROM_type&1);
+				if((ROM_type&8)!=0) mirroring=2;
+				if (mirroring == 0) ret.MirrorType = RomInfo.EMirrorType.Horizontal;
+				else if (mirroring == 1) ret.MirrorType = RomInfo.EMirrorType.Vertical;
+				else ret.MirrorType = RomInfo.EMirrorType.Other;
+				ret.PRG_Size = ROM_size;
+				if (ret.PRG_Size == 0)
+					ret.PRG_Size = 256;
+				ret.CHR_Size = VROM_size;
+				ret.Battery = (ROM_type & 2) != 0;
+
+				fixed (iNES_HEADER* self = &this) ret.PRAM_Size = self->reserve[0];
+				//0 is supposed to mean 1 (for compatibility, as this is an extension to original iNES format)
+				//but we're not worrying about that for now)
+
+				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, PRAM:{4}, bat:{5}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.PRAM_Size, ret.Battery ? 1 : 0);
+
 				//fceux calls uppow2(PRG_Banks) here, and also ups the chr size as well
 				//then it does something complicated that i don't understand with making sure it doesnt read too much data
 				//fceux only allows this condition for mappers in the list "not_power2" which is only 228
@@ -503,20 +547,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		INESBoard Classify(RomInfo info)
-		{
-			//you may think that this should be table driven.. but im not so sure. 
-			//i think this should be a backstop eventually, with other classification happening from the game database.
-			//if the gamedatabase has an exact answer for a game then the board can be determined..
-			//otherwise we might try to find a general case handler below.
-
-			if (info.MapperNo == 0 && info.Num_CHR_Banks == 1 && info.Num_PRG_Banks == 2 && info.Mirroring == 1) return new Boards.NROM();
-			return null;
-		}
+		const bool ENABLE_DB = true;
 
 		public unsafe void LoadGame(IGame game)
 		{
-			byte[] file = game.GetRomData();
+			byte[] file = game.GetFileData();
 			if (file.Length < 16) throw new InvalidOperationException("Alleged NES rom too small to be anything useful");
 			fixed (byte* bfile = &file[0])
 			{
@@ -524,14 +559,59 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (!header->CheckID()) throw new InvalidOperationException("iNES header not found");
 				header->Cleanup();
 
-				romInfo = header->Analyze();
-				board = Classify(romInfo);
+				//now that we know we have an iNES header, we can try to ignore it.
+				string hash;
+				using (var md5 = System.Security.Cryptography.MD5.Create())
+				{
+					md5.TransformFinalBlock(file, 16, file.Length - 16);
+					hash = Util.BytesToHexString(md5.Hash);
+				}
+				Console.WriteLine("headerless rom hash: {0}", hash);
+
+				GameInfo gi = null;
+				if (ENABLE_DB) gi = Database.CheckDatabase(hash);
+				else Console.WriteLine("database check disabled");
+
+				if (gi == null)
+				{
+					romInfo = header->Analyze();
+					string board = BoardDetector.Detect(romInfo);
+					if (board == null)
+						throw new InvalidOperationException("Couldn't detect board type");
+					romInfo.BoardName = board;
+					Console.WriteLine("board detected as " + board);
+				}
+				else
+				{
+					Console.WriteLine("found game in database: {0}", gi.Name);
+					romInfo = new RomInfo();
+					romInfo.MD5 = hash;
+					var dict = gi.ParseOptionsDictionary();
+					if (dict.ContainsKey("board"))
+						romInfo.BoardName = dict["board"];
+					switch (dict["mirror"])
+					{
+						case "V": romInfo.MirrorType = RomInfo.EMirrorType.Vertical; break;
+						case "H": romInfo.MirrorType = RomInfo.EMirrorType.Horizontal; break;
+					}
+					if (dict.ContainsKey("PRG"))
+						romInfo.PRG_Size = int.Parse(dict["PRG"]);
+					if (dict.ContainsKey("CHR"))
+						romInfo.CHR_Size = int.Parse(dict["CHR"]);
+				}
+
+				//construct board (todo)
+				switch (romInfo.BoardName)
+				{
+					case "NROM": board = new Boards.NROM(); break;
+				}
+
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
 				board.Initialize(romInfo, this);
 
 				//we're going to go ahead and copy these out, just in case we need to pad them alter
-				romInfo.ROM = new byte[romInfo.Num_PRG_Banks * 16 * 1024];
-				romInfo.VROM = new byte[romInfo.Num_CHR_Banks * 8 * 1024];
+				romInfo.ROM = new byte[romInfo.PRG_Size * 16 * 1024];
+				romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
 				Array.Copy(file, 16, romInfo.ROM, 0, romInfo.ROM.Length);
 				Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
 			}
@@ -540,3 +620,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 	}
 }
+
+//todo
+//http://blog.ntrq.net/?p=428
+//cpu bus junk bits

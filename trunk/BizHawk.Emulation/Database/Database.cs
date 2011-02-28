@@ -25,11 +25,31 @@ namespace BizHawk
                 return new string[0];
             return MetaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
         }
+
+		public Dictionary<string, string> ParseOptionsDictionary()
+		{
+			var ret = new Dictionary<string, string>();
+			foreach (var opt in GetOptions())
+			{
+				var parts = opt.Split('=');
+				var key = parts[0];
+				var value = parts.Length > 1 ? parts[1] : "";
+				ret[key] = value;
+			}
+			return ret;
+		}
     }
 
     public static class Database
     {
 		private static Dictionary<string, GameInfo> db = new Dictionary<string, GameInfo>();
+
+		public static GameInfo CheckDatabase(string hash)
+		{
+			GameInfo ret = null;
+			db.TryGetValue(hash, out ret);
+			return ret;
+		}
 
         public static void LoadDatabase(string path)
         {
@@ -46,7 +66,7 @@ namespace BizHawk
                         string[] items = line.Split('\t');
 
                         var Game = new GameInfo();
-                        Game.hash = items[0];
+                        Game.hash = items[0].ToUpper();
                         Game.Name = items[2];
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
@@ -61,13 +81,14 @@ namespace BizHawk
 
         public static GameInfo GetGameInfo(byte[] RomData, string fileName)
         {
+			GameInfo ret;
 			string hash = string.Format("{0:X8}", CRC32.Calculate(RomData));
-            if (db.ContainsKey(hash))
-                return db[hash];
+			if (db.TryGetValue(hash, out ret))
+				return ret;
 
 			hash = Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData));
-			if (db.ContainsKey(hash))
-				return db[hash];
+			if (db.TryGetValue(hash, out ret))
+				return ret;
 
             // rom is not in database. make some best-guesses
             var Game = new GameInfo();
