@@ -610,6 +610,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					case "NROM": board = new Boards.NROM(); break;
 					case "UNROM": board = new Boards.UxROM("UNROM"); break;
+					case "UOROM": board = new Boards.UxROM("UOROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
