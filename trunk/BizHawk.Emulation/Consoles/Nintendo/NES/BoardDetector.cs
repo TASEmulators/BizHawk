@@ -31,21 +31,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					var parts = line.Split('\t');
 					if (parts.Length < 4) continue;
-					line = line.Replace(parts[0],"");
-					line = line.TrimStart('\t');
-					Table[line] = parts[0];
+					line = line.Replace(parts[3],"");
+					line = line.TrimEnd('\t');
+					Table[line] = parts[3];
 				}
 			}
-//board		MAP	PRG	CHR
+//MAP	PRG	CHR	BOARD
 			static string ClassifyTable = @"
-NROM	0	1	1
-NROM	0	2	1
-UNROM	2	8	0
-UOROM	2	16	0
-CNROM	3	2	2
-CNROM	3	2	4
-ANROM	7	8	0
-AOROM	7	16	0
+0	1	1	NROM
+0	2	1	NROM
+2	8	0	UNROM
+2	16	0	UOROM
+3	2	2	CNROM
+3	2	4	CNROM
+7	8	0	ANROM
+7	16	0	AOROM
+11	4	2	Discrete_74x377
+11	2	4	Discrete_74x377
+13	2	0	CPROM
 ";
 
 		}

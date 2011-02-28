@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				Debug.Assert(old_value == value,"Found a test case of CxROM bus conflict. please report.");
 			}
 			chr = value&chr_mask;
-			Console.WriteLine("at {0}, set chr={1}", NES.ppu.ppur.status.sl, chr);
+			//Console.WriteLine("at {0}, set chr={1}", NES.ppu.ppur.status.sl, chr);
 		}
 
 		public override byte ReadPPU(int addr)
