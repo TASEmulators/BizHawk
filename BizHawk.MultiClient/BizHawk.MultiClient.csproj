@@ -317,7 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\ControllerImages\NESController.PNG" />
-    <Content Include="gamedb.txt" />
+    <Content Include="output\gamedb.txt" />
     <None Include="images\Refresh.bmp" />
     <None Include="images\TruncateFromRW.png" />
     <None Include="images\TruncateFromFile.png" />

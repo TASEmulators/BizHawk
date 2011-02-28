@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public fixed byte oam[4];
 				public fixed byte patterns[2];
 				public byte index;
-				byte pad;
+				public byte present;
 			}
 
 			//TODO - check flashing sirens in werewolf
@@ -249,34 +249,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//look for sprites (was supposed to run concurrent with bg rendering)
 					oamcounts[scanslot] = 0;
 					oamcount = 0;
-					if (sl == 0xb1)
-					{
-						int zzz = 9;
-					}
 					int spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
+
+					for (int i = 0; i < 64; i++)
+						fixed (TempOAM* oam = &oams[scanslot, i])
+							oam->present = 0;
+
 					for (int i = 0; i < 64; i++)
 					{
 						int spr = i * 4;
-						if (yp >= OAM[spr] && yp < OAM[spr] + spriteHeight)
 						{
-							//if we already have maxsprites, then this new one causes an overflow,
-							//set the flag and bail out.
-							if (oamcount >= 8 && reg_2001.PPUON)
+							if (yp >= OAM[spr] && yp < OAM[spr] + spriteHeight)
 							{
-								Reg2002_objoverflow = true;
-								if (SPRITELIMIT)
-									break;
-							}
+								//if we already have maxsprites, then this new one causes an overflow,
+								//set the flag and bail out.
+								if (oamcount >= 8 && reg_2001.PPUON)
+								{
+									Reg2002_objoverflow = true;
+									if (SPRITELIMIT)
+										break;
+								}
 
-							//just copy some bytes into the internal sprite buffer
-							for (int j = 0; j < 4; j++)
+								//just copy some bytes into the internal sprite buffer
 								fixed (TempOAM* oam = &oams[scanslot, oamcount])
-									oam->oam[j] = OAM[spr + j];
+								{
+									for (int j = 0; j < 4; j++)
+										oam->oam[j] = OAM[spr + j];
+									oam->present = 1;
+								}
 
-							//note that we stuff the oam index into [6].
-							//i need to turn this into a struct so we can have fewer magic numbers
-							oams[scanslot, oamcount].index = (byte)i;
-							oamcount++;
+								//note that we stuff the oam index into [6].
+								//i need to turn this into a struct so we can have fewer magic numbers
+								oams[scanslot, oamcount].index = (byte)i;
+								oamcount++;
+							}
 						}
 					}
 					oamcounts[scanslot] = oamcount;
@@ -303,11 +309,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//fetch sprite patterns
 					for (int s = 0; s < MAXSPRITES; s++)
 					{
-						if (sl == 0x9E && s == 1)
-						{
-							int zzz = 9;
-						}
-
 						//if we have hit our eight sprite pattern and we dont have any more sprites, then bail
 						if (s == oamcount && s >= 8)
 							break;
@@ -327,17 +328,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							int patternNumber = oam->oam[1];
 							int patternAddress;
 
+							//create deterministic dummy fetch pattern
+							if (oam->present==0)
+							{
+								patternNumber = 0;
+								line = 0;
+							}
+
 							//8x16 sprite handling:
 							if (reg_2000.obj_size_16)
 							{
 								int bank = (patternNumber & 1) << 12;
 								patternNumber = patternNumber & ~1;
-								patternNumber |= (line >> 3);
+								patternNumber |= (line >> 3)&1;
 								patternAddress = (patternNumber << 4) | bank;
 							}
 							else
 							{
-								patternAddress = (patternNumber << 4) | (reg_2000.obj_pattern_hi << 9);
+								patternAddress = (patternNumber << 4) | (reg_2000.obj_pattern_hi << 12);
 							}
 
 							//offset into the pattern for the current line.
@@ -347,6 +355,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							//garbage nametable fetches
 							//reset the scroll counter, happens at cycle 304
+							//TODO - compact this logic
 							if (realSprite)
 							{
 								if ((sl == 0) && reg_2001.PPUON)

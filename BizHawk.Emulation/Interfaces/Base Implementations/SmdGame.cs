@@ -65,6 +65,7 @@ namespace BizHawk
             return output;
         }
 
+		public byte[] GetFileData() { return null; }
         public byte[] GetRomData()
         {
             return RomData;
