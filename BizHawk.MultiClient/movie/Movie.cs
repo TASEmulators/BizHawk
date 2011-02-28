@@ -17,10 +17,10 @@ namespace BizHawk.MultiClient
 
         private MOVIEMODE MovieMode = new MOVIEMODE();
 
-        public Movie(string filename)
+        public Movie(string filename, MOVIEMODE m)
         {
             Filename = filename;    //TODO: Validate that file is writable
-            MovieMode = MOVIEMODE.PLAY;
+            MovieMode = m;
         }
 
         public void StopMovie()

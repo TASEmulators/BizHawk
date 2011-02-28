@@ -46,7 +46,6 @@
 
             if (mnemonic[15] != '.' && mnemonic[15] != '0')
                 Controller.ForceButton("Reset");
-
         }
 
 
