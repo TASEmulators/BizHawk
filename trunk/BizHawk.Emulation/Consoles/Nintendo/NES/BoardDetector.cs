@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			static string ClassifyTable = @"
 NROM	0	1	1
 NROM	0	2	1
+UXROM	2	8	0
 ";
 
 		}
