@@ -62,6 +62,7 @@ namespace BizHawk
                     string line = reader.ReadLine();
                     try
                     {
+						if (line.StartsWith(";")) continue; //comment
                         if (line.Trim().Length == 0) continue;
                         string[] items = line.Split('\t');
 

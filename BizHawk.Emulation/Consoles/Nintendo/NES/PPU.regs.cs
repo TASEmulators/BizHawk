@@ -276,8 +276,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active))
 				{
 					//if we just unleashed the vblank interrupt then activate it now
-					//TriggerNMI2();
-					Debug.Assert(false);
+					//FCEUX would use a "trigger NMI2" here. why?? why isn't a regular NMI good enough?
+					TriggerNMI();
 				}
 				reg_2000.Value = value;
 			}
