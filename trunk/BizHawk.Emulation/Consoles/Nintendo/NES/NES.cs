@@ -9,7 +9,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public partial class NES : IEmulator
 	{
-		//the main rom class that contains all information necessary for the board to operate
+        //Game issues:
+        //3-D World Runner - UNROM - weird lines in gameplay (scanlines off?)
+        //JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
+        //Castlevania II (U) - Black screen only
+        //Zelda II (U) - Black screen only
+
+
+        //the main rom class that contains all information necessary for the board to operate
 		public class RomInfo
 		{
 			public enum EHeaderType
