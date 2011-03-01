@@ -1,13 +1,27 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	//generally mapper3
 
+	//Solomon's Key
+	//Arkanoid
+	//Arkista's Ring
+	//Bump 'n' Jump
+	//Cybernoid
+
 	public class CxROM : NES.NESBoardBase
 	{
+		//configuration
 		string type;
+		int chr_mask;
+		bool bus_conflict;
+
+		//state
+		int chr;
+
 		public CxROM(string type)
 		{
 			this.type = type;
@@ -36,9 +50,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			else return base.ReadPPU(addr);
 		}
 
-		int chr;
-		int chr_mask;
-		bool bus_conflict;
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			bw.Write(chr);
+		}
 
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			chr = br.ReadInt32();
+		}
 	}
 }

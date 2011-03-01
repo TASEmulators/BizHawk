@@ -1,15 +1,22 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	//mapper 11
 
+	//Crystal Mines
+	//Metal Fighter
+
 	public class Discrete_74x377 : NES.NESBoardBase
 	{
+		//configuration
 		int prg_mask, chr_mask;
-		int prg, chr;
 		bool bus_conflict = true;
+
+		//state
+		int prg, chr;
 
 		public override void Initialize(NES.RomInfo romInfo, NES nes)
 		{
@@ -46,6 +53,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 			prg = (value & 3) & prg_mask;
 			chr = (value >> 4) & chr_mask;
+		}
+
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			bw.Write(chr);
+			bw.Write(prg);
+		}
+
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			chr = br.ReadInt32();
+			prg = br.ReadInt32();
 		}
 	}
 }

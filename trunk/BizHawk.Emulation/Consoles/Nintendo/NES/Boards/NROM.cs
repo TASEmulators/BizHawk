@@ -5,6 +5,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	public class NROM : NES.NESBoardBase
 	{
+		//configuration
+		int mask;
+
+		//state
+		//(none)
+
 		public override void Initialize(NES.RomInfo romInfo, NES nes)
 		{
 			base.Initialize(romInfo, nes);
@@ -16,7 +22,5 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			addr &= mask;
 			return RomInfo.ROM[addr];
 		}
-
-		int mask;
 	}
 }

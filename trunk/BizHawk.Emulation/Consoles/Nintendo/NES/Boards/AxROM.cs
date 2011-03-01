@@ -1,17 +1,27 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
+	//TODO - hardcode CRAM size and assert
+
 	//generally mapper7
+
+	//Battletoads
+	//Time Lord
+	//Marble Madness
 
 	public class AxROM : NES.NESBoardBase
 	{
+		//configuration
 		string type;
 		bool bus_conflict;
-		byte[] cram;
 		int cram_mask;
 		int prg_mask;
+
+		//state
+		byte[] cram;
 		int prg;
 
 		public AxROM(string type)
@@ -79,6 +89,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				cram[addr & cram_mask] = value;
 			}
 			else base.WritePPU(addr,value);
+		}
+
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			bw.Write(prg);
+			Util.WriteByteBuffer(bw, cram);
+		}
+
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			prg = br.ReadInt32();
+			cram = Util.ReadByteBuffer(br, false);
 		}
 
 	}

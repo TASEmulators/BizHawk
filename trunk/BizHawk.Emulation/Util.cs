@@ -200,6 +200,65 @@ namespace BizHawk
             writer.WriteLine();
         }
 
+		public static void SaveAsHex(this int[] buffer, TextWriter writer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+			{
+				writer.Write("{0:X8}", buffer[i]);
+			}
+			writer.WriteLine();
+		}
+
+		public static void SaveAsHex(this uint[] buffer, TextWriter writer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+			{
+				writer.Write("{0:X8}", buffer[i]);
+			}
+			writer.WriteLine();
+		}
+
+		public static void Write(this BinaryWriter bw, int[] buffer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		public static void Write(this BinaryWriter bw, uint[] buffer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		public static void Write(this BinaryWriter bw, short[] buffer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		public static void Write(this BinaryWriter bw, ushort[] buffer)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		public static int[] ReadInts(this BinaryReader br, int num)
+		{
+			int[] ret = new int[num];
+			for (int i = 0; i < num; i++)
+				ret[i] = br.ReadInt32();
+			return ret;
+		}
+
+		public static short[] ReadShorts(this BinaryReader br, int num)
+		{
+			short[] ret = new short[num];
+			for (int i = 0; i < num; i++)
+				ret[i] = br.ReadInt16();
+			return ret;
+		}
+
+
         public static void ReadFromHex(this byte[] buffer, string hex)
         {
             if (hex.Length % 2 != 0)
@@ -232,6 +291,22 @@ namespace BizHawk
                 buffer[i] = ushort.Parse(ushorthex, NumberStyles.HexNumber);
             }
         }
+
+		public static void ReadFromHex(this int[] buffer, BinaryWriter bw)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		public static void SaveAsHex(this uint[] buffer, BinaryWriter bw)
+		{
+			for (int i = 0; i < buffer.Length; i++)
+				bw.Write(buffer[i]);
+		}
+
+		//these don't work??? they dont get chosen by compiler
+		public static void Write(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
+		public static Bit ReadBit(this BinaryReader br) { return br.ReadBoolean(); }
     }
 
     public static class Colors
@@ -255,7 +330,7 @@ namespace BizHawk
 
 
 	//I think this is a little faster with uint than with byte
-	struct Bit
+	public struct Bit
 	{
 		Bit(uint val) { this.val = val; }
 		uint val;
@@ -299,6 +374,7 @@ namespace BizHawk
 
 		/// <summary>
 		/// conerts bytes to an uppercase string of hex numbers in upper case without any spacing or anything
+		/// //could be extension method
 		/// </summary>
 		public static string BytesToHexString(byte[] bytes)
 		{
@@ -306,6 +382,57 @@ namespace BizHawk
 			foreach (byte b in bytes)
 				sb.AppendFormat("{0:X2}", b);
 			return sb.ToString();
+		}
+
+		//could be extension method
+		public static byte[] HexStringToBytes(string str)
+		{
+			MemoryStream ms = new MemoryStream();
+			if (str.Length % 2 != 0) throw new ArgumentException();
+			int len = str.Length/2;
+			for (int i = 0; i < len; i++)
+			{
+				int d = 0;
+				for (int j = 0; j < 2; j++)
+				{
+					char c = char.ToLower(str[i * 2 + j]);
+					if (c >= '0' && c <= '9')
+						d += (c - '0');
+					else if (c >= 'a' && c <= 'f')
+						d += (c - 'a') + 10;
+					else throw new ArgumentException();
+					if (j == 0) d <<= 4;
+				}
+				ms.WriteByte((byte)d);
+			}
+			return ms.ToArray();
+		}
+
+		//could be extension method
+		public static void WriteByteBuffer(BinaryWriter bw, byte[] data)
+		{
+			if (data == null) bw.Write(0);
+			else
+			{
+				bw.Write(data.Length);
+				bw.Write(data);
+			}
+		}
+
+		//could be extension method
+		public static byte[] ReadByteBuffer(BinaryReader br, bool return_null)
+		{
+			int len = br.ReadInt32();
+			if (len == 0 && return_null) return null;
+			byte[] ret = new byte[len];
+			int ofs = 0;
+			while (len > 0)
+			{
+				int done = br.Read(ret, ofs, len);
+				ofs += done;
+				len -= done;
+			}
+			return ret;
 		}
 
 		public static unsafe int memcmp(void* a, string b, int len)

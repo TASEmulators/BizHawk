@@ -1,13 +1,25 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
+	//generally mapper66
+
+	//Doraemon
+	//Dragon Power
+	//Gumshoe
+	//Thunder & Lightning
+	//Super Mario Bros. + Duck Hunt
+
 	//should this be called GNROM? there is no other Gx anything AFAIK..
 
 	public class GxROM : NES.NESBoardBase
 	{
+		//configuraton
 		int prg_mask, chr_mask;
+
+		//state
 		int prg, chr;
 
 		public override void Initialize(NES.RomInfo romInfo, NES nes)
@@ -40,6 +52,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			prg = (((value>>4) & 3) & prg_mask);
 		}
 
-		int mask;
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			bw.Write(chr);
+			bw.Write(prg);
+		}
+
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			chr = br.ReadInt32();
+			prg = br.ReadInt32();
+		}
 	}
 }

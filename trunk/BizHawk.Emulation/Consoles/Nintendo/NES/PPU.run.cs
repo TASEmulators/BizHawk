@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public byte pt_0, pt_1;
 			};
 
-			public int[] xbuf = new int[256*256];
+			public short[] xbuf = new short[256*256];
 
 			void Read_bgdata(ref BGDataRecord bgdata) {
 				int addr = ppur.get_ntread();
@@ -68,11 +68,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			//TODO - check flashing sirens in werewolf
-			int PaletteAdjustPixel(int pixel)
+			short PaletteAdjustPixel(int pixel)
 			{
 				//tack on the deemph bits
 				pixel |= (reg_2001.intense_red<<8)|(reg_2001.intense_green<<9)|(reg_2001.intense_blue<<10);
-				return pixel;
+				return (short)pixel;
 			}
 
 			const int kLineTime = 341;
