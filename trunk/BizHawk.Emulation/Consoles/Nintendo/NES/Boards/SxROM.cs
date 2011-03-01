@@ -16,6 +16,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	//this board is a little more convoluted than it might otherwise be because i switched to a more chip-centered way of modeling it partway through
 	//perhaps i will make other boards work that way, and perhaps not
 
+    //Game issues:
+    //Castlevania II (U) - Black screen only
+    //Zelda II (U) - Black screen only
+
 	class MMC1
 	{
 		public MMC1()
