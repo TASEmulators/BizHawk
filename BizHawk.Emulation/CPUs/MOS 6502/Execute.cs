@@ -38,6 +38,9 @@ TriggerException(ExceptionType.BRK);
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
+                    case 0x04: // NOP zp
+                        PendingCycles -= 3; TotalExecutedCycles += 3;
+                        break;
                     case 0x05: // ORA zp
                         value8 = ReadMemory(ReadMemory(PC++));
                         A |= value8;
@@ -68,6 +71,9 @@ TriggerException(ExceptionType.BRK);
                         A = (byte) (A << 1);
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x0C: // NOP (addr)
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x0D: // ORA addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
@@ -104,6 +110,9 @@ TriggerException(ExceptionType.BRK);
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
+                    case 0x14: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0x15: // ORA zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         A |= value8;
@@ -130,6 +139,12 @@ TriggerException(ExceptionType.BRK);
                         PC += 2;
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
+                    case 0x1A: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x1C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x1D: // ORA addr,X
@@ -248,6 +263,9 @@ FlagT = true;//this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
+                    case 0x34: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0x35: // AND zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         A &= value8;
@@ -274,6 +292,12 @@ FlagT = true;//this seems wrong
                         PC += 2;
                         A &= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
+                    case 0x3A: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x3C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x3D: // AND addr,X
@@ -309,6 +333,9 @@ FlagT = true;// this seems wrong
                         A ^= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
+                        break;
+                    case 0x44: // NOP zp
+                        PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x45: // EOR zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -380,6 +407,9 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
+                    case 0x54: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0x55: // EOR zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         A ^= value8;
@@ -406,6 +436,12 @@ FlagT = true;// this seems wrong
                         PC += 2;
                         A ^= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
+                    case 0x5A: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x5C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x5D: // EOR addr,X
@@ -443,6 +479,9 @@ FlagT = true;// this seems wrong
                         A = (byte)temp;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
+                        break;
+                    case 0x64: // NOP zp
+                        PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x65: // ADC zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -528,6 +567,9 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
+                    case 0x74: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0x75: // ADC zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         temp = value8 + A + (FlagC ? 1 : 0);
@@ -562,6 +604,12 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
+                    case 0x7A: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x7C: // NOP (addr,X)
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0x7D: // ADC addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
@@ -586,10 +634,16 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7; TotalExecutedCycles += 7;
                         break;
+                    case 0x80: // NOP #nn
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
                     case 0x81: // STA (addr,X)
                         value16 = ReadWordPageWrap((byte)(ReadMemory(PC++)+X));
                         WriteMemory(value16, A);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
+                        break;
+                    case 0x82: // NOP #nn
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x84: // STY zp
                         value16 = ReadMemory(PC++);
@@ -608,6 +662,9 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x88: // DEY
                         P = (byte)((P & 0x7D) | TableNZ[--Y]);
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0x89: // NOP #nn
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x8A: // TXA
@@ -838,6 +895,9 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 6;
                         break;
+                    case 0xC2: // NOP #nn
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
                     case 0xC4: // CPY zp
                         value8 = ReadMemory(ReadMemory(PC++));
                         value16 = (ushort) (Y - value8);
@@ -916,6 +976,9 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 5;
                         break;
+                    case 0xD4: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0xD5: // CMP zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         value16 = (ushort) (A - value8);
@@ -943,6 +1006,12 @@ FlagT = true;// this seems wrong
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
                         PendingCycles -= 4;
+                        break;
+                    case 0xDA: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0xDC: // NOP (addr,X)
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xDD: // CMP addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
@@ -979,6 +1048,9 @@ FlagT = true;// this seems wrong
                         A = (byte)temp;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
+                        break;
+                    case 0xE2: // NOP #nn
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0xE4: // CPX zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -1065,6 +1137,9 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
+                    case 0xF4: // NOP zp,X
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0xF5: // SBC zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         temp = A - value8 - (FlagC?0:1);
@@ -1097,6 +1172,12 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
+                    case 0xFA: // NOP
+                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        break;
+                    case 0xFC: // NOP (addr,X)
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
+                        break;
                     case 0xFD: // SBC addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
                         if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
@@ -1120,7 +1201,9 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 7; TotalExecutedCycles += 7;
                         break;
                     default:
-                        throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
+                        //throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
+						//Console.WriteLine(String.Format("Unhandled opcode: {0:X2}", opcode));
+						break;
                 }
             }
         }

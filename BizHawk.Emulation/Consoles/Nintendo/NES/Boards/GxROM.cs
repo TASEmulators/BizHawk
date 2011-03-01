@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
+	//should this be called GNROM? there is no other Gx anything AFAIK..
+
 	public class GxROM : NES.NESBoardBase
 	{
 		int prg_mask, chr_mask;

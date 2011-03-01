@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public EHeaderType HeaderType;
 			public int PRG_Size = -1, CHR_Size = -1;
-			public int CRAM_Size = -1, NVWRAM_Size = -1, WRAM_Size = -1;
+			public int CRAM_Size = -1, PRAM_Size = -1;
 			public string BoardName;
 			public EMirrorType MirrorType;
 			public bool Battery;
@@ -43,11 +43,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr);
-			byte ReadWRAM(int addr);
+			byte ReadPRAM(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
-			void WriteWRAM(int addr, byte value);
+			void WritePRAM(int addr, byte value);
 			void Initialize(RomInfo romInfo, NES nes);
+			byte[] SaveRam { get; }
 		};
 
 		public abstract class NESBoardBase : INESBoard
@@ -101,8 +102,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte ReadPRG(int addr) { return RomInfo.ROM[addr];}
 			public virtual void WritePRG(int addr, byte value) { }
 
-			public virtual void WriteWRAM(int addr, byte value) { }
-			public virtual byte ReadWRAM(int addr) { return 0xFF; }
+			public virtual void WritePRAM(int addr, byte value) { }
+			public virtual byte ReadPRAM(int addr) { return 0xFF; }
 
 
 			public virtual void WritePPU(int addr, byte value)
@@ -127,6 +128,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return NES.ppu.ppu_defaultRead(ApplyMirroring(addr));
 				}
 			}
+
+			public virtual byte[] SaveRam { get { return null; } }
 		}
 
 		//hardware
@@ -214,7 +217,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x4000) return ReadPPUReg(addr & 7);
 			else if (addr < 0x4020) return ReadReg(addr); //we're not rebasing the register just to keep register names canonical
 			else if (addr < 0x6000) return 0xFF; //exp rom
-			else if (addr < 0x8000) return 0xFF; //sram
+			else if (addr < 0x8000) return board.ReadPRAM(addr);
 			else return board.ReadPRG(addr - 0x8000);
 		}
 
@@ -227,7 +230,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x4000) WritePPUReg(addr & 7,value);
 			else if (addr < 0x4020) WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
 			else if (addr < 0x6000) { } //exp rom
-			else if (addr < 0x8000) { } //sram
+			else if (addr < 0x8000) board.WritePRAM(addr,value);
 			else board.WritePRG(addr - 0x8000, value);
 		}
 
@@ -398,10 +401,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 		public bool DeterministicEmulation { get { return true; } set { } }
 
-		public byte[] SaveRam { get { return null; } }
+		public byte[] SaveRam
+		{
+			get
+			{
+				if(board==null) return null;
+				return board.SaveRam;
+			}
+		}
 		public bool SaveRamModified
 		{
-			get { return false; }
+			get { if (board == null) return false; if (board.SaveRam == null) return false; return true; }
 			set { }
 		}
 
@@ -562,11 +572,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ret.CHR_Size = VROM_size;
 				ret.Battery = (ROM_type & 2) != 0;
 
-				fixed (iNES_HEADER* self = &this) ret.WRAM_Size = self->reserve[0] * 8;
+				fixed (iNES_HEADER* self = &this) ret.PRAM_Size = self->reserve[0] * 8;
 				//0 is supposed to mean 1 (for compatibility, as this is an extension to original iNES format)
-				if (ret.WRAM_Size == 0) ret.WRAM_Size = 8;
+				if (ret.PRAM_Size == 0) ret.PRAM_Size = 8;
 
-				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, CRAM:{4}, WRAM:{5}, NVWRAM:{6}, bat:{7}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.CRAM_Size, ret.WRAM_Size, ret.NVWRAM_Size, ret.Battery ? 1 : 0);
+				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, CRAM:{4}, PRAM:{5}, bat:{6}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.CRAM_Size, ret.PRAM_Size, ret.Battery ? 1 : 0);
 
 				//fceux calls uppow2(PRG_Banks) here, and also ups the chr size as well
 				//then it does something complicated that i don't understand with making sure it doesnt read too much data
@@ -618,18 +628,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					var dict = gi.ParseOptionsDictionary();
 					if (dict.ContainsKey("board"))
 						romInfo.BoardName = dict["board"];
-					switch (dict["mirror"])
-					{
-						case "V": romInfo.MirrorType = EMirrorType.Vertical; break;
-						case "H": romInfo.MirrorType = EMirrorType.Horizontal; break;
-						case "X": romInfo.MirrorType = EMirrorType.External; break;
-					}
+					if(dict.ContainsKey("mirror"))
+						switch (dict["mirror"])
+						{
+							case "V": romInfo.MirrorType = EMirrorType.Vertical; break;
+							case "H": romInfo.MirrorType = EMirrorType.Horizontal; break;
+							case "X": romInfo.MirrorType = EMirrorType.External; break;
+							default: throw new InvalidOperationException();
+						}
+					
 					if (dict.ContainsKey("PRG"))
 						romInfo.PRG_Size = int.Parse(dict["PRG"]);
 					if (dict.ContainsKey("CHR"))
 						romInfo.CHR_Size = int.Parse(dict["CHR"]);
 					if (dict.ContainsKey("CRAM"))
 						romInfo.CRAM_Size = int.Parse(dict["CRAM"]);
+					if (dict.ContainsKey("PRAM"))
+						romInfo.PRAM_Size = int.Parse(dict["PRAM"]);
+					if (dict.ContainsKey("bat"))
+						romInfo.Battery = true;
 					if (dict.ContainsKey("bug"))
 						Console.WriteLine("game is known to be BUGGED!!!");
 				}
@@ -645,16 +662,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "AOROM": board = new Boards.AxROM("AOROM"); break;
 					case "Discrete_74x377": board = new Boards.Discrete_74x377(); break;
 					case "CPROM": board = new Boards.CPROM(); break;
-					case "GxROM": board = new Boards.GxROM(); break;	
+					case "GxROM": board = new Boards.GxROM(); break;
+					case "SGROM": board = new Boards.SxROM("SGROM"); break;
+					case "SNROM": board = new Boards.SxROM("SNROM"); break;
+					case "SL2ROM": board = new Boards.SxROM("SL2ROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
 
 				//we're going to go ahead and copy these out, just in case we need to pad them alter
 				romInfo.ROM = new byte[romInfo.PRG_Size * 16 * 1024];
-				romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
 				Array.Copy(file, 16, romInfo.ROM, 0, romInfo.ROM.Length);
-				Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
+				if (romInfo.CHR_Size > 0)
+				{
+					romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
+					Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
+				}
 
 				board.Initialize(romInfo, this);
 			}
@@ -667,3 +690,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 //todo
 //http://blog.ntrq.net/?p=428
 //cpu bus junk bits
+
+//UBER DOC
+//http://nocash.emubase.de/everynes.htm
+
+//A VERY NICE board assignments list
+//http://personales.epsg.upv.es/~jogilmo1/nes/TEXTOS/ARXIUS/BOARDTABLE.TXT
+
+//why not make boards communicate over the actual board pinouts
+//http://wiki.nesdev.com/w/index.php/Cartridge_connector
+
+//a mappers list
+//http://tuxnes.sourceforge.net/nesmapper.txt 
