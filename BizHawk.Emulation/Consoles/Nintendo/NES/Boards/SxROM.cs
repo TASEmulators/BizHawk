@@ -20,8 +20,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		public MMC1()
 		{
 			//collect data about whether this is required here:
-			//megaman 2 requires it
+			//kid icarus requires it
+			//zelda doesnt; nor megaman2; nor blastermaster; nor metroid
 			StandardReset();
+			//well, lets leave it.
 		}
 
 		public enum Rev
@@ -109,8 +111,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 					return prg;
 				else
 				{
-					Debug.Assert(false, "not tested yet, and had to guess");
-					return (prg + 1) & 0xF;
+					//"not tested very well yet! had to guess!
+					return (prg+1) & 0xF;
 				}
 			else if (prg_slot == 0)
 				if (PRG_A14 == 0)
