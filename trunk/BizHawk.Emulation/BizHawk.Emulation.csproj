@@ -62,6 +62,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardDetector.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />

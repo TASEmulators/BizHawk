@@ -215,7 +215,37 @@ namespace M6502
             Set(0x5E, "LSR", AddrMode.AbsoluteX, 7);
 
             // No Operation
-            Set(0xEA, "NOP", AddrMode.Implicit, 2); 
+            Set(0xEA, "NOP", AddrMode.Implicit, 2);
+			
+			// Illegal NOPs
+			Set(0x1A, "NOP", AddrMode.Implicit, 2);
+			Set(0x3A, "NOP", AddrMode.Implicit, 2);
+			Set(0x5A, "NOP", AddrMode.Implicit, 2);
+			Set(0x7A, "NOP", AddrMode.Implicit, 2);
+			Set(0xDA, "NOP", AddrMode.Implicit, 2);
+			Set(0xFA, "NOP", AddrMode.Implicit, 2);
+			Set(0x80, "NOP", AddrMode.Immediate, 2);
+			Set(0x82, "NOP", AddrMode.Immediate, 2);
+			Set(0x89, "NOP", AddrMode.Immediate, 2);
+			Set(0xC2, "NOP", AddrMode.Immediate, 2);
+			Set(0xE2, "NOP", AddrMode.Immediate, 2);
+			Set(0x04, "NOP", AddrMode.ZeroPage, 3); 
+			Set(0x44, "NOP", AddrMode.ZeroPage, 3);
+			Set(0x64, "NOP", AddrMode.ZeroPage, 3);
+			Set(0x14, "NOP", AddrMode.ZeroPageX, 4);
+			Set(0x34, "NOP", AddrMode.ZeroPageX, 4);
+			Set(0x54, "NOP", AddrMode.ZeroPageX, 4);
+			Set(0x74, "NOP", AddrMode.ZeroPageX, 4);
+			Set(0xD4, "NOP", AddrMode.ZeroPageX, 4);
+			Set(0xF4, "NOP", AddrMode.ZeroPageX, 4);
+			//do the following issue a read or write? if so, we need to emulate with another instruction
+			Set(0x0C, "NOP", AddrMode.Indirect, 4);
+			Set(0x1C, "NOP", AddrMode.IndirectX, 4);
+			Set(0x3C, "NOP", AddrMode.IndirectX, 4);
+			Set(0x5C, "NOP", AddrMode.IndirectX, 4);
+			Set(0x7C, "NOP", AddrMode.IndirectX, 4);
+			Set(0xDC, "NOP", AddrMode.IndirectX, 4);
+			Set(0xFC, "NOP", AddrMode.IndirectX, 4);
 
             // Bitwise OR with Accumulator
             Set(0x09, "ORA", AddrMode.Immediate, 2);
