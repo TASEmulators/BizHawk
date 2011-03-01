@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
         //Castlevania II (U) - Black screen only
         //Zelda II (U) - Black screen only
+        //Bard's Tale - The Tales of the Unkown (U) - Black screen only
 
 
         //the main rom class that contains all information necessary for the board to operate
