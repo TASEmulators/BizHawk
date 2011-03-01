@@ -93,8 +93,11 @@ namespace BizHawk.MultiClient
 			if ((modifiers & Keys.Alt) != 0)
 				str += "ALT + ";
 			str += key.ToString();
-            if (str.Substring(0, 3) == "Oem")
-                str = str.Substring(3, str.Length - 3);
+            if (str.Length > 3)
+            {
+                if (str.Substring(0, 3) == "Oem")
+                    str = str.Substring(3, str.Length - 3);
+            }
 			return str;
 		}
 		public Keys key;
