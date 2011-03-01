@@ -307,7 +307,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			//TODO!
 			//cpu.Execute(10000);
-			ppu.FrameAdvance();
+            Controller.UpdateControls(Frame++);
+            ppu.FrameAdvance();
 		}
 
 		protected void RunCpu(int cycles)
@@ -405,10 +406,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//cpu.debug = true;
 		}
 
-		public int Frame
-		{
-			get { return 0; }
-		}
+        public int Frame { get; set; }
+
+        private byte Port01 = 0xFF;
 		public bool DeterministicEmulation { get { return true; } set { } }
 
 		public byte[] SaveRam
