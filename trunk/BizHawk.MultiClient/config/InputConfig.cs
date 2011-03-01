@@ -366,6 +366,9 @@ namespace BizHawk.MultiClient
                 case "GB":
                     this.SystemComboBox.SelectedIndex = 4;
                     break;
+                case "NES":
+                    this.SystemComboBox.SelectedIndex = 5;
+                    break;
                 default:
                     this.SystemComboBox.SelectedIndex = 0;
                     break;

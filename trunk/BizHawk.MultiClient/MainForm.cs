@@ -266,7 +266,7 @@ namespace BizHawk.MultiClient
 			Global.SMSControls = smsControls;
 
 			var pceControls = new Controller(PCEngine.PCEngineController);
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < 1 /*TODO*/; i++)
 			{
 				pceControls.BindMulti("Up", Global.Config.PCEController[i].Up);
 				pceControls.BindMulti("Down", Global.Config.PCEController[i].Down);
@@ -279,6 +279,20 @@ namespace BizHawk.MultiClient
 				pceControls.BindMulti("Run", Global.Config.PCEController[i].Run);
 			}
 			Global.PCEControls = pceControls;
+
+            var nesControls = new Controller(NES.NESController);
+            for (int i = 0; i < 1 /*TODO*/; i++)
+            {
+                nesControls.BindMulti("Up", Global.Config.NESController[i].Up);
+                nesControls.BindMulti("Down", Global.Config.NESController[i].Down);
+                nesControls.BindMulti("Left", Global.Config.NESController[i].Left);
+                nesControls.BindMulti("Right", Global.Config.NESController[i].Right);
+                nesControls.BindMulti("A", Global.Config.NESController[i].A);
+                nesControls.BindMulti("B", Global.Config.NESController[i].B);
+                nesControls.BindMulti("Select", Global.Config.NESController[i].Select);
+                nesControls.BindMulti("Start", Global.Config.NESController[i].Start);
+            }
+            Global.NESControls = nesControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenP1Up);
@@ -316,16 +330,7 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("DOT", "NumberPadPeriod");
 			Global.TI83Controls = TI83Controls;
 
-			var NESControls = new Controller(NES.NESController);
-			NESControls.BindMulti("B", "Z");
-			NESControls.BindMulti("A", "X");
-			NESControls.BindMulti("Up", "UpArrow");
-			NESControls.BindMulti("Down", "DownArrow");
-			NESControls.BindMulti("Left", "LeftArrow");
-			NESControls.BindMulti("Right", "RightArrow");
-			NESControls.BindMulti("Select", "E");
-			NESControls.BindMulti("Start", "R");
-			Global.NESControls = NESControls;
+
 		}
 
 		private static void FormDragEnter(object sender, DragEventArgs e)
