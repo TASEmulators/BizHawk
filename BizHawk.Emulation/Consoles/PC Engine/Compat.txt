@@ -31,7 +31,7 @@ MML Demo          - Echo channels are too loud (equal volume!)
 Naxat Open        - Crashes when you start new game
 New Adventure Island - Minor gfx issues
 Night Creatures   - Some gfx glitches
-Outrun            - 'Sea Wind' sample when selecting music is not playing, raster issues, music slows when paused
+Outrun            - Raster issues, music slows when paused
 Populous          - Game freezes on starting new game - *** NEEDS BATTERY SAVERAM ***
 Power Drift       - Timing glitch... starting new game runs slower than it should
 R-Type            - Funky corruption after killing final boss in Stage 8

@@ -150,23 +150,28 @@ namespace BizHawk.Emulation.Sound
         private void MixChannel(short[] samples, int start, int len, PSGChannel channel)
         {
             if (channel.Enabled == false) return;
-            if (channel.DDA == false && (channel.Frequency == 0 || channel.Volume == 0)) return;
+            if (channel.DDA == false && channel.Volume == 0) return;
 
-            int freq = PsgBase / (32 * (channel.DDA ? 1 : (int)channel.Frequency));
+            short[] wave = channel.Wave;
+            int freq;
+
+            if (channel.NoiseChannel)
+            {
+                wave = Waves.NoiseWave;
+                freq = channel.NoiseFreq;
+            } else if (channel.DDA) {
+                freq = 0;
+            } else {
+                if (channel.Frequency == 0) return;
+                freq = PsgBase / (32 * ((int)channel.Frequency));
+            }
+
             int leftVol = channel.Panning >> 4;
             int rightVol = channel.Panning & 15;
             leftVol *= MainVolumeLeft;
             rightVol *= MainVolumeRight;
             leftVol /= 16;
             rightVol /= 16;
-
-            short[] wave = channel.Wave;
-            if (channel.NoiseChannel)
-            {
-                wave = Waves.NoiseWave;
-                freq = channel.NoiseFreq;
-            }
-
 
             float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/(float)(channel.Wave.Length*128) : freq);
             float moveThroughWaveRate = wave.Length / adjustedWaveLengthInSamples;
