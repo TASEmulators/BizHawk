@@ -2386,7 +2386,7 @@ D821FB982CE47299FDB08A027EC0B8BE		Super Mario Bros - Duck Hunt (U)	NES		board=Gx
 ;GxROM 8,4 (mapper 66)  ;these frequently needs to be corrected to V
 ADD4E9F5ED4391A6B3FDFC5F0E300E71		Doraemon (J)	NES		board=GxROM;mirror=V;PRG=8;CHR=4
 4E9D128C63A41C8CC20FF1114A67A2DD		Dragon Power (U)	NES		board=GxROM;mirror=V;PRG=8;CHR=4
-8F43E7D7BD3DBDF6D8ADF3E046DE3562		Gumshoe (UE)	NES		board=GxROM;mirror=H;PRG=8;CHR=4
+8F43E7D7BD3DBDF6D8ADF3E046DE3562		Gumshoe (UE)	NES		board=GxROM;mirror=V;PRG=8;CHR=4
 
 ;GxROM 8,16 (mapper 66)
 BE40E77C5532AF8E2C1EA7B96831CCEA		Thunder & Lightning (U).nes	NES		board=GxROM;mirror=H;PRG=8;CHR=16

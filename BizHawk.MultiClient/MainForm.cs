@@ -610,7 +610,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (/*Global.Config.RewindEnabled && */Global.ClientControls["Rewind"])
+			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"])
 			{
 				rewindCredits += Global.Config.SpeedPercent;
 				int rewindTodo = rewindCredits / 100;
@@ -629,7 +629,7 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
-				if(!suppressCaptureRewind) CaptureRewindState();
+				if(!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;

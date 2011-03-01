@@ -38,6 +38,8 @@ namespace BizHawk.MultiClient
             {
                 if (inChangeSequence == false)
                 {
+					if (i >= LastState.Length)
+						continue;
                     if (CurrentState[i] == LastState[i])
                         continue;
 
@@ -82,6 +84,8 @@ namespace BizHawk.MultiClient
             {
                 if (inChangeSequence == false)
                 {
+					if (i >= LastState.Length)
+						continue;
                     if (CurrentState[i] == LastState[i])
                         continue;
 

@@ -35,6 +35,7 @@
 		public bool LimitFramerate = true;
 		public bool AutoMinimizeSkipping = true;
 		public bool DisplayVSync = false;
+		public bool RewindEnabled = true;
 
         // Display options
         public bool DisplayFPS = false;

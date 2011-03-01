@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 
 namespace BizHawk.Emulation.CPUs.M6502
 {
@@ -59,19 +61,6 @@ namespace BizHawk.Emulation.CPUs.M6502
             return val;
         }
 
-        // ==== CPU State ====
-
-        public byte A;
-        public byte X;
-        public byte Y;
-        public byte P;
-        public ushort PC;
-        public byte S;
-
-        // TODO IRQ, NMI functions
-        public bool Interrupt;
-        public bool NMI;
-
 		private const ushort NMIVector = 0xFFFA;
 		private const ushort ResetVector = 0xFFFC;
 		private const ushort BRKVector = 0xFFFE;
@@ -91,11 +80,72 @@ namespace BizHawk.Emulation.CPUs.M6502
 			WriteMemory((ushort)(S-- + 0x100), P);
 			P = oldP;
 			FlagI = true;
-			if(type == ExceptionType.NMI)
+			if (type == ExceptionType.NMI)
 				PC = ReadWord(NMIVector);
 			else
 				PC = ReadWord(BRKVector);
 			PendingCycles -= 7;
+		}
+
+        // ==== CPU State ====
+
+        public byte A;
+        public byte X;
+        public byte Y;
+        public byte P;
+        public ushort PC;
+        public byte S;
+
+        // TODO IRQ, NMI functions
+        public bool Interrupt;
+        public bool NMI;
+
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[MOS6502]");
+			writer.WriteLine("A {0:X2}", A);
+			writer.WriteLine("X {0:X2}", X);
+			writer.WriteLine("Y {0:X2}", Y);
+			writer.WriteLine("P {0:X2}", P);
+			writer.WriteLine("PC {0:X4}", PC);
+			writer.WriteLine("S {0:X2}", S);
+			writer.WriteLine("NMI {0}", NMI);
+			writer.WriteLine("Interrupt {0}", Interrupt);
+			writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles);
+			writer.WriteLine("PendingCycles {0}", PendingCycles);
+			writer.WriteLine("[/MOS6502]\n");
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[/MOS6502]") break;
+				if (args[0] == "A")
+					A = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "X")
+					X = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "Y")
+					Y = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "P")
+					P = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "PC")
+					PC = ushort.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "S")
+					S = byte.Parse(args[1], NumberStyles.HexNumber);
+				else if (args[0] == "NMI")
+					NMI = bool.Parse(args[1]);
+				else if (args[0] == "Interrupt")
+					Interrupt = bool.Parse(args[1]);
+				else if (args[0] == "TotalExecutedCycles")
+					TotalExecutedCycles = int.Parse(args[1]);
+				else if (args[0] == "PendingCycles")
+					PendingCycles = int.Parse(args[1]);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
 		}
 
         // ==== End State ====

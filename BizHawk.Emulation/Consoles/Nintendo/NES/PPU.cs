@@ -51,8 +51,49 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Reset();
 			}
 
+			//state
 			int ppudead; //measured in frames
 			bool idleSynch;
+
+			public void SaveStateBinary(BinaryWriter bw)
+			{
+				bw.Write(ppudead);
+				bw.Write(idleSynch);
+				bw.Write((bool)Reg2002_objoverflow);
+				bw.Write((bool)Reg2002_objhit);
+				bw.Write((bool)Reg2002_vblank_active);
+				bw.Write(PPUGenLatch);
+				bw.Write(reg_2000.Value);
+				bw.Write(reg_2001.Value);
+				bw.Write(reg_2003);
+				Util.WriteByteBuffer(bw, OAM);
+				Util.WriteByteBuffer(bw, PALRAM);
+				Util.WriteByteBuffer(bw, NTARAM);
+				bw.Write(vtoggle);
+				bw.Write(VRAMBuffer);
+				ppur.SaveStateBinary(bw);
+				bw.Write(xbuf);
+			}
+
+			public void LoadStateBinary(BinaryReader br)
+			{
+				ppudead = br.ReadInt32();
+				idleSynch = br.ReadBoolean();
+				Reg2002_objoverflow = br.ReadBit();
+				Reg2002_objhit = br.ReadBit();
+				Reg2002_vblank_active = br.ReadBit();
+				PPUGenLatch = br.ReadByte();
+				reg_2000.Value = br.ReadByte();
+				reg_2001.Value = br.ReadByte();
+				reg_2003 = br.ReadByte();
+				OAM = Util.ReadByteBuffer(br,false);
+				PALRAM = Util.ReadByteBuffer(br, false);
+				NTARAM = Util.ReadByteBuffer(br, false);
+				vtoggle = br.ReadBoolean();
+				VRAMBuffer = br.ReadByte();
+				ppur.LoadStateBinary(br);
+				xbuf = br.ReadShorts(xbuf.Length);
+			}
 
 			public void Reset()
 			{

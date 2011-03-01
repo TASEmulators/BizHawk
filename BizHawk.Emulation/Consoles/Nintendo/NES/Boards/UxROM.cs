@@ -1,15 +1,30 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
 	//generally mapper2
 
+	//Mega Man
+	//Castlevania
+	//Contra
+	//Duck Tales
+	//Metal Gear
+
 	//TODO - simplify logic and handle fewer (known) cases (e.g. no IsPowerOfTwo, but rather hardcoded cases)
 
 	public class UxROM : NES.NESBoardBase
 	{
+		//configuration
 		string type;
+		int pagemask;
+		int cram_mask;
+
+		//state
+		int prg;
+		byte[] cram;
+
 		public UxROM(string type)
 		{
 			this.type = type;
@@ -24,6 +39,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			else throw new InvalidOperationException("Invalid UxROM type");
 
 			//guess CRAM size (this is a very confident guess!)
+			//(should these guesses be here?) (is this a guess? maybe all these boards have cram)
 			if (RomInfo.CRAM_Size == -1) RomInfo.CRAM_Size = 8;
 
 			cram = new byte[RomInfo.CRAM_Size * 1024];
@@ -59,9 +75,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			else base.WritePPU(addr,value);
 		}
 
-		int pagemask;
-		int prg;
-		byte[] cram;
-		int cram_mask;
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			bw.Write(prg);
+			Util.WriteByteBuffer(bw, cram);
+		}
+
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			prg = br.ReadInt32();
+			cram = Util.ReadByteBuffer(br, false);
+		}
 	}
 }

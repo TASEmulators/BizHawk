@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void WritePRAM(int addr, byte value);
 			void Initialize(RomInfo romInfo, NES nes);
 			byte[] SaveRam { get; }
+			void SaveStateBinary(BinaryWriter bw);
+			void LoadStateBinary(BinaryReader br);
 		};
 
 		public abstract class NESBoardBase : INESBoard
@@ -61,6 +63,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			public RomInfo RomInfo { get; set; }
 			public NES NES { get; set; }
+
+			public virtual void SaveStateBinary(BinaryWriter bw)
+			{
+				for (int i = 0; i < 4; i++) bw.Write(mirroring[i]);
+			}
+			public virtual void LoadStateBinary(BinaryReader br)
+			{
+				for (int i = 0; i < 4; i++) mirroring[i] = br.ReadInt32();
+			}
 
 			int[] mirroring = new int[4];
 			protected void SetMirroring(int a, int b, int c, int d)
@@ -132,17 +143,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte[] SaveRam { get { return null; } }
 		}
 
-		//hardware
+		//hardware/state
 		protected MOS6502 cpu;
 		INESBoard board;
 		public PPU ppu;
-		RomInfo romInfo;
 		byte[] ram;
-
-		IPortDevice[] ports;
+		int cpu_accumulate;
 
 		//user configuration 
 		int[,] palette; //TBD!!
+		IPortDevice[] ports;
+		RomInfo romInfo;
 
 		public byte ReadPPUReg(int addr)
 		{
@@ -299,7 +310,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ppu.FrameAdvance();
 		}
 
-		int cpu_accumulate;
 		protected void RunCpu(int cycles)
 		{
 			if (ppu.PAL)
@@ -413,27 +423,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			get { if (board == null) return false; if (board.SaveRam == null) return false; return true; }
 			set { }
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			return new byte[0];
 		}
 
 		public string SystemId { get { return "NES"; } }
@@ -684,6 +673,65 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			HardReset();
 		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			writer.WriteLine("[NES]");
+			byte[] lol = SaveStateBinary();
+			writer.WriteLine("blob {0}", Util.BytesToHexString(lol));
+			writer.WriteLine("[/NES]");
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			byte[] blob = null;
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0] == "blob")
+					blob = Util.HexStringToBytes(args[1]);
+				else if (args[0] == "[/NES]") break;
+			}
+			if (blob == null) throw new ArgumentException();
+			LoadStateBinary(new BinaryReader(new MemoryStream(blob)));
+		}
+
+
+		public byte[] SaveStateBinary()
+		{
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
+		}
+
+		public void SaveStateBinary(BinaryWriter bw)
+		{
+			using (var sw = new StringWriter())
+			{
+				cpu.SaveStateText(sw);
+				sw.Flush();
+				Util.WriteByteBuffer(bw, System.Text.Encoding.ASCII.GetBytes(sw.ToString()));
+			}
+			Util.WriteByteBuffer(bw,ram);
+			bw.Write(cpu_accumulate);
+			board.SaveStateBinary(bw);
+			ppu.SaveStateBinary(bw);
+			bw.Flush();
+		}
+
+		public void LoadStateBinary(BinaryReader br)
+		{
+			using (var sr = new StringReader(System.Text.Encoding.ASCII.GetString(Util.ReadByteBuffer(br, false))))
+				cpu.LoadStateText(sr);
+			ram = Util.ReadByteBuffer(br, false);
+			cpu_accumulate = br.ReadInt32();
+			board.LoadStateBinary(br);
+			ppu.LoadStateBinary(br);
+		}
+
+
 	}
 }
 

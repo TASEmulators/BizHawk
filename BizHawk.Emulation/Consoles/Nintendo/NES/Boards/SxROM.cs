@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
@@ -24,6 +25,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			//zelda doesnt; nor megaman2; nor blastermaster; nor metroid
 			StandardReset();
 			//well, lets leave it.
+		}
+
+		public void SaveStateBinary(BinaryWriter bw)
+		{
+			bw.Write(shift_count);
+			bw.Write(shift_val);
+			bw.Write(chr_mode);
+			bw.Write(prg_mode);
+			bw.Write(prg_slot);
+			bw.Write((int)mirror);
+			bw.Write(chr_0);
+			bw.Write(chr_1);
+			bw.Write(wram_disable);
+			bw.Write(prg);
+		}
+		public void LoadStateBinary(BinaryReader br)
+		{
+			shift_count = br.ReadInt32();
+			shift_val = br.ReadInt32();
+			chr_mode = br.ReadInt32();
+			prg_mode = br.ReadInt32();
+			prg_slot = br.ReadInt32();
+			mirror = (NES.EMirrorType)br.ReadInt32();
+			chr_0 = br.ReadInt32();
+			chr_1 = br.ReadInt32();
+			wram_disable = br.ReadInt32();
+			prg = br.ReadInt32();
 		}
 
 		public enum Rev
@@ -137,12 +165,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 	public class SxROM : NES.NESBoardBase
 	{
+		//configuration
 		string type;
-		MMC1 mmc1;
 		int prg_mask, chr_mask;
-		byte[] cram, pram;
 		int cram_mask, pram_mask;
 
+		//state
+		byte[] cram, pram;
+		MMC1 mmc1;
 
 		public SxROM(string type)
 		{
@@ -184,6 +214,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				cram = new byte[RomInfo.CRAM_Size * 1024];
 				cram_mask = cram.Length - 1;
 			}
+			else cram = new byte[0];
 
 			Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8);
 			if (RomInfo.PRAM_Size != 0)
@@ -191,6 +222,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				pram = new byte[RomInfo.CRAM_Size * 1024];
 				pram_mask = pram.Length - 1;
 			}
+			else pram = new byte[0];
 
 			if (RomInfo.CHR_Size != 0)
 			{
@@ -262,6 +294,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				//some boards have a pram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}
+		}
+
+		public override void SaveStateBinary(BinaryWriter bw)
+		{
+			base.SaveStateBinary(bw);
+			mmc1.SaveStateBinary(bw);
+			Util.WriteByteBuffer(bw, pram);
+			Util.WriteByteBuffer(bw, cram);
+		}
+		public override void LoadStateBinary(BinaryReader br)
+		{
+			base.LoadStateBinary(br);
+			mmc1.LoadStateBinary(br);
+			pram = Util.ReadByteBuffer(br, false);
+			cram = Util.ReadByteBuffer(br, false);
 		}
 
 
