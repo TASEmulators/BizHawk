@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			public static string Detect(RomInfo romInfo)
 			{
-				string key = string.Format("{0}	{1}	{2}",romInfo.MapperNumber,romInfo.PRG_Size,romInfo.CHR_Size);
+				string key = string.Format("{0}	{1}	{2}	{3}",romInfo.MapperNumber,romInfo.PRG_Size,romInfo.CHR_Size,romInfo.PRAM_Size);
 				string board;
 				Table.TryGetValue(key, out board);
 				return board;
@@ -30,27 +30,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				while ((line = sr.ReadLine()) != null)
 				{
 					var parts = line.Split('\t');
-					if (parts.Length < 4) continue;
-					line = line.Replace(parts[3],"");
-					line = line.TrimEnd('\t');
-					Table[line] = parts[3];
+					if (parts.Length < 5) continue;
+					string key = parts[0] + "\t" + parts[1] + "\t" + parts[2] + "\t" + parts[3];
+					string board = line.Replace(key, "");
+					board = board.TrimStart('\t');
+					if (board.IndexOf(';') != -1)
+						board = board.Substring(0, board.IndexOf(';'));
+					Table[key] = board;
 				}
 			}
-//MAP	PRG	CHR	BOARD
+//MAP	PRG	CHR	PRAM	BOARD
 			static string ClassifyTable = @"
-0	1	1	NROM
-0	2	1	NROM
-2	8	0	UNROM
-2	16	0	UOROM
-3	2	2	CNROM
-3	2	4	CNROM
-7	8	0	ANROM
-7	16	0	AOROM
-11	4	2	Discrete_74x377
-11	2	4	Discrete_74x377
-13	2	0	CPROM
-66	4	2	GxROM
-66	8	4	GxROM
+0	1	1	0	NROM
+0	2	1	0	NROM
+1	8	0	8	SNROM;	this handles zelda,
+2	8	0	0	UNROM
+2	16	0	0	UOROM
+3	2	2	0	CNROM
+3	2	4	0	CNROM
+7	8	0	0	ANROM
+7	16	0	0	AOROM
+11	4	2	0	Discrete_74x377
+11	2	4	0	Discrete_74x377
+13	2	0	0	CPROM
+66	4	2	0	GxROM
+66	8	4	0	GxROM
 ";
 
 		}

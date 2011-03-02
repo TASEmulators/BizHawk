@@ -419,6 +419,11 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
+			if (Global.Emulator is NullEmulator)
+			{
+				throw new Exception();
+			}
+
 			Global.Emulator.LoadGame(game);
 			Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 			ResetRewindBuffer();
@@ -474,6 +479,7 @@ namespace BizHawk.MultiClient
 				writer.Write(Global.Emulator.SaveRam, 0, len);
 				writer.Close();
 			}
+			Global.Emulator = new NullEmulator();
 		}
 
 		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
