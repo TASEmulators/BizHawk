@@ -252,6 +252,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
             RamSearch1.Restart();
 			Text = "BizHawk";
+            HandlePlatformMenus("");
 		}
 
 		private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -121,6 +121,12 @@
     </Compile>
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NEStools\NESPPU.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NEStools\NESPPU.Designer.cs">
+      <DependentUpon>NESPPU.cs</DependentUpon>
     </Compile>
     <Compile Include="PlayMovie.cs">
       <SubType>Form</SubType>
@@ -256,6 +262,10 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="NEStools\NESPPU.resx">
+      <DependentUpon>NESPPU.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlayMovie.resx">
       <DependentUpon>PlayMovie.cs</DependentUpon>
       <SubType>Designer</SubType>

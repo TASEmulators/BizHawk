@@ -88,6 +88,7 @@
             this.playMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playFromBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.replayInputLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -157,7 +158,10 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.replayInputLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pPUViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nameTableViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gameGenieCodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -169,6 +173,7 @@
             this.viewToolStripMenuItem,
             this.configToolStripMenuItem,
             this.toolsToolStripMenuItem,
+            this.nESToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -653,6 +658,13 @@
             this.playFromBeginningToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.playFromBeginningToolStripMenuItem.Text = "Play from Beginning";
             this.playFromBeginningToolStripMenuItem.Click += new System.EventHandler(this.playFromBeginningToolStripMenuItem_Click);
+            // 
+            // replayInputLogToolStripMenuItem
+            // 
+            this.replayInputLogToolStripMenuItem.Name = "replayInputLogToolStripMenuItem";
+            this.replayInputLogToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.replayInputLogToolStripMenuItem.Text = "Replay Input Log";
+            this.replayInputLogToolStripMenuItem.Click += new System.EventHandler(this.replayInputLogToolStripMenuItem_Click);
             // 
             // screenshotF12ToolStripMenuItem
             // 
@@ -1177,23 +1189,47 @@
             // 
             this.helpToolStripMenuItem1.Enabled = false;
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.helpToolStripMenuItem1.Text = "&Help";
             this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
-            // replayInputLogToolStripMenuItem
+            // nESToolStripMenuItem
             // 
-            this.replayInputLogToolStripMenuItem.Name = "replayInputLogToolStripMenuItem";
-            this.replayInputLogToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-            this.replayInputLogToolStripMenuItem.Text = "Replay Input Log";
-            this.replayInputLogToolStripMenuItem.Click += new System.EventHandler(this.replayInputLogToolStripMenuItem_Click);
+            this.nESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pPUViewerToolStripMenuItem,
+            this.nameTableViewerToolStripMenuItem,
+            this.gameGenieCodesToolStripMenuItem});
+            this.nESToolStripMenuItem.Name = "nESToolStripMenuItem";
+            this.nESToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.nESToolStripMenuItem.Text = "&NES";
+            // 
+            // pPUViewerToolStripMenuItem
+            // 
+            this.pPUViewerToolStripMenuItem.Name = "pPUViewerToolStripMenuItem";
+            this.pPUViewerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.pPUViewerToolStripMenuItem.Text = "&PPU Viewer";
+            this.pPUViewerToolStripMenuItem.Click += new System.EventHandler(this.pPUViewerToolStripMenuItem_Click);
+            // 
+            // nameTableViewerToolStripMenuItem
+            // 
+            this.nameTableViewerToolStripMenuItem.Enabled = false;
+            this.nameTableViewerToolStripMenuItem.Name = "nameTableViewerToolStripMenuItem";
+            this.nameTableViewerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.nameTableViewerToolStripMenuItem.Text = "&Name Table Viewer";
+            // 
+            // gameGenieCodesToolStripMenuItem
+            // 
+            this.gameGenieCodesToolStripMenuItem.Enabled = false;
+            this.gameGenieCodesToolStripMenuItem.Name = "gameGenieCodesToolStripMenuItem";
+            this.gameGenieCodesToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.gameGenieCodesToolStripMenuItem.Text = "&Game Genie Codes";
             // 
             // MainForm
             // 
@@ -1346,6 +1382,10 @@
         private System.Windows.Forms.ToolStripMenuItem saveConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replayInputLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nESToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pPUViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem nameTableViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gameGenieCodesToolStripMenuItem;
     }
 }
 
