@@ -369,6 +369,19 @@ namespace BizHawk.MultiClient
 			return "";
 		}
 
+        private void HandlePlatformMenus(string system)
+        {
+            switch (system)
+            {
+                case "NES":
+                    nESToolStripMenuItem.Visible = true;
+                    break;
+                default:
+                    nESToolStripMenuItem.Visible = false;
+                    break;
+            }
+        }
+
 		private bool LoadRom(string path)
 		{
 			var file = new FileInfo(path);
@@ -423,7 +436,8 @@ namespace BizHawk.MultiClient
 			{
 				throw new Exception();
 			}
-
+            
+            HandlePlatformMenus(Global.Game.System);
 			Global.Emulator.LoadGame(game);
 			Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 			ResetRewindBuffer();
@@ -1044,7 +1058,8 @@ namespace BizHawk.MultiClient
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-
+            //Hide platform specific menus until an appropriate ROM is loaded
+            nESToolStripMenuItem.Visible = false;
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1107,6 +1122,12 @@ namespace BizHawk.MultiClient
         {
             InputLog.StartPlayback(); 
             LoadRom(CurrentlyOpenRom);
+        }
+
+        private void pPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NESPPU n = new NESPPU();
+            n.Show();
         }
 	}
 }
