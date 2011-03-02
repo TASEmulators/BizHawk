@@ -189,6 +189,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
 			Debug.Assert(RomInfo.PRAM_Size == -1, "don't specify in gamedb, it is redundant");
+			Debug.Assert(RomInfo.MirrorType == NES.EMirrorType.External, "don't specify in gamedb, it is redundant");
 
 			//analyze board type
 			switch (type)

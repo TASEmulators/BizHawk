@@ -625,7 +625,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					var dict = gi.ParseOptionsDictionary();
 					if (dict.ContainsKey("board"))
 						romInfo.BoardName = dict["board"];
-					if(dict.ContainsKey("mirror"))
+					if (dict.ContainsKey("mirror"))
 						switch (dict["mirror"])
 						{
 							case "V": romInfo.MirrorType = EMirrorType.Vertical; break;
@@ -633,6 +633,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							case "X": romInfo.MirrorType = EMirrorType.External; break;
 							default: throw new InvalidOperationException();
 						}
+					else romInfo.MirrorType = EMirrorType.External;
 					
 					if (dict.ContainsKey("PRG"))
 						romInfo.PRG_Size = int.Parse(dict["PRG"]);
