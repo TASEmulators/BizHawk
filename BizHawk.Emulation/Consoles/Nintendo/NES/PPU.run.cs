@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public byte pt_0, pt_1;
 			};
 
-			public short[] xbuf = new short[256*256];
+			public short[] xbuf = new short[256*240];
 
 			void Read_bgdata(ref BGDataRecord bgdata) {
 				int addr = ppur.get_ntread();
