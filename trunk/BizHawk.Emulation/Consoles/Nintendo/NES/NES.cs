@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					NES.NTARAM[ApplyMirroring(addr)] = value;
+					NES.CIRAM[ApplyMirroring(addr)] = value;
 				}
 			}
 
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					return NES.NTARAM[ApplyMirroring(addr)];
+					return NES.CIRAM[ApplyMirroring(addr)];
 				}
 			}
 
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		INESBoard board;
 		public PPU ppu;
 		byte[] ram;
-		protected byte[] NTARAM;
+		protected byte[] CIRAM;
 		int cpu_accumulate;
 
 		//user configuration 
@@ -272,9 +272,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public int[] GetVideoBuffer()
 			{
-				int[] pixels = new int[256 * 256];
+				int[] pixels = new int[256 * 240];
 				int i = 0;
-				for (int y = 0; y < 256; y++)
+				for (int y = 0; y < 240; y++)
 					for (int x = 0; x < 256; x++)
 					{
 						int pixel = emu.ppu.xbuf[i];
@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return pixels;
 			}
 			public int BufferWidth { get { return 256; } }
-			public int BufferHeight { get { return 256; } }
+			public int BufferHeight { get { return 240; } }
 			public int BackgroundColor { get { return 0; } }
 		}
 		public IVideoProvider VideoProvider { get { return new MyVideoProvider(this); } }
@@ -401,7 +401,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.WriteMemory = WriteMemory;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
-			NTARAM = new byte[0x800];
+			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
 			ports[0] = new JoypadPortDevice(this);
 			ports[1] = new NullPortDevice();
@@ -728,7 +728,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Util.WriteByteBuffer(bw, System.Text.Encoding.ASCII.GetBytes(sw.ToString()));
 			}
 			Util.WriteByteBuffer(bw, ram);
-			Util.WriteByteBuffer(bw, NTARAM);
+			Util.WriteByteBuffer(bw, CIRAM);
 			bw.Write(cpu_accumulate);
 			board.SaveStateBinary(bw);
 			ppu.SaveStateBinary(bw);
@@ -740,7 +740,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			using (var sr = new StringReader(System.Text.Encoding.ASCII.GetString(Util.ReadByteBuffer(br, false))))
 				cpu.LoadStateText(sr);
 			ram = Util.ReadByteBuffer(br, false);
-			NTARAM = Util.ReadByteBuffer(br, false);
+			CIRAM = Util.ReadByteBuffer(br, false);
 			cpu_accumulate = br.ReadInt32();
 			board.LoadStateBinary(br);
 			ppu.LoadStateBinary(br);
