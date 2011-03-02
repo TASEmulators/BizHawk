@@ -12,13 +12,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	//Duck Tales
 	//Metal Gear
 
-	//TODO - simplify logic and handle fewer (known) cases (e.g. no IsPowerOfTwo, but rather hardcoded cases)
+	//TODO - look for a mirror=H UNROM--maybe there are none? this may be fixed to the board type.
 
 	public class UxROM : NES.NESBoardBase
 	{
 		//configuration
 		string type;
-		int pagemask;
+		int prg_mask;
 		int cram_mask;
 
 		//state
@@ -32,29 +32,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		public override void Initialize(NES.RomInfo romInfo, NES nes)
 		{
 			base.Initialize(romInfo, nes);
-			Debug.Assert(Util.IsPowerOfTwo(RomInfo.PRG_Size));
+			Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
 
-			if (type == "UNROM") pagemask = 7;
-			else if (type == "UOROM") pagemask = 15;
+			if (type == "UNROM") prg_mask = 7;
+			else if (type == "UOROM") prg_mask = 15;
 			else throw new InvalidOperationException("Invalid UxROM type");
 
-			//guess CRAM size (this is a very confident guess!)
-			//(should these guesses be here?) (is this a guess? maybe all these boards have cram)
-			if (RomInfo.CRAM_Size == -1) RomInfo.CRAM_Size = 8;
+			//regardless of what the board is equipped to handle, reduce the mask to how much ROM is actually present
+			int rom_prg_mask = (RomInfo.PRG_Size - 1);
+			if (rom_prg_mask < prg_mask) prg_mask = rom_prg_mask;
 
+			//these boards always have 8KB of CRAM
+			RomInfo.CRAM_Size = 8;
 			cram = new byte[RomInfo.CRAM_Size * 1024];
 			cram_mask = cram.Length - 1;
 		}
 		public override byte ReadPRG(int addr)
 		{
 			int block = addr >> 14;
-			int page = block == 1 ? pagemask : prg;
+			int page = block == 1 ? prg_mask : prg;
 			int ofs = addr & 0x3FFF;
 			return RomInfo.ROM[(page << 14) | ofs];
 		}
 		public override void WritePRG(int addr, byte value)
 		{
-			prg = value & pagemask;
+			prg = value & prg_mask;
 		}
 
 		public override byte ReadPPU(int addr)
