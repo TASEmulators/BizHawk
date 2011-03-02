@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 				mf.Show();
 				mf.ProgramRunLoop();
             } catch (Exception e) {
-                MessageBox.Show(e.ToString(), "Oh, no, a terrible thing happened!");
+				MessageBox.Show(e.ToString(), "Oh, no, a terrible thing happened!\n\n" + e.ToString());
             } finally {
                 if (Global.DSound != null && Global.DSound.Disposed == false)
                     Global.DSound.Dispose();

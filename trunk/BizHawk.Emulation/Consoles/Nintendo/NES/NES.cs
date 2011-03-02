@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -20,12 +21,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //the main rom class that contains all information necessary for the board to operate
 		public class RomInfo
 		{
-			public enum EHeaderType
+			public enum EInfoSource
 			{
-				None, INes
+				None, INesHeader, GameDatabase
 			}
 
-			public EHeaderType HeaderType;
+			public EInfoSource InfoSource;
 			public int PRG_Size = -1, CHR_Size = -1;
 			public int CRAM_Size = -1, PRAM_Size = -1;
 			public string BoardName;
@@ -587,12 +588,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		//turning this off probably doesnt work right now due to asserts in boards finding things set by the iNES header parsing
+		//need to separate those fields
 		const bool ENABLE_DB = true;
 
 		public unsafe void LoadGame(IGame game)
 		{
 			byte[] file = game.GetFileData();
-			if (file.Length < 16) throw new InvalidOperationException("Alleged NES rom too small to be anything useful");
+			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
+			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
+				throw new Exception("You've tried to open a UNIF rom. We don't have any UNIF roms to test with. Please consult the developers.");
 			fixed (byte* bfile = &file[0])
 			{
 				var header = (iNES_HEADER*)bfile;
@@ -620,11 +625,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						throw new InvalidOperationException("Couldn't detect board type");
 					romInfo.BoardName = board;
 					Console.WriteLine("board detected as " + board);
+					romInfo.InfoSource = RomInfo.EInfoSource.INesHeader;
 				}
 				else
 				{
 					Console.WriteLine("found game in database: {0}", gi.Name);
 					romInfo = new RomInfo();
+					romInfo.InfoSource = RomInfo.EInfoSource.GameDatabase;
 					romInfo.MD5 = hash;
 					var dict = gi.ParseOptionsDictionary();
 					if (dict.ContainsKey("board"))
