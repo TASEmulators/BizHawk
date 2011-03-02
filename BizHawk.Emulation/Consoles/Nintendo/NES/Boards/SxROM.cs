@@ -230,6 +230,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 				Debug.Assert(RomInfo.CHR_Size == 16);
 				chr_mask = (RomInfo.CHR_Size*2) - 1;
 			}
+
+			SetMirrorType(mmc1.mirror);
 		}
 
 		public override void WritePRG(int addr, byte value)

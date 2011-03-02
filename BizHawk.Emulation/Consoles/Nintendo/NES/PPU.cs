@@ -25,20 +25,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return nes.board.ReadPPU(addr);
 			}
 
-			//boards may not respond to a read, in which case this will get called. please apply mirroring logic beforehand
-			public byte ppu_defaultRead(int addr)
-			{
-				addr &= 0x7FF;
-				return NTARAM[addr];
-			}
-
-			//boards may not respond to a write, in which case this will get called. please apply mirroring logic beforehand
-			public void ppu_defaultWrite(int addr, byte value)
-			{
-				addr &= 0x7FF;
-				NTARAM[addr] = value;
-			}
-
 			enum PPUPHASE {
 				VBL, BG, OBJ
 			};
@@ -68,7 +54,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				bw.Write(reg_2003);
 				Util.WriteByteBuffer(bw, OAM);
 				Util.WriteByteBuffer(bw, PALRAM);
-				Util.WriteByteBuffer(bw, NTARAM);
 				bw.Write(vtoggle);
 				bw.Write(VRAMBuffer);
 				ppur.SaveStateBinary(bw);
@@ -88,7 +73,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				reg_2003 = br.ReadByte();
 				OAM = Util.ReadByteBuffer(br,false);
 				PALRAM = Util.ReadByteBuffer(br, false);
-				NTARAM = Util.ReadByteBuffer(br, false);
 				vtoggle = br.ReadBoolean();
 				VRAMBuffer = br.ReadByte();
 				ppur.LoadStateBinary(br);

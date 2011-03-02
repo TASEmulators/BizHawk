@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int block = (addr >> 10) & 3;
 				block = mirroring[block];
 				int ofs = addr & 0x3FF;
-				return (block << 10) | ofs | 0x2000;
+				return (block << 10) | ofs;
 			}
 
 			protected byte HandleNormalPRGConflict(int addr, byte value)
@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					NES.ppu.ppu_defaultWrite(ApplyMirroring(addr), value);
+					NES.NTARAM[ApplyMirroring(addr)] = value;
 				}
 			}
 
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					return NES.ppu.ppu_defaultRead(ApplyMirroring(addr));
+					return NES.NTARAM[ApplyMirroring(addr)];
 				}
 			}
 
@@ -158,6 +158,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		INESBoard board;
 		public PPU ppu;
 		byte[] ram;
+		protected byte[] NTARAM;
 		int cpu_accumulate;
 
 		//user configuration 
@@ -400,6 +401,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.WriteMemory = WriteMemory;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
+			NTARAM = new byte[0x800];
 			ports = new IPortDevice[2];
 			ports[0] = new JoypadPortDevice(this);
 			ports[1] = new NullPortDevice();
@@ -725,7 +727,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				sw.Flush();
 				Util.WriteByteBuffer(bw, System.Text.Encoding.ASCII.GetBytes(sw.ToString()));
 			}
-			Util.WriteByteBuffer(bw,ram);
+			Util.WriteByteBuffer(bw, ram);
+			Util.WriteByteBuffer(bw, NTARAM);
 			bw.Write(cpu_accumulate);
 			board.SaveStateBinary(bw);
 			ppu.SaveStateBinary(bw);
@@ -737,6 +740,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			using (var sr = new StringReader(System.Text.Encoding.ASCII.GetString(Util.ReadByteBuffer(br, false))))
 				cpu.LoadStateText(sr);
 			ram = Util.ReadByteBuffer(br, false);
+			NTARAM = Util.ReadByteBuffer(br, false);
 			cpu_accumulate = br.ReadInt32();
 			board.LoadStateBinary(br);
 			ppu.LoadStateBinary(br);
