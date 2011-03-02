@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public interface INESBoard
 		{
 			byte ReadPRG(int addr);
-			byte ReadPPU(int addr);
+			byte ReadPPU(int addr); byte PeekPPU(int addr);
 			byte ReadPRAM(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
@@ -135,6 +135,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					NES.ppu.ppu_defaultWrite(ApplyMirroring(addr), value);
 				}
 			}
+
+			public virtual byte PeekPPU(int addr) { return ReadPPU(addr); }
 
 			public virtual byte ReadPPU(int addr)
 			{
