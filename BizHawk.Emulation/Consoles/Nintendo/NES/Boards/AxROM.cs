@@ -4,8 +4,6 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 {
-	//TODO - hardcode CRAM size and assert
-
 	//generally mapper7
 
 	//Battletoads
@@ -37,22 +35,29 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.Initialize(romInfo, nes);
 
-			//guess CRAM size (this is a very confident guess!)
-			if (RomInfo.CRAM_Size == -1) RomInfo.CRAM_Size = 8;
+			Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
 
-			cram = new byte[RomInfo.CRAM_Size * 1024];
-			cram_mask = cram.Length - 1;
 
 			if (type == "ANROM")
 			{
-				Debug.Assert(RomInfo.PRG_Size == 8, "not sure how to handle this; please report");
-				prg_mask = 3;
+				Debug.Assert(RomInfo.PRG_Size == 8);
+				prg_mask = 7;
 			}
 			if (type == "AOROM")
 			{
-				Debug.Assert(RomInfo.PRG_Size == 16 || RomInfo.PRG_Size == 8, "not sure how to handle this; please report");
-				prg_mask = RomInfo.PRG_Size-1;
+				Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+				prg_mask = 15;
 			}
+
+			//regardless of what the board is equipped to handle, reduce the mask to how much ROM is actually present
+			int rom_prg_mask = (RomInfo.PRG_Size - 1);
+			if (rom_prg_mask < prg_mask) prg_mask = rom_prg_mask;
+
+			//these boards always have 8KB of CRAM
+			RomInfo.CRAM_Size = 8;
+			cram = new byte[RomInfo.CRAM_Size * 1024];
+			cram_mask = cram.Length - 1;
 
 			//it is necessary to write during initialization to set the mirroring
 			WritePRG(0, 0);
@@ -60,13 +65,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 		public override byte ReadPRG(int addr)
 		{
-			return RomInfo.ROM[addr + (prg << 15)];
+			return RomInfo.ROM[addr + (prg << 14)];
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
 			if (bus_conflict) value = HandleNormalPRGConflict(addr,value);
-			prg = value & prg_mask;
+			prg = (value*2) & prg_mask;
 			if ((value & 0x10) == 0)
 				SetMirrorType(NES.EMirrorType.OneScreenA);
 			else
