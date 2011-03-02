@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.Initialize(romInfo, nes);
 
-			Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+			Debug.Assert(RomInfo.PRG_Size == 1 || RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
 			prg_mask = RomInfo.PRG_Size - 1;
 
 			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
