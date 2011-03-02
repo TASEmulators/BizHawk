@@ -289,7 +289,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte reg_2003;
 			byte[] OAM;
 			byte[] PALRAM;
-			public byte[] NTARAM;
 			bool vtoggle;
 			byte VRAMBuffer;
 			void regs_reset()
@@ -305,7 +304,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				reg_2003 = 0;
 				OAM = new byte[0x100];
 				PALRAM = new byte[0x20];
-				NTARAM = new byte[0x800];
 				vtoggle = false;
 				VRAMBuffer = 0;
 			}
