@@ -13,8 +13,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	//check UNIF for more information.. it may specify board and MMC1 rev independently because boards may have any MMC1 rev
 	//in that case, we need to capture MMC1 rev in the game database (maybe add a new `chip` parameter)
 
-	//this board is a little more convoluted than it might otherwise be because i switched to a more chip-centered way of modeling it partway through
-	//perhaps i will make other boards work that way, and perhaps not
+	//Final Fantasy
+	//Mega Man 2
+	//Blaster Master
+	//Metroid
+	//Kid Icarus
+	//Zelda
+	//Zelda 2
+	//Castlevania 2
 
 	class MMC1
 	{
@@ -196,19 +202,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			{
 				case "SGROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-					romInfo.CHR_Size = 0; RomInfo.CRAM_Size = 8; romInfo.PRAM_Size = 0;
+					romInfo.CHR_Size = 0; 
+					RomInfo.CRAM_Size = 8; 
+					romInfo.PRAM_Size = 0;
 					break;
 				case "SNROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-					romInfo.CHR_Size = 0; RomInfo.CRAM_Size = 8; RomInfo.PRAM_Size = 8;
+					romInfo.CHR_Size = 0; 
+					RomInfo.CRAM_Size = 8; 
+					RomInfo.PRAM_Size = 8;
 					break;
 				case "SL2ROM":
+					//these boards have CHR roms and nothing else interesting
 					RomInfo.CRAM_Size = 0; 
 					RomInfo.PRAM_Size = 0;
 					break;
+
 				default: throw new InvalidOperationException();
 			}
 
+			//boards that don't contain CHR rom will contain CRAM. only one size is supported; set it up if it is there.
 			Debug.Assert(RomInfo.CRAM_Size == 0 || RomInfo.CRAM_Size == 8);
 			if (RomInfo.CRAM_Size != 0)
 			{
@@ -217,6 +230,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			}
 			else cram = new byte[0];
 
+			//some boards contain PRAM. we only understand one size right now. set it up if it is there.
 			Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8);
 			if (RomInfo.PRAM_Size != 0)
 			{
@@ -225,6 +239,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			}
 			else pram = new byte[0];
 
+			//some boards contain CHR roms, so set that up here.
 			if (RomInfo.CHR_Size != 0)
 			{
 				Debug.Assert(RomInfo.CHR_Size == 16);
