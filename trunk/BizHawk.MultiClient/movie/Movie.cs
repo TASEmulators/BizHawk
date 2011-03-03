@@ -7,7 +7,7 @@ using System.IO;
 namespace BizHawk.MultiClient
 {
     public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
-    class Movie
+    public class Movie
     {
         private MovieHeader Header = new MovieHeader();
         private MovieLog Log = new MovieLog();

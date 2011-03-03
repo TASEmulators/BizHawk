@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 		private string CurrentlyOpenRom;
 
         //TODO: adelikat: can this be the official file extension?
-        Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
+        public Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
 
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
@@ -148,12 +148,10 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-				if (InputLog.GetMovieMode() != MOVIEMODE.PLAY) //TODO: user movie not input log
-                    Input.Update();
-
+				
+                Input.Update();
 				CheckHotkeys();
-
-
+                
 				StepRunLoop_Core();
 				if(!IsNullEmulator())
 					StepRunLoop_Throttle();
@@ -587,9 +585,6 @@ namespace BizHawk.MultiClient
 
 		void StepRunLoop_Core()
 		{
-            if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-                Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame));
-               
             bool runFrame = false;
 			runloop_frameadvance = false;
 			DateTime now = DateTime.Now;
@@ -659,6 +654,8 @@ namespace BizHawk.MultiClient
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
+                if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+                    Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame));
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
@@ -1122,6 +1119,7 @@ namespace BizHawk.MultiClient
 
         private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            InputLog.StopMovie();
             InputLog.StartPlayback(); 
             LoadRom(CurrentlyOpenRom);
         }

@@ -255,12 +255,24 @@ namespace BizHawk.MultiClient
         {
             //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
             if (Global.Config.DisplayFrameCounter)
-                MessageFont.DrawString(null, Global.Emulator.Frame.ToString(), 1, 1, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
+                MessageFont.DrawString(null, MakeFrameCounter(), 1, 1, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
 
             if (Global.Config.DisplayInput)
             {
                 string input = MakeInputDisplay();
                 MessageFont.DrawString(null, input, 1, 16, new Color4(Color.White));
+            }
+        }
+
+        private string MakeFrameCounter()
+        {
+            if (Global.MainForm.InputLog.GetMovieMode() == MOVIEMODE.PLAY) //TODO: use user movie not input log (input log will never be allowed to be played back)
+            {
+                return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
+            }
+            else
+            {
+                return Global.Emulator.Frame.ToString();
             }
         }
 
