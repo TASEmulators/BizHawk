@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 					RomInfo.PRAM_Size = 0;
 					break;
                 case "SKROM":
-                    romInfo.CHR_Size = 128;
+                    romInfo.CHR_Size = 16;
                     RomInfo.PRAM_Size = 8;
                     RomInfo.CRAM_Size = 0;
                     break;

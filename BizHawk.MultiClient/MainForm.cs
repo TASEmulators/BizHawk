@@ -655,7 +655,7 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
                 if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-                    Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame));
+                    Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame)+ 1);
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();

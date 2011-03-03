@@ -17,10 +17,13 @@ namespace BizHawk.MultiClient
 
         private MOVIEMODE MovieMode = new MOVIEMODE();
 
+        public int lastLog;
+
         public Movie(string filename, MOVIEMODE m)
         {
             Filename = filename;    //TODO: Validate that file is writable
             MovieMode = m;
+            lastLog = 0;
         }
 
         public void StopMovie()
@@ -54,6 +57,7 @@ namespace BizHawk.MultiClient
 
         public string GetInputFrame(int frame)
         {
+            lastLog = frame;
             if (frame < Log.GetMovieLength())
                 return Log.GetFrame(frame);
             else
