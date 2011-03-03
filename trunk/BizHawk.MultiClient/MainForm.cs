@@ -148,7 +148,8 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-				Input.Update();
+				if (InputLog.GetMovieMode() != MOVIEMODE.PLAY) //TODO: user movie not input log
+                    Input.Update();
 
 				CheckHotkeys();
 
