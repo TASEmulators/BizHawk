@@ -1054,6 +1054,7 @@ namespace BizHawk.MultiClient
 			pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
+            enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1128,6 +1129,11 @@ namespace BizHawk.MultiClient
         {
             NESPPU n = new NESPPU();
             n.Show();
+        }
+
+        private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RewindEnabled ^= true;
         }
 	}
 }
