@@ -680,7 +680,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
 
-				//we're going to go ahead and copy these out, just in case we need to pad them alter
+				board.Initialize(romInfo, this);
+
+				//originally this was before board.initialize.
+				//however, i have decided that boards should get to setup some of their own parameters (e.g. chr size)
+				//so this needs to happen afterwards so we know how much to load.
+				//we may encounter some fishy issues and have to move it back above and do some other reconsidering.
 				romInfo.ROM = new byte[romInfo.PRG_Size * 16 * 1024];
 				Array.Copy(file, 16, romInfo.ROM, 0, romInfo.ROM.Length);
 				if (romInfo.CHR_Size > 0)
@@ -689,7 +694,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
 				}
 
-				board.Initialize(romInfo, this);
 			}
 
 			HardReset();
