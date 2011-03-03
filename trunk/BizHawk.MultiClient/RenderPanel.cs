@@ -268,7 +268,7 @@ namespace BizHawk.MultiClient
         {
             if (Global.MainForm.InputLog.GetMovieMode() == MOVIEMODE.PLAY) //TODO: use user movie not input log (input log will never be allowed to be played back)
             {
-                return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
+                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.InputLog.lastLog.ToString() + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
             }
             else
             {
