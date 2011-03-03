@@ -217,6 +217,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 					RomInfo.CRAM_Size = 0; 
 					RomInfo.PRAM_Size = 0;
 					break;
+                case "SKROM":
+                    romInfo.CHR_Size = 128;
+                    RomInfo.PRAM_Size = 8;
+                    RomInfo.CRAM_Size = 0;
+                    break;
 
 				default: throw new InvalidOperationException();
 			}
@@ -234,7 +239,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8);
 			if (RomInfo.PRAM_Size != 0)
 			{
-				pram = new byte[RomInfo.CRAM_Size * 1024];
+				pram = new byte[RomInfo.PRAM_Size * 1024];
 				pram_mask = pram.Length - 1;
 			}
 			else pram = new byte[0];
