@@ -204,7 +204,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     romInfo.CRAM_Size = 0;
                     RomInfo.PRAM_Size = 0;
                     RomInfo.PRAM_Size = 8;
-                    RomInfo.PRG_Size = 8;
+                    RomInfo.PRG_Size = 4;
+                    break;
+                case "SBROM":
+                    romInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
+                    RomInfo.PRG_Size = 4;
                     break;
                 case "SGROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
@@ -253,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			//some boards contain CHR roms, so set that up here.
 			if (RomInfo.CHR_Size != 0)
 			{
-				Debug.Assert(RomInfo.CHR_Size == 2 || RomInfo.CHR_Size == 16);
+				Debug.Assert(RomInfo.CHR_Size == 2 || RomInfo.CHR_Size == 4 || RomInfo.CHR_Size == 16);
 				chr_mask = (RomInfo.CHR_Size*2) - 1;
 			}
 

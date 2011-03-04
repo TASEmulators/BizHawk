@@ -673,6 +673,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "CPROM": board = new Boards.CPROM(); break;
 					case "GxROM": board = new Boards.GxROM(); break;
                     case "SAROM": board = new Boards.SxROM("SAROM"); break;
+                    case "SBROM": board = new Boards.SxROM("SBROM"); break;
                     case "SGROM": board = new Boards.SxROM("SGROM"); break;
 					case "SNROM": board = new Boards.SxROM("SNROM"); break;
                     case "SKROM": board = new Boards.SxROM("SKROM"); break;
