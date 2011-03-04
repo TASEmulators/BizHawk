@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Castlevania II (U) - Black screen only
         //Zelda II (U) - Black screen only
         //Bard's Tale - The Tales of the Unkown (U) - Black screen only
+        //Dragon Warrior (SBROM) - Black screen only
 
 
         //the main rom class that contains all information necessary for the board to operate
@@ -674,6 +675,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case "GxROM": board = new Boards.GxROM(); break;
                     case "SAROM": board = new Boards.SxROM("SAROM"); break;
                     case "SBROM": board = new Boards.SxROM("SBROM"); break;
+                    case "SCROM": board = new Boards.SxROM("SCROM"); break;
                     case "SGROM": board = new Boards.SxROM("SGROM"); break;
 					case "SNROM": board = new Boards.SxROM("SNROM"); break;
                     case "SKROM": board = new Boards.SxROM("SKROM"); break;
