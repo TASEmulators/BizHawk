@@ -239,7 +239,7 @@
             this.ValueBox.MaxLength = 9;
             this.ValueBox.Name = "ValueBox";
             this.ValueBox.Size = new System.Drawing.Size(80, 20);
-            this.ValueBox.TabIndex = 11;
+            this.ValueBox.TabIndex = 3;
             this.ValueBox.Text = "0000";
             this.ValueBox.Leave += new System.EventHandler(this.ValueBox_Leave);
             this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);

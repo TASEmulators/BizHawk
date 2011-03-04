@@ -1057,7 +1057,6 @@
         private System.Windows.Forms.TabControl hotkeyTabs;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
-        private InputWidget textBox14;
         private System.Windows.Forms.Button IDB_SAVE;
         private System.Windows.Forms.Button IDB_CANCEL;
         private System.Windows.Forms.TabPage tabPage1;
