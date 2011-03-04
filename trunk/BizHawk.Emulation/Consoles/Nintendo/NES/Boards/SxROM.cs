@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.Initialize(romInfo, nes);
 
-			Debug.Assert(RomInfo.PRG_Size == 1 || RomInfo.PRG_Size == 2 || RomInfo.PRG_Size == 4 || RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+            Debug.Assert(RomInfo.PRG_Size == 1 || RomInfo.PRG_Size == 2 || RomInfo.PRG_Size == 4 || RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16 || RomInfo.PRG_Size == 32);
 			prg_mask = RomInfo.PRG_Size - 1;
 
 			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
@@ -242,7 +242,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     romInfo.CHR_Size = 16;
                     break;
                 case "SIROM":
-                    Debug.Assert(1 == 2, "TODO: Please contact the emulator authors and tell them which game uses SIROM!");
                     romInfo.PRG_Size = 2;
                     RomInfo.CRAM_Size = 0;
                     RomInfo.PRAM_Size = 0;
@@ -257,8 +256,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     RomInfo.CRAM_Size = 0;
                     break;
                 case "SLROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    romInfo.CHR_Size = 16;
+                    RomInfo.PRAM_Size = 0;
+                    RomInfo.CRAM_Size = 0;
                     break;
                 case "SL1ROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    romInfo.CHR_Size = 16;
+                    RomInfo.PRAM_Size = 0;
+                    RomInfo.CRAM_Size = 0;
                     break;
 				case "SL2ROM":
 					//these boards have CHR roms and nothing else interesting
@@ -266,10 +273,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 					RomInfo.PRAM_Size = 0;
 					break;
                 case "SL3ROM":
+                    RomInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
                     break;
                 case "SLRROM":
+                    RomInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
                     break;
                 case "SMROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    RomInfo.CHR_Size = 0;
+                    RomInfo.PRAM_Size = 0;
+                    RomInfo.CRAM_Size = 8;
+                    RomInfo.PRG_Size = 16;
                     break;
                 case "SNROM":
                     Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
@@ -278,10 +294,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     RomInfo.PRAM_Size = 8;
                     break;
                 case "SOROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    romInfo.CHR_Size = 0;
+                    RomInfo.CRAM_Size = 8;
+                    RomInfo.PRAM_Size = 16;
                     break;
                 case "SUROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    RomInfo.PRG_Size = 32;
+                    RomInfo.PRAM_Size = 8;
+                    RomInfo.CRAM_Size = 8;
+                    RomInfo.CHR_Size = 0;
                     break;
                 case "SXROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    RomInfo.PRAM_Size = 32;
+                    RomInfo.CHR_Size = 0;
+                    RomInfo.CRAM_Size = 8;
                     break;
 				default: throw new InvalidOperationException();
 			}
@@ -296,7 +325,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			else cram = new byte[0];
 
 			//some boards contain PRAM. we only understand one size right now. set it up if it is there.
-			Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8);
+            Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8 || RomInfo.PRAM_Size == 16 || RomInfo.PRAM_Size == 32);
 			if (RomInfo.PRAM_Size != 0)
 			{
 				pram = new byte[RomInfo.PRAM_Size * 1024];

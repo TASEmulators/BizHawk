@@ -19,6 +19,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Dragon Warrior (SBROM) - Black screen only
         //Family Feud - Fails to get past intro screen
         //Air Wolf - Black screen
+        //Boyo and His Blob - Hangs on intro screen
+        //Goal = graphics garble (looks identical to Zelda 2 problem)
+        //Nobunaga's Ambition - black screen
 
         //the main rom class that contains all information necessary for the board to operate
 		public class RomInfo
