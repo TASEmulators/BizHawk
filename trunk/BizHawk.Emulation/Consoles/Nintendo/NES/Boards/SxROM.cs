@@ -251,23 +251,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     RomInfo.CRAM_Size = 0;
                     romInfo.PRAM_Size = 0;
                     break;
-				case "SNROM":
-					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-					romInfo.CHR_Size = 0; 
-					RomInfo.CRAM_Size = 8; 
-					RomInfo.PRAM_Size = 8;
-					break;
-				case "SL2ROM":
-					//these boards have CHR roms and nothing else interesting
-					RomInfo.CRAM_Size = 0; 
-					RomInfo.PRAM_Size = 0;
-					break;
                 case "SKROM":
                     romInfo.CHR_Size = 16;
                     RomInfo.PRAM_Size = 8;
                     RomInfo.CRAM_Size = 0;
                     break;
-
+                case "SLROM":
+                    break;
+                case "SL1ROM":
+                    break;
+				case "SL2ROM":
+					//these boards have CHR roms and nothing else interesting
+					RomInfo.CRAM_Size = 0; 
+					RomInfo.PRAM_Size = 0;
+					break;
+                case "SL3ROM":
+                    break;
+                case "SLRROM":
+                    break;
+                case "SMROM":
+                    break;
+                case "SNROM":
+                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
+                    romInfo.CHR_Size = 0;
+                    RomInfo.CRAM_Size = 8;
+                    RomInfo.PRAM_Size = 8;
+                    break;
+                case "SOROM":
+                    break;
+                case "SUROM":
+                    break;
+                case "SXROM":
+                    break;
 				default: throw new InvalidOperationException();
 			}
 
