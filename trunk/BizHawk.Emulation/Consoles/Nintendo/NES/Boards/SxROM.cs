@@ -222,6 +222,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     RomInfo.PRAM_Size = 0;
                     romInfo.PRG_Size = 2;
                     break;
+                case "SFROM":
+                    romInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
+                    break;
                 case "SGROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
 					romInfo.CHR_Size = 0; 
