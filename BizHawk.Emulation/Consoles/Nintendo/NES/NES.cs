@@ -682,11 +682,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                     case "SFROM": board = new Boards.SxROM("SFROM"); break;
                     case "SGROM": board = new Boards.SxROM("SGROM"); break;
                     case "SHROM": board = new Boards.SxROM("SHROM"); break;
+                    case "SH1ROM": board = new Boards.SxROM("SH1ROM"); break;
                     case "SIROM": board = new Boards.SxROM("SIROM"); break;
                     case "SJROM": board = new Boards.SxROM("SJROM"); break;
-					case "SNROM": board = new Boards.SxROM("SNROM"); break;
                     case "SKROM": board = new Boards.SxROM("SKROM"); break;
-					case "SL2ROM": board = new Boards.SxROM("SL2ROM"); break;
+                    case "SLROM": board = new Boards.SxROM("SLROM"); break;
+                    case "SL1ROM": board = new Boards.SxROM("SL1ROM"); break;
+                    case "SL2ROM": board = new Boards.SxROM("SL2ROM"); break;
+                    case "SL3ROM": board = new Boards.SxROM("SL3ROM"); break;
+                    case "SLRROM": board = new Boards.SxROM("SLRROM"); break;
+                    case "SMROM": board = new Boards.SxROM("SMROM"); break;
+                    case "SNROM": board = new Boards.SxROM("SNROM"); break;
+                    case "SOROM": board = new Boards.SxROM("SOROM"); break;
+                    case "SUROM": board = new Boards.SxROM("SUROM"); break;
+                    case "SXROM": board = new Boards.SxROM("SXROM"); break;
 				}
 
 				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
