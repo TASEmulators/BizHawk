@@ -234,11 +234,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 					romInfo.PRAM_Size = 0;
 					break;
                 case "SHROM":
+                case "SH1ROM":
                     Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
                     romInfo.PRG_Size = 2;
                     RomInfo.PRAM_Size = 0;
                     RomInfo.CRAM_Size = 0;
                     romInfo.CHR_Size = 16;
+                    break;
+                case "SIROM":
+                    Debug.Assert(1 == 2, "TODO: Please contact the emulator authors and tell them which game uses SIROM!");
+                    romInfo.PRG_Size = 2;
+                    RomInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
+                    break;
+                case "SJROM":
+                    RomInfo.CRAM_Size = 0;
+                    romInfo.PRAM_Size = 0;
                     break;
 				case "SNROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
