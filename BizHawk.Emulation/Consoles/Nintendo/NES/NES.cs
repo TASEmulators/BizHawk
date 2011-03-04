@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Zelda II (U) - Black screen only
         //Bard's Tale - The Tales of the Unkown (U) - Black screen only
         //Dragon Warrior (SBROM) - Black screen only
+        //Family Feud - Fails to get past intro screen
 
 
         //the main rom class that contains all information necessary for the board to operate
@@ -680,6 +681,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                     case "SEROM": board = new Boards.SxROM("SEROM"); break;
                     case "SFROM": board = new Boards.SxROM("SFROM"); break;
                     case "SGROM": board = new Boards.SxROM("SGROM"); break;
+                    case "SHROM": board = new Boards.SxROM("SHROM"); break;
 					case "SNROM": board = new Boards.SxROM("SNROM"); break;
                     case "SKROM": board = new Boards.SxROM("SKROM"); break;
 					case "SL2ROM": board = new Boards.SxROM("SL2ROM"); break;
