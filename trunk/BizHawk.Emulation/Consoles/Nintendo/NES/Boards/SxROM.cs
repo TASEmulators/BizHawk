@@ -190,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.Initialize(romInfo, nes);
 
-			Debug.Assert(RomInfo.PRG_Size == 1 |RomInfo.PRG_Size == 4 | RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
+			Debug.Assert(RomInfo.PRG_Size == 1 || RomInfo.PRG_Size == 2 || RomInfo.PRG_Size == 4 || RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
 			prg_mask = RomInfo.PRG_Size - 1;
 
 			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
@@ -202,7 +202,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			{
 				case "SAROM":
                     romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
                     RomInfo.PRAM_Size = 8;
                     RomInfo.PRG_Size = 4;
                     break;
@@ -212,10 +211,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
                     RomInfo.PRG_Size = 4;
                     break;
                 case "SCROM":
+                case "SC1ROM":
                     romInfo.CRAM_Size = 0;
                     RomInfo.PRAM_Size = 0;
                     RomInfo.PRG_Size = 4;
                     RomInfo.CHR_Size = 16;
+                    break;
+                case "SEROM":
+                    romInfo.CRAM_Size = 0;
+                    RomInfo.PRAM_Size = 0;
+                    romInfo.PRG_Size = 2;
                     break;
                 case "SGROM":
 					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
