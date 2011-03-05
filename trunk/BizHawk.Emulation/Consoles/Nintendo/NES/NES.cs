@@ -443,17 +443,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			set { }
 		}
 
+        private IList<MemoryDomain> memoryDomains;
+
+        private void SetupMemoryDomains()
+        {
+            var domains = new List<MemoryDomain>(6);
+            var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little,
+                addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
+            //System bus
+            //PPU 2000-3FFF
+            //APU 4000-5FFF
+            //WRAM 6000-7FFF
+            //PRG RAM 8000-FFFF
+
+            domains.Add(MainMemoryDomain);
+            memoryDomains = domains.AsReadOnly();
+        }
+
 		public string SystemId { get { return "NES"; } }
-		public IList<MemoryDomain> MemoryDomains { get { return new List<MemoryDomain>(); } }
-		public MemoryDomain MainMemory
-		{
-			get
-			{
-				return new MemoryDomain("x", 8, Endian.Little,
-										addr => 0,
-										(addr, value) => { });
-			}
-		}
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 
 		public object Query(EmulatorQuery query)
@@ -716,10 +725,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
 					Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
 				}
-
+                
 			}
-
 			HardReset();
+            SetupMemoryDomains();
 		}
 
 		public void SaveStateText(TextWriter writer)
