@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.PalettesGroups = new System.Windows.Forms.GroupBox();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -41,21 +41,21 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pattern Tables";
             // 
-            // groupBox2
+            // PalettesGroups
             // 
-            this.groupBox2.Location = new System.Drawing.Point(12, 262);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(415, 84);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Palettes";
+            this.PalettesGroups.Location = new System.Drawing.Point(12, 262);
+            this.PalettesGroups.Name = "PalettesGroups";
+            this.PalettesGroups.Size = new System.Drawing.Size(415, 84);
+            this.PalettesGroups.TabIndex = 1;
+            this.PalettesGroups.TabStop = false;
+            this.PalettesGroups.Text = "Palettes";
             // 
             // NESPPU
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(443, 359);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.PalettesGroups);
             this.Controls.Add(this.groupBox1);
             this.Name = "NESPPU";
             this.Text = "PPU Viewer";
@@ -67,6 +67,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox PalettesGroups;
     }
 }

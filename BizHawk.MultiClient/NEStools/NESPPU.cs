@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -16,9 +17,14 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        public void UpdateValues()
+        {
+            if (!(Global.Emulator is NES)) return;
+        }
+
         private void NESPPU_Load(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
