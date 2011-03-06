@@ -408,6 +408,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			}
 		}
 
+        public override byte[] PRam
+        {
+            get
+            {
+                if (RomInfo.PRAM_Size > 0)
+                    return pram;
+                else
+                    return null;
+            }
+        }
+
+        public override byte[] CRam
+        {
+            get
+            {
+                if (RomInfo.CRAM_Size > 0)
+                    return cram;
+                else
+                    return null;
+            }
+        }
+
 		public override void SaveStateBinary(BinaryWriter bw)
 		{
 			base.SaveStateBinary(bw);
