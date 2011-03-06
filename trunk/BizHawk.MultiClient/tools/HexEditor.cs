@@ -12,9 +12,9 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
+        //Length of values doesn't match
         //Find text box - autohighlights matches, and shows total matches
         //Implement Goto address
-        //Scroll bar
         //Users can customize background, & text colors
         //Context menu - Poke, Freeze/Unfreeze, Watch
         //Tool strip
@@ -73,21 +73,23 @@ namespace BizHawk.MultiClient
         {
             unchecked
             {
-                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left + 46, MemoryViewer.Top, MemoryViewer.Left + 46, MemoryViewer.Bottom-40);
-                e.Graphics.DrawString(HEADER, font, regBrush, new Point(16, 16));
-                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right-16, 34);
-                
-                int rowX = 16; 
+                int row = 0;
+                int rowX = 8; 
                 int rowY = 16;
                 int rowYoffset = 20;
                 string rowStr;
 
+                e.Graphics.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
+                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left + 38, MemoryViewer.Top, MemoryViewer.Left + 38, MemoryViewer.Bottom - 40);
+                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right - 16, 34);
+
                 for (int i = 0; i < Domain.Size / 16; i++)
                 {
-                    rowStr = String.Format("{0:X4}", i*16) + "  "; //TODO: num digits based on size of domain
+                    row = i + vScrollBar1.Value;
+                    rowStr = String.Format("{0:X4}", row*16) + "  "; //TODO: num digits based on size of domain
                     for (int j = 0; j < 16; j++)
                     {
-                        rowStr += String.Format("{0:X2}", Domain.PeekByte((i*16)+j)) + " "; //TODO: format based on data size
+                        rowStr += String.Format("{0:X2}", Domain.PeekByte((row*16)+j)) + " "; //TODO: format based on data size
                     }
 
                     e.Graphics.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY*(i+1))+rowYoffset));
@@ -162,6 +164,10 @@ namespace BizHawk.MultiClient
             }
             else
                 memoryDomainsToolStripMenuItem.Enabled = false;
+
+            //Set up scrollbar
+            vScrollBar1.Maximum = Domain.Size / 16; 
+            vScrollBar1.Value = 0;
         }
 
         private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
