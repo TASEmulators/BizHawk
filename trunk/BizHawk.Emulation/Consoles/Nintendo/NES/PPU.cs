@@ -14,13 +14,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public partial class PPU
 		{
 			//when the ppu issues a write it goes through here and into the game board
-			void ppubus_write(int addr, byte value)
+			public void ppubus_write(int addr, byte value)
 			{
 				nes.board.WritePPU(addr, value);
 			}
 
 			//when the ppu issues a read it goes through here and into the game board
-			byte ppubus_read(int addr)
+			public byte ppubus_read(int addr)
 			{
 				return nes.board.ReadPPU(addr);
 			}
