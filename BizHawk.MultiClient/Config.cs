@@ -76,6 +76,14 @@
         public bool RamSearchPreviewMode = true;
         public bool AlwaysExludeRamWatch = false;
 
+        // HexEditor Settings
+        public bool AutoLoadHexEditor = false;
+        public bool HexEditorSaveWindowPosition = true;
+        public int HexEditorWndx = -1;  //Negative numbers will be ignored even with save window position set
+        public int HexEditorWndy = -1;
+        public int HexEditorWidth = -1;
+        public int HexEditorHeight = -1;
+
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
 

@@ -42,6 +42,7 @@ namespace BizHawk.MultiClient
 		//tool dialogs
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
+        public HexEditor HexEditor1 = new HexEditor();
 
 		public MainForm(string[] args)
 		{
@@ -123,6 +124,8 @@ namespace BizHawk.MultiClient
 				LoadRamWatch();
 			if (Global.Config.AutoLoadRamSearch)
 				LoadRamSearch();
+            if (Global.Config.AutoLoadHexEditor)
+                LoadHexEditor();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -467,6 +470,7 @@ namespace BizHawk.MultiClient
 				SetSpeedPercent(Global.Config.SpeedPercent);
 			}
             RamSearch1.Restart();
+            HexEditor1.Restart();
 			CurrentlyOpenRom = path;
 			return true;
 		}
@@ -659,6 +663,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
+                HexEditor1.UpdateValues();
                 if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
                     InputLog.GetMnemonic();
 			}
@@ -927,6 +932,17 @@ namespace BizHawk.MultiClient
 				RamSearch1.Focus();
 		}
 
+        private void LoadHexEditor()
+        {
+            if (!HexEditor1.IsHandleCreated || HexEditor1.IsDisposed)
+            {
+                HexEditor1 = new HexEditor();
+                HexEditor1.Show();
+            }
+            else
+                HexEditor1.Focus();
+        }
+
 		private int lastWidth = -1;
 		private int lastHeight = -1;
 
@@ -1114,6 +1130,8 @@ namespace BizHawk.MultiClient
                 RamWatch1.SaveConfigSettings();
             if (!RamSearch1.IsDisposed)
                 RamSearch1.SaveConfigSettings();
+            if (!HexEditor1.IsDisposed)
+                HexEditor1.SaveConfigSettings();
             ConfigService.Save("config.ini", Global.Config);
         }
 
@@ -1137,8 +1155,7 @@ namespace BizHawk.MultiClient
 
         private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            HexEditor h = new HexEditor();
-            h.Show();   //TODO: make global + autoload capabilities
+            LoadHexEditor();
         }
 	}
 }

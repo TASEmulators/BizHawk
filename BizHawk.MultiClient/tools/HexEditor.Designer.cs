@@ -40,11 +40,16 @@
             this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MemoryViewer
             // 
+            this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
             this.MemoryViewer.Name = "MemoryViewer";
             this.MemoryViewer.Size = new System.Drawing.Size(484, 328);
@@ -97,7 +102,9 @@
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.memoryDomainsToolStripMenuItem,
-            this.dataSizeToolStripMenuItem});
+            this.dataSizeToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -136,6 +143,18 @@
             this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.byteToolStripMenuItem2.Text = "4 Byte";
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(183, 6);
+            // 
+            // restoreWindowSizeToolStripMenuItem
+            // 
+            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
+            // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -168,5 +187,7 @@
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
     }
 }

@@ -1703,6 +1703,4 @@ namespace BizHawk.MultiClient
             else return 8;
         }
     }
-
-
 }
