@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.MemoryViewer = new System.Windows.Forms.GroupBox();
+            this.MemoryViewer = new MemoryViewer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,8 +194,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox MemoryViewer;
+        
+        private MemoryViewer MemoryViewer;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dumpToFileToolStripMenuItem;

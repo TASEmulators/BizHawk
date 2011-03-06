@@ -35,6 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86">
@@ -199,6 +200,9 @@
     </Compile>
     <Compile Include="tools\LuaWindow.Designer.cs">
       <DependentUpon>LuaWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\MemoryViewer.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\RamPoke.cs">
       <SubType>Form</SubType>
