@@ -448,8 +448,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         private void SetupMemoryDomains()
         {
             var domains = new List<MemoryDomain>();
-            var WRAM = new MemoryDomain("WRAM", ram.Length, Endian.Little,
-                addr => ram[addr & ram.Length], (addr, value) => ram[addr &ram.Length] = value);
+            var WRAM = new MemoryDomain("WRAM", 0x8000, Endian.Little,
+                addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
             var MainMemory = new MemoryDomain("System Bus", 0x10000, Endian.Little,
                 addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
             var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
