@@ -25,8 +25,10 @@ namespace BizHawk.MultiClient
         //Show num addresses in group box title (show "address" if 1 address)
         //big font for currently mouse over'ed value?
 
-        Font font = new Font("Courier", 10);
+        Font font = new Font("Courier New", 10);
         Brush regBrush = Brushes.Black;
+
+        const string HEADER = " 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 
         int defaultWidth;
         int defaultHeight;
@@ -69,11 +71,28 @@ namespace BizHawk.MultiClient
 
         private void MemoryViewer_Paint(object sender, PaintEventArgs e)
         {
-            string row = "";
-            for (int x = 0; x < 16; x++)
-                row += String.Format("{0:X2}", Domain.PeekByte(x)) + " "; //TODO: format based on data size
+            unchecked
+            {
+                e.Graphics.DrawString(HEADER, font, regBrush, new Point(16, 16));
+                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right-16, 34);
 
-            e.Graphics.DrawString(row, font, regBrush, new Point(16, 16));
+                int row = 0; 
+                int rowX = 16; 
+                int rowY = 16;
+                int rowYoffset = 20;
+                string rowStr;
+
+                for (int i = 1; i < Domain.Size / 16; i++)
+                {
+                    rowStr = "";
+                    for (int j = 0; j < 16; j++)
+                    {
+                        rowStr += String.Format("{0:X2}", Domain.PeekByte(i*j)) + " "; //TODO: format based on data size
+                    }
+
+                    e.Graphics.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY*i)+rowYoffset));
+                }
+            }
         }
 
         public void UpdateValues()

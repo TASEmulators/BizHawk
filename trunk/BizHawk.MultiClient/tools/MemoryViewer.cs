@@ -13,7 +13,6 @@ namespace BizHawk.MultiClient
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
-            //SetStyle(ControlStyles.Opaque, true);
         }
     }
 }
