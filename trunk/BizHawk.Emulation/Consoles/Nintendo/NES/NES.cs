@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void WritePRAM(int addr, byte value);
 			void Initialize(RomInfo romInfo, NES nes);
 			byte[] SaveRam { get; }
+            byte[] PRam { get; }
+            byte[] CRam { get; }
 			void SaveStateBinary(BinaryWriter bw);
 			void LoadStateBinary(BinaryReader br);
 		};
@@ -157,6 +159,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			public virtual byte[] SaveRam { get { return null; } }
+            public virtual byte[] PRam { get { return null; } }
+            public virtual byte[] CRam { get { return null; } }
 		}
 
 		//hardware/state
@@ -465,7 +469,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             if (board.SaveRam != null)
             {
                 var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
-                    addr => board.SaveRam[addr & board.SaveRam.Length], (addr, value) => board.SaveRam[addr & SaveRam.Length] = value);
+                    addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
                 domains.Add(BatteryRam);
             }
 
@@ -480,10 +484,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                 domains.Add(CHRROM);
             }
 
+            if (board.CRam != null)
+            {
+                var CRAM = new MemoryDomain("CRAM", board.CRam.Length, Endian.Little,
+                    addr => board.CRam[addr], (addr, value) => board.CRam[addr] = value);
+                domains.Add(CRAM);
+            }
+
+            if (board.PRam != null)
+            {
+                var PRAM = new MemoryDomain("PRAM", board.PRam.Length, Endian.Little,
+                    addr => board.PRam[addr], (addr, value) => board.PRam[addr] = value);
+                domains.Add(PRAM);
+            }
+
             memoryDomains = domains.AsReadOnly();
         }
-
-        //TODO: PRAM & CRAM
 
 		public string SystemId { get { return "NES"; } }
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
