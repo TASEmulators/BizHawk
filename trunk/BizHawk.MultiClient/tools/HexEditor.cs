@@ -12,7 +12,19 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
-        //Everything
+        //Find text box - autohighlights matches, and shows total matches
+        //Implement Goto address
+        //Scroll bar
+        //Users can customize background, & text colors
+        //Context menu - Poke, Freeze/Unfreeze, Watch
+        //Tool strip
+        //Double click addres = send to ram watch
+        //Add to Ram Watch menu item, enabled conditionally on if any address is highlighted
+        //Text box showing currently highlighted address(es) & total
+        //Typing legit hex values = memory poke
+        //Show num addresses in group box title (show "address" if 1 address)
+
+
 
         int defaultWidth;
         int defaultHeight;
@@ -44,6 +56,8 @@ namespace BizHawk.MultiClient
             {
                 this.Size = new System.Drawing.Size(Global.Config.HexEditorWidth, Global.Config.HexEditorHeight);
             }
+
+            SetMemoryDomainMenu();
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -53,17 +67,16 @@ namespace BizHawk.MultiClient
 
         private void MemoryViewer_Paint(object sender, PaintEventArgs e)
         {
-            // Create a local version of the graphics object for the PictureBox.
             Graphics g = e.Graphics;
+            Font font = new Font("Arial", 10);
+            //TODO: big font for currently mouse over'ed value?
+            Brush regBrush = Brushes.Black;
 
-            // Draw a string on the PictureBox.
-            g.DrawString("This is a diagonal line drawn on the control",
-                new Font("Arial",10), System.Drawing.Brushes.Blue, new Point(30,30));
+            string row = "";
+            for (int x = 0; x < 16; x++)
+                row += String.Format("{0:X2}", Domain.PeekByte(x)) + " "; //TODO: format based on data size
 
-            // Draw a line in the PictureBox.
-            g.DrawLine(System.Drawing.Pens.Red, this.Left, this.Top,
-                this.Right, this.Bottom);
-
+            g.DrawString(row, font, regBrush, new Point(16, 16));
         }
 
         public void UpdateValues()
@@ -74,7 +87,7 @@ namespace BizHawk.MultiClient
 
         public void Restart()
         {
-            //TODO
+            SetMemoryDomainMenu(); //Calls update routines
         }
 
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -90,6 +103,53 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
+        }
+
+        private void SetMemoryDomain(int pos)
+        {
+            if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+            {
+                Domain = Global.Emulator.MemoryDomains[pos];
+            }
+            UpdateDomainString();
+        }
+
+        private void UpdateDomainString()
+        {
+            string memoryDomain = Domain.ToString();
+            string systemID = Global.Emulator.SystemId;
+            MemoryViewer.Text = systemID + " " + memoryDomain;
+        }
+
+        private void SetMemoryDomainMenu()
+        {
+            memoryDomainsToolStripMenuItem.DropDownItems.Clear();
+            if (Global.Emulator.MemoryDomains.Count > 0)
+            {
+                for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+                {
+                    string str = Global.Emulator.MemoryDomains[x].ToString();
+                    var item = new ToolStripMenuItem();
+                    item.Text = str;
+                    {
+                        int z = x;
+                        item.Click += (o, ev) => SetMemoryDomain(z);
+                    }
+                    if (x == 0)
+                    {
+                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
+                        SetMemoryDomain(x);
+                    }
+                    memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+            else
+                memoryDomainsToolStripMenuItem.Enabled = false;
+        }
+
+        private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //TODO
         }
     }
 }
