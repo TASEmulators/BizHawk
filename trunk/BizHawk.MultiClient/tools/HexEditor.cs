@@ -23,8 +23,10 @@ namespace BizHawk.MultiClient
         //Text box showing currently highlighted address(es) & total
         //Typing legit hex values = memory poke
         //Show num addresses in group box title (show "address" if 1 address)
+        //big font for currently mouse over'ed value?
 
-
+        Font font = new Font("Courier", 10);
+        Brush regBrush = Brushes.Black;
 
         int defaultWidth;
         int defaultHeight;
@@ -67,27 +69,23 @@ namespace BizHawk.MultiClient
 
         private void MemoryViewer_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
-            Font font = new Font("Arial", 10);
-            //TODO: big font for currently mouse over'ed value?
-            Brush regBrush = Brushes.Black;
-
             string row = "";
             for (int x = 0; x < 16; x++)
                 row += String.Format("{0:X2}", Domain.PeekByte(x)) + " "; //TODO: format based on data size
 
-            g.DrawString(row, font, regBrush, new Point(16, 16));
+            e.Graphics.DrawString(row, font, regBrush, new Point(16, 16));
         }
 
         public void UpdateValues()
         {
             if (!this.IsHandleCreated || this.IsDisposed) return;
-            //TODO
+            MemoryViewer.Refresh();
         }
 
         public void Restart()
         {
             SetMemoryDomainMenu(); //Calls update routines
+            MemoryViewer.Refresh();
         }
 
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
