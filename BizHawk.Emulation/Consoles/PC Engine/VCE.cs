@@ -12,9 +12,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public int[] Palette = new int[512];
         public byte DotClock;
 
+        // Note: To keep the VCE class from needing a reference to the CPU, the 1-cycle access 
+        // penalty for the VCE is handled by the memory mappers.
+
         public void WriteVCE(int port, byte value)
         {
-            //cpu.PendingCycles--; // VCE access puts CPU into a 1-cycle wait state.
             switch (port)
             {
                 case 0: // Control Port. Doesn't control anything we care about...
@@ -48,7 +50,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte ReadVCE(int port)
         {
-            //cpu.PendingCycles--;
             switch (port)
             {
                 case 4: // Data LSB

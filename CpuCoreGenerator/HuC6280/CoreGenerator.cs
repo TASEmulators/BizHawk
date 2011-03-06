@@ -165,7 +165,7 @@ namespace HuC6280
             Set(0x44, "BSR", AddrMode.Relative, 8); // Branch to Subroutine
 
             // CPU Break
-            Set(0x00, "BRK", AddrMode.Implicit, 7);
+            Set(0x00, "BRK", AddrMode.Implicit, 8);
 
             // Compare accumulator
             Set(0xC9, "CMP", AddrMode.Immediate, 2);
@@ -234,7 +234,7 @@ namespace HuC6280
             Set(0x7C, "JMP", AddrMode.AbsoluteIndirectX, 7);
 
             // Jump to Subroutine
-            Set(0x20, "JSR", AddrMode.Absolute, 6);
+            Set(0x20, "JSR", AddrMode.Absolute, 7);
 
             // Load Accumulator
             Set(0xA9, "LDA", AddrMode.Immediate, 2);
@@ -408,8 +408,8 @@ namespace HuC6280
             Set(0xB3, "TST", AddrMode.ImmAbsoluteX, 8);
 
             // Cpu Speed instructions
-            Set(0xD4, "CSH", AddrMode.Implicit, 2);
-            Set(0x54, "CSL", AddrMode.Implicit, 2);
+            Set(0xD4, "CSH", AddrMode.Implicit, 3);
+            Set(0x54, "CSL", AddrMode.Implicit, 3);
 
             // Block Memory Transfer instructions
             Set(0xF3, "TAI", AddrMode.BlockMove, 17); // Transfer Alternate Increment
