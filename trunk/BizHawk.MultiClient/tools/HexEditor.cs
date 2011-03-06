@@ -82,15 +82,15 @@ namespace BizHawk.MultiClient
                 int rowYoffset = 20;
                 string rowStr;
 
-                for (int i = 1; i < Domain.Size / 16; i++)
+                for (int i = 0; i < Domain.Size / 16; i++)
                 {
-                    rowStr = String.Format("{0:X4}", (i-1)*16) + "  "; //TODO: num digits based on size of domain
+                    rowStr = String.Format("{0:X4}", i*16) + "  "; //TODO: num digits based on size of domain
                     for (int j = 0; j < 16; j++)
                     {
-                        rowStr += String.Format("{0:X2}", Domain.PeekByte(i*j)) + " "; //TODO: format based on data size
+                        rowStr += String.Format("{0:X2}", Domain.PeekByte((i*16)+j)) + " "; //TODO: format based on data size
                     }
 
-                    e.Graphics.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY*i)+rowYoffset));
+                    e.Graphics.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY*(i+1))+rowYoffset));
                 }
             }
         }
