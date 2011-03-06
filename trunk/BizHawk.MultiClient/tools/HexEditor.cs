@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
         Font font = new Font("Courier New", 10);
         Brush regBrush = Brushes.Black;
 
-        const string HEADER = " 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+        const string HEADER = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 
         int defaultWidth;
         int defaultHeight;
@@ -73,10 +73,10 @@ namespace BizHawk.MultiClient
         {
             unchecked
             {
+                e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left + 46, MemoryViewer.Top, MemoryViewer.Left + 46, MemoryViewer.Bottom-40);
                 e.Graphics.DrawString(HEADER, font, regBrush, new Point(16, 16));
                 e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right-16, 34);
-
-                int row = 0; 
+                
                 int rowX = 16; 
                 int rowY = 16;
                 int rowYoffset = 20;
@@ -84,7 +84,7 @@ namespace BizHawk.MultiClient
 
                 for (int i = 1; i < Domain.Size / 16; i++)
                 {
-                    rowStr = "";
+                    rowStr = String.Format("{0:X4}", (i-1)*16) + "  "; //TODO: num digits based on size of domain
                     for (int j = 0; j < 16; j++)
                     {
                         rowStr += String.Format("{0:X2}", Domain.PeekByte(i*j)) + " "; //TODO: format based on data size
