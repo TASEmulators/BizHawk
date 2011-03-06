@@ -148,7 +148,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x01) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -157,7 +157,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagN == false) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -264,7 +264,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x02) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -274,7 +274,7 @@ throw new Exception("break");
                         WriteMemory((ushort)(S-- + 0x2100), (byte)(temp16 >> 8));
                         WriteMemory((ushort)(S-- + 0x2100), (byte)temp16);
                         PC = ReadWord(PC);
-                        PendingCycles -= 6;
+                        PendingCycles -= 7;
                         break;
                     case 0x21: // AND (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
@@ -397,7 +397,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x04) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -406,7 +406,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagN == true) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -547,7 +547,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x08) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -684,7 +684,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x10) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -693,7 +693,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagV == false) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -739,7 +739,7 @@ throw new Exception("break");
                         PendingCycles -= 5;
                         break;
                     case 0x54: // CSL
-                        PendingCycles -= 2;
+                        PendingCycles -= 3;
                         break;
                     case 0x55: // EOR zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
@@ -829,7 +829,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x20) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1018,7 +1018,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x40) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1027,7 +1027,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagV == true) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -1255,7 +1255,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x80) == 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1339,7 +1339,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x01) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1348,7 +1348,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagC == false) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -1438,7 +1438,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x02) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1522,7 +1522,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x04) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1531,7 +1531,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagC == true) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -1627,7 +1627,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x08) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1727,7 +1727,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x10) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1736,7 +1736,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagZ == false) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -1768,7 +1768,7 @@ throw new Exception("break");
                         PendingCycles -= temp;
                         break;
                     case 0xD4: // CSH
-                        PendingCycles -= 2;
+                        PendingCycles -= 3;
                         break;
                     case 0xD5: // CMP zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
@@ -1833,7 +1833,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x20) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1988,7 +1988,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x40) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;
@@ -1997,7 +1997,7 @@ throw new Exception("break");
                         rel8 = (sbyte)ReadMemory(PC++);
                         value16 = (ushort)(PC+rel8);
                         if (FlagZ == true) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = value16;
                         }
                         PendingCycles -= 2;
@@ -2174,7 +2174,7 @@ throw new Exception("break");
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
                         rel8 = (sbyte) ReadMemory(PC++);
                         if ((value8 & 0x80) != 0) {
-                            PendingCycles--;
+                            PendingCycles -= 2;
                             PC = (ushort)(PC+rel8);
                         }
                         PendingCycles -= 6;

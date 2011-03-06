@@ -98,7 +98,7 @@ namespace HuC6280
             w.WriteLine(Spaces + "value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));");
             w.WriteLine(Spaces + "rel8 = (sbyte) ReadMemory(PC++);");
             w.WriteLine(Spaces + "if ((value8 & "+filter+") "+cond+" 0) {");
-            w.WriteLine(Spaces + "    PendingCycles--;");
+            w.WriteLine(Spaces + "    PendingCycles -= 2;");
             w.WriteLine(Spaces + "    PC = (ushort)(PC+rel8);");
             w.WriteLine(Spaces + "}");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
@@ -108,7 +108,7 @@ namespace HuC6280
         {
             GetAddress(op, w, "value16");
             w.WriteLine(Spaces + "if (Flag" + flag + " == " + cond.ToString().ToLower() + ") {");
-            w.WriteLine(Spaces + "    PendingCycles--;");
+            w.WriteLine(Spaces + "    PendingCycles -= 2;");
             w.WriteLine(Spaces + "    PC = value16;");
             w.WriteLine(Spaces + "}");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
