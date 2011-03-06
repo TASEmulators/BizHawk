@@ -469,10 +469,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                 domains.Add(BatteryRam);
             }
 
-            if (board.
-            
+            var PRGROM = new MemoryDomain("PRG Rom", romInfo.PRG_Size * 16384, Endian.Little,
+                addr => romInfo.ROM[addr], (addr, value) => romInfo.VROM[addr] = value);
+            domains.Add(PRGROM);
+
+            if (romInfo.CHR_Size > 0)
+            {
+                var CHRROM = new MemoryDomain("CHR Rom", romInfo.CHR_Size * 8192, Endian.Little,
+                    addr => romInfo.VROM[addr], (addr, value) => romInfo.VROM[addr] = value);
+                domains.Add(CHRROM);
+            }
+
             memoryDomains = domains.AsReadOnly();
         }
+
+        //TODO: PRAM & CRAM
 
 		public string SystemId { get { return "NES"; } }
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
