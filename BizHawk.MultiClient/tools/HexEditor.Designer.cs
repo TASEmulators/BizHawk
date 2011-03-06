@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.MemoryViewer = new MemoryViewer();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dumpToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,25 +39,14 @@
             this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+            this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // MemoryViewer
-            // 
-            this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
-            this.MemoryViewer.Name = "MemoryViewer";
-            this.MemoryViewer.Size = new System.Drawing.Size(484, 328);
-            this.MemoryViewer.TabIndex = 0;
-            this.MemoryViewer.TabStop = false;
-            this.MemoryViewer.Text = "RAM";
-            this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             // 
             // menuStrip1
             // 
@@ -68,7 +56,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(508, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(534, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -115,7 +103,7 @@
             // memoryDomainsToolStripMenuItem
             // 
             this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
             // 
             // dataSizeToolStripMenuItem
@@ -125,26 +113,34 @@
             this.byteToolStripMenuItem1,
             this.byteToolStripMenuItem2});
             this.dataSizeToolStripMenuItem.Name = "dataSizeToolStripMenuItem";
-            this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.dataSizeToolStripMenuItem.Text = "Data Size";
             // 
             // byteToolStripMenuItem
             // 
             this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-            this.byteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byteToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.byteToolStripMenuItem.Text = "1 Byte";
             // 
             // byteToolStripMenuItem1
             // 
             this.byteToolStripMenuItem1.Name = "byteToolStripMenuItem1";
-            this.byteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.byteToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
             this.byteToolStripMenuItem1.Text = "2 Byte";
             // 
             // byteToolStripMenuItem2
             // 
             this.byteToolStripMenuItem2.Name = "byteToolStripMenuItem2";
-            this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.byteToolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
             this.byteToolStripMenuItem2.Text = "4 Byte";
+            // 
+            // goToAddressToolStripMenuItem
+            // 
+            this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
+            this.goToAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.goToAddressToolStripMenuItem.Text = "Go to Address";
+            this.goToAddressToolStripMenuItem.Click += new System.EventHandler(this.goToAddressToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
             // 
@@ -160,6 +156,7 @@
             this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
             this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // autoloadToolStripMenuItem
             // 
@@ -167,19 +164,35 @@
             this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.autoloadToolStripMenuItem.Text = "Auto-load";
             // 
-            // goToAddressToolStripMenuItem
+            // vScrollBar1
             // 
-            this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
-            this.goToAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.goToAddressToolStripMenuItem.Text = "Go to Address";
-            this.goToAddressToolStripMenuItem.Click += new System.EventHandler(this.goToAddressToolStripMenuItem_Click);
+            this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.vScrollBar1.LargeChange = 16;
+            this.vScrollBar1.Location = new System.Drawing.Point(515, 42);
+            this.vScrollBar1.Name = "vScrollBar1";
+            this.vScrollBar1.Size = new System.Drawing.Size(16, 323);
+            this.vScrollBar1.TabIndex = 0;
+            // 
+            // MemoryViewer
+            // 
+            this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
+            this.MemoryViewer.Name = "MemoryViewer";
+            this.MemoryViewer.Size = new System.Drawing.Size(502, 328);
+            this.MemoryViewer.TabIndex = 0;
+            this.MemoryViewer.TabStop = false;
+            this.MemoryViewer.Text = "RAM";
+            this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(508, 377);
+            this.ClientSize = new System.Drawing.Size(534, 377);
+            this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.MemoryViewer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -211,5 +224,6 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+        private System.Windows.Forms.VScrollBar vScrollBar1;
     }
 }
