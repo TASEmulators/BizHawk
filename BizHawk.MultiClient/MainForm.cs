@@ -1134,5 +1134,11 @@ namespace BizHawk.MultiClient
         {
             Global.Config.RewindEnabled ^= true;
         }
+
+        private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            HexEditor h = new HexEditor();
+            h.Show();   //TODO: make global + autoload capabilities
+        }
 	}
 }
