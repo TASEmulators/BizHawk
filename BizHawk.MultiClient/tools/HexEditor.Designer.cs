@@ -40,9 +40,10 @@
             this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(508, 24);
@@ -104,9 +106,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.memoryDomainsToolStripMenuItem,
             this.dataSizeToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.restoreWindowSizeToolStripMenuItem,
-            this.autoloadToolStripMenuItem});
+            this.goToAddressToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -146,24 +146,34 @@
             this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.byteToolStripMenuItem2.Text = "4 Byte";
             // 
-            // toolStripSeparator2
+            // settingsToolStripMenuItem
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(183, 6);
+            this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.restoreWindowSizeToolStripMenuItem,
+            this.autoloadToolStripMenuItem});
+            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.settingsToolStripMenuItem.Text = "&Settings";
             // 
             // restoreWindowSizeToolStripMenuItem
             // 
             this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
             this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
-            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // autoloadToolStripMenuItem
             // 
             this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
             this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.autoloadToolStripMenuItem.Text = "Auto-load";
-            this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+            // 
+            // goToAddressToolStripMenuItem
+            // 
+            this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
+            this.goToAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+            this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.goToAddressToolStripMenuItem.Text = "Go to Address";
+            this.goToAddressToolStripMenuItem.Click += new System.EventHandler(this.goToAddressToolStripMenuItem_Click);
             // 
             // HexEditor
             // 
@@ -197,7 +207,8 @@
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem goToAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
     }
