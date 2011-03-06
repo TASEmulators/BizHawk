@@ -68,6 +68,7 @@ namespace BizHawk.Emulation.Sound
 
         public void WritePSGImmediate(int register, byte value)
         {
+            register &= 0x0F;
             switch (register)
             {
                 case 0: // Set Voice Latch

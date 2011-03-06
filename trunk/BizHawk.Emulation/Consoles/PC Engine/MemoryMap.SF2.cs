@@ -20,9 +20,9 @@
 
             if (addr >= 0x1FE000) // hardware page.
             {
-                if (addr < 0x1FE400)           return VDC1.ReadVDC(addr & 0x03);
-                if (addr < 0x1FE800)           { Cpu.PendingCycles--; return VCE.ReadVCE((addr & 0x07)); }
-                if (addr < 0x1FE80F)           return IOBuffer;
+                if (addr < 0x1FE400)           return VDC1.ReadVDC(addr);
+                if (addr < 0x1FE800)           { Cpu.PendingCycles--; return VCE.ReadVCE(addr); }
+                if (addr < 0x1FEC00)           return IOBuffer;
                 if ((addr & ~1) == 0x1FEC00)   { IOBuffer = (byte) (Cpu.TimerValue | (IOBuffer & 0x80)); return IOBuffer; }
                 if (addr >= 0x1FF000 && 
                     addr <  0x1FF400)          { IOBuffer = ReadInput(); return IOBuffer; }
@@ -49,9 +49,9 @@
 
             else if (addr >= 0x1FE000) // hardware page.
             {
-                     if (addr < 0x1FE400)    VDC1.WriteVDC(addr & 3, value);
-                else if (addr < 0x1FE800)    { Cpu.PendingCycles--; VCE.WriteVCE(addr & 7, value); }
-                else if (addr < 0x1FE80A)    { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
+                     if (addr < 0x1FE400)    VDC1.WriteVDC(addr, value);
+                else if (addr < 0x1FE800)    { Cpu.PendingCycles--; VCE.WriteVCE(addr, value); }
+                else if (addr < 0x1FEC00)    { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
                 else if (addr == 0x1FEC00)   { IOBuffer = value; Cpu.WriteTimer(value); }
                 else if (addr == 0x1FEC01)   { IOBuffer = value; Cpu.WriteTimerEnable(value); }
                 else if (addr >= 0x1FF000 &&

@@ -18,14 +18,14 @@
                 if (addr < 0x1FE400)
                 {
                     addr &= 0x1F;
-                    if (addr <= 0x07)        return VDC1.ReadVDC(addr & 3);
+                    if (addr <= 0x07)        return VDC1.ReadVDC(addr);
                     if (addr <= 0x0F)        return VPC.ReadVPC(addr);
-                    if (addr <= 0x17)        return VDC2.ReadVDC(addr & 3);
+                    if (addr <= 0x17)        return VDC2.ReadVDC(addr);
                                              return 0xFF;
                 }
 
-                if (addr < 0x1FE800)         { Cpu.PendingCycles--; return VCE.ReadVCE((addr & 0x07)); }
-                if (addr < 0x1FE80F)         return IOBuffer;
+                if (addr < 0x1FE800)         { Cpu.PendingCycles--; return VCE.ReadVCE(addr); }
+                if (addr < 0x1FEC00)         return IOBuffer;
                 if ((addr & ~1) == 0x1FEC00) { IOBuffer = (byte)(Cpu.TimerValue | (IOBuffer & 0x80)); return IOBuffer; }
                 if (addr >= 0x1FF000 &&
                     addr < 0x1FF400)         { IOBuffer = ReadInput(); return IOBuffer; }
@@ -48,12 +48,12 @@
                 if (addr < 0x1FE400)
                 {
                     addr &= 0x1F;
-                         if (addr <= 0x07) VDC1.WriteVDC(addr & 3, value);
+                         if (addr <= 0x07) VDC1.WriteVDC(addr, value);
                     else if (addr <= 0x0F) VPC.WriteVPC(addr, value);
-                    else if (addr <= 0x17) VDC2.WriteVDC(addr & 3, value);
+                    else if (addr <= 0x17) VDC2.WriteVDC(addr, value);
                 }
-                else if (addr <  0x1FE800)     { Cpu.PendingCycles--; VCE.WriteVCE(addr & 7, value); }
-                else if (addr <  0x1FE80A)     { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
+                else if (addr <  0x1FE800)     { Cpu.PendingCycles--; VCE.WriteVCE(addr, value); }
+                else if (addr <  0x1FEC00)     { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
                 else if (addr == 0x1FEC00)     { IOBuffer = value; Cpu.WriteTimer(value); }
                 else if (addr == 0x1FEC01)     { IOBuffer = value; Cpu.WriteTimerEnable(value); }
                 else if (addr >= 0x1FF000 && 
