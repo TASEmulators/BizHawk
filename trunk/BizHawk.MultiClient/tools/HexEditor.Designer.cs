@@ -42,6 +42,7 @@
             this.byteToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,10 +105,12 @@
             this.memoryDomainsToolStripMenuItem,
             this.dataSizeToolStripMenuItem,
             this.toolStripSeparator2,
-            this.restoreWindowSizeToolStripMenuItem});
+            this.restoreWindowSizeToolStripMenuItem,
+            this.autoloadToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
             // memoryDomainsToolStripMenuItem
             // 
@@ -155,6 +158,13 @@
             this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
             this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
+            // autoloadToolStripMenuItem
+            // 
+            this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+            this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.autoloadToolStripMenuItem.Text = "Auto-load";
+            this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+            // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -189,5 +199,6 @@
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
     }
 }

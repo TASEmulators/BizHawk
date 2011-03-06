@@ -81,5 +81,15 @@ namespace BizHawk.MultiClient
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
         }
+
+        private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.AutoLoadHexEditor ^= true;
+        }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
+        }
     }
 }

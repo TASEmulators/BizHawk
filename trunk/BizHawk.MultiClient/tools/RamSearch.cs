@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
             {
                 searchList[x].prev = searchList[x].value;
                 searchList[x].PeekAddress(Domain);
-                                
+
                 if (searchList[x].prev != searchList[x].value)
                     searchList[x].changecount++;
   
