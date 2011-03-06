@@ -447,16 +447,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
         private void SetupMemoryDomains()
         {
-            var domains = new List<MemoryDomain>(6);
-            var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little,
-                addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
-            //System bus
-            //PPU 2000-3FFF
-            //APU 4000-5FFF
-            //WRAM 6000-7FFF
-            //PRG RAM 8000-FFFF
+            var domains = new List<MemoryDomain>();
+            var WRAM = new MemoryDomain("WRAM", ram.Length, Endian.Little,
+                addr => ram[addr & ram.Length], (addr, value) => ram[addr &ram.Length] = value);
+            var MainMemory = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+                addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
+            var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
+                addr => ppu.ppubus_read(addr), (addr, value) => ppu.ppubus_write(addr, value));
+            //TODO: board PRG, PRAM & SaveRAM, or whatever useful things from the board
 
-            domains.Add(MainMemoryDomain);
+            
+
+            domains.Add(WRAM);
+            domains.Add(MainMemory);
+            domains.Add(PPUBus);
+
+            if (board.SaveRam != null)
+            {
+                var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
+                    addr => board.SaveRam[addr & board.SaveRam.Length], (addr, value) => board.SaveRam[addr & SaveRam.Length] = value);
+                domains.Add(BatteryRam);
+            }
+            
             memoryDomains = domains.AsReadOnly();
         }
 
