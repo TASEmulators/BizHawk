@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void WriteVCE(int port, byte value)
         {
+            port &= 0x07;
             switch (port)
             {
                 case 0: // Control Port. Doesn't control anything we care about...
@@ -50,6 +51,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte ReadVCE(int port)
         {
+            port &= 0x07;
             switch (port)
             {
                 case 4: // Data LSB

@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte ReadVPC(int port)
         {
+            port &= 0x0F;
             switch (port)
             {
                 case 0x08: return Registers[0];
@@ -61,6 +62,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void WriteVPC(int port, byte value)
         {
+            port &= 0x0F;
             switch (port)
             {
                 case 0x08: Registers[0] = value; break;

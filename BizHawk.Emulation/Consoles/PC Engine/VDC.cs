@@ -93,6 +93,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void WriteVDC(int port, byte value)
         {
             cpu.PendingCycles--;
+            port &= 3;
             if (port == RegisterSelect)
             {
                 RegisterLatch = (byte)(value & 0x1F);
@@ -174,6 +175,8 @@ break;
         {
             cpu.PendingCycles--;
             byte retval = 0;
+
+            port &= 3;
             switch (port)
             {
                 case 0: // return status byte;
