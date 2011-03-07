@@ -185,6 +185,11 @@ namespace BizHawk.MultiClient
             MemoryViewer.BigEndian ^= true;
         }
 
+        private void MemoryViewer_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
         
     }
 }

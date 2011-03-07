@@ -7,11 +7,11 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-    public class MemoryViewer : GroupBox
+    public class MemoryViewer : Panel
     {
-        //TODO: 4 byte
-
         public VScrollBar vScrollBar1;
+        public Label info;
+
         MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
         Font font = new Font("Courier New", 10);
         Brush regBrush = Brushes.Black;
@@ -20,16 +20,23 @@ namespace BizHawk.MultiClient
         public bool BigEndian = false;
         string Header = "";
 
+
+        int addressOver = -1;
+        int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
+        int maxRow = 0;
+
         public MemoryViewer()
         {
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseMove);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseClick);
+
             this.vScrollBar1 = new VScrollBar();
-            
             Point n = new Point(this.Size);
-            this.vScrollBar1.Location = new System.Drawing.Point(n.X-18, n.Y-this.Height+7);
+            this.vScrollBar1.Location = new System.Drawing.Point(n.X-16, n.Y-this.Height+7);
             this.vScrollBar1.Height = this.Height-8;
             this.vScrollBar1.Width = 16;
             this.vScrollBar1.Visible = true;
@@ -39,8 +46,15 @@ namespace BizHawk.MultiClient
             this.vScrollBar1.Name = "vScrollBar1";
             this.vScrollBar1.TabIndex = 0;
             this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
-
             this.Controls.Add(this.vScrollBar1);
+
+            //Debugging control
+            this.info = new Label();
+            this.info.Text = "";
+            this.info.Font = new Font("Courier New", 8);
+            this.info.Location = new System.Drawing.Point(n.X / 2, 1);
+            this.info.Height = 11;
+            this.Controls.Add(this.info);
         }
 
         //protected unsafe override void OnPaint(PaintEventArgs e)
@@ -54,10 +68,10 @@ namespace BizHawk.MultiClient
                 int rowYoffset = 20;
                 string rowStr = "";
                 int addr = 0;
-                int aOffset = (GetNumDigits(Domain.Size) % 4) * 9 ;
-                g.DrawLine(new Pen(regBrush), this.Left + 38 + aOffset, this.Top, this.Left + 38 + aOffset, this.Bottom - 40);
+                addrOffset = (GetNumDigits(Domain.Size) % 4) * 9 ;
+                g.DrawLine(new Pen(regBrush), this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
                 g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
-
+                
                 for (int i = 0; i < RowsVisible; i++)
                 {
                     row = i + vScrollBar1.Value;
@@ -94,8 +108,8 @@ namespace BizHawk.MultiClient
                             break;
 
                     }
-
-                    g.DrawString(Header, font, regBrush, new Point(rowX + aOffset, rowY));
+                    g.DrawString(Domain.Name, font, regBrush, new Point(1, 1));
+                    g.DrawString(Header, font, regBrush, new Point(rowX + addrOffset, rowY));
                     if (row * 16 < Domain.Size)
                         g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
@@ -162,6 +176,7 @@ namespace BizHawk.MultiClient
         public void SetMemoryDomain(MemoryDomain d)
         {
             Domain = d;
+            maxRow = Domain.Size / 2;
             SetUpScrollBar();
             vScrollBar1.Value = 0;
             Refresh();
@@ -199,6 +214,50 @@ namespace BizHawk.MultiClient
             if (i <= 0x10000) return 4;
             if (i <= 0x1000000) return 6;
             else return 8;
+        }
+
+        private void MemoryViewer_MouseMove(object sender, MouseEventArgs e)
+        {
+            int x = e.X;
+            int y = e.Y;
+            info.Text = e.X.ToString() + "," + e.Y.ToString();
+
+            //Determine row - 32 pix header, 16 pix width
+            //Scroll value determines the first row
+            int row = vScrollBar1.Value;
+            row += (e.Y - 32) / 16;
+            //info.Text += " " + row.ToString(); //Debug
+
+            //Determine colums - 60 + addrOffset left padding
+            //24 pixel wide addresses (when 1 byte)
+            int column = (e.X - (60+addrOffset)) / 24;
+            //info.Text += " " + column.ToString(); //Debug
+            //TODO: 2 & 4 byte views
+
+
+            if (row >= 0 && row <= maxRow && column >= 0 && column < 16)
+            {
+                addressOver = row * 16 + column;
+                info.Text = String.Format("{0:X4}", addressOver);
+            }
+            else
+            {
+                addressOver = -1;
+                info.Text = "";
+            }
+        }
+
+        private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        public int GetPointedAddress()
+        {
+            if (addressOver >= 0)
+                return addressOver;
+            else
+                return -1;  //Negative means no address selected
         }
     }
 }
