@@ -118,20 +118,23 @@
             // byteToolStripMenuItem
             // 
             this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-            this.byteToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.byteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.byteToolStripMenuItem.Text = "1 Byte";
+            this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
             // 
             // byteToolStripMenuItem1
             // 
             this.byteToolStripMenuItem1.Name = "byteToolStripMenuItem1";
-            this.byteToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.byteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.byteToolStripMenuItem1.Text = "2 Byte";
+            this.byteToolStripMenuItem1.Click += new System.EventHandler(this.byteToolStripMenuItem1_Click);
             // 
             // byteToolStripMenuItem2
             // 
             this.byteToolStripMenuItem2.Name = "byteToolStripMenuItem2";
-            this.byteToolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
+            this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
             this.byteToolStripMenuItem2.Text = "4 Byte";
+            this.byteToolStripMenuItem2.Click += new System.EventHandler(this.byteToolStripMenuItem2_Click);
             // 
             // goToAddressToolStripMenuItem
             // 

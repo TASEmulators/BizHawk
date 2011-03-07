@@ -9,7 +9,7 @@ namespace BizHawk.MultiClient
 {
     public class MemoryViewer : GroupBox
     {
-        //data size variable, and adjust drawing based on it, and a method for parent to set it
+        //TODO: 4 byte
 
         public VScrollBar vScrollBar1;
         MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
         Brush regBrush = Brushes.Black;
         int RowsVisible = 0;
         int DataSize = 1;
+        bool BigEndian = false;
         string Header = "";
 
         public MemoryViewer()
@@ -67,15 +68,22 @@ namespace BizHawk.MultiClient
                     {
                         default:
                         case 1:
-                            Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F"; //TODO: not constant, must deal with bite size
+                            Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
                             for (int j = 0; j < 16; j++)
                             {
                                 addr = (row * 16) + j;
                                 if (addr < Domain.Size)
-                                    rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " "; //TODO: format based on data size
+                                    rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " ";
                             }
                             break;
                         case 2:
+                            Header = "         0    2    4    6    8    A    C    E";
+                            for (int j = 0; j < 16; j+=2)
+                            {
+                                addr = (row * 16) + j;
+                                if (addr < Domain.Size)
+                                    rowStr += String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ";
+                            }
                             break;
                         case 4:
                             break;
@@ -87,6 +95,42 @@ namespace BizHawk.MultiClient
                         g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
             }
+        }
+
+        private int MakeValue(int addr, int size, bool Bigendian)
+        {
+            int x = 0;
+            if (size == 1 || size == 2 || size == 4)
+            {
+                switch (size)
+                {
+                    case 1:
+                        x = Domain.PeekByte(addr);
+                        break;
+                    case 2:
+                        if (Bigendian)
+                        {
+                            x = Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
+                        }
+                        else
+                        {
+                            x = (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
+                        }
+                        break;
+                    case 3:
+                        if (Bigendian)
+                        {
+                            //TODO
+                        }
+                        else
+                        {
+                        }
+                        break;
+                }
+                return x;
+            }
+            else
+                return 0; //fail
         }
 
         public void ResetScrollBar()
@@ -136,6 +180,17 @@ namespace BizHawk.MultiClient
         private void MemoryViewer_Paint(object sender, PaintEventArgs e)
         {
             Display(e.Graphics);
+        }
+
+        public void SetDataSize(int size)
+        {
+            if (size == 1 || size == 2 || size == 4)
+                DataSize = size;
+        }
+
+        public int GetDataSize()
+        {
+            return DataSize;
         }
     }
 }
