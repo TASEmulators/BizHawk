@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Bizhawk.MultiClient
+namespace BizHawk.MultiClient
 {
     public class MemoryViewer : Panel
     {
