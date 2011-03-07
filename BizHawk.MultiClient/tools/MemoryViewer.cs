@@ -14,13 +14,14 @@ namespace BizHawk.MultiClient
 
         MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
         Font font = new Font("Courier New", 10);
-        Brush regBrush = Brushes.Black;
+        public Brush regBrush = Brushes.Black;
+        public Brush highlightBrush = Brushes.LightBlue;
         int RowsVisible = 0;
         int DataSize = 1;
         public bool BigEndian = false;
         string Header = "";
 
-
+        int addressHighlighted = -1;
         int addressOver = -1;
         int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
         int maxRow = 0;
@@ -71,7 +72,17 @@ namespace BizHawk.MultiClient
                 addrOffset = (GetNumDigits(Domain.Size) % 4) * 9 ;
                 g.DrawLine(new Pen(regBrush), this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
                 g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
-                
+
+                if (addressHighlighted >= 0) //&& visible (determine this)
+                {
+                    
+                    int left = ((addressHighlighted % 16) * 24) + 60 + addrOffset;
+                    int top = ((addressHighlighted / 16) * 16) + 36;
+                    Rectangle rect = new Rectangle(left, top, 24, 16);
+                    g.DrawRectangle(new Pen(highlightBrush), rect);
+                    g.FillRectangle(highlightBrush, rect);
+                }
+
                 for (int i = 0; i < RowsVisible; i++)
                 {
                     row = i + vScrollBar1.Value;
@@ -216,21 +227,19 @@ namespace BizHawk.MultiClient
             else return 8;
         }
 
-        private void MemoryViewer_MouseMove(object sender, MouseEventArgs e)
+        private void SetAddressOver(int x, int y)
         {
-            int x = e.X;
-            int y = e.Y;
-            info.Text = e.X.ToString() + "," + e.Y.ToString();
+            //info.Text = e.X.ToString() + "," + e.Y.ToString(); //Debug
 
             //Determine row - 32 pix header, 16 pix width
             //Scroll value determines the first row
             int row = vScrollBar1.Value;
-            row += (e.Y - 32) / 16;
+            row += (y - 36) / 16;
             //info.Text += " " + row.ToString(); //Debug
 
             //Determine colums - 60 + addrOffset left padding
             //24 pixel wide addresses (when 1 byte)
-            int column = (e.X - (60+addrOffset)) / 24;
+            int column = (x - (60 + addrOffset)) / 24;
             //info.Text += " " + column.ToString(); //Debug
             //TODO: 2 & 4 byte views
 
@@ -246,10 +255,19 @@ namespace BizHawk.MultiClient
                 info.Text = "";
             }
         }
+        
+        private void MemoryViewer_MouseMove(object sender, MouseEventArgs e)
+        {
+            SetAddressOver(e.X, e.Y);
+        }
 
         private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
         {
-
+            SetAddressOver(e.X, e.Y);
+            if (addressOver >= 0)
+                addressHighlighted = addressOver;
+            else
+                addressHighlighted = -1;
         }
 
         public int GetPointedAddress()
@@ -257,7 +275,15 @@ namespace BizHawk.MultiClient
             if (addressOver >= 0)
                 return addressOver;
             else
-                return -1;  //Negative means no address selected
+                return -1;  //Negative = no address pointed
+        }
+
+        public int GetHighlightedAddress()
+        {
+            if (addressHighlighted >= 0)
+                return addressHighlighted;
+            else
+                return -1; //Negative = no address highlighted
         }
     }
 }
