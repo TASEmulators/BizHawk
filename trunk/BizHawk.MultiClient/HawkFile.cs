@@ -3,92 +3,230 @@ using System.IO;
 
 namespace BizHawk.MultiClient
 {
+	//todo:
+	//split into "bind" and "open (the bound thing)"
+	//scan archive to flatten interior directories down to a path (maintain our own archive item list)
+
     public class HawkFile : IDisposable
     {
-        private bool zipped;
-        public bool Zipped { get { return zipped; } }
+		/// <summary>
+		/// returns whether a bound file exists. if there is no bound file, it can't exist
+		/// </summary>
+		public bool Exists { get { if (!rootExists) return false; return boundStream != null; } }
 
-        private bool exists;
-        public bool Exists { get { return exists; } }
-       
-        private string extension;
-        public string Extension { get { return extension; } }
+		/// <summary>
+		/// returns whether the root exists (the actual physical file)
+		/// </summary>
+		public bool RootExists { get { return rootExists; } }
 
-        public string Directory { get { return Path.GetDirectoryName(rawFileName); } }
+		/// <summary>
+		/// gets the directory containing the root
+		/// </summary>
+		public string Directory { get { return Path.GetDirectoryName(rootPath); } }
 
-        private string rawFileName;
-        private string name;
-        public string Name { get { return name; } }
-        public string FullName { get { return name + "." + extension; } }
+		/// <summary>
+		/// returns a stream for the currently bound file
+		/// </summary>
+		public Stream GetStream()
+		{
+			if (boundStream == null)
+				throw new InvalidOperationException("HawkFil: Can't call GetStream() before youve successfully bound something!");
+			return boundStream;
+		}
 
-        private IDisposable thingToDispose;
-        private Stream zippedStream;
+		/// <summary>
+		/// indicates whether this instance is bound
+		/// </summary>
+		public bool IsBound { get { return boundStream != null; } }
 
-        public HawkFile(string path) : this(path,"SMS","PCE","SGX","GG","SG","BIN","SMD","GB","IPS") {}
-        
-        public HawkFile(string path, params string[] recognizedExtensions)
+		/// <summary>
+		/// returns the complete canonical name ("archive|member") of the bound file
+		/// </summary>
+		public string CanonicalName { get { return MakeCanonicalName(rootPath,memberPath); } }
+
+		/// <summary>
+		/// returns the virtual name of the bound file (disregarding the archive)
+		/// </summary>
+		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(rootPath,memberPath)); } }
+
+		/// <summary>
+		/// returns the extension of Name
+		/// </summary>
+		public string Extension { get { return Path.GetExtension(Name); } }
+
+		//---
+		bool rootExists;
+		string rootPath;
+		string memberPath;
+		Stream rootStream, boundStream;
+		SevenZip.SevenZipExtractor extractor;
+
+		public static bool PathExists(string path)
+		{
+			using (var hf = new HawkFile(path))
+				return hf.Exists;
+		}
+		
+		public HawkFile(string path)
         {
-            var file = new FileInfo(path);
+			string autobind = null;
+			if (IsCanonicalArchivePath(path))
+			{
+				string[] parts = path.Split('|');
+				path = parts[0];
+				autobind = parts[1];
+			}
 
-            exists = file.Exists;
-            if (file.Exists == false)
+            var fi = new FileInfo(path);
+
+			rootExists = fi.Exists;
+			if (fi.Exists == false)
                 return;
 
-            if (file.Extension.ToLower().In(".zip",".rar",".7z"))
-            {
-                LoadZipFile(path, recognizedExtensions);
-                return;
-            }
+			rootPath = path;
 
-            zipped = false;
-            extension = file.Extension.Substring(1).ToUpperInvariant();
-            rawFileName = path;
-            name = Path.GetFileNameWithoutExtension(path);
+			AnalyzeArchive(path);
+			if (extractor == null)
+			{
+				rootStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+			}
+
+			if (autobind != null)
+			{
+				autobind = autobind.ToUpperInvariant();
+				for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+				{
+					if (extractor.ArchiveFileNames[i].ToUpperInvariant() == autobind)
+					{
+						BindArchiveMember(i);
+						return;
+					}
+				}
+			}
         }
 
-        private void LoadZipFile(string path, string[] recognizedExtensions)
-        {
-            zipped = true;
-            rawFileName = path;
+		/// <summary>
+		/// is the supplied path a canonical name including an archive?
+		/// </summary>
+		bool IsCanonicalArchivePath(string path)
+		{
+			return (path.IndexOf('|') != -1);
+		}
 
-			using (var extractor = new SevenZip.SevenZipExtractor(path))
-            {
-				thingToDispose = extractor;
-                foreach (var e in extractor.ArchiveFileData)
-                {
-                    extension = Path.GetExtension(e.FileName).Substring(1).ToUpperInvariant();
+		/// <summary>
+		/// converts a canonical name to a bound name (the bound part, whether or not it is an archive)
+		/// </summary>
+		string GetBoundNameFromCanonical(string canonical)
+		{
+			string[] parts = canonical.Split('|');
+			return parts[parts.Length - 1];
+		}
 
-                    if (extension.In(recognizedExtensions))
-                    {
-                        // we found our match.
-                        name = Path.GetFileNameWithoutExtension(e.FileName);
-                        zippedStream = new MemoryStream();
-                        //e.Extract(zippedStream);
-						extractor.ExtractFile(e.Index,zippedStream);
-                        thingToDispose = zippedStream;
-                        return;
-                    }
-                }
-                exists = false;
-            }
-        }
-              
-        public Stream GetStream()
+		/// <summary>
+		/// makes a canonical name from two parts
+		/// </summary>
+		string MakeCanonicalName(string root, string member)
+		{
+			if (member == null) return root;
+			else return string.Format("{0}|{1}", root, member);
+		}
+
+		void BindArchiveMember(int index)
+		{
+			boundStream = new MemoryStream();
+			extractor.ExtractFile(index, boundStream);
+			boundStream.Position = 0;
+			memberPath = extractor.ArchiveFileNames[index];
+			Console.WriteLine("bound " + CanonicalName);
+		}
+
+		/// <summary>
+		/// Removes any existing binding
+		/// </summary>
+		public void Unbind()
+		{
+			if (boundStream != null && boundStream != rootStream) boundStream.Close();
+			boundStream = null;
+			memberPath = null;
+		}
+
+		void BindRoot()
+		{
+			boundStream = rootStream;
+			Console.WriteLine("bound " + CanonicalName);
+		}
+
+		/// <summary>
+		/// Binds the first item in the archive (or the file itself). Supposing that there is anything in the archive.
+		/// </summary>
+		public HawkFile BindFirst()
+		{
+			BindFirstOf();
+			return this;
+		}
+
+		/// <summary>
+		/// Binds the first item in the archive (or the file itself) if the extension matches one of the supplied templates
+		/// </summary>
+		public HawkFile BindFirstOf(params string[] extensions)
+		{
+			if (!rootExists) return this;
+			if (boundStream != null) throw new InvalidOperationException("stream already bound!");
+
+			if (extractor == null)
+			{
+				//open uncompressed file
+				string extension = Path.GetExtension(rootPath).Substring(1).ToUpperInvariant();
+				if (extensions.Length==0 || extension.In(extensions))
+				{
+					BindRoot();
+				}
+				return this;
+			}
+
+			for(int i=0;i<extractor.ArchiveFileData.Count;i++)
+			{
+				var e = extractor.ArchiveFileData[i];
+				var extension = Path.GetExtension(e.FileName).Substring(1).ToUpperInvariant();
+				if (extensions.Length == 0 || extension.In(extensions))
+				{
+					BindArchiveMember(i);
+					return this;
+				}
+			}
+
+			return this;
+		}
+
+
+        private void AnalyzeArchive(string path)
         {
-            if (zipped == false)
-            {
-                var stream = new FileStream(rawFileName, FileMode.Open, FileAccess.Read);
-                thingToDispose = stream;
-                return stream;
-            }
-            
-            return zippedStream;
+			try
+			{
+				SevenZip.FileChecker.ThrowExceptions = false;
+				int offset;
+				bool isExecutable;
+				if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
+				{
+					extractor = new SevenZip.SevenZipExtractor(path);
+					//now would be a good time to scan the archive..
+				}
+			}
+			catch
+			{
+				//must not be an archive. is there a better way to determine this? the exceptions are as annoying as hell
+			}
         }
 
         public void Dispose()
         {
-            if (thingToDispose != null)
-                thingToDispose.Dispose();
-        }
+			Unbind();
+			
+			if (extractor != null) extractor.Dispose();
+			if (rootStream != null) rootStream.Dispose();
+
+			extractor = null;
+			rootStream = null;
+		}
     }
 }

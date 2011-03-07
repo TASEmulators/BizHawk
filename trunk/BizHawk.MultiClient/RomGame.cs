@@ -14,43 +14,44 @@ namespace BizHawk.MultiClient
         private List<string> options;
         private const int BankSize = 4096;
 
-        public RomGame(string path) : this(path, null){}
+        public RomGame(HawkFile file) : this(file, null){}
 
-        public RomGame(string path, string patch)
+        public RomGame(HawkFile file, string patch)
         {
-            using (var file = new HawkFile(path))
-            {
-                if (!file.Exists)
-                    throw new Exception("The file needs to exist, yo.");
+			if(!file.IsBound)
+				file.BindFirstOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES");
+			if (!file.Exists)
+			    throw new Exception("The file needs to exist, yo.");
 
-                var stream = file.GetStream();
+            var stream = file.GetStream();
 
-				FileData = Util.ReadAllBytes(stream);
+			FileData = Util.ReadAllBytes(stream);
 
-				int header = (int)(stream.Length % BankSize);
-				stream.Position = header;
-				int length = (int)stream.Length - header;
+			int header = (int)(stream.Length % BankSize);
+			stream.Position = header;
+			int length = (int)stream.Length - header;
 
-				RomData = new byte[length];
-				stream.Read(RomData, 0, length);
+			RomData = new byte[length];
+			stream.Read(RomData, 0, length);
 
-				if (file.Extension == "SMD")
-					RomData = DeInterleaveSMD(RomData);
+			if (file.Extension == "SMD")
+				RomData = DeInterleaveSMD(RomData);
 
-                var info = Database.GetGameInfo(RomData, file.FullName);
-                name = info.Name;
-                System = info.System;
-                options = new List<string>(info.GetOptions());
-                CheckForPatchOptions();
-            }
+            var info = Database.GetGameInfo(RomData, file.Name);
+            name = info.Name;
+            System = info.System;
+            options = new List<string>(info.GetOptions());
+            CheckForPatchOptions();
 
-            if (patch != null)
-            {
-                using (var stream = new HawkFile(patch).GetStream())
-                {
-                    IPS.Patch(RomData, stream);
-                }    
-            }
+			if (patch != null)
+			{
+				using (var patchFile = new HawkFile(patch))
+				{
+					patchFile.BindFirstOf("IPS");
+					if(patchFile.Exists)
+						IPS.Patch(RomData, patchFile.GetStream());
+				}    
+			}
         }
 
         public void AddOptions(params string[] options)

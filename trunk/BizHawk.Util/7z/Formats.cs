@@ -186,7 +186,11 @@ namespace SevenZip
         /// Microsoft virtual hard disk file format.
         /// </summary>
         /// <remarks><a href="http://en.wikipedia.org/wiki/VHD_%28file_format%29">Wikipedia information</a></remarks>
-        Vhd
+        Vhd,
+		/// <summary>
+		/// Not an archive
+		/// </summary>
+		None
     }
 
 #if COMPRESS
@@ -514,13 +518,15 @@ namespace SevenZip
         {
             if (String.IsNullOrEmpty(fileName) && reportErrors)
             {
-                throw new ArgumentException("File name is null or empty string!");
+				throw new ArgumentException("File name is null or empty string!");
             }
             string extension = Path.GetExtension(fileName).Substring(1);
             if (!InExtensionFormats.ContainsKey(extension) && reportErrors)
             {
-                throw new ArgumentException("Extension \"" + extension +
-                                            "\" is not a supported archive file name extension.");
+				if (FileChecker.ThrowExceptions)
+				 throw new ArgumentException("Extension \"" + extension + "\" is not a supported archive file name extension.");
+				else return InArchiveFormat.None;
+
             }
             return InExtensionFormats[extension];
         }
