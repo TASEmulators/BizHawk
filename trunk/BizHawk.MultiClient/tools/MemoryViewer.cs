@@ -9,8 +9,6 @@ namespace BizHawk.MultiClient
 {
     public class MemoryViewer : GroupBox
     {
-        //TODO: refactor so parent never needs to call setscrollbars (put in reset method?)
-        //think about scrollbar = 0, there needs to be a way for the parent to set that separately from scrollbars
         //data size variable, and adjust drawing based on it, and a method for parent to set it
 
         public VScrollBar vScrollBar1;
@@ -80,6 +78,7 @@ namespace BizHawk.MultiClient
         public void ResetScrollBar()
         {
             vScrollBar1.Value = 0;
+            SetUpScrollBar();
             Refresh();
         }
 

@@ -72,8 +72,6 @@ namespace BizHawk.MultiClient
         {
             SetMemoryDomainMenu(); //Calls update routines
             MemoryViewer.ResetScrollBar();
-            MemoryViewer.SetUpScrollBar();
-            MemoryViewer.Refresh();
         }
 
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -99,8 +97,6 @@ namespace BizHawk.MultiClient
             }
             UpdateDomainString();
             MemoryViewer.ResetScrollBar();
-            MemoryViewer.SetUpScrollBar();
-            MemoryViewer.Refresh();
         }
 
         private void UpdateDomainString()
