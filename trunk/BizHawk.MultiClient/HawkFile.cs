@@ -14,12 +14,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// returns whether a bound file exists. if there is no bound file, it can't exist
 		/// </summary>
-		public bool Exists { get { if (!rootExists) return false; return boundStream != null; } }
-
-		/// <summary>
-		/// returns whether the root exists (the actual physical file)
-		/// </summary>
-		public bool RootExists { get { return rootExists; } }
+		public bool Exists { get { return exists; } }
 
 		/// <summary>
 		/// gets the directory containing the root
@@ -32,7 +27,7 @@ namespace BizHawk.MultiClient
 		public Stream GetStream()
 		{
 			if (boundStream == null)
-				throw new InvalidOperationException("HawkFil: Can't call GetStream() before youve successfully bound something!");
+				throw new InvalidOperationException("HawkFile: Can't call GetStream() before youve successfully bound something!");
 			return boundStream;
 		}
 
@@ -61,11 +56,6 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public bool IsArchive { get { return extractor != null; } }
 
-		public static bool PathExists(string path)
-		{
-			using (var hf = new HawkFile(path))
-				return hf.Exists;
-		}
 
 		public class ArchiveItem
 		{
@@ -84,6 +74,7 @@ namespace BizHawk.MultiClient
 		}
 
 		//---
+		bool exists;
 		bool rootExists;
 		string rootPath;
 		string memberPath;
@@ -108,6 +99,7 @@ namespace BizHawk.MultiClient
                 return;
 
 			rootPath = path;
+			exists = true;
 
 			AnalyzeArchive(path);
 			if (extractor == null)
@@ -128,6 +120,8 @@ namespace BizHawk.MultiClient
 						return;
 					}
 				}
+
+				exists = false;
 			}
         }
 

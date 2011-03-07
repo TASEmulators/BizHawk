@@ -46,7 +46,7 @@ namespace BizHawk.MultiClient
 				using (var patchFile = new HawkFile(patch))
 				{
 					patchFile.BindFirstOf("IPS");
-					if(patchFile.Exists)
+					if(patchFile.IsBound)
 						IPS.Patch(RomData, patchFile.GetStream());
 				}    
 			}
