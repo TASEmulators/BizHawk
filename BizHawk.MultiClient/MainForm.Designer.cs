@@ -155,7 +155,7 @@
             this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.luaConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pPUViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nameTableViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameGenieCodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -173,7 +173,7 @@
             this.viewToolStripMenuItem,
             this.configToolStripMenuItem,
             this.toolsToolStripMenuItem,
-            this.nESToolStripMenuItem,
+            this.NESToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -1178,13 +1178,13 @@
             // 
             // nESToolStripMenuItem
             // 
-            this.nESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pPUViewerToolStripMenuItem,
             this.nameTableViewerToolStripMenuItem,
             this.gameGenieCodesToolStripMenuItem});
-            this.nESToolStripMenuItem.Name = "nESToolStripMenuItem";
-            this.nESToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
-            this.nESToolStripMenuItem.Text = "&NES";
+            this.NESToolStripMenuItem.Name = "nESToolStripMenuItem";
+            this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.NESToolStripMenuItem.Text = "&NES";
             // 
             // pPUViewerToolStripMenuItem
             // 
@@ -1381,7 +1381,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replayInputLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nESToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NESToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pPUViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nameTableViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gameGenieCodesToolStripMenuItem;

@@ -381,10 +381,10 @@ namespace BizHawk.MultiClient
             switch (system)
             {
                 case "NES":
-                    nESToolStripMenuItem.Visible = true;
+                    NESToolStripMenuItem.Visible = true;
                     break;
                 default:
-                    nESToolStripMenuItem.Visible = false;
+                    NESToolStripMenuItem.Visible = false;
                     break;
             }
         }
@@ -394,7 +394,7 @@ namespace BizHawk.MultiClient
 			using (var file = new HawkFile(path))
 			{
 				//if the provided file doesnt even exist, give up!
-				if (!file.RootExists) return false;
+				if (!file.Exists) return false;
 
 				//try binding normal rom extensions first
 				if (!file.IsBound)
@@ -1097,7 +1097,7 @@ namespace BizHawk.MultiClient
 		private void MainForm_Load(object sender, EventArgs e)
 		{
             //Hide platform specific menus until an appropriate ROM is loaded
-            nESToolStripMenuItem.Visible = false;
+            NESToolStripMenuItem.Visible = false;
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
