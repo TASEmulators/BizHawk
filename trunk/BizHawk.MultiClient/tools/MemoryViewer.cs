@@ -84,6 +84,13 @@ namespace BizHawk.MultiClient
                             }
                             break;
                         case 4:
+                            Header = "             0        4        8        C";
+                            for (int j = 0; j < 16; j += 4)
+                            {
+                                addr = (row * 16) + j;
+                                if (addr < Domain.Size)
+                                    rowStr += String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ";
+                            }
                             break;
 
                     }
@@ -106,29 +113,25 @@ namespace BizHawk.MultiClient
                         x = Domain.PeekByte(addr);
                         break;
                     case 2:
-                        if (Bigendian)
-                        {
-                            x = Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
-                        }
-                        else
-                        {
-                            x = (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
-                        }
+                        x = MakeWord(addr, Bigendian);
                         break;
-                    case 3:
-                        if (Bigendian)
-                        {
-                            //TODO
-                        }
-                        else
-                        {
-                        }
+                    case 4:
+                        x = (MakeWord(addr, Bigendian) * 65536) +
+                            MakeWord(addr + 2, Bigendian);
                         break;
                 }
                 return x;
             }
             else
                 return 0; //fail
+        }
+
+        private int MakeWord(int addr, bool endian)
+        {
+            if (endian)
+                return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
+            else
+                return (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
         }
 
         public void ResetScrollBar()
