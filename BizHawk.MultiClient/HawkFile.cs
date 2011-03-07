@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BizHawk.MultiClient
@@ -54,19 +56,41 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public string Extension { get { return Path.GetExtension(Name); } }
 
-		//---
-		bool rootExists;
-		string rootPath;
-		string memberPath;
-		Stream rootStream, boundStream;
-		SevenZip.SevenZipExtractor extractor;
+		/// <summary>
+		/// Indicates whether this file is an archive
+		/// </summary>
+		public bool IsArchive { get { return extractor != null; } }
 
 		public static bool PathExists(string path)
 		{
 			using (var hf = new HawkFile(path))
 				return hf.Exists;
 		}
-		
+
+		public class ArchiveItem
+		{
+			public string name;
+			public long size;
+			public int index;
+		}
+
+		public IEnumerable<ArchiveItem> ArchiveItems
+		{
+			get
+			{
+				if (!IsArchive) throw new InvalidOperationException("Cant get archive items from non-archive");
+				return archiveItems;
+			}
+		}
+
+		//---
+		bool rootExists;
+		string rootPath;
+		string memberPath;
+		Stream rootStream, boundStream;
+		SevenZip.SevenZipExtractor extractor;
+		List<ArchiveItem> archiveItems;
+
 		public HawkFile(string path)
         {
 			string autobind = null;
@@ -89,6 +113,8 @@ namespace BizHawk.MultiClient
 			if (extractor == null)
 			{
 				rootStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+				//we could autobind here, but i dont want to
+				//bind it later with the desired extensions.
 			}
 
 			if (autobind != null)
@@ -96,7 +122,7 @@ namespace BizHawk.MultiClient
 				autobind = autobind.ToUpperInvariant();
 				for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 				{
-					if (extractor.ArchiveFileNames[i].ToUpperInvariant() == autobind)
+					if (FixArchiveFilename(extractor.ArchiveFileNames[i]).ToUpperInvariant() == autobind)
 					{
 						BindArchiveMember(i);
 						return;
@@ -131,13 +157,26 @@ namespace BizHawk.MultiClient
 			else return string.Format("{0}|{1}", root, member);
 		}
 
-		void BindArchiveMember(int index)
+		string FixArchiveFilename(string fn)
 		{
+			return fn.Replace('\\', '/');
+		}
+
+		/// <summary>
+		/// binds the selected archive index
+		/// </summary>
+		public HawkFile BindArchiveMember(int archiveIndex)
+		{
+			if (!rootExists) return this;
+			if (boundStream != null) throw new InvalidOperationException("stream already bound!");
+
 			boundStream = new MemoryStream();
-			extractor.ExtractFile(index, boundStream);
+			extractor.ExtractFile(archiveIndex, boundStream);
 			boundStream.Position = 0;
-			memberPath = extractor.ArchiveFileNames[index];
+			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
 			Console.WriteLine("bound " + CanonicalName);
+			
+			return this;
 		}
 
 		/// <summary>
@@ -150,6 +189,9 @@ namespace BizHawk.MultiClient
 			memberPath = null;
 		}
 
+		/// <summary>
+		/// causes the root to be bound (in the case of non-archive files
+		/// </summary>
 		void BindRoot()
 		{
 			boundStream = rootStream;
@@ -166,9 +208,23 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
-		/// Binds the first item in the archive (or the file itself) if the extension matches one of the supplied templates
+		/// binds one of the supplied extensions if there is only one match in the archive
+		/// </summary>
+		public HawkFile BindSoleItemOf(params string[] extensions)
+		{
+			return BindByExtensionCore(false, extensions);
+		}
+
+			/// <summary>
+		/// Binds the first item in the archive (or the file itself) if the extension matches one of the supplied templates.
+		/// You probably should not use this. use BindSoleItemOf or the archive chooser instead
 		/// </summary>
 		public HawkFile BindFirstOf(params string[] extensions)
+		{
+			return BindByExtensionCore(true, extensions);
+		}
+
+		HawkFile BindByExtensionCore(bool first, params string[] extensions)
 		{
 			if (!rootExists) return this;
 			if (boundStream != null) throw new InvalidOperationException("stream already bound!");
@@ -177,44 +233,59 @@ namespace BizHawk.MultiClient
 			{
 				//open uncompressed file
 				string extension = Path.GetExtension(rootPath).Substring(1).ToUpperInvariant();
-				if (extensions.Length==0 || extension.In(extensions))
+				if (extensions.Length == 0 || extension.In(extensions))
 				{
 					BindRoot();
 				}
 				return this;
 			}
 
-			for(int i=0;i<extractor.ArchiveFileData.Count;i++)
+			var candidates = new List<int>();
+			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 			{
 				var e = extractor.ArchiveFileData[i];
-				var extension = Path.GetExtension(e.FileName).Substring(1).ToUpperInvariant();
+				if (e.IsDirectory) continue;
+				var extension = Path.GetExtension(e.FileName).ToUpperInvariant();
+				extension = extension.TrimStart('.');
 				if (extensions.Length == 0 || extension.In(extensions))
 				{
-					BindArchiveMember(i);
-					return this;
+					if (first)
+					{
+						BindArchiveMember(i);
+						return this;
+					}
+					candidates.Add(i);
 				}
 			}
-
+			if (candidates.Count == 1)
+				BindArchiveMember(candidates[0]);
 			return this;
 		}
 
 
-        private void AnalyzeArchive(string path)
-        {
-			try
+		void ScanArchive()
+		{
+			archiveItems = new List<ArchiveItem>();
+			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 			{
-				SevenZip.FileChecker.ThrowExceptions = false;
-				int offset;
-				bool isExecutable;
-				if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
-				{
-					extractor = new SevenZip.SevenZipExtractor(path);
-					//now would be a good time to scan the archive..
-				}
+				var afd = extractor.ArchiveFileData[i];
+				var ai = new ArchiveItem();
+				ai.name = FixArchiveFilename(afd.FileName);
+				ai.size = (long)afd.Size; //ulong. obnoxious.
+				ai.index = i;
+				archiveItems.Add(ai);
 			}
-			catch
+		}
+
+		private void AnalyzeArchive(string path)
+        {
+			SevenZip.FileChecker.ThrowExceptions = false;
+			int offset;
+			bool isExecutable;
+			if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
 			{
-				//must not be an archive. is there a better way to determine this? the exceptions are as annoying as hell
+				extractor = new SevenZip.SevenZipExtractor(path);
+				ScanArchive();
 			}
         }
 
