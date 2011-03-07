@@ -10,7 +10,6 @@ namespace BizHawk.MultiClient
     public class MemoryViewer : Panel
     {
         //TODO: highlighting and address determining for 2 & 4 byte viewing
-        //Scroll highlighted when moving scroll bar
 
         public VScrollBar vScrollBar1;
         public Label info;
@@ -78,10 +77,8 @@ namespace BizHawk.MultiClient
 
                 if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
                 {
-                    int zz = addressHighlighted % 16;
-                    int zzz = zz * 24;
                     int left = ((addressHighlighted % 16) * 25) + 56 + addrOffset -(addressHighlighted % 4);
-                    int top = ((addressHighlighted / 16) * 16) + 36;
+                    int top = (((addressHighlighted / 16)-vScrollBar1.Value) * 16) + 36;
                     Rectangle rect = new Rectangle(left, top, 25, 16);
                     g.DrawRectangle(new Pen(highlightBrush), rect);
                     g.FillRectangle(highlightBrush, rect);
