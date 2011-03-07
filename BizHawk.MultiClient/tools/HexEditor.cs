@@ -87,6 +87,26 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
+
+            switch (MemoryViewer.GetDataSize())
+            {
+                default:
+                case 1:
+                    byteToolStripMenuItem.Checked = true;
+                    byteToolStripMenuItem1.Checked = false;
+                    byteToolStripMenuItem2.Checked = false;
+                    break;
+                case 2:
+                    byteToolStripMenuItem.Checked = false;
+                    byteToolStripMenuItem1.Checked = true;
+                    byteToolStripMenuItem2.Checked = false;
+                    break;
+                case 4:
+                    byteToolStripMenuItem.Checked = false;
+                    byteToolStripMenuItem1.Checked = false;
+                    byteToolStripMenuItem2.Checked = true;
+                    break;
+            }
         }
 
         private void SetMemoryDomain(int pos)
@@ -143,6 +163,21 @@ namespace BizHawk.MultiClient
         {
             MemoryViewer.SetUpScrollBar();
             MemoryViewer.Refresh();
+        }
+
+        private void byteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MemoryViewer.SetDataSize(1);
+        }
+
+        private void byteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MemoryViewer.SetDataSize(2);
+        }
+
+        private void byteToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            MemoryViewer.SetDataSize(4);
         }
 
         
