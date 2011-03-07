@@ -55,7 +55,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(534, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(531, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -170,7 +170,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
             this.MemoryViewer.Name = "MemoryViewer";
-            this.MemoryViewer.Size = new System.Drawing.Size(502, 328);
+            this.MemoryViewer.Size = new System.Drawing.Size(499, 295);
             this.MemoryViewer.TabIndex = 0;
             this.MemoryViewer.TabStop = false;
             this.MemoryViewer.Text = "RAM";
@@ -179,7 +179,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(534, 377);
+            this.ClientSize = new System.Drawing.Size(531, 344);
             this.Controls.Add(this.MemoryViewer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
