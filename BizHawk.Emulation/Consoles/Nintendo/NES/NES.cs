@@ -16,12 +16,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Castlevania II (U) - Black screen only
         //Zelda II (U) - Black screen only
         //Bard's Tale - The Tales of the Unkown (U) - Black screen only
-        //Dragon Warrior (SBROM) - Black screen only
+        //Dragon Warrior (SAROM) - Black screen only
         //Family Feud - Fails to get past intro screen
         //Air Wolf - Black screen
         //Boyo and His Blob - Hangs on intro screen
         //Goal = graphics garble (looks identical to Zelda 2 problem)
         //Nobunaga's Ambition - black screen
+		//Knight Rider - very glitchy and seems to be a good timing case!
+		//Dragon warrior 3/4 certainly need some additional work done to the mapper wiring to get to the super big PRG (probably SXROM too)
+
+		[AttributeUsage(AttributeTargets.Class)]
+		public class INESBoardImplAttribute : Attribute {}
+		static List<Type> INESBoardImplementors = new List<Type>();
+
+		static NES()
+		{
+			foreach (Type type in typeof(NES).Assembly.GetTypes())
+			{
+				var attrs = type.GetCustomAttributes(typeof(INESBoardImplAttribute), true);
+				if (attrs.Length == 0) continue;
+				if (type.IsAbstract) continue;
+				INESBoardImplementors.Add(type);
+			}
+		}
+
+		static Type FindBoard(BootGodDB.Cart cart)
+		{
+			NES nes = new NES();
+			foreach (var type in INESBoardImplementors)
+			{
+				INESBoard board = (INESBoard)Activator.CreateInstance(type);
+				board.Create(nes);
+				if (board.Configure(cart))
+					return type;
+			}
+			return null;
+		}
+
 
         //the main rom class that contains all information necessary for the board to operate
 		public class RomInfo
@@ -42,7 +73,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public string MD5;
 
-			public byte[] ROM, VROM;
 		}
 
 		public enum EMirrorType
@@ -53,31 +83,43 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			External
 		}
 
+
+
 		public interface INESBoard
 		{
+			void Create(NES nes);
+			bool Configure(BootGodDB.Cart cart);
+			void InstallRoms(byte[] ROM, byte[] VROM);
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
 			byte ReadPRAM(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
 			void WritePRAM(int addr, byte value);
-			void Initialize(RomInfo romInfo, NES nes);
 			byte[] SaveRam { get; }
             byte[] PRam { get; }
             byte[] CRam { get; }
+			byte[] ROM { get; }
+			byte[] VROM { get; }
 			void SaveStateBinary(BinaryWriter bw);
 			void LoadStateBinary(BinaryReader br);
 		};
 
+		[INESBoardImpl]
 		public abstract class NESBoardBase : INESBoard
 		{
-			public virtual void Initialize(RomInfo romInfo, NES nes)
+			public virtual void Create(NES nes)
 			{
-				this.RomInfo = romInfo;
 				this.NES = nes;
-				SetMirrorType(romInfo.MirrorType);
 			}
-			public RomInfo RomInfo { get; set; }
+			public abstract bool Configure(BootGodDB.Cart cart);
+			public void InstallRoms(byte[] ROM, byte[] VROM)
+			{
+				this.ROM = ROM;
+				this.VROM = VROM;
+			}
+
+			public RomInfo BoardInfo { get { return NES.romInfo; } }
 			public NES NES { get; set; }
 
 			public virtual void SaveStateBinary(BinaryWriter bw)
@@ -96,6 +138,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mirroring[1] = b;
 				mirroring[2] = c;
 				mirroring[3] = d;
+			}
+
+			protected void SetMirrorType(int pad_h, int pad_v)
+			{
+				if (pad_h == 0)
+					if (pad_v == 0)
+						SetMirrorType(EMirrorType.OneScreenA);
+					else SetMirrorType(EMirrorType.Horizontal);
+				else
+					if (pad_v == 0)
+						SetMirrorType(EMirrorType.Vertical);
+					else SetMirrorType(EMirrorType.OneScreenB);
 			}
 
 			protected void SetMirrorType(EMirrorType mirrorType)
@@ -126,7 +180,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return value;
 			}
 
-			public virtual byte ReadPRG(int addr) { return RomInfo.ROM[addr];}
+			public virtual byte ReadPRG(int addr) { return ROM[addr];}
 			public virtual void WritePRG(int addr, byte value) { }
 
 			public virtual void WritePRAM(int addr, byte value) { }
@@ -150,7 +204,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (addr < 0x2000)
 				{
-					return RomInfo.VROM[addr];
+					return VROM[addr];
 				}
 				else
 				{
@@ -161,6 +215,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte[] SaveRam { get { return null; } }
             public virtual byte[] PRam { get { return null; } }
             public virtual byte[] CRam { get { return null; } }
+
+			public byte[] ROM { get; set; }
+			public byte[] VROM { get; set; }
+
+			protected void Assert(bool test, string comment, params object[] args)
+			{
+				if (!test) throw new Exception(string.Format(comment, args));
+			}
+			protected void Assert(bool test)
+			{
+				if (!test) throw new Exception("assertion failed in board setup!");
+			}
 		}
 
 		//hardware/state
@@ -170,11 +236,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		byte[] ram;
 		protected byte[] CIRAM;
 		int cpu_accumulate;
+		string game_name;
 
 		//user configuration 
 		int[,] palette; //TBD!!
 		IPortDevice[] ports;
-		RomInfo romInfo;
+		RomInfo romInfo = new RomInfo();
 
 		public byte ReadPPUReg(int addr)
 		{
@@ -269,6 +336,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public NES()
 		{
+			BootGodDB.Initialize();
 			palette = Palettes.FCEUX_Standard;
 		}
 
@@ -430,7 +498,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
         public int Frame { get; set; }
 
-        private byte Port01 = 0xFF;
 		public bool DeterministicEmulation { get { return true; } set { } }
 
 		public byte[] SaveRam
@@ -474,13 +541,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             }
 
             var PRGROM = new MemoryDomain("PRG Rom", romInfo.PRG_Size * 16384, Endian.Little,
-                addr => romInfo.ROM[addr], (addr, value) => romInfo.VROM[addr] = value);
+                addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
             domains.Add(PRGROM);
 
             if (romInfo.CHR_Size > 0)
             {
                 var CHRROM = new MemoryDomain("CHR Rom", romInfo.CHR_Size * 8192, Endian.Little,
-                    addr => romInfo.VROM[addr], (addr, value) => romInfo.VROM[addr] = value);
+					addr => board.VROM[addr], (addr, value) => board.VROM[addr] = value);
                 domains.Add(CHRROM);
             }
 
@@ -567,85 +634,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             return input;
         }
 
-		public class RomHeaderInfo
-		{
-			public int MapperNo, Mirroring, Num_PRG_Banks, Num_CHR_Banks, Num_PRAM_Banks;
-			public bool Battery;
-			public byte[] ROM, VROM;
-		}
-
-		unsafe struct iNES_HEADER {
-			public fixed byte ID[4]; /*NES^Z*/
-			public byte ROM_size;
-			public byte VROM_size;
-			public byte ROM_type;
-			public byte ROM_type2;
-			public fixed byte reserve[8];
-
-			public bool CheckID()
-			{
-				fixed (iNES_HEADER* self = &this)
-					return 0==Util.memcmp(self, "NES\x1A", 4);
-			}
-
-			//some cleanup code recommended by fceux
-			public void Cleanup()
-			{
-				fixed (iNES_HEADER* self = &this)
-				{
-					if (0==Util.memcmp((char*)(self) + 0x7, "DiskDude", 8))
-					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
-					}
-
-					if (0 == Util.memcmp((char*)(self) + 0x7, "demiforce", 9))
-					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
-					}
-
-					if (0 == Util.memcmp((char*)(self) + 0xA, "Ni03", 4))
-					{
-						if (0 == Util.memcmp((char*)(self) + 0x7, "Dis", 3))
-							Util.memset((char*)(self) + 0x7, 0, 0x9);
-						else
-							Util.memset((char*)(self) + 0xA, 0, 0x6);
-					}
-				}
-			}
-
-			public RomInfo Analyze()
-			{
-				var ret = new RomInfo();
-				ret.MapperNumber = (ROM_type>>4);
-				ret.MapperNumber |= (ROM_type2 & 0xF0);
-				int mirroring = (ROM_type&1);
-				if((ROM_type&8)!=0) mirroring=2;
-				if (mirroring == 0) ret.MirrorType = EMirrorType.Horizontal;
-				else if (mirroring == 1) ret.MirrorType = EMirrorType.Vertical;
-				else ret.MirrorType = EMirrorType.External;
-				ret.PRG_Size = ROM_size;
-				if (ret.PRG_Size == 0)
-					ret.PRG_Size = 256;
-				ret.CHR_Size = VROM_size;
-				ret.Battery = (ROM_type & 2) != 0;
-
-				fixed (iNES_HEADER* self = &this) ret.PRAM_Size = self->reserve[0] * 8;
-				//0 is supposed to mean 1 (for compatibility, as this is an extension to original iNES format)
-				if (ret.PRAM_Size == 0) ret.PRAM_Size = 8;
-
-				Console.WriteLine("iNES header: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, CRAM:{4}, PRAM:{5}, bat:{6}", ret.MapperNumber, ret.MirrorType, ret.PRG_Size, ret.CHR_Size, ret.CRAM_Size, ret.PRAM_Size, ret.Battery ? 1 : 0);
-
-				//fceux calls uppow2(PRG_Banks) here, and also ups the chr size as well
-				//then it does something complicated that i don't understand with making sure it doesnt read too much data
-				//fceux only allows this condition for mappers in the list "not_power2" which is only 228
-
-				return ret;
-			}
-		}
 
 		//turning this off probably doesnt work right now due to asserts in boards finding things set by the iNES header parsing
 		//need to separate those fields
 		const bool ENABLE_DB = true;
+
+		public string GameName { get { return game_name; } }
+
+		BootGodDB.Cart IdentifyFromGameDB(string hash)
+		{
+			GameInfo gi = Database.CheckDatabase(hash);
+			if (gi == null) return null;
+
+			BootGodDB.Game game = new BootGodDB.Game();
+			BootGodDB.Cart cart = new BootGodDB.Cart();
+			game.carts.Add(cart);
+
+            var dict = gi.ParseOptionsDictionary();
+			game.name = gi.Name;
+			cart.game = game;
+			cart.board_type = dict["board"];
+			if(dict.ContainsKey("PRG"))
+				cart.prg_size = short.Parse(dict["PRG"]);
+			if(dict.ContainsKey("CHR"))
+				cart.chr_size = short.Parse(dict["CHR"]);
+
+			return cart;
+		}
 
 		public unsafe void LoadGame(IGame game)
 		{
@@ -660,116 +675,73 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				header->Cleanup();
 
 				//now that we know we have an iNES header, we can try to ignore it.
-				string hash;
+				string hash_sha1;
+				string hash_md5;
+				using (var sha1 = System.Security.Cryptography.SHA1.Create())
+				{
+					sha1.TransformFinalBlock(file, 16, file.Length - 16);
+					hash_sha1 = "sha1:" + Util.BytesToHexString(sha1.Hash);
+				}
 				using (var md5 = System.Security.Cryptography.MD5.Create())
 				{
 					md5.TransformFinalBlock(file, 16, file.Length - 16);
-					hash = Util.BytesToHexString(md5.Hash);
+					hash_md5 = "md5:" + Util.BytesToHexString(md5.Hash);
 				}
-				Console.WriteLine("headerless rom hash: {0}", hash);
+				Console.WriteLine("headerless rom hash: {0}", hash_sha1);
+				Console.WriteLine("headerless rom hash: {0}", hash_md5);
 
-				GameInfo gi = null;
-				if (ENABLE_DB) gi = Database.CheckDatabase(hash);
-				else Console.WriteLine("database check disabled");
-
-				if (gi == null)
+				//check the bootgod database
+				BootGodDB.Initialize();
+				List<BootGodDB.Cart> choices = BootGodDB.Instance.Identify(hash_sha1);
+				BootGodDB.Cart choice;
+				if (choices.Count == 0)
 				{
-					romInfo = header->Analyze();
-					string board = BoardDetector.Detect(romInfo);
-					if (board == null)
-						throw new InvalidOperationException("Couldn't detect board type");
-					romInfo.BoardName = board;
-					Console.WriteLine("board detected as " + board);
-					romInfo.InfoSource = RomInfo.EInfoSource.INesHeader;
+					//try generating a bootgod cart descriptor from the game database
+					choice = IdentifyFromGameDB(hash_md5);
+					if (choice == null) 
+						choice = IdentifyFromGameDB(hash_sha1);
+					if (choice == null) 
+						throw new Exception("couldnt identify");
+					else
+						Console.WriteLine("Chose board from gamedb: ");
 				}
 				else
 				{
-					Console.WriteLine("found game in database: {0}", gi.Name);
-					romInfo = new RomInfo();
-					romInfo.InfoSource = RomInfo.EInfoSource.GameDatabase;
-					romInfo.MD5 = hash;
-					var dict = gi.ParseOptionsDictionary();
-					if (dict.ContainsKey("board"))
-						romInfo.BoardName = dict["board"];
-					if (dict.ContainsKey("mirror"))
-						switch (dict["mirror"])
-						{
-							case "V": romInfo.MirrorType = EMirrorType.Vertical; break;
-							case "H": romInfo.MirrorType = EMirrorType.Horizontal; break;
-							case "X": romInfo.MirrorType = EMirrorType.External; break;
-							default: throw new InvalidOperationException();
-						}
-					else romInfo.MirrorType = EMirrorType.External;
-					
-					if (dict.ContainsKey("PRG"))
-						romInfo.PRG_Size = int.Parse(dict["PRG"]);
-					if (dict.ContainsKey("CHR"))
-						romInfo.CHR_Size = int.Parse(dict["CHR"]);
-					if (dict.ContainsKey("CRAM"))
-						romInfo.CRAM_Size = int.Parse(dict["CRAM"]);
-					if (dict.ContainsKey("PRAM"))
-						romInfo.PRAM_Size = int.Parse(dict["PRAM"]);
-					if (dict.ContainsKey("bat"))
-						romInfo.Battery = true;
-					if (dict.ContainsKey("bug"))
-						Console.WriteLine("game is known to be BUGGED!!!");
+					Console.WriteLine("Chose board from nescartdb:");
+					//pick the first board for this hash arbitrarily. it probably doesn't make a difference
+					choice = choices[0];
 				}
 
-				//construct board (todo)
-				switch (romInfo.BoardName)
+				Console.WriteLine(choice.game);
+				Console.WriteLine(choice);
+				game_name = choice.game.name;
+
+				//todo - generate better name with region and system
+
+				//find a INESBoard to handle this
+				Type boardType = FindBoard(choice);
+				if (boardType == null)
 				{
-					case "NROM": board = new Boards.NROM(); break;
-					case "UNROM": board = new Boards.UxROM("UNROM"); break;
-					case "UOROM": board = new Boards.UxROM("UOROM"); break;
-					case "CNROM": board = new Boards.CxROM("CNROM"); break;
-					case "ANROM": board = new Boards.AxROM("ANROM"); break;
-					case "AOROM": board = new Boards.AxROM("AOROM"); break;
-					case "Discrete_74x377": board = new Boards.Discrete_74x377(); break;
-					case "CPROM": board = new Boards.CPROM(); break;
-					case "GxROM": board = new Boards.GxROM(); break;
-                    case "SAROM": board = new Boards.SxROM("SAROM"); break;
-                    case "SBROM": board = new Boards.SxROM("SBROM"); break;
-                    case "SCROM": board = new Boards.SxROM("SCROM"); break;
-                    case "SC1ROM": board = new Boards.SxROM("SC1ROM"); break;
-                    case "SEROM": board = new Boards.SxROM("SEROM"); break;
-                    case "SFROM": board = new Boards.SxROM("SFROM"); break;
-                    case "SGROM": board = new Boards.SxROM("SGROM"); break;
-                    case "SHROM": board = new Boards.SxROM("SHROM"); break;
-                    case "SH1ROM": board = new Boards.SxROM("SH1ROM"); break;
-                    case "SIROM": board = new Boards.SxROM("SIROM"); break;
-                    case "SJROM": board = new Boards.SxROM("SJROM"); break;
-                    case "SKROM": board = new Boards.SxROM("SKROM"); break;
-                    case "SLROM": board = new Boards.SxROM("SLROM"); break;
-                    case "SL1ROM": board = new Boards.SxROM("SL1ROM"); break;
-                    case "SL2ROM": board = new Boards.SxROM("SL2ROM"); break;
-                    case "SL3ROM": board = new Boards.SxROM("SL3ROM"); break;
-                    case "SLRROM": board = new Boards.SxROM("SLRROM"); break;
-                    case "SMROM": board = new Boards.SxROM("SMROM"); break;
-                    case "SNROM": board = new Boards.SxROM("SNROM"); break;
-                    case "SOROM": board = new Boards.SxROM("SOROM"); break;
-                    case "SUROM": board = new Boards.SxROM("SUROM"); break;
-                    case "SXROM": board = new Boards.SxROM("SXROM"); break;
+					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 				}
+				board = (INESBoard)Activator.CreateInstance(boardType);
 
-				if (board == null) throw new InvalidOperationException("Couldn't classify NES rom");
+				board.Create(this);
+				board.Configure(choice);
 
-				board.Initialize(romInfo, this);
-
-				//originally this was before board.initialize.
-				//however, i have decided that boards should get to setup some of their own parameters (e.g. chr size)
-				//so this needs to happen afterwards so we know how much to load.
-				//we may encounter some fishy issues and have to move it back above and do some other reconsidering.
-				romInfo.ROM = new byte[romInfo.PRG_Size * 16 * 1024];
-				Array.Copy(file, 16, romInfo.ROM, 0, romInfo.ROM.Length);
+				byte[] rom, vrom = null;
+				rom = new byte[romInfo.PRG_Size * 1024];
+				Array.Copy(file, 16, rom, 0, rom.Length);
 				if (romInfo.CHR_Size > 0)
 				{
-					romInfo.VROM = new byte[romInfo.CHR_Size * 8 * 1024];
-					Array.Copy(file, 16 + romInfo.ROM.Length, romInfo.VROM, 0, romInfo.VROM.Length);
+					vrom = new byte[romInfo.CHR_Size * 1024];
+					Array.Copy(file, 16 + rom.Length, vrom, 0, vrom.Length);
 				}
-                
+				board.InstallRoms(rom, vrom);
+
+				HardReset();
+				SetupMemoryDomains();
 			}
-			HardReset();
-            SetupMemoryDomains();
 		}
 
 		public void SaveStateText(TextWriter writer)
@@ -850,3 +822,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 //a mappers list
 //http://tuxnes.sourceforge.net/nesmapper.txt 
+
+//some ppu tests
+//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb

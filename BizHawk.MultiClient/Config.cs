@@ -255,8 +255,8 @@
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
                 Right = "J1 Right, RightArrow";
-                A = "J1 B1, Z";
-                B = "J1 B2, X";
+                A = "J1 B1, X";
+                B = "J1 B2, Z";
                 Start = "J1 B10, Return";
                 Select = "J1 B9, Space";
             }

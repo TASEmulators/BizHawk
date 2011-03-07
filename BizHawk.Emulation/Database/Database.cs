@@ -44,10 +44,23 @@ namespace BizHawk
     {
 		private static Dictionary<string, GameInfo> db = new Dictionary<string, GameInfo>();
 
+		static string RemoveHashType(string hash)
+		{
+			hash = hash.ToUpper();
+			if (hash.StartsWith("MD5:")) hash = hash.Substring(4);
+			if (hash.StartsWith("SHA1:")) hash = hash.Substring(5);
+			return hash;
+		}
+
 		public static GameInfo CheckDatabase(string hash)
 		{
 			GameInfo ret = null;
-			db.TryGetValue(hash, out ret);
+			if (!db.TryGetValue(hash, out ret))
+			{
+				//try removing hash type identifier
+				hash = RemoveHashType(hash);
+				db.TryGetValue(hash, out ret);
+			}
 			return ret;
 		}
 
@@ -67,7 +80,8 @@ namespace BizHawk
                         string[] items = line.Split('\t');
 
                         var Game = new GameInfo();
-                        Game.hash = items[0].ToUpper();
+						//remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
+						Game.hash = RemoveHashType(items[0].ToUpper());
                         Game.Name = items[2];
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;

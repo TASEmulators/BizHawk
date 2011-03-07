@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	//Thunder & Lightning
 	//Super Mario Bros. + Duck Hunt
 
-	//should this be called GNROM? there is no other Gx anything AFAIK..
+	//TODO - bus conflicts
 
 	public class GxROM : NES.NESBoardBase
 	{
@@ -22,26 +22,44 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		int prg, chr;
 
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-			base.Initialize(romInfo, nes);
-			Debug.Assert(romInfo.PRG_Size == 2 || romInfo.PRG_Size == 4 || romInfo.PRG_Size == 8);
-			//romInfo.CHR_Size == 8 || romInfo.CHR_Size == 16
-			Debug.Assert(romInfo.CHR_Size == 2 || romInfo.CHR_Size == 4, "This is unverified behaviour. Please check it (maybe you are playing thunder&lightning; do you have to play far into that game to see missing CHR?");
+			//configure
+			switch (cart.board_type)
+			{
+				case "NES-GNROM":
+				case "BANDAI-GNROM":
+				case "HVC-GNROM":
+				case "NES-MHROM":
+					Assert(cart.chr_size == 8 || cart.chr_size == 16 || cart.chr_size == 32);
+					BoardInfo.PRG_Size = (cart.board_type == "NES-MHROM" ? 64 : 128);
+					BoardInfo.CHR_Size = cart.chr_size;
+					break;
 
-			prg_mask = (romInfo.PRG_Size/2) - 1;
-			chr_mask = romInfo.CHR_Size - 1;
+				default:
+					return false;
+			}
+
+			prg_mask = (BoardInfo.PRG_Size/8/2) - 1;
+			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
+			SetMirrorType(cart.pad_h, cart.pad_v);
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			Assert(cart.chr_size == BoardInfo.CHR_Size);
+
+			return true;
 		}
 		public override byte ReadPRG(int addr)
 		{
-			return RomInfo.ROM[addr + (prg<<15)];
+			return ROM[addr + (prg<<15)];
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return RomInfo.VROM[addr + (chr << 13)];
+				return VROM[addr + (chr << 13)];
 			}
 			else return base.ReadPPU(addr);
 		}

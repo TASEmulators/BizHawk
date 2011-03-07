@@ -1,0 +1,44 @@
+
+//http://wiki.nesdev.com/w/index.php/Cartridge_connector
+//http://benheck.com/Downloads/NES_Famicom_Pinouts.pdf
+//http://kevtris.org/mappers/mmc1/index.html
+//one day, i will redo mappers at the pin level and it will look something like this:
+//public void Strobe(int PRG_A, int PRG_D, int PRG_READ, int CHR_A)
+//{
+//    if (PRG_READ == 1)
+//    {
+//        int PRG_A14 = (PRG_A >> 14) & 1;
+
+//        int tmp_prg_A17_A14;
+//        if (prg_mode == 0)
+//            if (PRG_A14 == 0)
+//                tmp_prg_A17_A14 = prg;
+//            else
+//                tmp_prg_A17_A14 = ((prg + 1) & 0xF);
+//        else if (prg_slot == 0)
+//            if (PRG_A14 == 0) tmp_prg_A17_A14 = 0;
+//            else tmp_prg_A17_A14 = prg;
+//        else if (PRG_A14 == 0)
+//            tmp_prg_A17_A14 = prg;
+//        else tmp_prg_A17_A14 = 0xF;
+
+//        out_PRG_A = PRG_A;
+//        out_PRG_A &= ~0x4000;
+//        out_PRG_A |= (tmp_prg_A17_A14 << 14);
+//    }
+//}
+//public int Read_CHR_A(int addr)
+//{
+//    int CHR_A10 = (addr >> 10) & 1;
+//    int CHR_A11 = (addr >> 10) & 1;
+//    int out_CIRAM_A10;
+//    switch (mirror)
+//    {
+//        case 0: out_CIRAM_A10 = 0; break;
+//        case 1: out_CIRAM_A10 = 1; break;
+//        case 2: out_CIRAM_A10 = CHR_A10; break;
+//        case 3: out_CIRAM_A10 = CHR_A11; break;
+//    }
+
+//    addr
+//}

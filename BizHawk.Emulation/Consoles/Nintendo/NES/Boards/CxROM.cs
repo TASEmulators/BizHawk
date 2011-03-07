@@ -15,23 +15,39 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	public class CxROM : NES.NESBoardBase
 	{
 		//configuration
-		string type;
-		int chr_mask;
+		int prg_mask,chr_mask;
 		bool bus_conflict;
 
 		//state
 		int chr;
 
-		public CxROM(string type)
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-			this.type = type;
-		}
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
-		{
-			base.Initialize(romInfo, nes);
-			Debug.Assert(Util.IsPowerOfTwo(RomInfo.CHR_Size));
-			chr_mask = RomInfo.CHR_Size - 1;
+			//configure
+			switch (cart.board_type)
+			{
+				case "NES-CNROM":
+				case "HVC-CNROM":
+					Assert(cart.prg_size == 16 || cart.prg_size == 32);
+					Assert(cart.chr_size == 16 || cart.chr_size == 32);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = cart.chr_size;
+					break;
+
+				default:
+					return false;
+
+			}
+			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
+			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
+			SetMirrorType(cart.pad_h, cart.pad_v);
 			bus_conflict = true;
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			Assert(cart.chr_size == BoardInfo.CHR_Size);
+
+			return true;
 		}
 		
 		public override void WritePRG(int addr, byte value)
@@ -45,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				return RomInfo.VROM[addr + (chr<<13)];
+				return VROM[addr + (chr<<13)];
 			}
 			else return base.ReadPPU(addr);
 		}

@@ -46,10 +46,12 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
-			//using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
-			//{
-			//    var NesCartXmlBytes = Util.ReadAllBytes(NesCartFile.GetStream());
-			//}
+			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
+			//we could background thread this later instead if we wanted to be real clever
+			NES.BootGodDB.GetDatabaseBytes = () => {
+				using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
+				    return Util.ReadAllBytes(NesCartFile.GetStream());
+			};
 
 			Global.MainForm = this;
 			Global.Config = ConfigService.Load<Config>("config.ini");
@@ -411,58 +413,74 @@ namespace BizHawk.MultiClient
 					else return false;
 				}
 
-				CloseGame();
-
 				var game = new RomGame(file);
-				Global.Game = game;
+				IEmulator nextEmulator = null;
 
 				switch (game.System)
 				{
 					case "SG":
 					case "SMS":
-						Global.Emulator = new SMS();
-						Global.Emulator.Controller = Global.SMSControls;
+						nextEmulator = new SMS();
+						nextEmulator.Controller = Global.SMSControls;
 						if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
 						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
 						if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
 						break;
 					case "GG":
-						Global.Emulator = new SMS { IsGameGear = true };
-						Global.Emulator.Controller = Global.SMSControls;
+						nextEmulator = new SMS { IsGameGear = true };
+						nextEmulator.Controller = Global.SMSControls;
 						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
 						break;
 					case "PCE":
-						Global.Emulator = new PCEngine(NecSystemType.TurboGrafx);
-						Global.Emulator.Controller = Global.PCEControls;
+						nextEmulator = new PCEngine(NecSystemType.TurboGrafx);
+						nextEmulator.Controller = Global.PCEControls;
 						break;
 					case "SGX":
-						Global.Emulator = new PCEngine(NecSystemType.SuperGrafx);
-						Global.Emulator.Controller = Global.PCEControls;
+						nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
+						nextEmulator.Controller = Global.PCEControls;
 						break;
 					case "GEN":
-						Global.Emulator = new Genesis(false);//TODO
-						Global.Emulator.Controller = Global.GenControls;
+						nextEmulator = new Genesis(false);//TODO
+						nextEmulator.Controller = Global.GenControls;
 						break;
 					case "TI83":
-						Global.Emulator = new TI83();
-						Global.Emulator.Controller = Global.TI83Controls;
+						nextEmulator = new TI83();
+						nextEmulator.Controller = Global.TI83Controls;
 						break;
 					case "NES":
-						Global.Emulator = new NES();
-						Global.Emulator.Controller = Global.NESControls;
+						nextEmulator = new NES();
+						nextEmulator.Controller = Global.NESControls;
 						break;
 					case "GB":
-						Global.Emulator = new Gameboy();
+						nextEmulator = new Gameboy();
 						break;
 				}
 
-				if (Global.Emulator is NullEmulator)
+				if (nextEmulator == null)
 				{
 					throw new Exception();
 				}
 
+				try
+				{
+					nextEmulator.LoadGame(game);
+				}
+				catch(Exception ex)
+				{
+					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+					return false;
+				}
+
+				CloseGame();
+				Global.Emulator = nextEmulator;
+				Global.Game = game;
+
+				if (game.System == "NES")
+				{
+					Global.Game.Name = (Global.Emulator as NES).GameName;
+				}
+
 				HandlePlatformMenus(Global.Game.System);
-				Global.Emulator.LoadGame(game);
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 				Global.Config.RecentRoms.Add(file.CanonicalName);
@@ -473,6 +491,7 @@ namespace BizHawk.MultiClient
 				{
 					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 				}
+		
 
 				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
 					InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
