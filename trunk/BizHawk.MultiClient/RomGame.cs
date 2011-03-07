@@ -18,8 +18,6 @@ namespace BizHawk.MultiClient
 
         public RomGame(HawkFile file, string patch)
         {
-			if(!file.IsBound)
-				file.BindFirstOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES");
 			if (!file.Exists)
 			    throw new Exception("The file needs to exist, yo.");
 

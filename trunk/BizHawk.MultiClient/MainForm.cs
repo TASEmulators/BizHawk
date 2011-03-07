@@ -393,7 +393,23 @@ namespace BizHawk.MultiClient
 		{
 			using (var file = new HawkFile(path))
 			{
+				//if the provided file doesnt even exist, give up!
 				if (!file.RootExists) return false;
+
+				//try binding normal rom extensions first
+				if (!file.IsBound)
+					file.BindSoleItemOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES");
+
+				//if we have an archive and need to bind something, then pop the dialog
+				if (file.IsArchive && !file.IsBound)
+				{
+					var ac = new ArchiveChooser(file);
+					if (ac.ShowDialog(this) == DialogResult.OK)
+					{
+						file.BindArchiveMember(ac.SelectedMemberIndex);
+					}
+					else return false;
+				}
 
 				CloseGame();
 

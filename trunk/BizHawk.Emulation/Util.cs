@@ -478,6 +478,40 @@ namespace BizHawk
 
 			return outStream.ToArray();
 		}
+
+		public static string FormatFileSize(long filesize)
+		{
+			Decimal size = (Decimal)filesize;
+
+			Decimal OneKiloByte = 1024M;
+			Decimal OneMegaByte = OneKiloByte * 1024M;
+			Decimal OneGigaByte = OneMegaByte * 1024M;
+
+			string suffix;
+			if (size > 1024*1024*1024)
+			{
+				size /= 1024*1024*1024;
+				suffix = "GB";
+			}
+			else if (size > 1024*1024)
+			{
+				size /= 1024*1024;
+				suffix = "MB";
+			}
+			else if (size > 1024)
+			{
+				size /= 1024;
+				suffix = "KB";
+			}
+			else
+			{
+				suffix = " B";
+			}
+
+			string precision = "2";
+			return String.Format("{0:N" + precision + "}{1}", size, suffix);
+		}
+
 	}
 
 
