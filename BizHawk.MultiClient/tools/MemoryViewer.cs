@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.MultiClient
+namespace Bizhawk.MultiClient
 {
     public class MemoryViewer : Panel
     {
@@ -13,8 +13,8 @@ namespace BizHawk.MultiClient
 
         public VScrollBar vScrollBar1;
         public Label info;
+        MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 
-        MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
         Font font = new Font("Courier New", 10);
         public Brush regBrush = Brushes.Black;
         public Brush highlightBrush = Brushes.LightBlue;
@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
         int DataSize = 1;
         public bool BigEndian = false;
         string Header = "";
-
+        
         int addressHighlighted = -1;
         int addressOver = -1;
         int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
@@ -33,10 +33,10 @@ namespace BizHawk.MultiClient
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
+            this.BorderStyle = BorderStyle.Fixed3D;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseMove);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseClick);
-
             this.vScrollBar1 = new VScrollBar();
             Point n = new Point(this.Size);
             this.vScrollBar1.Location = new System.Drawing.Point(n.X-16, n.Y-this.Height+7);
