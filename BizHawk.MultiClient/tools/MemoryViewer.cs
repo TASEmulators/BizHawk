@@ -9,6 +9,9 @@ namespace BizHawk.MultiClient
 {
     public class MemoryViewer : Panel
     {
+        //TODO: highlighting and address determining for 2 & 4 byte viewing
+        //Scroll highlighted when moving scroll bar
+
         public VScrollBar vScrollBar1;
         public Label info;
 
@@ -73,12 +76,13 @@ namespace BizHawk.MultiClient
                 g.DrawLine(new Pen(regBrush), this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
                 g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
 
-                if (addressHighlighted >= 0) //&& visible (determine this)
+                if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
                 {
-                    
-                    int left = ((addressHighlighted % 16) * 24) + 60 + addrOffset;
+                    int zz = addressHighlighted % 16;
+                    int zzz = zz * 24;
+                    int left = ((addressHighlighted % 16) * 25) + 56 + addrOffset -(addressHighlighted % 4);
                     int top = ((addressHighlighted / 16) * 16) + 36;
-                    Rectangle rect = new Rectangle(left, top, 24, 16);
+                    Rectangle rect = new Rectangle(left, top, 25, 16);
                     g.DrawRectangle(new Pen(highlightBrush), rect);
                     g.FillRectangle(highlightBrush, rect);
                 }
@@ -86,7 +90,7 @@ namespace BizHawk.MultiClient
                 for (int i = 0; i < RowsVisible; i++)
                 {
                     row = i + vScrollBar1.Value;
-                    rowStr = String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  "; //TODO: fix offsets on vertical line & digits if > 4
+                    rowStr = String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ";
                     switch (DataSize)
                     {
                         default:
@@ -238,8 +242,8 @@ namespace BizHawk.MultiClient
             //info.Text += " " + row.ToString(); //Debug
 
             //Determine colums - 60 + addrOffset left padding
-            //24 pixel wide addresses (when 1 byte)
-            int column = (x - (60 + addrOffset)) / 24;
+            //25 pixel wide addresses (when 1 byte) (actually more like 24.75 ugh
+            int column = (x - (56 + addrOffset)) / 25;
             //info.Text += " " + column.ToString(); //Debug
             //TODO: 2 & 4 byte views
 
@@ -284,6 +288,16 @@ namespace BizHawk.MultiClient
                 return addressHighlighted;
             else
                 return -1; //Negative = no address highlighted
+        }
+
+        private bool IsVisible(int addr)
+        {
+            int row = addr / 16;
+
+            if (row >=  vScrollBar1.Value && row <= (RowsVisible + vScrollBar1.Value))
+                return true;
+            else
+                return false;
         }
     }
 }
