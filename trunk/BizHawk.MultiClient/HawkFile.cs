@@ -269,6 +269,7 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 			{
 				var afd = extractor.ArchiveFileData[i];
+				if (afd.IsDirectory) continue;
 				var ai = new ArchiveItem();
 				ai.name = FixArchiveFilename(afd.FileName);
 				ai.size = (long)afd.Size; //ulong. obnoxious.
