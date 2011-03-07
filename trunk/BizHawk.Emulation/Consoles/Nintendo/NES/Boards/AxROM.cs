@@ -13,64 +13,69 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	public class AxROM : NES.NESBoardBase
 	{
 		//configuration
-		string type;
 		bool bus_conflict;
-		int cram_mask;
+		int cram_byte_mask;
 		int prg_mask;
 
 		//state
 		byte[] cram;
 		int prg;
 
-		public AxROM(string type)
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-			this.type = type;
-			switch (type)
+			//configure
+			switch (cart.board_type)
 			{
-				case "ANROM": bus_conflict = false; break;
-				case "AOROM": bus_conflict = true; break;
+				case "NES-ANROM":
+					BoardInfo.PRG_Size = 128;
+					bus_conflict = false;
+					break;
+
+				case "NES-AN1ROM":
+					BoardInfo.PRG_Size = 64;
+					bus_conflict = false;
+					break;
+
+				case "NES-AMROM":
+					BoardInfo.PRG_Size = 128;
+					bus_conflict = true;
+					break;
+			
+				case "NES-AOROM":
+				case "HVC-AOROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					bus_conflict = true; //MAYBE. apparently it varies
+					break;
+
+				default:
+					return false;
 			}
-		}
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
-		{
-			base.Initialize(romInfo, nes);
-
-			Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
-			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
-
-
-			if (type == "ANROM")
-			{
-				Debug.Assert(RomInfo.PRG_Size == 8);
-				prg_mask = 7;
-			}
-			if (type == "AOROM")
-			{
-				Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
-				prg_mask = 15;
-			}
-
-			//regardless of what the board is equipped to handle, reduce the mask to how much ROM is actually present
-			int rom_prg_mask = (RomInfo.PRG_Size - 1);
-			if (rom_prg_mask < prg_mask) prg_mask = rom_prg_mask;
 
 			//these boards always have 8KB of CRAM
-			RomInfo.CRAM_Size = 8;
-			cram = new byte[RomInfo.CRAM_Size * 1024];
-			cram_mask = cram.Length - 1;
+			BoardInfo.CRAM_Size = 8;
+			cram = new byte[BoardInfo.CRAM_Size * 1024];
+			cram_byte_mask = cram.Length - 1;
+
+			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
 
 			//it is necessary to write during initialization to set the mirroring
 			WritePRG(0, 0);
+
+			return true;
 		}
 
 		public override byte ReadPRG(int addr)
 		{
-			return RomInfo.ROM[addr + (prg << 14)];
+			return ROM[addr + (prg << 14)];
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (bus_conflict) value = HandleNormalPRGConflict(addr,value);
+			if (ROM != null && bus_conflict) value = HandleNormalPRGConflict(addr,value);
 			prg = (value*2) & prg_mask;
 			if ((value & 0x10) == 0)
 				SetMirrorType(NES.EMirrorType.OneScreenA);
@@ -82,7 +87,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				return cram[addr & cram_mask];
+				return cram[addr & cram_byte_mask];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -91,7 +96,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				cram[addr & cram_mask] = value;
+				cram[addr & cram_byte_mask] = value;
 			}
 			else base.WritePPU(addr,value);
 		}

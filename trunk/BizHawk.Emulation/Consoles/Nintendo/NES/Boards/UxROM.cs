@@ -17,43 +17,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	public class UxROM : NES.NESBoardBase
 	{
 		//configuration
-		string type;
 		int prg_mask;
-		int cram_mask;
+		int cram_byte_mask;
 
 		//state
 		int prg;
 		byte[] cram;
 
-		public UxROM(string type)
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-			this.type = type;
-		}
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
-		{
-			base.Initialize(romInfo, nes);
-			Debug.Assert(RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16);
-			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
+			//configure
+			switch (cart.board_type)
+			{
+				case "NES-UNROM":
+				case "HVC-UNROM": 
+				case "KONAMI-UNROM":
+					BoardInfo.PRG_Size = 128; 
+					break;
 
-			if (type == "UNROM") prg_mask = 7;
-			else if (type == "UOROM") prg_mask = 15;
-			else throw new InvalidOperationException("Invalid UxROM type");
+				case "NES-UOROM":
+				case "HVC-UOROM":
+					BoardInfo.PRG_Size = 256;
+					break;
 
-			//regardless of what the board is equipped to handle, reduce the mask to how much ROM is actually present
-			int rom_prg_mask = (RomInfo.PRG_Size - 1);
-			if (rom_prg_mask < prg_mask) prg_mask = rom_prg_mask;
-
+				default:
+					return false;
+			}
 			//these boards always have 8KB of CRAM
-			RomInfo.CRAM_Size = 8;
-			cram = new byte[RomInfo.CRAM_Size * 1024];
-			cram_mask = cram.Length - 1;
+			BoardInfo.CRAM_Size = 8;
+			cram = new byte[BoardInfo.CRAM_Size * 1024];
+			cram_byte_mask = cram.Length - 1;
+			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
+			SetMirrorType(cart.pad_h, cart.pad_v);
+
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+
+			return true;
 		}
+
 		public override byte ReadPRG(int addr)
 		{
 			int block = addr >> 14;
 			int page = block == 1 ? prg_mask : prg;
 			int ofs = addr & 0x3FFF;
-			return RomInfo.ROM[(page << 14) | ofs];
+			return ROM[(page << 14) | ofs];
 		}
 		public override void WritePRG(int addr, byte value)
 		{
@@ -64,7 +73,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				return cram[addr & cram_mask];
+				return cram[addr & cram_byte_mask];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -73,7 +82,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				cram[addr & cram_mask] = value;
+				cram[addr & cram_byte_mask] = value;
 			}
 			else base.WritePPU(addr,value);
 		}

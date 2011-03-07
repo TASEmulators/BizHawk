@@ -172,176 +172,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 	public class SxROM : NES.NESBoardBase
 	{
 		//configuration
-		string type;
 		int prg_mask, chr_mask;
 		int cram_mask, pram_mask;
 
 		//state
 		byte[] cram, pram;
 		MMC1 mmc1;
-
-		public SxROM(string type)
-		{
-			this.type = type;
-			mmc1 = new MMC1();
-		}
-
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
-		{
-			base.Initialize(romInfo, nes);
-
-            Debug.Assert(RomInfo.PRG_Size == 1 || RomInfo.PRG_Size == 2 || RomInfo.PRG_Size == 4 || RomInfo.PRG_Size == 8 || RomInfo.PRG_Size == 16 || RomInfo.PRG_Size == 32);
-			prg_mask = RomInfo.PRG_Size - 1;
-
-			Debug.Assert(RomInfo.CRAM_Size == -1, "don't specify in gamedb, it is redundant");
-			Debug.Assert(RomInfo.PRAM_Size == -1, "don't specify in gamedb, it is redundant");
-			Debug.Assert(RomInfo.MirrorType == NES.EMirrorType.External, "don't specify in gamedb, it is redundant");
-
-			//analyze board type
-			switch (type)
-			{
-				case "SAROM":
-                    romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 8;
-                    RomInfo.PRG_Size = 4;
-                    break;
-                case "SBROM":
-                    romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.PRG_Size = 4;
-                    break;
-                case "SCROM":
-                case "SC1ROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.PRG_Size = 4;
-                    RomInfo.CHR_Size = 16;
-                    break;
-                case "SEROM":
-                    romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    romInfo.PRG_Size = 2;
-                    break;
-                case "SFROM":
-                    romInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    break;
-                case "SGROM":
-					Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-					romInfo.CHR_Size = 0; 
-					RomInfo.CRAM_Size = 8; 
-					romInfo.PRAM_Size = 0;
-					break;
-                case "SHROM":
-                case "SH1ROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.PRG_Size = 2;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.CRAM_Size = 0;
-                    romInfo.CHR_Size = 16;
-                    break;
-                case "SIROM":
-                    romInfo.PRG_Size = 2;
-                    RomInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    break;
-                case "SJROM":
-                    RomInfo.CRAM_Size = 0;
-                    romInfo.PRAM_Size = 0;
-                    break;
-                case "SKROM":
-                    romInfo.CHR_Size = 16;
-                    RomInfo.PRAM_Size = 8;
-                    RomInfo.CRAM_Size = 0;
-                    break;
-                case "SLROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.CHR_Size = 16;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.CRAM_Size = 0;
-                    break;
-                case "SL1ROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.CHR_Size = 16;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.CRAM_Size = 0;
-                    break;
-				case "SL2ROM":
-					//these boards have CHR roms and nothing else interesting
-					RomInfo.CRAM_Size = 0; 
-					RomInfo.PRAM_Size = 0;
-					break;
-                case "SL3ROM":
-                    RomInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    break;
-                case "SLRROM":
-                    RomInfo.CRAM_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    break;
-                case "SMROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    RomInfo.CHR_Size = 0;
-                    RomInfo.PRAM_Size = 0;
-                    RomInfo.CRAM_Size = 8;
-                    RomInfo.PRG_Size = 16;
-                    break;
-                case "SNROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.CHR_Size = 0;
-                    RomInfo.CRAM_Size = 8;
-                    RomInfo.PRAM_Size = 8;
-                    break;
-                case "SOROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    romInfo.CHR_Size = 0;
-                    RomInfo.CRAM_Size = 8;
-                    RomInfo.PRAM_Size = 16;
-                    break;
-                case "SUROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    RomInfo.PRG_Size = 32;
-                    RomInfo.PRAM_Size = 8;
-                    RomInfo.CRAM_Size = 8;
-                    RomInfo.CHR_Size = 0;
-                    break;
-                case "SXROM":
-                    Debug.Assert(RomInfo.CHR_Size == -1, "don't specify in gamedb, it is redundant");
-                    RomInfo.PRAM_Size = 32;
-                    RomInfo.CHR_Size = 0;
-                    RomInfo.CRAM_Size = 8;
-                    break;
-				default: throw new InvalidOperationException();
-			}
-
-			//boards that don't contain CHR rom will contain CRAM. only one size is supported; set it up if it is there.
-			Debug.Assert(RomInfo.CRAM_Size == 0 || RomInfo.CRAM_Size == 8);
-			if (RomInfo.CRAM_Size != 0)
-			{
-				cram = new byte[RomInfo.CRAM_Size * 1024];
-				cram_mask = cram.Length - 1;
-			}
-			else cram = new byte[0];
-
-			//some boards contain PRAM. we only understand one size right now. set it up if it is there.
-            Debug.Assert(RomInfo.PRAM_Size == 0 || RomInfo.PRAM_Size == 8 || RomInfo.PRAM_Size == 16 || RomInfo.PRAM_Size == 32);
-			if (RomInfo.PRAM_Size != 0)
-			{
-				pram = new byte[RomInfo.PRAM_Size * 1024];
-				pram_mask = pram.Length - 1;
-			}
-			else pram = new byte[0];
-
-			//some boards contain CHR roms, so set that up here.
-			if (RomInfo.CHR_Size != 0)
-			{
-				Debug.Assert(RomInfo.CHR_Size == 2 || RomInfo.CHR_Size == 4 || RomInfo.CHR_Size == 16);
-				chr_mask = (RomInfo.CHR_Size*2) - 1;
-			}
-
-			SetMirrorType(mmc1.mirror);
-		}
 
 		public override void WritePRG(int addr, byte value)
 		{
@@ -353,7 +189,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			int bank = mmc1.Get_PRGBank(addr) & prg_mask;
 			addr = (bank << 14) | (addr & 0x3FFF);
-			return RomInfo.ROM[addr];
+			return ROM[addr];
 		}
 
 		int Gen_CHR_Address(int addr)
@@ -367,9 +203,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				if (RomInfo.CRAM_Size != 0)
+				if (BoardInfo.CRAM_Size != 0)
 					return cram[addr & cram_mask];
-				else return RomInfo.VROM[Gen_CHR_Address(addr)];
+				else return VROM[Gen_CHR_Address(addr)];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -378,7 +214,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				if (RomInfo.CRAM_Size != 0)
+				if (BoardInfo.CRAM_Size != 0)
 					cram[addr & cram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
@@ -386,14 +222,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 		public override byte ReadPRAM(int addr)
 		{
-			if (RomInfo.PRAM_Size != 0)
+			if (BoardInfo.PRAM_Size != 0)
 				return pram[addr & pram_mask];
 			else return 0xFF;
 		}
 
 		public override void WritePRAM(int addr, byte value)
 		{
-			if (RomInfo.PRAM_Size != 0)
+			if (BoardInfo.PRAM_Size != 0)
 				pram[addr & pram_mask] = value;
 		}
 
@@ -401,7 +237,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			get
 			{
-				if (!RomInfo.Battery) return null;
+				if (!BoardInfo.Battery) return null;
 				return pram;
 				//some boards have a pram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
@@ -412,7 +248,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
         {
             get
             {
-                if (RomInfo.PRAM_Size > 0)
+                if (BoardInfo.PRAM_Size > 0)
                     return pram;
                 else
                     return null;
@@ -423,7 +259,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
         {
             get
             {
-                if (RomInfo.CRAM_Size > 0)
+				if (BoardInfo.CRAM_Size > 0)
                     return cram;
                 else
                     return null;
@@ -446,49 +282,195 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		}
 
 
+		public override bool Configure(NES.BootGodDB.Cart cart)
+		{
+			//analyze board type
+			switch (cart.board_type)
+			{
+				case "NES-SAROM":
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
+					BoardInfo.PRG_Size = 64;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 8;
+					break;
+				case "NES-SBROM":
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
+					BoardInfo.PRG_Size = 64;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SCROM":
+				case "NES-SC1ROM":
+					BoardInfo.PRG_Size = 64;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SEROM":
+					BoardInfo.PRG_Size = 32;
+					BoardInfo.CHR_Size = 32;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SFROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SGROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.CRAM_Size = 8;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SHROM":
+				case "NES-SH1ROM":
+					BoardInfo.PRG_Size = 32;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.PRAM_Size = 0;
+					BoardInfo.CRAM_Size = 0;
+					break;
+				case "HVC-SIROM":
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
+					BoardInfo.PRG_Size = 32;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SJROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 8;
+					break;
+				case "NES-SKROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = cart.chr_size;
+					BoardInfo.PRAM_Size = 8;
+					BoardInfo.CRAM_Size = 0;
+					break;
+				case "NES-SLROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.PRAM_Size = 0;
+					BoardInfo.CRAM_Size = 0;
+					break;
+				case "NES-SL1ROM":
+					Assert(cart.prg_size == 64 || cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.PRAM_Size = 0;
+					BoardInfo.CRAM_Size = 0;
+					break;
+				case "NES-SL2ROM":
+					Assert(cart.prg_size == 128);
+					Assert(cart.chr_size == 128);
+					BoardInfo.PRG_Size = 128;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SL3ROM":
+					Assert(cart.prg_size == 256);
+					Assert(cart.chr_size == 128);
+					BoardInfo.PRG_Size = 256;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "NES-SLRROM":
+					Assert(cart.prg_size == 128);
+					Assert(cart.chr_size == 128);
+					BoardInfo.PRG_Size = 128;
+					BoardInfo.CHR_Size = 128;
+					BoardInfo.CRAM_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					break;
+				case "HVC-SMROM":
+					BoardInfo.PRG_Size = 256;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.PRAM_Size = 0;
+					BoardInfo.CRAM_Size = 8;
+					break;
+				case "NES-SNROM":
+					Assert(cart.prg_size == 16 || cart.prg_size == 128 || cart.prg_size == 256);
+					//16 is unexpected but blargg's tests use it
+					//TODO - consider making a unique board type for homebrew, as i discover how more of them are working
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.CRAM_Size = 8;
+					BoardInfo.PRAM_Size = 8;
+					break;
+				case "NES-SOROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.CRAM_Size = 8;
+					BoardInfo.PRAM_Size = 16;
+					break;
+				case "NES-SUROM":
+					BoardInfo.PRG_Size = 512;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.PRAM_Size = 8;
+					BoardInfo.CRAM_Size = 8;
+					break;
+				case "HVC-SXROM":
+					Assert(cart.prg_size == 128 || cart.prg_size == 256 || cart.prg_size == 512);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = 0;
+					BoardInfo.PRAM_Size = 32;
+					BoardInfo.CRAM_Size = 8;
+					break;
+				default:
+					return false;
+			}
+
+			//validate and setup the basics
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			Assert(cart.chr_size == BoardInfo.CHR_Size);
+			mmc1 = new MMC1();
+			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
+			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
+
+			//boards that don't contain CHR rom will contain CRAM. only one size is supported; set it up if it is there.
+			Debug.Assert(BoardInfo.CRAM_Size == 0 || BoardInfo.CRAM_Size == 8);
+			if (BoardInfo.CRAM_Size != 0)
+			{
+				cram = new byte[BoardInfo.CRAM_Size * 1024];
+				cram_mask = cram.Length - 1;
+			}
+			else cram = new byte[0];
+
+			//some boards contain PRAM. we only understand one size right now. set it up if it is there.
+			Debug.Assert(BoardInfo.PRAM_Size == 0 || BoardInfo.PRAM_Size == 8 || BoardInfo.PRAM_Size == 16 || BoardInfo.PRAM_Size == 32);
+			if (BoardInfo.PRAM_Size != 0)
+			{
+				pram = new byte[BoardInfo.PRAM_Size * 1024];
+				pram_mask = pram.Length - 1;
+			}
+			else pram = new byte[0];
+
+			//some boards contain CHR roms, so set that up here.
+			if (BoardInfo.CHR_Size != 0)
+			{
+				Debug.Assert(BoardInfo.CHR_Size == 16 || BoardInfo.CHR_Size == 32 || BoardInfo.CHR_Size == 128);
+				chr_mask = (BoardInfo.CHR_Size / 8 * 2) - 1;
+			}
+
+			SetMirrorType(mmc1.mirror);
+
+			return true;
+		}
+
 	}
 }
-
-//http://wiki.nesdev.com/w/index.php/Cartridge_connector
-//http://benheck.com/Downloads/NES_Famicom_Pinouts.pdf
-//http://kevtris.org/mappers/mmc1/index.html
-//one day, i will redo mappers at the pin level and it will look something like this:
-//public void Strobe(int PRG_A, int PRG_D, int PRG_READ, int CHR_A)
-//{
-//    if (PRG_READ == 1)
-//    {
-//        int PRG_A14 = (PRG_A >> 14) & 1;
-
-//        int tmp_prg_A17_A14;
-//        if (prg_mode == 0)
-//            if (PRG_A14 == 0)
-//                tmp_prg_A17_A14 = prg;
-//            else
-//                tmp_prg_A17_A14 = ((prg + 1) & 0xF);
-//        else if (prg_slot == 0)
-//            if (PRG_A14 == 0) tmp_prg_A17_A14 = 0;
-//            else tmp_prg_A17_A14 = prg;
-//        else if (PRG_A14 == 0)
-//            tmp_prg_A17_A14 = prg;
-//        else tmp_prg_A17_A14 = 0xF;
-
-//        out_PRG_A = PRG_A;
-//        out_PRG_A &= ~0x4000;
-//        out_PRG_A |= (tmp_prg_A17_A14 << 14);
-//    }
-//}
-//public int Read_CHR_A(int addr)
-//{
-//    int CHR_A10 = (addr >> 10) & 1;
-//    int CHR_A11 = (addr >> 10) & 1;
-//    int out_CIRAM_A10;
-//    switch (mirror)
-//    {
-//        case 0: out_CIRAM_A10 = 0; break;
-//        case 1: out_CIRAM_A10 = 1; break;
-//        case 2: out_CIRAM_A10 = CHR_A10; break;
-//        case 3: out_CIRAM_A10 = CHR_A11; break;
-//    }
-
-//    addr
-//}

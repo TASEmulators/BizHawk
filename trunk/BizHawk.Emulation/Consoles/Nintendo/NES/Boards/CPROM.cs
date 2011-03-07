@@ -15,13 +15,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		byte[] cram;
 		int chr;
 
-		public CPROM()
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-		}
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
-		{
-			base.Initialize(romInfo, nes);
+			//configure
+			switch (cart.board_type)
+			{
+				case "NES-CPROM":
+					BoardInfo.PRG_Size = 32;
+					break;
+				default:
+					return false;
+			}
+
 			cram = new byte[16*1024];
+			SetMirrorType(NES.EMirrorType.Vertical);
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+
+			return true;
 		}
 		
 		public override void WritePRG(int addr, byte value)

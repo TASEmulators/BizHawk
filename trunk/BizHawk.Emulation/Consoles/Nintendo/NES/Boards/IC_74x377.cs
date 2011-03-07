@@ -18,26 +18,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		int prg, chr;
 
-		public override void Initialize(NES.RomInfo romInfo, NES nes)
+		public override bool Configure(NES.BootGodDB.Cart cart)
 		{
-			base.Initialize(romInfo, nes);
-			
-			Debug.Assert(romInfo.PRG_Size == 2 || romInfo.PRG_Size == 4 || romInfo.PRG_Size == 8);
-			prg_mask = (romInfo.PRG_Size/2)-1;
+			switch (cart.board_type)
+			{
+				case "COLORDREAMS-74*377":
+					Assert(cart.prg_size == 32 || cart.prg_size == 64 || cart.prg_size == 128);
+					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64 || cart.chr_size == 128);
+					BoardInfo.PRG_Size = cart.prg_size;
+					BoardInfo.CHR_Size = cart.chr_size;
+					break;
 
-			Debug.Assert(romInfo.CHR_Size == 2 || romInfo.CHR_Size == 4 || romInfo.CHR_Size == 8 || romInfo.CHR_Size == 16);
-			chr_mask = (romInfo.CHR_Size - 1);
+				default:
+					return false;
+			}
+			
+			prg_mask = (BoardInfo.PRG_Size/8/2)-1;
+			chr_mask = (BoardInfo.CHR_Size / 8 - 1);
+
+			//validate
+			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			Assert(cart.chr_size == BoardInfo.CHR_Size);
+
+			return true;
 		}
 		public override byte ReadPRG(int addr)
 		{
-			return RomInfo.ROM[addr + (prg<<15)];
+			return ROM[addr + (prg<<15)];
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return RomInfo.VROM[addr + (chr << 13)];
+				return VROM[addr + (chr << 13)];
 			}
 			else return base.ReadPPU(addr);
 		}

@@ -102,7 +102,7 @@ namespace BizHawk.MultiClient
         public byte[] GetRomData() { return RomData; }
 		public byte[] GetFileData() { return FileData; }
         public IList<string> GetOptions() { return options; }
-        public string Name { get { return name; } }
+		public string Name { get { return name; } set { name = value; } }
 
         public string SaveRamPath
         {
