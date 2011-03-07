@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
-        //Length of values doesn't match
         //Find text box - autohighlights matches, and shows total matches
         //Implement Goto address
         //Users can customize background, & text colors
@@ -82,10 +81,10 @@ namespace BizHawk.MultiClient
                 e.Graphics.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
                 e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left + 38, MemoryViewer.Top, MemoryViewer.Left + 38, MemoryViewer.Bottom - 40);
                 e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right - 16, 34);
-
+                int zzz = Domain.Size / 16;
                 for (int i = 0; i < Domain.Size / 16; i++)
                 {
-                    row = i + vScrollBar1.Value;
+                    row = i+vScrollBar1.Value;
                     rowStr = String.Format("{0:X4}", row*16) + "  "; //TODO: num digits based on size of domain
                     for (int j = 0; j < 16; j++)
                     {
@@ -106,6 +105,7 @@ namespace BizHawk.MultiClient
         public void Restart()
         {
             SetMemoryDomainMenu(); //Calls update routines
+            SetUpScrollBar();
             MemoryViewer.Refresh();
         }
 
@@ -165,14 +165,36 @@ namespace BizHawk.MultiClient
             else
                 memoryDomainsToolStripMenuItem.Enabled = false;
 
-            //Set up scrollbar
-            vScrollBar1.Maximum = Domain.Size / 16; 
+            SetUpScrollBar();
             vScrollBar1.Value = 0;
         }
 
         private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //TODO
+        }
+
+        private void SetUpScrollBar()
+        {
+            int rowsVisible = MemoryViewer.Height / 16;
+            int totalRows = Domain.Size / 16;
+            int max = (totalRows - rowsVisible) + 17;
+
+            if (max > 0)
+            {
+                vScrollBar1.Visible = true;
+                if (vScrollBar1.Value > max)
+                    vScrollBar1.Value = max;
+                vScrollBar1.Maximum = max;
+            }
+            else
+                vScrollBar1.Visible = false;
+
+        }
+
+        private void HexEditor_Resize(object sender, EventArgs e)
+        {
+            SetUpScrollBar();
         }
     }
 }

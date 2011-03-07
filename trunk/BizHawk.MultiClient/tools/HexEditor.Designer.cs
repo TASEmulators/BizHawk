@@ -199,6 +199,7 @@
             this.Name = "HexEditor";
             this.Text = "HexEditor";
             this.Load += new System.EventHandler(this.HexEditor_Load);
+            this.Resize += new System.EventHandler(this.HexEditor_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
