@@ -16,8 +16,8 @@ namespace BizHawk.MultiClient
         Font font = new Font("Courier New", 10);
         Brush regBrush = Brushes.Black;
         int RowsVisible = 0;
-
-        const string HEADER = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F"; //TODO: not constant, must deal with bite size
+        int DataSize = 1;
+        string Header = "";
 
         public MemoryViewer()
         {
@@ -54,7 +54,7 @@ namespace BizHawk.MultiClient
                 string rowStr = "";
                 int addr = 0;
 
-                g.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
+                
                 g.DrawLine(new Pen(regBrush), this.Left + 38, this.Top, this.Left + 38, this.Bottom - 40);
                 g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
 
@@ -62,13 +62,27 @@ namespace BizHawk.MultiClient
                 {
                     row = i + vScrollBar1.Value;
                     rowStr = String.Format("{0:X4}", row * 16) + "  "; //TODO: num digits based on size of domain
-                    for (int j = 0; j < 16; j++)
+
+                    switch (DataSize)
                     {
-                        addr = (row * 16) + j;
-                        if (addr < Domain.Size)
-                            rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " "; //TODO: format based on data size
+                        default:
+                        case 1:
+                            Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F"; //TODO: not constant, must deal with bite size
+                            for (int j = 0; j < 16; j++)
+                            {
+                                addr = (row * 16) + j;
+                                if (addr < Domain.Size)
+                                    rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " "; //TODO: format based on data size
+                            }
+                            break;
+                        case 2:
+                            break;
+                        case 4:
+                            break;
+
                     }
 
+                    g.DrawString(Header, font, regBrush, new Point(rowX, rowY));
                     if (row * 16 < Domain.Size)
                         g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
