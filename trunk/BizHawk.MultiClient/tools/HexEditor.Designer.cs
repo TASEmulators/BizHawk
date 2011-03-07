@@ -40,11 +40,12 @@
             this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.byteToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.enToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddressBox = new System.Windows.Forms.TextBox();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -57,7 +58,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(531, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(572, 24);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -139,6 +140,13 @@
             this.byteToolStripMenuItem2.Text = "4 Byte";
             this.byteToolStripMenuItem2.Click += new System.EventHandler(this.byteToolStripMenuItem2_Click);
             // 
+            // enToolStripMenuItem
+            // 
+            this.enToolStripMenuItem.Name = "enToolStripMenuItem";
+            this.enToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.enToolStripMenuItem.Text = "Big Endian";
+            this.enToolStripMenuItem.Click += new System.EventHandler(this.enToolStripMenuItem_Click);
+            // 
             // goToAddressToolStripMenuItem
             // 
             this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
@@ -169,30 +177,33 @@
             this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.autoloadToolStripMenuItem.Text = "Auto-load";
             // 
-            // enToolStripMenuItem
+            // AddressBox
             // 
-            this.enToolStripMenuItem.Name = "enToolStripMenuItem";
-            this.enToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.enToolStripMenuItem.Text = "Big Endian";
-            this.enToolStripMenuItem.Click += new System.EventHandler(this.enToolStripMenuItem_Click);
+            this.AddressBox.Location = new System.Drawing.Point(487, 37);
+            this.AddressBox.Name = "AddressBox";
+            this.AddressBox.ReadOnly = true;
+            this.AddressBox.Size = new System.Drawing.Size(57, 20);
+            this.AddressBox.TabIndex = 2;
             // 
             // MemoryViewer
             // 
             this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.MemoryViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
             this.MemoryViewer.Name = "MemoryViewer";
-            this.MemoryViewer.Size = new System.Drawing.Size(499, 295);
+            this.MemoryViewer.Size = new System.Drawing.Size(458, 295);
             this.MemoryViewer.TabIndex = 0;
-            this.MemoryViewer.TabStop = false;
             this.MemoryViewer.Text = "RAM";
+            this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(531, 344);
+            this.ClientSize = new System.Drawing.Size(572, 344);
+            this.Controls.Add(this.AddressBox);
             this.Controls.Add(this.MemoryViewer);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -227,5 +238,6 @@
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
+        private System.Windows.Forms.TextBox AddressBox;
     }
 }
