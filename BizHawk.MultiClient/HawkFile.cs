@@ -280,7 +280,15 @@ namespace BizHawk.MultiClient
 			if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
 			{
 				extractor = new SevenZip.SevenZipExtractor(path);
-				ScanArchive();
+				try
+				{
+					ScanArchive();
+				}
+				catch
+				{
+					extractor = null;
+					archiveItems = null;
+				}
 			}
         }
 
