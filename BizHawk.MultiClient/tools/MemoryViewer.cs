@@ -58,7 +58,16 @@ namespace Bizhawk.MultiClient
             this.info.Location = new System.Drawing.Point(n.X / 2, 1);
             this.info.Height = 11;
             this.Controls.Add(this.info);
+
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MemoryViewer_KeyDown);
         }
+
+        private void MemoryViewer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            int x = 0;
+            x++;
+        }
+
 
         //protected unsafe override void OnPaint(PaintEventArgs e)
         private void Display(Graphics g)
@@ -264,6 +273,7 @@ namespace Bizhawk.MultiClient
 
         private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
         {
+            this.Focus();
             SetAddressOver(e.X, e.Y);
             if (addressOver >= 0)
                 addressHighlighted = addressOver;
