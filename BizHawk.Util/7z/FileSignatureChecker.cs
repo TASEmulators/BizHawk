@@ -24,8 +24,10 @@ namespace SevenZip
     /// The signature checker class. Original code by Siddharth Uppal, adapted by Markhor.
     /// </summary>
     /// <remarks>Based on the code at http://blog.somecreativity.com/2008/04/08/how-to-check-if-a-file-is-compressed-in-c/#</remarks>
-    internal static class FileChecker
+    public static class FileChecker
     {
+		public static bool ThrowExceptions = true;
+
         private const int SIGNATURE_SIZE = 16;
         private const int SFX_SCAN_LENGTH = 256 * 1024;
 
@@ -69,13 +71,19 @@ namespace SevenZip
         public static InArchiveFormat CheckSignature(Stream stream, out int offset, out bool isExecutable)
         {
             offset = 0;
+			isExecutable = false;
+
             if (!stream.CanRead)
             {
-                throw new ArgumentException("The stream must be readable.");
+				if (ThrowExceptions)
+					throw new ArgumentException("The stream must be readable.");
+				else return InArchiveFormat.None;
             }
             if (stream.Length < SIGNATURE_SIZE)
             {
-                throw new ArgumentException("The stream is invalid.");
+				if (ThrowExceptions)
+					throw new ArgumentException("The stream is invalid.");
+				else return InArchiveFormat.None;
             }
 
             #region Get file signature
@@ -207,8 +215,10 @@ namespace SevenZip
                 }
             }
             #endregion
-            
-            throw new ArgumentException("The stream is invalid or no corresponding signature was found.");
+
+			if (ThrowExceptions)
+				throw new ArgumentException("The stream is invalid or no corresponding signature was found.");
+			else return InArchiveFormat.None;
         }
 
         /// <summary>
@@ -225,14 +235,16 @@ namespace SevenZip
             {
                 try
                 {
-                    return CheckSignature(fs, out offset, out isExecutable);
+                    InArchiveFormat format = CheckSignature(fs, out offset, out isExecutable);
+					if (format != InArchiveFormat.None) return format;
                 }
                 catch (ArgumentException)
                 {
-                    offset = 0;
-                    isExecutable = false;
-                    return Formats.FormatByFileName(fileName, true);
-                }
+				}
+
+				offset = 0;
+				isExecutable = false;
+				return Formats.FormatByFileName(fileName, true);
             }
         }
     }

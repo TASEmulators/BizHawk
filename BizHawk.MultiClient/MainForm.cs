@@ -46,6 +46,11 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
+			//using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
+			//{
+			//    var NesCartXmlBytes = Util.ReadAllBytes(NesCartFile.GetStream());
+			//}
+
 			Global.MainForm = this;
 			Global.Config = ConfigService.Load<Config>("config.ini");
 
@@ -386,93 +391,95 @@ namespace BizHawk.MultiClient
 
 		private bool LoadRom(string path)
 		{
-			var file = new FileInfo(path);
-			if (file.Exists == false) return false;
-
-			CloseGame();
-
-			var game = new RomGame(path);
-			Global.Game = game;
-
-			switch (game.System)
+			using (var file = new HawkFile(path))
 			{
-				case "SG":
-				case "SMS":
-					Global.Emulator = new SMS();
-					Global.Emulator.Controller = Global.SMSControls;
-					if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
-					if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-					if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
-					break;
-				case "GG":
-					Global.Emulator = new SMS { IsGameGear = true };
-					Global.Emulator.Controller = Global.SMSControls;
-					if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-					break;
-				case "PCE":
-					Global.Emulator = new PCEngine(NecSystemType.TurboGrafx);
-					Global.Emulator.Controller = Global.PCEControls;
-					break;
-				case "SGX":
-					Global.Emulator = new PCEngine(NecSystemType.SuperGrafx);
-					Global.Emulator.Controller = Global.PCEControls;
-					break;
-				case "GEN":
-					Global.Emulator = new Genesis(false);//TODO
-					Global.Emulator.Controller = Global.GenControls;
-					break;
-				case "TI83":
-					Global.Emulator = new TI83();
-					Global.Emulator.Controller = Global.TI83Controls;
-					break;
-				case "NES":
-					Global.Emulator = new NES();
-					Global.Emulator.Controller = Global.NESControls;
-					break;
-				case "GB":
-					Global.Emulator = new Gameboy();
-					break;
-			}
+				if (!file.RootExists) return false;
 
-			if (Global.Emulator is NullEmulator)
-			{
-				throw new Exception();
-			}
-            
-            HandlePlatformMenus(Global.Game.System);
-			Global.Emulator.LoadGame(game);
-			Text = DisplayNameForSystem(game.System) + " - " + game.Name;
-			ResetRewindBuffer();
-			Global.Config.RecentRoms.Add(file.FullName);
-			if (File.Exists(game.SaveRamPath))
-				LoadSaveRam();
+				CloseGame();
 
-			if (game.System == "GB")
-			{
-				new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
-			}
-            
-            if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-                InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
-            else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-            {
-                InputLog.LoadMovie();   //TODO: Debug
-                InputLog.StartPlayback(); //TODO: Debug
-            }
+				var game = new RomGame(file);
+				Global.Game = game;
 
-			//setup the throttle based on platform's specifications
-			//(one day later for some systems we will need to modify it at runtime as the display mode changes)
-			{
-				object o = Global.Emulator.Query(EmulatorQuery.VsyncRate);
-				if (o is double)
-					throttle.SetCoreFps((double)o);
-				else throttle.SetCoreFps(60);
-				SetSpeedPercent(Global.Config.SpeedPercent);
+				switch (game.System)
+				{
+					case "SG":
+					case "SMS":
+						Global.Emulator = new SMS();
+						Global.Emulator.Controller = Global.SMSControls;
+						if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
+						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
+						if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
+						break;
+					case "GG":
+						Global.Emulator = new SMS { IsGameGear = true };
+						Global.Emulator.Controller = Global.SMSControls;
+						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
+						break;
+					case "PCE":
+						Global.Emulator = new PCEngine(NecSystemType.TurboGrafx);
+						Global.Emulator.Controller = Global.PCEControls;
+						break;
+					case "SGX":
+						Global.Emulator = new PCEngine(NecSystemType.SuperGrafx);
+						Global.Emulator.Controller = Global.PCEControls;
+						break;
+					case "GEN":
+						Global.Emulator = new Genesis(false);//TODO
+						Global.Emulator.Controller = Global.GenControls;
+						break;
+					case "TI83":
+						Global.Emulator = new TI83();
+						Global.Emulator.Controller = Global.TI83Controls;
+						break;
+					case "NES":
+						Global.Emulator = new NES();
+						Global.Emulator.Controller = Global.NESControls;
+						break;
+					case "GB":
+						Global.Emulator = new Gameboy();
+						break;
+				}
+
+				if (Global.Emulator is NullEmulator)
+				{
+					throw new Exception();
+				}
+
+				HandlePlatformMenus(Global.Game.System);
+				Global.Emulator.LoadGame(game);
+				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
+				ResetRewindBuffer();
+				Global.Config.RecentRoms.Add(file.CanonicalName);
+				if (File.Exists(game.SaveRamPath))
+					LoadSaveRam();
+
+				if (game.System == "GB")
+				{
+					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
+				}
+
+				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+					InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
+				else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+				{
+					InputLog.LoadMovie();   //TODO: Debug
+					InputLog.StartPlayback(); //TODO: Debug
+				}
+
+				//setup the throttle based on platform's specifications
+				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
+				{
+					object o = Global.Emulator.Query(EmulatorQuery.VsyncRate);
+					if (o is double)
+						throttle.SetCoreFps((double)o);
+					else throttle.SetCoreFps(60);
+					SetSpeedPercent(Global.Config.SpeedPercent);
+				}
+				RamSearch1.Restart();
+				HexEditor1.Restart();
+				CurrentlyOpenRom = path;
+				return true;
 			}
-            RamSearch1.Restart();
-            HexEditor1.Restart();
-			CurrentlyOpenRom = path;
-			return true;
 		}
 
 		private void LoadSaveRam()
