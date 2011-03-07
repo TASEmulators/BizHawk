@@ -87,7 +87,7 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
-
+            enToolStripMenuItem.Checked = MemoryViewer.BigEndian;
             switch (MemoryViewer.GetDataSize())
             {
                 default:
@@ -178,6 +178,11 @@ namespace BizHawk.MultiClient
         private void byteToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             MemoryViewer.SetDataSize(4);
+        }
+
+        private void enToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MemoryViewer.BigEndian ^= true;
         }
 
         

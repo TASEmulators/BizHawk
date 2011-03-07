@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
         Brush regBrush = Brushes.Black;
         int RowsVisible = 0;
         int DataSize = 1;
-        bool BigEndian = false;
+        public bool BigEndian = false;
         string Header = "";
 
         public MemoryViewer()
@@ -62,8 +62,7 @@ namespace BizHawk.MultiClient
                 for (int i = 0; i < RowsVisible; i++)
                 {
                     row = i + vScrollBar1.Value;
-                    rowStr = String.Format("{0:X4}", row * 16) + "  "; //TODO: num digits based on size of domain
-
+                    rowStr = String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  "; //TODO: fix offsets on vertical line & digits if > 4
                     switch (DataSize)
                     {
                         default:
@@ -191,6 +190,13 @@ namespace BizHawk.MultiClient
         public int GetDataSize()
         {
             return DataSize;
+        }
+
+        private int GetNumDigits(Int32 i)
+        {
+            if (i < 0x10000) return 4;
+            if (i < 0x1000000) return 6;
+            else return 8;
         }
     }
 }

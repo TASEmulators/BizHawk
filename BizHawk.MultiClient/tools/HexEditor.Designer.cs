@@ -44,6 +44,7 @@
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
+            this.enToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +94,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.memoryDomainsToolStripMenuItem,
             this.dataSizeToolStripMenuItem,
+            this.enToolStripMenuItem,
             this.goToAddressToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -178,6 +180,13 @@
             this.MemoryViewer.TabStop = false;
             this.MemoryViewer.Text = "RAM";
             // 
+            // enToolStripMenuItem
+            // 
+            this.enToolStripMenuItem.Name = "enToolStripMenuItem";
+            this.enToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.enToolStripMenuItem.Text = "Big Endian";
+            this.enToolStripMenuItem.Click += new System.EventHandler(this.enToolStripMenuItem_Click);
+            // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -215,5 +224,6 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
     }
 }
