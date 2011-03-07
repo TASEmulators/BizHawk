@@ -251,6 +251,7 @@ namespace BizHawk.MultiClient
 			CloseGame();
 			Global.Emulator = new NullEmulator();
             RamSearch1.Restart();
+            HexEditor1.Restart();
 			Text = "BizHawk";
             HandlePlatformMenus("");
 		}
