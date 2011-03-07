@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
-        //Read only the memory in the visible portion
         //Find text box - autohighlights matches, and shows total matches
         //Implement Goto address
         //Users can customize background, & text colors
