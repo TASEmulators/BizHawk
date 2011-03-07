@@ -9,6 +9,10 @@ namespace BizHawk.MultiClient
 {
     public class MemoryViewer : GroupBox
     {
+        //TODO: refactor so parent never needs to call setscrollbars (put in reset method?)
+        //think about scrollbar = 0, there needs to be a way for the parent to set that separately from scrollbars
+        //data size variable, and adjust drawing based on it, and a method for parent to set it
+
         public VScrollBar vScrollBar1;
         MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
         Font font = new Font("Courier New", 10);
@@ -49,7 +53,8 @@ namespace BizHawk.MultiClient
                 int rowX = 8;
                 int rowY = 16;
                 int rowYoffset = 20;
-                string rowStr;
+                string rowStr = "";
+                int addr = 0;
 
                 g.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
                 g.DrawLine(new Pen(regBrush), this.Left + 38, this.Top, this.Left + 38, this.Bottom - 40);
@@ -61,10 +66,13 @@ namespace BizHawk.MultiClient
                     rowStr = String.Format("{0:X4}", row * 16) + "  "; //TODO: num digits based on size of domain
                     for (int j = 0; j < 16; j++)
                     {
-                        rowStr += String.Format("{0:X2}", Domain.PeekByte((row * 16) + j)) + " "; //TODO: format based on data size
+                        addr = (row * 16) + j;
+                        if (addr < Domain.Size)
+                            rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " "; //TODO: format based on data size
                     }
 
-                    g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
+                    if (row * 16 < Domain.Size)
+                        g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
             }
         }
