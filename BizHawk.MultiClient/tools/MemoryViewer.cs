@@ -54,9 +54,8 @@ namespace BizHawk.MultiClient
                 int rowYoffset = 20;
                 string rowStr = "";
                 int addr = 0;
-
-                
-                g.DrawLine(new Pen(regBrush), this.Left + 38, this.Top, this.Left + 38, this.Bottom - 40);
+                int aOffset = (GetNumDigits(Domain.Size) % 4) * 9 ;
+                g.DrawLine(new Pen(regBrush), this.Left + 38 + aOffset, this.Top, this.Left + 38 + aOffset, this.Bottom - 40);
                 g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
 
                 for (int i = 0; i < RowsVisible; i++)
@@ -89,7 +88,7 @@ namespace BizHawk.MultiClient
 
                     }
 
-                    g.DrawString(Header, font, regBrush, new Point(rowX, rowY));
+                    g.DrawString(Header, font, regBrush, new Point(rowX + aOffset, rowY));
                     if (row * 16 < Domain.Size)
                         g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
@@ -194,8 +193,8 @@ namespace BizHawk.MultiClient
 
         private int GetNumDigits(Int32 i)
         {
-            if (i < 0x10000) return 4;
-            if (i < 0x1000000) return 6;
+            if (i <= 0x10000) return 4;
+            if (i <= 0x1000000) return 6;
             else return 8;
         }
     }
