@@ -27,6 +27,7 @@ namespace BizHawk.MultiClient
 
         Font font = new Font("Courier New", 10);
         Brush regBrush = Brushes.Black;
+        int RowsVisible = 0;
 
         const string HEADER = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 
@@ -82,8 +83,8 @@ namespace BizHawk.MultiClient
                 e.Graphics.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
                 e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left + 38, MemoryViewer.Top, MemoryViewer.Left + 38, MemoryViewer.Bottom - 40);
                 e.Graphics.DrawLine(new Pen(regBrush), MemoryViewer.Left, 34, MemoryViewer.Right - 16, 34);
-                int zzz = Domain.Size / 16;
-                for (int i = 0; i < Domain.Size / 16; i++)
+
+                for (int i = 0; i < RowsVisible; i++)
                 {
                     row = i+vScrollBar1.Value;
                     rowStr = String.Format("{0:X4}", row*16) + "  "; //TODO: num digits based on size of domain
@@ -132,6 +133,9 @@ namespace BizHawk.MultiClient
                 Domain = Global.Emulator.MemoryDomains[pos];
             }
             UpdateDomainString();
+            SetUpScrollBar();
+            vScrollBar1.Value = 0;
+            MemoryViewer.Refresh();
         }
 
         private void UpdateDomainString()
@@ -168,6 +172,7 @@ namespace BizHawk.MultiClient
 
             SetUpScrollBar();
             vScrollBar1.Value = 0;
+            MemoryViewer.Refresh();
         }
 
         private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -177,16 +182,16 @@ namespace BizHawk.MultiClient
 
         private void SetUpScrollBar()
         {
-            int rowsVisible = MemoryViewer.Height / 16;
+            RowsVisible = MemoryViewer.Height / 16;
             int totalRows = Domain.Size / 16;
-            int max = (totalRows - rowsVisible) + 17;
+            int MaxRows = (totalRows - RowsVisible) + 17;
 
-            if (max > 0)
+            if (MaxRows > 0)
             {
                 vScrollBar1.Visible = true;
-                if (vScrollBar1.Value > max)
-                    vScrollBar1.Value = max;
-                vScrollBar1.Maximum = max;
+                if (vScrollBar1.Value > MaxRows)
+                    vScrollBar1.Value = MaxRows;
+                vScrollBar1.Maximum = MaxRows;
             }
             else
                 vScrollBar1.Visible = false;
