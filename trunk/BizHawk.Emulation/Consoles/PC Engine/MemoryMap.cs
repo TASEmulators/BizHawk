@@ -17,7 +17,7 @@
                 if (addr < 0x1FE400)           return VDC1.ReadVDC(addr);
                 if (addr < 0x1FE800)           { Cpu.PendingCycles--; return VCE.ReadVCE(addr); }
                 if (addr < 0x1FEC00)           return IOBuffer;
-                if ((addr & ~1) == 0x1FEC00)   { IOBuffer = (byte) (Cpu.TimerValue | (IOBuffer & 0x80)); return IOBuffer; }
+                if (addr < 0x1FF000)           { IOBuffer = (byte) (Cpu.TimerValue | (IOBuffer & 0x80)); return IOBuffer; }
                 if (addr >= 0x1FF000 && 
                     addr <  0x1FF400)          { IOBuffer = ReadInput(); return IOBuffer; }
                 if ((addr & ~1) == 0x1FF400)   return IOBuffer;

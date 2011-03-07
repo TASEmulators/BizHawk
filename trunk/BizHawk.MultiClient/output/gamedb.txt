@@ -2127,7 +2127,7 @@ DD0EBF8C		Magical Chase	PCE
 B101B333		Makai Prince Dorabo Chan	PCE
 E87190F1		Mesopotamia	PCE
 25A02BEE		Metal Stoker	PCE
-13B5407F		Military Madness	PCE
+93F316F7		Military Madness	PCE
 3FB1A8E3		MML Demo	PCE
 E2B0D544		Moto Roader	PCE
 0B7F6E5F		Moto Roader II	PCE
@@ -2228,7 +2228,7 @@ AD226F30		Volfied	PCE
 2841FD1E		Wonderboy in Monsterland	PCE
 BE850530		World Beach Volley	PCE
 B3EEEA2E		World Circuit	PCE
-C4EB68A5		World Court Tennis	PCE
+A4457DF0	 	World Court Tennis	PCE
 C0905CA9		Yuu Yuu Jinsei	PCE
 B77F2E2F		Zero 4 Champ	PCE
 67AAB7A1		Zipang	PCE
@@ -2240,6 +2240,7 @@ F9C3EFD4	V	Dungeon Explorer (bad dump)	PCE
 0BC0A12B	V	Falcon (bad dump)	PCE
 1C6CE41D	V	Gunboat (bad dump)	PCE
 C4751503	V	Impossamole (bad dump)	PCE
+13B5407F	V	Military Madness (bad dump)	PCE
 2739B927	V	Pac-Land (bad dump)	PCE
 85B85FF9	V	Rastan Saga II (bad dump)	PCE
 9E2CF932	V	R-Type (bad dump)	PCE
@@ -2248,6 +2249,7 @@ C4751503	V	Impossamole (bad dump)	PCE
 24C82EBE	V	Talespin (bad dump)	PCE
 11F7BD20	V	TV Sports Hockey (bad dump)	PCE
 11334B70	V	Victory Run (bad dump)	PCE
+C4EB68A5	V	World Court Tennis (bad dump)	PCE
 D5C782F2	V	Bonk's Adventure (bad dump)	PCE
 
 8C4588E2		1941	SGX
