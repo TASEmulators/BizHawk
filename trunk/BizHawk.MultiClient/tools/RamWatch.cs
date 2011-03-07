@@ -18,6 +18,8 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Ability to watch in different memory domains
+        //.wch format includes platform and domain type
+        //address num digits based on domain size
  
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
