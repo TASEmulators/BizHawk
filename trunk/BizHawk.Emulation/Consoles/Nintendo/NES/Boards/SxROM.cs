@@ -441,6 +441,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 			mmc1 = new MMC1();
 			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
 			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
+			BoardInfo.Battery = cart.wram_battery;
 
 			//boards that don't contain CHR rom will contain CRAM. only one size is supported; set it up if it is there.
 			Debug.Assert(BoardInfo.CRAM_Size == 0 || BoardInfo.CRAM_Size == 8);
