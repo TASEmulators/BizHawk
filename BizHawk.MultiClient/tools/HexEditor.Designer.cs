@@ -43,7 +43,6 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -164,17 +163,6 @@
             this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.autoloadToolStripMenuItem.Text = "Auto-load";
             // 
-            // vScrollBar1
-            // 
-            this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScrollBar1.LargeChange = 16;
-            this.vScrollBar1.Location = new System.Drawing.Point(515, 42);
-            this.vScrollBar1.Name = "vScrollBar1";
-            this.vScrollBar1.Size = new System.Drawing.Size(16, 323);
-            this.vScrollBar1.TabIndex = 0;
-            this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
-            // 
             // MemoryViewer
             // 
             this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -186,14 +174,12 @@
             this.MemoryViewer.TabIndex = 0;
             this.MemoryViewer.TabStop = false;
             this.MemoryViewer.Text = "RAM";
-            this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             // 
             // HexEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 377);
-            this.Controls.Add(this.vScrollBar1);
             this.Controls.Add(this.MemoryViewer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -226,6 +212,5 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
-        private System.Windows.Forms.VScrollBar vScrollBar1;
     }
 }
