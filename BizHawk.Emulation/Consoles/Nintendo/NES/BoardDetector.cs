@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 									case "wram":
 										currCart.wram_size += (short)ParseSize(xmlreader.GetAttribute("size"));
 										if (xmlreader.GetAttribute("battery") != null)
-											currCart.wram_battery = 1;
+											currCart.wram_battery = true;
 										break;
 									case "pad":
 										currCart.pad_h = byte.Parse(xmlreader.GetAttribute("h"));
@@ -145,7 +145,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public short chr_size;
 				public short prg_size;
 				public short wram_size, vram_size;
-				public byte pad_h, pad_v, wram_battery, mapper;
+				public byte pad_h, pad_v, mapper;
+				public bool wram_battery;
 
 				public string board_type;
 
