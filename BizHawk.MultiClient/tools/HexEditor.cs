@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
         //Users can customize background, & text colors
         //Context menu - Poke, Freeze/Unfreeze, Watch
         //Tool strip
-        //Double click addres = send to ram watch
+        //Double click sends all highlighted to Ram Watch not just currently pointed
         //Add to Ram Watch menu item, enabled conditionally on if any address is highlighted
         //Text box showing currently highlighted address(es) & total
         //Typing legit hex values = memory poke
@@ -188,6 +188,46 @@ namespace BizHawk.MultiClient
         private void MemoryViewer_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void MemoryViewer_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            //Add to RAM Watch
+            int address = MemoryViewer.GetPointedAddress();
+            if (address >= 0)
+            {
+                Watch w = new Watch();
+                w.address = address;
+
+                switch (MemoryViewer.GetDataSize())
+                {
+                    default:
+                    case 1:
+                        w.type = atype.BYTE;
+                        break;
+                    case 2:
+                        w.type = atype.WORD;
+                        break;
+                    case 4:
+                        w.type = atype.DWORD;
+                        break;
+                }
+
+                w.bigendian = MemoryViewer.BigEndian;
+                w.signed = asigned.HEX;
+
+                if (!Global.MainForm.RamWatch1.IsHandleCreated || Global.MainForm.RamWatch1.IsDisposed)
+                {
+                    Global.MainForm.RamWatch1 = new RamWatch();
+                    Global.MainForm.RamWatch1.Show();
+                }
+                else
+                {
+                    Global.MainForm.RamWatch1.Focus();
+                }
+
+                Global.MainForm.RamWatch1.AddWatch(w);
+            }
         }
 
         

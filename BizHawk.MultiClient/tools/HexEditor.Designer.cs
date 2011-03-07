@@ -197,6 +197,7 @@
             this.MemoryViewer.TabIndex = 0;
             this.MemoryViewer.Text = "RAM";
             this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
+            this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
             // 
             // HexEditor
             // 
