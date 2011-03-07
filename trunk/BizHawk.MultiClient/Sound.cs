@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
         private SecondarySoundBuffer DSoundBuffer;
         private byte[] SoundBuffer;
         private const int BufferSize = 4410 * 2 * 2; // 1/10th of a second, 2 bytes per sample, 2 channels;
-        private int SoundBufferPosition;
+        //private int SoundBufferPosition; //TODO: use this
 
         private BufferedAsync semisync = new BufferedAsync();
         

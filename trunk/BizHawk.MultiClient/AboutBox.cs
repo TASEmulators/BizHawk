@@ -40,7 +40,7 @@ namespace BizHawk.MultiClient
 				sfx.Dispose();
 		}
 
-		int smack = 0;
+		//int smack = 0;
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			ctr++;
