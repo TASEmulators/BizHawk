@@ -22,15 +22,12 @@ namespace BizHawk.MultiClient
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
-
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.vScrollBar1 = new VScrollBar();
             
-            //TODO: based on size of MemoryViewer?
             Point n = new Point(this.Size);
-            this.vScrollBar1.Location = new System.Drawing.Point(n.X-16, n.Y-this.Height);
-            this.vScrollBar1.Size = new System.Drawing.Size(16, 323);
-            
-            this.vScrollBar1.Height = this.Height;
+            this.vScrollBar1.Location = new System.Drawing.Point(n.X-18, n.Y-this.Height+7);
+            this.vScrollBar1.Height = this.Height-8;
             this.vScrollBar1.Width = 16;
             this.vScrollBar1.Visible = true;
             this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -43,7 +40,8 @@ namespace BizHawk.MultiClient
             this.Controls.Add(this.vScrollBar1);
         }
 
-        protected unsafe override void OnPaint(PaintEventArgs e)
+        //protected unsafe override void OnPaint(PaintEventArgs e)
+        private void Display(Graphics g)
         {
             unchecked
             {
@@ -53,9 +51,9 @@ namespace BizHawk.MultiClient
                 int rowYoffset = 20;
                 string rowStr;
 
-                e.Graphics.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
-                e.Graphics.DrawLine(new Pen(regBrush), this.Left + 38, this.Top, this.Left + 38, this.Bottom - 40);
-                e.Graphics.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
+                g.DrawString(HEADER, font, regBrush, new Point(rowX, rowY));
+                g.DrawLine(new Pen(regBrush), this.Left + 38, this.Top, this.Left + 38, this.Bottom - 40);
+                g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
 
                 for (int i = 0; i < RowsVisible; i++)
                 {
@@ -66,7 +64,7 @@ namespace BizHawk.MultiClient
                         rowStr += String.Format("{0:X2}", Domain.PeekByte((row * 16) + j)) + " "; //TODO: format based on data size
                     }
 
-                    e.Graphics.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
+                    g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
                 }
             }
         }
@@ -112,6 +110,11 @@ namespace BizHawk.MultiClient
         {
             this.SetUpScrollBar();
             this.Refresh();
+        }
+
+        private void MemoryViewer_Paint(object sender, PaintEventArgs e)
+        {
+            Display(e.Graphics);
         }
     }
 }
