@@ -25,10 +25,6 @@ namespace BizHawk.MultiClient
         //Show num addresses in group box title (show "address" if 1 address)
         //big font for currently mouse over'ed value?
 
-        
-
-        
-
         int defaultWidth;
         int defaultHeight;
         
