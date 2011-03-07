@@ -286,6 +286,7 @@ namespace BizHawk.MultiClient
 				}
 				catch
 				{
+					extractor.Dispose();
 					extractor = null;
 					archiveItems = null;
 				}
