@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper66
 
@@ -22,31 +22,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		int prg, chr;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-GNROM":
+				case "NES-GNROM": //thunder & lightning
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
-				case "NES-MHROM":
-					Assert(cart.chr_size == 8 || cart.chr_size == 16 || cart.chr_size == 32);
-					BoardInfo.PRG_Size = (cart.board_type == "NES-MHROM" ? 64 : 128);
-					BoardInfo.CHR_Size = cart.chr_size;
+				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
+					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 
-			prg_mask = (BoardInfo.PRG_Size/8/2) - 1;
-			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
-			SetMirrorType(cart.pad_h, cart.pad_v);
+			prg_mask = (Cart.prg_size/8/2) - 1;
+			chr_mask = (Cart.chr_size / 8) - 1;
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
-			Assert(cart.chr_size == BoardInfo.CHR_Size);
 
 			return true;
 		}

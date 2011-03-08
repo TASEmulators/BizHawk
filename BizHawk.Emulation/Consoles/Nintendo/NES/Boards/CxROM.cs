@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper3
 
@@ -21,31 +21,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		int chr;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-CNROM":
+				case "NES-CNROM": //adventure island
 				case "HVC-CNROM":
-					Assert(cart.prg_size == 16 || cart.prg_size == 32);
-					Assert(cart.chr_size == 16 || cart.chr_size == 32);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = cart.chr_size;
+					AssertPrg(16, 32); AssertChr(16,32);
 					break;
 
 				default:
 					return false;
 
 			}
-			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
-			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
-			SetMirrorType(cart.pad_h, cart.pad_v);
+			prg_mask = (Cart.prg_size / 16) - 1;
+			chr_mask = (Cart.chr_size / 8) - 1;
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			bus_conflict = true;
-
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
-			Assert(cart.chr_size == BoardInfo.CHR_Size);
 
 			return true;
 		}
