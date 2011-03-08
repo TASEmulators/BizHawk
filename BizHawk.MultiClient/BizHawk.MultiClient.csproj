@@ -135,6 +135,9 @@
     <Compile Include="NEStools\NESPPU.Designer.cs">
       <DependentUpon>NESPPU.cs</DependentUpon>
     </Compile>
+    <Compile Include="NEStools\PaletteViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
