@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Find text box - autohighlights matches, and shows total matches
-        //Implement Goto address
         //Users can customize background, & text colors
         //Tool strip
         //Double click sends all highlighted to Ram Watch not just currently pointed
@@ -154,7 +153,24 @@ namespace BizHawk.MultiClient
 
         private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //TODO
+            InputPrompt i = new InputPrompt();
+            i.Text = "Go to Address";
+            i.SetMessage("Enter a hexadecimal value");
+            i.ShowDialog();
+
+            if (i.UserOK)
+            {
+                if (InputValidate.IsValidHexNumber(i.UserText))
+                {
+                    int address = int.Parse(i.UserText, NumberStyles.HexNumber);
+
+                    if (address < MemoryViewer.GetSize())
+                    {
+                        MemoryViewer.SetHighlighted(address);
+                        MemoryViewer.Refresh();
+                    }
+                }
+            }
         }
 
         
