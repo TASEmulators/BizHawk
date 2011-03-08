@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -15,7 +16,6 @@ namespace BizHawk.MultiClient
         //Find text box - autohighlights matches, and shows total matches
         //Implement Goto address
         //Users can customize background, & text colors
-        //Context menu - Poke, Freeze/Unfreeze, Watch
         //Tool strip
         //Double click sends all highlighted to Ram Watch not just currently pointed
         //Add to Ram Watch menu item, enabled conditionally on if any address is highlighted
@@ -190,7 +190,7 @@ namespace BizHawk.MultiClient
 
         }
 
-        private void MemoryViewer_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void AddToRamWatch()
         {
             //Add to RAM Watch
             int address = MemoryViewer.GetPointedAddress();
@@ -228,6 +228,38 @@ namespace BizHawk.MultiClient
 
                 Global.MainForm.RamWatch1.AddWatch(w);
             }
+        }
+
+        private void MemoryViewer_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            AddToRamWatch();
+        }
+
+        private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int p = MemoryViewer.GetPointedAddress();
+            if (p >= 0)
+            {
+                InputPrompt i = new InputPrompt();
+                i.Text = "Poke " + String.Format("{0:X}", p);
+                i.SetMessage("Enter a hexadecimal value");
+                i.ShowDialog();
+
+                if (i.UserOK)
+                {
+                    if (InputValidate.IsValidHexNumber(i.UserText))
+                    {
+                        int value = int.Parse(i.UserText, NumberStyles.HexNumber);
+                        MemoryViewer.HighlightPointed();
+                        MemoryViewer.PokeHighlighted(value);
+                    }
+                }
+            }
+        }
+
+        private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddToRamWatch();
         }
 
         
