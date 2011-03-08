@@ -56,7 +56,7 @@
             // PaletteView
             // 
             this.PaletteView.Location = new System.Drawing.Point(69, 35);
-            this.PaletteView.Size = new System.Drawing.Size(129, 34);
+            this.PaletteView.Size = new System.Drawing.Size(257, 34);
             this.PaletteView.Name = "PaletteView";
             this.PaletteView.TabIndex = 0;
             // 
