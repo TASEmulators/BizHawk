@@ -13,9 +13,6 @@ namespace BizHawk.MultiClient
         //TODO: highlighting and address determining for 2 & 4 byte viewing
         //2 & 4 byte typign in
         //show nibbles on top of highlighted address
-        //double check that typign into last column moves to the next
-        //If automove to next address goes off screen, advance vscroll by 1 so it is still at bottom, not top
-        //If clicking the highlighted value, make it unhighlight
         //Multi-highlight
 
         public VScrollBar vScrollBar1;
@@ -107,7 +104,7 @@ namespace BizHawk.MultiClient
             {
                 if (!IsVisible(addr))
                 {
-                    vScrollBar1.Value = addr / 16;
+                    vScrollBar1.Value = (addr / 16) - RowsVisible + 1;
                 }
                 addressHighlighted = addr;
             }
@@ -330,7 +327,13 @@ namespace BizHawk.MultiClient
         private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
         {
             SetAddressOver(e.X, e.Y);
-            HighlightPointed();
+            if (addressOver == addressHighlighted && addressOver >= 0)
+            {
+                addressHighlighted = -1;
+                this.Refresh();
+            }
+            else
+                HighlightPointed();
         }
 
         public int GetPointedAddress()
