@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -22,7 +23,7 @@ namespace BizHawk.MultiClient
         int DataSize = 1;
         public bool BigEndian = false;
         string Header = "";
-        
+        char[] nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
         int addressHighlighted = -1;
         int addressOver = -1;
         int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
@@ -62,10 +63,34 @@ namespace BizHawk.MultiClient
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MemoryViewer_KeyDown);
         }
 
+        private void ClearNibbles()
+        {
+            for (int x = 0; x < 4; x++)
+                nibbles[x] = 'G';
+        }
+
         private void MemoryViewer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            int x = 0;
-            x++;
+            if (!InputValidate.IsValidHexNumber( ((char)e.KeyCode).ToString()))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            //TODO: 2 byte & 4 byte
+            if (nibbles[0] == 'G')
+            {
+                nibbles[0] = (char)e.KeyCode;
+                info.Text = nibbles[0].ToString();
+            }
+            else
+            {
+                string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+                int x = int.Parse(temp, NumberStyles.HexNumber);
+                Domain.PokeByte(addressHighlighted, (byte)x);
+                this.Refresh();
+            }
+
         }
 
 
@@ -275,9 +300,12 @@ namespace BizHawk.MultiClient
         {
             SetAddressOver(e.X, e.Y);
             if (addressOver >= 0)
+            {
                 addressHighlighted = addressOver;
+            }
             else
                 addressHighlighted = -1;
+            ClearNibbles();
             this.Focus();
             this.Refresh();
         }
