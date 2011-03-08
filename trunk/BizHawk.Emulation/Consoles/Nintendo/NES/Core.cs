@@ -132,6 +132,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.PendingCycles -= 512;
 		}
 
+		public int ConvertColor(int pixel)
+		{
+			int deemph = pixel >> 8;
+			int palentry = pixel & 0xFF;
+			int r = palette[palentry, 0];
+			int g = palette[palentry, 1];
+			int b = palette[palentry, 2];
+			Palettes.ApplyDeemphasis(ref r, ref g, ref b, deemph);
+			return (r << 16) | (g << 8) | b;
+		}
+
 		public byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x0800) return ram[addr];

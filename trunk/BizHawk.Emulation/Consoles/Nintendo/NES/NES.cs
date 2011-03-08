@@ -56,13 +56,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					for (int x = 0; x < 256; x++)
 					{
 						int pixel = emu.ppu.xbuf[i];
-						int deemph = pixel >> 8;
-						int palentry = pixel & 0xFF;
-						int r = emu.palette[palentry, 0];
-						int g = emu.palette[palentry, 1];
-						int b = emu.palette[palentry, 2];
-						Palettes.ApplyDeemphasis(ref r, ref g, ref b, deemph);
-						pixels[i] = (r<<16)|(g<<8)|b;
+						pixels[i] = emu.ConvertColor(pixel);
 						i++;
 					}
 				return pixels;
