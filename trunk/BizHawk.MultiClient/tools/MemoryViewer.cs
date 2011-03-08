@@ -273,12 +273,13 @@ namespace BizHawk.MultiClient
 
         private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
         {
-            this.Focus();
             SetAddressOver(e.X, e.Y);
             if (addressOver >= 0)
                 addressHighlighted = addressOver;
             else
                 addressHighlighted = -1;
+            this.Focus();
+            this.Refresh();
         }
 
         public int GetPointedAddress()
