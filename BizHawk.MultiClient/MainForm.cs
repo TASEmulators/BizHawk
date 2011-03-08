@@ -43,6 +43,7 @@ namespace BizHawk.MultiClient
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
         public HexEditor HexEditor1 = new HexEditor();
+        public NESPPU NESPPU1 = new NESPPU();
 
 		public MainForm(string[] args)
 		{
@@ -133,6 +134,8 @@ namespace BizHawk.MultiClient
 				LoadRamSearch();
             if (Global.Config.AutoLoadHexEditor)
                 LoadHexEditor();
+            if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
+                LoadNESPPU();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -706,6 +709,7 @@ namespace BizHawk.MultiClient
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
                 HexEditor1.UpdateValues();
+                NESPPU1.UpdateValues();
                 if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
                     InputLog.GetMnemonic();
 			}
@@ -985,6 +989,17 @@ namespace BizHawk.MultiClient
                 HexEditor1.Focus();
         }
 
+        private void LoadNESPPU()
+        {
+            if (!NESPPU1.IsHandleCreated || NESPPU1.IsDisposed)
+            {
+                NESPPU1 = new NESPPU();
+                NESPPU1.Show();
+            }
+            else
+                NESPPU1.Focus();
+        }
+
 		private int lastWidth = -1;
 		private int lastHeight = -1;
 
@@ -1186,8 +1201,7 @@ namespace BizHawk.MultiClient
 
         private void pPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NESPPU n = new NESPPU();
-            n.Show();
+            LoadNESPPU();
         }
 
         private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)

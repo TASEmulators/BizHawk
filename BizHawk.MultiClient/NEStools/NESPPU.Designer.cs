@@ -30,7 +30,7 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.PalettesGroup = new System.Windows.Forms.GroupBox();
-            this.PaletteView = new PaletteViewer();
+            this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
             this.PalettesGroup.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,9 +55,10 @@
             // 
             // PaletteView
             // 
+            this.PaletteView.BackColor = System.Drawing.Color.White;
             this.PaletteView.Location = new System.Drawing.Point(69, 35);
-            this.PaletteView.Size = new System.Drawing.Size(257, 34);
             this.PaletteView.Name = "PaletteView";
+            this.PaletteView.Size = new System.Drawing.Size(257, 34);
             this.PaletteView.TabIndex = 0;
             // 
             // NESPPU
@@ -67,11 +68,11 @@
             this.ClientSize = new System.Drawing.Size(443, 359);
             this.Controls.Add(this.PalettesGroup);
             this.Controls.Add(this.groupBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "NESPPU";
             this.Text = "PPU Viewer";
             this.Load += new System.EventHandler(this.NESPPU_Load);
             this.PalettesGroup.ResumeLayout(false);
-            this.PalettesGroup.PerformLayout();
             this.ResumeLayout(false);
 
         }

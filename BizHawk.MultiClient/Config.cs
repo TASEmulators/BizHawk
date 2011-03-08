@@ -84,6 +84,12 @@
         public int HexEditorWidth = -1;
         public int HexEditorHeight = -1;
 
+        // NESPPU Setings
+        public bool AutoLoadNESPPU = true;
+        public bool NESPPUSaveWindowPosition = true;
+        public int NESPPUWndx = -1;
+        public int NESPPUWndy = -1;
+
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
 
