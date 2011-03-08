@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
     {
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        NES Nes;
 
         public NESPPU()
         {
@@ -27,6 +28,12 @@ namespace BizHawk.MultiClient
             Global.Config.NESPPUWndy = this.Location.Y;
         }
 
+        public void Restart()
+        {
+            if (!(Global.Emulator is NES)) this.Close();
+            Nes = Global.Emulator as NES;
+        }
+
         private void LoadConfigSettings()
         {
             defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
@@ -34,7 +41,6 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.NESPPUWndx >= 0 && Global.Config.NESPPUWndy >= 0)
                 Location = new Point(Global.Config.NESPPUWndx, Global.Config.NESPPUWndy);
-
         }
 
         public void UpdateValues()
@@ -47,6 +53,7 @@ namespace BizHawk.MultiClient
         private void NESPPU_Load(object sender, EventArgs e)
         {
             LoadConfigSettings();
+            Nes = Global.Emulator as NES;
         }
     }
 }

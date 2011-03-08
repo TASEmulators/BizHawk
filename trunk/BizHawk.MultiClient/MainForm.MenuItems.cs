@@ -252,6 +252,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
             RamSearch1.Restart();
             HexEditor1.Restart();
+            NESPPU1.Restart();
 			Text = "BizHawk";
             HandlePlatformMenus("");
 		}
