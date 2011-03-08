@@ -88,6 +88,8 @@ namespace BizHawk.MultiClient
                 string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
                 int x = int.Parse(temp, NumberStyles.HexNumber);
                 Domain.PokeByte(addressHighlighted, (byte)x);
+                ClearNibbles();
+                addressHighlighted++;
                 this.Refresh();
             }
 
