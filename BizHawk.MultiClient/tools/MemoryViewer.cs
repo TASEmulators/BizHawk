@@ -93,12 +93,23 @@ namespace BizHawk.MultiClient
                 int x = int.Parse(temp, NumberStyles.HexNumber);
                 Domain.PokeByte(addressHighlighted, (byte)x);
                 ClearNibbles();
-                addressHighlighted++;
+                SetHighlighted(addressHighlighted + 1);
                 this.Refresh();
             }
 
         }
 
+        public void SetHighlighted(int addr)
+        {
+            if (addr < Domain.Size)
+            {
+                if (!IsVisible(addr))
+                {
+                    vScrollBar1.Value = addr / 16;
+                }
+                addressHighlighted = addr;
+            }
+        }
 
         //protected unsafe override void OnPaint(PaintEventArgs e)
         private void Display(Graphics g)
@@ -209,7 +220,7 @@ namespace BizHawk.MultiClient
 
         public void SetUpScrollBar()
         {
-            RowsVisible = this.Height / 16;
+            RowsVisible = ((this.Height - 8) / 16) - 2;
             int totalRows = Domain.Size / 16;
             int MaxRows = (totalRows - RowsVisible) + 17;
 
@@ -337,11 +348,11 @@ namespace BizHawk.MultiClient
                 return -1; //Negative = no address highlighted
         }
 
-        private bool IsVisible(int addr)
+        public bool IsVisible(int addr)
         {
             int row = addr / 16;
 
-            if (row >=  vScrollBar1.Value && row <= (RowsVisible + vScrollBar1.Value))
+            if (row >=  vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
                 return true;
             else
                 return false;
@@ -352,6 +363,11 @@ namespace BizHawk.MultiClient
             //TODO: 2 byte & 4 byte
             if (addressHighlighted >= 0)
                 Domain.PokeByte(addressHighlighted, (byte)value);
+        }
+
+        public int GetSize()
+        {
+            return Domain.Size;
         }
     }
 }
