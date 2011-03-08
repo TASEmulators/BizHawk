@@ -29,8 +29,11 @@ namespace BizHawk.MultiClient
 
             public void SetValue(int val)
             {
-                value = val;
-                color = Color.FromArgb(val);
+                unchecked
+                {
+                    value = val | (int)0xFF000000;
+                }
+                color = Color.FromArgb(value);
             }
 
             public Color GetColor()
