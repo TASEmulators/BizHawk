@@ -10,20 +10,37 @@ namespace BizHawk.MultiClient
 {
     public class PaletteViewer : Control
     {
-        private class Palette
+        public class Palette
         {
             public int address { get; set; }
-            public int value { get; set; }
+            private int value { get; set; }
+            private Color color;
 
             public Palette(int Address)
             {
                 address = Address;
                 value = -1;
             }
+
+            public int GetValue()
+            {
+                return value;
+            }
+
+            public void SetValue(int val)
+            {
+                value = val;
+                color = Color.FromArgb(val);
+            }
+
+            public Color GetColor()
+            {
+                return color;
+            }
         }
 
-        private Palette[] bgPalettes = new Palette[16];
-        private Palette[] spritePalettes = new Palette[16];
+        public Palette[] bgPalettes = new Palette[16];
+        public Palette[] spritePalettes = new Palette[16];
         
         public PaletteViewer()
         {
@@ -40,10 +57,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < 16; x++)
             {
                 bgPalettes[x] = new Palette(0x3F00 + x);
-                bgPalettes[x].value = x;
-
                 spritePalettes[x] = new Palette(0x3F10 + x);
-                spritePalettes[x].value = x;
             }
 
         }
@@ -58,12 +72,12 @@ namespace BizHawk.MultiClient
                 for (int x = 0; x < 16; x++)
                 {
                     rect = new Rectangle(new Point(x * 16, 1), new Size(16, 16));
-                    g.FillRectangle(new SolidBrush(GetColorByValue(bgPalettes[x].value)), rect);
+                    g.FillRectangle(new SolidBrush(bgPalettes[x].GetColor()), rect);
                 }
                 for (int x = 0; x < 16; x++)
                 {
                     rect = new Rectangle(new Point(x * 16, 17), new Size(16, 16));
-                    g.FillRectangle(new SolidBrush(GetColorByValue(spritePalettes[x].value)), rect);
+                    g.FillRectangle(new SolidBrush(spritePalettes[x].GetColor()), rect);
                 }
             }
         }
@@ -82,7 +96,7 @@ namespace BizHawk.MultiClient
         {
 
         }
-
+        /*
         //adelikat: Using my own approximation of the NES color palette until we have a decent palette system
         private Color GetColorByValue(int value)
         {
@@ -123,6 +137,7 @@ namespace BizHawk.MultiClient
                 default:
                     return Color.Black;
             }
-        }   
+        }
+        */
     }
 }

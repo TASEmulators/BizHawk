@@ -47,6 +47,11 @@ namespace BizHawk.MultiClient
         {
             if (!(Global.Emulator is NES)) return;
             if (!this.IsHandleCreated || this.IsDisposed) return;
+            for (int x = 0; x < 16; x++)
+            {
+                PaletteView.bgPalettes[x].SetValue(Nes.ppu.ppubus_read(PaletteView.bgPalettes[x].address));
+                PaletteView.spritePalettes[x].SetValue(Nes.ppu.ppubus_read(PaletteView.spritePalettes[x].address));
+            }
             PaletteView.Refresh();
         }
 
