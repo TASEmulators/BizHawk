@@ -2,13 +2,9 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper7
-
-	//Battletoads
-	//Time Lord
-	//Marble Madness
 
 	public class AxROM : NES.NESBoardBase
 	{
@@ -18,49 +14,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		int prg_mask;
 
 		//state
-		byte[] cram;
 		int prg;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-ANROM":
-					BoardInfo.PRG_Size = 128;
+				case "NES-ANROM": //marble madness
+					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
 					bus_conflict = false;
 					break;
 
-				case "NES-AN1ROM":
-					BoardInfo.PRG_Size = 64;
-					bus_conflict = false;
-					break;
+				case "NES-AN1ROM": //R.C. Pro-Am
+					AssertPrg(64); AssertChr(0); AssertVram(8); AssertWram(0); 
+				    bus_conflict = false;
+				    break;
 
-				case "NES-AMROM":
-					BoardInfo.PRG_Size = 128;
-					bus_conflict = true;
-					break;
+				case "NES-AMROM": //time lord
+					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
+				    bus_conflict = true;
+				    break;
 			
-				case "NES-AOROM":
+				case "NES-AOROM": //battletoads
 				case "HVC-AOROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					bus_conflict = true; //MAYBE. apparently it varies
-					break;
+					AssertPrg(128,256); AssertChr(0); AssertVram(8); AssertWram(0); 
+				    bus_conflict = true; //MAYBE. apparently it varies
+				    break;
 
 				default:
 					return false;
 			}
 
-			//these boards always have 8KB of CRAM
-			BoardInfo.CRAM_Size = 8;
-			cram = new byte[BoardInfo.CRAM_Size * 1024];
-			cram_byte_mask = cram.Length - 1;
-
-			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
-
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			prg_mask = (Cart.prg_size / 16) - 1;
+			cram_byte_mask = 8 * 1024 - 1; //these boards always have 8KB of CRAM
 
 			//it is necessary to write during initialization to set the mirroring
 			WritePRG(0, 0);
@@ -87,7 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				return cram[addr & cram_byte_mask];
+				return VRAM[addr & cram_byte_mask];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -96,7 +83,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				cram[addr & cram_byte_mask] = value;
+				VRAM[addr & cram_byte_mask] = value;
 			}
 			else base.WritePPU(addr,value);
 		}
@@ -105,14 +92,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.SaveStateBinary(bw);
 			bw.Write(prg);
-			Util.WriteByteBuffer(bw, cram);
 		}
 
 		public override void LoadStateBinary(BinaryReader br)
 		{
 			base.LoadStateBinary(br);
 			prg = br.ReadInt32();
-			cram = Util.ReadByteBuffer(br, false);
 		}
 
 	}

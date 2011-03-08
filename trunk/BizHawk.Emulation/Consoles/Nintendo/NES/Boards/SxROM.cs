@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA MMC1
 	//http://wiki.nesdev.com/w/index.php/SxROM
@@ -176,7 +176,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		int cram_mask, pram_mask;
 
 		//state
-		byte[] cram, pram;
 		MMC1 mmc1;
 
 		public override void WritePRG(int addr, byte value)
@@ -203,8 +202,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				if (BoardInfo.CRAM_Size != 0)
-					return cram[addr & cram_mask];
+				if (Cart.vram_size != 0)
+					return VRAM[addr & cram_mask];
 				else return VROM[Gen_CHR_Address(addr)];
 			}
 			else return base.ReadPPU(addr);
@@ -214,260 +213,130 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				if (BoardInfo.CRAM_Size != 0)
-					cram[addr & cram_mask] = value;
+				if (Cart.vram_size != 0)
+					VRAM[addr & cram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
 		}
 
 		public override byte ReadPRAM(int addr)
 		{
-			if (BoardInfo.PRAM_Size != 0)
-				return pram[addr & pram_mask];
+			if (Cart.wram_size != 0)
+				return WRAM[addr & pram_mask];
 			else return 0xFF;
 		}
 
 		public override void WritePRAM(int addr, byte value)
 		{
-			if (BoardInfo.PRAM_Size != 0)
-				pram[addr & pram_mask] = value;
+			if (Cart.wram_size != 0)
+				WRAM[addr & pram_mask] = value;
 		}
 
 		public override byte[] SaveRam
 		{
 			get
 			{
-				if (!BoardInfo.Battery) return null;
-				return pram;
+				if (!Cart.wram_battery) return null;
+				return WRAM;
 				//some boards have a pram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}
 		}
 
-        public override byte[] PRam
-        {
-            get
-            {
-                if (BoardInfo.PRAM_Size > 0)
-                    return pram;
-                else
-                    return null;
-            }
-        }
-
-        public override byte[] CRam
-        {
-            get
-            {
-				if (BoardInfo.CRAM_Size > 0)
-                    return cram;
-                else
-                    return null;
-            }
-        }
-
-		public override void SaveStateBinary(BinaryWriter bw)
+   		public override void SaveStateBinary(BinaryWriter bw)
 		{
 			base.SaveStateBinary(bw);
 			mmc1.SaveStateBinary(bw);
-			Util.WriteByteBuffer(bw, pram);
-			Util.WriteByteBuffer(bw, cram);
+
 		}
 		public override void LoadStateBinary(BinaryReader br)
 		{
 			base.LoadStateBinary(br);
 			mmc1.LoadStateBinary(br);
-			pram = Util.ReadByteBuffer(br, false);
-			cram = Util.ReadByteBuffer(br, false);
 		}
 
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//analyze board type
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-SAROM":
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
-					BoardInfo.PRG_Size = 64;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 8;
+				case "NES-SAROM": //dragon warrior
+					AssertPrg(64); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8); 
 					break;
-				case "NES-SBROM":
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
-					BoardInfo.PRG_Size = 64;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
+				case "NES-SBROM": //dance aerobics
+					AssertPrg(64); AssertChr(16, 32, 64);  AssertVram(0); AssertWram(0);
 					break;
-				case "NES-SCROM":
-				case "NES-SC1ROM":
-					BoardInfo.PRG_Size = 64;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SEROM":
-					BoardInfo.PRG_Size = 32;
-					BoardInfo.CHR_Size = 32;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SFROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SGROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.CRAM_Size = 8;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SHROM":
-				case "NES-SH1ROM":
-					BoardInfo.PRG_Size = 32;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.PRAM_Size = 0;
-					BoardInfo.CRAM_Size = 0;
-					break;
-				case "HVC-SIROM":
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
-					BoardInfo.PRG_Size = 32;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SJROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 8;
-					break;
-				case "NES-SKROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = cart.chr_size;
-					BoardInfo.PRAM_Size = 8;
-					BoardInfo.CRAM_Size = 0;
-					break;
-				case "NES-SLROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.PRAM_Size = 0;
-					BoardInfo.CRAM_Size = 0;
-					break;
-				case "NES-SL1ROM":
-					Assert(cart.prg_size == 64 || cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.PRAM_Size = 0;
-					BoardInfo.CRAM_Size = 0;
-					break;
-				case "NES-SL2ROM":
-					Assert(cart.prg_size == 128);
-					Assert(cart.chr_size == 128);
-					BoardInfo.PRG_Size = 128;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SL3ROM":
-					Assert(cart.prg_size == 256);
-					Assert(cart.chr_size == 128);
-					BoardInfo.PRG_Size = 256;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "NES-SLRROM":
-					Assert(cart.prg_size == 128);
-					Assert(cart.chr_size == 128);
-					BoardInfo.PRG_Size = 128;
-					BoardInfo.CHR_Size = 128;
-					BoardInfo.CRAM_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					break;
-				case "HVC-SMROM":
-					BoardInfo.PRG_Size = 256;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.PRAM_Size = 0;
-					BoardInfo.CRAM_Size = 8;
-					break;
-				case "NES-SNROM":
-					Assert(cart.prg_size == 16 || cart.prg_size == 128 || cart.prg_size == 256);
-					//16 is unexpected but blargg's tests use it
+				case "NES-SCROM": //mechanized attack
+				case "NES-SC1ROM": //knight rider
+					AssertPrg(64); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SEROM": //lolo
+				case "HVC-SEROM": //dr. mario
+					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SFROM": //bubble bobble
+					AssertPrg(128,256); AssertChr(16,32,64); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SGROM": //bionic commando
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(0);
+				    break;
+				case "NES-SHROM": //family feud
+				case "NES-SH1ROM": //airwolf
+					AssertPrg(32); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
+					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
+				    break;
+				case "NES-SJROM": //air fortress
+					AssertPrg(128,256); AssertChr(16,32,64); AssertVram(0); AssertWram(8);
+				    break;
+				case "NES-SKROM": //zelda 2
+					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
+				    break;
+				case "NES-SLROM": //castlevania 2
+					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SL1ROM": //hoops
+					AssertPrg(64, 128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SL2ROM": //blaster master
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SL3ROM": //goal!
+					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "NES-SLRROM": //tecmo bowl
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+				    break;
+				case "HVC-SMROM": //Hokkaidou Rensa Satsujin: Okhotsu ni Shoyu  
+					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
+				    break;
+				case "NES-SNROM": //dragon warrior 2
+				case "HVC-SNROM": 
+					//prg=16 is unexpected but blargg's tests use it
+					AssertPrg(16, 128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					//TODO - consider making a unique board type for homebrew, as i discover how more of them are working
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.CRAM_Size = 8;
-					BoardInfo.PRAM_Size = 8;
 					break;
-				case "NES-SOROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.CRAM_Size = 8;
-					BoardInfo.PRAM_Size = 16;
-					break;
-				case "NES-SUROM":
-					BoardInfo.PRG_Size = 512;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.PRAM_Size = 8;
-					BoardInfo.CRAM_Size = 8;
-					break;
-				case "HVC-SXROM":
-					Assert(cart.prg_size == 128 || cart.prg_size == 256 || cart.prg_size == 512);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = 0;
-					BoardInfo.PRAM_Size = 32;
-					BoardInfo.CRAM_Size = 8;
-					break;
+				case "NES-SOROM": //Nobunaga's Ambition
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
+				    break;
+				case "NES-SUROM": //dragon warrior 4
+				case "HVC-SUROM":
+					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
+				    break;
+				case "HVC-SXROM": //final fantasy 1& 2
+					AssertPrg(128,256,512); AssertChr(0); AssertVram(8); AssertWram(32);
+				    break;
 				default:
 					return false;
 			}
 
-			//validate and setup the basics
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
-			Assert(cart.chr_size == BoardInfo.CHR_Size);
 			mmc1 = new MMC1();
-			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
-			chr_mask = (BoardInfo.CHR_Size / 8) - 1;
-			BoardInfo.Battery = cart.wram_battery;
-
-			//boards that don't contain CHR rom will contain CRAM. only one size is supported; set it up if it is there.
-			Debug.Assert(BoardInfo.CRAM_Size == 0 || BoardInfo.CRAM_Size == 8);
-			if (BoardInfo.CRAM_Size != 0)
-			{
-				cram = new byte[BoardInfo.CRAM_Size * 1024];
-				cram_mask = cram.Length - 1;
-			}
-			else cram = new byte[0];
-
-			//some boards contain PRAM. we only understand one size right now. set it up if it is there.
-			Debug.Assert(BoardInfo.PRAM_Size == 0 || BoardInfo.PRAM_Size == 8 || BoardInfo.PRAM_Size == 16 || BoardInfo.PRAM_Size == 32);
-			if (BoardInfo.PRAM_Size != 0)
-			{
-				pram = new byte[BoardInfo.PRAM_Size * 1024];
-				pram_mask = pram.Length - 1;
-			}
-			else pram = new byte[0];
-
-			//some boards contain CHR roms, so set that up here.
-			if (BoardInfo.CHR_Size != 0)
-			{
-				Debug.Assert(BoardInfo.CHR_Size == 16 || BoardInfo.CHR_Size == 32 || BoardInfo.CHR_Size == 128);
-				chr_mask = (BoardInfo.CHR_Size / 8 * 2) - 1;
-			}
-
+			prg_mask = (Cart.prg_size / 16) - 1;
+			cram_mask = (Cart.vram_size*1024) - 1;
+			pram_mask = (Cart.wram_size*1024) - 1;
+			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			SetMirrorType(mmc1.mirror);
 
 			return true;

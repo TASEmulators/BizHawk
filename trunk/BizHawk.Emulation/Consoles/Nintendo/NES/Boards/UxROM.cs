@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//generally mapper2
 
@@ -22,37 +22,30 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 
 		//state
 		int prg;
-		byte[] cram;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-UNROM":
+				case "NES-UNROM": //mega man
 				case "HVC-UNROM": 
 				case "KONAMI-UNROM":
-					BoardInfo.PRG_Size = 128; 
+					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 
-				case "NES-UOROM":
+				case "NES-UOROM": //paperboy 2
 				case "HVC-UOROM":
-					BoardInfo.PRG_Size = 256;
+					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 			//these boards always have 8KB of CRAM
-			BoardInfo.CRAM_Size = 8;
-			cram = new byte[BoardInfo.CRAM_Size * 1024];
-			cram_byte_mask = cram.Length - 1;
-			prg_mask = (BoardInfo.PRG_Size / 16) - 1;
-			SetMirrorType(cart.pad_h, cart.pad_v);
-
-
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
+			cram_byte_mask = (Cart.vram_size*1024) - 1;
+			prg_mask = (Cart.prg_size / 16) - 1;
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
 			return true;
 		}
@@ -73,7 +66,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				return cram[addr & cram_byte_mask];
+				return VRAM[addr & cram_byte_mask];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -82,7 +75,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			if (addr < 0x2000)
 			{
-				cram[addr & cram_byte_mask] = value;
+				VRAM[addr & cram_byte_mask] = value;
 			}
 			else base.WritePPU(addr,value);
 		}
@@ -91,14 +84,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.SaveStateBinary(bw);
 			bw.Write(prg);
-			Util.WriteByteBuffer(bw, cram);
 		}
 
 		public override void LoadStateBinary(BinaryReader br)
 		{
 			base.LoadStateBinary(br);
 			prg = br.ReadInt32();
-			cram = Util.ReadByteBuffer(br, false);
 		}
 	}
 }

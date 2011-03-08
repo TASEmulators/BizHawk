@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 11
 
@@ -18,27 +18,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		int prg, chr;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
 				case "COLORDREAMS-74*377":
-					Assert(cart.prg_size == 32 || cart.prg_size == 64 || cart.prg_size == 128);
-					Assert(cart.chr_size == 16 || cart.chr_size == 32 || cart.chr_size == 64 || cart.chr_size == 128);
-					BoardInfo.PRG_Size = cart.prg_size;
-					BoardInfo.CHR_Size = cart.chr_size;
+					AssertPrg(32,64,128); AssertChr(16,32,64,128); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 			
-			prg_mask = (BoardInfo.PRG_Size/8/2)-1;
-			chr_mask = (BoardInfo.CHR_Size / 8 - 1);
-
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
-			Assert(cart.chr_size == BoardInfo.CHR_Size);
+			prg_mask = (Cart.prg_size/8/2)-1;
+			chr_mask = (Cart.chr_size / 8 - 1);
 
 			return true;
 		}

@@ -2,36 +2,30 @@ using System;
 using System.IO;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
 	public class CPROM : NES.NESBoardBase
 	{
 		//generally mapper 13
 
-		//Videomation
-
 		//state
-		byte[] cram;
 		int chr;
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "NES-CPROM":
-					BoardInfo.PRG_Size = 32;
+				case "NES-CPROM": //videomation
+					AssertPrg(32); AssertChr(0); AssertVram(16); AssertWram(0);
 					break;
+				
 				default:
 					return false;
 			}
 
-			cram = new byte[16*1024];
 			SetMirrorType(NES.EMirrorType.Vertical);
-
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
 
 			return true;
 		}
@@ -45,18 +39,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x1000)
-				return cram[addr];
+				return VRAM[addr];
 			else if(addr<0x2000)
-				return cram[addr-0x1000 + (chr<<12)];
+				return VRAM[addr - 0x1000 + (chr << 12)];
 			else return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x1000)
-				cram[addr] = value;
+				VRAM[addr] = value;
 			else if (addr < 0x2000)
-				cram[addr - 0x1000 + (chr << 12)] = value;
+				VRAM[addr - 0x1000 + (chr << 12)] = value;
 			else base.WritePPU(addr,value);
 		}
 
@@ -64,14 +58,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		{
 			base.SaveStateBinary(bw);
 			bw.Write(chr);
-			Util.WriteByteBuffer(bw, cram);
 		}
 
 		public override void LoadStateBinary(BinaryReader br)
 		{
 			base.LoadStateBinary(br);
 			chr = br.ReadInt32();
-			cram = Util.ReadByteBuffer(br, false);
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace BizHawk.Emulation.Consoles.Nintendo.Boards
+namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public class NROM : NES.NESBoardBase
 	{
@@ -11,37 +11,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo.Boards
 		//state
 		//(none)
 
-		public override bool Configure(NES.BootGodDB.Cart cart)
+		public override bool Configure()
 		{
 			//configure
-			switch (cart.board_type)
+			switch (Cart.board_type)
 			{
-				case "HVC-NROM-256": 
-					BoardInfo.PRG_Size = 32; 
-					BoardInfo.CHR_Size = 8; 
+				case "HVC-NROM-256": //super mario bros.
+					AssertPrg(32); AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
-				case "HVC-RROM":
+				case "HVC-RROM": //balloon fight
 				case "HVC-NROM-128":
 				case "IREM-NROM-128":
 				case "KONAMI-NROM-128":
 				case "NES-NROM-128":
 				case "NAMCOT-3301":
-					BoardInfo.PRG_Size = 16;
-					BoardInfo.CHR_Size = 8;
+					AssertPrg(16); AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
 					return false;
 			}
 
-			prg_byte_mask = (BoardInfo.PRG_Size << 10) - 1;
-			SetMirrorType(cart.pad_h, cart.pad_v);
+			prg_byte_mask = (Cart.prg_size*1024) - 1;
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			
-			//validate
-			Assert(cart.prg_size == BoardInfo.PRG_Size);
-			Assert(cart.chr_size == BoardInfo.CHR_Size);
-
 			return true;
 		}
 
