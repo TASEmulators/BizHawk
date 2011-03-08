@@ -16,10 +16,7 @@ namespace BizHawk.MultiClient
         //Find text box - autohighlights matches, and shows total matches
         //Users can customize background, & text colors
         //Tool strip
-        //Double click sends all highlighted to Ram Watch not just currently pointed
-        //Add to Ram Watch menu item, enabled conditionally on if any address is highlighted
         //Text box showing currently highlighted address(es) & total
-        //Typing legit hex values = memory poke
         //Show num addresses in group box title (show "address" if 1 address)
         //big font for currently mouse over'ed value?
 
@@ -106,6 +103,11 @@ namespace BizHawk.MultiClient
                     byteToolStripMenuItem2.Checked = true;
                     break;
             }
+
+            if (MemoryViewer.GetHighlightedAddress() >= 0)
+                addToRamWatchToolStripMenuItem1.Enabled = true;
+            else
+                addToRamWatchToolStripMenuItem1.Enabled = false;
         }
 
         private void SetMemoryDomain(int pos)
@@ -274,6 +276,11 @@ namespace BizHawk.MultiClient
         }
 
         private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddToRamWatch();
+        }
+
+        private void addToRamWatchToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             AddToRamWatch();
         }

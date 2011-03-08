@@ -52,6 +52,8 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ViewerContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -103,7 +105,9 @@
             this.memoryDomainsToolStripMenuItem,
             this.dataSizeToolStripMenuItem,
             this.enToolStripMenuItem,
-            this.goToAddressToolStripMenuItem});
+            this.toolStripSeparator2,
+            this.goToAddressToolStripMenuItem,
+            this.addToRamWatchToolStripMenuItem1});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -112,7 +116,7 @@
             // memoryDomainsToolStripMenuItem
             // 
             this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
             // 
             // dataSizeToolStripMenuItem
@@ -122,7 +126,7 @@
             this.byteToolStripMenuItem1,
             this.byteToolStripMenuItem2});
             this.dataSizeToolStripMenuItem.Name = "dataSizeToolStripMenuItem";
-            this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.dataSizeToolStripMenuItem.Text = "Data Size";
             // 
             // byteToolStripMenuItem
@@ -149,7 +153,7 @@
             // enToolStripMenuItem
             // 
             this.enToolStripMenuItem.Name = "enToolStripMenuItem";
-            this.enToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.enToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.enToolStripMenuItem.Text = "Big Endian";
             this.enToolStripMenuItem.Click += new System.EventHandler(this.enToolStripMenuItem_Click);
             // 
@@ -157,8 +161,8 @@
             // 
             this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
             this.goToAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-            this.goToAddressToolStripMenuItem.Text = "Go to Address";
+            this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.goToAddressToolStripMenuItem.Text = "&Go to Address...";
             this.goToAddressToolStripMenuItem.Click += new System.EventHandler(this.goToAddressToolStripMenuItem_Click);
             // 
             // settingsToolStripMenuItem
@@ -198,7 +202,7 @@
             this.freezeToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem});
             this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-            this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 92);
+            this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 70);
             // 
             // pokeToolStripMenuItem
             // 
@@ -235,6 +239,18 @@
             this.MemoryViewer.Text = "RAM";
             this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
+            // 
+            // addToRamWatchToolStripMenuItem1
+            // 
+            this.addToRamWatchToolStripMenuItem1.Name = "addToRamWatchToolStripMenuItem1";
+            this.addToRamWatchToolStripMenuItem1.Size = new System.Drawing.Size(204, 22);
+            this.addToRamWatchToolStripMenuItem1.Text = "Add to Ram Watch";
+            this.addToRamWatchToolStripMenuItem1.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem1_Click);
             // 
             // HexEditor
             // 
@@ -282,5 +298,7 @@
         private System.Windows.Forms.ToolStripMenuItem pokeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem1;
     }
 }
