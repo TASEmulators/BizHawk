@@ -56,8 +56,8 @@ namespace BizHawk.MultiClient
 
             for (int x = 0; x < 16; x++)
             {
-                bgPalettes[x] = new Palette(0x3F00 + x);
-                spritePalettes[x] = new Palette(0x3F10 + x);
+                bgPalettes[x] = new Palette(x);
+                spritePalettes[x] = new Palette(x);
             }
 
         }
