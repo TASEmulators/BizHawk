@@ -515,6 +515,7 @@ namespace BizHawk.MultiClient
 				}
 				RamSearch1.Restart();
 				HexEditor1.Restart();
+                NESPPU1.Restart();
 				CurrentlyOpenRom = path;
 				return true;
 			}
