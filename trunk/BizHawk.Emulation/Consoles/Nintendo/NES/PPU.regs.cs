@@ -288,7 +288,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Reg_2001 reg_2001;
 			byte reg_2003;
 			byte[] OAM;
-			byte[] PALRAM;
+			public byte[] PALRAM;
 			bool vtoggle;
 			byte VRAMBuffer;
 			void regs_reset()

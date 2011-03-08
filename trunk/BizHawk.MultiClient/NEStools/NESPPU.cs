@@ -49,8 +49,8 @@ namespace BizHawk.MultiClient
             if (!this.IsHandleCreated || this.IsDisposed) return;
             for (int x = 0; x < 16; x++)
             {
-                PaletteView.bgPalettes[x].SetValue(Nes.ppu.ppubus_read(PaletteView.bgPalettes[x].address));
-                PaletteView.spritePalettes[x].SetValue(Nes.ppu.ppubus_read(PaletteView.spritePalettes[x].address));
+				PaletteView.bgPalettes[x].SetValue(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]);
+				PaletteView.spritePalettes[x].SetValue(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]);
             }
             PaletteView.Refresh();
         }
