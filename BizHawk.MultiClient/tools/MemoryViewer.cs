@@ -11,6 +11,10 @@ namespace BizHawk.MultiClient
     public class MemoryViewer : Panel
     {
         //TODO: highlighting and address determining for 2 & 4 byte viewing
+        //2 & 4 byte typign in
+        //show nibbles instead of highlighted address
+        //double check that typign into last column moves to the next
+        //If moving to an offscreen address, increment scrollbar
 
         public VScrollBar vScrollBar1;
         public Label info;
@@ -298,9 +302,8 @@ namespace BizHawk.MultiClient
             SetAddressOver(e.X, e.Y);
         }
 
-        private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
+        public void HighlightPointed()
         {
-            SetAddressOver(e.X, e.Y);
             if (addressOver >= 0)
             {
                 addressHighlighted = addressOver;
@@ -310,6 +313,12 @@ namespace BizHawk.MultiClient
             ClearNibbles();
             this.Focus();
             this.Refresh();
+        }
+
+        private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
+        {
+            SetAddressOver(e.X, e.Y);
+            HighlightPointed();
         }
 
         public int GetPointedAddress()
@@ -336,6 +345,13 @@ namespace BizHawk.MultiClient
                 return true;
             else
                 return false;
+        }
+
+        public void PokeHighlighted(int value)
+        {
+            //TODO: 2 byte & 4 byte
+            if (addressHighlighted >= 0)
+                Domain.PokeByte(addressHighlighted, (byte)value);
         }
     }
 }

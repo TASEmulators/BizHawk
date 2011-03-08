@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HexEditor));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,8 +47,13 @@
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddressBox = new System.Windows.Forms.TextBox();
+            this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.menuStrip1.SuspendLayout();
+            this.ViewerContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -185,12 +191,43 @@
             this.AddressBox.Size = new System.Drawing.Size(57, 20);
             this.AddressBox.TabIndex = 2;
             // 
+            // ViewerContextMenuStrip
+            // 
+            this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pokeToolStripMenuItem,
+            this.freezeToolStripMenuItem,
+            this.addToRamWatchToolStripMenuItem});
+            this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
+            this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 92);
+            // 
+            // pokeToolStripMenuItem
+            // 
+            this.pokeToolStripMenuItem.Name = "pokeToolStripMenuItem";
+            this.pokeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.pokeToolStripMenuItem.Text = "&Poke";
+            this.pokeToolStripMenuItem.Click += new System.EventHandler(this.pokeToolStripMenuItem_Click);
+            // 
+            // freezeToolStripMenuItem
+            // 
+            this.freezeToolStripMenuItem.Enabled = false;
+            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
+            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.freezeToolStripMenuItem.Text = "&Freeze";
+            // 
+            // addToRamWatchToolStripMenuItem
+            // 
+            this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
+            this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
+            this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
+            // 
             // MemoryViewer
             // 
             this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.MemoryViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.MemoryViewer.ContextMenuStrip = this.ViewerContextMenuStrip;
             this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
             this.MemoryViewer.Name = "MemoryViewer";
             this.MemoryViewer.Size = new System.Drawing.Size(458, 295);
@@ -215,6 +252,7 @@
             this.Resize += new System.EventHandler(this.HexEditor_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.ViewerContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -240,5 +278,9 @@
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
         private System.Windows.Forms.TextBox AddressBox;
+        private System.Windows.Forms.ContextMenuStrip ViewerContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem pokeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
     }
 }

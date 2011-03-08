@@ -22,14 +22,25 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        public void SetMessage(string message)
+        {
+            PromptLabel.Text = message;
+         }
+
         private void InputPrompt_Load(object sender, EventArgs e)
         {
-            this.Close();
+
         }
 
         private void OK_Click(object sender, EventArgs e)
         {
             UserOK = true;
+            UserText = PromptBox.Text;
+            this.Close();
+        }
+
+        private void Cancel_Click(object sender, EventArgs e)
+        {
             this.Close();
         }
     }
