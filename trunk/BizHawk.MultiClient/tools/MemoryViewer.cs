@@ -12,9 +12,11 @@ namespace BizHawk.MultiClient
     {
         //TODO: highlighting and address determining for 2 & 4 byte viewing
         //2 & 4 byte typign in
-        //show nibbles instead of highlighted address
+        //show nibbles on top of highlighted address
         //double check that typign into last column moves to the next
-        //If moving to an offscreen address, increment scrollbar
+        //If automove to next address goes off screen, advance vscroll by 1 so it is still at bottom, not top
+        //If clicking the highlighted value, make it unhighlight
+        //Multi-highlight
 
         public VScrollBar vScrollBar1;
         public Label info;
@@ -111,7 +113,6 @@ namespace BizHawk.MultiClient
             }
         }
 
-        //protected unsafe override void OnPaint(PaintEventArgs e)
         private void Display(Graphics g)
         {
             unchecked
