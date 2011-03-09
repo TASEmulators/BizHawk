@@ -138,6 +138,9 @@
     <Compile Include="NEStools\PaletteViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NEStools\PatternViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>

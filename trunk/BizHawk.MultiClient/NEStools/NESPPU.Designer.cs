@@ -30,17 +30,20 @@
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.PalettesGroup = new System.Windows.Forms.GroupBox();
-            this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
             this.DetailsBox = new System.Windows.Forms.GroupBox();
             this.SectionLabel = new System.Windows.Forms.Label();
             this.AddressLabel = new System.Windows.Forms.Label();
             this.ValueLabel = new System.Windows.Forms.Label();
+            this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
+            this.PatternView = new BizHawk.MultiClient.PatternViewer();
+            this.groupBox1.SuspendLayout();
             this.PalettesGroup.SuspendLayout();
             this.DetailsBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.PatternView);
             this.groupBox1.Location = new System.Drawing.Point(12, 26);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(281, 199);
@@ -57,17 +60,6 @@
             this.PalettesGroup.TabIndex = 1;
             this.PalettesGroup.TabStop = false;
             this.PalettesGroup.Text = "Palettes";
-            // 
-            // PaletteView
-            // 
-            this.PaletteView.BackColor = System.Drawing.Color.White;
-            this.PaletteView.Location = new System.Drawing.Point(6, 19);
-            this.PaletteView.Name = "PaletteView";
-            this.PaletteView.Size = new System.Drawing.Size(257, 34);
-            this.PaletteView.TabIndex = 0;
-            this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
-            this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
-            this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
             // 
             // DetailsBox
             // 
@@ -108,6 +100,23 @@
             this.ValueLabel.TabIndex = 2;
             this.ValueLabel.Text = "label1";
             // 
+            // PaletteView
+            // 
+            this.PaletteView.BackColor = System.Drawing.Color.White;
+            this.PaletteView.Location = new System.Drawing.Point(6, 19);
+            this.PaletteView.Name = "PaletteView";
+            this.PaletteView.Size = new System.Drawing.Size(257, 34);
+            this.PaletteView.TabIndex = 0;
+            this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
+            this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
+            this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
+            // 
+            // label1
+            // 
+            this.PatternView.Location = new System.Drawing.Point(17, 26);
+            this.PatternView.Size = new System.Drawing.Size(35, 13);
+            this.PatternView.TabIndex = 0;
+            // 
             // NESPPU
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -120,6 +129,8 @@
             this.Name = "NESPPU";
             this.Text = "PPU Viewer";
             this.Load += new System.EventHandler(this.NESPPU_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.PalettesGroup.ResumeLayout(false);
             this.DetailsBox.ResumeLayout(false);
             this.DetailsBox.PerformLayout();
@@ -136,5 +147,6 @@
         private System.Windows.Forms.Label ValueLabel;
         private System.Windows.Forms.Label AddressLabel;
         private System.Windows.Forms.Label SectionLabel;
+        private BizHawk.MultiClient.PatternViewer PatternView;
     }
 }

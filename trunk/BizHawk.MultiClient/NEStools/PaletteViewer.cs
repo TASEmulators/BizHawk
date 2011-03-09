@@ -53,8 +53,6 @@ namespace BizHawk.MultiClient
             this.Size = new Size(128, 32);
             this.BackColor = Color.White;
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaletteViewer_Paint);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteViewer_MouseMove);
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteViewer_MouseClick);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PaletteViewer_KeyDown);
 
             for (int x = 0; x < 16; x++)
@@ -89,58 +87,5 @@ namespace BizHawk.MultiClient
         {
             Display(e.Graphics);
         }
-                        
-        private void PaletteViewer_MouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void PaletteViewer_MouseClick(object sender, MouseEventArgs e)
-        {
-
-        }
-        /*
-        //adelikat: Using my own approximation of the NES color palette until we have a decent palette system
-        private Color GetColorByValue(int value)
-        {
-            switch (value)
-            {
-                case 0x00:
-                    return Color.White;
-                case 0x01:
-                    return Color.LightBlue;
-                case 0x02:
-                    return Color.Blue;
-                case 0x03:
-                    return Color.DarkBlue;
-                case 0x04:
-                    return Color.Magenta;
-                case 0x05:
-                    return Color.OrangeRed;
-                case 0x06:
-                    return Color.Red;
-                case 0x07:
-                    return Color.DarkRed;
-                case 0x08:
-                    return Color.Brown;
-                case 0x09:
-                    return Color.DarkGreen;
-                case 0x0A:
-                    return Color.Green;
-                case 0x0B:
-                    return Color.LightGreen;
-                case 0x0C:
-                    return Color.Aqua;
-                case 0x0D:
-                    return Color.DarkGray;
-                case 0x0E:
-                    return Color.Gray;
-                case 0x0F:
-                    return Color.LightGray;
-                default:
-                    return Color.Black;
-            }
-        }
-        */
     }
 }
