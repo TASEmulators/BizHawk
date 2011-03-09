@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
                 {
                     value = val | (int)0xFF000000;
                 }
-                color = Color.FromArgb(value);
+                color = Color.FromArgb(value); //TODO: value should be unprocessed! then do all calculations on this line
             }
 
             public Color GetColor()
