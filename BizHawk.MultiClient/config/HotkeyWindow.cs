@@ -110,8 +110,27 @@ namespace BizHawk.MultiClient.tools
             Global.Config.SelectSlot8 = IDW_ST8.Text;
             Global.Config.SelectSlot9 = IDW_ST9.Text;            
             
-
             this.Close();
+        }
+
+        private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            /*
+            switch (hotkeyTabs.SelectedIndex)
+            {
+                default:
+                case 0:
+                    IDW_FRAMEADVANCE.Focus();
+                    break;
+                case 1:
+                    IDW_SS1.Focus();
+                    break;
+                case 2:
+                    IDW_TOGGLEMTRACK.Focus();
+                    break;
+            }
+             */
+            hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
         }
        
     }
