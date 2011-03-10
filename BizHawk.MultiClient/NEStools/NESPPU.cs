@@ -96,5 +96,21 @@ namespace BizHawk.MultiClient
                 val = PaletteView.spritePalettes[column].GetValue();
             ValueLabel.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
         }
+
+        private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.AutoLoadNESPPU ^= true;
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.NESPPUSaveWindowPosition ^= true;
+        }
+
+        private void toolStripDropDownButton1_DropDownOpened(object sender, EventArgs e)
+        {
+            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadNESPPU;
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESPPUSaveWindowPosition;
+        }
     }
 }
