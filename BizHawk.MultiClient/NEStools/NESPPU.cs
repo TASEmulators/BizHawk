@@ -66,7 +66,20 @@ namespace BizHawk.MultiClient
                     {
                         for (int y = 0; y < 8; y++)
                         {
-                            PatternView.pattern.SetPixel(x + (i*8), y + (j*8), Color.White);
+                            int address = (i * 256) + (j * 16) + (x / 4) + (y / 4);
+                            byte value;
+
+                            //Incorrectly read the color value for now
+                            value = Nes.ppu.ppubus_read(address);
+                            value /= 4;
+                            /////////////////////////////////////////
+                            int cvalue = Nes.ConvertColor(value);
+                            unchecked
+                            {
+                                cvalue = cvalue | (int)0xFF000000;
+                            }
+                            Color color = Color.FromArgb(cvalue);
+                            PatternView.pattern.SetPixel(x + (i*8), y + (j*8), color);
                         }
                     }
                 }
