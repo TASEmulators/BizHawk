@@ -66,6 +66,41 @@ namespace BizHawk.MultiClient
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MemoryViewer_KeyDown);
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Up)
+            {
+                addressHighlighted -= 16;
+                this.Refresh();
+            }
+
+            else if (keyData == Keys.Down)
+            {
+                addressHighlighted += 16;
+                this.Refresh();
+            }
+
+            else if (keyData == Keys.Left)
+            {
+                addressHighlighted -= 1;
+                this.Refresh();
+            }
+
+            else if (keyData == Keys.Right)
+            {
+                addressHighlighted += 1;
+                this.Refresh();
+            }
+
+            else if (keyData == Keys.Tab)
+            {
+                addressHighlighted += 8;
+                this.Refresh();
+            }
+
+            return true;
+        }
+
         private void ClearNibbles()
         {
             for (int x = 0; x < 4; x++)

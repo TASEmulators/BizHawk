@@ -48,13 +48,13 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddressBox = new System.Windows.Forms.TextBox();
             this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
-            this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.ViewerContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -203,8 +203,16 @@
             this.autoloadToolStripMenuItem.Text = "Auto-load";
             this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
             // 
+            // saveWindowsSettingsToolStripMenuItem
+            // 
+            this.saveWindowsSettingsToolStripMenuItem.Name = "saveWindowsSettingsToolStripMenuItem";
+            this.saveWindowsSettingsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.saveWindowsSettingsToolStripMenuItem.Text = "Save windows settings";
+            this.saveWindowsSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveWindowsSettingsToolStripMenuItem_Click);
+            // 
             // AddressBox
             // 
+            this.AddressBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AddressBox.Location = new System.Drawing.Point(487, 37);
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.ReadOnly = true;
@@ -255,13 +263,6 @@
             this.MemoryViewer.Text = "RAM";
             this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
-            // 
-            // saveWindowsSettingsToolStripMenuItem
-            // 
-            this.saveWindowsSettingsToolStripMenuItem.Name = "saveWindowsSettingsToolStripMenuItem";
-            this.saveWindowsSettingsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.saveWindowsSettingsToolStripMenuItem.Text = "Save windows settings";
-            this.saveWindowsSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveWindowsSettingsToolStripMenuItem_Click);
             // 
             // HexEditor
             // 
