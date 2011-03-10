@@ -929,8 +929,9 @@ namespace BizHawk.MultiClient
                 contextMenuStrip1.Items[2].Visible = false;
                 contextMenuStrip1.Items[3].Visible = false;
                 contextMenuStrip1.Items[4].Visible = false;
-                contextMenuStrip1.Items[6].Visible = false;
+                contextMenuStrip1.Items[5].Visible = false;
                 contextMenuStrip1.Items[7].Visible = false;
+                contextMenuStrip1.Items[8].Visible = false;
 
             }
             else
@@ -940,19 +941,19 @@ namespace BizHawk.MultiClient
             }
 
             if (Global.Config.RamWatchShowChangeColumn)
-                contextMenuStrip1.Items[9].Text = "Hide change counts";
+                contextMenuStrip1.Items[10].Text = "Hide change counts";
             else
-                contextMenuStrip1.Items[9].Text = "Show change counts";
+                contextMenuStrip1.Items[10].Text = "Show change counts";
 
             if (Global.Config.RamWatchShowPrevColumn)
-                contextMenuStrip1.Items[10].Text = "Hide previous value";
+                contextMenuStrip1.Items[11].Text = "Hide previous value";
             else
-                contextMenuStrip1.Items[10].Text = "Show previous value";
+                contextMenuStrip1.Items[11].Text = "Show previous value";
 
             if (Global.Config.RamWatchShowChangeFromPrev)
-                contextMenuStrip1.Items[11].Text = "Display Previous value as previous";
+                contextMenuStrip1.Items[12].Text = "Display Previous value as previous";
             else
-                contextMenuStrip1.Items[11].Text = "Display Previosu value as change amount";
+                contextMenuStrip1.Items[12].Text = "Display Previosu value as change amount";
         }
 
         private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1040,6 +1041,16 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             prevValueShowsChangeAmountToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeFromPrev;
+        }
+
+        private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                Global.MainForm.LoadHexEditor();
+                Global.MainForm.HexEditor1.GoToAddress(watchList[indexes[0]].address);
+            }
         }
     }
 }
