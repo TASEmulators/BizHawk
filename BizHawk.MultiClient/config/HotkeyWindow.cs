@@ -115,21 +115,6 @@ namespace BizHawk.MultiClient.tools
 
         private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*
-            switch (hotkeyTabs.SelectedIndex)
-            {
-                default:
-                case 0:
-                    IDW_FRAMEADVANCE.Focus();
-                    break;
-                case 1:
-                    IDW_SS1.Focus();
-                    break;
-                case 2:
-                    IDW_TOGGLEMTRACK.Focus();
-                    break;
-            }
-             */
             hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
         }
        
