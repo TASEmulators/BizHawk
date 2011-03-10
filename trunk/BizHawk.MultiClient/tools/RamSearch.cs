@@ -501,7 +501,20 @@ namespace BizHawk.MultiClient
                 else if (searchList[index].signed == asigned.SIGNED)
                     text = ((sbyte)searchList[index].value).ToString();
                 else if (searchList[index].signed == asigned.HEX)
-                    text = searchList[index].value.ToString("X");
+                {
+                    switch (searchList[index].type)
+                    {
+                        case atype.BYTE:
+                            text = String.Format("{0:X2}", searchList[index].value);
+                            break;
+                        case atype.WORD:
+                            text = String.Format("{0:X4}", searchList[index].value);
+                            break;
+                        case atype.DWORD:
+                            text = String.Format("{0:X8}", searchList[index].value);
+                            break;
+                    }
+                }
             }
             if (column == 2)
             {
@@ -522,9 +535,35 @@ namespace BizHawk.MultiClient
                 else if (searchList[index].signed == asigned.HEX)
                 {
                     if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-                        text = searchList[index].prev.ToString("X");
+                    {
+                        switch (searchList[index].type)
+                        {
+                            case atype.BYTE:
+                                text = String.Format("{0:X2}", searchList[index].prev);
+                                break;
+                            case atype.WORD:
+                                text = String.Format("{0:X4}", searchList[index].prev);
+                                break;
+                            case atype.DWORD:
+                                text = String.Format("{0:X8}", searchList[index].prev);
+                                break;
+                        }
+                    }
                     else
-                        text = prevList[index].value.ToString("X");
+                    {
+                        switch (searchList[index].type)
+                        {
+                            case atype.BYTE:
+                                text = String.Format("{0:X2}", prevList[index].value);
+                                break;
+                            case atype.WORD:
+                                text = String.Format("{0:X4}", prevList[index].value);
+                                break;
+                            case atype.DWORD:
+                                text = String.Format("{0:X8}", prevList[index].value);
+                                break;
+                        }
+                    }
                 }
             }
             if (column == 3)
