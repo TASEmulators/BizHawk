@@ -48,12 +48,30 @@ namespace BizHawk.MultiClient
         {
             if (!(Global.Emulator is NES)) return;
             if (!this.IsHandleCreated || this.IsDisposed) return;
+            
+            //Pattern Viewer
             for (int x = 0; x < 16; x++)
             {
 				PaletteView.bgPalettes[x].SetValue(Nes.ConvertColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
 				PaletteView.spritePalettes[x].SetValue(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]);
             }
             PaletteView.Refresh();
+
+            //Pattern Viewer
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 16; j++)
+                {
+                    for (int x = 0; x < 8; x++)
+                    {
+                        for (int y = 0; y < 8; y++)
+                        {
+                            PatternView.pattern.SetPixel(x + (i*8), y + (j*8), Color.White);
+                        }
+                    }
+                }
+            }
+            PatternView.Refresh();
         }
 
         private void NESPPU_Load(object sender, EventArgs e)
