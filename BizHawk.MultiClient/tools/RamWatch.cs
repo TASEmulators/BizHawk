@@ -125,7 +125,7 @@ namespace BizHawk.MultiClient
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
                 else
-                    text = String.Format("{0:X}", watchList[index].address);
+                    text = String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", watchList[index].address);
             }
             if (column == 1) //Value
             {
@@ -1051,6 +1051,19 @@ namespace BizHawk.MultiClient
                 Global.MainForm.LoadHexEditor();
                 Global.MainForm.HexEditor1.GoToAddress(watchList[indexes[0]].address);
             }
+        }
+
+        private int GetNumDigits(Int32 i)
+        {
+            //if (i == 0) return 0;
+            //if (i < 0x10) return 1;
+            //if (i < 0x100) return 2;
+            //if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
+            if (i < 0x10000) return 4;
+            //if (i < 0x100000) return 5;
+            if (i < 0x1000000) return 6;
+            //if (i < 0x10000000) return 7;
+            else return 8;
         }
     }
 }
