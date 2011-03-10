@@ -96,6 +96,7 @@
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.WatchCountLabel = new System.Windows.Forms.Label();
             this.MessageLabel = new System.Windows.Forms.Label();
+            this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -416,6 +417,7 @@
             this.removeToolStripMenuItem,
             this.duplicateToolStripMenuItem,
             this.pokeToolStripMenuItem,
+            this.viewInHexEditorToolStripMenuItem,
             this.toolStripSeparator6,
             this.insertSeperatorToolStripMenuItem,
             this.moveUpToolStripMenuItem1,
@@ -425,7 +427,7 @@
             this.showPreviousValueToolStripMenuItem1,
             this.prevValueAsChangeAmountToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(228, 258);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(228, 280);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // editToolStripMenuItem
@@ -686,6 +688,13 @@
             this.MessageLabel.TabIndex = 5;
             this.MessageLabel.Text = "                                                            ";
             // 
+            // viewInHexEditorToolStripMenuItem
+            // 
+            this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
+            this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.viewInHexEditorToolStripMenuItem.Text = "View in Hex Editor";
+            this.viewInHexEditorToolStripMenuItem.Click += new System.EventHandler(this.viewInHexEditorToolStripMenuItem_Click);
+            // 
             // RamWatch
             // 
             this.AllowDrop = true;
@@ -783,5 +792,6 @@
         private System.Windows.Forms.ToolStripMenuItem showChangeCountsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem showPreviousValueToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem prevValueAsChangeAmountToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
     }
 }

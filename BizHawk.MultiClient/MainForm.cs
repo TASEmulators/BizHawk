@@ -979,7 +979,7 @@ namespace BizHawk.MultiClient
 				RamSearch1.Focus();
 		}
 
-        private void LoadHexEditor()
+        public void LoadHexEditor()
         {
             if (!HexEditor1.IsHandleCreated || HexEditor1.IsDisposed)
             {

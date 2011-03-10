@@ -156,6 +156,15 @@ namespace BizHawk.MultiClient
                 memoryDomainsToolStripMenuItem.Enabled = false;
         }
 
+        public void GoToAddress(int address)
+        {
+            if (address < MemoryViewer.GetSize())
+            {
+                MemoryViewer.SetHighlighted(address);
+                MemoryViewer.Refresh();
+            }
+        }
+
         private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InputPrompt i = new InputPrompt();
@@ -167,13 +176,7 @@ namespace BizHawk.MultiClient
             {
                 if (InputValidate.IsValidHexNumber(i.UserText))
                 {
-                    int address = int.Parse(i.UserText, NumberStyles.HexNumber);
-
-                    if (address < MemoryViewer.GetSize())
-                    {
-                        MemoryViewer.SetHighlighted(address);
-                        MemoryViewer.Refresh();
-                    }
+                    GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
                 }
             }
         }
