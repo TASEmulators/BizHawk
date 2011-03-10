@@ -1215,5 +1215,10 @@ namespace BizHawk.MultiClient
         {
             LoadHexEditor();
         }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            HandlePlatformMenus(Global.Game.System);
+        }
 	}
 }
