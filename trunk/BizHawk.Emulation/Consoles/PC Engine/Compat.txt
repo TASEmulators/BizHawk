@@ -19,7 +19,7 @@ Andre Panza Kickbx- Doesn't boot. Looks like semi pedigree as Battle Royal.
 Battle Ace        - Some gfx glitches
 Battle Royale     - Doesnt boot
 Boxy Boy          - Freezes when starting game; seems to remain broken even after rewinding (!!)
-Bravoman          - Isn currently booting. But has been boot-problematic in the past.
+Bravoman          - Is currently booting. But has been boot-problematic in the past.
 Cadash            - Camera is all crazy. Very sensitive to interrupt timing and timing in general.
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
 Chouzetsu Rinjin  - Japanese version of Bravoman. Currently working.
@@ -48,11 +48,9 @@ Madoo Granzort    - Graphics issues because VPC renderer is not using new frame 
 Metal Stoker      - Tearing when scrolling vertically at bottom of screen - timing
 MML Demo          - Echo channels are too loud (equal volume!)
 Naxat Open        - Crashes when you start new game
-New Adventure Island - Minor gfx issues- ON VERY FIRST SCREEN, == good target.
 NHK Taiga Drama Ta- Sprite flicker and corruption issues
 Night Creatures   - Some gfx glitches
 Outrun            - Raster issues, music slows when paused
-P47 Freedom Fightr- Total gfx corruption upon new game
 Paranoia          - MAYBE game freeze in like 5th level? not sure, didnt verify.
 Populous          - Game freezes on starting new game - *** NEEDS BATTERY SAVERAM ***
 Power Drift       - Timing glitch... starting new game runs slower than it should
@@ -62,14 +60,11 @@ Raiden            - Sprites and BG get out of sync with current timing
 Rastan Saga 2     - Doesn't boot - lots of invalid reads?
 Sekikehara        - Gfx corruption, some palette problems?
 Side Arms         - Screen is like 4 pixels too tall
-Silent Debuggers  - Gfx corruption
 Sinistron         - Raster effect errors
 Soldier Blade     - Freezes about 5 minutes in. Always in the same spot, fortunately. I have a savestate.
 Soukoban World    - J version of Boxy Boy - Same bugs
-Strip Fighter     - Minor gfx glitches (status area)
 Thunder Blade     - After beating the 1st 3d area, game semi-freezes
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
-Turrican          - Playable, issues with opening sequence - possibly palette issue?
 Valkyrie No Densetsu - Boots now, but with pretty severe issues
 
 

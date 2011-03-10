@@ -120,9 +120,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
                     break;
                 case VWR: // VRAM Write Register
-                    VRAM[Registers[MAWR] & 0x7FFF] = Registers[VWR];
-                    UpdatePatternData((ushort) (Registers[MAWR] & 0x7FFF));
-                    UpdateSpriteData((ushort) (Registers[MAWR] & 0x7FFF));
+                    if (Registers[MAWR] < 0x8000)
+                    {
+                        VRAM[Registers[MAWR] & 0x7FFF] = Registers[VWR];
+                        UpdatePatternData((ushort) (Registers[MAWR] & 0x7FFF));
+                        UpdateSpriteData((ushort) (Registers[MAWR] & 0x7FFF));
+                    }
                     Registers[MAWR] += IncrementWidth;
                     break;
 case CR:
