@@ -31,25 +31,29 @@ namespace BizHawk.MultiClient
 
         public void SaveConfigSettings()
         {
-            Global.Config.HexEditorWndx = this.Location.X;
-            Global.Config.HexEditorWndy = this.Location.Y;
-            Global.Config.HexEditorWidth = this.Right - this.Left;
-            Global.Config.HexEditorHeight = this.Bottom - this.Top;
+            if (Global.Config.HexEditorSaveWindowPosition)
+            {
+                Global.Config.HexEditorWndx = this.Location.X;
+                Global.Config.HexEditorWndy = this.Location.Y;
+                Global.Config.HexEditorWidth = this.Right - this.Left;
+                Global.Config.HexEditorHeight = this.Bottom - this.Top;
+            }
         }
 
         private void HexEditor_Load(object sender, EventArgs e)
         {
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = this.Size.Height;
-
-            if (Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
-                this.Location = new Point(Global.Config.HexEditorWndx, Global.Config.HexEditorWndy);
-
-            if (Global.Config.HexEditorWidth >= 0 && Global.Config.HexEditorHeight >= 0)
+            if (Global.Config.HexEditorSaveWindowPosition)
             {
-                this.Size = new System.Drawing.Size(Global.Config.HexEditorWidth, Global.Config.HexEditorHeight);
-            }
+                if (Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
+                    this.Location = new Point(Global.Config.HexEditorWndx, Global.Config.HexEditorWndy);
 
+                if (Global.Config.HexEditorWidth >= 0 && Global.Config.HexEditorHeight >= 0)
+                {
+                    this.Size = new System.Drawing.Size(Global.Config.HexEditorWidth, Global.Config.HexEditorHeight);
+                }
+            }
             SetMemoryDomainMenu();
         }
 
@@ -82,7 +86,6 @@ namespace BizHawk.MultiClient
 
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
             enToolStripMenuItem.Checked = MemoryViewer.BigEndian;
             switch (MemoryViewer.GetDataSize())
             {
@@ -283,6 +286,17 @@ namespace BizHawk.MultiClient
         private void addToRamWatchToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             AddToRamWatch();
+        }
+
+        private void saveWindowsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.HexEditorSaveWindowPosition ^= true;
+        }
+
+        private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
+            saveWindowsSettingsToolStripMenuItem.Checked = Global.Config.HexEditorSaveWindowPosition;
         }
 
         
