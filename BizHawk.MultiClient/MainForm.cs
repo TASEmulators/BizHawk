@@ -483,7 +483,6 @@ namespace BizHawk.MultiClient
 					Global.Game.Name = (Global.Emulator as NES).GameName;
 				}
 
-				HandlePlatformMenus(Global.Game.System);
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 				Global.Config.RecentRoms.Add(file.CanonicalName);
@@ -517,6 +516,7 @@ namespace BizHawk.MultiClient
 				HexEditor1.Restart();
                 NESPPU1.Restart();
 				CurrentlyOpenRom = path;
+                HandlePlatformMenus(Global.Game.System);
 				return true;
 			}
 		}
@@ -1102,7 +1102,8 @@ namespace BizHawk.MultiClient
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
 		{
-			if (Global.Config.PauseWhenMenuActivated)
+            HandlePlatformMenus(Global.Game.System);
+            if (Global.Config.PauseWhenMenuActivated)
 			{
 				if (EmulatorPaused)
 					wasPaused = true;
