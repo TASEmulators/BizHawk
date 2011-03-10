@@ -240,16 +240,7 @@ namespace BizHawk.MultiClient
                 w.bigendian = MemoryViewer.BigEndian;
                 w.signed = asigned.HEX;
 
-                if (!Global.MainForm.RamWatch1.IsHandleCreated || Global.MainForm.RamWatch1.IsDisposed)
-                {
-                    Global.MainForm.RamWatch1 = new RamWatch();
-                    Global.MainForm.RamWatch1.Show();
-                }
-                else
-                {
-                    Global.MainForm.RamWatch1.Focus();
-                }
-
+                Global.MainForm.LoadRamWatch();
                 Global.MainForm.RamWatch1.AddWatch(w);
             }
         }

@@ -253,15 +253,7 @@ namespace BizHawk.MultiClient
 
             if (indexes.Count > 0)
             {
-                if (!Global.MainForm.RamWatch1.IsHandleCreated || Global.MainForm.RamWatch1.IsDisposed)
-                {
-                    Global.MainForm.RamWatch1 = new RamWatch();
-                    Global.MainForm.RamWatch1.Show();
-                }
-                else
-                {
-                    Global.MainForm.RamWatch1.Focus();
-                }
+                Global.MainForm.LoadRamWatch();
                 for (int x = 0; x < indexes.Count; x++)
                     Global.MainForm.RamWatch1.AddWatch(searchList[indexes[x]]);
             }
@@ -321,9 +313,6 @@ namespace BizHawk.MultiClient
             searchList.Clear();
             undoList.Clear();
             SetPlatformAndMemoryDomainLabel();
-            int startaddress = 0;
-            if (Global.Emulator.SystemId == "PCE")
-                startaddress = 0x1F0000;    //For now, until Emulator core functionality can better handle a prefix
             int count = 0;
             int divisor = 1;
 
@@ -346,7 +335,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x <= ((Domain.Size / divisor)-1); x++)
             {
                 searchList.Add(new Watch());
-                searchList[x].address = count + startaddress;
+                searchList[x].address = count;
                 searchList[x].type = GetDataSize();
                 searchList[x].bigendian = GetBigEndian();
                 searchList[x].signed = GetDataType();
