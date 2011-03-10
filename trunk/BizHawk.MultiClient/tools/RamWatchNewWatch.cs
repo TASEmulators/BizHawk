@@ -85,6 +85,8 @@ namespace BizHawk.MultiClient
                 SetTypeRadio(w.type);
                 SetSignedRadio(w.signed);
 
+                AddressBox.Text = "0000";
+
                 if (w.bigendian == true)
                     BigEndianRadio.Checked = true;
                 else
