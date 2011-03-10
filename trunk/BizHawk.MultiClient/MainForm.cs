@@ -955,7 +955,7 @@ namespace BizHawk.MultiClient
 			recentROMToolStripMenuItem.DropDownItems.Add(auto);
 		}
 
-		private void LoadRamWatch()
+		public void LoadRamWatch()
 		{
 			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
 			{
@@ -968,7 +968,7 @@ namespace BizHawk.MultiClient
 				RamWatch1.Focus();
 		}
 
-		private void LoadRamSearch()
+		public void LoadRamSearch()
 		{
 			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
 			{
@@ -990,7 +990,7 @@ namespace BizHawk.MultiClient
                 HexEditor1.Focus();
         }
 
-        private void LoadNESPPU()
+        public void LoadNESPPU()
         {
             if (!NESPPU1.IsHandleCreated || NESPPU1.IsDisposed)
             {
