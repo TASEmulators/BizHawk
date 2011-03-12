@@ -44,6 +44,12 @@ namespace BizHawk.MultiClient
                 Location = new Point(Global.Config.NESPPUWndx, Global.Config.NESPPUWndy);
         }
 
+        private byte GetBit(int address, int bit)
+        {
+            byte value = Nes.ppu.ppubus_read(address);
+            return (byte)(((value >> (7 - bit)) & 1));
+        }
+
         public void UpdateValues()
         {
             if (!(Global.Emulator is NES)) return;
@@ -66,13 +72,14 @@ namespace BizHawk.MultiClient
                     {
                         for (int y = 0; y < 8; y++)
                         {
-                            int address = (i * 256) + (j * 16) + (x / 4) + (y / 4);
-                            byte value;
+                            Bit b0 = new Bit();
+                            Bit b1 = new Bit();
 
-                            //Incorrectly read the color value for now
-                            value = Nes.ppu.ppubus_read(address);
-                            value /= 4;
-                            /////////////////////////////////////////
+                            b0 = GetBit((i * 256) + (j * 16) + y + b0 * 8, x);
+                            b1 = GetBit((i * 256) + (j * 16) + y + b1 * 8, x);
+                            byte value = (byte)(b0 + (b1 * 2));
+                            //TODO: add PALRAM info to value
+
                             int cvalue = Nes.ConvertColor(value);
                             unchecked
                             {
