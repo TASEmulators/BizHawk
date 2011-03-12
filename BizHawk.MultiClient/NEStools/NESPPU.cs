@@ -13,6 +13,17 @@ namespace BizHawk.MultiClient
 {
     public partial class NESPPU : Form
     {
+        //TODO:
+        //Pattern viewer - 
+        //      Row interleaving
+        //      Proper color reading
+        //      2nd table
+        //      option for 2x view (and 4x?)
+        //      Mouse over events
+        //      user option to select different palettes
+        //Sprite viewer
+        //Nametable viewer
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         NES Nes;
@@ -86,7 +97,7 @@ namespace BizHawk.MultiClient
                                 cvalue = cvalue | (int)0xFF000000;
                             }
                             Color color = Color.FromArgb(cvalue);
-                            PatternView.pattern.SetPixel(x + (i*8), y + (j*8), color);
+                            PatternView.pattern.SetPixel(x + (j*8), y + (i*8), color);
                         }
                     }
                 }
