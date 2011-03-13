@@ -1218,7 +1218,10 @@ namespace BizHawk.MultiClient
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            HandlePlatformMenus(Global.Game.System);
+			if(Global.Game == null)
+				HandlePlatformMenus("");
+			else
+				HandlePlatformMenus(Global.Game.System);
         }
 	}
 }
