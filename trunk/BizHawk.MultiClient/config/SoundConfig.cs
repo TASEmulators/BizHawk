@@ -26,6 +26,7 @@ namespace BizHawk.MultiClient
         {
             Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
             Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
+			Global.Sound.StartSound();
             this.Close();
         }
 

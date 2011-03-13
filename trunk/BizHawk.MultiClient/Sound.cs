@@ -7,7 +7,6 @@ namespace BizHawk.MultiClient
 {
     public class Sound : IDisposable
     {
-        public bool SoundEnabled = true;
         public bool Muted = false;
         private bool disposed = false;
 
@@ -44,7 +43,7 @@ namespace BizHawk.MultiClient
         public void StartSound()
         {
             if (disposed) throw new ObjectDisposedException("Sound");
-            if (SoundEnabled == false) return;
+            if (Global.Config.SoundEnabled == false) return;
 
 			if(IsPlaying)
 				return;
@@ -112,7 +111,7 @@ namespace BizHawk.MultiClient
 
         public void UpdateSound(ISoundProvider soundProvider)
         {
-            if (SoundEnabled == false || disposed)
+			if (Global.Config.SoundEnabled == false || disposed)
                 return;
 
 			int samplesNeeded = SNDDXGetAudioSpace()*2;
