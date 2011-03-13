@@ -73,48 +73,51 @@ namespace BizHawk.MultiClient
 				PaletteView.spritePalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]));
 			}
 			PaletteView.Refresh();
-
+            
 			//Pattern Viewer
+            int b0 = 0;
+            int b1 = 0;
+            byte value;
+            int cvalue;
+            int pal;
+
 			System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int* framebuf = (int*)bmpdata.Scan0.ToPointer();
-			for (int i = 0; i < 16; i++)
-			{
-				for (int j = 0; j < 16; j++)
-				{
-					for (int x = 0; x < 8; x++)
-					{
-						for (int y = 0; y < 8; y++)
-						{
-							Bit b0 = new Bit();
-							Bit b1 = new Bit();
+            for (int z = 0; z < 2; z++)
+            {
+                if (z == 0)
+                    pal = PatternView.Pal0;
+                else
+                    pal = PatternView.Pal1;
 
-							Bit b2 = new Bit();
-							Bit b3 = new Bit(); //2nd page of patterns 
+                for (int i = 0; i < 16; i++)
+                {
+                    for (int j = 0; j < 16; j++)
+                    {
+                        for (int x = 0; x < 8; x++)
+                        {
+                            for (int y = 0; y < 8; y++)
+                            {
+                                b0 = GetBit((z*0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
+                                b1 = GetBit((z*0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
 
-							b0 = GetBit((i * 256) + (j * 16) + y + 0 * 8, x);
-							b1 = GetBit((i * 256) + (j * 16) + y + 1 * 8, x);
-							b2 = GetBit(0x1000 + (i * 256) + (j * 16) + y + 0 * 8, x);
-							b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + 1 * 8, x);
-                            
-							byte value = (byte)(b0 + (b1 << 1));
-							byte value2 = (byte)(b2 + (b3 << 1));
+                                value = (byte)(b0 + (b1 << 1));
 
-							int cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
-							int cvalue2 = Nes.LookupColor(Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)]);
-							unchecked
-							{
-								cvalue = cvalue | (int)0xFF000000;
-								cvalue2 = cvalue2 | (int)0xFF000000;
-							}
-							Color color = Color.FromArgb(cvalue);
-							Color color2 = Color.FromArgb(cvalue2);
-							int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-							framebuf[adr] = color.ToArgb();
-							framebuf[adr + 128] = color2.ToArgb();
-						}
-					}
-				}
-			}
+                                cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
+                                
+                                unchecked
+                                {
+                                    cvalue = cvalue | (int)0xFF000000;
+                                }
+                                Color color = Color.FromArgb(cvalue);
+
+                                int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
+                                framebuf[adr + (z*128)] = color.ToArgb();
+                            }
+                        }
+                    }
+                }
+            }
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
 		}
