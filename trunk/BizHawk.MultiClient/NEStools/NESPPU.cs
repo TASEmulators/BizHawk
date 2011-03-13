@@ -85,19 +85,29 @@ namespace BizHawk.MultiClient
                         {
                             Bit b0 = new Bit();
                             Bit b1 = new Bit();
+                            
+                            Bit b2 = new Bit();
+                            Bit b3 = new Bit(); //2nd page of patterns 
 
                             b0 = GetBit((i * 256) + (j * 16) + y + b0 * 8, x);
                             b1 = GetBit((i * 256) + (j * 16) + y + b1 * 8, x);
+                            b2 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b2 * 8, x);
+                            b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b3 * 8, x);
                             byte value = (byte)(b0 + (b1 * 2));
+                            byte value2 = (byte)(b2 + (b3 * 2));
                             //TODO: add PALRAM info to value
-
+                            
                             int cvalue = Nes.ConvertColor(value);
+                            int cvalue2 = Nes.ConvertColor(value2);
                             unchecked
                             {
                                 cvalue = cvalue | (int)0xFF000000;
+                                cvalue2 = cvalue2 | (int)0xFF000000;
                             }
                             Color color = Color.FromArgb(cvalue);
+                            Color color2 = Color.FromArgb(cvalue2);
                             PatternView.pattern.SetPixel(x + (j*8), y + (i*8), color);
+                            PatternView.pattern.SetPixel(128 + x + (j * 8), y + (i * 8), color2);
                         }
                     }
                 }
