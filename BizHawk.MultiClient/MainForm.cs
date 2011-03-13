@@ -381,8 +381,11 @@ namespace BizHawk.MultiClient
 			return "";
 		}
 
-        private void HandlePlatformMenus(string system)
+        private void HandlePlatformMenus()
         {
+			string system = "";
+			if (Global.Game != null)
+				system = Global.Game.System;
             switch (system)
             {
                 case "NES":
@@ -516,7 +519,7 @@ namespace BizHawk.MultiClient
 				HexEditor1.Restart();
                 NESPPU1.Restart();
 				CurrentlyOpenRom = path;
-                HandlePlatformMenus(Global.Game.System);
+                HandlePlatformMenus();
 				return true;
 			}
 		}
@@ -1102,7 +1105,7 @@ namespace BizHawk.MultiClient
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
 		{
-            HandlePlatformMenus(Global.Game.System);
+            HandlePlatformMenus();
             if (Global.Config.PauseWhenMenuActivated)
 			{
 				if (EmulatorPaused)
@@ -1218,10 +1221,7 @@ namespace BizHawk.MultiClient
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-			if(Global.Game == null)
-				HandlePlatformMenus("");
-			else
-				HandlePlatformMenus(Global.Game.System);
+			HandlePlatformMenus();
         }
 	}
 }
