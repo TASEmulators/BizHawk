@@ -18,10 +18,9 @@ namespace BizHawk.MultiClient
 		//Pattern viewer - 
 		//      Row interleaving
 		//      Proper color reading
-		//      2nd table
 		//      option for 2x view (and 4x?)
 		//      Mouse over events
-		//      user option to select different palettes
+		//      Drop down menu for pattern viewer palette selections
 		//Sprite viewer
 		//Nametable viewer
 
@@ -178,5 +177,11 @@ namespace BizHawk.MultiClient
 			autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadNESPPU;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESPPUSaveWindowPosition;
 		}
+
+        private void PatternView_Click(object sender, EventArgs e)
+        {
+            Table1PaletteLabel.Text = "Palette: " + PatternView.Pal0;
+            Table2PaletteLabel.Text = "Palette: " + PatternView.Pal1;
+        }
 	}
 }
