@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//reg0
 				int duty, length_halt, envelope_constant, envelope_cnt_value;
 				//reg1
-				int sweep_en, timer_period, negate, shiftcount;
+				int sweep_en, sweep_period, negate, shiftcount;
 				//reg2/3
 				int len_cnt;
 				int timer_raw_reload_value, timer_reload_value;
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 1:
 							shiftcount = val & 7;
 							negate = (val >> 3) & 1;
-							timer_period = (val >> 4) & 7;
+							sweep_period = (val >> 4) & 7;
 							sweep_en = (val >> 7) & 1;
 							break;
 						case 2:
@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 							timer_raw_reload_value = timer_reload_value;
 							sq_seq = 0;
+							timer_counter = timer_raw_reload_value;
 							calc_sweep_unit();
 							//serves as a useful note-on diagnostic
 							Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
@@ -81,6 +82,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int swp_val_result;
 				bool swp_silence;
 				int sq_seq;
+				int timer_counter;
 				public int sample;
 				int envelope_value;
 
@@ -120,11 +122,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//writes and frame counter, and envelope is set through the memory
 					//regs also, so we just need to deal with the timer and sequencer here
 
-					if (--timer_period==0)
+					timer_counter--;
+					if (timer_counter == 0)
 					{
 						sq_seq = (sq_seq + 1) & 7;
 						//reload timer
-						timer_period = timer_raw_reload_value + 2;
+						timer_counter = timer_raw_reload_value + 2;
 					}
 					if (PULSE_DUTY[duty,sq_seq] == 1) //we are outputting something
 					{
@@ -182,7 +185,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (sequencer_irq_inhibit == 0)
 							{
 								sequencer_irq_flag = 1;
-								//TODO - actually fire IRQ
+								//nes.cpu.Interrupt = true;
+								//Console.WriteLine("APU trigger IRQ (cpu needs implementation)");
 							}
 							sequencer_step = 0;
 						}
@@ -245,12 +249,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				pulse[0].Run();
 				pulse[1].Run();
-				sequencer_tick();
 
 				int mix = pulse[0].sample;
 				mix += pulse[1].sample;
 
 				EmitSample(mix);
+
+				sequencer_tick();
 
 				//since the units run concurrently, the APU frame sequencer 
 				//is ran last because
