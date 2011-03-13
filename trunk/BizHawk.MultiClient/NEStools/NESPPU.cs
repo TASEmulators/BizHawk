@@ -134,7 +134,7 @@ namespace BizHawk.MultiClient
 			SectionLabel.Text = "";
 			AddressLabel.Text = "";
 			ValueLabel.Text = "";
-			//TODO: more info labels
+            Value2Label.Text = "";
 		}
 
 		private void PaletteView_MouseLeave(object sender, EventArgs e)

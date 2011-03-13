@@ -129,6 +129,9 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NEStools\NameTableViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="NEStools\NESPPU.cs">
       <SubType>Form</SubType>
     </Compile>
