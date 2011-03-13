@@ -99,8 +99,8 @@ namespace BizHawk.MultiClient
 							byte value = (byte)(b0 + (b1 * 2));
 							byte value2 = (byte)(b2 + (b3 * 2));
 
-							value += Nes.ppu.PALRAM[value + (0 * 4)];     //TODO: 0 = user selection 0-7
-							value2 += Nes.ppu.PALRAM[value2 + (0 * 4)];    //TODO: 0 = user selection 0-7
+							value += Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)];     //TODO: 0 = user selection 0-7
+							value2 += Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)];    //TODO: 0 = user selection 0-7
 
 							int cvalue = Nes.ConvertColor(value);
 							int cvalue2 = Nes.ConvertColor(value2);
