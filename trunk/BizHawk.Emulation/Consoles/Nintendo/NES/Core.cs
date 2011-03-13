@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x2000) return ram[addr - 0x1800];
 			else if (addr < 0x4000) return ReadPPUReg(addr & 7);
 			else if (addr < 0x4020) return ReadReg(addr); //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) return 0xFF; //exp rom
+			else if (addr < 0x6000) return board.ReadEXP(addr);
 			else if (addr < 0x8000) return board.ReadPRAM(addr);
 			else return board.ReadPRG(addr - 0x8000);
 		}
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x2000) ram[addr - 0x1800] = value;
 			else if (addr < 0x4000) WritePPUReg(addr & 7, value);
 			else if (addr < 0x4020) WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) { } //exp rom
+			else if (addr < 0x6000) board.WriteEXP(addr, value); 
 			else if (addr < 0x8000) board.WritePRAM(addr, value);
 			else board.WritePRG(addr - 0x8000, value);
 		}
