@@ -207,7 +207,7 @@
             this.NameTableGroup.Controls.Add(this.NameTableView);
             this.NameTableGroup.Location = new System.Drawing.Point(12, 28);
             this.NameTableGroup.Name = "NameTableGroup";
-            this.NameTableGroup.Size = new System.Drawing.Size(525, 472);
+            this.NameTableGroup.Size = new System.Drawing.Size(525, 508);
             this.NameTableGroup.TabIndex = 4;
             this.NameTableGroup.TabStop = false;
             this.NameTableGroup.Text = "Name Tables";
