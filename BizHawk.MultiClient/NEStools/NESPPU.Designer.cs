@@ -58,7 +58,7 @@
             this.PatternGroup.Controls.Add(this.Table2PaletteLabel);
             this.PatternGroup.Controls.Add(this.Table1PaletteLabel);
             this.PatternGroup.Controls.Add(this.PatternView);
-            this.PatternGroup.Location = new System.Drawing.Point(12, 26);
+            this.PatternGroup.Location = new System.Drawing.Point(548, 185);
             this.PatternGroup.Name = "PatternGroup";
             this.PatternGroup.Size = new System.Drawing.Size(272, 169);
             this.PatternGroup.TabIndex = 0;
@@ -98,7 +98,7 @@
             // PalettesGroup
             // 
             this.PalettesGroup.Controls.Add(this.PaletteView);
-            this.PalettesGroup.Location = new System.Drawing.Point(12, 214);
+            this.PalettesGroup.Location = new System.Drawing.Point(548, 360);
             this.PalettesGroup.Name = "PalettesGroup";
             this.PalettesGroup.Size = new System.Drawing.Size(272, 65);
             this.PalettesGroup.TabIndex = 1;
@@ -122,7 +122,7 @@
             this.DetailsBox.Controls.Add(this.ValueLabel);
             this.DetailsBox.Controls.Add(this.AddressLabel);
             this.DetailsBox.Controls.Add(this.SectionLabel);
-            this.DetailsBox.Location = new System.Drawing.Point(18, 302);
+            this.DetailsBox.Location = new System.Drawing.Point(557, 28);
             this.DetailsBox.Name = "DetailsBox";
             this.DetailsBox.Size = new System.Drawing.Size(177, 129);
             this.DetailsBox.TabIndex = 2;
@@ -171,7 +171,7 @@
             this.toolStripDropDownButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(620, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(832, 25);
             this.toolStrip1.TabIndex = 3;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -205,9 +205,9 @@
             // NameTableGroup
             // 
             this.NameTableGroup.Controls.Add(this.NameTableView);
-            this.NameTableGroup.Location = new System.Drawing.Point(302, 28);
+            this.NameTableGroup.Location = new System.Drawing.Point(12, 28);
             this.NameTableGroup.Name = "NameTableGroup";
-            this.NameTableGroup.Size = new System.Drawing.Size(284, 251);
+            this.NameTableGroup.Size = new System.Drawing.Size(525, 472);
             this.NameTableGroup.TabIndex = 4;
             this.NameTableGroup.TabStop = false;
             this.NameTableGroup.Text = "Name Tables";
@@ -217,14 +217,14 @@
             this.NameTableView.BackColor = System.Drawing.Color.White;
             this.NameTableView.Location = new System.Drawing.Point(6, 15);
             this.NameTableView.Name = "NameTableView";
-            this.NameTableView.Size = new System.Drawing.Size(256, 224);
+            this.NameTableView.Size = new System.Drawing.Size(512, 480);
             this.NameTableView.TabIndex = 0;
             // 
             // NESPPU
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(620, 480);
+            this.ClientSize = new System.Drawing.Size(832, 618);
             this.Controls.Add(this.NameTableGroup);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.DetailsBox);
