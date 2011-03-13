@@ -16,9 +16,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
 			byte ReadPRAM(int addr);
+			byte ReadEXP(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
 			void WritePRAM(int addr, byte value);
+			void WriteEXP(int addr, byte value);
 			byte[] SaveRam { get; }
 			byte[] WRAM { get; set; }
 			byte[] VRAM { get; set; }
@@ -109,6 +111,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual void WritePRAM(int addr, byte value) { }
 			public virtual byte ReadPRAM(int addr) { return 0xFF; }
 
+			public virtual void WriteEXP(int addr, byte value) { }
+			public virtual byte ReadEXP(int addr) { return 0xFF; }
 
 			public virtual void WritePPU(int addr, byte value)
 			{
