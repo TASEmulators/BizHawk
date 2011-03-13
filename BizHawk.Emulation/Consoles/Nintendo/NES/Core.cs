@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected MOS6502 cpu;
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
+		public APU apu;
 		byte[] ram;
 		protected byte[] CIRAM; //AKA nametables
 		string game_name; //friendly name exposed to user and used as filename base
@@ -30,6 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
 			ppu = new PPU(this);
+			apu = new APU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
@@ -54,8 +56,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ppu.FrameAdvance();
 		}
 
-		protected void RunCpu(int cycles)
+		protected void RunCpu(int ppu_cycles)
 		{
+			int cycles = ppu_cycles;
 			if (ppu.PAL)
 				cycles *= 15;
 			else
@@ -65,7 +68,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int todo = cpu_accumulate / 48;
 			cpu_accumulate -= todo * 48;
 			if (todo > 0)
+			{
 				cpu.Execute(todo);
+				apu.Run(todo);
+			}
 		}
 
 		public byte ReadPPUReg(int addr)
@@ -77,9 +83,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (addr)
 			{
+				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
+				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
+				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
+				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+					return apu.ReadReg(addr);
+				case 0x4014: /*OAM DMA*/ break;
+				case 0x4015: return apu.ReadReg(addr); break;
 				case 0x4016:
-				case 0x4017:
 					return read_joyport(addr);
+				case 0x4017: return apu.ReadReg(addr); break;
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
 					break;
@@ -97,11 +111,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (addr)
 			{
+				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
+				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
+				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
+				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+					apu.WriteReg(addr, val);
+					break;
 				case 0x4014: Exec_OAMDma(val); break;
+				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
 					ports[0].Write(val & 1);
 					ports[1].Write(val & 1);
 					break;
+				case 0x4017: apu.WriteReg(addr, val); break;
 				default:
 					//Console.WriteLine("wrote register: {0:x4} = {1:x2}", addr, val);
 					break;
