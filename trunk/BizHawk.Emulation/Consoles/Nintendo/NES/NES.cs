@@ -6,6 +6,8 @@ using System.IO;
 using System.Collections.Generic;
 using BizHawk.Emulation.CPUs.M6502;
 
+//TODO - redo all timekeeping in terms of master clock
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
