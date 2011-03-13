@@ -69,7 +69,7 @@ namespace BizHawk.MultiClient
 			//Pattern Viewer
 			for (int x = 0; x < 16; x++)
 			{
-				PaletteView.bgPalettes[x].SetValue(Nes.ConvertColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
+				PaletteView.bgPalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
 				PaletteView.spritePalettes[x].SetValue(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]);
 			}
 			PaletteView.Refresh();
@@ -99,8 +99,8 @@ namespace BizHawk.MultiClient
 							byte value = (byte)(b0 + (b1 << 1));
 							byte value2 = (byte)(b2 + (b3 << 1));
 
-                            int cvalue = Nes.ConvertColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
-                            int cvalue2 = Nes.ConvertColor(Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)]);
+							int cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
+							int cvalue2 = Nes.LookupColor(Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)]);
 							unchecked
 							{
 								cvalue = cvalue | (int)0xFF000000;

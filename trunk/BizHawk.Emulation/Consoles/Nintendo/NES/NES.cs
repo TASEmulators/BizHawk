@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public NES()
 		{
 			BootGodDB.Initialize();
-			palette = Palettes.FCEUX_Standard;
+			SetPalette(Palettes.FCEUX_Standard);
 		}
 
 		public enum EMirrorType
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					for (int x = 0; x < 256; x++)
 					{
 						int pixel = emu.ppu.xbuf[i];
-						pixels[i] = emu.ConvertColor(pixel);
+						pixels[i] = emu.CompleteDecodeColor(pixel);
 						i++;
 					}
 				return pixels;
