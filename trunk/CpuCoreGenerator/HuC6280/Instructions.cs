@@ -338,6 +338,7 @@ namespace HuC6280
         {
             w.WriteLine(Spaces + "P = ReadMemory((ushort)(++S + 0x2100));");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "goto AfterClearTFlag;");
         }
 
         private void ROL(OpcodeInfo op, TextWriter w)
@@ -388,6 +389,7 @@ namespace HuC6280
             w.WriteLine(Spaces + "PC = ReadMemory((ushort)(++S + 0x2100));");
             w.WriteLine(Spaces + "PC |= (ushort)(ReadMemory((ushort)(++S + 0x2100)) << 8);");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "goto AfterClearTFlag;");
         }
 
         private void RTS(OpcodeInfo op, TextWriter w)

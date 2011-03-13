@@ -22,28 +22,26 @@ namespace BizHawk.Emulation.CPUs.H6280
 
                 if (IRQ1Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ1Selector) == 0)
                 {
-                    FlagB = false;
+                    //Log.Note("CPU", "ENTERING IRQ1 INTERRUPT");
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
-                    WriteMemory((ushort)(S-- + 0x2100), P);
+                    WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
                     FlagD = false;
                     FlagI = true;
                     PC = ReadWord(IRQ1Vector);
-                    PendingCycles -= 7;
-                    //Log.Note("CPU", "ENTERING IRQ1 INTERRUPT");
+                    PendingCycles -= 8;
                 }
 
                 if (TimerAssert && FlagI == false && LagIFlag == false && (IRQControlByte & TimerSelector) == 0)
                 {
-                    FlagB = false;
+                    //Log.Note("CPU", "ENTERING __TIMER__ INTERRUPT");
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
-                    WriteMemory((ushort)(S-- + 0x2100), P);
+                    WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
                     FlagD = false;
                     FlagI = true;
                     PC = ReadWord(TimerVector);
-                    PendingCycles -= 7;
-                    //Log.Note("CPU", "ENTERING __TIMER__ INTERRUPT");
+                    PendingCycles -= 8;
                 }
 
                 IRQControlByte = IRQNextControlByte;
@@ -250,8 +248,6 @@ throw new Exception("break");
                         break;
                     case 0x1E: // ASL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = ReadMemory(value16);
                         FlagC = (value8 & 0x80) != 0;
@@ -341,7 +337,7 @@ throw new Exception("break");
                     case 0x28: // PLP
                         P = ReadMemory((ushort)(++S + 0x2100));
                         PendingCycles -= 4;
-                        break;
+                        goto AfterClearTFlag;
                     case 0x29: // AND #nn
                         value8 = ReadMemory(PC++);
                         if (FlagT == false) { 
@@ -533,8 +529,6 @@ throw new Exception("break");
                         break;
                     case 0x3E: // ROL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = temp8 = ReadMemory(value16);
                         value8 = (byte)((value8 << 1) | (P & 1));
@@ -557,7 +551,7 @@ throw new Exception("break");
                         PC = ReadMemory((ushort)(++S + 0x2100));
                         PC |= (ushort)(ReadMemory((ushort)(++S + 0x2100)) << 8);
                         PendingCycles -= 7;
-                        break;
+                        goto AfterClearTFlag;
                     case 0x41: // EOR (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
                         if (FlagT == false) { 
@@ -815,8 +809,6 @@ throw new Exception("break");
                         break;
                     case 0x5E: // LSR addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = ReadMemory(value16);
                         FlagC = (value8 & 1) != 0;
@@ -1241,8 +1233,6 @@ throw new Exception("break");
                         break;
                     case 0x7E: // ROR addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = temp8 = ReadMemory(value16);
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
@@ -1356,8 +1346,6 @@ throw new Exception("break");
                     case 0x91: // STA (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value16 = (ushort)(temp16+Y);
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         WriteMemory(value16, A);
                         PendingCycles -= 7;
                         break;
@@ -1403,8 +1391,6 @@ throw new Exception("break");
                         break;
                     case 0x99: // STA addr,Y
                         value16 = (ushort)(ReadWord(PC)+Y);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         WriteMemory(value16, A);
                         PendingCycles -= 5;
@@ -1420,16 +1406,12 @@ throw new Exception("break");
                         break;
                     case 0x9D: // STA addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         WriteMemory(value16, A);
                         PendingCycles -= 5;
                         break;
                     case 0x9E: // STZ addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         WriteMemory(value16, 0);
                         PendingCycles -= 5;
@@ -1821,8 +1803,6 @@ throw new Exception("break");
                         break;
                     case 0xDE: // DEC addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
@@ -2162,8 +2142,6 @@ throw new Exception("break");
                         break;
                     case 0xFE: // INC addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
