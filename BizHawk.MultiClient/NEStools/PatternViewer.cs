@@ -55,17 +55,7 @@ namespace BizHawk.MultiClient
 
         private void PatternViewer_Click(object sender, MouseEventArgs e)
         {
-            if (e.X < (this.Size.Width / 2))
-            {
-                Pal0++;
-                if (Pal0 > 7) Pal0 = 0;
-            }
-            else
-            {
-                Pal1++;
-                if (Pal1 > 7) Pal1 = 0;
-            }
-            this.Refresh();
+            //Moved to parent event handler
         }
     }
 }

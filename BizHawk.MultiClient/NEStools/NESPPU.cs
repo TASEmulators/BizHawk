@@ -179,9 +179,19 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESPPUSaveWindowPosition;
 		}
 
-        private void PatternView_Click(object sender, EventArgs e)
+        private void PatternView_Click(object sender, MouseEventArgs e)
         {
-            //TODO: these values are off by 1 because it gets triggered before the PatternViewer_Click event
+            if (e.X < PatternView.Width / 2)
+            {
+                PatternView.Pal0++;
+                if (PatternView.Pal0 > 7) PatternView.Pal0 = 0;
+            }
+            else
+            {
+                PatternView.Pal1++;
+                if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
+            }
+            PatternView.Refresh();
             Table1PaletteLabel.Text = "Palette: " + PatternView.Pal0;
             Table2PaletteLabel.Text = "Palette: " + PatternView.Pal1;
         }
