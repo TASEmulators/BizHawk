@@ -250,11 +250,12 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
+			Global.Game = null;
             RamSearch1.Restart();
             HexEditor1.Restart();
             NESPPU1.Restart();
 			Text = "BizHawk";
-            HandlePlatformMenus("");
+            HandlePlatformMenus();
 		}
 
 		private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
