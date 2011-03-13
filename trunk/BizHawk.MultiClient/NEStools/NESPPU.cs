@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < 16; x++)
 			{
 				PaletteView.bgPalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
-				PaletteView.spritePalettes[x].SetValue(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]);
+				PaletteView.spritePalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]));
 			}
 			PaletteView.Refresh();
 
