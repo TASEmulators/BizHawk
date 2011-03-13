@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESPPU));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Table2PaletteLabel = new System.Windows.Forms.Label();
+            this.Table1PaletteLabel = new System.Windows.Forms.Label();
             this.PalettesGroup = new System.Windows.Forms.GroupBox();
             this.DetailsBox = new System.Windows.Forms.GroupBox();
             this.ValueLabel = new System.Windows.Forms.Label();
@@ -39,10 +41,9 @@
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Table1PaletteLabel = new System.Windows.Forms.Label();
-            this.Table2PaletteLabel = new System.Windows.Forms.Label();
             this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
             this.PatternView = new BizHawk.MultiClient.PatternViewer();
+            this.Value2Label = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.PalettesGroup.SuspendLayout();
             this.DetailsBox.SuspendLayout();
@@ -61,6 +62,24 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Pattern Tables";
             // 
+            // Table2PaletteLabel
+            // 
+            this.Table2PaletteLabel.AutoSize = true;
+            this.Table2PaletteLabel.Location = new System.Drawing.Point(129, 150);
+            this.Table2PaletteLabel.Name = "Table2PaletteLabel";
+            this.Table2PaletteLabel.Size = new System.Drawing.Size(52, 13);
+            this.Table2PaletteLabel.TabIndex = 2;
+            this.Table2PaletteLabel.Text = "Palette: 0";
+            // 
+            // Table1PaletteLabel
+            // 
+            this.Table1PaletteLabel.AutoSize = true;
+            this.Table1PaletteLabel.Location = new System.Drawing.Point(6, 150);
+            this.Table1PaletteLabel.Name = "Table1PaletteLabel";
+            this.Table1PaletteLabel.Size = new System.Drawing.Size(52, 13);
+            this.Table1PaletteLabel.TabIndex = 1;
+            this.Table1PaletteLabel.Text = "Palette: 0";
+            // 
             // PalettesGroup
             // 
             this.PalettesGroup.Controls.Add(this.PaletteView);
@@ -73,6 +92,7 @@
             // 
             // DetailsBox
             // 
+            this.DetailsBox.Controls.Add(this.Value2Label);
             this.DetailsBox.Controls.Add(this.ValueLabel);
             this.DetailsBox.Controls.Add(this.AddressLabel);
             this.DetailsBox.Controls.Add(this.SectionLabel);
@@ -147,24 +167,6 @@
             this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
-            // Table1PaletteLabel
-            // 
-            this.Table1PaletteLabel.AutoSize = true;
-            this.Table1PaletteLabel.Location = new System.Drawing.Point(6, 150);
-            this.Table1PaletteLabel.Name = "Table1PaletteLabel";
-            this.Table1PaletteLabel.Size = new System.Drawing.Size(52, 13);
-            this.Table1PaletteLabel.TabIndex = 1;
-            this.Table1PaletteLabel.Text = "Palette: 0";
-            // 
-            // Table2PaletteLabel
-            // 
-            this.Table2PaletteLabel.AutoSize = true;
-            this.Table2PaletteLabel.Location = new System.Drawing.Point(129, 150);
-            this.Table2PaletteLabel.Name = "Table2PaletteLabel";
-            this.Table2PaletteLabel.Size = new System.Drawing.Size(52, 13);
-            this.Table2PaletteLabel.TabIndex = 2;
-            this.Table2PaletteLabel.Text = "Palette: 0";
-            // 
             // PaletteView
             // 
             this.PaletteView.BackColor = System.Drawing.Color.White;
@@ -183,7 +185,19 @@
             this.PatternView.Name = "PatternView";
             this.PatternView.Size = new System.Drawing.Size(256, 128);
             this.PatternView.TabIndex = 0;
+            this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
+            this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
             this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
+            this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
+            // 
+            // Value2Label
+            // 
+            this.Value2Label.AutoSize = true;
+            this.Value2Label.Location = new System.Drawing.Point(6, 97);
+            this.Value2Label.Name = "Value2Label";
+            this.Value2Label.Size = new System.Drawing.Size(35, 13);
+            this.Value2Label.TabIndex = 3;
+            this.Value2Label.Text = "label1";
             // 
             // NESPPU
             // 
@@ -226,5 +240,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.Label Table2PaletteLabel;
         private System.Windows.Forms.Label Table1PaletteLabel;
+        private System.Windows.Forms.Label Value2Label;
     }
 }
