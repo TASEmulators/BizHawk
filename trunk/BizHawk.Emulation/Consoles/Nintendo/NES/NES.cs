@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             var SystemBus = new MemoryDomain("System Bus", 0x10000, Endian.Little,
                 addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
             var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
-                addr => ppu.ppubus_read(addr), (addr, value) => ppu.ppubus_write(addr, value));
+                addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
 			var dCIRAM = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
             
