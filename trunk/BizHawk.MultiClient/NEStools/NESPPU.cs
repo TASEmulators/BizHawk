@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using BizHawk.Emulation.Consoles.Nintendo;
+using System.Diagnostics;
 
 namespace BizHawk.MultiClient
 {
@@ -95,7 +96,9 @@ namespace BizHawk.MultiClient
                             b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b3 * 8, x);
                             byte value = (byte)(b0 + (b1 * 2));
                             byte value2 = (byte)(b2 + (b3 * 2));
-                            //TODO: add PALRAM info to value
+                            
+                            value += Nes.ppu.PALRAM[value + (0*4)];     //TODO: 0 = user selection 0-7
+                            value2 += Nes.ppu.PALRAM[value2 + (0*4)];    //TODO: 0 = user selection 0-7
                             
                             int cvalue = Nes.ConvertColor(value);
                             int cvalue2 = Nes.ConvertColor(value2);
