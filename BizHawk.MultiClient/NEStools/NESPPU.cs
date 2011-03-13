@@ -161,6 +161,11 @@ namespace BizHawk.MultiClient
 			else
 				val = PaletteView.spritePalettes[column].GetValue();
 			ValueLabel.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
+
+            if (baseAddr == 0x3F00)
+                Value2Label.Text = "ID: BG" + (column / 4).ToString();
+            else
+                Value2Label.Text = "ID: SPR" + (column / 4).ToString();
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,6 +199,26 @@ namespace BizHawk.MultiClient
             PatternView.Refresh();
             Table1PaletteLabel.Text = "Palette: " + PatternView.Pal0;
             Table2PaletteLabel.Text = "Palette: " + PatternView.Pal1;
+        }
+
+        private void PatternView_MouseEnter(object sender, EventArgs e)
+        {
+            SectionLabel.Text = "Section: Pattern";
+        }
+
+        private void PatternView_MouseLeave(object sender, EventArgs e)
+        {
+            ClearDetails();
+        }
+
+        private void PatternView_MouseMove(object sender, MouseEventArgs e)
+        {
+            int table = 0;
+            if (e.X > PatternView.Width / 2)
+                table = 1;
+            int address = ((e.X + 8) / 8);
+            AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
+            ValueLabel.Text = "Table " + table.ToString();
         }
 	}
 }
