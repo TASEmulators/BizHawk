@@ -681,14 +681,10 @@ namespace HuC6280
                 case AddrMode.ImmAbsoluteX:
                 case AddrMode.AbsoluteX:
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(ReadWord(PC)+X));");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.AbsoluteY:
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(ReadWord(PC)+Y));");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.Indirect:
@@ -698,8 +694,6 @@ namespace HuC6280
                 case AddrMode.IndirectY:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));");
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(temp16+Y));");
-                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     break;
                 default:
                     throw new Exception("p"+op.Instruction);
