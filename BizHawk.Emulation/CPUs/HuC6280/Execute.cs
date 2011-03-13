@@ -163,8 +163,6 @@ throw new Exception("break");
                     case 0x11: // ORA (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
@@ -217,8 +215,6 @@ throw new Exception("break");
                         break;
                     case 0x19: // ORA addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -239,8 +235,6 @@ throw new Exception("break");
                         break;
                     case 0x1D: // ORA addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -410,8 +404,6 @@ throw new Exception("break");
                     case 0x31: // AND (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         if (FlagT == false) { 
                             A &= value8;
                             P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -481,8 +473,6 @@ throw new Exception("break");
                         break;
                     case 0x39: // AND addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         if (FlagT == false) { 
                             A &= value8;
@@ -502,8 +492,6 @@ throw new Exception("break");
                         break;
                     case 0x3C: // BIT addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         FlagN = (value8 & 0x80) != 0;
                         FlagV = (value8 & 0x40) != 0;
@@ -512,8 +500,6 @@ throw new Exception("break");
                         break;
                     case 0x3D: // AND addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         if (FlagT == false) { 
                             A &= value8;
@@ -695,8 +681,6 @@ throw new Exception("break");
                     case 0x51: // EOR (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         if (FlagT == false) { 
                             A ^= value8;
                             P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -771,8 +755,6 @@ throw new Exception("break");
                         break;
                     case 0x59: // EOR addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         if (FlagT == false) { 
                             A ^= value8;
@@ -792,8 +774,6 @@ throw new Exception("break");
                         break;
                     case 0x5D: // EOR addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         if (FlagT == false) { 
                             A ^= value8;
@@ -1027,8 +1007,6 @@ throw new Exception("break");
                     case 0x71: // ADC (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         source8 = FlagT ? ReadMemory((ushort)(0x2000 + X)) : A;
 
                         if ((P & 0x08) != 0) {
@@ -1156,8 +1134,6 @@ throw new Exception("break");
                         break;
                     case 0x79: // ADC addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         source8 = FlagT ? ReadMemory((ushort)(0x2000 + X)) : A;
 
@@ -1199,8 +1175,6 @@ throw new Exception("break");
                         break;
                     case 0x7D: // ADC addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         source8 = FlagT ? ReadMemory((ushort)(0x2000 + X)) : A;
 
@@ -1521,8 +1495,6 @@ throw new Exception("break");
                     case 0xB1: // LDA (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         A = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 7;
                         break;
@@ -1534,8 +1506,6 @@ throw new Exception("break");
                     case 0xB3: // TST
                         value8 = ReadMemory(PC++);
                         temp8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         FlagN = (temp8 & 0x80) != 0;
                         FlagV = (temp8 & 0x40) != 0;
@@ -1570,8 +1540,6 @@ throw new Exception("break");
                         break;
                     case 0xB9: // LDA addr,Y
                         A = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
@@ -1583,24 +1551,18 @@ throw new Exception("break");
                         break;
                     case 0xBC: // LDY addr,X
                         Y = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 5;
                         break;
                     case 0xBD: // LDA addr,X
                         A = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5;
                         break;
                     case 0xBE: // LDX addr,Y
                         X = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 5;
@@ -1726,8 +1688,6 @@ throw new Exception("break");
                     case 0xD1: // CMP (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
@@ -1779,8 +1739,6 @@ throw new Exception("break");
                         break;
                     case 0xD9: // CMP addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
@@ -1793,8 +1751,6 @@ throw new Exception("break");
                         break;
                     case 0xDD: // CMP addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
@@ -1985,8 +1941,6 @@ throw new Exception("break");
                     case 0xF1: // SBC (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            PendingCycles--;
                         temp = A - value8 - (FlagC ? 0 : 1);
                         if ((P & 0x08) != 0) {
                             lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
@@ -2089,8 +2043,6 @@ throw new Exception("break");
                         break;
                     case 0xF9: // SBC addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         temp = A - value8 - (FlagC ? 0 : 1);
                         if ((P & 0x08) != 0) {
@@ -2118,8 +2070,6 @@ throw new Exception("break");
                         break;
                     case 0xFD: // SBC addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            PendingCycles--;
                         PC += 2;
                         temp = A - value8 - (FlagC ? 0 : 1);
                         if ((P & 0x08) != 0) {
