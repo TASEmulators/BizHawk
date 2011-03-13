@@ -457,28 +457,26 @@ namespace HuC6280
             w.WriteLine();
             w.WriteLine("                if (IRQ1Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ1Selector) == 0)");
             w.WriteLine("                {");
-            w.WriteLine("                    FlagB = false;");
+            w.WriteLine("                    //Log.Note(\"CPU\", \"ENTERING IRQ1 INTERRUPT\");");
             w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));");
             w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)PC);");
-            w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), P);");
+            w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));");
             w.WriteLine("                    FlagD = false;");
             w.WriteLine("                    FlagI = true;");
             w.WriteLine("                    PC = ReadWord(IRQ1Vector);");
-            w.WriteLine("                    PendingCycles -= 7;");
-            w.WriteLine("                    //Log.Note(\"CPU\", \"ENTERING IRQ1 INTERRUPT\");");
+            w.WriteLine("                    PendingCycles -= 8;");
             w.WriteLine("                }");
             w.WriteLine();
             w.WriteLine("                if (TimerAssert && FlagI == false && LagIFlag == false && (IRQControlByte & TimerSelector) == 0)");
             w.WriteLine("                {");
-            w.WriteLine("                    FlagB = false;");
+            w.WriteLine("                    //Log.Note(\"CPU\", \"ENTERING __TIMER__ INTERRUPT\");");
             w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));");
             w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)PC);");
-            w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), P);");
+            w.WriteLine("                    WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));");
             w.WriteLine("                    FlagD = false;");
             w.WriteLine("                    FlagI = true;");
             w.WriteLine("                    PC = ReadWord(TimerVector);");
-            w.WriteLine("                    PendingCycles -= 7;");
-            w.WriteLine("                    //Log.Note(\"CPU\", \"ENTERING __TIMER__ INTERRUPT\");");
+            w.WriteLine("                    PendingCycles -= 8;");
             w.WriteLine("                }");
             w.WriteLine();
             w.WriteLine("                IRQControlByte = IRQNextControlByte;");
@@ -657,7 +655,7 @@ namespace HuC6280
                     w.WriteLine("throw new Exception(\"unsupported opcode {0:X2}\");",opcode);
                     break;
             }
-            if (op.Instruction != "SET")
+            if (op.Instruction != "SET" && op.Instruction != "RTI" && op.Instruction != "PLP")
                 w.WriteLine(Spaces + "break;");
         }
 
@@ -725,14 +723,10 @@ namespace HuC6280
                     w.WriteLine(Spaces + dest + " = ReadWord(PC); PC += 2;"); break;
                 case AddrMode.AbsoluteX:
                     w.WriteLine(Spaces + dest + " = (ushort)(ReadWord(PC)+X);");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.AbsoluteY:
                     w.WriteLine(Spaces + dest + " = (ushort)(ReadWord(PC)+Y);");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.Indirect:
@@ -742,8 +736,6 @@ namespace HuC6280
                 case AddrMode.IndirectY:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));");
                     w.WriteLine(Spaces + dest + " = (ushort)(temp16+Y);");
-                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    PendingCycles--;");
                     break;
                 case AddrMode.Relative:
                     w.WriteLine(Spaces + "rel8 = (sbyte)ReadMemory(PC++);");
