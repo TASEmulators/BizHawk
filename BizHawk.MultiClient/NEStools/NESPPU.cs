@@ -95,14 +95,12 @@ namespace BizHawk.MultiClient
 							b1 = GetBit((i * 256) + (j * 16) + y + b1 * 8, x);
 							b2 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b2 * 8, x);
 							b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b3 * 8, x);
-							byte value = (byte)(b0 + (b1 * 2));
-							byte value2 = (byte)(b2 + (b3 * 2));
+                            
+							byte value = (byte)(b0 + (b1 << 1));
+							byte value2 = (byte)(b2 + (b3 << 1));
 
-							value += Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)];     //TODO: 0 = user selection 0-7
-							value2 += Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)];    //TODO: 0 = user selection 0-7
-
-							int cvalue = Nes.ConvertColor(value);
-							int cvalue2 = Nes.ConvertColor(value2);
+                            int cvalue = Nes.ConvertColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
+                            int cvalue2 = Nes.ConvertColor(Nes.ppu.PALRAM[value2 + (PatternView.Pal1 * 4)]);
 							unchecked
 							{
 								cvalue = cvalue | (int)0xFF000000;
@@ -180,6 +178,7 @@ namespace BizHawk.MultiClient
 
         private void PatternView_Click(object sender, EventArgs e)
         {
+            //TODO: these values are off by 1 because it gets triggered before the PatternViewer_Click event
             Table1PaletteLabel.Text = "Palette: " + PatternView.Pal0;
             Table2PaletteLabel.Text = "Palette: " + PatternView.Pal1;
         }
