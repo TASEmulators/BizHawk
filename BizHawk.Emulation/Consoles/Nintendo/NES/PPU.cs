@@ -25,6 +25,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return nes.board.ReadPPU(addr);
 			}
 
+			//debug tools peek into the ppu through this
+			public byte ppubus_peek(int addr)
+			{
+				return nes.board.PeekPPU(addr);
+			}
+
 			enum PPUPHASE {
 				VBL, BG, OBJ
 			};
