@@ -183,7 +183,7 @@
             this.PatternView.Name = "PatternView";
             this.PatternView.Size = new System.Drawing.Size(256, 128);
             this.PatternView.TabIndex = 0;
-            this.PatternView.Click += new System.EventHandler(this.PatternView_Click);
+            this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
             // 
             // NESPPU
             // 
