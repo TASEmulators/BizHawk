@@ -15,10 +15,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
          + BackgroundY is the current offset into the scroll plane. It is set with BYR
            register at certain sync points and incremented every scanline. 
            Its values range from 0 - $1FF.
-         + RCRCount is the current offset into the RCR register. It is reset to $40 
-           on the first active display line, and incremented every line. Its effective
-           range is $40 - $146.
-         
         */
         public int ScanLine;
         public int BackgroundY;
@@ -27,7 +23,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private byte[] InterSpritePriorityBuffer = new byte[512];
         private int latchedDisplayStartLine;
         private int ActiveLine;
-        private int RCRCount;
 
         public void ExecFrame(bool render)
         {
@@ -35,10 +30,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             ActiveLine = 0 - latchedDisplayStartLine;
             ScanLine = 0;
 
-            int HDS = (Registers[HSR] >> 8) & 0x7F;
-            int HDE = (Registers[HDR] >> 8) & 0x7F;
-            int hblankCycles = (HDS + HDE + 2) * 8;
-            //hblankCycles -= 2;
+            int hds = (Registers[HSR] >> 8) & 0x7F;
+            int hde = (Registers[HDR] >> 8) & 0x7F;
+            int vds = Registers[VPR] >> 8;
+            int vsw = Registers[VPR] & 0x1F;
+
+            int VBlankScanline = vds + vsw + Registers[VDW] + 1;
+            if (VBlankScanline > 261)
+                VBlankScanline = 261;
+
+            int hblankCycles = (hds + hde + 2) * 8;
 
             switch (vce.DotClock)
             {
@@ -47,7 +48,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 2: hblankCycles = (hblankCycles*2)/3; break;
             }
 
-            for (; ScanLine < 262;)
+            for (; ScanLine < 263;)
             {
                 //Log.Note("VDC","ScanLine {0} (ActiveLine {1}, RCR {2}, BGY {3})",ScanLine, ActiveLine, RCRCount, BackgroundY);
                 bool InActiveDisplay = false;
@@ -55,35 +56,33 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     InActiveDisplay = true;
 
                 if (ActiveLine == 0)
-                {
                     BackgroundY = Registers[BYR];
-                    RCRCount = 0x40;
-                    //Console.WriteLine("Latched BYR {0} at scanline {1}",BackgroundY, ScanLine);
-                }
 
-                if ((RCRCount) == (Registers[RCR] & 0x3FF))
+                if (ActiveLine == (Registers[RCR] & 0x3FF) - 0x40)
                 {
-                    if (IntRasterCompare)
+                    if (RasterCompareInterruptEnabled)
                     {
-                        //Log.Note("VDC", "Enter RCR interrupt at scanline {0}",ScanLine);
+                        Log.Note("VDC", "Firing RCR interrupt at {0}", ScanLine);
                         StatusByte |= StatusRasterCompare;
                         cpu.IRQ1Assert = true;
                     }
                 }
 
-                if (ActiveLine == BufferHeight && IntVerticalBlank)
-                {
-                    StatusByte |= StatusVerticalBlanking;
-                    cpu.IRQ1Assert = true;
-                }
                 cpu.Execute(hblankCycles);
-
+                
                 if (InActiveDisplay && render)
                     RenderScanLine();
 
+                if (ScanLine == VBlankScanline && VBlankInterruptEnabled)
+                {
+                    Log.Note("VDC", "Firing VBlank interrupt at {0}", ScanLine);
+                    StatusByte |= StatusVerticalBlanking;
+                    cpu.IRQ1Assert = true;
+                }
+
                 cpu.Execute(455-hblankCycles);
 
-                if (ScanLine == FrameHeight - 1)
+                if (ScanLine == VBlankScanline)
                     UpdateSpriteAttributeTable();
 
                 if (InActiveDisplay == false && DmaRequested)
@@ -91,7 +90,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 ScanLine++;
                 ActiveLine++;
-                RCRCount++;
                 BackgroundY++;
                 BackgroundY &= 0x01FF;
             }
@@ -115,7 +113,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 if ((Registers[DCR] & 1) > 0)
                 {
-                    Console.WriteLine("FIRING SATB DMA COMPLETION IRQ");
+                    Log.Note("VDC","FIRING SATB DMA COMPLETION IRQ");
                     StatusByte |= StatusVramSatDmaComplete;
                     cpu.IRQ1Assert = true;
                 }

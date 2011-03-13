@@ -38,14 +38,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // PC Engine timings:
         // 21,477,270  Machine clocks / sec
         //  7,159,090  Cpu cycles / sec
-        
-        // At 60.00 FPS
-        //    357,954  mclks / frame
-        //    119,318  Cpu cycles / frame
-
-        // 263 lines / frame:
-        //       1361  mclks / line
-        //        454  Cpu cycles / line
 
         public PCEngine(NecSystemType type)
         {
@@ -108,7 +100,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void FrameAdvance(bool render)
         {
             Controller.UpdateControls(Frame++);
-            //Log.Note("CPU","======== FRAME {0} =========",Frame);
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
             if (SuperGrafx)
