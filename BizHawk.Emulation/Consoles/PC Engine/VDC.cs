@@ -35,12 +35,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        public bool BackgroundEnabled  { get { return (Registers[CR] & 0x80) != 0; } }
-        public bool SpritesEnabled     { get { return (Registers[CR] & 0x40) != 0; } }
-        public bool IntVerticalBlank   { get { return (Registers[CR] & 0x08) != 0; } }
-        public bool IntRasterCompare   { get { return (Registers[CR] & 0x04) != 0; } }
-        public bool IntSpriteOverflow  { get { return (Registers[CR] & 0x02) != 0; } }
-        public bool IntSpriteCollision { get { return (Registers[CR] & 0x01) != 0; } }
+        public bool BackgroundEnabled               { get { return (Registers[CR] & 0x80) != 0; } }
+        public bool SpritesEnabled                  { get { return (Registers[CR] & 0x40) != 0; } }
+        public bool VBlankInterruptEnabled          { get { return (Registers[CR] & 0x08) != 0; } }
+        public bool RasterCompareInterruptEnabled   { get { return (Registers[CR] & 0x04) != 0; } }
+        public bool SpriteOverflowInterruptEnabled  { get { return (Registers[CR] & 0x02) != 0; } }
+        public bool SpriteCollisionInterruptEnabled { get { return (Registers[CR] & 0x01) != 0; } }
 
         public int BatWidth  { get { switch((Registers[MWR] >> 4) & 3) { case 0: return 32; case 1: return 64; default: return 128; } } }
         public int BatHeight { get { return ((Registers[MWR] & 0x40) == 0) ? 32 : 64; } }
@@ -81,6 +81,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public const byte StatusSpriteOverflow      = 0x02;
         public const byte StatusSprite0Collision    = 0x01;
 
+        private const int VramSize = 0x8000;
+
         private HuC6280 cpu;
         private VCE vce;
 
@@ -88,6 +90,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             this.cpu = cpu;
             this.vce = vce;
+
+            Registers[HSR] = 0x00FF;
+            Registers[HDR] = 0x00FF;
+            Registers[VPR] = 0xFFFF;
+            Registers[VCR] = 0xFFFF;
+            ReadBuffer = 0xFFFF;
         }
 
         public void WriteVDC(int port, byte value)
@@ -108,37 +116,32 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 Registers[RegisterLatch] &= 0x00FF;
                 Registers[RegisterLatch] |= (ushort) (value << 8);
-                CompleteMSBWrite();
+                CompleteMSBWrite(RegisterLatch);
             }
         }
 
-        private void CompleteMSBWrite()
+        private void CompleteMSBWrite(int register)
         {
-            switch (RegisterLatch)
+            switch (register)
             {
                 case MARR: // Memory Address Read Register
                     ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
                     break;
                 case VWR: // VRAM Write Register
-                    if (Registers[MAWR] < 0x8000)
+                    if (Registers[MAWR] < VramSize) // Several games attempt to write past the end of VRAM
                     {
-                        VRAM[Registers[MAWR] & 0x7FFF] = Registers[VWR];
+                        VRAM[Registers[MAWR]] = Registers[VWR];
                         UpdatePatternData((ushort) (Registers[MAWR] & 0x7FFF));
                         UpdateSpriteData((ushort) (Registers[MAWR] & 0x7FFF));
                     }
                     Registers[MAWR] += IncrementWidth;
                     break;
-case CR:
-//if (Registers[CR] == 0)
-//Log.Note("CPU", "****************** WRITE TO CR: {0:X}", Registers[CR]);
-break;
                 case BXR:
                     Registers[BXR] &= 0x3FF;
                     break;
                 case BYR:
                     Registers[BYR] &= 0x1FF;
                     BackgroundY = Registers[BYR];
-                    //Console.WriteLine("Updating BYR to {0} at scanline {1}", BackgroundY, ScanLine);
                     break;
                 case HDR: // Horizontal Display Register - update framebuffer size
                     FrameWidth = RequestedFrameWidth;
@@ -190,7 +193,7 @@ break;
                 case 1: // unused
                     return 0;
                 case 2: // LSB
-                    return (byte) (ReadBuffer & 0xFF);
+                    return (byte) ReadBuffer;
                 case 3: // MSB
                     retval = (byte)(ReadBuffer >> 8);
                     if (RegisterLatch == VRR)
@@ -221,7 +224,7 @@ break;
 
             if ((Registers[DCR] & 2) > 0)
             {
-                Console.WriteLine("FIRE VRAM-VRAM DMA COMPLETE IRQ");
+                Log.Note("Vdc","FIRE VRAM-VRAM DMA COMPLETE IRQ");
                 StatusByte |= StatusVramVramDmaComplete;
                 cpu.IRQ1Assert = true;
             }
@@ -315,6 +318,9 @@ break;
                 UpdatePatternData(i);
                 UpdateSpriteData(i);
             }
+
+            CompleteMSBWrite(HDR);
+            CompleteMSBWrite(VDW);
         }
 
         public void SaveStateBinary(BinaryWriter writer)
@@ -345,6 +351,9 @@ break;
             RegisterLatch = reader.ReadByte();
             ReadBuffer = reader.ReadUInt16();
             StatusByte = reader.ReadByte();
+
+            CompleteMSBWrite(HDR);
+            CompleteMSBWrite(VDW);
         }
     }
 }

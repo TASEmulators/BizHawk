@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 if ((ScanLine + 64) == (VDC1.Registers[6] & 0x3FF))
                 {
-                    if (VDC1.IntRasterCompare)
+                    if (VDC1.RasterCompareInterruptEnabled)
                     {
                         VDC1.StatusByte |= VDC.StatusRasterCompare;
                         CPU.IRQ1Assert = true;
@@ -161,20 +161,20 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 if ((ScanLine + 64) == (VDC2.Registers[6] & 0x3FF))
                 {
-                    if (VDC2.IntRasterCompare)
+                    if (VDC2.RasterCompareInterruptEnabled)
                     {
                         VDC2.StatusByte |= VDC.StatusRasterCompare;
                         CPU.IRQ1Assert = true;
                     }
                 }
 
-                if (ScanLine == 240 && VDC1.IntVerticalBlank)
+                if (ScanLine == 240 && VDC1.VBlankInterruptEnabled)
                 {
                     VDC1.StatusByte |= VDC.StatusVerticalBlanking;
                     CPU.IRQ1Assert = true;
                 }
 
-                if (ScanLine == 240 && VDC2.IntVerticalBlank)
+                if (ScanLine == 240 && VDC2.VBlankInterruptEnabled)
                 {
                     VDC2.StatusByte |= VDC.StatusVerticalBlanking;
                     CPU.IRQ1Assert = true;
@@ -295,7 +295,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (width == 32)
                     patternNo &= 0x1FE;
 
-                int yofs = 0;
+                int yofs;
                 if (vflip == false)
                 {
                     yofs = (vdc.ScanLine - y) & 15;

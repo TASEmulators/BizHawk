@@ -1,71 +1,41 @@
 ﻿======= TurboGrafx compatibility issues =======
 
 General: 
- + Noise Channel isn't right. Less obnoxious now, still not happy.
- + T Flag implemented for ADC, EOR. Log warning if used by any other instructions. 
-   Should probably just do it for the others, but I hate not having a test case.
- + Video timing is off.
+ + Don't have a complete list of instructions affected by T flag. Currently warns if SET precedes an unrecognized instruction.
  + Audio volumes are probably wrong.
  + LFO is not implemented, though I can't tell.
  + Screen is too tall on several games. Obv resolution calculation is not 100% correct. 
 
-Adventure Island  - Flicker on title screen sequence - timing?
-Aero Blaster      - Bottom of Screen possibly extends too many lines
-Agmeda            - Very minor timing/gfx glitches esp at bottom of screen
-Air Zonk          - Freezes shortly into a new game
-Alice             - Screen possibly too tall; glitches when scrolling up, but in pcejin also,  
+Aero Blaster      - Bottom of Screen extends too many lines - like 3 extra or so
+Air Zonk          - Fully playable, doesn't freeze, but some gfx/timing issues
+Alice             - Screen too tall; glitches when scrolling up, but in pcejin also,  
                     but not ootake; ergo probably a timing artifact
 Andre Panza Kickbx- Doesn't boot. Looks like semi pedigree as Battle Royal.
-Battle Ace        - Some gfx glitches
 Battle Royale     - Doesnt boot
-Boxy Boy          - Freezes when starting game; seems to remain broken even after rewinding (!!)
-Bravoman          - Is currently booting. But has been boot-problematic in the past.
-Cadash            - Camera is all crazy. Very sensitive to interrupt timing and timing in general.
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
-Chouzetsu Rinjin  - Japanese version of Bravoman. Currently working.
-College Pro Basebl- In startup sequence, sprites are crazy, game goes nuts when starting game
 Cross Wiber       - Minor; Raster on wrong line 
-Cyber Dodge       - Minor gfx issues
-Davis Cup Tennis  - Doesnt boot at all right now
+Davis Cup Tennis  - Some timing issue, splash screen is too slow
 Dead Moon         - Screen is too tall
-Dragon Egg        - Doesn't boot at all
 Dungeon Explorer  - Freeze in 'intro' - gfx corruption in-game 
 Fighting Run      - Corruption issues
-Final Blaster     - Does crazy shit with video modes; freezes if intro is not skipped
-Final Solider     - Graphics corruption issues - some right at the beginning that might be a good target
-Ghost Mannor      - Game will freeze in some circumstances mid gameplay
+Final Blaster     - Intro does crazy shit with video modes; not sure what if anything to do about it
 Griffon           - Screen goes black because game changes video mode mid-frame
 Gunboat           - Crash / CPU Break (Needs BRAM)
-Hisou Kihei Serd  - Doesn't boot
-Idol Hanafuda Fan Club - Doesn't boot
-Impossamole       - Gfx issues
-Jack Nicholas Golf- Doesnt boot basically
-Legendary Axe     - BYR updated on the wrong line of the screen, but playable.
-Legendary Axe II  - Fairly serious corruption issues, but playable now
+Jack Nicholas Golf- Some screens are too tall and reveal bad gfx below the intended visible screen
 Legend of Hero Ton- Slight gfx- check top of screen
 Lode Runner       - Freezes in new game 
-Madoo Granzort    - Graphics issues because VPC renderer is not using new frame timing
-Metal Stoker      - Tearing when scrolling vertically at bottom of screen - timing
+Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
+Metal Stoker      - Tearing when scrolling vertically at bottom of screen - screen too tall?
 MML Demo          - Echo channels are too loud (equal volume!)
-Naxat Open        - Crashes when you start new game
-NHK Taiga Drama Ta- Sprite flicker and corruption issues
-Night Creatures   - Some gfx glitches
 Outrun            - Raster issues, music slows when paused
-Paranoia          - MAYBE game freeze in like 5th level? not sure, didnt verify.
+Paranoia          - Game hits BREAK on 3rd level. need to investigate
 Populous          - Game freezes on starting new game - *** NEEDS BATTERY SAVERAM ***
 Power Drift       - Timing glitch... starting new game runs slower than it should
-Power Tennis      - Freezes in (elaborate) intro screen. decent target though
-R-Type            - Funky corruption after killing final boss in Stage 8
+Power Tennis      - Elaborate intro screen doesnt display right
 Raiden            - Sprites and BG get out of sync with current timing
-Rastan Saga 2     - Doesn't boot - lots of invalid reads?
-Sekikehara        - Gfx corruption, some palette problems?
 Side Arms         - Screen is like 4 pixels too tall
-Sinistron         - Raster effect errors
-Soldier Blade     - Freezes about 5 minutes in. Always in the same spot, fortunately. I have a savestate.
-Soukoban World    - J version of Boxy Boy - Same bugs
-Thunder Blade     - After beating the 1st 3d area, game semi-freezes
+Sinistron         - Much less bad raster effect errors now
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
-Valkyrie No Densetsu - Boots now, but with pretty severe issues
 
 
 Stuff I Fixed That's Not In Other Docs:
