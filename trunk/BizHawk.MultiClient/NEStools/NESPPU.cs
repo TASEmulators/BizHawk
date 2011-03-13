@@ -91,10 +91,10 @@ namespace BizHawk.MultiClient
 							Bit b2 = new Bit();
 							Bit b3 = new Bit(); //2nd page of patterns 
 
-							b0 = GetBit((i * 256) + (j * 16) + y + b0 * 8, x);
-							b1 = GetBit((i * 256) + (j * 16) + y + b1 * 8, x);
-							b2 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b2 * 8, x);
-							b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + b3 * 8, x);
+							b0 = GetBit((i * 256) + (j * 16) + y + 0 * 8, x);
+							b1 = GetBit((i * 256) + (j * 16) + y + 1 * 8, x);
+							b2 = GetBit(0x1000 + (i * 256) + (j * 16) + y + 0 * 8, x);
+							b3 = GetBit(0x1000 + (i * 256) + (j * 16) + y + 1 * 8, x);
                             
 							byte value = (byte)(b0 + (b1 << 1));
 							byte value2 = (byte)(b2 + (b3 << 1));
