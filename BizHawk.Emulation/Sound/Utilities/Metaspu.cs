@@ -5,8 +5,13 @@ namespace BizHawk.Emulation.Sound
 {
 	public class MetaspuSoundProvider : ISoundProvider
 	{
-		public ISynchronizingAudioBuffer buffer = Metaspu.metaspu_construct(ESynchMethod.ESynchMethod_Z);
+		public ISynchronizingAudioBuffer buffer;
+		public MetaspuSoundProvider(ESynchMethod method)
+		{
+			buffer = Metaspu.metaspu_construct(method);
+		}
 		public MetaspuSoundProvider()
+			: this(ESynchMethod.ESynchMethod_Z)
 		{
 		}
 
@@ -19,6 +24,7 @@ namespace BizHawk.Emulation.Sound
 	public interface ISynchronizingAudioBuffer
 	{
 		void enqueue_samples(short[] buf, int samples_provided);
+		void enqueue_sample(short left, short right);
 		
 		//returns the number of samples actually supplied, which may not match the number requested
 		int output_samples(short[] buf, int samples_requested);
@@ -62,6 +68,11 @@ namespace BizHawk.Emulation.Sound
 
 		//adjustobuf(200,1000)
 		bool mixqueue_go = false;
+
+		public void enqueue_sample(short left, short right)
+		{
+			adjustobuf.enqueue(left, right);
+		}
 
 		public void enqueue_samples(short[] buf, int samples_provided)
 		{
@@ -265,6 +276,11 @@ namespace BizHawk.Emulation.Sound
 				sampleQueue.Add(new ssamp(buf[cursor+0],buf[cursor+1]));
 				cursor += 2;
 			}
+		}
+
+		public void enqueue_sample(short left, short right)
+		{
+			sampleQueue.Add(new ssamp(left,right));
 		}
 
 		public int output_samples(short[] buf, int samples_requested)
