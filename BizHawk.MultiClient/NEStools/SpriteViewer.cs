@@ -8,14 +8,12 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-    public class PatternViewer : Control
+    public class SpriteViewer : Control
     {
         Size pSize;
         public Bitmap pattern;
-        public int Pal0 = 0; //0-7 Palette choice
-        public int Pal1 = 0;
 
-        public PatternViewer()
+        public SpriteViewer()
         {
             pSize = new Size(256, 128);
             pattern = new Bitmap(pSize.Width, pSize.Height);
@@ -24,7 +22,7 @@ namespace BizHawk.MultiClient
             SetStyle(ControlStyles.DoubleBuffer, true);
             this.Size = pSize;
             this.BackColor = Color.White;
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.SpriteViewer_Paint);
         }
 
         private void Display(Graphics g)
@@ -35,7 +33,7 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void PatternViewer_Paint(object sender, PaintEventArgs e)
+        private void SpriteViewer_Paint(object sender, PaintEventArgs e)
         {
             Display(e.Graphics);
         }
