@@ -17,9 +17,8 @@ namespace BizHawk.MultiClient
 		//TODO:
 		//Pattern viewer - 
 		//      Row interleaving
-		//      Proper color reading
 		//      option for 2x view (and 4x?)
-		//      Mouse over events
+		//      Mouse over - Usage (BG vs Sprite usage)
 		//      Drop down menu for pattern viewer palette selections
 		//Sprite viewer
 		//Nametable viewer
@@ -199,6 +198,7 @@ namespace BizHawk.MultiClient
             PatternView.Refresh();
             Table1PaletteLabel.Text = "Palette: " + PatternView.Pal0;
             Table2PaletteLabel.Text = "Palette: " + PatternView.Pal1;
+            PatternView.Refresh();
         }
 
         private void PatternView_MouseEnter(object sender, EventArgs e)
@@ -214,11 +214,28 @@ namespace BizHawk.MultiClient
         private void PatternView_MouseMove(object sender, MouseEventArgs e)
         {
             int table = 0;
+            int address = 0;
+            int tile = 0;
             if (e.X > PatternView.Width / 2)
                 table = 1;
-            int address = ((e.X + 8) / 8);
+
+            if (table == 0)
+            {
+                tile = address = (e.X - 1) / 8;
+                
+            }
+            else
+            {
+                address = 0x1000 + ((e.X - 128) / 8);
+                tile = (e.X - 128) / 8;
+            }
+
+            address += (e.Y / 8) * 256;
+            tile += (e.Y / 8) * 16;
+
             AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
             ValueLabel.Text = "Table " + table.ToString();
+            Value2Label.Text = "Tile " + String.Format("{0:X2}", tile);
         }
 	}
 }
