@@ -278,17 +278,17 @@ namespace BizHawk.MultiClient
 			Global.SMSControls = smsControls;
 
 			var pceControls = new Controller(PCEngine.PCEngineController);
-			for (int i = 0; i < 1 /*TODO*/; i++)
+			for (int i = 0; i < 5; i++)
 			{
-				pceControls.BindMulti("Up", Global.Config.PCEController[i].Up);
-				pceControls.BindMulti("Down", Global.Config.PCEController[i].Down);
-				pceControls.BindMulti("Left", Global.Config.PCEController[i].Left);
-				pceControls.BindMulti("Right", Global.Config.PCEController[i].Right);
+				pceControls.BindMulti("P"+(i+1)+" Up", Global.Config.PCEController[i].Up);
+				pceControls.BindMulti("P"+(i+1)+" Down", Global.Config.PCEController[i].Down);
+				pceControls.BindMulti("P"+(i+1)+" Left", Global.Config.PCEController[i].Left);
+				pceControls.BindMulti("P"+(i+1)+" Right", Global.Config.PCEController[i].Right);
 
-				pceControls.BindMulti("II", Global.Config.PCEController[i].II);
-				pceControls.BindMulti("I", Global.Config.PCEController[i].I);
-				pceControls.BindMulti("Select", Global.Config.PCEController[i].Select);
-				pceControls.BindMulti("Run", Global.Config.PCEController[i].Run);
+				pceControls.BindMulti("P"+(i+1)+" B2", Global.Config.PCEController[i].II);
+				pceControls.BindMulti("P"+(i+1)+" B1", Global.Config.PCEController[i].I);
+				pceControls.BindMulti("P"+(i+1)+" Select", Global.Config.PCEController[i].Select);
+				pceControls.BindMulti("P"+(i+1)+" Run", Global.Config.PCEController[i].Run);
 			}
 			Global.PCEControls = pceControls;
 

@@ -6,7 +6,14 @@
             new ControllerDefinition
             {
                 Name = "PC Engine Controller",
-                BoolButtons = { "Up", "Down", "Left", "Right", "II", "I", "Select", "Run" }
+                BoolButtons =
+                    {
+                        "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B2", "P1 B1", "P1 Select", "P1 Run",
+                        "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B2", "P2 B1", "P2 Select", "P2 Run",
+                        "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 B2", "P3 B1", "P3 Select", "P3 Run",
+                        "P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 B2", "P4 B1", "P4 Select", "P4 Run",
+                        "P5 Up", "P5 Down", "P5 Left", "P5 Right", "P5 B2", "P5 B1", "P5 Select", "P5 Run"
+                    }
             };
 
         public ControllerDefinition ControllerDefinition { get { return PCEngineController;  } }
@@ -40,21 +47,21 @@
             
             string input = "|";
 
-            if (Controller.IsPressed("Up")) input += "U";
+            if (Controller.IsPressed("P1 Up")) input += "U";
             else input += ".";
-            if (Controller.IsPressed("Down")) input += "D";
+            if (Controller.IsPressed("P1 Down")) input += "D";
             else input += ".";
-            if (Controller.IsPressed("Left")) input += "L";
+            if (Controller.IsPressed("P1 Left")) input += "L";
             else input += ".";
-            if (Controller.IsPressed("Right")) input += "R";
+            if (Controller.IsPressed("P1 Right")) input += "R";
             else input += ".";
-            if (Controller.IsPressed("I")) input += "1";
+            if (Controller.IsPressed("P1 B1")) input += "1";
             else input += ".";
-            if (Controller.IsPressed("II")) input += "2";
+            if (Controller.IsPressed("P1 B2")) input += "2";
             else input += ".";
-            if (Controller.IsPressed("Select")) input += "S";
+            if (Controller.IsPressed("P1 Select")) input += "S";
             else input += ".";
-            if (Controller.IsPressed("Run")) input += "R";
+            if (Controller.IsPressed("P1 Run")) input += "R";
             else input += ".";
 
             input += "|.|"; //TODO: Add commands like reset here
@@ -62,31 +69,45 @@
             return input;
         }
 
-        private byte inputSelector;
-        public bool SEL { get { return ((inputSelector & 1) != 0) ;} }
-
+        private int SelectedController;
+        private byte InputByte;
+        public bool SEL { get { return ((InputByte & 1) != 0) ;} }
+        public bool CLR { get { return ((InputByte & 2) != 0); } }
+        
         private void WriteInput(byte value)
         {
-            inputSelector = value;
+            bool prevSEL = SEL;
+            InputByte = value;
+            if (CLR == false && prevSEL == false && SEL == true)
+                SelectedController = (SelectedController + 1) % 6;
         }
     
         private byte ReadInput()
         {
-            byte value = 0xBF; 
-            if (SEL == false) // return buttons
+            byte value = 0x3F;
+            if (CLR == false && SelectedController != 0)
             {
-                if (Controller["I"])      value &= 0xFE;
-                if (Controller["II"])     value &= 0xFD;
-                if (Controller["Select"]) value &= 0xFB;
-                if (Controller["Run"])    value &= 0xF7;
-            } else { //return directions
-                if (Controller["Up"])     value &= 0xFE;
-                if (Controller["Right"])  value &= 0xFD;
-                if (Controller["Down"])   value &= 0xFB;
-                if (Controller["Left"])   value &= 0xF7;
+                if (SEL == false) // return buttons
+                {
+                    if (Controller["P" + SelectedController + " B1"]) value &= 0xFE;
+                    if (Controller["P" + SelectedController + " B2"]) value &= 0xFD;
+                    if (Controller["P" + SelectedController + " Select"]) value &= 0xFB;
+                    if (Controller["P" + SelectedController + " Run"]) value &= 0xF7;
+                }
+                else
+                {
+                    //return directions
+                    if (Controller["P" + SelectedController + " Up"]) value &= 0xFE;
+                    if (Controller["P" + SelectedController + " Right"]) value &= 0xFD;
+                    if (Controller["P" + SelectedController + " Down"]) value &= 0xFB;
+                    if (Controller["P" + SelectedController + " Left"]) value &= 0xF7;
+                }
             }
 
             if (Region == "Japan") value |= 0x40;
+
+            if (Type != NecSystemType.TurboCD)
+                value |= 0x80;
 
             return value;
         }
