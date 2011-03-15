@@ -157,7 +157,6 @@
             this.luaConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pPUViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nameTableViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameGenieCodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -704,33 +703,33 @@
             // pauseToolStripMenuItem
             // 
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pauseToolStripMenuItem.Text = "&Pause";
             this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // powerToolStripMenuItem
             // 
             this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-            this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.powerToolStripMenuItem.Text = "Power Cycle";
             this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(141, 6);
             // 
             // sega8bitToolStripMenuItem
             // 
@@ -739,7 +738,7 @@
             this.overclockWhenKnownSafeToolStripMenuItem,
             this.forceStereoSeparationToolStripMenuItem});
             this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
-            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
             // 
             // enableFMChipToolStripMenuItem
@@ -1144,35 +1143,35 @@
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
             // rAMPokeToolStripMenuItem
             // 
             this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
             this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.rAMPokeToolStripMenuItem_Click);
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
             // 
             // luaConsoleToolStripMenuItem
             // 
             this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.luaConsoleToolStripMenuItem.Text = "Lua Console";
             this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
             // 
@@ -1180,7 +1179,6 @@
             // 
             this.NESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pPUViewerToolStripMenuItem,
-            this.nameTableViewerToolStripMenuItem,
             this.gameGenieCodesToolStripMenuItem});
             this.NESToolStripMenuItem.Name = "NESToolStripMenuItem";
             this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
@@ -1189,23 +1187,16 @@
             // pPUViewerToolStripMenuItem
             // 
             this.pPUViewerToolStripMenuItem.Name = "pPUViewerToolStripMenuItem";
-            this.pPUViewerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.pPUViewerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.pPUViewerToolStripMenuItem.Text = "&PPU Viewer";
             this.pPUViewerToolStripMenuItem.Click += new System.EventHandler(this.pPUViewerToolStripMenuItem_Click);
             // 
-            // nameTableViewerToolStripMenuItem
-            // 
-            this.nameTableViewerToolStripMenuItem.Enabled = false;
-            this.nameTableViewerToolStripMenuItem.Name = "nameTableViewerToolStripMenuItem";
-            this.nameTableViewerToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.nameTableViewerToolStripMenuItem.Text = "&Name Table Viewer";
-            // 
             // gameGenieCodesToolStripMenuItem
             // 
-            this.gameGenieCodesToolStripMenuItem.Enabled = false;
             this.gameGenieCodesToolStripMenuItem.Name = "gameGenieCodesToolStripMenuItem";
-            this.gameGenieCodesToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
-            this.gameGenieCodesToolStripMenuItem.Text = "&Game Genie Codes";
+            this.gameGenieCodesToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.gameGenieCodesToolStripMenuItem.Text = "&Game Genie Encoder/Decoder";
+            this.gameGenieCodesToolStripMenuItem.Click += new System.EventHandler(this.gameGenieCodesToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -1384,7 +1375,6 @@
         private System.Windows.Forms.ToolStripMenuItem replayInputLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NESToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pPUViewerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem nameTableViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem gameGenieCodesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableRewindToolStripMenuItem;
     }
