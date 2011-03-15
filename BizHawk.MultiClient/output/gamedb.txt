@@ -1,4 +1,4 @@
-CRC	Status	Name	System ID	Notes	MetaData	Configurations
+;CRC	Status	Name	System ID	Notes	MetaData	Configurations
 F0F35C22	 	20 em 1 (BR)	SMS			
 241F2707	D	20 in 1 menu [beta]	SMS	SMS newbie		
 A581402E	D	64-Color Palette Test Program	SMS	Charles MacDonald		

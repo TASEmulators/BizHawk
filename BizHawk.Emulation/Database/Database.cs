@@ -81,8 +81,6 @@ namespace BizHawk
         {
             using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
             {
-                reader.ReadLine(); // Skip header row
-
                 while (reader.EndOfStream == false)
                 {
                     string line = reader.ReadLine();
