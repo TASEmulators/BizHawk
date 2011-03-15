@@ -64,6 +64,19 @@ namespace BizHawk
 			return ret;
 		}
 
+		static void LoadDatabase_Escape(string line)
+		{
+			if (!line.ToUpper().StartsWith("#INCLUDE")) return;
+			line = line.Substring(8).TrimStart();
+			if (File.Exists(line))
+			{
+				Console.WriteLine("loaded external game database {0}", line);
+				LoadDatabase(line);
+			}
+			else
+				Console.WriteLine("BENIGN: missing external game database {0}", line);
+		}
+
         public static void LoadDatabase(string path)
         {
             using (var reader = new StreamReader(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
@@ -76,6 +89,11 @@ namespace BizHawk
                     try
                     {
 						if (line.StartsWith(";")) continue; //comment
+						if (line.StartsWith("#"))
+						{
+							LoadDatabase_Escape(line);
+							continue;
+						}
                         if (line.Trim().Length == 0) continue;
                         string[] items = line.Split('\t');
 
