@@ -78,29 +78,35 @@
         {
             bool prevSEL = SEL;
             InputByte = value;
+
+            if (SEL && CLR)
+                SelectedController = 0;
+
             if (CLR == false && prevSEL == false && SEL == true)
-                SelectedController = (SelectedController + 1) % 6;
+                SelectedController = (SelectedController + 1);
         }
     
         private byte ReadInput()
         {
             byte value = 0x3F;
-            if (CLR == false && SelectedController != 0)
+			
+            int player = SelectedController + 1;
+            if (player < 6)
             {
                 if (SEL == false) // return buttons
                 {
-                    if (Controller["P" + SelectedController + " B1"]) value &= 0xFE;
-                    if (Controller["P" + SelectedController + " B2"]) value &= 0xFD;
-                    if (Controller["P" + SelectedController + " Select"]) value &= 0xFB;
-                    if (Controller["P" + SelectedController + " Run"]) value &= 0xF7;
+                    if (Controller["P" + player + " B1"]) value &= 0xFE;
+                    if (Controller["P" + player + " B2"]) value &= 0xFD;
+                    if (Controller["P" + player + " Select"]) value &= 0xFB;
+                    if (Controller["P" + player + " Run"]) value &= 0xF7;
                 }
                 else
                 {
                     //return directions
-                    if (Controller["P" + SelectedController + " Up"]) value &= 0xFE;
-                    if (Controller["P" + SelectedController + " Right"]) value &= 0xFD;
-                    if (Controller["P" + SelectedController + " Down"]) value &= 0xFB;
-                    if (Controller["P" + SelectedController + " Left"]) value &= 0xF7;
+                    if (Controller["P" + player + " Up"]) value &= 0xFE;
+                    if (Controller["P" + player + " Right"]) value &= 0xFD;
+                    if (Controller["P" + player + " Down"]) value &= 0xFB;
+                    if (Controller["P" + player + " Left"]) value &= 0xF7;
                 }
             }
 

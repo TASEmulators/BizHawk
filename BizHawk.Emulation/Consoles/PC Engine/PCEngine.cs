@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void FrameAdvance(bool render)
         {
             Controller.UpdateControls(Frame++);
-            SelectedController = 0;
+
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
             if (SuperGrafx)
