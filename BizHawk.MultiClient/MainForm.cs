@@ -1223,5 +1223,11 @@ namespace BizHawk.MultiClient
         {
 			HandlePlatformMenus();
         }
+
+        private void gameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NESGameGenie g = new NESGameGenie();
+            g.Show();
+        }
 	}
 }

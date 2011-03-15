@@ -132,6 +132,12 @@
     <Compile Include="NEStools\NameTableViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NEStools\NESGameGenie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NEStools\NESGameGenie.designer.cs">
+      <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </Compile>
     <Compile Include="NEStools\NESPPU.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,6 +300,10 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="NEStools\NESGameGenie.resx">
+      <DependentUpon>NESGameGenie.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="NEStools\NESPPU.resx">
       <DependentUpon>NESPPU.cs</DependentUpon>
       <SubType>Designer</SubType>
