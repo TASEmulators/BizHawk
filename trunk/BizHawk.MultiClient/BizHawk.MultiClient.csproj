@@ -213,6 +213,13 @@
     <Compile Include="config\HotkeyWindow.Designer.cs">
       <DependentUpon>HotkeyWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Cheat.cs" />
+    <Compile Include="tools\Cheats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Cheats.Designer.cs">
+      <DependentUpon>Cheats.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\HexEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -322,6 +329,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\HotkeyWindow.resx">
       <DependentUpon>HotkeyWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Cheats.resx">
+      <DependentUpon>Cheats.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor.resx">
