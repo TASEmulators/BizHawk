@@ -85,11 +85,20 @@
         public int HexEditorHeight = -1;
 
         // NESPPU Setings
-        public bool AutoLoadNESPPU = true;
+        public bool AutoLoadNESPPU = false;
         public bool NESPPUSaveWindowPosition = true;
         public int NESPPUWndx = -1;
         public int NESPPUWndy = -1;
 
+        // Cheats Dialog
+        public bool AutoLoadCheats = false;
+        public bool CheatsSaveWindowPosition = true;
+        public RecentFiles RecentCheats = new RecentFiles(8);
+        public int CheatsWndx = -1;
+        public int CheatsWndy = -1;
+        public int CheatsWidth = -1;
+        public int CheatsHeight = -1;
+        
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
 
