@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public Bit intense_blue; //Intensify blues (and darken other colors)
 				public Bit intense_red; //Intensify reds (and darken other colors)
 
+				public int intensity_lsl_8; //an optimization..
+
 				public bool PPUON { get { return show_bg || show_obj; } }
 
 				public byte Value
@@ -49,6 +51,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						intense_green = (value >> 5) & 1;
 						intense_blue = (value >> 6) & 1;
 						intense_red = (value >> 7) & 1;
+						intensity_lsl_8 = ((value >> 5) & 7)<<8;
 					}
 				}
 			}
@@ -120,17 +123,44 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//other regs that need savestating
 				public int fh;//3 (horz scroll)
 
-				//other regs that don't need saving
-				public int par;//8 (sort of a hack, just stored in here, but not managed by this system)
-
 				//cached state data. these are always reset at the beginning of a frame and don't need saving
 				//but just to be safe, we're gonna save it
 				public PPUSTATUS status = new PPUSTATUS();
 
+				//public int ComputeIndex()
+				//{
+				//    return fv | (v << 3) | (h << 4) | (vt << 5) | (ht << 10) | (fh << 15);
+				//}
+				//public void DecodeIndex(int index)
+				//{
+				//    fv = index & 7;
+				//    v = (index >> 3) & 1;
+				//    h = (index >> 4) & 1;
+				//    vt = (index >> 5) & 0x1F;
+				//    ht = (index >> 10) & 0x1F;
+				//    fh = (index >> 15) & 7;
+				//}
+
+				//const int tbl_size = 1 << 18;
+				//int[] tbl_increment_hsc = new int[tbl_size];
+				//int[] tbl_increment_vs = new int[tbl_size];
+				//public void BuildTables()
+				//{
+				//    for (int i = 0; i < tbl_size; i++)
+				//    {
+				//        DecodeIndex(i);
+				//        increment_hsc();
+				//        tbl_increment_hsc[i] = ComputeIndex();
+				//        DecodeIndex(i);
+				//        increment_vs();
+				//        tbl_increment_vs[i] = ComputeIndex();
+				//    }
+				//}
+
 				public void reset()
 				{
 					fv = v = h = vt = ht = 0;
-					fh = par = 0;
+					fh = 0;
 					_fv = _v = _h = _vt = _ht = 0;
 					status.cycle = 0;
 					status.end_cycle = 341;
@@ -202,7 +232,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 
 				//address line 3 relates to the pattern table fetch occuring (the PPU always makes them in pairs).
-				public int get_ptread()
+				public int get_ptread(int par)
 				{
 					int s = ppu.reg_2000.bg_pattern_hi;
 					return (s << 0xC) | (par << 0x4) | fv;

@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public int[] GetVideoBuffer()
 			{
+				//why is it faster to continually reallocate? i have no idea.
 				int[] pixels = new int[256 * 240];
 				int i = 0;
 				for (int y = 0; y < 240; y++)

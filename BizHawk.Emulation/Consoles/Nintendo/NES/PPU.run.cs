@@ -50,8 +50,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				runppu(1);
 
-				ppur.par = bgdata.nt;
-				addr = ppur.get_ptread();
+				addr = ppur.get_ptread(bgdata.nt);
 				bgdata.pt_0 = ppubus_read(addr);
 				runppu(kFetchTime);
 				addr |= 8;
@@ -70,15 +69,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//TODO - check flashing sirens in werewolf
 			short PaletteAdjustPixel(int pixel)
 			{
-				//tack on the deemph bits
-				pixel |= (reg_2001.intense_red<<8)|(reg_2001.intense_green<<9)|(reg_2001.intense_blue<<10);
-				return (short)pixel;
+				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
+				return (short)(pixel| reg_2001.intensity_lsl_8);
 			}
 
 			const int kLineTime = 341;
 			public unsafe void FrameAdvance()
 			{
-				BGDataRecord[] bgdata = new BGDataRecord[34]; //one at the end is junk, it can never be rendered
+				BGDataRecord *bgdata = stackalloc BGDataRecord[34]; //one at the end is junk, it can never be rendered
 
 				//262 scanlines
 				if (ppudead != 0)
@@ -117,8 +115,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//if(PPUON)
 				//	ppur.install_latches();
 
-				TempOAM[,] oams = new TempOAM[2,64]; //[7] turned to [8] for faster indexing
-				int[] oamcounts = new int[2];
+				TempOAM* oams = stackalloc TempOAM[128];
+				int* oamcounts = stackalloc int[2];
 				int oamslot=0;
 				int oamcount=0;
 
@@ -185,7 +183,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								bool havepixel = false;
 								for (int s = 0; s < oamcount; s++)
 								{
-									fixed (TempOAM* oam = &oams[renderslot, s])
+									TempOAM *oam = &oams[(renderslot<<6)+s];
 									{
 										int x = oam->oam[3];
 										if (rasterpos >= x && rasterpos < x + 8)
@@ -232,6 +230,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 									} //c# fixed oam ptr
 
+
 								}//oamcount loop
 
 								xbuf[target] = PaletteAdjustPixel(pixelcolor);
@@ -248,8 +247,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					int spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
 					for (int i = 0; i < 64; i++)
-						fixed (TempOAM* oam = &oams[scanslot, i])
-							oam->present = 0;
+						oams[(scanslot<<6)+i].present = 0;
 
 					for (int i = 0; i < 64; i++)
 					{
@@ -267,7 +265,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								}
 
 								//just copy some bytes into the internal sprite buffer
-								fixed (TempOAM* oam = &oams[scanslot, oamcount])
+								TempOAM* oam = &oams[(scanslot << 6) + oamcount];
 								{
 									for (int j = 0; j < 4; j++)
 										oam->oam[j] = OAM[spr + j];
@@ -276,7 +274,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 								//note that we stuff the oam index into [6].
 								//i need to turn this into a struct so we can have fewer magic numbers
-								oams[scanslot, oamcount].index = (byte)i;
+								oams[(scanslot<<6)+oamcount].index = (byte)i;
 								oamcount++;
 							}
 						}
@@ -315,7 +313,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//this could be handy for the debugging tools also
 						bool realSprite = (s < 8);
 
-						fixed (TempOAM* oam = &oams[scanslot, s])
+						TempOAM* oam = &oams[(scanslot << 6) + s];
+						//fixed (TempOAM* oam = &oams[scanslot, s])
 						{
 							int line = yp - oam->oam[0];
 							if ((oam->oam[2] & 0x80) != 0) //vflip

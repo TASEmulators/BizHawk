@@ -100,11 +100,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void runppu(int x)
 			{
 				//pputime+=x;
-				//if(cputodo<200) return;
 
 				//DON'T LIKE THIS....
-				ppur.status.cycle = (ppur.status.cycle + x) %
-				                       ppur.status.end_cycle;
+				ppur.status.cycle += x;
+				if (ppur.status.cycle > ppur.status.end_cycle)
+					ppur.status.cycle -= ppur.status.end_cycle;
+				
 				nes.RunCpu(x);
 				//pputime -= cputodo<<2;
 			}
