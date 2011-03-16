@@ -177,13 +177,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                 addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
             var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
                 addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
-			var dCIRAM = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
+			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
-            
+
+			SystemBus.GetFreeze = addr => sysbus_freeze[addr];
+			SystemBus.SetFreeze = (addr,value) => sysbus_freeze[addr] = value;
+
             domains.Add(RAM);
 			domains.Add(SystemBus);
             domains.Add(PPUBus);
-			domains.Add(dCIRAM);
+			domains.Add(CIRAMdomain);
 
             if (board.SaveRam != null)
             {
