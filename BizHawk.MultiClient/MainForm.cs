@@ -139,8 +139,10 @@ namespace BizHawk.MultiClient
 				LoadRamSearch();
             if (Global.Config.AutoLoadHexEditor)
                 LoadHexEditor();
-			//if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
-			//    LoadNESPPU();
+            if (Global.Config.AutoLoadCheats)
+                LoadCheatsWindow();
+			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
+			    LoadNESPPU();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -1022,6 +1024,8 @@ namespace BizHawk.MultiClient
             if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
             {
                 Cheats1 = new Cheats();
+                if (Global.Config.AutoLoadCheats)
+                    Cheats1.LoadWatchFromRecent(Global.Config.RecentCheats.GetRecentFileByPosition(0));
                 Cheats1.Show();
             }
             else
