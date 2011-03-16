@@ -44,6 +44,7 @@ namespace BizHawk.MultiClient
 		public RamSearch RamSearch1 = new RamSearch();
         public HexEditor HexEditor1 = new HexEditor();
         public NESPPU NESPPU1 = new NESPPU();
+        public Cheats Cheats1 = new Cheats();
 
 		public MainForm(string[] args)
 		{
@@ -1004,6 +1005,17 @@ namespace BizHawk.MultiClient
                 NESPPU1.Focus();
         }
 
+        public void LoadCheatsWindow()
+        {
+            if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
+            {
+                Cheats1 = new Cheats();
+                Cheats1.Show();
+            }
+            else
+                NESPPU1.Focus();
+        }
+
 		private int lastWidth = -1;
 		private int lastHeight = -1;
 
@@ -1228,6 +1240,11 @@ namespace BizHawk.MultiClient
         {
             NESGameGenie g = new NESGameGenie();
             g.Show();
+        }
+
+        private void cheatsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadCheatsWindow();
         }
 	}
 }
