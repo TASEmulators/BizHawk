@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.MultiClient
 {
-    class Cheat
+    public class Cheat
     {
         public string name { get; set; }
         public int address { get; set; }

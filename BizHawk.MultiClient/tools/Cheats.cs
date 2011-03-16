@@ -13,13 +13,22 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
+        //TODO: Get vlist display working
+        //Input validation on address & value boxes
+        //Remove compare column? make it conditional? Think about this
+        //Set address box text load based on memory domain size
+        //Recent files 
+        //Memory domains
+        //File format - saving & loading
+        //Shortcuts for Cheat menu items
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
 
         List<Cheat> cheatList = new List<Cheat>();
         string currentCheatFile = "";
         bool changes = false;
-        /*
+
         public List<Cheat> GetCheatList()
         {
             List<Cheat> c = new List<Cheat>();
@@ -28,11 +37,62 @@ namespace BizHawk.MultiClient
 
             return c;
         }
-        */
+
         public Cheats()
         {
             InitializeComponent();
             Closing += (o, e) => SaveConfigSettings();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!AskSave())
+                e.Cancel = true;
+            CheatListView.QueryItemText += new QueryItemTextHandler(CheatListView_QueryItemText);
+            CheatListView.QueryItemBkColor += new QueryItemBkColorHandler(CheatListView_QueryItemBkColor);
+            CheatListView.VirtualMode = true;
+            base.OnClosing(e);
+        }
+
+        private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
+        {
+            if (cheatList[index].address < 0)
+                color = this.BackColor;
+        }
+
+        private void CheatListView_QueryItemText(int index, int column, out string text)
+        {
+            text = "";
+            if (column == 0) //Name
+            {
+                text = cheatList[index].name;
+            }
+            if (column == 1) //Address
+            {
+                text = String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", cheatList[index].address);
+            }
+            if (column == 2) //Value
+            {
+                text = String.Format("{0:2X", cheatList[index].value);
+            }
+            if (column == 3) //Compare
+            {
+                text = String.Format("{0:2X", cheatList[index].compare);
+            }
+
+        }
+
+        private int GetNumDigits(Int32 i)
+        {
+            //if (i == 0) return 0;
+            //if (i < 0x10) return 1;
+            //if (i < 0x100) return 2;
+            //if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
+            if (i < 0x10000) return 4;
+            //if (i < 0x100000) return 5;
+            if (i < 0x1000000) return 6;
+            //if (i < 0x10000000) return 7;
+            else return 8;
         }
 
         private void Cheats_Load(object sender, EventArgs e)
@@ -40,25 +100,31 @@ namespace BizHawk.MultiClient
             LoadConfigSettings();
         }
 
+        public void AddCheat(Cheat c)
+        {
+            cheatList.Add(c);
+            UpdateNumberOfCheats();
+            DisplayCheatsList();
+        }
+
         public void LoadWatchFromRecent(string file)
         {
             bool z = true;
-            /*
+
             if (changes) z = AskSave();
 
             if (z)
             {
-                bool r = LoadWatchFile(file, false);
+                bool r = LoadCheatFile(file, false);
                 if (!r)
                 {
                     DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                     if (result == DialogResult.Yes)
-                        Global.Config.RecentWatches.Remove(file);
+                        Global.Config.RecentCheats.Remove(file);
                 }
-                DisplayWatchList();
+                DisplayCheatsList();
                 changes = false;
             }
-            */
         }
 
         private void LoadConfigSettings()
@@ -85,12 +151,35 @@ namespace BizHawk.MultiClient
 
         private void DisplayCheatsList()
         {
-
+            CheatListView.ItemCount = cheatList.Count;
+            //CheatListView.Refresh();
         }
 
         private void MoveUp()
         {
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            Cheat temp = new Cheat();
+            if (indexes[0] == 0) return;
+            foreach (int index in indexes)
+            {
+                temp = cheatList[index];
+                cheatList.Remove(cheatList[index]);
+                cheatList.Insert(index - 1, temp);
 
+                //Note: here it will get flagged many times redundantly potentially, 
+                //but this avoids it being flagged falsely when the user did not select an index
+                Changes();
+            }
+            List<int> i = new List<int>();
+            for (int z = 0; z < indexes.Count; z++)
+                i.Add(indexes[z] - 1);
+
+            CheatListView.SelectedIndices.Clear();
+            for (int z = 0; z < i.Count; z++)
+                CheatListView.SelectItem(i[z], true);
+
+
+            DisplayCheatsList();
         }
 
         private void MoveDown()
@@ -336,6 +425,88 @@ namespace BizHawk.MultiClient
         private void openToolStripButton_Click(object sender, EventArgs e)
         {
             OpenCheatFile();
+        }
+
+        private void InsertSeparator()
+        {
+            Cheat c = new Cheat();
+            c.address = -1;
+            c.name = "Separator"; //TODO: remove me
+
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            int x;
+            if (indexes.Count > 0)
+            {
+                x = indexes[0];
+                if (indexes[0] > 0)
+                    cheatList.Insert(indexes[0], c);
+            }
+            else
+                cheatList.Add(c);
+            DisplayCheatsList();
+            CheatListView.Refresh();
+        }
+
+        private void toolStripButtonSeparator_Click(object sender, EventArgs e)
+        {
+            InsertSeparator();
+        }
+
+        private void insertSeparatorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            InsertSeparator();
+        }
+        
+        private Cheat MakeCheat()
+        {
+            Cheat c = new Cheat();
+            c.name = NameBox.Text;
+            c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
+            c.value = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+            return c;
+        }
+
+        private void AddCheatButton_Click(object sender, EventArgs e)
+        {
+            AddCheat(MakeCheat());
+        }
+
+        private void addCheatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddCheat(MakeCheat());
+        }
+
+        private void RemoveCheat()
+        {
+            Changes();
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                foreach (int index in indexes)
+                {
+                    cheatList.Remove(cheatList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+                }
+                DisplayCheatsList();
+            }
+        }
+
+        private void cutToolStripButton_Click(object sender, EventArgs e)
+        {
+            RemoveCheat();
+        }
+
+        private void removeCheatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveCheat();
+        }
+
+        private void UpdateNumberOfCheats()
+        {
+            int z = cheatList.Count;
+            if (z == 1)
+                NumCheatsLabel.Text = z.ToString() + " cheat";
+            else
+                NumCheatsLabel.Text = z.ToString() + " cheats";
         }
     }
 }
