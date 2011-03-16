@@ -211,6 +211,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//apply freeze
 			if (sysbus_freeze[addr].IsFrozen) ret = sysbus_freeze[addr].value;
 
+			//handle breakpoints and stuff.
+			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
+			//but since freeze is a common case, it was implemented through its own mechanisms
+			if (sysbus_freeze[addr].HasWatch)
+			{
+				(sysbus_freeze[addr].watch as NESWatch).Read();
+			}
+
 			return ret;
 		}
 

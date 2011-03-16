@@ -48,22 +48,31 @@ namespace BizHawk
         public readonly int Size;
         public readonly Endian Endian;
 
+		//perhaps inconveniently, this is a struct. 
+		//this is a premature optimization, since I anticipate having millions of these and i didnt want millions of objects
 		public struct FreezeData
 		{
 			public FreezeData(Flag flags, byte value)
 			{
 				this.flags = flags;
 				this.value = value;
+				watch = null;
 			}
 			public byte value;
 			public Flag flags;
+			public object watch;
+			public void SetWatch(object watch)
+			{
+				this.watch = watch;
+			}
 			public enum Flag : byte
 			{
 				None = 0,
 				Frozen = 1
 			}
 
-			public bool IsFrozen { get { return flags != Flag.None; } }
+			public bool IsFrozen { get { return (flags & Flag.Frozen) != 0; } }
+			public bool HasWatch { get { return watch != null; } }
 			public static FreezeData Unfrozen { get { return new FreezeData(); } }
 		}
 
