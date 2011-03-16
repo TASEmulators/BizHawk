@@ -48,8 +48,29 @@ namespace BizHawk
         public readonly int Size;
         public readonly Endian Endian;
 
+		public struct FreezeData
+		{
+			public FreezeData(Flag flags, byte value)
+			{
+				this.flags = flags;
+				this.value = value;
+			}
+			public byte value;
+			public Flag flags;
+			public enum Flag : byte
+			{
+				None = 0,
+				Frozen = 1
+			}
+
+			public bool IsFrozen { get { return flags != Flag.None; } }
+			public static FreezeData Unfrozen { get { return new FreezeData(); } }
+		}
+
         public readonly Func<int, byte> PeekByte;
         public readonly Action<int, byte> PokeByte;
+		public Func<int, FreezeData> GetFreeze;
+		public Action<int, FreezeData> SetFreeze;
 
         public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
         {

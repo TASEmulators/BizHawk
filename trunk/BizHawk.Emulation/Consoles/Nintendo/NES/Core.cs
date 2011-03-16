@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public PPU ppu;
 		public APU apu;
 		byte[] ram;
+		MemoryDomain.FreezeData[] sysbus_freeze = new MemoryDomain.FreezeData[65536];
 		protected byte[] CIRAM; //AKA nametables
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
@@ -196,15 +197,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public byte ReadMemory(ushort addr)
 		{
-			if (addr < 0x0800) return ram[addr];
-			else if (addr < 0x1000) return ram[addr - 0x0800];
-			else if (addr < 0x1800) return ram[addr - 0x1000];
-			else if (addr < 0x2000) return ram[addr - 0x1800];
-			else if (addr < 0x4000) return ReadPPUReg(addr & 7);
-			else if (addr < 0x4020) return ReadReg(addr); //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) return board.ReadEXP(addr);
-			else if (addr < 0x8000) return board.ReadPRAM(addr);
-			else return board.ReadPRG(addr - 0x8000);
+			byte ret;
+			if (addr < 0x0800) ret = ram[addr];
+			else if (addr < 0x1000) ret = ram[addr - 0x0800];
+			else if (addr < 0x1800) ret = ram[addr - 0x1000];
+			else if (addr < 0x2000) ret = ram[addr - 0x1800];
+			else if (addr < 0x4000) ret = ReadPPUReg(addr & 7);
+			else if (addr < 0x4020) ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+			else if (addr < 0x6000) ret = board.ReadEXP(addr);
+			else if (addr < 0x8000) ret = board.ReadPRAM(addr);
+			else ret = board.ReadPRG(addr - 0x8000);
+			
+			//apply freeze
+			if (sysbus_freeze[addr].IsFrozen) ret = sysbus_freeze[addr].value;
+
+			return ret;
 		}
 
 		public void WriteMemory(ushort addr, byte value)
