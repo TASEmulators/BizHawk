@@ -6,11 +6,14 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
+using BizHawk;
 
 namespace BizHawk.MultiClient
 {
     public partial class NESGameGenie : Form
     {
+        //TODO: Encoding: Backspace on textboxes should trigger encoding
         int address = -1;
         int value = -1;
         int compare = -1;
@@ -47,8 +50,15 @@ namespace BizHawk.MultiClient
             if (e.KeyChar > 97 && e.KeyChar < 123)
                 e.KeyChar -= (char)32;
 
-            if (!(GameGenieTable.ContainsKey(e.KeyChar))) 
-                e.Handled = true;
+            if (!(GameGenieTable.ContainsKey(e.KeyChar)))
+            {
+                if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+                    e.Handled = true;
+            }
+            else
+            {
+                Encoding.Checked = false;
+            }
         }
 
         private int GetBit(int value, int bit)
@@ -167,10 +177,13 @@ namespace BizHawk.MultiClient
 
         private void GameGenieCode_TextChanged(object sender, EventArgs e)
         {
-            if (GameGenieCode.Text.Length == 6 || GameGenieCode.Text.Length == 8)
-                DecodeGameGenieCode(GameGenieCode.Text);
-            else
-                ClearProperties();
+            if (Encoding.Checked == false)
+            {
+                if (GameGenieCode.Text.Length == 6 || GameGenieCode.Text.Length == 8)
+                    DecodeGameGenieCode(GameGenieCode.Text);
+                else
+                    ClearProperties();
+            }
         }
 
         private void Keypad_Click(object sender, EventArgs e)
@@ -193,53 +206,147 @@ namespace BizHawk.MultiClient
                 if (sender == S) GameGenieCode.Text += "S";
                 if (sender == V) GameGenieCode.Text += "V";
                 if (sender == N) GameGenieCode.Text += "N";
+                Encoding.Checked = false;
             }
         }
 
         private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //TODO: IsValidHex
-            //if not ignore input
+            if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+            {
+                if (InputValidate.IsValidHexNumber(e.KeyChar))
+                {
+                    Encoding.Checked = true;
+                }
+                else
+                    e.Handled = true;
+            }
+            else
+                Encoding.Checked = true;
         }
 
         private void CompareBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //TODO: IsValidHex
+            if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+            {
+                if (InputValidate.IsValidHexNumber(e.KeyChar))
+                {
+
+                    Encoding.Checked = true;
+                }
+                else
+                    e.Handled = true;
+            }
+            else
+                Encoding.Checked = true;
         }
 
         private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //TODO: IsValidHex
+            if (!(e.KeyChar == (char)Keys.Back)) //Allow backspace
+            {
+                if (InputValidate.IsValidHexNumber(e.KeyChar))
+                {
+
+                    Encoding.Checked = true;
+                }
+                else
+                    e.Handled = true;
+            }
+            else
+                Encoding.Checked = true;
         }
 
         private void AddressBox_TextChanged(object sender, EventArgs e)
         {
-            /*
-            int a = int.Parse(AddressBox.Text); //TODO: try/catch just in case?
-            if (a >= 0x8000)
+            if (Encoding.Checked && AddressBox.Text.Length > 0)
             {
-                if (ValueBox.Text.Length > 0 && CompareBox.Text.Length > 0)
+                int a = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: try/catch just in case?
+                if (ValueBox.Text.Length > 0)
                 {
                     address = a;
-                    EncodeGameGenie(); //TODO: check to make sure value & compare are set
+                    EncodeGameGenie();
                 }
             }
-            */ //TODO: decoder will change the text and trigger this event, find a way around it
         }
 
         private void CompareBox_TextChanged(object sender, EventArgs e)
         {
-            
+            if (Encoding.Checked)
+            {
+                if (CompareBox.Text.Length > 0)
+                {
+                    int c = int.Parse(CompareBox.Text, NumberStyles.HexNumber);
+                    if (c > 0 && c < 0x100)
+                    {
+                        if (ValueBox.Text.Length > 0 && AddressBox.Text.Length > 0)
+                        {
+                            compare = c;
+                            EncodeGameGenie();
+                        }
+                    }
+                }
+                else
+                {
+                    compare = -1;
+                    EncodeGameGenie();
+                }
+            }
         }
 
         private void ValueBox_TextChanged(object sender, EventArgs e)
         {
-
+            if (Encoding.Checked && ValueBox.Text.Length > 0)
+            {
+                int v = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+                if (v > 0 && v < 0x100)
+                {
+                    if (AddressBox.Text.Length > 0)
+                    {
+                        value = v;
+                        EncodeGameGenie();
+                    }
+                }
+            }
         }
 
         private void EncodeGameGenie()
         {
+            char[] letters = {'A','P','Z','L','G','I','T','Y','E','O','X','U','K','S','V','N'};
+            if (address >= 0x8000)
+                address -= 0x8000;
+            GameGenieCode.Text = "";
+            byte[] num = {0, 0, 0, 0, 0, 0, 0, 0};
+            num[0] = (byte)((value & 7) + ((value >> 4) & 8));
+            num[1] = (byte)(((value >> 4) & 7) + ((address >> 4) & 8));
+            num[2] = (byte)(((address >> 4) & 7));
+            num[3] = (byte)((address >> 12) + (address & 8));
+            num[4] = (byte)((address & 7) + ((address >> 8) & 8));
+            num[5] = (byte)(((address >> 8) & 7));
 
+            if (compare < 0 || CompareBox.Text.Length == 0)
+            {
+                num[5] += (byte)(value & 8);
+                for (int x = 0; x < 6; x++)
+                    GameGenieCode.Text += letters[num[x]];
+            }
+            else
+            {
+                num[2] += 8;
+                num[5] += (byte)(compare & 8);
+                num[6] = (byte)((compare & 7) + ((compare >> 4) & 8));
+                num[7] = (byte)(((compare >> 4) & 7) + (value & 8));
+                for (int x = 0; x < 8; x++)
+                    GameGenieCode.Text += letters[num[x]];
+            }
+            
+        }
+
+        private void ClearButton_Click(object sender, EventArgs e)
+        {
+            ClearProperties();
+            GameGenieCode.Text = "";
+            Encoding.Checked = false;
         }
     }
 }
