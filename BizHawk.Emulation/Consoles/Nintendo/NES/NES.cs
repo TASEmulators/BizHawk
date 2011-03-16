@@ -34,6 +34,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetPalette(Palettes.FCEUX_Standard);
 		}
 
+		class NESWatch
+		{
+			public Action OnRead;
+
+			public void Read()
+			{
+				if (OnRead != null) OnRead();
+			}
+		}
+
 		public enum EMirrorType
 		{
 			Vertical, Horizontal,
@@ -182,6 +192,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			SystemBus.GetFreeze = addr => sysbus_freeze[addr];
 			SystemBus.SetFreeze = (addr,value) => sysbus_freeze[addr] = value;
+
+			//demo a watchpoint
+			var test = new NESWatch();
+			test.OnRead = () => Console.WriteLine("0x8000 was read!");
+			MemoryDomain.FreezeData temp = SystemBus.GetFreeze(0x8000);
+			temp.SetWatch(test);
+			SystemBus.SetFreeze(0x8000,temp);
 
             domains.Add(RAM);
 			domains.Add(SystemBus);
