@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -31,7 +32,10 @@ namespace BizHawk.MultiClient
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused;
+		int runloop_fps;
 		bool runloop_frameadvance;
+		DateTime runloop_second;
+		
 		Throttle throttle = new Throttle();
 		int rewindCredits;
 
@@ -135,8 +139,8 @@ namespace BizHawk.MultiClient
 				LoadRamSearch();
             if (Global.Config.AutoLoadHexEditor)
                 LoadHexEditor();
-            if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
-                LoadNESPPU();
+			//if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
+			//    LoadNESPPU();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -704,6 +708,14 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
+				runloop_fps++;
+				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
+				{
+					runloop_second = DateTime.Now;
+					Global.RenderPanel.FPS = runloop_fps;
+					runloop_fps = 0;
+				}
+
 				if(!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)

@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public static void ApplyDeemphasis(ref int r, ref int g, ref int b, int deemph_bits)
 			{
+				//DEEMPH BITS MAY BE ORDERED WRONG. PLEASE CHECK
 				if (deemph_bits == 0) return;
 				int d = deemph_bits-1;
 				r = (int)(r * rtmul[d]);

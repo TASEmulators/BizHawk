@@ -109,12 +109,14 @@ namespace BizHawk.MultiClient
 		void Render(IVideoProvider video);
 		bool Resized { get; set; }
 		void AddMessage(string msg);
+		decimal FPS { get; set; }
 	}
 
 	public class SysdrawingRenderPanel : IRenderer
 	{
 		public bool Resized { get; set; }
 		public void Dispose() { }
+		public decimal FPS { get; set; }
 		public void Render(IVideoProvider video)
 		{
             Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
@@ -144,6 +146,7 @@ namespace BizHawk.MultiClient
     {
         public Color BackgroundColor { get; set; }
         public bool Resized { get; set; }
+		public decimal FPS { get; set; }
 
         private Direct3D d3d;
         private Device Device;
@@ -262,6 +265,9 @@ namespace BizHawk.MultiClient
                 string input = MakeInputDisplay();
                 MessageFont.DrawString(null, input, 1, 16, new Color4(Color.White));
             }
+
+			if (Global.Config.DisplayFPS)
+				MessageFont.DrawString(null, FPS.ToString(), 0, 0, new Color4(Color.White));
         }
 
         private string MakeFrameCounter()
