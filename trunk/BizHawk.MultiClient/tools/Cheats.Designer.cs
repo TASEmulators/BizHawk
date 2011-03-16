@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cheats));
-            this.CheatListView = new System.Windows.Forms.ListView();
+            this.CheatListView = new BizHawk.VirtualListView();
             this.CheatName = new System.Windows.Forms.ColumnHeader();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
@@ -41,6 +41,7 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.appendFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -51,6 +52,10 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findAndLoadCheatFileByGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -63,13 +68,20 @@
             this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.MessageLabel = new System.Windows.Forms.Label();
-            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.findAndLoadCheatFileByGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddCheatGroup = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.NameBox = new System.Windows.Forms.TextBox();
+            this.AddressBox = new System.Windows.Forms.TextBox();
+            this.ValueBox = new System.Windows.Forms.TextBox();
+            this.AddCheatButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.NumCheatsLabel = new System.Windows.Forms.Label();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.AddCheatGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // CheatListView
@@ -83,9 +95,11 @@
             this.Value,
             this.Compare});
             this.CheatListView.GridLines = true;
-            this.CheatListView.Location = new System.Drawing.Point(12, 56);
+            this.CheatListView.ItemCount = 0;
+            this.CheatListView.Location = new System.Drawing.Point(12, 72);
             this.CheatListView.Name = "CheatListView";
-            this.CheatListView.Size = new System.Drawing.Size(294, 293);
+            this.CheatListView.selectedItem = -1;
+            this.CheatListView.Size = new System.Drawing.Size(294, 277);
             this.CheatListView.TabIndex = 0;
             this.CheatListView.UseCompatibleStateImageBehavior = false;
             this.CheatListView.View = System.Windows.Forms.View.Details;
@@ -173,6 +187,12 @@
             this.appendFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.appendFileToolStripMenuItem.Text = "Append File";
             // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -204,12 +224,14 @@
             this.addCheatToolStripMenuItem.Name = "addCheatToolStripMenuItem";
             this.addCheatToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.addCheatToolStripMenuItem.Text = "&Add Cheat";
+            this.addCheatToolStripMenuItem.Click += new System.EventHandler(this.addCheatToolStripMenuItem_Click);
             // 
             // removeCheatToolStripMenuItem
             // 
             this.removeCheatToolStripMenuItem.Name = "removeCheatToolStripMenuItem";
             this.removeCheatToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.removeCheatToolStripMenuItem.Text = "&Remove Cheat";
+            this.removeCheatToolStripMenuItem.Click += new System.EventHandler(this.removeCheatToolStripMenuItem_Click);
             // 
             // duplicateToolStripMenuItem
             // 
@@ -222,6 +244,7 @@
             this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
             this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
+            this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
@@ -241,6 +264,34 @@
             this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.moveDownToolStripMenuItem.Text = "Move &Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveWindowPositionToolStripMenuItem,
+            this.findAndLoadCheatFileByGameToolStripMenuItem,
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "&Options";
+            // 
+            // saveWindowPositionToolStripMenuItem
+            // 
+            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            // 
+            // findAndLoadCheatFileByGameToolStripMenuItem
+            // 
+            this.findAndLoadCheatFileByGameToolStripMenuItem.Name = "findAndLoadCheatFileByGameToolStripMenuItem";
+            this.findAndLoadCheatFileByGameToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.findAndLoadCheatFileByGameToolStripMenuItem.Text = "Find and Load Cheat File by Game";
+            // 
+            // autoTurnOnCheatsOnLoadToolStripMenuItem
+            // 
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Name = "autoTurnOnCheatsOnLoadToolStripMenuItem";
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Text = "Auto Turn on Cheats on Load";
             // 
             // toolStrip1
             // 
@@ -299,11 +350,12 @@
             // cutToolStripButton
             // 
             this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.cutToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("cutToolStripButton.Image")));
+            this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
             this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.cutToolStripButton.Name = "cutToolStripButton";
             this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.cutToolStripButton.Text = "&Remove";
+            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
             // 
             // copyToolStripButton
             // 
@@ -322,6 +374,7 @@
             this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
             this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
             this.toolStripButtonSeparator.Text = "Insert Separator";
+            this.toolStripButtonSeparator.Click += new System.EventHandler(this.toolStripButtonSeparator_Click);
             // 
             // toolStripSeparator2
             // 
@@ -354,49 +407,124 @@
             this.MessageLabel.AutoSize = true;
             this.MessageLabel.Location = new System.Drawing.Point(13, 356);
             this.MessageLabel.Name = "MessageLabel";
-            this.MessageLabel.Size = new System.Drawing.Size(35, 13);
+            this.MessageLabel.Size = new System.Drawing.Size(0, 13);
             this.MessageLabel.TabIndex = 3;
-            this.MessageLabel.Text = "label1";
             // 
-            // recentToolStripMenuItem
+            // AddCheatGroup
             // 
-            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.recentToolStripMenuItem.Text = "Recent";
+            this.AddCheatGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddCheatGroup.Controls.Add(this.label5);
+            this.AddCheatGroup.Controls.Add(this.label4);
+            this.AddCheatGroup.Controls.Add(this.AddCheatButton);
+            this.AddCheatGroup.Controls.Add(this.ValueBox);
+            this.AddCheatGroup.Controls.Add(this.AddressBox);
+            this.AddCheatGroup.Controls.Add(this.NameBox);
+            this.AddCheatGroup.Controls.Add(this.label3);
+            this.AddCheatGroup.Controls.Add(this.label2);
+            this.AddCheatGroup.Controls.Add(this.label1);
+            this.AddCheatGroup.Location = new System.Drawing.Point(327, 72);
+            this.AddCheatGroup.Name = "AddCheatGroup";
+            this.AddCheatGroup.Size = new System.Drawing.Size(170, 150);
+            this.AddCheatGroup.TabIndex = 4;
+            this.AddCheatGroup.TabStop = false;
+            this.AddCheatGroup.Text = "Add Cheat";
             // 
-            // optionsToolStripMenuItem
+            // label3
             // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveWindowPositionToolStripMenuItem,
-            this.findAndLoadCheatFileByGameToolStripMenuItem,
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.optionsToolStripMenuItem.Text = "&Options";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 82);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(34, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Value";
             // 
-            // saveWindowPositionToolStripMenuItem
+            // label2
             // 
-            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 54);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 13);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Address";
             // 
-            // findAndLoadCheatFileByGameToolStripMenuItem
+            // label1
             // 
-            this.findAndLoadCheatFileByGameToolStripMenuItem.Name = "findAndLoadCheatFileByGameToolStripMenuItem";
-            this.findAndLoadCheatFileByGameToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.findAndLoadCheatFileByGameToolStripMenuItem.Text = "Find and Load Cheat File by Game";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 28);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Name";
             // 
-            // autoTurnOnCheatsOnLoadToolStripMenuItem
+            // NameBox
             // 
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Name = "autoTurnOnCheatsOnLoadToolStripMenuItem";
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem.Text = "Auto Turn on Cheats on Load";
+            this.NameBox.Location = new System.Drawing.Point(64, 25);
+            this.NameBox.Name = "NameBox";
+            this.NameBox.Size = new System.Drawing.Size(100, 20);
+            this.NameBox.TabIndex = 3;
+            // 
+            // AddressBox
+            // 
+            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.AddressBox.Location = new System.Drawing.Point(99, 51);
+            this.AddressBox.MaxLength = 8;
+            this.AddressBox.Name = "AddressBox";
+            this.AddressBox.Size = new System.Drawing.Size(65, 20);
+            this.AddressBox.TabIndex = 4;
+            // 
+            // ValueBox
+            // 
+            this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.ValueBox.Location = new System.Drawing.Point(99, 79);
+            this.ValueBox.MaxLength = 2;
+            this.ValueBox.Name = "ValueBox";
+            this.ValueBox.Size = new System.Drawing.Size(65, 20);
+            this.ValueBox.TabIndex = 5;
+            // 
+            // AddCheatButton
+            // 
+            this.AddCheatButton.Location = new System.Drawing.Point(99, 115);
+            this.AddCheatButton.Name = "AddCheatButton";
+            this.AddCheatButton.Size = new System.Drawing.Size(65, 23);
+            this.AddCheatButton.TabIndex = 6;
+            this.AddCheatButton.Text = "&Add";
+            this.AddCheatButton.UseVisualStyleBackColor = true;
+            this.AddCheatButton.Click += new System.EventHandler(this.AddCheatButton_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(80, 56);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(18, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "0x";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(80, 85);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(18, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "0x";
+            // 
+            // NumCheatsLabel
+            // 
+            this.NumCheatsLabel.AutoSize = true;
+            this.NumCheatsLabel.Location = new System.Drawing.Point(9, 52);
+            this.NumCheatsLabel.Name = "NumCheatsLabel";
+            this.NumCheatsLabel.Size = new System.Drawing.Size(49, 13);
+            this.NumCheatsLabel.TabIndex = 5;
+            this.NumCheatsLabel.Text = "0 Cheats";
             // 
             // Cheats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(509, 379);
+            this.Controls.Add(this.NumCheatsLabel);
+            this.Controls.Add(this.AddCheatGroup);
             this.Controls.Add(this.MessageLabel);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.CheatListView);
@@ -409,6 +537,8 @@
             this.CheatsMenu.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.AddCheatGroup.ResumeLayout(false);
+            this.AddCheatGroup.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -416,7 +546,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView CheatListView;
+        private VirtualListView CheatListView;
         private System.Windows.Forms.MenuStrip CheatsMenu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
@@ -455,5 +585,16 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findAndLoadCheatFileByGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoTurnOnCheatsOnLoadToolStripMenuItem;
+        private System.Windows.Forms.GroupBox AddCheatGroup;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox AddressBox;
+        private System.Windows.Forms.TextBox NameBox;
+        private System.Windows.Forms.TextBox ValueBox;
+        private System.Windows.Forms.Button AddCheatButton;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label NumCheatsLabel;
     }
 }
