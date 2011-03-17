@@ -20,7 +20,8 @@ namespace BizHawk.MultiClient
         //Ability to watch in different memory domains
         //.wch format includes platform and domain type
         //address num digits based on domain size
- 
+        //Refactor column width settings like Cheats, default valeu = -1, and check for negative values
+        //Refactor restore window size by saving widths in constructor and use them to restore
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
         List<Watch> watchList = new List<Watch>();

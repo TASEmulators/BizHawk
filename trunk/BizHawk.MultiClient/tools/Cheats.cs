@@ -13,14 +13,19 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //Implement Edit button
-        //Input validation on address & value boxes
-        //Set address box text load based on memory domain size
         //File format - saving & loading
         //Shortcuts for Cheat menu items
+        //Implement Options menu settings
+        //Save column widths
+        //Implement Freeze/Unfreeze on enabled changed in Cheat object
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        int defaultNameWidth;
+        int defaultAddressWidth;
+        int defaultValueWidth;
+        int defaultDomainWidth;
+        int defaultOnWidth;
 
         List<Cheat> cheatList = new List<Cheat>();
         string currentCheatFile = "";
@@ -55,7 +60,7 @@ namespace BizHawk.MultiClient
         {
             if (cheatList[index].address < 0)
                 color = Color.DarkGray;
-            else if (!cheatList[index].enabled)
+            else if (!cheatList[index].IsEnabled())
                 color = this.BackColor;
         }
 
@@ -83,7 +88,7 @@ namespace BizHawk.MultiClient
             }
             if (column == 4) //Enabled
             {
-                if (cheatList[index].enabled)
+                if (cheatList[index].IsEnabled())
                     text = "*";
                 else
                     text = "";
@@ -101,6 +106,7 @@ namespace BizHawk.MultiClient
         {
             LoadConfigSettings();
             PopulateMemoryDomainComboBox();
+            AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
         }
 
         private void PopulateMemoryDomainComboBox()
@@ -191,6 +197,11 @@ namespace BizHawk.MultiClient
         {
             defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = Size.Height;
+            defaultNameWidth = CheatListView.Columns[0].Width;
+            defaultAddressWidth = CheatListView.Columns[1].Width;
+            defaultValueWidth = CheatListView.Columns[2].Width;
+            defaultDomainWidth = CheatListView.Columns[3].Width;
+            defaultOnWidth = CheatListView.Columns[4].Width;
 
             if (Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
                 Location = new Point(Global.Config.CheatsWndx, Global.Config.CheatsWndy);
@@ -199,6 +210,17 @@ namespace BizHawk.MultiClient
             {
                 Size = new System.Drawing.Size(Global.Config.CheatsWidth, Global.Config.CheatsHeight);
             }
+
+            if (Global.Config.CheatsNameWidth > 0)
+                CheatListView.Columns[0].Width = Global.Config.CheatsNameWidth;
+            if (Global.Config.CheatsAddressWidth > 0)
+                CheatListView.Columns[1].Width = Global.Config.CheatsAddressWidth;
+            if (Global.Config.CheatsValueWidth > 0)
+                CheatListView.Columns[2].Width = Global.Config.CheatsValueWidth;
+            if (Global.Config.CheatsDomainWidth > 0)
+                CheatListView.Columns[3].Width = Global.Config.CheatsDomainWidth;
+            if (Global.Config.CheatsOnWidth > 0)
+                CheatListView.Columns[4].Width = Global.Config.CheatsOnWidth;
         }
 
         public void SaveConfigSettings()
@@ -207,6 +229,12 @@ namespace BizHawk.MultiClient
             Global.Config.CheatsWndy = this.Location.Y;
             Global.Config.CheatsWidth = this.Right - this.Left;
             Global.Config.CheatsHeight = this.Bottom - this.Top;
+
+            Global.Config.CheatsNameWidth = CheatListView.Columns[0].Width;
+            Global.Config.CheatsAddressWidth = CheatListView.Columns[1].Width;
+            Global.Config.CheatsValueWidth = CheatListView.Columns[2].Width;
+            Global.Config.CheatsDomainWidth = CheatListView.Columns[3].Width;
+            Global.Config.CheatsOnWidth = CheatListView.Columns[4].Width;
         }
 
         private void DisplayCheatsList()
@@ -523,7 +551,7 @@ namespace BizHawk.MultiClient
             c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
             c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
             c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-            c.enabled = true;
+            c.Enable();
             return c;
         }
 
@@ -611,7 +639,10 @@ namespace BizHawk.MultiClient
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             if (indexes.Count > 0)
             {
-                cheatList[indexes[0]].enabled ^= true;
+                if (cheatList[indexes[0]].IsEnabled())
+                    cheatList[indexes[0]].Enable();
+                else
+                    cheatList[indexes[0]].Disable();
                 CheatListView.Refresh();
             }
         }
@@ -635,7 +666,14 @@ namespace BizHawk.MultiClient
 
         private void EditButton_Click(object sender, EventArgs e)
         {
-            //TODO Modify seletcted index 0 with cheat values
+            //TODO: this fails because selected index must go away to edit values, either prevent that or keep track of the last selected index
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+                    cheatList[indexes[0]] = MakeCheat();
+                CheatListView.Refresh();
+            }
         }
 
         private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -668,6 +706,39 @@ namespace BizHawk.MultiClient
                 AddCheatButton.Enabled = true;
             else
                 AddCheatButton.Enabled = false;
+        }
+
+        private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+            if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void ValueBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+            if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                e.Handled = true;
+        }
+
+        private void CheatListView_AfterLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            if (e.Label == null) //If no change
+                return;
+            string Str = e.Label;
+            int index = e.Item;
+            cheatList[e.Item].name = Str;
+        }
+
+        private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+            CheatListView.Columns[0].Width = defaultNameWidth;
+            CheatListView.Columns[1].Width = defaultAddressWidth;
+            CheatListView.Columns[2].Width = defaultValueWidth;
+            CheatListView.Columns[3].Width = defaultDomainWidth;
+            CheatListView.Columns[4].Width = defaultOnWidth;
         }
 
     }

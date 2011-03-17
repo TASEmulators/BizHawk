@@ -87,6 +87,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.NumCheatsLabel = new System.Windows.Forms.Label();
             this.EditButton = new System.Windows.Forms.Button();
+            this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -119,6 +120,7 @@
             this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
             this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
             this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
+            this.CheatListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.CheatListView_AfterLabelEdit);
             // 
             // CheatName
             // 
@@ -324,7 +326,8 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveWindowPositionToolStripMenuItem,
             this.findAndLoadCheatFileByGameToolStripMenuItem,
-            this.autoTurnOnCheatsOnLoadToolStripMenuItem});
+            this.autoTurnOnCheatsOnLoadToolStripMenuItem,
+            this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -544,6 +547,7 @@
             this.ValueBox.Size = new System.Drawing.Size(65, 20);
             this.ValueBox.TabIndex = 5;
             this.ValueBox.TextChanged += new System.EventHandler(this.ValueBox_TextChanged);
+            this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
             // 
             // AddressBox
             // 
@@ -554,6 +558,7 @@
             this.AddressBox.Size = new System.Drawing.Size(65, 20);
             this.AddressBox.TabIndex = 4;
             this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
+            this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
             // 
             // NameBox
             // 
@@ -609,6 +614,13 @@
             this.EditButton.Text = "&Edit";
             this.EditButton.UseVisualStyleBackColor = true;
             this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
+            // 
+            // restoreWindowSizeToolStripMenuItem
+            // 
+            this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+            this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // Cheats
             // 
@@ -696,5 +708,6 @@
         private System.Windows.Forms.ComboBox DomainComboBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button EditButton;
+        private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
     }
 }
