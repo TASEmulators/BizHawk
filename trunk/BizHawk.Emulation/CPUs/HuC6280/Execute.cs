@@ -47,7 +47,6 @@ namespace BizHawk.Emulation.CPUs.H6280
                 IRQControlByte = IRQNextControlByte;
                 LagIFlag = FlagI;
 
-//if (debug) Log.Note("CPU", State());
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
@@ -717,6 +716,7 @@ throw new Exception("break");
                         PendingCycles -= 5;
                         break;
                     case 0x54: // CSL
+                        LowSpeed = true;
                         PendingCycles -= 3;
                         break;
                     case 0x55: // EOR zp,X
@@ -1710,6 +1710,7 @@ throw new Exception("break");
                         PendingCycles -= temp;
                         break;
                     case 0xD4: // CSH
+                        LowSpeed = false;
                         PendingCycles -= 3;
                         break;
                     case 0xD5: // CMP zp,X
@@ -2114,6 +2115,8 @@ throw new Exception("break");
                 P &= 0xDF; // Clear T flag
             AfterClearTFlag: // SET command jumps here
                 int delta = lastCycles - PendingCycles;
+                if (LowSpeed)
+                    delta *= 4;
                 TotalExecutedCycles += delta;
 
                 if (TimerEnabled)

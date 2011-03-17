@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             PendingCycles = 0;
             TotalExecutedCycles = 0;
             LagIFlag = true;
+            LowSpeed = true;
         }
 
         public void ResetPC()
@@ -47,8 +48,7 @@ namespace BizHawk.Emulation.CPUs.H6280
 
         public int TotalExecutedCycles;
         public int PendingCycles;
-
-        public bool debug = true;
+        public bool LowSpeed;
 
         // -- Timer Support --
 
@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.WriteLine("IRQNextControlByte {0:X2}", IRQNextControlByte);
             writer.WriteLine("ExecutedCycles {0}", TotalExecutedCycles);
             writer.WriteLine("PendingCycles {0}", PendingCycles);
+            writer.WriteLine("LowSpeed {0}", TimerTickCounter);
             writer.WriteLine("TimerTickCounter {0}", TimerTickCounter);
             writer.WriteLine("TimerReloadValue {0}", TimerReloadValue);
             writer.WriteLine("TimerValue {0}", TimerValue);
@@ -114,6 +115,8 @@ namespace BizHawk.Emulation.CPUs.H6280
                     TotalExecutedCycles = int.Parse(args[1]);
                 else if (args[0] == "PendingCycles")
                     PendingCycles = int.Parse(args[1]);
+                else if (args[0] == "LowSpeed")
+                    LowSpeed = bool.Parse(args[1]);
                 else if (args[0] == "TimerTickCounter")
                     TimerTickCounter = int.Parse(args[1]);
                 else if (args[0] == "TimerReloadValue")
@@ -142,6 +145,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.Write(IRQNextControlByte);
             writer.Write(TotalExecutedCycles);
             writer.Write(PendingCycles);
+            writer.Write(LowSpeed);
 
             writer.Write(TimerTickCounter);
             writer.Write(TimerReloadValue);
@@ -164,6 +168,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             IRQNextControlByte = reader.ReadByte();
             TotalExecutedCycles = reader.ReadInt32();
             PendingCycles = reader.ReadInt32();
+            LowSpeed = reader.ReadBoolean();
 
             TimerTickCounter = reader.ReadInt32();
             TimerReloadValue = reader.ReadByte();
@@ -191,12 +196,10 @@ namespace BizHawk.Emulation.CPUs.H6280
 
             value &= 7;
             IRQNextControlByte = value;
-            //Console.WriteLine("WROTTEN TO IRQ COTRL {0:X2}", value);
         }
 
         public void WriteIrqStatus()
         {
-            //Console.WriteLine("ACKNOWLDGED TIMER INT");
             TimerAssert = false;
         }
 
@@ -206,7 +209,6 @@ namespace BizHawk.Emulation.CPUs.H6280
             //if (IRQ2Assert) status |= 1;
             if (IRQ1Assert) status  |= 2;
             if (TimerAssert) status |= 4;
-            //Console.WriteLine("READING IRQ STATUS BYTE {0:X2}",status);
             return status;
         }
 
@@ -214,7 +216,6 @@ namespace BizHawk.Emulation.CPUs.H6280
         {
             value &= 0x7F;
             TimerReloadValue = value;
-            //Console.WriteLine("*** Timer Countdown Set {0}, {1} per sec",value,7160000/1024/(TimerReloadValue+1));
         }
 
         public void WriteTimerEnable(byte value)
@@ -225,7 +226,6 @@ namespace BizHawk.Emulation.CPUs.H6280
                 TimerTickCounter = 0;
             }
             TimerEnabled = (value & 1) == 1;
-            //Console.WriteLine("*** Timer "+(TimerEnabled?"Enabled":"Disabled"));
         }
 
         // ==== Flags ====
