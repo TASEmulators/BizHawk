@@ -251,7 +251,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveStateBinary()
         {
-            var buf = new byte[SuperGrafx ? 166551 : 75853];
+            var buf = new byte[SuperGrafx ? 166552 : 75854];
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);
