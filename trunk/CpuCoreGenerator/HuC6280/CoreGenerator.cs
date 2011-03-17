@@ -501,7 +501,10 @@ namespace HuC6280
             w.WriteLine("            AfterClearTFlag: // SET command jumps here");
             w.WriteLine("                int delta = lastCycles - PendingCycles;");
             w.WriteLine("                if (LowSpeed)");
+            w.WriteLine("                {");
             w.WriteLine("                    delta *= 4;");
+            w.WriteLine("                    PendingCycles = lastCycles - delta;");
+            w.WriteLine("                }");
             w.WriteLine("                TotalExecutedCycles += delta;");
             w.WriteLine();
             w.WriteLine("                if (TimerEnabled)");

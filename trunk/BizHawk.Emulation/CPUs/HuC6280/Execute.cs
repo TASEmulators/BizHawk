@@ -2116,7 +2116,10 @@ throw new Exception("break");
             AfterClearTFlag: // SET command jumps here
                 int delta = lastCycles - PendingCycles;
                 if (LowSpeed)
+                {
                     delta *= 4;
+                    PendingCycles = lastCycles - delta;
+                }
                 TotalExecutedCycles += delta;
 
                 if (TimerEnabled)
