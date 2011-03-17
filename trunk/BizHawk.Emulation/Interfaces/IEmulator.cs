@@ -57,8 +57,8 @@ namespace BizHawk
 				this.flags = flags;
 				this.value = value;
 			}
-			public byte value;
-			public Flag flags;
+			public readonly byte value;
+			public readonly Flag flags;
 			public enum Flag : byte
 			{
 				None = 0,
