@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					for (int x = 0; x < 256; x++)
 					{
 						int pixel = emu.ppu.xbuf[i];
-						pixels[i] = emu.CompleteDecodeColor(pixel);
+                        pixels[i] = unchecked(emu.CompleteDecodeColor(pixel) | (int)0xFF000000);
 						i++;
 					}
 				return pixels;
