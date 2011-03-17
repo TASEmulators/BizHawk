@@ -33,6 +33,7 @@
             this.CheatName = new System.Windows.Forms.ColumnHeader();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
+            this.Domain = new System.Windows.Forms.ColumnHeader();
             this.On = new System.Windows.Forms.ColumnHeader();
             this.CheatsMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,6 +74,8 @@
             this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.MessageLabel = new System.Windows.Forms.Label();
             this.AddCheatGroup = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.DomainComboBox = new System.Windows.Forms.ComboBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.AddCheatButton = new System.Windows.Forms.Button();
@@ -83,6 +86,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.NumCheatsLabel = new System.Windows.Forms.Label();
+            this.EditButton = new System.Windows.Forms.Button();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -99,6 +103,7 @@
             this.CheatName,
             this.Address,
             this.Value,
+            this.Domain,
             this.On});
             this.CheatListView.FullRowSelect = true;
             this.CheatListView.GridLines = true;
@@ -107,29 +112,38 @@
             this.CheatListView.Location = new System.Drawing.Point(12, 72);
             this.CheatListView.Name = "CheatListView";
             this.CheatListView.selectedItem = -1;
-            this.CheatListView.Size = new System.Drawing.Size(294, 277);
+            this.CheatListView.Size = new System.Drawing.Size(298, 277);
             this.CheatListView.TabIndex = 0;
             this.CheatListView.UseCompatibleStateImageBehavior = false;
             this.CheatListView.View = System.Windows.Forms.View.Details;
             this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
+            this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
             this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
             // 
             // CheatName
             // 
             this.CheatName.Text = "Name";
-            this.CheatName.Width = 110;
+            this.CheatName.Width = 104;
             // 
             // Address
             // 
             this.Address.Text = "Address";
+            this.Address.Width = 52;
             // 
             // Value
             // 
             this.Value.Text = "Value";
+            this.Value.Width = 40;
+            // 
+            // Domain
+            // 
+            this.Domain.Text = "Domain";
+            this.Domain.Width = 58;
             // 
             // On
             // 
             this.On.Text = "On";
+            this.On.Width = 40;
             // 
             // CheatsMenu
             // 
@@ -456,6 +470,9 @@
             // AddCheatGroup
             // 
             this.AddCheatGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddCheatGroup.Controls.Add(this.EditButton);
+            this.AddCheatGroup.Controls.Add(this.label6);
+            this.AddCheatGroup.Controls.Add(this.DomainComboBox);
             this.AddCheatGroup.Controls.Add(this.label5);
             this.AddCheatGroup.Controls.Add(this.label4);
             this.AddCheatGroup.Controls.Add(this.AddCheatButton);
@@ -467,15 +484,32 @@
             this.AddCheatGroup.Controls.Add(this.label1);
             this.AddCheatGroup.Location = new System.Drawing.Point(327, 72);
             this.AddCheatGroup.Name = "AddCheatGroup";
-            this.AddCheatGroup.Size = new System.Drawing.Size(170, 150);
+            this.AddCheatGroup.Size = new System.Drawing.Size(170, 225);
             this.AddCheatGroup.TabIndex = 4;
             this.AddCheatGroup.TabStop = false;
             this.AddCheatGroup.Text = "Add Cheat";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 120);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 13);
+            this.label6.TabIndex = 10;
+            this.label6.Text = "Memory Domain";
+            // 
+            // DomainComboBox
+            // 
+            this.DomainComboBox.FormattingEnabled = true;
+            this.DomainComboBox.Location = new System.Drawing.Point(10, 136);
+            this.DomainComboBox.Name = "DomainComboBox";
+            this.DomainComboBox.Size = new System.Drawing.Size(100, 21);
+            this.DomainComboBox.TabIndex = 9;
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(80, 85);
+            this.label5.Location = new System.Drawing.Point(80, 87);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(18, 13);
             this.label5.TabIndex = 8;
@@ -484,7 +518,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(80, 56);
+            this.label4.Location = new System.Drawing.Point(80, 58);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(18, 13);
             this.label4.TabIndex = 7;
@@ -492,7 +526,8 @@
             // 
             // AddCheatButton
             // 
-            this.AddCheatButton.Location = new System.Drawing.Point(99, 115);
+            this.AddCheatButton.Enabled = false;
+            this.AddCheatButton.Location = new System.Drawing.Point(10, 187);
             this.AddCheatButton.Name = "AddCheatButton";
             this.AddCheatButton.Size = new System.Drawing.Size(65, 23);
             this.AddCheatButton.TabIndex = 6;
@@ -503,16 +538,17 @@
             // ValueBox
             // 
             this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.ValueBox.Location = new System.Drawing.Point(99, 79);
+            this.ValueBox.Location = new System.Drawing.Point(99, 81);
             this.ValueBox.MaxLength = 2;
             this.ValueBox.Name = "ValueBox";
             this.ValueBox.Size = new System.Drawing.Size(65, 20);
             this.ValueBox.TabIndex = 5;
+            this.ValueBox.TextChanged += new System.EventHandler(this.ValueBox_TextChanged);
             // 
             // AddressBox
             // 
             this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.AddressBox.Location = new System.Drawing.Point(99, 51);
+            this.AddressBox.Location = new System.Drawing.Point(99, 53);
             this.AddressBox.MaxLength = 8;
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.Size = new System.Drawing.Size(65, 20);
@@ -525,11 +561,12 @@
             this.NameBox.Name = "NameBox";
             this.NameBox.Size = new System.Drawing.Size(100, 20);
             this.NameBox.TabIndex = 3;
+            this.NameBox.TextChanged += new System.EventHandler(this.NameBox_TextChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 82);
+            this.label3.Location = new System.Drawing.Point(7, 84);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(34, 13);
             this.label3.TabIndex = 2;
@@ -538,7 +575,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 54);
+            this.label2.Location = new System.Drawing.Point(6, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 1;
@@ -561,6 +598,17 @@
             this.NumCheatsLabel.Size = new System.Drawing.Size(49, 13);
             this.NumCheatsLabel.TabIndex = 5;
             this.NumCheatsLabel.Text = "0 Cheats";
+            // 
+            // EditButton
+            // 
+            this.EditButton.Enabled = false;
+            this.EditButton.Location = new System.Drawing.Point(99, 187);
+            this.EditButton.Name = "EditButton";
+            this.EditButton.Size = new System.Drawing.Size(65, 23);
+            this.EditButton.TabIndex = 11;
+            this.EditButton.Text = "&Edit";
+            this.EditButton.UseVisualStyleBackColor = true;
+            this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
             // 
             // Cheats
             // 
@@ -608,6 +656,7 @@
         private System.Windows.Forms.ColumnHeader CheatName;
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
+        private System.Windows.Forms.ColumnHeader Domain;
         private System.Windows.Forms.ColumnHeader On;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -644,5 +693,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
+        private System.Windows.Forms.ComboBox DomainComboBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button EditButton;
     }
 }

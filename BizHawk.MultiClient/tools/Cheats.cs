@@ -13,12 +13,11 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
+        //Implement Edit button
         //Input validation on address & value boxes
         //Set address box text load based on memory domain size
-        //Memory domains
         //File format - saving & loading
         //Shortcuts for Cheat menu items
-        //Edit button enabled conditionally on highlighted listview item
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -55,14 +54,17 @@ namespace BizHawk.MultiClient
         private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
         {
             if (cheatList[index].address < 0)
+                color = Color.DarkGray;
+            else if (!cheatList[index].enabled)
                 color = this.BackColor;
-            else if (cheatList[index].enabled)
-                color = Color.Pink;
         }
 
         private void CheatListView_QueryItemText(int index, int column, out string text)
         {
             text = "";
+            if (cheatList[index].address == -1)
+                return;
+
             if (column == 0) //Name
             {
                 text = cheatList[index].name;
@@ -75,7 +77,11 @@ namespace BizHawk.MultiClient
             {
                 text = String.Format("{0:X2}", cheatList[index].value);
             }
-            if (column == 3) //Enabled
+            if (column == 3) //Domain
+            {
+                text = cheatList[index].domain.Name;
+            }
+            if (column == 4) //Enabled
             {
                 if (cheatList[index].enabled)
                     text = "*";
@@ -94,6 +100,20 @@ namespace BizHawk.MultiClient
         private void Cheats_Load(object sender, EventArgs e)
         {
             LoadConfigSettings();
+            PopulateMemoryDomainComboBox();
+        }
+
+        private void PopulateMemoryDomainComboBox()
+        {
+            if (Global.Emulator.MemoryDomains.Count > 0)
+            {
+                for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+                {
+                    string str = Global.Emulator.MemoryDomains[x].ToString();
+                    DomainComboBox.Items.Add(str);
+                }
+                DomainComboBox.SelectedIndex = 0;
+            }
         }
 
         public void AddCheat(Cheat c)
@@ -471,7 +491,6 @@ namespace BizHawk.MultiClient
         {
             Cheat c = new Cheat();
             c.address = -1;
-            c.name = "Separator"; //TODO: remove me
 
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             int x;
@@ -503,6 +522,8 @@ namespace BizHawk.MultiClient
             c.name = NameBox.Text;
             c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
             c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
+            c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
+            c.enabled = true;
             return c;
         }
 
@@ -612,9 +633,42 @@ namespace BizHawk.MultiClient
             return String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", address);
         }
 
+        private void EditButton_Click(object sender, EventArgs e)
+        {
+            //TODO Modify seletcted index 0 with cheat values
+        }
+
+        private void CheatListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (CheatListView.SelectedIndices.Count > 0)
+                EditButton.Enabled = true;
+            else
+                EditButton.Enabled = false;
+        }
+
         private void AddressBox_TextChanged(object sender, EventArgs e)
         {
-
+            if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+                AddCheatButton.Enabled = true;
+            else
+                AddCheatButton.Enabled = false;
         }
+
+        private void ValueBox_TextChanged(object sender, EventArgs e)
+        {
+            if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+                AddCheatButton.Enabled = true;
+            else
+                AddCheatButton.Enabled = false;
+        }
+
+        private void NameBox_TextChanged(object sender, EventArgs e)
+        {
+            if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
+                AddCheatButton.Enabled = true;
+            else
+                AddCheatButton.Enabled = false;
+        }
+
     }
 }
