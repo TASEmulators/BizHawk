@@ -9,7 +9,7 @@ namespace BizHawk.MultiClient
     {
         public string name { get; set; }
         public int address { get; set; }
-        public int value { get; set; }
+        public byte value { get; set; }
         public bool enabled { get; set; }
 
         public Cheat()
@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
             enabled = c.enabled;
         }
 
-        public Cheat(string cname, int addr, int val, int comp, bool e)
+        public Cheat(string cname, int addr, byte val, int comp, bool e)
         {
             name = cname;
             address = addr;

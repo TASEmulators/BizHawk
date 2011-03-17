@@ -13,14 +13,13 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //TODO: Get vlist display working
         //Input validation on address & value boxes
-        //Remove compare column? make it conditional? Think about this
         //Set address box text load based on memory domain size
         //Memory domains
         //File format - saving & loading
         //Shortcuts for Cheat menu items
         //Edit button enabled conditionally on highlighted listview item
+        //ListView click event should update add cheat box
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -58,6 +57,8 @@ namespace BizHawk.MultiClient
         {
             if (cheatList[index].address < 0)
                 color = this.BackColor;
+            else if (cheatList[index].enabled)
+                color = Color.Pink;
         }
 
         private void CheatListView_QueryItemText(int index, int column, out string text)
@@ -73,24 +74,21 @@ namespace BizHawk.MultiClient
             }
             if (column == 2) //Value
             {
-                text = String.Format("{0:2X", cheatList[index].value);
+                text = String.Format("{0:X2}", cheatList[index].value);
             }
             if (column == 3) //Enabled
             {
-                //TODO
+                if (cheatList[index].enabled)
+                    text = "*";
+                else
+                    text = "";
             }
         }
 
         private int GetNumDigits(Int32 i)
         {
-            //if (i == 0) return 0;
-            //if (i < 0x10) return 1;
-            //if (i < 0x100) return 2;
-            //if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
             if (i < 0x10000) return 4;
-            //if (i < 0x100000) return 5;
             if (i < 0x1000000) return 6;
-            //if (i < 0x10000000) return 7;
             else return 8;
         }
 
@@ -505,7 +503,7 @@ namespace BizHawk.MultiClient
             Cheat c = new Cheat();
             c.name = NameBox.Text;
             c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
-            c.value = int.Parse(ValueBox.Text, NumberStyles.HexNumber);
+            c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
             return c;
         }
 
@@ -586,6 +584,16 @@ namespace BizHawk.MultiClient
         private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DuplicateCheat();
+        }
+
+        private void CheatListView_DoubleClick(object sender, EventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                cheatList[indexes[0]].enabled ^= true;
+                CheatListView.Refresh();
+            }
         }
     }
 }
