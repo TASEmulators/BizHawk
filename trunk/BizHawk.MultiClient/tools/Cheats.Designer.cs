@@ -69,16 +69,20 @@
             this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.MessageLabel = new System.Windows.Forms.Label();
             this.AddCheatGroup = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.AddCheatButton = new System.Windows.Forms.Button();
+            this.ValueBox = new System.Windows.Forms.TextBox();
+            this.AddressBox = new System.Windows.Forms.TextBox();
+            this.NameBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.NameBox = new System.Windows.Forms.TextBox();
-            this.AddressBox = new System.Windows.Forms.TextBox();
-            this.ValueBox = new System.Windows.Forms.TextBox();
-            this.AddCheatButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.NumCheatsLabel = new System.Windows.Forms.Label();
+            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -86,16 +90,20 @@
             // 
             // CheatListView
             // 
+            this.CheatListView.AllowColumnReorder = true;
             this.CheatListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.CheatListView.AutoArrange = false;
             this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.CheatName,
             this.Address,
             this.Value,
             this.Compare});
+            this.CheatListView.FullRowSelect = true;
             this.CheatListView.GridLines = true;
             this.CheatListView.ItemCount = 0;
+            this.CheatListView.LabelEdit = true;
             this.CheatListView.Location = new System.Drawing.Point(12, 72);
             this.CheatListView.Name = "CheatListView";
             this.CheatListView.selectedItem = -1;
@@ -189,9 +197,15 @@
             // 
             // recentToolStripMenuItem
             // 
+            this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noneToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.clearToolStripMenuItem,
+            this.autoLoadToolStripMenuItem});
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.recentToolStripMenuItem.Text = "Recent";
+            this.recentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpened);
             // 
             // toolStripSeparator1
             // 
@@ -274,12 +288,14 @@
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
             // saveWindowPositionToolStripMenuItem
             // 
             this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
             this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
             // findAndLoadCheatFileByGameToolStripMenuItem
             // 
@@ -429,6 +445,59 @@
             this.AddCheatGroup.TabStop = false;
             this.AddCheatGroup.Text = "Add Cheat";
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(80, 85);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(18, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "0x";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(80, 56);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(18, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "0x";
+            // 
+            // AddCheatButton
+            // 
+            this.AddCheatButton.Location = new System.Drawing.Point(99, 115);
+            this.AddCheatButton.Name = "AddCheatButton";
+            this.AddCheatButton.Size = new System.Drawing.Size(65, 23);
+            this.AddCheatButton.TabIndex = 6;
+            this.AddCheatButton.Text = "&Add";
+            this.AddCheatButton.UseVisualStyleBackColor = true;
+            this.AddCheatButton.Click += new System.EventHandler(this.AddCheatButton_Click);
+            // 
+            // ValueBox
+            // 
+            this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.ValueBox.Location = new System.Drawing.Point(99, 79);
+            this.ValueBox.MaxLength = 2;
+            this.ValueBox.Name = "ValueBox";
+            this.ValueBox.Size = new System.Drawing.Size(65, 20);
+            this.ValueBox.TabIndex = 5;
+            // 
+            // AddressBox
+            // 
+            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.AddressBox.Location = new System.Drawing.Point(99, 51);
+            this.AddressBox.MaxLength = 8;
+            this.AddressBox.Name = "AddressBox";
+            this.AddressBox.Size = new System.Drawing.Size(65, 20);
+            this.AddressBox.TabIndex = 4;
+            // 
+            // NameBox
+            // 
+            this.NameBox.Location = new System.Drawing.Point(64, 25);
+            this.NameBox.Name = "NameBox";
+            this.NameBox.Size = new System.Drawing.Size(100, 20);
+            this.NameBox.TabIndex = 3;
+            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -456,59 +525,6 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Name";
             // 
-            // NameBox
-            // 
-            this.NameBox.Location = new System.Drawing.Point(64, 25);
-            this.NameBox.Name = "NameBox";
-            this.NameBox.Size = new System.Drawing.Size(100, 20);
-            this.NameBox.TabIndex = 3;
-            // 
-            // AddressBox
-            // 
-            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.AddressBox.Location = new System.Drawing.Point(99, 51);
-            this.AddressBox.MaxLength = 8;
-            this.AddressBox.Name = "AddressBox";
-            this.AddressBox.Size = new System.Drawing.Size(65, 20);
-            this.AddressBox.TabIndex = 4;
-            // 
-            // ValueBox
-            // 
-            this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.ValueBox.Location = new System.Drawing.Point(99, 79);
-            this.ValueBox.MaxLength = 2;
-            this.ValueBox.Name = "ValueBox";
-            this.ValueBox.Size = new System.Drawing.Size(65, 20);
-            this.ValueBox.TabIndex = 5;
-            // 
-            // AddCheatButton
-            // 
-            this.AddCheatButton.Location = new System.Drawing.Point(99, 115);
-            this.AddCheatButton.Name = "AddCheatButton";
-            this.AddCheatButton.Size = new System.Drawing.Size(65, 23);
-            this.AddCheatButton.TabIndex = 6;
-            this.AddCheatButton.Text = "&Add";
-            this.AddCheatButton.UseVisualStyleBackColor = true;
-            this.AddCheatButton.Click += new System.EventHandler(this.AddCheatButton_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(80, 56);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(18, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "0x";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(80, 85);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(18, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "0x";
-            // 
             // NumCheatsLabel
             // 
             this.NumCheatsLabel.AutoSize = true;
@@ -517,6 +533,29 @@
             this.NumCheatsLabel.Size = new System.Drawing.Size(49, 13);
             this.NumCheatsLabel.TabIndex = 5;
             this.NumCheatsLabel.Text = "0 Cheats";
+            // 
+            // noneToolStripMenuItem
+            // 
+            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noneToolStripMenuItem.Text = "None";
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            // 
+            // autoLoadToolStripMenuItem
+            // 
+            this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
+            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.autoLoadToolStripMenuItem.Text = "Auto-load";
             // 
             // Cheats
             // 
@@ -596,5 +635,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label NumCheatsLabel;
+        private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
     }
 }
