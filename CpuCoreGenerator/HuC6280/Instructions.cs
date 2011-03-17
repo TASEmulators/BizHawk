@@ -178,6 +178,18 @@ namespace HuC6280
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
         }
 
+        private void CSH(OpcodeInfo op, TextWriter w)
+        {
+            w.WriteLine(Spaces + "LowSpeed = false;");
+            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+        }
+
+        private void CSL(OpcodeInfo op, TextWriter w)
+        {
+            w.WriteLine(Spaces + "LowSpeed = true;");
+            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+        }
+
         private void DEC(OpcodeInfo op, TextWriter w)
         {
             if (op.AddressMode != AddrMode.Accumulator)

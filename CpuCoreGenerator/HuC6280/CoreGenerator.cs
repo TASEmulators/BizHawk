@@ -483,9 +483,6 @@ namespace HuC6280
             w.WriteLine("                LagIFlag = FlagI;");
             w.WriteLine();
 
-            // TODO halt state, shit like that
-            w.WriteLine("//if (debug) Log.Note(\"CPU\", State());");
-
             w.WriteLine("                byte opcode = ReadMemory(PC++);");
             w.WriteLine("                switch (opcode)");
             w.WriteLine("                {");
@@ -503,6 +500,8 @@ namespace HuC6280
             w.WriteLine("                P &= 0xDF; // Clear T flag");
             w.WriteLine("            AfterClearTFlag: // SET command jumps here");
             w.WriteLine("                int delta = lastCycles - PendingCycles;");
+            w.WriteLine("                if (LowSpeed)");
+            w.WriteLine("                    delta *= 4;");
             w.WriteLine("                TotalExecutedCycles += delta;");
             w.WriteLine();
             w.WriteLine("                if (TimerEnabled)");
@@ -575,8 +574,8 @@ namespace HuC6280
                 case "CMP": CMP_reg(op, w, "A"); break;
                 case "CPX": CMP_reg(op, w, "X"); break;
                 case "CPY": CMP_reg(op, w, "Y"); break;
-                case "CSH": NOP(op, w); break; // TODO fixme
-                case "CSL": NOP(op, w); break; // TODO fixme
+                case "CSH": CSH(op, w); break;
+                case "CSL": CSL(op, w); break;
                 case "DEC": DEC(op, w); break;
                 case "DEX": DEX(op, w); break;
                 case "DEY": DEY(op, w); break;
@@ -661,8 +660,6 @@ namespace HuC6280
 
         private void GetValue8(OpcodeInfo op, TextWriter w, string dest)
         {
-            // TODO it APPEARS that the +1 opcode penalty applies to all AbsoluteX, AbsoluteY, and IndirectY
-            // but this is not completely clear. the doc has some exceptions, but are they real?
             switch (op.AddressMode)
             {
                 case AddrMode.Immediate:
@@ -697,14 +694,11 @@ namespace HuC6280
                     break;
                 default:
                     throw new Exception("p"+op.Instruction);
-                    
             }
         }
 
         private void GetAddress(OpcodeInfo op, TextWriter w, string dest)
         {
-            // TODO it APPEARS that the +1 opcode penalty applies to all AbsoluteX, AbsoluteY, and IndirectY
-            // but this is not completely clear. the doc has some exceptions, but are they real?
             switch (op.AddressMode)
             {
                 case AddrMode.ZeroPage:
