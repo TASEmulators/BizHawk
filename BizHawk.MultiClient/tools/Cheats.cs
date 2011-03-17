@@ -75,11 +75,10 @@ namespace BizHawk.MultiClient
             {
                 text = String.Format("{0:2X", cheatList[index].value);
             }
-            if (column == 3) //Compare
+            if (column == 3) //Enabled
             {
-                text = String.Format("{0:2X", cheatList[index].compare);
+                //TODO
             }
-
         }
 
         private int GetNumDigits(Int32 i)
@@ -573,7 +572,6 @@ namespace BizHawk.MultiClient
                 c.name = cheatList[x].name;
                 c.address = cheatList[x].address;
                 c.value = cheatList[x].value;
-                c.compare = cheatList[x].compare;
                 Changes();
                 cheatList.Add(c);
                 DisplayCheatsList();

@@ -10,7 +10,6 @@ namespace BizHawk.MultiClient
         public string name { get; set; }
         public int address { get; set; }
         public int value { get; set; }
-        public int compare { get; set; }
         public bool enabled { get; set; }
 
         public Cheat()
@@ -18,7 +17,6 @@ namespace BizHawk.MultiClient
             name = "";
             address = 0;
             value = 0;
-            compare = 0;
             enabled = false;
         }
 
@@ -27,7 +25,6 @@ namespace BizHawk.MultiClient
             name = c.name;
             address = c.address;
             value = c.value;
-            compare = c.compare;
             enabled = c.enabled;
         }
 
@@ -36,7 +33,6 @@ namespace BizHawk.MultiClient
             name = cname;
             address = addr;
             value = val;
-            compare = comp;
             enabled = e;
         }
 
