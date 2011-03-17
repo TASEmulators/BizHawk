@@ -17,10 +17,10 @@ namespace BizHawk.MultiClient
         //Input validation on address & value boxes
         //Remove compare column? make it conditional? Think about this
         //Set address box text load based on memory domain size
-        //Recent files 
         //Memory domains
         //File format - saving & loading
         //Shortcuts for Cheat menu items
+        //Edit button enabled conditionally on highlighted listview item
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -103,7 +103,6 @@ namespace BizHawk.MultiClient
         public void AddCheat(Cheat c)
         {
             cheatList.Add(c);
-            UpdateNumberOfCheats();
             DisplayCheatsList();
             CheatListView.Refresh();
         }
@@ -196,6 +195,7 @@ namespace BizHawk.MultiClient
 
         private void DisplayCheatsList()
         {
+            UpdateNumberOfCheats();
             CheatListView.ItemCount = cheatList.Count;
         }
 
@@ -561,6 +561,33 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
+        }
+
+        private void DuplicateCheat()
+        {
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                Cheat c = new Cheat();
+                int x = indexes[0];
+                c.name = cheatList[x].name;
+                c.address = cheatList[x].address;
+                c.value = cheatList[x].value;
+                c.compare = cheatList[x].compare;
+                Changes();
+                cheatList.Add(c);
+                DisplayCheatsList();
+            }
+        }
+
+        private void copyToolStripButton_Click(object sender, EventArgs e)
+        {
+            DuplicateCheat();
+        }
+
+        private void duplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DuplicateCheat();
         }
     }
 }
