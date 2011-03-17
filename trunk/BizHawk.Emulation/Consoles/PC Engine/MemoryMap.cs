@@ -33,8 +33,8 @@
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
             {
-                if (Cpu.debug)
-                    Log.Note("MEM", "*Mem* Changed {0:X4} from {1:X2} to {2:X2}", addr & 0x1FFF, Ram[addr & 0x1FFF], value);
+                //if (Cpu.debug)
+                    //Log.Note("MEM", "*Mem* Changed {0:X4} from {1:X2} to {2:X2}", addr & 0x1FFF, Ram[addr & 0x1FFF], value);
                 Ram[addr & 0x1FFF] = value;
             }
 
