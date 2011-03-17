@@ -13,10 +13,8 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //File format - saving & loading
-        //Shortcuts for Cheat menu items
+        //File format - loading
         //Implement Options menu settings
-        //Save column widths
         //Implement Freeze/Unfreeze on enabled changed in Cheat object
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -107,6 +105,7 @@ namespace BizHawk.MultiClient
             LoadConfigSettings();
             PopulateMemoryDomainComboBox();
             AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+            UpdateNumberOfCheats();
         }
 
         private void PopulateMemoryDomainComboBox()
@@ -366,16 +365,14 @@ namespace BizHawk.MultiClient
 
                 for (int x = 0; x < cheatList.Count; x++)
                 {
-                    //str += string.Format("{0:X4}", watchList[x].address) + "\t";
-                    //str += watchList[x].GetTypeByChar().ToString() + "\t";
-                    //str += watchList[x].GetSignedByChar().ToString() + "\t";
-
-                    //if (watchList[x].bigendian == true)
-                    //    str += "1\t";
-                    //else
-                    //    str += "0\t";
-
-                    //str += watchList[x].notes + "\n";
+                    str += FormatAddress(cheatList[x].address) + "\t";
+                    str += String.Format("{0:X2}", cheatList[x].value) + "\t";
+                    str += cheatList[x].domain.Name + "\t";
+                    if (cheatList[x].IsEnabled())
+                        str += "1\t";
+                    else
+                        str += "0\t";
+                    str += cheatList[x].name + "\n";
                 }
 
                 sw.WriteLine(str);
@@ -388,7 +385,7 @@ namespace BizHawk.MultiClient
         {
             if (changes)
             {
-                DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+                DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 
                 if (result == DialogResult.Yes)
                 {
@@ -591,11 +588,23 @@ namespace BizHawk.MultiClient
 
         private void UpdateNumberOfCheats()
         {
-            int z = cheatList.Count;
-            if (z == 1)
-                NumCheatsLabel.Text = z.ToString() + " cheat";
+            string message = "";
+            int active = 0;
+            for (int x = 0; x < cheatList.Count; x++)
+            {
+                if (cheatList[x].IsEnabled())
+                    active++;
+            }
+
+            int c = cheatList.Count;
+            if (c == 1)
+                message += c.ToString() + " cheat (" + active.ToString() + " active)";
+            else if (c == 0)
+                message += c.ToString() + " cheats";
             else
-                NumCheatsLabel.Text = z.ToString() + " cheats";
+                message += c.ToString() + " cheats (" + active.ToString() + " active)";
+
+            NumCheatsLabel.Text = message;
         }
 
         private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -640,11 +649,12 @@ namespace BizHawk.MultiClient
             if (indexes.Count > 0)
             {
                 if (cheatList[indexes[0]].IsEnabled())
-                    cheatList[indexes[0]].Enable();
-                else
                     cheatList[indexes[0]].Disable();
+                else
+                    cheatList[indexes[0]].Enable();
                 CheatListView.Refresh();
             }
+            UpdateNumberOfCheats();
         }
 
         private void CheatListView_Click(object sender, EventArgs e)
