@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
         //File format - saving & loading
         //Shortcuts for Cheat menu items
         //Edit button enabled conditionally on highlighted listview item
-        //ListView click event should update add cheat box
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -70,7 +69,7 @@ namespace BizHawk.MultiClient
             }
             if (column == 1) //Address
             {
-                text = String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", cheatList[index].address);
+                text = FormatAddress(cheatList[index].address);
             }
             if (column == 2) //Value
             {
@@ -594,6 +593,28 @@ namespace BizHawk.MultiClient
                 cheatList[indexes[0]].enabled ^= true;
                 CheatListView.Refresh();
             }
+        }
+
+        private void CheatListView_Click(object sender, EventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                NameBox.Text = cheatList[indexes[0]].name;
+                AddressBox.Text = FormatAddress(cheatList[indexes[0]].address);
+                ValueBox.Text = String.Format("{0:X2}", cheatList[indexes[0]].value);
+                CheatListView.Refresh();
+            }
+        }
+
+        private string FormatAddress(int address)
+        {
+            return String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", address);
+        }
+
+        private void AddressBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

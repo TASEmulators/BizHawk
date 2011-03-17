@@ -111,6 +111,7 @@
             this.CheatListView.TabIndex = 0;
             this.CheatListView.UseCompatibleStateImageBehavior = false;
             this.CheatListView.View = System.Windows.Forms.View.Details;
+            this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
             this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
             // 
             // CheatName
@@ -516,6 +517,7 @@
             this.AddressBox.Name = "AddressBox";
             this.AddressBox.Size = new System.Drawing.Size(65, 20);
             this.AddressBox.TabIndex = 4;
+            this.AddressBox.TextChanged += new System.EventHandler(this.AddressBox_TextChanged);
             // 
             // NameBox
             // 
