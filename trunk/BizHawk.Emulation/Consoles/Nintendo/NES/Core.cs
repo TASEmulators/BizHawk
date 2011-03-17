@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public APU apu;
 		byte[] ram;
 		MemoryDomain.FreezeData[] sysbus_freeze = new MemoryDomain.FreezeData[65536];
+		NESWatch[] sysbus_watch = new NESWatch[65536];
 		protected byte[] CIRAM; //AKA nametables
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
@@ -214,9 +215,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
 			//but since freeze is a common case, it was implemented through its own mechanisms
-			if (sysbus_freeze[addr].HasWatch)
+			if (sysbus_watch[addr] != null)
 			{
-				(sysbus_freeze[addr].watch as NESWatch).Read();
+				sysbus_watch[addr].Sync();
+				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
 			return ret;

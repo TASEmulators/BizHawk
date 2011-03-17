@@ -34,14 +34,76 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SetPalette(Palettes.FCEUX_Standard);
 		}
 
+		NESWatch GetWatch(NESWatch.EDomain domain, int address)
+		{
+			if (domain == NESWatch.EDomain.Sysbus)
+			{
+				NESWatch ret = sysbus_watch[address] ?? new NESWatch(this,domain,address);
+				sysbus_watch[address] = ret;
+				return ret;
+			}
+			return null;
+		}
+
 		class NESWatch
 		{
-			public Action OnRead;
-
-			public void Read()
+			public enum EDomain
 			{
-				if (OnRead != null) OnRead();
+				Sysbus
 			}
+			public NESWatch(NES nes, EDomain domain, int address)
+			{
+				Address = address;
+				Domain = domain;
+				if (domain == EDomain.Sysbus)
+				{
+					watches = nes.sysbus_watch;
+				}
+			}
+			public int Address;
+			public EDomain Domain;
+
+			public enum EFlags
+			{
+				None = 0,
+				GameGenie = 1,
+				ReadPrint = 2
+			}
+			EFlags flags;
+			
+			public void Sync()
+			{
+				if (flags == EFlags.None)
+					watches[Address] = null;
+				else watches[Address] = this;
+			}
+
+			public void SetGameGenie(int check, int replace)
+			{
+				flags |= EFlags.GameGenie;
+				gg_check = check;
+				gg_replace = replace;
+				Sync();
+			}
+
+			public bool HasGameGenie { get { return (flags & EFlags.GameGenie) != 0; } }
+			public byte ApplyGameGenie(byte curr)
+			{
+				if (!HasGameGenie) return curr;
+				if (curr == gg_check || gg_check == -1) { Console.WriteLine("applied game genie"); return (byte)gg_replace; }
+				else return curr;
+			}
+
+			public void RemoveGameGenie()
+			{
+				flags &= ~EFlags.GameGenie;
+				Sync();
+			}
+
+			int gg_check, gg_replace;
+
+			
+			NESWatch[] watches;
 		}
 
 		public enum EMirrorType
@@ -194,12 +256,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			SystemBus.GetFreeze = addr => sysbus_freeze[addr];
 			SystemBus.SetFreeze = (addr,value) => sysbus_freeze[addr] = value;
 
-			//demo a watchpoint
-			var test = new NESWatch();
-			test.OnRead = () => Console.WriteLine("0x8000 was read!");
-			MemoryDomain.FreezeData temp = SystemBus.GetFreeze(0x8000);
-			temp.SetWatch(test);
-			SystemBus.SetFreeze(0x8000,temp);
+			//demo a game genie code
+			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
+			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).RemoveGameGenie();
 
             domains.Add(RAM);
 			domains.Add(SystemBus);

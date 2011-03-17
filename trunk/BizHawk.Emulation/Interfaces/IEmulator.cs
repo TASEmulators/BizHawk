@@ -56,24 +56,17 @@ namespace BizHawk
 			{
 				this.flags = flags;
 				this.value = value;
-				watch = null;
 			}
 			public byte value;
 			public Flag flags;
-			public object watch;
-			public void SetWatch(object watch)
-			{
-				this.watch = watch;
-			}
 			public enum Flag : byte
 			{
 				None = 0,
-				Frozen = 1
+				Frozen = 1,
 			}
 
 			public bool IsFrozen { get { return (flags & Flag.Frozen) != 0; } }
-			public bool HasWatch { get { return watch != null; } }
-			public static FreezeData Unfrozen { get { return new FreezeData(); } }
+			public static FreezeData Empty { get { return new FreezeData(); } }
 		}
 
         public readonly Func<int, byte> PeekByte;
