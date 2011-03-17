@@ -10,8 +10,8 @@ namespace BizHawk.MultiClient
         public string name { get; set; }
         public int address { get; set; }
         public byte value { get; set; }
-        public bool enabled { get; set; }
         public MemoryDomain domain { get; set; }
+        private bool enabled;
 
         public Cheat()
         {
@@ -38,6 +38,23 @@ namespace BizHawk.MultiClient
             value = val;
             enabled = e;
             domain = d;
+        }
+
+        public void Enable()
+        {
+            enabled = true;
+            //TODO: freeze
+        }
+
+        public void Disable()
+        {
+            enabled = false;
+            //TODO: freeze
+        }
+
+        public bool IsEnabled()
+        {
+            return enabled;
         }
 
     }

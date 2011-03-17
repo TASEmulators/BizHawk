@@ -98,6 +98,11 @@
         public int CheatsWndy = -1;
         public int CheatsWidth = -1;
         public int CheatsHeight = -1;
+        public int CheatsNameWidth = -1;
+        public int CheatsAddressWidth = -1;
+        public int CheatsValueWidth = -1;
+        public int CheatsDomainWidth = -1;
+        public int CheatsOnWidth = -1;
         
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
