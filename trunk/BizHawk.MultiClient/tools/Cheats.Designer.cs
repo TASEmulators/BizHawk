@@ -33,7 +33,7 @@
             this.CheatName = new System.Windows.Forms.ColumnHeader();
             this.Address = new System.Windows.Forms.ColumnHeader();
             this.Value = new System.Windows.Forms.ColumnHeader();
-            this.Compare = new System.Windows.Forms.ColumnHeader();
+            this.On = new System.Windows.Forms.ColumnHeader();
             this.CheatsMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,7 +99,7 @@
             this.CheatName,
             this.Address,
             this.Value,
-            this.Compare});
+            this.On});
             this.CheatListView.FullRowSelect = true;
             this.CheatListView.GridLines = true;
             this.CheatListView.ItemCount = 0;
@@ -125,9 +125,9 @@
             // 
             this.Value.Text = "Value";
             // 
-            // Compare
+            // On
             // 
-            this.Compare.Text = "Compare";
+            this.On.Text = "On";
             // 
             // CheatsMenu
             // 
@@ -605,7 +605,7 @@
         private System.Windows.Forms.ColumnHeader CheatName;
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
-        private System.Windows.Forms.ColumnHeader Compare;
+        private System.Windows.Forms.ColumnHeader On;
         private System.Windows.Forms.ToolStripMenuItem duplicateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStrip toolStrip1;
