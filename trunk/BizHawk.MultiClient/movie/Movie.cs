@@ -82,24 +82,20 @@ namespace BizHawk.MultiClient
 
         private void WriteText()
         {
-            var file = new FileInfo(Filename);
-            
             int length = Log.GetMovieLength();
-            string str = "";
             
             using (StreamWriter sw = new StreamWriter(Filename))
             {          
                 foreach (KeyValuePair<string, string> kvp in Header.GetHeaderInfo())
                 {
-                    str += kvp.Key + " " + kvp.Value + "\n";
+                    sw.WriteLine(kvp.Key + " " + kvp.Value);
                 }
 
                 
                 for (int x = 0; x < length; x++)
                 {
-                    str += Log.GetFrame(x) + "\n";
+                    sw.WriteLine(Log.GetFrame(x));
                 }
-                sw.WriteLine(str);
             }
         }
 
