@@ -978,7 +978,7 @@ namespace BizHawk.MultiClient
 			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
 			{
 				RamWatch1 = new RamWatch();
-				if (Global.Config.AutoLoadRamWatch)
+				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
 					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
 				RamWatch1.Show();
 			}
@@ -1024,8 +1024,8 @@ namespace BizHawk.MultiClient
             if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
             {
                 Cheats1 = new Cheats();
-                if (Global.Config.AutoLoadCheats)
-                    Cheats1.LoadWatchFromRecent(Global.Config.RecentCheats.GetRecentFileByPosition(0));
+                if (Global.Config.AutoLoadCheats && Global.Config.RecentCheats.Length() > 0)
+                    Cheats1.LoadCheatFromRecent(Global.Config.RecentCheats.GetRecentFileByPosition(0));
                 Cheats1.Show();
             }
             else

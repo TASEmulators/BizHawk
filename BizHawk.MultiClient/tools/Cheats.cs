@@ -42,15 +42,15 @@ namespace BizHawk.MultiClient
         {
             InitializeComponent();
             Closing += (o, e) => SaveConfigSettings();
+            CheatListView.QueryItemText += new QueryItemTextHandler(CheatListView_QueryItemText);
+            CheatListView.QueryItemBkColor += new QueryItemBkColorHandler(CheatListView_QueryItemBkColor);
+            CheatListView.VirtualMode = true;
         }
 
         protected override void OnClosing(CancelEventArgs e)
         {
             if (!AskSave())
                 e.Cancel = true;
-            CheatListView.QueryItemText += new QueryItemTextHandler(CheatListView_QueryItemText);
-            CheatListView.QueryItemBkColor += new QueryItemBkColorHandler(CheatListView_QueryItemBkColor);
-            CheatListView.VirtualMode = true;
             base.OnClosing(e);
         }
 
@@ -105,9 +105,10 @@ namespace BizHawk.MultiClient
             cheatList.Add(c);
             UpdateNumberOfCheats();
             DisplayCheatsList();
+            CheatListView.Refresh();
         }
 
-        public void LoadWatchFromRecent(string file)
+        public void LoadCheatFromRecent(string file)
         {
             bool z = true;
 
@@ -125,6 +126,50 @@ namespace BizHawk.MultiClient
                 DisplayCheatsList();
                 changes = false;
             }
+        }
+
+        private void UpdateAutoLoadCheats()
+        {
+            autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadCheats ^= true;
+        }
+
+        private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            //Clear out recent Roms list
+            //repopulate it with an up to date list
+            recentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Global.Config.RecentCheats.IsEmpty())
+            {
+                recentToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < Global.Config.RecentCheats.Length(); x++)
+                {
+                    string path = Global.Config.RecentCheats.GetRecentFileByPosition(x);
+                    var item = new ToolStripMenuItem();
+                    item.Text = path;
+                    item.Click += (o, ev) => LoadCheatFromRecent(path);
+                    recentToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+
+            recentToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => Global.Config.RecentCheats.Clear();
+            recentToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Auto-Load";
+            auto.Click += (o, ev) => UpdateAutoLoadCheats();
+            if (Global.Config.AutoLoadCheats == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentToolStripMenuItem.DropDownItems.Add(auto);
         }
 
         private void LoadConfigSettings()
@@ -152,7 +197,6 @@ namespace BizHawk.MultiClient
         private void DisplayCheatsList()
         {
             CheatListView.ItemCount = cheatList.Count;
-            //CheatListView.Refresh();
         }
 
         private void MoveUp()
@@ -507,6 +551,16 @@ namespace BizHawk.MultiClient
                 NumCheatsLabel.Text = z.ToString() + " cheat";
             else
                 NumCheatsLabel.Text = z.ToString() + " cheats";
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.CheatsSaveWindowPosition ^= true;
+        }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
         }
     }
 }
