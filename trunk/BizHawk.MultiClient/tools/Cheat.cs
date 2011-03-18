@@ -7,6 +7,7 @@ namespace BizHawk.MultiClient
 {
     public class Cheat
     {
+        //TODO: compare value (for NES)
         public string name { get; set; }
         public int address { get; set; }
         public byte value { get; set; }
