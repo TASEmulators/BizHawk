@@ -31,7 +31,7 @@ namespace BizHawk.MultiClient
             domain = c.domain;
         }
 
-        public Cheat(string cname, int addr, byte val, int comp, bool e, MemoryDomain d)
+        public Cheat(string cname, int addr, byte val, bool e, MemoryDomain d)
         {
             name = cname;
             address = addr;

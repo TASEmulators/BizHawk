@@ -17,6 +17,8 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
+        //Ability to freeze 2 & 4 byte
+        //Display frozen watches with blue background
         //Ability to watch in different memory domains
         //.wch format includes platform and domain type
         //address num digits based on domain size
@@ -874,6 +876,8 @@ namespace BizHawk.MultiClient
                 removeWatchToolStripMenuItem.Enabled = true;
                 moveUpToolStripMenuItem.Enabled = true;
                 moveDownToolStripMenuItem.Enabled = true;
+                pokeAddressToolStripMenuItem.Enabled = true;
+                freezeAddressToolStripMenuItem.Enabled = true;
             }
             else
             {
@@ -882,6 +886,8 @@ namespace BizHawk.MultiClient
                 removeWatchToolStripMenuItem.Enabled = false;
                 moveUpToolStripMenuItem.Enabled = false;
                 moveDownToolStripMenuItem.Enabled = false;
+                pokeAddressToolStripMenuItem.Enabled = false;
+                freezeAddressToolStripMenuItem.Enabled = false;
             }
         }
 
@@ -931,8 +937,9 @@ namespace BizHawk.MultiClient
                 contextMenuStrip1.Items[3].Visible = false;
                 contextMenuStrip1.Items[4].Visible = false;
                 contextMenuStrip1.Items[5].Visible = false;
-                contextMenuStrip1.Items[7].Visible = false;
+                contextMenuStrip1.Items[6].Visible = false;
                 contextMenuStrip1.Items[8].Visible = false;
+                contextMenuStrip1.Items[9].Visible = false;
 
             }
             else
@@ -942,19 +949,19 @@ namespace BizHawk.MultiClient
             }
 
             if (Global.Config.RamWatchShowChangeColumn)
-                contextMenuStrip1.Items[10].Text = "Hide change counts";
+                contextMenuStrip1.Items[11].Text = "Hide change counts";
             else
-                contextMenuStrip1.Items[10].Text = "Show change counts";
+                contextMenuStrip1.Items[11].Text = "Show change counts";
 
             if (Global.Config.RamWatchShowPrevColumn)
-                contextMenuStrip1.Items[11].Text = "Hide previous value";
+                contextMenuStrip1.Items[12].Text = "Hide previous value";
             else
-                contextMenuStrip1.Items[11].Text = "Show previous value";
+                contextMenuStrip1.Items[12].Text = "Show previous value";
 
             if (Global.Config.RamWatchShowChangeFromPrev)
-                contextMenuStrip1.Items[12].Text = "Display Previous value as previous";
+                contextMenuStrip1.Items[13].Text = "Display Previous value as previous";
             else
-                contextMenuStrip1.Items[12].Text = "Display Previosu value as change amount";
+                contextMenuStrip1.Items[13].Text = "Display Previosu value as change amount";
         }
 
         private void WatchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1061,10 +1068,35 @@ namespace BizHawk.MultiClient
             //if (i < 0x100) return 2;
             //if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
             if (i < 0x10000) return 4;
-            //if (i < 0x100000) return 5;
             if (i < 0x1000000) return 6;
-            //if (i < 0x10000000) return 7;
             else return 8;
+        }
+
+        private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
+
+        private void FreezeAddress()
+        {
+            ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+            //TODO: if 2 byte or 4 byte, freeze correct addresses
+            if (indexes.Count > 0)
+            {
+                Cheat c = new Cheat("", watchList[indexes[0]].address, (byte)watchList[indexes[0]].value,
+                    true, Global.Emulator.MainMemory);
+                Global.MainForm.Cheats1.AddCheat(c);
+            }
+        }
+
+        private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
+
+        private void FreezetoolStripButton2_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
         }
     }
 }
