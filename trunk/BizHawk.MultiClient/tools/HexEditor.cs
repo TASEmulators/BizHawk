@@ -13,6 +13,8 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
+        //Freeze address feature
+        //different back color for frozen addresses
         //Find text box - autohighlights matches, and shows total matches
         //Users can customize background, & text colors
         //Tool strip

@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
+        //Open/Close rom should start a new cheat list
         //File format - loading
         //Implement Options menu settings
         //Implement Freeze/Unfreeze on enabled changed in Cheat object
@@ -751,5 +752,16 @@ namespace BizHawk.MultiClient
             CheatListView.Columns[4].Width = defaultOnWidth;
         }
 
+        public bool IsActiveCheat(MemoryDomain d, int address)
+        {
+            for (int x = 0; x < cheatList.Count; x++)
+            {
+                if (cheatList[x].address == address && cheatList[x].domain.Name == d.Name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
