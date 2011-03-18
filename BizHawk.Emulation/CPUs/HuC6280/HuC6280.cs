@@ -228,6 +228,15 @@ namespace BizHawk.Emulation.CPUs.H6280
             TimerEnabled = (value & 1) == 1;
         }
 
+        public byte ReadTimerValue()
+        {
+            if (TimerTickCounter + 5 > 1024)
+            {
+                return (byte) ((TimerValue - 1) & 0x7F);
+            }
+            return TimerValue;
+        }
+
         // ==== Flags ====
 
         /// <summary>Carry Flag</summary>
