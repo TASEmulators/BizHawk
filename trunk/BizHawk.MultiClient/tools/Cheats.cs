@@ -14,12 +14,9 @@ namespace BizHawk.MultiClient
     public partial class Cheats : Form
     {
         //Open/Close rom should start a new cheat list
-        //File format - loading
         //Implement Options menu settings
         //Implement Freeze/Unfreeze on enabled changed in Cheat object
         //Save - implement (should default to SaveAs if no cheats file)
-        //Append file
-        
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -818,7 +815,11 @@ namespace BizHawk.MultiClient
 
         private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            var file = GetFileFromUser();
+            if (file != null)
+                LoadCheatFile(file.FullName, true);
+            DisplayCheatsList();
+            Changes();
         }
     }
 }

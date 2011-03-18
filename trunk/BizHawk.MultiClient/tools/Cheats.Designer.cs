@@ -432,10 +432,11 @@
             // 
             this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.MessageLabel.AutoSize = true;
-            this.MessageLabel.Location = new System.Drawing.Point(13, 305);
+            this.MessageLabel.Location = new System.Drawing.Point(13, 312);
             this.MessageLabel.Name = "MessageLabel";
-            this.MessageLabel.Size = new System.Drawing.Size(0, 13);
+            this.MessageLabel.Size = new System.Drawing.Size(31, 13);
             this.MessageLabel.TabIndex = 3;
+            this.MessageLabel.Text = "        ";
             // 
             // AddCheatGroup
             // 
