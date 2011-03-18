@@ -17,6 +17,9 @@ namespace BizHawk.MultiClient
         //File format - loading
         //Implement Options menu settings
         //Implement Freeze/Unfreeze on enabled changed in Cheat object
+        //Save - implement (should default to SaveAs if no cheats file)
+        //Append file
+        
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -476,13 +479,57 @@ namespace BizHawk.MultiClient
 
         bool LoadCheatFile(string path, bool append)
         {
-            int y, z;
+            int y;
+            string domain;
             var file = new FileInfo(path);
             if (file.Exists == false) return false;
 
             using (StreamReader sr = file.OpenText())
             {
+                if (!append) currentCheatFile = path;
 
+                string s = "";
+                string temp = "";
+
+                if (append == false)
+                    cheatList.Clear();  //Wipe existing list and read from file
+
+                while ((s = sr.ReadLine()) != null)
+                {
+                    if (s.Length < 6) continue;
+                    Cheat c = new Cheat();
+                    temp = s.Substring(0, s.IndexOf('\t'));   //Address
+                    c.address = int.Parse(temp, NumberStyles.HexNumber);
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y);   //Value
+                    temp = s.Substring(0, 2);
+                    c.value = byte.Parse(temp, NumberStyles.HexNumber);
+                    
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y); //Memory Domain
+                    temp = s.Substring(0, s.IndexOf('\t'));
+                    domain = s;
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y); //Enabled
+                    y = int.Parse(s[0].ToString());
+                    if (y == 0)
+                        c.Disable();
+                    else
+                        c.Enable();
+
+                    y = s.IndexOf('\t') + 1;
+                    s = s.Substring(y, s.Length - y); //Name
+                    c.name = s;
+
+                    cheatList.Add(c);
+                }
+
+                Global.Config.RecentCheats.Add(file.FullName);
+                changes = false;
+                MessageLabel.Text = Path.GetFileName(file.FullName);
+                UpdateNumberOfCheats();
             }
 
             return true; //TODO
@@ -762,6 +809,16 @@ namespace BizHawk.MultiClient
                 }
             }
             return false;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void appendFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

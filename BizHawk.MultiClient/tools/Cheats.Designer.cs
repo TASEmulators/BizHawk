@@ -58,8 +58,16 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSeparator = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.MessageLabel = new System.Windows.Forms.Label();
             this.AddCheatGroup = new System.Windows.Forms.GroupBox();
             this.EditButton = new System.Windows.Forms.Button();
@@ -81,14 +89,6 @@
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Domain = new System.Windows.Forms.ColumnHeader();
             this.On = new System.Windows.Forms.ColumnHeader();
-            this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSeparator = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -159,6 +159,7 @@
             this.appendFileToolStripMenuItem.Name = "appendFileToolStripMenuItem";
             this.appendFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.appendFileToolStripMenuItem.Text = "Append File";
+            this.appendFileToolStripMenuItem.Click += new System.EventHandler(this.appendFileToolStripMenuItem_Click);
             // 
             // recentToolStripMenuItem
             // 
@@ -206,6 +207,7 @@
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // cheatsToolStripMenuItem
             // 
@@ -336,15 +338,95 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // newToolStripButton
+            // 
+            this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
+            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.newToolStripButton.Name = "newToolStripButton";
+            this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.newToolStripButton.Text = "&New";
+            this.newToolStripButton.Click += new System.EventHandler(this.newToolStripButton_Click);
+            // 
+            // openToolStripButton
+            // 
+            this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
+            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.openToolStripButton.Name = "openToolStripButton";
+            this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.openToolStripButton.Text = "&Open";
+            this.openToolStripButton.Click += new System.EventHandler(this.openToolStripButton_Click);
+            // 
+            // saveToolStripButton
+            // 
+            this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
+            this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.saveToolStripButton.Name = "saveToolStripButton";
+            this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.saveToolStripButton.Text = "&Save";
+            this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripButton_Click);
+            // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
             this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
+            // cutToolStripButton
+            // 
+            this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+            this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.cutToolStripButton.Name = "cutToolStripButton";
+            this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.cutToolStripButton.Text = "&Remove";
+            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
+            // 
+            // copyToolStripButton
+            // 
+            this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
+            this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.copyToolStripButton.Name = "copyToolStripButton";
+            this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.copyToolStripButton.Text = "&Duplicate";
+            this.copyToolStripButton.Click += new System.EventHandler(this.copyToolStripButton_Click);
+            // 
+            // toolStripButtonSeparator
+            // 
+            this.toolStripButtonSeparator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSeparator.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
+            this.toolStripButtonSeparator.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
+            this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSeparator.Text = "Insert Separator";
+            this.toolStripButtonSeparator.Click += new System.EventHandler(this.toolStripButtonSeparator_Click);
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonMoveUp
+            // 
+            this.toolStripButtonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonMoveUp.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
+            this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
+            this.toolStripButtonMoveUp.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonMoveUp.Text = "toolStripButton1";
+            this.toolStripButtonMoveUp.Click += new System.EventHandler(this.toolStripButtonMoveUp_Click);
+            // 
+            // toolStripButtonMoveDown
+            // 
+            this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonMoveDown.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
+            this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
+            this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonMoveDown.Text = "Move Down";
+            this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
             // 
             // MessageLabel
             // 
@@ -553,86 +635,6 @@
             // 
             this.On.Text = "On";
             this.On.Width = 40;
-            // 
-            // newToolStripButton
-            // 
-            this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.newToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripButton.Image")));
-            this.newToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.newToolStripButton.Name = "newToolStripButton";
-            this.newToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.newToolStripButton.Text = "&New";
-            this.newToolStripButton.Click += new System.EventHandler(this.newToolStripButton_Click);
-            // 
-            // openToolStripButton
-            // 
-            this.openToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripButton.Image")));
-            this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.openToolStripButton.Name = "openToolStripButton";
-            this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.openToolStripButton.Text = "&Open";
-            this.openToolStripButton.Click += new System.EventHandler(this.openToolStripButton_Click);
-            // 
-            // saveToolStripButton
-            // 
-            this.saveToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.saveToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripButton.Image")));
-            this.saveToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveToolStripButton.Name = "saveToolStripButton";
-            this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.saveToolStripButton.Text = "&Save";
-            this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripButton_Click);
-            // 
-            // cutToolStripButton
-            // 
-            this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
-            this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.cutToolStripButton.Name = "cutToolStripButton";
-            this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.cutToolStripButton.Text = "&Remove";
-            this.cutToolStripButton.Click += new System.EventHandler(this.cutToolStripButton_Click);
-            // 
-            // copyToolStripButton
-            // 
-            this.copyToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.copyToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("copyToolStripButton.Image")));
-            this.copyToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.copyToolStripButton.Name = "copyToolStripButton";
-            this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.copyToolStripButton.Text = "&Duplicate";
-            this.copyToolStripButton.Click += new System.EventHandler(this.copyToolStripButton_Click);
-            // 
-            // toolStripButtonSeparator
-            // 
-            this.toolStripButtonSeparator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSeparator.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
-            this.toolStripButtonSeparator.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSeparator.Name = "toolStripButtonSeparator";
-            this.toolStripButtonSeparator.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSeparator.Text = "Insert Separator";
-            this.toolStripButtonSeparator.Click += new System.EventHandler(this.toolStripButtonSeparator_Click);
-            // 
-            // toolStripButtonMoveUp
-            // 
-            this.toolStripButtonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonMoveUp.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
-            this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
-            this.toolStripButtonMoveUp.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonMoveUp.Text = "toolStripButton1";
-            this.toolStripButtonMoveUp.Click += new System.EventHandler(this.toolStripButtonMoveUp_Click);
-            // 
-            // toolStripButtonMoveDown
-            // 
-            this.toolStripButtonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonMoveDown.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
-            this.toolStripButtonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonMoveDown.Name = "toolStripButtonMoveDown";
-            this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonMoveDown.Text = "Move Down";
-            this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
             // 
             // Cheats
             // 
