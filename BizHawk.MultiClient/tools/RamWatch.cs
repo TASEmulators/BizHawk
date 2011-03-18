@@ -21,10 +21,16 @@ namespace BizHawk.MultiClient
         //Ability to watch in different memory domains
         //.wch format includes platform and domain type
         //address num digits based on domain size
-        //Refactor column width settings like Cheats, default valeu = -1, and check for negative values
-        //Refactor restore window size by saving widths in constructor and use them to restore
+        //Restore window size should restore column order as well
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        int defaultAddressWidth;
+        int defaultValueWidth;
+        int defaultPrevWidth;
+        int defaultChangeWidth;
+        int NotesWidth;
+
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
         bool changes = false;
@@ -66,6 +72,11 @@ namespace BizHawk.MultiClient
         {
             defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = Size.Height;
+            defaultAddressWidth = WatchListView.Columns[0].Width;
+            defaultValueWidth = WatchListView.Columns[1].Width;
+            defaultPrevWidth = WatchListView.Columns[2].Width;
+            defaultChangeWidth = WatchListView.Columns[3].Width;
+            NotesWidth = WatchListView.Columns[4].Width;
 
             if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
                 Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
@@ -76,11 +87,16 @@ namespace BizHawk.MultiClient
             }
             SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
             SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
-            WatchListView.Columns[0].Width = Global.Config.RamWatchAddressWidth;
-            WatchListView.Columns[1].Width = Global.Config.RamWatchValueWidth;
-            WatchListView.Columns[2].Width = Global.Config.RamWatchPrevWidth;
-            WatchListView.Columns[3].Width = Global.Config.RamWatchChangeWidth;
-            WatchListView.Columns[4].Width = Global.Config.RamWatchNotesWidth;
+            if (Global.Config.RamWatchAddressWidth > 0)
+                WatchListView.Columns[0].Width = Global.Config.RamWatchAddressWidth;
+            if (Global.Config.RamWatchValueWidth > 0)
+                WatchListView.Columns[1].Width = Global.Config.RamWatchValueWidth;
+            if (Global.Config.RamWatchPrevWidth > 0)
+                WatchListView.Columns[2].Width = Global.Config.RamWatchPrevWidth;
+            if (Global.Config.RamWatchChangeWidth > 0)
+                WatchListView.Columns[3].Width = Global.Config.RamWatchChangeWidth;
+            if (Global.Config.RamWatchNotesWidth > 0)
+                WatchListView.Columns[4].Width = Global.Config.RamWatchNotesWidth;
         }
 
         public void SaveConfigSettings()

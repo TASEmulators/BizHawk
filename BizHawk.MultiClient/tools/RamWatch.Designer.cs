@@ -100,6 +100,7 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FreezetoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -323,6 +324,7 @@
             this.showChangeCountsToolStripMenuItem,
             this.showPreviousValueToolStripMenuItem,
             this.prevValueShowsChangeAmountToolStripMenuItem,
+            this.toolStripSeparator7,
             this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -726,6 +728,11 @@
             this.FreezetoolStripButton2.Text = "Freeze";
             this.FreezetoolStripButton2.Click += new System.EventHandler(this.FreezetoolStripButton2_Click);
             // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(188, 6);
+            // 
             // RamWatch
             // 
             this.AllowDrop = true;
@@ -827,5 +834,6 @@
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton FreezetoolStripButton2;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
     }
 }

@@ -73,6 +73,13 @@ namespace BizHawk.MultiClient
 
         private void RamSearch_Load(object sender, EventArgs e)
         {
+            LoadConfigSettings();
+            StartNewSearch();
+            SetMemoryDomainMenu();
+        }
+
+        private void LoadConfigSettings()
+        {
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = this.Size.Height;
 
@@ -87,8 +94,6 @@ namespace BizHawk.MultiClient
                 littleEndianToolStripMenuItem.Checked = true;
             }
 
-            StartNewSearch();
-            
             if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
                 this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
 
@@ -96,8 +101,6 @@ namespace BizHawk.MultiClient
             {
                 this.Size = new System.Drawing.Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
             }
-
-            SetMemoryDomainMenu();
         }
 
         private void SetMemoryDomainMenu()
