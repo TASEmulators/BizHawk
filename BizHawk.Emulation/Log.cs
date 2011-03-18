@@ -69,7 +69,10 @@ namespace BizHawk
                 writer = new StreamWriter(LogFilename);
 
             if (LogToFile)
+            {
                 writer.WriteLine(message);
+                writer.Flush();
+            }
         }
     }
 }
