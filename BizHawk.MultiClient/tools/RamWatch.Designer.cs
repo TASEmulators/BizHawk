@@ -101,6 +101,9 @@
             this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FreezetoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.MemDomainLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -225,6 +228,8 @@
             // watchesToolStripMenuItem
             // 
             this.watchesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.memoryDomainsToolStripMenuItem,
+            this.toolStripSeparator8,
             this.newWatchToolStripMenuItem,
             this.editWatchToolStripMenuItem,
             this.removeWatchToolStripMenuItem,
@@ -733,6 +738,25 @@
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(188, 6);
             // 
+            // memoryDomainsToolStripMenuItem
+            // 
+            this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
+            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.memoryDomainsToolStripMenuItem.Text = "Memory Domains";
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(219, 6);
+            // 
+            // MemDomainLabel
+            // 
+            this.MemDomainLabel.AutoSize = true;
+            this.MemDomainLabel.Location = new System.Drawing.Point(147, 57);
+            this.MemDomainLabel.Name = "MemDomainLabel";
+            this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
+            this.MemDomainLabel.TabIndex = 6;
+            // 
             // RamWatch
             // 
             this.AllowDrop = true;
@@ -740,6 +764,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(364, 406);
             this.Controls.Add(this.MessageLabel);
+            this.Controls.Add(this.MemDomainLabel);
             this.Controls.Add(this.WatchCountLabel);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -835,5 +860,8 @@
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton FreezetoolStripButton2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem memoryDomainsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.Label MemDomainLabel;
     }
 }

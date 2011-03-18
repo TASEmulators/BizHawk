@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
         //.wch format includes platform and domain type
         //address num digits based on domain size
         //Restore window size should restore column order as well
+        //When receiving a watch from a different domain, should something be done?
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -31,6 +32,8 @@ namespace BizHawk.MultiClient
         int defaultChangeWidth;
         int NotesWidth;
 
+        string systemID = "NULL";
+        MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
         bool changes = false;
@@ -55,7 +58,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < watchList.Count; x++)
             {
                 watchList[x].prev = watchList[x].value;
-                watchList[x].PeekAddress(Global.Emulator.MainMemory);
+                watchList[x].PeekAddress(Domain);
                 if (watchList[x].value != watchList[x].prev)
                     watchList[x].changecount++;
             }
@@ -133,7 +136,7 @@ namespace BizHawk.MultiClient
         {
             if (watchList[index].type == atype.SEPARATOR)
                 color = this.BackColor;
-            if (Global.MainForm.Cheats1.IsActiveCheat(Global.Emulator.MainMemory, watchList[index].address))
+            if (Global.MainForm.Cheats1.IsActiveCheat(Domain, watchList[index].address))
                 color = Color.LightCyan;
         }
 
@@ -145,7 +148,7 @@ namespace BizHawk.MultiClient
                 if (watchList[index].type == atype.SEPARATOR)
                     text = "";
                 else
-                    text = String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", watchList[index].address);
+                    text = String.Format("{0:X" + GetNumDigits((Domain.Size - 1)).ToString() + "}", watchList[index].address);
             }
             if (column == 1) //Value
             {
@@ -685,6 +688,7 @@ namespace BizHawk.MultiClient
         private void RamWatch_Load(object sender, EventArgs e)
         {
             LoadConfigSettings();
+            SetMemoryDomainMenu();
         }
 
         private void filesToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1101,7 +1105,7 @@ namespace BizHawk.MultiClient
             if (indexes.Count > 0)
             {
                 Cheat c = new Cheat("", watchList[indexes[0]].address, (byte)watchList[indexes[0]].value,
-                    true, Global.Emulator.MainMemory);
+                    true, Domain);
                 Global.MainForm.Cheats1.AddCheat(c);
             }
         }
@@ -1115,5 +1119,49 @@ namespace BizHawk.MultiClient
         {
             FreezeAddress();
         }
+
+        private void SetPlatformAndMemoryDomainLabel()
+        {
+            string memoryDomain = Domain.ToString();
+            systemID = Global.Emulator.SystemId;
+            MemDomainLabel.Text = systemID + " " + memoryDomain;
+        }
+
+        private void SetMemoryDomain(int pos)
+        {
+            if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+            {
+                Domain = Global.Emulator.MemoryDomains[pos];
+            }
+            SetPlatformAndMemoryDomainLabel();
+            Update();
+        }
+
+        private void SetMemoryDomainMenu()
+        {
+            memoryDomainsToolStripMenuItem.DropDownItems.Clear();
+            if (Global.Emulator.MemoryDomains.Count > 0)
+            {
+                for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+                {
+                    string str = Global.Emulator.MemoryDomains[x].ToString();
+                    var item = new ToolStripMenuItem();
+                    item.Text = str;
+                    {
+                        int z = x;
+                        item.Click += (o, ev) => SetMemoryDomain(z);
+                    }
+                    if (x == 0)
+                    {
+                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
+                        SetMemoryDomain(x);
+                    }
+                    memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+            else
+                memoryDomainsToolStripMenuItem.Enabled = false;
+        }
+
     }
 }
