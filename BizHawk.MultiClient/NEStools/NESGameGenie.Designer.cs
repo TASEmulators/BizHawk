@@ -151,13 +151,13 @@
             // 
             // AddCheat
             // 
-            this.AddCheat.Enabled = false;
             this.AddCheat.Location = new System.Drawing.Point(202, 217);
             this.AddCheat.Name = "AddCheat";
             this.AddCheat.Size = new System.Drawing.Size(69, 21);
             this.AddCheat.TabIndex = 3;
             this.AddCheat.Text = "Add Cheat";
             this.AddCheat.UseVisualStyleBackColor = true;
+            this.AddCheat.Click += new System.EventHandler(this.AddCheat_Click);
             // 
             // ButtonPanel
             // 

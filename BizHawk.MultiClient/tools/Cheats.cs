@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
         //Implement Options menu settings
         //Implement Freeze/Unfreeze on enabled changed in Cheat object
         //Save - implement (should default to SaveAs if no cheats file)
+        //Restore Window Size should restore column order as well
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;

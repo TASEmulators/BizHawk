@@ -13,7 +13,9 @@ namespace BizHawk.MultiClient
 {
     public partial class NESGameGenie : Form
     {
-        //TODO: Encoding: Backspace on textboxes should trigger encoding
+        //TODO
+        //Autoload
+        //Save Window Position
         int address = -1;
         int value = -1;
         int compare = -1;
@@ -42,6 +44,8 @@ namespace BizHawk.MultiClient
             GameGenieTable.Add('S', 13);    //1101
             GameGenieTable.Add('V', 14);    //1110
             GameGenieTable.Add('N', 15);    //1111
+
+            AddCheat.Enabled = false;
         }
 
         private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
@@ -173,6 +177,7 @@ namespace BizHawk.MultiClient
             AddressBox.Text = "";
             CompareBox.Text = "";
             ValueBox.Text = "";
+            AddCheat.Enabled = false;
         }
 
         private void GameGenieCode_TextChanged(object sender, EventArgs e)
@@ -184,6 +189,7 @@ namespace BizHawk.MultiClient
                 else
                     ClearProperties();
             }
+            TryEnableAddCheat();
         }
 
         private void Keypad_Click(object sender, EventArgs e)
@@ -268,6 +274,7 @@ namespace BizHawk.MultiClient
                     EncodeGameGenie();
                 }
             }
+            TryEnableAddCheat();
         }
 
         private void CompareBox_TextChanged(object sender, EventArgs e)
@@ -292,6 +299,15 @@ namespace BizHawk.MultiClient
                     EncodeGameGenie();
                 }
             }
+            TryEnableAddCheat();
+        }
+
+        private void TryEnableAddCheat()
+        {
+            if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0 && GameGenieCode.Text.Length > 0)
+                AddCheat.Enabled = true;
+            else
+                AddCheat.Enabled = false;
         }
 
         private void ValueBox_TextChanged(object sender, EventArgs e)
@@ -308,6 +324,8 @@ namespace BizHawk.MultiClient
                     }
                 }
             }
+
+            TryEnableAddCheat();
         }
 
         private void EncodeGameGenie()
@@ -347,6 +365,16 @@ namespace BizHawk.MultiClient
             ClearProperties();
             GameGenieCode.Text = "";
             Encoding.Checked = false;
+        }
+
+        private void AddCheat_Click(object sender, EventArgs e)
+        {
+            Cheat c = new Cheat();
+            c.name = GameGenieCode.Text;
+            c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber);
+            c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+            c.Enable();
+            Global.MainForm.Cheats1.AddCheat(c);
         }
     }
 }
