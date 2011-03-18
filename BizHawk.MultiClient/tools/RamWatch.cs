@@ -18,7 +18,6 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //Ability to freeze 2 & 4 byte
-        //Display frozen watches with blue background
         //Ability to watch in different memory domains
         //.wch format includes platform and domain type
         //address num digits based on domain size
@@ -118,6 +117,8 @@ namespace BizHawk.MultiClient
         {
             if (watchList[index].type == atype.SEPARATOR)
                 color = this.BackColor;
+            if (Global.MainForm.Cheats1.IsActiveCheat(Global.Emulator.MainMemory, watchList[index].address))
+                color = Color.LightCyan;
         }
 
         void WatchListView_QueryItemText(int index, int column, out string text)
