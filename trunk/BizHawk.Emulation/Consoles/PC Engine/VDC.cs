@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public ushort[] Registers = new ushort[0x20];
         public ushort ReadBuffer;
         public byte StatusByte;
-        private bool DmaRequested;
-        private bool SatDmaRequested;
+        internal bool DmaRequested;
+        internal bool SatDmaRequested;
 
         public ushort IncrementWidth
         {
@@ -105,7 +105,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (port == RegisterSelect)
             {
                 RegisterLatch = (byte)(value & 0x1F);
-                Log.Note("CPU","LATCH VDC REGISTER: {0:X}",RegisterLatch);
             }
             else if (port == LSB)
             {
@@ -148,25 +147,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     if (FrameBuffer.Length != FrameWidth * FrameHeight)
                     {
                         FrameBuffer = new int[FrameWidth*FrameHeight];
-                        Console.WriteLine("RESIZED FRAME BUFFER: width="+FrameWidth);
                     }
                     break;
-                case VPR:
-                    int vds = Registers[VPR] >> 8;
-                    int vsw = Registers[VPR] & 0x1F;
-                    Console.WriteLine("SET VPR: VDS {0} VSW {1} startpos={2} {3}",vds, vsw, vds+vsw, DisplayStartLine);
-                    break;
                 case VDW: // Vertical Display Word? - update framebuffer size
-                    Console.WriteLine("REQUEST FRAME HEIGHT=" + RequestedFrameHeight);
                     FrameHeight = RequestedFrameHeight;
                     if (FrameBuffer.Length != FrameWidth * FrameHeight)
                     {
                         FrameBuffer = new int[FrameWidth * FrameHeight];
-                        Console.WriteLine("RESIZED FRAME BUFFER: height="+FrameHeight);
                     }
-                    break;
-                case VCR: 
-                    Console.WriteLine("VCR / END POSITION: "+(Registers[VCR] & 0xFF));
                     break;
                 case LENR: // Initiate DMA transfer
                     DmaRequested = true;
@@ -206,9 +194,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             return 0;
         }
 
-        private void RunDmaForScanline()
+        internal void RunDmaForScanline()
         {
-            Console.WriteLine("DOING DMA ********************************************* ");
             DmaRequested = false;
             int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
             int advanceDest   = (Registers[DCR] & 8) == 0 ? +1 : -1;

@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.WriteLine("IRQNextControlByte {0:X2}", IRQNextControlByte);
             writer.WriteLine("ExecutedCycles {0}", TotalExecutedCycles);
             writer.WriteLine("PendingCycles {0}", PendingCycles);
-            writer.WriteLine("LowSpeed {0}", TimerTickCounter);
+            writer.WriteLine("LowSpeed {0}", LowSpeed);
             writer.WriteLine("TimerTickCounter {0}", TimerTickCounter);
             writer.WriteLine("TimerReloadValue {0}", TimerReloadValue);
             writer.WriteLine("TimerValue {0}", TimerValue);
