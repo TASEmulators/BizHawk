@@ -18,6 +18,7 @@ namespace BizHawk.MultiClient
     {
         //TODO:
         //Context Menu - if highlighted items - show Highlight dependent functions
+        //Freeze address - ability to freeze multi-byte addresses
 
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
@@ -481,7 +482,11 @@ namespace BizHawk.MultiClient
                 if (!weededList.Contains(searchList[index]))
                 {
                     color = Color.Pink;
+                    if (Global.MainForm.Cheats1.IsActiveCheat(Domain, searchList[index].address))
+                        color = Color.Purple;
                 }
+                else if (Global.MainForm.Cheats1.IsActiveCheat(Domain, searchList[index].address))
+                    color = Color.LightCyan;
                 else
                     color = Color.White;
             }
@@ -1729,6 +1734,28 @@ namespace BizHawk.MultiClient
             if (i < 0x1000000) return 6;
             if (i < 0x10000000) return 7;
             else return 8;
+        }
+
+        private void FreezeAddressToolStrip_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
+
+        private void FreezeAddress()
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+            //TODO: if 2 byte or 4 byte, freeze correct addresses
+            if (indexes.Count > 0)
+            {
+                Cheat c = new Cheat("", searchList[indexes[0]].address, (byte)searchList[indexes[0]].value,
+                    true, Domain);
+                Global.MainForm.Cheats1.AddCheat(c);
+            }
+        }
+
+        private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
         }
     }
 }
