@@ -11,7 +11,6 @@ General:
 
 Air Zonk          - Fully playable, doesn't freeze, but some gfx/timing issues
 Battle Ace        - Some gfx glitches
-Battle Royale     - STILLL  Doesnt boot
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
 Cross Wiber       - Minor; Raster on wrong line 
 Davis Cup Tennis  - Some timing issue, splash screen is too slow
