@@ -1747,12 +1747,72 @@ namespace BizHawk.MultiClient
         private void FreezeAddress()
         {
             ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
-            //TODO: if 2 byte or 4 byte, freeze correct addresses
             if (indexes.Count > 0)
             {
-                Cheat c = new Cheat("", searchList[indexes[0]].address, (byte)searchList[indexes[0]].value,
-                    true, Domain);
-                Global.MainForm.Cheats1.AddCheat(c);
+                switch (searchList[indexes[0]].type)
+                {
+                    case atype.BYTE:
+                        Cheat c = new Cheat("", searchList[indexes[0]].address, (byte)searchList[indexes[0]].value,
+                            true, Domain);
+                        Global.MainForm.Cheats1.AddCheat(c);
+                        break;
+                    case atype.WORD:
+                        {
+                            byte low = (byte)(searchList[indexes[0]].value / 256);
+                            byte high = (byte)(searchList[indexes[0]].value);
+                            int a1 = searchList[indexes[0]].address;
+                            int a2 = searchList[indexes[0]].address + 1;
+                            if (searchList[indexes[0]].bigendian)
+                            {
+                                Cheat c1 = new Cheat("", a1, low, true, Domain);
+                                Cheat c2 = new Cheat("", a2, high, true, Domain);
+                                Global.MainForm.Cheats1.AddCheat(c1);
+                                Global.MainForm.Cheats1.AddCheat(c2);
+                            }
+                            else
+                            {
+                                Cheat c1 = new Cheat("", a1, high, true, Domain);
+                                Cheat c2 = new Cheat("", a2, low, true, Domain);
+                                Global.MainForm.Cheats1.AddCheat(c1);
+                                Global.MainForm.Cheats1.AddCheat(c2);
+                            }
+                        }
+                        break;
+                    case atype.DWORD:
+                        {
+                            byte HIWORDhigh = (byte)(searchList[indexes[0]].value / 0x1000000);
+                            byte HIWORDlow = (byte)(searchList[indexes[0]].value / 0x10000);
+                            byte LOWORDhigh = (byte)(searchList[indexes[0]].value / 0x100);
+                            byte LOWORDlow = (byte)(searchList[indexes[0]].value);
+                            int a1 = searchList[indexes[0]].address;
+                            int a2 = searchList[indexes[0]].address + 1;
+                            int a3 = searchList[indexes[0]].address + 2;
+                            int a4 = searchList[indexes[0]].address + 3;
+                            if (searchList[indexes[0]].bigendian)
+                            {
+                                Cheat c1 = new Cheat("", a1, HIWORDhigh, true, Domain);
+                                Cheat c2 = new Cheat("", a2, HIWORDlow, true, Domain);
+                                Cheat c3 = new Cheat("", a3, LOWORDhigh, true, Domain);
+                                Cheat c4 = new Cheat("", a4, LOWORDlow, true, Domain);
+                                Global.MainForm.Cheats1.AddCheat(c1);
+                                Global.MainForm.Cheats1.AddCheat(c2);
+                                Global.MainForm.Cheats1.AddCheat(c3);
+                                Global.MainForm.Cheats1.AddCheat(c4);
+                            }
+                            else
+                            {
+                                Cheat c1 = new Cheat("", a1, LOWORDlow, true, Domain);
+                                Cheat c2 = new Cheat("", a2, LOWORDhigh, true, Domain);
+                                Cheat c3 = new Cheat("", a3, HIWORDlow, true, Domain);
+                                Cheat c4 = new Cheat("", a4, HIWORDhigh, true, Domain);
+                                Global.MainForm.Cheats1.AddCheat(c1);
+                                Global.MainForm.Cheats1.AddCheat(c2);
+                                Global.MainForm.Cheats1.AddCheat(c3);
+                                Global.MainForm.Cheats1.AddCheat(c4);
+                            }
+                        }
+                        break;
+                }
             }
         }
 
