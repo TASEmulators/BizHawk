@@ -510,10 +510,10 @@ namespace HuC6280
             w.WriteLine("                if (TimerEnabled)");
             w.WriteLine("                {");
             w.WriteLine("                    TimerTickCounter += delta;");
-            w.WriteLine("                    if (TimerTickCounter >= 1024)");
+            w.WriteLine("                    while (TimerTickCounter >= 1024)");
             w.WriteLine("                    {");
             w.WriteLine("                        TimerValue--;");
-            w.WriteLine("                        TimerTickCounter &= 1023;");
+            w.WriteLine("                        TimerTickCounter -= 1024;");
             w.WriteLine("                        if (TimerValue == 0xFF)");
             w.WriteLine("                        {");
             w.WriteLine("                            TimerValue = TimerReloadValue;");

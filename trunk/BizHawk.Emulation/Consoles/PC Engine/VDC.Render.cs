@@ -74,13 +74,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     RenderScanLine();
 
                 if (ScanLine == VBlankScanline && VBlankInterruptEnabled)
-                {
-                    Log.Note("VDC", "Firing VBlank interrupt at {0}", ScanLine);
                     StatusByte |= StatusVerticalBlanking;
-                    cpu.IRQ1Assert = true;
-                }
+                
+                cpu.Execute(2);
 
-                cpu.Execute(455-hblankCycles);
+                if ((StatusByte & StatusVerticalBlanking) > 0)
+                    cpu.IRQ1Assert = true;
+
+                cpu.Execute(455-hblankCycles-2);
 
                 if (ScanLine == VBlankScanline)
                     UpdateSpriteAttributeTable();
