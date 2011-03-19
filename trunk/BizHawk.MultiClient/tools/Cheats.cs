@@ -18,6 +18,7 @@ namespace BizHawk.MultiClient
         //Implement Freeze functions in all memory domains
         //Save - implement (should default to SaveAs if no cheats file)
         //Restore Window Size should restore column order as well
+        //Save & Load Domain name into .wch file
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
