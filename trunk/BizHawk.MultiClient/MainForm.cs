@@ -143,6 +143,8 @@ namespace BizHawk.MultiClient
                 LoadCheatsWindow();
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			    LoadNESPPU();
+            if (Global.Config.NESGGAutoload && Global.Emulator is NES)
+                LoadGameGenieEC();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -997,6 +999,12 @@ namespace BizHawk.MultiClient
 				RamSearch1.Focus();
 		}
 
+        public void LoadGameGenieEC()
+        {
+            NESGameGenie gg = new NESGameGenie();
+            gg.Show();
+        }
+
         public void LoadHexEditor()
         {
             if (!HexEditor1.IsHandleCreated || HexEditor1.IsDisposed)
@@ -1254,8 +1262,7 @@ namespace BizHawk.MultiClient
 
         private void gameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NESGameGenie g = new NESGameGenie();
-            g.Show();
+            LoadGameGenieEC();
         }
 
         private void cheatsToolStripMenuItem_Click(object sender, EventArgs e)
