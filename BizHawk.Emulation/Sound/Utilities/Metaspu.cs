@@ -19,12 +19,17 @@ namespace BizHawk.Emulation.Sound
 		{
 			buffer.output_samples(samples, samples.Length / 2);
 		}
+		public void DiscardSamples()
+		{
+			buffer.clear();
+		}
 	}
 
 	public interface ISynchronizingAudioBuffer
 	{
 		void enqueue_samples(short[] buf, int samples_provided);
 		void enqueue_sample(short left, short right);
+		void clear();
 		
 		//returns the number of samples actually supplied, which may not match the number requested
 		int output_samples(short[] buf, int samples_requested);
@@ -68,6 +73,11 @@ namespace BizHawk.Emulation.Sound
 
 		//adjustobuf(200,1000)
 		bool mixqueue_go = false;
+
+		public void clear()
+		{
+			adjustobuf.clear();
+		}
 
 		public void enqueue_sample(short left, short right)
 		{
@@ -122,12 +132,7 @@ namespace BizHawk.Emulation.Sound
 			{
 				minLatency = _minLatency;
 				maxLatency = _maxLatency;
-				rollingTotalSize = 0;
-				targetLatency = (maxLatency + minLatency)/2;
-				rate = 1.0f;
-				cursor = 0.0f;
-				curr[0] = curr[1] = 0;
-				kAverageSize = 80000;
+				clear();
 			}
 
 			float rate, cursor;
@@ -136,6 +141,19 @@ namespace BizHawk.Emulation.Sound
 			Queue<int> statsHistory = new Queue<int>();
 			public int size = 0;
 			short[] curr = new short[2];
+
+			public void clear()
+			{
+				buffer.Clear();
+				statsHistory.Clear();
+				rollingTotalSize = 0;
+				targetLatency = (maxLatency + minLatency) / 2;
+				rate = 1.0f;
+				cursor = 0.0f;
+				curr[0] = curr[1] = 0;
+				kAverageSize = 80000;
+				size = 0;
+			}
 
 			public void enqueue(short left, short  right) 
 			{
@@ -242,6 +260,11 @@ namespace BizHawk.Emulation.Sound
 			int rrv = ((int)lhs.r * outNum + (int)rhs.r * inNum) / denom;
 
 			return new ssamp((short)lrv,(short)rrv);
+		}
+
+		public void clear()
+		{
+			sampleQueue.Clear();
 		}
 
 		static void emit_sample(short[] outbuf, ref int cursor, ssamp sample)

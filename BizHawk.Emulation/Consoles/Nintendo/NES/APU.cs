@@ -47,13 +47,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//reg0
 				int duty_cnt, env_loop, env_constant, env_cnt_value;
 				//reg1
-				int sweep_en, sweep_period, negate, shiftcount;
+				int sweep_en, sweep_divider_cnt, sweep_negate, sweep_shiftcount;
+				bool sweep_reload;
 				//reg2/3
 				int len_cnt;
 				int timer_raw_reload_value, timer_reload_value;
 
-				//from other apu regs
-				public int lenctr_en;
+				//misc..
+				int lenctr_en;
+
+				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
 				public void WriteReg(int addr, byte val)
 				{
@@ -67,30 +70,42 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							duty_cnt = (val >> 6) & 3;
 							break;
 						case 1:
-							shiftcount = val & 7;
-							negate = (val >> 3) & 1;
-							sweep_period = (val >> 4) & 7;
+							sweep_shiftcount = val & 7;
+							sweep_negate = (val >> 3) & 1;
+							sweep_divider_cnt = (val >> 4) & 7;
 							sweep_en = (val >> 7) & 1;
+							sweep_reload = true;
 							break;
 						case 2:
 							timer_reload_value = (timer_reload_value & ~0xFF) | val;
-							calc_sweep_unit();
+							timer_raw_reload_value = timer_reload_value * 2 + 2;
+							//if (unit == 1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
 							break;
 						case 3:
 							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
 							timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
-							timer_raw_reload_value = timer_reload_value * 2;
-							duty_step = 0;
+							timer_raw_reload_value = timer_reload_value * 2 + 2;
+							//duty_step = 0; //?just a guess?
 							timer_counter = timer_raw_reload_value;
-							calc_sweep_unit();
 							env_start_flag = 1;
+
+							//allow the lenctr_en to kill the len_cnt
+							set_lenctr_en(lenctr_en);
+							
 							//serves as a useful note-on diagnostic
-							//Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
+							//if(unit==1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
 							break;
 					}
 				}
 
-				int swp_val_result;
+				public void set_lenctr_en(int value)
+				{
+					lenctr_en = value;
+					//if the length counter is not enabled, then we must disable the length system in this way
+					if (lenctr_en == 0) len_cnt = 0;
+				}
+
+				int swp_divider_counter;
 				bool swp_silence;
 				int duty_step;
 				int timer_counter;
@@ -98,27 +113,51 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				int env_start_flag, env_divider, env_counter, env_output;
 
-				void calc_sweep_unit()
-				{
-					//1's complement for chan 0, 2's complement if chan 1
-					if (negate == 1) //check to see if negate is on
-						swp_val_result = ~swp_val_result + unit;
-					//add with the shifter chan
-					swp_val_result += timer_reload_value;
-
-					if ((timer_reload_value < 8) ||
-						 ((swp_val_result > 0x7FF) && (negate==0)))
-						swp_silence = true; //silence
-					else
-						swp_silence = false; //don't silence
-
-				}
-
 				public void clock_length_and_sweep()
 				{
-					//(as well as length counter)
-					if(sweep_en==1)
-						timer_raw_reload_value = swp_val_result & 0x7FF;
+					//this should be optimized to update only when `timer_reload_value` changes
+					int sweep_shifter = timer_reload_value >> sweep_shiftcount;
+					if (sweep_negate == 1)
+						sweep_shifter = ~sweep_shifter + unit;
+					sweep_shifter += timer_reload_value;
+
+					//this sweep logic is always enabled:
+					swp_silence = (timer_reload_value < 8 || (sweep_shifter > 0x7FF && sweep_negate == 0));
+
+					//does enable only block the pitch bend? does the clocking proceed?
+					if (sweep_en == 1)
+					{
+						//clock divider
+						if (swp_divider_counter != 0) swp_divider_counter--;
+						if (swp_divider_counter == 0)
+						{
+							swp_divider_counter = sweep_divider_cnt + 1;
+						
+							//divider was clocked: process sweep pitch bend
+							if (sweep_shiftcount != 0 && !swp_silence)
+							{
+								timer_reload_value = sweep_shifter;
+								timer_raw_reload_value = timer_reload_value * 2 + 2;
+							}
+							//TODO - does this change the user's reload value or the latched reload value?
+						}
+
+						//handle divider reload, after clocking happens
+						if (sweep_reload)
+						{
+							swp_divider_counter = sweep_divider_cnt + 1;
+							sweep_reload = false;
+						}
+
+
+					}
+
+
+
+					
+					//env_loopdoubles as "halt length counter"
+					if (env_loop == 0 && len_cnt > 0)
+						len_cnt--;
 				}
 
 				public void clock_env()
@@ -131,7 +170,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					else
 					{
-						env_divider--;
+						if(env_divider != 0) env_divider--;
 						if (env_divider == 0)
 						{
 							env_divider = (env_cnt_value + 1);
@@ -162,7 +201,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						duty_step = (duty_step + 1) & 7;
 						//reload timer
-						timer_counter = timer_raw_reload_value + 2;
+						timer_counter = timer_raw_reload_value;
 					}
 					if (PULSE_DUTY[duty_cnt, duty_step] == 1) //we are outputting something
 					{
@@ -171,8 +210,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						if (swp_silence)
 							sample = 0;
 
-						//if (len_cnt==0) //length counter is 0
-						//    sample = 0; //silenced
+						if (len_cnt==0) //length counter is 0
+						    sample = 0; //silenced
 					}
 					else
 						sample = 0; //duty cycle is 0, silenced.
@@ -269,7 +308,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			PulseUnit[] pulse = { new PulseUnit(0), new PulseUnit(1) };
 			TriangleUnit triangle = new TriangleUnit();
 
-			int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_flag;
+			int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit;
 			void sequencer_reset()
 			{
 				sequencer_counter = 0;
@@ -308,9 +347,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						{
 							if (sequencer_irq_inhibit == 0)
 							{
-								sequencer_irq_flag = 1;
-								//nes.cpu.Interrupt = true;
-								//Console.WriteLine("APU trigger IRQ (cpu needs implementation)");
+								nes.irq_apu = true;
 							}
 							sequencer_step = 0;
 						}
@@ -349,13 +386,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						triangle.WriteReg(addr - 0x4008, val);
 						break;
 					case 0x4015:
-						pulse[0].lenctr_en = (val & 1);
-						pulse[1].lenctr_en = ((val>>1) & 1);
+						pulse[0].set_lenctr_en(val & 1);
+						pulse[1].set_lenctr_en((val >> 1) & 1);
 						break;
 					case 0x4017:
 						sequencer_mode = (val>>7)&1;
-						if(((val>>6)&1)==1)
-							sequencer_irq_inhibit = 0;
+						sequencer_irq_inhibit = (val >> 6) & 1;
+						if (sequencer_irq_inhibit == 1)
+							nes.irq_apu = false;
 						sequencer_reset();
 						break;
 				}
@@ -365,8 +403,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				switch (addr)
 				{
+					case 0x4015:
+					{
+						//notice a missing bit here. should properly emulate with empty bus
+						//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
+						int dmc_irq_flag = 0; //todo
+						int dmc_nonzero = 0; //todo
+						int noise_nonzero = 0; //todo
+						int tri_nonzero = 0; //todo
+						int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
+						int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
+						int ret = (dmc_irq_flag << 7) | ((nes.irq_apu?1:0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero<<2) | (pulse1_nonzero<<1) | (pulse0_nonzero);
+						nes.irq_apu = false;
+						return (byte)ret;
+					}
 					default:
-						return 0x00;
+						return 0xFF;
 				}
 			}
 
@@ -374,6 +426,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				for (int i = 0; i < cycles; i++)
 					RunOne();
+			}
+
+			public void DiscardSamples()
+			{
+				metaspu.buffer.clear();
 			}
 
 			void RunOne()

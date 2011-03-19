@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
         private byte[] SoundBuffer;
         private const int BufferSize = 4410 * 2 * 2; // 1/10th of a second, 2 bytes per sample, 2 channels;
         //private int SoundBufferPosition; //TODO: use this
+		bool needDiscard;
 
         private BufferedAsync semisync = new BufferedAsync();
         
@@ -47,6 +48,8 @@ namespace BizHawk.MultiClient
 
 			if(IsPlaying)
 				return;
+
+			needDiscard = true;
 
             DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
 
@@ -112,7 +115,10 @@ namespace BizHawk.MultiClient
         public void UpdateSound(ISoundProvider soundProvider)
         {
 			if (Global.Config.SoundEnabled == false || disposed)
-                return;
+			{
+				soundProvider.DiscardSamples();
+				return;
+			}
 
 			int samplesNeeded = SNDDXGetAudioSpace()*2;
 			if (samplesNeeded == 0)
@@ -121,11 +127,12 @@ namespace BizHawk.MultiClient
             short[] samples = new short[samplesNeeded];
 			//Console.WriteLine(samplesNeeded/2);
 
-            if (soundProvider != null && Muted == false)
-            {
-                semisync.BaseSoundProvider = soundProvider;
-                semisync.GetSamples(samples);
-            }
+			if (soundProvider != null && Muted == false)
+			{
+				semisync.BaseSoundProvider = soundProvider;
+				semisync.GetSamples(samples);
+			}
+			else soundProvider.DiscardSamples();
 
 			int cursor = soundoffset;
 			for (int i = 0; i < samples.Length; i++)

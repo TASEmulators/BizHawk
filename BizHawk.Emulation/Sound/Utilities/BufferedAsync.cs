@@ -23,6 +23,12 @@ namespace BizHawk.Emulation.Sound
         private const int TargetExtraSamples = 882;
         private const int MaxExcessSamples = 4096;
 
+		public void DiscardSamples()
+		{
+			if(BaseSoundProvider != null)
+				BaseSoundProvider.DiscardSamples();
+		}
+
         public void GetSamples(short[] samples)
         {
             int samplesToGenerate = SamplesInOneFrame;

@@ -127,6 +127,7 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
+		public void DiscardSamples() { /*TBD*/ }
         public void GetSamples(short[] samples)
         {
             int elapsedCycles = frameStopTime - frameStartTime;

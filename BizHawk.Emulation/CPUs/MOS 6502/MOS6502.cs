@@ -64,10 +64,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 		private const ushort NMIVector = 0xFFFA;
 		private const ushort ResetVector = 0xFFFC;
 		private const ushort BRKVector = 0xFFFE;
+		private const ushort IRQVector = 0xFFFE;
 
 		enum ExceptionType
 		{
-			BRK, NMI
+			BRK, NMI, IRQ
 		}
 
 		void TriggerException(ExceptionType type)
@@ -80,10 +81,19 @@ namespace BizHawk.Emulation.CPUs.M6502
 			WriteMemory((ushort)(S-- + 0x100), P);
 			P = oldP;
 			FlagI = true;
-			if (type == ExceptionType.NMI)
-				PC = ReadWord(NMIVector);
-			else
-				PC = ReadWord(BRKVector);
+			switch (type)
+			{
+				case ExceptionType.NMI:
+					PC = ReadWord(NMIVector);
+					break;
+				case ExceptionType.IRQ:
+					PC = ReadWord(IRQVector);
+					break;
+				case ExceptionType.BRK:
+					PC = ReadWord(BRKVector);
+					break;
+				default: throw new Exception();
+			}
 			PendingCycles -= 7;
 		}
 
@@ -96,8 +106,7 @@ namespace BizHawk.Emulation.CPUs.M6502
         public ushort PC;
         public byte S;
 
-        // TODO IRQ, NMI functions
-        public bool Interrupt;
+        public bool IRQ;
         public bool NMI;
 
 		public void SaveStateText(TextWriter writer)
@@ -110,7 +119,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			writer.WriteLine("PC {0:X4}", PC);
 			writer.WriteLine("S {0:X2}", S);
 			writer.WriteLine("NMI {0}", NMI);
-			writer.WriteLine("Interrupt {0}", Interrupt);
+			writer.WriteLine("IRQ {0}", IRQ);
 			writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles);
 			writer.WriteLine("PendingCycles {0}", PendingCycles);
 			writer.WriteLine("[/MOS6502]\n");
@@ -137,8 +146,8 @@ namespace BizHawk.Emulation.CPUs.M6502
 					S = byte.Parse(args[1], NumberStyles.HexNumber);
 				else if (args[0] == "NMI")
 					NMI = bool.Parse(args[1]);
-				else if (args[0] == "Interrupt")
-					Interrupt = bool.Parse(args[1]);
+				else if (args[0] == "IRQ")
+					IRQ = bool.Parse(args[1]);
 				else if (args[0] == "TotalExecutedCycles")
 					TotalExecutedCycles = int.Parse(args[1]);
 				else if (args[0] == "PendingCycles")

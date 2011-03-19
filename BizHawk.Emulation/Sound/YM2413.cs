@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Sound
 			OPLL_writeReg(opll, register, value);
 		}
 
+		public void DiscardSamples() { }
         public void GetSamples(short[] samples)
         {
             for (int i=0; i<samples.Length;)
