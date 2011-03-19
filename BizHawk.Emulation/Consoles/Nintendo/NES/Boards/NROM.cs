@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "HVC-NROM-256": //super mario bros.
+				case "NES-NROM-256": //10 yard fight
 					AssertPrg(32); AssertChr(8); AssertVram(0); AssertWram(0);
 					break;
 

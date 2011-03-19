@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public partial class NES : IEmulator
 	{
+		static readonly bool USE_DATABASE = true;
+
         //Game issues:
         //3-D World Runner - UNROM - weird lines in gameplay (scanlines off?)
         //JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
@@ -371,6 +373,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public string GameName { get { return game_name; } }
 
+		enum EDetectionOrigin
+		{
+			None, BootGodDB, GameDB, INES
+		}
+
 		public unsafe void LoadGame(IGame game)
 		{
 			byte[] file = game.GetFileData();
@@ -379,6 +386,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				throw new Exception("You've tried to open a UNIF rom. We don't have any UNIF roms to test with. Please consult the developers.");
 			fixed (byte* bfile = &file[0])
 			{
+				var origin = EDetectionOrigin.None;
+
 				var header = (iNES_HEADER*)bfile;
 				if (!header->CheckID()) throw new InvalidOperationException("iNES header not found");
 				header->Cleanup();
@@ -399,17 +408,36 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine("headerless rom hash: {0}", hash_sha1);
 				Console.WriteLine("headerless rom hash: {0}", hash_md5);
 
-				CartInfo choice = IdentifyFromBootGodDB(hash_sha1);
+				CartInfo choice = null;
+				if(USE_DATABASE)
+					choice = IdentifyFromBootGodDB(hash_sha1);
 				if(choice == null)
 				{
-					choice = IdentifyFromGameDB(hash_md5);
-					if (choice == null) 
-						choice = IdentifyFromGameDB(hash_sha1);
-					if (choice == null) 
-						throw new Exception("couldnt identify");
+					if (USE_DATABASE)
+					{
+						choice = IdentifyFromGameDB(hash_md5);
+						if (choice == null)
+							choice = IdentifyFromGameDB(hash_sha1);
+					}
+					if (choice == null)
+					{
+						Console.WriteLine("Attempting inference from iNES header");
+						choice = header->Analyze();
+						string iNES_board = iNESBoardDetector.Detect(choice);
+						if (iNES_board == null)
+							throw new Exception("couldnt identify NES rom");
+						Console.WriteLine("trying board " + iNES_board);
+						choice.board_type = iNES_board;
+						choice.game.name = game.Name;
+						origin = EDetectionOrigin.INES;
+					}
 					else
+					{
+						origin = EDetectionOrigin.GameDB;
 						Console.WriteLine("Chose board from gamedb: ");
+					}
 				}
+				else origin = EDetectionOrigin.BootGodDB;
 
 				Console.WriteLine(choice.game);
 				Console.WriteLine(choice);
@@ -418,11 +446,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				game_name = choice.game.name;
 
 				//find a INESBoard to handle this
-				Type boardType = FindBoard(choice);
-				if (boardType == null)
+				Type boardType = null;
+				bool iNES_tryAgain = false;
+				try
 				{
-					throw new Exception("No class implements the necessary board type: " + choice.board_type);
+					boardType = FindBoard(choice);
+					if (boardType == null)
+						iNES_tryAgain = true;
 				}
+				catch(Exception)
+				{
+					if (origin == EDetectionOrigin.INES)
+						iNES_tryAgain = true;
+					else throw;
+				}
+				if (iNES_tryAgain)
+				{
+					//try again with a different wram size.. because iNES sucks that way
+					choice.wram_size = 8;
+					Console.WriteLine("Trying classification again with iNES wram adjustment. new parameters:");
+					Console.WriteLine(choice);
+					boardType = FindBoard(choice);
+				}
+				if (boardType == null)
+					throw new Exception("No class implements the necessary board type: " + choice.board_type);
+
 				board = (INESBoard)Activator.CreateInstance(boardType);
 
 				cart = choice;

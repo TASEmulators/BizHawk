@@ -42,6 +42,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
+			Console.WriteLine("Caution! If this board was inferred from iNES then the mirr.type might be wrong");
+
 
 			return true;
 		}
