@@ -254,7 +254,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
 
 			SystemBus.GetFreeze = addr => sysbus_freeze[addr];
-			SystemBus.SetFreeze = (addr,value) => sysbus_freeze[addr] = value;
+			SystemBus.SetFreeze = (addr, value) => sysbus_freeze[addr] = value;
+
+            RAM.GetFreeze = addr => sysbus_freeze[addr & 0x07FF];
+            RAM.SetFreeze = (addr, value) => sysbus_freeze[addr & 0x07FF] = value;
 
 			//demo a game genie code
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
