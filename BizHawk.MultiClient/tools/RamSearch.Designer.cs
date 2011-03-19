@@ -48,8 +48,12 @@
             this.Changes = new System.Windows.Forms.ColumnHeader();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.removeSelectedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.freezeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -307,29 +311,62 @@
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.startNewSearchToolStripMenuItem,
+            this.searchToolStripMenuItem2,
             this.toolStripSeparator9,
-            this.searchToolStripMenuItem2});
+            this.removeSelectedToolStripMenuItem1,
+            this.addToRamWatchToolStripMenuItem,
+            this.pokeAddressToolStripMenuItem1,
+            this.freezeAddressToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(170, 54);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 164);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // startNewSearchToolStripMenuItem
             // 
             this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
-            this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(169, 22);
+            this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
             this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(166, 6);
             // 
             // searchToolStripMenuItem2
             // 
             this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
-            this.searchToolStripMenuItem2.Size = new System.Drawing.Size(169, 22);
+            this.searchToolStripMenuItem2.Size = new System.Drawing.Size(175, 22);
             this.searchToolStripMenuItem2.Text = "&Search";
             this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(172, 6);
+            // 
+            // removeSelectedToolStripMenuItem1
+            // 
+            this.removeSelectedToolStripMenuItem1.Name = "removeSelectedToolStripMenuItem1";
+            this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+            this.removeSelectedToolStripMenuItem1.Text = "Remove Selected";
+            this.removeSelectedToolStripMenuItem1.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem1_Click);
+            // 
+            // addToRamWatchToolStripMenuItem
+            // 
+            this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
+            this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.addToRamWatchToolStripMenuItem.Text = "Add to Ram Watch";
+            this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
+            // 
+            // pokeAddressToolStripMenuItem1
+            // 
+            this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
+            this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+            this.pokeAddressToolStripMenuItem1.Text = "Poke Address";
+            this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
+            // 
+            // freezeAddressToolStripMenuItem1
+            // 
+            this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
+            this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+            this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
+            this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
             // 
             // menuStrip1
             // 
@@ -659,7 +696,7 @@
             this.WatchtoolStripButton1});
             this.toolStrip1.Location = new System.Drawing.Point(3, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(191, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(160, 25);
             this.toolStrip1.TabIndex = 1;
             // 
             // NewSearchtoolStripButton
@@ -1255,5 +1292,9 @@
         private System.Windows.Forms.ToolStripButton FreezeAddressToolStrip;
         private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem1;
     }
 }

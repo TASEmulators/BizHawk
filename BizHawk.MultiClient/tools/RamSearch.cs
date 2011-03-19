@@ -16,10 +16,6 @@ namespace BizHawk.MultiClient
     /// </summary>
     public partial class RamSearch : Form
     {
-        //TODO:
-        //Context Menu - if highlighted items - show Highlight dependent functions
-        //Freeze address - ability to freeze multi-byte addresses
-
         string systemID = "NULL";
         List<Watch> searchList = new List<Watch>();
         List<Watch> undoList = new List<Watch>();
@@ -1817,6 +1813,43 @@ namespace BizHawk.MultiClient
         }
 
         private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+            if (indexes.Count == 0)
+            {
+                contextMenuStrip1.Items[3].Visible = false;
+                contextMenuStrip1.Items[4].Visible = false;
+                contextMenuStrip1.Items[5].Visible = false;
+                contextMenuStrip1.Items[6].Visible = false;
+            }
+            else
+            {
+                for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
+                    contextMenuStrip1.Items[x].Visible = true;
+            }
+        }
+
+        private void removeSelectedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            RemoveAddresses();
+        }
+
+        private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddToRamWatch();
+        }
+
+        private void pokeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            PokeAddress();
+        }
+
+        private void freezeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             FreezeAddress();
         }
