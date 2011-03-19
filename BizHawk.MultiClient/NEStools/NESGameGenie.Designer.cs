@@ -60,9 +60,16 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Encoding = new System.Windows.Forms.CheckBox();
             this.ClearButton = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GameGenieCodeBox.SuspendLayout();
             this.ButtonPanel.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // GameGenieCode
@@ -79,7 +86,7 @@
             // GameGenieCodeBox
             // 
             this.GameGenieCodeBox.Controls.Add(this.GameGenieCode);
-            this.GameGenieCodeBox.Location = new System.Drawing.Point(31, 85);
+            this.GameGenieCodeBox.Location = new System.Drawing.Point(31, 103);
             this.GameGenieCodeBox.Name = "GameGenieCodeBox";
             this.GameGenieCodeBox.Size = new System.Drawing.Size(115, 54);
             this.GameGenieCodeBox.TabIndex = 1;
@@ -151,7 +158,7 @@
             // 
             // AddCheat
             // 
-            this.AddCheat.Location = new System.Drawing.Point(202, 217);
+            this.AddCheat.Location = new System.Drawing.Point(202, 235);
             this.AddCheat.Name = "AddCheat";
             this.AddCheat.Size = new System.Drawing.Size(69, 21);
             this.AddCheat.TabIndex = 3;
@@ -178,7 +185,7 @@
             this.ButtonPanel.Controls.Add(this.Z);
             this.ButtonPanel.Controls.Add(this.P);
             this.ButtonPanel.Controls.Add(this.A);
-            this.ButtonPanel.Location = new System.Drawing.Point(31, 12);
+            this.ButtonPanel.Location = new System.Drawing.Point(31, 30);
             this.ButtonPanel.Name = "ButtonPanel";
             this.ButtonPanel.Size = new System.Drawing.Size(240, 67);
             this.ButtonPanel.TabIndex = 4;
@@ -354,7 +361,7 @@
             this.groupBox1.Controls.Add(this.AddressBox);
             this.groupBox1.Controls.Add(this.ValueBox);
             this.groupBox1.Controls.Add(this.CompareBox);
-            this.groupBox1.Location = new System.Drawing.Point(31, 145);
+            this.groupBox1.Location = new System.Drawing.Point(31, 163);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(126, 93);
             this.groupBox1.TabIndex = 5;
@@ -391,7 +398,7 @@
             // 
             this.Encoding.Appearance = System.Windows.Forms.Appearance.Button;
             this.Encoding.AutoSize = true;
-            this.Encoding.Location = new System.Drawing.Point(217, 101);
+            this.Encoding.Location = new System.Drawing.Point(217, 119);
             this.Encoding.Name = "Encoding";
             this.Encoding.Size = new System.Drawing.Size(54, 23);
             this.Encoding.TabIndex = 6;
@@ -400,13 +407,62 @@
             // 
             // ClearButton
             // 
-            this.ClearButton.Location = new System.Drawing.Point(217, 130);
+            this.ClearButton.Location = new System.Drawing.Point(217, 148);
             this.ClearButton.Name = "ClearButton";
             this.ClearButton.Size = new System.Drawing.Size(54, 23);
             this.ClearButton.TabIndex = 7;
             this.ClearButton.Text = "&Clear";
             this.ClearButton.UseVisualStyleBackColor = true;
             this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(302, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.exitToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
+            // 
+            // autoloadToolStripMenuItem
+            // 
+            this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+            this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.autoloadToolStripMenuItem.Text = "Auto-load";
+            this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+            // 
+            // saveWindowPositionToolStripMenuItem
+            // 
+            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.exitToolStripMenuItem.Text = "E&xit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // NESGameGenie
             // 
@@ -419,7 +475,9 @@
             this.Controls.Add(this.ButtonPanel);
             this.Controls.Add(this.AddCheat);
             this.Controls.Add(this.GameGenieCodeBox);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "NESGameGenie";
             this.ShowIcon = false;
@@ -430,6 +488,8 @@
             this.ButtonPanel.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -469,5 +529,11 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button ClearButton;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
     }
 }

@@ -13,9 +13,6 @@ namespace BizHawk.MultiClient
 {
     public partial class NESGameGenie : Form
     {
-        //TODO
-        //Autoload
-        //Save Window Position
         int address = -1;
         int value = -1;
         int compare = -1;
@@ -24,6 +21,7 @@ namespace BizHawk.MultiClient
         public NESGameGenie()
         {
             InitializeComponent();
+            Closing += (o, e) => SaveConfigSettings();
         }
 
         private void NESGameGenie_Load(object sender, EventArgs e)
@@ -46,6 +44,15 @@ namespace BizHawk.MultiClient
             GameGenieTable.Add('N', 15);    //1111
 
             AddCheat.Enabled = false;
+
+            if (Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
+                Location = new Point(Global.Config.NESGGWndx, Global.Config.NESGGWndy);
+        }
+
+        private void SaveConfigSettings()
+        {
+            Global.Config.NESGGWndx = this.Location.X;
+            Global.Config.NESGGWndy = this.Location.Y;
         }
 
         private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
@@ -375,6 +382,27 @@ namespace BizHawk.MultiClient
             c.value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
             c.Enable();
             Global.MainForm.Cheats1.AddCheat(c);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.NESGGSaveWindowPosition ^= true;
+        }
+
+        private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.NESGGAutoload ^= true;
+        }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            autoloadToolStripMenuItem.Checked = Global.Config.NESGGAutoload;
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESGGSaveWindowPosition;
         }
     }
 }

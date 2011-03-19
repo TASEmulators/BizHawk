@@ -104,6 +104,12 @@
         public int CheatsDomainWidth = -1;
         public int CheatsOnWidth = -1;
         
+        // NES Game Genie Encoder/Decoder
+        public bool NESGGAutoload = false;
+        public bool NESGGSaveWindowPosition = true;
+        public int NESGGWndx = -1;
+        public int NESGGWndy = -1;
+
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
 
