@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
         //address num digits based on domain size
         //Restore window size should restore column order as well
         //When receiving a watch from a different domain, should something be done?
-        //Save should default to SaveAs if no watch file
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
