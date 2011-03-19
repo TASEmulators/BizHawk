@@ -364,6 +364,10 @@ namespace M6502
             w.WriteLine("                   TriggerException(ExceptionType.NMI);");
             w.WriteLine("                   NMI = false;");
             w.WriteLine("               }");
+			w.WriteLine("               if (IRQ && !FlagI)");
+			w.WriteLine("               {");
+			w.WriteLine("                   TriggerException(ExceptionType.IRQ);");
+			w.WriteLine("               }");
             w.WriteLine("");
 
             w.WriteLine("                if(debug) Console.WriteLine(State());");

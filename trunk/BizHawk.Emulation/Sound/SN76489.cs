@@ -416,6 +416,7 @@ namespace BizHawk.Emulation.Sound
 
         #endregion
 
+		public void DiscardSamples() { /* todo */ }
         public void GetSamples(short[] samples)
         {
             int elapsedCycles = frameStopTime - frameStartTime;

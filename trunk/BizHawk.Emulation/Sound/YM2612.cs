@@ -17,6 +17,7 @@
         {
         }
 
+		public void DiscardSamples() { }
         public void GetSamples(short[] samples)
         {
             // TODO

@@ -24,6 +24,12 @@ namespace BizHawk.Emulation.Sound
             SoundProviders.Remove(source);
         }
 
+		public void DiscardSamples()
+		{
+			foreach (var soundSource in SoundProviders)
+				soundSource.DiscardSamples();
+		}
+
         public void GetSamples(short[] samples)
         {
             foreach (var soundSource in SoundProviders)

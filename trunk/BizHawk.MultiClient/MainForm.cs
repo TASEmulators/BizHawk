@@ -125,12 +125,19 @@ namespace BizHawk.MultiClient
 					cmdRom = arg;
 			}
 
-			if (cmdRom != null) //Commandline should always override auto-load
+			if (cmdRom != null)
+			{
+				//Commandline should always override auto-load
 				LoadRom(cmdRom);
+				if (Global.Game == null)
+				{
+					MessageBox.Show("Failed to load rom specified on commandline");
+				}
+			}
 			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
 				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
 
-			if (cmdLoadState != null)
+			if (cmdLoadState != null && Global.Game != null)
 				LoadState("QuickSave" + cmdLoadState);
 
 			if (Global.Config.AutoLoadRamWatch)

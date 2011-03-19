@@ -22,6 +22,10 @@ namespace BizHawk.Emulation.CPUs.M6502
                    TriggerException(ExceptionType.NMI);
                    NMI = false;
                }
+               if (IRQ && !FlagI)
+               {
+                   TriggerException(ExceptionType.IRQ);
+               }
 
                 if(debug) Console.WriteLine(State());
 
@@ -1201,9 +1205,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 7; TotalExecutedCycles += 7;
                         break;
                     default:
-                        //throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
-						//Console.WriteLine(String.Format("Unhandled opcode: {0:X2}", opcode));
-						break;
+                        throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
                 }
             }
         }
