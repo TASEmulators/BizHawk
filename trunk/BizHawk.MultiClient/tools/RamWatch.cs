@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Ability to freeze 2 & 4 byte
+        //Ability to freeze 4 byte
         //.wch format includes platform and domain type
         //address num digits based on domain size
         //Restore window size should restore column order as well
@@ -1097,15 +1097,51 @@ namespace BizHawk.MultiClient
             FreezeAddress();
         }
 
+        private int WORDGetLowerByte(int value)
+        {
+            return value / 256;
+        }
+
+        private int WORDGetUpperByte(int value)
+        {
+            return value >> 2;
+        }
+
         private void FreezeAddress()
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
-            //TODO: if 2 byte or 4 byte, freeze correct addresses
             if (indexes.Count > 0)
             {
-                Cheat c = new Cheat("", watchList[indexes[0]].address, (byte)watchList[indexes[0]].value,
-                    true, Domain);
-                Global.MainForm.Cheats1.AddCheat(c);
+                switch (watchList[indexes[0]].type)
+                {
+                    case atype.BYTE:
+                        Cheat c = new Cheat("", watchList[indexes[0]].address, (byte)watchList[indexes[0]].value,
+                            true, Domain);
+                        Global.MainForm.Cheats1.AddCheat(c);
+                        break;
+                    case atype.WORD:
+                        byte low = (byte)(watchList[indexes[0]].value / 256);
+                        byte high = (byte)(watchList[indexes[0]].value % 256);
+                        int a1 = watchList[indexes[0]].address;
+                        int a2 = watchList[indexes[0]].address + 1;
+                        if (watchList[indexes[0]].bigendian)
+                        {
+                            Cheat c1 = new Cheat("", a1, low, true, Domain);
+                            Cheat c2 = new Cheat("", a2, high, true, Domain);
+                            Global.MainForm.Cheats1.AddCheat(c1);
+                            Global.MainForm.Cheats1.AddCheat(c2);
+                        }
+                        else
+                        {
+                            Cheat c1 = new Cheat("", a1, high, true, Domain);
+                            Cheat c2 = new Cheat("", a2, low, true, Domain);
+                            Global.MainForm.Cheats1.AddCheat(c1);
+                            Global.MainForm.Cheats1.AddCheat(c2);
+                        }
+                        break;
+                    case atype.DWORD:
+                        break;
+                }
             }
         }
 
