@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Fix freeze 4 byte and PokeDWord of Watch.cs to be correct big & little endian
         //.wch format includes platform and domain type
         //address num digits based on domain size
         //Restore window size should restore column order as well
@@ -1153,10 +1152,10 @@ namespace BizHawk.MultiClient
                             int a4 = watchList[indexes[0]].address + 3;
                             if (watchList[indexes[0]].bigendian)
                             {
-                                Cheat c1 = new Cheat("", a1, LOWORDlow, true, Domain);
-                                Cheat c2 = new Cheat("", a2, LOWORDhigh, true, Domain);
-                                Cheat c3 = new Cheat("", a3, HIWORDlow, true, Domain);
-                                Cheat c4 = new Cheat("", a4, HIWORDhigh, true, Domain);
+                                Cheat c1 = new Cheat("", a1, HIWORDhigh, true, Domain);
+                                Cheat c2 = new Cheat("", a2, HIWORDlow, true, Domain);
+                                Cheat c3 = new Cheat("", a3, LOWORDhigh, true, Domain);
+                                Cheat c4 = new Cheat("", a4, LOWORDlow, true, Domain);
                                 Global.MainForm.Cheats1.AddCheat(c1);
                                 Global.MainForm.Cheats1.AddCheat(c2);
                                 Global.MainForm.Cheats1.AddCheat(c3);
