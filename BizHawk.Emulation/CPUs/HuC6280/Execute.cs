@@ -2125,10 +2125,10 @@ throw new Exception("break");
                 if (TimerEnabled)
                 {
                     TimerTickCounter += delta;
-                    if (TimerTickCounter >= 1024)
+                    while (TimerTickCounter >= 1024)
                     {
                         TimerValue--;
-                        TimerTickCounter &= 1023;
+                        TimerTickCounter -= 1024;
                         if (TimerValue == 0xFF)
                         {
                             TimerValue = TimerReloadValue;
