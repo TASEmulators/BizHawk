@@ -475,10 +475,20 @@ namespace BizHawk.MultiClient
             return file;
         }
 
+        private MemoryDomain SetDomain(string name)
+        {
+            //Attempts to find the memory domain by name, if it fails, it defaults to index 0
+            for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+            {
+                if (Global.Emulator.MemoryDomains[x].Name == name)
+                    return Global.Emulator.MemoryDomains[x];
+            }
+            return Global.Emulator.MemoryDomains[0];
+        }
+
         bool LoadCheatFile(string path, bool append)
         {
             int y;
-            string domain;
             var file = new FileInfo(path);
             if (file.Exists == false) return false;
 
@@ -507,7 +517,7 @@ namespace BizHawk.MultiClient
                     y = s.IndexOf('\t') + 1;
                     s = s.Substring(y, s.Length - y); //Memory Domain
                     temp = s.Substring(0, s.IndexOf('\t'));
-                    domain = s;
+                    c.domain = SetDomain(temp);
 
                     y = s.IndexOf('\t') + 1;
                     s = s.Substring(y, s.Length - y); //Enabled
