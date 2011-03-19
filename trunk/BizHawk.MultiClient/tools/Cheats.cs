@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
     {
         //Open/Close rom should start a new cheat list
         //Implement Options menu settings
-        //Implement Freeze/Unfreeze on enabled changed in Cheat object
+        //Implement Freeze functions in all memory domains
         //Save - implement (should default to SaveAs if no cheats file)
         //Restore Window Size should restore column order as well
 
