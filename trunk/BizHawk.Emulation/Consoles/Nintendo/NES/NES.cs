@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public partial class NES : IEmulator
 	{
-		static readonly bool USE_DATABASE = false;
+		static readonly bool USE_DATABASE = true;
 
         //Game issues:
         //3-D World Runner - UNROM - weird lines in gameplay (scanlines off?)

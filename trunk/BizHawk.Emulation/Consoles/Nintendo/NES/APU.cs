@@ -238,6 +238,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 1: break;
 						case 2:
 							timer_cnt = (timer_cnt & ~0xFF) | val;
+							timer_cnt_reload = timer_cnt + 1;
 							break;
 						case 3:
 							timer_cnt = (timer_cnt & 0xFF) | ((val & 0x7) << 8);
@@ -246,6 +247,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							halt_flag = 1;
 							break;
 					}
+					//Console.WriteLine("tri timer_reload_value: {0}", timer_cnt_reload);
 				}
 
 				int linear_counter, timer, timer_cnt_reload;
@@ -265,19 +267,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//is clocked in frame counter.
 					if (en)
 					{
-						timer--;
+						if(timer>0) timer--;
 						if (timer == 0)
 						{
 							seq = (seq + 1) & 0x1F;
 							timer = timer_cnt_reload;
 						}
-						if(CFG_DECLICK)
-							sample = TRIANGLE_TABLE[(seq+8)&0x1F];
-						else
+						//if(CFG_DECLICK)
+						//    sample = TRIANGLE_TABLE[(seq+8)&0x1F];
+						//else
 							sample = TRIANGLE_TABLE[seq];
 					}
-					else
-						sample = 0;
 				}
 
 				
@@ -290,7 +290,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//	Console.WriteLine("linear_counter: {0}", linear_counter);
 					if (halt_flag == 1)
 					{
-						timer = timer_cnt_reload;
 						linear_counter = linear_counter_reload;
 					}
 					else if (linear_counter != 0)
@@ -459,8 +458,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			double timer;
 			Queue<int> squeue = new Queue<int>();
 			int last_hwsamp;
+			int panic_sample, panic_count;
 			void EmitSample(int samp)
 			{
+				//kill the annoying hum that is a consequence of the shitty code below
+				if (samp == panic_sample)
+					panic_count++;
+				else panic_count = 0;
+				if (panic_count > 178977)
+					samp = 0;
+				else
+					panic_sample = samp;
+				
 				int this_samp = samp;
 				const double kMixRate = 44100.0/1789772.0;
 				const double kInvMixRate = (1 / kMixRate);
@@ -490,8 +499,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void ISoundProvider.GetSamples(short[] samples)
 			{
-				if(CFG_USE_METASPU)
+				if (CFG_USE_METASPU)
+				{
 					metaspu.GetSamples(samples);
+					//foreach(short sample in samples) bw.Write((short)sample);
+				}
 				else
 					MyGetSamples(samples);
 			}
