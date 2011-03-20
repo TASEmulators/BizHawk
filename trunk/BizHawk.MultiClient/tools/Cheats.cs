@@ -13,7 +13,8 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //Implement Options menu settings
+        //Auto-save cheat file (generating file name based on game name)
+            //User option to toggle this (on by default)
         //Implement Freeze functions in all memory domains
         //Restore Window Size should restore column order as well
         //TODO: use currently selected memory domain! - line 50
@@ -38,6 +39,24 @@ namespace BizHawk.MultiClient
                 c.Add(new Cheat(cheatList[x]));
 
             return c;
+        }
+
+        /// <summary>
+        /// Looks for a .cht file that matches the name of the ROM loaded
+        /// It is up to the client to determine which director it looks
+        /// </summary>
+        public bool AttemptLoadCheatFile()
+        {
+            string CheatFile = Global.Config.LastRomPath + "\\" + Global.Game.Name + ".cht";
+            
+            var file = new FileInfo(CheatFile);
+            if (file.Exists == false)
+                return false;
+            else
+            {
+                LoadCheatFile(CheatFile, false);
+                return true;
+            }
         }
 
         private void ClearFields()
@@ -686,6 +705,7 @@ namespace BizHawk.MultiClient
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
             CheatsOnOffLoadToolStripMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
             autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadCheats;
+            LoadCheatFileByGameToolStripMenuItem.Checked = Global.Config.LoadCheatFileByGame;
         }
 
         private void DuplicateCheat()
@@ -904,6 +924,11 @@ namespace BizHawk.MultiClient
         private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.AutoLoadCheats ^= true;
+        }
+
+        private void LoadCheatFileByGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.LoadCheatFileByGame ^= true;
         }
     }
 }
