@@ -39,9 +39,17 @@
 
         // Display options
         public bool DisplayFPS = false;
+        public int DispFPSx = 0;
+        public int DispFPSy = 0;
         public bool DisplayFrameCounter = false;
+        public int DispFrameCx = 0;
+        public int DispFrameCy = 12;
         public bool DisplayLagCounter = false;
+        public int DispLagx = 0;
+        public int DispLagy = 36;
         public bool DisplayInput = false;
+        public int DispInpx = 0;
+        public int DispInpy = 24;
 
         // Sound options
         public bool SoundEnabled = true;
