@@ -16,6 +16,7 @@ namespace BizHawk.MultiClient
         //Implement Options menu settings
         //Implement Freeze functions in all memory domains
         //Restore Window Size should restore column order as well
+        //Disable all cheats menu & context menu item
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -44,7 +45,8 @@ namespace BizHawk.MultiClient
             AddressBox.Text = "";
             ValueBox.Text = "";
             PopulateMemoryDomainComboBox();
-            AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+            //AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+            //TODO: use currently selected memory domain!
         }
 
         public void Restart()
@@ -560,6 +562,11 @@ namespace BizHawk.MultiClient
                 UpdateNumberOfCheats();
             }
 
+            if (Global.Config.DisableCheatsOnLoad)
+            {
+                for (int x = 0; x < cheatList.Count; x++)
+                    cheatList[x].Disable();
+            }
             return true; //TODO
         }
 
@@ -691,6 +698,7 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
+            CheatsOnOffLoadToolStripMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
         }
 
         private void DuplicateCheat()
@@ -868,6 +876,11 @@ namespace BizHawk.MultiClient
             {
                 saveToolStripMenuItem.Enabled = true;
             }
+        }
+
+        private void CheatsOnOffLoadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.DisableCheatsOnLoad ^= true;
         }
     }
 }
