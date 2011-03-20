@@ -56,18 +56,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			//in this emulator, reset takes place instantaneously
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
+			cpu.P = 0x34;
+			cpu.S = 0xFD;
 
 			//cpu.debug = true;
 		}
 
+		bool resetSignal;
 		public void FrameAdvance(bool render)
 		{
 			Controller.UpdateControls(Frame++);
+			if (resetSignal)
+				Controller.UnpressButton("Reset");
+			resetSignal = Controller["Reset"];
 			ppu.FrameAdvance();
 		}
 
 		protected void RunCpu(int ppu_cycles)
 		{
+			if (resetSignal)
+			{
+				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
+				apu.WriteReg(0x4015, 0);
+				cpu.FlagI = true;
+			}
+
 			int cycles = ppu_cycles;
 			if (ppu.PAL)
 				cycles *= 15;
@@ -233,6 +246,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void WriteMemory(ushort addr, byte value)
 		{
+			if (addr >= 0x6000 && addr < 0x6fff)
+			{
+				int zzz = 9;
+			}
 			if (addr < 0x0800) ram[addr] = value;
 			else if (addr < 0x1000) ram[addr - 0x0800] = value;
 			else if (addr < 0x1800) ram[addr - 0x1000] = value;

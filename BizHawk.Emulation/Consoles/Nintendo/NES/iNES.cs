@@ -49,20 +49,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 //MAP PRG CHR WRAM VRAM BOARD
 static string ClassifyTable = @"
-0	16	8	0	0	NES-NROM-128; balloon fight, but its broken right now
-0	32	8	0	0	NES-NROM-256; super mario bros
-1	32	32	0	0	NES-SEROM; lolo
+0	16	0	8	8	NROM-HOMEBREW; some of blargg's test (sprite tests)
+0	16	8	8	0	NES-NROM-128; balloon fight, but its broken right now
+0	32	8	8	0	NES-NROM-256; super mario bros
+1	32	32	8	0	NES-SEROM; lolo
 1	128	0	8	0	NES-SNROM; zelda
-2	128	0	0	0	NES-UNROM; mega man
-2	256	0	0	0	NES-UOROM; paperboy 2
-3	32	32	0	0	NES-CNROM; adventure island
-7	128	0	0	0	NES-ANROM; marble madness
-7	256	0	0	8	NES-AOROM; battletoads
-11	32	16	0	0	Discrete_74x377
-11	16	32	0	0	Discrete_74x377
-13	32	0	0	16	NES-CPROM; videomation
-66	64	16	0	0	NES-MHROM; super mario bros / duck hunt
-66	128	32	0	0	NES-GNROM; gumshoe
+1	128	128	8	0	NES-SKROM; zelda 2
+1	128	0	8	8	NES-SNROM; some of blargg's tests (apu)
+1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests)
+2	128	0	8	0	NES-UNROM; mega man
+2	256	0	8	0	NES-UOROM; paperboy 2
+3	32	32	8	0	NES-CNROM; adventure island
+7	128	0	8	0	NES-ANROM; marble madness
+7	256	0	8	8	NES-AOROM; battletoads
+11	32	16	8	0	Discrete_74x377
+11	16	32	8	0	Discrete_74x377
+13	32	0	8	16	NES-CPROM; videomation
+66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
+66	128	32	8	0	NES-GNROM; gumshoe
 ";
 }
 
@@ -73,7 +77,10 @@ static string ClassifyTable = @"
 			public byte VROM_size;
 			public byte ROM_type;
 			public byte ROM_type2;
-			public fixed byte reserve[8];
+			public byte wram_size;
+			public byte flags9, flags10;
+			public byte zero11, zero12, zero13, zero14, zero15;
+
 
 			public bool CheckID()
 			{
@@ -123,9 +130,17 @@ static string ClassifyTable = @"
 				ret.chr_size = (short)(VROM_size * 8);
 				ret.wram_battery = (ROM_type & 2) != 0;
 
-				fixed (iNES_HEADER* self = &this) ret.wram_size = (short)(self->reserve[0] * 8);
-				//0 is supposed to mean 1 (for compatibility, as this is an extension to original iNES format)
-				//but we'll try using 8 later if it doesn't work with 0
+				if(wram_size != 0 || flags9 != 0 || flags10 != 0 || zero11 != 0 || zero12 != 0 || zero13 != 0 || zero14 != 0 || zero15 != 0)
+				{
+					Console.WriteLine("Looks like you have an iNES 2.0 header, or some other kind of weird garbage.");
+					Console.WriteLine("We haven't bothered to support iNES 2.0.");
+					Console.WriteLine("We might, if we can find anyone who uses it. Let us know.");
+				}
+
+				ret.wram_size = (short)(wram_size * 8);
+				//0 is supposed to mean 8KB (for compatibility, as this is an extension to original iNES format)
+				if (ret.wram_size == 0)
+					ret.wram_size = 8;
 
 				//iNES wants us to assume that no chr -> 8KB vram
 				if (ret.chr_size == 0) ret.vram_size = 8;
