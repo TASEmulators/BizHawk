@@ -1232,6 +1232,10 @@ namespace BizHawk.MultiClient
         private FileInfo GetSaveFileFromUser()
         {
             var sfd = new SaveFileDialog();
+            if (currentSearchFile.Length > 0)
+                sfd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
+            else if (!(Global.Emulator is NullEmulator))
+                sfd.FileName = Global.Game.Name;
             sfd.InitialDirectory = Global.Config.LastRomPath;
             sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             sfd.RestoreDirectory = true;
@@ -1422,10 +1426,13 @@ namespace BizHawk.MultiClient
         private FileInfo GetFileFromUser()
         {
             var ofd = new OpenFileDialog();
+            if (currentSearchFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
             ofd.InitialDirectory = Global.Config.LastRomPath;
             ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             ofd.RestoreDirectory = true;
-
+            if (currentSearchFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
             Global.Sound.StopSound();
             var result = ofd.ShowDialog();
             Global.Sound.StartSound();
