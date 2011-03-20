@@ -16,10 +16,8 @@ namespace BizHawk.MultiClient
         //Implement Options menu settings
         //Implement Freeze functions in all memory domains
         //Restore Window Size should restore column order as well
-        //Disable all cheats menu & context menu item
-        //Double click should toggle all selected cheats not just one
         //TODO: use currently selected memory domain! - line 50
-        //Populate context menu
+        //context menu - enable/disable highlight dependent items
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -729,18 +727,26 @@ namespace BizHawk.MultiClient
             DuplicateCheat();
         }
 
-        private void CheatListView_DoubleClick(object sender, EventArgs e)
+        private void Toggle()
         {
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             if (indexes.Count > 0)
             {
-                if (cheatList[indexes[0]].IsEnabled())
-                    cheatList[indexes[0]].Disable();
-                else
-                    cheatList[indexes[0]].Enable();
+                for (int x = 0; x < indexes.Count; x++)
+                {
+                    if (cheatList[indexes[x]].IsEnabled())
+                        cheatList[indexes[x]].Disable();
+                    else
+                        cheatList[indexes[x]].Enable();
+                }
                 CheatListView.Refresh();
             }
             UpdateNumberOfCheats();
+        }
+
+        private void CheatListView_DoubleClick(object sender, EventArgs e)
+        {
+            Toggle();
         }
 
         private void CheatListView_Click(object sender, EventArgs e)
@@ -901,6 +907,16 @@ namespace BizHawk.MultiClient
         private void disableAllCheatsToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             DisableAllCheats();
+        }
+
+        private void toggleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Toggle();
+        }
+
+        private void removeSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveCheat();
         }
     }
 }
