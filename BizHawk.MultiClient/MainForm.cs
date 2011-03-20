@@ -1041,12 +1041,10 @@ namespace BizHawk.MultiClient
             if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
             {
                 Cheats1 = new Cheats();
-                if (Global.Config.AutoLoadCheats && Global.Config.RecentCheats.Length() > 0)
-                    Cheats1.LoadCheatFromRecent(Global.Config.RecentCheats.GetRecentFileByPosition(0));
                 Cheats1.Show();
             }
             else
-                NESPPU1.Focus();
+                Cheats1.Focus();
         }
 
 		private int lastWidth = -1;
