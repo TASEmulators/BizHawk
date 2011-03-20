@@ -181,7 +181,7 @@
         //GameBoy Settings
         public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
 
-		public string NESReset = "Tab";
+		public string NESReset = "Backspace";
         public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
     }
 
