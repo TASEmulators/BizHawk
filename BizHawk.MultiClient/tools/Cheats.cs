@@ -334,6 +334,10 @@ namespace BizHawk.MultiClient
         private FileInfo GetSaveFileFromUser()
         {
             var sfd = new SaveFileDialog();
+            if (currentCheatFile.Length > 0)
+                sfd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
+            else if (!(Global.Emulator is NullEmulator))
+                sfd.FileName = Global.Game.Name;
             sfd.InitialDirectory = Global.Config.LastRomPath;
             sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
             sfd.RestoreDirectory = true;
@@ -462,6 +466,8 @@ namespace BizHawk.MultiClient
         private FileInfo GetFileFromUser()
         {
             var ofd = new OpenFileDialog();
+            if (currentCheatFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
             ofd.InitialDirectory = Global.Config.LastRomPath;
             ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
             ofd.RestoreDirectory = true;

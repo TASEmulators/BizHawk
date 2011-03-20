@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Make default .wch filename based on Rom, ditto for Ram Search & Cheat Search
         //address num digits based on domain size
         //Restore window size should restore column order as well
         //When receiving a watch from a different domain, should something be done?
@@ -579,6 +578,8 @@ namespace BizHawk.MultiClient
         private FileInfo GetFileFromUser()
         {
             var ofd = new OpenFileDialog();
+            if (currentWatchFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
             ofd.InitialDirectory = Global.Config.LastRomPath;
             ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             ofd.RestoreDirectory = true;
@@ -624,6 +625,10 @@ namespace BizHawk.MultiClient
         private FileInfo GetSaveFileFromUser()
         {
             var sfd = new SaveFileDialog();
+            if (currentWatchFile.Length > 0)
+                sfd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
+            else if (!(Global.Emulator is NullEmulator))
+                sfd.FileName = Global.Game.Name;
             sfd.InitialDirectory = Global.Config.LastRomPath;
             sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             sfd.RestoreDirectory = true;
