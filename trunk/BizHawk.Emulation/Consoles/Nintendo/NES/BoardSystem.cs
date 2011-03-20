@@ -250,7 +250,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (choices.Count == 0) return null;
 
 			//pick the first board for this hash arbitrarily. it probably doesn't make a difference
-			Console.WriteLine("Chose board from nescartdb:");
 			return choices[0];
 		}
 
