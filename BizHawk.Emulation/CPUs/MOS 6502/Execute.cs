@@ -61,7 +61,7 @@ TriggerException(ExceptionType.BRK);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x08: // PHP
-                        //FlagB = true; //why would it do this?? how weird
+                        FlagB = true; //why would it do this?? how weird
                         WriteMemory((ushort)(S-- + 0x100), P);
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;

@@ -418,7 +418,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						return (byte)ret;
 					}
 					default:
-						return 0xFF;
+						return 0x00;
 				}
 			}
 
