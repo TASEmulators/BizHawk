@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public partial class NES : IEmulator
 	{
-		static readonly bool USE_DATABASE = true;
+		static readonly bool USE_DATABASE = false;
 
         //Game issues:
         //3-D World Runner - UNROM - weird lines in gameplay (scanlines off?)
@@ -188,6 +188,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					value <<= 1;
 					value |= nes.Controller.IsPressed(str) ? 1 : 0;
 				}
+				//Console.WriteLine("STROBE");
 			}
 			public override void Write(int value)
 			{
@@ -373,7 +374,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public string GameName { get { return game_name; } }
 
-		enum EDetectionOrigin
+		public enum EDetectionOrigin
 		{
 			None, BootGodDB, GameDB, INES
 		}
@@ -447,27 +448,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				//find a INESBoard to handle this
 				Type boardType = null;
-				bool iNES_tryAgain = false;
-				try
-				{
-					boardType = FindBoard(choice);
-					if (boardType == null)
-						iNES_tryAgain = true;
-				}
-				catch(Exception)
-				{
-					if (origin == EDetectionOrigin.INES)
-						iNES_tryAgain = true;
-					else throw;
-				}
-				if (iNES_tryAgain)
-				{
-					//try again with a different wram size.. because iNES sucks that way
-					choice.wram_size = 8;
-					Console.WriteLine("Trying classification again with iNES wram adjustment. new parameters:");
-					Console.WriteLine(choice);
-					boardType = FindBoard(choice);
-				}
+				boardType = FindBoard(choice,EDetectionOrigin.INES);
 				if (boardType == null)
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
@@ -475,7 +456,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				cart = choice;
 				board.Create(this);
-				board.Configure();
+				board.Configure(origin);
 
 				//create the board's rom and vrom
 				board.ROM = new byte[choice.prg_size * 1024];

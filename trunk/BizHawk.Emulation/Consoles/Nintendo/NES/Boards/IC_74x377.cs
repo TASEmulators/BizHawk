@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//state
 		int prg, chr;
 
-		public override bool Configure()
+		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{

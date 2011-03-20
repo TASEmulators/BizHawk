@@ -247,6 +247,10 @@ namespace M6502
 			Set(0xDC, "NOP", AddrMode.IndirectX, 4);
 			Set(0xFC, "NOP", AddrMode.IndirectX, 4);
 
+			//undocumented opcodes
+			//RLA:
+			//Set(0x23, "RLA", AddrMode.IndirectX, 8);
+
             // Bitwise OR with Accumulator
             Set(0x09, "ORA", AddrMode.Immediate, 2);
             Set(0x05, "ORA", AddrMode.ZeroPage , 2);
@@ -384,8 +388,10 @@ namespace M6502
                     EmulateOpcode(w, i);
             }
 
-            w.WriteLine("                    default:");
-            w.WriteLine("                        throw new Exception(String.Format(\"Unhandled opcode: {0:X2}\", opcode));");
+            w.WriteLine("                   default:");
+            w.WriteLine("                       if(throw_unhandled)");
+            w.WriteLine("                           throw new Exception(String.Format(\"Unhandled opcode: {0:X2}\", opcode));");
+            w.WriteLine("                      break;");
             w.WriteLine("                }");
             w.WriteLine("            }");
             w.WriteLine("        }");

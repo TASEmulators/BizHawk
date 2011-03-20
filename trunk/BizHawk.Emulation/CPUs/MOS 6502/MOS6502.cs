@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.CPUs.M6502
         }*/
 
 		public bool debug;
+		public bool throw_unhandled;
 
         public void Reset()
         {
@@ -37,11 +38,6 @@ namespace BizHawk.Emulation.CPUs.M6502
             PC = 0;
             PendingCycles = 0;
             TotalExecutedCycles = 0;
-        }
-
-        public void ResetPC()
-        {
-            PC = ReadWord(0xFFFE);
         }
 
         public string State()
@@ -61,10 +57,10 @@ namespace BizHawk.Emulation.CPUs.M6502
             return val;
         }
 
-		private const ushort NMIVector = 0xFFFA;
-		private const ushort ResetVector = 0xFFFC;
-		private const ushort BRKVector = 0xFFFE;
-		private const ushort IRQVector = 0xFFFE;
+		public const ushort NMIVector = 0xFFFA;
+		public const ushort ResetVector = 0xFFFC;
+		public const ushort BRKVector = 0xFFFE;
+		public const ushort IRQVector = 0xFFFE;
 
 		enum ExceptionType
 		{
@@ -73,13 +69,12 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		void TriggerException(ExceptionType type)
 		{
+			if (type == ExceptionType.BRK)
+				PC++;
 			WriteMemory((ushort)(S-- + 0x100), (byte)(PC >> 8));
 			WriteMemory((ushort)(S-- + 0x100), (byte)PC);
-			byte oldP = P;
-			FlagB = false;
-			FlagT = true;
+			FlagB = type == ExceptionType.BRK;
 			WriteMemory((ushort)(S-- + 0x100), P);
-			P = oldP;
 			FlagI = true;
 			switch (type)
 			{
@@ -174,7 +169,7 @@ namespace BizHawk.Emulation.CPUs.M6502
         }
 
         /// <summary>Interrupt Disable Flag</summary>
-        private bool FlagI
+        public bool FlagI
         {
             get { return (P & 0x04) != 0; }
             set { P = (byte)((P & ~0x04) | (value ? 0x04 : 0x00)); }
@@ -227,7 +222,7 @@ namespace BizHawk.Emulation.CPUs.M6502
             WriteMemory = null;
         }
 
-        private ushort ReadWord(ushort address)
+        public ushort ReadWord(ushort address)
         {
             byte l = ReadMemory(address);
             byte h = ReadMemory(++address);

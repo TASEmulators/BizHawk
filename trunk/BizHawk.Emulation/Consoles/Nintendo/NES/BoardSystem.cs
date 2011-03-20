@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public interface INESBoard
 		{
 			void Create(NES nes);
-			bool Configure();
+			bool Configure(NES.EDetectionOrigin origin);
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
 			byte ReadPRAM(int addr);
@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				this.NES = nes;
 			}
-			public abstract bool Configure();
+			public abstract bool Configure(NES.EDetectionOrigin origin);
 
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
@@ -118,6 +118,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (addr < 0x2000)
 				{
+					if (VRAM != null)
+						VRAM[addr] = value;
 				}
 				else
 				{
@@ -131,7 +133,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (addr < 0x2000)
 				{
-					return VROM[addr];
+					if (VROM != null)
+						return VROM[addr];
+					else return VRAM[addr];
 				}
 				else
 				{
@@ -222,7 +226,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// finds a board class which can handle the provided cart
 		/// </summary>
-		static Type FindBoard(CartInfo cart)
+		static Type FindBoard(CartInfo cart, EDetectionOrigin origin)
 		{
 			NES nes = new NES();
 			nes.cart = cart;
@@ -230,7 +234,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				INESBoard board = (INESBoard)Activator.CreateInstance(type);
 				board.Create(nes);
-				if (board.Configure())
+				if (board.Configure(origin))
 					return type;
 			}
 			return null;

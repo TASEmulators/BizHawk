@@ -230,6 +230,7 @@ namespace M6502
 
         private void PHP(OpcodeInfo op, TextWriter w)
         {
+            w.WriteLine(Spaces + "FlagB = true; //why would it do this?? how weird");
             w.WriteLine(Spaces + "WriteMemory((ushort)(S-- + 0x100), P);");
             w.WriteLine(Spaces + "PendingCycles -= {0}; TotalExecutedCycles += {0};", op.Cycles);
         }

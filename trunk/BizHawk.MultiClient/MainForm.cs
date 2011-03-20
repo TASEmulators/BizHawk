@@ -309,6 +309,7 @@ namespace BizHawk.MultiClient
 			Global.PCEControls = pceControls;
 
             var nesControls = new Controller(NES.NESController);
+			nesControls.BindMulti("Reset", Global.Config.NESReset);
             for (int i = 0; i < 1 /*TODO*/; i++)
             {
                 nesControls.BindMulti("Up", Global.Config.NESController[i].Up);

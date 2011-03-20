@@ -61,6 +61,7 @@ TriggerException(ExceptionType.BRK);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x08: // PHP
+                        //FlagB = true; //why would it do this?? how weird
                         WriteMemory((ushort)(S-- + 0x100), P);
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
@@ -1204,8 +1205,10 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[value8]);
                         PendingCycles -= 7; TotalExecutedCycles += 7;
                         break;
-                    default:
-                        throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
+                   default:
+                       if(throw_unhandled)
+                           throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
+                      break;
                 }
             }
         }
