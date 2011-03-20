@@ -15,7 +15,6 @@ namespace BizHawk.MultiClient
     {
         //Implement Options menu settings
         //Implement Freeze functions in all memory domains
-        //Save - implement (should default to SaveAs if no cheats file)
         //Restore Window Size should restore column order as well
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -852,6 +851,23 @@ namespace BizHawk.MultiClient
                 LoadCheatFile(file.FullName, true);
             DisplayCheatsList();
             Changes();
+        }
+
+        private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Global.Config.AutoLoadCheats == true)
+                autoLoadToolStripMenuItem.Checked = true;
+            else
+                autoLoadToolStripMenuItem.Checked = false;
+
+            if (string.Compare(currentCheatFile, "") == 0 || !changes)
+            {
+                saveToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                saveToolStripMenuItem.Enabled = true;
+            }
         }
     }
 }
