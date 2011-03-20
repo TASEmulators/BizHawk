@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace BizHawk.Core
@@ -45,8 +46,14 @@ namespace BizHawk.Core
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			if(bmp != null)
+			if (bmp != null)
+			{
+				e.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+				e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
+				e.Graphics.CompositingMode = CompositingMode.SourceCopy;
+				e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
 				e.Graphics.DrawImage(bmp, 0, 0, Width, Height);
+			}
 		}
 
 	}

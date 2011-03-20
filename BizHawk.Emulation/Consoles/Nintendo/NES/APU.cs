@@ -110,11 +110,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (lenctr_en == 0) len_cnt = 0;
 				}
 
+				//state
 				int swp_divider_counter;
 				bool swp_silence;
 				int duty_step;
 				int timer_counter;
 				public int sample;
+				bool duty_value;
 
 				int env_start_flag, env_divider, env_counter, env_output;
 
@@ -192,13 +194,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public void Run()
 				{
 					if (timer_counter > 0) timer_counter--;
-					if (timer_counter == 0)
+					if (timer_counter == 0 && timer_raw_reload_value!=0)
 					{
 						duty_step = (duty_step + 1) & 7;
+						duty_value = PULSE_DUTY[duty_cnt, duty_step] == 1;
 						//reload timer
 						timer_counter = timer_raw_reload_value;
 					}
-					if (PULSE_DUTY[duty_cnt, duty_step] == 1) //we are outputting something
+					if (duty_value) //we are outputting something
 					{
 						sample = env_output;
 
