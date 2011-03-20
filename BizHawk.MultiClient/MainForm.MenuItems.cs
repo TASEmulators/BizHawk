@@ -254,6 +254,7 @@ namespace BizHawk.MultiClient
             RamSearch1.Restart();
             HexEditor1.Restart();
             NESPPU1.Restart();
+            Cheats1.Restart();
 			Text = "BizHawk";
             HandlePlatformMenus();
 		}

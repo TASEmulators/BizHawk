@@ -13,12 +13,10 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //Open/Close rom should start a new cheat list
         //Implement Options menu settings
         //Implement Freeze functions in all memory domains
         //Save - implement (should default to SaveAs if no cheats file)
         //Restore Window Size should restore column order as well
-        //Save & Load Domain name into .wch file
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
@@ -39,6 +37,21 @@ namespace BizHawk.MultiClient
                 c.Add(new Cheat(cheatList[x]));
 
             return c;
+        }
+
+        private void ClearFields()
+        {
+            NameBox.Text = "";
+            AddressBox.Text = "";
+            ValueBox.Text = "";
+            PopulateMemoryDomainComboBox();
+            AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+        }
+
+        public void Restart()
+        {
+            NewCheatList();
+            ClearFields();
         }
 
         public Cheats()
@@ -113,6 +126,7 @@ namespace BizHawk.MultiClient
 
         private void PopulateMemoryDomainComboBox()
         {
+            DomainComboBox.Items.Clear();
             if (Global.Emulator.MemoryDomains.Count > 0)
             {
                 for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
