@@ -233,6 +233,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int timer_counter;
 				public int sample;
 				int env_output, env_start_flag, env_divider, env_counter;
+				bool noise_bit = true;
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
@@ -304,7 +305,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public void Run()
 				{
 					if (timer_counter > 0) timer_counter--;
-					if (timer_counter == 0)
+					if (timer_counter == 0 && period_cnt != 0)
 					{
 						//reload timer
 						timer_counter = period_cnt;
@@ -315,12 +316,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						shift_register >>= 1;
 						shift_register &= ~(1 << 14);
 						shift_register |= (feedback << 14);
+						noise_bit = (shift_register & 1)!=0;
 					}
 
-					sample = env_output;
-					if ((shift_register & 1) == 0) sample = 0;
-					if (len_cnt == 0) 
-						sample = 0;
+					if (noise_bit || len_cnt==0) sample = 0;
+					else
+						sample = env_output;
 				}
 			}
 
@@ -546,7 +547,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				metaspu.buffer.clear();
 			}
 
-			void RunOne()
+			public void RunOne()
 			{
 				pulse[0].Run();
 				pulse[1].Run();

@@ -403,7 +403,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//screen (or basically, the first nametable address that will be accessed when
 					//the PPU is fetching background data on the next scanline).
 					//(not implemented yet)
-					runppu(kFetchTime);
+					runppu(kFetchTime*2);
 					if (sl == 0)
 					{
 						if (idleSynch && reg_2001.PPUON && !PAL)
@@ -414,7 +414,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					else
 						ppur.status.end_cycle = 341;
-					runppu(kFetchTime);
+					//runppu(kFetchTime);
 
 					//After memory access 170, the PPU simply rests for 4 cycles (or the
 					//equivelant of half a memory access cycle) before repeating the whole

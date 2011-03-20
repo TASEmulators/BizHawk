@@ -412,7 +412,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				CartInfo choice = null;
 				if(USE_DATABASE)
 					choice = IdentifyFromBootGodDB(hash_sha1);
-				if(choice == null)
+				if (choice == null)
 				{
 					if (USE_DATABASE)
 					{
@@ -435,10 +435,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else
 					{
 						origin = EDetectionOrigin.GameDB;
-						Console.WriteLine("Chose board from gamedb: ");
+						Console.WriteLine("Chose board from gamedb: " + board);
 					}
 				}
-				else origin = EDetectionOrigin.BootGodDB;
+				else
+				{
+					Console.WriteLine("Chose board from nescartdb: " + choice.board_type);
+					origin = EDetectionOrigin.BootGodDB;
+				}
 
 				Console.WriteLine(choice.game);
 				Console.WriteLine(choice);

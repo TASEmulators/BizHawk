@@ -65,6 +65,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool resetSignal;
 		public void FrameAdvance(bool render)
 		{
+			if (resetSignal)
+			{
+				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
+				apu.WriteReg(0x4015, 0);
+				cpu.FlagI = true;
+			}
+
 			Controller.UpdateControls(Frame++);
 			if (resetSignal)
 				Controller.UnpressButton("Reset");
@@ -74,24 +81,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		protected void RunCpu(int ppu_cycles)
 		{
-			if (resetSignal)
-			{
-				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
-				apu.WriteReg(0x4015, 0);
-				cpu.FlagI = true;
-			}
-
 			int cycles = ppu_cycles;
 			if (ppu.PAL)
-				cycles *= 15;
+			    cycles *= 15;
 			else
-				cycles *= 16;
+				cycles <<= 4;
 
 			cpu_accumulate += cycles;
-			int todo = cpu_accumulate / 48;
-			cpu_accumulate -= todo * 48;
-			if (todo > 0)
+			if (cpu_accumulate >= 48)
 			{
+				int todo = cpu_accumulate / 48;
+				cpu_accumulate -= todo * 48;
 				cpu.Execute(todo);
 				apu.Run(todo);
 			}
