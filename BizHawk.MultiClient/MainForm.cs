@@ -535,6 +535,11 @@ namespace BizHawk.MultiClient
 				RamSearch1.Restart();
 				HexEditor1.Restart();
                 NESPPU1.Restart();
+                if (Global.Config.LoadCheatFileByGame)
+                {
+                    if (Cheats1.AttemptLoadCheatFile())
+                        Global.RenderPanel.AddMessage("Cheats file loaded");
+                }
                 Cheats1.Restart();
 				CurrentlyOpenRom = path;
                 HandlePlatformMenus();
