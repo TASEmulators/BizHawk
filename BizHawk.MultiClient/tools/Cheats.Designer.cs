@@ -41,7 +41,6 @@
             this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,6 +95,7 @@
             this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -175,8 +175,7 @@
             this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem,
             this.toolStripSeparator4,
-            this.clearToolStripMenuItem,
-            this.autoLoadToolStripMenuItem});
+            this.clearToolStripMenuItem});
             this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
             this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.recentToolStripMenuItem.Text = "Recent";
@@ -198,12 +197,6 @@
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
             this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clearToolStripMenuItem.Text = "Clear";
-            // 
-            // autoLoadToolStripMenuItem
-            // 
-            this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-            this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.autoLoadToolStripMenuItem.Text = "Auto-load";
             // 
             // toolStripSeparator1
             // 
@@ -292,6 +285,7 @@
             this.saveWindowPositionToolStripMenuItem,
             this.findAndLoadCheatFileByGameToolStripMenuItem,
             this.CheatsOnOffLoadToolStripMenuItem,
+            this.autoloadDialogToolStripMenuItem,
             this.toolStripSeparator5,
             this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
@@ -669,7 +663,7 @@
             this.removeSelectedToolStripMenuItem,
             this.disableAllCheatsToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 92);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 70);
             // 
             // disableAllCheatsToolStripMenuItem1
             // 
@@ -691,6 +685,13 @@
             this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.removeSelectedToolStripMenuItem.Text = "Remove Selected";
             this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
+            // 
+            // autoloadDialogToolStripMenuItem
+            // 
+            this.autoloadDialogToolStripMenuItem.Name = "autoloadDialogToolStripMenuItem";
+            this.autoloadDialogToolStripMenuItem.Size = new System.Drawing.Size(248, 22);
+            this.autoloadDialogToolStripMenuItem.Text = "Auto-load Dialog";
+            this.autoloadDialogToolStripMenuItem.Click += new System.EventHandler(this.autoloadDialogToolStripMenuItem_Click);
             // 
             // Cheats
             // 
@@ -776,7 +777,6 @@
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
         private System.Windows.Forms.ComboBox DomainComboBox;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button EditButton;
@@ -788,5 +788,6 @@
         private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
     }
 }

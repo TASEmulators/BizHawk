@@ -199,15 +199,6 @@ namespace BizHawk.MultiClient
             clearitem.Text = "&Clear";
             clearitem.Click += (o, ev) => Global.Config.RecentCheats.Clear();
             recentToolStripMenuItem.DropDownItems.Add(clearitem);
-
-            var auto = new ToolStripMenuItem();
-            auto.Text = "&Auto-Load";
-            auto.Click += (o, ev) => UpdateAutoLoadCheats();
-            if (Global.Config.AutoLoadCheats == true)
-                auto.Checked = true;
-            else
-                auto.Checked = false;
-            recentToolStripMenuItem.DropDownItems.Add(auto);
         }
 
         private void LoadConfigSettings()
@@ -699,6 +690,7 @@ namespace BizHawk.MultiClient
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.CheatsSaveWindowPosition;
             CheatsOnOffLoadToolStripMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
+            autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadCheats;
         }
 
         private void DuplicateCheat()
@@ -917,6 +909,11 @@ namespace BizHawk.MultiClient
         private void removeSelectedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RemoveCheat();
+        }
+
+        private void autoloadDialogToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.AutoLoadCheats ^= true;
         }
     }
 }
