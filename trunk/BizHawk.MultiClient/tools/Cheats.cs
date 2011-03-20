@@ -166,11 +166,6 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void UpdateAutoLoadCheats()
-        {
-            autoLoadToolStripMenuItem.Checked = Global.Config.AutoLoadCheats ^= true;
-        }
-
         private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             //Clear out recent Roms list
@@ -863,11 +858,6 @@ namespace BizHawk.MultiClient
 
         private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            if (Global.Config.AutoLoadCheats == true)
-                autoLoadToolStripMenuItem.Checked = true;
-            else
-                autoLoadToolStripMenuItem.Checked = false;
-
             if (string.Compare(currentCheatFile, "") == 0 || !changes)
             {
                 saveToolStripMenuItem.Enabled = false;
