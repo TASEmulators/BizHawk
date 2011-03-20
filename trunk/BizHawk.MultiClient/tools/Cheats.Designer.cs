@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Cheats));
             this.CheatsMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,9 +90,14 @@
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Domain = new System.Windows.Forms.ColumnHeader();
             this.On = new System.Windows.Forms.ColumnHeader();
+            this.disableAllCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // CheatsMenu
@@ -219,7 +225,9 @@
             this.insertSeparatorToolStripMenuItem,
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem});
+            this.moveDownToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.disableAllCheatsToolStripMenuItem});
             this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
             this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.cheatsToolStripMenuItem.Text = "&Cheats";
@@ -598,6 +606,7 @@
             this.Value,
             this.Domain,
             this.On});
+            this.CheatListView.ContextMenuStrip = this.contextMenuStrip1;
             this.CheatListView.FullRowSelect = true;
             this.CheatListView.GridLines = true;
             this.CheatListView.ItemCount = 0;
@@ -639,6 +648,32 @@
             this.On.Text = "On";
             this.On.Width = 40;
             // 
+            // disableAllCheatsToolStripMenuItem
+            // 
+            this.disableAllCheatsToolStripMenuItem.Name = "disableAllCheatsToolStripMenuItem";
+            this.disableAllCheatsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.disableAllCheatsToolStripMenuItem.Text = "Disable all Cheats";
+            this.disableAllCheatsToolStripMenuItem.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(198, 6);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.disableAllCheatsToolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 48);
+            // 
+            // disableAllCheatsToolStripMenuItem1
+            // 
+            this.disableAllCheatsToolStripMenuItem1.Name = "disableAllCheatsToolStripMenuItem1";
+            this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+            this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
+            this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
+            // 
             // Cheats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -661,6 +696,7 @@
             this.toolStrip1.PerformLayout();
             this.AddCheatGroup.ResumeLayout(false);
             this.AddCheatGroup.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -728,5 +764,9 @@
         private System.Windows.Forms.Button EditButton;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem1;
     }
 }
