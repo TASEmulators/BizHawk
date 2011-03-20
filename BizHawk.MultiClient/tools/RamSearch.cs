@@ -1208,7 +1208,7 @@ namespace BizHawk.MultiClient
 
             using (StreamWriter sw = new StreamWriter(path))
             {
-                string str = "";
+                string str = "Domain " + Domain.Name + "\n";
 
                 for (int x = 0; x < searchList.Count; x++)
                 {
@@ -1279,6 +1279,17 @@ namespace BizHawk.MultiClient
             return count;
         }
 
+        private int GetDomainPos(string name)
+        {
+            //Attempts to find the memory domain by name, if it fails, it defaults to index 0
+            for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+            {
+                if (Global.Emulator.MemoryDomains[x].Name == name)
+                    return x;
+            }
+            return 0;
+        }
+
         bool LoadSearchFile(string path, bool append, bool truncate, List<Watch> list)
         {
             int y, z;
@@ -1304,6 +1315,9 @@ namespace BizHawk.MultiClient
                     //.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
                     //Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
                     if (s.Length < 5) continue;
+
+                    if (s.Substring(0, 6) == "Domain")
+                        SetMemoryDomain(GetDomainPos(s.Substring(7, s.Length - 7)));
 
                     z = HowMany(s, '\t');
                     if (z == 5)
