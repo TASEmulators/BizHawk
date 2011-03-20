@@ -94,6 +94,8 @@
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -663,9 +665,11 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toggleToolStripMenuItem,
+            this.removeSelectedToolStripMenuItem,
             this.disableAllCheatsToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(171, 92);
             // 
             // disableAllCheatsToolStripMenuItem1
             // 
@@ -673,6 +677,20 @@
             this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
             this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
             this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
+            // 
+            // toggleToolStripMenuItem
+            // 
+            this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
+            this.toggleToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.toggleToolStripMenuItem.Text = "Toggle";
+            this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
+            // 
+            // removeSelectedToolStripMenuItem
+            // 
+            this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
+            this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.removeSelectedToolStripMenuItem.Text = "Remove Selected";
+            this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
             // 
             // Cheats
             // 
@@ -768,5 +786,7 @@
         private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem disableAllCheatsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
     }
 }
