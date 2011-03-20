@@ -37,6 +37,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1,  0,
  				0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
 			};
+			static int[] NOISE_TABLE = 
+			{
+				4, 8, 16, 32, 64, 96, 128, 160, 202, 254, 380, 508, 762, 1016, 2034, 4068 //NTSC
+				//4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778 //PAL
+			};
 
 	
 			class PulseUnit
@@ -148,12 +153,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							swp_divider_counter = sweep_divider_cnt + 1;
 							sweep_reload = false;
 						}
-
-
 					}
-
-
-
 					
 					//env_loopdoubles as "halt length counter"
 					if (env_loop == 0 && len_cnt > 0)
@@ -191,12 +191,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void Run()
 				{
-					//sweep units are figured out during memory writes to the regs
-					//that set the timer, length counter are figured out in the
-					//writes and frame counter, and envelope is set through the memory
-					//regs also, so we just need to deal with the timer and sequencer here
-
-					timer_counter--;
+					if (timer_counter > 0) timer_counter--;
 					if (timer_counter == 0)
 					{
 						duty_step = (duty_step + 1) & 7;
@@ -216,6 +211,116 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else
 						sample = 0; //duty cycle is 0, silenced.
 
+				}
+			}
+
+			class NoiseUnit
+			{
+				//reg0 (sweep)
+				int env_cnt_value, env_loop, env_constant;
+
+				//reg2 (mode and period)
+				int mode_cnt, period_cnt;
+
+				//reg3 (length counter and envelop trigger)
+				int len_cnt;
+
+				//set from apu:
+				int lenctr_en;
+
+				//state
+				int shift_register = 1;
+				int timer_counter;
+				public int sample;
+				int env_output, env_start_flag, env_divider, env_counter;
+
+				public bool IsLenCntNonZero() { return len_cnt > 0; }
+
+				public void WriteReg(int addr, byte val)
+				{
+					switch (addr)
+					{
+						case 0:
+							env_cnt_value = val & 0xF;
+							env_constant = (val >> 4) & 1;
+							env_loop = (val>>5)&1;
+							break;
+						case 1:
+							break;
+						case 2:
+							period_cnt = NOISE_TABLE[val & 0xF];
+							mode_cnt = (val>>7)&1;
+							//Console.WriteLine("noise period: {0}, vol: {1}", (val & 0xF), env_cnt_value);
+							break;
+						case 3:
+							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+							set_lenctr_en(lenctr_en);
+							env_start_flag = 1;
+							break;
+					}
+				}
+
+				public void set_lenctr_en(int value)
+				{
+					lenctr_en = value;
+					//Console.WriteLine("noise lenctr_en: " + lenctr_en);
+					//if the length counter is not enabled, then we must disable the length system in this way
+					if (lenctr_en == 0) len_cnt = 0;
+				}
+
+				public void clock_env() {}
+				public void clock_length_and_sweep()
+				{
+					if (env_start_flag == 1)
+					{
+						env_start_flag = 0;
+						env_divider = (env_cnt_value + 1);
+						env_counter = 15;
+					}
+					else
+					{
+						if (env_divider != 0) env_divider--;
+						if (env_divider == 0)
+						{
+							env_divider = (env_cnt_value + 1);
+							if (env_counter == 0)
+							{
+								if (env_loop == 1)
+								{
+									env_counter = 15;
+								}
+							}
+							else env_counter--;
+						}
+						if (env_constant == 1)
+							env_output = env_cnt_value;
+						else env_output = env_counter;
+					}
+
+					if (len_cnt > 0 && env_loop == 0)
+						len_cnt--;
+				}
+
+				public void Run()
+				{
+					if (timer_counter > 0) timer_counter--;
+					if (timer_counter == 0)
+					{
+						//reload timer
+						timer_counter = period_cnt;
+						int feedback_bit;
+						if (mode_cnt == 1) feedback_bit = (shift_register >> 6) & 1;
+						else feedback_bit = (shift_register >> 1) & 1;
+						int feedback = feedback_bit ^ (shift_register & 1);
+						shift_register >>= 1;
+						shift_register &= ~(1 << 14);
+						shift_register |= (feedback << 14);
+					}
+
+					sample = env_output;
+					if ((shift_register & 1) == 0) sample = 0;
+					if (len_cnt == 0) 
+						sample = 0;
 				}
 			}
 
@@ -303,9 +408,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-
 			PulseUnit[] pulse = { new PulseUnit(0), new PulseUnit(1) };
 			TriangleUnit triangle = new TriangleUnit();
+			NoiseUnit noise = new NoiseUnit();
 
 			int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit;
 			void sequencer_reset()
@@ -336,11 +441,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						pulse[0].clock_env();
 						pulse[1].clock_env();
 						triangle.clock_linear_counter();
+						noise.clock_env();
 						if (sequencer_step == 2 || sequencer_step == 4)
 						{
 							pulse[0].clock_length_and_sweep();
 							pulse[1].clock_length_and_sweep();
 							triangle.clock_length_and_sweep();
+							noise.clock_length_and_sweep();
 						}
 						if (sequencer_step == 4)
 						{
@@ -357,12 +464,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							pulse[0].clock_env();
 							pulse[1].clock_env();
 							triangle.clock_linear_counter();
+							noise.clock_env();
 						}
 						if (sequencer_step == 1 || sequencer_step == 3)
 						{
 							pulse[0].clock_length_and_sweep();
 							pulse[1].clock_length_and_sweep();
 							triangle.clock_length_and_sweep();
+							noise.clock_length_and_sweep();
 						}
 						if (sequencer_step == 5)
 							sequencer_step = 0;
@@ -384,9 +493,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case 0x4008: case 0x4009: case 0x400A: case 0x400B:
 						triangle.WriteReg(addr - 0x4008, val);
 						break;
+					case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+						noise.WriteReg(addr - 0x400C, val);
+						break;
 					case 0x4015:
 						pulse[0].set_lenctr_en(val & 1);
 						pulse[1].set_lenctr_en((val >> 1) & 1);
+						//todo - triangle length counter?
+						noise.set_lenctr_en((val >> 3) & 1);
 						break;
 					case 0x4017:
 						sequencer_mode = (val>>7)&1;
@@ -408,7 +522,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
 						int dmc_irq_flag = 0; //todo
 						int dmc_nonzero = 0; //todo
-						int noise_nonzero = 0; //todo
+						int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
 						int tri_nonzero = 0; //todo
 						int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
 						int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
@@ -437,11 +551,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				pulse[0].Run();
 				pulse[1].Run();
 				triangle.Run();
+				noise.Run();
 
 				int mix = 0;
 				mix += pulse[0].sample;
 				mix += pulse[1].sample;
 				mix += triangle.sample;
+				mix += noise.sample;
 
 				EmitSample(mix);
 
@@ -485,7 +601,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				double factional_remainder = (this_samp - last_hwsamp) * (1-ratio);
 				accumulate += fractional;
 
-				accumulate *= 600;
+				accumulate *= 540; //32768/(15*4) -- adjust later for other sound channels
 				int outsamp = (int)(accumulate / kInvMixRate);
 				if (CFG_USE_METASPU)
 					metaspu.buffer.enqueue_sample((short)outsamp, (short)outsamp);
@@ -502,13 +618,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (CFG_USE_METASPU)
 				{
 					metaspu.GetSamples(samples);
-					//foreach(short sample in samples) bw.Write((short)sample);
+					foreach(short sample in samples) bw.Write((short)sample);
 				}
 				else
 					MyGetSamples(samples);
 			}
 
-			//static BinaryWriter bw = new BinaryWriter(File.OpenWrite("d:\\out.raw"));
+			static BinaryWriter bw = new BinaryWriter(File.OpenWrite("d:\\out.raw"));
 			void MyGetSamples(short[] samples)
 			{
 				//Console.WriteLine("a: {0} with todo: {1}",squeue.Count,samples.Length/2);
