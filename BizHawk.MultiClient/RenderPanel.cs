@@ -258,16 +258,16 @@ namespace BizHawk.MultiClient
         {
             //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
             if (Global.Config.DisplayFrameCounter)
-                MessageFont.DrawString(null, MakeFrameCounter(), 1, 1, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
+                MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx, Global.Config.DispFrameCy, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
 
             if (Global.Config.DisplayInput)
             {
                 string input = MakeInputDisplay();
-                MessageFont.DrawString(null, input, 1, 16, new Color4(Color.White));
+                MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, new Color4(Color.White));
             }
 
 			if (Global.Config.DisplayFPS)
-				MessageFont.DrawString(null, FPS.ToString(), 0, 0, new Color4(Color.White));
+                MessageFont.DrawString(null, FPS.ToString() + " fps", Global.Config.DispFPSx, Global.Config.DispFPSy, new Color4(Color.White));
         }
 
         private string MakeFrameCounter()
