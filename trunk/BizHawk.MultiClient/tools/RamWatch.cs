@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //address num digits based on domain size
         //Restore window size should restore column order as well
         //When receiving a watch from a different domain, should something be done?
 
