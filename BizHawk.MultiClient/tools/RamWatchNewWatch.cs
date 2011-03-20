@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
 {
     public partial class RamWatchNewWatch : Form
     {
-        //TODO: better input validation - Like Ram Search
         public Watch watch = new Watch();
         public bool userSelected = false;
         public bool customSetup = false;
@@ -151,6 +150,14 @@ namespace BizHawk.MultiClient
                 ToolTip t = new ToolTip();
                 t.Show("MUst be a valid hexadecimal vaue", AddressBox, 5000);
             }
+        }
+
+        private void AddressBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\b') return;
+
+            if (!InputValidate.IsValidHexNumber(e.KeyChar))
+                e.Handled = true;
         }
     }
 }

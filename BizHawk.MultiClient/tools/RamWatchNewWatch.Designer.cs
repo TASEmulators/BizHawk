@@ -79,6 +79,7 @@
             this.AddressBox.TabIndex = 2;
             this.AddressBox.Text = "00000000";
             this.AddressBox.Leave += new System.EventHandler(this.AddressBox_Leave);
+            this.AddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AddressBox_KeyPress);
             // 
             // NotesBox
             // 
