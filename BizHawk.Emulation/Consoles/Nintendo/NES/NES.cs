@@ -128,7 +128,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
 			{
-				//why is it faster to continually reallocate? i have no idea.
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
 				for (int i = 0; i < 256*240; i++)
 				{
@@ -140,10 +139,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int BufferHeight { get { return 240; } }
 			public int BackgroundColor { get { return 0; } }
 		}
-		public IVideoProvider VideoProvider { get { return videoProvider; } }
+
 		MyVideoProvider videoProvider;
-
-
+		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		public ISoundProvider SoundProvider { get { return apu; } }
 
 		public static readonly ControllerDefinition NESController =
