@@ -33,31 +33,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//well, lets leave it.
 		}
 
-		public void SaveStateBinary(BinaryWriter bw)
+		public void SyncStateBinary(BinarySerializer ser)
 		{
-			bw.Write(shift_count);
-			bw.Write(shift_val);
-			bw.Write(chr_mode);
-			bw.Write(prg_mode);
-			bw.Write(prg_slot);
-			bw.Write((int)mirror);
-			bw.Write(chr_0);
-			bw.Write(chr_1);
-			bw.Write(wram_disable);
-			bw.Write(prg);
-		}
-		public void LoadStateBinary(BinaryReader br)
-		{
-			shift_count = br.ReadInt32();
-			shift_val = br.ReadInt32();
-			chr_mode = br.ReadInt32();
-			prg_mode = br.ReadInt32();
-			prg_slot = br.ReadInt32();
-			mirror = (NES.EMirrorType)br.ReadInt32();
-			chr_0 = br.ReadInt32();
-			chr_1 = br.ReadInt32();
-			wram_disable = br.ReadInt32();
-			prg = br.ReadInt32();
+			ser.Sync(ref shift_count);
+			ser.Sync(ref shift_val);
+			ser.Sync(ref chr_mode);
+			ser.Sync(ref prg_mode);
+			ser.Sync(ref prg_slot);
+			ser.Sync(ref chr_0);
+			ser.Sync(ref chr_1);
+			ser.Sync(ref wram_disable);
+			ser.Sync(ref prg);
+			ser.SyncEnum(ref mirror);
+
 		}
 
 		public enum Rev
@@ -173,7 +161,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		int prg_mask, chr_mask;
-		int cram_mask, pram_mask;
+		int vram_mask, wram_mask;
 
 		//state
 		MMC1 mmc1;
@@ -203,7 +191,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					return VRAM[addr & cram_mask];
+					return VRAM[addr & vram_mask];
 				else return VROM[Gen_CHR_Address(addr)];
 			}
 			else return base.ReadPPU(addr);
@@ -214,22 +202,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					VRAM[addr & cram_mask] = value;
+					VRAM[addr & vram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
 		}
 
-		public override byte ReadPRAM(int addr)
+		public override byte ReadWRAM(int addr)
 		{
 			if (Cart.wram_size != 0)
-				return WRAM[addr & pram_mask];
+				return WRAM[addr & wram_mask];
 			else return 0xFF;
 		}
 
-		public override void WritePRAM(int addr, byte value)
+		public override void WriteWRAM(int addr, byte value)
 		{
 			if (Cart.wram_size != 0)
-				WRAM[addr & pram_mask] = value;
+				WRAM[addr & wram_mask] = value;
 		}
 
 		public override byte[] SaveRam
@@ -243,19 +231,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-   		public override void SaveStateBinary(BinaryWriter bw)
+		public override void SyncStateBinary(BinarySerializer ser)
 		{
-			base.SaveStateBinary(bw);
-			mmc1.SaveStateBinary(bw);
+			base.SyncStateBinary(ser);
+			mmc1.SyncStateBinary(ser);
 
 		}
-		public override void LoadStateBinary(BinaryReader br)
-		{
-			base.LoadStateBinary(br);
-			mmc1.LoadStateBinary(br);
-		}
-
-
+	
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//analyze board type
@@ -334,8 +316,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			mmc1 = new MMC1();
 			prg_mask = (Cart.prg_size / 16) - 1;
-			cram_mask = (Cart.vram_size*1024) - 1;
-			pram_mask = (Cart.wram_size*1024) - 1;
+			vram_mask = (Cart.vram_size*1024) - 1;
+			wram_mask = (Cart.wram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			SetMirrorType(mmc1.mirror);
 

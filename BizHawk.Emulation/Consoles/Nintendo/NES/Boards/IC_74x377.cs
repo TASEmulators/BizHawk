@@ -62,18 +62,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr = (value >> 4) & chr_mask;
 		}
 
-		public override void SaveStateBinary(BinaryWriter bw)
+		public override void SyncStateBinary(BinarySerializer ser)
 		{
-			base.SaveStateBinary(bw);
-			bw.Write(chr);
-			bw.Write(prg);
+			base.SyncStateBinary(ser);
+			ser.Sync(ref chr);
+			ser.Sync(ref prg);
 		}
 
-		public override void LoadStateBinary(BinaryReader br)
-		{
-			base.LoadStateBinary(br);
-			chr = br.ReadInt32();
-			prg = br.ReadInt32();
-		}
 	}
 }

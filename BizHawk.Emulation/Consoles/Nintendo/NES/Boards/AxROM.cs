@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		bool bus_conflict;
-		int cram_byte_mask;
+		int vram_byte_mask;
 		int prg_mask;
 
 		//state
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			prg_mask = (Cart.prg_size / 16) - 1;
-			cram_byte_mask = 8 * 1024 - 1; //these boards always have 8KB of CRAM
+			vram_byte_mask = 8 * 1024 - 1; //these boards always have 8KB of VRAM
 
 			//it is necessary to write during initialization to set the mirroring
 			WritePRG(0, 0);
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				return VRAM[addr & cram_byte_mask];
+				return VRAM[addr & vram_byte_mask];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -83,21 +83,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				VRAM[addr & cram_byte_mask] = value;
+				VRAM[addr & vram_byte_mask] = value;
 			}
 			else base.WritePPU(addr,value);
 		}
 
-		public override void SaveStateBinary(BinaryWriter bw)
+		public override void SyncStateBinary(BinarySerializer ser)
 		{
-			base.SaveStateBinary(bw);
-			bw.Write(prg);
-		}
-
-		public override void LoadStateBinary(BinaryReader br)
-		{
-			base.LoadStateBinary(br);
-			prg = br.ReadInt32();
+			base.SyncStateBinary(ser);
+			ser.Sync(ref prg);
 		}
 
 	}

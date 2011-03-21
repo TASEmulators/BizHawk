@@ -517,7 +517,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Util.WriteByteBuffer(bw, ram);
 			Util.WriteByteBuffer(bw, CIRAM);
 			bw.Write(cpu_accumulate);
-			board.SaveStateBinary(bw);
+			board.SyncStateBinary(BinarySerializer.CreateWriter(bw));
 			ppu.SaveStateBinary(bw);
 			bw.Flush();
 		}
@@ -528,7 +528,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ram = Util.ReadByteBuffer(br, false);
 			CIRAM = Util.ReadByteBuffer(br, false);
 			cpu_accumulate = br.ReadInt32();
-			board.LoadStateBinary(br);
+			board.SyncStateBinary(BinarySerializer.CreateReader(br));
 			ppu.LoadStateBinary(br);
 		}
 

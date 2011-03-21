@@ -519,6 +519,8 @@ namespace BizHawk
 	{
 		BinaryReader br;
 		BinaryWriter bw;
+		public BinaryReader BinaryReader { get { return br; } }
+		public BinaryWriter BinaryWriter { get { return bw; } }
 		public BinarySerializer() { }
 		public BinarySerializer(BinaryWriter _bw) { StartWrite(_bw); }
 		public BinarySerializer(BinaryReader _br) { StartRead(_br); }
@@ -527,7 +529,22 @@ namespace BizHawk
 		public static BinarySerializer CreateWriter(BinaryWriter _bw) { return new BinarySerializer(_bw); }
 		public static BinarySerializer CreateReader(BinaryReader _br) { return new BinarySerializer(_br); }
 
-		bool IsReader { get { return br != null; } }
+		public bool IsReader { get { return br != null; } }
+		public bool IsWriter { get { return bw != null; } }
+
+		public unsafe void SyncEnum<T>(ref T val) where T : struct
+		{
+			if (typeof(T).BaseType != typeof(System.Enum))
+				throw new InvalidOperationException();
+			if (IsReader) val = (T)Enum.ToObject(typeof(T), br.ReadInt32());
+			else bw.Write(Convert.ToInt32(val));
+		}
+
+		public void Sync(ref byte[] val, bool use_null)
+		{
+			if (IsReader) val = Util.ReadByteBuffer(br, use_null);
+			else Util.WriteByteBuffer(bw, val);
+		}
 
 		public void Sync(ref byte val)
 		{
