@@ -103,10 +103,6 @@ namespace BizHawk.MultiClient
 
                                 cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
                                 
-                                unchecked
-                                {
-                                    cvalue = cvalue | (int)0xFF000000;
-                                }
                                 Color color = Color.FromArgb(cvalue);
 
                                 int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);

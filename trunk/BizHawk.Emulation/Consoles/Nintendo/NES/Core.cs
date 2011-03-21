@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//user configuration 
 		int[,] palette = new int[64,3];
-		int[] palette_compiled = new int[64];
+		int[] palette_compiled = new int[64*8];
 		IPortDevice[] ports;
 
 		public void HardReset()
@@ -184,32 +184,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		void SetPalette(int[,] pal)
 		{
 			Array.Copy(pal,palette,64*3);
-			for(int i=0;i<64;i++)
+			for(int i=0;i<64*8;i++)
 			{
-				int r = palette[i, 0];
-				int g = palette[i, 1];
-				int b = palette[i, 2];
+				int d = i >> 6;
+				int c = i & 63;
+				if (d >= 7) continue;
+				int r = palette[c, 0];
+				int g = palette[c, 1];
+				int b = palette[c, 2];
+				Palettes.ApplyDeemphasis(ref r, ref g, ref b, d);
 				palette_compiled[i] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
 			}
 		}
 
-
 		/// <summary>
-		/// Converts an internal NES core pixel value (includes deemph bits) to an rgb int.
-		/// </summary>
-		int CompleteDecodeColor(int pixel)
-		{
-			int deemph = pixel >> 8;
-			int palentry = pixel & 0xFF;
-			int r = palette[palentry, 0];
-			int g = palette[palentry, 1];
-			int b = palette[palentry, 2];
-			Palettes.ApplyDeemphasis(ref r, ref g, ref b, deemph);
-			return (r << 16) | (g << 8) | b;
-		}
-
-		/// <summary>
-		/// looks up an internal NES pixel value to an rgb int.
+		/// looks up an internal NES pixel value to an rgb int (applying the core's current palette and assuming no deemph)
 		/// </summary>
 		public int LookupColor(int pixel)
 		{

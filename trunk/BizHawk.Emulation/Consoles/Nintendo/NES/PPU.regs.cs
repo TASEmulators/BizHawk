@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public Bit intense_blue; //Intensify blues (and darken other colors)
 				public Bit intense_red; //Intensify reds (and darken other colors)
 
-				public int intensity_lsl_8; //an optimization..
+				public int intensity_lsl_6; //an optimization..
 
 				public bool PPUON { get { return show_bg || show_obj; } }
 
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						intense_green = (value >> 5) & 1;
 						intense_blue = (value >> 6) & 1;
 						intense_red = (value >> 7) & 1;
-						intensity_lsl_8 = ((value >> 5) & 7)<<8;
+						intensity_lsl_6 = ((value >> 5) & 7)<<6;
 					}
 				}
 			}

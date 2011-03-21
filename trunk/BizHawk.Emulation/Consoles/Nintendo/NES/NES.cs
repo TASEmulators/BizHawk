@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
+			videoProvider = new MyVideoProvider(this);
 		}
 
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
@@ -124,25 +125,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				this.emu = emu;
 			}
 
+			int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
 			{
 				//why is it faster to continually reallocate? i have no idea.
-				int[] pixels = new int[256 * 240];
-				int i = 0;
-				for (int y = 0; y < 240; y++)
-					for (int x = 0; x < 256; x++)
-					{
-						int pixel = emu.ppu.xbuf[i];
-                        pixels[i] = unchecked(emu.CompleteDecodeColor(pixel) | (int)0xFF000000);
-						i++;
-					}
+				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
+				for (int i = 0; i < 256*240; i++)
+				{
+                    pixels[i] = emu.palette_compiled[emu.ppu.xbuf[i]];
+				}
 				return pixels;
 			}
 			public int BufferWidth { get { return 256; } }
 			public int BufferHeight { get { return 240; } }
 			public int BackgroundColor { get { return 0; } }
 		}
-		public IVideoProvider VideoProvider { get { return new MyVideoProvider(this); } }
+		public IVideoProvider VideoProvider { get { return videoProvider; } }
+		MyVideoProvider videoProvider;
 
 
 		public ISoundProvider SoundProvider { get { return apu; } }
