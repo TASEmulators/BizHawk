@@ -785,9 +785,10 @@ namespace BizHawk.MultiClient
 			var video = Global.Emulator.VideoProvider;
 			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 
+			var framebuf = video.GetVideoBuffer();
 			for (int y = 0; y < video.BufferHeight; y++)
 				for (int x = 0; x < video.BufferWidth; x++)
-					image.SetPixel(x, y, Color.FromArgb(video.GetVideoBuffer()[(y * video.BufferWidth) + x]));
+					image.SetPixel(x, y, Color.FromArgb(framebuf[(y * video.BufferWidth) + x]));
 
 			var f = new FileInfo(String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
 			if (f.Directory.Exists == false)
