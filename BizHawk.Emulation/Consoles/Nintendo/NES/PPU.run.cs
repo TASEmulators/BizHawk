@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			short PaletteAdjustPixel(int pixel)
 			{
 				//tack on the deemph bits. THESE MAY BE ORDERED WRONG. PLEASE CHECK IN THE PALETTE CODE
-				return (short)(pixel| reg_2001.intensity_lsl_8);
+				return (short)(pixel | reg_2001.intensity_lsl_6);
 			}
 
 			const int kLineTime = 341;
