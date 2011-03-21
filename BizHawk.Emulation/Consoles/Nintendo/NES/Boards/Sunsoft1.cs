@@ -1,0 +1,54 @@
+﻿using System;
+using System.IO;
+using System.Diagnostics;
+
+namespace BizHawk.Emulation.Consoles.Nintendo
+{
+    /*
+     * Life Span: April 1986 - July 1986
+PCB Class: SUNSOFT-1
+iNES Mapper #184
+PRG-ROM: 32KB
+PRG-RAM: None
+CHR-ROM: 16KB
+CHR-RAM: None
+Battery is not available
+Uses vertical mirroring
+No CIC present
+Other chips used: Sunsoft-1
+     * 
+     * Games:
+     * Atlantis no Nazo
+     * The Wing of Madoola
+     */
+
+    class Sunsoft1 : NES.NESBoardBase
+    {
+        int prg, chr;
+
+        public override bool Configure(NES.EDetectionOrigin origin)
+        {
+            //configure
+            SetMirrorType(Cart.pad_h, Cart.pad_v);
+            return true;
+        }
+
+        public override byte ReadPPU(int addr)
+        {
+            int left_piece = 0;
+            int right_piece = 3;
+
+            if (addr < 0x1000)
+            {
+                return VROM[(addr%0x1000) + (left_piece*0x1000)]; 
+            }
+            else if (addr < 0x2000)
+            {
+                return VROM[(addr%0x1000) + (right_piece*0x1000)];
+            }
+
+            return base.ReadPPU(addr);
+        }
+        
+    }
+}
