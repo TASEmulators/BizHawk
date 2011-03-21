@@ -515,6 +515,74 @@ namespace BizHawk
 
 	}
 
+	public class BinarySerializer
+	{
+		BinaryReader br;
+		BinaryWriter bw;
+		public BinarySerializer() { }
+		public BinarySerializer(BinaryWriter _bw) { StartWrite(_bw); }
+		public BinarySerializer(BinaryReader _br) { StartRead(_br); }
+		public void StartWrite(BinaryWriter _bw) { this.bw = _bw; }
+		public void StartRead(BinaryReader _br) { this.br = _br; }
+		public static BinarySerializer CreateWriter(BinaryWriter _bw) { return new BinarySerializer(_bw); }
+		public static BinarySerializer CreateReader(BinaryReader _br) { return new BinarySerializer(_br); }
+
+		bool IsReader { get { return br != null; } }
+
+		public void Sync(ref byte val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref ushort val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref uint val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref sbyte val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref short val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref int val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void Sync(ref bool val)
+		{
+			if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+
+
+		void Read(ref byte val) { val = br.ReadByte(); }
+		void Write(ref byte val) { bw.Write(val); }
+		void Read(ref ushort val) { val = br.ReadUInt16(); }
+		void Write(ref ushort val) { bw.Write(val); }
+		void Read(ref uint val) { val = br.ReadUInt32(); }
+		void Write(ref uint val) { bw.Write(val); }
+		void Read(ref sbyte val) { val = br.ReadSByte(); }
+		void Write(ref sbyte val) { bw.Write(val); }
+		void Read(ref short val) { val = br.ReadInt16(); }
+		void Write(ref short val) { bw.Write(val); }
+		void Read(ref int val) { val = br.ReadInt32(); }
+		void Write(ref int val) { bw.Write(val); }
+
+		void Read(ref bool val) { val = br.ReadBoolean(); }
+		void Write(ref bool val) { bw.Write(val); }
+	}
+
 
 	public static class BITREV
 	{

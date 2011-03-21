@@ -513,12 +513,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			using (var sw = new StringWriter())
-			{
-				cpu.SaveStateText(sw);
-				sw.Flush();
-				Util.WriteByteBuffer(bw, System.Text.Encoding.ASCII.GetBytes(sw.ToString()));
-			}
+			cpu.SaveStateBinary(bw);
 			Util.WriteByteBuffer(bw, ram);
 			Util.WriteByteBuffer(bw, CIRAM);
 			bw.Write(cpu_accumulate);
@@ -529,8 +524,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			using (var sr = new StringReader(System.Text.Encoding.ASCII.GetString(Util.ReadByteBuffer(br, false))))
-				cpu.LoadStateText(sr);
+			cpu.LoadStateBinary(br);
 			ram = Util.ReadByteBuffer(br, false);
 			CIRAM = Util.ReadByteBuffer(br, false);
 			cpu_accumulate = br.ReadInt32();

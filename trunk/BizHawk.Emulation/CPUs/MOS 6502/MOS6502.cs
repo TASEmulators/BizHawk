@@ -152,6 +152,22 @@ namespace BizHawk.Emulation.CPUs.M6502
 			}
 		}
 
+		void SyncStateBinary(BinarySerializer ser)
+		{
+			ser.Sync(ref A);
+			ser.Sync(ref X);
+			ser.Sync(ref Y);
+			ser.Sync(ref P);
+			ser.Sync(ref PC);
+			ser.Sync(ref S);
+			ser.Sync(ref NMI);
+			ser.Sync(ref IRQ);
+			ser.Sync(ref TotalExecutedCycles);
+			ser.Sync(ref PendingCycles);
+		}
+		public void SaveStateBinary(BinaryWriter writer) { SyncStateBinary(BinarySerializer.CreateWriter(writer)); }
+		public void LoadStateBinary(BinaryReader reader) { SyncStateBinary(BinarySerializer.CreateReader(reader)); }
+
         // ==== End State ====
 
         /// <summary>Carry Flag</summary>
