@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -11,15 +13,94 @@ namespace BizHawk.Core
 	/// </summary>
 	public class RetainedViewportPanel : Control
 	{
+		Thread threadPaint;
+		EventWaitHandle ewh;
+		volatile bool killSignal;
+
+		/// <summary>
+		/// Turns this panel into multi-threaded mode.
+		/// This will sort of glitch out other gdi things on the system, but at least its fast...
+		/// </summary>
+		public void ActivateThreaded()
+		{
+			ewh = new EventWaitHandle(false, EventResetMode.AutoReset);
+			threadPaint = new Thread(PaintProc);
+			threadPaint.Start();
+		}
+
 		public RetainedViewportPanel()
 		{
 			CreateHandle();
 			
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.DoubleBuffer, false);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserMouse, true);
+		}
+
+
+		protected override void Dispose(bool disposing)
+		{
+			base.Dispose(disposing);
+			if (threadPaint != null)
+			{
+				killSignal = true;
+				ewh.Set();
+				ewh.WaitOne();
+			}
+			CleanupDisposeQueue();
+		}
+
+		void DoPaint()
+		{
+			if (bmp != null)
+			{
+				using (Graphics g = CreateGraphics())
+				{
+					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+					g.InterpolationMode = InterpolationMode.NearestNeighbor;
+					g.CompositingMode = CompositingMode.SourceCopy;
+					g.CompositingQuality = CompositingQuality.HighSpeed;
+					g.DrawImage(bmp, 0, 0, Width, Height);
+				}
+			}
+
+			CleanupDisposeQueue();
+		}
+
+		void PaintProc()
+		{
+			for (; ; )
+			{
+				ewh.WaitOne();
+				if (killSignal)
+				{
+					ewh.Set();
+					return;
+				}
+
+				DoPaint();
+			}
+		}
+
+		void CleanupDisposeQueue()
+		{
+			lock (this)
+			{
+				while (DisposeQueue.Count > 0)
+					DisposeQueue.Dequeue().Dispose();
+			}
+		}
+
+		Queue<Bitmap> DisposeQueue = new Queue<Bitmap>();
+
+		void SignalPaint()
+		{
+			if (threadPaint == null)
+				DoPaint();
+			else
+				ewh.Set();
 		}
 
 		//Size logicalSize;
@@ -36,24 +117,26 @@ namespace BizHawk.Core
 		/// </summary>
 		public void SetBitmap(Bitmap newbmp)
 		{
-			if (bmp != null) bmp.Dispose();
-			bmp = newbmp;
-			Refresh();
+			lock (this)
+			{
+				if(bmp != null) DisposeQueue.Enqueue(bmp);
+				bmp = newbmp;
+			}
+			SignalPaint();
 		}
 
 		Bitmap bmp;
 
+		protected override void OnPaintBackground(PaintEventArgs pevent)
+		{
+
+		}
+
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			SignalPaint();
 			base.OnPaint(e);
-			if (bmp != null)
-			{
-				e.Graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-				e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
-				e.Graphics.CompositingMode = CompositingMode.SourceCopy;
-				e.Graphics.CompositingQuality = CompositingQuality.HighSpeed;
-				e.Graphics.DrawImage(bmp, 0, 0, Width, Height);
-			}
 		}
 
 	}

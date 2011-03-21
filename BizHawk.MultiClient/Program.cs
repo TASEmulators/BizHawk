@@ -13,16 +13,20 @@ namespace BizHawk.MultiClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+			Global.Config = ConfigService.Load<Config>("config.ini");
+
             try { Global.DSound = new DirectSound(); }
             catch {
                 MessageBox.Show("Couldn't initialize DirectSound!");
                 return;
             }
 
-            try { Global.Direct3D = new Direct3D(); }
-            catch {
-                //can fallback to GDI rendering
-            }
+			try { Global.Direct3D = new Direct3D(); }
+			catch
+			{
+				//can fallback to GDI rendering
+				Global.Config.ForceGDI = true;
+			}
 
             try {
 				var mf = new MainForm(args);
