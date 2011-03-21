@@ -50,6 +50,7 @@
         public bool DisplayInput = false;
         public int DispInpx = 0;
         public int DispInpy = 24;
+		public bool ForceGDI = false;
 
         // Sound options
         public bool SoundEnabled = true;

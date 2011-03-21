@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
-		private void rAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RamPoke r = new RamPoke();
 			r.Show();
@@ -383,6 +383,48 @@ namespace BizHawk.MultiClient
 			LoadRom(file.FullName);
 		}
 
+		private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InputLog.StopMovie();
+			InputLog.StartPlayback();
+			LoadRom(CurrentlyOpenRom);
+		}
+
+		private void PPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadNESPPU();
+		}
+
+		private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RewindEnabled ^= true;
+		}
+
+		private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadHexEditor();
+		}
+
+		private void MainForm_Shown(object sender, EventArgs e)
+		{
+			HandlePlatformMenus();
+		}
+
+		private void gameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadGameGenieEC();
+		}
+
+		private void cheatsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadCheatsWindow();
+		}
+
+		private void forceGDIPPresentationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ForceGDI ^= true;
+			SyncPresentationMode();
+		}
 
 	}
 }

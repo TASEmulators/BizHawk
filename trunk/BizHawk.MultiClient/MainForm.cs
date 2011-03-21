@@ -52,6 +52,8 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
+			InitializeComponent();
+
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () => {
@@ -60,28 +62,10 @@ namespace BizHawk.MultiClient
 			};
 
 			Global.MainForm = this;
-			Global.Config = ConfigService.Load<Config>("config.ini");
-
-			if (Global.Direct3D != null)
-				renderTarget = new ViewportPanel();
-			else renderTarget = retainedPanel = new RetainedViewportPanel();
-
-			renderTarget.Dock = DockStyle.Fill;
-			renderTarget.BackColor = Color.Black;
-			Controls.Add(renderTarget);
-
-			InitializeComponent();
 
 			Database.LoadDatabase("gamedb.txt");
 
-			if (Global.Direct3D != null)
-			{
-				Global.RenderPanel = new Direct3DRenderPanel(Global.Direct3D, renderTarget);
-			}
-			else
-			{
-				Global.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
-			}
+			SyncPresentationMode();
 
 			Load += (o, e) =>
 			{
@@ -159,6 +143,44 @@ namespace BizHawk.MultiClient
 			if (Global.Config.StartPaused)
 				PauseEmulator();
 		}
+
+		void SyncPresentationMode()
+		{
+			bool gdi = Global.Config.ForceGDI;
+			if (Global.Direct3D == null)
+			{
+				gdi = Global.Config.ForceGDI = true;
+			}
+
+			if (renderTarget != null)
+			{
+				renderTarget.Dispose();
+				Controls.Remove(renderTarget);
+			}
+
+			if (retainedPanel != null) retainedPanel.Dispose();
+			if (Global.RenderPanel != null) Global.RenderPanel.Dispose();
+
+			if (gdi)
+				renderTarget = retainedPanel = new RetainedViewportPanel();
+			else renderTarget = new ViewportPanel();
+			Controls.Add(renderTarget);
+			Controls.SetChildIndex(renderTarget, 0);
+
+			renderTarget.Dock = DockStyle.Fill;
+			renderTarget.BackColor = Color.Black;
+
+			if (gdi)
+			{
+				Global.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
+				retainedPanel.ActivateThreaded();
+			}
+			else
+			{
+				Global.RenderPanel = new Direct3DRenderPanel(Global.Direct3D, renderTarget);
+			}
+		}
+
 
 		void SetSpeedPercent(int value)
 		{
@@ -503,7 +525,7 @@ namespace BizHawk.MultiClient
 					Global.Game.Name = (Global.Emulator as NES).GameName;
 				}
 
-				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
+				Text = DisplayNameForSystem(game.System) + " - " + game.Name + " \\";
 				ResetRewindBuffer();
 				Global.Config.RecentRoms.Add(file.CanonicalName);
 				if (File.Exists(game.SaveRamPath))
@@ -730,6 +752,8 @@ namespace BizHawk.MultiClient
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
 					runloop_second = DateTime.Now;
+					Global.RenderPanel.FPS = runloop_fps;
+					Text = Text.Substring(0, Text.IndexOf('\\')) + "\\ " + runloop_fps + " fps";
 					Global.RenderPanel.FPS = runloop_fps;
 					runloop_fps = 0;
 				}
@@ -1179,6 +1203,7 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
             enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
+			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1245,41 +1270,6 @@ namespace BizHawk.MultiClient
             ConfigService.Save("config.ini", Global.Config);
         }
 
-        private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            InputLog.StopMovie();
-            InputLog.StartPlayback(); 
-            LoadRom(CurrentlyOpenRom);
-        }
-
-        private void pPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadNESPPU();
-        }
-
-        private void enableRewindToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.RewindEnabled ^= true;
-        }
-
-        private void hexEditorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadHexEditor();
-        }
-
-        private void MainForm_Shown(object sender, EventArgs e)
-        {
-			HandlePlatformMenus();
-        }
-
-        private void gameGenieCodesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadGameGenieEC();
-        }
-
-        private void cheatsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadCheatsWindow();
-        }
+   
 	}
 }
