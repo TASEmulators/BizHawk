@@ -15,7 +15,6 @@ namespace BizHawk.MultiClient
     {
         //Implement Freeze functions in all memory domains
         //Restore Window Size should restore column order as well
-        //TODO: use currently selected memory domain! - line 71
         //context menu - enable/disable highlight dependent items
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -68,7 +67,7 @@ namespace BizHawk.MultiClient
             AddressBox.Text = "";
             ValueBox.Text = "";
             PopulateMemoryDomainComboBox();
-            //AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+            AddressBox.MaxLength = GetNumDigits(Global.Emulator.MemoryDomains[0].Size - 1);
         }
 
         public void Restart()
