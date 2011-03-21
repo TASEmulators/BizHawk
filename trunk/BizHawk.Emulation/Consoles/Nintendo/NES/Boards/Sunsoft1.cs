@@ -29,6 +29,14 @@ Other chips used: Sunsoft-1
         public override bool Configure(NES.EDetectionOrigin origin)
         {
             //configure
+			switch (Cart.board_type)
+			{
+				case "SUNSOFT-1":
+					break;
+				default:
+					return false;
+			}
+
             SetMirrorType(Cart.pad_h, Cart.pad_v);
             return true;
         }

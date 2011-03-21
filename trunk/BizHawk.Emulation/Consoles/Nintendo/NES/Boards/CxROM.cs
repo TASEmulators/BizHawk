@@ -59,16 +59,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else return base.ReadPPU(addr);
 		}
 
-		public override void SaveStateBinary(BinaryWriter bw)
+		public override void SyncStateBinary(BinarySerializer ser)
 		{
-			base.SaveStateBinary(bw);
-			bw.Write(chr);
+			base.SyncStateBinary(ser);
+			ser.Sync(ref chr);
 		}
 
-		public override void LoadStateBinary(BinaryReader br)
-		{
-			base.LoadStateBinary(br);
-			chr = br.ReadInt32();
-		}
 	}
 }

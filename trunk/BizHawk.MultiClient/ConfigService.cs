@@ -21,7 +21,8 @@ namespace BizHawk.MultiClient
 					}
             }
             catch { }
-            return config;
+			if (config == null) return new T();
+            else return config;
         }
 
         public static void Save(string filepath, object config)

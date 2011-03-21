@@ -643,6 +643,7 @@ namespace BizHawk.MultiClient
 				{
 					if (!IsNullEmulator())
 						SaveState("QuickSave" + i.ToString());
+					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
 					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
 				}
 			}
@@ -653,6 +654,7 @@ namespace BizHawk.MultiClient
 					if (!IsNullEmulator())
 						LoadState("QuickSave" + i.ToString());
 					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
+					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
 				}
 			}
 			for (int i = 0; i < 10; i++)
@@ -973,6 +975,8 @@ namespace BizHawk.MultiClient
 				autoloadMostRecentToolStripMenuItem.Checked = true;
 			else
 				autoloadMostRecentToolStripMenuItem.Checked = false;
+
+			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
 		}
 
 		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1270,6 +1274,36 @@ namespace BizHawk.MultiClient
                 HexEditor1.SaveConfigSettings();
             ConfigService.Save("config.ini", Global.Config);
         }
+
+		private void saveStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			savestate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot1;
+			savestate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot2;
+			savestate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot3;
+			savestate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot4;
+			savestate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot5;
+			savestate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot6;
+			savestate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot7;
+			savestate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot8;
+			savestate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot9;
+			savestate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot0;
+			//saveNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global. //eh?
+		}
+
+		private void loadStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot0;
+			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot1;
+			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot2;
+			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot3;
+			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot4;
+			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot5;
+			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot6;
+			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot7;
+			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
+			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
+			//loadNamedStateToolStripMenuItem //eh?
+		}
 
    
 	}

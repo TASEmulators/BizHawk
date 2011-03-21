@@ -15,19 +15,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bool Configure(NES.EDetectionOrigin origin);
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
-			byte ReadPRAM(int addr);
+			byte ReadWRAM(int addr);
 			byte ReadEXP(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
-			void WritePRAM(int addr, byte value);
+			void WriteWRAM(int addr, byte value);
 			void WriteEXP(int addr, byte value);
 			byte[] SaveRam { get; }
 			byte[] WRAM { get; set; }
 			byte[] VRAM { get; set; }
 			byte[] ROM { get; set; }
 			byte[] VROM { get; set; }
-			void SaveStateBinary(BinaryWriter bw);
-			void LoadStateBinary(BinaryReader br);
+			void SyncStateBinary(BinarySerializer ser);
 		};
 
 
@@ -43,18 +42,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
 
-			public virtual void SaveStateBinary(BinaryWriter bw)
+			public virtual void SyncStateBinary(BinarySerializer ser)
 			{
-				Util.WriteByteBuffer(bw, VRAM);
-				Util.WriteByteBuffer(bw, WRAM);
-				for (int i = 0; i < 4; i++) bw.Write(mirroring[i]);
+				ser.Sync(ref vram,true);
+				ser.Sync(ref wram,true);
+				for (int i = 0; i < 4; i++) ser.Sync(ref mirroring[i]);
 			}
-			public virtual void LoadStateBinary(BinaryReader br)
-			{
-				VRAM = Util.ReadByteBuffer(br, true);
-				WRAM = Util.ReadByteBuffer(br, true);
-				for (int i = 0; i < 4; i++) mirroring[i] = br.ReadInt32();
-			}
+
 
 			int[] mirroring = new int[4];
 			protected void SetMirroring(int a, int b, int c, int d)
@@ -108,8 +102,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte ReadPRG(int addr) { return ROM[addr]; }
 			public virtual void WritePRG(int addr, byte value) { }
 
-			public virtual void WritePRAM(int addr, byte value) { }
-			public virtual byte ReadPRAM(int addr) { return 0xFF; }
+			public virtual void WriteWRAM(int addr, byte value) { }
+			public virtual byte ReadWRAM(int addr) { return 0xFF; }
 
 			public virtual void WriteEXP(int addr, byte value) { }
 			public virtual byte ReadEXP(int addr) { return 0xFF; }
@@ -144,10 +138,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			public virtual byte[] SaveRam { get { return null; } }
-			public byte[] WRAM { get; set; }
-			public byte[] VRAM { get; set; }
+			public byte[] WRAM { get { return wram; } set { wram = value; } }
+			public byte[] VRAM { get { return vram; } set { vram = value; } }
 			public byte[] ROM { get; set; }
 			public byte[] VROM { get; set; }
+			byte[] wram, vram;
 
 			protected void Assert(bool test, string comment, params object[] args)
 			{
