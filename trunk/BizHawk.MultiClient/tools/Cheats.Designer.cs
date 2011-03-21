@@ -96,6 +96,7 @@
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveCheatsOnCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -282,10 +283,11 @@
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveWindowPositionToolStripMenuItem,
             this.LoadCheatFileByGameToolStripMenuItem,
+            this.saveCheatsOnCloseToolStripMenuItem,
             this.CheatsOnOffLoadToolStripMenuItem,
             this.autoloadDialogToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
             this.toolStripSeparator5,
             this.restoreWindowSizeToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
@@ -694,6 +696,13 @@
             this.autoloadDialogToolStripMenuItem.Text = "Auto-load Dialog";
             this.autoloadDialogToolStripMenuItem.Click += new System.EventHandler(this.autoloadDialogToolStripMenuItem_Click);
             // 
+            // saveCheatsOnCloseToolStripMenuItem
+            // 
+            this.saveCheatsOnCloseToolStripMenuItem.Name = "saveCheatsOnCloseToolStripMenuItem";
+            this.saveCheatsOnCloseToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.saveCheatsOnCloseToolStripMenuItem.Text = "Save Cheats on Close";
+            this.saveCheatsOnCloseToolStripMenuItem.Click += new System.EventHandler(this.saveCheatsOnCloseToolStripMenuItem_Click);
+            // 
             // Cheats
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -790,5 +799,6 @@
         private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveCheatsOnCloseToolStripMenuItem;
     }
 }

@@ -103,6 +103,7 @@
         public bool CheatsSaveWindowPosition = true;
         public bool DisableCheatsOnLoad = false;
         public bool LoadCheatFileByGame = true;
+        public bool CheatsAutoSaveOnClose = true;
         public RecentFiles RecentCheats = new RecentFiles(8);
         public int CheatsWndx = -1;
         public int CheatsWndy = -1;

@@ -13,11 +13,9 @@ namespace BizHawk.MultiClient
 {
     public partial class Cheats : Form
     {
-        //Auto-save cheat file (generating file name based on game name)
-            //User option to toggle this (on by default)
         //Implement Freeze functions in all memory domains
         //Restore Window Size should restore column order as well
-        //TODO: use currently selected memory domain! - line 50
+        //TODO: use currently selected memory domain! - line 71
         //context menu - enable/disable highlight dependent items
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -47,7 +45,7 @@ namespace BizHawk.MultiClient
         /// </summary>
         public bool AttemptLoadCheatFile()
         {
-            string CheatFile = Global.Config.LastRomPath + "\\" + Global.Game.Name + ".cht";
+            string CheatFile = MakeDefaultFilename();
             
             var file = new FileInfo(CheatFile);
             if (file.Exists == false)
@@ -57,6 +55,11 @@ namespace BizHawk.MultiClient
                 LoadCheatFile(CheatFile, false);
                 return true;
             }
+        }
+
+        private string MakeDefaultFilename()
+        {
+            return Global.Config.LastRomPath + "\\" + Global.Game.Name + ".cht";
         }
 
         private void ClearFields()
@@ -85,8 +88,11 @@ namespace BizHawk.MultiClient
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            if (!AskSave())
-                e.Cancel = true;
+            if (!Global.Config.CheatsAutoSaveOnClose)
+            {
+                if (!AskSave())
+                    e.Cancel = true;
+            }
             base.OnClosing(e);
         }
 
@@ -257,6 +263,17 @@ namespace BizHawk.MultiClient
             Global.Config.CheatsValueWidth = CheatListView.Columns[2].Width;
             Global.Config.CheatsDomainWidth = CheatListView.Columns[3].Width;
             Global.Config.CheatsOnWidth = CheatListView.Columns[4].Width;
+
+            if (Global.Config.CheatsAutoSaveOnClose)
+            {
+                if (changes)
+                {
+                    if (currentCheatFile.Length == 0)
+                        currentCheatFile = MakeDefaultFilename();
+
+                    SaveCheatFile(currentCheatFile);
+                }
+            }
         }
 
         private void DisplayCheatsList()
@@ -706,6 +723,7 @@ namespace BizHawk.MultiClient
             CheatsOnOffLoadToolStripMenuItem.Checked = Global.Config.DisableCheatsOnLoad;
             autoloadDialogToolStripMenuItem.Checked = Global.Config.AutoLoadCheats;
             LoadCheatFileByGameToolStripMenuItem.Checked = Global.Config.LoadCheatFileByGame;
+            saveCheatsOnCloseToolStripMenuItem.Checked = Global.Config.CheatsAutoSaveOnClose;
         }
 
         private void DuplicateCheat()
@@ -929,6 +947,11 @@ namespace BizHawk.MultiClient
         private void LoadCheatFileByGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.LoadCheatFileByGame ^= true;
+        }
+
+        private void saveCheatsOnCloseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.CheatsAutoSaveOnClose ^= true;
         }
     }
 }
