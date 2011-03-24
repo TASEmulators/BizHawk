@@ -13,7 +13,6 @@ namespace BizHawk.MultiClient
     public partial class HexEditor : Form
     {
         //TODO:
-        //Freeze address feature
         //different back color for frozen addresses
         //Find text box - autohighlights matches, and shows total matches
         //Users can customize background, & text colors
@@ -21,6 +20,9 @@ namespace BizHawk.MultiClient
         //Text box showing currently highlighted address(es) & total
         //Show num addresses in group box title (show "address" if 1 address)
         //big font for currently mouse over'ed value?
+        //Unfreeze All items - this one is tricky though, the dialog should keep track of
+        //  which addresses were frozen using this dialog (its own cheatList), and only 
+        //  remove those from the Cheats window cheat list
 
         int defaultWidth;
         int defaultHeight;

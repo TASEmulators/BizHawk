@@ -789,17 +789,18 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
-            WatchListView.Columns[0].Width = 59;        //Address
-            WatchListView.Columns[1].Width = 59;        //Value
+
+            WatchListView.Columns[0].Width = Global.Config.RamWatchAddressWidth;
+            WatchListView.Columns[1].Width = Global.Config.RamWatchValueWidth;
             if (showPreviousValueToolStripMenuItem.Checked)
-                WatchListView.Columns[2].Width = 59;    //Prev
+                WatchListView.Columns[2].Width = Global.Config.RamWatchPrevWidth;
             else
                 WatchListView.Columns[2].Width = 0;
             if (showChangeCountsToolStripMenuItem.Checked)
-                WatchListView.Columns[3].Width = 54;    //Change counts
+                WatchListView.Columns[3].Width = Global.Config.RamWatchChangeWidth;
             else
                 WatchListView.Columns[3].Width = 0;
-            WatchListView.Columns[4].Width = 130;       //Notes
+            WatchListView.Columns[4].Width = Global.Config.RamWatchNotesWidth;
         }
 
         private void newToolStripButton_Click(object sender, EventArgs e)
@@ -1248,6 +1249,5 @@ namespace BizHawk.MultiClient
             else
                 memoryDomainsToolStripMenuItem.Enabled = false;
         }
-
     }
 }

@@ -45,12 +45,15 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.watchesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.newWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +62,7 @@
             this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.prevValueShowsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WatchListView = new BizHawk.VirtualListView();
             this.Address = new System.Windows.Forms.ColumnHeader();
@@ -71,6 +75,7 @@
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.duplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.insertSeperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,28 +86,23 @@
             this.showPreviousValueToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.prevValueAsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.WatchCountLabel = new System.Windows.Forms.Label();
-            this.MessageLabel = new System.Windows.Forms.Label();
             this.newToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.NewWatchStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.EditWatchToolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
             this.DuplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.PoketoolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.FreezetoolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.MoveUpStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.MoveDownStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FreezetoolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.WatchCountLabel = new System.Windows.Forms.Label();
+            this.MessageLabel = new System.Windows.Forms.Label();
             this.MemDomainLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
@@ -246,6 +246,17 @@
             this.watchesToolStripMenuItem.Text = "&Watches";
             this.watchesToolStripMenuItem.DropDownOpened += new System.EventHandler(this.watchesToolStripMenuItem_DropDownOpened);
             // 
+            // memoryDomainsToolStripMenuItem
+            // 
+            this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
+            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.memoryDomainsToolStripMenuItem.Text = "Memory Domains";
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(219, 6);
+            // 
             // newWatchToolStripMenuItem
             // 
             this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
@@ -278,14 +289,6 @@
             this.duplicateWatchToolStripMenuItem.Text = "&Duplicate Watch";
             this.duplicateWatchToolStripMenuItem.Click += new System.EventHandler(this.duplicateWatchToolStripMenuItem_Click);
             // 
-            // insertSeparatorToolStripMenuItem
-            // 
-            this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
-            this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
-            this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
-            // 
             // pokeAddressToolStripMenuItem
             // 
             this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
@@ -293,6 +296,22 @@
             this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.pokeAddressToolStripMenuItem.Text = "Poke Address";
             this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
+            // 
+            // freezeAddressToolStripMenuItem
+            // 
+            this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
+            this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+            this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
+            this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
+            // 
+            // insertSeparatorToolStripMenuItem
+            // 
+            this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
+            this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
+            this.insertSeparatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeparatorToolStripMenuItem_Click);
             // 
             // clearChangeCountsToolStripMenuItem
             // 
@@ -358,6 +377,11 @@
             this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value  as change";
             this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(188, 6);
             // 
             // restoreWindowSizeToolStripMenuItem
             // 
@@ -470,6 +494,13 @@
             this.pokeToolStripMenuItem.Text = "&Poke";
             this.pokeToolStripMenuItem.Click += new System.EventHandler(this.pokeToolStripMenuItem_Click);
             // 
+            // freezeToolStripMenuItem
+            // 
+            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
+            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
+            this.freezeToolStripMenuItem.Text = "&Freeze";
+            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
+            // 
             // viewInHexEditorToolStripMenuItem
             // 
             this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
@@ -553,35 +584,6 @@
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // WatchCountLabel
-            // 
-            this.WatchCountLabel.AutoSize = true;
-            this.WatchCountLabel.Location = new System.Drawing.Point(22, 57);
-            this.WatchCountLabel.Name = "WatchCountLabel";
-            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
-            this.WatchCountLabel.TabIndex = 4;
-            this.WatchCountLabel.Text = "0 watches";
-            // 
-            // MessageLabel
-            // 
-            this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.MessageLabel.AutoSize = true;
-            this.MessageLabel.Location = new System.Drawing.Point(28, 390);
-            this.MessageLabel.Name = "MessageLabel";
-            this.MessageLabel.Size = new System.Drawing.Size(187, 13);
-            this.MessageLabel.TabIndex = 5;
-            this.MessageLabel.Text = "                                                            ";
-            // 
             // newToolStripButton
             // 
             this.newToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -611,6 +613,11 @@
             this.saveToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.saveToolStripButton.Text = "&Save";
             this.saveToolStripButton.Click += new System.EventHandler(this.saveToolStripButton_Click);
+            // 
+            // toolStripSeparator
+            // 
+            this.toolStripSeparator.Name = "toolStripSeparator";
+            this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
             // NewWatchStripButton1
             // 
@@ -677,6 +684,16 @@
             this.PoketoolStripButton2.ToolTipText = "Poke address";
             this.PoketoolStripButton2.Click += new System.EventHandler(this.PoketoolStripButton2_Click);
             // 
+            // FreezetoolStripButton2
+            // 
+            this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+            this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
+            this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
+            this.FreezetoolStripButton2.Text = "Freeze";
+            this.FreezetoolStripButton2.Click += new System.EventHandler(this.FreezetoolStripButton2_Click);
+            // 
             // toolStripButton1
             // 
             this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -687,6 +704,11 @@
             this.toolStripButton1.Text = "-";
             this.toolStripButton1.ToolTipText = "Insert Separator";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
             // 
             // MoveUpStripButton1
             // 
@@ -708,46 +730,24 @@
             this.MoveDownStripButton1.Text = "Move Down";
             this.MoveDownStripButton1.Click += new System.EventHandler(this.MoveDownStripButton1_Click);
             // 
-            // freezeToolStripMenuItem
+            // WatchCountLabel
             // 
-            this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
-            this.freezeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
-            this.freezeToolStripMenuItem.Text = "&Freeze";
-            this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
+            this.WatchCountLabel.AutoSize = true;
+            this.WatchCountLabel.Location = new System.Drawing.Point(22, 57);
+            this.WatchCountLabel.Name = "WatchCountLabel";
+            this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
+            this.WatchCountLabel.TabIndex = 4;
+            this.WatchCountLabel.Text = "0 watches";
             // 
-            // freezeAddressToolStripMenuItem
+            // MessageLabel
             // 
-            this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
-            this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-            this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
-            this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
-            // 
-            // FreezetoolStripButton2
-            // 
-            this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
-            this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
-            this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
-            this.FreezetoolStripButton2.Text = "Freeze";
-            this.FreezetoolStripButton2.Click += new System.EventHandler(this.FreezetoolStripButton2_Click);
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(188, 6);
-            // 
-            // memoryDomainsToolStripMenuItem
-            // 
-            this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-            this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.memoryDomainsToolStripMenuItem.Text = "Memory Domains";
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(219, 6);
+            this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.MessageLabel.AutoSize = true;
+            this.MessageLabel.Location = new System.Drawing.Point(28, 390);
+            this.MessageLabel.Name = "MessageLabel";
+            this.MessageLabel.Size = new System.Drawing.Size(187, 13);
+            this.MessageLabel.TabIndex = 5;
+            this.MessageLabel.Text = "                                                            ";
             // 
             // MemDomainLabel
             // 

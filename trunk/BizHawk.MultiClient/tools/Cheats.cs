@@ -910,7 +910,7 @@ namespace BizHawk.MultiClient
             Global.Config.DisableCheatsOnLoad ^= true;
         }
 
-        private void DisableAllCheats()
+        public void DisableAllCheats()
         {
             for (int x = 0; x < cheatList.Count; x++)
                 cheatList[x].Disable();
