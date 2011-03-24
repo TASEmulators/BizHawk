@@ -408,5 +408,15 @@ namespace BizHawk.MultiClient
         {
             return Domain.Size;
         }
+
+        public byte GetPointedValue()
+        {
+            return Domain.PeekByte(addressOver);
+        }
+
+        public MemoryDomain GetDomain()
+        {
+            return Domain;
+        }
     }
 }
