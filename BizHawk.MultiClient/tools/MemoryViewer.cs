@@ -11,7 +11,7 @@ namespace BizHawk.MultiClient
     public class MemoryViewer : Panel
     {
         //TODO: highlighting and address determining for 2 & 4 byte viewing
-        //2 & 4 byte typign in
+        //2 & 4 byte typing in
         //show nibbles on top of highlighted address
         //Multi-highlight
 
