@@ -110,9 +110,15 @@ namespace BizHawk.MultiClient
             }
 
             if (MemoryViewer.GetHighlightedAddress() >= 0)
+            {
                 addToRamWatchToolStripMenuItem1.Enabled = true;
+                freezeAddressToolStripMenuItem.Enabled = true;
+            }
             else
+            {
                 addToRamWatchToolStripMenuItem1.Enabled = false;
+                freezeAddressToolStripMenuItem.Enabled = false;
+            }
         }
 
         private void SetMemoryDomain(int pos)
@@ -295,6 +301,41 @@ namespace BizHawk.MultiClient
             saveWindowsSettingsToolStripMenuItem.Checked = Global.Config.HexEditorSaveWindowPosition;
         }
 
-        
+        private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
+
+        private void FreezeAddress()
+        {
+            int address = MemoryViewer.GetPointedAddress();
+            if (address >= 0)
+            {
+                Cheat c = new Cheat();
+                c.address = address;
+                c.value = MemoryViewer.GetPointedValue();
+                c.domain = MemoryViewer.GetDomain();
+                //TODO: multibyte
+                switch (MemoryViewer.GetDataSize())
+                {
+                    default:
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case 4:
+                        break;
+                }
+
+                //w.bigendian = MemoryViewer.BigEndian;
+
+                Global.MainForm.Cheats1.AddCheat(c);
+            }
+        }
+
+        private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FreezeAddress();
+        }
     }
 }
