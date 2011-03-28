@@ -48,6 +48,7 @@ namespace BizHawk.MultiClient
 		public RamSearch RamSearch1 = new RamSearch();
         public HexEditor HexEditor1 = new HexEditor();
         public NESPPU NESPPU1 = new NESPPU();
+        public NESDebugger NESDebug1 = new NESDebugger();
         public Cheats Cheats1 = new Cheats();
 
 		public MainForm(string[] args)
@@ -134,6 +135,8 @@ namespace BizHawk.MultiClient
                 LoadCheatsWindow();
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			    LoadNESPPU();
+            if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
+                LoadNESDebugger();
             if (Global.Config.NESGGAutoload && Global.Emulator is NES)
                 LoadGameGenieEC();
 
@@ -557,6 +560,7 @@ namespace BizHawk.MultiClient
 				RamSearch1.Restart();
 				HexEditor1.Restart();
                 NESPPU1.Restart();
+                NESDebug1.Restart();
                 if (Global.Config.LoadCheatFileByGame)
                 {
                     if (Cheats1.AttemptLoadCheatFile())
@@ -1070,6 +1074,17 @@ namespace BizHawk.MultiClient
                 NESPPU1.Focus();
         }
 
+        public void LoadNESDebugger()
+        {
+            if (!NESDebug1.IsHandleCreated || NESDebug1.IsDisposed)
+            {
+                NESDebug1 = new NESDebugger();
+                NESDebug1.Show();
+            }
+            else
+                NESDebug1.Focus();
+        }
+
         public void LoadCheatsWindow()
         {
             if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
@@ -1304,7 +1319,5 @@ namespace BizHawk.MultiClient
 			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
 			//loadNamedStateToolStripMenuItem //eh?
 		}
-
-   
 	}
 }

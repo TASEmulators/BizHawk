@@ -93,11 +93,19 @@
         public int HexEditorWidth = -1;
         public int HexEditorHeight = -1;
 
-        // NESPPU Setings
+        // NESPPU Settings
         public bool AutoLoadNESPPU = false;
         public bool NESPPUSaveWindowPosition = true;
         public int NESPPUWndx = -1;
         public int NESPPUWndy = -1;
+
+        // NESDebuger Settings
+        public bool AutoLoadNESDebugger = false;
+        public bool NESDebuggerSaveWindowPosition = true;
+        public int NESDebuggerWndx = -1;
+        public int NESDebuggerWndy = -1;
+        public int NESDebuggerWidth = -1;
+        public int NESDebuggerHeight = -1;
 
         // Cheats Dialog
         public bool AutoLoadCheats = false;

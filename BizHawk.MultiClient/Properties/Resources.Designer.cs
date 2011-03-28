@@ -95,6 +95,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Debugger {
+            get {
+                object obj = ResourceManager.GetObject("Debugger", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap FindHS {
             get {
                 object obj = ResourceManager.GetObject("FindHS", resourceCulture);
