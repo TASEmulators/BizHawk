@@ -160,11 +160,11 @@
             this.cheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pPUViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gameGenieCodesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.debuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -178,9 +178,10 @@
             this.toolsToolStripMenuItem,
             this.NESToolStripMenuItem,
             this.helpToolStripMenuItem});
+            this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(470, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(470, 21);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
@@ -202,7 +203,7 @@
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 17);
             this.fileToolStripMenuItem.Text = "&File";
             this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpened);
             // 
@@ -679,7 +680,7 @@
             this.toolStripSeparator8,
             this.sega8bitToolStripMenuItem});
             this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
-            this.emulationToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.emulationToolStripMenuItem.Size = new System.Drawing.Size(65, 17);
             this.emulationToolStripMenuItem.Text = "&Emulation";
             this.emulationToolStripMenuItem.DropDownOpened += new System.EventHandler(this.emulationToolStripMenuItem_DropDownOpened);
             // 
@@ -755,7 +756,7 @@
             this.displayLagCounterToolStripMenuItem,
             this.displayInputToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 17);
             this.viewToolStripMenuItem.Text = "&View";
             this.viewToolStripMenuItem.DropDownOpened += new System.EventHandler(this.viewToolStripMenuItem_DropDownOpened);
             // 
@@ -860,7 +861,7 @@
             this.saveConfigToolStripMenuItem,
             this.loadConfigToolStripMenuItem});
             this.configToolStripMenuItem.Name = "configToolStripMenuItem";
-            this.configToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.configToolStripMenuItem.Size = new System.Drawing.Size(50, 17);
             this.configToolStripMenuItem.Text = "&Config";
             // 
             // controllersToolStripMenuItem
@@ -1130,53 +1131,53 @@
             this.toolStripSeparator11,
             this.cheatsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
             // rAMPokeToolStripMenuItem
             // 
             this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
             this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
             // 
             // luaConsoleToolStripMenuItem
             // 
             this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.luaConsoleToolStripMenuItem.Text = "Lua Console";
             this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
             // 
             // cheatsToolStripMenuItem
             // 
             this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.cheatsToolStripMenuItem.Text = "Cheats";
             this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
             // 
@@ -1187,7 +1188,7 @@
             this.debuggerToolStripMenuItem,
             this.gameGenieCodesToolStripMenuItem});
             this.NESToolStripMenuItem.Name = "NESToolStripMenuItem";
-            this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 20);
+            this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 17);
             this.NESToolStripMenuItem.Text = "&NES";
             // 
             // pPUViewerToolStripMenuItem
@@ -1196,6 +1197,13 @@
             this.pPUViewerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
             this.pPUViewerToolStripMenuItem.Text = "&PPU Viewer";
             this.pPUViewerToolStripMenuItem.Click += new System.EventHandler(this.PPUViewerToolStripMenuItem_Click);
+            // 
+            // debuggerToolStripMenuItem
+            // 
+            this.debuggerToolStripMenuItem.Name = "debuggerToolStripMenuItem";
+            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+            this.debuggerToolStripMenuItem.Text = "&Debugger";
+            this.debuggerToolStripMenuItem.Click += new System.EventHandler(this.debuggerToolStripMenuItem_Click);
             // 
             // gameGenieCodesToolStripMenuItem
             // 
@@ -1210,7 +1218,7 @@
             this.helpToolStripMenuItem1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 17);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
             // helpToolStripMenuItem1
@@ -1227,13 +1235,6 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // debuggerToolStripMenuItem
-            // 
-            this.debuggerToolStripMenuItem.Name = "debuggerToolStripMenuItem";
-            this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
-            this.debuggerToolStripMenuItem.Text = "&Debugger";
-            this.debuggerToolStripMenuItem.Click += new System.EventHandler(this.debuggerToolStripMenuItem_Click);
             // 
             // MainForm
             // 
