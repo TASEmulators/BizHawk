@@ -259,6 +259,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             RAM.GetFreeze = addr => sysbus_freeze[addr & 0x07FF];
             RAM.SetFreeze = (addr, value) => sysbus_freeze[addr & 0x07FF] = value;
 
+            PPUBus.GetFreeze = addr => ppu.ppubus_freeze[addr];
+            PPUBus.SetFreeze = (addr, value) => ppu.ppubus_freeze[addr] = value;
+
 			//demo a game genie code
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).RemoveGameGenie();
