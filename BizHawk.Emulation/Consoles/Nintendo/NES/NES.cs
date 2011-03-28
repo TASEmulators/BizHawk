@@ -484,6 +484,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			writer.WriteLine("[NES]");
 			byte[] lol = SaveStateBinary();
 			writer.WriteLine("blob {0}", Util.BytesToHexString(lol));
+            writer.WriteLine("Frame {0}", Frame);
 			writer.WriteLine("[/NES]");
 		}
 
@@ -495,7 +496,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				string[] args = reader.ReadLine().Split(' ');
 				if (args[0] == "blob")
 					blob = Util.HexStringToBytes(args[1]);
-				else if (args[0] == "[/NES]") break;
+                else if (args[0] == "Frame")
+                    Frame = int.Parse(args[1]);
+                else if (args[0] == "[/NES]") break;
 			}
 			if (blob == null) throw new ArgumentException();
 			LoadStateBinary(new BinaryReader(new MemoryStream(blob)));
@@ -513,7 +516,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			cpu.SaveStateBinary(bw);
+            bw.Write(Frame);
+            cpu.SaveStateBinary(bw);
 			Util.WriteByteBuffer(bw, ram);
 			Util.WriteByteBuffer(bw, CIRAM);
 			bw.Write(cpu_accumulate);
@@ -524,7 +528,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			cpu.LoadStateBinary(br);
+            Frame = br.ReadInt32();
+            cpu.LoadStateBinary(br);
 			ram = Util.ReadByteBuffer(br, false);
 			CIRAM = Util.ReadByteBuffer(br, false);
 			cpu_accumulate = br.ReadInt32();
