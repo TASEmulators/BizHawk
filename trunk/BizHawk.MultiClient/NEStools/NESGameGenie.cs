@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 
             AddCheat.Enabled = false;
 
-            if (Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
+            if (Global.Config.NESGGSaveWindowPosition && Global.Config.NESGGWndx >= 0 && Global.Config.NESGGWndy >= 0)
                 Location = new Point(Global.Config.NESGGWndx, Global.Config.NESGGWndy);
         }
 

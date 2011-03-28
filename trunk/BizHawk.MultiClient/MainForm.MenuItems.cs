@@ -254,6 +254,7 @@ namespace BizHawk.MultiClient
             RamSearch1.Restart();
             HexEditor1.Restart();
             NESPPU1.Restart();
+            NESDebug1.Restart();
             Cheats1.Restart();
 			Text = "BizHawk";
             HandlePlatformMenus();
@@ -425,6 +426,11 @@ namespace BizHawk.MultiClient
 			Global.Config.ForceGDI ^= true;
 			SyncPresentationMode();
 		}
+
+        private void debuggerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadNESDebugger();
+        }
 
 	}
 }
