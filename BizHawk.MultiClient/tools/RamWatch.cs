@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
         List<Watch> watchList = new List<Watch>();
         string currentWatchFile = "";
         bool changes = false;
+        List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 
         public List<Watch> GetRamWatchList()
         {
@@ -1240,14 +1241,30 @@ namespace BizHawk.MultiClient
                     }
                     if (x == 0)
                     {
-                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
                         SetMemoryDomain(x);
                     }
                     memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                    domainMenuItems.Add(item);
                 }
             }
             else
                 memoryDomainsToolStripMenuItem.Enabled = false;
+        }
+
+        private void CheckDomainMenuItems()
+        {
+            for (int x = 0; x < domainMenuItems.Count; x++)
+            {
+                if (Domain.Name == domainMenuItems[x].Text)
+                    domainMenuItems[x].Checked = true;
+                else
+                    domainMenuItems[x].Checked = false;
+            }
+        }
+
+        private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            CheckDomainMenuItems();
         }
     }
 }

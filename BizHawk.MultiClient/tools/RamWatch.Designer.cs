@@ -251,6 +251,7 @@
             this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
             this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.memoryDomainsToolStripMenuItem.Text = "Memory Domains";
+            this.memoryDomainsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.memoryDomainsToolStripMenuItem_DropDownOpened);
             // 
             // toolStripSeparator8
             // 

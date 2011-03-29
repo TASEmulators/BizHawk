@@ -55,8 +55,8 @@
             this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
             this.menuStrip1.SuspendLayout();
             this.ViewerContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -122,6 +122,7 @@
             this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
             this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
+            this.memoryDomainsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.memoryDomainsToolStripMenuItem_DropDownOpened);
             // 
             // dataSizeToolStripMenuItem
             // 
@@ -260,6 +261,11 @@
             this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
             this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(191, 6);
+            // 
             // MemoryViewer
             // 
             this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -274,11 +280,6 @@
             this.MemoryViewer.Text = "RAM";
             this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(191, 6);
             // 
             // HexEditor
             // 

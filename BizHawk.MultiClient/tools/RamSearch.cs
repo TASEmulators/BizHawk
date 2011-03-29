@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
         List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
         List<Watch> prevList = new List<Watch>();
         private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
-
+        List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
         MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
 
         public enum SCompareTo { PREV, VALUE, ADDRESS, CHANGES };
@@ -115,10 +115,10 @@ namespace BizHawk.MultiClient
                     }
                     if (x == 0)
                     {
-                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
                         SetMemoryDomain(x);
                     }
                     memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                    domainMenuItems.Add(item);
                 }
             }
             else
@@ -1873,6 +1873,22 @@ namespace BizHawk.MultiClient
         private void freezeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             FreezeAddress();
+        }
+
+        private void CheckDomainMenuItems()
+        {
+            for (int x = 0; x < domainMenuItems.Count; x++)
+            {
+                if (Domain.Name == domainMenuItems[x].Text)
+                    domainMenuItems[x].Checked = true;
+                else
+                    domainMenuItems[x].Checked = false;
+            }
+        }
+
+        private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            CheckDomainMenuItems();
         }
     }
 }

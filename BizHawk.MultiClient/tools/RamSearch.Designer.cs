@@ -318,7 +318,7 @@
             this.pokeAddressToolStripMenuItem1,
             this.freezeAddressToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 164);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(176, 142);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // startNewSearchToolStripMenuItem
@@ -520,6 +520,7 @@
             this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
             this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
+            this.memoryDomainsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.memoryDomainsToolStripMenuItem_DropDownOpened);
             // 
             // searchToolStripMenuItem1
             // 
