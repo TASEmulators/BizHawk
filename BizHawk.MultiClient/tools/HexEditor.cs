@@ -26,7 +26,9 @@ namespace BizHawk.MultiClient
 
         int defaultWidth;
         int defaultHeight;
-        
+        List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+
+
         public HexEditor()
         {
             InitializeComponent();
@@ -123,8 +125,11 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void SetMemoryDomain(int pos)
+        private void SetMemoryDomain(int pos, ToolStripMenuItem item)
         {
+            for (int x = 0; x < domainMenuItems.Count; x++)
+                domainMenuItems[x].Checked = false;
+            item.Checked = true;
             if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
             {
                 MemoryViewer.SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
@@ -152,14 +157,14 @@ namespace BizHawk.MultiClient
                     item.Text = str;
                     {
                         int z = x;
-                        item.Click += (o, ev) => SetMemoryDomain(z);
+                        item.Click += (o, ev) => SetMemoryDomain(z, item);
                     }
                     if (x == 0)
                     {
-                        //item.Checked = true; //TODO: figure out how to check/uncheck these in SetMemoryDomain
-                        SetMemoryDomain(x);
+                        SetMemoryDomain(x, item);
                     }
                     memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+                    domainMenuItems.Add(item);
                 }
             }
             else
