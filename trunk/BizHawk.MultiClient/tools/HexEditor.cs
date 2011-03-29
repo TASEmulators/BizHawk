@@ -125,11 +125,8 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void SetMemoryDomain(int pos, ToolStripMenuItem item)
+        private void SetMemoryDomain(int pos)
         {
-            for (int x = 0; x < domainMenuItems.Count; x++)
-                domainMenuItems[x].Checked = false;
-            item.Checked = true;
             if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
             {
                 MemoryViewer.SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
@@ -157,11 +154,11 @@ namespace BizHawk.MultiClient
                     item.Text = str;
                     {
                         int z = x;
-                        item.Click += (o, ev) => SetMemoryDomain(z, item);
+                        item.Click += (o, ev) => SetMemoryDomain(z);
                     }
                     if (x == 0)
                     {
-                        SetMemoryDomain(x, item);
+                        SetMemoryDomain(x);
                     }
                     memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
                     domainMenuItems.Add(item);
@@ -343,6 +340,22 @@ namespace BizHawk.MultiClient
         private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FreezeAddress();
+        }
+
+        private void CheckDomainMenuItems()
+        {
+            for (int x = 0; x < domainMenuItems.Count; x++)
+            {
+                if (MemoryViewer.GetDomain().Name == domainMenuItems[x].Text)
+                    domainMenuItems[x].Checked = true;
+                else
+                    domainMenuItems[x].Checked = false;
+            }
+        }
+
+        private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            CheckDomainMenuItems();
         }
     }
 }
