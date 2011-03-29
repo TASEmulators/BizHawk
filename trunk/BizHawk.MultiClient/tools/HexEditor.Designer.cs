@@ -45,6 +45,7 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,7 @@
             this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
-            this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.ViewerContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -180,12 +181,20 @@
             this.addToRamWatchToolStripMenuItem1.Text = "Add to Ram Watch";
             this.addToRamWatchToolStripMenuItem1.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem1_Click);
             // 
+            // freezeAddressToolStripMenuItem
+            // 
+            this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
+            this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
+            this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
+            // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.restoreWindowSizeToolStripMenuItem,
             this.autoloadToolStripMenuItem,
-            this.saveWindowsSettingsToolStripMenuItem});
+            this.saveWindowsSettingsToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.restoreWindowSizeToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
             this.settingsToolStripMenuItem.Text = "&Settings";
@@ -266,12 +275,10 @@
             this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
             this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
             // 
-            // freezeAddressToolStripMenuItem
+            // toolStripSeparator3
             // 
-            this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
-            this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
-            this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(191, 6);
             // 
             // HexEditor
             // 
@@ -323,5 +330,6 @@
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem saveWindowsSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
     }
 }
