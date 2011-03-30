@@ -563,6 +563,7 @@ namespace BizHawk.MultiClient
 				RamSearch1.Restart();
 				HexEditor1.Restart();
                 NESPPU1.Restart();
+                NESNameTableViewer1.Restart();
                 NESDebug1.Restart();
                 if (Global.Config.LoadCheatFileByGame)
                 {
@@ -777,6 +778,7 @@ namespace BizHawk.MultiClient
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
                 HexEditor1.UpdateValues();
+                NESNameTableViewer1.UpdateValues();
                 NESPPU1.UpdateValues();
                 if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
                     InputLog.GetMnemonic();
