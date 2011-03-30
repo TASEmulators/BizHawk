@@ -107,6 +107,12 @@
         public int NESDebuggerWidth = -1;
         public int NESDebuggerHeight = -1;
 
+        // NESNameTableViewer Settings
+        public bool AutoLoadNESNameTable = false;
+        public bool NESNameTableSaveWindowPosition = true;
+        public int NESNameTableWndx = -1;
+        public int NESNameTableWndy = -1;
+
         // Cheats Dialog
         public bool AutoLoadCheats = false;
         public bool CheatsSaveWindowPosition = true;

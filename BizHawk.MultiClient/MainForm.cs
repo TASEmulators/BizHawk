@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 		public RamWatch RamWatch1 = new RamWatch();
 		public RamSearch RamSearch1 = new RamSearch();
         public HexEditor HexEditor1 = new HexEditor();
+        public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
         public NESPPU NESPPU1 = new NESPPU();
         public NESDebugger NESDebug1 = new NESDebugger();
         public Cheats Cheats1 = new Cheats();
@@ -135,6 +136,8 @@ namespace BizHawk.MultiClient
                 LoadCheatsWindow();
 			if (Global.Config.AutoLoadNESPPU && Global.Emulator is NES)
 			    LoadNESPPU();
+            if (Global.Config.AutoLoadNESNameTable && Global.Emulator is NES)
+                LoadNESNameTable();
             if (Global.Config.AutoLoadNESDebugger && Global.Emulator is NES)
                 LoadNESDebugger();
             if (Global.Config.NESGGAutoload && Global.Emulator is NES)
@@ -1074,6 +1077,17 @@ namespace BizHawk.MultiClient
                 NESPPU1.Focus();
         }
 
+        public void LoadNESNameTable()
+        {
+            if (!NESNameTableViewer1.IsHandleCreated || NESNameTableViewer1.IsDisposed)
+            {
+                NESNameTableViewer1 = new NESNameTableViewer();
+                NESNameTableViewer1.Show();
+            }
+            else
+                NESNameTableViewer1.Focus();
+        }
+
         public void LoadNESDebugger()
         {
             if (!NESDebug1.IsHandleCreated || NESDebug1.IsDisposed)
@@ -1319,5 +1333,10 @@ namespace BizHawk.MultiClient
 			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
 			//loadNamedStateToolStripMenuItem //eh?
 		}
+
+        private void nametableViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadNESNameTable();
+        }
 	}
 }
