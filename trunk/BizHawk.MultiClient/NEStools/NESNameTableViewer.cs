@@ -30,16 +30,35 @@ namespace BizHawk.MultiClient
 
         public void UpdateValues()
         {
+            int NTAddr;
+            int AttributeAddr;
             if (!(Global.Emulator is NES)) return;
             if (!this.IsHandleCreated || this.IsDisposed) return;
 
-            for (int i = 0; i < 32; i++)
+            for (int table = 0; table < 4; table++)
             {
-                for (int j = 0; j < 30; j++)
+                for (int y = 0; y < 30; y++)
                 {
+                    for (int x = 0; x < 32; x++)
+                    {
+                        NTAddr = (y * 32) + x;
+                        AttributeAddr = 0x3C0 + ((y >> 2) << 3) + (x >> 2);
 
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            for (int j = 0; j < 8; j++)
+                            {
+                                int cvalue = Nes.LookupColor(Nes.ppu.PALRAM[5]);
+
+                                Color color = Color.FromArgb(cvalue);
+                                this.NameTableView.nametables.SetPixel((x * 8) + i, (y * 8) + j, color);
+                            }
+                        }
+                    }
                 }
             }
+            NameTableView.Refresh();
         }
 
         public void Restart()
