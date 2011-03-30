@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
     {
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        NES Nes;
 
         public NESNameTableViewer()
         {
@@ -26,6 +27,20 @@ namespace BizHawk.MultiClient
             Global.Config.NESNameTableWndy = this.Location.Y;
         }
 
+        public void UpdateValues()
+        {
+            if (!(Global.Emulator is NES)) return;
+            if (!this.IsHandleCreated || this.IsDisposed) return;
+
+
+        }
+
+        public void Restart()
+        {
+            if (!(Global.Emulator is NES)) this.Close();
+            Nes = Global.Emulator as NES;
+        }
+
         private void NESNameTableViewer_Load(object sender, EventArgs e)
         {
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
@@ -33,6 +48,8 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
                 this.Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
+
+            Nes = Global.Emulator as NES;
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
