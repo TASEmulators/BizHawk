@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -32,7 +33,13 @@ namespace BizHawk.MultiClient
             if (!(Global.Emulator is NES)) return;
             if (!this.IsHandleCreated || this.IsDisposed) return;
 
+            for (int i = 0; i < 32; i++)
+            {
+                for (int j = 0; j < 30; j++)
+                {
 
+                }
+            }
         }
 
         public void Restart()
