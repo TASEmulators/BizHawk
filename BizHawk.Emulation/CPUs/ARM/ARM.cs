@@ -105,11 +105,26 @@ namespace BizHawk.Emulation.CPUs.ARM
 			}
 		}
 
-		//todo: make R[] indexer which is defined as in manual with an assert when R[15] is written to
 		public Registers r;
 		uint[] _R = new uint[16];
 		public Status_Reg APSR;
 		public Status_Reg SPSR;
+
+		float[] S = new float[32];
+		double[] D = new double[16];
+
+		unsafe uint float_downcast(float f)
+		{
+			float* fp = &f;
+			return *(uint*)fp;
+		}
+
+		unsafe ulong double_downcast(double f)
+		{
+			double* fp = &f;
+			return *(ulong*)fp;
+		}
+
 
 		public uint SP { get { return r[13]; } set { r[13] = value; } }
 		public uint LR { get { return r[14]; } set { r[14] = value; } }

@@ -376,6 +376,34 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
+		//A8.6.60 LDR (register)
+		uint ExecuteCore_LDR_register(Encoding encoding, uint t, uint n, uint m, SRType shift_t, int shift_n, bool index, bool add, bool wback)
+		{
+			if(disassemble)
+				return Disassemble_LDR_STR_register("LDR<c>", t, n, m, shift_t, shift_n, index, add, wback);
+
+			_NullCheckIfThumbEE(n);
+			uint offset = _Shift(r[m], shift_t, shift_n, APSR.C);
+			uint offset_addr = add ? (r[n] + offset) : (r[n] - offset);
+			uint address = index ? offset_addr : r[n];
+			uint data = MemU_Read32(address);
+			if (wback) r[n] = offset_addr;
+			if (t == 15)
+			{
+				if ((address & 3) == _.b00) _LoadWritePC(data);
+				else _FlagUnpredictable();
+			}
+			else if (_UnalignedSupport() || (address & 3) == _.b00)
+				r[t] = data;
+			else //can only apply before ARMv7
+				if (_CurrentInstrSet() == EInstrSet.ARM)
+					r[t] = _ROR(data, 8 * ((int)address & 3));
+				else
+					r[t] = (uint)_UNKNOWN(32, _ROR(data, 8 * ((int)address & 3)));
+
+			return 1;
+		}
+
 		//A8.6.61 LDRB (immediate, thumb)
 		uint ExecuteCore_LDRB_immediate_thumb(Encoding encoding, uint t, uint n, uint imm32, bool index, bool add, bool wback)
 		{
@@ -979,6 +1007,12 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
+		//A8.6.320 VLDR
+		uint ExecuteCore_VLDR(Encoding encoding, bool single_reg, bool add, uint d, uint n, uint imm32)
+		{
+			throw new NotImplementedException("TODO");
+		}
+
 		//A8.6.336 VMSR
 		uint ExecuteCore_VMSR(uint t)
 		{
@@ -986,6 +1020,33 @@ namespace BizHawk.Emulation.CPUs.ARM
 			_SerializeVFP();
 			_VFPExcBarrier();
 			FPSCR = r[t];
+			return 1;
+		}
+
+		//A8.6.355 VPUSH
+		uint ExecuteCore_VPUSH(Encoding encoding, bool single_regs, uint d, uint regs, uint imm32)
+		{
+			if (disassemble)
+				return DISNEW("VPUSH<c><{.size}>", "<list>", single_regs ? 32 : 64, single_regs, d, regs);
+
+			_CheckVFPEnabled(true);
+			_NullCheckIfThumbEE(13);
+			
+			uint address = SP - imm32;
+			SP = SP - imm32;
+			if (single_regs)
+				for (uint r = 0; r <= regs-1; r++)
+				{
+					MemA_WriteSingle(address, S[d+r]); 
+					address += 4;
+				}
+			else
+				for (uint r = 0; r <= regs - 1; r++)
+				{
+					MemA_WriteDouble(address, D[d+r]);
+					address += 8;
+				}
+
 			return 1;
 		}
 

@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 						case _.b001: return Execute_Unhandled("STRH (register) on page A8-412");
 						case _.b010: return Execute_STRB_register_T1();
 						case _.b011: return Execute_Unhandled("LDRSB (register) on page A8-164");
-						case _.b100: return Execute_Unhandled("LDR (register) on page A8-124");
+						case _.b100: return Execute_LDR_register_T1();
 						case _.b101: return Execute_Unhandled("LDRH (register)");
 						case _.b110: return Execute_LDRB_register_T1();
 						case _.b111: return Execute_Unhandled("LDRSH (register) on page A8-172");
@@ -199,6 +199,19 @@ namespace BizHawk.Emulation.CPUs.ARM
 			const SRType shift_t = SRType.LSL;
 			const int shift_n = 0;
 			return ExecuteCore_STRB_register(Encoding.T1, t, n, m, shift_t, shift_n, index, add, wback);
+		}
+
+		uint Execute_LDR_register_T1()
+		{
+			//A8.6.60
+			if (_CurrentInstrSet() == EInstrSet.THUMBEE) throw new NotSupportedException("Modified operatoin in ThumbEE");
+			uint t = Reg8(0);
+			uint n = Reg8(3);
+			uint m = Reg8(6);
+			const bool index = true; const bool add = true; const bool wback = false;
+			const SRType shift_t = SRType.LSL;
+			const int shift_n = 0;
+			return ExecuteCore_LDR_register(Encoding.T1, t, n, m, shift_t, shift_n, index, add, wback);
 		}
 
 		uint Execute_LDRB_register_T1()
