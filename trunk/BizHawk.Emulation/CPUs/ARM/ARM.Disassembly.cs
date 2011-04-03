@@ -162,6 +162,11 @@ namespace BizHawk.Emulation.CPUs.ARM
 				else opcode = opcode.Replace(crepl, CC_strings[_CurrentCond()]);
 			}
 			else opcode = opcode.Replace(crepl, "");
+
+			if(opcode.Contains("{.size}"))
+			{
+				opcode = opcode.Replace("<{.size}>","." + args[argindex++].ToString());
+			}
 			//---------
 
 			string cpcomment = null;
@@ -317,9 +322,26 @@ namespace BizHawk.Emulation.CPUs.ARM
 								{
 									item = "";
 									cpcomment = args[argindex++] as string;
+									break;
 								}
 
-								break;
+							case "list":
+								{
+									bool single = (bool)args[argindex++];
+									uint d = (uint)args[argindex++];
+									uint regs = (uint)args[argindex++];
+									item = "{";
+									string name = single ? "s" : "d";
+									bool first=true;
+									for (uint r = 0; r <= regs - 1; r++)
+									{
+										if (!first) item += ",";
+										first = false;
+										item += name + (r + d).ToString();
+									}
+									item += "}";
+									break;
+								}
 
 							default: item = "<" + item + ">"; break;
 						}

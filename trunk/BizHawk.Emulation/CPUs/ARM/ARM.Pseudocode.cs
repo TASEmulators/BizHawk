@@ -101,6 +101,19 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return true;
 		}
 
+		void MemA_WriteSingle(uint addr, float val)
+		{
+			MemA_Write32(addr,float_downcast(val));
+		}
+
+		void MemA_WriteDouble(uint addr, double val)
+		{
+			ulong uval = double_downcast(val);
+			//TODO endian
+			MemA_Write32(addr,(uint)uval);
+			MemA_Write32(addr+4,(uint)(uval>>32));
+		}
+
 		void MemA_Write32(uint addr, uint val)
 		{
 			addr = _Align(addr, 4);
@@ -180,6 +193,8 @@ namespace BizHawk.Emulation.CPUs.ARM
 			else
 				_BranchTo((uint)(address & ~1));
 		}
+
+		bool _BigEndian() { return false; }
 
 		void _BranchTo(uint address)
 		{

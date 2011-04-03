@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 				case _.b01000:
 				case _.b01001:
 					if (Rn != _.b1111) return Execute_ADD_immedate_arm_A1();
-					else return Execute_Unhandled("arm adr");
+					else return Execute_ADR_A1();
 				case _.b01010:
 				case _.b01011: return Execute_Unhandled("arm adc imm");
 				case _.b01100:
@@ -413,11 +413,33 @@ namespace BizHawk.Emulation.CPUs.ARM
 			uint imm12 = instruction & 0xFFF;
 
 			if (n == _.b1111 && S == 0) throw new NotImplementedException("SEE ADR");
-			if (n == _.b1101) throw new NotImplementedException("SEE SUB (SP minus immediate");
+			if (n == _.b1101) return Execute_SUB_SP_minus_immediate_A1();
 			if (n == _.b1111 && S == 1) throw new NotImplementedException("SEE SUBS PC, LR and related instructions");
 			bool setflags = (S == 1);
 			uint imm32 = _ARMExpandImm(imm12);
 			return ExecuteCore_SUB_immediate_arm(Encoding.A1, setflags, n, d, imm32);
+		}
+
+		uint Execute_SUB_SP_minus_immediate_A1()
+		{
+			//A8.6.215
+			uint d = Reg16(12);
+			Bit S = _.BIT20(instruction);
+			if (d == _.b1111 && S == 1) throw new NotImplementedException("SEE SUBS PC, LR and related instructions");
+			bool setflags = (S == 1);
+			uint imm12 = instruction & 0xFFF;
+			uint imm32 = _ARMExpandImm(imm12);
+			return ExecuteCore_SUB_SP_minus_immediate(Encoding.A1,d,setflags,imm32);
+		}
+
+		uint Execute_ADR_A1()
+		{
+			//A8.6.10
+			uint d = Reg16(12);
+			uint imm12 = instruction & 0xFFF;
+			uint imm32 = _ARMExpandImm(imm12);
+			const bool add = true;
+			return ExecuteCore_ADR(Encoding.A1, d, imm32, add);
 		}
 
 		uint Execute_ADD_immedate_arm_A1()
@@ -690,7 +712,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 
 			Decoder_ExecuteArm_SVCAndCP.Ensure(() => Decoder_ExecuteArm_SVCAndCP
 				.d("op1", 6).d("op", 1).d("coproc_special", 1).d("rn_is_15", 1)
-				.r("op1==#0xxxxx && op1!=#000x0x && coproc_special==#1", () => Execute_Unhandled("ExecuteArm_SIMD_VFP_LoadStore"))
+				.r("op1==#0xxxxx && op1!=#000x0x && coproc_special==#1", () => Execute_ExtensionRegister_LoadStore())
 				.r("op1==#0xxxx0 && op1!=#000x0x && coproc_special==#0", () => Execute_Unhandled("STC,STC2"))
 				.r("op1==#0xxxx1 && op1!=#000x0x && coproc_special==#0 && rn_is_15==#0", () => Execute_Unhandled("LDC,LDC2(immediate)"))
 				.r("op1==#0xxxx1 && op1!=#000x0x && coproc_special==#0 && rn_is_15==#1", () => Execute_Unhandled("LDC,LDC2(literal)"))
@@ -717,9 +739,85 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
+		uint Execute_ExtensionRegister_LoadStore()
+		{
+			//A7.6 Extension register load/store instructions
+			uint opcode = (instruction >> 20) & 0x1F;
+			uint n = Reg16(16);
+			bool bit8 = _.BIT8(instruction)==1;
+			switch (opcode)
+			{
+				case _.b00100: case _.b00101: return Execute_Unhandled("64-bit transfers between ARM core and extension registers");
+				case _.b01000: case _.b01100: return Execute_Unhandled("VSTM");
+				case _.b01010: case _.b01110: return Execute_Unhandled("VSTM");
+				case _.b10000: case _.b10100: case _.b11000: case _.b11100: return Execute_Unhandled("VSTR");
+				case _.b10010: case _.b10110:
+					if (n != _.b1101) return Execute_Unhandled("VSTM");
+					else return bit8?Execute_VPUSH_A1():Execute_VPUSH_A2();
+				case _.b01001: case _.b01101: return Execute_Unhandled("VLDM");
+				case _.b01011: case _.b01111:
+					if (n != _.b1101) return Execute_Unhandled("VLDM");
+					else return Execute_Unhandled("VPOP");
+				case _.b10001: case _.b10101: case _.b11001: case _.b11101:
+					return bit8 ? Execute_VLDR_A1() : Execute_VLDR_A2();
+				case _.b10011: case _.b10111: return Execute_Unhandled("VLDM");
+				default: throw new InvalidOperationException("decoder fail");
+			}
+		}
+
+		uint Execute_VLDR_A1()
+		{
+			//A8.6.320
+			throw new NotSupportedException("Execute_VLDR_A1");
+		}
+
+		uint Execute_VLDR_A2()
+		{
+			//A8.6.320
+			const bool single_reg = true;
+			Bit U = _.BIT23(instruction);
+			Bit D = _.BIT22(instruction);
+			bool add = (U == 1);
+			uint imm8 = instruction & 0xFF;
+			uint imm32 = _ZeroExtend_32(imm8 << 2);
+			uint Vd = Reg16(12);
+			uint n = Reg16(0);
+			uint d = (Vd << 1) | D;
+			return ExecuteCore_VLDR(Encoding.A1, single_reg, add, d, n, imm32);
+		}
+
+		uint Execute_VPUSH_A1()
+		{
+			//A8.6.355
+			const bool single_regs = false;
+			Bit D = _.BIT22(instruction);
+			uint d = ((uint)D << 4) | Reg16(12);
+			uint imm8 = instruction & 0xFF;
+			uint imm32 = _ZeroExtend_32(imm8 << 2);
+			uint regs = imm8 / 2;
+			Debug.Assert(!((imm8&1)==1),"see FSTMX");
+			if(regs==0 || regs>16 || (d+regs)>32) _FlagUnpredictable();
+			return ExecuteCore_VPUSH(Encoding.A1, single_regs, d, regs, imm32);
+
+		}
+
+		uint Execute_VPUSH_A2()
+		{
+			//A8.6.355
+			const bool single_regs = true;
+			Bit D = _.BIT22(instruction);
+			uint d = (Reg16(12)<<1)|D;
+			uint imm8 = instruction & 0xFF;
+			uint imm32 = _ZeroExtend_32(imm8 << 2);
+			uint regs = imm8;
+			if (regs == 0 || regs > 16 || (d + regs) > 32) _FlagUnpredictable();
+			return ExecuteCore_VPUSH(Encoding.A2, single_regs, d, regs, imm32);
+		}
+
 		uint Execute_MRC_MRC2_A1()
 		{
 			//ignoring admonition to see "advanced SIMD and VFP" which has been handled by decode earlier
+			//TODO - but i should assert anyway
 			uint t = Reg16(12);
 			uint cp = Reg16(8);
 			uint opc1 = Reg8(21);
