@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 
 				case _.b010010:
 				case _.b010011:
-					return ExecuteThumb_LdrLiteral_T1();
+					return Execute_LDR_literal_T1();
 
 				case _.b010100:
 				case _.b010101:
@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 					return ExecuteThumb_LoadStore();
 
 				case _.b101000:
-				case _.b101001: return ExecuteThumb_ADR_T1();
+				case _.b101001: return Execute_ADR_T1();
 				case _.b101010:
 				case _.b101011: return Execute_ADD_SP_plus_immediate_T1();
 
@@ -101,14 +101,13 @@ namespace BizHawk.Emulation.CPUs.ARM
 			}
 		}
 
-		uint ExecuteThumb_LdrLiteral_T1()
+		uint Execute_LDR_literal_T1()
 		{
 			//A8.6.59
-			//A8-122
 			uint t = Reg8(8);
 			uint imm8 = instruction & 0xFF;
 			uint imm32 = imm8 << 2;
-			bool add = true;
+			const bool add = true;
 
 			return ExecuteCore_LDR_literal(Encoding.T1, t, imm32, add);
 		}
@@ -344,18 +343,16 @@ namespace BizHawk.Emulation.CPUs.ARM
 				case _.b001:
 				case _.b011: return Execute_Unhandled("thumb-32bit 6T2 branch");
 				case _.b100:
-				case _.b110: return ExecuteThumb_BL_BLX_immediate_T2();
+				case _.b110: return Execute_BL_BLX_immediate_T2();
 				case _.b101:
-				case _.b111: return ExecuteThumb_BL_BLX_immediate_T1();
+				case _.b111: return Execute_BL_BLX_immediate_T1();
 				default: throw new InvalidOperationException();
 			}
 		}
 
-		uint ExecuteThumb_BL_BLX_immediate_T1()
+		uint Execute_BL_BLX_immediate_T1()
 		{
 			//A8.6.23
-			//A8-58
-			//(BL)
 			uint S = _.BIT10(instruction);
 			uint J1 = _.BIT13(thumb_32bit_extra);
 			uint J2 = _.BIT11(thumb_32bit_extra);
@@ -368,11 +365,9 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return ExecuteCore_BL_BLX_immediate(Encoding.T1, _CurrentInstrSet(), imm32, false);
 		}
 
-		uint ExecuteThumb_BL_BLX_immediate_T2()
+		uint Execute_BL_BLX_immediate_T2()
 		{
 			//A8.6.23
-			//A8-58
-			//(BLX)
 			uint S = _.BIT10(instruction);
 			uint J1 = _.BIT13(thumb_32bit_extra);
 			uint J2 = _.BIT11(thumb_32bit_extra);
@@ -726,9 +721,9 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
-		uint ExecuteThumb_ADR_T1()
+		uint Execute_ADR_T1()
 		{
-			//A8.6.10 ADR
+			//A8.6.10
 			uint d = Reg8(8);
 			uint imm8 = instruction & 0xFF;
 			uint imm32 = _ZeroExtend_32(imm8 << 2);
@@ -738,7 +733,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 
 		uint Execute_ADD_SP_plus_immediate_T2()
 		{
-			//A8.6.8 ADD SP plus immediate
+			//A8.6.8
 			uint d = 13;
 			uint imm7 = (instruction & 0xFF);
 			bool setflags = false;
@@ -860,7 +855,6 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return ExecuteCore_STM_STMIA_STMEA(Encoding.T1, wback, n, registers);
 		}
 
-		uint ExecuteThumb_LDM() { return Execute_Unhandled("ExecuteThumb_LDM"); }
 		uint ExecuteThumb_CondBr_And_SVC()
 		{
 			uint opcode = (instruction >> 8) & 0xF;
