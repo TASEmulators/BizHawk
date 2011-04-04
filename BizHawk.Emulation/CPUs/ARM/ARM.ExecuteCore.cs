@@ -211,6 +211,17 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
+		//A8.6.25 BX
+		uint ExecuteCore_BX(Encoding encoding, uint m)
+		{
+			if (disassemble)
+				return DISNEW("BX<c>", "<rm>", m);
+
+			_BXWritePC(r[m]);
+
+			return 1;
+		}
+
 		//A8.6.35 CMP (immediate)
 		uint ExecuteCore_CMP_immediate(Encoding encoding, uint n, uint imm32)
 		{
@@ -586,6 +597,14 @@ namespace BizHawk.Emulation.CPUs.ARM
 		{
 			//(this space intentionally blank. NEG was removed from the spec and replaced with RSB (immediate)
 			return 0;
+		}
+
+		//A8.6.110 NOP
+		uint ExecuteCore_NOP(Encoding encoding)
+		{
+			if (disassemble)
+				return DISNEW("NOP<c>", "");
+			return 1;
 		}
 
 		//A8.6.113 ORR (immediate)
@@ -1007,10 +1026,73 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
+		//A8.6.272 VADD (floating point)
+		uint ExecuteCore_VADD_floating_point(Encoding encoding, bool dp_operation, bool advsimd, uint d, uint n, uint m)
+		{
+			if (advsimd) throw new NotImplementedException("VMOV reg adv simd :(");
+			
+			if (disassemble)
+				return DISNEW("VADD<c><.fpsize>", "<{SDd~SDn, }><SDn>, <SDm>", dp_operation ? 64 : 32, !dp_operation, d, n, !dp_operation, n, !dp_operation, m);
+
+			if (advsimd)
+			{
+			}
+			else
+			{
+				if (dp_operation)
+					D[d] = _FPAdd(D[n], D[m], true);
+				else
+					S[d] = _FPAdd(S[n], S[m], true);
+			}
+
+			return 1;
+		}
+
 		//A8.6.320 VLDR
 		uint ExecuteCore_VLDR(Encoding encoding, bool single_reg, bool add, uint d, uint n, uint imm32)
 		{
-			throw new NotImplementedException("TODO");
+			if (disassemble)
+				return DISNEW("VLDR<c>", "<SDd>, [<rn!><{, #+/-imm}>]", single_reg, d, n, add, imm32);
+
+			_CheckVFPEnabled(true);
+			_NullCheckIfThumbEE(n);
+			uint @base = (n==15)?_Align(PC,4):r[n];
+			uint address = add ? (@base + imm32) : (@base - imm32);
+			if (single_reg)
+				S[d] = MemA_ReadSingle(address);
+			else
+				D[d] = MemA_ReadDouble(address);
+
+			return 1;
+		}
+
+		//A8.6.326 VMOV (immediate)
+		uint ExecuteCore_VMOV_immediate(Encoding encoding, bool single_register, bool advsimd, uint d, uint regs, float imm32, double imm64)
+		{
+			if (advsimd) throw new NotImplementedException("VMOV imm adv simd :(");
+			throw new NotImplementedException("ExecuteCore_VMOV_immediate");
+
+			//if(disassemble)
+			//    return DISNEW("VMOV<c><.fpsize>", "<SDd>", single_register?32:64, single_register, d
+			return 1;
+		}
+
+		//A8.6.327 VMOV (register)
+		uint ExecuteCore_VMOV_register(Encoding encoding, bool single_register, bool advsimd, uint d, uint m, uint regs)
+		{
+			if (advsimd) throw new NotImplementedException("VMOV reg adv simd :(");
+
+			if (disassemble)
+				return DISNEW("VMOV<c><.fpsize>", "<SDd>, <SDm>", single_register ? 32 : 64, single_register, d, single_register, m);
+
+			_CheckAdvSIMDOrVFPEnabled(true, advsimd);
+
+			if (single_register)
+				S[d] = S[m];
+			else for (uint r = 0; r <= regs - 1; r++)
+					D[d + r] = D[m + r];
+
+			return 1;
 		}
 
 		//A8.6.336 VMSR
@@ -1027,7 +1109,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 		uint ExecuteCore_VPUSH(Encoding encoding, bool single_regs, uint d, uint regs, uint imm32)
 		{
 			if (disassemble)
-				return DISNEW("VPUSH<c><{.size}>", "<list>", single_regs ? 32 : 64, single_regs, d, regs);
+				return DISNEW("VPUSH<c><{.fpsize}>", "<list>", single_regs ? 32 : 64, single_regs, d, regs);
 
 			_CheckVFPEnabled(true);
 			_NullCheckIfThumbEE(13);
