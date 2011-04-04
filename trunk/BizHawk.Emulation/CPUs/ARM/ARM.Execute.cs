@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 			opcode += "<c>";
 			//we may want conditional logic here to control whether various registers are displayed (we used to have it, but i changed my mind)
 			if (offset)
-				return DISNEW(opcode, rt + ", [<Rn!><{,+/-#imm}>]", t, n, add, imm32);
+				return DISNEW(opcode, rt + ", [<Rn!><{, #+/-imm}>]", t, n, add, imm32);
 			else if (preindexed)
 				return DISNEW(opcode, rt + ", [<Rn!>, <+/-><imm>]!", t, n, add, imm32);
 			else if (postindex)

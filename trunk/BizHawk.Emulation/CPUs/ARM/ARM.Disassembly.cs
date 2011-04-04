@@ -163,10 +163,10 @@ namespace BizHawk.Emulation.CPUs.ARM
 			}
 			else opcode = opcode.Replace(crepl, "");
 
-			if(opcode.Contains("{.size}"))
-			{
-				opcode = opcode.Replace("<{.size}>","." + args[argindex++].ToString());
-			}
+			if(opcode.Contains("{.fpsize}"))
+				opcode = opcode.Replace("<{.fpsize}>",".F" + args[argindex++].ToString());
+			if (opcode.Contains(".fpsize"))
+				opcode = opcode.Replace("<.fpsize>", ".F" + args[argindex++].ToString());
 			//---------
 
 			string cpcomment = null;
@@ -215,6 +215,26 @@ namespace BizHawk.Emulation.CPUs.ARM
 									break;
 								}
 
+							case "sdd":
+							case "sdn":
+							case "sdm":
+								if ((bool)args[argindex++]) 
+									item = "s" + args[argindex++].ToString(); 
+								else 
+									item = "d" + args[argindex++].ToString();
+								break;
+
+							case "{sdd~sdn, }":
+								{
+									bool s = (bool)args[argindex++];
+									uint rd = (uint)args[argindex++];
+									uint rx = (uint)args[argindex++];
+									if (disopt.showExplicitAccumulateRegisters || rd != rx)
+										item = string.Format("{0}{1}, ", s ? "s" : "d", rd);
+									else item = "";
+									break;
+								}
+
 							case "fpscr": item = nstyle ? "fpscr" : "FPSCR"; break;
 
 							case "const": item = string.Format("0x{0:x}", args[argindex++]); break;
@@ -228,7 +248,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 									else item = string.Format(",#0x{0:x}", temp);
 									break;
 								}
-							case "{,+/-#imm}":
+							case "{, #+/-imm}":
 								{
 									uint temp = (uint)args[argindex + 1];
 									if (temp == 0 && disopt.hideZeroOffset) item = "";

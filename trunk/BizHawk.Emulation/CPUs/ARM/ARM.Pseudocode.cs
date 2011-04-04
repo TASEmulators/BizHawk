@@ -89,6 +89,13 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return bus.Read32(AT.READ, addr);
 		}
 
+		ulong MemA_Read64(uint addr)
+		{
+			ulong ret = MemA_Read32(addr);
+			ret |= (((ulong)MemA_Read32(addr + 4)) << 32);
+			return ret;
+		}
+
 		void _SetExclusiveMonitors(uint address, int size)
 		{
 			//TODO!!! boring!!
@@ -104,6 +111,16 @@ namespace BizHawk.Emulation.CPUs.ARM
 		void MemA_WriteSingle(uint addr, float val)
 		{
 			MemA_Write32(addr,float_downcast(val));
+		}
+
+		float MemA_ReadSingle(uint addr)
+		{
+			return float_upcast(MemA_Read32(addr));
+		}
+
+		double MemA_ReadDouble(uint addr)
+		{
+			return double_upcast(MemA_Read64(addr));
 		}
 
 		void MemA_WriteDouble(uint addr, double val)
@@ -441,6 +458,78 @@ namespace BizHawk.Emulation.CPUs.ARM
 			Bit carry_out;
 			_RRX_C(x, carry_in, out result, out carry_out);
 			return result;
+		}
+
+		float _FPAdd(float op1, float op2, bool fpscr_controlled)
+		{
+			//TODO
+			return op1 + op2;
+		}
+
+		double _FPAdd(double op1, double op2, bool fpscr_controlled)
+		{
+			//TODO
+			return op1 + op2;
+		}
+
+		bool _CheckAdvSIMDOrVFPEnabled(bool x, bool y)
+		{
+			//TODO
+			return true;
+		}
+
+		static uint[] __VFPExpandImm32_table;
+		static uint __VFPExpandImm32_calc(uint imm8)
+		{
+			uint a = _.BIT7(imm8);
+			uint B = _.BIT6(imm8)^1;
+			uint b = _.BIT6(imm8); 
+			b |= (b << 1); //replicated to 2 bits
+			b |= (b << 2); //replicated to 4 bits
+			b |= (b << 1); //replicated to 5 bits
+			uint cdefgh = imm8 & 0x3F;
+
+			return (a<<31)|(B<<30)|(b<<29)|(cdefgh<<24);
+		}
+
+		static ulong[] __VFPExpandImm64_table;
+		static ulong __VFPExpandImm64_calc(uint imm8)
+		{
+			uint a = _.BIT7(imm8);
+			uint B = _.BIT6(imm8) ^ 1;
+			uint b = _.BIT6(imm8);
+			b |= (b << 1); //replicated to 2 bits
+			b |= (b << 2); //replicated to 4 bits
+			b |= (b << 4); //replicated to 8 bits
+			uint cdefgh = imm8 & 0x3F;
+
+			uint uintret = (a << 31) | (B << 30) | (b << 29) | (cdefgh << 20);
+			ulong ulongret = uintret << 32;
+			return ulongret;
+		}
+
+		uint _VFPExpandImm32(uint imm8)
+		{
+			if(__VFPExpandImm32_table == null)
+			{
+				__VFPExpandImm32_table = new uint[256];
+				for(uint i=0;i<256;i++)
+					__VFPExpandImm32_table[i] = __VFPExpandImm32_calc(i);
+			}
+
+			return __VFPExpandImm32_table[imm8];
+		}
+
+		ulong _VFPExpandImm64(uint imm8)
+		{
+			if (__VFPExpandImm64_table == null)
+			{
+				__VFPExpandImm64_table = new ulong[256];
+				for (uint i = 0; i < 256; i++)
+					__VFPExpandImm64_table[i] = __VFPExpandImm64_calc(i);
+			}
+
+			return __VFPExpandImm64_table[imm8];
 		}
 
 		uint _ARMExpandImm(uint imm12)

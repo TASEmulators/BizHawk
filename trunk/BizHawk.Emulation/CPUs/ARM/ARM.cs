@@ -113,18 +113,29 @@ namespace BizHawk.Emulation.CPUs.ARM
 		float[] S = new float[32];
 		double[] D = new double[16];
 
-		unsafe uint float_downcast(float f)
+		unsafe static uint float_downcast(float f)
 		{
 			float* fp = &f;
 			return *(uint*)fp;
 		}
 
-		unsafe ulong double_downcast(double f)
+		unsafe static float float_upcast(uint f)
+		{
+			uint* fp = &f;
+			return *(float*)fp;
+		}
+
+		unsafe static ulong double_downcast(double f)
 		{
 			double* fp = &f;
 			return *(ulong*)fp;
 		}
 
+		unsafe static double double_upcast(ulong f)
+		{
+			ulong* fp = &f;
+			return *(double*)fp;
+		}
 
 		public uint SP { get { return r[13]; } set { r[13] = value; } }
 		public uint LR { get { return r[14]; } set { r[14] = value; } }
@@ -140,6 +151,8 @@ namespace BizHawk.Emulation.CPUs.ARM
 
 
 		uint FPSCR;
+		uint _FPSCR_LEN() { return 0; }
+		uint _FPSCR_STRIDE() { return 0; }
 
 		public ARM(ARM_SYS sys, ARM_BUS bus)
 		{

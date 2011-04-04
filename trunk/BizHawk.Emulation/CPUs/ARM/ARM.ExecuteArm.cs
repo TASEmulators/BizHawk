@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 				.r("A==0 && op1 == #0x010", () => Execute_Unhandled("STRT on page A8-416"))
 				.r("A==1 && op1 == #0x010 && B==0", () => Execute_Unhandled("STRT on page A8-416"))
 				.r("A==0 && op1 == #xx0x1 && op1 != #0x011 && Rn != #1111", () => Execute_LDR_immediate_arm_A1())
-				.r("A==0 && op1 == #xx0x1 && op1 != #0x011 && Rn == #1111", () => ExecuteArm_LDR_literal_A1())
+				.r("A==0 && op1 == #xx0x1 && op1 != #0x011 && Rn == #1111", () => Execute_LDR_literal_A1())
 				.r("A==1 && op1 == #xx0x1 && A != #0x011 && B==0", () => Execute_Unhandled("LDR (register) on page A8-124"))
 				.r("A==0 && op1 == #0x011", () => Execute_Unhandled("LDRT on page A8-176"))
 				.r("A==1 && op1 == #0x011 && B==0", () => Execute_Unhandled("LDRT on page A8-176"))
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return ExecuteCore_PUSH(Encoding.A2, registers, UnalignedAllowed);
 		}
 
-		uint ExecuteArm_LDR_literal_A1()
+		uint Execute_LDR_literal_A1()
 		{
 			//A8.6.59
 			//A8-122
@@ -182,12 +182,54 @@ namespace BizHawk.Emulation.CPUs.ARM
 						return ExecuteArm_DataProcessing_Immediate();
 					if (op1 == _.b10000) return Execute_Unhandled("16-bit immediate load (MOV (immediate on page A8-193) //v6T2");
 					if (op1 == _.b10100) return Execute_Unhandled("high halfword 16-bit immediate load (MOVT on page A8-200) //v6T2");
-					if (CHK(op1, _.b11011, _.b10010)) return Execute_Unhandled("MSR (immediate), and hints on page A5-17");
+					if (CHK(op1, _.b11011, _.b10010)) return ExecuteArm_MSR_immediate_and_hints();
 					throw new InvalidOperationException("unexpected decoder fail");
 
 				default:
 					throw new InvalidOperationException("totally impossible decoder fail");
 			}
+		}
+
+		uint ExecuteArm_MSR_immediate_and_hints()
+		{
+			Bit op = _.BIT22(instruction);
+			uint op1 = (instruction >> 16) & 0xF;
+			uint op2 = instruction & 0xFF;
+			if (op == 0)
+			{
+				switch(op1)
+				{
+					case _.b0000:
+						switch (op2)
+						{
+							case 0: return Execute_NOP_A1();
+							case 1: return Execute_Unhandled("yield");
+							case 2: return Execute_Unhandled("wfe");
+							case 3: return Execute_Unhandled("wfi");
+							case 4: return Execute_Unhandled("sev");
+							default: return Execute_Unhandled("DBG");
+						}
+					case _.b0100:
+					case _.b1000: case _.b1100: 
+						return Execute_Unhandled("MSR immediate");
+					case _.b0001: case _.b0101:
+					case _.b1001: case _.b1101:
+						return Execute_Unhandled("MSR immediate");
+					case _.b0010: case _.b0011:
+					case _.b0110: case _.b0111:
+					case _.b1010: case _.b1011:
+					case _.b1110: case _.b1111:
+						return Execute_Unhandled("MSR immediate");
+					default: throw new InvalidOperationException("decode fail");
+				}
+			}
+			else return Execute_Unhandled("MSR immediate");
+		}
+
+		uint Execute_NOP_A1()
+		{
+			//A8.6.110
+			return ExecuteCore_NOP(Encoding.A1);
 		}
 
 		uint ExecuteArm_SynchronizationPrimitives()
@@ -562,7 +604,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 				case _.b001:
 					switch (op)
 					{
-						case _.b01: return ExecuteArm_BX_A1();
+						case _.b01: return Execute_BX_A1();
 						case _.b11: return Execute_Unhandled("ExecuteArm_CLZ");
 						default:
 							return Execute_Undefined();
@@ -588,16 +630,11 @@ namespace BizHawk.Emulation.CPUs.ARM
 			} //switch(op2)
 		}
 
-		uint ExecuteArm_BX_A1()
+		uint Execute_BX_A1()
 		{
-			//A8-62
 			//A8.6.25
-			uint Rm = Reg16(0);
-			if (disassemble)
-				return DIS("BX/c/", "/r0/", Rm);
-			uint m = r[Rm];
-			_BXWritePC(m);
-			return 1;
+			uint m = Reg16(0);
+			return ExecuteCore_BX(Encoding.A1, m);
 		}
 
 		uint ExecuteArm_Media() { return Execute_Unhandled("ExecuteArm_Media"); }
@@ -720,7 +757,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 				.r("op1==#00010x && coproc_special==#1", () => Execute_Unhandled("ExecuteArm_SIMD_VFP_64bit_xfer"))
 				.r("op1==#000100 && coproc_special==#0", () => Execute_Unhandled("MCRR,MCRR2"))
 				.r("op1==#000101 && coproc_special==#0", () => Execute_Unhandled("MRRC,MRRC2"))
-				.r("op1==#10xxxx && op==0 && coproc_special==#1", () => Execute_Unhandled("VFP data-processing on page A7-24"))
+				.r("op1==#10xxxx && op==0 && coproc_special==#1", () => ExecuteArm_VFP_DataProcessing())
 				.r("op1==#10xxxx && op==0 && coproc_special==#0", () => Execute_Unhandled("CDP,CDP2 on page A8-68"))
 				.r("op1==#10xxxx && op==1 && coproc_special==#1", () => ExecuteArm_ShortVFPTransfer())
 				.r("op1==#10xxx0 && op==1 && coproc_special==#0", () => Execute_Unhandled("MCR,MCR2 on pageA8-186"))
@@ -736,6 +773,124 @@ namespace BizHawk.Emulation.CPUs.ARM
 			uint rn_is_15 = (Rn == 15) ? 1U : 0U;
 
 			Decoder_ExecuteArm_SVCAndCP.Evaluate(op1, op, coproc_special, rn_is_15);
+			return 1;
+		}
+
+		uint ExecuteArm_VFP_DataProcessing()
+		{
+			//A7.5
+			uint opc1 = (instruction >> 20) & 0xF;
+			uint opc2 = (instruction >> 16) & 0xF;
+			uint opc3 = (instruction >> 6) & 3;
+
+			if (opc1 == _.b0000 || opc1 == _.b0100) return Execute_Unhandled("VML, VMLS (floating point)");
+			if (opc1 == _.b0001 || opc1 == _.b0101) return Execute_Unhandled("VNMLA, VNMLS, VNMUL");
+			if (opc1 == _.b0010 || opc1 == _.b0110)
+				if (opc3 == _.b01 || opc3 == _.b11) return Execute_Unhandled("VMUL (floating point)");
+				else if (opc3 == _.b00 || opc3 == _.b10) return Execute_Unhandled("VMUL (floating point)");
+				else throw new InvalidOperationException("decode fail");
+			if (opc1 == _.b0011 || opc1 == _.b0111)
+				if (opc3 == _.b00 || opc3 == _.b10) return Execute_VADD_floating_point_A2();
+				else if (opc3 == _.b01 || opc3 == _.b11) return Execute_Unhandled("VSUB (floating point)");
+			if (opc1 == _.b1000 || opc1 == _.b1100)
+				if (opc3 == _.b00 || opc3 == _.b10) return Execute_Unhandled("VDIV");
+				else throw new InvalidOperationException("unhandled opcode space..");
+			if (opc1 == _.b1011 || opc1 == _.b1111)
+			{
+				if (opc3 == _.b00 || opc3 == _.b10) return Execute_Unhandled("VMOV (immediate)");
+				if (opc2 == _.b0000 && opc3 == _.b01) return Execute_VMOV_register_A2();
+				if (opc2 == _.b0000 && opc3 == _.b11) return Execute_Unhandled("VABS");
+				if (opc2 == _.b0001 && opc3 == _.b01) return Execute_Unhandled("VNEG");
+				if (opc2 == _.b0001 && opc3 == _.b11) return Execute_Unhandled("VSQRT");
+				if (opc2 == _.b0010 || opc2 == _.b0011) return Execute_Unhandled("VCVTB, VCVTT (between half-precision and single precision)");
+				if (opc2 == _.b0100 || opc2 == _.b0101) return Execute_Unhandled("VCMP, VCMPE");
+				if (opc2 == _.b0111) return Execute_Unhandled("VCVT (between double precision and single precision)");
+				if (opc2 == _.b1000) return Execute_Unhandled("VCVT, VCVTR (between floating point and integer)");
+				if (opc2 == _.b1010 || opc2 == _.b1011) return Execute_Unhandled("VCVT (between floating point and fixed point)");
+				if (opc2 == _.b1100 || opc2 == _.b1101) return Execute_Unhandled("VCVT, VCVTR (between floating point and integer)");
+				if (opc2 == _.b1110 || opc2 == _.b1111) return Execute_Unhandled("VCVT (between floating point and fixed point)");
+			}
+		
+			throw new InvalidOperationException("decoder fail");
+		}
+
+		uint Execute_VADD_floating_point_A2()
+		{
+			//A8.6.272
+			if (_FPSCR_LEN() != _.b000 || _FPSCR_STRIDE() != _.b00) throw new NotImplementedException("see VFP vectors");
+			const bool advsimd = false;
+			Bit sz = _.BIT8(instruction);
+			bool dp_operation = (sz == 1);
+			uint D = _.BIT22(instruction);
+			uint M = _.BIT5(instruction);
+			uint N = _.BIT7(instruction);
+			uint Vm = Reg16(0);
+			uint Vd = Reg16(12);
+			uint Vn = Reg16(16);
+			uint d = dp_operation ? ((D << 4) | Vd) : ((Vd << 1) | D);
+			uint n = dp_operation ? ((N << 4) | Vn) : ((Vn << 1) | N);
+			uint m = dp_operation ? ((M << 4) | Vm) : ((Vm << 1) | M);
+			return ExecuteCore_VADD_floating_point(Encoding.A2, dp_operation, advsimd, d, n, m);
+		}
+
+		uint Execute_VMOV_register_A2()
+		{
+			//A8.6.327
+			if (_FPSCR_LEN() != _.b000 || _FPSCR_STRIDE() != _.b00) throw new NotImplementedException("see VFP vectors");
+			Bit sz = _.BIT8(instruction);
+			bool single_register = (sz == 0);
+			const bool advsimd = false;
+			uint d,m;
+			uint Vd = Reg16(12);
+			uint Vm = Reg16(0);
+			uint D = _.BIT22(instruction);
+			uint M = _.BIT5(instruction);
+			uint regs = 0;
+			if (single_register)
+			{
+				d = (Vd << 1) | D;
+				m = (Vm << 1) | M;
+				
+			}
+			else
+			{
+				d = (D << 4) | Vd;
+				m = (M << 4) | Vm;
+				regs = 1;
+			}
+
+			return ExecuteCore_VMOV_register(Encoding.A2, single_register, advsimd, d, m, regs);
+		}
+
+		uint Execute_VMOV_immediate_A2()
+		{
+			////A8.6.326
+			//if (_FPSCR_LEN() != _.b000 || _FPSCR_STRIDE() != _.b00) throw new NotImplementedException("see VFP vectors");
+			//Bit sz = _.BIT8(instruction);
+			//bool single_register = (sz == 0);
+			//const bool advsimd = false;
+			//uint d;
+			//uint Vd = Reg16(12);
+			//uint D = _.BIT22(instruction);
+			//uint imm32 = 0;
+			//ulong imm64 = 0;
+			//uint imm4H = (instruction>>16)&0xF;
+			//uint imm4L = (instruction&0xF);
+			//uint regs = 0;
+			//if (single_register)
+			//{
+			//    d = (Vd << 1) | D;
+			//    imm32 = _VFPExpandImm32((imm4H << 4) | imm4L);
+			//}
+			//else
+			//{
+			//    d = (D << 4) | Vd;
+			//    imm64 = _VFPExpandImm64((imm4H << 4) | imm4L);
+			//    regs = 1;
+			//}
+
+			//return ExecuteCore_VMOV(Encoding.A2, single_register, advsimd, d, regs, imm32, imm64);
+
 			return 1;
 		}
 
@@ -781,7 +936,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 			uint imm8 = instruction & 0xFF;
 			uint imm32 = _ZeroExtend_32(imm8 << 2);
 			uint Vd = Reg16(12);
-			uint n = Reg16(0);
+			uint n = Reg16(16);
 			uint d = (Vd << 1) | D;
 			return ExecuteCore_VLDR(Encoding.A1, single_reg, add, d, n, imm32);
 		}
@@ -837,7 +992,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 			Decoder_ExecuteArm_ShortVFPTransfer.Ensure(() => Decoder_ExecuteArm_ShortVFPTransfer
 				.d("A", 3).d("L", 1).d("C", 1).d("B", 2)
 				.r("L==0 && C==0 && A==#000", () => Execute_Unhandled("VMOV (between ARM core register and single-precision register) on page A8-648"))
-				.r("L==0 && C==0 && A==#111", () => ExecuteArm_VMSR_A1())
+				.r("L==0 && C==0 && A==#111", () => Execute_VMSR_A1())
 				.r("L==0 && C==1 && A==#0xx", () => Execute_Unhandled("VMOV (ARM core register to scalar) on page A8-644"))
 				.r("L==0 && C==1 && A==#1xx && B==#0x", () => Execute_Unhandled("VDUP (ARM core register) on page A8-594"))
 				.r("L==1 && C==0 && A==#000", () => Execute_Unhandled("VMOV (between ARM core register and single-precision register) on page A8-648"))
@@ -854,7 +1009,7 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return 1;
 		}
 
-		uint ExecuteArm_VMSR_A1()
+		uint Execute_VMSR_A1()
 		{
 			uint t = Reg16(12);
 			if (t == 15 || (t == 13 && _CurrentInstrSet() != EInstrSet.ARM)) return _UNPREDICTABLE();
