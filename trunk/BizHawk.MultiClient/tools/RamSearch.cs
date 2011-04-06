@@ -90,7 +90,7 @@ namespace BizHawk.MultiClient
                 littleEndianToolStripMenuItem.Checked = true;
             }
 
-            if (Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
+            if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
                 this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
 
             if (Global.Config.RamSearchWidth >= 0 && Global.Config.RamSearchHeight >= 0)

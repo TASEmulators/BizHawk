@@ -49,7 +49,7 @@ namespace BizHawk.MultiClient
 			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
 			defaultHeight = Size.Height;
 
-			if (Global.Config.NESPPUWndx >= 0 && Global.Config.NESPPUWndy >= 0)
+			if (Global.Config.NESPPUSaveWindowPosition && Global.Config.NESPPUWndx >= 0 && Global.Config.NESPPUWndy >= 0)
 				Location = new Point(Global.Config.NESPPUWndx, Global.Config.NESPPUWndy);
 		}
 

@@ -78,7 +78,7 @@ namespace BizHawk.MultiClient
             defaultChangeWidth = WatchListView.Columns[3].Width;
             NotesWidth = WatchListView.Columns[4].Width;
 
-            if (Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
+            if (Global.Config.RamWatchSaveWindowPosition && Global.Config.RamWatchWndx >= 0 && Global.Config.RamWatchWndy >= 0)
                 Location = new Point(Global.Config.RamWatchWndx, Global.Config.RamWatchWndy);
 
             if (Global.Config.RamWatchWidth >= 0 && Global.Config.RamWatchHeight >= 0)

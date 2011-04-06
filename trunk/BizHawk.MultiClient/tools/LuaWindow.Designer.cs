@@ -126,6 +126,7 @@
             this.Controls.Add(this.IDT_SCRIPTFILE);
             this.Name = "LuaWindow";
             this.Text = "Lua Script";
+            this.Load += new System.EventHandler(this.LuaWindow_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
