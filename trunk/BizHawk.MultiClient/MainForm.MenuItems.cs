@@ -307,6 +307,12 @@ namespace BizHawk.MultiClient
 		{
 			InputConfig i = new InputConfig();
 			i.ShowDialog();
+			//re-initialize controls in case anything was changed
+			if (i.DialogResult == DialogResult.OK)
+			{
+				InitControls();
+				SyncControls();
+			}
 		}
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
