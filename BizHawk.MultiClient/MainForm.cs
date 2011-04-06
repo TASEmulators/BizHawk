@@ -763,7 +763,8 @@ namespace BizHawk.MultiClient
 				{
 					runloop_second = DateTime.Now;
 					Global.RenderPanel.FPS = runloop_fps;
-					Text = Text.Substring(0, Text.IndexOf('\\')) + "\\ " + runloop_fps + " fps";
+					if(Text.IndexOf('\\') != -1)
+						Text = Text.Substring(0, Text.IndexOf('\\')) + "\\ " + runloop_fps + " fps";
 					Global.RenderPanel.FPS = runloop_fps;
 					runloop_fps = 0;
 				}
