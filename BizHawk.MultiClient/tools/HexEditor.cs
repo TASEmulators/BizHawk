@@ -52,7 +52,7 @@ namespace BizHawk.MultiClient
             defaultHeight = this.Size.Height;
             if (Global.Config.HexEditorSaveWindowPosition)
             {
-                if (Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
+                if (Global.Config.HexEditorSaveWindowPosition && Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
                     this.Location = new Point(Global.Config.HexEditorWndx, Global.Config.HexEditorWndy);
 
                 if (Global.Config.HexEditorWidth >= 0 && Global.Config.HexEditorHeight >= 0)

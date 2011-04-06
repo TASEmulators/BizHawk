@@ -230,7 +230,7 @@ namespace BizHawk.MultiClient
             defaultDomainWidth = CheatListView.Columns[3].Width;
             defaultOnWidth = CheatListView.Columns[4].Width;
 
-            if (Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
+            if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
                 Location = new Point(Global.Config.CheatsWndx, Global.Config.CheatsWndy);
 
             if (Global.Config.CheatsWidth >= 0 && Global.Config.CheatsHeight >= 0)

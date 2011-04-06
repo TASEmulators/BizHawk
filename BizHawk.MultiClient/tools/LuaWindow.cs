@@ -45,5 +45,10 @@ namespace BizHawk.MultiClient.tools
             LuaImp.DoLuaFile(IDT_SCRIPTFILE.Text);
         }
 
+        private void LuaWindow_Load(object sender, EventArgs e)
+        {
+
+        }
+
     }
 }
