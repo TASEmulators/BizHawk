@@ -381,6 +381,7 @@ namespace BizHawk.MultiClient
             {
                UpdateAll();
             }
+			this.DialogResult = DialogResult.OK;
             this.Close();
         }
 

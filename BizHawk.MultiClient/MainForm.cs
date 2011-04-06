@@ -442,6 +442,38 @@ namespace BizHawk.MultiClient
             }
         }
 
+		void SyncControls()
+		{
+			switch (Global.Game.System)
+			{
+				case "SG":
+				case "SMS":
+					Global.Emulator.Controller = Global.SMSControls;
+					break;
+				case "GG":
+					Global.Emulator.Controller = Global.SMSControls;
+					break;
+				case "PCE":
+					Global.Emulator.Controller = Global.PCEControls;
+					break;
+				case "SGX":
+					Global.Emulator.Controller = Global.PCEControls;
+					break;
+				case "GEN":
+					Global.Emulator.Controller = Global.GenControls;
+					break;
+				case "TI83":
+					Global.Emulator.Controller = Global.TI83Controls;
+					break;
+				case "NES":
+					Global.Emulator.Controller = Global.NESControls;
+					break;
+				case "GB":
+					break;
+			}
+
+		}
+
 		private bool LoadRom(string path)
 		{
 			using (var file = new HawkFile(path))
@@ -472,35 +504,28 @@ namespace BizHawk.MultiClient
 					case "SG":
 					case "SMS":
 						nextEmulator = new SMS();
-						nextEmulator.Controller = Global.SMSControls;
 						if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
 						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
 						if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
 						break;
 					case "GG":
 						nextEmulator = new SMS { IsGameGear = true };
-						nextEmulator.Controller = Global.SMSControls;
 						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
 						break;
 					case "PCE":
 						nextEmulator = new PCEngine(NecSystemType.TurboGrafx);
-						nextEmulator.Controller = Global.PCEControls;
 						break;
 					case "SGX":
 						nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
-						nextEmulator.Controller = Global.PCEControls;
 						break;
 					case "GEN":
 						nextEmulator = new Genesis(false);//TODO
-						nextEmulator.Controller = Global.GenControls;
 						break;
 					case "TI83":
 						nextEmulator = new TI83();
-						nextEmulator.Controller = Global.TI83Controls;
 						break;
 					case "NES":
 						nextEmulator = new NES();
-						nextEmulator.Controller = Global.NESControls;
 						break;
 					case "GB":
 						nextEmulator = new Gameboy();
@@ -525,6 +550,7 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.Emulator = nextEmulator;
 				Global.Game = game;
+				SyncControls();
 
 				if (game.System == "NES")
 				{
