@@ -619,7 +619,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (CFG_USE_METASPU)
 				{
 					metaspu.GetSamples(samples);
-					foreach(short sample in samples) bw.Write((short)sample);
+					//foreach(short sample in samples) bw.Write((short)sample);
 				}
 				else
 					MyGetSamples(samples);
