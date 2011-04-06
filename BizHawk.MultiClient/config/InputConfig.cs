@@ -346,33 +346,34 @@ namespace BizHawk.MultiClient
         }
         private void InputConfig_Load(object sender, EventArgs e)
         {
-            switch (Global.Game.System)
-            {
-                case "SMS":
-                case "SG":
-                case "GG":
-                    this.SystemComboBox.SelectedIndex = 0;
-                    break;
-                case "PCE":
-                case "SGX":
-                    this.SystemComboBox.SelectedIndex = 1;
-                    break;
-                case "GEN":
-                    this.SystemComboBox.SelectedIndex = 2;
-                    break;
-                case "TI83":
-                    this.SystemComboBox.SelectedIndex = 3;
-                    break;
-                case "GB":
-                    this.SystemComboBox.SelectedIndex = 4;
-                    break;
-                case "NES":
-                    this.SystemComboBox.SelectedIndex = 5;
-                    break;
-                default:
-                    this.SystemComboBox.SelectedIndex = 0;
-                    break;
-            }
+			if(Global.Game != null)
+				switch (Global.Game.System)
+				{
+					case "SMS":
+					case "SG":
+					case "GG":
+						this.SystemComboBox.SelectedIndex = 0;
+						break;
+					case "PCE":
+					case "SGX":
+						this.SystemComboBox.SelectedIndex = 1;
+						break;
+					case "GEN":
+						this.SystemComboBox.SelectedIndex = 2;
+						break;
+					case "TI83":
+						this.SystemComboBox.SelectedIndex = 3;
+						break;
+					case "GB":
+						this.SystemComboBox.SelectedIndex = 4;
+						break;
+					case "NES":
+						this.SystemComboBox.SelectedIndex = 5;
+						break;
+					default:
+						this.SystemComboBox.SelectedIndex = 0;
+						break;
+				}
         }
         private void OK_Click(object sender, EventArgs e)
         {
