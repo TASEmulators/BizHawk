@@ -625,7 +625,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					MyGetSamples(samples);
 			}
 
-			static BinaryWriter bw = new BinaryWriter(File.OpenWrite("d:\\out.raw"));
+			//static BinaryWriter bw = new BinaryWriter(File.OpenWrite("d:\\out.raw"));
 			void MyGetSamples(short[] samples)
 			{
 				//Console.WriteLine("a: {0} with todo: {1}",squeue.Count,samples.Length/2);
