@@ -183,6 +183,7 @@
         public string LoadSlot7 = "F7";
         public string LoadSlot8 = "F8";
         public string LoadSlot9 = "F9";
+        public string ToolBox = "T";
         
         
         // SMS / GameGear Settings

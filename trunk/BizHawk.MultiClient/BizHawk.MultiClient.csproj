@@ -285,6 +285,12 @@
     <Compile Include="RomGame.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Sound.cs" />
+    <Compile Include="tools\ToolBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\ToolBox.Designer.cs">
+      <DependentUpon>ToolBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Watch.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +383,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\RamSearch.resx">
       <DependentUpon>RamSearch.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\ToolBox.resx">
+      <DependentUpon>ToolBox.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

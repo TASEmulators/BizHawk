@@ -51,6 +51,7 @@ namespace BizHawk.MultiClient
         public NESPPU NESPPU1 = new NESPPU();
         public NESDebugger NESDebug1 = new NESDebugger();
         public Cheats Cheats1 = new Cheats();
+        public ToolBox ToolBox1 = new ToolBox();
 
 		public MainForm(string[] args)
 		{
@@ -259,7 +260,7 @@ namespace BizHawk.MultiClient
                 "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-                "LoadSlot7","LoadSlot8","LoadSlot9"}
+                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox"}
 		};
 
 		private void InitControls()
@@ -305,6 +306,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("LoadSlot7", Global.Config.LoadSlot7);
 			controls.BindMulti("LoadSlot8", Global.Config.LoadSlot8);
 			controls.BindMulti("LoadSlot9", Global.Config.LoadSlot9);
+            controls.BindMulti("ToolBox", Global.Config.ToolBox);
 			Global.ClientControls = controls;
 
 			var smsControls = new Controller(SMS.SmsController);
@@ -632,7 +634,13 @@ namespace BizHawk.MultiClient
 
 		public void CheckHotkeys()
 		{
-			if (Global.ClientControls["Quick Save State"])
+            if (Global.ClientControls["ToolBox"])
+            {
+                LoadToolBox();
+                Global.ClientControls.UnpressButton("ToolBox");
+            }
+            
+            if (Global.ClientControls["Quick Save State"])
 			{
 				if (!IsNullEmulator())
 					SaveState("QuickSave" + SaveSlot.ToString());
@@ -1093,6 +1101,17 @@ namespace BizHawk.MultiClient
             }
             else
                 HexEditor1.Focus();
+        }
+
+        public void LoadToolBox()
+        {
+            if (!ToolBox1.IsHandleCreated || ToolBox1.IsDisposed)
+            {
+                ToolBox1 = new ToolBox();
+                ToolBox1.Show();
+            }
+            else
+                ToolBox1.Close();
         }
 
         public void LoadNESPPU()
