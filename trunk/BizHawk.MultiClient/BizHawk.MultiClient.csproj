@@ -415,6 +415,10 @@
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
     <None Include="images\Debugger.png" />
+    <None Include="images\Stop.png" />
+    <None Include="images\ToolBox.png" />
+    <None Include="images\Pause.png" />
+    <None Include="images\Play.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />

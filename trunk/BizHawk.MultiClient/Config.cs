@@ -56,6 +56,9 @@
         public bool SoundEnabled = true;
         public bool MuteFrameAdvance = true;
 
+        // Lua Console
+        public RecentFiles RecentLua = new RecentFiles(8);
+
         // RamWatch Settings
         public bool AutoLoadRamWatch = false;
         public RecentFiles RecentWatches = new RecentFiles(8);
