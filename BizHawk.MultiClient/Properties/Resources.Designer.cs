@@ -143,9 +143,23 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Pause {
+            get {
+                object obj = ResourceManager.GetObject("Pause", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap PCEngineController {
             get {
                 object obj = ResourceManager.GetObject("PCEngineController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Play {
+            get {
+                object obj = ResourceManager.GetObject("Play", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -181,6 +195,20 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap SMSController {
             get {
                 object obj = ResourceManager.GetObject("SMSController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Stop {
+            get {
+                object obj = ResourceManager.GetObject("Stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ToolBox {
+            get {
+                object obj = ResourceManager.GetObject("ToolBox", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
