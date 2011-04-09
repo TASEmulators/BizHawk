@@ -58,6 +58,12 @@
 
         // Lua Console
         public RecentFiles RecentLua = new RecentFiles(8);
+        public bool AutoLoadLua = false;
+        public bool LuaConsoleSaveWindowPosition = true;
+        public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
+        public int LuaConsoleWndy = -1;
+        public int LuaConsoleWidth = -1;
+        public int LuaConsoleHeight = -1;
 
         // RamWatch Settings
         public bool AutoLoadRamWatch = false;
@@ -65,7 +71,7 @@
         public bool RamWatchSaveWindowPosition = true;
         public int RamWatchWndx = -1;   //Negative numbers will be ignored even with save window position set
         public int RamWatchWndy = -1;
-        public int RamWatchWidth = -1;  //Negative numbers will be ignored
+        public int RamWatchWidth = -1;  
         public int RamWatchHeight = -1;
         public bool RamWatchShowChangeColumn = true;
         public bool RamWatchShowPrevColumn = false;
