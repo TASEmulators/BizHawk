@@ -151,12 +151,14 @@
             this.saveConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.rAMWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rAMSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rAMPokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.luaConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.luaConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debuggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -182,7 +184,7 @@
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(470, 21);
+            this.menuStrip1.Size = new System.Drawing.Size(470, 23);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
@@ -490,6 +492,7 @@
             this.saveSlotToolStripMenuItem.Name = "saveSlotToolStripMenuItem";
             this.saveSlotToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.saveSlotToolStripMenuItem.Text = "SaveSlot";
+            this.saveSlotToolStripMenuItem.DropDownOpened += new System.EventHandler(this.saveSlotToolStripMenuItem_DropDownOpened);
             // 
             // selectSlot10ToolStripMenuItem
             // 
@@ -1126,61 +1129,76 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolBoxToolStripMenuItem,
+            this.toolStripSeparator12,
             this.rAMWatchToolStripMenuItem,
             this.rAMSearchToolStripMenuItem,
             this.rAMPokeToolStripMenuItem,
             this.hexEditorToolStripMenuItem,
-            this.luaConsoleToolStripMenuItem,
             this.toolStripSeparator11,
+            this.luaConsoleToolStripMenuItem,
             this.cheatsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
             this.toolsToolStripMenuItem.Text = "&Tools";
+            this.toolsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolsToolStripMenuItem_DropDownOpened);
+            // 
+            // toolBoxToolStripMenuItem
+            // 
+            this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
+            this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.toolBoxToolStripMenuItem.Text = "&Tool Box";
+            this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(149, 6);
             // 
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
             // rAMPokeToolStripMenuItem
             // 
             this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
             this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
-            // 
-            // luaConsoleToolStripMenuItem
-            // 
-            this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
-            this.luaConsoleToolStripMenuItem.Text = "Lua Console";
-            this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
+            // 
+            // luaConsoleToolStripMenuItem
+            // 
+            this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.luaConsoleToolStripMenuItem.Text = "Lua Console";
+            this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
             // 
             // cheatsToolStripMenuItem
             // 
             this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.cheatsToolStripMenuItem.Text = "Cheats";
             this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
             // 
@@ -1407,6 +1425,8 @@
 		private System.Windows.Forms.ToolStripMenuItem forceGDIPPresentationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem debuggerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem nametableViewerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolBoxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }
 

@@ -456,7 +456,7 @@ namespace BizHawk.MultiClient
             savestate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot8;
             savestate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot9;
             savestate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveSlot0;
-
+            saveNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SaveNamedState;
         }
 
         private void loadStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -471,6 +471,7 @@ namespace BizHawk.MultiClient
             loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot7;
             loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
             loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
+            loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadNamedState;
         }
 
         private void nametableViewerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -520,6 +521,35 @@ namespace BizHawk.MultiClient
             Global.Emulator.LoadStateText(reader);
             reader.Close();
             Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
+        }
+
+        private void toolBoxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadToolBox();
+        }
+
+        private void toolsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            toolBoxToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToolBox;
+            if (!ToolBox1.IsHandleCreated || ToolBox1.IsDisposed)
+                toolBoxToolStripMenuItem.Enabled = true;
+            else
+                toolBoxToolStripMenuItem.Enabled = false;
+        }
+
+        private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            selectSlot10ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot0;
+            selectSlot1ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot1;
+            selectSlot2ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot2;
+            selectSlot3ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot3;
+            selectSlot4ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot4;
+            selectSlot5ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot5;
+            selectSlot6ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot6;
+            selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot7;
+            selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot8;
+            selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot9;
+
         }
 	}
 }
