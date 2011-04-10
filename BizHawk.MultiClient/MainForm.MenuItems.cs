@@ -319,6 +319,11 @@ namespace BizHawk.MultiClient
 		{
 			BizHawk.MultiClient.tools.HotkeyWindow h = new BizHawk.MultiClient.tools.HotkeyWindow();
 			h.ShowDialog();
+            if (h.DialogResult == DialogResult.OK)
+            {
+                InitControls();
+                SyncControls();
+            }
 		}
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)

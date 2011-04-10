@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient.tools
             Global.Config.SelectSlot8 = IDW_ST8.Text;
             Global.Config.SelectSlot9 = IDW_ST9.Text;
             Global.Config.ToolBox = IDW_TOOLBOX.Text;
-            
+            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
