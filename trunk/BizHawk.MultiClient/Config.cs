@@ -190,6 +190,8 @@
         public string LoadSlot8 = "F8";
         public string LoadSlot9 = "F9";
         public string ToolBox = "T";
+        public string SaveNamedState = "Save Named State";
+        public string LoadNamedState = "Load Named State";
         
         
         // SMS / GameGear Settings
