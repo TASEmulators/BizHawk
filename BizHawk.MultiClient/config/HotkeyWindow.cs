@@ -57,6 +57,7 @@ namespace BizHawk.MultiClient.tools
             IDW_ST7.Text = Global.Config.SelectSlot7;
             IDW_ST8.Text = Global.Config.SelectSlot8;
             IDW_ST9.Text = Global.Config.SelectSlot9;
+            IDW_TOOLBOX.Text = Global.Config.ToolBox;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -108,7 +109,8 @@ namespace BizHawk.MultiClient.tools
             Global.Config.SelectSlot6 = IDW_ST6.Text;
             Global.Config.SelectSlot7 = IDW_ST7.Text;
             Global.Config.SelectSlot8 = IDW_ST8.Text;
-            Global.Config.SelectSlot9 = IDW_ST9.Text;            
+            Global.Config.SelectSlot9 = IDW_ST9.Text;
+            Global.Config.ToolBox = IDW_TOOLBOX.Text;
             
             this.Close();
         }
@@ -117,6 +119,5 @@ namespace BizHawk.MultiClient.tools
         {
             hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
         }
-       
     }
 }
