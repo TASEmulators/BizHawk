@@ -480,7 +480,23 @@ namespace BizHawk.MultiClient
         
         private void saveNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var sfd = new SaveFileDialog();
+            string path = Global.Game.SaveStatePrefix;
+            sfd.InitialDirectory = path;
+            sfd.FileName = "QuickSave0.State";
+            var file = new FileInfo(path);
+            if (file.Directory.Exists == false)
+                file.Directory.Create();
 
+            var result = sfd.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+
+            var writer = new StreamWriter(sfd.FileName);
+            
+            Global.Emulator.SaveStateText(writer);
+            writer.Close();
+            Global.RenderPanel.AddMessage(sfd.FileName + " saved");
         }
 
         private void loadNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -504,7 +520,6 @@ namespace BizHawk.MultiClient
             Global.Emulator.LoadStateText(reader);
             reader.Close();
             Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
-
         }
 	}
 }
