@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         public void SetControllersAsMnemonic(string mnemonic)
         {
             if (mnemonic.Length == 0) return;
-
+            
             if (mnemonic[1] != '.')
                 Controller.ForceButton("Up");
             if (mnemonic[2] != '.')
