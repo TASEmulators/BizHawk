@@ -149,7 +149,6 @@
         public RecentFiles RecentMovies = new RecentFiles(8);
 
         // Client Hotkey Bindings
-        //TODO: These should be allowed to be "", not every hotkey should have to be mapped somewhere
         public string HardResetBinding = "LeftShift+Tab"; //TODO: This needs to be Ctrl+R but how?
         public string FastForwardBinding = "J1 B6, Tab";
         public string RewindBinding = "J1 B5, LeftShift+R, RightShift+R";
@@ -190,8 +189,8 @@
         public string LoadSlot8 = "F8";
         public string LoadSlot9 = "F9";
         public string ToolBox = "T";
-        public string SaveNamedState = "Save Named State";
-        public string LoadNamedState = "Load Named State";
+        public string SaveNamedState = "";
+        public string LoadNamedState = "";
         
         
         // SMS / GameGear Settings
