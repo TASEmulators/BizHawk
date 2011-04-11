@@ -52,6 +52,11 @@
             this.label31 = new System.Windows.Forms.Label();
             this.IDW_QuickSave = new BizHawk.MultiClient.InputWidget();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.HR = new BizHawk.Core.HorizontalLine();
+            this.label48 = new System.Windows.Forms.Label();
+            this.IDW_LOADNAMEDSTATE = new BizHawk.MultiClient.InputWidget();
+            this.label47 = new System.Windows.Forms.Label();
+            this.IDW_SAVENAMEDSTATE = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS1 = new BizHawk.MultiClient.InputWidget();
             this.IDW_ST7 = new BizHawk.MultiClient.InputWidget();
             this.IDW_ST0 = new BizHawk.MultiClient.InputWidget();
@@ -141,7 +146,7 @@
             this.hotkeyTabs.Location = new System.Drawing.Point(12, 12);
             this.hotkeyTabs.Name = "hotkeyTabs";
             this.hotkeyTabs.SelectedIndex = 0;
-            this.hotkeyTabs.Size = new System.Drawing.Size(598, 290);
+            this.hotkeyTabs.Size = new System.Drawing.Size(598, 328);
             this.hotkeyTabs.TabIndex = 97;
             this.hotkeyTabs.TabStop = false;
             this.hotkeyTabs.SelectedIndexChanged += new System.EventHandler(this.hotkeyTabs_SelectedIndexChanged);
@@ -171,7 +176,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(590, 258);
+            this.tabPage1.Size = new System.Drawing.Size(590, 296);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -356,6 +361,11 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.HR);
+            this.tabPage2.Controls.Add(this.label48);
+            this.tabPage2.Controls.Add(this.IDW_LOADNAMEDSTATE);
+            this.tabPage2.Controls.Add(this.label47);
+            this.tabPage2.Controls.Add(this.IDW_SAVENAMEDSTATE);
             this.tabPage2.Controls.Add(this.IDW_SS1);
             this.tabPage2.Controls.Add(this.IDW_ST7);
             this.tabPage2.Controls.Add(this.IDW_ST0);
@@ -419,10 +429,49 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 28);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(590, 258);
+            this.tabPage2.Size = new System.Drawing.Size(590, 296);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Save States";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // HR
+            // 
+            this.HR.Location = new System.Drawing.Point(10, 251);
+            this.HR.Name = "HR";
+            this.HR.Size = new System.Drawing.Size(558, 2);
+            this.HR.TabIndex = 0;
+            // 
+            // label48
+            // 
+            this.label48.AutoSize = true;
+            this.label48.Location = new System.Drawing.Point(282, 268);
+            this.label48.Name = "label48";
+            this.label48.Size = new System.Drawing.Size(96, 13);
+            this.label48.TabIndex = 122;
+            this.label48.Text = "Load Named State";
+            // 
+            // IDW_LOADNAMEDSTATE
+            // 
+            this.IDW_LOADNAMEDSTATE.Location = new System.Drawing.Point(382, 264);
+            this.IDW_LOADNAMEDSTATE.Name = "IDW_LOADNAMEDSTATE";
+            this.IDW_LOADNAMEDSTATE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_LOADNAMEDSTATE.TabIndex = 121;
+            // 
+            // label47
+            // 
+            this.label47.AutoSize = true;
+            this.label47.Location = new System.Drawing.Point(55, 268);
+            this.label47.Name = "label47";
+            this.label47.Size = new System.Drawing.Size(97, 13);
+            this.label47.TabIndex = 120;
+            this.label47.Text = "Save Named State";
+            // 
+            // IDW_SAVENAMEDSTATE
+            // 
+            this.IDW_SAVENAMEDSTATE.Location = new System.Drawing.Point(154, 264);
+            this.IDW_SAVENAMEDSTATE.Name = "IDW_SAVENAMEDSTATE";
+            this.IDW_SAVENAMEDSTATE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_SAVENAMEDSTATE.TabIndex = 119;
             // 
             // IDW_SS1
             // 
@@ -920,7 +969,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 28);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(590, 258);
+            this.tabPage3.Size = new System.Drawing.Size(590, 296);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "MultiTrack";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1040,7 +1089,7 @@
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(22, 305);
+            this.label38.Location = new System.Drawing.Point(22, 343);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(153, 13);
             this.label38.TabIndex = 3;
@@ -1050,7 +1099,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(622, 327);
+            this.ClientSize = new System.Drawing.Size(622, 362);
             this.Controls.Add(this.label38);
             this.Controls.Add(this.IDB_CANCEL);
             this.Controls.Add(this.IDB_SAVE);
@@ -1172,5 +1221,10 @@
         private System.Windows.Forms.Label label45;
         private InputWidget IDW_TOOLBOX;
         private System.Windows.Forms.Label label46;
+        private System.Windows.Forms.Label label48;
+        private InputWidget IDW_LOADNAMEDSTATE;
+        private System.Windows.Forms.Label label47;
+        private InputWidget IDW_SAVENAMEDSTATE;
+        private BizHawk.Core.HorizontalLine HR;
     }
 }
