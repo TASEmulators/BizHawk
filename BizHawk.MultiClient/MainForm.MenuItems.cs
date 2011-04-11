@@ -496,6 +496,13 @@ namespace BizHawk.MultiClient
                 toolBoxToolStripMenuItem.Enabled = true;
             else
                 toolBoxToolStripMenuItem.Enabled = false;
+
+            rAMWatchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamWatch;
+            rAMSearchToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamSearch;
+            rAMPokeToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RamPoke;
+            hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HexEditor;
+            luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
+            cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
         }
 
         private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)

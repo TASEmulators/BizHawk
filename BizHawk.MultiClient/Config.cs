@@ -193,6 +193,12 @@
         public string LoadNamedState = "";
         public string PreviousSlot = "";
         public string NextSlot = "";
+        public string RamWatch = "";
+        public string RamSearch = "";
+        public string RamPoke = "";
+        public string HexEditor = "";
+        public string LuaConsole = "";
+        public string Cheats = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;

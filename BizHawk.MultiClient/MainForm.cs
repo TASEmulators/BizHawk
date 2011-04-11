@@ -260,7 +260,8 @@ namespace BizHawk.MultiClient
                 "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot"}
+                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot",
+                "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", "Lua Console", "Cheats"}
 		};
 
 		private void InitControls()
@@ -311,6 +312,13 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Load Named State", Global.Config.LoadNamedState);
             controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
             controls.BindMulti("Next Slot", Global.Config.NextSlot);
+            controls.BindMulti("Ram Watch", Global.Config.RamWatch);
+            controls.BindMulti("Ram Search", Global.Config.RamSearch);
+            controls.BindMulti("Ram Poke", Global.Config.RamPoke);
+            controls.BindMulti("Hex Editor", Global.Config.HexEditor);
+            controls.BindMulti("Lua Console", Global.Config.LuaConsole);
+            controls.BindMulti("Cheats", Global.Config.Cheats);
+
 			Global.ClientControls = controls;
 
 			var smsControls = new Controller(SMS.SmsController);
@@ -635,87 +643,87 @@ namespace BizHawk.MultiClient
 		public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
 		public void CheckHotkeys()
-		{
+        {
             if (Global.ClientControls["ToolBox"])
             {
                 LoadToolBox();
                 Global.ClientControls.UnpressButton("ToolBox");
             }
-            
+
             if (Global.ClientControls["Quick Save State"])
-			{
-				if (!IsNullEmulator())
-					SaveState("QuickSave" + SaveSlot.ToString());
-				Global.ClientControls.UnpressButton("Quick Save State");
-			}
+            {
+                if (!IsNullEmulator())
+                    SaveState("QuickSave" + SaveSlot.ToString());
+                Global.ClientControls.UnpressButton("Quick Save State");
+            }
 
-			if (Global.ClientControls["Quick Load State"])
-			{
-				if (!IsNullEmulator())
-					LoadState("QuickSave" + SaveSlot.ToString());
-				Global.ClientControls.UnpressButton("Quick Load State");
-			}
+            if (Global.ClientControls["Quick Load State"])
+            {
+                if (!IsNullEmulator())
+                    LoadState("QuickSave" + SaveSlot.ToString());
+                Global.ClientControls.UnpressButton("Quick Load State");
+            }
 
-			//the pause hotkey is ignored when we are frame advancing
-			if (!Global.ClientControls.IsPressed("Frame Advance"))
-			{
-				if (Global.ClientControls["Emulator Pause"])
-				{
-					Global.ClientControls.UnpressButton("Emulator Pause");
-					if (EmulatorPaused)
-						UnpauseEmulator();
-					else
-						PauseEmulator();
-				}
-			}
+            //the pause hotkey is ignored when we are frame advancing
+            if (!Global.ClientControls.IsPressed("Frame Advance"))
+            {
+                if (Global.ClientControls["Emulator Pause"])
+                {
+                    Global.ClientControls.UnpressButton("Emulator Pause");
+                    if (EmulatorPaused)
+                        UnpauseEmulator();
+                    else
+                        PauseEmulator();
+                }
+            }
 
-			if (Global.ClientControls["Hard Reset"])
-			{
-				Global.ClientControls.UnpressButton("Hard Reset");
-				LoadRom(CurrentlyOpenRom);
-			}
+            if (Global.ClientControls["Hard Reset"])
+            {
+                Global.ClientControls.UnpressButton("Hard Reset");
+                LoadRom(CurrentlyOpenRom);
+            }
 
-			if (Global.ClientControls["Screenshot"])
-			{
-				Global.ClientControls.UnpressButton("Screenshot");
-				TakeScreenshot();
-			}
+            if (Global.ClientControls["Screenshot"])
+            {
+                Global.ClientControls.UnpressButton("Screenshot");
+                TakeScreenshot();
+            }
 
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["SaveSlot" + i.ToString()])
-				{
-					if (!IsNullEmulator())
-						SaveState("QuickSave" + i.ToString());
-					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
-					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
-				}
-			}
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["LoadSlot" + i.ToString()])
-				{
-					if (!IsNullEmulator())
-						LoadState("QuickSave" + i.ToString());
-					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
-					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
-				}
-			}
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["SelectSlot" + i.ToString()])
-				{
-					SaveSlot = i;
-					SaveSlotSelectedMessage();
-					Global.ClientControls.UnpressButton("SelectSlot" + i.ToString());
-				}
-			}
+            for (int i = 0; i < 10; i++)
+            {
+                if (Global.ClientControls["SaveSlot" + i.ToString()])
+                {
+                    if (!IsNullEmulator())
+                        SaveState("QuickSave" + i.ToString());
+                    Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
+                    Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
+                }
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                if (Global.ClientControls["LoadSlot" + i.ToString()])
+                {
+                    if (!IsNullEmulator())
+                        LoadState("QuickSave" + i.ToString());
+                    Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
+                    Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
+                }
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                if (Global.ClientControls["SelectSlot" + i.ToString()])
+                {
+                    SaveSlot = i;
+                    SaveSlotSelectedMessage();
+                    Global.ClientControls.UnpressButton("SelectSlot" + i.ToString());
+                }
+            }
 
-			if (Global.ClientControls["Toggle Fullscreen"])
-			{
-				Global.ClientControls.UnpressButton("Toggle Fullscreen");
-				ToggleFullscreen();
-			}
+            if (Global.ClientControls["Toggle Fullscreen"])
+            {
+                Global.ClientControls.UnpressButton("Toggle Fullscreen");
+                ToggleFullscreen();
+            }
 
             if (Global.ClientControls["Save Named State"])
             {
@@ -740,7 +748,45 @@ namespace BizHawk.MultiClient
                 NextSlot();
                 Global.ClientControls.UnpressButton("Next Slot");
             }
-		}
+
+            if (Global.ClientControls["Ram Watch"])
+            {
+                LoadRamWatch();
+                Global.ClientControls.UnpressButton("Ram Watch");
+            }
+
+            if (Global.ClientControls["Ram Search"])
+            {
+                LoadRamSearch();
+                Global.ClientControls.UnpressButton("Ram Search");
+            }
+
+            if (Global.ClientControls["Ram Poke"])
+            {
+                RamPoke r = new RamPoke();
+                r.Show();
+                Global.ClientControls.UnpressButton("Ram Poke");
+            }
+
+            if (Global.ClientControls["Hex Editor"])
+            {
+                LoadHexEditor();
+                Global.ClientControls.UnpressButton("Hex Editor");
+            }
+
+            if (Global.ClientControls["Lua Console"])
+            {
+                var window = new BizHawk.MultiClient.tools.LuaWindow();
+                window.Show();
+                Global.ClientControls.UnpressButton("Lua Console");
+            }
+
+            if (Global.ClientControls["Cheats"])
+            {
+                LoadCheatsWindow();
+                Global.ClientControls.UnpressButton("Cheats");
+            }
+        }
                 
 		void StepRunLoop_Throttle()
 		{
