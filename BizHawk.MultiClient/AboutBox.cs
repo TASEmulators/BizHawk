@@ -81,6 +81,11 @@ namespace BizHawk.MultiClient
 
 			pictureBox2.Location = new Point((int)(353 + 800 + -800* Math.Abs(Math.Sin(ctr / 18.0))), pictureBox2.Location.Y);
 		}
+
+        private void AboutBox_Load(object sender, EventArgs e)
+        {
+
+        }
 	}
 
 	

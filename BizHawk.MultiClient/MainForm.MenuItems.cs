@@ -481,46 +481,12 @@ namespace BizHawk.MultiClient
         
         private void saveNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var sfd = new SaveFileDialog();
-            string path = Global.Game.SaveStatePrefix;
-            sfd.InitialDirectory = path;
-            sfd.FileName = "QuickSave0.State";
-            var file = new FileInfo(path);
-            if (file.Directory.Exists == false)
-                file.Directory.Create();
-
-            var result = sfd.ShowDialog();
-            if (result != DialogResult.OK)
-                return;
-
-            var writer = new StreamWriter(sfd.FileName);
-            
-            Global.Emulator.SaveStateText(writer);
-            writer.Close();
-            Global.RenderPanel.AddMessage(sfd.FileName + " saved");
+            SaveStateAs();
         }
 
         private void loadNamedStateToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var ofd = new OpenFileDialog();
-            ofd.InitialDirectory = Global.Game.SaveStatePrefix;
-            ofd.Filter = "Save States (*.State)|*.State|All File|*.*";
-            ofd.RestoreDirectory = true;
-
-            Global.Sound.StopSound();
-            var result = ofd.ShowDialog();
-            Global.Sound.StartSound();
-
-            if (result != DialogResult.OK)
-                return;
-
-            if (File.Exists(ofd.FileName) == false)
-                return;
-
-            var reader = new StreamReader(ofd.FileName);
-            Global.Emulator.LoadStateText(reader);
-            reader.Close();
-            Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
+            LoadStateAs();
         }
 
         private void toolBoxToolStripMenuItem_Click(object sender, EventArgs e)
@@ -549,7 +515,6 @@ namespace BizHawk.MultiClient
             selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot7;
             selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot8;
             selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot9;
-
         }
 	}
 }

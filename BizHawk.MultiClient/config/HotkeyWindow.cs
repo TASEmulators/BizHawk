@@ -58,6 +58,8 @@ namespace BizHawk.MultiClient.tools
             IDW_ST8.Text = Global.Config.SelectSlot8;
             IDW_ST9.Text = Global.Config.SelectSlot9;
             IDW_TOOLBOX.Text = Global.Config.ToolBox;
+            IDW_SAVENAMEDSTATE.Text = Global.Config.SaveNamedState;
+            IDW_LOADNAMEDSTATE.Text = Global.Config.LoadNamedState;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -111,6 +113,8 @@ namespace BizHawk.MultiClient.tools
             Global.Config.SelectSlot8 = IDW_ST8.Text;
             Global.Config.SelectSlot9 = IDW_ST9.Text;
             Global.Config.ToolBox = IDW_TOOLBOX.Text;
+            Global.Config.SaveNamedState = IDW_SAVENAMEDSTATE.Text;
+            Global.Config.LoadNamedState = IDW_LOADNAMEDSTATE.Text;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

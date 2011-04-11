@@ -307,6 +307,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("LoadSlot8", Global.Config.LoadSlot8);
 			controls.BindMulti("LoadSlot9", Global.Config.LoadSlot9);
             controls.BindMulti("ToolBox", Global.Config.ToolBox);
+            controls.BindMulti("Save Named State", Global.Config.SaveNamedState);
+            controls.BindMulti("Load Named State", Global.Config.LoadNamedState);
 			Global.ClientControls = controls;
 
 			var smsControls = new Controller(SMS.SmsController);
@@ -712,8 +714,20 @@ namespace BizHawk.MultiClient
 				Global.ClientControls.UnpressButton("Toggle Fullscreen");
 				ToggleFullscreen();
 			}
-		}
 
+            if (Global.ClientControls["Save Named State"])
+            {
+                SaveStateAs();
+                Global.ClientControls.UnpressButton("Save Named State");
+            }
+
+            if (Global.ClientControls["Load Named State"])
+            {
+                LoadStateAs();
+                Global.ClientControls.UnpressButton("Load Named State");
+            }
+		}
+                
 		void StepRunLoop_Throttle()
 		{
 			throttle.signal_fastForward = Global.ClientControls["Fast Forward"];
@@ -857,6 +871,27 @@ namespace BizHawk.MultiClient
 			Global.RenderPanel.AddMessage("Saved state: " + name);
 		}
 
+        private void SaveStateAs()
+        {
+            var sfd = new SaveFileDialog();
+            string path = Global.Game.SaveStatePrefix;
+            sfd.InitialDirectory = path;
+            sfd.FileName = "QuickSave0.State";
+            var file = new FileInfo(path);
+            if (file.Directory.Exists == false)
+                file.Directory.Create();
+
+            var result = sfd.ShowDialog();
+            if (result != DialogResult.OK)
+                return;
+
+            var writer = new StreamWriter(sfd.FileName);
+
+            Global.Emulator.SaveStateText(writer);
+            writer.Close();
+            Global.RenderPanel.AddMessage(sfd.FileName + " saved");
+        }
+
 		private void LoadState(string name)
 		{
 			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
@@ -869,6 +904,28 @@ namespace BizHawk.MultiClient
 			Global.RenderPanel.AddMessage("Loaded state: " + name);
 		}
 
+        private void LoadStateAs()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.InitialDirectory = Global.Game.SaveStatePrefix;
+            ofd.Filter = "Save States (*.State)|*.State|All File|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+
+            if (result != DialogResult.OK)
+                return;
+
+            if (File.Exists(ofd.FileName) == false)
+                return;
+
+            var reader = new StreamReader(ofd.FileName);
+            Global.Emulator.LoadStateText(reader);
+            reader.Close();
+            Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
+        }
 	
 		private void SaveSlotSelectedMessage()
 		{
