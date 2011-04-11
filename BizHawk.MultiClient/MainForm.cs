@@ -956,6 +956,10 @@ namespace BizHawk.MultiClient
 			forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
+
+            pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
+            powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+            resetToolStripMenuItem = Global.Config.Rese
 		}
 
 
@@ -1005,6 +1009,7 @@ namespace BizHawk.MultiClient
 				loadstate9toolStripMenuItem.Enabled = false;
 				loadstate0toolStripMenuItem.Enabled = false;
 
+                screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
 			}
 			else
 			{
