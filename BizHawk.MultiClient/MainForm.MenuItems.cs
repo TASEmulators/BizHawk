@@ -223,17 +223,12 @@ namespace BizHawk.MultiClient
 
 		private void previousSlotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SaveSlot == 0) SaveSlot = 9;       //Wrap to end of slot list
-			else if (SaveSlot > 9) SaveSlot = 9;   //Meh, just in case
-			else SaveSlot--;
-			SaveSlotSelectedMessage();
+            PreviousSlot();
 		}
 
 		private void nextSlotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
-			else SaveSlot++;
-			SaveSlotSelectedMessage();
+            NextSlot();
 		}
 
 		private void saveToCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
@@ -515,6 +510,10 @@ namespace BizHawk.MultiClient
             selectSlot7ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot7;
             selectSlot8ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot8;
             selectSlot9ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SelectSlot9;
+            previousSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PreviousSlot;
+            nextSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.NextSlot;
+            saveToCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickSave;
+            loadConfigToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickLoad;
         }
 	}
 }

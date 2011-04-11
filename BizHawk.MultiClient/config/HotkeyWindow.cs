@@ -60,6 +60,8 @@ namespace BizHawk.MultiClient.tools
             IDW_TOOLBOX.Text = Global.Config.ToolBox;
             IDW_SAVENAMEDSTATE.Text = Global.Config.SaveNamedState;
             IDW_LOADNAMEDSTATE.Text = Global.Config.LoadNamedState;
+            IDW_NEXTSLOT.Text = Global.Config.NextSlot;
+            IDW_PREVIOUSSLOT.Text = Global.Config.PreviousSlot;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -115,6 +117,9 @@ namespace BizHawk.MultiClient.tools
             Global.Config.ToolBox = IDW_TOOLBOX.Text;
             Global.Config.SaveNamedState = IDW_SAVENAMEDSTATE.Text;
             Global.Config.LoadNamedState = IDW_LOADNAMEDSTATE.Text;
+            Global.Config.PreviousSlot = IDW_PREVIOUSSLOT.Text;
+            Global.Config.NextSlot = IDW_NEXTSLOT.Text;
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }

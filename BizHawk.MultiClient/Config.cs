@@ -191,7 +191,8 @@
         public string ToolBox = "T";
         public string SaveNamedState = "";
         public string LoadNamedState = "";
-        
+        public string PreviousSlot = "";
+        public string NextSlot = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
