@@ -260,7 +260,7 @@ namespace BizHawk.MultiClient
                 "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox"}
+                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot"}
 		};
 
 		private void InitControls()
@@ -309,6 +309,8 @@ namespace BizHawk.MultiClient
             controls.BindMulti("ToolBox", Global.Config.ToolBox);
             controls.BindMulti("Save Named State", Global.Config.SaveNamedState);
             controls.BindMulti("Load Named State", Global.Config.LoadNamedState);
+            controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
+            controls.BindMulti("Next Slot", Global.Config.NextSlot);
 			Global.ClientControls = controls;
 
 			var smsControls = new Controller(SMS.SmsController);
@@ -725,6 +727,18 @@ namespace BizHawk.MultiClient
             {
                 LoadStateAs();
                 Global.ClientControls.UnpressButton("Load Named State");
+            }
+
+            if (Global.ClientControls["Previous Slot"])
+            {
+                PreviousSlot();
+                Global.ClientControls.UnpressButton("Previous Slot");
+            }
+
+            if (Global.ClientControls["Next Slot"])
+            {
+                NextSlot();
+                Global.ClientControls.UnpressButton("Next Slot");
             }
 		}
                 
@@ -1405,6 +1419,21 @@ namespace BizHawk.MultiClient
             if (!HexEditor1.IsDisposed)
                 HexEditor1.SaveConfigSettings();
             ConfigService.Save("config.ini", Global.Config);
+        }
+
+        private void PreviousSlot()
+        {
+            if (SaveSlot == 0) SaveSlot = 9;       //Wrap to end of slot list
+            else if (SaveSlot > 9) SaveSlot = 9;   //Meh, just in case
+            else SaveSlot--;
+            SaveSlotSelectedMessage();
+        }
+
+        private void NextSlot()
+        {
+            if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
+            else SaveSlot++;
+            SaveSlotSelectedMessage();
         }
 	}
 }
