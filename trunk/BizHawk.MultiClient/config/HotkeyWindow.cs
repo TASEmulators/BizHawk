@@ -62,6 +62,12 @@ namespace BizHawk.MultiClient.tools
             IDW_LOADNAMEDSTATE.Text = Global.Config.LoadNamedState;
             IDW_NEXTSLOT.Text = Global.Config.NextSlot;
             IDW_PREVIOUSSLOT.Text = Global.Config.PreviousSlot;
+            IDW_RamWatch.Text = Global.Config.RamWatch;
+            IDW_RamSearch.Text = Global.Config.RamSearch;
+            IDW_RamPoke.Text = Global.Config.RamPoke;
+            IDW_HexEditor.Text = Global.Config.HexEditor;
+            IDW_LuaConsole.Text = Global.Config.LuaConsole;
+            IDW_Cheats.Text = Global.Config.Cheats;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -119,6 +125,12 @@ namespace BizHawk.MultiClient.tools
             Global.Config.LoadNamedState = IDW_LOADNAMEDSTATE.Text;
             Global.Config.PreviousSlot = IDW_PREVIOUSSLOT.Text;
             Global.Config.NextSlot = IDW_NEXTSLOT.Text;
+            Global.Config.RamWatch = IDW_RamWatch.Text;
+            Global.Config.RamSearch = IDW_RamSearch.Text;
+            Global.Config.RamPoke = IDW_RamPoke.Text;
+            Global.Config.HexEditor = IDW_HexEditor.Text;
+            Global.Config.LuaConsole = IDW_LuaConsole.Text;
+            Global.Config.Cheats = IDW_Cheats.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -127,6 +139,11 @@ namespace BizHawk.MultiClient.tools
         private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
+        }
+
+        private void tabPage4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

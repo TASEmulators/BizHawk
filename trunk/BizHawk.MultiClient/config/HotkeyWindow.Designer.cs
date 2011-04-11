@@ -31,17 +31,27 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
             this.hotkeyTabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label46 = new System.Windows.Forms.Label();
+            this.IDW_FRAMEADVANCE = new BizHawk.MultiClient.InputWidget();
             this.label45 = new System.Windows.Forms.Label();
+            this.IDW_FULLSCREEN = new BizHawk.MultiClient.InputWidget();
+            this.IDW_SCREENSHOT = new BizHawk.MultiClient.InputWidget();
             this.label44 = new System.Windows.Forms.Label();
+            this.IDW_REWIND = new BizHawk.MultiClient.InputWidget();
             this.label37 = new System.Windows.Forms.Label();
+            this.IDW_FASTFORWARD = new BizHawk.MultiClient.InputWidget();
             this.label36 = new System.Windows.Forms.Label();
+            this.IDW_HARDRESET = new BizHawk.MultiClient.InputWidget();
             this.label35 = new System.Windows.Forms.Label();
+            this.IDW_PAUSE = new BizHawk.MultiClient.InputWidget();
             this.label34 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
+            this.IDW_QuickLoad = new BizHawk.MultiClient.InputWidget();
             this.label31 = new System.Windows.Forms.Label();
+            this.IDW_QuickSave = new BizHawk.MultiClient.InputWidget();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label50 = new System.Windows.Forms.Label();
+            this.label49 = new System.Windows.Forms.Label();
             this.HR = new BizHawk.Core.HorizontalLine();
             this.label48 = new System.Windows.Forms.Label();
             this.label47 = new System.Windows.Forms.Label();
@@ -75,25 +85,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label43 = new System.Windows.Forms.Label();
-            this.label42 = new System.Windows.Forms.Label();
-            this.label41 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
-            this.label39 = new System.Windows.Forms.Label();
-            this.IDB_SAVE = new System.Windows.Forms.Button();
-            this.IDB_CANCEL = new System.Windows.Forms.Button();
-            this.label38 = new System.Windows.Forms.Label();
-            this.IDW_TOOLBOX = new BizHawk.MultiClient.InputWidget();
-            this.IDW_FRAMEADVANCE = new BizHawk.MultiClient.InputWidget();
-            this.IDW_FULLSCREEN = new BizHawk.MultiClient.InputWidget();
-            this.IDW_SCREENSHOT = new BizHawk.MultiClient.InputWidget();
-            this.IDW_REWIND = new BizHawk.MultiClient.InputWidget();
-            this.IDW_FASTFORWARD = new BizHawk.MultiClient.InputWidget();
-            this.IDW_HARDRESET = new BizHawk.MultiClient.InputWidget();
-            this.IDW_PAUSE = new BizHawk.MultiClient.InputWidget();
-            this.IDW_QuickLoad = new BizHawk.MultiClient.InputWidget();
-            this.IDW_QuickSave = new BizHawk.MultiClient.InputWidget();
+            this.IDW_NEXTSLOT = new BizHawk.MultiClient.InputWidget();
+            this.IDW_PREVIOUSSLOT = new BizHawk.MultiClient.InputWidget();
             this.IDW_LOADNAMEDSTATE = new BizHawk.MultiClient.InputWidget();
             this.IDW_SAVENAMEDSTATE = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS1 = new BizHawk.MultiClient.InputWidget();
@@ -126,19 +119,40 @@
             this.IDW_SS4 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.IDW_TOGGLEMTRACK = new BizHawk.MultiClient.InputWidget();
             this.IDW_MTDECPLAYER = new BizHawk.MultiClient.InputWidget();
             this.IDW_MTINCPLAYER = new BizHawk.MultiClient.InputWidget();
+            this.label43 = new System.Windows.Forms.Label();
+            this.label42 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
             this.IDW_SELECTNONE = new BizHawk.MultiClient.InputWidget();
             this.IDW_MTSELECTALL = new BizHawk.MultiClient.InputWidget();
-            this.IDW_PREVIOUSSLOT = new BizHawk.MultiClient.InputWidget();
-            this.IDW_NEXTSLOT = new BizHawk.MultiClient.InputWidget();
-            this.label49 = new System.Windows.Forms.Label();
-            this.label50 = new System.Windows.Forms.Label();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.IDW_TOOLBOX = new BizHawk.MultiClient.InputWidget();
+            this.label46 = new System.Windows.Forms.Label();
+            this.label56 = new System.Windows.Forms.Label();
+            this.IDW_Cheats = new BizHawk.MultiClient.InputWidget();
+            this.label55 = new System.Windows.Forms.Label();
+            this.IDW_LuaConsole = new BizHawk.MultiClient.InputWidget();
+            this.label54 = new System.Windows.Forms.Label();
+            this.IDW_HexEditor = new BizHawk.MultiClient.InputWidget();
+            this.label53 = new System.Windows.Forms.Label();
+            this.IDW_RamPoke = new BizHawk.MultiClient.InputWidget();
+            this.label52 = new System.Windows.Forms.Label();
+            this.IDW_RamSearch = new BizHawk.MultiClient.InputWidget();
+            this.label51 = new System.Windows.Forms.Label();
+            this.IDW_RamWatch = new BizHawk.MultiClient.InputWidget();
+            this.IDB_SAVE = new System.Windows.Forms.Button();
+            this.IDB_CANCEL = new System.Windows.Forms.Button();
+            this.label38 = new System.Windows.Forms.Label();
             this.hotkeyTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // hotkeyTabs
@@ -146,6 +160,7 @@
             this.hotkeyTabs.Controls.Add(this.tabPage1);
             this.hotkeyTabs.Controls.Add(this.tabPage2);
             this.hotkeyTabs.Controls.Add(this.tabPage3);
+            this.hotkeyTabs.Controls.Add(this.tabPage4);
             this.hotkeyTabs.ItemSize = new System.Drawing.Size(65, 24);
             this.hotkeyTabs.Location = new System.Drawing.Point(12, 12);
             this.hotkeyTabs.Name = "hotkeyTabs";
@@ -157,8 +172,6 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.IDW_TOOLBOX);
-            this.tabPage1.Controls.Add(this.label46);
             this.tabPage1.Controls.Add(this.IDW_FRAMEADVANCE);
             this.tabPage1.Controls.Add(this.label45);
             this.tabPage1.Controls.Add(this.IDW_FULLSCREEN);
@@ -180,19 +193,19 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 28);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(590, 296);
+            this.tabPage1.Size = new System.Drawing.Size(590, 315);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label46
+            // IDW_FRAMEADVANCE
             // 
-            this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(207, 107);
-            this.label46.Name = "label46";
-            this.label46.Size = new System.Drawing.Size(49, 13);
-            this.label46.TabIndex = 14;
-            this.label46.Text = "Tool Box";
+            this.IDW_FRAMEADVANCE.AcceptsTab = true;
+            this.IDW_FRAMEADVANCE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(92, 8);
+            this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
+            this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_FRAMEADVANCE.TabIndex = 1;
             // 
             // label45
             // 
@@ -203,6 +216,24 @@
             this.label45.TabIndex = 13;
             this.label45.Text = "Full Screen";
             // 
+            // IDW_FULLSCREEN
+            // 
+            this.IDW_FULLSCREEN.AcceptsTab = true;
+            this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 80);
+            this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
+            this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
+            this.IDW_FULLSCREEN.TabIndex = 9;
+            // 
+            // IDW_SCREENSHOT
+            // 
+            this.IDW_SCREENSHOT.AcceptsTab = true;
+            this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 56);
+            this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
+            this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
+            this.IDW_SCREENSHOT.TabIndex = 8;
+            // 
             // label44
             // 
             this.label44.AutoSize = true;
@@ -211,6 +242,15 @@
             this.label44.Size = new System.Drawing.Size(61, 13);
             this.label44.TabIndex = 12;
             this.label44.Text = "Screenshot";
+            // 
+            // IDW_REWIND
+            // 
+            this.IDW_REWIND.AcceptsTab = true;
+            this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_REWIND.Location = new System.Drawing.Point(92, 104);
+            this.IDW_REWIND.Name = "IDW_REWIND";
+            this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
+            this.IDW_REWIND.TabIndex = 5;
             // 
             // label37
             // 
@@ -221,6 +261,15 @@
             this.label37.TabIndex = 4;
             this.label37.Text = "Rewind";
             // 
+            // IDW_FASTFORWARD
+            // 
+            this.IDW_FASTFORWARD.AcceptsTab = true;
+            this.IDW_FASTFORWARD.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_FASTFORWARD.Location = new System.Drawing.Point(92, 80);
+            this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
+            this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
+            this.IDW_FASTFORWARD.TabIndex = 4;
+            // 
             // label36
             // 
             this.label36.AutoSize = true;
@@ -230,6 +279,15 @@
             this.label36.TabIndex = 3;
             this.label36.Text = "Fast Forward";
             // 
+            // IDW_HARDRESET
+            // 
+            this.IDW_HARDRESET.AcceptsTab = true;
+            this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_HARDRESET.Location = new System.Drawing.Point(92, 56);
+            this.IDW_HARDRESET.Name = "IDW_HARDRESET";
+            this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
+            this.IDW_HARDRESET.TabIndex = 3;
+            // 
             // label35
             // 
             this.label35.AutoSize = true;
@@ -238,6 +296,15 @@
             this.label35.Size = new System.Drawing.Size(61, 13);
             this.label35.TabIndex = 2;
             this.label35.Text = "Hard Reset";
+            // 
+            // IDW_PAUSE
+            // 
+            this.IDW_PAUSE.AcceptsTab = true;
+            this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_PAUSE.Location = new System.Drawing.Point(92, 33);
+            this.IDW_PAUSE.Name = "IDW_PAUSE";
+            this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PAUSE.TabIndex = 2;
             // 
             // label34
             // 
@@ -266,6 +333,15 @@
             this.label32.TabIndex = 11;
             this.label32.Text = "Quick Load";
             // 
+            // IDW_QuickLoad
+            // 
+            this.IDW_QuickLoad.AcceptsTab = true;
+            this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_QuickLoad.Location = new System.Drawing.Point(293, 32);
+            this.IDW_QuickLoad.Name = "IDW_QuickLoad";
+            this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
+            this.IDW_QuickLoad.TabIndex = 7;
+            // 
             // label31
             // 
             this.label31.AutoSize = true;
@@ -275,20 +351,22 @@
             this.label31.TabIndex = 0;
             this.label31.Text = "Frame Advance";
             // 
+            // IDW_QuickSave
+            // 
+            this.IDW_QuickSave.AcceptsTab = true;
+            this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_QuickSave.Location = new System.Drawing.Point(293, 8);
+            this.IDW_QuickSave.Name = "IDW_QuickSave";
+            this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
+            this.IDW_QuickSave.TabIndex = 6;
+            // 
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.label50);
             this.tabPage2.Controls.Add(this.label49);
-            this.tabPage2.Controls.Add(this.IDW_NEXTSLOT);
-            this.tabPage2.Controls.Add(this.IDW_PREVIOUSSLOT);
             this.tabPage2.Controls.Add(this.HR);
             this.tabPage2.Controls.Add(this.label48);
-            this.tabPage2.Controls.Add(this.IDW_LOADNAMEDSTATE);
             this.tabPage2.Controls.Add(this.label47);
-            this.tabPage2.Controls.Add(this.IDW_SAVENAMEDSTATE);
-            this.tabPage2.Controls.Add(this.IDW_SS1);
-            this.tabPage2.Controls.Add(this.IDW_ST7);
-            this.tabPage2.Controls.Add(this.IDW_ST0);
             this.tabPage2.Controls.Add(this.label21);
             this.tabPage2.Controls.Add(this.label22);
             this.tabPage2.Controls.Add(this.label23);
@@ -319,6 +397,13 @@
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.IDW_NEXTSLOT);
+            this.tabPage2.Controls.Add(this.IDW_PREVIOUSSLOT);
+            this.tabPage2.Controls.Add(this.IDW_LOADNAMEDSTATE);
+            this.tabPage2.Controls.Add(this.IDW_SAVENAMEDSTATE);
+            this.tabPage2.Controls.Add(this.IDW_SS1);
+            this.tabPage2.Controls.Add(this.IDW_ST7);
+            this.tabPage2.Controls.Add(this.IDW_ST0);
             this.tabPage2.Controls.Add(this.IDW_ST9);
             this.tabPage2.Controls.Add(this.IDW_ST8);
             this.tabPage2.Controls.Add(this.IDW_ST6);
@@ -353,6 +438,24 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Save States";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label50
+            // 
+            this.label50.AutoSize = true;
+            this.label50.Location = new System.Drawing.Point(303, 291);
+            this.label50.Name = "label50";
+            this.label50.Size = new System.Drawing.Size(50, 13);
+            this.label50.TabIndex = 126;
+            this.label50.Text = "Next Slot";
+            // 
+            // label49
+            // 
+            this.label49.AutoSize = true;
+            this.label49.Location = new System.Drawing.Point(284, 268);
+            this.label49.Name = "label49";
+            this.label49.Size = new System.Drawing.Size(69, 13);
+            this.label49.TabIndex = 125;
+            this.label49.Text = "Previous Slot";
             // 
             // HR
             // 
@@ -649,189 +752,19 @@
             this.label1.TabIndex = 62;
             this.label1.Text = "Save State 1";
             // 
-            // tabPage3
+            // IDW_NEXTSLOT
             // 
-            this.tabPage3.Controls.Add(this.IDW_TOGGLEMTRACK);
-            this.tabPage3.Controls.Add(this.IDW_MTDECPLAYER);
-            this.tabPage3.Controls.Add(this.IDW_MTINCPLAYER);
-            this.tabPage3.Controls.Add(this.label43);
-            this.tabPage3.Controls.Add(this.label42);
-            this.tabPage3.Controls.Add(this.label41);
-            this.tabPage3.Controls.Add(this.label40);
-            this.tabPage3.Controls.Add(this.label39);
-            this.tabPage3.Controls.Add(this.IDW_SELECTNONE);
-            this.tabPage3.Controls.Add(this.IDW_MTSELECTALL);
-            this.tabPage3.Location = new System.Drawing.Point(4, 28);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(590, 296);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "MultiTrack";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.IDW_NEXTSLOT.Location = new System.Drawing.Point(361, 288);
+            this.IDW_NEXTSLOT.Name = "IDW_NEXTSLOT";
+            this.IDW_NEXTSLOT.Size = new System.Drawing.Size(100, 20);
+            this.IDW_NEXTSLOT.TabIndex = 124;
             // 
-            // label43
+            // IDW_PREVIOUSSLOT
             // 
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(6, 103);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(91, 13);
-            this.label43.TabIndex = 74;
-            this.label43.Text = "Decrement Player";
-            // 
-            // label42
-            // 
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(6, 81);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(86, 13);
-            this.label42.TabIndex = 73;
-            this.label42.Text = "Increment Player";
-            // 
-            // label41
-            // 
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(6, 59);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(66, 13);
-            this.label41.TabIndex = 71;
-            this.label41.Text = "Select None";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(6, 35);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(51, 13);
-            this.label40.TabIndex = 69;
-            this.label40.Text = "Select All";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(6, 12);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(93, 13);
-            this.label39.TabIndex = 67;
-            this.label39.Text = "Toggle MultiTrack";
-            // 
-            // IDB_SAVE
-            // 
-            this.IDB_SAVE.Location = new System.Drawing.Point(441, 9);
-            this.IDB_SAVE.Name = "IDB_SAVE";
-            this.IDB_SAVE.Size = new System.Drawing.Size(82, 22);
-            this.IDB_SAVE.TabIndex = 99;
-            this.IDB_SAVE.TabStop = false;
-            this.IDB_SAVE.Text = "Save";
-            this.IDB_SAVE.UseVisualStyleBackColor = true;
-            this.IDB_SAVE.Click += new System.EventHandler(this.IDB_SAVE_Click);
-            // 
-            // IDB_CANCEL
-            // 
-            this.IDB_CANCEL.Location = new System.Drawing.Point(528, 9);
-            this.IDB_CANCEL.Name = "IDB_CANCEL";
-            this.IDB_CANCEL.Size = new System.Drawing.Size(80, 22);
-            this.IDB_CANCEL.TabIndex = 98;
-            this.IDB_CANCEL.TabStop = false;
-            this.IDB_CANCEL.Text = "Cancel";
-            this.IDB_CANCEL.UseVisualStyleBackColor = true;
-            this.IDB_CANCEL.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(22, 362);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(153, 13);
-            this.label38.TabIndex = 3;
-            this.label38.Text = "* Escape clears a key mapping";
-            // 
-            // IDW_TOOLBOX
-            // 
-            this.IDW_TOOLBOX.Location = new System.Drawing.Point(293, 107);
-            this.IDW_TOOLBOX.Name = "IDW_TOOLBOX";
-            this.IDW_TOOLBOX.Size = new System.Drawing.Size(100, 20);
-            this.IDW_TOOLBOX.TabIndex = 15;
-            // 
-            // IDW_FRAMEADVANCE
-            // 
-            this.IDW_FRAMEADVANCE.AcceptsTab = true;
-            this.IDW_FRAMEADVANCE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_FRAMEADVANCE.Location = new System.Drawing.Point(92, 8);
-            this.IDW_FRAMEADVANCE.Name = "IDW_FRAMEADVANCE";
-            this.IDW_FRAMEADVANCE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FRAMEADVANCE.TabIndex = 1;
-            // 
-            // IDW_FULLSCREEN
-            // 
-            this.IDW_FULLSCREEN.AcceptsTab = true;
-            this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 80);
-            this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
-            this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FULLSCREEN.TabIndex = 9;
-            // 
-            // IDW_SCREENSHOT
-            // 
-            this.IDW_SCREENSHOT.AcceptsTab = true;
-            this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 56);
-            this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
-            this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_SCREENSHOT.TabIndex = 8;
-            // 
-            // IDW_REWIND
-            // 
-            this.IDW_REWIND.AcceptsTab = true;
-            this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_REWIND.Location = new System.Drawing.Point(92, 104);
-            this.IDW_REWIND.Name = "IDW_REWIND";
-            this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
-            this.IDW_REWIND.TabIndex = 5;
-            // 
-            // IDW_FASTFORWARD
-            // 
-            this.IDW_FASTFORWARD.AcceptsTab = true;
-            this.IDW_FASTFORWARD.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_FASTFORWARD.Location = new System.Drawing.Point(92, 80);
-            this.IDW_FASTFORWARD.Name = "IDW_FASTFORWARD";
-            this.IDW_FASTFORWARD.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FASTFORWARD.TabIndex = 4;
-            // 
-            // IDW_HARDRESET
-            // 
-            this.IDW_HARDRESET.AcceptsTab = true;
-            this.IDW_HARDRESET.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_HARDRESET.Location = new System.Drawing.Point(92, 56);
-            this.IDW_HARDRESET.Name = "IDW_HARDRESET";
-            this.IDW_HARDRESET.Size = new System.Drawing.Size(100, 20);
-            this.IDW_HARDRESET.TabIndex = 3;
-            // 
-            // IDW_PAUSE
-            // 
-            this.IDW_PAUSE.AcceptsTab = true;
-            this.IDW_PAUSE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_PAUSE.Location = new System.Drawing.Point(92, 33);
-            this.IDW_PAUSE.Name = "IDW_PAUSE";
-            this.IDW_PAUSE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_PAUSE.TabIndex = 2;
-            // 
-            // IDW_QuickLoad
-            // 
-            this.IDW_QuickLoad.AcceptsTab = true;
-            this.IDW_QuickLoad.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_QuickLoad.Location = new System.Drawing.Point(293, 32);
-            this.IDW_QuickLoad.Name = "IDW_QuickLoad";
-            this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
-            this.IDW_QuickLoad.TabIndex = 7;
-            // 
-            // IDW_QuickSave
-            // 
-            this.IDW_QuickSave.AcceptsTab = true;
-            this.IDW_QuickSave.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_QuickSave.Location = new System.Drawing.Point(293, 8);
-            this.IDW_QuickSave.Name = "IDW_QuickSave";
-            this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
-            this.IDW_QuickSave.TabIndex = 6;
+            this.IDW_PREVIOUSSLOT.Location = new System.Drawing.Point(361, 265);
+            this.IDW_PREVIOUSSLOT.Name = "IDW_PREVIOUSSLOT";
+            this.IDW_PREVIOUSSLOT.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PREVIOUSSLOT.TabIndex = 123;
             // 
             // IDW_LOADNAMEDSTATE
             // 
@@ -1058,6 +991,26 @@
             this.IDW_SS2.Size = new System.Drawing.Size(100, 20);
             this.IDW_SS2.TabIndex = 64;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.IDW_TOGGLEMTRACK);
+            this.tabPage3.Controls.Add(this.IDW_MTDECPLAYER);
+            this.tabPage3.Controls.Add(this.IDW_MTINCPLAYER);
+            this.tabPage3.Controls.Add(this.label43);
+            this.tabPage3.Controls.Add(this.label42);
+            this.tabPage3.Controls.Add(this.label41);
+            this.tabPage3.Controls.Add(this.label40);
+            this.tabPage3.Controls.Add(this.label39);
+            this.tabPage3.Controls.Add(this.IDW_SELECTNONE);
+            this.tabPage3.Controls.Add(this.IDW_MTSELECTALL);
+            this.tabPage3.Location = new System.Drawing.Point(4, 28);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(590, 315);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "MultiTrack";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
             // IDW_TOGGLEMTRACK
             // 
             this.IDW_TOGGLEMTRACK.AcceptsTab = true;
@@ -1085,6 +1038,51 @@
             this.IDW_MTINCPLAYER.Size = new System.Drawing.Size(100, 20);
             this.IDW_MTINCPLAYER.TabIndex = 75;
             // 
+            // label43
+            // 
+            this.label43.AutoSize = true;
+            this.label43.Location = new System.Drawing.Point(6, 103);
+            this.label43.Name = "label43";
+            this.label43.Size = new System.Drawing.Size(91, 13);
+            this.label43.TabIndex = 74;
+            this.label43.Text = "Decrement Player";
+            // 
+            // label42
+            // 
+            this.label42.AutoSize = true;
+            this.label42.Location = new System.Drawing.Point(6, 81);
+            this.label42.Name = "label42";
+            this.label42.Size = new System.Drawing.Size(86, 13);
+            this.label42.TabIndex = 73;
+            this.label42.Text = "Increment Player";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(6, 59);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(66, 13);
+            this.label41.TabIndex = 71;
+            this.label41.Text = "Select None";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(6, 35);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(51, 13);
+            this.label40.TabIndex = 69;
+            this.label40.Text = "Select All";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Location = new System.Drawing.Point(6, 12);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(93, 13);
+            this.label39.TabIndex = 67;
+            this.label39.Text = "Toggle MultiTrack";
+            // 
             // IDW_SELECTNONE
             // 
             this.IDW_SELECTNONE.AcceptsTab = true;
@@ -1103,37 +1101,184 @@
             this.IDW_MTSELECTALL.Size = new System.Drawing.Size(100, 20);
             this.IDW_MTSELECTALL.TabIndex = 70;
             // 
-            // IDW_PREVIOUSSLOT
+            // tabPage4
             // 
-            this.IDW_PREVIOUSSLOT.Location = new System.Drawing.Point(361, 265);
-            this.IDW_PREVIOUSSLOT.Name = "IDW_PREVIOUSSLOT";
-            this.IDW_PREVIOUSSLOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_PREVIOUSSLOT.TabIndex = 123;
+            this.tabPage4.Controls.Add(this.IDW_TOOLBOX);
+            this.tabPage4.Controls.Add(this.label46);
+            this.tabPage4.Controls.Add(this.label56);
+            this.tabPage4.Controls.Add(this.IDW_Cheats);
+            this.tabPage4.Controls.Add(this.label55);
+            this.tabPage4.Controls.Add(this.IDW_LuaConsole);
+            this.tabPage4.Controls.Add(this.label54);
+            this.tabPage4.Controls.Add(this.IDW_HexEditor);
+            this.tabPage4.Controls.Add(this.label53);
+            this.tabPage4.Controls.Add(this.IDW_RamPoke);
+            this.tabPage4.Controls.Add(this.label52);
+            this.tabPage4.Controls.Add(this.IDW_RamSearch);
+            this.tabPage4.Controls.Add(this.label51);
+            this.tabPage4.Controls.Add(this.IDW_RamWatch);
+            this.tabPage4.Location = new System.Drawing.Point(4, 28);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(590, 315);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Tools";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPage4.Click += new System.EventHandler(this.tabPage4_Click);
             // 
-            // IDW_NEXTSLOT
+            // IDW_TOOLBOX
             // 
-            this.IDW_NEXTSLOT.Location = new System.Drawing.Point(361, 288);
-            this.IDW_NEXTSLOT.Name = "IDW_NEXTSLOT";
-            this.IDW_NEXTSLOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_NEXTSLOT.TabIndex = 124;
+            this.IDW_TOOLBOX.Location = new System.Drawing.Point(87, 164);
+            this.IDW_TOOLBOX.Name = "IDW_TOOLBOX";
+            this.IDW_TOOLBOX.Size = new System.Drawing.Size(100, 20);
+            this.IDW_TOOLBOX.TabIndex = 82;
             // 
-            // label49
+            // label46
             // 
-            this.label49.AutoSize = true;
-            this.label49.Location = new System.Drawing.Point(284, 268);
-            this.label49.Name = "label49";
-            this.label49.Size = new System.Drawing.Size(69, 13);
-            this.label49.TabIndex = 125;
-            this.label49.Text = "Previous Slot";
+            this.label46.AutoSize = true;
+            this.label46.Location = new System.Drawing.Point(26, 167);
+            this.label46.Name = "label46";
+            this.label46.Size = new System.Drawing.Size(49, 13);
+            this.label46.TabIndex = 81;
+            this.label46.Text = "Tool Box";
             // 
-            // label50
+            // label56
             // 
-            this.label50.AutoSize = true;
-            this.label50.Location = new System.Drawing.Point(303, 291);
-            this.label50.Name = "label50";
-            this.label50.Size = new System.Drawing.Size(50, 13);
-            this.label50.TabIndex = 126;
-            this.label50.Text = "Next Slot";
+            this.label56.AutoSize = true;
+            this.label56.Location = new System.Drawing.Point(35, 141);
+            this.label56.Name = "label56";
+            this.label56.Size = new System.Drawing.Size(40, 13);
+            this.label56.TabIndex = 80;
+            this.label56.Text = "Cheats";
+            // 
+            // IDW_Cheats
+            // 
+            this.IDW_Cheats.AcceptsTab = true;
+            this.IDW_Cheats.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_Cheats.Location = new System.Drawing.Point(87, 138);
+            this.IDW_Cheats.Name = "IDW_Cheats";
+            this.IDW_Cheats.Size = new System.Drawing.Size(100, 20);
+            this.IDW_Cheats.TabIndex = 79;
+            // 
+            // label55
+            // 
+            this.label55.AutoSize = true;
+            this.label55.Location = new System.Drawing.Point(10, 115);
+            this.label55.Name = "label55";
+            this.label55.Size = new System.Drawing.Size(66, 13);
+            this.label55.TabIndex = 78;
+            this.label55.Text = "Lua Console";
+            // 
+            // IDW_LuaConsole
+            // 
+            this.IDW_LuaConsole.AcceptsTab = true;
+            this.IDW_LuaConsole.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_LuaConsole.Location = new System.Drawing.Point(87, 112);
+            this.IDW_LuaConsole.Name = "IDW_LuaConsole";
+            this.IDW_LuaConsole.Size = new System.Drawing.Size(100, 20);
+            this.IDW_LuaConsole.TabIndex = 77;
+            // 
+            // label54
+            // 
+            this.label54.AutoSize = true;
+            this.label54.Location = new System.Drawing.Point(19, 91);
+            this.label54.Name = "label54";
+            this.label54.Size = new System.Drawing.Size(56, 13);
+            this.label54.TabIndex = 76;
+            this.label54.Text = "Hex Editor";
+            // 
+            // IDW_HexEditor
+            // 
+            this.IDW_HexEditor.AcceptsTab = true;
+            this.IDW_HexEditor.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_HexEditor.Location = new System.Drawing.Point(87, 88);
+            this.IDW_HexEditor.Name = "IDW_HexEditor";
+            this.IDW_HexEditor.Size = new System.Drawing.Size(100, 20);
+            this.IDW_HexEditor.TabIndex = 75;
+            // 
+            // label53
+            // 
+            this.label53.AutoSize = true;
+            this.label53.Location = new System.Drawing.Point(19, 66);
+            this.label53.Name = "label53";
+            this.label53.Size = new System.Drawing.Size(57, 13);
+            this.label53.TabIndex = 74;
+            this.label53.Text = "Ram Poke";
+            // 
+            // IDW_RamPoke
+            // 
+            this.IDW_RamPoke.AcceptsTab = true;
+            this.IDW_RamPoke.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_RamPoke.Location = new System.Drawing.Point(87, 63);
+            this.IDW_RamPoke.Name = "IDW_RamPoke";
+            this.IDW_RamPoke.Size = new System.Drawing.Size(100, 20);
+            this.IDW_RamPoke.TabIndex = 73;
+            // 
+            // label52
+            // 
+            this.label52.AutoSize = true;
+            this.label52.Location = new System.Drawing.Point(10, 41);
+            this.label52.Name = "label52";
+            this.label52.Size = new System.Drawing.Size(66, 13);
+            this.label52.TabIndex = 72;
+            this.label52.Text = "Ram Search";
+            // 
+            // IDW_RamSearch
+            // 
+            this.IDW_RamSearch.AcceptsTab = true;
+            this.IDW_RamSearch.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_RamSearch.Location = new System.Drawing.Point(87, 38);
+            this.IDW_RamSearch.Name = "IDW_RamSearch";
+            this.IDW_RamSearch.Size = new System.Drawing.Size(100, 20);
+            this.IDW_RamSearch.TabIndex = 71;
+            // 
+            // label51
+            // 
+            this.label51.AutoSize = true;
+            this.label51.Location = new System.Drawing.Point(12, 16);
+            this.label51.Name = "label51";
+            this.label51.Size = new System.Drawing.Size(64, 13);
+            this.label51.TabIndex = 70;
+            this.label51.Text = "Ram Watch";
+            // 
+            // IDW_RamWatch
+            // 
+            this.IDW_RamWatch.AcceptsTab = true;
+            this.IDW_RamWatch.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_RamWatch.Location = new System.Drawing.Point(87, 13);
+            this.IDW_RamWatch.Name = "IDW_RamWatch";
+            this.IDW_RamWatch.Size = new System.Drawing.Size(100, 20);
+            this.IDW_RamWatch.TabIndex = 69;
+            // 
+            // IDB_SAVE
+            // 
+            this.IDB_SAVE.Location = new System.Drawing.Point(441, 9);
+            this.IDB_SAVE.Name = "IDB_SAVE";
+            this.IDB_SAVE.Size = new System.Drawing.Size(82, 22);
+            this.IDB_SAVE.TabIndex = 99;
+            this.IDB_SAVE.TabStop = false;
+            this.IDB_SAVE.Text = "Save";
+            this.IDB_SAVE.UseVisualStyleBackColor = true;
+            this.IDB_SAVE.Click += new System.EventHandler(this.IDB_SAVE_Click);
+            // 
+            // IDB_CANCEL
+            // 
+            this.IDB_CANCEL.Location = new System.Drawing.Point(528, 9);
+            this.IDB_CANCEL.Name = "IDB_CANCEL";
+            this.IDB_CANCEL.Size = new System.Drawing.Size(80, 22);
+            this.IDB_CANCEL.TabIndex = 98;
+            this.IDB_CANCEL.TabStop = false;
+            this.IDB_CANCEL.Text = "Cancel";
+            this.IDB_CANCEL.UseVisualStyleBackColor = true;
+            this.IDB_CANCEL.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Location = new System.Drawing.Point(22, 362);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(153, 13);
+            this.label38.TabIndex = 3;
+            this.label38.Text = "* Escape clears a key mapping";
             // 
             // HotkeyWindow
             // 
@@ -1157,6 +1302,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1259,8 +1406,6 @@
         private InputWidget IDW_SCREENSHOT;
         private System.Windows.Forms.Label label44;
         private System.Windows.Forms.Label label45;
-        private InputWidget IDW_TOOLBOX;
-        private System.Windows.Forms.Label label46;
         private System.Windows.Forms.Label label48;
         private InputWidget IDW_LOADNAMEDSTATE;
         private System.Windows.Forms.Label label47;
@@ -1270,5 +1415,20 @@
         private System.Windows.Forms.Label label49;
         private InputWidget IDW_NEXTSLOT;
         private InputWidget IDW_PREVIOUSSLOT;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.Label label52;
+        private InputWidget IDW_RamSearch;
+        private System.Windows.Forms.Label label51;
+        private InputWidget IDW_RamWatch;
+        private System.Windows.Forms.Label label54;
+        private InputWidget IDW_HexEditor;
+        private System.Windows.Forms.Label label53;
+        private InputWidget IDW_RamPoke;
+        private System.Windows.Forms.Label label56;
+        private InputWidget IDW_Cheats;
+        private System.Windows.Forms.Label label55;
+        private InputWidget IDW_LuaConsole;
+        private InputWidget IDW_TOOLBOX;
+        private System.Windows.Forms.Label label46;
     }
 }
