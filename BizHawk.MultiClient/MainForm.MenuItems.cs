@@ -515,5 +515,10 @@ namespace BizHawk.MultiClient
             saveToCurrentSlotToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickSave;
             loadConfigToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.QuickLoad;
         }
+
+        private void switchToFullscreenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleFullscreen();
+        }
 	}
 }

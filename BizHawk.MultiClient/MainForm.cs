@@ -959,7 +959,6 @@ namespace BizHawk.MultiClient
 
             pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
             powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
-            resetToolStripMenuItem = Global.Config.Rese
 		}
 
 
@@ -1329,6 +1328,8 @@ namespace BizHawk.MultiClient
 				case 5: x5MenuItem.Checked = true; break;
 				case 10: mzMenuItem.Checked = true; break;
 			}
+
+            switchToFullscreenToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleFullscreenBinding;
 		}
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
