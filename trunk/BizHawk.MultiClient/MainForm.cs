@@ -456,9 +456,11 @@ namespace BizHawk.MultiClient
 
 		void SyncControls()
 		{
-			switch (Global.Game.System)
+            if (Global.Game == null) return;
+            switch (Global.Game.System)
 			{
-				case "SG":
+				
+                case "SG":
 				case "SMS":
 					Global.Emulator.Controller = Global.SMSControls;
 					break;
@@ -482,6 +484,8 @@ namespace BizHawk.MultiClient
 					break;
 				case "GB":
 					break;
+                default:
+                    break;
 			}
 
 		}
