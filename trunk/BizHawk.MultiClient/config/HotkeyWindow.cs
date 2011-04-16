@@ -70,6 +70,10 @@ namespace BizHawk.MultiClient.tools
             IDW_Cheats.Text = Global.Config.Cheats;
             IDW_OpenROM.Text = Global.Config.OpenROM;
             IDW_CloseROM.Text = Global.Config.CloseROM;
+            IDW_DisplayFPS.Text = Global.Config.FPSBinding;
+            IDW_FrameCounter.Text = Global.Config.FrameCounterBinding;
+            IDW_LagCounter.Text = Global.Config.LagCounterBinding;
+            IDW_InputDisplay.Text = Global.Config.InputDisplayBinding;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -135,6 +139,10 @@ namespace BizHawk.MultiClient.tools
             Global.Config.Cheats = IDW_Cheats.Text;
             Global.Config.OpenROM = IDW_OpenROM.Text;
             Global.Config.CloseROM = IDW_CloseROM.Text;
+            Global.Config.FPSBinding = IDW_DisplayFPS.Text;
+            Global.Config.FrameCounterBinding = IDW_FrameCounter.Text;
+            Global.Config.LagCounterBinding = IDW_LagCounter.Text;
+            Global.Config.InputDisplayBinding = IDW_InputDisplay.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -143,11 +151,6 @@ namespace BizHawk.MultiClient.tools
         private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
-        }
-
-        private void tabPage4_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

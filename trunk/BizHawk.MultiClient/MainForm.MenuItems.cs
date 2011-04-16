@@ -313,22 +313,22 @@ namespace BizHawk.MultiClient
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayFPS ^= true;
+            ToggleFPS();
 		}
 
 		private void displayFrameCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayFrameCounter ^= true;
+            ToggleFrameCounter();
 		}
 
 		private void displayInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayInput ^= true;
+            ToggleInputDisplay();
 		}
 
 		private void displayLagCounterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayLagCounter ^= true;
+            ToggleLagCounter();
 		}
 
 		private void screenshotF12ToolStripMenuItem_Click(object sender, EventArgs e)
