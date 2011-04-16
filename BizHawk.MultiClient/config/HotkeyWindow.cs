@@ -68,6 +68,8 @@ namespace BizHawk.MultiClient.tools
             IDW_HexEditor.Text = Global.Config.HexEditor;
             IDW_LuaConsole.Text = Global.Config.LuaConsole;
             IDW_Cheats.Text = Global.Config.Cheats;
+            IDW_OpenROM.Text = Global.Config.OpenROM;
+            IDW_CloseROM.Text = Global.Config.CloseROM;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -131,6 +133,8 @@ namespace BizHawk.MultiClient.tools
             Global.Config.HexEditor = IDW_HexEditor.Text;
             Global.Config.LuaConsole = IDW_LuaConsole.Text;
             Global.Config.Cheats = IDW_Cheats.Text;
+            Global.Config.OpenROM = IDW_OpenROM.Text;
+            Global.Config.CloseROM = IDW_CloseROM.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

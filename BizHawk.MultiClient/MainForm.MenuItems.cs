@@ -243,17 +243,7 @@ namespace BizHawk.MultiClient
 
 		private void closeROMToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CloseGame();
-			Global.Emulator = new NullEmulator();
-			Global.Game = null;
-            RamSearch1.Restart();
-            HexEditor1.Restart();
-            NESPPU1.Restart();
-            NESNameTableViewer1.Restart();
-            NESDebug1.Restart();
-            Cheats1.Restart();
-			Text = "BizHawk";
-            HandlePlatformMenus();
+            CloseROM();
 		}
 
 		private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -376,19 +366,7 @@ namespace BizHawk.MultiClient
 
 		private void openROMToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
-			ofd.InitialDirectory = Global.Config.LastRomPath;
-			ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			Global.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-			var file = new FileInfo(ofd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
-			LoadRom(file.FullName);
+            OpenROM();
 		}
 
 		private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)

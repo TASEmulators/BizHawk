@@ -199,6 +199,8 @@
         public string HexEditor = "";
         public string LuaConsole = "";
         public string Cheats = "";
+        public string OpenROM = "";
+        public string CloseROM = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
