@@ -261,7 +261,7 @@ namespace BizHawk.MultiClient
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
                 "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot",
-                "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", "Lua Console", "Cheats"}
+                "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", "Lua Console", "Cheats", "Open ROM", "Close ROM"}
 		};
 
 		private void InitControls()
@@ -318,6 +318,8 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Hex Editor", Global.Config.HexEditor);
             controls.BindMulti("Lua Console", Global.Config.LuaConsole);
             controls.BindMulti("Cheats", Global.Config.Cheats);
+            controls.BindMulti("Open ROM", Global.Config.OpenROM);
+            controls.BindMulti("Close ROM", Global.Config.CloseROM);
 
 			Global.ClientControls = controls;
 
@@ -789,6 +791,18 @@ namespace BizHawk.MultiClient
             {
                 LoadCheatsWindow();
                 Global.ClientControls.UnpressButton("Cheats");
+            }
+
+            if (Global.ClientControls["Open ROM"])
+            {
+                OpenROM();
+                Global.ClientControls.UnpressButton("Open ROM");
+            }
+
+            if (Global.ClientControls["Close ROM"])
+            {
+                CloseROM();
+                Global.ClientControls.UnpressButton("Close ROM");
             }
         }
                 
@@ -1418,6 +1432,38 @@ namespace BizHawk.MultiClient
             //Hide platform specific menus until an appropriate ROM is loaded
             NESToolStripMenuItem.Visible = false;
 		}
+
+        private void OpenROM()
+        {
+            var ofd = new OpenFileDialog();
+            ofd.InitialDirectory = Global.Config.LastRomPath;
+            ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return;
+            var file = new FileInfo(ofd.FileName);
+            Global.Config.LastRomPath = file.DirectoryName;
+            LoadRom(file.FullName);
+        }
+
+        private void CloseROM()
+        {
+            CloseGame();
+            Global.Emulator = new NullEmulator();
+            Global.Game = null;
+            RamSearch1.Restart();
+            HexEditor1.Restart();
+            NESPPU1.Restart();
+            NESNameTableViewer1.Restart();
+            NESDebug1.Restart();
+            Cheats1.Restart();
+            Text = "BizHawk";
+            HandlePlatformMenus();
+        }
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
