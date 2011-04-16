@@ -201,6 +201,10 @@
         public string Cheats = "";
         public string OpenROM = "";
         public string CloseROM = "";
+        public string FrameCounterBinding = "";
+        public string FPSBinding = "";
+        public string LagCounterBinding = "";
+        public string InputDisplayBinding = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;

@@ -260,8 +260,8 @@ namespace BizHawk.MultiClient
                 "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot",
-                "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", "Lua Console", "Cheats", "Open ROM", "Close ROM"}
+                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
+                "Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input"}
 		};
 
 		private void InitControls()
@@ -320,6 +320,10 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Cheats", Global.Config.Cheats);
             controls.BindMulti("Open ROM", Global.Config.OpenROM);
             controls.BindMulti("Close ROM", Global.Config.CloseROM);
+            controls.BindMulti("Display FPS", Global.Config.FPSBinding);
+            controls.BindMulti("Display FrameCounter", Global.Config.FrameCounterBinding);
+            controls.BindMulti("Display LagCounter", Global.Config.LagCounterBinding);
+            controls.BindMulti("Display Input", Global.Config.InputDisplayBinding);
 
 			Global.ClientControls = controls;
 
@@ -804,6 +808,30 @@ namespace BizHawk.MultiClient
                 CloseROM();
                 Global.ClientControls.UnpressButton("Close ROM");
             }
+            //"Display LagCounter", "Display Input"}
+            if (Global.ClientControls["Display FPS"])
+            {
+                ToggleFPS();
+                Global.ClientControls.UnpressButton("Display FPS");
+            }
+
+            if (Global.ClientControls["Display FrameCounter"])
+            {
+                ToggleFrameCounter();
+                Global.ClientControls.UnpressButton("Display FrameCounter");
+            }
+
+            if (Global.ClientControls["Display LagCounter"])
+            {
+                ToggleLagCounter();
+                Global.ClientControls.UnpressButton("Display LagCounter");
+            }
+
+            if (Global.ClientControls["Display Input"])
+            {
+                ToggleInputDisplay();
+                Global.ClientControls.UnpressButton("Display Input");
+            }
         }
                 
 		void StepRunLoop_Throttle()
@@ -1071,8 +1099,6 @@ namespace BizHawk.MultiClient
 				loadstate8toolStripMenuItem.Enabled = false;
 				loadstate9toolStripMenuItem.Enabled = false;
 				loadstate0toolStripMenuItem.Enabled = false;
-
-                screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
 			}
 			else
 			{
@@ -1113,9 +1139,9 @@ namespace BizHawk.MultiClient
 			selectSlot6ToolStripMenuItem.Checked = false;
 			selectSlot7ToolStripMenuItem.Checked = false;
 			selectSlot8ToolStripMenuItem.Checked = false;
-			selectSlot9ToolStripMenuItem.Checked = false;
-
+            selectSlot9ToolStripMenuItem.Checked = false;
 			selectSlot1ToolStripMenuItem.Checked = false;
+
 			switch (SaveSlot)
 			{
 				case 0:
@@ -1158,6 +1184,8 @@ namespace BizHawk.MultiClient
 				autoloadMostRecentToolStripMenuItem.Checked = false;
 
 			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
+            openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenROM;
+            closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.CloseROM;
 		}
 
 		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1378,6 +1406,11 @@ namespace BizHawk.MultiClient
 			displayLagCounterToolStripMenuItem.Checked = Global.Config.DisplayLagCounter;
 			displayInputToolStripMenuItem.Checked = Global.Config.DisplayInput;
 
+            displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FPSBinding;
+            displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FrameCounterBinding;
+            displayLagCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LagCounterBinding;
+            displayInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.InputDisplayBinding;
+
 			x1MenuItem.Checked = false;
 			x2MenuItem.Checked = false;
 			x3MenuItem.Checked = false;
@@ -1536,6 +1569,26 @@ namespace BizHawk.MultiClient
             if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
             else SaveSlot++;
             SaveSlotSelectedMessage();
+        }
+
+        private void ToggleFPS()
+        {
+            Global.Config.DisplayFPS ^= true;
+        }
+
+        private void ToggleFrameCounter()
+        {
+            Global.Config.DisplayFrameCounter ^= true;
+        }
+
+        private void ToggleLagCounter()
+        {
+            Global.Config.DisplayLagCounter ^= true;
+        }
+
+        private void ToggleInputDisplay()
+        {
+            Global.Config.DisplayInput ^= true;
         }
 	}
 }
