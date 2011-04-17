@@ -74,40 +74,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					reset();
 				}
 
-				public void SaveStateBinary(BinaryWriter bw)
+				public void SyncState(Serializer ser)
 				{
-					bw.Write(fv);
-					bw.Write(v);
-					bw.Write(h);
-					bw.Write(vt);
-					bw.Write(ht);
-					bw.Write(_fv);
-					bw.Write(_v);
-					bw.Write(_h);
-					bw.Write(_vt);
-					bw.Write(_ht);
-					bw.Write(fh);
-					bw.Write(status.cycle);
-					bw.Write(status.end_cycle);
-					bw.Write(status.sl);
-				}
-
-				public void LoadStateBinary(BinaryReader br)
-				{
-					fv = br.ReadInt32();
-					v = br.ReadInt32();
-					h = br.ReadInt32();
-					vt = br.ReadInt32();
-					ht = br.ReadInt32();
-					_fv = br.ReadInt32();
-					_v = br.ReadInt32();
-					_h = br.ReadInt32();
-					_vt = br.ReadInt32();
-					_ht = br.ReadInt32();
-					fh = br.ReadInt32();
-					status.cycle = br.ReadInt32();
-					status.end_cycle = br.ReadInt32();
-					status.sl = br.ReadInt32();
+					ser.Sync("fv", ref fv);
+					ser.Sync("v", ref v);
+					ser.Sync("h", ref h);
+					ser.Sync("vt", ref vt);
+					ser.Sync("ht", ref ht);
+					ser.Sync("_fv", ref _fv);
+					ser.Sync("_v", ref _v);
+					ser.Sync("_h", ref _h);
+					ser.Sync("_vt", ref _vt);
+					ser.Sync("_ht", ref _ht);
+					ser.Sync("fh", ref fh);
+					ser.Sync("status.cycle", ref status.cycle);
+					ser.Sync("status.end_cycle", ref status.end_cycle);
+					ser.Sync("status.sl", ref status.sl);
 				}
 
 				//normal clocked regs. as the game can interfere with these at any time, they need to be savestated

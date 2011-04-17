@@ -62,11 +62,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr = (value >> 4) & chr_mask;
 		}
 
-		public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
 		{
-			base.SyncStateBinary(ser);
-			ser.Sync(ref chr);
-			ser.Sync(ref prg);
+			base.SyncState(ser);
+			ser.Sync("chr", ref chr);
+			ser.Sync("prg", ref prg);
 		}
 
 	}

@@ -306,7 +306,7 @@ namespace BizHawk
 		}
 
 		//these don't work??? they dont get chosen by compiler
-		public static void Write(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
+		public static void WriteBit(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
 		public static Bit ReadBit(this BinaryReader br) { return br.ReadBoolean(); }
     }
 
@@ -420,7 +420,29 @@ namespace BizHawk
 			}
 		}
 
-		//could be extension method
+		public static short[] ByteBufferToShortBuffer(byte[] buf)
+		{
+			int num = buf.Length/2;
+			short[] ret = new short[num];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i] =(short)(buf[i * 2] | (buf[i * 2 + 1] << 8));
+			}
+			return ret;
+		}
+
+		public static byte[] ShortBufferToByteBuffer(short[] buf)
+		{
+			int num = buf.Length;
+			byte[] ret = new byte[num * 2];
+			for (int i = 0; i < num; i++)
+			{
+				ret[i * 2 + 0] = (byte)(buf[i] & 0xFF);
+				ret[i * 2 + 1] = (byte)((buf[i]>>8) & 0xFF);
+			}
+			return ret;
+		}
+
 		public static byte[] ReadByteBuffer(BinaryReader br, bool return_null)
 		{
 			int len = br.ReadInt32();
@@ -515,89 +537,247 @@ namespace BizHawk
 
 	}
 
-	public class BinarySerializer
+	public class Serializer
 	{
 		BinaryReader br;
 		BinaryWriter bw;
+		TextReader tr;
+		TextWriter tw;
 		public BinaryReader BinaryReader { get { return br; } }
 		public BinaryWriter BinaryWriter { get { return bw; } }
-		public BinarySerializer() { }
-		public BinarySerializer(BinaryWriter _bw) { StartWrite(_bw); }
-		public BinarySerializer(BinaryReader _br) { StartRead(_br); }
-		public void StartWrite(BinaryWriter _bw) { this.bw = _bw; }
-		public void StartRead(BinaryReader _br) { this.br = _br; }
-		public static BinarySerializer CreateWriter(BinaryWriter _bw) { return new BinarySerializer(_bw); }
-		public static BinarySerializer CreateReader(BinaryReader _br) { return new BinarySerializer(_br); }
+		public TextReader TextReader { get { return tr; } }
+		public TextWriter TextWriter { get { return tw; } }
+		public Serializer() { }
+		public Serializer(BinaryWriter _bw) { StartWrite(_bw); }
+		public Serializer(BinaryReader _br) { StartRead(_br); }
+		public Serializer(TextWriter _tw) { StartWrite(_tw); }
+		public Serializer(TextReader _tr) { StartRead(_tr); }
+		public void StartWrite(BinaryWriter _bw) { this.bw = _bw; isReader = false; }
+		public void StartRead(BinaryReader _br) { this.br = _br; isReader = true; }
+		public void StartWrite(TextWriter _tw) { this.tw = _tw; isReader = false; isText = true; }
+		public void StartRead(TextReader _tr) { this.tr = _tr; isReader = true; isText = true; }
+		public static Serializer CreateBinaryWriter(BinaryWriter _bw) { return new Serializer(_bw); }
+		public static Serializer CreateBinaryReader(BinaryReader _br) { return new Serializer(_br); }
+		public static Serializer CreateTextWriter(TextWriter _tw) { return new Serializer(_tw); }
+		public static Serializer CreateTextReader(TextReader _tr) { return new Serializer(_tr); }
 
-		public bool IsReader { get { return br != null; } }
-		public bool IsWriter { get { return bw != null; } }
+		public bool IsReader { get { return isReader; } }
+		public bool IsWriter { get { return !IsReader; } }
+		public bool IsText { get { return isText; } }
+		bool isText;
+		bool isReader;
 
-		public unsafe void SyncEnum<T>(ref T val) where T : struct
+		Stack<string> sections = new Stack<string>();
+		public void BeginSection(string name)
+		{
+			sections.Push(name);
+			if (IsText)
+				if (IsWriter) { tw.WriteLine("[{0}]", name);}
+				else { tr.ReadLine(); }
+		}
+
+		public void EndSection()
+		{
+			string name = sections.Pop();
+			if (IsText)
+				if (IsWriter) tw.WriteLine("[/{0}]", name);
+				else tr.ReadLine();
+		}
+
+		public unsafe void SyncEnum<T>(string name, ref T val) where T : struct
 		{
 			if (typeof(T).BaseType != typeof(System.Enum))
 				throw new InvalidOperationException();
-			if (IsReader) val = (T)Enum.ToObject(typeof(T), br.ReadInt32());
+			if(isText) SyncEnumText<T>(name, ref val);
+			else if (IsReader) val = (T)Enum.ToObject(typeof(T), br.ReadInt32());
 			else bw.Write(Convert.ToInt32(val));
 		}
 
-		public void Sync(ref byte[] val, bool use_null)
+		public unsafe void SyncEnumText<T>(string name, ref T val) where T : struct
 		{
-			if (IsReader) val = Util.ReadByteBuffer(br, use_null);
+			if (IsReader) val = (T)Enum.Parse(typeof(T), tr.ReadLine().Split(' ')[1]);
+			else tw.WriteLine("{0} {1}", name, val.ToString());
+		}
+
+		public void Sync(string name, ref byte[] val, bool use_null)
+		{
+			if (IsText) SyncText(name, ref val, use_null);
+			else if (IsReader) val = Util.ReadByteBuffer(br, use_null);
 			else Util.WriteByteBuffer(bw, val);
 		}
-
-		public void Sync(ref byte val)
+		public void SyncText(string name, ref byte[] val, bool use_null)
 		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref ushort val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref uint val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref sbyte val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref short val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref int val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
-		}
-		public void Sync(ref bool val)
-		{
-			if (IsReader) Read(ref val);
-			else Write(ref val);
+			if (IsReader)
+			{
+				string[] parts = tr.ReadLine().Split(' ');
+				val = Util.HexStringToBytes(parts[1]);
+				if (val.Length == 0 && use_null) val = null;
+			}
+			else
+			{
+				byte[] temp = val;
+				if (temp == null) temp = new byte[0];
+				tw.WriteLine("{0} {1}", name, Util.BytesToHexString(temp));
+			}
 		}
 
+		public void Sync(string name, ref short[] val, bool use_null)
+		{
+			if (IsText) SyncText(name, ref val, use_null);
+			else if (IsReader)
+			{
+				val = Util.ByteBufferToShortBuffer(Util.ReadByteBuffer(br, false));
+				if (val == null && !use_null) val = new short[0];
+			}
+			else Util.WriteByteBuffer(bw, Util.ShortBufferToByteBuffer(val));
+		}
+		public void SyncText(string name, ref short[] val, bool use_null)
+		{
+			if (IsReader)
+			{
+				string[] parts = tr.ReadLine().Split(' ');
+				byte[] bytes = Util.HexStringToBytes(parts[1]);
+				val = Util.ByteBufferToShortBuffer(bytes);
+				if (val.Length == 0 && use_null) val = null;
+			}
+			else
+			{
+				short[] temp = val;
+				if (temp == null) temp = new short[0];
+				tw.WriteLine("{0} {1}", name, Util.BytesToHexString(Util.ShortBufferToByteBuffer(temp)));
+			}
+		}
+
+		public void Sync(string name, ref Bit val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		public void SyncText(string name, ref Bit val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref byte val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref byte val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref ushort val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref ushort val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref uint val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref uint val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref sbyte val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref sbyte val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref short val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref short val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref int val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref int val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+		public void Sync(string name, ref bool val)
+		{
+			if (IsText) SyncText(name, ref val);
+			else if (IsReader) Read(ref val);
+			else Write(ref val);
+		}
+		void SyncText(string name, ref bool val)
+		{
+			if (IsReader) ReadText(name, ref val);
+			else WriteText(name, ref val);
+		}
+
+		void Read(ref Bit val) { val = br.ReadBit(); }
+		void Write(ref Bit val) { bw.WriteBit(val); }
+		void ReadText(string name, ref Bit val) { val = (Bit)int.Parse(tr.ReadLine().Split(' ')[1]); }
+		void WriteText(string name, ref Bit val) { tw.WriteLine("{0} {1}", name, (int)val); }
 
 		void Read(ref byte val) { val = br.ReadByte(); }
 		void Write(ref byte val) { bw.Write(val); }
+		void ReadText(string name, ref byte val) { val = byte.Parse(tr.ReadLine().Split(' ')[1].Replace("0x", ""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref byte val) { tw.WriteLine("{0} 0x{1:X2}", name, val); }
+
 		void Read(ref ushort val) { val = br.ReadUInt16(); }
 		void Write(ref ushort val) { bw.Write(val); }
+		void ReadText(string name, ref ushort val) { val = ushort.Parse(tr.ReadLine().Split(' ')[1].Replace("0x", ""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref ushort val) { tw.WriteLine("{0} 0x{1:X4}", name, val); }
+
 		void Read(ref uint val) { val = br.ReadUInt32(); }
 		void Write(ref uint val) { bw.Write(val); }
+		void ReadText(string name, ref uint val) { val = uint.Parse(tr.ReadLine().Split(' ')[1].Replace("0x", ""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref uint val) { tw.WriteLine("{0} 0x{1:X8}", name, val); }
+
 		void Read(ref sbyte val) { val = br.ReadSByte(); }
 		void Write(ref sbyte val) { bw.Write(val); }
+		void ReadText(string name, ref sbyte val) { val = sbyte.Parse(tr.ReadLine().Split(' ')[1].Replace("0x", ""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref sbyte val) { tw.WriteLine("{0} 0x{1:X2}", name, val); }
+
 		void Read(ref short val) { val = br.ReadInt16(); }
 		void Write(ref short val) { bw.Write(val); }
+		void ReadText(string name, ref short val) { val = short.Parse(tr.ReadLine().Split(' ')[1].Replace("0x", ""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref short val) { tw.WriteLine("{0} 0x{1:X4}", name, val); }
+
 		void Read(ref int val) { val = br.ReadInt32(); }
 		void Write(ref int val) { bw.Write(val); }
+		void ReadText(string name, ref int val) { val = int.Parse(tr.ReadLine().Split(' ')[1].Replace("0x",""), NumberStyles.HexNumber); }
+		void WriteText(string name, ref int val) { tw.WriteLine("{0} 0x{1:X8}", name, val); }
 
 		void Read(ref bool val) { val = br.ReadBoolean(); }
 		void Write(ref bool val) { bw.Write(val); }
+		void ReadText(string name, ref bool val) { val = bool.Parse(tr.ReadLine().Split(' ')[1]); }
+		void WriteText(string name, ref bool val) { tw.WriteLine("{0} {1}", name, val); }
+
+
 	}
 
 

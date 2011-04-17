@@ -104,69 +104,24 @@ namespace BizHawk.Emulation.CPUs.M6502
         public bool IRQ;
         public bool NMI;
 
-		public void SaveStateText(TextWriter writer)
+		public void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[MOS6502]");
-			writer.WriteLine("A {0:X2}", A);
-			writer.WriteLine("X {0:X2}", X);
-			writer.WriteLine("Y {0:X2}", Y);
-			writer.WriteLine("P {0:X2}", P);
-			writer.WriteLine("PC {0:X4}", PC);
-			writer.WriteLine("S {0:X2}", S);
-			writer.WriteLine("NMI {0}", NMI);
-			writer.WriteLine("IRQ {0}", IRQ);
-			writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles);
-			writer.WriteLine("PendingCycles {0}", PendingCycles);
-			writer.WriteLine("[/MOS6502]\n");
+			ser.BeginSection("MOS6502");
+			ser.Sync("A", ref A);
+			ser.Sync("X", ref X);
+			ser.Sync("Y", ref Y);
+			ser.Sync("P", ref P);
+			ser.Sync("PC", ref PC);
+			ser.Sync("S", ref S);
+			ser.Sync("NMI", ref NMI);
+			ser.Sync("IRQ", ref IRQ);
+			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
+			ser.Sync("PendingCycles", ref PendingCycles);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
-		{
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0].Trim() == "") continue;
-				if (args[0] == "[/MOS6502]") break;
-				if (args[0] == "A")
-					A = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "X")
-					X = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "Y")
-					Y = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "P")
-					P = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "PC")
-					PC = ushort.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "S")
-					S = byte.Parse(args[1], NumberStyles.HexNumber);
-				else if (args[0] == "NMI")
-					NMI = bool.Parse(args[1]);
-				else if (args[0] == "IRQ")
-					IRQ = bool.Parse(args[1]);
-				else if (args[0] == "TotalExecutedCycles")
-					TotalExecutedCycles = int.Parse(args[1]);
-				else if (args[0] == "PendingCycles")
-					PendingCycles = int.Parse(args[1]);
-				else
-					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-			}
-		}
-
-		void SyncStateBinary(BinarySerializer ser)
-		{
-			ser.Sync(ref A);
-			ser.Sync(ref X);
-			ser.Sync(ref Y);
-			ser.Sync(ref P);
-			ser.Sync(ref PC);
-			ser.Sync(ref S);
-			ser.Sync(ref NMI);
-			ser.Sync(ref IRQ);
-			ser.Sync(ref TotalExecutedCycles);
-			ser.Sync(ref PendingCycles);
-		}
-		public void SaveStateBinary(BinaryWriter writer) { SyncStateBinary(BinarySerializer.CreateWriter(writer)); }
-		public void LoadStateBinary(BinaryReader reader) { SyncStateBinary(BinarySerializer.CreateReader(reader)); }
+		public void SaveStateBinary(BinaryWriter writer) { SyncState(Serializer.CreateBinaryWriter(writer)); }
+		public void LoadStateBinary(BinaryReader reader) { SyncState(Serializer.CreateBinaryReader(reader)); }
 
         // ==== End State ====
 

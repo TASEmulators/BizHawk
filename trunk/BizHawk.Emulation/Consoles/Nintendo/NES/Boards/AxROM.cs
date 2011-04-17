@@ -88,10 +88,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else base.WritePPU(addr,value);
 		}
 
-		public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
 		{
-			base.SyncStateBinary(ser);
-			ser.Sync(ref prg);
+			base.SyncState(ser);
+			ser.Sync("prg",ref prg);
 		}
 
 	}

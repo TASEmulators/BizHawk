@@ -53,42 +53,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int ppudead; //measured in frames
 			bool idleSynch;
 
-			public void SaveStateBinary(BinaryWriter bw)
+			public void SyncState(Serializer ser)
 			{
-				bw.Write(ppudead);
-				bw.Write(idleSynch);
-				bw.Write((bool)Reg2002_objoverflow);
-				bw.Write((bool)Reg2002_objhit);
-				bw.Write((bool)Reg2002_vblank_active);
-				bw.Write(PPUGenLatch);
-				bw.Write(reg_2000.Value);
-				bw.Write(reg_2001.Value);
-				bw.Write(reg_2003);
-				Util.WriteByteBuffer(bw, OAM);
-				Util.WriteByteBuffer(bw, PALRAM);
-				bw.Write(vtoggle);
-				bw.Write(VRAMBuffer);
-				ppur.SaveStateBinary(bw);
-				bw.Write(xbuf);
-			}
+				ser.Sync("ppudead", ref ppudead);
+				ser.Sync("idleSynch", ref idleSynch);
+				ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
+				ser.Sync("Reg2002_objhit", ref Reg2002_objhit);
+				ser.Sync("Reg2002_vblank_active", ref Reg2002_vblank_active);
+				ser.Sync("PPUGenLatch", ref PPUGenLatch);
+				ser.Sync("reg_2003", ref reg_2003);
+				ser.Sync("OAM", ref OAM, false);
+				ser.Sync("PALRAM", ref PALRAM, false);
+				ser.Sync("vtoggle", ref vtoggle);
+				ser.Sync("VRAMBuffer", ref VRAMBuffer);
+				ppur.SyncState(ser);
 
-			public void LoadStateBinary(BinaryReader br)
-			{
-				ppudead = br.ReadInt32();
-				idleSynch = br.ReadBoolean();
-				Reg2002_objoverflow = br.ReadBit();
-				Reg2002_objhit = br.ReadBit();
-				Reg2002_vblank_active = br.ReadBit();
-				PPUGenLatch = br.ReadByte();
-				reg_2000.Value = br.ReadByte();
-				reg_2001.Value = br.ReadByte();
-				reg_2003 = br.ReadByte();
-				OAM = Util.ReadByteBuffer(br,false);
-				PALRAM = Util.ReadByteBuffer(br, false);
-				vtoggle = br.ReadBoolean();
-				VRAMBuffer = br.ReadByte();
-				ppur.LoadStateBinary(br);
-				xbuf = br.ReadShorts(xbuf.Length);
+				if(ser.IsText)
+					ser.Sync("xbuf", ref xbuf, false);
+
+				byte temp;
+
+				temp = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp); reg_2000.Value = temp;
+				temp = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp); reg_2001.Value = temp;
 			}
 
 			public void Reset()

@@ -64,11 +64,11 @@ Other chips used: Sunsoft-1
             right_piece = (value >> 4) & 7 & chr_mask;
         }
 
-        public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
         {
-            base.SyncStateBinary(ser);
-            ser.Sync(ref left_piece);
-            ser.Sync(ref right_piece);
+			base.SyncState(ser);
+            ser.Sync("left_piece", ref left_piece);
+            ser.Sync("right_piece", ref right_piece);
         }
     }
 }

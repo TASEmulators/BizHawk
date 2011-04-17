@@ -221,7 +221,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 
-        public int Frame { get; set; }
+		int _frame;
+		public int Frame { get { return _frame; } set { _frame = value; } }
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
@@ -482,31 +483,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
+		void SyncState(Serializer ser)
 		{
-			writer.WriteLine("[NES]");
-			byte[] lol = SaveStateBinary();
-			writer.WriteLine("blob {0}", Util.BytesToHexString(lol));
-            writer.WriteLine("Frame {0}", Frame);
-			writer.WriteLine("[/NES]");
+			ser.BeginSection("NES");
+			ser.Sync("Frame", ref _frame);
+			cpu.SyncState(ser);
+			ser.Sync("ram", ref ram, false);
+			ser.Sync("CIRAM", ref CIRAM, false);
+			ser.Sync("cpu_accumulate", ref cpu_accumulate);
+			board.SyncState(ser);
+			ppu.SyncState(ser);
+			ser.EndSection();
 		}
 
-		public void LoadStateText(TextReader reader)
-		{
-			byte[] blob = null;
-			while (true)
-			{
-				string[] args = reader.ReadLine().Split(' ');
-				if (args[0] == "blob")
-					blob = Util.HexStringToBytes(args[1]);
-                else if (args[0] == "Frame")
-                    Frame = int.Parse(args[1]);
-                else if (args[0] == "[/NES]") break;
-			}
-			if (blob == null) throw new ArgumentException();
-			LoadStateBinary(new BinaryReader(new MemoryStream(blob)));
-		}
-
+		public void SaveStateText(TextWriter writer) { SyncState(Serializer.CreateTextWriter(writer)); }
+		public void LoadStateText(TextReader reader) { SyncState(Serializer.CreateTextReader(reader)); }
+		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
+		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
 
 		public byte[] SaveStateBinary()
 		{
@@ -516,31 +509,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bw.Flush();
 			return ms.ToArray();
 		}
-
-		public void SaveStateBinary(BinaryWriter bw)
-		{
-            bw.Write(Frame);
-            cpu.SaveStateBinary(bw);
-			Util.WriteByteBuffer(bw, ram);
-			Util.WriteByteBuffer(bw, CIRAM);
-			bw.Write(cpu_accumulate);
-			board.SyncStateBinary(BinarySerializer.CreateWriter(bw));
-			ppu.SaveStateBinary(bw);
-			bw.Flush();
-		}
-
-		public void LoadStateBinary(BinaryReader br)
-		{
-            Frame = br.ReadInt32();
-            cpu.LoadStateBinary(br);
-			ram = Util.ReadByteBuffer(br, false);
-			CIRAM = Util.ReadByteBuffer(br, false);
-			cpu_accumulate = br.ReadInt32();
-			board.SyncStateBinary(BinarySerializer.CreateReader(br));
-			ppu.LoadStateBinary(br);
-		}
-
-
 	}
 }
 

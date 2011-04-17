@@ -33,19 +33,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//well, lets leave it.
 		}
 
-		public void SyncStateBinary(BinarySerializer ser)
+		public void SyncState(Serializer ser)
 		{
-			ser.Sync(ref shift_count);
-			ser.Sync(ref shift_val);
-			ser.Sync(ref chr_mode);
-			ser.Sync(ref prg_mode);
-			ser.Sync(ref prg_slot);
-			ser.Sync(ref chr_0);
-			ser.Sync(ref chr_1);
-			ser.Sync(ref wram_disable);
-			ser.Sync(ref prg);
-			ser.SyncEnum(ref mirror);
-
+			ser.Sync("shift_count", ref shift_count);
+			ser.Sync("shift_val", ref shift_val);
+			ser.Sync("chr_mode", ref chr_mode);
+			ser.Sync("prg_mode", ref prg_mode);
+			ser.Sync("prg_slot", ref prg_slot);
+			ser.Sync("chr_0", ref chr_0);
+			ser.Sync("chr_1", ref chr_1);
+			ser.Sync("wram_disable", ref wram_disable);
+			ser.Sync("prg", ref prg);
+			ser.SyncEnum("mirror", ref mirror);
 		}
 
 		public enum Rev
@@ -231,10 +230,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
 		{
-			base.SyncStateBinary(ser);
-			mmc1.SyncStateBinary(ser);
+			base.SyncState(ser);
+			mmc1.SyncState(ser);
 
 		}
 	

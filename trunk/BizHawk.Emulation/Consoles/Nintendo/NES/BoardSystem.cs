@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] VRAM { get; set; }
 			byte[] ROM { get; set; }
 			byte[] VROM { get; set; }
-			void SyncStateBinary(BinarySerializer ser);
+			void SyncState(Serializer ser);
 		};
 
 
@@ -42,11 +42,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
 
-			public virtual void SyncStateBinary(BinarySerializer ser)
+			public virtual void SyncState(Serializer ser)
 			{
-				ser.Sync(ref vram,true);
-				ser.Sync(ref wram,true);
-				for (int i = 0; i < 4; i++) ser.Sync(ref mirroring[i]);
+				ser.Sync("vram", ref vram, true);
+				ser.Sync("wram", ref wram, true);
+				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
 			}
 
 
