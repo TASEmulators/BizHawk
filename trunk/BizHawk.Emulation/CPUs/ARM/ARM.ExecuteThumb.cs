@@ -752,33 +752,83 @@ namespace BizHawk.Emulation.CPUs.ARM
 			return ExecuteCore_ADD_SP_plus_immedate(Encoding.T1, d, setflags, imm32);
 		}
 
-		Decoder decoder_ExecuteThumb_Misc16 = new Decoder();
 		uint ExecuteThumb_Misc16()
 		{
-			decoder_ExecuteThumb_Misc16.Ensure(() => decoder_ExecuteThumb_Misc16
-				.d("opcode", 7)
-				.r("opcode == #0110010", () => Execute_Unhandled("SETEND on page A8-314"))
-				.r("opcode == #0110011", () => Execute_Unhandled("CPS on page B6-3"))
-				.r("opcode == #00000xx", () => Execute_ADD_SP_plus_immediate_T2())
-				.r("opcode == #00001xx", () => Execute_SUB_SP_minus_immediate_T1())
-				.r("opcode == #0001xxx", () => Execute_Unhandled("CBNZ,CBZ on page A8-66 [v6T2]"))
-				.r("opcode == #001000x", () => Execute_Unhandled("SXTH on page A8-444"))
-				.r("opcode == #001001x", () => Execute_Unhandled("SXTB on page A8-440"))
-				.r("opcode == #001010x", () => Execute_UXTH_T1())
-				.r("opcode == #001011x", () => Execute_UXTB_T1())
-				.r("opcode == #0011xxx", () => Execute_Unhandled("CBNZ,CBZ on page A8-66 [v6T2]"))
-				.r("opcode == #010xxxx", () => Execute_PUSH_T1())
-				.r("opcode == #1001xxx", () => Execute_Unhandled("CBNZ,CBZ on page A8-66 [v6T2]"))
-				.r("opcode == #101000x", () => Execute_Unhandled("REV on page A8-272"))
-				.r("opcode == #101001x", () => Execute_Unhandled("REV16 on page A8-274"))
-				.r("opcode == #101011x", () => Execute_Unhandled("REVSH on page A8-276"))
-				.r("opcode == #110xxxx", () => Execute_POP_T1())
-				.r("opcode == #1110xxx", () => Execute_Unhandled("BKPT on page A8-56"))
-				.r("opcode == #1111xxx", () => Execute_Unhandled("If-Then and hints on page A6-12"))
-				);
-
 			uint opcode = (instruction >> 5) & 0x7F;
-			decoder_ExecuteThumb_Misc16.Evaluate(opcode);
+			
+			//ThumbMisc
+			switch((opcode<<0)) {
+			//opcode == #0110010
+			case 50: 
+				Execute_Unhandled("SETEND on page A8-314");
+				break;
+			//opcode == #0110011
+			case 51: 
+				Execute_Unhandled("CPS on page B6-3");
+				break;
+			//opcode == #00000xx
+			case 0: case 1: case 2: case 3: 
+				Execute_ADD_SP_plus_immediate_T2();
+				break;
+			//opcode == #00001xx
+			case 4: case 5: case 6: case 7: 
+				Execute_SUB_SP_minus_immediate_T1();
+				break;
+			//opcode == #0001xxx
+			//opcode == #0011xxx
+			//opcode == #1001xxx
+			case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15: case 24: case 25: case 26: case 27: case 28: case 29: case 30: case 31: case 72: case 73: case 74: case 75: case 76: case 77: case 78: case 79: 
+				Execute_Unhandled("CBNZ,CBZ on page A8-66 [v6T2]");
+				break;
+			//opcode == #001000x
+			case 16: case 17: 
+				Execute_Unhandled("SXTH on page A8-444");
+				break;
+			//opcode == #001001x
+			case 18: case 19: 
+				Execute_Unhandled("SXTB on page A8-440");
+				break;
+			//opcode == #001010x
+			case 20: case 21: 
+				Execute_UXTH_T1();
+				break;
+			//opcode == #001011x
+			case 22: case 23: 
+				Execute_UXTB_T1();
+				break;
+			//opcode == #010xxxx
+			case 32: case 33: case 34: case 35: case 36: case 37: case 38: case 39: case 40: case 41: case 42: case 43: case 44: case 45: case 46: case 47: 
+				Execute_PUSH_T1();
+				break;
+			//opcode == #101000x
+			case 80: case 81: 
+				Execute_Unhandled("REV on page A8-272");
+				break;
+			//opcode == #101001x
+			case 82: case 83: 
+				Execute_Unhandled("REV16 on page A8-274");
+				break;
+			//opcode == #101011x
+			case 86: case 87: 
+				Execute_Unhandled("REVSH on page A8-276");
+				break;
+			//opcode == #110xxxx
+			case 96: case 97: case 98: case 99: case 100: case 101: case 102: case 103: case 104: case 105: case 106: case 107: case 108: case 109: case 110: case 111: 
+				Execute_POP_T1();
+				break;
+			//opcode == #1110xxx
+			case 112: case 113: case 114: case 115: case 116: case 117: case 118: case 119: 
+				Execute_Unhandled("BKPT on page A8-56");
+				break;
+			//opcode == #1111xxx
+			case 120: case 121: case 122: case 123: case 124: case 125: case 126: case 127: 
+				Execute_Unhandled("If-Then and hints on page A6-12");
+				break;
+			default: throw new InvalidOperationException("unhandled case for switch ThumbMisc");
+			}
+
+
+
 			return 1;
 		}
 
