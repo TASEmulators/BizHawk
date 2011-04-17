@@ -25,6 +25,8 @@ Other chips used: Sunsoft-1
     class Sunsoft1 : NES.NESBoardBase
     {
         int prg, chr;
+        int left_piece = 0;
+        int right_piece = 3;
 
         public override bool Configure(NES.EDetectionOrigin origin)
         {
@@ -43,8 +45,8 @@ Other chips used: Sunsoft-1
 
         public override byte ReadPPU(int addr)
         {
-            int left_piece = 0;
-            int right_piece = 3;
+            left_piece &= 3;
+            right_piece &= 3;
 
             if (addr < 0x1000)
             {
@@ -57,6 +59,13 @@ Other chips used: Sunsoft-1
 
             return base.ReadPPU(addr);
         }
-        
+
+        public override void WriteWRAM(int addr, byte value)
+        {
+            left_piece = value & 7;
+            right_piece = (value & 127) / 16;
+            Debug.Assert(left_piece < 8);
+            Debug.Assert(right_piece < 8);
+        }
     }
 }
