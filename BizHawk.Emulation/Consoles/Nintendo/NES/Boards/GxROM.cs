@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
-					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					//AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
 					break;
 
 				default:
@@ -67,11 +67,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg = (((value>>4) & 3) & prg_mask);
 		}
 
-		public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
 		{
-			base.SyncStateBinary(ser);
-			ser.Sync(ref chr);
-			ser.Sync(ref prg);
+			base.SyncState(ser);
+			ser.Sync("chr", ref chr);
+			ser.Sync("prg", ref prg);
 		}
 	}
 }

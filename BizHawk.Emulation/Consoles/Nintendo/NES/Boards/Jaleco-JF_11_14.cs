@@ -44,9 +44,9 @@ Other chips used: Sunsoft-1
             return base.ReadPPU(addr);
         }
 
-        public override void SyncStateBinary(BinarySerializer ser)
+		public override void SyncState(Serializer ser)
         {
-            base.SyncStateBinary(ser);
+			base.SyncState(ser);
         }
     }
 }
