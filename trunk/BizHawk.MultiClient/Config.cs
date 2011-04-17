@@ -199,8 +199,8 @@
         public string HexEditor = "";
         public string LuaConsole = "";
         public string Cheats = "";
-        public string OpenROM = "";
-        public string CloseROM = "";
+        public string OpenROM = "LeftControl+O, RightControl+O";
+        public string CloseROM = "LeftControl+W, RightControl+W";
         public string FrameCounterBinding = "";
         public string FPSBinding = "";
         public string LagCounterBinding = "";
