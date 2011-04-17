@@ -24,7 +24,7 @@ Other chips used: Sunsoft-1
 
     class Sunsoft1 : NES.NESBoardBase
     {
-        int prg, chr;
+        int chr_mask;
         int left_piece = 0;
         int right_piece = 3;
 
@@ -38,23 +38,21 @@ Other chips used: Sunsoft-1
 				default:
 					return false;
 			}
-
+            chr_mask = (Cart.chr_size / 4) - 1;
             SetMirrorType(Cart.pad_h, Cart.pad_v);
             return true;
         }
 
         public override byte ReadPPU(int addr)
         {
-            left_piece &= 3;
-            right_piece &= 3;
-
+            
             if (addr < 0x1000)
             {
-                return VROM[(addr%0x1000) + (left_piece*0x1000)]; 
+                return VROM[(addr & 0xFFF) + (left_piece*0x1000)]; 
             }
             else if (addr < 0x2000)
             {
-                return VROM[(addr%0x1000) + (right_piece*0x1000)];
+                return VROM[(addr & 0xFFF) + (right_piece * 0x1000)];
             }
 
             return base.ReadPPU(addr);
@@ -62,10 +60,8 @@ Other chips used: Sunsoft-1
 
         public override void WriteWRAM(int addr, byte value)
         {
-            left_piece = value & 7;
-            right_piece = (value & 127) / 16;
-            Debug.Assert(left_piece < 8);
-            Debug.Assert(right_piece < 8);
+            left_piece = value & 7 & chr_mask;
+            right_piece = (value >> 4) & 7 & chr_mask;
         }
     }
 }
