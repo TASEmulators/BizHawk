@@ -87,11 +87,11 @@ namespace BizHawk.MultiClient
 		{
 			string str = "";
 			if((modifiers & Keys.Shift)!=0)
-				str += "SHIFT + ";
+                str += "LeftShift + ";
 			if ((modifiers & Keys.Control) != 0)
-				str += "CTRL + ";
+                str += "LeftControl + ";
 			if ((modifiers & Keys.Alt) != 0)
-				str += "ALT + ";
+				str += "LeftAlt + ";
 			str += key.ToString();
             if (str.Length > 3)
             {
