@@ -115,8 +115,6 @@
     <Compile Include="CPUs\ARM\ARM.ExecuteCore.cs" />
     <Compile Include="CPUs\ARM\ARM.ExecuteThumb.cs" />
     <Compile Include="CPUs\ARM\ARM.Pseudocode.cs" />
-    <Compile Include="CPUs\ARM\decoder\decoder.cs" />
-    <Compile Include="CPUs\ARM\decoder\scripting.cs" />
     <Compile Include="CPUs\ARM\_.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
