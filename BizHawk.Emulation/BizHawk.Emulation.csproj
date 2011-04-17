@@ -40,8 +40,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\BizHawk.MultiClient\LuaInterface.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.JScript" />
-    <Reference Include="Microsoft.Vsa" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
