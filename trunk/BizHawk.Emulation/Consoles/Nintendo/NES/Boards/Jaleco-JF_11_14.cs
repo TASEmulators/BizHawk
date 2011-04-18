@@ -62,7 +62,6 @@ Other chips used: Sunsoft-1
         {
             prg = (value >> 4) & 3;
             chr = (value & 15);
-			Console.WriteLine("{0} {1}", prg, chr);
         }
 
 		public override void SyncState(Serializer ser)
