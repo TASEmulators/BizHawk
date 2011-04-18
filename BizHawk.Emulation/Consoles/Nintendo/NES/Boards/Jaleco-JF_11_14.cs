@@ -33,6 +33,8 @@ Other chips used: Sunsoft-1
 			{
 				case "JALECO-JF-14":
 					break;
+				case "JALECO-JF-11":
+					break;
 				default:
 					return false;
 			}
@@ -60,6 +62,7 @@ Other chips used: Sunsoft-1
         {
             prg = (value >> 4) & 3;
             chr = (value & 15);
+			Console.WriteLine("{0} {1}", prg, chr);
         }
 
 		public override void SyncState(Serializer ser)
