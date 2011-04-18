@@ -65,9 +65,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (ROM != null && bus_conflict) value = HandleNormalPRGConflict(addr,value);
 			prg = (value*2) & prg_mask;
 			if ((value & 0x10) == 0)
-				SetMirrorType(NES.EMirrorType.OneScreenA);
+				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
 			else
-				SetMirrorType(NES.EMirrorType.OneScreenB);
+				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB);
 		}
 
 		public override byte ReadPPU(int addr)
