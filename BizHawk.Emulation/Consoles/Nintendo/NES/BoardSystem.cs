@@ -273,6 +273,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart.vram_size = short.Parse(dict["VRAM"]);
 			if (dict.ContainsKey("WRAM"))
 				cart.wram_size = short.Parse(dict["WRAM"]);
+			if (dict.ContainsKey("PAD_H"))
+				cart.pad_h = byte.Parse(dict["PAD_H"]);
+			if (dict.ContainsKey("PAD_V"))
+				cart.pad_h = byte.Parse(dict["PAD_V"]);
 			if (dict.ContainsKey("bad"))
 				Console.WriteLine("rom is flagged as BAD!");
 

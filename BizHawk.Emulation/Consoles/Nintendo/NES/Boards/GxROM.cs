@@ -31,7 +31,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
-					//AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					break;
+				case "GXROM_HACKY":
 					break;
 
 				default:
@@ -42,7 +44,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
-			Console.WriteLine("Caution! If this board was inferred from iNES then the mirr.type might be wrong");
+			if(origin == NES.EDetectionOrigin.INES)
+				Console.WriteLine("Caution! This board (inferred from iNES) might have wrong mirr.type");
 
 
 			return true;

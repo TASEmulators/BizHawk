@@ -453,7 +453,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				//find a INESBoard to handle this
 				Type boardType = null;
-				boardType = FindBoard(choice,EDetectionOrigin.INES);
+				boardType = FindBoard(choice, origin);
 				if (boardType == null)
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 

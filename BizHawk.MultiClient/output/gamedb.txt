@@ -2269,8 +2269,9 @@ sha1:894F20405286F5F75133CE4648300E2C67972B40		Solomon's Key (U)	NES		board=NES-
 sha1:0C53B06E1D13AE917536BB39010914EA3D111FF5		Thunder & Lightning (U)	NES		board=NES-GNROM;PRG=128;CHR=32;bad
 
 ;these roms are from goodNES but they are confusingly messed up somehow
-sha1:192C543866F1037276D2778046ABEDCA84868E26		Bio Senshi Dan - Increaser To No Tatakai (J)	NES		board=JALECO-JF-14;PRG=128;CHR=128;mirror=0
-sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C		Mississippi Satsujin Jiken (Alt) (J).nes	NES		board=JALECO-JF-11;PRG=127;CHR=32
+sha1:192C543866F1037276D2778046ABEDCA84868E26		Bio Senshi Dan - Increaser To No Tatakai (J)	NES		board=JALECO-JF-14;PRG=128;CHR=128
+sha1:E80FF0B707B0D675FDBEF474E3FDB1A83E2B7C44		Mississippi Satsujin Jiken (J)	NES		board=JALECO-JF-11;PRG=128;CHR=32;PAD_H=1
+sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C		Mississippi Satsujin Jiken (Alt) (J)	NES		board=GXROM_HACKY;PRG=128;CHR=32;PAD_H=1
 
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt
