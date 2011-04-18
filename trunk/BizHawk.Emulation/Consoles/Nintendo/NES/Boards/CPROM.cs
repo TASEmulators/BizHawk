@@ -25,7 +25,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 
-			SetMirrorType(NES.EMirrorType.Vertical);
+			//TODO - assert that mirror type is vertical?
+			//set it in the cart?
+
+			SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
 
 			return true;
 		}

@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public int chr_mode;
 		public int prg_mode;
 		public int prg_slot; //complicated
-		public NES.EMirrorType mirror;
-		static NES.EMirrorType[] _mirrorTypes = new NES.EMirrorType[] { NES.EMirrorType.OneScreenA, NES.EMirrorType.OneScreenB, NES.EMirrorType.Vertical, NES.EMirrorType.Horizontal };
+		public NES.NESBoardBase.EMirrorType mirror;
+		static NES.NESBoardBase.EMirrorType[] _mirrorTypes = new NES.NESBoardBase.EMirrorType[] { NES.NESBoardBase.EMirrorType.OneScreenA, NES.NESBoardBase.EMirrorType.OneScreenB, NES.NESBoardBase.EMirrorType.Vertical, NES.NESBoardBase.EMirrorType.Horizontal };
 
 		//register 1,2:
 		int chr_0, chr_1;

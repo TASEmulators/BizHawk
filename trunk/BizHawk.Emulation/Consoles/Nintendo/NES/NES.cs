@@ -109,14 +109,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			NESWatch[] watches;
 		}
 
-		public enum EMirrorType
-		{
-			Vertical, Horizontal,
-			OneScreenA, OneScreenB,
-			//unknown or controlled by the board
-			External
-		}
-
 		class MyVideoProvider : IVideoProvider
 		{
 			NES emu;

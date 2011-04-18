@@ -22,14 +22,6 @@ mirroring - both
     {
         int prg, mirror;
         
-        public enum EMirrorType
-        {
-            Vertical, Horizontal,
-            OneScreenA, OneScreenB,
-            //unknown or controlled by the board
-            External
-        }
-
         public override bool Configure(NES.EDetectionOrigin origin)
         {
             //configure
@@ -45,11 +37,6 @@ mirroring - both
 
         public override byte ReadPPU(int addr)
         {
-            if (mirror == 0)
-                SetMirrorType(0, 1);
-            else
-                SetMirrorType(1, 0);
-            SetMirrorType(Cart.pad_h, Cart.pad_v);
             return base.ReadPPU(addr);
         }
 
@@ -62,7 +49,8 @@ mirroring - both
         {
             int mirror = (addr & 0x01);
             prg = (addr & 0x7F) >> 3;
-            base.WriteWRAM(addr, value);
+			if (mirror == 1) SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal);
+			else SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
         }
 
 		public override void SyncState(Serializer ser)
