@@ -2261,14 +2261,16 @@ B486A8ED		Dai Makai Mura	SGX
 D4448D09BBFDE687C04F9E3310E023AB		ti83_1.rom	TI83		initPC=6ce
 
 ;--nes--;
-;i don't have a good dump of these according to bootgod? 
-;someone else please check their dumps and see if these get used (look for "Chose board from gamedb" [vs "Chose board from nescartdb"] in console log)
+;these games seem to be in goodNES but not bootgod's DB
 sha1:22E6986903141495BA4589AC65982F3FB4D0E37B		Adventures of Lolo (U)	NES		board=NES-SEROM;PRG=32;CHR=32
 sha1:CF655333DCE649A3C7060E9989860F2FC74E473A		Demon Sword (U)	NES		board=NES-SL1ROM;PRG=128;CHR=128
 sha1:7786BA1FE8E7E9E542EEB13CF2A6E2A1AD7F696D		Metal Gear (U)	NES		board=KONAMI-UNROM;PRG=128
 sha1:894F20405286F5F75133CE4648300E2C67972B40		Solomon's Key (U)	NES		board=NES-CNROM;PRG=32;CHR=32
 sha1:0C53B06E1D13AE917536BB39010914EA3D111FF5		Thunder & Lightning (U)	NES		board=NES-GNROM;PRG=128;CHR=32;bad
-sha1:192C543866F1037276D2778046ABEDCA84868E26		Bio Senshi Dan - Increaser To No Tatakai (J)	NES		board=JALECO-JF-14;PRG=128;CHR=128;WRAM=8;mirror=0
+
+;these roms are from goodNES but they are confusingly messed up somehow
+sha1:192C543866F1037276D2778046ABEDCA84868E26		Bio Senshi Dan - Increaser To No Tatakai (J)	NES		board=JALECO-JF-14;PRG=128;CHR=128;mirror=0
+sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C		Mississippi Satsujin Jiken (Alt) (J).nes	NES		board=JALECO-JF-11;PRG=127;CHR=32
 
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt
