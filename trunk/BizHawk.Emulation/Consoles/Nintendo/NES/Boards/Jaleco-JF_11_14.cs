@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-    /*
-     * Life Span: October 1986 - April 1987
+	/*
+	 * Life Span: October 1986 - April 1987
 PCB Class: Jaleco-JF-11
-           Jaleco-JF-14
+		   Jaleco-JF-14
 iNES Mapper #140
 
 JF-11
@@ -17,12 +17,13 @@ Battery is not available
 Uses vertical mirroring
 No CIC present
 Other chips used: Sunsoft-1
-     * 
-     * Games:
-     * Bio Senshi Dan - Increaser Tono Tatakai
-     */
+	 * 
+	 * Games:
+	 * Mississippi Satsujin Jiken (J)
+	 * Bio Senshi Dan - Increaser Tono Tatakai [allegedly; but it does not work]
+	 */
 
-    class Jaleco_JF_11_14 : NES.NESBoardBase
+	class Jaleco_JF_11_14 : NES.NESBoardBase
     {
         int chr, prg;
 
