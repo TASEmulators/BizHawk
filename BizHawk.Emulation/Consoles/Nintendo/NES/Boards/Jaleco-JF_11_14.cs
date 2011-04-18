@@ -24,7 +24,8 @@ Other chips used: Sunsoft-1
 
     class Jaleco_JF_11_14 : NES.NESBoardBase
     {
-        
+        int chr, prg;
+
         public override bool Configure(NES.EDetectionOrigin origin)
         {
             //configure
@@ -39,14 +40,33 @@ Other chips used: Sunsoft-1
             return true;
         }
 
+        public override byte ReadPRG(int addr)
+        {
+            if (addr < 0x8000)
+                return ROM[addr + (prg * 0x8000)];
+            else
+                return base.ReadPRG(addr);
+        }
+
         public override byte ReadPPU(int addr)
         {
-            return base.ReadPPU(addr);
+            if (addr < 0x2000)
+                return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+            else
+                return base.ReadPPU(addr);
+        }
+
+        public override void WriteWRAM(int addr, byte value)
+        {
+            prg = (value >> 4) & 3;
+            chr = (value & 15);
         }
 
 		public override void SyncState(Serializer ser)
         {
 			base.SyncState(ser);
+            ser.Sync("chr", ref chr);
+            ser.Sync("prg", ref prg);
         }
     }
 }
