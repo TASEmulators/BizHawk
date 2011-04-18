@@ -4,6 +4,8 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	//(doesnt work in neshawk; works in fceux)
+
     /*
 PCB Class: Unknown
 iNES Mapper #242
@@ -35,17 +37,12 @@ mirroring - both
             return true;
         }
 
-        public override byte ReadPPU(int addr)
-        {
-            return base.ReadPPU(addr);
-        }
-
         public override byte ReadPRG(int addr)
         {
             return ROM[addr + (prg * 0x8000)];
         }
 
-        public override void WriteWRAM(int addr, byte value)
+        public override void WritePRG(int addr, byte value)
         {
             mirror = ((addr>>1) & 0x01);
 			prg = (addr >> 3) & 15;
