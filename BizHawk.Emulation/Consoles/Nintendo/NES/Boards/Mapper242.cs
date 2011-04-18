@@ -47,8 +47,8 @@ mirroring - both
 
         public override void WriteWRAM(int addr, byte value)
         {
-            int mirror = (addr & 0x01);
-            prg = (addr & 0x7F) >> 3;
+            mirror = ((addr>>1) & 0x01);
+			prg = (addr >> 3) & 15;
 			if (mirror == 1) SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal);
 			else SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
         }
