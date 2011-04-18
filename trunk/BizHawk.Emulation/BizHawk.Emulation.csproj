@@ -73,6 +73,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\Jaleco-JF_11_14.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
