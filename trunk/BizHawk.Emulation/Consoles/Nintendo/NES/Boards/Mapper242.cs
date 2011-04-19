@@ -44,10 +44,15 @@ mirroring - both
 
         public override void WritePRG(int addr, byte value)
         {
-            mirror = ((addr>>1) & 0x01);
+			mirror = (value & 0x03);
 			prg = (addr >> 3) & 15;
-			if (mirror == 1) SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal);
-			else SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical);
+			switch (mirror)
+			{
+				case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
+				case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
+				case 2: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA); break;
+				case 3: SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenB); break;
+			}
         }
 
 		public override void SyncState(Serializer ser)

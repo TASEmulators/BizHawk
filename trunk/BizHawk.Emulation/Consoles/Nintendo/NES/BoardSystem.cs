@@ -112,8 +112,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual byte ReadPRG(int addr) { return ROM[addr]; }
 			public virtual void WritePRG(int addr, byte value) { }
 
-			public virtual void WriteWRAM(int addr, byte value) { }
-			public virtual byte ReadWRAM(int addr) { return 0xFF; }
+			public virtual void WriteWRAM(int addr, byte value)
+			{
+				if(wram != null)
+					wram[addr] = value;
+			}
+			public virtual byte ReadWRAM(int addr) {
+				if (wram != null)
+					return wram[addr];
+				else return 0xFF;
+			}
 
 			public virtual void WriteEXP(int addr, byte value) { }
 			public virtual byte ReadEXP(int addr) { return 0xFF; }
@@ -211,7 +219,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public override string ToString()
 			{
-				return string.Format("pr={0},cr={1},wr={2},vr={3},ba={4},pa={5}|{6},brd={7},map={8},sys={9}", prg_size, chr_size, wram_size, vram_size, wram_battery?1:0, pad_h, pad_v, board_type, mapper, system);
+				return string.Format("pr={0},ch={1},wr={2},vr={3},ba={4},pa={5}|{6},brd={7},map={8},sys={9}", prg_size, chr_size, wram_size, vram_size, wram_battery?1:0, pad_h, pad_v, board_type, mapper, system);
 			}
 		}
 
