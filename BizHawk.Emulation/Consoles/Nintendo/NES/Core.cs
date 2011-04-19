@@ -214,8 +214,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x2000) ret = ram[addr - 0x1800];
 			else if (addr < 0x4000) ret = ReadPPUReg(addr & 7);
 			else if (addr < 0x4020) ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) ret = board.ReadEXP(addr);
-			else if (addr < 0x8000) ret = board.ReadWRAM(addr);
+			else if (addr < 0x6000) ret = board.ReadEXP(addr - 0x4000);
+			else if (addr < 0x8000) ret = board.ReadWRAM(addr - 0x6000);
 			else ret = board.ReadPRG(addr - 0x8000);
 			
 			//apply freeze
@@ -241,8 +241,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x2000) ram[addr - 0x1800] = value;
 			else if (addr < 0x4000) WritePPUReg(addr & 7, value);
 			else if (addr < 0x4020) WriteReg(addr, value);  //we're not rebasing the register just to keep register names canonical
-			else if (addr < 0x6000) board.WriteEXP(addr, value); 
-			else if (addr < 0x8000) board.WriteWRAM(addr, value);
+			else if (addr < 0x6000) board.WriteEXP(addr - 0x4000, value); 
+			else if (addr < 0x8000) board.WriteWRAM(addr - 0x6000, value);
 			else board.WritePRG(addr - 0x8000, value);
 		}
 
