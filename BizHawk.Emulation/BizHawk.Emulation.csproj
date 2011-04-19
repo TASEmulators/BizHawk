@@ -57,6 +57,7 @@
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
       <SubType>Code</SubType>
     </Compile>
