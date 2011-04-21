@@ -609,6 +609,7 @@ namespace BizHawk.MultiClient
 					SetSpeedPercent(Global.Config.SpeedPercent);
 				}
 				RamSearch1.Restart();
+                RamWatch1.Restart();
 				HexEditor1.Restart();
                 NESPPU1.Restart();
                 NESNameTableViewer1.Restart();
@@ -1489,6 +1490,7 @@ namespace BizHawk.MultiClient
             Global.Emulator = new NullEmulator();
             Global.Game = null;
             RamSearch1.Restart();
+            RamWatch1.Restart();
             HexEditor1.Restart();
             NESPPU1.Restart();
             NESNameTableViewer1.Restart();
