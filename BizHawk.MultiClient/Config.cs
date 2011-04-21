@@ -38,6 +38,7 @@
 		public bool RewindEnabled = true;
 
         // Display options
+        public int MessagesColor = -1;
         public bool DisplayFPS = false;
         public int DispFPSx = 0;
         public int DispFPSy = 0;
