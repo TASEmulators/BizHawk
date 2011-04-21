@@ -127,6 +127,7 @@ namespace BizHawk.MultiClient
 
         public void Restart()
         {
+            if (!this.IsHandleCreated || this.IsDisposed) return;
             SetMemoryDomainMenu();  //Calls Start New Search
         }
 

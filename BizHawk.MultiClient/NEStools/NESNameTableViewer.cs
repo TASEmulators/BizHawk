@@ -64,6 +64,7 @@ namespace BizHawk.MultiClient
         public void Restart()
         {
             if (!(Global.Emulator is NES)) this.Close();
+            if (!this.IsHandleCreated || this.IsDisposed) return;
             Nes = Global.Emulator as NES;
         }
 

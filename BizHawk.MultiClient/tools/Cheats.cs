@@ -72,7 +72,8 @@ namespace BizHawk.MultiClient
 
         public void Restart()
         {
-            NewCheatList();
+            NewCheatList(); //Should be run even if dialog isn't open so cheats system can work
+            if (!this.IsHandleCreated || this.IsDisposed) return;
             ClearFields();
         }
 
