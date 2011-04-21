@@ -118,6 +118,7 @@ namespace BizHawk.MultiClient
                     case "GB":  return "Gameboy/SaveRAM/" + Name + ".SaveRAM";
                     case "GEN": return "Genesis/SaveRAM/" + Name + ".SaveRAM";
                     case "NES": return "NES/SaveRAM/" + Name + ".SaveRAM";
+                    case "TI83": return "TI83/SaveRAM/" + "TI83" + ".SaveRAM";
                     default:    return "";
                 }
             }
@@ -137,6 +138,7 @@ namespace BizHawk.MultiClient
                     case "GB":  return "Gameboy/State/" + Name;
                     case "GEN": return "Genesis/State/" + Name;
                     case "NES": return "NES/State/" + Name;
+                    case "TI83": return "TI83/State/" + "TI83";
                     default:    return "";
                 }
                 
@@ -157,6 +159,7 @@ namespace BizHawk.MultiClient
                     case "GB":  return "Gameboy/Movie/" + Name;
                     case "GEN": return "Genesis/Movie/" + Name;
                     case "NES": return "NES/Movie/" + Name;
+                    case "TI83": return "TI83/Movie/" + Name;
                     default:    return "";
                 }
             }
@@ -176,6 +179,7 @@ namespace BizHawk.MultiClient
                     case "GB":  return "Gameboy/Screenshot/" + Name;
                     case "GEN": return "Genesis/Screenshot/" + Name;
                     case "NES": return "NES/Screenshot/" + Name;
+                    case "TI83": return "TI83/Screenshot/" + "TI83";
                     default:    return "";
                 }
             }

@@ -377,7 +377,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public void FrameAdvance(bool render)
 		{
-			//I eyeballed this speed
+            Frame++;
+            //I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
 				onPressed = Controller.IsPressed("ON");
@@ -409,10 +410,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			disp_x = disp_y = 0;
 		}
 
-		public int Frame
-		{
-			get { return 0; }
-		}
+		public int Frame {get; set;}
+		
 		public bool DeterministicEmulation { get { return true; } set { } }
 
 		public byte[] SaveRam { get { return null; } }
@@ -424,10 +423,22 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public void SaveStateText(TextWriter writer)
 		{
+            writer.WriteLine("[TI83]\n");
+            writer.WriteLine("Frame {0}", Frame);
+            writer.WriteLine("[/TI83]");
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[TI83]") continue;
+                if (args[0] == "[/TI83]") break;
+                if (args[0] == "Frame")
+                    Frame = int.Parse(args[1]);
+            }
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
