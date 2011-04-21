@@ -425,6 +425,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		{
             writer.WriteLine("[TI83]\n");
             writer.WriteLine("Frame {0}", Frame);
+            cpu.SaveStateText(writer);
+            writer.Write("RAM ");
+            ram.SaveAsHex(writer);
+            writer.WriteLine ("romPageLow3Bits {0}", romPageLow3Bits);
+            writer.WriteLine("romPageHighBit {0}", romPageHighBit);
             writer.WriteLine("[/TI83]");
 		}
 
@@ -438,6 +443,16 @@ namespace BizHawk.Emulation.Consoles.Calculator
                 if (args[0] == "[/TI83]") break;
                 if (args[0] == "Frame")
                     Frame = int.Parse(args[1]);
+                else if (args[0] == "[Z80]")
+                    cpu.LoadStateText(reader);
+                else if (args[0] == "RAM")
+                    ram.ReadFromHex(args[1]);
+                else if (args[0] == "romPageLow3Bits")
+                    romPageLow3Bits = int.Parse(args[1]);
+                else if (args[0] == "romPageHighBit")
+                    romPageHighBit = int.Parse(args[1]);
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
 		}
 
