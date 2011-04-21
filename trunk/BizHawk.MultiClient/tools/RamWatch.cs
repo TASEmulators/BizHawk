@@ -17,7 +17,6 @@ namespace BizHawk.MultiClient
     public partial class RamWatch : Form
     {
         //TODO: 
-        //Restart() method to be called in main
         //Restore window size should restore column order as well
         //When receiving a watch from a different domain, should something be done?
 
@@ -35,6 +34,12 @@ namespace BizHawk.MultiClient
         string currentWatchFile = "";
         bool changes = false;
         List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+
+        public void Restart()
+        {
+            if (!this.IsHandleCreated || this.IsDisposed) return;
+            NewWatchList(true);
+        }
 
         public List<Watch> GetRamWatchList()
         {
@@ -289,12 +294,12 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void NewWatchList()
+        private void NewWatchList(bool suppressAsk)
         {
             bool result = true;
             if (changes) result = AskSave();
 
-            if (result == true)
+            if (result == true || suppressAsk)
             {
                 watchList.Clear();
                 DisplayWatchList();
@@ -573,7 +578,7 @@ namespace BizHawk.MultiClient
 
         private void newListToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewWatchList();
+            NewWatchList(false);
         }
 
         private FileInfo GetFileFromUser()
@@ -807,7 +812,7 @@ namespace BizHawk.MultiClient
 
         private void newToolStripButton_Click(object sender, EventArgs e)
         {
-            NewWatchList();
+            NewWatchList(false);
         }
 
         private void openToolStripButton_Click(object sender, EventArgs e)
