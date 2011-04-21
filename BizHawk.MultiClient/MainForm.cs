@@ -579,7 +579,7 @@ namespace BizHawk.MultiClient
 					Global.Game.Name = (Global.Emulator as NES).GameName;
 				}
 
-				Text = DisplayNameForSystem(game.System) + " - " + game.Name + " \\";
+				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 				Global.Config.RecentRoms.Add(file.CanonicalName);
 				if (File.Exists(game.SaveRamPath))
@@ -916,8 +916,6 @@ namespace BizHawk.MultiClient
 				{
 					runloop_second = DateTime.Now;
 					Global.RenderPanel.FPS = runloop_fps;
-					if(Text.IndexOf('\\') != -1)
-						Text = Text.Substring(0, Text.IndexOf('\\')) + "\\ " + runloop_fps + " fps";
 					Global.RenderPanel.FPS = runloop_fps;
 					runloop_fps = 0;
 				}
