@@ -372,6 +372,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			}
 
 			HardReset();
+            SetupMemoryDomains();
 		}
 
 		public void FrameAdvance(bool render)
@@ -443,8 +444,22 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		}
 
         public string SystemId { get { return "TI83"; } }
-        public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
-        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
+
+        private IList<MemoryDomain> memoryDomains;
+        private const ushort RamSizeMask = 0x7FFF;
+
+        private void SetupMemoryDomains()
+        {
+            var domains = new List<MemoryDomain>();
+            var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little, 
+                addr => ram[addr & RamSizeMask],
+                (addr, value) => ram[addr & RamSizeMask] = value);
+            domains.Add(MainMemoryDomain);
+            memoryDomains = domains.AsReadOnly();
+        }
+
+        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 
 		public object Query(EmulatorQuery query)
