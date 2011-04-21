@@ -309,7 +309,7 @@ namespace BizHawk.MultiClient
                 int x = 3;
                 int y = backingControl.Size.Height - (line*18);
                 MessageFont.DrawString(null, messages[i].Message, x+2, y+2, new Color4(Color.Black));
-                MessageFont.DrawString(null, messages[i].Message, x, y, new Color4(Color.White));
+                MessageFont.DrawString(null, messages[i].Message, x, y, Color.FromArgb(Global.Config.MessagesColor));
             }
         }
 
