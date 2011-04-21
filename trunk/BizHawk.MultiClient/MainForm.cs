@@ -505,7 +505,7 @@ namespace BizHawk.MultiClient
 
 				//try binding normal rom extensions first
 				if (!file.IsBound)
-					file.BindSoleItemOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES");
+					file.BindSoleItemOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES", "ROM");
 
 				//if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
@@ -1470,7 +1470,7 @@ namespace BizHawk.MultiClient
         {
             var ofd = new OpenFileDialog();
             ofd.InitialDirectory = Global.Config.LastRomPath;
-            ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|Archive Files|*.zip;*.7z|All Files|*.*";
+            ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|All Files|*.*";
             ofd.RestoreDirectory = true;
 
             Global.Sound.StopSound();

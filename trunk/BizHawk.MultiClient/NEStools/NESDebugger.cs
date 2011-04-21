@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 
         public void Restart()
         {
-
+            if (!this.IsHandleCreated || this.IsDisposed) return;
         }
 
         private void NESDebugger_Load(object sender, EventArgs e)
