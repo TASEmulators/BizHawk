@@ -430,6 +430,16 @@ namespace BizHawk.Emulation.Consoles.Calculator
             ram.SaveAsHex(writer);
             writer.WriteLine ("romPageLow3Bits {0}", romPageLow3Bits);
             writer.WriteLine("romPageHighBit {0}", romPageHighBit);
+            writer.WriteLine("disp_mode {0}", disp_mode);
+            writer.WriteLine("disp_move {0}", disp_move);
+            writer.WriteLine("disp_x {0}", disp_x);
+            writer.WriteLine("disp_y {0}", disp_y);
+            writer.WriteLine("m_CursorMoved", m_CursorMoved);
+            writer.WriteLine("maskOn", maskOn);
+            writer.WriteLine("onPressed", onPressed);
+            writer.WriteLine("keyboardMask", keyboardMask);
+            writer.WriteLine("m_LinkOutput", m_LinkOutput);
+            writer.WriteLine("m_LinkState", m_LinkState);
             writer.WriteLine("[/TI83]");
 		}
 
@@ -451,6 +461,26 @@ namespace BizHawk.Emulation.Consoles.Calculator
                     romPageLow3Bits = int.Parse(args[1]);
                 else if (args[0] == "romPageHighBit")
                     romPageHighBit = int.Parse(args[1]);
+                else if (args[0] == "dispMode")
+                    disp_mode = int.Parse(args[1]);
+                else if (args[0] == "disp_move")
+                    disp_move = int.Parse(args[1]);
+                else if (args[0] == "disp_x")
+                    disp_x = uint.Parse(args[1]);
+                else if (args[0] == "disp_y")
+                    disp_y = uint.Parse(args[1]);
+                else if (args[0] == "m_CursorMoved")
+                    m_CursorMoved = bool.Parse(args[1]);
+                else if (args[0] == "maskOn")
+                    maskOn = bool.Parse(args[1]);
+                else if (args[0] == "onPressed")
+                    onPressed = bool.Parse(args[1]);
+                else if (args[0] == "keyboardMask")
+                    keyboardMask = int.Parse(args[1]);
+                else if (args[0] == "m_LinkOutput")
+                    m_LinkOutput = int.Parse(args[1]);
+                else if (args[0] == "m_LinkState")
+                    m_LinkState = int.Parse(args[1]);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
