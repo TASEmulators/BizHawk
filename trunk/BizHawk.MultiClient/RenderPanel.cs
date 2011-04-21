@@ -120,7 +120,6 @@ namespace BizHawk.MultiClient
 		public void Render(IVideoProvider video)
 		{
             Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
-
             int[] data = video.GetVideoBuffer();
 
 			Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
@@ -258,8 +257,12 @@ namespace BizHawk.MultiClient
         {
             //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
             if (Global.Config.DisplayFrameCounter)
-                MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx, Global.Config.DispFrameCy, new Color4(Color.White)); //TODO: Allow user to set screen coordinates?
-
+            {
+                //MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx+2,
+                //    Global.Config.DispFrameCy+2, new Color4(Color.Black));
+                MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx,
+                    Global.Config.DispFrameCy, Color.FromArgb(Global.Config.MessagesColor));
+            }
             if (Global.Config.DisplayInput)
             {
                 string input = MakeInputDisplay();
@@ -274,7 +277,8 @@ namespace BizHawk.MultiClient
         {
             if (Global.MainForm.InputLog.GetMovieMode() == MOVIEMODE.PLAY) //TODO: use user movie not input log (input log will never be allowed to be played back)
             {
-                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.InputLog.lastLog.ToString() + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
+                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.InputLog.lastLog.ToString() 
+                    + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
             }
             else
             {
