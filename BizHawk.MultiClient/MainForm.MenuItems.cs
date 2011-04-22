@@ -505,5 +505,11 @@ namespace BizHawk.MultiClient
         {
             ToggleFullscreen();
         }
+
+        private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageConfig m = new MessageConfig();
+            m.Show();
+        }
 	}
 }
