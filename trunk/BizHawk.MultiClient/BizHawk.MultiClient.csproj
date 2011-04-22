@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -104,6 +104,12 @@
     </Compile>
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\MessageConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\MessageConfig.Designer.cs">
+      <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
@@ -329,6 +335,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\InputConfig.resx">
       <DependentUpon>InputConfig.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\MessageConfig.resx">
+      <DependentUpon>MessageConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="config\SoundConfig.resx">
