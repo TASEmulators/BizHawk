@@ -13,9 +13,12 @@ namespace BizHawk.MultiClient
     {
         //TODO: 
         //crash if moving too far off drawing area while dragging
-        //Put x & y after each radio dial, right aligned on box and update those when necessary
         //Get message color box working
         //Add read only edit box to display message color as hex value
+        //Implement message position as a variable
+        //Make a checkbox to enable/disable the stacking effect of message label
+        //Implement restore defaults
+        //Deal with typing into Numerics properly
 
         int DispFPSx = Global.Config.DispFPSx;
         int DispFPSy = Global.Config.DispFPSy;
@@ -96,6 +99,7 @@ namespace BizHawk.MultiClient
             }
 
             PositionPanel.Refresh();
+            SetPositionLabels();
         }
 
         private void SaveSettings()
@@ -147,15 +151,22 @@ namespace BizHawk.MultiClient
             SetPositionInfo();
         }
 
-        private void XNumeric_ValueChanged(object sender, EventArgs e)
+        private void XNumericChange()
         {
             px = (int)XNumeric.Value;
+            SetPositionLabels();
             PositionPanel.Refresh();
+        }
+
+        private void XNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            XNumericChange();
         }
 
         private void YNumeric_ValueChanged(object sender, EventArgs e)
         {
             py = (int)XNumeric.Value;
+            SetPositionLabels();
             PositionPanel.Refresh();
         }
 
@@ -201,12 +212,51 @@ namespace BizHawk.MultiClient
             px = mx;
             py = my;
             PositionPanel.Refresh();
+            SetPositionLabels();
         }
 
         private void PositionPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (mousedown)
                 SetNewPosition(e.X, e.Y);
+        }
+
+        private void SetPositionLabels()
+        {
+            if (FPSRadio.Checked)
+            {
+                DispFPSx = px;
+                DispFPSy = py;
+            }
+            else if (FrameCounterRadio.Checked)
+            {
+                DispFrameCx = px;
+                DispFrameCy = py;
+            }
+            else if (LagCounterRadio.Checked)
+            {
+                DispLagx = px;
+                DispLagy = py;
+            }
+            else if (InputDisplayRadio.Checked)
+            {
+                DispInpx = px;
+                DispInpy = py;
+            }
+            else if (MessagesRadio.Checked)
+            {
+                //TODO
+            }
+            FpsPosLabel.Text = DispFPSx.ToString() + ", " + DispFPSy.ToString();
+            FCLabel.Text = DispFrameCx.ToString() + ", " + DispFrameCy.ToString();
+            LagLabel.Text = DispLagx.ToString() + ", " + DispLagy.ToString();
+            InpLabel.Text = DispInpx.ToString() + ", " + DispInpy.ToString();
+            MessLabel.Text = "0, 0";
+        }
+
+        private void ResetDefaultsButton_Click(object sender, EventArgs e)
+        {
+            //TODO
         }
     }
 }
