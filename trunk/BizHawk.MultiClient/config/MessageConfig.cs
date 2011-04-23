@@ -15,6 +15,7 @@ namespace BizHawk.MultiClient
         //Implement message position as a variable
         //Make a checkbox to enable/disable the stacking effect of message label
         //Deal with typing into Numerics properly
+        //Have some method of binding a display object to top/bottom/left/right instead of an absolute position
 
         int DispFPSx = Global.Config.DispFPSx;
         int DispFPSy = Global.Config.DispFPSy;
@@ -46,9 +47,17 @@ namespace BizHawk.MultiClient
 
         private void SetMaxXY()
         {
-            XNumeric.Maximum = 500; //TODO: set by platform
-            YNumeric.Maximum = 500; //TODO: set by platform
-            //Set PositionPanel size, and group box that contains it, and dialog size if necessary
+            XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth-8;
+            YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight-8;
+            PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+            
+            int width;
+            if (Global.Emulator.VideoProvider.BufferWidth > 128)
+                width = Global.Emulator.VideoProvider.BufferWidth + 32;
+            else
+                width = 128+32;
+            
+            PositionGroupBox.Size = new Size(width, Global.Emulator.VideoProvider.BufferHeight + 56);
         }
 
         private void SetColorBox()

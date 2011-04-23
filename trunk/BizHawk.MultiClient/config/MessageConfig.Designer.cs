@@ -40,12 +40,6 @@
             this.LagCounterRadio = new System.Windows.Forms.RadioButton();
             this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
             this.FPSRadio = new System.Windows.Forms.RadioButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.YNumeric = new System.Windows.Forms.NumericUpDown();
-            this.XNumeric = new System.Windows.Forms.NumericUpDown();
-            this.PositionPanel = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.ColorText = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -55,17 +49,24 @@
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.PositionPanel = new System.Windows.Forms.Panel();
+            this.XNumeric = new System.Windows.Forms.NumericUpDown();
+            this.YNumeric = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.PositionGroupBox = new System.Windows.Forms.GroupBox();
             this.MessageTypeBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.MessageColorBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
+            this.PositionGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // OK
             // 
-            this.OK.Location = new System.Drawing.Point(293, 238);
+            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OK.Location = new System.Drawing.Point(327, 319);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -195,78 +196,6 @@
             this.FPSRadio.UseVisualStyleBackColor = true;
             this.FPSRadio.CheckedChanged += new System.EventHandler(this.FPSRadio_CheckedChanged);
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.YNumeric);
-            this.groupBox1.Controls.Add(this.XNumeric);
-            this.groupBox1.Controls.Add(this.PositionPanel);
-            this.groupBox1.Location = new System.Drawing.Point(182, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(267, 166);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Position";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(152, 126);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(12, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "y";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 126);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(12, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "x";
-            // 
-            // YNumeric
-            // 
-            this.YNumeric.Location = new System.Drawing.Point(170, 124);
-            this.YNumeric.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            this.YNumeric.Name = "YNumeric";
-            this.YNumeric.Size = new System.Drawing.Size(66, 20);
-            this.YNumeric.TabIndex = 2;
-            this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
-            // 
-            // XNumeric
-            // 
-            this.XNumeric.Location = new System.Drawing.Point(31, 124);
-            this.XNumeric.Maximum = new decimal(new int[] {
-            256,
-            0,
-            0,
-            0});
-            this.XNumeric.Name = "XNumeric";
-            this.XNumeric.Size = new System.Drawing.Size(66, 20);
-            this.XNumeric.TabIndex = 1;
-            this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
-            // 
-            // PositionPanel
-            // 
-            this.PositionPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.PositionPanel.Location = new System.Drawing.Point(16, 18);
-            this.PositionPanel.Name = "PositionPanel";
-            this.PositionPanel.Size = new System.Drawing.Size(220, 100);
-            this.PositionPanel.TabIndex = 0;
-            this.PositionPanel.MouseLeave += new System.EventHandler(this.PositionPanel_MouseLeave);
-            this.PositionPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PositionPanel_Paint);
-            this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
-            this.PositionPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseDown);
-            this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
-            this.PositionPanel.MouseEnter += new System.EventHandler(this.PositionPanel_MouseEnter);
-            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label3);
@@ -319,8 +248,9 @@
             // 
             // Cancel
             // 
+            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(374, 238);
+            this.Cancel.Location = new System.Drawing.Point(408, 319);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 5;
@@ -330,7 +260,8 @@
             // 
             // ResetDefaultsButton
             // 
-            this.ResetDefaultsButton.Location = new System.Drawing.Point(182, 192);
+            this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ResetDefaultsButton.Location = new System.Drawing.Point(18, 280);
             this.ResetDefaultsButton.Name = "ResetDefaultsButton";
             this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
             this.ResetDefaultsButton.TabIndex = 6;
@@ -347,33 +278,119 @@
             this.label3.TabIndex = 7;
             this.label3.Text = "0x";
             // 
+            // PositionPanel
+            // 
+            this.PositionPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PositionPanel.Location = new System.Drawing.Point(16, 18);
+            this.PositionPanel.Name = "PositionPanel";
+            this.PositionPanel.Size = new System.Drawing.Size(264, 248);
+            this.PositionPanel.TabIndex = 0;
+            this.PositionPanel.MouseLeave += new System.EventHandler(this.PositionPanel_MouseLeave);
+            this.PositionPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PositionPanel_Paint);
+            this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
+            this.PositionPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseDown);
+            this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
+            this.PositionPanel.MouseEnter += new System.EventHandler(this.PositionPanel_MouseEnter);
+            // 
+            // XNumeric
+            // 
+            this.XNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.XNumeric.Location = new System.Drawing.Point(28, 271);
+            this.XNumeric.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.XNumeric.Name = "XNumeric";
+            this.XNumeric.Size = new System.Drawing.Size(44, 20);
+            this.XNumeric.TabIndex = 1;
+            this.XNumeric.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
+            // 
+            // YNumeric
+            // 
+            this.YNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.YNumeric.Location = new System.Drawing.Point(91, 271);
+            this.YNumeric.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.YNumeric.Name = "YNumeric";
+            this.YNumeric.Size = new System.Drawing.Size(44, 20);
+            this.YNumeric.TabIndex = 2;
+            this.YNumeric.Value = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 274);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(12, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "x";
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(77, 273);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(12, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "y";
+            // 
+            // PositionGroupBox
+            // 
+            this.PositionGroupBox.Controls.Add(this.label2);
+            this.PositionGroupBox.Controls.Add(this.label1);
+            this.PositionGroupBox.Controls.Add(this.YNumeric);
+            this.PositionGroupBox.Controls.Add(this.XNumeric);
+            this.PositionGroupBox.Controls.Add(this.PositionPanel);
+            this.PositionGroupBox.Location = new System.Drawing.Point(182, 12);
+            this.PositionGroupBox.Name = "PositionGroupBox";
+            this.PositionGroupBox.Size = new System.Drawing.Size(301, 299);
+            this.PositionGroupBox.TabIndex = 3;
+            this.PositionGroupBox.TabStop = false;
+            this.PositionGroupBox.Text = "Position";
+            // 
             // MessageConfig
             // 
             this.AcceptButton = this.OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(470, 272);
+            this.ClientSize = new System.Drawing.Size(521, 354);
             this.Controls.Add(this.ResetDefaultsButton);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.PositionGroupBox);
             this.Controls.Add(this.MessageTypeBox);
             this.Controls.Add(this.OK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "MessageConfig";
             this.ShowIcon = false;
             this.Text = "Configure On Screen Messages";
             this.Load += new System.EventHandler(this.MessageConfig_Load);
             this.MessageTypeBox.ResumeLayout(false);
             this.MessageTypeBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.MessageColorBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
+            this.PositionGroupBox.ResumeLayout(false);
+            this.PositionGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -387,12 +404,6 @@
         private System.Windows.Forms.RadioButton LagCounterRadio;
         private System.Windows.Forms.RadioButton FrameCounterRadio;
         private System.Windows.Forms.RadioButton FPSRadio;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown YNumeric;
-        private System.Windows.Forms.NumericUpDown XNumeric;
-        private System.Windows.Forms.Panel PositionPanel;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ColorDialog MessageColorDialog;
@@ -407,5 +418,11 @@
         private System.Windows.Forms.GroupBox MessageColorBox;
         private System.Windows.Forms.Panel ColorPanel;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel PositionPanel;
+        private System.Windows.Forms.NumericUpDown XNumeric;
+        private System.Windows.Forms.NumericUpDown YNumeric;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox PositionGroupBox;
     }
 }
