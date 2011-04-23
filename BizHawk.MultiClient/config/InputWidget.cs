@@ -85,14 +85,16 @@ namespace BizHawk.MultiClient
 	{
 		public override string ToString()
 		{
-			string str = "";
-			if((modifiers & Keys.Shift)!=0)
+            string str = "";
+            if((modifiers & Keys.Shift)!=0)
                 str += "LeftShift + ";
 			if ((modifiers & Keys.Control) != 0)
                 str += "LeftControl + ";
 			if ((modifiers & Keys.Alt) != 0)
 				str += "LeftAlt + ";
 			str += key.ToString();
+            if (str.Substring(0, 6) == "NumPad")
+                str = str.Insert(3, "ber");
             if (str.Length > 3)
             {
                 if (str.Substring(0, 3) == "Oem")
