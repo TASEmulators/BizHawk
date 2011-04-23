@@ -12,12 +12,8 @@ namespace BizHawk.MultiClient
     public partial class MessageConfig : Form
     {
         //TODO: 
-        //crash if moving too far off drawing area while dragging
-        //Get message color box working
-        //Add read only edit box to display message color as hex value
         //Implement message position as a variable
         //Make a checkbox to enable/disable the stacking effect of message label
-        //Implement restore defaults
         //Deal with typing into Numerics properly
 
         int DispFPSx = Global.Config.DispFPSx;
@@ -57,7 +53,9 @@ namespace BizHawk.MultiClient
 
         private void SetColorBox()
         {
-            MessageColorBox.BackColor = MessageColorDialog.Color;
+            MessageColor = MessageColorDialog.Color.ToArgb();
+            ColorPanel.BackColor = MessageColorDialog.Color;
+            ColorText.Text =  String.Format("{0:X8}", MessageColor);
         }
 
         private void SetPositionInfo()
@@ -123,7 +121,8 @@ namespace BizHawk.MultiClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageColorDialog.ShowDialog();
+            if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+                SetColorBox();
         }
 
         private void FPSRadio_CheckedChanged(object sender, EventArgs e)
@@ -158,6 +157,13 @@ namespace BizHawk.MultiClient
             PositionPanel.Refresh();
         }
 
+        private void YNumericChange()
+        {
+            py = (int)YNumeric.Value;
+            SetPositionLabels();
+            PositionPanel.Refresh();
+        }
+
         private void XNumeric_ValueChanged(object sender, EventArgs e)
         {
             XNumericChange();
@@ -165,9 +171,7 @@ namespace BizHawk.MultiClient
 
         private void YNumeric_ValueChanged(object sender, EventArgs e)
         {
-            py = (int)XNumeric.Value;
-            SetPositionLabels();
-            PositionPanel.Refresh();
+            YNumericChange();
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -207,6 +211,10 @@ namespace BizHawk.MultiClient
 
         private void SetNewPosition(int mx, int my)
         {
+            if (mx < 0) mx = 0;
+            if (my < 0) my = 0;
+            if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
+            if (my > YNumeric.Maximum) my = (int)YNumeric.Maximum;
             XNumeric.Value = mx;
             YNumeric.Value = my;
             px = mx;
@@ -218,7 +226,9 @@ namespace BizHawk.MultiClient
         private void PositionPanel_MouseMove(object sender, MouseEventArgs e)
         {
             if (mousedown)
+            {
                 SetNewPosition(e.X, e.Y);
+            }
         }
 
         private void SetPositionLabels()
@@ -256,7 +266,37 @@ namespace BizHawk.MultiClient
 
         private void ResetDefaultsButton_Click(object sender, EventArgs e)
         {
-            //TODO
+            Global.Config.DispFPSx = 0;
+            Global.Config.DispFPSy = 0;
+            Global.Config.DispFrameCx = 0;
+            Global.Config.DispFrameCy = 12;
+            Global.Config.DispLagx = 0;
+            Global.Config.DispLagy = 36;
+            Global.Config.DispInpx = 0;
+            Global.Config.DispInpy = 24;
+            Global.Config.MessagesColor = -1;
+
+            DispFPSx = Global.Config.DispFPSx;
+            DispFPSy = Global.Config.DispFPSy;
+            DispFrameCx = Global.Config.DispFrameCx;
+            DispFrameCy = Global.Config.DispFrameCy;
+            DispLagx = Global.Config.DispLagx;
+            DispLagy = Global.Config.DispLagy;
+            DispInpx = Global.Config.DispInpx;
+            DispInpy = Global.Config.DispInpy;
+            MessageColor = Global.Config.MessagesColor;
+
+
+            SetMaxXY();
+            MessageColorDialog.Color = Color.FromArgb(MessageColor);
+            SetColorBox();
+            SetPositionInfo();
+        }
+
+        private void ColorPanel_DoubleClick(object sender, EventArgs e)
+        {
+            if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+                SetColorBox();
         }
     }
 }

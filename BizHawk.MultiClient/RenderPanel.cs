@@ -258,22 +258,22 @@ namespace BizHawk.MultiClient
             //TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
             if (Global.Config.DisplayFrameCounter)
             {
-                MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx+2,
-                    Global.Config.DispFrameCy+2, new Color4(Color.Black));
+                MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx+1,
+                    Global.Config.DispFrameCy+1, new Color4(Color.Black));
                 MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx,
                     Global.Config.DispFrameCy, Color.FromArgb(Global.Config.MessagesColor));
             }
             if (Global.Config.DisplayInput)
             {
                 string input = MakeInputDisplay();
-                MessageFont.DrawString(null, input, Global.Config.DispInpx+2, Global.Config.DispInpy+2, new Color4(Color.Black));
+                MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, new Color4(Color.Black));
                 MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, Color.FromArgb(Global.Config.MessagesColor));
             }
 
             if (Global.Config.DisplayFPS)
             {
-                MessageFont.DrawString(null, FPS.ToString() + " fps", Global.Config.DispFPSx+2, 
-                    Global.Config.DispFPSy+2, new Color4(Color.Black));
+                MessageFont.DrawString(null, FPS.ToString() + " fps", Global.Config.DispFPSx+1, 
+                    Global.Config.DispFPSy+1, new Color4(Color.Black));
                 MessageFont.DrawString(null, FPS.ToString() + " fps", Global.Config.DispFPSx,
                     Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
             }
