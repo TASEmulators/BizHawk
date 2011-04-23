@@ -45,6 +45,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.MessageColorBox = new System.Windows.Forms.GroupBox();
             this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
+            this.Cancel = new System.Windows.Forms.Button();
             this.MessageTypeBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
@@ -55,7 +56,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(417, 398);
+            this.OK.Location = new System.Drawing.Point(336, 398);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -70,7 +71,7 @@
             this.MessageTypeBox.Controls.Add(this.LagCounterRadio);
             this.MessageTypeBox.Controls.Add(this.FrameCounterRadio);
             this.MessageTypeBox.Controls.Add(this.FPSRadio);
-            this.MessageTypeBox.Location = new System.Drawing.Point(12, 190);
+            this.MessageTypeBox.Location = new System.Drawing.Point(18, 119);
             this.MessageTypeBox.Name = "MessageTypeBox";
             this.MessageTypeBox.Size = new System.Drawing.Size(105, 139);
             this.MessageTypeBox.TabIndex = 2;
@@ -80,12 +81,14 @@
             // MessagesRadio
             // 
             this.MessagesRadio.AutoSize = true;
+            this.MessagesRadio.Enabled = false;
             this.MessagesRadio.Location = new System.Drawing.Point(6, 114);
             this.MessagesRadio.Name = "MessagesRadio";
             this.MessagesRadio.Size = new System.Drawing.Size(73, 17);
             this.MessagesRadio.TabIndex = 4;
             this.MessagesRadio.Text = "Messages";
             this.MessagesRadio.UseVisualStyleBackColor = true;
+            this.MessagesRadio.CheckedChanged += new System.EventHandler(this.MessagesRadio_CheckedChanged);
             // 
             // InputDisplayRadio
             // 
@@ -96,6 +99,7 @@
             this.InputDisplayRadio.TabIndex = 3;
             this.InputDisplayRadio.Text = "Input Display";
             this.InputDisplayRadio.UseVisualStyleBackColor = true;
+            this.InputDisplayRadio.CheckedChanged += new System.EventHandler(this.InputDisplayRadio_CheckedChanged);
             // 
             // LagCounterRadio
             // 
@@ -106,6 +110,7 @@
             this.LagCounterRadio.TabIndex = 2;
             this.LagCounterRadio.Text = "Lag Counter";
             this.LagCounterRadio.UseVisualStyleBackColor = true;
+            this.LagCounterRadio.CheckedChanged += new System.EventHandler(this.LagCounterRadio_CheckedChanged);
             // 
             // FrameCounterRadio
             // 
@@ -116,6 +121,7 @@
             this.FrameCounterRadio.TabIndex = 1;
             this.FrameCounterRadio.Text = "Frame counter";
             this.FrameCounterRadio.UseVisualStyleBackColor = true;
+            this.FrameCounterRadio.CheckedChanged += new System.EventHandler(this.FrameCounterRadio_CheckedChanged);
             // 
             // FPSRadio
             // 
@@ -128,6 +134,7 @@
             this.FPSRadio.TabStop = true;
             this.FPSRadio.Text = "Fps";
             this.FPSRadio.UseVisualStyleBackColor = true;
+            this.FPSRadio.CheckedChanged += new System.EventHandler(this.FPSRadio_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -138,7 +145,7 @@
             this.groupBox1.Controls.Add(this.PositionPanel);
             this.groupBox1.Location = new System.Drawing.Point(144, 119);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(267, 210);
+            this.groupBox1.Size = new System.Drawing.Size(267, 166);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Position";
@@ -172,6 +179,7 @@
             this.YNumeric.Name = "YNumeric";
             this.YNumeric.Size = new System.Drawing.Size(66, 20);
             this.YNumeric.TabIndex = 2;
+            this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
             // 
             // XNumeric
             // 
@@ -184,6 +192,7 @@
             this.XNumeric.Name = "XNumeric";
             this.XNumeric.Size = new System.Drawing.Size(66, 20);
             this.XNumeric.TabIndex = 1;
+            this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
             // 
             // PositionPanel
             // 
@@ -192,6 +201,12 @@
             this.PositionPanel.Name = "PositionPanel";
             this.PositionPanel.Size = new System.Drawing.Size(220, 100);
             this.PositionPanel.TabIndex = 0;
+            this.PositionPanel.MouseLeave += new System.EventHandler(this.PositionPanel_MouseLeave);
+            this.PositionPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PositionPanel_Paint);
+            this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
+            this.PositionPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseDown);
+            this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
+            this.PositionPanel.MouseEnter += new System.EventHandler(this.PositionPanel_MouseEnter);
             // 
             // groupBox2
             // 
@@ -222,12 +237,26 @@
             this.MessageColorBox.TabIndex = 0;
             this.MessageColorBox.TabStop = false;
             // 
+            // Cancel
+            // 
+            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Cancel.Location = new System.Drawing.Point(417, 398);
+            this.Cancel.Name = "Cancel";
+            this.Cancel.Size = new System.Drawing.Size(75, 23);
+            this.Cancel.TabIndex = 5;
+            this.Cancel.Text = "&Cancel";
+            this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+            // 
             // MessageConfig
             // 
             this.AcceptButton = this.OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(504, 433);
+            this.Controls.Add(this.Cancel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.MessageTypeBox);
@@ -265,5 +294,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox MessageColorBox;
         private System.Windows.Forms.ColorDialog MessageColorDialog;
+        private System.Windows.Forms.Button Cancel;
     }
 }
