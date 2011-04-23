@@ -509,7 +509,7 @@ namespace BizHawk.MultiClient
         private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MessageConfig m = new MessageConfig();
-            m.Show();
+            m.ShowDialog();
         }
 	}
 }

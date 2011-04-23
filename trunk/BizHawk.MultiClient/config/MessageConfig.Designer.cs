@@ -47,23 +47,25 @@
             this.XNumeric = new System.Windows.Forms.NumericUpDown();
             this.PositionPanel = new System.Windows.Forms.Panel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ColorText = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.MessageColorBox = new System.Windows.Forms.GroupBox();
+            this.ColorPanel = new System.Windows.Forms.Panel();
             this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.MessageTypeBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.MessageColorBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // OK
             // 
-            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(337, 316);
+            this.OK.Location = new System.Drawing.Point(293, 238);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -83,7 +85,7 @@
             this.MessageTypeBox.Controls.Add(this.LagCounterRadio);
             this.MessageTypeBox.Controls.Add(this.FrameCounterRadio);
             this.MessageTypeBox.Controls.Add(this.FPSRadio);
-            this.MessageTypeBox.Location = new System.Drawing.Point(18, 23);
+            this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
             this.MessageTypeBox.Name = "MessageTypeBox";
             this.MessageTypeBox.Size = new System.Drawing.Size(149, 139);
             this.MessageTypeBox.TabIndex = 2;
@@ -200,7 +202,7 @@
             this.groupBox1.Controls.Add(this.YNumeric);
             this.groupBox1.Controls.Add(this.XNumeric);
             this.groupBox1.Controls.Add(this.PositionPanel);
-            this.groupBox1.Location = new System.Drawing.Point(182, 23);
+            this.groupBox1.Location = new System.Drawing.Point(182, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(267, 166);
             this.groupBox1.TabIndex = 3;
@@ -267,19 +269,30 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.label3);
+            this.groupBox2.Controls.Add(this.ColorText);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.MessageColorBox);
-            this.groupBox2.Location = new System.Drawing.Point(24, 212);
+            this.groupBox2.Location = new System.Drawing.Point(12, 173);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(156, 88);
+            this.groupBox2.Size = new System.Drawing.Size(128, 88);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Message Color";
             // 
+            // ColorText
+            // 
+            this.ColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.ColorText.Location = new System.Drawing.Point(61, 27);
+            this.ColorText.MaxLength = 8;
+            this.ColorText.Name = "ColorText";
+            this.ColorText.ReadOnly = true;
+            this.ColorText.Size = new System.Drawing.Size(59, 20);
+            this.ColorText.TabIndex = 2;
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(77, 53);
+            this.button1.Location = new System.Drawing.Point(12, 53);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(65, 23);
             this.button1.TabIndex = 1;
@@ -289,17 +302,25 @@
             // 
             // MessageColorBox
             // 
+            this.MessageColorBox.Controls.Add(this.ColorPanel);
             this.MessageColorBox.Location = new System.Drawing.Point(12, 19);
             this.MessageColorBox.Name = "MessageColorBox";
-            this.MessageColorBox.Size = new System.Drawing.Size(36, 30);
+            this.MessageColorBox.Size = new System.Drawing.Size(29, 29);
             this.MessageColorBox.TabIndex = 0;
             this.MessageColorBox.TabStop = false;
             // 
+            // ColorPanel
+            // 
+            this.ColorPanel.Location = new System.Drawing.Point(4, 8);
+            this.ColorPanel.Name = "ColorPanel";
+            this.ColorPanel.Size = new System.Drawing.Size(20, 16);
+            this.ColorPanel.TabIndex = 7;
+            this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
+            // 
             // Cancel
             // 
-            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(417, 314);
+            this.Cancel.Location = new System.Drawing.Point(374, 238);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 5;
@@ -309,7 +330,7 @@
             // 
             // ResetDefaultsButton
             // 
-            this.ResetDefaultsButton.Location = new System.Drawing.Point(18, 316);
+            this.ResetDefaultsButton.Location = new System.Drawing.Point(182, 192);
             this.ResetDefaultsButton.Name = "ResetDefaultsButton";
             this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
             this.ResetDefaultsButton.TabIndex = 6;
@@ -317,15 +338,14 @@
             this.ResetDefaultsButton.UseVisualStyleBackColor = true;
             this.ResetDefaultsButton.Click += new System.EventHandler(this.ResetDefaultsButton_Click);
             // 
-            // textBox1
+            // label3
             // 
-            this.textBox1.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.textBox1.Location = new System.Drawing.Point(12, 55);
-            this.textBox1.MaxLength = 8;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(59, 20);
-            this.textBox1.TabIndex = 2;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(44, 30);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(18, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "0x";
             // 
             // MessageConfig
             // 
@@ -333,14 +353,16 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(504, 349);
+            this.ClientSize = new System.Drawing.Size(470, 272);
             this.Controls.Add(this.ResetDefaultsButton);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.MessageTypeBox);
             this.Controls.Add(this.OK);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MessageConfig";
+            this.ShowIcon = false;
             this.Text = "Configure On Screen Messages";
             this.Load += new System.EventHandler(this.MessageConfig_Load);
             this.MessageTypeBox.ResumeLayout(false);
@@ -351,6 +373,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.MessageColorBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -372,7 +395,6 @@
         private System.Windows.Forms.Panel PositionPanel;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.GroupBox MessageColorBox;
         private System.Windows.Forms.ColorDialog MessageColorDialog;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label MessLabel;
@@ -381,6 +403,9 @@
         private System.Windows.Forms.Label FCLabel;
         private System.Windows.Forms.Label FpsPosLabel;
         private System.Windows.Forms.Button ResetDefaultsButton;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox ColorText;
+        private System.Windows.Forms.GroupBox MessageColorBox;
+        private System.Windows.Forms.Panel ColorPanel;
+        private System.Windows.Forms.Label label3;
     }
 }
