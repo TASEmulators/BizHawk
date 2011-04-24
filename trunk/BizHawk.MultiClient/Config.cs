@@ -382,6 +382,34 @@
         public string MULTIPLY;
         public string DIVIDE;
         public string CLEAR;
+        public string EXP;
+        public string DASH;
+        public string PARACLOSE;
+        public string TAN;
+        public string VARS;
+        public string PARAOPEN;
+        public string COS;
+        public string PRGM;
+        public string STAT;
+        public string COMMA;
+        public string SIN;
+        public string MATRIX;
+        public string X;
+        public string STO;
+        public string LN;
+        public string LOG;
+        public string SQUARED;
+        public string NEG1;
+        public string MATH;
+        public string ALPHA;
+        public string GRAPH;
+        public string TRACE;
+        public string ZOOM;
+        public string WINDOW;
+        public string Y;
+        public string SECOND;
+        public string MODE;
+        public string DEL;
         public TI83ControllerTemplate() { }
         public bool Enabled;
         public TI83ControllerTemplate(bool defaults)
@@ -411,6 +439,32 @@
                 MULTIPLY = "NumberPadStar";
                 DIVIDE = "NumberPadSlash";
                 CLEAR = "Escape";
+                EXP = "6";
+                DASH = "Minus";
+                PARACLOSE = "0";
+                PARAOPEN = "9";
+                TAN = "T";
+                VARS = "V";
+                COS = "C";
+                PRGM = "R";
+                STAT = "S";
+                MATRIX = "LeftBracket";
+                X = "X";
+                STO = "Insert";
+                LN = "L";
+                LOG = "O";
+                SQUARED = "2";
+                NEG1 = "1";
+                MATH = "M";
+                ALPHA = "A";
+                GRAPH = "G";
+                TRACE = "Home"; 
+                ZOOM = "Z";
+                WINDOW = "W";
+                Y = "Y";
+                SECOND = "Slash";
+                MODE = "BackSlash";
+                DEL = "Delete";
             }
             else
             {
@@ -437,6 +491,34 @@
                 MULTIPLY = "";
                 DIVIDE = "";
                 CLEAR = "";
+                EXP = "";
+                DASH = "";
+                PARACLOSE = "";
+                TAN = "";
+                VARS = "";
+                PARAOPEN = "";
+                COS = "";
+                PRGM = "";
+                STAT = "";
+                COMMA = "";
+                SIN = "";
+                MATRIX = "";
+                X = "";
+                STO = "";
+                LN = "";
+                LOG = "";
+                SQUARED = "";
+                NEG1 = "";
+                MATH = "";
+                ALPHA = "";
+                GRAPH = "";
+                TRACE = "";
+                ZOOM = "";
+                WINDOW = "";
+                Y = "";
+                SECOND = "";
+                MODE = "";
+                DEL = "";
             }
         }
     }
