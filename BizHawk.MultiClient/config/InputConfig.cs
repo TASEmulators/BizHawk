@@ -265,7 +265,9 @@ namespace BizHawk.MultiClient
             Changed = true;
             Labels.Clear();
             TextBoxes.Clear();
-            for (int i = 0; i < TI83ControlList.Length; i++)
+            
+            //NOTE: Uses a hard coded 50 buttons (but it isn't likely that a TI-83 will magically get more buttons
+            for (int i = 0; i < 17; i++)
             {
                 TempLabel = new Label();
                 TempLabel.Text = TI83ControlList[i];
@@ -278,6 +280,37 @@ namespace BizHawk.MultiClient
                 ButtonsGroupBox.Controls.Add(TempTextBox);
                 ButtonsGroupBox.Controls.Add(TempLabel);
             }
+            int c = 0;
+            for (int i = 17; i < 34; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = TI83ControlList[i];
+                TempLabel.Location = new Point(150, 20 + (c * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(190, 20 + (c * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+                c++;
+            }
+            c = 0;
+            for (int i = 34; i < 50; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = TI83ControlList[i];
+                TempLabel.Location = new Point(292, 20 + (c * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(348, 20 + (c * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+                c++;
+            }
+
             Changed = true;
         }
 
