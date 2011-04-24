@@ -27,8 +27,108 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
-        public string GetControllersAsMnemonic() { return "|.|0|"; } //TODO: Implement this
-        public void SetControllersAsMnemonic(string mnemonic) { return;/*TODO*/ }
+        public string GetControllersAsMnemonic() 
+        {
+            string input = "|";
+
+            if (Controller.IsPressed("0")) input += "0";
+            else input += ".";
+            if (Controller.IsPressed("1")) input += "1";
+            else input += ".";
+            if (Controller.IsPressed("2")) input += "2";
+            else input += ".";
+            if (Controller.IsPressed("3")) input += "3";
+            else input += ".";
+            if (Controller.IsPressed("4")) input += "4";
+            else input += ".";
+            if (Controller.IsPressed("5")) input += "5";
+            else input += ".";
+            if (Controller.IsPressed("6")) input += "6";
+            else input += ".";
+            if (Controller.IsPressed("7")) input += "7";
+            else input += ".";
+            if (Controller.IsPressed("8")) input += "8";
+            else input += ".";
+            if (Controller.IsPressed("9")) input += "9";
+            else input += ".";
+            if (Controller.IsPressed("DOT")) input += ".";
+            else input += ".";
+            if (Controller.IsPressed("ON")) input += "O";
+            else input += ".";
+            if (Controller.IsPressed("ENTER")) input += "E";
+            else input += ".";
+            if (Controller.IsPressed("UP")) input += "U";
+            else input += ".";
+            if (Controller.IsPressed("DOWN")) input += "D";
+            else input += ".";
+            if (Controller.IsPressed("LEFT")) input += "L";
+            else input += ".";
+            if (Controller.IsPressed("RIGHT")) input += "R";
+            else input += ".";
+            if (Controller.IsPressed("PLUS")) input += "+";
+            else input += ".";
+            if (Controller.IsPressed("MINUS")) input += "-";
+            else input += ".";
+            if (Controller.IsPressed("MULTIPLY")) input += "*";
+            else input += ".";
+            if (Controller.IsPressed("DIVIDE")) input += "/";
+            else input += ".";
+            if (Controller.IsPressed("CLEAR")) input += "C";
+            else input += ".";
+
+            input += "|.|"; //TODO: perhaps ON should go here?
+
+            return input;
+        }
+        public void SetControllersAsMnemonic(string mnemonic) 
+        {
+            if (mnemonic.Length == 0) return;
+
+            if (mnemonic[1] != '.')
+                Controller.ForceButton("0");
+            if (mnemonic[2] != '.')
+                Controller.ForceButton("1");
+            if (mnemonic[3] != '.')
+                Controller.ForceButton("2");
+            if (mnemonic[4] != '.')
+                Controller.ForceButton("3");
+            if (mnemonic[5] != '.')
+                Controller.ForceButton("4");
+            if (mnemonic[6] != '.')
+                Controller.ForceButton("5");
+            if (mnemonic[7] != '.')
+                Controller.ForceButton("6");
+            if (mnemonic[8] != '.')
+                Controller.ForceButton("7");
+            if (mnemonic[9] != '.')
+                Controller.ForceButton("8");
+            if (mnemonic[10] != '.')
+                Controller.ForceButton("9");
+            if (mnemonic[11] != '.')
+                Controller.ForceButton("DOT");
+            if (mnemonic[12] != '.')
+                Controller.ForceButton("ON");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("ENTER");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("UP");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("DOWN");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("LEFT");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("RIGHT");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("PLUS");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("MINUS");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("MULTIPLY");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("DIVIDE");
+            if (mnemonic[13] != '.')
+                Controller.ForceButton("CLEAR");
+        }
 
         public byte ReadMemory(ushort addr)
         {
