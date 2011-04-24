@@ -383,28 +383,28 @@ namespace BizHawk.MultiClient
 			Global.GenControls = genControls;
 
 			var TI83Controls = new Controller(TI83.TI83Controller);
-			TI83Controls.BindMulti("0", "D0"); //numpad 4,8,6,2 (up/down/left/right) dont work in slimdx!! wtf!!
-			TI83Controls.BindMulti("1", "D1");
-			TI83Controls.BindMulti("2", "D2");
-			TI83Controls.BindMulti("3", "D3");
-			TI83Controls.BindMulti("4", "D4");
-			TI83Controls.BindMulti("5", "D5");
-			TI83Controls.BindMulti("6", "D6");
-			TI83Controls.BindMulti("7", "D7");
-			TI83Controls.BindMulti("8", "D8");
-			TI83Controls.BindMulti("9", "D9");
-			TI83Controls.BindMulti("ON", "Space");
-			TI83Controls.BindMulti("ENTER", "NumberPadEnter");
-			TI83Controls.BindMulti("DOWN", "DownArrow");
-			TI83Controls.BindMulti("LEFT", "LeftArrow");
-			TI83Controls.BindMulti("RIGHT", "RightArrow");
-			TI83Controls.BindMulti("UP", "UpArrow");
-			TI83Controls.BindMulti("PLUS", "NumberPadPlus");
-			TI83Controls.BindMulti("MINUS", "NumberPadMinus");
-			TI83Controls.BindMulti("MULTIPLY", "NumberPadStar");
-			TI83Controls.BindMulti("DIVIDE", "NumberPadSlash");
-			TI83Controls.BindMulti("CLEAR", "Escape");
-			TI83Controls.BindMulti("DOT", "NumberPadPeriod");
+			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0); //TODO numpad 4,8,6,2 (up/down/left/right) dont work in slimdx!! wtf!!
+			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
+			TI83Controls.BindMulti("2", Global.Config.TI83Controller[0]._2);
+            TI83Controls.BindMulti("3", Global.Config.TI83Controller[0]._3);
+            TI83Controls.BindMulti("4", Global.Config.TI83Controller[0]._4);
+            TI83Controls.BindMulti("5", Global.Config.TI83Controller[0]._5);
+            TI83Controls.BindMulti("6", Global.Config.TI83Controller[0]._6);
+            TI83Controls.BindMulti("7", Global.Config.TI83Controller[0]._7);
+            TI83Controls.BindMulti("8", Global.Config.TI83Controller[0]._8);
+            TI83Controls.BindMulti("9", Global.Config.TI83Controller[0]._9);
+			TI83Controls.BindMulti("ON", Global.Config.TI83Controller[0].ON);
+			TI83Controls.BindMulti("ENTER", Global.Config.TI83Controller[0].ENTER);
+			TI83Controls.BindMulti("DOWN", Global.Config.TI83Controller[0].DOWN);
+			TI83Controls.BindMulti("LEFT", Global.Config.TI83Controller[0].LEFT);
+			TI83Controls.BindMulti("RIGHT", Global.Config.TI83Controller[0].RIGHT);
+			TI83Controls.BindMulti("UP", Global.Config.TI83Controller[0].UP);
+			TI83Controls.BindMulti("PLUS", Global.Config.TI83Controller[0].PLUS);
+			TI83Controls.BindMulti("MINUS", Global.Config.TI83Controller[0].MINUS);
+			TI83Controls.BindMulti("MULTIPLY", Global.Config.TI83Controller[0].MULTIPLY);
+			TI83Controls.BindMulti("DIVIDE", Global.Config.TI83Controller[0].DIVIDE);
+			TI83Controls.BindMulti("CLEAR", Global.Config.TI83Controller[0].CLEAR);
+			TI83Controls.BindMulti("DOT", Global.Config.TI83Controller[0].DOT);
 			Global.TI83Controls = TI83Controls;
 		}
 
