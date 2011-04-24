@@ -68,6 +68,9 @@
             // 
             // ButtonsGroupBox
             // 
+            this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 68);
             this.ButtonsGroupBox.Name = "ButtonsGroupBox";
             this.ButtonsGroupBox.Size = new System.Drawing.Size(240, 239);
@@ -77,10 +80,13 @@
             // 
             // ControllerImage
             // 
+            this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.ControllerImage.Location = new System.Drawing.Point(258, 73);
             this.ControllerImage.Name = "ControllerImage";
-            this.ControllerImage.Size = new System.Drawing.Size(169, 195);
+            this.ControllerImage.Size = new System.Drawing.Size(169, 202);
             this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.ControllerImage.TabIndex = 3;
             this.ControllerImage.TabStop = false;

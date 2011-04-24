@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
+    //TODO: Multi column for TI83
+    //TODO: keep track of size of dynamic inputwidget creation and resize the dialog + groupbox accordingly
     public partial class InputConfig : Form
     {
         const string ControllerStr = "Configure Controllers - ";
@@ -17,6 +19,7 @@ namespace BizHawk.MultiClient
         public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
         public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X", "Y", "Z" };
         public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select" };
+        public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "Dot", "On", "Enter", "Up", "Down", "Left", "Right", "Plus", "Minus", "Multiply", "Divide", "Clear"};
         private ArrayList Labels;
         private ArrayList TextBoxes;
         private string CurSelectConsole;
@@ -198,7 +201,130 @@ namespace BizHawk.MultiClient
 
         private void DoTI83()
         {
+            Label TempLabel;
+            InputWidget TempTextBox;
             this.Text = ControllerStr + "TI-83";
+            ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
+            int jpad = this.ControllComboBox.SelectedIndex;
+            string[] ButtonMappings = new string[TI83ControlList.Length];
+            ButtonMappings[0] = Global.Config.TI83Controller[jpad]._0;
+            ButtonMappings[1] = Global.Config.TI83Controller[jpad]._1;
+            ButtonMappings[2] = Global.Config.TI83Controller[jpad]._2;
+            ButtonMappings[3] = Global.Config.TI83Controller[jpad]._3;
+            ButtonMappings[4] = Global.Config.TI83Controller[jpad]._4;
+            ButtonMappings[5] = Global.Config.TI83Controller[jpad]._5;
+            ButtonMappings[6] = Global.Config.TI83Controller[jpad]._6;
+            ButtonMappings[7] = Global.Config.TI83Controller[jpad]._7;
+            ButtonMappings[8] = Global.Config.TI83Controller[jpad]._8;
+            ButtonMappings[9] = Global.Config.TI83Controller[jpad]._9;
+            ButtonMappings[10] = Global.Config.TI83Controller[jpad].DOT;
+            ButtonMappings[11] = Global.Config.TI83Controller[jpad].ON;
+            ButtonMappings[12] = Global.Config.TI83Controller[jpad].ENTER;
+            ButtonMappings[13] = Global.Config.TI83Controller[jpad].UP;
+            ButtonMappings[14] = Global.Config.TI83Controller[jpad].DOWN;
+            ButtonMappings[15] = Global.Config.TI83Controller[jpad].LEFT;
+            ButtonMappings[16] = Global.Config.TI83Controller[jpad].RIGHT;
+            ButtonMappings[17] = Global.Config.TI83Controller[jpad].PLUS;
+            ButtonMappings[18] = Global.Config.TI83Controller[jpad].MINUS;
+            ButtonMappings[19] = Global.Config.TI83Controller[jpad].MULTIPLY;
+            ButtonMappings[20] = Global.Config.TI83Controller[jpad].DIVIDE;
+            ButtonMappings[21] = Global.Config.TI83Controller[jpad].CLEAR;
+            IDX_CONTROLLERENABLED.Checked = Global.Config.TI83Controller[jpad].Enabled;
+            Changed = true;
+            Labels.Clear();
+            TextBoxes.Clear();
+            for (int i = 0; i < TI83ControlList.Length; i++)
+            {
+                TempLabel = new Label();
+                TempLabel.Text = TI83ControlList[i];
+                TempLabel.Location = new Point(8, 20 + (i * 24));
+                Labels.Add(TempLabel);
+                TempTextBox = new InputWidget();
+                TempTextBox.Location = new Point(48, 20 + (i * 24));
+                TextBoxes.Add(TempTextBox);
+                TempTextBox.Text = ButtonMappings[i];
+                ButtonsGroupBox.Controls.Add(TempTextBox);
+                ButtonsGroupBox.Controls.Add(TempLabel);
+            }
+            Changed = true;
+        }
+
+        private void UpdateTI83()
+        {
+            ButtonsGroupBox.Controls.Clear();
+            InputWidget TempBox;
+            Label TempLabel;
+            TempBox = TextBoxes[0] as InputWidget;
+            Global.Config.TI83Controller[0]._0 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._0);
+            TempBox.Dispose();
+            TempBox = TextBoxes[1] as InputWidget;
+            Global.Config.TI83Controller[0]._1 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._1);
+            TempBox.Dispose();
+            TempBox = TextBoxes[2] as InputWidget;
+            Global.Config.TI83Controller[0]._2 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._2);
+            TempBox.Dispose();
+            TempBox = TextBoxes[3] as InputWidget;
+            Global.Config.TI83Controller[0]._3 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._3);
+            TempBox.Dispose();
+            TempBox = TextBoxes[4] as InputWidget;
+            Global.Config.TI83Controller[0]._4 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._4);
+            TempBox.Dispose();
+            TempBox = TextBoxes[5] as InputWidget;
+            Global.Config.TI83Controller[0]._5 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._5);
+            TempBox.Dispose();
+            TempBox = TextBoxes[6] as InputWidget;
+            Global.Config.TI83Controller[0]._6 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._6);
+            TempBox.Dispose();
+            TempBox = TextBoxes[7] as InputWidget;
+            Global.Config.TI83Controller[0]._7 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._7);
+            TempBox.Dispose();
+            TempBox = TextBoxes[8] as InputWidget;
+            Global.Config.TI83Controller[0]._8 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._8);
+            TempBox.Dispose();
+            TempBox = TextBoxes[9] as InputWidget;
+            Global.Config.TI83Controller[0]._9 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._9);
+            TempBox.Dispose();
+            TempBox = TextBoxes[10] as InputWidget;
+            Global.Config.TI83Controller[0].DOT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DOT);
+            TempBox.Dispose();
+            TempBox = TextBoxes[11] as InputWidget;
+            Global.Config.TI83Controller[0].ENTER = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].ENTER);
+            TempBox.Dispose();
+            TempBox = TextBoxes[12] as InputWidget;
+            Global.Config.TI83Controller[0].UP = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].UP);
+            TempBox.Dispose();
+            TempBox = TextBoxes[13] as InputWidget;
+            Global.Config.TI83Controller[0].DOWN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DOWN);
+            TempBox.Dispose();
+            TempBox = TextBoxes[14] as InputWidget;
+            Global.Config.TI83Controller[0].LEFT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].LEFT);
+            TempBox.Dispose();
+            TempBox = TextBoxes[15] as InputWidget;
+            Global.Config.TI83Controller[0].RIGHT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].RIGHT);
+            TempBox.Dispose();
+            TempBox = TextBoxes[16] as InputWidget;
+            Global.Config.TI83Controller[0].PLUS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].PLUS);
+            TempBox.Dispose();
+            TempBox = TextBoxes[17] as InputWidget;
+            Global.Config.TI83Controller[0].MINUS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MINUS);
+            TempBox.Dispose();
+            TempBox = TextBoxes[18] as InputWidget;
+            Global.Config.TI83Controller[0].MULTIPLY = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MULTIPLY);
+            TempBox.Dispose();
+            TempBox = TextBoxes[19] as InputWidget;
+            Global.Config.TI83Controller[0].DIVIDE = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DIVIDE);
+            TempBox.Dispose();
+            TempBox = TextBoxes[20] as InputWidget;
+            Global.Config.TI83Controller[0].CLEAR = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].CLEAR);
+            TempBox.Dispose();
+
+            for (int i = 0; i < TI83ControlList.Length; i++)
+            {
+                TempLabel = Labels[i] as Label;
+                TempLabel.Dispose();
+            }
+            IDX_CONTROLLERENABLED.Enabled = true;
+
         }
 
         private void DoGameBoy()
@@ -358,15 +484,16 @@ namespace BizHawk.MultiClient
 					case "SGX":
 						this.SystemComboBox.SelectedIndex = 1;
 						break;
-					case "GEN":
+					case "GB":
 						this.SystemComboBox.SelectedIndex = 2;
 						break;
-					case "TI83":
-						this.SystemComboBox.SelectedIndex = 3;
+					case "GEN":
+                        this.SystemComboBox.SelectedIndex = 3;
 						break;
-					case "GB":
+					case "TI83":
 						this.SystemComboBox.SelectedIndex = 4;
 						break;
+
 					case "NES":
 						this.SystemComboBox.SelectedIndex = 5;
 						break;
@@ -473,7 +600,7 @@ namespace BizHawk.MultiClient
                     //UpdateGenesis();
                     break;
                 case "TI-83":
-                    //Update TI-83();
+                    UpdateTI83();
                     break;
                 case "NES":
                     UpdateNES(CurSelectController);

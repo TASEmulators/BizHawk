@@ -618,4 +618,10 @@
   <data name="ToolBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ToolBox.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TI83Calculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\TI83Calculator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TI83CalculatorCrop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\config\ControllerImages\TI83CalculatorCrop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

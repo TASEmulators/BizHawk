@@ -93,8 +93,18 @@ namespace BizHawk.MultiClient
 			if ((modifiers & Keys.Alt) != 0)
 				str += "LeftAlt + ";
 			str += key.ToString();
-            if (str.Substring(0, 6) == "NumPad")
+            if (str.Length >= 6 && str.Substring(0, 6) == "NumPad")
                 str = str.Insert(3, "ber");
+            if (str.Length == 7 && str.Substring(0, 7) == "Decimal")
+                str = "NumberPadPeriod";
+            if (str.Length == 6 && str.Substring(0, 6) == "Divide")
+                str = "NumberPadSlash";
+            if (str.Length == 8 && str.Substring(0, 8) == "Multiply")
+                str = "NumberPadStar";
+            if (str.Length == 8 && str.Substring(0, 8) == "Subtract")
+                str = "NumberPadMinus";
+            if (str.Length == 3 && str.Substring(0, 3) == "Add")
+                str = "NumberPadPlus";
             if (str.Length > 3)
             {
                 if (str.Substring(0, 3) == "Oem")

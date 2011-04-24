@@ -15,6 +15,7 @@
             NESController[1] = new NESControllerTemplate(false);
             NESController[2] = new NESControllerTemplate(false);
             NESController[3] = new NESControllerTemplate(false);
+            TI83Controller[0] = new TI83ControllerTemplate(true);
         }
 
         // General Client Settings
@@ -232,8 +233,12 @@
         //GameBoy Settings
         public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
 
-		public string NESReset = "Backspace";
+		//NES settings
+        public string NESReset = "Backspace";
         public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
+
+        //TI 83 settings
+        public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
     }
 
     public class SMSControllerTemplate
@@ -349,6 +354,89 @@
                 B = "";
                 Start = "";
                 Select = "";
+            }
+        }
+    }
+
+    public class TI83ControllerTemplate
+    {
+        public string _0;
+        public string _1;
+        public string _2;
+        public string _3;
+        public string _4;
+        public string _5;
+        public string _6;
+        public string _7;
+        public string _8;
+        public string _9;
+        public string DOT;
+        public string ON;
+        public string ENTER;
+        public string DOWN;
+        public string UP;
+        public string LEFT;
+        public string RIGHT;
+        public string PLUS;
+        public string MINUS;
+        public string MULTIPLY;
+        public string DIVIDE;
+        public string CLEAR;
+        public TI83ControllerTemplate() { }
+        public bool Enabled;
+        public TI83ControllerTemplate(bool defaults)
+        {
+            if (defaults)
+            {
+                Enabled = true;
+                _0 = "NumberPad0";
+                _1 = "NumberPad1";
+                _2 = "NumberPad2";
+                _3 = "NumberPad3";
+                _4 = "NumberPad4";
+                _5 = "NumberPad5";
+                _6 = "NumberPad6";
+                _7 = "NumberPad7";
+                _8 = "NumberPad8";
+                _9 = "NumberPad9";
+                DOT = "NumberPadPeriod";
+                ON = "Space";
+                ENTER = "Return";
+                UP = "UpArrow";
+                DOWN = "DownArrow";
+                LEFT = "LeftArrow";
+                RIGHT = "RightArrow";
+                PLUS = "NumberPadPlus";
+                MINUS = "NumberPadMinus";
+                MULTIPLY = "NumberPadStar";
+                DIVIDE = "NumberPadSlash";
+                CLEAR = "Escape";
+            }
+            else
+            {
+                Enabled = false;
+                _0 = "";
+                _1 = "";
+                _2 = "";
+                _3 = "";
+                _4 = "";
+                _5 = "";
+                _6 = "";
+                _7 = "";
+                _8 = "";
+                _9 = "";
+                DOT = "";
+                ON = "";
+                ENTER = "";
+                UP = "";
+                DOWN = "";
+                LEFT = "";
+                RIGHT = "";
+                PLUS = "";
+                MINUS = "";
+                MULTIPLY = "";
+                DIVIDE = "";
+                CLEAR = "";
             }
         }
     }
