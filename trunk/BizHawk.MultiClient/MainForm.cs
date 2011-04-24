@@ -405,6 +405,34 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("DIVIDE", Global.Config.TI83Controller[0].DIVIDE);
 			TI83Controls.BindMulti("CLEAR", Global.Config.TI83Controller[0].CLEAR);
 			TI83Controls.BindMulti("DOT", Global.Config.TI83Controller[0].DOT);
+            TI83Controls.BindMulti("EXP", "");
+            TI83Controls.BindMulti("DASH", "");
+            TI83Controls.BindMulti("PARACLOSE", "0");
+            TI83Controls.BindMulti("TAN", "");
+            TI83Controls.BindMulti("VARS", "");
+            TI83Controls.BindMulti("PARAOPEN", "9");
+            TI83Controls.BindMulti("COS", "");
+            TI83Controls.BindMulti("PRGM", "");
+            TI83Controls.BindMulti("STAT", "");
+            TI83Controls.BindMulti("COMMA", "");
+            TI83Controls.BindMulti("SIN", "");
+            TI83Controls.BindMulti("MATRIX", "");
+            TI83Controls.BindMulti("X", "");
+            TI83Controls.BindMulti("STO", "");
+            TI83Controls.BindMulti("LN", "");
+            TI83Controls.BindMulti("LOG", "");
+            TI83Controls.BindMulti("SQUARED", "");
+            TI83Controls.BindMulti("NEG1", "");
+            TI83Controls.BindMulti("MATH", "");
+            TI83Controls.BindMulti("ALPHA", "");
+            TI83Controls.BindMulti("GRAPH", "");
+            TI83Controls.BindMulti("TRACE", "");
+            TI83Controls.BindMulti("ZOOM", "");
+            TI83Controls.BindMulti("WINDOW", "");
+            TI83Controls.BindMulti("Y", "");
+            TI83Controls.BindMulti("2ND", "");
+            TI83Controls.BindMulti("MODE", "");
+            TI83Controls.BindMulti("DEL", "");
 			Global.TI83Controls = TI83Controls;
 		}
 
