@@ -12,8 +12,12 @@ namespace BizHawk.MultiClient
 {
     //TODO: Multi column for TI83
     //TODO: keep track of size of dynamic inputwidget creation and resize the dialog + groupbox accordingly
+    //Navigate away from TI83 = crash
+
     public partial class InputConfig : Form
     {
+        int prevWidth;
+        int prevHeight;
         const string ControllerStr = "Configure Controllers - ";
         public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
         public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
@@ -310,7 +314,6 @@ namespace BizHawk.MultiClient
                 ButtonsGroupBox.Controls.Add(TempLabel);
                 c++;
             }
-
             Changed = true;
         }
 
@@ -627,7 +630,10 @@ namespace BizHawk.MultiClient
         }
         private void InputConfig_Load(object sender, EventArgs e)
         {
-			if(Global.Game != null)
+            prevWidth = Size.Width;
+            prevHeight = Size.Height;
+
+            if(Global.Game != null)
 				switch (Global.Game.System)
 				{
 					case "SMS":
@@ -683,21 +689,35 @@ namespace BizHawk.MultiClient
             {
                 case "SMS / GG / SG-1000":
                     joypads = 2;
+                    this.Width = prevWidth;
+                    this.Height = prevHeight;
                     break;
                 case "PC Engine / SGX":
                     joypads = 5;
+                    this.Width = prevWidth;
+                    this.Height = prevHeight;
                     break;
                 case "Gameboy":
                     joypads = 1;
+                    this.Width = prevWidth;
+                    this.Height = prevHeight;
                     break;
                 case "Sega Genesis":
                     joypads = 8;
+                    this.Width = prevWidth;
+                    this.Height = prevHeight;
                     break;
                 case "TI-83":
                     joypads = 1;
+                    if (this.Width < 690)
+                        this.Width = 690;
+                    if (this.Height < 540)
+                        this.Height = 540;
                     break;
                 case "NES":
                     joypads = 4;
+                    this.Width = prevWidth;
+                    this.Height = prevHeight;
                     break;
             }
             ControllComboBox.Items.Clear();
