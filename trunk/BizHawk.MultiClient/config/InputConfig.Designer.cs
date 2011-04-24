@@ -80,8 +80,7 @@
             // 
             // ControllerImage
             // 
-            this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
+            this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.ControllerImage.Location = new System.Drawing.Point(258, 73);
