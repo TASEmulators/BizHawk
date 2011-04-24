@@ -124,6 +124,8 @@ namespace BizHawk.MultiClient
                 str = "Slash";
             if (str.Length == 8 && str == "Oemtilde")
                 str = "Grave";
+            if (str.Length == 8 && str == "Oemcomma")
+                str = "Comma";
             if (str.Length > 3)
             {
                 if (str.Substring(0, 3) == "Oem")

@@ -391,7 +391,6 @@
         public string COS;
         public string PRGM;
         public string STAT;
-        public string COMMA;
         public string SIN;
         public string MATRIX;
         public string X;
@@ -412,59 +411,64 @@
         public string DEL;
         public TI83ControllerTemplate() { }
         public bool Enabled;
+        public string COMMA;
+        public string APPS;
         public TI83ControllerTemplate(bool defaults)
         {
             if (defaults)
             {
                 Enabled = true;
-                _0 = "NumberPad0";
-                _1 = "NumberPad1";
-                _2 = "NumberPad2";
-                _3 = "NumberPad3";
-                _4 = "NumberPad4";
-                _5 = "NumberPad5";
-                _6 = "NumberPad6";
-                _7 = "NumberPad7";
-                _8 = "NumberPad8";
-                _9 = "NumberPad9";
-                DOT = "NumberPadPeriod";
-                ON = "Space";
-                ENTER = "Return";
-                UP = "UpArrow";
-                DOWN = "DownArrow";
-                LEFT = "LeftArrow";
-                RIGHT = "RightArrow";
-                PLUS = "NumberPadPlus";
-                MINUS = "NumberPadMinus";
-                MULTIPLY = "NumberPadStar";
-                DIVIDE = "NumberPadSlash";
-                CLEAR = "Escape";
-                EXP = "6";
-                DASH = "Minus";
-                PARACLOSE = "0";
-                PARAOPEN = "9";
-                TAN = "T";
-                VARS = "V";
-                COS = "C";
-                PRGM = "R";
-                STAT = "S";
-                MATRIX = "LeftBracket";
-                X = "X";
-                STO = "Insert";
-                LN = "L";
-                LOG = "O";
-                SQUARED = "2";
-                NEG1 = "1";
-                MATH = "M";
-                ALPHA = "A";
-                GRAPH = "G";
-                TRACE = "Home"; 
-                ZOOM = "Z";
-                WINDOW = "W";
-                Y = "Y";
-                SECOND = "Slash";
-                MODE = "BackSlash";
-                DEL = "Delete";
+                _0 = "NumberPad0";      //0
+                _1 = "NumberPad1";      //1
+                _2 = "NumberPad2";      //2
+                _3 = "NumberPad3";      //3
+                _4 = "NumberPad4";      //4
+                _5 = "NumberPad5";      //5
+                _6 = "NumberPad6";      //6
+                _7 = "NumberPad7";      //7
+                _8 = "NumberPad8";      //8
+                _9 = "NumberPad9";      //9
+                DOT = "NumberPadPeriod";//10
+                ON = "Space";           //11
+                ENTER = "Return";       //12
+                UP = "UpArrow";         //13
+                DOWN = "DownArrow";     //14
+                LEFT = "LeftArrow";     //15
+                RIGHT = "RightArrow";   //16
+                PLUS = "NumberPadPlus"; //17
+                MINUS = "NumberPadMinus";     //18
+                MULTIPLY = "NumberPadStar";   //19
+                DIVIDE = "NumberPadSlash";    //20
+                CLEAR = "Escape";       //21
+                EXP = "6";              //22
+                DASH = "Minus";         //23
+                PARACLOSE = "0";        //24
+                PARAOPEN = "9";         //25
+                TAN = "T";              //26
+                VARS = "V";             //27
+                COS = "C";              //28
+                PRGM = "R";             //29
+                STAT = "S";             //30
+                MATRIX = "LeftBracket"; //31
+                X = "X";                //32
+                STO = "Insert";         //33
+                LN = "L";               //34
+                LOG = "O";              //35
+                SQUARED = "2";          //36
+                NEG1 = "1";             //37
+                MATH = "M";             //38
+                ALPHA = "A";            //39
+                GRAPH = "G";            //40
+                TRACE = "Home";         //41
+                ZOOM = "Z";             //42
+                WINDOW = "W";           //43
+                Y = "Y";                //44
+                SECOND = "Slash";       //45
+                MODE = "BackSlash";     //46
+                DEL = "Delete";         //47
+                COMMA = "Comma";        //48
+                SIN = "Period";         //49
+                APPS = "Home";          //50
             }
             else
             {
@@ -500,7 +504,6 @@
                 COS = "";
                 PRGM = "";
                 STAT = "";
-                COMMA = "";
                 SIN = "";
                 MATRIX = "";
                 X = "";
@@ -519,6 +522,8 @@
                 SECOND = "";
                 MODE = "";
                 DEL = "";
+                COMMA = "";
+                APPS = "";
             }
         }
     }
