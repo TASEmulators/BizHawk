@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					break;
 				case 1: //PORT_KEYBOARD:
 					keyboardMask = value;
-					Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
+					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
 				case 2: //PORT_ROMPAGE
 					romPageLow3Bits = value & 0x7;
@@ -209,11 +209,11 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					}
 
 				case 4: //PORT_INTCTRL
-					Console.WriteLine("read PORT_INTCTRL");
+					//Console.WriteLine("read PORT_INTCTRL");
 					return 0xFF;
 
 				case 16: //PORT_DISPCTRL
-					Console.WriteLine("read DISPCTRL");
+					//Console.WriteLine("read DISPCTRL");
 					break;
 
 				case 17: //PORT_DISPDATA
@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			//ref TI-9X
 			
 			int ret = 0xFF;
-			Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
+			//Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
 			if ((keyboardMask & 1) == 0)
 			{
 				if (Controller.IsPressed("DOWN")) ret ^= 1;
@@ -242,14 +242,18 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				if (Controller.IsPressed("MINUS")) ret ^= 4;
 				if (Controller.IsPressed("MULTIPLY")) ret ^= 8;
 				if (Controller.IsPressed("DIVIDE")) ret ^= 16;
-				//(exponent key)
+				if (Controller.IsPressed("EXP")) ret ^= 32;
 				if (Controller.IsPressed("CLEAR")) ret ^= 64;
 			}
 			if ((keyboardMask & 4) == 0)
 			{
-				if (Controller.IsPressed("3")) ret ^= 2;
+				if (Controller.IsPressed("DASH")) ret ^= 1;
+                if (Controller.IsPressed("3")) ret ^= 2;
 				if (Controller.IsPressed("6")) ret ^= 4;
 				if (Controller.IsPressed("9")) ret ^= 8;
+                if (Controller.IsPressed("PARACLOSE")) ret ^= 16;
+                if (Controller.IsPressed("TAN")) ret ^= 32;
+                if (Controller.IsPressed("VARS")) ret ^= 64;
 			}
 			if ((keyboardMask & 8) == 0)
 			{
@@ -257,6 +261,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				if (Controller.IsPressed("2")) ret ^= 2;
 				if (Controller.IsPressed("5")) ret ^= 4;
 				if (Controller.IsPressed("8")) ret ^= 8;
+                if (Controller.IsPressed("PARAOPEN")) ret ^= 16;
+                if (Controller.IsPressed("COS")) ret ^= 32;
+                if (Controller.IsPressed("PRGM")) ret ^= 64;
+                if (Controller.IsPressed("STAT")) ret ^= 128;
 			}
 			if ((keyboardMask & 16) == 0)
 			{
@@ -264,7 +272,34 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				if (Controller.IsPressed("1")) ret ^= 2;
 				if (Controller.IsPressed("4")) ret ^= 4;
 				if (Controller.IsPressed("7")) ret ^= 8;
+                if (Controller.IsPressed("COMMA")) ret ^= 16;
+                if (Controller.IsPressed("SIN")) ret ^= 32;
+                if (Controller.IsPressed("MATRIX")) ret ^= 64;
+                if (Controller.IsPressed("X")) ret ^= 128;
 			}
+
+            if ((keyboardMask & 32) == 0)
+            {
+                if (Controller.IsPressed("STO")) ret ^= 2;
+                if (Controller.IsPressed("LN")) ret ^= 4;
+                if (Controller.IsPressed("LOG")) ret ^= 8;
+                if (Controller.IsPressed("SQUARED")) ret ^= 16;
+                if (Controller.IsPressed("NEG1")) ret ^= 32;
+                if (Controller.IsPressed("MATH")) ret ^= 64;
+                if (Controller.IsPressed("ALPHA")) ret ^= 128;
+            }
+
+            if ((keyboardMask & 64) == 0)
+            {
+                if (Controller.IsPressed("GRAPH")) ret ^= 1;
+                if (Controller.IsPressed("TRACE")) ret ^= 2;
+                if (Controller.IsPressed("ZOOM")) ret ^= 4;
+                if (Controller.IsPressed("WINDOW")) ret ^= 8;
+                if (Controller.IsPressed("Y")) ret ^= 16;
+                if (Controller.IsPressed("2ND")) ret ^= 32;
+                if (Controller.IsPressed("MODE")) ret ^= 64;
+                if (Controller.IsPressed("DEL")) ret ^= 128;
+            }
 
 			return (byte)ret;
 
@@ -443,7 +478,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					"ON","ENTER",
 					"DOWN","LEFT","UP","RIGHT",
 					"PLUS","MINUS","MULTIPLY","DIVIDE",
-					"CLEAR"
+					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
+                    "COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
+                    "STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
+                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
 				}
 			};
 
