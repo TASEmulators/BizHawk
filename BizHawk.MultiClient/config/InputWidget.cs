@@ -85,6 +85,7 @@ namespace BizHawk.MultiClient
 	{
 		public override string ToString()
 		{
+            // Convert Windows key names to SlimDX key names
             string str = "";
             if((modifiers & Keys.Shift)!=0)
                 str += "LeftShift + ";
@@ -93,6 +94,14 @@ namespace BizHawk.MultiClient
 			if ((modifiers & Keys.Alt) != 0)
 				str += "LeftAlt + ";
 			str += key.ToString();
+            if (str.Length == 2 && str == "Up")
+                str = "UpArrow";
+            if (str.Length == 4 && str == "Down")
+                str = "DownArrow";
+            if (str.Length == 4 && str == "Left")
+                str = "LeftArrow";
+            if (str.Length == 5 && str == "Right")
+                str = "RightArrow";
             if (str.Length >= 6 && str.Substring(0, 6) == "NumPad")
                 str = str.Insert(3, "ber");
             if (str.Length == 7 && str.Substring(0, 7) == "Decimal")
@@ -105,11 +114,24 @@ namespace BizHawk.MultiClient
                 str = "NumberPadMinus";
             if (str.Length == 3 && str.Substring(0, 3) == "Add")
                 str = "NumberPadPlus";
+            if (str.Length == 4 && str == "Oem5")
+                str = "BackSlash";
+            if (str.Length == 4 && str == "Oem6")
+                str = "RightBracket";
+            if (str.Length == 4 && str == "Next")
+                str = "PageDown";
+            if (str.Length == 11 && str == "OemQuestion")
+                str = "Slash";
+            if (str.Length == 8 && str == "Oemtilde")
+                str = "Grave";
             if (str.Length > 3)
             {
                 if (str.Substring(0, 3) == "Oem")
                     str = str.Substring(3, str.Length - 3);
             }
+            //Oem Removed now removed from these but they still need conversion
+            if (str.Length == 12 && str.Substring(0, 12) == "OpenBrackets")
+                str = "LeftBracket";
 			return str;
 		}
 		public Keys key;
