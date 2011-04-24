@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
             else input += ".";
             if (Controller.IsPressed("ON")) input += "O";
             else input += ".";
-            if (Controller.IsPressed("ENTER")) input += "E";
+            if (Controller.IsPressed("ENTER")) input += "=";
             else input += ".";
             if (Controller.IsPressed("UP")) input += "U";
             else input += ".";
@@ -67,13 +67,71 @@ namespace BizHawk.Emulation.Consoles.Calculator
             else input += ".";
             if (Controller.IsPressed("PLUS")) input += "+";
             else input += ".";
-            if (Controller.IsPressed("MINUS")) input += "-";
+            if (Controller.IsPressed("MINUS")) input += "_";
             else input += ".";
             if (Controller.IsPressed("MULTIPLY")) input += "*";
             else input += ".";
             if (Controller.IsPressed("DIVIDE")) input += "/";
             else input += ".";
-            if (Controller.IsPressed("CLEAR")) input += "C";
+            if (Controller.IsPressed("CLEAR")) input += "c";
+            else input += ".";
+            if (Controller.IsPressed("EXP")) input += "^";
+            else input += ".";
+            if (Controller.IsPressed("DASH")) input += "-";
+            else input += ".";
+            if (Controller.IsPressed("PARAOPEN")) input += "(";
+            else input += ".";
+            if (Controller.IsPressed("PARACLOSE")) input += ")";
+            else input += ".";
+            if (Controller.IsPressed("TAN")) input += "T";
+            else input += ".";
+            if (Controller.IsPressed("VARS")) input += "V";
+            else input += ".";
+            if (Controller.IsPressed("COS")) input += "C";
+            else input += ".";
+            if (Controller.IsPressed("PRGM")) input += "P";
+            else input += ".";
+            if (Controller.IsPressed("STAT")) input += "s";
+            else input += ".";
+            if (Controller.IsPressed("MATRIX")) input += "m";
+            else input += ".";
+            if (Controller.IsPressed("X")) input += "X";
+            else input += ".";
+            if (Controller.IsPressed("STO")) input += ">";
+            else input += ".";
+            if (Controller.IsPressed("LN")) input += "n";
+            else input += ".";
+            if (Controller.IsPressed("LOG")) input += "L";
+            else input += ".";
+            if (Controller.IsPressed("SQUARED")) input += "2";
+            else input += ".";
+            if (Controller.IsPressed("NEG1")) input += "1";
+            else input += ".";
+            if (Controller.IsPressed("MATH")) input += "H";
+            else input += ".";
+            if (Controller.IsPressed("ALPHA")) input += "A";
+            else input += ".";
+            if (Controller.IsPressed("GRAPH")) input += "G";
+            else input += ".";
+            if (Controller.IsPressed("TRACE")) input += "t";
+            else input += ".";
+            if (Controller.IsPressed("ZOOM")) input += "Z";
+            else input += ".";
+            if (Controller.IsPressed("WINDOW")) input += "W";
+            else input += ".";
+            if (Controller.IsPressed("Y")) input += "Y";
+            else input += ".";
+            if (Controller.IsPressed("2ND")) input += "&";
+            else input += ".";
+            if (Controller.IsPressed("MODE")) input += "O";
+            else input += ".";
+            if (Controller.IsPressed("DEL")) input += "D";
+            else input += ".";
+            if (Controller.IsPressed("COMMA")) input += ",";
+            else input += ".";
+            if (Controller.IsPressed("SIN")) input += "S";
+            else input += ".";
+            if (Controller.IsPressed("APPS")) input += "@";
             else input += ".";
 
             input += "|.|"; //TODO: perhaps ON should go here?
@@ -110,24 +168,82 @@ namespace BizHawk.Emulation.Consoles.Calculator
                 Controller.ForceButton("ON");
             if (mnemonic[13] != '.')
                 Controller.ForceButton("ENTER");
-            if (mnemonic[13] != '.')
+            if (mnemonic[14] != '.')
                 Controller.ForceButton("UP");
-            if (mnemonic[13] != '.')
+            if (mnemonic[15] != '.')
                 Controller.ForceButton("DOWN");
-            if (mnemonic[13] != '.')
+            if (mnemonic[16] != '.')
                 Controller.ForceButton("LEFT");
-            if (mnemonic[13] != '.')
+            if (mnemonic[17] != '.')
                 Controller.ForceButton("RIGHT");
-            if (mnemonic[13] != '.')
+            if (mnemonic[18] != '.')
                 Controller.ForceButton("PLUS");
-            if (mnemonic[13] != '.')
+            if (mnemonic[19] != '.')
                 Controller.ForceButton("MINUS");
-            if (mnemonic[13] != '.')
+            if (mnemonic[20] != '.')
                 Controller.ForceButton("MULTIPLY");
-            if (mnemonic[13] != '.')
+            if (mnemonic[21] != '.')
                 Controller.ForceButton("DIVIDE");
-            if (mnemonic[13] != '.')
+            if (mnemonic[22] != '.')
                 Controller.ForceButton("CLEAR");
+            if (mnemonic[23] != '.')
+                Controller.ForceButton("EXP");
+            if (mnemonic[24] != '.')
+                Controller.ForceButton("DASH");
+            if (mnemonic[25] != '.')
+                Controller.ForceButton("PARAOPEN");
+            if (mnemonic[26] != '.')
+                Controller.ForceButton("PARACLOSE");
+            if (mnemonic[27] != '.')
+                Controller.ForceButton("TAN");
+            if (mnemonic[28] != '.')
+                Controller.ForceButton("VARS");
+            if (mnemonic[29] != '.')
+                Controller.ForceButton("COS");
+            if (mnemonic[30] != '.')
+                Controller.ForceButton("PGRM");
+            if (mnemonic[31] != '.')
+                Controller.ForceButton("STAT");
+            if (mnemonic[32] != '.')
+                Controller.ForceButton("MATRIX");
+            if (mnemonic[33] != '.')
+                Controller.ForceButton("X");
+            if (mnemonic[34] != '.')
+                Controller.ForceButton("STO");
+            if (mnemonic[35] != '.')
+                Controller.ForceButton("LN");
+            if (mnemonic[36] != '.')
+                Controller.ForceButton("LOG");
+            if (mnemonic[37] != '.')
+                Controller.ForceButton("SQUARED");
+            if (mnemonic[38] != '.')
+                Controller.ForceButton("NEG");
+            if (mnemonic[39] != '.')
+                Controller.ForceButton("MATH");
+            if (mnemonic[40] != '.')
+                Controller.ForceButton("ALPHA");
+            if (mnemonic[41] != '.')
+                Controller.ForceButton("GRAPH");
+            if (mnemonic[42] != '.')
+                Controller.ForceButton("TRACE");
+            if (mnemonic[43] != '.')
+                Controller.ForceButton("ZOOM");
+            if (mnemonic[44] != '.')
+                Controller.ForceButton("WINDOW");
+            if (mnemonic[45] != '.')
+                Controller.ForceButton("Y");
+            if (mnemonic[46] != '.')
+                Controller.ForceButton("2ND");
+            if (mnemonic[47] != '.')
+                Controller.ForceButton("MODE");
+            if (mnemonic[48] != '.')
+                Controller.ForceButton("DEL");
+            if (mnemonic[49] != '.')
+                Controller.ForceButton("COMMA");
+            if (mnemonic[50] != '.')
+                Controller.ForceButton("SIN");
+            if (mnemonic[51] != '.')
+                Controller.ForceButton("APPS");
         }
 
         public byte ReadMemory(ushort addr)
@@ -285,7 +401,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
                 if (Controller.IsPressed("LOG")) ret ^= 8;
                 if (Controller.IsPressed("SQUARED")) ret ^= 16;
                 if (Controller.IsPressed("NEG1")) ret ^= 32;
-                if (Controller.IsPressed("MATH")) ret ^= 64;
+                if (Controller.IsPressed("MATH")) 
+                    ret ^= 64;
                 if (Controller.IsPressed("ALPHA")) ret ^= 128;
             }
 
@@ -481,7 +598,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
                     "COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
                     "STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
-                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
+                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL", "APPS"
 				}
 			};
 
