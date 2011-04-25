@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-    //TODO: Multi column for TI83
-    //TODO: keep track of size of dynamic inputwidget creation and resize the dialog + groupbox accordingly
-    //Navigate away from TI83 = crash
+    //TODO: 
+    //Sizing event should change prevWidth & prevHeight
+    
 
     public partial class InputConfig : Form
     {
@@ -26,7 +26,7 @@ namespace BizHawk.MultiClient
         public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON", 
             "ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS", 
             "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW",
-            "Y", "2nd", "MODE", "Del", ",", "SIN", "APPS"}; //TODO: display shift / alpha names too, Also order these in the order 
+            "Y", "2nd", "MODE", "Del", ",", "SIN"}; //TODO: display shift / alpha names too, Also order these like on the calculator
         private ArrayList Labels;
         private ArrayList TextBoxes;
         private string CurSelectConsole;
@@ -264,7 +264,6 @@ namespace BizHawk.MultiClient
             ButtonMappings[47] = Global.Config.TI83Controller[jpad].DEL;
             ButtonMappings[48] = Global.Config.TI83Controller[jpad].COMMA;
             ButtonMappings[49] = Global.Config.TI83Controller[jpad].SIN;
-            ButtonMappings[50] = Global.Config.TI83Controller[jpad].APPS;
             IDX_CONTROLLERENABLED.Checked = Global.Config.TI83Controller[jpad].Enabled;
             Changed = true;
             Labels.Clear();
@@ -472,9 +471,6 @@ namespace BizHawk.MultiClient
             TempBox = TextBoxes[49] as InputWidget;
             Global.Config.TI83Controller[0].SIN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].SIN);
             TempBox.Dispose();
-            TempBox = TextBoxes[50] as InputWidget;
-            Global.Config.TI83Controller[0].APPS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].APPS);
-            TempBox.Dispose();
 
             for (int i = 0; i < TI83ControlList.Length; i++)
             {
@@ -482,7 +478,7 @@ namespace BizHawk.MultiClient
                 TempLabel.Dispose();
             }
             IDX_CONTROLLERENABLED.Enabled = true;
-
+             
         }
 
         private void DoGameBoy()

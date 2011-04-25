@@ -131,8 +131,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
             else input += ".";
             if (Controller.IsPressed("SIN")) input += "S";
             else input += ".";
-            if (Controller.IsPressed("APPS")) input += "@";
-            else input += ".";
 
             input += "|.|"; //TODO: perhaps ON should go here?
 
@@ -242,8 +240,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
                 Controller.ForceButton("COMMA");
             if (mnemonic[50] != '.')
                 Controller.ForceButton("SIN");
-            if (mnemonic[51] != '.')
-                Controller.ForceButton("APPS");
         }
 
         public byte ReadMemory(ushort addr)
@@ -598,7 +594,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
                     "COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
                     "STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
-                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL", "APPS"
+                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
 				}
 			};
 
