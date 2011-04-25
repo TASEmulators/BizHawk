@@ -412,7 +412,6 @@
         public TI83ControllerTemplate() { }
         public bool Enabled;
         public string COMMA;
-        public string APPS;
         public TI83ControllerTemplate(bool defaults)
         {
             if (defaults)
@@ -468,7 +467,6 @@
                 DEL = "Delete";         //47
                 COMMA = "Comma";        //48
                 SIN = "Period";         //49
-                APPS = "Home";          //50
             }
             else
             {
@@ -523,7 +521,6 @@
                 MODE = "";
                 DEL = "";
                 COMMA = "";
-                APPS = "";
             }
         }
     }

@@ -435,7 +435,6 @@ namespace BizHawk.MultiClient
             TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].DEL);
             TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].COMMA);
             TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].SIN);
-            TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].APPS);
 			Global.TI83Controls = TI83Controls;
 		}
 
