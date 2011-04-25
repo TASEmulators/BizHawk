@@ -511,5 +511,30 @@ namespace BizHawk.MultiClient
             MessageConfig m = new MessageConfig();
             m.ShowDialog();
         }
+
+        private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!(Global.Emulator is TI83)) return;
+            Global.Config.TI83autoloadKeyPad ^= true;
+        }
+
+        private void keypadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!(Global.Emulator is TI83))
+                return;
+            LoadTI83KeyPad();
+        }
+
+        private void disableSaveslotKeysOnLoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!(Global.Emulator is TI83)) return;
+            Global.Config.TI83disableSaveSlotKeys ^= true;
+        }
+
+        private void tI83ToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            disableSaveslotKeysOnLoToolStripMenuItem.Checked = Global.Config.TI83disableSaveSlotKeys;
+            autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
+        }
 	}
 }

@@ -150,6 +150,13 @@
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
 
+        //TI83
+        public bool TI83disableSaveSlotKeys = true;
+        public bool TI83autoloadKeyPad = true;
+        public bool TI83KeypadSaveWindowPosition = true;
+        public int TI83KeyPadWndx = -1;
+        public int TI83KeyPadWndy = -1;
+        
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab"; //TODO: This needs to be Ctrl+R but how?
         public string FastForwardBinding = "J1 B6, Tab";

@@ -52,6 +52,7 @@ namespace BizHawk.MultiClient
         public NESDebugger NESDebug1 = new NESDebugger();
         public Cheats Cheats1 = new Cheats();
         public ToolBox ToolBox1 = new ToolBox();
+        public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 
 		public MainForm(string[] args)
 		{
@@ -481,10 +482,16 @@ namespace BizHawk.MultiClient
 				system = Global.Game.System;
             switch (system)
             {
+                case "TI83":
+                    tI83ToolStripMenuItem.Visible = true;
+                    NESToolStripMenuItem.Visible = false;
+                    break;
                 case "NES":
                     NESToolStripMenuItem.Visible = true;
+                    tI83ToolStripMenuItem.Visible = false;
                     break;
                 default:
+                    tI83ToolStripMenuItem.Visible = false;
                     NESToolStripMenuItem.Visible = false;
                     break;
             }
@@ -575,6 +582,8 @@ namespace BizHawk.MultiClient
 						break;
 					case "TI83":
 						nextEmulator = new TI83();
+                        if (Global.Config.TI83autoloadKeyPad)
+                            LoadTI83KeyPad();
 						break;
 					case "NES":
 						nextEmulator = new NES();
@@ -644,6 +653,7 @@ namespace BizHawk.MultiClient
                 NESPPU1.Restart();
                 NESNameTableViewer1.Restart();
                 NESDebug1.Restart();
+                TI83KeyPad1.Restart();
                 if (Global.Config.LoadCheatFileByGame)
                 {
                     if (Cheats1.AttemptLoadCheatFile())
@@ -1341,6 +1351,17 @@ namespace BizHawk.MultiClient
                 NESDebug1.Focus();
         }
 
+        public void LoadTI83KeyPad()
+        {
+            if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
+            {
+                TI83KeyPad1 = new TI83KeyPad();
+                TI83KeyPad1.Show();
+            }
+            else
+                TI83KeyPad1.Focus();
+        }
+
         public void LoadCheatsWindow()
         {
             if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
@@ -1523,6 +1544,7 @@ namespace BizHawk.MultiClient
             NESPPU1.Restart();
             NESNameTableViewer1.Restart();
             NESDebug1.Restart();
+            TI83KeyPad1.Restart();
             Cheats1.Restart();
             Text = "BizHawk";
             HandlePlatformMenus();
