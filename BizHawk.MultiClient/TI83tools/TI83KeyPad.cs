@@ -57,5 +57,60 @@ namespace BizHawk.MultiClient
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.TI83KeypadSaveWindowPosition;
         }
+
+        private void button42_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button43_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button39_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("2");
+        }
+
+        private void ONE_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("1");
+        }
+
+        private void THREE_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("3");
+        }
+
+        private void FOUR_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("4");
+        }
+
+        private void FIVE_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("5");
+        }
+
+        private void SIX_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("6");
+        }
+
+        private void SEVEN_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("7");
+        }
+
+        private void EIGHT_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("8");
+        }
+
+        private void NINE_Click(object sender, EventArgs e)
+        {
+            Global.Emulator.Controller.ForceButton("9");
+        }
     }
 }
