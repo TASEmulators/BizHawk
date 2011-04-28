@@ -1565,13 +1565,13 @@
             // label74
             // 
             this.label74.AutoSize = true;
-            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label74.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label74.ForeColor = System.Drawing.Color.Gold;
             this.label74.Location = new System.Drawing.Point(155, 501);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(10, 13);
             this.label74.TabIndex = 119;
-            this.label74.Text = "\'";
+            this.label74.Text = "i";
             // 
             // label75
             // 
