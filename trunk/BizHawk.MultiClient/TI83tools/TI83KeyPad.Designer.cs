@@ -36,6 +36,7 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showHotkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.YEQUAL = new System.Windows.Forms.Button();
             this.SECOND = new System.Windows.Forms.Button();
             this.WINDOW = new System.Windows.Forms.Button();
@@ -163,7 +164,6 @@
             this.DOWN = new System.Windows.Forms.Button();
             this.UP = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.showHotkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -189,14 +189,14 @@
             this.keyPadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.keyPadToolStripMenuItem.Name = "keyPadToolStripMenuItem";
-            this.keyPadToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.keyPadToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.keyPadToolStripMenuItem.Text = "Key Pad";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -206,16 +206,25 @@
             this.saveWindowPositionToolStripMenuItem,
             this.showHotkToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
             // saveWindowPositionToolStripMenuItem
             // 
             this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+            // 
+            // showHotkToolStripMenuItem
+            // 
+            this.showHotkToolStripMenuItem.Checked = true;
+            this.showHotkToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showHotkToolStripMenuItem.Name = "showHotkToolStripMenuItem";
+            this.showHotkToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+            this.showHotkToolStripMenuItem.Text = "Show Hotkeys";
+            this.showHotkToolStripMenuItem.Click += new System.EventHandler(this.showHotkToolStripMenuItem_Click);
             // 
             // YEQUAL
             // 
@@ -238,7 +247,7 @@
             this.SECOND.Location = new System.Drawing.Point(15, 130);
             this.SECOND.Name = "SECOND";
             this.SECOND.Size = new System.Drawing.Size(54, 23);
-            this.SECOND.TabIndex = 5;
+            this.SECOND.TabIndex = 6;
             this.SECOND.Text = "2nd";
             this.SECOND.UseVisualStyleBackColor = false;
             this.SECOND.Click += new System.EventHandler(this.button5_Click);
@@ -251,7 +260,7 @@
             this.WINDOW.Location = new System.Drawing.Point(87, 58);
             this.WINDOW.Name = "WINDOW";
             this.WINDOW.Size = new System.Drawing.Size(60, 20);
-            this.WINDOW.TabIndex = 6;
+            this.WINDOW.TabIndex = 2;
             this.WINDOW.Text = "Window";
             this.WINDOW.UseVisualStyleBackColor = false;
             this.WINDOW.Click += new System.EventHandler(this.button6_Click);
@@ -264,7 +273,7 @@
             this.ZOOM.Location = new System.Drawing.Point(155, 58);
             this.ZOOM.Name = "ZOOM";
             this.ZOOM.Size = new System.Drawing.Size(54, 20);
-            this.ZOOM.TabIndex = 7;
+            this.ZOOM.TabIndex = 3;
             this.ZOOM.Text = "Zoom";
             this.ZOOM.UseVisualStyleBackColor = false;
             this.ZOOM.Click += new System.EventHandler(this.button7_Click);
@@ -277,7 +286,7 @@
             this.TRACE.Location = new System.Drawing.Point(224, 58);
             this.TRACE.Name = "TRACE";
             this.TRACE.Size = new System.Drawing.Size(54, 20);
-            this.TRACE.TabIndex = 8;
+            this.TRACE.TabIndex = 4;
             this.TRACE.Text = "Trace";
             this.TRACE.UseVisualStyleBackColor = false;
             this.TRACE.Click += new System.EventHandler(this.button8_Click);
@@ -290,7 +299,7 @@
             this.GRAPH.Location = new System.Drawing.Point(294, 58);
             this.GRAPH.Name = "GRAPH";
             this.GRAPH.Size = new System.Drawing.Size(54, 20);
-            this.GRAPH.TabIndex = 9;
+            this.GRAPH.TabIndex = 5;
             this.GRAPH.Text = "Graph";
             this.GRAPH.UseVisualStyleBackColor = false;
             this.GRAPH.Click += new System.EventHandler(this.button9_Click);
@@ -333,7 +342,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Gold;
-            this.label4.Location = new System.Drawing.Point(224, 42);
+            this.label4.Location = new System.Drawing.Point(231, 42);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(38, 13);
             this.label4.TabIndex = 13;
@@ -358,7 +367,7 @@
             this.MODE.Location = new System.Drawing.Point(87, 130);
             this.MODE.Name = "MODE";
             this.MODE.Size = new System.Drawing.Size(54, 23);
-            this.MODE.TabIndex = 15;
+            this.MODE.TabIndex = 7;
             this.MODE.Text = "MODE";
             this.MODE.UseVisualStyleBackColor = false;
             this.MODE.Click += new System.EventHandler(this.button2_Click);
@@ -393,7 +402,7 @@
             this.DEL.Location = new System.Drawing.Point(155, 130);
             this.DEL.Name = "DEL";
             this.DEL.Size = new System.Drawing.Size(54, 23);
-            this.DEL.TabIndex = 17;
+            this.DEL.TabIndex = 8;
             this.DEL.Text = "DEL";
             this.DEL.UseVisualStyleBackColor = false;
             this.DEL.Click += new System.EventHandler(this.button3_Click);
@@ -406,8 +415,8 @@
             this.XT.Location = new System.Drawing.Point(87, 178);
             this.XT.Name = "XT";
             this.XT.Size = new System.Drawing.Size(57, 23);
-            this.XT.TabIndex = 19;
-            this.XT.Text = "X,T,0,n";
+            this.XT.TabIndex = 14;
+            this.XT.Text = "X,T,ø,n";
             this.XT.UseVisualStyleBackColor = false;
             this.XT.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -419,7 +428,7 @@
             this.STAT.Location = new System.Drawing.Point(155, 178);
             this.STAT.Name = "STAT";
             this.STAT.Size = new System.Drawing.Size(54, 23);
-            this.STAT.TabIndex = 20;
+            this.STAT.TabIndex = 15;
             this.STAT.Text = "STAT";
             this.STAT.UseVisualStyleBackColor = false;
             this.STAT.Click += new System.EventHandler(this.button10_Click);
@@ -454,7 +463,7 @@
             this.ALPHA.Location = new System.Drawing.Point(15, 178);
             this.ALPHA.Name = "ALPHA";
             this.ALPHA.Size = new System.Drawing.Size(54, 23);
-            this.ALPHA.TabIndex = 23;
+            this.ALPHA.TabIndex = 13;
             this.ALPHA.Text = "Alpha";
             this.ALPHA.UseVisualStyleBackColor = false;
             this.ALPHA.Click += new System.EventHandler(this.button11_Click);
@@ -478,7 +487,7 @@
             this.MATH.Location = new System.Drawing.Point(15, 225);
             this.MATH.Name = "MATH";
             this.MATH.Size = new System.Drawing.Size(54, 23);
-            this.MATH.TabIndex = 25;
+            this.MATH.TabIndex = 16;
             this.MATH.Text = "MATH";
             this.MATH.UseVisualStyleBackColor = false;
             this.MATH.Click += new System.EventHandler(this.button12_Click);
@@ -502,7 +511,7 @@
             this.MATRIX.Location = new System.Drawing.Point(87, 225);
             this.MATRIX.Name = "MATRIX";
             this.MATRIX.Size = new System.Drawing.Size(54, 23);
-            this.MATRIX.TabIndex = 27;
+            this.MATRIX.TabIndex = 17;
             this.MATRIX.Text = "Matrix";
             this.MATRIX.UseVisualStyleBackColor = false;
             this.MATRIX.Click += new System.EventHandler(this.button13_Click);
@@ -515,7 +524,7 @@
             this.PRGM.Location = new System.Drawing.Point(155, 225);
             this.PRGM.Name = "PRGM";
             this.PRGM.Size = new System.Drawing.Size(54, 23);
-            this.PRGM.TabIndex = 28;
+            this.PRGM.TabIndex = 18;
             this.PRGM.Text = "PRGM";
             this.PRGM.UseVisualStyleBackColor = false;
             this.PRGM.Click += new System.EventHandler(this.button14_Click);
@@ -528,7 +537,7 @@
             this.VARS.Location = new System.Drawing.Point(224, 225);
             this.VARS.Name = "VARS";
             this.VARS.Size = new System.Drawing.Size(54, 23);
-            this.VARS.TabIndex = 29;
+            this.VARS.TabIndex = 19;
             this.VARS.Text = "VARS";
             this.VARS.UseVisualStyleBackColor = false;
             this.VARS.Click += new System.EventHandler(this.button15_Click);
@@ -541,7 +550,7 @@
             this.CLEAR.Location = new System.Drawing.Point(294, 225);
             this.CLEAR.Name = "CLEAR";
             this.CLEAR.Size = new System.Drawing.Size(54, 23);
-            this.CLEAR.TabIndex = 30;
+            this.CLEAR.TabIndex = 20;
             this.CLEAR.Text = "Clear";
             this.CLEAR.UseVisualStyleBackColor = false;
             this.CLEAR.Click += new System.EventHandler(this.button16_Click);
@@ -643,7 +652,7 @@
             this.NEG1.Name = "NEG1";
             this.NEG1.Size = new System.Drawing.Size(54, 23);
             this.NEG1.TabIndex = 39;
-            this.NEG1.Text = "X -1";
+            this.NEG1.Text = "X ¹־";
             this.NEG1.UseVisualStyleBackColor = false;
             this.NEG1.Click += new System.EventHandler(this.button17_Click);
             // 
@@ -706,9 +715,9 @@
             this.label20.ForeColor = System.Drawing.Color.Gold;
             this.label20.Location = new System.Drawing.Point(87, 258);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(43, 13);
+            this.label20.Size = new System.Drawing.Size(39, 13);
             this.label20.TabIndex = 44;
-            this.label20.Text = "SIN -1";
+            this.label20.Text = "SIN-1";
             // 
             // label21
             // 
@@ -735,13 +744,13 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label23.ForeColor = System.Drawing.Color.Gold;
-            this.label23.Location = new System.Drawing.Point(294, 258);
+            this.label23.Location = new System.Drawing.Point(295, 254);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(19, 13);
+            this.label23.Size = new System.Drawing.Size(16, 18);
             this.label23.TabIndex = 47;
-            this.label23.Text = "PI";
+            this.label23.Text = "π";
             // 
             // label24
             // 
@@ -878,13 +887,13 @@
             // DIVIDE
             // 
             this.DIVIDE.BackColor = System.Drawing.Color.CornflowerBlue;
-            this.DIVIDE.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DIVIDE.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DIVIDE.ForeColor = System.Drawing.Color.FloralWhite;
             this.DIVIDE.Location = new System.Drawing.Point(294, 323);
             this.DIVIDE.Name = "DIVIDE";
             this.DIVIDE.Size = new System.Drawing.Size(54, 23);
             this.DIVIDE.TabIndex = 58;
-            this.DIVIDE.Text = "/";
+            this.DIVIDE.Text = "÷";
             this.DIVIDE.UseVisualStyleBackColor = false;
             this.DIVIDE.Click += new System.EventHandler(this.button22_Click);
             // 
@@ -917,13 +926,13 @@
             // COMMA
             // 
             this.COMMA.BackColor = System.Drawing.Color.Black;
-            this.COMMA.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.COMMA.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.COMMA.ForeColor = System.Drawing.Color.FloralWhite;
             this.COMMA.Location = new System.Drawing.Point(87, 323);
             this.COMMA.Name = "COMMA";
             this.COMMA.Size = new System.Drawing.Size(54, 23);
             this.COMMA.TabIndex = 55;
-            this.COMMA.Text = ",";
+            this.COMMA.Text = "’";
             this.COMMA.UseVisualStyleBackColor = false;
             this.COMMA.Click += new System.EventHandler(this.button25_Click);
             // 
@@ -936,7 +945,7 @@
             this.SQUARED.Name = "SQUARED";
             this.SQUARED.Size = new System.Drawing.Size(54, 23);
             this.SQUARED.TabIndex = 54;
-            this.SQUARED.Text = "X2";
+            this.SQUARED.Text = "X ²";
             this.SQUARED.UseVisualStyleBackColor = false;
             this.SQUARED.Click += new System.EventHandler(this.button26_Click);
             // 
@@ -947,9 +956,9 @@
             this.label36.ForeColor = System.Drawing.Color.Gold;
             this.label36.Location = new System.Drawing.Point(15, 307);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(41, 13);
+            this.label36.Size = new System.Drawing.Size(14, 13);
             this.label36.TabIndex = 53;
-            this.label36.Text = "SQRT";
+            this.label36.Text = "√";
             // 
             // label37
             // 
@@ -1048,7 +1057,7 @@
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(14, 13);
             this.label45.TabIndex = 74;
-            this.label45.Text = "?";
+            this.label45.Text = "u";
             // 
             // MULTIPLY
             // 
@@ -1059,7 +1068,7 @@
             this.MULTIPLY.Name = "MULTIPLY";
             this.MULTIPLY.Size = new System.Drawing.Size(54, 23);
             this.MULTIPLY.TabIndex = 73;
-            this.MULTIPLY.Text = "X";
+            this.MULTIPLY.Text = "×";
             this.MULTIPLY.UseVisualStyleBackColor = false;
             this.MULTIPLY.Click += new System.EventHandler(this.MULTIPLY_Click);
             // 
@@ -1234,7 +1243,7 @@
             this.MINUS.Name = "MINUS";
             this.MINUS.Size = new System.Drawing.Size(54, 23);
             this.MINUS.TabIndex = 88;
-            this.MINUS.Text = "-";
+            this.MINUS.Text = "▬";
             this.MINUS.UseVisualStyleBackColor = false;
             this.MINUS.Click += new System.EventHandler(this.MINUS_Click);
             // 
@@ -1604,13 +1613,13 @@
             // PERIOD
             // 
             this.PERIOD.BackColor = System.Drawing.Color.Gray;
-            this.PERIOD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PERIOD.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.PERIOD.ForeColor = System.Drawing.Color.FloralWhite;
             this.PERIOD.Location = new System.Drawing.Point(155, 517);
             this.PERIOD.Name = "PERIOD";
             this.PERIOD.Size = new System.Drawing.Size(54, 23);
             this.PERIOD.TabIndex = 115;
-            this.PERIOD.Text = ".";
+            this.PERIOD.Text = "●";
             this.PERIOD.UseVisualStyleBackColor = false;
             this.PERIOD.Click += new System.EventHandler(this.PERIOD_Click);
             // 
@@ -1655,11 +1664,11 @@
             this.LEFT.BackColor = System.Drawing.Color.CornflowerBlue;
             this.LEFT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LEFT.ForeColor = System.Drawing.Color.White;
+            this.LEFT.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriLeft;
             this.LEFT.Location = new System.Drawing.Point(224, 130);
             this.LEFT.Name = "LEFT";
             this.LEFT.Size = new System.Drawing.Size(27, 53);
-            this.LEFT.TabIndex = 126;
-            this.LEFT.Text = "<";
+            this.LEFT.TabIndex = 9;
             this.LEFT.UseVisualStyleBackColor = false;
             this.LEFT.Click += new System.EventHandler(this.button47_Click);
             // 
@@ -1668,10 +1677,11 @@
             this.RIGHT.BackColor = System.Drawing.Color.CornflowerBlue;
             this.RIGHT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.RIGHT.ForeColor = System.Drawing.Color.White;
+            this.RIGHT.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriRight;
             this.RIGHT.Location = new System.Drawing.Point(307, 130);
             this.RIGHT.Name = "RIGHT";
             this.RIGHT.Size = new System.Drawing.Size(27, 53);
-            this.RIGHT.TabIndex = 127;
+            this.RIGHT.TabIndex = 11;
             this.RIGHT.Text = ">";
             this.RIGHT.UseVisualStyleBackColor = false;
             this.RIGHT.Click += new System.EventHandler(this.button48_Click);
@@ -1681,10 +1691,11 @@
             this.DOWN.BackColor = System.Drawing.Color.CornflowerBlue;
             this.DOWN.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DOWN.ForeColor = System.Drawing.Color.White;
+            this.DOWN.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriDown;
             this.DOWN.Location = new System.Drawing.Point(250, 182);
             this.DOWN.Name = "DOWN";
             this.DOWN.Size = new System.Drawing.Size(63, 21);
-            this.DOWN.TabIndex = 128;
+            this.DOWN.TabIndex = 12;
             this.DOWN.Text = "v";
             this.DOWN.UseVisualStyleBackColor = false;
             this.DOWN.Click += new System.EventHandler(this.button49_Click);
@@ -1694,22 +1705,13 @@
             this.UP.BackColor = System.Drawing.Color.CornflowerBlue;
             this.UP.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.UP.ForeColor = System.Drawing.Color.White;
+            this.UP.Image = global::BizHawk.MultiClient.Properties.Resources.whiteTriUp;
             this.UP.Location = new System.Drawing.Point(250, 109);
             this.UP.Name = "UP";
             this.UP.Size = new System.Drawing.Size(63, 21);
-            this.UP.TabIndex = 129;
-            this.UP.Text = "^";
+            this.UP.TabIndex = 10;
             this.UP.UseVisualStyleBackColor = false;
             this.UP.Click += new System.EventHandler(this.button50_Click);
-            // 
-            // showHotkToolStripMenuItem
-            // 
-            this.showHotkToolStripMenuItem.Checked = true;
-            this.showHotkToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.showHotkToolStripMenuItem.Name = "showHotkToolStripMenuItem";
-            this.showHotkToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.showHotkToolStripMenuItem.Text = "Show Hotkeys";
-            this.showHotkToolStripMenuItem.Click += new System.EventHandler(this.showHotkToolStripMenuItem_Click);
             // 
             // TI83KeyPad
             // 
