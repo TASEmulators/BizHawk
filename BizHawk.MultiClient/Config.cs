@@ -156,6 +156,7 @@
         public bool TI83KeypadSaveWindowPosition = true;
         public int TI83KeyPadWndx = -1;
         public int TI83KeyPadWndy = -1;
+        public bool TI83ToolTips = true;
         
         // Client Hotkey Bindings
         public string HardResetBinding = "LeftShift+Tab"; //TODO: This needs to be Ctrl+R but how?

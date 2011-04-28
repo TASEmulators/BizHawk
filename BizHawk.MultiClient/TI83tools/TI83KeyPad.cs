@@ -24,7 +24,12 @@ namespace BizHawk.MultiClient
         {
             if (Global.Config.TI83KeypadSaveWindowPosition && Global.Config.TI83KeyPadWndx >= 0 && Global.Config.TI83KeyPadWndy >= 0)
                 Location = new Point(Global.Config.TI83KeyPadWndx, Global.Config.TI83KeyPadWndy);
+            if (Global.Config.TI83ToolTips)
+                SetToolTips();
+        }
 
+        private void SetToolTips()
+        {
             //Set button hotkey mapping into tooltips
             toolTip1.SetToolTip(ZERO, Global.Config.TI83Controller[0]._0);
             toolTip1.SetToolTip(ONE, Global.Config.TI83Controller[0]._1);
@@ -76,7 +81,11 @@ namespace BizHawk.MultiClient
             toolTip1.SetToolTip(DEL, Global.Config.TI83Controller[0].DEL);
             toolTip1.SetToolTip(COMMA, Global.Config.TI83Controller[0].COMMA);
             toolTip1.SetToolTip(SIN, Global.Config.TI83Controller[0].SIN);
+        }
 
+        public void StopToolTips()
+        {
+            toolTip1.RemoveAll();
         }
 
         public void UpdateValues()
@@ -109,6 +118,7 @@ namespace BizHawk.MultiClient
         private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             saveWindowPositionToolStripMenuItem.Checked = Global.Config.TI83KeypadSaveWindowPosition;
+            showHotkToolStripMenuItem.Checked = Global.Config.TI83ToolTips;
         }
 
         private void button42_Click(object sender, EventArgs e)
@@ -118,7 +128,7 @@ namespace BizHawk.MultiClient
 
         private void button43_Click(object sender, EventArgs e)
         {
-
+            Global.Emulator.Controller.ForceButton("DASH");
         }
 
         private void button39_Click(object sender, EventArgs e)
@@ -354,6 +364,15 @@ namespace BizHawk.MultiClient
         private void PERIOD_Click(object sender, EventArgs e)
         {
             Global.Emulator.Controller.ForceButton("DOT");
+        }
+
+        private void showHotkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.TI83ToolTips ^= true;
+            if (Global.Config.TI83ToolTips == true)
+                SetToolTips();
+            else
+                StopToolTips();
         }
     }
 }

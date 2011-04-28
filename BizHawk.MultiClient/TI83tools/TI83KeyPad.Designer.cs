@@ -163,6 +163,7 @@
             this.DOWN = new System.Windows.Forms.Button();
             this.UP = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.showHotkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -195,14 +196,15 @@
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveWindowPositionToolStripMenuItem});
+            this.saveWindowPositionToolStripMenuItem,
+            this.showHotkToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
@@ -1700,6 +1702,15 @@
             this.UP.UseVisualStyleBackColor = false;
             this.UP.Click += new System.EventHandler(this.button50_Click);
             // 
+            // showHotkToolStripMenuItem
+            // 
+            this.showHotkToolStripMenuItem.Checked = true;
+            this.showHotkToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showHotkToolStripMenuItem.Name = "showHotkToolStripMenuItem";
+            this.showHotkToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.showHotkToolStripMenuItem.Text = "Show Hotkeys";
+            this.showHotkToolStripMenuItem.Click += new System.EventHandler(this.showHotkToolStripMenuItem_Click);
+            // 
             // TI83KeyPad
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1980,5 +1991,6 @@
         private System.Windows.Forms.Button DOWN;
         private System.Windows.Forms.Button UP;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolStripMenuItem showHotkToolStripMenuItem;
     }
 }
