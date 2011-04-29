@@ -628,7 +628,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public void FrameAdvance(bool render)
 		{
-            Controller.UpdateControls(Frame++);
+            
             //I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
@@ -637,6 +637,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				cpu.ExecuteCycles(10000);
 				cpu.Interrupt = true;
 			}
+            Controller.UpdateControls(Frame++);
 		}
 
 		public void HardReset()
