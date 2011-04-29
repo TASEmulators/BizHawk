@@ -194,14 +194,14 @@
             this.keyPadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exitToolStripMenuItem});
             this.keyPadToolStripMenuItem.Name = "keyPadToolStripMenuItem";
-            this.keyPadToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+            this.keyPadToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.keyPadToolStripMenuItem.Text = "Key Pad";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -211,14 +211,14 @@
             this.saveWindowPositionToolStripMenuItem,
             this.showHotkToolStripMenuItem});
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
             // saveWindowPositionToolStripMenuItem
             // 
             this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
             this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
@@ -227,7 +227,7 @@
             this.showHotkToolStripMenuItem.Checked = true;
             this.showHotkToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.showHotkToolStripMenuItem.Name = "showHotkToolStripMenuItem";
-            this.showHotkToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.showHotkToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.showHotkToolStripMenuItem.Text = "Show Hotkeys";
             this.showHotkToolStripMenuItem.Click += new System.EventHandler(this.showHotkToolStripMenuItem_Click);
             // 
@@ -1335,18 +1335,18 @@
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(13, 13);
             this.label58.TabIndex = 111;
-            this.label58.Text = "||";
+            this.label58.Text = "\'\'";
             // 
             // label59
             // 
             this.label59.AutoSize = true;
-            this.label59.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label59.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label59.ForeColor = System.Drawing.Color.LightSeaGreen;
-            this.label59.Location = new System.Drawing.Point(266, 453);
+            this.label59.Location = new System.Drawing.Point(266, 451);
             this.label59.Name = "label59";
-            this.label59.Size = new System.Drawing.Size(14, 13);
+            this.label59.Size = new System.Drawing.Size(15, 15);
             this.label59.TabIndex = 110;
-            this.label59.Text = "0";
+            this.label59.Text = "ø";
             // 
             // label60
             // 
