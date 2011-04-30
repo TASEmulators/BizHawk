@@ -81,6 +81,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap calculator {
+            get {
+                object obj = ResourceManager.GetObject("calculator", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap cheat {
             get {
                 object obj = ResourceManager.GetObject("cheat", resourceCulture);

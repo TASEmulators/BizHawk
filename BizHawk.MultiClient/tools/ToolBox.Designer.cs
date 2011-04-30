@@ -36,6 +36,11 @@
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.HexEditor = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+            this.NESDebugger = new System.Windows.Forms.ToolStripButton();
+            this.NESPPU = new System.Windows.Forms.ToolStripButton();
+            this.NESNameTable = new System.Windows.Forms.ToolStripButton();
+            this.NESGameGenie = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,11 +53,16 @@
             this.toolStripButton3,
             this.toolStripButton4,
             this.HexEditor,
-            this.toolStripButton5});
+            this.toolStripButton5,
+            this.NESDebugger,
+            this.NESPPU,
+            this.NESNameTable,
+            this.NESGameGenie,
+            this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
             this.toolStrip1.Location = new System.Drawing.Point(9, 27);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(86, 138);
+            this.toolStrip1.Size = new System.Drawing.Size(86, 272);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.TabStop = true;
             // 
@@ -110,6 +120,51 @@
             this.toolStripButton5.Text = "Lua Console";
             this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
+            // NESDebugger
+            // 
+            this.NESDebugger.Image = ((System.Drawing.Image)(resources.GetObject("NESDebugger.Image")));
+            this.NESDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NESDebugger.Name = "NESDebugger";
+            this.NESDebugger.Size = new System.Drawing.Size(74, 20);
+            this.NESDebugger.Text = "Debugger";
+            this.NESDebugger.Click += new System.EventHandler(this.NESDebugger_Click);
+            // 
+            // NESPPU
+            // 
+            this.NESPPU.Image = ((System.Drawing.Image)(resources.GetObject("NESPPU.Image")));
+            this.NESPPU.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NESPPU.Name = "NESPPU";
+            this.NESPPU.Size = new System.Drawing.Size(46, 20);
+            this.NESPPU.Text = "PPU";
+            this.NESPPU.Click += new System.EventHandler(this.NESPPU_Click);
+            // 
+            // NESNameTable
+            // 
+            this.NESNameTable.Image = ((System.Drawing.Image)(resources.GetObject("NESNameTable.Image")));
+            this.NESNameTable.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NESNameTable.Name = "NESNameTable";
+            this.NESNameTable.Size = new System.Drawing.Size(78, 20);
+            this.NESNameTable.Text = "Nametable";
+            this.NESNameTable.Click += new System.EventHandler(this.NESNameTable_Click);
+            // 
+            // NESGameGenie
+            // 
+            this.NESGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("NESGameGenie.Image")));
+            this.NESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.NESGameGenie.Name = "NESGameGenie";
+            this.NESGameGenie.Size = new System.Drawing.Size(84, 20);
+            this.NESGameGenie.Text = "Game Genie";
+            this.NESGameGenie.Click += new System.EventHandler(this.NESGameGenie_Click);
+            // 
+            // toolStripButton6
+            // 
+            this.toolStripButton6.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
+            this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton6.Name = "toolStripButton6";
+            this.toolStripButton6.Size = new System.Drawing.Size(63, 20);
+            this.toolStripButton6.Text = "Keypad";
+            this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+            // 
             // ToolBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -136,6 +191,11 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripButton HexEditor;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
+        private System.Windows.Forms.ToolStripButton NESPPU;
+        private System.Windows.Forms.ToolStripButton NESDebugger;
+        private System.Windows.Forms.ToolStripButton NESGameGenie;
+        private System.Windows.Forms.ToolStripButton NESNameTable;
+        private System.Windows.Forms.ToolStripButton toolStripButton6;
 
     }
 }
