@@ -43,5 +43,16 @@ namespace BizHawk.MultiClient
             RamPoke r = new RamPoke();
             r.Show();
         }
+
+        private void HexEditor_Click(object sender, EventArgs e)
+        {
+            Global.MainForm.LoadHexEditor();
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            var window = new BizHawk.MultiClient.tools.LuaWindow();
+            window.Show();
+        }
     }
 }

@@ -34,6 +34,8 @@
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+            this.HexEditor = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,11 +46,13 @@
             this.toolStripButton1,
             this.toolStripButton2,
             this.toolStripButton3,
-            this.toolStripButton4});
+            this.toolStripButton4,
+            this.HexEditor,
+            this.toolStripButton5});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
             this.toolStrip1.Location = new System.Drawing.Point(9, 27);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(85, 111);
+            this.toolStrip1.Size = new System.Drawing.Size(86, 138);
             this.toolStrip1.TabIndex = 0;
             // 
             // toolStripButton1
@@ -56,8 +60,8 @@
             this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(74, 20);
-            this.toolStripButton1.Text = "Debugger";
+            this.toolStripButton1.Size = new System.Drawing.Size(61, 20);
+            this.toolStripButton1.Text = "Cheats";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
@@ -87,6 +91,24 @@
             this.toolStripButton4.Text = "Ram Poke";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
+            // HexEditor
+            // 
+            this.HexEditor.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
+            this.HexEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.HexEditor.Name = "HexEditor";
+            this.HexEditor.Size = new System.Drawing.Size(77, 20);
+            this.HexEditor.Text = "Hex Editor";
+            this.HexEditor.Click += new System.EventHandler(this.HexEditor_Click);
+            // 
+            // toolStripButton5
+            // 
+            this.toolStripButton5.Image = global::BizHawk.MultiClient.Properties.Resources.textdoc;
+            this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton5.Name = "toolStripButton5";
+            this.toolStripButton5.Size = new System.Drawing.Size(85, 20);
+            this.toolStripButton5.Text = "Lua Console";
+            this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
+            // 
             // ToolBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -111,6 +133,8 @@
         private System.Windows.Forms.ToolStripButton toolStripButton2;
         private System.Windows.Forms.ToolStripButton toolStripButton3;
         private System.Windows.Forms.ToolStripButton toolStripButton4;
+        private System.Windows.Forms.ToolStripButton HexEditor;
+        private System.Windows.Forms.ToolStripButton toolStripButton5;
 
     }
 }
