@@ -473,6 +473,8 @@
     <None Include="images\Lua.png" />
     <None Include="images\textdoc.png" />
     <None Include="images\calculator.png" />
+    <None Include="images\NESController.png" />
+    <None Include="images\NESControllerIcon.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />

@@ -151,6 +151,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap NESControllerIcon {
+            get {
+                object obj = ResourceManager.GetObject("NESControllerIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.IO.UnmanagedMemoryStream nothawk {
             get {
                 return ResourceManager.GetStream("nothawk", resourceCulture);

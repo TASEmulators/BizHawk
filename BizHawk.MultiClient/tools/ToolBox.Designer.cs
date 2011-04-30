@@ -122,7 +122,7 @@
             // 
             // NESDebugger
             // 
-            this.NESDebugger.Image = ((System.Drawing.Image)(resources.GetObject("NESDebugger.Image")));
+            this.NESDebugger.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
             this.NESDebugger.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.NESDebugger.Name = "NESDebugger";
             this.NESDebugger.Size = new System.Drawing.Size(74, 20);
@@ -131,7 +131,7 @@
             // 
             // NESPPU
             // 
-            this.NESPPU.Image = ((System.Drawing.Image)(resources.GetObject("NESPPU.Image")));
+            this.NESPPU.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
             this.NESPPU.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.NESPPU.Name = "NESPPU";
             this.NESPPU.Size = new System.Drawing.Size(46, 20);
@@ -140,7 +140,7 @@
             // 
             // NESNameTable
             // 
-            this.NESNameTable.Image = ((System.Drawing.Image)(resources.GetObject("NESNameTable.Image")));
+            this.NESNameTable.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
             this.NESNameTable.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.NESNameTable.Name = "NESNameTable";
             this.NESNameTable.Size = new System.Drawing.Size(78, 20);
@@ -149,7 +149,7 @@
             // 
             // NESGameGenie
             // 
-            this.NESGameGenie.Image = ((System.Drawing.Image)(resources.GetObject("NESGameGenie.Image")));
+            this.NESGameGenie.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
             this.NESGameGenie.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.NESGameGenie.Name = "NESGameGenie";
             this.NESGameGenie.Size = new System.Drawing.Size(84, 20);
