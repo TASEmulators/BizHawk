@@ -470,6 +470,8 @@
     <None Include="images\whiteTriDown.png" />
     <None Include="images\whiteTriLeft.png" />
     <None Include="images\whiteTriRight.png" />
+    <None Include="images\Lua.png" />
+    <None Include="images\textdoc.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
