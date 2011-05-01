@@ -19,6 +19,7 @@ namespace BizHawk
         void FrameAdvance(bool render);
 
         int Frame { get; }
+        int LagCount { get; }
         string SystemId { get; }
         bool DeterministicEmulation { get; set; }
 

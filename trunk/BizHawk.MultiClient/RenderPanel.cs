@@ -277,6 +277,15 @@ namespace BizHawk.MultiClient
                 MessageFont.DrawString(null, FPS.ToString() + " fps", Global.Config.DispFPSx,
                     Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
             }
+
+            if (Global.Config.DisplayLagCounter)
+            {
+                //TODO: lag counter should do something on a lag frame, turn red (or another color if messages color = red?), and perhaps a larger font
+                MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
+                    Global.Config.DispLagy + 1, new Color4(Color.Black));
+                MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
+                    Global.Config.DispLagy, Color.FromArgb(Global.Config.MessagesColor));
+            }
         }
 
         private string MakeFrameCounter()
@@ -290,6 +299,11 @@ namespace BizHawk.MultiClient
             {
                 return Global.Emulator.Frame.ToString();
             }
+        }
+
+        private string MakeLagCounter()
+        {
+            return Global.Emulator.LagCount.ToString();
         }
 
         private List<UIMessage> messages = new List<UIMessage>(5);

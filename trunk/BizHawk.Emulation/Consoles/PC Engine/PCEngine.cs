@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         }
 
         public int Frame { get; set; }
+        public int LagCount { get { return 0; } } //TODO: Implement this
 
         public void FrameAdvance(bool render)
         {

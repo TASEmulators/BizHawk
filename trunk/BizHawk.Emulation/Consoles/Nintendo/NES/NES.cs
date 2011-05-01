@@ -215,6 +215,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		int _frame;
 		public int Frame { get { return _frame; } set { _frame = value; } }
+        public int LagCount { get { return 0; } } //TODO: implement this
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
