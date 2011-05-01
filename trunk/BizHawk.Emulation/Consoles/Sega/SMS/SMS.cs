@@ -44,8 +44,10 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool IsGameGear = false;
         public bool HasYM2413 = false;
 
+        private int _lagcount = 0;
+        private bool lagged = true;
         public int Frame { get; set; }
-        public int LagCount { get { return -1; } set { return; } } //TODO: implement this
+        public int LagCount { get { return _lagcount; } set { _lagcount = value; } } //TODO: implement this
         private byte Port01 = 0xFF;
         private byte Port02 = 0xFF;
         private byte Port3E = 0xAF;
@@ -167,6 +169,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void FrameAdvance(bool render)
         {
+            lagged = true;
             Controller.UpdateControls(Frame++);
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
@@ -175,6 +178,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             Vdp.ExecFrame(render);
             PSG.EndFrame(Cpu.TotalExecutedCycles);
+            if (lagged)
+                _lagcount++;
         }
 
         public void SaveStateText(TextWriter writer)
@@ -185,6 +190,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Vdp.SaveStateText(writer);
 
             writer.WriteLine("Frame {0}", Frame);
+            writer.WriteLine("Lag {0}", _lagcount);
             writer.WriteLine("Bank0 {0}", RomBank0);
             writer.WriteLine("Bank1 {0}", RomBank1);
             writer.WriteLine("Bank2 {0}", RomBank2);
@@ -223,6 +229,8 @@ namespace BizHawk.Emulation.Consoles.Sega
                     RomBank2 = byte.Parse(args[1]);
                 else if (args[0] == "Frame")
                     Frame = int.Parse(args[1]);
+                else if (args[0] == "Lag")
+                    _lagcount = int.Parse(args[1]);
                 else if (args[0] == "RAM")
                     SystemRam.ReadFromHex(args[1]);
                 else if (args[0] == "SaveRAM")
@@ -234,7 +242,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 {
                     byte[] regs = new byte[YM2413.opll.reg.Length];
                     regs.ReadFromHex(args[1]);
-                    for (byte i=0; i<regs.Length; i++)
+                    for (byte i = 0; i < regs.Length; i++)
                         YM2413.Write(i, regs[i]);
                 }
                 else if (args[0] == "Port01")
@@ -271,6 +279,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Vdp.SaveStateBinary(writer);
 
             writer.Write(Frame);
+            writer.Write(_lagcount);
             writer.Write(RomBank0);
             writer.Write(RomBank1);
             writer.Write(RomBank2);
@@ -289,6 +298,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Vdp.LoadStateBinary(reader);
 
             Frame = reader.ReadInt32();
+            _lagcount = reader.ReadInt32();
             RomBank0 = reader.ReadByte();
             RomBank1 = reader.ReadByte();
             RomBank2 = reader.ReadByte();

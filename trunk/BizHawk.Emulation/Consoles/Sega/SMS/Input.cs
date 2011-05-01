@@ -95,6 +95,7 @@
 
         private byte ReadControls1()
         {
+            lagged = false;
             byte value = 0xFF;
 
             if (Controller["P1 Up"])    value &= 0xFE;
@@ -112,6 +113,7 @@
 
         private byte ReadControls2()
         {
+            lagged = false;
             byte value = 0xFF;
 
             if (Controller["P2 Left"])  value &= 0xFE;
