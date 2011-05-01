@@ -272,6 +272,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					m_LinkState = m_LinkOutput ^ 3;
 					break;
 				case 1: //PORT_KEYBOARD:
+                    lagged = false;
 					keyboardMask = value;
 					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
@@ -628,7 +629,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public void FrameAdvance(bool render)
 		{
-            
+            lagged = true;
             //I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
@@ -638,6 +639,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				cpu.Interrupt = true;
 			}
             Controller.UpdateControls(Frame++);
+            if (lagged)
+                _lagcount++;
 		}
 
 		public void HardReset()
@@ -662,8 +665,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			disp_x = disp_y = 0;
 		}
 
+        private int _lagcount = 0;
+        private bool lagged = true;
 		public int Frame {get; set;}
-        public int LagCount { get { return -1; } set { return; } }
+        public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		
 		public bool DeterministicEmulation { get { return true; } set { } }
 
