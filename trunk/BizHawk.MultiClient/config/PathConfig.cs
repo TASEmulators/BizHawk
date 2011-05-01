@@ -11,6 +11,15 @@ namespace BizHawk.MultiClient
 {
     public partial class PathConfig : Form
     {
+        //TODO:
+        // `exe` shoudl be valid notation to mean path that the .exe is in ex: `exe`/NES
+        // ./  and ../ are always always relative to base path
+        // `recent` notation for most recently used path
+        //If "always use recent path for roms" is checked then base path of each platorm should be disabled
+        //Path text boxes shoudl be anchored L + R and the remaining widgets anchored R
+        //Alight everything in each tab the same
+
+
         public PathConfig()
         {
             InitializeComponent();
@@ -35,6 +44,11 @@ namespace BizHawk.MultiClient
         {
             SaveSettings();
             this.Close();
+        }
+
+        private void textBox24_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
