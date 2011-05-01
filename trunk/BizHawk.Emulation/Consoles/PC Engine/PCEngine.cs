@@ -95,11 +95,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             SetupMemoryDomains();
         }
 
+        private int _lagcount = 0;
+        private bool lagged = true;
         public int Frame { get; set; }
-        public int LagCount { get { return -1; } set { return; } } //TODO: Implement this
+        public int LagCount { get { return _lagcount; } set { _lagcount = value; } } //TODO: Implement this
 
         public void FrameAdvance(bool render)
         {
+            lagged = true;
             Controller.UpdateControls(Frame++);
 
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
@@ -110,6 +113,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VDC1.ExecFrame(render);
 
             PSG.EndFrame(Cpu.TotalExecutedCycles);
+            if (lagged)
+                _lagcount++;
         }
 
         public IVideoProvider VideoProvider
@@ -143,6 +148,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.Write("RAM ");
             Ram.SaveAsHex(writer);
             writer.WriteLine("Frame " + Frame);
+            writer.WriteLine("Lag " + _lagcount);
             if (Cpu.ReadMemory21 == ReadMemorySF2)
                 writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
             writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
@@ -177,6 +183,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (args[0] == "[/PCEngine]") break;
                 if (args[0] == "Frame")
                     Frame = int.Parse(args[1]);
+                else if (args[0] == "Lag")
+                    _lagcount = int.Parse(args[1]);
                 else if (args[0] == "SF2MapperLatch")
                     SF2MapperLatch = byte.Parse(args[1]);
                 else if (args[0] == "IOBuffer")
@@ -192,9 +200,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 else if (args[0] == "[VPC]")
                     VPC.LoadStateText(reader);
                 else if (args[0] == "[VDC1]")
-                    VDC1.LoadStateText(reader,1);
+                    VDC1.LoadStateText(reader, 1);
                 else if (args[0] == "[VDC2]")
-                    VDC2.LoadStateText(reader,2);
+                    VDC2.LoadStateText(reader, 2);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -206,6 +214,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 writer.Write(Ram);
                 writer.Write(Frame);
+//                writer.Write(_lagcount); //TODO: why does this fail?
                 writer.Write(SF2MapperLatch);
                 writer.Write(IOBuffer);
                 Cpu.SaveStateBinary(writer);
@@ -215,6 +224,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             } else {
                 writer.Write(Ram);
                 writer.Write(Frame);
+//                writer.Write(_lagcount);
                 writer.Write(IOBuffer);
                 Cpu.SaveStateBinary(writer);
                 VCE.SaveStateBinary(writer);
@@ -231,6 +241,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 Ram = reader.ReadBytes(0x2000);
                 Frame = reader.ReadInt32();
+//                _lagcount = reader.ReadInt32();
                 SF2MapperLatch = reader.ReadByte();
                 IOBuffer = reader.ReadByte();
                 Cpu.LoadStateBinary(reader);
@@ -240,6 +251,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             } else {
                 Ram = reader.ReadBytes(0x8000);
                 Frame = reader.ReadInt32();
+//                _lagcount = reader.ReadInt32();
                 IOBuffer = reader.ReadByte();
                 Cpu.LoadStateBinary(reader);
                 VCE.LoadStateBinary(reader);
