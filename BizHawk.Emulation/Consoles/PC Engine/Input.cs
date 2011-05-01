@@ -93,6 +93,7 @@
             int player = SelectedController + 1;
             if (player < 6)
             {
+                lagged = false;
                 if (SEL == false) // return buttons
                 {
                     if (Controller["P" + player + " B1"]) value &= 0xFE;
