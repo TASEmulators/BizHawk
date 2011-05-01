@@ -736,6 +736,45 @@ namespace BizHawk
 			if (IsReader) ReadText(name, ref val);
 			else WriteText(name, ref val);
 		}
+		public void SyncFixedString(string name, ref string val, int length)
+		{
+			//TODO - this could be made more efficient perhaps just by writing values right out of the string..
+
+			if (IsReader)
+			{
+				char[] buf = new char[length];
+				if (isText)
+				{
+					tr.Read(buf, 0, length);
+				}
+				else
+				{
+					br.Read(buf, 0, length);
+				}
+				int len = 0;
+				for (; len < length; len++)
+				{
+					if (buf[len] == 0) break;
+				}
+				val = new string(buf, 0, len);
+			}
+			else
+			{
+				if (name.Length > length) throw new InvalidOperationException("SyncFixedString too long");
+				char[] buf = val.ToCharArray();
+				char[] remainder = new char[length - buf.Length];
+				if (IsText)
+				{
+					tw.Write(buf);
+					tw.Write(remainder);
+				}
+				else
+				{
+					bw.Write(buf);
+					bw.Write(remainder);
+				}
+			}
+		}
 
 		void Read(ref Bit val) { val = br.ReadBit(); }
 		void Write(ref Bit val) { bw.WriteBit(val); }
