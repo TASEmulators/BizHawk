@@ -46,8 +46,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         private int _lagcount = 0;
         private bool lagged = true;
+        private bool islag = false;
         public int Frame { get; set; }
-        public int LagCount { get { return _lagcount; } set { _lagcount = value; } } //TODO: implement this
+        public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+        public bool IsLagFrame { get { return islag; } }
         private byte Port01 = 0xFF;
         private byte Port02 = 0xFF;
         private byte Port3E = 0xAF;
@@ -179,7 +181,12 @@ namespace BizHawk.Emulation.Consoles.Sega
             Vdp.ExecFrame(render);
             PSG.EndFrame(Cpu.TotalExecutedCycles);
             if (lagged)
+            {
                 _lagcount++;
+                islag = true;
+            }
+            else
+                islag = false;
         }
 
         public void SaveStateText(TextWriter writer)

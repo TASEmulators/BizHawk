@@ -141,6 +141,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public int Frame { get; set; }
         public int LagCount { get { return -1; } set { return; } } //TODO: Implement
+        public bool IsLagFrame { get { return false; } }
         public bool DeterministicEmulation { get; set; }
         public string SystemId { get { return "GEN"; } }
 

@@ -640,7 +640,12 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			}
             Controller.UpdateControls(Frame++);
             if (lagged)
+            {
                 _lagcount++;
+                islag = true;
+            }
+            else
+                islag = false;
 		}
 
 		public void HardReset()
@@ -667,8 +672,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
         private int _lagcount = 0;
         private bool lagged = true;
+        private bool islag = false;
 		public int Frame {get; set;}
         public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+        public bool IsLagFrame { get { return islag; } }
 		
 		public bool DeterministicEmulation { get { return true; } set { } }
 

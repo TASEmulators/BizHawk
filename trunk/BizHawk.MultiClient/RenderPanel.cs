@@ -153,6 +153,7 @@ namespace BizHawk.MultiClient
         public ImageTexture Texture;
         private Sprite Sprite;
         private Font MessageFont;
+        private Font AlertFont;
 
 		public Direct3DRenderPanel(Direct3D direct3D, Control control)
         {
@@ -199,6 +200,9 @@ namespace BizHawk.MultiClient
             Sprite = new Sprite(Device);
             Texture = new ImageTexture(Device);
             MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Arial");
+            AlertFont = new Font(Device, 20, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Arial");
+            
+                
         }
 
         public void Render()
@@ -283,8 +287,18 @@ namespace BizHawk.MultiClient
                 //TODO: lag counter should do something on a lag frame, turn red (or another color if messages color = red?), and perhaps a larger font
                 MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
                     Global.Config.DispLagy + 1, new Color4(Color.Black));
-                MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
+                
+                if (Global.Emulator.IsLagFrame)
+                {
+                    AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
+                    Global.Config.DispLagy, Color.Red);
+                }
+                else
+                {
+                    MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
                     Global.Config.DispLagy, Color.FromArgb(Global.Config.MessagesColor));
+                }
+                
             }
         }
 

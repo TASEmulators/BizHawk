@@ -97,8 +97,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         private int _lagcount = 0;
         private bool lagged = true;
+        private bool islag = false;
         public int Frame { get; set; }
-        public int LagCount { get { return _lagcount; } set { _lagcount = value; } } //TODO: Implement this
+        public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+        public bool IsLagFrame { get { return islag; } }
 
         public void FrameAdvance(bool render)
         {
@@ -114,7 +116,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
             PSG.EndFrame(Cpu.TotalExecutedCycles);
             if (lagged)
+            {
                 _lagcount++;
+                islag = true;
+            }
+            else
+                islag = false;
         }
 
         public IVideoProvider VideoProvider

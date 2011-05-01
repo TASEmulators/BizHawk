@@ -34,6 +34,7 @@ namespace BizHawk
 
         public int Frame { get; set; }
         public int LagCount { get { return 0; } set { return; } }
+        public bool IsLagFrame { get { return false; } }
 
         public byte[] SaveRam { get { return new byte[0]; } }
         public bool DeterministicEmulation { get; set; }

@@ -20,6 +20,7 @@ namespace BizHawk
 
         int Frame { get; }
         int LagCount { get; set; }
+        bool IsLagFrame { get; }
         string SystemId { get; }
         bool DeterministicEmulation { get; set; }
 

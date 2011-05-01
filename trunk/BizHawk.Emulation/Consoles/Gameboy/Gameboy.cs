@@ -653,6 +653,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
         }
 
         public int LagCount { get { return -1; } set { return; } } //TODO: implement
+        public bool IsLagFrame { get { return false; } } //TODO: implement
 
         public byte[] SaveRam
         {
