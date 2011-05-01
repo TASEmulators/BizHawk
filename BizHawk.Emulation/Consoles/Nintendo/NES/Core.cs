@@ -79,7 +79,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			resetSignal = Controller["Reset"];
 			ppu.FrameAdvance();
             if (lagged)
+            {
                 _lagcount++;
+                islag = true;
+            }
+            else
+                islag = false;
 		}
 
 		protected void RunCpu(int ppu_cycles)

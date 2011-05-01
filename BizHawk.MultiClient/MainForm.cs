@@ -1514,6 +1514,7 @@ namespace BizHawk.MultiClient
 		{
             //Hide platform specific menus until an appropriate ROM is loaded
             NESToolStripMenuItem.Visible = false;
+            tI83ToolStripMenuItem.Visible = false;
 		}
 
         private void OpenROM()
