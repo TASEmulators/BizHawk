@@ -652,7 +652,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
             get { throw new NotImplementedException(); }
         }
 
-        public int LagCount { get { return 0; } set { return; } } //TODO: implement
+        public int LagCount { get { return -1; } set { return; } } //TODO: implement
 
         public byte[] SaveRam
         {
