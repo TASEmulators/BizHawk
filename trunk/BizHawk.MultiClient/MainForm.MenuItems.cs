@@ -536,5 +536,11 @@ namespace BizHawk.MultiClient
             disableSaveslotKeysOnLoToolStripMenuItem.Checked = Global.Config.TI83disableSaveSlotKeys;
             autoloadVirtualKeyboardToolStripMenuItem.Checked = Global.Config.TI83autoloadKeyPad;
         }
+
+        private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PathConfig p = new PathConfig();
+            p.ShowDialog();
+        }
 	}
 }
