@@ -111,6 +111,12 @@
     <Compile Include="config\MessageConfig.Designer.cs">
       <DependentUpon>MessageConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PathConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PathConfig.Designer.cs">
+      <DependentUpon>PathConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -346,6 +352,9 @@
     <EmbeddedResource Include="config\MessageConfig.resx">
       <DependentUpon>MessageConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PathConfig.resx">
+      <DependentUpon>PathConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\SoundConfig.resx">
       <DependentUpon>SoundConfig.cs</DependentUpon>
