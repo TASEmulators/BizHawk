@@ -35,6 +35,7 @@ namespace BizHawk.MultiClient
 		int runloop_fps;
 		bool runloop_frameadvance;
 		DateTime runloop_second;
+        public string wasPressed = "";  //Last frame mnemonic
 		
 		Throttle throttle = new Throttle();
 		int rewindCredits;
@@ -914,6 +915,7 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
+                wasPressed = Global.Emulator.GetControllersAsMnemonic();
 			}
 			else
 			{

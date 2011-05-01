@@ -267,8 +267,10 @@ namespace BizHawk.MultiClient
             }
             if (Global.Config.DisplayInput)
             {
-                string input = MakeInputDisplay();
-                MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, new Color4(Color.Black));
+                string input = MakeLastInputDisplay();
+                MessageFont.DrawString(null, input, Global.Config.DispInpx+2, Global.Config.DispInpy+2, new Color4(Color.Black));
+                MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, Color.FromArgb(Global.Config.MessagesColor));
+                input = MakeInputDisplay();
                 MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, Color.FromArgb(Global.Config.MessagesColor));
             }
 
@@ -353,6 +355,14 @@ namespace BizHawk.MultiClient
         public string MakeInputDisplay()
         {
             string tmp = Global.Emulator.GetControllersAsMnemonic();
+            tmp = tmp.Replace(".", " ");
+            tmp = tmp.Replace("|", "");
+            return tmp;
+        }
+
+        public string MakeLastInputDisplay()
+        {
+            string tmp = Global.MainForm.wasPressed;
             tmp = tmp.Replace(".", " ");
             tmp = tmp.Replace("|", "");
             return tmp;
