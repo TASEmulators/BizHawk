@@ -489,6 +489,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("CIRAM", ref CIRAM, false);
 			ser.Sync("cpu_accumulate", ref cpu_accumulate);
+            string inp = GetControllersAsMnemonic();
+            ser.SyncFixedString("input", ref inp, 32);
 			board.SyncState(ser);
 			ppu.SyncState(ser);
 			ser.EndSection();
