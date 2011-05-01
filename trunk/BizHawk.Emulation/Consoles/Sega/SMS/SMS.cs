@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool HasYM2413 = false;
 
         public int Frame { get; set; }
-        public int LagCount { get { return 0; } } //TODO: implement this
+        public int LagCount { get { return 0; } set { return; } } //TODO: implement this
         private byte Port01 = 0xFF;
         private byte Port02 = 0xFF;
         private byte Port3E = 0xAF;
