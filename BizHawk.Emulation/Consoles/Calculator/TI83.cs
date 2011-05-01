@@ -663,7 +663,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		}
 
 		public int Frame {get; set;}
-        public int LagCount { get { return 0; } }
+        public int LagCount { get { return 0; } set { return; } }
 		
 		public bool DeterministicEmulation { get { return true; } set { } }
 

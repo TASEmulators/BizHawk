@@ -65,7 +65,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool resetSignal;
 		public void FrameAdvance(bool render)
 		{
-			if (resetSignal)
+            lagged = true;
+            if (resetSignal)
 			{
 				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
 				apu.WriteReg(0x4015, 0);
@@ -77,6 +78,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Controller.UnpressButton("Reset");
 			resetSignal = Controller["Reset"];
 			ppu.FrameAdvance();
+            if (lagged)
+                _lagcount++;
 		}
 
 		protected void RunCpu(int ppu_cycles)
@@ -160,7 +163,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//many todos here
 			if (addr == 0x4016)
 			{
-				byte ret = ports[0].Read();
+                lagged = false;
+                byte ret = ports[0].Read();
 				return ret;
 			}
 			else return 0;

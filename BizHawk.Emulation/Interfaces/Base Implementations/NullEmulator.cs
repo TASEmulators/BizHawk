@@ -33,7 +33,9 @@ namespace BizHawk
         public void SetControllersAsMnemonic(string mnemonic) { return; }
 
         public int Frame { get; set; }
-        public int LagCount { get { return 0; } }
+        //public int LagCount { get { return 0; } }
+        public int LagCount { get; set; }
+
         public byte[] SaveRam { get { return new byte[0]; } }
         public bool DeterministicEmulation { get; set; }
         public bool SaveRamModified { get; set; }
