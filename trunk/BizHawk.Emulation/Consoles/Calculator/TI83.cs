@@ -692,12 +692,13 @@ namespace BizHawk.Emulation.Consoles.Calculator
             writer.WriteLine("disp_move {0}", disp_move);
             writer.WriteLine("disp_x {0}", disp_x);
             writer.WriteLine("disp_y {0}", disp_y);
-            writer.WriteLine("m_CursorMoved", m_CursorMoved);
-            writer.WriteLine("maskOn", maskOn);
-            writer.WriteLine("onPressed", onPressed);
-            writer.WriteLine("keyboardMask", keyboardMask);
-            writer.WriteLine("m_LinkOutput", m_LinkOutput);
-            writer.WriteLine("m_LinkState", m_LinkState);
+            writer.WriteLine("m_CursorMoved {0}", m_CursorMoved);
+            writer.WriteLine("maskOn {0}", maskOn);
+            writer.WriteLine("onPressed {0}", onPressed);
+            writer.WriteLine("keyboardMask {0}", keyboardMask);
+            writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
+            writer.WriteLine("m_LinkState {0}", m_LinkState);
+            writer.WriteLine("lag {0}", _lagcount);
             writer.WriteLine("[/TI83]");
 		}
 
@@ -719,7 +720,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
                     romPageLow3Bits = int.Parse(args[1]);
                 else if (args[0] == "romPageHighBit")
                     romPageHighBit = int.Parse(args[1]);
-                else if (args[0] == "dispMode")
+                else if (args[0] == "disp_mode")
                     disp_mode = int.Parse(args[1]);
                 else if (args[0] == "disp_move")
                     disp_move = int.Parse(args[1]);
@@ -739,6 +740,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
                     m_LinkOutput = int.Parse(args[1]);
                 else if (args[0] == "m_LinkState")
                     m_LinkState = int.Parse(args[1]);
+                else if (args[0] == "lag")
+                    _lagcount = int.Parse(args[1]);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }

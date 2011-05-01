@@ -482,6 +482,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			ser.BeginSection("NES");
 			ser.Sync("Frame", ref _frame);
+            ser.Sync("Lag", ref _lagcount);
 			cpu.SyncState(ser);
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("CIRAM", ref CIRAM, false);
