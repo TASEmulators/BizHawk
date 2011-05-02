@@ -46,9 +46,44 @@ namespace BizHawk.MultiClient
             this.Close();
         }
 
-        private void textBox24_TextChanged(object sender, EventArgs e)
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            //TODO: make base text box Controls[0] so this will focus on it
+            //tabControl1.TabPages[tabControl1.SelectedIndex].Controls[0].Focus(); 
+        }
 
+        private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RecentForROMs.Checked)
+            {
+                NESROMsBox.Enabled = false;
+                BrowseNESROMs.Enabled = false;
+                Sega8ROMsBox.Enabled = false;
+                Sega8BrowseROMs.Enabled = false;
+                GenesisROMsBox.Enabled = false;
+                GenesisBrowseROMs.Enabled = false;
+                PCEROMsBox.Enabled = false;
+                PCEBrowseROMs.Enabled = false;
+                GBROMsBox.Enabled = false;
+                GBBrowseROMs.Enabled = false;
+                TI83ROMsBox.Enabled = false;
+                TI83BrowseROMs.Enabled = false;     
+            }
+            else
+            {
+                NESROMsBox.Enabled = true;
+                BrowseNESROMs.Enabled = true;
+                Sega8ROMsBox.Enabled = true;
+                Sega8BrowseROMs.Enabled = true;
+                GenesisROMsBox.Enabled = true;
+                GenesisBrowseROMs.Enabled = true;
+                PCEROMsBox.Enabled = true;
+                PCEBrowseROMs.Enabled = true;
+                GBROMsBox.Enabled = true;
+                GBBrowseROMs.Enabled = true;
+                TI83ROMsBox.Enabled = true;
+                TI83BrowseROMs.Enabled = true;
+            }
         }
     }
 }
