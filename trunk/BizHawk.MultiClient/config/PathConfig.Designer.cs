@@ -39,9 +39,6 @@
             this.LuaBox = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.BrowseLua = new System.Windows.Forms.Button();
-            this.CheatsBox = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.BrowseCheats = new System.Windows.Forms.Button();
             this.NESScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.BrowseNESScreenshots = new System.Windows.Forms.Button();
@@ -147,6 +144,24 @@
             this.BrowseBase = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
             this.RecentForROMs = new System.Windows.Forms.CheckBox();
+            this.NESBrowseCheats = new System.Windows.Forms.Button();
+            this.NESCheatsBox = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.Sega8BrowseCheats = new System.Windows.Forms.Button();
+            this.Sega8CheatsBox = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.GenesisBrowseCheats = new System.Windows.Forms.Button();
+            this.GenesisCheatsBox = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.PCEBrowseCheats = new System.Windows.Forms.Button();
+            this.PCECheatsBox = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.GBBrowseCheats = new System.Windows.Forms.Button();
+            this.GBCheatsBox = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.TI83BrowseBox = new System.Windows.Forms.Button();
+            this.TI83CheatsBox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -182,7 +197,7 @@
             // 
             // WatchBox
             // 
-            this.WatchBox.Location = new System.Drawing.Point(13, 105);
+            this.WatchBox.Location = new System.Drawing.Point(13, 89);
             this.WatchBox.Name = "WatchBox";
             this.WatchBox.Size = new System.Drawing.Size(202, 20);
             this.WatchBox.TabIndex = 14;
@@ -190,7 +205,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(281, 109);
+            this.label9.Location = new System.Drawing.Point(280, 93);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(71, 13);
             this.label9.TabIndex = 17;
@@ -198,7 +213,7 @@
             // 
             // BrowseWatch
             // 
-            this.BrowseWatch.Location = new System.Drawing.Point(221, 103);
+            this.BrowseWatch.Location = new System.Drawing.Point(221, 88);
             this.BrowseWatch.Name = "BrowseWatch";
             this.BrowseWatch.Size = new System.Drawing.Size(54, 23);
             this.BrowseWatch.TabIndex = 15;
@@ -207,7 +222,7 @@
             // 
             // MoviesBox
             // 
-            this.MoviesBox.Location = new System.Drawing.Point(13, 22);
+            this.MoviesBox.Location = new System.Drawing.Point(13, 21);
             this.MoviesBox.Name = "MoviesBox";
             this.MoviesBox.Size = new System.Drawing.Size(202, 20);
             this.MoviesBox.TabIndex = 10;
@@ -215,7 +230,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(281, 26);
+            this.label10.Location = new System.Drawing.Point(281, 25);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(41, 13);
             this.label10.TabIndex = 13;
@@ -232,7 +247,7 @@
             // 
             // LuaBox
             // 
-            this.LuaBox.Location = new System.Drawing.Point(13, 75);
+            this.LuaBox.Location = new System.Drawing.Point(13, 59);
             this.LuaBox.Name = "LuaBox";
             this.LuaBox.Size = new System.Drawing.Size(202, 20);
             this.LuaBox.TabIndex = 6;
@@ -240,7 +255,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(281, 79);
+            this.label11.Location = new System.Drawing.Point(281, 63);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(25, 13);
             this.label11.TabIndex = 9;
@@ -248,41 +263,16 @@
             // 
             // BrowseLua
             // 
-            this.BrowseLua.Location = new System.Drawing.Point(221, 73);
+            this.BrowseLua.Location = new System.Drawing.Point(221, 58);
             this.BrowseLua.Name = "BrowseLua";
             this.BrowseLua.Size = new System.Drawing.Size(54, 23);
             this.BrowseLua.TabIndex = 7;
             this.BrowseLua.Text = "Browse";
             this.BrowseLua.UseVisualStyleBackColor = true;
             // 
-            // CheatsBox
-            // 
-            this.CheatsBox.Location = new System.Drawing.Point(13, 48);
-            this.CheatsBox.Name = "CheatsBox";
-            this.CheatsBox.Size = new System.Drawing.Size(202, 20);
-            this.CheatsBox.TabIndex = 2;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(281, 52);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 13);
-            this.label12.TabIndex = 5;
-            this.label12.Text = "Cheats";
-            // 
-            // BrowseCheats
-            // 
-            this.BrowseCheats.Location = new System.Drawing.Point(221, 46);
-            this.BrowseCheats.Name = "BrowseCheats";
-            this.BrowseCheats.Size = new System.Drawing.Size(54, 23);
-            this.BrowseCheats.TabIndex = 3;
-            this.BrowseCheats.Text = "Browse";
-            this.BrowseCheats.UseVisualStyleBackColor = true;
-            // 
             // NESScreenshotsBox
             // 
-            this.NESScreenshotsBox.Location = new System.Drawing.Point(3, 144);
+            this.NESScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.NESScreenshotsBox.Name = "NESScreenshotsBox";
             this.NESScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.NESScreenshotsBox.TabIndex = 14;
@@ -290,7 +280,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(274, 148);
+            this.label1.Location = new System.Drawing.Point(281, 153);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 13);
             this.label1.TabIndex = 17;
@@ -298,7 +288,7 @@
             // 
             // BrowseNESScreenshots
             // 
-            this.BrowseNESScreenshots.Location = new System.Drawing.Point(214, 142);
+            this.BrowseNESScreenshots.Location = new System.Drawing.Point(221, 148);
             this.BrowseNESScreenshots.Name = "BrowseNESScreenshots";
             this.BrowseNESScreenshots.Size = new System.Drawing.Size(54, 23);
             this.BrowseNESScreenshots.TabIndex = 15;
@@ -307,7 +297,7 @@
             // 
             // NESROMsBox
             // 
-            this.NESROMsBox.Location = new System.Drawing.Point(3, 62);
+            this.NESROMsBox.Location = new System.Drawing.Point(13, 59);
             this.NESROMsBox.Name = "NESROMsBox";
             this.NESROMsBox.Size = new System.Drawing.Size(202, 20);
             this.NESROMsBox.TabIndex = 10;
@@ -315,7 +305,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(274, 65);
+            this.label2.Location = new System.Drawing.Point(281, 63);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 13);
             this.label2.TabIndex = 13;
@@ -323,7 +313,7 @@
             // 
             // BrowseNESROMs
             // 
-            this.BrowseNESROMs.Location = new System.Drawing.Point(214, 59);
+            this.BrowseNESROMs.Location = new System.Drawing.Point(221, 58);
             this.BrowseNESROMs.Name = "BrowseNESROMs";
             this.BrowseNESROMs.Size = new System.Drawing.Size(54, 23);
             this.BrowseNESROMs.TabIndex = 11;
@@ -332,7 +322,7 @@
             // 
             // NESSaveRAMBox
             // 
-            this.NESSaveRAMBox.Location = new System.Drawing.Point(3, 114);
+            this.NESSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.NESSaveRAMBox.Name = "NESSaveRAMBox";
             this.NESSaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.NESSaveRAMBox.TabIndex = 6;
@@ -340,7 +330,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(274, 118);
+            this.label3.Location = new System.Drawing.Point(281, 123);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 9;
@@ -348,7 +338,7 @@
             // 
             // BrowseNESSaveRAM
             // 
-            this.BrowseNESSaveRAM.Location = new System.Drawing.Point(214, 112);
+            this.BrowseNESSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.BrowseNESSaveRAM.Name = "BrowseNESSaveRAM";
             this.BrowseNESSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.BrowseNESSaveRAM.TabIndex = 7;
@@ -357,7 +347,7 @@
             // 
             // NESSavestatesBox
             // 
-            this.NESSavestatesBox.Location = new System.Drawing.Point(3, 87);
+            this.NESSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.NESSavestatesBox.Name = "NESSavestatesBox";
             this.NESSavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.NESSavestatesBox.TabIndex = 2;
@@ -365,7 +355,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(274, 91);
+            this.label4.Location = new System.Drawing.Point(281, 93);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 5;
@@ -373,7 +363,7 @@
             // 
             // BrowseNESSavestates
             // 
-            this.BrowseNESSavestates.Location = new System.Drawing.Point(214, 85);
+            this.BrowseNESSavestates.Location = new System.Drawing.Point(221, 88);
             this.BrowseNESSavestates.Name = "BrowseNESSavestates";
             this.BrowseNESSavestates.Size = new System.Drawing.Size(54, 23);
             this.BrowseNESSavestates.TabIndex = 3;
@@ -382,7 +372,7 @@
             // 
             // Sega8ScreenshotsBox
             // 
-            this.Sega8ScreenshotsBox.Location = new System.Drawing.Point(6, 142);
+            this.Sega8ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.Sega8ScreenshotsBox.Name = "Sega8ScreenshotsBox";
             this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8ScreenshotsBox.TabIndex = 14;
@@ -390,7 +380,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(274, 146);
+            this.label5.Location = new System.Drawing.Point(281, 153);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(66, 13);
             this.label5.TabIndex = 17;
@@ -398,7 +388,7 @@
             // 
             // Sega8BrowseScreenshots
             // 
-            this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(214, 140);
+            this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.Sega8BrowseScreenshots.Name = "Sega8BrowseScreenshots";
             this.Sega8BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.Sega8BrowseScreenshots.TabIndex = 15;
@@ -407,7 +397,7 @@
             // 
             // Sega8ROMsBox
             // 
-            this.Sega8ROMsBox.Location = new System.Drawing.Point(6, 59);
+            this.Sega8ROMsBox.Location = new System.Drawing.Point(13, 59);
             this.Sega8ROMsBox.Name = "Sega8ROMsBox";
             this.Sega8ROMsBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8ROMsBox.TabIndex = 10;
@@ -415,7 +405,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(274, 63);
+            this.label6.Location = new System.Drawing.Point(281, 63);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(37, 13);
             this.label6.TabIndex = 13;
@@ -423,7 +413,7 @@
             // 
             // Sega8BrowseROMs
             // 
-            this.Sega8BrowseROMs.Location = new System.Drawing.Point(214, 57);
+            this.Sega8BrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.Sega8BrowseROMs.Name = "Sega8BrowseROMs";
             this.Sega8BrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.Sega8BrowseROMs.TabIndex = 11;
@@ -432,7 +422,7 @@
             // 
             // Sega8SaveRAMBox
             // 
-            this.Sega8SaveRAMBox.Location = new System.Drawing.Point(6, 112);
+            this.Sega8SaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.Sega8SaveRAMBox.Name = "Sega8SaveRAMBox";
             this.Sega8SaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8SaveRAMBox.TabIndex = 6;
@@ -440,7 +430,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(274, 116);
+            this.label7.Location = new System.Drawing.Point(281, 123);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 9;
@@ -448,7 +438,7 @@
             // 
             // Sega8BrowseSaveRAM
             // 
-            this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(214, 110);
+            this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.Sega8BrowseSaveRAM.Name = "Sega8BrowseSaveRAM";
             this.Sega8BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.Sega8BrowseSaveRAM.TabIndex = 7;
@@ -457,7 +447,7 @@
             // 
             // Sega8SavestatesBox
             // 
-            this.Sega8SavestatesBox.Location = new System.Drawing.Point(6, 85);
+            this.Sega8SavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.Sega8SavestatesBox.Name = "Sega8SavestatesBox";
             this.Sega8SavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8SavestatesBox.TabIndex = 2;
@@ -465,7 +455,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(274, 89);
+            this.label8.Location = new System.Drawing.Point(281, 93);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(60, 13);
             this.label8.TabIndex = 5;
@@ -473,7 +463,7 @@
             // 
             // Sega8BrowseSavestates
             // 
-            this.Sega8BrowseSavestates.Location = new System.Drawing.Point(214, 83);
+            this.Sega8BrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.Sega8BrowseSavestates.Name = "Sega8BrowseSavestates";
             this.Sega8BrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.Sega8BrowseSavestates.TabIndex = 3;
@@ -483,7 +473,7 @@
             // AVIBox
             // 
             this.AVIBox.AcceptsReturn = true;
-            this.AVIBox.Location = new System.Drawing.Point(13, 133);
+            this.AVIBox.Location = new System.Drawing.Point(13, 119);
             this.AVIBox.Name = "AVIBox";
             this.AVIBox.Size = new System.Drawing.Size(202, 20);
             this.AVIBox.TabIndex = 19;
@@ -491,7 +481,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(281, 137);
+            this.label13.Location = new System.Drawing.Point(281, 123);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(60, 13);
             this.label13.TabIndex = 22;
@@ -499,7 +489,7 @@
             // 
             // BrowseAVI
             // 
-            this.BrowseAVI.Location = new System.Drawing.Point(221, 131);
+            this.BrowseAVI.Location = new System.Drawing.Point(221, 118);
             this.BrowseAVI.Name = "BrowseAVI";
             this.BrowseAVI.Size = new System.Drawing.Size(54, 23);
             this.BrowseAVI.TabIndex = 20;
@@ -526,6 +516,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.NESBrowseCheats);
+            this.tabPage1.Controls.Add(this.NESCheatsBox);
             this.tabPage1.Controls.Add(this.NESBaseBox);
             this.tabPage1.Controls.Add(this.label22);
             this.tabPage1.Controls.Add(this.BrowseNESBase);
@@ -551,7 +544,7 @@
             // 
             // NESBaseBox
             // 
-            this.NESBaseBox.Location = new System.Drawing.Point(3, 22);
+            this.NESBaseBox.Location = new System.Drawing.Point(13, 21);
             this.NESBaseBox.Name = "NESBaseBox";
             this.NESBaseBox.Size = new System.Drawing.Size(202, 20);
             this.NESBaseBox.TabIndex = 18;
@@ -559,15 +552,15 @@
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(274, 25);
+            this.label22.Location = new System.Drawing.Point(281, 25);
             this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(56, 13);
+            this.label22.Size = new System.Drawing.Size(31, 13);
             this.label22.TabIndex = 20;
-            this.label22.Text = "NES Base";
+            this.label22.Text = "Base";
             // 
             // BrowseNESBase
             // 
-            this.BrowseNESBase.Location = new System.Drawing.Point(214, 19);
+            this.BrowseNESBase.Location = new System.Drawing.Point(221, 20);
             this.BrowseNESBase.Name = "BrowseNESBase";
             this.BrowseNESBase.Size = new System.Drawing.Size(54, 23);
             this.BrowseNESBase.TabIndex = 19;
@@ -576,6 +569,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label15);
+            this.tabPage2.Controls.Add(this.Sega8BrowseCheats);
+            this.tabPage2.Controls.Add(this.Sega8CheatsBox);
             this.tabPage2.Controls.Add(this.Sega8BaseBox);
             this.tabPage2.Controls.Add(this.Sega8ScreenshotsBox);
             this.tabPage2.Controls.Add(this.label23);
@@ -601,7 +597,7 @@
             // 
             // Sega8BaseBox
             // 
-            this.Sega8BaseBox.Location = new System.Drawing.Point(6, 22);
+            this.Sega8BaseBox.Location = new System.Drawing.Point(13, 21);
             this.Sega8BaseBox.Name = "Sega8BaseBox";
             this.Sega8BaseBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8BaseBox.TabIndex = 19;
@@ -610,7 +606,7 @@
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(274, 26);
+            this.label23.Location = new System.Drawing.Point(281, 25);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(31, 13);
             this.label23.TabIndex = 21;
@@ -618,7 +614,7 @@
             // 
             // Sega8BrowseBase
             // 
-            this.Sega8BrowseBase.Location = new System.Drawing.Point(214, 20);
+            this.Sega8BrowseBase.Location = new System.Drawing.Point(221, 20);
             this.Sega8BrowseBase.Name = "Sega8BrowseBase";
             this.Sega8BrowseBase.Size = new System.Drawing.Size(54, 23);
             this.Sega8BrowseBase.TabIndex = 20;
@@ -627,6 +623,9 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.label16);
+            this.tabPage3.Controls.Add(this.GenesisBrowseCheats);
+            this.tabPage3.Controls.Add(this.GenesisCheatsBox);
             this.tabPage3.Controls.Add(this.GenesisBaseBox);
             this.tabPage3.Controls.Add(this.GenesisScreenshotsBox);
             this.tabPage3.Controls.Add(this.GenesisBrowseSaveRAM);
@@ -651,21 +650,21 @@
             // 
             // GenesisBaseBox
             // 
-            this.GenesisBaseBox.Location = new System.Drawing.Point(3, 25);
+            this.GenesisBaseBox.Location = new System.Drawing.Point(13, 21);
             this.GenesisBaseBox.Name = "GenesisBaseBox";
             this.GenesisBaseBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisBaseBox.TabIndex = 34;
             // 
             // GenesisScreenshotsBox
             // 
-            this.GenesisScreenshotsBox.Location = new System.Drawing.Point(3, 145);
+            this.GenesisScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.GenesisScreenshotsBox.Name = "GenesisScreenshotsBox";
             this.GenesisScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisScreenshotsBox.TabIndex = 31;
             // 
             // GenesisBrowseSaveRAM
             // 
-            this.GenesisBrowseSaveRAM.Location = new System.Drawing.Point(211, 113);
+            this.GenesisBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.GenesisBrowseSaveRAM.Name = "GenesisBrowseSaveRAM";
             this.GenesisBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.GenesisBrowseSaveRAM.TabIndex = 26;
@@ -674,7 +673,7 @@
             // 
             // GenesisBrowseROMs
             // 
-            this.GenesisBrowseROMs.Location = new System.Drawing.Point(211, 60);
+            this.GenesisBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.GenesisBrowseROMs.Name = "GenesisBrowseROMs";
             this.GenesisBrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.GenesisBrowseROMs.TabIndex = 29;
@@ -684,7 +683,7 @@
             // label24
             // 
             this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(271, 29);
+            this.label24.Location = new System.Drawing.Point(281, 25);
             this.label24.Name = "label24";
             this.label24.Size = new System.Drawing.Size(31, 13);
             this.label24.TabIndex = 36;
@@ -693,7 +692,7 @@
             // label28
             // 
             this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(271, 119);
+            this.label28.Location = new System.Drawing.Point(281, 123);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(59, 13);
             this.label28.TabIndex = 27;
@@ -701,7 +700,7 @@
             // 
             // GenesisSavestatesBox
             // 
-            this.GenesisSavestatesBox.Location = new System.Drawing.Point(3, 88);
+            this.GenesisSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.GenesisSavestatesBox.Name = "GenesisSavestatesBox";
             this.GenesisSavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisSavestatesBox.TabIndex = 22;
@@ -709,7 +708,7 @@
             // label25
             // 
             this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(271, 149);
+            this.label25.Location = new System.Drawing.Point(281, 153);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(66, 13);
             this.label25.TabIndex = 33;
@@ -717,7 +716,7 @@
             // 
             // GenesisSaveRAMBox
             // 
-            this.GenesisSaveRAMBox.Location = new System.Drawing.Point(3, 115);
+            this.GenesisSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.GenesisSaveRAMBox.Name = "GenesisSaveRAMBox";
             this.GenesisSaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisSaveRAMBox.TabIndex = 25;
@@ -725,7 +724,7 @@
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(271, 66);
+            this.label27.Location = new System.Drawing.Point(281, 63);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(37, 13);
             this.label27.TabIndex = 30;
@@ -733,7 +732,7 @@
             // 
             // GenesisBrowseBase
             // 
-            this.GenesisBrowseBase.Location = new System.Drawing.Point(211, 23);
+            this.GenesisBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.GenesisBrowseBase.Name = "GenesisBrowseBase";
             this.GenesisBrowseBase.Size = new System.Drawing.Size(54, 23);
             this.GenesisBrowseBase.TabIndex = 35;
@@ -743,7 +742,7 @@
             // label26
             // 
             this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(271, 92);
+            this.label26.Location = new System.Drawing.Point(281, 93);
             this.label26.Name = "label26";
             this.label26.Size = new System.Drawing.Size(60, 13);
             this.label26.TabIndex = 24;
@@ -751,7 +750,7 @@
             // 
             // GenesisBrowseSavestates
             // 
-            this.GenesisBrowseSavestates.Location = new System.Drawing.Point(211, 86);
+            this.GenesisBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.GenesisBrowseSavestates.Name = "GenesisBrowseSavestates";
             this.GenesisBrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.GenesisBrowseSavestates.TabIndex = 23;
@@ -760,7 +759,7 @@
             // 
             // GenesisBrowseScreenshots
             // 
-            this.GenesisBrowseScreenshots.Location = new System.Drawing.Point(211, 143);
+            this.GenesisBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.GenesisBrowseScreenshots.Name = "GenesisBrowseScreenshots";
             this.GenesisBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.GenesisBrowseScreenshots.TabIndex = 32;
@@ -769,13 +768,16 @@
             // 
             // GenesisROMsBox
             // 
-            this.GenesisROMsBox.Location = new System.Drawing.Point(3, 62);
+            this.GenesisROMsBox.Location = new System.Drawing.Point(13, 59);
             this.GenesisROMsBox.Name = "GenesisROMsBox";
             this.GenesisROMsBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisROMsBox.TabIndex = 28;
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.label17);
+            this.tabPage4.Controls.Add(this.PCEBrowseCheats);
+            this.tabPage4.Controls.Add(this.PCECheatsBox);
             this.tabPage4.Controls.Add(this.PCEBaseBox);
             this.tabPage4.Controls.Add(this.PCEScreenshotsBox);
             this.tabPage4.Controls.Add(this.label29);
@@ -800,7 +802,7 @@
             // 
             // PCEBaseBox
             // 
-            this.PCEBaseBox.Location = new System.Drawing.Point(13, 25);
+            this.PCEBaseBox.Location = new System.Drawing.Point(13, 21);
             this.PCEBaseBox.Name = "PCEBaseBox";
             this.PCEBaseBox.Size = new System.Drawing.Size(202, 20);
             this.PCEBaseBox.TabIndex = 34;
@@ -808,7 +810,7 @@
             // PCEScreenshotsBox
             // 
             this.PCEScreenshotsBox.AcceptsReturn = true;
-            this.PCEScreenshotsBox.Location = new System.Drawing.Point(13, 145);
+            this.PCEScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.PCEScreenshotsBox.Name = "PCEScreenshotsBox";
             this.PCEScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.PCEScreenshotsBox.TabIndex = 31;
@@ -816,7 +818,7 @@
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(281, 29);
+            this.label29.Location = new System.Drawing.Point(281, 25);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(31, 13);
             this.label29.TabIndex = 36;
@@ -825,7 +827,7 @@
             // label30
             // 
             this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(281, 149);
+            this.label30.Location = new System.Drawing.Point(281, 153);
             this.label30.Name = "label30";
             this.label30.Size = new System.Drawing.Size(66, 13);
             this.label30.TabIndex = 33;
@@ -833,7 +835,7 @@
             // 
             // PCEBrowseBase
             // 
-            this.PCEBrowseBase.Location = new System.Drawing.Point(221, 23);
+            this.PCEBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.PCEBrowseBase.Name = "PCEBrowseBase";
             this.PCEBrowseBase.Size = new System.Drawing.Size(54, 23);
             this.PCEBrowseBase.TabIndex = 35;
@@ -842,7 +844,7 @@
             // 
             // PCEBrowseScreenshots
             // 
-            this.PCEBrowseScreenshots.Location = new System.Drawing.Point(221, 143);
+            this.PCEBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.PCEBrowseScreenshots.Name = "PCEBrowseScreenshots";
             this.PCEBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.PCEBrowseScreenshots.TabIndex = 32;
@@ -852,14 +854,14 @@
             // PCEROMsBox
             // 
             this.PCEROMsBox.AcceptsReturn = true;
-            this.PCEROMsBox.Location = new System.Drawing.Point(13, 62);
+            this.PCEROMsBox.Location = new System.Drawing.Point(13, 59);
             this.PCEROMsBox.Name = "PCEROMsBox";
             this.PCEROMsBox.Size = new System.Drawing.Size(202, 20);
             this.PCEROMsBox.TabIndex = 28;
             // 
             // PCEBrowseSavestates
             // 
-            this.PCEBrowseSavestates.Location = new System.Drawing.Point(221, 86);
+            this.PCEBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.PCEBrowseSavestates.Name = "PCEBrowseSavestates";
             this.PCEBrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.PCEBrowseSavestates.TabIndex = 23;
@@ -869,7 +871,7 @@
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(281, 92);
+            this.label31.Location = new System.Drawing.Point(281, 93);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(60, 13);
             this.label31.TabIndex = 24;
@@ -878,7 +880,7 @@
             // label32
             // 
             this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(281, 66);
+            this.label32.Location = new System.Drawing.Point(281, 63);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(37, 13);
             this.label32.TabIndex = 30;
@@ -887,14 +889,14 @@
             // PCESavestatesBox
             // 
             this.PCESavestatesBox.AcceptsTab = true;
-            this.PCESavestatesBox.Location = new System.Drawing.Point(13, 88);
+            this.PCESavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.PCESavestatesBox.Name = "PCESavestatesBox";
             this.PCESavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.PCESavestatesBox.TabIndex = 22;
             // 
             // PCEBrowseROMs
             // 
-            this.PCEBrowseROMs.Location = new System.Drawing.Point(221, 60);
+            this.PCEBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.PCEBrowseROMs.Name = "PCEBrowseROMs";
             this.PCEBrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.PCEBrowseROMs.TabIndex = 29;
@@ -903,7 +905,7 @@
             // 
             // PCEBrowseSaveRAM
             // 
-            this.PCEBrowseSaveRAM.Location = new System.Drawing.Point(221, 113);
+            this.PCEBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.PCEBrowseSaveRAM.Name = "PCEBrowseSaveRAM";
             this.PCEBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.PCEBrowseSaveRAM.TabIndex = 26;
@@ -913,7 +915,7 @@
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(281, 119);
+            this.label33.Location = new System.Drawing.Point(281, 123);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(59, 13);
             this.label33.TabIndex = 27;
@@ -921,13 +923,16 @@
             // 
             // PCESaveRAMBox
             // 
-            this.PCESaveRAMBox.Location = new System.Drawing.Point(13, 115);
+            this.PCESaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.PCESaveRAMBox.Name = "PCESaveRAMBox";
             this.PCESaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.PCESaveRAMBox.TabIndex = 25;
             // 
             // tabPage5
             // 
+            this.tabPage5.Controls.Add(this.label18);
+            this.tabPage5.Controls.Add(this.GBBrowseCheats);
+            this.tabPage5.Controls.Add(this.GBCheatsBox);
             this.tabPage5.Controls.Add(this.GBBaseBox);
             this.tabPage5.Controls.Add(this.GBScreenshotsBox);
             this.tabPage5.Controls.Add(this.label34);
@@ -952,14 +957,14 @@
             // 
             // GBBaseBox
             // 
-            this.GBBaseBox.Location = new System.Drawing.Point(14, 25);
+            this.GBBaseBox.Location = new System.Drawing.Point(13, 21);
             this.GBBaseBox.Name = "GBBaseBox";
             this.GBBaseBox.Size = new System.Drawing.Size(202, 20);
             this.GBBaseBox.TabIndex = 34;
             // 
             // GBScreenshotsBox
             // 
-            this.GBScreenshotsBox.Location = new System.Drawing.Point(14, 145);
+            this.GBScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.GBScreenshotsBox.Name = "GBScreenshotsBox";
             this.GBScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.GBScreenshotsBox.TabIndex = 31;
@@ -967,7 +972,7 @@
             // label34
             // 
             this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(282, 29);
+            this.label34.Location = new System.Drawing.Point(281, 25);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(31, 13);
             this.label34.TabIndex = 36;
@@ -976,7 +981,7 @@
             // label35
             // 
             this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(282, 149);
+            this.label35.Location = new System.Drawing.Point(281, 153);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(66, 13);
             this.label35.TabIndex = 33;
@@ -984,7 +989,7 @@
             // 
             // GBBrowseBase
             // 
-            this.GBBrowseBase.Location = new System.Drawing.Point(222, 23);
+            this.GBBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.GBBrowseBase.Name = "GBBrowseBase";
             this.GBBrowseBase.Size = new System.Drawing.Size(54, 23);
             this.GBBrowseBase.TabIndex = 35;
@@ -993,7 +998,7 @@
             // 
             // GBBrowseScreenshots
             // 
-            this.GBBrowseScreenshots.Location = new System.Drawing.Point(222, 143);
+            this.GBBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.GBBrowseScreenshots.Name = "GBBrowseScreenshots";
             this.GBBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.GBBrowseScreenshots.TabIndex = 32;
@@ -1002,14 +1007,14 @@
             // 
             // GBROMsBox
             // 
-            this.GBROMsBox.Location = new System.Drawing.Point(14, 62);
+            this.GBROMsBox.Location = new System.Drawing.Point(13, 59);
             this.GBROMsBox.Name = "GBROMsBox";
             this.GBROMsBox.Size = new System.Drawing.Size(202, 20);
             this.GBROMsBox.TabIndex = 28;
             // 
             // GBBrowseSavestates
             // 
-            this.GBBrowseSavestates.Location = new System.Drawing.Point(222, 86);
+            this.GBBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.GBBrowseSavestates.Name = "GBBrowseSavestates";
             this.GBBrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.GBBrowseSavestates.TabIndex = 23;
@@ -1019,7 +1024,7 @@
             // label36
             // 
             this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(282, 92);
+            this.label36.Location = new System.Drawing.Point(281, 93);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(60, 13);
             this.label36.TabIndex = 24;
@@ -1028,7 +1033,7 @@
             // label37
             // 
             this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(282, 66);
+            this.label37.Location = new System.Drawing.Point(281, 63);
             this.label37.Name = "label37";
             this.label37.Size = new System.Drawing.Size(37, 13);
             this.label37.TabIndex = 30;
@@ -1036,14 +1041,14 @@
             // 
             // GBSavestatesBox
             // 
-            this.GBSavestatesBox.Location = new System.Drawing.Point(14, 88);
+            this.GBSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.GBSavestatesBox.Name = "GBSavestatesBox";
             this.GBSavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.GBSavestatesBox.TabIndex = 22;
             // 
             // GBBrowseROMs
             // 
-            this.GBBrowseROMs.Location = new System.Drawing.Point(222, 60);
+            this.GBBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.GBBrowseROMs.Name = "GBBrowseROMs";
             this.GBBrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.GBBrowseROMs.TabIndex = 29;
@@ -1052,7 +1057,7 @@
             // 
             // GBBrowseSaveRAM
             // 
-            this.GBBrowseSaveRAM.Location = new System.Drawing.Point(222, 113);
+            this.GBBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.GBBrowseSaveRAM.Name = "GBBrowseSaveRAM";
             this.GBBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.GBBrowseSaveRAM.TabIndex = 26;
@@ -1062,7 +1067,7 @@
             // label38
             // 
             this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(282, 119);
+            this.label38.Location = new System.Drawing.Point(281, 123);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(59, 13);
             this.label38.TabIndex = 27;
@@ -1070,13 +1075,16 @@
             // 
             // GBSaveRAMBox
             // 
-            this.GBSaveRAMBox.Location = new System.Drawing.Point(14, 115);
+            this.GBSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.GBSaveRAMBox.Name = "GBSaveRAMBox";
             this.GBSaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.GBSaveRAMBox.TabIndex = 25;
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add(this.label19);
+            this.tabPage6.Controls.Add(this.TI83BrowseBox);
+            this.tabPage6.Controls.Add(this.TI83CheatsBox);
             this.tabPage6.Controls.Add(this.TI83BaseBox);
             this.tabPage6.Controls.Add(this.TI83ScreenshotsBox);
             this.tabPage6.Controls.Add(this.label39);
@@ -1101,14 +1109,14 @@
             // 
             // TI83BaseBox
             // 
-            this.TI83BaseBox.Location = new System.Drawing.Point(16, 25);
+            this.TI83BaseBox.Location = new System.Drawing.Point(13, 21);
             this.TI83BaseBox.Name = "TI83BaseBox";
             this.TI83BaseBox.Size = new System.Drawing.Size(202, 20);
             this.TI83BaseBox.TabIndex = 34;
             // 
             // TI83ScreenshotsBox
             // 
-            this.TI83ScreenshotsBox.Location = new System.Drawing.Point(16, 145);
+            this.TI83ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.TI83ScreenshotsBox.Name = "TI83ScreenshotsBox";
             this.TI83ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.TI83ScreenshotsBox.TabIndex = 31;
@@ -1116,7 +1124,7 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(284, 29);
+            this.label39.Location = new System.Drawing.Point(281, 25);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(31, 13);
             this.label39.TabIndex = 36;
@@ -1125,7 +1133,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(284, 149);
+            this.label40.Location = new System.Drawing.Point(281, 153);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(66, 13);
             this.label40.TabIndex = 33;
@@ -1133,7 +1141,7 @@
             // 
             // TI83BrowseBase
             // 
-            this.TI83BrowseBase.Location = new System.Drawing.Point(224, 23);
+            this.TI83BrowseBase.Location = new System.Drawing.Point(221, 20);
             this.TI83BrowseBase.Name = "TI83BrowseBase";
             this.TI83BrowseBase.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseBase.TabIndex = 35;
@@ -1142,7 +1150,7 @@
             // 
             // TI83BrowseScreenshots
             // 
-            this.TI83BrowseScreenshots.Location = new System.Drawing.Point(224, 143);
+            this.TI83BrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.TI83BrowseScreenshots.Name = "TI83BrowseScreenshots";
             this.TI83BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseScreenshots.TabIndex = 32;
@@ -1152,14 +1160,14 @@
             // TI83ROMsBox
             // 
             this.TI83ROMsBox.AcceptsTab = true;
-            this.TI83ROMsBox.Location = new System.Drawing.Point(16, 62);
+            this.TI83ROMsBox.Location = new System.Drawing.Point(13, 59);
             this.TI83ROMsBox.Name = "TI83ROMsBox";
             this.TI83ROMsBox.Size = new System.Drawing.Size(202, 20);
             this.TI83ROMsBox.TabIndex = 28;
             // 
             // TI83BrowseSavestates
             // 
-            this.TI83BrowseSavestates.Location = new System.Drawing.Point(224, 86);
+            this.TI83BrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.TI83BrowseSavestates.Name = "TI83BrowseSavestates";
             this.TI83BrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseSavestates.TabIndex = 23;
@@ -1169,7 +1177,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(284, 92);
+            this.label41.Location = new System.Drawing.Point(281, 93);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(60, 13);
             this.label41.TabIndex = 24;
@@ -1178,7 +1186,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(284, 66);
+            this.label42.Location = new System.Drawing.Point(281, 63);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(37, 13);
             this.label42.TabIndex = 30;
@@ -1186,14 +1194,14 @@
             // 
             // TI83SavestatesBox
             // 
-            this.TI83SavestatesBox.Location = new System.Drawing.Point(16, 88);
+            this.TI83SavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.TI83SavestatesBox.Name = "TI83SavestatesBox";
             this.TI83SavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.TI83SavestatesBox.TabIndex = 22;
             // 
             // TI83BrowseROMs
             // 
-            this.TI83BrowseROMs.Location = new System.Drawing.Point(224, 60);
+            this.TI83BrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.TI83BrowseROMs.Name = "TI83BrowseROMs";
             this.TI83BrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseROMs.TabIndex = 29;
@@ -1202,7 +1210,7 @@
             // 
             // TI83BrowseSaveRAM
             // 
-            this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(224, 113);
+            this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.TI83BrowseSaveRAM.Name = "TI83BrowseSaveRAM";
             this.TI83BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseSaveRAM.TabIndex = 26;
@@ -1212,7 +1220,7 @@
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(284, 119);
+            this.label43.Location = new System.Drawing.Point(281, 123);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(59, 13);
             this.label43.TabIndex = 27;
@@ -1221,7 +1229,7 @@
             // TI83SaveRAMBox
             // 
             this.TI83SaveRAMBox.AcceptsTab = true;
-            this.TI83SaveRAMBox.Location = new System.Drawing.Point(16, 115);
+            this.TI83SaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.TI83SaveRAMBox.Name = "TI83SaveRAMBox";
             this.TI83SaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.TI83SaveRAMBox.TabIndex = 25;
@@ -1231,10 +1239,7 @@
             this.tabPage7.Controls.Add(this.AVIBox);
             this.tabPage7.Controls.Add(this.MoviesBox);
             this.tabPage7.Controls.Add(this.label13);
-            this.tabPage7.Controls.Add(this.BrowseCheats);
             this.tabPage7.Controls.Add(this.BrowseAVI);
-            this.tabPage7.Controls.Add(this.label12);
-            this.tabPage7.Controls.Add(this.CheatsBox);
             this.tabPage7.Controls.Add(this.WatchBox);
             this.tabPage7.Controls.Add(this.BrowseLua);
             this.tabPage7.Controls.Add(this.label9);
@@ -1284,6 +1289,157 @@
             this.RecentForROMs.TabIndex = 26;
             this.RecentForROMs.Text = "Always use recent path for ROMs";
             this.RecentForROMs.UseVisualStyleBackColor = true;
+            // 
+            // NESBrowseCheats
+            // 
+            this.NESBrowseCheats.Location = new System.Drawing.Point(221, 178);
+            this.NESBrowseCheats.Name = "NESBrowseCheats";
+            this.NESBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.NESBrowseCheats.TabIndex = 22;
+            this.NESBrowseCheats.Text = "Browse";
+            this.NESBrowseCheats.UseVisualStyleBackColor = true;
+            // 
+            // NESCheatsBox
+            // 
+            this.NESCheatsBox.AcceptsTab = true;
+            this.NESCheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.NESCheatsBox.Name = "NESCheatsBox";
+            this.NESCheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.NESCheatsBox.TabIndex = 21;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(281, 183);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(40, 13);
+            this.label12.TabIndex = 23;
+            this.label12.Text = "Cheats";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(281, 183);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(40, 13);
+            this.label15.TabIndex = 26;
+            this.label15.Text = "Cheats";
+            // 
+            // Sega8BrowseCheats
+            // 
+            this.Sega8BrowseCheats.Location = new System.Drawing.Point(221, 178);
+            this.Sega8BrowseCheats.Name = "Sega8BrowseCheats";
+            this.Sega8BrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseCheats.TabIndex = 25;
+            this.Sega8BrowseCheats.Text = "Browse";
+            this.Sega8BrowseCheats.UseVisualStyleBackColor = true;
+            // 
+            // Sega8CheatsBox
+            // 
+            this.Sega8CheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.Sega8CheatsBox.Name = "Sega8CheatsBox";
+            this.Sega8CheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8CheatsBox.TabIndex = 24;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(281, 183);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(40, 13);
+            this.label16.TabIndex = 39;
+            this.label16.Text = "Cheats";
+            // 
+            // GenesisBrowseCheats
+            // 
+            this.GenesisBrowseCheats.Location = new System.Drawing.Point(221, 178);
+            this.GenesisBrowseCheats.Name = "GenesisBrowseCheats";
+            this.GenesisBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseCheats.TabIndex = 38;
+            this.GenesisBrowseCheats.Text = "Browse";
+            this.GenesisBrowseCheats.UseVisualStyleBackColor = true;
+            // 
+            // GenesisCheatsBox
+            // 
+            this.GenesisCheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.GenesisCheatsBox.Name = "GenesisCheatsBox";
+            this.GenesisCheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisCheatsBox.TabIndex = 37;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(281, 183);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(40, 13);
+            this.label17.TabIndex = 39;
+            this.label17.Text = "Cheats";
+            // 
+            // PCEBrowseCheats
+            // 
+            this.PCEBrowseCheats.Location = new System.Drawing.Point(221, 178);
+            this.PCEBrowseCheats.Name = "PCEBrowseCheats";
+            this.PCEBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseCheats.TabIndex = 38;
+            this.PCEBrowseCheats.Text = "Browse";
+            this.PCEBrowseCheats.UseVisualStyleBackColor = true;
+            // 
+            // PCECheatsBox
+            // 
+            this.PCECheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.PCECheatsBox.Name = "PCECheatsBox";
+            this.PCECheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.PCECheatsBox.TabIndex = 37;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(281, 183);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(40, 13);
+            this.label18.TabIndex = 39;
+            this.label18.Text = "Cheats";
+            // 
+            // GBBrowseCheats
+            // 
+            this.GBBrowseCheats.Location = new System.Drawing.Point(221, 178);
+            this.GBBrowseCheats.Name = "GBBrowseCheats";
+            this.GBBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseCheats.TabIndex = 38;
+            this.GBBrowseCheats.Text = "Browse";
+            this.GBBrowseCheats.UseVisualStyleBackColor = true;
+            // 
+            // GBCheatsBox
+            // 
+            this.GBCheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.GBCheatsBox.Name = "GBCheatsBox";
+            this.GBCheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.GBCheatsBox.TabIndex = 37;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(281, 183);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(40, 13);
+            this.label19.TabIndex = 39;
+            this.label19.Text = "Cheats";
+            // 
+            // TI83BrowseBox
+            // 
+            this.TI83BrowseBox.Location = new System.Drawing.Point(221, 178);
+            this.TI83BrowseBox.Name = "TI83BrowseBox";
+            this.TI83BrowseBox.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseBox.TabIndex = 38;
+            this.TI83BrowseBox.Text = "Browse";
+            this.TI83BrowseBox.UseVisualStyleBackColor = true;
+            // 
+            // TI83CheatsBox
+            // 
+            this.TI83CheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.TI83CheatsBox.Name = "TI83CheatsBox";
+            this.TI83CheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83CheatsBox.TabIndex = 37;
             // 
             // PathConfig
             // 
@@ -1336,9 +1492,6 @@
         private System.Windows.Forms.TextBox LuaBox;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button BrowseLua;
-        private System.Windows.Forms.TextBox CheatsBox;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Button BrowseCheats;
         private System.Windows.Forms.TextBox AVIBox;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Button BrowseAVI;
@@ -1444,5 +1597,23 @@
         private System.Windows.Forms.Button BrowseBase;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox RecentForROMs;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button NESBrowseCheats;
+        private System.Windows.Forms.TextBox NESCheatsBox;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Button Sega8BrowseCheats;
+        private System.Windows.Forms.TextBox Sega8CheatsBox;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Button GenesisBrowseCheats;
+        private System.Windows.Forms.TextBox GenesisCheatsBox;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button PCEBrowseCheats;
+        private System.Windows.Forms.TextBox PCECheatsBox;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Button GBBrowseCheats;
+        private System.Windows.Forms.TextBox GBCheatsBox;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Button TI83BrowseBox;
+        private System.Windows.Forms.TextBox TI83CheatsBox;
     }
 }
