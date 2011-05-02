@@ -40,6 +40,8 @@
 
         // Display options
         public int MessagesColor = -1;
+        public int AlertMessageColor = -65536;
+        public int LastInputColor = -23296;
         public bool DisplayFPS = false;
         public int DispFPSx = 0;
         public int DispFPSy = 0;

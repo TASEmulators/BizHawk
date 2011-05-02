@@ -269,7 +269,7 @@ namespace BizHawk.MultiClient
             {
                 string input = MakeLastInputDisplay();
                 MessageFont.DrawString(null, input, Global.Config.DispInpx+2, Global.Config.DispInpy+2, new Color4(Color.Black));
-                MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, Color.FromArgb(Global.Config.MessagesColor));
+                MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, Color.FromArgb(Global.Config.LastInputColor));
                 input = MakeInputDisplay();
                 MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, Color.FromArgb(Global.Config.MessagesColor));
             }
@@ -284,14 +284,13 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.DisplayLagCounter)
             {
-                //TODO: lag counter should do something on a lag frame, turn red (or another color if messages color = red?), and perhaps a larger font
                 MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
                     Global.Config.DispLagy + 1, new Color4(Color.Black));
                 
                 if (Global.Emulator.IsLagFrame)
                 {
                     AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
-                    Global.Config.DispLagy, Color.Red);
+                    Global.Config.DispLagy, Color.FromArgb(Global.Config.AlertMessageColor));
                 }
                 else
                 {

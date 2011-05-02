@@ -41,6 +41,20 @@
             this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
             this.FPSRadio = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.LInputText = new System.Windows.Forms.TextBox();
+            this.ChangeLInput = new System.Windows.Forms.Button();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.LInputColorPanel = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.AlertColorText = new System.Windows.Forms.TextBox();
+            this.ChangeAlertColor = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.AlertColorPanel = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.ColorText = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.MessageColorBox = new System.Windows.Forms.GroupBox();
@@ -48,15 +62,18 @@
             this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
             this.Cancel = new System.Windows.Forms.Button();
             this.ResetDefaultsButton = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
             this.PositionPanel = new System.Windows.Forms.Panel();
             this.XNumeric = new System.Windows.Forms.NumericUpDown();
             this.YNumeric = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.PositionGroupBox = new System.Windows.Forms.GroupBox();
+            this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
+            this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
             this.MessageTypeBox.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.MessageColorBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
@@ -66,7 +83,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(327, 319);
+            this.OK.Location = new System.Drawing.Point(340, 371);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -88,15 +105,16 @@
             this.MessageTypeBox.Controls.Add(this.FPSRadio);
             this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
             this.MessageTypeBox.Name = "MessageTypeBox";
-            this.MessageTypeBox.Size = new System.Drawing.Size(149, 139);
+            this.MessageTypeBox.Size = new System.Drawing.Size(177, 139);
             this.MessageTypeBox.TabIndex = 2;
             this.MessageTypeBox.TabStop = false;
             this.MessageTypeBox.Text = "Message Type";
             // 
             // MessLabel
             // 
+            this.MessLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.MessLabel.AutoSize = true;
-            this.MessLabel.Location = new System.Drawing.Point(98, 116);
+            this.MessLabel.Location = new System.Drawing.Point(126, 116);
             this.MessLabel.Name = "MessLabel";
             this.MessLabel.Size = new System.Drawing.Size(49, 13);
             this.MessLabel.TabIndex = 9;
@@ -104,8 +122,9 @@
             // 
             // InpLabel
             // 
+            this.InpLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.InpLabel.AutoSize = true;
-            this.InpLabel.Location = new System.Drawing.Point(98, 92);
+            this.InpLabel.Location = new System.Drawing.Point(126, 92);
             this.InpLabel.Name = "InpLabel";
             this.InpLabel.Size = new System.Drawing.Size(49, 13);
             this.InpLabel.TabIndex = 8;
@@ -113,8 +132,9 @@
             // 
             // LagLabel
             // 
+            this.LagLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.LagLabel.AutoSize = true;
-            this.LagLabel.Location = new System.Drawing.Point(98, 68);
+            this.LagLabel.Location = new System.Drawing.Point(126, 68);
             this.LagLabel.Name = "LagLabel";
             this.LagLabel.Size = new System.Drawing.Size(49, 13);
             this.LagLabel.TabIndex = 7;
@@ -122,8 +142,9 @@
             // 
             // FCLabel
             // 
+            this.FCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.FCLabel.AutoSize = true;
-            this.FCLabel.Location = new System.Drawing.Point(98, 44);
+            this.FCLabel.Location = new System.Drawing.Point(126, 44);
             this.FCLabel.Name = "FCLabel";
             this.FCLabel.Size = new System.Drawing.Size(49, 13);
             this.FCLabel.TabIndex = 6;
@@ -131,8 +152,9 @@
             // 
             // FpsPosLabel
             // 
+            this.FpsPosLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.FpsPosLabel.AutoSize = true;
-            this.FpsPosLabel.Location = new System.Drawing.Point(98, 20);
+            this.FpsPosLabel.Location = new System.Drawing.Point(126, 20);
             this.FpsPosLabel.Name = "FpsPosLabel";
             this.FpsPosLabel.Size = new System.Drawing.Size(49, 13);
             this.FpsPosLabel.TabIndex = 5;
@@ -198,21 +220,158 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label7);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.LInputText);
+            this.groupBox2.Controls.Add(this.ChangeLInput);
+            this.groupBox2.Controls.Add(this.groupBox3);
+            this.groupBox2.Controls.Add(this.label6);
+            this.groupBox2.Controls.Add(this.label5);
+            this.groupBox2.Controls.Add(this.AlertColorText);
+            this.groupBox2.Controls.Add(this.ChangeAlertColor);
+            this.groupBox2.Controls.Add(this.groupBox1);
+            this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.ColorText);
             this.groupBox2.Controls.Add(this.button1);
             this.groupBox2.Controls.Add(this.MessageColorBox);
             this.groupBox2.Location = new System.Drawing.Point(12, 173);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(128, 88);
+            this.groupBox2.Size = new System.Drawing.Size(177, 192);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Message Color";
+            this.groupBox2.Text = "Message Colors";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(1, 120);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(86, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "Last Frame Input";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(28, 142);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(18, 13);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "0x";
+            // 
+            // LInputText
+            // 
+            this.LInputText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.LInputText.Location = new System.Drawing.Point(45, 139);
+            this.LInputText.MaxLength = 8;
+            this.LInputText.Name = "LInputText";
+            this.LInputText.ReadOnly = true;
+            this.LInputText.Size = new System.Drawing.Size(59, 20);
+            this.LInputText.TabIndex = 16;
+            // 
+            // ChangeLInput
+            // 
+            this.ChangeLInput.Location = new System.Drawing.Point(110, 136);
+            this.ChangeLInput.Name = "ChangeLInput";
+            this.ChangeLInput.Size = new System.Drawing.Size(52, 23);
+            this.ChangeLInput.TabIndex = 15;
+            this.ChangeLInput.Text = "Change";
+            this.ChangeLInput.UseVisualStyleBackColor = true;
+            this.ChangeLInput.Click += new System.EventHandler(this.ChangeLInput_Click);
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.LInputColorPanel);
+            this.groupBox3.Location = new System.Drawing.Point(1, 131);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(28, 28);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            // 
+            // LInputColorPanel
+            // 
+            this.LInputColorPanel.Location = new System.Drawing.Point(4, 8);
+            this.LInputColorPanel.Name = "LInputColorPanel";
+            this.LInputColorPanel.Size = new System.Drawing.Size(20, 16);
+            this.LInputColorPanel.TabIndex = 7;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1, 71);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(78, 13);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Alert messages";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(28, 93);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(18, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "0x";
+            // 
+            // AlertColorText
+            // 
+            this.AlertColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.AlertColorText.Location = new System.Drawing.Point(45, 90);
+            this.AlertColorText.MaxLength = 8;
+            this.AlertColorText.Name = "AlertColorText";
+            this.AlertColorText.ReadOnly = true;
+            this.AlertColorText.Size = new System.Drawing.Size(59, 20);
+            this.AlertColorText.TabIndex = 11;
+            // 
+            // ChangeAlertColor
+            // 
+            this.ChangeAlertColor.Location = new System.Drawing.Point(110, 87);
+            this.ChangeAlertColor.Name = "ChangeAlertColor";
+            this.ChangeAlertColor.Size = new System.Drawing.Size(52, 23);
+            this.ChangeAlertColor.TabIndex = 10;
+            this.ChangeAlertColor.Text = "Change";
+            this.ChangeAlertColor.UseVisualStyleBackColor = true;
+            this.ChangeAlertColor.Click += new System.EventHandler(this.ChangeAlertColor_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.AlertColorPanel);
+            this.groupBox1.Location = new System.Drawing.Point(1, 82);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(28, 28);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            // 
+            // AlertColorPanel
+            // 
+            this.AlertColorPanel.Location = new System.Drawing.Point(4, 8);
+            this.AlertColorPanel.Name = "AlertColorPanel";
+            this.AlertColorPanel.Size = new System.Drawing.Size(20, 16);
+            this.AlertColorPanel.TabIndex = 7;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(1, 24);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(80, 13);
+            this.label4.TabIndex = 8;
+            this.label4.Text = "Main messages";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(28, 46);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(18, 13);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "0x";
             // 
             // ColorText
             // 
             this.ColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.ColorText.Location = new System.Drawing.Point(61, 27);
+            this.ColorText.Location = new System.Drawing.Point(45, 43);
             this.ColorText.MaxLength = 8;
             this.ColorText.Name = "ColorText";
             this.ColorText.ReadOnly = true;
@@ -221,20 +380,20 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 53);
+            this.button1.Location = new System.Drawing.Point(110, 40);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 23);
+            this.button1.Size = new System.Drawing.Size(52, 23);
             this.button1.TabIndex = 1;
-            this.button1.Text = "Change...";
+            this.button1.Text = "Change";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MessageColorBox
             // 
             this.MessageColorBox.Controls.Add(this.ColorPanel);
-            this.MessageColorBox.Location = new System.Drawing.Point(12, 19);
+            this.MessageColorBox.Location = new System.Drawing.Point(1, 35);
             this.MessageColorBox.Name = "MessageColorBox";
-            this.MessageColorBox.Size = new System.Drawing.Size(29, 29);
+            this.MessageColorBox.Size = new System.Drawing.Size(28, 28);
             this.MessageColorBox.TabIndex = 0;
             this.MessageColorBox.TabStop = false;
             // 
@@ -250,7 +409,7 @@
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(408, 319);
+            this.Cancel.Location = new System.Drawing.Point(421, 371);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 5;
@@ -261,22 +420,13 @@
             // ResetDefaultsButton
             // 
             this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ResetDefaultsButton.Location = new System.Drawing.Point(18, 280);
+            this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 371);
             this.ResetDefaultsButton.Name = "ResetDefaultsButton";
             this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
             this.ResetDefaultsButton.TabIndex = 6;
             this.ResetDefaultsButton.Text = "Restore Defaults";
             this.ResetDefaultsButton.UseVisualStyleBackColor = true;
             this.ResetDefaultsButton.Click += new System.EventHandler(this.ResetDefaultsButton_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(44, 30);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(18, 13);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "0x";
             // 
             // PositionPanel
             // 
@@ -357,7 +507,7 @@
             this.PositionGroupBox.Controls.Add(this.YNumeric);
             this.PositionGroupBox.Controls.Add(this.XNumeric);
             this.PositionGroupBox.Controls.Add(this.PositionPanel);
-            this.PositionGroupBox.Location = new System.Drawing.Point(182, 12);
+            this.PositionGroupBox.Location = new System.Drawing.Point(195, 12);
             this.PositionGroupBox.Name = "PositionGroupBox";
             this.PositionGroupBox.Size = new System.Drawing.Size(301, 299);
             this.PositionGroupBox.TabIndex = 3;
@@ -370,7 +520,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(521, 354);
+            this.ClientSize = new System.Drawing.Size(534, 406);
             this.Controls.Add(this.ResetDefaultsButton);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.groupBox2);
@@ -386,6 +536,8 @@
             this.MessageTypeBox.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.MessageColorBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
@@ -424,5 +576,20 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox PositionGroupBox;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox AlertColorText;
+        private System.Windows.Forms.Button ChangeAlertColor;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Panel AlertColorPanel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox LInputText;
+        private System.Windows.Forms.Button ChangeLInput;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Panel LInputColorPanel;
+        private System.Windows.Forms.ColorDialog AlertColorDialog;
+        private System.Windows.Forms.ColorDialog LInputColorDialog;
     }
 }
