@@ -30,123 +30,123 @@
         {
             this.Cancel = new System.Windows.Forms.Button();
             this.OK = new System.Windows.Forms.Button();
-            this.textBox9 = new System.Windows.Forms.TextBox();
+            this.WatchBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.button9 = new System.Windows.Forms.Button();
-            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.BrowseWatch = new System.Windows.Forms.Button();
+            this.MoviesBox = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
-            this.textBox11 = new System.Windows.Forms.TextBox();
+            this.BrowseMovies = new System.Windows.Forms.Button();
+            this.LuaBox = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.button11 = new System.Windows.Forms.Button();
-            this.textBox12 = new System.Windows.Forms.TextBox();
+            this.BrowseLua = new System.Windows.Forms.Button();
+            this.CheatsBox = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
-            this.button12 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.BrowseCheats = new System.Windows.Forms.Button();
+            this.NESScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.BrowseNESScreenshots = new System.Windows.Forms.Button();
+            this.NESROMsBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.BrowseNESROMs = new System.Windows.Forms.Button();
+            this.NESSaveRAMBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.BrowseNESSaveRAM = new System.Windows.Forms.Button();
+            this.NESSavestatesBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button4 = new System.Windows.Forms.Button();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.BrowseNESSavestates = new System.Windows.Forms.Button();
+            this.Sega8ScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.Sega8BrowseScreenshots = new System.Windows.Forms.Button();
+            this.Sega8ROMsBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.Sega8BrowseROMs = new System.Windows.Forms.Button();
+            this.Sega8SaveRAMBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.button7 = new System.Windows.Forms.Button();
-            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.Sega8BrowseSaveRAM = new System.Windows.Forms.Button();
+            this.Sega8SavestatesBox = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.button8 = new System.Windows.Forms.Button();
-            this.textBox13 = new System.Windows.Forms.TextBox();
+            this.Sega8BrowseSavestates = new System.Windows.Forms.Button();
+            this.AVIBox = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.button13 = new System.Windows.Forms.Button();
+            this.BrowseAVI = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.textBox23 = new System.Windows.Forms.TextBox();
+            this.NESBaseBox = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
-            this.button24 = new System.Windows.Forms.Button();
-            this.textBox24 = new System.Windows.Forms.TextBox();
+            this.BrowseNESBase = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.Sega8BaseBox = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
-            this.button25 = new System.Windows.Forms.Button();
-            this.textBox25 = new System.Windows.Forms.TextBox();
-            this.textBox26 = new System.Windows.Forms.TextBox();
+            this.Sega8BrowseBase = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.GenesisBaseBox = new System.Windows.Forms.TextBox();
+            this.GenesisScreenshotsBox = new System.Windows.Forms.TextBox();
+            this.GenesisBrowseSaveRAM = new System.Windows.Forms.Button();
+            this.GenesisBrowseROMs = new System.Windows.Forms.Button();
             this.label24 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.button26 = new System.Windows.Forms.Button();
-            this.button27 = new System.Windows.Forms.Button();
-            this.textBox27 = new System.Windows.Forms.TextBox();
-            this.button28 = new System.Windows.Forms.Button();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.textBox28 = new System.Windows.Forms.TextBox();
-            this.button29 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
             this.label28 = new System.Windows.Forms.Label();
-            this.textBox29 = new System.Windows.Forms.TextBox();
-            this.textBox30 = new System.Windows.Forms.TextBox();
-            this.textBox31 = new System.Windows.Forms.TextBox();
+            this.GenesisSavestatesBox = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.GenesisSaveRAMBox = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.GenesisBrowseBase = new System.Windows.Forms.Button();
+            this.label26 = new System.Windows.Forms.Label();
+            this.GenesisBrowseSavestates = new System.Windows.Forms.Button();
+            this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
+            this.GenesisROMsBox = new System.Windows.Forms.TextBox();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.PCEBaseBox = new System.Windows.Forms.TextBox();
+            this.PCEScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label29 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
-            this.button31 = new System.Windows.Forms.Button();
-            this.button32 = new System.Windows.Forms.Button();
-            this.textBox32 = new System.Windows.Forms.TextBox();
-            this.button33 = new System.Windows.Forms.Button();
+            this.PCEBrowseBase = new System.Windows.Forms.Button();
+            this.PCEBrowseScreenshots = new System.Windows.Forms.Button();
+            this.PCEROMsBox = new System.Windows.Forms.TextBox();
+            this.PCEBrowseSavestates = new System.Windows.Forms.Button();
             this.label31 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
-            this.textBox33 = new System.Windows.Forms.TextBox();
-            this.button34 = new System.Windows.Forms.Button();
-            this.button35 = new System.Windows.Forms.Button();
+            this.PCESavestatesBox = new System.Windows.Forms.TextBox();
+            this.PCEBrowseROMs = new System.Windows.Forms.Button();
+            this.PCEBrowseSaveRAM = new System.Windows.Forms.Button();
             this.label33 = new System.Windows.Forms.Label();
-            this.textBox34 = new System.Windows.Forms.TextBox();
-            this.textBox35 = new System.Windows.Forms.TextBox();
-            this.textBox36 = new System.Windows.Forms.TextBox();
+            this.PCESaveRAMBox = new System.Windows.Forms.TextBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.GBBaseBox = new System.Windows.Forms.TextBox();
+            this.GBScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.label35 = new System.Windows.Forms.Label();
-            this.button36 = new System.Windows.Forms.Button();
-            this.button37 = new System.Windows.Forms.Button();
-            this.textBox37 = new System.Windows.Forms.TextBox();
-            this.button38 = new System.Windows.Forms.Button();
+            this.GBBrowseBase = new System.Windows.Forms.Button();
+            this.GBBrowseScreenshots = new System.Windows.Forms.Button();
+            this.GBROMsBox = new System.Windows.Forms.TextBox();
+            this.GBBrowseSavestates = new System.Windows.Forms.Button();
             this.label36 = new System.Windows.Forms.Label();
             this.label37 = new System.Windows.Forms.Label();
-            this.textBox38 = new System.Windows.Forms.TextBox();
-            this.button39 = new System.Windows.Forms.Button();
-            this.button40 = new System.Windows.Forms.Button();
+            this.GBSavestatesBox = new System.Windows.Forms.TextBox();
+            this.GBBrowseROMs = new System.Windows.Forms.Button();
+            this.GBBrowseSaveRAM = new System.Windows.Forms.Button();
             this.label38 = new System.Windows.Forms.Label();
-            this.textBox39 = new System.Windows.Forms.TextBox();
-            this.textBox40 = new System.Windows.Forms.TextBox();
-            this.textBox41 = new System.Windows.Forms.TextBox();
+            this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.TI83BaseBox = new System.Windows.Forms.TextBox();
+            this.TI83ScreenshotsBox = new System.Windows.Forms.TextBox();
             this.label39 = new System.Windows.Forms.Label();
             this.label40 = new System.Windows.Forms.Label();
-            this.button41 = new System.Windows.Forms.Button();
-            this.button42 = new System.Windows.Forms.Button();
-            this.textBox42 = new System.Windows.Forms.TextBox();
-            this.button43 = new System.Windows.Forms.Button();
+            this.TI83BrowseBase = new System.Windows.Forms.Button();
+            this.TI83BrowseScreenshots = new System.Windows.Forms.Button();
+            this.TI83ROMsBox = new System.Windows.Forms.TextBox();
+            this.TI83BrowseSavestates = new System.Windows.Forms.Button();
             this.label41 = new System.Windows.Forms.Label();
             this.label42 = new System.Windows.Forms.Label();
-            this.textBox43 = new System.Windows.Forms.TextBox();
-            this.button44 = new System.Windows.Forms.Button();
-            this.button45 = new System.Windows.Forms.Button();
+            this.TI83SavestatesBox = new System.Windows.Forms.TextBox();
+            this.TI83BrowseROMs = new System.Windows.Forms.Button();
+            this.TI83BrowseSaveRAM = new System.Windows.Forms.Button();
             this.label43 = new System.Windows.Forms.Label();
-            this.textBox44 = new System.Windows.Forms.TextBox();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.button14 = new System.Windows.Forms.Button();
+            this.TI83SaveRAMBox = new System.Windows.Forms.TextBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.BasePathBox = new System.Windows.Forms.TextBox();
+            this.BrowseBase = new System.Windows.Forms.Button();
             this.label14 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.RecentForROMs = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -180,12 +180,12 @@
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.OK_Click);
             // 
-            // textBox9
+            // WatchBox
             // 
-            this.textBox9.Location = new System.Drawing.Point(13, 105);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(202, 20);
-            this.textBox9.TabIndex = 14;
+            this.WatchBox.Location = new System.Drawing.Point(13, 105);
+            this.WatchBox.Name = "WatchBox";
+            this.WatchBox.Size = new System.Drawing.Size(202, 20);
+            this.WatchBox.TabIndex = 14;
             // 
             // label9
             // 
@@ -196,21 +196,21 @@
             this.label9.TabIndex = 17;
             this.label9.Text = "Watch (.wch)";
             // 
-            // button9
+            // BrowseWatch
             // 
-            this.button9.Location = new System.Drawing.Point(221, 103);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(54, 23);
-            this.button9.TabIndex = 15;
-            this.button9.Text = "Browse";
-            this.button9.UseVisualStyleBackColor = true;
+            this.BrowseWatch.Location = new System.Drawing.Point(221, 103);
+            this.BrowseWatch.Name = "BrowseWatch";
+            this.BrowseWatch.Size = new System.Drawing.Size(54, 23);
+            this.BrowseWatch.TabIndex = 15;
+            this.BrowseWatch.Text = "Browse";
+            this.BrowseWatch.UseVisualStyleBackColor = true;
             // 
-            // textBox10
+            // MoviesBox
             // 
-            this.textBox10.Location = new System.Drawing.Point(13, 22);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(202, 20);
-            this.textBox10.TabIndex = 10;
+            this.MoviesBox.Location = new System.Drawing.Point(13, 22);
+            this.MoviesBox.Name = "MoviesBox";
+            this.MoviesBox.Size = new System.Drawing.Size(202, 20);
+            this.MoviesBox.TabIndex = 10;
             // 
             // label10
             // 
@@ -221,21 +221,21 @@
             this.label10.TabIndex = 13;
             this.label10.Text = "Movies";
             // 
-            // button10
+            // BrowseMovies
             // 
-            this.button10.Location = new System.Drawing.Point(221, 20);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(54, 23);
-            this.button10.TabIndex = 11;
-            this.button10.Text = "Browse";
-            this.button10.UseVisualStyleBackColor = true;
+            this.BrowseMovies.Location = new System.Drawing.Point(221, 20);
+            this.BrowseMovies.Name = "BrowseMovies";
+            this.BrowseMovies.Size = new System.Drawing.Size(54, 23);
+            this.BrowseMovies.TabIndex = 11;
+            this.BrowseMovies.Text = "Browse";
+            this.BrowseMovies.UseVisualStyleBackColor = true;
             // 
-            // textBox11
+            // LuaBox
             // 
-            this.textBox11.Location = new System.Drawing.Point(13, 75);
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(202, 20);
-            this.textBox11.TabIndex = 6;
+            this.LuaBox.Location = new System.Drawing.Point(13, 75);
+            this.LuaBox.Name = "LuaBox";
+            this.LuaBox.Size = new System.Drawing.Size(202, 20);
+            this.LuaBox.TabIndex = 6;
             // 
             // label11
             // 
@@ -246,21 +246,21 @@
             this.label11.TabIndex = 9;
             this.label11.Text = "Lua";
             // 
-            // button11
+            // BrowseLua
             // 
-            this.button11.Location = new System.Drawing.Point(221, 73);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(54, 23);
-            this.button11.TabIndex = 7;
-            this.button11.Text = "Browse";
-            this.button11.UseVisualStyleBackColor = true;
+            this.BrowseLua.Location = new System.Drawing.Point(221, 73);
+            this.BrowseLua.Name = "BrowseLua";
+            this.BrowseLua.Size = new System.Drawing.Size(54, 23);
+            this.BrowseLua.TabIndex = 7;
+            this.BrowseLua.Text = "Browse";
+            this.BrowseLua.UseVisualStyleBackColor = true;
             // 
-            // textBox12
+            // CheatsBox
             // 
-            this.textBox12.Location = new System.Drawing.Point(13, 48);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(202, 20);
-            this.textBox12.TabIndex = 2;
+            this.CheatsBox.Location = new System.Drawing.Point(13, 48);
+            this.CheatsBox.Name = "CheatsBox";
+            this.CheatsBox.Size = new System.Drawing.Size(202, 20);
+            this.CheatsBox.TabIndex = 2;
             // 
             // label12
             // 
@@ -271,21 +271,21 @@
             this.label12.TabIndex = 5;
             this.label12.Text = "Cheats";
             // 
-            // button12
+            // BrowseCheats
             // 
-            this.button12.Location = new System.Drawing.Point(221, 46);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(54, 23);
-            this.button12.TabIndex = 3;
-            this.button12.Text = "Browse";
-            this.button12.UseVisualStyleBackColor = true;
+            this.BrowseCheats.Location = new System.Drawing.Point(221, 46);
+            this.BrowseCheats.Name = "BrowseCheats";
+            this.BrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.BrowseCheats.TabIndex = 3;
+            this.BrowseCheats.Text = "Browse";
+            this.BrowseCheats.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // NESScreenshotsBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(3, 144);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(202, 20);
-            this.textBox1.TabIndex = 14;
+            this.NESScreenshotsBox.Location = new System.Drawing.Point(3, 144);
+            this.NESScreenshotsBox.Name = "NESScreenshotsBox";
+            this.NESScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.NESScreenshotsBox.TabIndex = 14;
             // 
             // label1
             // 
@@ -296,21 +296,21 @@
             this.label1.TabIndex = 17;
             this.label1.Text = "Screenshots";
             // 
-            // button1
+            // BrowseNESScreenshots
             // 
-            this.button1.Location = new System.Drawing.Point(214, 142);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(54, 23);
-            this.button1.TabIndex = 15;
-            this.button1.Text = "Browse";
-            this.button1.UseVisualStyleBackColor = true;
+            this.BrowseNESScreenshots.Location = new System.Drawing.Point(214, 142);
+            this.BrowseNESScreenshots.Name = "BrowseNESScreenshots";
+            this.BrowseNESScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.BrowseNESScreenshots.TabIndex = 15;
+            this.BrowseNESScreenshots.Text = "Browse";
+            this.BrowseNESScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox2
+            // NESROMsBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(3, 62);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(202, 20);
-            this.textBox2.TabIndex = 10;
+            this.NESROMsBox.Location = new System.Drawing.Point(3, 62);
+            this.NESROMsBox.Name = "NESROMsBox";
+            this.NESROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.NESROMsBox.TabIndex = 10;
             // 
             // label2
             // 
@@ -321,21 +321,21 @@
             this.label2.TabIndex = 13;
             this.label2.Text = "ROMs";
             // 
-            // button2
+            // BrowseNESROMs
             // 
-            this.button2.Location = new System.Drawing.Point(214, 59);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(54, 23);
-            this.button2.TabIndex = 11;
-            this.button2.Text = "Browse";
-            this.button2.UseVisualStyleBackColor = true;
+            this.BrowseNESROMs.Location = new System.Drawing.Point(214, 59);
+            this.BrowseNESROMs.Name = "BrowseNESROMs";
+            this.BrowseNESROMs.Size = new System.Drawing.Size(54, 23);
+            this.BrowseNESROMs.TabIndex = 11;
+            this.BrowseNESROMs.Text = "Browse";
+            this.BrowseNESROMs.UseVisualStyleBackColor = true;
             // 
-            // textBox3
+            // NESSaveRAMBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(3, 114);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(202, 20);
-            this.textBox3.TabIndex = 6;
+            this.NESSaveRAMBox.Location = new System.Drawing.Point(3, 114);
+            this.NESSaveRAMBox.Name = "NESSaveRAMBox";
+            this.NESSaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.NESSaveRAMBox.TabIndex = 6;
             // 
             // label3
             // 
@@ -346,21 +346,21 @@
             this.label3.TabIndex = 9;
             this.label3.Text = "Save RAM";
             // 
-            // button3
+            // BrowseNESSaveRAM
             // 
-            this.button3.Location = new System.Drawing.Point(214, 112);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(54, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Browse";
-            this.button3.UseVisualStyleBackColor = true;
+            this.BrowseNESSaveRAM.Location = new System.Drawing.Point(214, 112);
+            this.BrowseNESSaveRAM.Name = "BrowseNESSaveRAM";
+            this.BrowseNESSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.BrowseNESSaveRAM.TabIndex = 7;
+            this.BrowseNESSaveRAM.Text = "Browse";
+            this.BrowseNESSaveRAM.UseVisualStyleBackColor = true;
             // 
-            // textBox4
+            // NESSavestatesBox
             // 
-            this.textBox4.Location = new System.Drawing.Point(3, 87);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(202, 20);
-            this.textBox4.TabIndex = 2;
+            this.NESSavestatesBox.Location = new System.Drawing.Point(3, 87);
+            this.NESSavestatesBox.Name = "NESSavestatesBox";
+            this.NESSavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.NESSavestatesBox.TabIndex = 2;
             // 
             // label4
             // 
@@ -371,21 +371,21 @@
             this.label4.TabIndex = 5;
             this.label4.Text = "Savestates";
             // 
-            // button4
+            // BrowseNESSavestates
             // 
-            this.button4.Location = new System.Drawing.Point(214, 85);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(54, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "Browse";
-            this.button4.UseVisualStyleBackColor = true;
+            this.BrowseNESSavestates.Location = new System.Drawing.Point(214, 85);
+            this.BrowseNESSavestates.Name = "BrowseNESSavestates";
+            this.BrowseNESSavestates.Size = new System.Drawing.Size(54, 23);
+            this.BrowseNESSavestates.TabIndex = 3;
+            this.BrowseNESSavestates.Text = "Browse";
+            this.BrowseNESSavestates.UseVisualStyleBackColor = true;
             // 
-            // textBox5
+            // Sega8ScreenshotsBox
             // 
-            this.textBox5.Location = new System.Drawing.Point(6, 142);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(202, 20);
-            this.textBox5.TabIndex = 14;
+            this.Sega8ScreenshotsBox.Location = new System.Drawing.Point(6, 142);
+            this.Sega8ScreenshotsBox.Name = "Sega8ScreenshotsBox";
+            this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8ScreenshotsBox.TabIndex = 14;
             // 
             // label5
             // 
@@ -396,21 +396,21 @@
             this.label5.TabIndex = 17;
             this.label5.Text = "Screenshots";
             // 
-            // button5
+            // Sega8BrowseScreenshots
             // 
-            this.button5.Location = new System.Drawing.Point(214, 140);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(54, 23);
-            this.button5.TabIndex = 15;
-            this.button5.Text = "Browse";
-            this.button5.UseVisualStyleBackColor = true;
+            this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(214, 140);
+            this.Sega8BrowseScreenshots.Name = "Sega8BrowseScreenshots";
+            this.Sega8BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseScreenshots.TabIndex = 15;
+            this.Sega8BrowseScreenshots.Text = "Browse";
+            this.Sega8BrowseScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox6
+            // Sega8ROMsBox
             // 
-            this.textBox6.Location = new System.Drawing.Point(6, 59);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(202, 20);
-            this.textBox6.TabIndex = 10;
+            this.Sega8ROMsBox.Location = new System.Drawing.Point(6, 59);
+            this.Sega8ROMsBox.Name = "Sega8ROMsBox";
+            this.Sega8ROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8ROMsBox.TabIndex = 10;
             // 
             // label6
             // 
@@ -421,21 +421,21 @@
             this.label6.TabIndex = 13;
             this.label6.Text = "ROMs";
             // 
-            // button6
+            // Sega8BrowseROMs
             // 
-            this.button6.Location = new System.Drawing.Point(214, 57);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(54, 23);
-            this.button6.TabIndex = 11;
-            this.button6.Text = "Browse";
-            this.button6.UseVisualStyleBackColor = true;
+            this.Sega8BrowseROMs.Location = new System.Drawing.Point(214, 57);
+            this.Sega8BrowseROMs.Name = "Sega8BrowseROMs";
+            this.Sega8BrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseROMs.TabIndex = 11;
+            this.Sega8BrowseROMs.Text = "Browse";
+            this.Sega8BrowseROMs.UseVisualStyleBackColor = true;
             // 
-            // textBox7
+            // Sega8SaveRAMBox
             // 
-            this.textBox7.Location = new System.Drawing.Point(6, 112);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(202, 20);
-            this.textBox7.TabIndex = 6;
+            this.Sega8SaveRAMBox.Location = new System.Drawing.Point(6, 112);
+            this.Sega8SaveRAMBox.Name = "Sega8SaveRAMBox";
+            this.Sega8SaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8SaveRAMBox.TabIndex = 6;
             // 
             // label7
             // 
@@ -446,21 +446,21 @@
             this.label7.TabIndex = 9;
             this.label7.Text = "Save RAM";
             // 
-            // button7
+            // Sega8BrowseSaveRAM
             // 
-            this.button7.Location = new System.Drawing.Point(214, 110);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(54, 23);
-            this.button7.TabIndex = 7;
-            this.button7.Text = "Browse";
-            this.button7.UseVisualStyleBackColor = true;
+            this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(214, 110);
+            this.Sega8BrowseSaveRAM.Name = "Sega8BrowseSaveRAM";
+            this.Sega8BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseSaveRAM.TabIndex = 7;
+            this.Sega8BrowseSaveRAM.Text = "Browse";
+            this.Sega8BrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
-            // textBox8
+            // Sega8SavestatesBox
             // 
-            this.textBox8.Location = new System.Drawing.Point(6, 85);
-            this.textBox8.Name = "textBox8";
-            this.textBox8.Size = new System.Drawing.Size(202, 20);
-            this.textBox8.TabIndex = 2;
+            this.Sega8SavestatesBox.Location = new System.Drawing.Point(6, 85);
+            this.Sega8SavestatesBox.Name = "Sega8SavestatesBox";
+            this.Sega8SavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8SavestatesBox.TabIndex = 2;
             // 
             // label8
             // 
@@ -471,21 +471,22 @@
             this.label8.TabIndex = 5;
             this.label8.Text = "Savestates";
             // 
-            // button8
+            // Sega8BrowseSavestates
             // 
-            this.button8.Location = new System.Drawing.Point(214, 83);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(54, 23);
-            this.button8.TabIndex = 3;
-            this.button8.Text = "Browse";
-            this.button8.UseVisualStyleBackColor = true;
+            this.Sega8BrowseSavestates.Location = new System.Drawing.Point(214, 83);
+            this.Sega8BrowseSavestates.Name = "Sega8BrowseSavestates";
+            this.Sega8BrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseSavestates.TabIndex = 3;
+            this.Sega8BrowseSavestates.Text = "Browse";
+            this.Sega8BrowseSavestates.UseVisualStyleBackColor = true;
             // 
-            // textBox13
+            // AVIBox
             // 
-            this.textBox13.Location = new System.Drawing.Point(13, 133);
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(202, 20);
-            this.textBox13.TabIndex = 19;
+            this.AVIBox.AcceptsReturn = true;
+            this.AVIBox.Location = new System.Drawing.Point(13, 133);
+            this.AVIBox.Name = "AVIBox";
+            this.AVIBox.Size = new System.Drawing.Size(202, 20);
+            this.AVIBox.TabIndex = 19;
             // 
             // label13
             // 
@@ -496,14 +497,14 @@
             this.label13.TabIndex = 22;
             this.label13.Text = "Video (AVI)";
             // 
-            // button13
+            // BrowseAVI
             // 
-            this.button13.Location = new System.Drawing.Point(221, 131);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(54, 23);
-            this.button13.TabIndex = 20;
-            this.button13.Text = "Browse";
-            this.button13.UseVisualStyleBackColor = true;
+            this.BrowseAVI.Location = new System.Drawing.Point(221, 131);
+            this.BrowseAVI.Name = "BrowseAVI";
+            this.BrowseAVI.Size = new System.Drawing.Size(54, 23);
+            this.BrowseAVI.TabIndex = 20;
+            this.BrowseAVI.Text = "Browse";
+            this.BrowseAVI.UseVisualStyleBackColor = true;
             // 
             // tabControl1
             // 
@@ -525,180 +526,35 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.textBox23);
+            this.tabPage1.Controls.Add(this.NESBaseBox);
             this.tabPage1.Controls.Add(this.label22);
-            this.tabPage1.Controls.Add(this.button24);
-            this.tabPage1.Controls.Add(this.textBox2);
-            this.tabPage1.Controls.Add(this.textBox1);
-            this.tabPage1.Controls.Add(this.button4);
+            this.tabPage1.Controls.Add(this.BrowseNESBase);
+            this.tabPage1.Controls.Add(this.NESROMsBox);
+            this.tabPage1.Controls.Add(this.NESScreenshotsBox);
+            this.tabPage1.Controls.Add(this.BrowseNESSavestates);
             this.tabPage1.Controls.Add(this.label1);
             this.tabPage1.Controls.Add(this.label4);
-            this.tabPage1.Controls.Add(this.button1);
-            this.tabPage1.Controls.Add(this.textBox4);
-            this.tabPage1.Controls.Add(this.button3);
+            this.tabPage1.Controls.Add(this.BrowseNESScreenshots);
+            this.tabPage1.Controls.Add(this.NESSavestatesBox);
+            this.tabPage1.Controls.Add(this.BrowseNESSaveRAM);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.textBox3);
-            this.tabPage1.Controls.Add(this.button2);
+            this.tabPage1.Controls.Add(this.NESSaveRAMBox);
+            this.tabPage1.Controls.Add(this.BrowseNESROMs);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(392, 251);
+            this.tabPage1.Size = new System.Drawing.Size(435, 251);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "NES";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // NESBaseBox
             // 
-            this.tabPage2.Controls.Add(this.textBox24);
-            this.tabPage2.Controls.Add(this.textBox5);
-            this.tabPage2.Controls.Add(this.label23);
-            this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Controls.Add(this.button25);
-            this.tabPage2.Controls.Add(this.button5);
-            this.tabPage2.Controls.Add(this.textBox6);
-            this.tabPage2.Controls.Add(this.button8);
-            this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Controls.Add(this.textBox8);
-            this.tabPage2.Controls.Add(this.button6);
-            this.tabPage2.Controls.Add(this.button7);
-            this.tabPage2.Controls.Add(this.label7);
-            this.tabPage2.Controls.Add(this.textBox7);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(392, 251);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Sega 8bit";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.textBox25);
-            this.tabPage3.Controls.Add(this.textBox26);
-            this.tabPage3.Controls.Add(this.button30);
-            this.tabPage3.Controls.Add(this.button29);
-            this.tabPage3.Controls.Add(this.label24);
-            this.tabPage3.Controls.Add(this.label28);
-            this.tabPage3.Controls.Add(this.textBox28);
-            this.tabPage3.Controls.Add(this.label25);
-            this.tabPage3.Controls.Add(this.textBox29);
-            this.tabPage3.Controls.Add(this.label27);
-            this.tabPage3.Controls.Add(this.button26);
-            this.tabPage3.Controls.Add(this.label26);
-            this.tabPage3.Controls.Add(this.button28);
-            this.tabPage3.Controls.Add(this.button27);
-            this.tabPage3.Controls.Add(this.textBox27);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(392, 251);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Genesis";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.textBox30);
-            this.tabPage4.Controls.Add(this.textBox31);
-            this.tabPage4.Controls.Add(this.label29);
-            this.tabPage4.Controls.Add(this.label30);
-            this.tabPage4.Controls.Add(this.button31);
-            this.tabPage4.Controls.Add(this.button32);
-            this.tabPage4.Controls.Add(this.textBox32);
-            this.tabPage4.Controls.Add(this.button33);
-            this.tabPage4.Controls.Add(this.label31);
-            this.tabPage4.Controls.Add(this.label32);
-            this.tabPage4.Controls.Add(this.textBox33);
-            this.tabPage4.Controls.Add(this.button34);
-            this.tabPage4.Controls.Add(this.button35);
-            this.tabPage4.Controls.Add(this.label33);
-            this.tabPage4.Controls.Add(this.textBox34);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(392, 251);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "PC Engine";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.textBox35);
-            this.tabPage5.Controls.Add(this.textBox36);
-            this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.label35);
-            this.tabPage5.Controls.Add(this.button36);
-            this.tabPage5.Controls.Add(this.button37);
-            this.tabPage5.Controls.Add(this.textBox37);
-            this.tabPage5.Controls.Add(this.button38);
-            this.tabPage5.Controls.Add(this.label36);
-            this.tabPage5.Controls.Add(this.label37);
-            this.tabPage5.Controls.Add(this.textBox38);
-            this.tabPage5.Controls.Add(this.button39);
-            this.tabPage5.Controls.Add(this.button40);
-            this.tabPage5.Controls.Add(this.label38);
-            this.tabPage5.Controls.Add(this.textBox39);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(392, 251);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Gameboy";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // tabPage6
-            // 
-            this.tabPage6.Controls.Add(this.textBox40);
-            this.tabPage6.Controls.Add(this.textBox41);
-            this.tabPage6.Controls.Add(this.label39);
-            this.tabPage6.Controls.Add(this.label40);
-            this.tabPage6.Controls.Add(this.button41);
-            this.tabPage6.Controls.Add(this.button42);
-            this.tabPage6.Controls.Add(this.textBox42);
-            this.tabPage6.Controls.Add(this.button43);
-            this.tabPage6.Controls.Add(this.label41);
-            this.tabPage6.Controls.Add(this.label42);
-            this.tabPage6.Controls.Add(this.textBox43);
-            this.tabPage6.Controls.Add(this.button44);
-            this.tabPage6.Controls.Add(this.button45);
-            this.tabPage6.Controls.Add(this.label43);
-            this.tabPage6.Controls.Add(this.textBox44);
-            this.tabPage6.Location = new System.Drawing.Point(4, 22);
-            this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(392, 251);
-            this.tabPage6.TabIndex = 5;
-            this.tabPage6.Text = "TI83";
-            this.tabPage6.UseVisualStyleBackColor = true;
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add(this.textBox13);
-            this.tabPage7.Controls.Add(this.textBox10);
-            this.tabPage7.Controls.Add(this.label13);
-            this.tabPage7.Controls.Add(this.button12);
-            this.tabPage7.Controls.Add(this.button13);
-            this.tabPage7.Controls.Add(this.label12);
-            this.tabPage7.Controls.Add(this.textBox12);
-            this.tabPage7.Controls.Add(this.textBox9);
-            this.tabPage7.Controls.Add(this.button11);
-            this.tabPage7.Controls.Add(this.label9);
-            this.tabPage7.Controls.Add(this.label11);
-            this.tabPage7.Controls.Add(this.button9);
-            this.tabPage7.Controls.Add(this.textBox11);
-            this.tabPage7.Controls.Add(this.button10);
-            this.tabPage7.Controls.Add(this.label10);
-            this.tabPage7.Location = new System.Drawing.Point(4, 22);
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(435, 251);
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Tools";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // textBox23
-            // 
-            this.textBox23.Location = new System.Drawing.Point(3, 22);
-            this.textBox23.Name = "textBox23";
-            this.textBox23.Size = new System.Drawing.Size(202, 20);
-            this.textBox23.TabIndex = 18;
+            this.NESBaseBox.Location = new System.Drawing.Point(3, 22);
+            this.NESBaseBox.Name = "NESBaseBox";
+            this.NESBaseBox.Size = new System.Drawing.Size(202, 20);
+            this.NESBaseBox.TabIndex = 18;
             // 
             // label22
             // 
@@ -709,22 +565,47 @@
             this.label22.TabIndex = 20;
             this.label22.Text = "NES Base";
             // 
-            // button24
+            // BrowseNESBase
             // 
-            this.button24.Location = new System.Drawing.Point(214, 19);
-            this.button24.Name = "button24";
-            this.button24.Size = new System.Drawing.Size(54, 23);
-            this.button24.TabIndex = 19;
-            this.button24.Text = "Browse";
-            this.button24.UseVisualStyleBackColor = true;
+            this.BrowseNESBase.Location = new System.Drawing.Point(214, 19);
+            this.BrowseNESBase.Name = "BrowseNESBase";
+            this.BrowseNESBase.Size = new System.Drawing.Size(54, 23);
+            this.BrowseNESBase.TabIndex = 19;
+            this.BrowseNESBase.Text = "Browse";
+            this.BrowseNESBase.UseVisualStyleBackColor = true;
             // 
-            // textBox24
+            // tabPage2
             // 
-            this.textBox24.Location = new System.Drawing.Point(6, 22);
-            this.textBox24.Name = "textBox24";
-            this.textBox24.Size = new System.Drawing.Size(202, 20);
-            this.textBox24.TabIndex = 19;
-            this.textBox24.TextChanged += new System.EventHandler(this.textBox24_TextChanged);
+            this.tabPage2.Controls.Add(this.Sega8BaseBox);
+            this.tabPage2.Controls.Add(this.Sega8ScreenshotsBox);
+            this.tabPage2.Controls.Add(this.label23);
+            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.Sega8BrowseBase);
+            this.tabPage2.Controls.Add(this.Sega8BrowseScreenshots);
+            this.tabPage2.Controls.Add(this.Sega8ROMsBox);
+            this.tabPage2.Controls.Add(this.Sega8BrowseSavestates);
+            this.tabPage2.Controls.Add(this.label8);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.Sega8SavestatesBox);
+            this.tabPage2.Controls.Add(this.Sega8BrowseROMs);
+            this.tabPage2.Controls.Add(this.Sega8BrowseSaveRAM);
+            this.tabPage2.Controls.Add(this.label7);
+            this.tabPage2.Controls.Add(this.Sega8SaveRAMBox);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(435, 251);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Sega 8bit";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // Sega8BaseBox
+            // 
+            this.Sega8BaseBox.Location = new System.Drawing.Point(6, 22);
+            this.Sega8BaseBox.Name = "Sega8BaseBox";
+            this.Sega8BaseBox.Size = new System.Drawing.Size(202, 20);
+            this.Sega8BaseBox.TabIndex = 19;
+            this.Sega8BaseBox.TextChanged += new System.EventHandler(this.textBox24_TextChanged);
             // 
             // label23
             // 
@@ -735,28 +616,70 @@
             this.label23.TabIndex = 21;
             this.label23.Text = "Base";
             // 
-            // button25
+            // Sega8BrowseBase
             // 
-            this.button25.Location = new System.Drawing.Point(214, 20);
-            this.button25.Name = "button25";
-            this.button25.Size = new System.Drawing.Size(54, 23);
-            this.button25.TabIndex = 20;
-            this.button25.Text = "Browse";
-            this.button25.UseVisualStyleBackColor = true;
+            this.Sega8BrowseBase.Location = new System.Drawing.Point(214, 20);
+            this.Sega8BrowseBase.Name = "Sega8BrowseBase";
+            this.Sega8BrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.Sega8BrowseBase.TabIndex = 20;
+            this.Sega8BrowseBase.Text = "Browse";
+            this.Sega8BrowseBase.UseVisualStyleBackColor = true;
             // 
-            // textBox25
+            // tabPage3
             // 
-            this.textBox25.Location = new System.Drawing.Point(3, 25);
-            this.textBox25.Name = "textBox25";
-            this.textBox25.Size = new System.Drawing.Size(202, 20);
-            this.textBox25.TabIndex = 34;
+            this.tabPage3.Controls.Add(this.GenesisBaseBox);
+            this.tabPage3.Controls.Add(this.GenesisScreenshotsBox);
+            this.tabPage3.Controls.Add(this.GenesisBrowseSaveRAM);
+            this.tabPage3.Controls.Add(this.GenesisBrowseROMs);
+            this.tabPage3.Controls.Add(this.label24);
+            this.tabPage3.Controls.Add(this.label28);
+            this.tabPage3.Controls.Add(this.GenesisSavestatesBox);
+            this.tabPage3.Controls.Add(this.label25);
+            this.tabPage3.Controls.Add(this.GenesisSaveRAMBox);
+            this.tabPage3.Controls.Add(this.label27);
+            this.tabPage3.Controls.Add(this.GenesisBrowseBase);
+            this.tabPage3.Controls.Add(this.label26);
+            this.tabPage3.Controls.Add(this.GenesisBrowseSavestates);
+            this.tabPage3.Controls.Add(this.GenesisBrowseScreenshots);
+            this.tabPage3.Controls.Add(this.GenesisROMsBox);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(435, 251);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Genesis";
+            this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // textBox26
+            // GenesisBaseBox
             // 
-            this.textBox26.Location = new System.Drawing.Point(3, 145);
-            this.textBox26.Name = "textBox26";
-            this.textBox26.Size = new System.Drawing.Size(202, 20);
-            this.textBox26.TabIndex = 31;
+            this.GenesisBaseBox.Location = new System.Drawing.Point(3, 25);
+            this.GenesisBaseBox.Name = "GenesisBaseBox";
+            this.GenesisBaseBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisBaseBox.TabIndex = 34;
+            // 
+            // GenesisScreenshotsBox
+            // 
+            this.GenesisScreenshotsBox.Location = new System.Drawing.Point(3, 145);
+            this.GenesisScreenshotsBox.Name = "GenesisScreenshotsBox";
+            this.GenesisScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisScreenshotsBox.TabIndex = 31;
+            // 
+            // GenesisBrowseSaveRAM
+            // 
+            this.GenesisBrowseSaveRAM.Location = new System.Drawing.Point(211, 113);
+            this.GenesisBrowseSaveRAM.Name = "GenesisBrowseSaveRAM";
+            this.GenesisBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseSaveRAM.TabIndex = 26;
+            this.GenesisBrowseSaveRAM.Text = "Browse";
+            this.GenesisBrowseSaveRAM.UseVisualStyleBackColor = true;
+            // 
+            // GenesisBrowseROMs
+            // 
+            this.GenesisBrowseROMs.Location = new System.Drawing.Point(211, 60);
+            this.GenesisBrowseROMs.Name = "GenesisBrowseROMs";
+            this.GenesisBrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseROMs.TabIndex = 29;
+            this.GenesisBrowseROMs.Text = "Browse";
+            this.GenesisBrowseROMs.UseVisualStyleBackColor = true;
             // 
             // label24
             // 
@@ -767,6 +690,22 @@
             this.label24.TabIndex = 36;
             this.label24.Text = "Base";
             // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(271, 119);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(59, 13);
+            this.label28.TabIndex = 27;
+            this.label28.Text = "Save RAM";
+            // 
+            // GenesisSavestatesBox
+            // 
+            this.GenesisSavestatesBox.Location = new System.Drawing.Point(3, 88);
+            this.GenesisSavestatesBox.Name = "GenesisSavestatesBox";
+            this.GenesisSavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisSavestatesBox.TabIndex = 22;
+            // 
             // label25
             // 
             this.label25.AutoSize = true;
@@ -776,48 +715,12 @@
             this.label25.TabIndex = 33;
             this.label25.Text = "Screenshots";
             // 
-            // button26
+            // GenesisSaveRAMBox
             // 
-            this.button26.Location = new System.Drawing.Point(211, 23);
-            this.button26.Name = "button26";
-            this.button26.Size = new System.Drawing.Size(54, 23);
-            this.button26.TabIndex = 35;
-            this.button26.Text = "Browse";
-            this.button26.UseVisualStyleBackColor = true;
-            // 
-            // button27
-            // 
-            this.button27.Location = new System.Drawing.Point(211, 143);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(54, 23);
-            this.button27.TabIndex = 32;
-            this.button27.Text = "Browse";
-            this.button27.UseVisualStyleBackColor = true;
-            // 
-            // textBox27
-            // 
-            this.textBox27.Location = new System.Drawing.Point(3, 62);
-            this.textBox27.Name = "textBox27";
-            this.textBox27.Size = new System.Drawing.Size(202, 20);
-            this.textBox27.TabIndex = 28;
-            // 
-            // button28
-            // 
-            this.button28.Location = new System.Drawing.Point(211, 86);
-            this.button28.Name = "button28";
-            this.button28.Size = new System.Drawing.Size(54, 23);
-            this.button28.TabIndex = 23;
-            this.button28.Text = "Browse";
-            this.button28.UseVisualStyleBackColor = true;
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(271, 92);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(60, 13);
-            this.label26.TabIndex = 24;
-            this.label26.Text = "Savestates";
+            this.GenesisSaveRAMBox.Location = new System.Drawing.Point(3, 115);
+            this.GenesisSaveRAMBox.Name = "GenesisSaveRAMBox";
+            this.GenesisSaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisSaveRAMBox.TabIndex = 25;
             // 
             // label27
             // 
@@ -828,60 +731,87 @@
             this.label27.TabIndex = 30;
             this.label27.Text = "ROMs";
             // 
-            // textBox28
+            // GenesisBrowseBase
             // 
-            this.textBox28.Location = new System.Drawing.Point(3, 88);
-            this.textBox28.Name = "textBox28";
-            this.textBox28.Size = new System.Drawing.Size(202, 20);
-            this.textBox28.TabIndex = 22;
+            this.GenesisBrowseBase.Location = new System.Drawing.Point(211, 23);
+            this.GenesisBrowseBase.Name = "GenesisBrowseBase";
+            this.GenesisBrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseBase.TabIndex = 35;
+            this.GenesisBrowseBase.Text = "Browse";
+            this.GenesisBrowseBase.UseVisualStyleBackColor = true;
             // 
-            // button29
+            // label26
             // 
-            this.button29.Location = new System.Drawing.Point(211, 60);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(54, 23);
-            this.button29.TabIndex = 29;
-            this.button29.Text = "Browse";
-            this.button29.UseVisualStyleBackColor = true;
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(271, 92);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(60, 13);
+            this.label26.TabIndex = 24;
+            this.label26.Text = "Savestates";
             // 
-            // button30
+            // GenesisBrowseSavestates
             // 
-            this.button30.Location = new System.Drawing.Point(211, 113);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(54, 23);
-            this.button30.TabIndex = 26;
-            this.button30.Text = "Browse";
-            this.button30.UseVisualStyleBackColor = true;
+            this.GenesisBrowseSavestates.Location = new System.Drawing.Point(211, 86);
+            this.GenesisBrowseSavestates.Name = "GenesisBrowseSavestates";
+            this.GenesisBrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseSavestates.TabIndex = 23;
+            this.GenesisBrowseSavestates.Text = "Browse";
+            this.GenesisBrowseSavestates.UseVisualStyleBackColor = true;
             // 
-            // label28
+            // GenesisBrowseScreenshots
             // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(271, 119);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(59, 13);
-            this.label28.TabIndex = 27;
-            this.label28.Text = "Save RAM";
+            this.GenesisBrowseScreenshots.Location = new System.Drawing.Point(211, 143);
+            this.GenesisBrowseScreenshots.Name = "GenesisBrowseScreenshots";
+            this.GenesisBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.GenesisBrowseScreenshots.TabIndex = 32;
+            this.GenesisBrowseScreenshots.Text = "Browse";
+            this.GenesisBrowseScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox29
+            // GenesisROMsBox
             // 
-            this.textBox29.Location = new System.Drawing.Point(3, 115);
-            this.textBox29.Name = "textBox29";
-            this.textBox29.Size = new System.Drawing.Size(202, 20);
-            this.textBox29.TabIndex = 25;
+            this.GenesisROMsBox.Location = new System.Drawing.Point(3, 62);
+            this.GenesisROMsBox.Name = "GenesisROMsBox";
+            this.GenesisROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.GenesisROMsBox.TabIndex = 28;
             // 
-            // textBox30
+            // tabPage4
             // 
-            this.textBox30.Location = new System.Drawing.Point(13, 25);
-            this.textBox30.Name = "textBox30";
-            this.textBox30.Size = new System.Drawing.Size(202, 20);
-            this.textBox30.TabIndex = 34;
+            this.tabPage4.Controls.Add(this.PCEBaseBox);
+            this.tabPage4.Controls.Add(this.PCEScreenshotsBox);
+            this.tabPage4.Controls.Add(this.label29);
+            this.tabPage4.Controls.Add(this.label30);
+            this.tabPage4.Controls.Add(this.PCEBrowseBase);
+            this.tabPage4.Controls.Add(this.PCEBrowseScreenshots);
+            this.tabPage4.Controls.Add(this.PCEROMsBox);
+            this.tabPage4.Controls.Add(this.PCEBrowseSavestates);
+            this.tabPage4.Controls.Add(this.label31);
+            this.tabPage4.Controls.Add(this.label32);
+            this.tabPage4.Controls.Add(this.PCESavestatesBox);
+            this.tabPage4.Controls.Add(this.PCEBrowseROMs);
+            this.tabPage4.Controls.Add(this.PCEBrowseSaveRAM);
+            this.tabPage4.Controls.Add(this.label33);
+            this.tabPage4.Controls.Add(this.PCESaveRAMBox);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(435, 251);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "PC Engine";
+            this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // textBox31
+            // PCEBaseBox
             // 
-            this.textBox31.Location = new System.Drawing.Point(13, 145);
-            this.textBox31.Name = "textBox31";
-            this.textBox31.Size = new System.Drawing.Size(202, 20);
-            this.textBox31.TabIndex = 31;
+            this.PCEBaseBox.Location = new System.Drawing.Point(13, 25);
+            this.PCEBaseBox.Name = "PCEBaseBox";
+            this.PCEBaseBox.Size = new System.Drawing.Size(202, 20);
+            this.PCEBaseBox.TabIndex = 34;
+            // 
+            // PCEScreenshotsBox
+            // 
+            this.PCEScreenshotsBox.AcceptsReturn = true;
+            this.PCEScreenshotsBox.Location = new System.Drawing.Point(13, 145);
+            this.PCEScreenshotsBox.Name = "PCEScreenshotsBox";
+            this.PCEScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.PCEScreenshotsBox.TabIndex = 31;
             // 
             // label29
             // 
@@ -901,39 +831,40 @@
             this.label30.TabIndex = 33;
             this.label30.Text = "Screenshots";
             // 
-            // button31
+            // PCEBrowseBase
             // 
-            this.button31.Location = new System.Drawing.Point(221, 23);
-            this.button31.Name = "button31";
-            this.button31.Size = new System.Drawing.Size(54, 23);
-            this.button31.TabIndex = 35;
-            this.button31.Text = "Browse";
-            this.button31.UseVisualStyleBackColor = true;
+            this.PCEBrowseBase.Location = new System.Drawing.Point(221, 23);
+            this.PCEBrowseBase.Name = "PCEBrowseBase";
+            this.PCEBrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseBase.TabIndex = 35;
+            this.PCEBrowseBase.Text = "Browse";
+            this.PCEBrowseBase.UseVisualStyleBackColor = true;
             // 
-            // button32
+            // PCEBrowseScreenshots
             // 
-            this.button32.Location = new System.Drawing.Point(221, 143);
-            this.button32.Name = "button32";
-            this.button32.Size = new System.Drawing.Size(54, 23);
-            this.button32.TabIndex = 32;
-            this.button32.Text = "Browse";
-            this.button32.UseVisualStyleBackColor = true;
+            this.PCEBrowseScreenshots.Location = new System.Drawing.Point(221, 143);
+            this.PCEBrowseScreenshots.Name = "PCEBrowseScreenshots";
+            this.PCEBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseScreenshots.TabIndex = 32;
+            this.PCEBrowseScreenshots.Text = "Browse";
+            this.PCEBrowseScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox32
+            // PCEROMsBox
             // 
-            this.textBox32.Location = new System.Drawing.Point(13, 62);
-            this.textBox32.Name = "textBox32";
-            this.textBox32.Size = new System.Drawing.Size(202, 20);
-            this.textBox32.TabIndex = 28;
+            this.PCEROMsBox.AcceptsReturn = true;
+            this.PCEROMsBox.Location = new System.Drawing.Point(13, 62);
+            this.PCEROMsBox.Name = "PCEROMsBox";
+            this.PCEROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.PCEROMsBox.TabIndex = 28;
             // 
-            // button33
+            // PCEBrowseSavestates
             // 
-            this.button33.Location = new System.Drawing.Point(221, 86);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(54, 23);
-            this.button33.TabIndex = 23;
-            this.button33.Text = "Browse";
-            this.button33.UseVisualStyleBackColor = true;
+            this.PCEBrowseSavestates.Location = new System.Drawing.Point(221, 86);
+            this.PCEBrowseSavestates.Name = "PCEBrowseSavestates";
+            this.PCEBrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseSavestates.TabIndex = 23;
+            this.PCEBrowseSavestates.Text = "Browse";
+            this.PCEBrowseSavestates.UseVisualStyleBackColor = true;
             // 
             // label31
             // 
@@ -953,30 +884,31 @@
             this.label32.TabIndex = 30;
             this.label32.Text = "ROMs";
             // 
-            // textBox33
+            // PCESavestatesBox
             // 
-            this.textBox33.Location = new System.Drawing.Point(13, 88);
-            this.textBox33.Name = "textBox33";
-            this.textBox33.Size = new System.Drawing.Size(202, 20);
-            this.textBox33.TabIndex = 22;
+            this.PCESavestatesBox.AcceptsTab = true;
+            this.PCESavestatesBox.Location = new System.Drawing.Point(13, 88);
+            this.PCESavestatesBox.Name = "PCESavestatesBox";
+            this.PCESavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.PCESavestatesBox.TabIndex = 22;
             // 
-            // button34
+            // PCEBrowseROMs
             // 
-            this.button34.Location = new System.Drawing.Point(221, 60);
-            this.button34.Name = "button34";
-            this.button34.Size = new System.Drawing.Size(54, 23);
-            this.button34.TabIndex = 29;
-            this.button34.Text = "Browse";
-            this.button34.UseVisualStyleBackColor = true;
+            this.PCEBrowseROMs.Location = new System.Drawing.Point(221, 60);
+            this.PCEBrowseROMs.Name = "PCEBrowseROMs";
+            this.PCEBrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseROMs.TabIndex = 29;
+            this.PCEBrowseROMs.Text = "Browse";
+            this.PCEBrowseROMs.UseVisualStyleBackColor = true;
             // 
-            // button35
+            // PCEBrowseSaveRAM
             // 
-            this.button35.Location = new System.Drawing.Point(221, 113);
-            this.button35.Name = "button35";
-            this.button35.Size = new System.Drawing.Size(54, 23);
-            this.button35.TabIndex = 26;
-            this.button35.Text = "Browse";
-            this.button35.UseVisualStyleBackColor = true;
+            this.PCEBrowseSaveRAM.Location = new System.Drawing.Point(221, 113);
+            this.PCEBrowseSaveRAM.Name = "PCEBrowseSaveRAM";
+            this.PCEBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.PCEBrowseSaveRAM.TabIndex = 26;
+            this.PCEBrowseSaveRAM.Text = "Browse";
+            this.PCEBrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
             // label33
             // 
@@ -987,26 +919,50 @@
             this.label33.TabIndex = 27;
             this.label33.Text = "Save RAM";
             // 
-            // textBox34
+            // PCESaveRAMBox
             // 
-            this.textBox34.Location = new System.Drawing.Point(13, 115);
-            this.textBox34.Name = "textBox34";
-            this.textBox34.Size = new System.Drawing.Size(202, 20);
-            this.textBox34.TabIndex = 25;
+            this.PCESaveRAMBox.Location = new System.Drawing.Point(13, 115);
+            this.PCESaveRAMBox.Name = "PCESaveRAMBox";
+            this.PCESaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.PCESaveRAMBox.TabIndex = 25;
             // 
-            // textBox35
+            // tabPage5
             // 
-            this.textBox35.Location = new System.Drawing.Point(14, 25);
-            this.textBox35.Name = "textBox35";
-            this.textBox35.Size = new System.Drawing.Size(202, 20);
-            this.textBox35.TabIndex = 34;
+            this.tabPage5.Controls.Add(this.GBBaseBox);
+            this.tabPage5.Controls.Add(this.GBScreenshotsBox);
+            this.tabPage5.Controls.Add(this.label34);
+            this.tabPage5.Controls.Add(this.label35);
+            this.tabPage5.Controls.Add(this.GBBrowseBase);
+            this.tabPage5.Controls.Add(this.GBBrowseScreenshots);
+            this.tabPage5.Controls.Add(this.GBROMsBox);
+            this.tabPage5.Controls.Add(this.GBBrowseSavestates);
+            this.tabPage5.Controls.Add(this.label36);
+            this.tabPage5.Controls.Add(this.label37);
+            this.tabPage5.Controls.Add(this.GBSavestatesBox);
+            this.tabPage5.Controls.Add(this.GBBrowseROMs);
+            this.tabPage5.Controls.Add(this.GBBrowseSaveRAM);
+            this.tabPage5.Controls.Add(this.label38);
+            this.tabPage5.Controls.Add(this.GBSaveRAMBox);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(435, 251);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Gameboy";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // textBox36
+            // GBBaseBox
             // 
-            this.textBox36.Location = new System.Drawing.Point(14, 145);
-            this.textBox36.Name = "textBox36";
-            this.textBox36.Size = new System.Drawing.Size(202, 20);
-            this.textBox36.TabIndex = 31;
+            this.GBBaseBox.Location = new System.Drawing.Point(14, 25);
+            this.GBBaseBox.Name = "GBBaseBox";
+            this.GBBaseBox.Size = new System.Drawing.Size(202, 20);
+            this.GBBaseBox.TabIndex = 34;
+            // 
+            // GBScreenshotsBox
+            // 
+            this.GBScreenshotsBox.Location = new System.Drawing.Point(14, 145);
+            this.GBScreenshotsBox.Name = "GBScreenshotsBox";
+            this.GBScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.GBScreenshotsBox.TabIndex = 31;
             // 
             // label34
             // 
@@ -1026,39 +982,39 @@
             this.label35.TabIndex = 33;
             this.label35.Text = "Screenshots";
             // 
-            // button36
+            // GBBrowseBase
             // 
-            this.button36.Location = new System.Drawing.Point(222, 23);
-            this.button36.Name = "button36";
-            this.button36.Size = new System.Drawing.Size(54, 23);
-            this.button36.TabIndex = 35;
-            this.button36.Text = "Browse";
-            this.button36.UseVisualStyleBackColor = true;
+            this.GBBrowseBase.Location = new System.Drawing.Point(222, 23);
+            this.GBBrowseBase.Name = "GBBrowseBase";
+            this.GBBrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseBase.TabIndex = 35;
+            this.GBBrowseBase.Text = "Browse";
+            this.GBBrowseBase.UseVisualStyleBackColor = true;
             // 
-            // button37
+            // GBBrowseScreenshots
             // 
-            this.button37.Location = new System.Drawing.Point(222, 143);
-            this.button37.Name = "button37";
-            this.button37.Size = new System.Drawing.Size(54, 23);
-            this.button37.TabIndex = 32;
-            this.button37.Text = "Browse";
-            this.button37.UseVisualStyleBackColor = true;
+            this.GBBrowseScreenshots.Location = new System.Drawing.Point(222, 143);
+            this.GBBrowseScreenshots.Name = "GBBrowseScreenshots";
+            this.GBBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseScreenshots.TabIndex = 32;
+            this.GBBrowseScreenshots.Text = "Browse";
+            this.GBBrowseScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox37
+            // GBROMsBox
             // 
-            this.textBox37.Location = new System.Drawing.Point(14, 62);
-            this.textBox37.Name = "textBox37";
-            this.textBox37.Size = new System.Drawing.Size(202, 20);
-            this.textBox37.TabIndex = 28;
+            this.GBROMsBox.Location = new System.Drawing.Point(14, 62);
+            this.GBROMsBox.Name = "GBROMsBox";
+            this.GBROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.GBROMsBox.TabIndex = 28;
             // 
-            // button38
+            // GBBrowseSavestates
             // 
-            this.button38.Location = new System.Drawing.Point(222, 86);
-            this.button38.Name = "button38";
-            this.button38.Size = new System.Drawing.Size(54, 23);
-            this.button38.TabIndex = 23;
-            this.button38.Text = "Browse";
-            this.button38.UseVisualStyleBackColor = true;
+            this.GBBrowseSavestates.Location = new System.Drawing.Point(222, 86);
+            this.GBBrowseSavestates.Name = "GBBrowseSavestates";
+            this.GBBrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseSavestates.TabIndex = 23;
+            this.GBBrowseSavestates.Text = "Browse";
+            this.GBBrowseSavestates.UseVisualStyleBackColor = true;
             // 
             // label36
             // 
@@ -1078,30 +1034,30 @@
             this.label37.TabIndex = 30;
             this.label37.Text = "ROMs";
             // 
-            // textBox38
+            // GBSavestatesBox
             // 
-            this.textBox38.Location = new System.Drawing.Point(14, 88);
-            this.textBox38.Name = "textBox38";
-            this.textBox38.Size = new System.Drawing.Size(202, 20);
-            this.textBox38.TabIndex = 22;
+            this.GBSavestatesBox.Location = new System.Drawing.Point(14, 88);
+            this.GBSavestatesBox.Name = "GBSavestatesBox";
+            this.GBSavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.GBSavestatesBox.TabIndex = 22;
             // 
-            // button39
+            // GBBrowseROMs
             // 
-            this.button39.Location = new System.Drawing.Point(222, 60);
-            this.button39.Name = "button39";
-            this.button39.Size = new System.Drawing.Size(54, 23);
-            this.button39.TabIndex = 29;
-            this.button39.Text = "Browse";
-            this.button39.UseVisualStyleBackColor = true;
+            this.GBBrowseROMs.Location = new System.Drawing.Point(222, 60);
+            this.GBBrowseROMs.Name = "GBBrowseROMs";
+            this.GBBrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseROMs.TabIndex = 29;
+            this.GBBrowseROMs.Text = "Browse";
+            this.GBBrowseROMs.UseVisualStyleBackColor = true;
             // 
-            // button40
+            // GBBrowseSaveRAM
             // 
-            this.button40.Location = new System.Drawing.Point(222, 113);
-            this.button40.Name = "button40";
-            this.button40.Size = new System.Drawing.Size(54, 23);
-            this.button40.TabIndex = 26;
-            this.button40.Text = "Browse";
-            this.button40.UseVisualStyleBackColor = true;
+            this.GBBrowseSaveRAM.Location = new System.Drawing.Point(222, 113);
+            this.GBBrowseSaveRAM.Name = "GBBrowseSaveRAM";
+            this.GBBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.GBBrowseSaveRAM.TabIndex = 26;
+            this.GBBrowseSaveRAM.Text = "Browse";
+            this.GBBrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
             // label38
             // 
@@ -1112,26 +1068,50 @@
             this.label38.TabIndex = 27;
             this.label38.Text = "Save RAM";
             // 
-            // textBox39
+            // GBSaveRAMBox
             // 
-            this.textBox39.Location = new System.Drawing.Point(14, 115);
-            this.textBox39.Name = "textBox39";
-            this.textBox39.Size = new System.Drawing.Size(202, 20);
-            this.textBox39.TabIndex = 25;
+            this.GBSaveRAMBox.Location = new System.Drawing.Point(14, 115);
+            this.GBSaveRAMBox.Name = "GBSaveRAMBox";
+            this.GBSaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.GBSaveRAMBox.TabIndex = 25;
             // 
-            // textBox40
+            // tabPage6
             // 
-            this.textBox40.Location = new System.Drawing.Point(16, 25);
-            this.textBox40.Name = "textBox40";
-            this.textBox40.Size = new System.Drawing.Size(202, 20);
-            this.textBox40.TabIndex = 34;
+            this.tabPage6.Controls.Add(this.TI83BaseBox);
+            this.tabPage6.Controls.Add(this.TI83ScreenshotsBox);
+            this.tabPage6.Controls.Add(this.label39);
+            this.tabPage6.Controls.Add(this.label40);
+            this.tabPage6.Controls.Add(this.TI83BrowseBase);
+            this.tabPage6.Controls.Add(this.TI83BrowseScreenshots);
+            this.tabPage6.Controls.Add(this.TI83ROMsBox);
+            this.tabPage6.Controls.Add(this.TI83BrowseSavestates);
+            this.tabPage6.Controls.Add(this.label41);
+            this.tabPage6.Controls.Add(this.label42);
+            this.tabPage6.Controls.Add(this.TI83SavestatesBox);
+            this.tabPage6.Controls.Add(this.TI83BrowseROMs);
+            this.tabPage6.Controls.Add(this.TI83BrowseSaveRAM);
+            this.tabPage6.Controls.Add(this.label43);
+            this.tabPage6.Controls.Add(this.TI83SaveRAMBox);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size(435, 251);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "TI83";
+            this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // textBox41
+            // TI83BaseBox
             // 
-            this.textBox41.Location = new System.Drawing.Point(16, 145);
-            this.textBox41.Name = "textBox41";
-            this.textBox41.Size = new System.Drawing.Size(202, 20);
-            this.textBox41.TabIndex = 31;
+            this.TI83BaseBox.Location = new System.Drawing.Point(16, 25);
+            this.TI83BaseBox.Name = "TI83BaseBox";
+            this.TI83BaseBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83BaseBox.TabIndex = 34;
+            // 
+            // TI83ScreenshotsBox
+            // 
+            this.TI83ScreenshotsBox.Location = new System.Drawing.Point(16, 145);
+            this.TI83ScreenshotsBox.Name = "TI83ScreenshotsBox";
+            this.TI83ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83ScreenshotsBox.TabIndex = 31;
             // 
             // label39
             // 
@@ -1151,39 +1131,40 @@
             this.label40.TabIndex = 33;
             this.label40.Text = "Screenshots";
             // 
-            // button41
+            // TI83BrowseBase
             // 
-            this.button41.Location = new System.Drawing.Point(224, 23);
-            this.button41.Name = "button41";
-            this.button41.Size = new System.Drawing.Size(54, 23);
-            this.button41.TabIndex = 35;
-            this.button41.Text = "Browse";
-            this.button41.UseVisualStyleBackColor = true;
+            this.TI83BrowseBase.Location = new System.Drawing.Point(224, 23);
+            this.TI83BrowseBase.Name = "TI83BrowseBase";
+            this.TI83BrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseBase.TabIndex = 35;
+            this.TI83BrowseBase.Text = "Browse";
+            this.TI83BrowseBase.UseVisualStyleBackColor = true;
             // 
-            // button42
+            // TI83BrowseScreenshots
             // 
-            this.button42.Location = new System.Drawing.Point(224, 143);
-            this.button42.Name = "button42";
-            this.button42.Size = new System.Drawing.Size(54, 23);
-            this.button42.TabIndex = 32;
-            this.button42.Text = "Browse";
-            this.button42.UseVisualStyleBackColor = true;
+            this.TI83BrowseScreenshots.Location = new System.Drawing.Point(224, 143);
+            this.TI83BrowseScreenshots.Name = "TI83BrowseScreenshots";
+            this.TI83BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseScreenshots.TabIndex = 32;
+            this.TI83BrowseScreenshots.Text = "Browse";
+            this.TI83BrowseScreenshots.UseVisualStyleBackColor = true;
             // 
-            // textBox42
+            // TI83ROMsBox
             // 
-            this.textBox42.Location = new System.Drawing.Point(16, 62);
-            this.textBox42.Name = "textBox42";
-            this.textBox42.Size = new System.Drawing.Size(202, 20);
-            this.textBox42.TabIndex = 28;
+            this.TI83ROMsBox.AcceptsTab = true;
+            this.TI83ROMsBox.Location = new System.Drawing.Point(16, 62);
+            this.TI83ROMsBox.Name = "TI83ROMsBox";
+            this.TI83ROMsBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83ROMsBox.TabIndex = 28;
             // 
-            // button43
+            // TI83BrowseSavestates
             // 
-            this.button43.Location = new System.Drawing.Point(224, 86);
-            this.button43.Name = "button43";
-            this.button43.Size = new System.Drawing.Size(54, 23);
-            this.button43.TabIndex = 23;
-            this.button43.Text = "Browse";
-            this.button43.UseVisualStyleBackColor = true;
+            this.TI83BrowseSavestates.Location = new System.Drawing.Point(224, 86);
+            this.TI83BrowseSavestates.Name = "TI83BrowseSavestates";
+            this.TI83BrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseSavestates.TabIndex = 23;
+            this.TI83BrowseSavestates.Text = "Browse";
+            this.TI83BrowseSavestates.UseVisualStyleBackColor = true;
             // 
             // label41
             // 
@@ -1203,30 +1184,30 @@
             this.label42.TabIndex = 30;
             this.label42.Text = "ROMs";
             // 
-            // textBox43
+            // TI83SavestatesBox
             // 
-            this.textBox43.Location = new System.Drawing.Point(16, 88);
-            this.textBox43.Name = "textBox43";
-            this.textBox43.Size = new System.Drawing.Size(202, 20);
-            this.textBox43.TabIndex = 22;
+            this.TI83SavestatesBox.Location = new System.Drawing.Point(16, 88);
+            this.TI83SavestatesBox.Name = "TI83SavestatesBox";
+            this.TI83SavestatesBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83SavestatesBox.TabIndex = 22;
             // 
-            // button44
+            // TI83BrowseROMs
             // 
-            this.button44.Location = new System.Drawing.Point(224, 60);
-            this.button44.Name = "button44";
-            this.button44.Size = new System.Drawing.Size(54, 23);
-            this.button44.TabIndex = 29;
-            this.button44.Text = "Browse";
-            this.button44.UseVisualStyleBackColor = true;
+            this.TI83BrowseROMs.Location = new System.Drawing.Point(224, 60);
+            this.TI83BrowseROMs.Name = "TI83BrowseROMs";
+            this.TI83BrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseROMs.TabIndex = 29;
+            this.TI83BrowseROMs.Text = "Browse";
+            this.TI83BrowseROMs.UseVisualStyleBackColor = true;
             // 
-            // button45
+            // TI83BrowseSaveRAM
             // 
-            this.button45.Location = new System.Drawing.Point(224, 113);
-            this.button45.Name = "button45";
-            this.button45.Size = new System.Drawing.Size(54, 23);
-            this.button45.TabIndex = 26;
-            this.button45.Text = "Browse";
-            this.button45.UseVisualStyleBackColor = true;
+            this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(224, 113);
+            this.TI83BrowseSaveRAM.Name = "TI83BrowseSaveRAM";
+            this.TI83BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.TI83BrowseSaveRAM.TabIndex = 26;
+            this.TI83BrowseSaveRAM.Text = "Browse";
+            this.TI83BrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
             // label43
             // 
@@ -1237,28 +1218,53 @@
             this.label43.TabIndex = 27;
             this.label43.Text = "Save RAM";
             // 
-            // textBox44
+            // TI83SaveRAMBox
             // 
-            this.textBox44.Location = new System.Drawing.Point(16, 115);
-            this.textBox44.Name = "textBox44";
-            this.textBox44.Size = new System.Drawing.Size(202, 20);
-            this.textBox44.TabIndex = 25;
+            this.TI83SaveRAMBox.AcceptsTab = true;
+            this.TI83SaveRAMBox.Location = new System.Drawing.Point(16, 115);
+            this.TI83SaveRAMBox.Name = "TI83SaveRAMBox";
+            this.TI83SaveRAMBox.Size = new System.Drawing.Size(202, 20);
+            this.TI83SaveRAMBox.TabIndex = 25;
             // 
-            // textBox14
+            // tabPage7
             // 
-            this.textBox14.Location = new System.Drawing.Point(29, 27);
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(202, 20);
-            this.textBox14.TabIndex = 23;
+            this.tabPage7.Controls.Add(this.AVIBox);
+            this.tabPage7.Controls.Add(this.MoviesBox);
+            this.tabPage7.Controls.Add(this.label13);
+            this.tabPage7.Controls.Add(this.BrowseCheats);
+            this.tabPage7.Controls.Add(this.BrowseAVI);
+            this.tabPage7.Controls.Add(this.label12);
+            this.tabPage7.Controls.Add(this.CheatsBox);
+            this.tabPage7.Controls.Add(this.WatchBox);
+            this.tabPage7.Controls.Add(this.BrowseLua);
+            this.tabPage7.Controls.Add(this.label9);
+            this.tabPage7.Controls.Add(this.label11);
+            this.tabPage7.Controls.Add(this.BrowseWatch);
+            this.tabPage7.Controls.Add(this.LuaBox);
+            this.tabPage7.Controls.Add(this.BrowseMovies);
+            this.tabPage7.Controls.Add(this.label10);
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size(435, 251);
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Tools";
+            this.tabPage7.UseVisualStyleBackColor = true;
             // 
-            // button14
+            // BasePathBox
             // 
-            this.button14.Location = new System.Drawing.Point(237, 25);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(54, 23);
-            this.button14.TabIndex = 24;
-            this.button14.Text = "Browse";
-            this.button14.UseVisualStyleBackColor = true;
+            this.BasePathBox.Location = new System.Drawing.Point(29, 27);
+            this.BasePathBox.Name = "BasePathBox";
+            this.BasePathBox.Size = new System.Drawing.Size(202, 20);
+            this.BasePathBox.TabIndex = 23;
+            // 
+            // BrowseBase
+            // 
+            this.BrowseBase.Location = new System.Drawing.Point(237, 25);
+            this.BrowseBase.Name = "BrowseBase";
+            this.BrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.BrowseBase.TabIndex = 24;
+            this.BrowseBase.Text = "Browse";
+            this.BrowseBase.UseVisualStyleBackColor = true;
             // 
             // label14
             // 
@@ -1269,15 +1275,15 @@
             this.label14.TabIndex = 25;
             this.label14.Text = "Base";
             // 
-            // checkBox1
+            // RecentForROMs
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(29, 63);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(184, 17);
-            this.checkBox1.TabIndex = 26;
-            this.checkBox1.Text = "Always use recent path for ROMs";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.RecentForROMs.AutoSize = true;
+            this.RecentForROMs.Location = new System.Drawing.Point(29, 63);
+            this.RecentForROMs.Name = "RecentForROMs";
+            this.RecentForROMs.Size = new System.Drawing.Size(184, 17);
+            this.RecentForROMs.TabIndex = 26;
+            this.RecentForROMs.Text = "Always use recent path for ROMs";
+            this.RecentForROMs.UseVisualStyleBackColor = true;
             // 
             // PathConfig
             // 
@@ -1286,9 +1292,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(467, 425);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.textBox14);
-            this.Controls.Add(this.button14);
+            this.Controls.Add(this.RecentForROMs);
+            this.Controls.Add(this.BasePathBox);
+            this.Controls.Add(this.BrowseBase);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.OK);
@@ -1321,45 +1327,45 @@
 
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Button OK;
-        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox WatchBox;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.Button BrowseWatch;
+        private System.Windows.Forms.TextBox MoviesBox;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.TextBox textBox11;
+        private System.Windows.Forms.Button BrowseMovies;
+        private System.Windows.Forms.TextBox LuaBox;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.TextBox textBox12;
+        private System.Windows.Forms.Button BrowseLua;
+        private System.Windows.Forms.TextBox CheatsBox;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.TextBox textBox13;
+        private System.Windows.Forms.Button BrowseCheats;
+        private System.Windows.Forms.TextBox AVIBox;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Button button13;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button BrowseAVI;
+        private System.Windows.Forms.TextBox NESScreenshotsBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button BrowseNESScreenshots;
+        private System.Windows.Forms.TextBox NESROMsBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button BrowseNESROMs;
+        private System.Windows.Forms.TextBox NESSaveRAMBox;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button BrowseNESSaveRAM;
+        private System.Windows.Forms.TextBox NESSavestatesBox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Button BrowseNESSavestates;
+        private System.Windows.Forms.TextBox Sega8ScreenshotsBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.TextBox textBox6;
+        private System.Windows.Forms.Button Sega8BrowseScreenshots;
+        private System.Windows.Forms.TextBox Sega8ROMsBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.Button Sega8BrowseROMs;
+        private System.Windows.Forms.TextBox Sega8SaveRAMBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.Button Sega8BrowseSaveRAM;
+        private System.Windows.Forms.TextBox Sega8SavestatesBox;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button Sega8BrowseSavestates;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
@@ -1367,76 +1373,76 @@
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TabPage tabPage6;
-        private System.Windows.Forms.TextBox textBox23;
+        private System.Windows.Forms.TextBox NESBaseBox;
         private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.Button button24;
-        private System.Windows.Forms.TextBox textBox24;
+        private System.Windows.Forms.Button BrowseNESBase;
+        private System.Windows.Forms.TextBox Sega8BaseBox;
         private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.Button Sega8BrowseBase;
         private System.Windows.Forms.TabPage tabPage7;
-        private System.Windows.Forms.TextBox textBox25;
-        private System.Windows.Forms.TextBox textBox26;
-        private System.Windows.Forms.Button button30;
-        private System.Windows.Forms.Button button29;
+        private System.Windows.Forms.TextBox GenesisBaseBox;
+        private System.Windows.Forms.TextBox GenesisScreenshotsBox;
+        private System.Windows.Forms.Button GenesisBrowseSaveRAM;
+        private System.Windows.Forms.Button GenesisBrowseROMs;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.TextBox textBox28;
+        private System.Windows.Forms.TextBox GenesisSavestatesBox;
         private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.TextBox textBox29;
+        private System.Windows.Forms.TextBox GenesisSaveRAMBox;
         private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.Button button26;
+        private System.Windows.Forms.Button GenesisBrowseBase;
         private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Button button28;
-        private System.Windows.Forms.Button button27;
-        private System.Windows.Forms.TextBox textBox27;
-        private System.Windows.Forms.TextBox textBox30;
-        private System.Windows.Forms.TextBox textBox31;
+        private System.Windows.Forms.Button GenesisBrowseSavestates;
+        private System.Windows.Forms.Button GenesisBrowseScreenshots;
+        private System.Windows.Forms.TextBox GenesisROMsBox;
+        private System.Windows.Forms.TextBox PCEBaseBox;
+        private System.Windows.Forms.TextBox PCEScreenshotsBox;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.Button button31;
-        private System.Windows.Forms.Button button32;
-        private System.Windows.Forms.TextBox textBox32;
-        private System.Windows.Forms.Button button33;
+        private System.Windows.Forms.Button PCEBrowseBase;
+        private System.Windows.Forms.Button PCEBrowseScreenshots;
+        private System.Windows.Forms.TextBox PCEROMsBox;
+        private System.Windows.Forms.Button PCEBrowseSavestates;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.TextBox textBox33;
-        private System.Windows.Forms.Button button34;
-        private System.Windows.Forms.Button button35;
+        private System.Windows.Forms.TextBox PCESavestatesBox;
+        private System.Windows.Forms.Button PCEBrowseROMs;
+        private System.Windows.Forms.Button PCEBrowseSaveRAM;
         private System.Windows.Forms.Label label33;
-        private System.Windows.Forms.TextBox textBox34;
-        private System.Windows.Forms.TextBox textBox35;
-        private System.Windows.Forms.TextBox textBox36;
+        private System.Windows.Forms.TextBox PCESaveRAMBox;
+        private System.Windows.Forms.TextBox GBBaseBox;
+        private System.Windows.Forms.TextBox GBScreenshotsBox;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.Label label35;
-        private System.Windows.Forms.Button button36;
-        private System.Windows.Forms.Button button37;
-        private System.Windows.Forms.TextBox textBox37;
-        private System.Windows.Forms.Button button38;
+        private System.Windows.Forms.Button GBBrowseBase;
+        private System.Windows.Forms.Button GBBrowseScreenshots;
+        private System.Windows.Forms.TextBox GBROMsBox;
+        private System.Windows.Forms.Button GBBrowseSavestates;
         private System.Windows.Forms.Label label36;
         private System.Windows.Forms.Label label37;
-        private System.Windows.Forms.TextBox textBox38;
-        private System.Windows.Forms.Button button39;
-        private System.Windows.Forms.Button button40;
+        private System.Windows.Forms.TextBox GBSavestatesBox;
+        private System.Windows.Forms.Button GBBrowseROMs;
+        private System.Windows.Forms.Button GBBrowseSaveRAM;
         private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.TextBox textBox39;
-        private System.Windows.Forms.TextBox textBox40;
-        private System.Windows.Forms.TextBox textBox41;
+        private System.Windows.Forms.TextBox GBSaveRAMBox;
+        private System.Windows.Forms.TextBox TI83BaseBox;
+        private System.Windows.Forms.TextBox TI83ScreenshotsBox;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.Button button41;
-        private System.Windows.Forms.Button button42;
-        private System.Windows.Forms.TextBox textBox42;
-        private System.Windows.Forms.Button button43;
+        private System.Windows.Forms.Button TI83BrowseBase;
+        private System.Windows.Forms.Button TI83BrowseScreenshots;
+        private System.Windows.Forms.TextBox TI83ROMsBox;
+        private System.Windows.Forms.Button TI83BrowseSavestates;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.TextBox textBox43;
-        private System.Windows.Forms.Button button44;
-        private System.Windows.Forms.Button button45;
+        private System.Windows.Forms.TextBox TI83SavestatesBox;
+        private System.Windows.Forms.Button TI83BrowseROMs;
+        private System.Windows.Forms.Button TI83BrowseSaveRAM;
         private System.Windows.Forms.Label label43;
-        private System.Windows.Forms.TextBox textBox44;
-        private System.Windows.Forms.TextBox textBox14;
-        private System.Windows.Forms.Button button14;
+        private System.Windows.Forms.TextBox TI83SaveRAMBox;
+        private System.Windows.Forms.TextBox BasePathBox;
+        private System.Windows.Forms.Button BrowseBase;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox RecentForROMs;
     }
 }
