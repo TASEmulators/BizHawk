@@ -16,6 +16,7 @@ namespace BizHawk.MultiClient
         //Make a checkbox to enable/disable the stacking effect of message label
         //Deal with typing into Numerics properly
         //Have some method of binding a display object to top/bottom/left/right instead of an absolute position
+        //Bug: restore defaults doesn't restore the y value of whatever radio is checked
 
         int DispFPSx = Global.Config.DispFPSx;
         int DispFPSy = Global.Config.DispFPSy;
@@ -26,6 +27,8 @@ namespace BizHawk.MultiClient
         int DispInpx = Global.Config.DispInpx;
         int DispInpy = Global.Config.DispInpy;
         int MessageColor = Global.Config.MessagesColor;
+        int AlertColor = Global.Config.AlertMessageColor;
+        int LastInputColor = Global.Config.LastInputColor;
 
         public Brush brush = Brushes.Black;
         int px = 0;
@@ -41,6 +44,8 @@ namespace BizHawk.MultiClient
         {
             SetMaxXY();
             MessageColorDialog.Color = Color.FromArgb(MessageColor);
+            AlertColorDialog.Color = Color.FromArgb(AlertColor);
+            LInputColorDialog.Color = Color.FromArgb(LastInputColor);
             SetColorBox();
             SetPositionInfo();
         }
@@ -65,6 +70,14 @@ namespace BizHawk.MultiClient
             MessageColor = MessageColorDialog.Color.ToArgb();
             ColorPanel.BackColor = MessageColorDialog.Color;
             ColorText.Text =  String.Format("{0:X8}", MessageColor);
+
+            AlertColor = AlertColorDialog.Color.ToArgb();
+            AlertColorPanel.BackColor = AlertColorDialog.Color;
+            AlertColorText.Text = String.Format("{0:X8}", AlertColor);
+
+            LastInputColor = LInputColorDialog.Color.ToArgb();
+            LInputColorPanel.BackColor = LInputColorDialog.Color;
+            LInputText.Text = String.Format("{0:X8}", LastInputColor);
         }
 
         private void SetPositionInfo()
@@ -120,6 +133,8 @@ namespace BizHawk.MultiClient
             Global.Config.DispInpx = DispInpx;
             Global.Config.DispInpy = DispInpy;
             Global.Config.MessagesColor = MessageColor;
+            Global.Config.AlertMessageColor = AlertColor;
+            Global.Config.LastInputColor = LastInputColor;
         }
 
         private void OK_Click(object sender, EventArgs e)
@@ -284,6 +299,8 @@ namespace BizHawk.MultiClient
             Global.Config.DispInpx = 0;
             Global.Config.DispInpy = 24;
             Global.Config.MessagesColor = -1;
+            Global.Config.AlertMessageColor = -65536;
+            Global.Config.LastInputColor = -23296;
 
             DispFPSx = Global.Config.DispFPSx;
             DispFPSy = Global.Config.DispFPSy;
@@ -294,10 +311,14 @@ namespace BizHawk.MultiClient
             DispInpx = Global.Config.DispInpx;
             DispInpy = Global.Config.DispInpy;
             MessageColor = Global.Config.MessagesColor;
+            AlertColor = Global.Config.AlertMessageColor;
+            LastInputColor = Global.Config.LastInputColor;
 
 
             SetMaxXY();
             MessageColorDialog.Color = Color.FromArgb(MessageColor);
+            AlertColorDialog.Color = Color.FromArgb(AlertColor);
+            LInputColorDialog.Color = Color.FromArgb(LastInputColor);
             SetColorBox();
             SetPositionInfo();
         }
@@ -305,6 +326,18 @@ namespace BizHawk.MultiClient
         private void ColorPanel_DoubleClick(object sender, EventArgs e)
         {
             if (MessageColorDialog.ShowDialog() == DialogResult.OK)
+                SetColorBox();
+        }
+
+        private void ChangeAlertColor_Click(object sender, EventArgs e)
+        {
+            if (AlertColorDialog.ShowDialog() == DialogResult.OK)
+                SetColorBox();
+        }
+
+        private void ChangeLInput_Click(object sender, EventArgs e)
+        {
+            if (LInputColorDialog.ShowDialog() == DialogResult.OK)
                 SetColorBox();
         }
     }
