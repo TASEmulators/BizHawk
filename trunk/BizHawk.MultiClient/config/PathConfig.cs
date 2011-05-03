@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
 
 namespace BizHawk.MultiClient
 {
@@ -19,6 +21,7 @@ namespace BizHawk.MultiClient
         //Path text boxes shoudl be anchored L + R and the remaining widgets anchored R
         //Alight everything in each tab the same
 
+        string EXEPath;
 
         public PathConfig()
         {
@@ -27,12 +30,24 @@ namespace BizHawk.MultiClient
 
         private void PathConfig_Load(object sender, EventArgs e)
         {
+            EXEPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            WatchBox.Text = Global.Config.WatchPath;
+        }
 
+        private string ProcessPath(string path)
+        {
+            //if (path == "`recent`")
+            if (path == "%base%")
+                return BasePathBox.Text;
+            if (path == "%exe%")
+                return EXEPath;
+
+            return path;
         }
 
         private void SaveSettings()
         {
-
+            Global.Config.WatchPath = WatchBox.Text;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -84,6 +99,16 @@ namespace BizHawk.MultiClient
                 TI83ROMsBox.Enabled = true;
                 TI83BrowseROMs.Enabled = true;
             }
+        }
+
+        private void BrowseWatch_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog f = new FolderBrowserDialog();
+            f.Description = "Set the directory for Watch (.wch) files";
+            //TODO: find a way to set root folder to base
+            DialogResult result = f.ShowDialog();
+            if (result == DialogResult.OK)
+                WatchBox.Text = f.SelectedPath;
         }
     }
 }

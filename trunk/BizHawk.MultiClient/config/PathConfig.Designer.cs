@@ -219,6 +219,7 @@
             this.BrowseWatch.TabIndex = 15;
             this.BrowseWatch.Text = "Browse";
             this.BrowseWatch.UseVisualStyleBackColor = true;
+            this.BrowseWatch.Click += new System.EventHandler(this.BrowseWatch_Click);
             // 
             // MoviesBox
             // 

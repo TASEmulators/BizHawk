@@ -586,7 +586,7 @@ namespace BizHawk.MultiClient
             var ofd = new OpenFileDialog();
             if (currentWatchFile.Length > 0)
                 ofd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
-            ofd.InitialDirectory = Global.Config.LastRomPath;
+            ofd.InitialDirectory = Global.Config.WatchPath;
             ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             ofd.RestoreDirectory = true;
 
@@ -635,7 +635,7 @@ namespace BizHawk.MultiClient
                 sfd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
             else if (!(Global.Emulator is NullEmulator))
                 sfd.FileName = Global.Game.Name;
-            sfd.InitialDirectory = Global.Config.LastRomPath;
+            sfd.InitialDirectory = Global.Config.WatchPath;
             sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
             sfd.RestoreDirectory = true;
             Global.Sound.StopSound();
