@@ -18,10 +18,20 @@
             TI83Controller[0] = new TI83ControllerTemplate(true);
         }
 
+        // Directories
+        public string LastRomPath = ".";
+        public string BasePath = ".";
+        public string BaseNES = ".\\NES";
+        public string BaseSMS = ".\\SMS";
+        public string BaseGenesis = ".\\Genesis";
+        public string BasePCE = ".\\PCE";
+        public string BaseGameboy = ".\\Gameboy";
+        public string BaseTI83 = ".\\TI83";
+        public string WatchPath = ".";
+        
         // General Client Settings
         public int TargetZoomFactor = 2;
-        public string LastRomPath = ".";
-        public bool AutoLoadMostRecentRom = false;    //TODO: eventually make a class or struct for all the auto-loads, which will include recent roms, movies, etc, as well as autoloading any modeless dialog
+        public bool AutoLoadMostRecentRom = false;
         public RecentFiles RecentRoms = new RecentFiles(8);
         public bool PauseWhenMenuActivated = true;
         public bool SaveWindowPosition = true;
