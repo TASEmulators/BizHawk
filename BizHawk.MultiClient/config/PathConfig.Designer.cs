@@ -197,6 +197,8 @@
             // 
             // WatchBox
             // 
+            this.WatchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.WatchBox.Location = new System.Drawing.Point(13, 89);
             this.WatchBox.Name = "WatchBox";
             this.WatchBox.Size = new System.Drawing.Size(202, 20);
@@ -204,6 +206,7 @@
             // 
             // label9
             // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(280, 93);
             this.label9.Name = "label9";
@@ -213,6 +216,7 @@
             // 
             // BrowseWatch
             // 
+            this.BrowseWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseWatch.Location = new System.Drawing.Point(221, 88);
             this.BrowseWatch.Name = "BrowseWatch";
             this.BrowseWatch.Size = new System.Drawing.Size(54, 23);
@@ -223,6 +227,8 @@
             // 
             // MoviesBox
             // 
+            this.MoviesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.MoviesBox.Location = new System.Drawing.Point(13, 21);
             this.MoviesBox.Name = "MoviesBox";
             this.MoviesBox.Size = new System.Drawing.Size(202, 20);
@@ -230,6 +236,7 @@
             // 
             // label10
             // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(281, 25);
             this.label10.Name = "label10";
@@ -239,6 +246,7 @@
             // 
             // BrowseMovies
             // 
+            this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseMovies.Location = new System.Drawing.Point(221, 20);
             this.BrowseMovies.Name = "BrowseMovies";
             this.BrowseMovies.Size = new System.Drawing.Size(54, 23);
@@ -248,6 +256,8 @@
             // 
             // LuaBox
             // 
+            this.LuaBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.LuaBox.Location = new System.Drawing.Point(13, 59);
             this.LuaBox.Name = "LuaBox";
             this.LuaBox.Size = new System.Drawing.Size(202, 20);
@@ -255,6 +265,7 @@
             // 
             // label11
             // 
+            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(281, 63);
             this.label11.Name = "label11";
@@ -264,6 +275,7 @@
             // 
             // BrowseLua
             // 
+            this.BrowseLua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseLua.Location = new System.Drawing.Point(221, 58);
             this.BrowseLua.Name = "BrowseLua";
             this.BrowseLua.Size = new System.Drawing.Size(54, 23);
@@ -273,6 +285,8 @@
             // 
             // NESScreenshotsBox
             // 
+            this.NESScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.NESScreenshotsBox.Name = "NESScreenshotsBox";
             this.NESScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -280,6 +294,7 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(281, 153);
             this.label1.Name = "label1";
@@ -289,6 +304,7 @@
             // 
             // BrowseNESScreenshots
             // 
+            this.BrowseNESScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseNESScreenshots.Location = new System.Drawing.Point(221, 148);
             this.BrowseNESScreenshots.Name = "BrowseNESScreenshots";
             this.BrowseNESScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -298,6 +314,8 @@
             // 
             // NESROMsBox
             // 
+            this.NESROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESROMsBox.Location = new System.Drawing.Point(13, 59);
             this.NESROMsBox.Name = "NESROMsBox";
             this.NESROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -305,6 +323,7 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(281, 63);
             this.label2.Name = "label2";
@@ -314,6 +333,7 @@
             // 
             // BrowseNESROMs
             // 
+            this.BrowseNESROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseNESROMs.Location = new System.Drawing.Point(221, 58);
             this.BrowseNESROMs.Name = "BrowseNESROMs";
             this.BrowseNESROMs.Size = new System.Drawing.Size(54, 23);
@@ -323,6 +343,8 @@
             // 
             // NESSaveRAMBox
             // 
+            this.NESSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.NESSaveRAMBox.Name = "NESSaveRAMBox";
             this.NESSaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -330,6 +352,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(281, 123);
             this.label3.Name = "label3";
@@ -339,6 +362,7 @@
             // 
             // BrowseNESSaveRAM
             // 
+            this.BrowseNESSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseNESSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.BrowseNESSaveRAM.Name = "BrowseNESSaveRAM";
             this.BrowseNESSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -348,6 +372,8 @@
             // 
             // NESSavestatesBox
             // 
+            this.NESSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.NESSavestatesBox.Name = "NESSavestatesBox";
             this.NESSavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -355,6 +381,7 @@
             // 
             // label4
             // 
+            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(281, 93);
             this.label4.Name = "label4";
@@ -364,6 +391,7 @@
             // 
             // BrowseNESSavestates
             // 
+            this.BrowseNESSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseNESSavestates.Location = new System.Drawing.Point(221, 88);
             this.BrowseNESSavestates.Name = "BrowseNESSavestates";
             this.BrowseNESSavestates.Size = new System.Drawing.Size(54, 23);
@@ -373,6 +401,8 @@
             // 
             // Sega8ScreenshotsBox
             // 
+            this.Sega8ScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.Sega8ScreenshotsBox.Name = "Sega8ScreenshotsBox";
             this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -380,6 +410,7 @@
             // 
             // label5
             // 
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(281, 153);
             this.label5.Name = "label5";
@@ -389,6 +420,7 @@
             // 
             // Sega8BrowseScreenshots
             // 
+            this.Sega8BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.Sega8BrowseScreenshots.Name = "Sega8BrowseScreenshots";
             this.Sega8BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -398,6 +430,8 @@
             // 
             // Sega8ROMsBox
             // 
+            this.Sega8ROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8ROMsBox.Location = new System.Drawing.Point(13, 59);
             this.Sega8ROMsBox.Name = "Sega8ROMsBox";
             this.Sega8ROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -405,6 +439,7 @@
             // 
             // label6
             // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(281, 63);
             this.label6.Name = "label6";
@@ -414,6 +449,7 @@
             // 
             // Sega8BrowseROMs
             // 
+            this.Sega8BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.Sega8BrowseROMs.Name = "Sega8BrowseROMs";
             this.Sega8BrowseROMs.Size = new System.Drawing.Size(54, 23);
@@ -423,6 +459,8 @@
             // 
             // Sega8SaveRAMBox
             // 
+            this.Sega8SaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8SaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.Sega8SaveRAMBox.Name = "Sega8SaveRAMBox";
             this.Sega8SaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -430,6 +468,7 @@
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(281, 123);
             this.label7.Name = "label7";
@@ -439,6 +478,7 @@
             // 
             // Sega8BrowseSaveRAM
             // 
+            this.Sega8BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.Sega8BrowseSaveRAM.Name = "Sega8BrowseSaveRAM";
             this.Sega8BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -448,6 +488,8 @@
             // 
             // Sega8SavestatesBox
             // 
+            this.Sega8SavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8SavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.Sega8SavestatesBox.Name = "Sega8SavestatesBox";
             this.Sega8SavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -455,6 +497,7 @@
             // 
             // label8
             // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(281, 93);
             this.label8.Name = "label8";
@@ -464,6 +507,7 @@
             // 
             // Sega8BrowseSavestates
             // 
+            this.Sega8BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.Sega8BrowseSavestates.Name = "Sega8BrowseSavestates";
             this.Sega8BrowseSavestates.Size = new System.Drawing.Size(54, 23);
@@ -474,6 +518,8 @@
             // AVIBox
             // 
             this.AVIBox.AcceptsReturn = true;
+            this.AVIBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.AVIBox.Location = new System.Drawing.Point(13, 119);
             this.AVIBox.Name = "AVIBox";
             this.AVIBox.Size = new System.Drawing.Size(202, 20);
@@ -481,6 +527,7 @@
             // 
             // label13
             // 
+            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(281, 123);
             this.label13.Name = "label13";
@@ -490,6 +537,7 @@
             // 
             // BrowseAVI
             // 
+            this.BrowseAVI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseAVI.Location = new System.Drawing.Point(221, 118);
             this.BrowseAVI.Name = "BrowseAVI";
             this.BrowseAVI.Size = new System.Drawing.Size(54, 23);
@@ -546,6 +594,7 @@
             // 
             // label12
             // 
+            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(281, 183);
             this.label12.Name = "label12";
@@ -555,6 +604,7 @@
             // 
             // NESBrowseCheats
             // 
+            this.NESBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.NESBrowseCheats.Location = new System.Drawing.Point(221, 178);
             this.NESBrowseCheats.Name = "NESBrowseCheats";
             this.NESBrowseCheats.Size = new System.Drawing.Size(54, 23);
@@ -565,6 +615,8 @@
             // NESCheatsBox
             // 
             this.NESCheatsBox.AcceptsTab = true;
+            this.NESCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESCheatsBox.Location = new System.Drawing.Point(13, 179);
             this.NESCheatsBox.Name = "NESCheatsBox";
             this.NESCheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -572,6 +624,8 @@
             // 
             // NESBaseBox
             // 
+            this.NESBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.NESBaseBox.Location = new System.Drawing.Point(13, 21);
             this.NESBaseBox.Name = "NESBaseBox";
             this.NESBaseBox.Size = new System.Drawing.Size(202, 20);
@@ -579,6 +633,7 @@
             // 
             // label22
             // 
+            this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label22.AutoSize = true;
             this.label22.Location = new System.Drawing.Point(281, 25);
             this.label22.Name = "label22";
@@ -588,6 +643,7 @@
             // 
             // BrowseNESBase
             // 
+            this.BrowseNESBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseNESBase.Location = new System.Drawing.Point(221, 20);
             this.BrowseNESBase.Name = "BrowseNESBase";
             this.BrowseNESBase.Size = new System.Drawing.Size(54, 23);
@@ -625,6 +681,7 @@
             // 
             // label15
             // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(281, 183);
             this.label15.Name = "label15";
@@ -634,6 +691,7 @@
             // 
             // Sega8BrowseCheats
             // 
+            this.Sega8BrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseCheats.Location = new System.Drawing.Point(221, 178);
             this.Sega8BrowseCheats.Name = "Sega8BrowseCheats";
             this.Sega8BrowseCheats.Size = new System.Drawing.Size(54, 23);
@@ -643,6 +701,8 @@
             // 
             // Sega8CheatsBox
             // 
+            this.Sega8CheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8CheatsBox.Location = new System.Drawing.Point(13, 179);
             this.Sega8CheatsBox.Name = "Sega8CheatsBox";
             this.Sega8CheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -650,6 +710,8 @@
             // 
             // Sega8BaseBox
             // 
+            this.Sega8BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BaseBox.Location = new System.Drawing.Point(13, 21);
             this.Sega8BaseBox.Name = "Sega8BaseBox";
             this.Sega8BaseBox.Size = new System.Drawing.Size(202, 20);
@@ -657,6 +719,7 @@
             // 
             // label23
             // 
+            this.label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label23.AutoSize = true;
             this.label23.Location = new System.Drawing.Point(281, 25);
             this.label23.Name = "label23";
@@ -666,6 +729,7 @@
             // 
             // Sega8BrowseBase
             // 
+            this.Sega8BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Sega8BrowseBase.Location = new System.Drawing.Point(221, 20);
             this.Sega8BrowseBase.Name = "Sega8BrowseBase";
             this.Sega8BrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -702,6 +766,7 @@
             // 
             // label16
             // 
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label16.AutoSize = true;
             this.label16.Location = new System.Drawing.Point(281, 183);
             this.label16.Name = "label16";
@@ -711,6 +776,7 @@
             // 
             // GenesisBrowseCheats
             // 
+            this.GenesisBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseCheats.Location = new System.Drawing.Point(221, 178);
             this.GenesisBrowseCheats.Name = "GenesisBrowseCheats";
             this.GenesisBrowseCheats.Size = new System.Drawing.Size(54, 23);
@@ -720,6 +786,8 @@
             // 
             // GenesisCheatsBox
             // 
+            this.GenesisCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisCheatsBox.Location = new System.Drawing.Point(13, 179);
             this.GenesisCheatsBox.Name = "GenesisCheatsBox";
             this.GenesisCheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -727,6 +795,8 @@
             // 
             // GenesisBaseBox
             // 
+            this.GenesisBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBaseBox.Location = new System.Drawing.Point(13, 21);
             this.GenesisBaseBox.Name = "GenesisBaseBox";
             this.GenesisBaseBox.Size = new System.Drawing.Size(202, 20);
@@ -734,6 +804,8 @@
             // 
             // GenesisScreenshotsBox
             // 
+            this.GenesisScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.GenesisScreenshotsBox.Name = "GenesisScreenshotsBox";
             this.GenesisScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -741,6 +813,7 @@
             // 
             // GenesisBrowseSaveRAM
             // 
+            this.GenesisBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.GenesisBrowseSaveRAM.Name = "GenesisBrowseSaveRAM";
             this.GenesisBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -750,6 +823,7 @@
             // 
             // GenesisBrowseROMs
             // 
+            this.GenesisBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.GenesisBrowseROMs.Name = "GenesisBrowseROMs";
             this.GenesisBrowseROMs.Size = new System.Drawing.Size(54, 23);
@@ -759,6 +833,7 @@
             // 
             // label24
             // 
+            this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label24.AutoSize = true;
             this.label24.Location = new System.Drawing.Point(281, 25);
             this.label24.Name = "label24";
@@ -768,6 +843,7 @@
             // 
             // label28
             // 
+            this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label28.AutoSize = true;
             this.label28.Location = new System.Drawing.Point(281, 123);
             this.label28.Name = "label28";
@@ -777,6 +853,8 @@
             // 
             // GenesisSavestatesBox
             // 
+            this.GenesisSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.GenesisSavestatesBox.Name = "GenesisSavestatesBox";
             this.GenesisSavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -784,6 +862,7 @@
             // 
             // label25
             // 
+            this.label25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label25.AutoSize = true;
             this.label25.Location = new System.Drawing.Point(281, 153);
             this.label25.Name = "label25";
@@ -793,6 +872,8 @@
             // 
             // GenesisSaveRAMBox
             // 
+            this.GenesisSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.GenesisSaveRAMBox.Name = "GenesisSaveRAMBox";
             this.GenesisSaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -800,6 +881,7 @@
             // 
             // label27
             // 
+            this.label27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label27.AutoSize = true;
             this.label27.Location = new System.Drawing.Point(281, 63);
             this.label27.Name = "label27";
@@ -809,6 +891,7 @@
             // 
             // GenesisBrowseBase
             // 
+            this.GenesisBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.GenesisBrowseBase.Name = "GenesisBrowseBase";
             this.GenesisBrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -818,6 +901,7 @@
             // 
             // label26
             // 
+            this.label26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label26.AutoSize = true;
             this.label26.Location = new System.Drawing.Point(281, 93);
             this.label26.Name = "label26";
@@ -827,6 +911,7 @@
             // 
             // GenesisBrowseSavestates
             // 
+            this.GenesisBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.GenesisBrowseSavestates.Name = "GenesisBrowseSavestates";
             this.GenesisBrowseSavestates.Size = new System.Drawing.Size(54, 23);
@@ -836,6 +921,7 @@
             // 
             // GenesisBrowseScreenshots
             // 
+            this.GenesisBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.GenesisBrowseScreenshots.Name = "GenesisBrowseScreenshots";
             this.GenesisBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -845,6 +931,8 @@
             // 
             // GenesisROMsBox
             // 
+            this.GenesisROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GenesisROMsBox.Location = new System.Drawing.Point(13, 59);
             this.GenesisROMsBox.Name = "GenesisROMsBox";
             this.GenesisROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -879,6 +967,7 @@
             // 
             // label17
             // 
+            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(281, 183);
             this.label17.Name = "label17";
@@ -888,6 +977,7 @@
             // 
             // PCEBrowseCheats
             // 
+            this.PCEBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseCheats.Location = new System.Drawing.Point(221, 178);
             this.PCEBrowseCheats.Name = "PCEBrowseCheats";
             this.PCEBrowseCheats.Size = new System.Drawing.Size(54, 23);
@@ -897,6 +987,8 @@
             // 
             // PCECheatsBox
             // 
+            this.PCECheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCECheatsBox.Location = new System.Drawing.Point(13, 179);
             this.PCECheatsBox.Name = "PCECheatsBox";
             this.PCECheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -904,6 +996,8 @@
             // 
             // PCEBaseBox
             // 
+            this.PCEBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBaseBox.Location = new System.Drawing.Point(13, 21);
             this.PCEBaseBox.Name = "PCEBaseBox";
             this.PCEBaseBox.Size = new System.Drawing.Size(202, 20);
@@ -912,6 +1006,8 @@
             // PCEScreenshotsBox
             // 
             this.PCEScreenshotsBox.AcceptsReturn = true;
+            this.PCEScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.PCEScreenshotsBox.Name = "PCEScreenshotsBox";
             this.PCEScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -919,6 +1015,7 @@
             // 
             // label29
             // 
+            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label29.AutoSize = true;
             this.label29.Location = new System.Drawing.Point(281, 25);
             this.label29.Name = "label29";
@@ -928,6 +1025,7 @@
             // 
             // label30
             // 
+            this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label30.AutoSize = true;
             this.label30.Location = new System.Drawing.Point(281, 153);
             this.label30.Name = "label30";
@@ -937,6 +1035,7 @@
             // 
             // PCEBrowseBase
             // 
+            this.PCEBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.PCEBrowseBase.Name = "PCEBrowseBase";
             this.PCEBrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -946,6 +1045,7 @@
             // 
             // PCEBrowseScreenshots
             // 
+            this.PCEBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.PCEBrowseScreenshots.Name = "PCEBrowseScreenshots";
             this.PCEBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -956,6 +1056,8 @@
             // PCEROMsBox
             // 
             this.PCEROMsBox.AcceptsReturn = true;
+            this.PCEROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEROMsBox.Location = new System.Drawing.Point(13, 59);
             this.PCEROMsBox.Name = "PCEROMsBox";
             this.PCEROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -963,6 +1065,7 @@
             // 
             // PCEBrowseSavestates
             // 
+            this.PCEBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.PCEBrowseSavestates.Name = "PCEBrowseSavestates";
             this.PCEBrowseSavestates.Size = new System.Drawing.Size(54, 23);
@@ -972,6 +1075,7 @@
             // 
             // label31
             // 
+            this.label31.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label31.AutoSize = true;
             this.label31.Location = new System.Drawing.Point(281, 93);
             this.label31.Name = "label31";
@@ -981,6 +1085,7 @@
             // 
             // label32
             // 
+            this.label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label32.AutoSize = true;
             this.label32.Location = new System.Drawing.Point(281, 63);
             this.label32.Name = "label32";
@@ -991,6 +1096,8 @@
             // PCESavestatesBox
             // 
             this.PCESavestatesBox.AcceptsTab = true;
+            this.PCESavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCESavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.PCESavestatesBox.Name = "PCESavestatesBox";
             this.PCESavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -998,6 +1105,7 @@
             // 
             // PCEBrowseROMs
             // 
+            this.PCEBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.PCEBrowseROMs.Name = "PCEBrowseROMs";
             this.PCEBrowseROMs.Size = new System.Drawing.Size(54, 23);
@@ -1007,6 +1115,7 @@
             // 
             // PCEBrowseSaveRAM
             // 
+            this.PCEBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PCEBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.PCEBrowseSaveRAM.Name = "PCEBrowseSaveRAM";
             this.PCEBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -1016,6 +1125,7 @@
             // 
             // label33
             // 
+            this.label33.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label33.AutoSize = true;
             this.label33.Location = new System.Drawing.Point(281, 123);
             this.label33.Name = "label33";
@@ -1025,6 +1135,8 @@
             // 
             // PCESaveRAMBox
             // 
+            this.PCESaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.PCESaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.PCESaveRAMBox.Name = "PCESaveRAMBox";
             this.PCESaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -1059,6 +1171,7 @@
             // 
             // label18
             // 
+            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(281, 183);
             this.label18.Name = "label18";
@@ -1068,6 +1181,7 @@
             // 
             // GBBrowseCheats
             // 
+            this.GBBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseCheats.Location = new System.Drawing.Point(221, 178);
             this.GBBrowseCheats.Name = "GBBrowseCheats";
             this.GBBrowseCheats.Size = new System.Drawing.Size(54, 23);
@@ -1077,6 +1191,8 @@
             // 
             // GBCheatsBox
             // 
+            this.GBCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBCheatsBox.Location = new System.Drawing.Point(13, 179);
             this.GBCheatsBox.Name = "GBCheatsBox";
             this.GBCheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -1084,6 +1200,8 @@
             // 
             // GBBaseBox
             // 
+            this.GBBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBaseBox.Location = new System.Drawing.Point(13, 21);
             this.GBBaseBox.Name = "GBBaseBox";
             this.GBBaseBox.Size = new System.Drawing.Size(202, 20);
@@ -1091,6 +1209,8 @@
             // 
             // GBScreenshotsBox
             // 
+            this.GBScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.GBScreenshotsBox.Name = "GBScreenshotsBox";
             this.GBScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -1098,6 +1218,7 @@
             // 
             // label34
             // 
+            this.label34.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label34.AutoSize = true;
             this.label34.Location = new System.Drawing.Point(281, 25);
             this.label34.Name = "label34";
@@ -1107,6 +1228,7 @@
             // 
             // label35
             // 
+            this.label35.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label35.AutoSize = true;
             this.label35.Location = new System.Drawing.Point(281, 153);
             this.label35.Name = "label35";
@@ -1116,6 +1238,7 @@
             // 
             // GBBrowseBase
             // 
+            this.GBBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseBase.Location = new System.Drawing.Point(221, 20);
             this.GBBrowseBase.Name = "GBBrowseBase";
             this.GBBrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -1125,6 +1248,7 @@
             // 
             // GBBrowseScreenshots
             // 
+            this.GBBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.GBBrowseScreenshots.Name = "GBBrowseScreenshots";
             this.GBBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -1134,6 +1258,8 @@
             // 
             // GBROMsBox
             // 
+            this.GBROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBROMsBox.Location = new System.Drawing.Point(13, 59);
             this.GBROMsBox.Name = "GBROMsBox";
             this.GBROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -1141,6 +1267,7 @@
             // 
             // GBBrowseSavestates
             // 
+            this.GBBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.GBBrowseSavestates.Name = "GBBrowseSavestates";
             this.GBBrowseSavestates.Size = new System.Drawing.Size(54, 23);
@@ -1150,6 +1277,7 @@
             // 
             // label36
             // 
+            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label36.AutoSize = true;
             this.label36.Location = new System.Drawing.Point(281, 93);
             this.label36.Name = "label36";
@@ -1159,6 +1287,7 @@
             // 
             // label37
             // 
+            this.label37.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label37.AutoSize = true;
             this.label37.Location = new System.Drawing.Point(281, 63);
             this.label37.Name = "label37";
@@ -1168,6 +1297,8 @@
             // 
             // GBSavestatesBox
             // 
+            this.GBSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBSavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.GBSavestatesBox.Name = "GBSavestatesBox";
             this.GBSavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -1175,6 +1306,7 @@
             // 
             // GBBrowseROMs
             // 
+            this.GBBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.GBBrowseROMs.Name = "GBBrowseROMs";
             this.GBBrowseROMs.Size = new System.Drawing.Size(54, 23);
@@ -1184,6 +1316,7 @@
             // 
             // GBBrowseSaveRAM
             // 
+            this.GBBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.GBBrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.GBBrowseSaveRAM.Name = "GBBrowseSaveRAM";
             this.GBBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -1193,6 +1326,7 @@
             // 
             // label38
             // 
+            this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label38.AutoSize = true;
             this.label38.Location = new System.Drawing.Point(281, 123);
             this.label38.Name = "label38";
@@ -1202,6 +1336,8 @@
             // 
             // GBSaveRAMBox
             // 
+            this.GBSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.GBSaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.GBSaveRAMBox.Name = "GBSaveRAMBox";
             this.GBSaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -1236,6 +1372,7 @@
             // 
             // label19
             // 
+            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(281, 183);
             this.label19.Name = "label19";
@@ -1245,6 +1382,7 @@
             // 
             // TI83BrowseBox
             // 
+            this.TI83BrowseBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseBox.Location = new System.Drawing.Point(221, 178);
             this.TI83BrowseBox.Name = "TI83BrowseBox";
             this.TI83BrowseBox.Size = new System.Drawing.Size(54, 23);
@@ -1254,6 +1392,8 @@
             // 
             // TI83CheatsBox
             // 
+            this.TI83CheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83CheatsBox.Location = new System.Drawing.Point(13, 179);
             this.TI83CheatsBox.Name = "TI83CheatsBox";
             this.TI83CheatsBox.Size = new System.Drawing.Size(202, 20);
@@ -1261,6 +1401,8 @@
             // 
             // TI83BaseBox
             // 
+            this.TI83BaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BaseBox.Location = new System.Drawing.Point(13, 21);
             this.TI83BaseBox.Name = "TI83BaseBox";
             this.TI83BaseBox.Size = new System.Drawing.Size(202, 20);
@@ -1268,6 +1410,8 @@
             // 
             // TI83ScreenshotsBox
             // 
+            this.TI83ScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.TI83ScreenshotsBox.Name = "TI83ScreenshotsBox";
             this.TI83ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
@@ -1275,6 +1419,7 @@
             // 
             // label39
             // 
+            this.label39.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label39.AutoSize = true;
             this.label39.Location = new System.Drawing.Point(281, 25);
             this.label39.Name = "label39";
@@ -1284,6 +1429,7 @@
             // 
             // label40
             // 
+            this.label40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label40.AutoSize = true;
             this.label40.Location = new System.Drawing.Point(281, 153);
             this.label40.Name = "label40";
@@ -1293,6 +1439,7 @@
             // 
             // TI83BrowseBase
             // 
+            this.TI83BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseBase.Location = new System.Drawing.Point(221, 20);
             this.TI83BrowseBase.Name = "TI83BrowseBase";
             this.TI83BrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -1302,6 +1449,7 @@
             // 
             // TI83BrowseScreenshots
             // 
+            this.TI83BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseScreenshots.Location = new System.Drawing.Point(221, 148);
             this.TI83BrowseScreenshots.Name = "TI83BrowseScreenshots";
             this.TI83BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
@@ -1312,6 +1460,8 @@
             // TI83ROMsBox
             // 
             this.TI83ROMsBox.AcceptsTab = true;
+            this.TI83ROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ROMsBox.Location = new System.Drawing.Point(13, 59);
             this.TI83ROMsBox.Name = "TI83ROMsBox";
             this.TI83ROMsBox.Size = new System.Drawing.Size(202, 20);
@@ -1319,6 +1469,7 @@
             // 
             // TI83BrowseSavestates
             // 
+            this.TI83BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseSavestates.Location = new System.Drawing.Point(221, 88);
             this.TI83BrowseSavestates.Name = "TI83BrowseSavestates";
             this.TI83BrowseSavestates.Size = new System.Drawing.Size(54, 23);
@@ -1328,6 +1479,7 @@
             // 
             // label41
             // 
+            this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label41.AutoSize = true;
             this.label41.Location = new System.Drawing.Point(281, 93);
             this.label41.Name = "label41";
@@ -1337,6 +1489,7 @@
             // 
             // label42
             // 
+            this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label42.AutoSize = true;
             this.label42.Location = new System.Drawing.Point(281, 63);
             this.label42.Name = "label42";
@@ -1346,6 +1499,8 @@
             // 
             // TI83SavestatesBox
             // 
+            this.TI83SavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.TI83SavestatesBox.Name = "TI83SavestatesBox";
             this.TI83SavestatesBox.Size = new System.Drawing.Size(202, 20);
@@ -1353,6 +1508,7 @@
             // 
             // TI83BrowseROMs
             // 
+            this.TI83BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseROMs.Location = new System.Drawing.Point(221, 58);
             this.TI83BrowseROMs.Name = "TI83BrowseROMs";
             this.TI83BrowseROMs.Size = new System.Drawing.Size(54, 23);
@@ -1362,6 +1518,7 @@
             // 
             // TI83BrowseSaveRAM
             // 
+            this.TI83BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(221, 118);
             this.TI83BrowseSaveRAM.Name = "TI83BrowseSaveRAM";
             this.TI83BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
@@ -1371,6 +1528,7 @@
             // 
             // label43
             // 
+            this.label43.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label43.AutoSize = true;
             this.label43.Location = new System.Drawing.Point(281, 123);
             this.label43.Name = "label43";
@@ -1381,6 +1539,8 @@
             // TI83SaveRAMBox
             // 
             this.TI83SaveRAMBox.AcceptsTab = true;
+            this.TI83SaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.TI83SaveRAMBox.Name = "TI83SaveRAMBox";
             this.TI83SaveRAMBox.Size = new System.Drawing.Size(202, 20);
@@ -1409,6 +1569,8 @@
             // 
             // BasePathBox
             // 
+            this.BasePathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.BasePathBox.Location = new System.Drawing.Point(29, 27);
             this.BasePathBox.Name = "BasePathBox";
             this.BasePathBox.Size = new System.Drawing.Size(202, 20);
@@ -1416,6 +1578,7 @@
             // 
             // BrowseBase
             // 
+            this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BrowseBase.Location = new System.Drawing.Point(237, 25);
             this.BrowseBase.Name = "BrowseBase";
             this.BrowseBase.Size = new System.Drawing.Size(54, 23);
@@ -1425,6 +1588,7 @@
             // 
             // label14
             // 
+            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(297, 31);
             this.label14.Name = "label14";
