@@ -14,14 +14,16 @@ namespace BizHawk.MultiClient
     public partial class PathConfig : Form
     {
         //TODO:
-        // `exe` shoudl be valid notation to mean path that the .exe is in ex: `exe`/NES
+        // `exe` should be valid notation to mean path that the .exe is in ex: `exe`/NES
         // ./  and ../ are always always relative to base path
+        // ./ and ../ in the base path are always relative to EXE path
         // `recent` notation for most recently used path
         //If "always use recent path for roms" is checked then base path of each platorm should be disabled
         //Path text boxes shoudl be anchored L + R and the remaining widgets anchored R
-        //Alight everything in each tab the same
+        //Find a way for base to always be absolute
 
-        string EXEPath;
+        string EXEPath; //TODO: public variable in main, populated at run time
+        string BasePath; //TODO: needs to be in config of course, but populated with EXEPath (absolute) if ".", . and .. in the context of this box are relative to EXE
 
         public PathConfig()
         {
@@ -34,13 +36,19 @@ namespace BizHawk.MultiClient
             WatchBox.Text = Global.Config.WatchPath;
         }
 
-        private string ProcessPath(string path)
+        private string MakeAbsolutePath(string path)
         {
-            //if (path == "`recent`")
+            //This function translates relative path and special identifiers in absolute paths
+            
+            if (path == "recent")
+                return Global.Config.LastRomPath; //TODO: Don't use this, shoudl be an Environment one instead?
             if (path == "%base%")
-                return BasePathBox.Text;
+                return MakeAbsolutePath(BasePathBox.Text);
             if (path == "%exe%")
-                return EXEPath;
+                return MakeAbsolutePath(EXEPath);
+
+            if (path == ".")
+                return BasePathBox.Text;
 
             return path;
         }
@@ -105,6 +113,7 @@ namespace BizHawk.MultiClient
         {
             FolderBrowserDialog f = new FolderBrowserDialog();
             f.Description = "Set the directory for Watch (.wch) files";
+            f.SelectedPath = "C:\\Repos";
             //TODO: find a way to set root folder to base
             DialogResult result = f.ShowDialog();
             if (result == DialogResult.OK)
