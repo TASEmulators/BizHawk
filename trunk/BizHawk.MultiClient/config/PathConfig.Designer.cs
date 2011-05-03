@@ -176,7 +176,7 @@
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(380, 390);
+            this.Cancel.Location = new System.Drawing.Point(381, 390);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 0;
@@ -187,7 +187,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(299, 390);
+            this.OK.Location = new System.Drawing.Point(300, 390);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -547,9 +547,8 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
@@ -1573,13 +1572,13 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.BasePathBox.Location = new System.Drawing.Point(29, 27);
             this.BasePathBox.Name = "BasePathBox";
-            this.BasePathBox.Size = new System.Drawing.Size(202, 20);
+            this.BasePathBox.Size = new System.Drawing.Size(203, 20);
             this.BasePathBox.TabIndex = 23;
             // 
             // BrowseBase
             // 
             this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseBase.Location = new System.Drawing.Point(237, 25);
+            this.BrowseBase.Location = new System.Drawing.Point(238, 25);
             this.BrowseBase.Name = "BrowseBase";
             this.BrowseBase.Size = new System.Drawing.Size(54, 23);
             this.BrowseBase.TabIndex = 24;
@@ -1590,7 +1589,7 @@
             // 
             this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(297, 31);
+            this.label14.Location = new System.Drawing.Point(298, 31);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(31, 13);
             this.label14.TabIndex = 25;
@@ -1613,7 +1612,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(467, 425);
+            this.ClientSize = new System.Drawing.Size(468, 425);
             this.Controls.Add(this.RecentForROMs);
             this.Controls.Add(this.BasePathBox);
             this.Controls.Add(this.BrowseBase);
