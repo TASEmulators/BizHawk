@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
         //Find a way for base to always be absolute
         //Make all base path text boxes not allow  %recent%
         //All path text boxes should do some kind of error checking
+        //Paths should default to their platform specific base before the main base! This will have to be done by specifically calling methods for each platform type
 
         public PathConfig()
         {
@@ -31,7 +32,54 @@ namespace BizHawk.MultiClient
 
         private void PathConfig_Load(object sender, EventArgs e)
         {
+            BasePathBox.Text = Global.Config.BasePath;
+            
+            NESBaseBox.Text = Global.Config.BaseNES;
+            NESROMsBox.Text = Global.Config.PathNESROMs;
+            NESSavestatesBox.Text = Global.Config.PathNESSavestates;
+            NESSaveRAMBox.Text = Global.Config.PathNESSaveRAM;
+            NESScreenshotsBox.Text = Global.Config.PathNESScreenshots;
+            NESCheatsBox.Text = Global.Config.PathNESCheats;
+            
+            Sega8BaseBox.Text = Global.Config.BaseSMS;
+            Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
+            Sega8SavestatesBox.Text = Global.Config.PathSMSSavestates;
+            Sega8SaveRAM.Text = Global.Config.PathSMSSaveRAM;
+            Sega8ScreenshotsBox.Text = Global.Config.PathSMSScreenshots;
+            Sega8CheatsBox.Text = Global.Config.PathSMSCheats;
+
+            PCEBaseBox.Text = Global.Config.BasePCE;
+            PCEROMsBox.Text = Global.Config.PathPCEROMs;
+            PCESavestatesBox.Text = Global.Config.PathPCESavestates;
+            PCESaveRAMBox.Text = Global.Config.PathPCESaveRAM;
+            PCEScreenshotsBox.Text = Global.Config.PathPCEScreenshots;
+            PCECheatsBox.Text = Global.Config.PathPCECheats;
+
+            GenesisBaseBox.Text = Global.Config.BaseGenesis;
+            GenesisROMsBox.Text = Global.Config.PathGenesisROMs;
+            GenesisSavestatesBox.Text = Global.Config.PathGenesisScreenshots;
+            GenesisSaveRAMBox.Text = Global.Config.PathGenesisSaveRAM;
+            GenesisScreenshotsBox.Text = Global.Config.PathGenesisScreenshots;
+            GenesisCheatsBox.Text = Global.Config.PathGenesisCheats;
+
+            GBBaseBox.Text = Global.Config.BaseGameboy;
+            GBROMsBox.Text = Global.Config.PathGBROMs;
+            GBSavestatesBox.Text = Global.Config.PathGBSavestates;
+            GBSaveRAMBox.Text = Global.Config.PathGBSaveRAM;
+            GBScreenshotsBox.Text = Global.Config.PathGBScreenshots;
+            GBCheatsBox.Text = Global.Config.PathGBCheats;
+
+            TI83BaseBox.Text = Global.Config.BaseTI83;
+            TI83ROMsBox.Text = Global.Config.PathTI83ROMs;
+            TI83SavestatesBox.Text = Global.Config.PathTI83Savestates;
+            TI83SaveRAMBox.Text = Global.Config.PathTI83SaveRAM;
+            TI83ScreenshotsBox.Text = Global.Config.PathTI83Screenshots;
+            TI83CheatsBox.Text = Global.Config.PathTI83Cheats;
+
+            MoviesBox.Text = Global.Config.MoviesPath;
+            LuaBox.Text = Global.Config.LuaPath;
             WatchBox.Text = Global.Config.WatchPath;
+            AVIBox.Text = Global.Config.AVIPath;
         }
 
         private void SaveSettings()
