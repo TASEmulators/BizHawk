@@ -38,6 +38,7 @@ namespace BizHawk.MultiClient
                         string tmp = Global.Config.BasePath;
                         tmp = tmp.Remove(0, 1);
                         tmp = tmp.Insert(0, GetExePathAbsolute());
+                        return tmp;
                     }
                 }
             }
@@ -90,10 +91,17 @@ namespace BizHawk.MultiClient
 
             if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
             {
+                //C:\
                 if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
                     return path;
                 else
-                    return GetExePathAbsolute(); //bad path
+                {
+                    //file:\ is an acceptable path as well, and what FileBrowserDialog returns
+                    if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
+                        return path;
+                    else
+                        return GetExePathAbsolute(); //bad path
+                }
             }
 
             //all pad paths default to EXE
