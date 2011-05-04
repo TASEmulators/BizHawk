@@ -117,6 +117,7 @@
     <Compile Include="config\PathConfig.Designer.cs">
       <DependentUpon>PathConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PathManager.cs" />
     <Compile Include="config\SoundConfig.cs">
       <SubType>Form</SubType>
     </Compile>
