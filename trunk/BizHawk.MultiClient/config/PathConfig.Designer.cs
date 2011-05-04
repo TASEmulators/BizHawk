@@ -31,137 +31,138 @@
             this.Cancel = new System.Windows.Forms.Button();
             this.OK = new System.Windows.Forms.Button();
             this.WatchBox = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
+            this.WatchDescription = new System.Windows.Forms.Label();
             this.BrowseWatch = new System.Windows.Forms.Button();
             this.MoviesBox = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.MoviesDescription = new System.Windows.Forms.Label();
             this.BrowseMovies = new System.Windows.Forms.Button();
             this.LuaBox = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
+            this.LuaDescription = new System.Windows.Forms.Label();
             this.BrowseLua = new System.Windows.Forms.Button();
             this.NESScreenshotsBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.NESScreenshotsDescription = new System.Windows.Forms.Label();
             this.BrowseNESScreenshots = new System.Windows.Forms.Button();
             this.NESROMsBox = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.NESROMsDescription = new System.Windows.Forms.Label();
             this.BrowseNESROMs = new System.Windows.Forms.Button();
             this.NESSaveRAMBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.NESSaveRAMDescription = new System.Windows.Forms.Label();
             this.BrowseNESSaveRAM = new System.Windows.Forms.Button();
             this.NESSavestatesBox = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.NESSavestatesDescription = new System.Windows.Forms.Label();
             this.BrowseNESSavestates = new System.Windows.Forms.Button();
             this.Sega8ScreenshotsBox = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.Sega8ScreenshotsDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseScreenshots = new System.Windows.Forms.Button();
             this.Sega8ROMsBox = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.Sega8ROMsDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseROMs = new System.Windows.Forms.Button();
             this.Sega8SaveRAMBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.Sega8SaveRAM = new System.Windows.Forms.Label();
             this.Sega8BrowseSaveRAM = new System.Windows.Forms.Button();
             this.Sega8SavestatesBox = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.Sega8SavestatesDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseSavestates = new System.Windows.Forms.Button();
             this.AVIBox = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
+            this.AVIDescription = new System.Windows.Forms.Label();
             this.BrowseAVI = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label12 = new System.Windows.Forms.Label();
+            this.NESCheatsDescription = new System.Windows.Forms.Label();
             this.NESBrowseCheats = new System.Windows.Forms.Button();
             this.NESCheatsBox = new System.Windows.Forms.TextBox();
             this.NESBaseBox = new System.Windows.Forms.TextBox();
-            this.label22 = new System.Windows.Forms.Label();
+            this.NESBaseDescription = new System.Windows.Forms.Label();
             this.BrowseNESBase = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.label15 = new System.Windows.Forms.Label();
+            this.Sega8CheatsDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseCheats = new System.Windows.Forms.Button();
             this.Sega8CheatsBox = new System.Windows.Forms.TextBox();
             this.Sega8BaseBox = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
+            this.Sega8BaseDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseBase = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label16 = new System.Windows.Forms.Label();
+            this.GenesisCheatsDescription = new System.Windows.Forms.Label();
             this.GenesisBrowseCheats = new System.Windows.Forms.Button();
             this.GenesisCheatsBox = new System.Windows.Forms.TextBox();
             this.GenesisBaseBox = new System.Windows.Forms.TextBox();
             this.GenesisScreenshotsBox = new System.Windows.Forms.TextBox();
             this.GenesisBrowseSaveRAM = new System.Windows.Forms.Button();
             this.GenesisBrowseROMs = new System.Windows.Forms.Button();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
+            this.GenesisBaseDescription = new System.Windows.Forms.Label();
+            this.GenesisSaveRAMDescription = new System.Windows.Forms.Label();
             this.GenesisSavestatesBox = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
+            this.GenesisScreenshotsDescription = new System.Windows.Forms.Label();
             this.GenesisSaveRAMBox = new System.Windows.Forms.TextBox();
-            this.label27 = new System.Windows.Forms.Label();
+            this.GenesisROMsDescription = new System.Windows.Forms.Label();
             this.GenesisBrowseBase = new System.Windows.Forms.Button();
-            this.label26 = new System.Windows.Forms.Label();
+            this.GenesisSavestatesDescription = new System.Windows.Forms.Label();
             this.GenesisBrowseSavestates = new System.Windows.Forms.Button();
             this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
             this.GenesisROMsBox = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.label17 = new System.Windows.Forms.Label();
+            this.PCECheatsDescription = new System.Windows.Forms.Label();
             this.PCEBrowseCheats = new System.Windows.Forms.Button();
             this.PCECheatsBox = new System.Windows.Forms.TextBox();
             this.PCEBaseBox = new System.Windows.Forms.TextBox();
             this.PCEScreenshotsBox = new System.Windows.Forms.TextBox();
-            this.label29 = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
+            this.PCEBaseDescription = new System.Windows.Forms.Label();
+            this.PCEScreenshotsDescription = new System.Windows.Forms.Label();
             this.PCEBrowseBase = new System.Windows.Forms.Button();
             this.PCEBrowseScreenshots = new System.Windows.Forms.Button();
             this.PCEROMsBox = new System.Windows.Forms.TextBox();
             this.PCEBrowseSavestates = new System.Windows.Forms.Button();
-            this.label31 = new System.Windows.Forms.Label();
-            this.label32 = new System.Windows.Forms.Label();
+            this.PCESavestatesDescription = new System.Windows.Forms.Label();
+            this.PCEROMsDescription = new System.Windows.Forms.Label();
             this.PCESavestatesBox = new System.Windows.Forms.TextBox();
             this.PCEBrowseROMs = new System.Windows.Forms.Button();
             this.PCEBrowseSaveRAM = new System.Windows.Forms.Button();
-            this.label33 = new System.Windows.Forms.Label();
+            this.PCESaveRAMDescription = new System.Windows.Forms.Label();
             this.PCESaveRAMBox = new System.Windows.Forms.TextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.label18 = new System.Windows.Forms.Label();
+            this.GBCheatsDescription = new System.Windows.Forms.Label();
             this.GBBrowseCheats = new System.Windows.Forms.Button();
             this.GBCheatsBox = new System.Windows.Forms.TextBox();
             this.GBBaseBox = new System.Windows.Forms.TextBox();
             this.GBScreenshotsBox = new System.Windows.Forms.TextBox();
-            this.label34 = new System.Windows.Forms.Label();
-            this.label35 = new System.Windows.Forms.Label();
+            this.GBBaseDescription = new System.Windows.Forms.Label();
+            this.GBScreenshotsDescription = new System.Windows.Forms.Label();
             this.GBBrowseBase = new System.Windows.Forms.Button();
             this.GBBrowseScreenshots = new System.Windows.Forms.Button();
             this.GBROMsBox = new System.Windows.Forms.TextBox();
             this.GBBrowseSavestates = new System.Windows.Forms.Button();
-            this.label36 = new System.Windows.Forms.Label();
-            this.label37 = new System.Windows.Forms.Label();
+            this.GBSavestatesDescription = new System.Windows.Forms.Label();
+            this.GBROMsDescription = new System.Windows.Forms.Label();
             this.GBSavestatesBox = new System.Windows.Forms.TextBox();
             this.GBBrowseROMs = new System.Windows.Forms.Button();
             this.GBBrowseSaveRAM = new System.Windows.Forms.Button();
-            this.label38 = new System.Windows.Forms.Label();
+            this.GBSaveRAMDescription = new System.Windows.Forms.Label();
             this.GBSaveRAMBox = new System.Windows.Forms.TextBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.label19 = new System.Windows.Forms.Label();
+            this.TI83CheatsDescription = new System.Windows.Forms.Label();
             this.TI83BrowseBox = new System.Windows.Forms.Button();
             this.TI83CheatsBox = new System.Windows.Forms.TextBox();
             this.TI83BaseBox = new System.Windows.Forms.TextBox();
             this.TI83ScreenshotsBox = new System.Windows.Forms.TextBox();
-            this.label39 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
+            this.TI83BaseDescription = new System.Windows.Forms.Label();
+            this.TI83ScreenshotsDescription = new System.Windows.Forms.Label();
             this.TI83BrowseBase = new System.Windows.Forms.Button();
             this.TI83BrowseScreenshots = new System.Windows.Forms.Button();
             this.TI83ROMsBox = new System.Windows.Forms.TextBox();
             this.TI83BrowseSavestates = new System.Windows.Forms.Button();
-            this.label41 = new System.Windows.Forms.Label();
-            this.label42 = new System.Windows.Forms.Label();
+            this.TI83SavestatesDescription = new System.Windows.Forms.Label();
+            this.TI83ROMsDescription = new System.Windows.Forms.Label();
             this.TI83SavestatesBox = new System.Windows.Forms.TextBox();
             this.TI83BrowseROMs = new System.Windows.Forms.Button();
             this.TI83BrowseSaveRAM = new System.Windows.Forms.Button();
-            this.label43 = new System.Windows.Forms.Label();
+            this.TI83SaveRAMDescription = new System.Windows.Forms.Label();
             this.TI83SaveRAMBox = new System.Windows.Forms.TextBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
             this.BasePathBox = new System.Windows.Forms.TextBox();
             this.BrowseBase = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
+            this.BaseDescription = new System.Windows.Forms.Label();
             this.RecentForROMs = new System.Windows.Forms.CheckBox();
+            this.SaveButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -204,15 +205,15 @@
             this.WatchBox.Size = new System.Drawing.Size(202, 20);
             this.WatchBox.TabIndex = 14;
             // 
-            // label9
+            // WatchDescription
             // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(280, 93);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(71, 13);
-            this.label9.TabIndex = 17;
-            this.label9.Text = "Watch (.wch)";
+            this.WatchDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.WatchDescription.AutoSize = true;
+            this.WatchDescription.Location = new System.Drawing.Point(280, 93);
+            this.WatchDescription.Name = "WatchDescription";
+            this.WatchDescription.Size = new System.Drawing.Size(71, 13);
+            this.WatchDescription.TabIndex = 17;
+            this.WatchDescription.Text = "Watch (.wch)";
             // 
             // BrowseWatch
             // 
@@ -234,15 +235,15 @@
             this.MoviesBox.Size = new System.Drawing.Size(202, 20);
             this.MoviesBox.TabIndex = 10;
             // 
-            // label10
+            // MoviesDescription
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(281, 25);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(41, 13);
-            this.label10.TabIndex = 13;
-            this.label10.Text = "Movies";
+            this.MoviesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.MoviesDescription.AutoSize = true;
+            this.MoviesDescription.Location = new System.Drawing.Point(281, 25);
+            this.MoviesDescription.Name = "MoviesDescription";
+            this.MoviesDescription.Size = new System.Drawing.Size(41, 13);
+            this.MoviesDescription.TabIndex = 13;
+            this.MoviesDescription.Text = "Movies";
             // 
             // BrowseMovies
             // 
@@ -263,15 +264,15 @@
             this.LuaBox.Size = new System.Drawing.Size(202, 20);
             this.LuaBox.TabIndex = 6;
             // 
-            // label11
+            // LuaDescription
             // 
-            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(281, 63);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(25, 13);
-            this.label11.TabIndex = 9;
-            this.label11.Text = "Lua";
+            this.LuaDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.LuaDescription.AutoSize = true;
+            this.LuaDescription.Location = new System.Drawing.Point(281, 63);
+            this.LuaDescription.Name = "LuaDescription";
+            this.LuaDescription.Size = new System.Drawing.Size(25, 13);
+            this.LuaDescription.TabIndex = 9;
+            this.LuaDescription.Text = "Lua";
             // 
             // BrowseLua
             // 
@@ -292,15 +293,15 @@
             this.NESScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.NESScreenshotsBox.TabIndex = 14;
             // 
-            // label1
+            // NESScreenshotsDescription
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(281, 153);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 13);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "Screenshots";
+            this.NESScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESScreenshotsDescription.AutoSize = true;
+            this.NESScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.NESScreenshotsDescription.Name = "NESScreenshotsDescription";
+            this.NESScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.NESScreenshotsDescription.TabIndex = 17;
+            this.NESScreenshotsDescription.Text = "Screenshots";
             // 
             // BrowseNESScreenshots
             // 
@@ -321,15 +322,15 @@
             this.NESROMsBox.Size = new System.Drawing.Size(202, 20);
             this.NESROMsBox.TabIndex = 10;
             // 
-            // label2
+            // NESROMsDescription
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(281, 63);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 13);
-            this.label2.TabIndex = 13;
-            this.label2.Text = "ROMs";
+            this.NESROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESROMsDescription.AutoSize = true;
+            this.NESROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.NESROMsDescription.Name = "NESROMsDescription";
+            this.NESROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.NESROMsDescription.TabIndex = 13;
+            this.NESROMsDescription.Text = "ROMs";
             // 
             // BrowseNESROMs
             // 
@@ -350,15 +351,15 @@
             this.NESSaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.NESSaveRAMBox.TabIndex = 6;
             // 
-            // label3
+            // NESSaveRAMDescription
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(281, 123);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 13);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Save RAM";
+            this.NESSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESSaveRAMDescription.AutoSize = true;
+            this.NESSaveRAMDescription.Location = new System.Drawing.Point(281, 123);
+            this.NESSaveRAMDescription.Name = "NESSaveRAMDescription";
+            this.NESSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.NESSaveRAMDescription.TabIndex = 9;
+            this.NESSaveRAMDescription.Text = "Save RAM";
             // 
             // BrowseNESSaveRAM
             // 
@@ -379,15 +380,15 @@
             this.NESSavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.NESSavestatesBox.TabIndex = 2;
             // 
-            // label4
+            // NESSavestatesDescription
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(281, 93);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
-            this.label4.TabIndex = 5;
-            this.label4.Text = "Savestates";
+            this.NESSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESSavestatesDescription.AutoSize = true;
+            this.NESSavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.NESSavestatesDescription.Name = "NESSavestatesDescription";
+            this.NESSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.NESSavestatesDescription.TabIndex = 5;
+            this.NESSavestatesDescription.Text = "Savestates";
             // 
             // BrowseNESSavestates
             // 
@@ -408,15 +409,15 @@
             this.Sega8ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8ScreenshotsBox.TabIndex = 14;
             // 
-            // label5
+            // Sega8ScreenshotsDescription
             // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(281, 153);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 13);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "Screenshots";
+            this.Sega8ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8ScreenshotsDescription.AutoSize = true;
+            this.Sega8ScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.Sega8ScreenshotsDescription.Name = "Sega8ScreenshotsDescription";
+            this.Sega8ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.Sega8ScreenshotsDescription.TabIndex = 17;
+            this.Sega8ScreenshotsDescription.Text = "Screenshots";
             // 
             // Sega8BrowseScreenshots
             // 
@@ -437,15 +438,15 @@
             this.Sega8ROMsBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8ROMsBox.TabIndex = 10;
             // 
-            // label6
+            // Sega8ROMsDescription
             // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(281, 63);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(37, 13);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "ROMs";
+            this.Sega8ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8ROMsDescription.AutoSize = true;
+            this.Sega8ROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.Sega8ROMsDescription.Name = "Sega8ROMsDescription";
+            this.Sega8ROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.Sega8ROMsDescription.TabIndex = 13;
+            this.Sega8ROMsDescription.Text = "ROMs";
             // 
             // Sega8BrowseROMs
             // 
@@ -466,15 +467,15 @@
             this.Sega8SaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8SaveRAMBox.TabIndex = 6;
             // 
-            // label7
+            // Sega8SaveRAM
             // 
-            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(281, 123);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 13);
-            this.label7.TabIndex = 9;
-            this.label7.Text = "Save RAM";
+            this.Sega8SaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8SaveRAM.AutoSize = true;
+            this.Sega8SaveRAM.Location = new System.Drawing.Point(281, 123);
+            this.Sega8SaveRAM.Name = "Sega8SaveRAM";
+            this.Sega8SaveRAM.Size = new System.Drawing.Size(59, 13);
+            this.Sega8SaveRAM.TabIndex = 9;
+            this.Sega8SaveRAM.Text = "Save RAM";
             // 
             // Sega8BrowseSaveRAM
             // 
@@ -495,15 +496,15 @@
             this.Sega8SavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8SavestatesBox.TabIndex = 2;
             // 
-            // label8
+            // Sega8SavestatesDescription
             // 
-            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(281, 93);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(60, 13);
-            this.label8.TabIndex = 5;
-            this.label8.Text = "Savestates";
+            this.Sega8SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8SavestatesDescription.AutoSize = true;
+            this.Sega8SavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.Sega8SavestatesDescription.Name = "Sega8SavestatesDescription";
+            this.Sega8SavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.Sega8SavestatesDescription.TabIndex = 5;
+            this.Sega8SavestatesDescription.Text = "Savestates";
             // 
             // Sega8BrowseSavestates
             // 
@@ -525,15 +526,15 @@
             this.AVIBox.Size = new System.Drawing.Size(202, 20);
             this.AVIBox.TabIndex = 19;
             // 
-            // label13
+            // AVIDescription
             // 
-            this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(281, 123);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(60, 13);
-            this.label13.TabIndex = 22;
-            this.label13.Text = "Video (AVI)";
+            this.AVIDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AVIDescription.AutoSize = true;
+            this.AVIDescription.Location = new System.Drawing.Point(281, 123);
+            this.AVIDescription.Name = "AVIDescription";
+            this.AVIDescription.Size = new System.Drawing.Size(60, 13);
+            this.AVIDescription.TabIndex = 22;
+            this.AVIDescription.Text = "Video (AVI)";
             // 
             // BrowseAVI
             // 
@@ -565,22 +566,22 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.label12);
+            this.tabPage1.Controls.Add(this.NESCheatsDescription);
             this.tabPage1.Controls.Add(this.NESBrowseCheats);
             this.tabPage1.Controls.Add(this.NESCheatsBox);
             this.tabPage1.Controls.Add(this.NESBaseBox);
-            this.tabPage1.Controls.Add(this.label22);
+            this.tabPage1.Controls.Add(this.NESBaseDescription);
             this.tabPage1.Controls.Add(this.BrowseNESBase);
             this.tabPage1.Controls.Add(this.NESROMsBox);
             this.tabPage1.Controls.Add(this.NESScreenshotsBox);
             this.tabPage1.Controls.Add(this.BrowseNESSavestates);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.label4);
+            this.tabPage1.Controls.Add(this.NESScreenshotsDescription);
+            this.tabPage1.Controls.Add(this.NESSavestatesDescription);
             this.tabPage1.Controls.Add(this.BrowseNESScreenshots);
             this.tabPage1.Controls.Add(this.NESSavestatesBox);
             this.tabPage1.Controls.Add(this.BrowseNESSaveRAM);
-            this.tabPage1.Controls.Add(this.label3);
-            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.NESSaveRAMDescription);
+            this.tabPage1.Controls.Add(this.NESROMsDescription);
             this.tabPage1.Controls.Add(this.NESSaveRAMBox);
             this.tabPage1.Controls.Add(this.BrowseNESROMs);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -591,15 +592,15 @@
             this.tabPage1.Text = "NES";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // label12
+            // NESCheatsDescription
             // 
-            this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(281, 183);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 13);
-            this.label12.TabIndex = 23;
-            this.label12.Text = "Cheats";
+            this.NESCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESCheatsDescription.AutoSize = true;
+            this.NESCheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.NESCheatsDescription.Name = "NESCheatsDescription";
+            this.NESCheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.NESCheatsDescription.TabIndex = 23;
+            this.NESCheatsDescription.Text = "Cheats";
             // 
             // NESBrowseCheats
             // 
@@ -630,15 +631,15 @@
             this.NESBaseBox.Size = new System.Drawing.Size(202, 20);
             this.NESBaseBox.TabIndex = 18;
             // 
-            // label22
+            // NESBaseDescription
             // 
-            this.label22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(281, 25);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(31, 13);
-            this.label22.TabIndex = 20;
-            this.label22.Text = "Base";
+            this.NESBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NESBaseDescription.AutoSize = true;
+            this.NESBaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.NESBaseDescription.Name = "NESBaseDescription";
+            this.NESBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.NESBaseDescription.TabIndex = 20;
+            this.NESBaseDescription.Text = "Base";
             // 
             // BrowseNESBase
             // 
@@ -652,23 +653,23 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.label15);
+            this.tabPage2.Controls.Add(this.Sega8CheatsDescription);
             this.tabPage2.Controls.Add(this.Sega8BrowseCheats);
             this.tabPage2.Controls.Add(this.Sega8CheatsBox);
             this.tabPage2.Controls.Add(this.Sega8BaseBox);
             this.tabPage2.Controls.Add(this.Sega8ScreenshotsBox);
-            this.tabPage2.Controls.Add(this.label23);
-            this.tabPage2.Controls.Add(this.label5);
+            this.tabPage2.Controls.Add(this.Sega8BaseDescription);
+            this.tabPage2.Controls.Add(this.Sega8ScreenshotsDescription);
             this.tabPage2.Controls.Add(this.Sega8BrowseBase);
             this.tabPage2.Controls.Add(this.Sega8BrowseScreenshots);
             this.tabPage2.Controls.Add(this.Sega8ROMsBox);
             this.tabPage2.Controls.Add(this.Sega8BrowseSavestates);
-            this.tabPage2.Controls.Add(this.label8);
-            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Controls.Add(this.Sega8SavestatesDescription);
+            this.tabPage2.Controls.Add(this.Sega8ROMsDescription);
             this.tabPage2.Controls.Add(this.Sega8SavestatesBox);
             this.tabPage2.Controls.Add(this.Sega8BrowseROMs);
             this.tabPage2.Controls.Add(this.Sega8BrowseSaveRAM);
-            this.tabPage2.Controls.Add(this.label7);
+            this.tabPage2.Controls.Add(this.Sega8SaveRAM);
             this.tabPage2.Controls.Add(this.Sega8SaveRAMBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -678,15 +679,15 @@
             this.tabPage2.Text = "Sega 8bit";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // label15
+            // Sega8CheatsDescription
             // 
-            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(281, 183);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(40, 13);
-            this.label15.TabIndex = 26;
-            this.label15.Text = "Cheats";
+            this.Sega8CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8CheatsDescription.AutoSize = true;
+            this.Sega8CheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.Sega8CheatsDescription.Name = "Sega8CheatsDescription";
+            this.Sega8CheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.Sega8CheatsDescription.TabIndex = 26;
+            this.Sega8CheatsDescription.Text = "Cheats";
             // 
             // Sega8BrowseCheats
             // 
@@ -716,15 +717,15 @@
             this.Sega8BaseBox.Size = new System.Drawing.Size(202, 20);
             this.Sega8BaseBox.TabIndex = 19;
             // 
-            // label23
+            // Sega8BaseDescription
             // 
-            this.label23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(281, 25);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(31, 13);
-            this.label23.TabIndex = 21;
-            this.label23.Text = "Base";
+            this.Sega8BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8BaseDescription.AutoSize = true;
+            this.Sega8BaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.Sega8BaseDescription.Name = "Sega8BaseDescription";
+            this.Sega8BaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.Sega8BaseDescription.TabIndex = 21;
+            this.Sega8BaseDescription.Text = "Base";
             // 
             // Sega8BrowseBase
             // 
@@ -738,21 +739,21 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.label16);
+            this.tabPage3.Controls.Add(this.GenesisCheatsDescription);
             this.tabPage3.Controls.Add(this.GenesisBrowseCheats);
             this.tabPage3.Controls.Add(this.GenesisCheatsBox);
             this.tabPage3.Controls.Add(this.GenesisBaseBox);
             this.tabPage3.Controls.Add(this.GenesisScreenshotsBox);
             this.tabPage3.Controls.Add(this.GenesisBrowseSaveRAM);
             this.tabPage3.Controls.Add(this.GenesisBrowseROMs);
-            this.tabPage3.Controls.Add(this.label24);
-            this.tabPage3.Controls.Add(this.label28);
+            this.tabPage3.Controls.Add(this.GenesisBaseDescription);
+            this.tabPage3.Controls.Add(this.GenesisSaveRAMDescription);
             this.tabPage3.Controls.Add(this.GenesisSavestatesBox);
-            this.tabPage3.Controls.Add(this.label25);
+            this.tabPage3.Controls.Add(this.GenesisScreenshotsDescription);
             this.tabPage3.Controls.Add(this.GenesisSaveRAMBox);
-            this.tabPage3.Controls.Add(this.label27);
+            this.tabPage3.Controls.Add(this.GenesisROMsDescription);
             this.tabPage3.Controls.Add(this.GenesisBrowseBase);
-            this.tabPage3.Controls.Add(this.label26);
+            this.tabPage3.Controls.Add(this.GenesisSavestatesDescription);
             this.tabPage3.Controls.Add(this.GenesisBrowseSavestates);
             this.tabPage3.Controls.Add(this.GenesisBrowseScreenshots);
             this.tabPage3.Controls.Add(this.GenesisROMsBox);
@@ -763,15 +764,15 @@
             this.tabPage3.Text = "Genesis";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // label16
+            // GenesisCheatsDescription
             // 
-            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(281, 183);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(40, 13);
-            this.label16.TabIndex = 39;
-            this.label16.Text = "Cheats";
+            this.GenesisCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisCheatsDescription.AutoSize = true;
+            this.GenesisCheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.GenesisCheatsDescription.Name = "GenesisCheatsDescription";
+            this.GenesisCheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.GenesisCheatsDescription.TabIndex = 39;
+            this.GenesisCheatsDescription.Text = "Cheats";
             // 
             // GenesisBrowseCheats
             // 
@@ -830,25 +831,25 @@
             this.GenesisBrowseROMs.Text = "Browse";
             this.GenesisBrowseROMs.UseVisualStyleBackColor = true;
             // 
-            // label24
+            // GenesisBaseDescription
             // 
-            this.label24.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(281, 25);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(31, 13);
-            this.label24.TabIndex = 36;
-            this.label24.Text = "Base";
+            this.GenesisBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisBaseDescription.AutoSize = true;
+            this.GenesisBaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.GenesisBaseDescription.Name = "GenesisBaseDescription";
+            this.GenesisBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.GenesisBaseDescription.TabIndex = 36;
+            this.GenesisBaseDescription.Text = "Base";
             // 
-            // label28
+            // GenesisSaveRAMDescription
             // 
-            this.label28.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(281, 123);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(59, 13);
-            this.label28.TabIndex = 27;
-            this.label28.Text = "Save RAM";
+            this.GenesisSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisSaveRAMDescription.AutoSize = true;
+            this.GenesisSaveRAMDescription.Location = new System.Drawing.Point(281, 123);
+            this.GenesisSaveRAMDescription.Name = "GenesisSaveRAMDescription";
+            this.GenesisSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.GenesisSaveRAMDescription.TabIndex = 27;
+            this.GenesisSaveRAMDescription.Text = "Save RAM";
             // 
             // GenesisSavestatesBox
             // 
@@ -859,15 +860,15 @@
             this.GenesisSavestatesBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisSavestatesBox.TabIndex = 22;
             // 
-            // label25
+            // GenesisScreenshotsDescription
             // 
-            this.label25.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(281, 153);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(66, 13);
-            this.label25.TabIndex = 33;
-            this.label25.Text = "Screenshots";
+            this.GenesisScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisScreenshotsDescription.AutoSize = true;
+            this.GenesisScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.GenesisScreenshotsDescription.Name = "GenesisScreenshotsDescription";
+            this.GenesisScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.GenesisScreenshotsDescription.TabIndex = 33;
+            this.GenesisScreenshotsDescription.Text = "Screenshots";
             // 
             // GenesisSaveRAMBox
             // 
@@ -878,15 +879,15 @@
             this.GenesisSaveRAMBox.Size = new System.Drawing.Size(202, 20);
             this.GenesisSaveRAMBox.TabIndex = 25;
             // 
-            // label27
+            // GenesisROMsDescription
             // 
-            this.label27.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(281, 63);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(37, 13);
-            this.label27.TabIndex = 30;
-            this.label27.Text = "ROMs";
+            this.GenesisROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisROMsDescription.AutoSize = true;
+            this.GenesisROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.GenesisROMsDescription.Name = "GenesisROMsDescription";
+            this.GenesisROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.GenesisROMsDescription.TabIndex = 30;
+            this.GenesisROMsDescription.Text = "ROMs";
             // 
             // GenesisBrowseBase
             // 
@@ -898,15 +899,15 @@
             this.GenesisBrowseBase.Text = "Browse";
             this.GenesisBrowseBase.UseVisualStyleBackColor = true;
             // 
-            // label26
+            // GenesisSavestatesDescription
             // 
-            this.label26.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(281, 93);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(60, 13);
-            this.label26.TabIndex = 24;
-            this.label26.Text = "Savestates";
+            this.GenesisSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GenesisSavestatesDescription.AutoSize = true;
+            this.GenesisSavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.GenesisSavestatesDescription.Name = "GenesisSavestatesDescription";
+            this.GenesisSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.GenesisSavestatesDescription.TabIndex = 24;
+            this.GenesisSavestatesDescription.Text = "Savestates";
             // 
             // GenesisBrowseSavestates
             // 
@@ -939,23 +940,23 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.label17);
+            this.tabPage4.Controls.Add(this.PCECheatsDescription);
             this.tabPage4.Controls.Add(this.PCEBrowseCheats);
             this.tabPage4.Controls.Add(this.PCECheatsBox);
             this.tabPage4.Controls.Add(this.PCEBaseBox);
             this.tabPage4.Controls.Add(this.PCEScreenshotsBox);
-            this.tabPage4.Controls.Add(this.label29);
-            this.tabPage4.Controls.Add(this.label30);
+            this.tabPage4.Controls.Add(this.PCEBaseDescription);
+            this.tabPage4.Controls.Add(this.PCEScreenshotsDescription);
             this.tabPage4.Controls.Add(this.PCEBrowseBase);
             this.tabPage4.Controls.Add(this.PCEBrowseScreenshots);
             this.tabPage4.Controls.Add(this.PCEROMsBox);
             this.tabPage4.Controls.Add(this.PCEBrowseSavestates);
-            this.tabPage4.Controls.Add(this.label31);
-            this.tabPage4.Controls.Add(this.label32);
+            this.tabPage4.Controls.Add(this.PCESavestatesDescription);
+            this.tabPage4.Controls.Add(this.PCEROMsDescription);
             this.tabPage4.Controls.Add(this.PCESavestatesBox);
             this.tabPage4.Controls.Add(this.PCEBrowseROMs);
             this.tabPage4.Controls.Add(this.PCEBrowseSaveRAM);
-            this.tabPage4.Controls.Add(this.label33);
+            this.tabPage4.Controls.Add(this.PCESaveRAMDescription);
             this.tabPage4.Controls.Add(this.PCESaveRAMBox);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -964,15 +965,15 @@
             this.tabPage4.Text = "PC Engine";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // label17
+            // PCECheatsDescription
             // 
-            this.label17.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(281, 183);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(40, 13);
-            this.label17.TabIndex = 39;
-            this.label17.Text = "Cheats";
+            this.PCECheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCECheatsDescription.AutoSize = true;
+            this.PCECheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.PCECheatsDescription.Name = "PCECheatsDescription";
+            this.PCECheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.PCECheatsDescription.TabIndex = 39;
+            this.PCECheatsDescription.Text = "Cheats";
             // 
             // PCEBrowseCheats
             // 
@@ -1012,25 +1013,25 @@
             this.PCEScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.PCEScreenshotsBox.TabIndex = 31;
             // 
-            // label29
+            // PCEBaseDescription
             // 
-            this.label29.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(281, 25);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(31, 13);
-            this.label29.TabIndex = 36;
-            this.label29.Text = "Base";
+            this.PCEBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCEBaseDescription.AutoSize = true;
+            this.PCEBaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.PCEBaseDescription.Name = "PCEBaseDescription";
+            this.PCEBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.PCEBaseDescription.TabIndex = 36;
+            this.PCEBaseDescription.Text = "Base";
             // 
-            // label30
+            // PCEScreenshotsDescription
             // 
-            this.label30.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(281, 153);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(66, 13);
-            this.label30.TabIndex = 33;
-            this.label30.Text = "Screenshots";
+            this.PCEScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCEScreenshotsDescription.AutoSize = true;
+            this.PCEScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.PCEScreenshotsDescription.Name = "PCEScreenshotsDescription";
+            this.PCEScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.PCEScreenshotsDescription.TabIndex = 33;
+            this.PCEScreenshotsDescription.Text = "Screenshots";
             // 
             // PCEBrowseBase
             // 
@@ -1072,25 +1073,25 @@
             this.PCEBrowseSavestates.Text = "Browse";
             this.PCEBrowseSavestates.UseVisualStyleBackColor = true;
             // 
-            // label31
+            // PCESavestatesDescription
             // 
-            this.label31.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(281, 93);
-            this.label31.Name = "label31";
-            this.label31.Size = new System.Drawing.Size(60, 13);
-            this.label31.TabIndex = 24;
-            this.label31.Text = "Savestates";
+            this.PCESavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCESavestatesDescription.AutoSize = true;
+            this.PCESavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.PCESavestatesDescription.Name = "PCESavestatesDescription";
+            this.PCESavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.PCESavestatesDescription.TabIndex = 24;
+            this.PCESavestatesDescription.Text = "Savestates";
             // 
-            // label32
+            // PCEROMsDescription
             // 
-            this.label32.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(281, 63);
-            this.label32.Name = "label32";
-            this.label32.Size = new System.Drawing.Size(37, 13);
-            this.label32.TabIndex = 30;
-            this.label32.Text = "ROMs";
+            this.PCEROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCEROMsDescription.AutoSize = true;
+            this.PCEROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.PCEROMsDescription.Name = "PCEROMsDescription";
+            this.PCEROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.PCEROMsDescription.TabIndex = 30;
+            this.PCEROMsDescription.Text = "ROMs";
             // 
             // PCESavestatesBox
             // 
@@ -1122,15 +1123,15 @@
             this.PCEBrowseSaveRAM.Text = "Browse";
             this.PCEBrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
-            // label33
+            // PCESaveRAMDescription
             // 
-            this.label33.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(281, 123);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(59, 13);
-            this.label33.TabIndex = 27;
-            this.label33.Text = "Save RAM";
+            this.PCESaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PCESaveRAMDescription.AutoSize = true;
+            this.PCESaveRAMDescription.Location = new System.Drawing.Point(281, 123);
+            this.PCESaveRAMDescription.Name = "PCESaveRAMDescription";
+            this.PCESaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.PCESaveRAMDescription.TabIndex = 27;
+            this.PCESaveRAMDescription.Text = "Save RAM";
             // 
             // PCESaveRAMBox
             // 
@@ -1143,23 +1144,23 @@
             // 
             // tabPage5
             // 
-            this.tabPage5.Controls.Add(this.label18);
+            this.tabPage5.Controls.Add(this.GBCheatsDescription);
             this.tabPage5.Controls.Add(this.GBBrowseCheats);
             this.tabPage5.Controls.Add(this.GBCheatsBox);
             this.tabPage5.Controls.Add(this.GBBaseBox);
             this.tabPage5.Controls.Add(this.GBScreenshotsBox);
-            this.tabPage5.Controls.Add(this.label34);
-            this.tabPage5.Controls.Add(this.label35);
+            this.tabPage5.Controls.Add(this.GBBaseDescription);
+            this.tabPage5.Controls.Add(this.GBScreenshotsDescription);
             this.tabPage5.Controls.Add(this.GBBrowseBase);
             this.tabPage5.Controls.Add(this.GBBrowseScreenshots);
             this.tabPage5.Controls.Add(this.GBROMsBox);
             this.tabPage5.Controls.Add(this.GBBrowseSavestates);
-            this.tabPage5.Controls.Add(this.label36);
-            this.tabPage5.Controls.Add(this.label37);
+            this.tabPage5.Controls.Add(this.GBSavestatesDescription);
+            this.tabPage5.Controls.Add(this.GBROMsDescription);
             this.tabPage5.Controls.Add(this.GBSavestatesBox);
             this.tabPage5.Controls.Add(this.GBBrowseROMs);
             this.tabPage5.Controls.Add(this.GBBrowseSaveRAM);
-            this.tabPage5.Controls.Add(this.label38);
+            this.tabPage5.Controls.Add(this.GBSaveRAMDescription);
             this.tabPage5.Controls.Add(this.GBSaveRAMBox);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
@@ -1168,15 +1169,15 @@
             this.tabPage5.Text = "Gameboy";
             this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // label18
+            // GBCheatsDescription
             // 
-            this.label18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(281, 183);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(40, 13);
-            this.label18.TabIndex = 39;
-            this.label18.Text = "Cheats";
+            this.GBCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBCheatsDescription.AutoSize = true;
+            this.GBCheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.GBCheatsDescription.Name = "GBCheatsDescription";
+            this.GBCheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.GBCheatsDescription.TabIndex = 39;
+            this.GBCheatsDescription.Text = "Cheats";
             // 
             // GBBrowseCheats
             // 
@@ -1215,25 +1216,25 @@
             this.GBScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.GBScreenshotsBox.TabIndex = 31;
             // 
-            // label34
+            // GBBaseDescription
             // 
-            this.label34.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label34.AutoSize = true;
-            this.label34.Location = new System.Drawing.Point(281, 25);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(31, 13);
-            this.label34.TabIndex = 36;
-            this.label34.Text = "Base";
+            this.GBBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBBaseDescription.AutoSize = true;
+            this.GBBaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.GBBaseDescription.Name = "GBBaseDescription";
+            this.GBBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.GBBaseDescription.TabIndex = 36;
+            this.GBBaseDescription.Text = "Base";
             // 
-            // label35
+            // GBScreenshotsDescription
             // 
-            this.label35.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label35.AutoSize = true;
-            this.label35.Location = new System.Drawing.Point(281, 153);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(66, 13);
-            this.label35.TabIndex = 33;
-            this.label35.Text = "Screenshots";
+            this.GBScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBScreenshotsDescription.AutoSize = true;
+            this.GBScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.GBScreenshotsDescription.Name = "GBScreenshotsDescription";
+            this.GBScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.GBScreenshotsDescription.TabIndex = 33;
+            this.GBScreenshotsDescription.Text = "Screenshots";
             // 
             // GBBrowseBase
             // 
@@ -1274,25 +1275,25 @@
             this.GBBrowseSavestates.Text = "Browse";
             this.GBBrowseSavestates.UseVisualStyleBackColor = true;
             // 
-            // label36
+            // GBSavestatesDescription
             // 
-            this.label36.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label36.AutoSize = true;
-            this.label36.Location = new System.Drawing.Point(281, 93);
-            this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(60, 13);
-            this.label36.TabIndex = 24;
-            this.label36.Text = "Savestates";
+            this.GBSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBSavestatesDescription.AutoSize = true;
+            this.GBSavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.GBSavestatesDescription.Name = "GBSavestatesDescription";
+            this.GBSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.GBSavestatesDescription.TabIndex = 24;
+            this.GBSavestatesDescription.Text = "Savestates";
             // 
-            // label37
+            // GBROMsDescription
             // 
-            this.label37.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(281, 63);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(37, 13);
-            this.label37.TabIndex = 30;
-            this.label37.Text = "ROMs";
+            this.GBROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBROMsDescription.AutoSize = true;
+            this.GBROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.GBROMsDescription.Name = "GBROMsDescription";
+            this.GBROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.GBROMsDescription.TabIndex = 30;
+            this.GBROMsDescription.Text = "ROMs";
             // 
             // GBSavestatesBox
             // 
@@ -1323,15 +1324,15 @@
             this.GBBrowseSaveRAM.Text = "Browse";
             this.GBBrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
-            // label38
+            // GBSaveRAMDescription
             // 
-            this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label38.AutoSize = true;
-            this.label38.Location = new System.Drawing.Point(281, 123);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(59, 13);
-            this.label38.TabIndex = 27;
-            this.label38.Text = "Save RAM";
+            this.GBSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GBSaveRAMDescription.AutoSize = true;
+            this.GBSaveRAMDescription.Location = new System.Drawing.Point(281, 123);
+            this.GBSaveRAMDescription.Name = "GBSaveRAMDescription";
+            this.GBSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.GBSaveRAMDescription.TabIndex = 27;
+            this.GBSaveRAMDescription.Text = "Save RAM";
             // 
             // GBSaveRAMBox
             // 
@@ -1344,23 +1345,23 @@
             // 
             // tabPage6
             // 
-            this.tabPage6.Controls.Add(this.label19);
+            this.tabPage6.Controls.Add(this.TI83CheatsDescription);
             this.tabPage6.Controls.Add(this.TI83BrowseBox);
             this.tabPage6.Controls.Add(this.TI83CheatsBox);
             this.tabPage6.Controls.Add(this.TI83BaseBox);
             this.tabPage6.Controls.Add(this.TI83ScreenshotsBox);
-            this.tabPage6.Controls.Add(this.label39);
-            this.tabPage6.Controls.Add(this.label40);
+            this.tabPage6.Controls.Add(this.TI83BaseDescription);
+            this.tabPage6.Controls.Add(this.TI83ScreenshotsDescription);
             this.tabPage6.Controls.Add(this.TI83BrowseBase);
             this.tabPage6.Controls.Add(this.TI83BrowseScreenshots);
             this.tabPage6.Controls.Add(this.TI83ROMsBox);
             this.tabPage6.Controls.Add(this.TI83BrowseSavestates);
-            this.tabPage6.Controls.Add(this.label41);
-            this.tabPage6.Controls.Add(this.label42);
+            this.tabPage6.Controls.Add(this.TI83SavestatesDescription);
+            this.tabPage6.Controls.Add(this.TI83ROMsDescription);
             this.tabPage6.Controls.Add(this.TI83SavestatesBox);
             this.tabPage6.Controls.Add(this.TI83BrowseROMs);
             this.tabPage6.Controls.Add(this.TI83BrowseSaveRAM);
-            this.tabPage6.Controls.Add(this.label43);
+            this.tabPage6.Controls.Add(this.TI83SaveRAMDescription);
             this.tabPage6.Controls.Add(this.TI83SaveRAMBox);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
@@ -1369,15 +1370,15 @@
             this.tabPage6.Text = "TI83";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
-            // label19
+            // TI83CheatsDescription
             // 
-            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(281, 183);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(40, 13);
-            this.label19.TabIndex = 39;
-            this.label19.Text = "Cheats";
+            this.TI83CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83CheatsDescription.AutoSize = true;
+            this.TI83CheatsDescription.Location = new System.Drawing.Point(281, 183);
+            this.TI83CheatsDescription.Name = "TI83CheatsDescription";
+            this.TI83CheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.TI83CheatsDescription.TabIndex = 39;
+            this.TI83CheatsDescription.Text = "Cheats";
             // 
             // TI83BrowseBox
             // 
@@ -1416,25 +1417,25 @@
             this.TI83ScreenshotsBox.Size = new System.Drawing.Size(202, 20);
             this.TI83ScreenshotsBox.TabIndex = 31;
             // 
-            // label39
+            // TI83BaseDescription
             // 
-            this.label39.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(281, 25);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(31, 13);
-            this.label39.TabIndex = 36;
-            this.label39.Text = "Base";
+            this.TI83BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83BaseDescription.AutoSize = true;
+            this.TI83BaseDescription.Location = new System.Drawing.Point(281, 25);
+            this.TI83BaseDescription.Name = "TI83BaseDescription";
+            this.TI83BaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.TI83BaseDescription.TabIndex = 36;
+            this.TI83BaseDescription.Text = "Base";
             // 
-            // label40
+            // TI83ScreenshotsDescription
             // 
-            this.label40.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(281, 153);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(66, 13);
-            this.label40.TabIndex = 33;
-            this.label40.Text = "Screenshots";
+            this.TI83ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83ScreenshotsDescription.AutoSize = true;
+            this.TI83ScreenshotsDescription.Location = new System.Drawing.Point(281, 153);
+            this.TI83ScreenshotsDescription.Name = "TI83ScreenshotsDescription";
+            this.TI83ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.TI83ScreenshotsDescription.TabIndex = 33;
+            this.TI83ScreenshotsDescription.Text = "Screenshots";
             // 
             // TI83BrowseBase
             // 
@@ -1476,25 +1477,25 @@
             this.TI83BrowseSavestates.Text = "Browse";
             this.TI83BrowseSavestates.UseVisualStyleBackColor = true;
             // 
-            // label41
+            // TI83SavestatesDescription
             // 
-            this.label41.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(281, 93);
-            this.label41.Name = "label41";
-            this.label41.Size = new System.Drawing.Size(60, 13);
-            this.label41.TabIndex = 24;
-            this.label41.Text = "Savestates";
+            this.TI83SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83SavestatesDescription.AutoSize = true;
+            this.TI83SavestatesDescription.Location = new System.Drawing.Point(281, 93);
+            this.TI83SavestatesDescription.Name = "TI83SavestatesDescription";
+            this.TI83SavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.TI83SavestatesDescription.TabIndex = 24;
+            this.TI83SavestatesDescription.Text = "Savestates";
             // 
-            // label42
+            // TI83ROMsDescription
             // 
-            this.label42.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(281, 63);
-            this.label42.Name = "label42";
-            this.label42.Size = new System.Drawing.Size(37, 13);
-            this.label42.TabIndex = 30;
-            this.label42.Text = "ROMs";
+            this.TI83ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83ROMsDescription.AutoSize = true;
+            this.TI83ROMsDescription.Location = new System.Drawing.Point(281, 63);
+            this.TI83ROMsDescription.Name = "TI83ROMsDescription";
+            this.TI83ROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.TI83ROMsDescription.TabIndex = 30;
+            this.TI83ROMsDescription.Text = "ROMs";
             // 
             // TI83SavestatesBox
             // 
@@ -1525,15 +1526,15 @@
             this.TI83BrowseSaveRAM.Text = "Browse";
             this.TI83BrowseSaveRAM.UseVisualStyleBackColor = true;
             // 
-            // label43
+            // TI83SaveRAMDescription
             // 
-            this.label43.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(281, 123);
-            this.label43.Name = "label43";
-            this.label43.Size = new System.Drawing.Size(59, 13);
-            this.label43.TabIndex = 27;
-            this.label43.Text = "Save RAM";
+            this.TI83SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.TI83SaveRAMDescription.AutoSize = true;
+            this.TI83SaveRAMDescription.Location = new System.Drawing.Point(281, 123);
+            this.TI83SaveRAMDescription.Name = "TI83SaveRAMDescription";
+            this.TI83SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.TI83SaveRAMDescription.TabIndex = 27;
+            this.TI83SaveRAMDescription.Text = "Save RAM";
             // 
             // TI83SaveRAMBox
             // 
@@ -1549,16 +1550,16 @@
             // 
             this.tabPage7.Controls.Add(this.AVIBox);
             this.tabPage7.Controls.Add(this.MoviesBox);
-            this.tabPage7.Controls.Add(this.label13);
+            this.tabPage7.Controls.Add(this.AVIDescription);
             this.tabPage7.Controls.Add(this.BrowseAVI);
             this.tabPage7.Controls.Add(this.WatchBox);
             this.tabPage7.Controls.Add(this.BrowseLua);
-            this.tabPage7.Controls.Add(this.label9);
-            this.tabPage7.Controls.Add(this.label11);
+            this.tabPage7.Controls.Add(this.WatchDescription);
+            this.tabPage7.Controls.Add(this.LuaDescription);
             this.tabPage7.Controls.Add(this.BrowseWatch);
             this.tabPage7.Controls.Add(this.LuaBox);
             this.tabPage7.Controls.Add(this.BrowseMovies);
-            this.tabPage7.Controls.Add(this.label10);
+            this.tabPage7.Controls.Add(this.MoviesDescription);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Size = new System.Drawing.Size(435, 251);
@@ -1584,16 +1585,17 @@
             this.BrowseBase.TabIndex = 24;
             this.BrowseBase.Text = "Browse";
             this.BrowseBase.UseVisualStyleBackColor = true;
+            this.BrowseBase.Click += new System.EventHandler(this.BrowseBase_Click);
             // 
-            // label14
+            // BaseDescription
             // 
-            this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(298, 31);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(31, 13);
-            this.label14.TabIndex = 25;
-            this.label14.Text = "Base";
+            this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BaseDescription.AutoSize = true;
+            this.BaseDescription.Location = new System.Drawing.Point(298, 31);
+            this.BaseDescription.Name = "BaseDescription";
+            this.BaseDescription.Size = new System.Drawing.Size(63, 13);
+            this.BaseDescription.TabIndex = 25;
+            this.BaseDescription.Text = "Base Folder";
             // 
             // RecentForROMs
             // 
@@ -1606,6 +1608,16 @@
             this.RecentForROMs.UseVisualStyleBackColor = true;
             this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForROMs_CheckedChanged);
             // 
+            // SaveButton
+            // 
+            this.SaveButton.Location = new System.Drawing.Point(12, 390);
+            this.SaveButton.Name = "SaveButton";
+            this.SaveButton.Size = new System.Drawing.Size(75, 23);
+            this.SaveButton.TabIndex = 27;
+            this.SaveButton.Text = "&Save";
+            this.SaveButton.UseVisualStyleBackColor = true;
+            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            // 
             // PathConfig
             // 
             this.AcceptButton = this.OK;
@@ -1613,11 +1625,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(468, 425);
+            this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.RecentForROMs);
             this.Controls.Add(this.BasePathBox);
             this.Controls.Add(this.BrowseBase);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.label14);
+            this.Controls.Add(this.BaseDescription);
             this.Controls.Add(this.OK);
             this.Controls.Add(this.Cancel);
             this.Name = "PathConfig";
@@ -1649,40 +1662,40 @@
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.TextBox WatchBox;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label WatchDescription;
         private System.Windows.Forms.Button BrowseWatch;
         private System.Windows.Forms.TextBox MoviesBox;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label MoviesDescription;
         private System.Windows.Forms.Button BrowseMovies;
         private System.Windows.Forms.TextBox LuaBox;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label LuaDescription;
         private System.Windows.Forms.Button BrowseLua;
         private System.Windows.Forms.TextBox AVIBox;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label AVIDescription;
         private System.Windows.Forms.Button BrowseAVI;
         private System.Windows.Forms.TextBox NESScreenshotsBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label NESScreenshotsDescription;
         private System.Windows.Forms.Button BrowseNESScreenshots;
         private System.Windows.Forms.TextBox NESROMsBox;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label NESROMsDescription;
         private System.Windows.Forms.Button BrowseNESROMs;
         private System.Windows.Forms.TextBox NESSaveRAMBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label NESSaveRAMDescription;
         private System.Windows.Forms.Button BrowseNESSaveRAM;
         private System.Windows.Forms.TextBox NESSavestatesBox;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label NESSavestatesDescription;
         private System.Windows.Forms.Button BrowseNESSavestates;
         private System.Windows.Forms.TextBox Sega8ScreenshotsBox;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label Sega8ScreenshotsDescription;
         private System.Windows.Forms.Button Sega8BrowseScreenshots;
         private System.Windows.Forms.TextBox Sega8ROMsBox;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label Sega8ROMsDescription;
         private System.Windows.Forms.Button Sega8BrowseROMs;
         private System.Windows.Forms.TextBox Sega8SaveRAMBox;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label Sega8SaveRAM;
         private System.Windows.Forms.Button Sega8BrowseSaveRAM;
         private System.Windows.Forms.TextBox Sega8SavestatesBox;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label Sega8SavestatesDescription;
         private System.Windows.Forms.Button Sega8BrowseSavestates;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
@@ -1692,93 +1705,94 @@
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TabPage tabPage6;
         private System.Windows.Forms.TextBox NESBaseBox;
-        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label NESBaseDescription;
         private System.Windows.Forms.Button BrowseNESBase;
         private System.Windows.Forms.TextBox Sega8BaseBox;
-        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label Sega8BaseDescription;
         private System.Windows.Forms.Button Sega8BrowseBase;
         private System.Windows.Forms.TabPage tabPage7;
         private System.Windows.Forms.TextBox GenesisBaseBox;
         private System.Windows.Forms.TextBox GenesisScreenshotsBox;
         private System.Windows.Forms.Button GenesisBrowseSaveRAM;
         private System.Windows.Forms.Button GenesisBrowseROMs;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.Label GenesisBaseDescription;
+        private System.Windows.Forms.Label GenesisSaveRAMDescription;
         private System.Windows.Forms.TextBox GenesisSavestatesBox;
-        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.Label GenesisScreenshotsDescription;
         private System.Windows.Forms.TextBox GenesisSaveRAMBox;
-        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label GenesisROMsDescription;
         private System.Windows.Forms.Button GenesisBrowseBase;
-        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label GenesisSavestatesDescription;
         private System.Windows.Forms.Button GenesisBrowseSavestates;
         private System.Windows.Forms.Button GenesisBrowseScreenshots;
         private System.Windows.Forms.TextBox GenesisROMsBox;
         private System.Windows.Forms.TextBox PCEBaseBox;
         private System.Windows.Forms.TextBox PCEScreenshotsBox;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label PCEBaseDescription;
+        private System.Windows.Forms.Label PCEScreenshotsDescription;
         private System.Windows.Forms.Button PCEBrowseBase;
         private System.Windows.Forms.Button PCEBrowseScreenshots;
         private System.Windows.Forms.TextBox PCEROMsBox;
         private System.Windows.Forms.Button PCEBrowseSavestates;
-        private System.Windows.Forms.Label label31;
-        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.Label PCESavestatesDescription;
+        private System.Windows.Forms.Label PCEROMsDescription;
         private System.Windows.Forms.TextBox PCESavestatesBox;
         private System.Windows.Forms.Button PCEBrowseROMs;
         private System.Windows.Forms.Button PCEBrowseSaveRAM;
-        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label PCESaveRAMDescription;
         private System.Windows.Forms.TextBox PCESaveRAMBox;
         private System.Windows.Forms.TextBox GBBaseBox;
         private System.Windows.Forms.TextBox GBScreenshotsBox;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Label GBBaseDescription;
+        private System.Windows.Forms.Label GBScreenshotsDescription;
         private System.Windows.Forms.Button GBBrowseBase;
         private System.Windows.Forms.Button GBBrowseScreenshots;
         private System.Windows.Forms.TextBox GBROMsBox;
         private System.Windows.Forms.Button GBBrowseSavestates;
-        private System.Windows.Forms.Label label36;
-        private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.Label GBSavestatesDescription;
+        private System.Windows.Forms.Label GBROMsDescription;
         private System.Windows.Forms.TextBox GBSavestatesBox;
         private System.Windows.Forms.Button GBBrowseROMs;
         private System.Windows.Forms.Button GBBrowseSaveRAM;
-        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label GBSaveRAMDescription;
         private System.Windows.Forms.TextBox GBSaveRAMBox;
         private System.Windows.Forms.TextBox TI83BaseBox;
         private System.Windows.Forms.TextBox TI83ScreenshotsBox;
-        private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.Label TI83BaseDescription;
+        private System.Windows.Forms.Label TI83ScreenshotsDescription;
         private System.Windows.Forms.Button TI83BrowseBase;
         private System.Windows.Forms.Button TI83BrowseScreenshots;
         private System.Windows.Forms.TextBox TI83ROMsBox;
         private System.Windows.Forms.Button TI83BrowseSavestates;
-        private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.Label label42;
+        private System.Windows.Forms.Label TI83SavestatesDescription;
+        private System.Windows.Forms.Label TI83ROMsDescription;
         private System.Windows.Forms.TextBox TI83SavestatesBox;
         private System.Windows.Forms.Button TI83BrowseROMs;
         private System.Windows.Forms.Button TI83BrowseSaveRAM;
-        private System.Windows.Forms.Label label43;
+        private System.Windows.Forms.Label TI83SaveRAMDescription;
         private System.Windows.Forms.TextBox TI83SaveRAMBox;
         private System.Windows.Forms.TextBox BasePathBox;
         private System.Windows.Forms.Button BrowseBase;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label BaseDescription;
         private System.Windows.Forms.CheckBox RecentForROMs;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label NESCheatsDescription;
         private System.Windows.Forms.Button NESBrowseCheats;
         private System.Windows.Forms.TextBox NESCheatsBox;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label Sega8CheatsDescription;
         private System.Windows.Forms.Button Sega8BrowseCheats;
         private System.Windows.Forms.TextBox Sega8CheatsBox;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label GenesisCheatsDescription;
         private System.Windows.Forms.Button GenesisBrowseCheats;
         private System.Windows.Forms.TextBox GenesisCheatsBox;
-        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label PCECheatsDescription;
         private System.Windows.Forms.Button PCEBrowseCheats;
         private System.Windows.Forms.TextBox PCECheatsBox;
-        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label GBCheatsDescription;
         private System.Windows.Forms.Button GBBrowseCheats;
         private System.Windows.Forms.TextBox GBCheatsBox;
-        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label TI83CheatsDescription;
         private System.Windows.Forms.Button TI83BrowseBox;
         private System.Windows.Forms.TextBox TI83CheatsBox;
+        private System.Windows.Forms.Button SaveButton;
     }
 }

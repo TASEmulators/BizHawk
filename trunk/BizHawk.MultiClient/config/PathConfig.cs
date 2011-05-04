@@ -24,8 +24,6 @@ namespace BizHawk.MultiClient
         //Make all base path text boxes not allow  %recent%
         //All path text boxes should do some kind of error checking
 
-        string EXEPath; //TODO: public variable in main, populated at run time
-
         public PathConfig()
         {
             InitializeComponent();
@@ -33,157 +31,12 @@ namespace BizHawk.MultiClient
 
         private void PathConfig_Load(object sender, EventArgs e)
         {
-            EXEPath = GetExePathAbsolute();
             WatchBox.Text = Global.Config.WatchPath;
         }
 
-        //--------------------------------------
-        //TODO: Move these to Main (or util if EXE path is same
-        private string GetExePathAbsolute()
-        {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
-        }
-
-        private string GetBasePathAbsolute()
-        {
-            //Gets absolute base as derived from EXE
-
-            if (Global.Config.BasePath.Length < 1) //If empty, then EXE path
-                return GetExePathAbsolute();
-            
-            if (Global.Config.BasePath.Substring(0,5) == "%exe%")
-                return GetExePathAbsolute();
-            if (Global.Config.BasePath[0] == '.')
-            {
-                if (Global.Config.BasePath.Length == 1)
-                    return GetExePathAbsolute();
-                else
-                {
-                    if (Global.Config.BasePath.Length == 2 &&
-                        Global.Config.BasePath == ".\\")
-                        return GetExePathAbsolute();
-                    else
-                    {
-                        string tmp = Global.Config.BasePath;
-                        tmp = tmp.Remove(0, 1);
-                        tmp = tmp.Insert(0, GetExePathAbsolute());
-                    }
-                }
-            }
-            
-            if (Global.Config.BasePath.Substring(0, 2) == "..")
-                return RemoveParents(Global.Config.BasePath, GetExePathAbsolute());   
-            
-            //In case of error, return EXE path
-            return GetExePathAbsolute();
-        }
-        
-
-        private string MakeAbsolutePath(string path)
-        {
-            //This function translates relative path and special identifiers in absolute paths
-            
-            if (path.Length < 1)
-                return GetBasePathAbsolute();
-
-            if (path == "%recent%")
-            {
-                //return last used directory (environment path)
-            }
-
-            if (path.Substring(0, 5) == "%exe%")
-            {
-                if (path.Length == 5)
-                    return GetExePathAbsolute();
-                else
-                {
-                    string tmp = path.Remove(0, 5);
-                    tmp = tmp.Insert(0, GetExePathAbsolute());
-                    return tmp;
-                }
-            }
-
-            if (path[0] == '.')
-            {
-                if (path.Length == 1)
-                    return GetBasePathAbsolute();
-                else
-                {
-                    string tmp = path.Remove(0, 1);
-                    tmp = tmp.Insert(0, GetBasePathAbsolute());
-                    return tmp;
-                }
-            }
-            
-            //If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
-
-            if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
-            {
-                if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
-                    return path;
-                else
-                    return GetExePathAbsolute(); //bad path
-            }
-
-            //all pad paths default to EXE
-            return GetExePathAbsolute();
-        }
-
-        private string RemoveParents(string path, string workingpath)
-        {
-            //determines number of parents, then removes directories from working path, return absolute path result
-            //Ex: "..\..\Bob\", "C:\Projects\Emulators\Bizhawk" will return "C:\Projects\Bob\" 
-            int x = NumParentDirectories(path);
-            if (x > 0)
-            {
-                int y = HowMany(path, "..\\");
-                int z = HowMany(workingpath, "\\");
-                if (y >= z)
-                {
-                    //Return drive letter only, working path must be absolute?
-                }
-                return "";
-            }
-            else return path;            
-        }
-
-        private int NumParentDirectories(string path)
-        {
-            //determine the number of parent directories in path and return result
-            int x = HowMany(path, '\\');
-            if (x > 0)
-            {
-                return HowMany(path, "..\\");
-            }
-            return 0;
-        }
-
-        public int HowMany(string str, string s)
-        {
-            int count = 0;
-            for (int x = 0; x < (str.Length - s.Length); x++)
-            {
-                if (str.Substring(x, s.Length) == s)
-                    count++;
-            }
-            return count;
-        }
-
-        public int HowMany(string str, char c)
-        {
-            int count = 0;
-            for (int x = 0; x < str.Length; x++)
-            {
-                if (str[x] == c)
-                    count++;
-            }
-            return count;
-        }
-
-        //-------------------------------------------------------
-
         private void SaveSettings()
         {
+            Global.Config.BasePath = BasePathBox.Text;
             Global.Config.WatchPath = WatchBox.Text;
         }
 
@@ -238,15 +91,29 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void BrowseWatch_Click(object sender, EventArgs e)
+        private void BrowseFolder(TextBox box, string Name)
         {
             FolderBrowserDialog f = new FolderBrowserDialog();
-            f.Description = "Set the directory for Watch (.wch) files";
-            f.SelectedPath = "C:\\Repos";
-            //TODO: find a way to set root folder to base
+            f.Description = "Set the directory for " + Name;
+            f.SelectedPath = PathManager.MakeAbsolutePath(box.Text);
             DialogResult result = f.ShowDialog();
             if (result == DialogResult.OK)
-                WatchBox.Text = f.SelectedPath;
+                box.Text = f.SelectedPath;
+        }
+
+        private void BrowseWatch_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(WatchBox, WatchDescription.Text);
+        }
+
+        private void BrowseBase_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(BasePathBox, BaseDescription.Text);
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
         }
     }
 }
