@@ -21,13 +21,54 @@
         // Directories
         public string LastRomPath = ".";
         public string BasePath = ".";
+        
         public string BaseNES = ".\\NES";
+        public string PathNESROMs = ".";
+        public string PathNESSavestates = ".\\State";
+        public string PathNESSaveRAM = ".\\SaveRAM";
+        public string PathNESScreenshots = ".\\Screenshots";
+        public string PathNESCheats = ".\\Cheats";
+
         public string BaseSMS = ".\\SMS";
+        public string PathSMSROMs = ".";
+        public string PathSMSSavestates = ".\\State";
+        public string PathSMSSaveRAM = ".\\SaveRAM";
+        public string PathSMSScreenshots = ".\\Screenshots";
+        public string PathSMSCheats = ".\\Cheats";
+
         public string BaseGenesis = ".\\Genesis";
+        public string PathGenesisROMs = ".";
+        public string PathGenesisSavestates = ".\\State";
+        public string PathGenesisSaveRAM = ".\\SaveRAM";
+        public string PathGenesisScreenshots = ".\\Screenshots";
+        public string PathGenesisCheats = ".\\Cheats";
+
         public string BasePCE = ".\\PCE";
+        public string PathPCEROMs = ".";
+        public string PathPCESavestates = ".\\State";
+        public string PathPCESaveRAM = ".\\SaveRAM";
+        public string PathPCEScreenshots = ".\\Screenshots";
+        public string PathPCECheats = ".\\Cheats";
+
         public string BaseGameboy = ".\\Gameboy";
+        public string PathGBROMs = ".";
+        public string PathGBSavestates = ".\\State";
+        public string PathGBSaveRAM = ".\\SaveRAM";
+        public string PathGBScreenshots = ".\\Screenshots";
+        public string PathGBCheats = ".\\Cheats";
+
         public string BaseTI83 = ".\\TI83";
+        public string PathTI83ROMs = ".";
+        public string PathTI83Savestates = ".\\State";
+        public string PathTI83SaveRAM = ".\\SaveRAM";
+        public string PathTI83Screenshots = ".\\Screenshots";
+        public string PathTI83Cheats = ".\\Cheats";
+
+        public string MoviesPath = ".\\Movies";
+        public string LuaPath = ".\\Lua";
         public string WatchPath = ".";
+        public string AVIPath = ".";
+        
         
         // General Client Settings
         public int TargetZoomFactor = 2;
