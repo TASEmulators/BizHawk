@@ -30,6 +30,7 @@
         {
             this.Cancel = new System.Windows.Forms.Button();
             this.OK = new System.Windows.Forms.Button();
+            this.BrowseMovies = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Cancel
@@ -55,6 +56,16 @@
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.OK_Click);
             // 
+            // BrowseMovies
+            // 
+            this.BrowseMovies.Location = new System.Drawing.Point(234, 34);
+            this.BrowseMovies.Name = "BrowseMovies";
+            this.BrowseMovies.Size = new System.Drawing.Size(75, 23);
+            this.BrowseMovies.TabIndex = 2;
+            this.BrowseMovies.Text = "Browse...";
+            this.BrowseMovies.UseVisualStyleBackColor = true;
+            this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
+            // 
             // PlayMovie
             // 
             this.AcceptButton = this.OK;
@@ -62,6 +73,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(321, 290);
+            this.Controls.Add(this.BrowseMovies);
             this.Controls.Add(this.OK);
             this.Controls.Add(this.Cancel);
             this.MaximizeBox = false;
@@ -76,5 +88,6 @@
 
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Button OK;
+        private System.Windows.Forms.Button BrowseMovies;
     }
 }
