@@ -34,8 +34,10 @@ namespace BizHawk.MultiClient
 
 		private void luaConsoleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new BizHawk.MultiClient.tools.LuaWindow();
-			window.Show();
+			//var window = new BizHawk.MultiClient.tools.LuaWindow();
+			//window.Show();
+            LuaConsole l = new LuaConsole();
+            l.Show();
 		}
 
 		private void miLimitFramerate_Click(object sender, EventArgs e)
