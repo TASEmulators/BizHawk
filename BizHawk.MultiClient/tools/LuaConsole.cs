@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using LuaInterface;
 
 namespace BizHawk.MultiClient
 {
@@ -18,6 +19,7 @@ namespace BizHawk.MultiClient
         int defaultHeight;
 
         List<LuaFiles> luaList = new List<LuaFiles>();
+        LuaImplementation LuaImp;
         string lastLuaFile = "";
 
         private List<LuaFiles> GetLuaFileList()
@@ -29,9 +31,20 @@ namespace BizHawk.MultiClient
             return l;
         }
 
+        public LuaConsole get()
+        {
+            return this;
+        }
+
+        public void AddText(string s)
+        {
+            OutputBox.Text += s;
+        }
+
         public LuaConsole()
         {
             InitializeComponent();
+            LuaImp = new LuaImplementation(this);
             Closing += (o, e) => SaveConfigSettings();
             LuaListView.QueryItemText += new QueryItemTextHandler(LuaListView_QueryItemText);
             LuaListView.QueryItemBkColor += new QueryItemBkColorHandler(LuaListView_QueryItemBkColor);
@@ -114,13 +127,20 @@ namespace BizHawk.MultiClient
             return file;
         }
 
+        private void LoadLuaFile(string path)
+        {
+            LuaFiles l = new LuaFiles("", path, true);
+            luaList.Add(l);
+
+            LuaImp.DoLuaFile(path);
+        }
 
         private void OpenLuaFile()
         {
             var file = GetFileFromUser();
             if (file != null)
             {
-                //LoadLuaFile(file.FullName, false);
+                LoadLuaFile(file.FullName);
                 //DisplayLuaList();
             }
         }

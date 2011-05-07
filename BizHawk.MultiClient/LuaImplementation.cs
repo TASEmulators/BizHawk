@@ -11,11 +11,12 @@ namespace BizHawk.MultiClient
     class LuaImplementation
     {
         Lua lua = new Lua();
-        LuaWindow Caller;
+        LuaConsole Caller;
+
         public static string[] MemoryFunctions = new string[] {
             "readbyte",
             "writebyte"};           
-        public LuaImplementation(LuaWindow passed)
+        public LuaImplementation(LuaConsole passed)
         {
             Caller = passed.get();
             lua.RegisterFunction("print",this, this.GetType().GetMethod("print"));
@@ -24,8 +25,8 @@ namespace BizHawk.MultiClient
             {
                 lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod(MemoryFunctions[i]));
 			}
-
         }
+
         public void DoLuaFile(string File)
         {
             lua.DoFile(File);
