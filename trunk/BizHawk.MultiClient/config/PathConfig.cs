@@ -159,8 +159,7 @@ namespace BizHawk.MultiClient
         {
             FolderBrowserDialog f = new FolderBrowserDialog();
             f.Description = "Set the directory for " + Name;
-            //f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
-            f.SelectedPath = Global.Config.LastRomPath;
+            f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
             DialogResult result = f.ShowDialog();
             if (result == DialogResult.OK)
                 box.Text = f.SelectedPath;

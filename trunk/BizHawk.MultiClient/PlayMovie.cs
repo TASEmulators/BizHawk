@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
         private void BrowseMovies_Click(object sender, EventArgs e)
         {
             OpenFileDialog o = new OpenFileDialog();
-            o.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath);
+            o.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
             if (o.ShowDialog() == DialogResult.OK)
             {
 
