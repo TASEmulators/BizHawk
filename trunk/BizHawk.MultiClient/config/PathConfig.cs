@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
         //TODO config path under base, config will default to %exe%
         //Think of other modifiers (perhaps all environment paths?)
         //If enough modifiers, path boxes can do a pull down of suggestions when user types %
+        //Game Gear and SG-1000 need their own path config
 
         //******************
         //Modifiers
@@ -47,6 +48,7 @@ namespace BizHawk.MultiClient
 
         private void PathConfig_Load(object sender, EventArgs e)
         {
+            RecentForROMs.Checked = Global.Config.UseRecentForROMs;
             BasePathBox.Text = Global.Config.BasePath;
             
             NESBaseBox.Text = Global.Config.BaseNES;
@@ -59,7 +61,7 @@ namespace BizHawk.MultiClient
             Sega8BaseBox.Text = Global.Config.BaseSMS;
             Sega8ROMsBox.Text = Global.Config.PathSMSROMs;
             Sega8SavestatesBox.Text = Global.Config.PathSMSSavestates;
-            Sega8SaveRAMDescription.Text = Global.Config.PathSMSSaveRAM;
+            Sega8SaveRAMBox.Text = Global.Config.PathSMSSaveRAM;
             Sega8ScreenshotsBox.Text = Global.Config.PathSMSScreenshots;
             Sega8CheatsBox.Text = Global.Config.PathSMSCheats;
 
@@ -122,6 +124,7 @@ namespace BizHawk.MultiClient
 
         private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
         {
+            Global.Config.UseRecentForROMs = RecentForROMs.Checked;
             if (RecentForROMs.Checked)
             {
                 NESROMsBox.Enabled = false;
@@ -135,7 +138,14 @@ namespace BizHawk.MultiClient
                 GBROMsBox.Enabled = false;
                 GBBrowseROMs.Enabled = false;
                 TI83ROMsBox.Enabled = false;
-                TI83BrowseROMs.Enabled = false;     
+                TI83BrowseROMs.Enabled = false;
+
+                NESROMsDescription.Enabled = false;
+                Sega8ROMsDescription.Enabled = false;
+                GenesisROMsDescription.Enabled = false;
+                PCEROMsDescription.Enabled = false;
+                GBROMsDescription.Enabled = false;
+                TI83ROMsDescription.Enabled = false;
             }
             else
             {
@@ -151,6 +161,13 @@ namespace BizHawk.MultiClient
                 GBBrowseROMs.Enabled = true;
                 TI83ROMsBox.Enabled = true;
                 TI83BrowseROMs.Enabled = true;
+
+                NESROMsDescription.Enabled = true;
+                Sega8ROMsDescription.Enabled = true;
+                GenesisROMsDescription.Enabled = true;
+                PCEROMsDescription.Enabled = true;
+                GBROMsDescription.Enabled = true;
+                TI83ROMsDescription.Enabled = true;
             }
         }
 
