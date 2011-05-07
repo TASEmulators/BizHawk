@@ -50,8 +50,31 @@ namespace BizHawk.MultiClient
             return GetExePathAbsolute();
         }
 
+        public static string GetPlatformBase(string system)
+        {
+            switch (system)
+            {
+                case "NES":
+                    return Global.Config.BaseNES;
+                case "SG":
+                case "GG":
+                case "SMS":
+                    return Global.Config.BaseSMS;
+                case "SGX":
+                case "PCE":
+                    return Global.Config.BasePCE;
+                case "TI83":
+                    return Global.Config.BaseTI83;
+                case "GEN":
+                    return Global.Config.BaseGenesis;
+                case "GB":
+                    return Global.Config.BaseGameboy;
+                default:
+                    return "";
+            }
+        }
 
-        public static string MakeAbsolutePath(string path)
+        public static string MakeAbsolutePath(string path, string system)
         {
             //This function translates relative path and special identifiers in absolute paths
 
@@ -77,11 +100,14 @@ namespace BizHawk.MultiClient
 
             if (path[0] == '.')
             {
+                string tmp = path;
+                tmp = tmp.Remove(0, 1);
+                tmp = tmp.Insert(0, GetPlatformBase(system));
                 if (path.Length == 1)
                     return GetBasePathAbsolute();
                 else
                 {
-                    string tmp = path.Remove(0, 1);
+                    tmp = path.Remove(0, 1);
                     tmp = tmp.Insert(0, GetBasePathAbsolute());
                     return tmp;
                 }
