@@ -195,6 +195,13 @@
         public int CheatsDomainWidth = -1;
         public int CheatsOnWidth = -1;
         
+        // TAStudio Dialog
+        public bool TAStudioSaveWindowPosition = true;
+        public int TASWndx = -1;
+        public int TASWndy = -1;
+        public int TASWidth = -1;
+        public int TASHeight = -1;
+
         // NES Game Genie Encoder/Decoder
         public bool NESGGAutoload = false;
         public bool NESGGSaveWindowPosition = true;
