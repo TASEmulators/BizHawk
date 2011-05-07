@@ -58,7 +58,7 @@
             this.Sega8ROMsDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseROMs = new System.Windows.Forms.Button();
             this.Sega8SaveRAMBox = new System.Windows.Forms.TextBox();
-            this.Sega8SaveRAM = new System.Windows.Forms.Label();
+            this.Sega8SaveRAMDescription = new System.Windows.Forms.Label();
             this.Sega8BrowseSaveRAM = new System.Windows.Forms.Button();
             this.Sega8SavestatesBox = new System.Windows.Forms.TextBox();
             this.Sega8SavestatesDescription = new System.Windows.Forms.Label();
@@ -434,6 +434,7 @@
             this.Sega8BrowseScreenshots.TabIndex = 15;
             this.Sega8BrowseScreenshots.Text = "Browse";
             this.Sega8BrowseScreenshots.UseVisualStyleBackColor = true;
+            this.Sega8BrowseScreenshots.Click += new System.EventHandler(this.Sega8BrowseScreenshots_Click);
             // 
             // Sega8ROMsBox
             // 
@@ -463,6 +464,7 @@
             this.Sega8BrowseROMs.TabIndex = 11;
             this.Sega8BrowseROMs.Text = "Browse";
             this.Sega8BrowseROMs.UseVisualStyleBackColor = true;
+            this.Sega8BrowseROMs.Click += new System.EventHandler(this.Sega8BrowseROMs_Click);
             // 
             // Sega8SaveRAMBox
             // 
@@ -473,15 +475,15 @@
             this.Sega8SaveRAMBox.Size = new System.Drawing.Size(280, 20);
             this.Sega8SaveRAMBox.TabIndex = 6;
             // 
-            // Sega8SaveRAM
+            // Sega8SaveRAMDescription
             // 
-            this.Sega8SaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Sega8SaveRAM.AutoSize = true;
-            this.Sega8SaveRAM.Location = new System.Drawing.Point(360, 123);
-            this.Sega8SaveRAM.Name = "Sega8SaveRAM";
-            this.Sega8SaveRAM.Size = new System.Drawing.Size(59, 13);
-            this.Sega8SaveRAM.TabIndex = 9;
-            this.Sega8SaveRAM.Text = "Save RAM";
+            this.Sega8SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Sega8SaveRAMDescription.AutoSize = true;
+            this.Sega8SaveRAMDescription.Location = new System.Drawing.Point(360, 123);
+            this.Sega8SaveRAMDescription.Name = "Sega8SaveRAMDescription";
+            this.Sega8SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.Sega8SaveRAMDescription.TabIndex = 9;
+            this.Sega8SaveRAMDescription.Text = "Save RAM";
             // 
             // Sega8BrowseSaveRAM
             // 
@@ -492,6 +494,7 @@
             this.Sega8BrowseSaveRAM.TabIndex = 7;
             this.Sega8BrowseSaveRAM.Text = "Browse";
             this.Sega8BrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.Sega8BrowseSaveRAM.Click += new System.EventHandler(this.Sega8BrowseSaveRAM_Click);
             // 
             // Sega8SavestatesBox
             // 
@@ -521,6 +524,7 @@
             this.Sega8BrowseSavestates.TabIndex = 3;
             this.Sega8BrowseSavestates.Text = "Browse";
             this.Sega8BrowseSavestates.UseVisualStyleBackColor = true;
+            this.Sega8BrowseSavestates.Click += new System.EventHandler(this.Sega8BrowseSavestates_Click);
             // 
             // AVIBox
             // 
@@ -680,7 +684,7 @@
             this.tabPage2.Controls.Add(this.Sega8SavestatesBox);
             this.tabPage2.Controls.Add(this.Sega8BrowseROMs);
             this.tabPage2.Controls.Add(this.Sega8BrowseSaveRAM);
-            this.tabPage2.Controls.Add(this.Sega8SaveRAM);
+            this.tabPage2.Controls.Add(this.Sega8SaveRAMDescription);
             this.tabPage2.Controls.Add(this.Sega8SaveRAMBox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -709,6 +713,7 @@
             this.Sega8BrowseCheats.TabIndex = 25;
             this.Sega8BrowseCheats.Text = "Browse";
             this.Sega8BrowseCheats.UseVisualStyleBackColor = true;
+            this.Sega8BrowseCheats.Click += new System.EventHandler(this.Sega8BrowseCheats_Click);
             // 
             // Sega8CheatsBox
             // 
@@ -747,6 +752,7 @@
             this.Sega8BrowseBase.TabIndex = 20;
             this.Sega8BrowseBase.Text = "Browse";
             this.Sega8BrowseBase.UseVisualStyleBackColor = true;
+            this.Sega8BrowseBase.Click += new System.EventHandler(this.Sega8BrowseBase_Click);
             // 
             // tabPage3
             // 
@@ -794,6 +800,7 @@
             this.GenesisBrowseCheats.TabIndex = 38;
             this.GenesisBrowseCheats.Text = "Browse";
             this.GenesisBrowseCheats.UseVisualStyleBackColor = true;
+            this.GenesisBrowseCheats.Click += new System.EventHandler(this.GenesisBrowseCheats_Click);
             // 
             // GenesisCheatsBox
             // 
@@ -831,6 +838,7 @@
             this.GenesisBrowseSaveRAM.TabIndex = 26;
             this.GenesisBrowseSaveRAM.Text = "Browse";
             this.GenesisBrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.GenesisBrowseSaveRAM.Click += new System.EventHandler(this.GenesisBrowseSaveRAM_Click);
             // 
             // GenesisBrowseROMs
             // 
@@ -841,6 +849,7 @@
             this.GenesisBrowseROMs.TabIndex = 29;
             this.GenesisBrowseROMs.Text = "Browse";
             this.GenesisBrowseROMs.UseVisualStyleBackColor = true;
+            this.GenesisBrowseROMs.Click += new System.EventHandler(this.GenesisBrowseROMs_Click);
             // 
             // GenesisBaseDescription
             // 
@@ -909,6 +918,7 @@
             this.GenesisBrowseBase.TabIndex = 35;
             this.GenesisBrowseBase.Text = "Browse";
             this.GenesisBrowseBase.UseVisualStyleBackColor = true;
+            this.GenesisBrowseBase.Click += new System.EventHandler(this.GenesisBrowseBase_Click);
             // 
             // GenesisSavestatesDescription
             // 
@@ -929,6 +939,7 @@
             this.GenesisBrowseSavestates.TabIndex = 23;
             this.GenesisBrowseSavestates.Text = "Browse";
             this.GenesisBrowseSavestates.UseVisualStyleBackColor = true;
+            this.GenesisBrowseSavestates.Click += new System.EventHandler(this.GenesisBrowseSavestates_Click);
             // 
             // GenesisBrowseScreenshots
             // 
@@ -939,6 +950,7 @@
             this.GenesisBrowseScreenshots.TabIndex = 32;
             this.GenesisBrowseScreenshots.Text = "Browse";
             this.GenesisBrowseScreenshots.UseVisualStyleBackColor = true;
+            this.GenesisBrowseScreenshots.Click += new System.EventHandler(this.GenesisBrowseScreenshots_Click);
             // 
             // GenesisROMsBox
             // 
@@ -995,6 +1007,7 @@
             this.PCEBrowseCheats.TabIndex = 38;
             this.PCEBrowseCheats.Text = "Browse";
             this.PCEBrowseCheats.UseVisualStyleBackColor = true;
+            this.PCEBrowseCheats.Click += new System.EventHandler(this.PCEBrowseCheats_Click);
             // 
             // PCECheatsBox
             // 
@@ -1053,6 +1066,7 @@
             this.PCEBrowseBase.TabIndex = 35;
             this.PCEBrowseBase.Text = "Browse";
             this.PCEBrowseBase.UseVisualStyleBackColor = true;
+            this.PCEBrowseBase.Click += new System.EventHandler(this.PCEBrowseBase_Click);
             // 
             // PCEBrowseScreenshots
             // 
@@ -1063,6 +1077,7 @@
             this.PCEBrowseScreenshots.TabIndex = 32;
             this.PCEBrowseScreenshots.Text = "Browse";
             this.PCEBrowseScreenshots.UseVisualStyleBackColor = true;
+            this.PCEBrowseScreenshots.Click += new System.EventHandler(this.PCEBrowseScreenshots_Click);
             // 
             // PCEROMsBox
             // 
@@ -1083,6 +1098,7 @@
             this.PCEBrowseSavestates.TabIndex = 23;
             this.PCEBrowseSavestates.Text = "Browse";
             this.PCEBrowseSavestates.UseVisualStyleBackColor = true;
+            this.PCEBrowseSavestates.Click += new System.EventHandler(this.PCEBrowseSavestates_Click);
             // 
             // PCESavestatesDescription
             // 
@@ -1123,6 +1139,7 @@
             this.PCEBrowseROMs.TabIndex = 29;
             this.PCEBrowseROMs.Text = "Browse";
             this.PCEBrowseROMs.UseVisualStyleBackColor = true;
+            this.PCEBrowseROMs.Click += new System.EventHandler(this.PCEBrowseROMs_Click);
             // 
             // PCEBrowseSaveRAM
             // 
@@ -1133,6 +1150,7 @@
             this.PCEBrowseSaveRAM.TabIndex = 26;
             this.PCEBrowseSaveRAM.Text = "Browse";
             this.PCEBrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.PCEBrowseSaveRAM.Click += new System.EventHandler(this.PCEBrowseSaveRAM_Click);
             // 
             // PCESaveRAMDescription
             // 
@@ -1199,6 +1217,7 @@
             this.GBBrowseCheats.TabIndex = 38;
             this.GBBrowseCheats.Text = "Browse";
             this.GBBrowseCheats.UseVisualStyleBackColor = true;
+            this.GBBrowseCheats.Click += new System.EventHandler(this.GBBrowseCheats_Click);
             // 
             // GBCheatsBox
             // 
@@ -1256,6 +1275,7 @@
             this.GBBrowseBase.TabIndex = 35;
             this.GBBrowseBase.Text = "Browse";
             this.GBBrowseBase.UseVisualStyleBackColor = true;
+            this.GBBrowseBase.Click += new System.EventHandler(this.GBBrowseBase_Click);
             // 
             // GBBrowseScreenshots
             // 
@@ -1266,6 +1286,7 @@
             this.GBBrowseScreenshots.TabIndex = 32;
             this.GBBrowseScreenshots.Text = "Browse";
             this.GBBrowseScreenshots.UseVisualStyleBackColor = true;
+            this.GBBrowseScreenshots.Click += new System.EventHandler(this.GBBrowseScreenshots_Click);
             // 
             // GBROMsBox
             // 
@@ -1285,6 +1306,7 @@
             this.GBBrowseSavestates.TabIndex = 23;
             this.GBBrowseSavestates.Text = "Browse";
             this.GBBrowseSavestates.UseVisualStyleBackColor = true;
+            this.GBBrowseSavestates.Click += new System.EventHandler(this.GBBrowseSavestates_Click);
             // 
             // GBSavestatesDescription
             // 
@@ -1324,6 +1346,7 @@
             this.GBBrowseROMs.TabIndex = 29;
             this.GBBrowseROMs.Text = "Browse";
             this.GBBrowseROMs.UseVisualStyleBackColor = true;
+            this.GBBrowseROMs.Click += new System.EventHandler(this.GBBrowseROMs_Click);
             // 
             // GBBrowseSaveRAM
             // 
@@ -1334,6 +1357,7 @@
             this.GBBrowseSaveRAM.TabIndex = 26;
             this.GBBrowseSaveRAM.Text = "Browse";
             this.GBBrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.GBBrowseSaveRAM.Click += new System.EventHandler(this.GBBrowseSaveRAM_Click);
             // 
             // GBSaveRAMDescription
             // 
@@ -1400,6 +1424,7 @@
             this.TI83BrowseBox.TabIndex = 38;
             this.TI83BrowseBox.Text = "Browse";
             this.TI83BrowseBox.UseVisualStyleBackColor = true;
+            this.TI83BrowseBox.Click += new System.EventHandler(this.TI83BrowseBox_Click);
             // 
             // TI83CheatsBox
             // 
@@ -1457,6 +1482,7 @@
             this.TI83BrowseBase.TabIndex = 35;
             this.TI83BrowseBase.Text = "Browse";
             this.TI83BrowseBase.UseVisualStyleBackColor = true;
+            this.TI83BrowseBase.Click += new System.EventHandler(this.TI83BrowseBase_Click);
             // 
             // TI83BrowseScreenshots
             // 
@@ -1467,6 +1493,7 @@
             this.TI83BrowseScreenshots.TabIndex = 32;
             this.TI83BrowseScreenshots.Text = "Browse";
             this.TI83BrowseScreenshots.UseVisualStyleBackColor = true;
+            this.TI83BrowseScreenshots.Click += new System.EventHandler(this.TI83BrowseScreenshots_Click);
             // 
             // TI83ROMsBox
             // 
@@ -1487,6 +1514,7 @@
             this.TI83BrowseSavestates.TabIndex = 23;
             this.TI83BrowseSavestates.Text = "Browse";
             this.TI83BrowseSavestates.UseVisualStyleBackColor = true;
+            this.TI83BrowseSavestates.Click += new System.EventHandler(this.TI83BrowseSavestates_Click);
             // 
             // TI83SavestatesDescription
             // 
@@ -1526,6 +1554,7 @@
             this.TI83BrowseROMs.TabIndex = 29;
             this.TI83BrowseROMs.Text = "Browse";
             this.TI83BrowseROMs.UseVisualStyleBackColor = true;
+            this.TI83BrowseROMs.Click += new System.EventHandler(this.TI83BrowseROMs_Click);
             // 
             // TI83BrowseSaveRAM
             // 
@@ -1536,6 +1565,7 @@
             this.TI83BrowseSaveRAM.TabIndex = 26;
             this.TI83BrowseSaveRAM.Text = "Browse";
             this.TI83BrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.TI83BrowseSaveRAM.Click += new System.EventHandler(this.TI83BrowseSaveRAM_Click);
             // 
             // TI83SaveRAMDescription
             // 
@@ -1703,7 +1733,7 @@
         private System.Windows.Forms.Label Sega8ROMsDescription;
         private System.Windows.Forms.Button Sega8BrowseROMs;
         private System.Windows.Forms.TextBox Sega8SaveRAMBox;
-        private System.Windows.Forms.Label Sega8SaveRAM;
+        private System.Windows.Forms.Label Sega8SaveRAMDescription;
         private System.Windows.Forms.Button Sega8BrowseSaveRAM;
         private System.Windows.Forms.TextBox Sega8SavestatesBox;
         private System.Windows.Forms.Label Sega8SavestatesDescription;
