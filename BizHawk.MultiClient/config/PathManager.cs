@@ -100,16 +100,23 @@ namespace BizHawk.MultiClient
 
             if (path[0] == '.')
             {
-                string tmp = path;
-                tmp = tmp.Remove(0, 1);
-                tmp = tmp.Insert(0, GetPlatformBase(system));
+                if (system.Length > 0)
+                {
+                    
+                    path = path.Remove(0, 1);
+                    path = path.Insert(0, GetPlatformBase(system));
+                }
                 if (path.Length == 1)
                     return GetBasePathAbsolute();
                 else
                 {
-                    tmp = path.Remove(0, 1);
-                    tmp = tmp.Insert(0, GetBasePathAbsolute());
-                    return tmp;
+                    if (path[0] == '.')
+                    {
+                        path = path.Remove(0, 1);
+                        path = path.Insert(0, GetBasePathAbsolute());
+                    }
+                    
+                    return path;
                 }
             }
 
