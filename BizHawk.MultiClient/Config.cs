@@ -19,6 +19,7 @@
         }
 
         // Directories
+        public bool UseRecentForROMs = false;
         public string LastRomPath = ".";
         public string BasePath = ".";
         
