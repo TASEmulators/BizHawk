@@ -17,12 +17,12 @@ namespace BizHawk.MultiClient.tools
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
-        LuaImplementation LuaImp;
+        //LuaImplementation LuaImp;
 
         public LuaWindow()
         {
             InitializeComponent();
-             LuaImp = new LuaImplementation(this);
+             //LuaImp = new LuaImplementation(this);
              Closing += (o, e) => SaveConfigSettings(); 
         }
         public LuaWindow get()
