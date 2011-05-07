@@ -24,10 +24,16 @@ namespace BizHawk.MultiClient
         //Make all base path text boxes not allow  %recent%
         //All path text boxes should do some kind of error checking
         //Paths should default to their platform specific base before the main base! This will have to be done by specifically calling methods for each platform type
+        //TODO config path under base, config will default to %exe%
 
         public PathConfig()
         {
             InitializeComponent();
+        }
+
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            SaveSettings();
         }
 
         private void PathConfig_Load(object sender, EventArgs e)
@@ -143,8 +149,18 @@ namespace BizHawk.MultiClient
         {
             FolderBrowserDialog f = new FolderBrowserDialog();
             f.Description = "Set the directory for " + Name;
-            //TODO: figure out how to send system parameter
             f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, "");
+            DialogResult result = f.ShowDialog();
+            if (result == DialogResult.OK)
+                box.Text = f.SelectedPath;
+        }
+
+        private void BrowseFolder(TextBox box, string Name, string System)
+        {
+            FolderBrowserDialog f = new FolderBrowserDialog();
+            f.Description = "Set the directory for " + Name;
+            //f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
+            f.SelectedPath = Global.Config.LastRomPath;
             DialogResult result = f.ShowDialog();
             if (result == DialogResult.OK)
                 box.Text = f.SelectedPath;
@@ -159,10 +175,50 @@ namespace BizHawk.MultiClient
         {
             BrowseFolder(BasePathBox, BaseDescription.Text);
         }
-
-        private void SaveButton_Click(object sender, EventArgs e)
+        
+        private void BrowseAVI_Click(object sender, EventArgs e)
         {
-            SaveSettings();
+            BrowseFolder(AVIBox, AVIDescription.Text);
+        }
+
+        private void BrowseLua_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(LuaBox, LuaDescription.Text);
+        }
+
+        private void BrowseMovies_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(MoviesBox, MoviesDescription.Text);
+        }
+
+        private void BrowseNESBase_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESBaseBox, NESBaseDescription.Text);
+        }
+
+        private void BrowseNESROMs_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESROMsBox, NESROMsDescription.Text, "NES");
+        }
+
+        private void BrowseNESSavestates_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESSavestatesBox, NESSavestatesDescription.Text, "NES");
+        }
+
+        private void BrowseNESSaveRAM_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESSaveRAMBox, NESSaveRAMDescription.Text, "NES");
+        }
+
+        private void BrowseNESScreenshots_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESScreenshotsBox, NESScreenshotsDescription.Text, "NES");
+        }
+
+        private void NESBrowseCheats_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(NESCheatsBox, NESCheatsDescription.Text, "NES");
         }
     }
 }

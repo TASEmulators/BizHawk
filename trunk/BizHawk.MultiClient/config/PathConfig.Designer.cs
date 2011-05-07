@@ -254,6 +254,7 @@
             this.BrowseMovies.TabIndex = 11;
             this.BrowseMovies.Text = "Browse";
             this.BrowseMovies.UseVisualStyleBackColor = true;
+            this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
             // 
             // LuaBox
             // 
@@ -283,6 +284,7 @@
             this.BrowseLua.TabIndex = 7;
             this.BrowseLua.Text = "Browse";
             this.BrowseLua.UseVisualStyleBackColor = true;
+            this.BrowseLua.Click += new System.EventHandler(this.BrowseLua_Click);
             // 
             // NESScreenshotsBox
             // 
@@ -312,6 +314,7 @@
             this.BrowseNESScreenshots.TabIndex = 15;
             this.BrowseNESScreenshots.Text = "Browse";
             this.BrowseNESScreenshots.UseVisualStyleBackColor = true;
+            this.BrowseNESScreenshots.Click += new System.EventHandler(this.BrowseNESScreenshots_Click);
             // 
             // NESROMsBox
             // 
@@ -341,6 +344,7 @@
             this.BrowseNESROMs.TabIndex = 11;
             this.BrowseNESROMs.Text = "Browse";
             this.BrowseNESROMs.UseVisualStyleBackColor = true;
+            this.BrowseNESROMs.Click += new System.EventHandler(this.BrowseNESROMs_Click);
             // 
             // NESSaveRAMBox
             // 
@@ -370,6 +374,7 @@
             this.BrowseNESSaveRAM.TabIndex = 7;
             this.BrowseNESSaveRAM.Text = "Browse";
             this.BrowseNESSaveRAM.UseVisualStyleBackColor = true;
+            this.BrowseNESSaveRAM.Click += new System.EventHandler(this.BrowseNESSaveRAM_Click);
             // 
             // NESSavestatesBox
             // 
@@ -399,6 +404,7 @@
             this.BrowseNESSavestates.TabIndex = 3;
             this.BrowseNESSavestates.Text = "Browse";
             this.BrowseNESSavestates.UseVisualStyleBackColor = true;
+            this.BrowseNESSavestates.Click += new System.EventHandler(this.BrowseNESSavestates_Click);
             // 
             // Sega8ScreenshotsBox
             // 
@@ -546,6 +552,7 @@
             this.BrowseAVI.TabIndex = 20;
             this.BrowseAVI.Text = "Browse";
             this.BrowseAVI.UseVisualStyleBackColor = true;
+            this.BrowseAVI.Click += new System.EventHandler(this.BrowseAVI_Click);
             // 
             // tabControl1
             // 
@@ -613,6 +620,7 @@
             this.NESBrowseCheats.TabIndex = 22;
             this.NESBrowseCheats.Text = "Browse";
             this.NESBrowseCheats.UseVisualStyleBackColor = true;
+            this.NESBrowseCheats.Click += new System.EventHandler(this.NESBrowseCheats_Click);
             // 
             // NESCheatsBox
             // 
@@ -652,6 +660,7 @@
             this.BrowseNESBase.TabIndex = 19;
             this.BrowseNESBase.Text = "Browse";
             this.BrowseNESBase.UseVisualStyleBackColor = true;
+            this.BrowseNESBase.Click += new System.EventHandler(this.BrowseNESBase_Click);
             // 
             // tabPage2
             // 
