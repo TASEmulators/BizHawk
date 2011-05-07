@@ -69,7 +69,7 @@ namespace BizHawk.MultiClient.tools
 
         private void IDB_RUN_Click(object sender, EventArgs e)
         {
-            LuaImp.DoLuaFile(IDT_SCRIPTFILE.Text);
+            //LuaImp.DoLuaFile(IDT_SCRIPTFILE.Text);
         }
 
         private void LuaWindow_Load(object sender, EventArgs e)

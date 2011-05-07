@@ -279,6 +279,7 @@
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\LuaFiles.cs" />
+    <Compile Include="tools\LuaText.cs" />
     <Compile Include="tools\LuaWindow.cs">
       <SubType>Form</SubType>
     </Compile>
