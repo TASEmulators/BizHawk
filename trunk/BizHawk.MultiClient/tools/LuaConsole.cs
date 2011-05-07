@@ -129,5 +129,58 @@ namespace BizHawk.MultiClient
         {
             OpenLuaFile();
         }
+
+        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
+        }
+
+        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.LuaConsoleSaveWindowPosition ^= true;
+        }
+
+        private void Toggle()
+        {
+            ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                for (int x = 0; x < indexes.Count; x++)
+                {
+                    if (luaList[indexes[x]].Enabled)
+                        luaList[indexes[x]].Enabled = false;
+                    else
+                        luaList[indexes[x]].Enabled = true;
+                }
+                LuaListView.Refresh();
+            }
+            UpdateNumberOfScripts();
+        }
+
+        private void UpdateNumberOfScripts()
+        {
+            string message = "";
+            int active = 0;
+            for (int x = 0; x < luaList.Count; x++)
+            {
+                if (luaList[x].Enabled)
+                    active++;
+            }
+
+            int L = luaList.Count;
+            if (L == 1)
+                message += L.ToString() + " cheat (" + active.ToString() + " active)";
+            else if (L == 0)
+                message += L.ToString() + " cheats";
+            else
+                message += L.ToString() + " cheats (" + active.ToString() + " active)";
+
+            NumberOfScripts.Text = message;
+        }
+
+        private void LuaListView_DoubleClick(object sender, EventArgs e)
+        {
+            Toggle();
+        }
     }
 }
