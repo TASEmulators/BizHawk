@@ -596,7 +596,6 @@ namespace BizHawk.MultiClient
             if (result != DialogResult.OK)
                 return null;
             var file = new FileInfo(ofd.FileName);
-            Global.Config.LastRomPath = file.DirectoryName;
             return file;
         }
 
@@ -654,7 +653,6 @@ namespace BizHawk.MultiClient
             if (result != DialogResult.OK)
                 return null;
             var file = new FileInfo(sfd.FileName);
-            Global.Config.LastRomPath = file.DirectoryName;
             return file;
         }
 

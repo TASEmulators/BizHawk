@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.LuaListView = new VirtualListView();
             this.Script = new System.Windows.Forms.ColumnHeader();
-            this.Path = new System.Windows.Forms.ColumnHeader();
+            this.PathName = new System.Windows.Forms.ColumnHeader();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,29 +58,29 @@
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // listView1
+            // LuaListView
             // 
-            this.listView1.CheckBoxes = true;
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.LuaListView.CheckBoxes = true;
+            this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Script,
-            this.Path});
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 51);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(293, 278);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.PathName});
+            this.LuaListView.GridLines = true;
+            this.LuaListView.Location = new System.Drawing.Point(12, 51);
+            this.LuaListView.Name = "LuaListView";
+            this.LuaListView.Size = new System.Drawing.Size(293, 278);
+            this.LuaListView.TabIndex = 0;
+            this.LuaListView.UseCompatibleStateImageBehavior = false;
+            this.LuaListView.View = System.Windows.Forms.View.Details;
             // 
             // Script
             // 
             this.Script.Text = "Script";
             this.Script.Width = 92;
             // 
-            // Path
+            // PathName
             // 
-            this.Path.Text = "Path";
-            this.Path.Width = 195;
+            this.PathName.Text = "Path";
+            this.PathName.Width = 195;
             // 
             // menuStrip1
             // 
@@ -127,6 +127,7 @@
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.openToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.openToolStripMenuItem.Text = "&Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -257,7 +258,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(598, 359);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.LuaListView);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -274,8 +275,8 @@
 
         #endregion
 
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ColumnHeader Path;
+        private VirtualListView LuaListView;
+        private System.Windows.Forms.ColumnHeader PathName;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

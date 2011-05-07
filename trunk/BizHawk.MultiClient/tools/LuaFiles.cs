@@ -10,6 +10,7 @@ namespace BizHawk.MultiClient
         public string Name;
         public string Path;
         public bool Enabled;
+        public bool IsSeparator;
 
         public LuaFiles(string path)
         {
@@ -23,6 +24,15 @@ namespace BizHawk.MultiClient
             Name = name;
             Path = path;
             Enabled = enabled;
+            IsSeparator = false;
+        }
+
+        public LuaFiles(bool isSeparator)
+        {
+            IsSeparator = isSeparator;
+            Name = "";
+            Path = "";
+            Enabled = false;
         }
 
         public LuaFiles(LuaFiles l)
@@ -30,6 +40,7 @@ namespace BizHawk.MultiClient
             Name = l.Name;
             Path = l.Path;
             Enabled = l.Enabled;
+            IsSeparator = l.IsSeparator;
         }
 
         public void Toggle()

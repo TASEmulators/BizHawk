@@ -6,15 +6,16 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
     public partial class LuaConsole : Form
     {
+        //TODO: remember column widths
+
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
-        int defaultNameWidth;
-        int defaultAddressWidth;
 
         List<LuaFiles> luaList = new List<LuaFiles>();
         string lastLuaFile = "";
@@ -32,6 +33,22 @@ namespace BizHawk.MultiClient
         {
             InitializeComponent();
             Closing += (o, e) => SaveConfigSettings();
+            LuaListView.QueryItemText += new QueryItemTextHandler(LuaListView_QueryItemText);
+            LuaListView.QueryItemBkColor += new QueryItemBkColorHandler(LuaListView_QueryItemBkColor);
+            LuaListView.VirtualMode = true;
+        }
+
+        private void LuaListView_QueryItemBkColor(int index, int column, ref Color color)
+        {
+            if (luaList[index].IsSeparator)
+                color = Color.DarkGray;
+            else if (!luaList[index].Enabled)
+                color = this.BackColor;
+        }
+
+        private void LuaListView_QueryItemText(int index, int column, out string text)
+        {
+            text = "";
         }
 
         private void LuaConsole_Load(object sender, EventArgs e)
@@ -77,6 +94,40 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+        }
+
+        private FileInfo GetFileFromUser()
+        {
+            var ofd = new OpenFileDialog();
+            if (lastLuaFile.Length > 0)
+                ofd.FileName = Path.GetFileNameWithoutExtension(lastLuaFile);
+            ofd.InitialDirectory = Global.Config.LuaPath;
+            ofd.Filter = "Lua Scripts (*.lua)|*.lua|All Files|*.*";
+            ofd.RestoreDirectory = true;
+
+            Global.Sound.StopSound();
+            var result = ofd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return null;
+            var file = new FileInfo(ofd.FileName);
+            return file;
+        }
+
+
+        private void OpenLuaFile()
+        {
+            var file = GetFileFromUser();
+            if (file != null)
+            {
+                //LoadLuaFile(file.FullName, false);
+                //DisplayLuaList();
+            }
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenLuaFile();
         }
     }
 }
