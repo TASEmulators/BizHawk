@@ -7,7 +7,7 @@ namespace BizHawk
     public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider
     {
         public string SystemId { get { return "NULL"; } }
-        private static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
+        public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
         private int[] frameBuffer = new int[256 * 192];
         private Random rand = new Random();

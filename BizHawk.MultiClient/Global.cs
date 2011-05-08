@@ -20,5 +20,6 @@ namespace BizHawk.MultiClient
 		public static Controller TI83Controls;
 		public static Controller NESControls;
         public static Controller ActiveController;
+        public static Controller NullControls;
     }
 }

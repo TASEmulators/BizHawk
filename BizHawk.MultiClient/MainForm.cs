@@ -329,6 +329,9 @@ namespace BizHawk.MultiClient
 
 			Global.ClientControls = controls;
 
+
+            Global.NullControls = new Controller(NullEmulator.NullController);
+
 			var smsControls = new Controller(SMS.SmsController);
 			smsControls.BindMulti("Reset", Global.Config.SmsReset);
 			smsControls.BindMulti("Pause", Global.Config.SmsPause);
@@ -529,6 +532,7 @@ namespace BizHawk.MultiClient
 				case "GB":
 					break;
                 default:
+                    Global.ActiveController = Global.NullControls;
                     break;
 			}
 		    Global.Emulator.Controller = Global.ActiveController;
