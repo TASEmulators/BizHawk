@@ -17,12 +17,6 @@ namespace BizHawk
         bool IsPressed(string button);
         float GetFloat(string name);
 
-        void SetSticky(string button, bool sticky);
-        bool IsSticky(string button);
-        
-        void UnpressButton(string button);
-        void ForceButton(string button);
-
         void UpdateControls(int frame);
     }
 }

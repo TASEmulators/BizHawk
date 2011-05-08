@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			Controller.UpdateControls(Frame++);
-			if (resetSignal)
-				Controller.UnpressButton("Reset");
+			//if (resetSignal)
+				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
 			ppu.FrameAdvance();
             if (lagged)

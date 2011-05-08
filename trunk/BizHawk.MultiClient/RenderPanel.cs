@@ -353,7 +353,7 @@ namespace BizHawk.MultiClient
 
         public string MakeInputDisplay()
         {
-            string tmp = Global.Emulator.GetControllersAsMnemonic();
+            string tmp = Global.ActiveController.GetControllersAsMnemonic();
             tmp = tmp.Replace(".", " ");
             tmp = tmp.Replace("|", "");
             return tmp;

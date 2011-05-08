@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return null;
 		}
 
-        public void SetControllersAsMnemonic(string mnemonic)
+/*        public void SetControllersAsMnemonic(string mnemonic)
         {
             if (mnemonic.Length == 0) return;
             
@@ -368,7 +368,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             input += "|";
 
             return input;
-        }
+        }*/
 
 		public string GameName { get { return game_name; } }
 
@@ -489,8 +489,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("CIRAM", ref CIRAM, false);
 			ser.Sync("cpu_accumulate", ref cpu_accumulate);
-            string inp = GetControllersAsMnemonic();
-            ser.SyncFixedString("input", ref inp, 32);
+            //string inp = GetControllersAsMnemonic();  TODO sorry bout that
+            //ser.SyncFixedString("input", ref inp, 32);
 			board.SyncState(ser);
 			ppu.SyncState(ser);
 			ser.EndSection();

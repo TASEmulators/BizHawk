@@ -19,56 +19,6 @@
         public ControllerDefinition ControllerDefinition { get { return PCEngineController;  } }
         public IController Controller { get; set; }
 
-        public void SetControllersAsMnemonic(string mnemonic)
-        {
-            if (mnemonic.Length == 0) return;
-
-            if (mnemonic[1] != '.')
-                Controller.ForceButton("Up");
-            if (mnemonic[2] != '.')
-                Controller.ForceButton("Down");
-            if (mnemonic[3] != '.')
-                Controller.ForceButton("Left");
-            if (mnemonic[4] != '.')
-                Controller.ForceButton("Right");
-            if (mnemonic[5] != '.')
-                Controller.ForceButton("I");
-            if (mnemonic[6] != '.')
-                Controller.ForceButton("II");
-            if (mnemonic[7] != '.')
-                Controller.ForceButton("Select");
-            if (mnemonic[8] != '.')
-                Controller.ForceButton("Run");
-        }
-
-        public string GetControllersAsMnemonic()
-        {
-            //TODO: Implement all controllers
-            
-            string input = "|";
-
-            if (Controller.IsPressed("P1 Up")) input += "U";
-            else input += ".";
-            if (Controller.IsPressed("P1 Down")) input += "D";
-            else input += ".";
-            if (Controller.IsPressed("P1 Left")) input += "L";
-            else input += ".";
-            if (Controller.IsPressed("P1 Right")) input += "R";
-            else input += ".";
-            if (Controller.IsPressed("P1 B1")) input += "1";
-            else input += ".";
-            if (Controller.IsPressed("P1 B2")) input += "2";
-            else input += ".";
-            if (Controller.IsPressed("P1 Select")) input += "S";
-            else input += ".";
-            if (Controller.IsPressed("P1 Run")) input += "R";
-            else input += ".";
-
-            input += "|.|"; //TODO: Add commands like reset here
-
-            return input;
-        }
-
         private int SelectedController;
         private byte InputByte;
         public bool SEL { get { return ((InputByte & 1) != 0) ;} }
