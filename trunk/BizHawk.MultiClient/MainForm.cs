@@ -1015,6 +1015,9 @@ namespace BizHawk.MultiClient
 
 			var writer = new StreamWriter(path);
 			Global.Emulator.SaveStateText(writer);
+            //TODO: logic surrounding the behavior of movie modes & settings
+            //TODO: refactor save/loadstate as functions to automatically include this behavior too
+            InputLog.DumpLogIntoSavestateText(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
 		}
@@ -1048,6 +1051,9 @@ namespace BizHawk.MultiClient
 
 			var reader = new StreamReader(path);
 			Global.Emulator.LoadStateText(reader);
+            //TODO: more logic regarding each movie mode
+            if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                InputLog.LoadLogFromSavestateText(reader);
 			reader.Close();
 			Global.RenderPanel.AddMessage("Loaded state: " + name);
 		}
