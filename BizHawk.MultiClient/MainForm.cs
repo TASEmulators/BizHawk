@@ -99,7 +99,7 @@ namespace BizHawk.MultiClient
 
 			InitControls();
 			Global.Emulator = new NullEmulator();
-            InputLog.StopMovie();
+            //InputLog.StopMovie();
             Global.ActiveController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
@@ -640,12 +640,13 @@ namespace BizHawk.MultiClient
 
 				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
 					InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
-				else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+				/*
+                else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
 				{
 					InputLog.LoadMovie();   //TODO: Debug
 					InputLog.StartPlayback(); //TODO: Debug
 				}
-
+                */
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				{
@@ -696,7 +697,7 @@ namespace BizHawk.MultiClient
 				writer.Close();
 			}
 			Global.Emulator = new NullEmulator();
-            InputLog.StopMovie();
+            //InputLog.StopMovie();
             Global.ActiveController = Global.NullControls;
 		}
 
