@@ -99,6 +99,7 @@ namespace BizHawk.MultiClient
 
 			InitControls();
 			Global.Emulator = new NullEmulator();
+            InputLog.StopMovie();
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
 
@@ -694,6 +695,7 @@ namespace BizHawk.MultiClient
 				writer.Close();
 			}
 			Global.Emulator = new NullEmulator();
+            InputLog.StopMovie();
 		}
 
 		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
