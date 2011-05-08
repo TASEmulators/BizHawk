@@ -65,7 +65,7 @@ namespace BizHawk.MultiClient
 				using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
 				    return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
-
+            //InputLog.StartPlayback(); //Debug switch this on to play back log.tas
 			Global.MainForm = this;
 
 			Database.LoadDatabase("gamedb.txt");
@@ -640,13 +640,13 @@ namespace BizHawk.MultiClient
 
 				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
 					InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
-				/*
+				
                 else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
 				{
 					InputLog.LoadMovie();   //TODO: Debug
 					InputLog.StartPlayback(); //TODO: Debug
 				}
-                */
+                
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				{

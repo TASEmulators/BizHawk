@@ -218,16 +218,17 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "NES Controls")
             {
+                input.Append(IsPressed("Reset") ? "r" : ".");
+                input.Append("|");
+                input.Append(IsPressed("A") ? "A" : ".");
+                input.Append(IsPressed("B") ? "B" : ".");
+                input.Append(IsPressed("Select") ? "s" : ".");
+                input.Append(IsPressed("Start") ? "S" : ".");
                 input.Append(IsPressed("Up")     ? "U" : ".");
                 input.Append(IsPressed("Down")   ? "D" : ".");
                 input.Append(IsPressed("Left")   ? "L" : ".");
                 input.Append(IsPressed("Right")  ? "R" : ".");
-                input.Append(IsPressed("A")      ? "A" : ".");
-                input.Append(IsPressed("B")      ? "B" : ".");
-                input.Append(IsPressed("Select") ? "s" : ".");
-                input.Append(IsPressed("Start")  ? "S" : ".");
                 input.Append("|");
-                input.Append(IsPressed("Reset")  ? "R" : ".");
                 return input.ToString();
             }
 
@@ -309,15 +310,23 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "NES Controls")
             {
-                if (mnemonic[1]  != '.') programmaticallyPressedButtons.Add("Up");
-                if (mnemonic[2]  != '.') programmaticallyPressedButtons.Add("Down");
-                if (mnemonic[3]  != '.') programmaticallyPressedButtons.Add("Left");
-                if (mnemonic[4]  != '.') programmaticallyPressedButtons.Add("Right");
-                if (mnemonic[5]  != '.') programmaticallyPressedButtons.Add("A");
-                if (mnemonic[6]  != '.') programmaticallyPressedButtons.Add("B");
-                if (mnemonic[7]  != '.') programmaticallyPressedButtons.Add("Select");
-                if (mnemonic[8]  != '.') programmaticallyPressedButtons.Add("Start");
-                if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("Reset");
+                //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
+                if (mnemonic[3] != '.') programmaticallyPressedButtons.Add("Right");
+                if (mnemonic[4] != '.') programmaticallyPressedButtons.Add("Left");
+                if (mnemonic[5] != '.') programmaticallyPressedButtons.Add("Down");
+                if (mnemonic[6] != '.') programmaticallyPressedButtons.Add("Up");
+                if (mnemonic[7] != '.') programmaticallyPressedButtons.Add("Start");
+                if (mnemonic[8] != '.') programmaticallyPressedButtons.Add("Select");
+                if (mnemonic[9] != '.') programmaticallyPressedButtons.Add("B");
+                if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("A");
+                
+                
+                
+                
+                
+                
+                
+                
             }
         }
     }
