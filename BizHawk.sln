@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Util", "BizHawk.Uti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.MultiClient", "BizHawk.MultiClient\BizHawk.MultiClient.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "DiscoHawk\DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +27,10 @@ Global
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C43F8BCA-CB5F-47CF-A0BD-B32ED49423BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C43F8BCA-CB5F-47CF-A0BD-B32ED49423BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C43F8BCA-CB5F-47CF-A0BD-B32ED49423BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C43F8BCA-CB5F-47CF-A0BD-B32ED49423BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

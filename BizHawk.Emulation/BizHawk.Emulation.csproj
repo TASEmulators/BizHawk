@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -44,6 +44,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -159,6 +161,13 @@
     <Compile Include="Consoles\Gameboy\Mappers.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Disc\CCD_format.cs" />
+    <Compile Include="Disc\CUE_format.cs" />
+    <Compile Include="Disc\Disc.cs" />
+    <Compile Include="Disc\DiscTOC.cs" />
+    <Compile Include="Disc\ECM.cs" />
+    <Compile Include="Disc\FFmpeg.cs" />
+    <Compile Include="Disc\TOC_format.cs" />
     <Compile Include="Interfaces\Base Implementations\Game.cs" />
     <Compile Include="Interfaces\Base Implementations\IPS.cs" />
     <Compile Include="Interfaces\Base Implementations\Movies.cs" />

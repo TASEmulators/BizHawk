@@ -69,7 +69,8 @@
         public string LuaPath = ".\\Lua";
         public string WatchPath = ".";
         public string AVIPath = ".";
-        
+
+		public string FFMpegPath = "ffmpeg.exe";
         
         // General Client Settings
         public int TargetZoomFactor = 2;
