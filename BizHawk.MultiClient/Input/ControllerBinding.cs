@@ -220,14 +220,14 @@ namespace BizHawk.MultiClient
             {
                 input.Append(IsPressed("Reset") ? "r" : ".");
                 input.Append("|");
-                input.Append(IsPressed("A") ? "A" : ".");
-                input.Append(IsPressed("B") ? "B" : ".");
-                input.Append(IsPressed("Select") ? "s" : ".");
+                input.Append(IsPressed("Right") ? "R" : ".");
+                input.Append(IsPressed("Left") ? "L" : ".");
+                input.Append(IsPressed("Down") ? "D" : ".");
+                input.Append(IsPressed("Up") ? "U" : ".");
                 input.Append(IsPressed("Start") ? "S" : ".");
-                input.Append(IsPressed("Up")     ? "U" : ".");
-                input.Append(IsPressed("Down")   ? "D" : ".");
-                input.Append(IsPressed("Left")   ? "L" : ".");
-                input.Append(IsPressed("Right")  ? "R" : ".");
+                input.Append(IsPressed("Select") ? "s" : ".");
+                input.Append(IsPressed("B") ? "B" : ".");
+                input.Append(IsPressed("A") ? "A" : ".");
                 input.Append("|");
                 return input.ToString();
             }
