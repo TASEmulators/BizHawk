@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
-        public string GetControllersAsMnemonic() 
+/*        public string GetControllersAsMnemonic() 
         {
             string input = "|";
 
@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
                 Controller.ForceButton("COMMA");
             if (mnemonic[50] != '.')
                 Controller.ForceButton("SIN");
-        }
+        }*/
 
         public byte ReadMemory(ushort addr)
         {

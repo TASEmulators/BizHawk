@@ -123,247 +123,247 @@ namespace BizHawk.MultiClient
 
         private void button42_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("ENTER");
+            Global.ActiveController.ForceButton("ENTER");
         }
 
         private void button43_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("DASH");
+            Global.ActiveController.ForceButton("DASH");
         }
 
         private void button39_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("2");
+            Global.ActiveController.ForceButton("2");
         }
 
         private void ONE_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("1");
+            Global.ActiveController.ForceButton("1");
         }
 
         private void THREE_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("3");
+            Global.ActiveController.ForceButton("3");
         }
 
         private void FOUR_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("4");
+            Global.ActiveController.ForceButton("4");
         }
 
         private void FIVE_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("5");
+            Global.ActiveController.ForceButton("5");
         }
 
         private void SIX_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("6");
+            Global.ActiveController.ForceButton("6");
         }
 
         private void SEVEN_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("7");
+            Global.ActiveController.ForceButton("7");
         }
 
         private void EIGHT_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("8");
+            Global.ActiveController.ForceButton("8");
         }
 
         private void NINE_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("9");
+            Global.ActiveController.ForceButton("9");
         }
 
         private void ON_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("ON");
+            Global.ActiveController.ForceButton("ON");
         }
 
         private void STO_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("STO");
+            Global.ActiveController.ForceButton("STO");
         }
 
         private void PLUS_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("PLUS");
+            Global.ActiveController.ForceButton("PLUS");
         }
 
         private void LN_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("LN");
+            Global.ActiveController.ForceButton("LN");
         }
 
         private void MINUS_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("MINUS");
+            Global.ActiveController.ForceButton("MINUS");
         }
 
         private void LOG_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("LOG");
+            Global.ActiveController.ForceButton("LOG");
         }
 
         private void MULTIPLY_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("MULTIPLY");
+            Global.ActiveController.ForceButton("MULTIPLY");
         }
 
         private void button26_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("SQUARED");
+            Global.ActiveController.ForceButton("SQUARED");
         }
 
         private void button25_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("COMMA");
+            Global.ActiveController.ForceButton("COMMA");
         }
 
         private void button24_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("PARAOPEN");
+            Global.ActiveController.ForceButton("PARAOPEN");
         }
 
         private void button23_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("PARACLOSE");
+            Global.ActiveController.ForceButton("PARACLOSE");
         }
 
         private void button22_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("DIVIDE");
+            Global.ActiveController.ForceButton("DIVIDE");
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("NEG1");
+            Global.ActiveController.ForceButton("NEG1");
         }
 
         private void button18_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("SIN");
+            Global.ActiveController.ForceButton("SIN");
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("COS");
+            Global.ActiveController.ForceButton("COS");
         }
 
         private void button20_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("TAN");
+            Global.ActiveController.ForceButton("TAN");
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("EXP");
+            Global.ActiveController.ForceButton("EXP");
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("MATH");
+            Global.ActiveController.ForceButton("MATH");
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("MATRIX");
+            Global.ActiveController.ForceButton("MATRIX");
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("PRGM");
+            Global.ActiveController.ForceButton("PRGM");
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("VARS");
+            Global.ActiveController.ForceButton("VARS");
         }
 
         private void button16_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("CLEAR");
+            Global.ActiveController.ForceButton("CLEAR");
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("ALPHA");
+            Global.ActiveController.ForceButton("ALPHA");
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("X");
+            Global.ActiveController.ForceButton("X");
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("STAT");
+            Global.ActiveController.ForceButton("STAT");
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("2ND");
+            Global.ActiveController.ForceButton("2ND");
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("MODE");
+            Global.ActiveController.ForceButton("MODE");
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("DEL");
+            Global.ActiveController.ForceButton("DEL");
         }
 
         private void button47_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("LEFT");
+            Global.ActiveController.ForceButton("LEFT");
         }
 
         private void button49_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("DOWN");
+            Global.ActiveController.ForceButton("DOWN");
         }
 
         private void button48_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("RIGHT");
+            Global.ActiveController.ForceButton("RIGHT");
         }
 
         private void button50_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("UP");
+            Global.ActiveController.ForceButton("UP");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("Y");
+            Global.ActiveController.ForceButton("Y");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("WINDOW");
+            Global.ActiveController.ForceButton("WINDOW");
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("ZOOM");
+            Global.ActiveController.ForceButton("ZOOM");
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("TRACE");
+            Global.ActiveController.ForceButton("TRACE");
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("GRAPH");
+            Global.ActiveController.ForceButton("GRAPH");
         }
 
         private void PERIOD_Click(object sender, EventArgs e)
         {
-            Global.Emulator.Controller.ForceButton("DOT");
+            Global.ActiveController.ForceButton("DOT");
         }
 
         private void showHotkToolStripMenuItem_Click(object sender, EventArgs e)

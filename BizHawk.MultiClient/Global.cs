@@ -13,11 +13,12 @@ namespace BizHawk.MultiClient
         public static Config Config;
         public static IEmulator Emulator;
         public static RomGame Game;
-        public static IController ClientControls;
-        public static IController SMSControls;
-        public static IController PCEControls;
-        public static IController GenControls;
-		public static IController TI83Controls;
-		public static IController NESControls;
+        public static Controller ClientControls;
+        public static Controller SMSControls;
+        public static Controller PCEControls;
+        public static Controller GenControls;
+		public static Controller TI83Controls;
+		public static Controller NESControls;
+        public static Controller ActiveController;
     }
 }

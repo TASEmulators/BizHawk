@@ -37,17 +37,7 @@ namespace BizHawk
         {
             return baseController.GetFloat(name);
         }
-
-        public void UnpressButton(string name)
-        {
-            baseController.UnpressButton(name);
-        }
-
-        public void ForceButton(string button)
-        {
-            baseController.ForceButton(button);
-        }
-
+      
         private int frame;
 
         public void UpdateControls(int frame)
@@ -72,16 +62,6 @@ namespace BizHawk
             }
             writer.Seek(frame*2, SeekOrigin.Begin);
             writer.Write((ushort)encodedValue);
-        }
-
-        public void SetSticky(string button, bool sticky)
-        {
-            baseController.SetSticky(button, sticky);
-        }
-
-        public bool IsSticky(string button)
-        {
-            return baseController.IsSticky(button);
         }
     }
 

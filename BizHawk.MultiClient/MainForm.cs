@@ -506,32 +506,33 @@ namespace BizHawk.MultiClient
 				
                 case "SG":
 				case "SMS":
-					Global.Emulator.Controller = Global.SMSControls;
+                    Global.ActiveController = Global.SMSControls;
 					break;
 				case "GG":
-					Global.Emulator.Controller = Global.SMSControls;
+                    Global.ActiveController = Global.SMSControls;
 					break;
 				case "PCE":
-					Global.Emulator.Controller = Global.PCEControls;
+                    Global.ActiveController = Global.PCEControls;
 					break;
 				case "SGX":
-					Global.Emulator.Controller = Global.PCEControls;
+                    Global.ActiveController = Global.PCEControls;
 					break;
 				case "GEN":
-					Global.Emulator.Controller = Global.GenControls;
+                    Global.ActiveController = Global.GenControls;
 					break;
 				case "TI83":
-					Global.Emulator.Controller = Global.TI83Controls;
+                    Global.ActiveController = Global.TI83Controls;
 					break;
 				case "NES":
-					Global.Emulator.Controller = Global.NESControls;
+                    Global.ActiveController = Global.NESControls;
 					break;
 				case "GB":
 					break;
                 default:
                     break;
 			}
-
+		    Global.Emulator.Controller = Global.ActiveController;
+		    Global.ActiveController.MovieMode = false;
 		}
 
 		private bool LoadRom(string path)
@@ -915,7 +916,7 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
-                wasPressed = Global.Emulator.GetControllersAsMnemonic();
+                wasPressed = Global.ActiveController.GetControllersAsMnemonic();
 			}
 			else
 			{
@@ -967,7 +968,7 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
                 if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-                    Global.Emulator.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame)+ 1);
+                    Global.ActiveController.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame) + 1);
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();

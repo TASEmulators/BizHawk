@@ -269,7 +269,7 @@ namespace BizHawk.MultiClient
 		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
-				Global.Emulator.Controller.ForceButton("Reset");
+                Global.ActiveController.ForceButton("Reset");
 		}
 
 		private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
