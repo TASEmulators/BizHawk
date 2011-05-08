@@ -186,5 +186,27 @@ namespace BizHawk.MultiClient
         {
             return Log.GetMovieLength();
         }
+
+        public void DumpLogIntoSavestateText(TextWriter writer)
+        {
+            writer.WriteLine("[Input]");
+            for (int x = 0; x < Log.Length(); x++)
+                writer.WriteLine(Log.GetFrame(x));
+            writer.WriteLine("[/Input]");
+        }
+
+        public void LoadLogFromSavestateText(TextReader reader)
+        {
+            Log.Clear();
+            while (true)
+            {
+                string line = reader.ReadLine();
+                if (line.Trim() == "") continue;
+                if (line == "[Input]") continue;
+                if (line == "[/Input]") break;
+                if (line[0] == '|')
+                    Log.AddFrame(line);
+            }
+        }
     }
 }
