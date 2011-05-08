@@ -36,6 +36,7 @@ namespace BizHawk.MultiClient
         {
             MovieMode = MOVIEMODE.RECORD;
             Log.Clear();
+            Header = new MovieHeader("v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name);
         }
 
         public void StartPlayback()
@@ -67,8 +68,6 @@ namespace BizHawk.MultiClient
         //Movie editing tools may like to have something like this
         public void AddMovieRecord(string record)
         {
-            //TODO: validate input
-            //Format into string acceptable by MovieLog
             Log.AddFrame(record);
         }
 
@@ -156,11 +155,11 @@ namespace BizHawk.MultiClient
                     }
                     else if (str[0] == '|')
                     {
-                        Log.AddFrame(str);  //TODO: validate proper formatting
+                        Log.AddFrame(str);
                     }
                     else
                     {
-                        //TODO: Something has gone wrong here!
+                        Header.Comments.Add(str);
                     }
                     
                 }

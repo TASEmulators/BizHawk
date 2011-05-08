@@ -10,6 +10,8 @@ namespace BizHawk.MultiClient
     /// </summary>
     class MovieLog
     {
+        //TODO: Insert(int frame) not useful for convenctional tasing but TAStudio will want it
+
         List<string> MovieRecords = new List<string>();
         
         public MovieLog()
@@ -29,13 +31,23 @@ namespace BizHawk.MultiClient
 
         public void AddFrame(string frame)
         {
-            MovieRecords.Add(frame); //Validate the format? Or shoudl the Movie class be resonible for formatting?
+            MovieRecords.Add(frame);
+        }
+
+        public void Truncate(int frame)
+        {
+            //TODO
         }
 
         public string GetFrame(int frameCount) //Frame count is 0 based here, should it be?
         {
             if (frameCount >= 0)
-                return MovieRecords[frameCount];
+            {
+                if (frameCount < MovieRecords.Count)
+                    return MovieRecords[frameCount];
+                else
+                    return "";
+            }
             else
                 return "";  //TODO: throw an exception?
         }
