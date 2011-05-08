@@ -15,11 +15,14 @@ namespace BizHawk.MultiClient
         //TODO: GUID, checksum of game, other stuff
 
         Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
-
+        public List<string> Comments = new List<string>();
+        
         public const string EMULATIONVERSION = "EmulationVersion";
         public const string MOVIEVERSION = "MovieVersion";
         public const string PLATFORM = "Platform";
         public const string GAMENAME = "GameName";
+
+        public static string MovieVersion = "v0.0.1";
 
         public MovieHeader() //All required fields will be set to default values
         {
