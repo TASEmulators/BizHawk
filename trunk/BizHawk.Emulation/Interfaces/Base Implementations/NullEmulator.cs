@@ -29,8 +29,8 @@ namespace BizHawk
         public ControllerDefinition ControllerDefinition { get { return NullController; } }
         public IController Controller { get; set; }
 
-        public string GetControllersAsMnemonic() { return "|.|.|"; }
-        public void SetControllersAsMnemonic(string mnemonic) { return; }
+        //public string GetControllersAsMnemonic() { return "|.|.|"; }
+        //public void SetControllersAsMnemonic(string mnemonic) { return; }
 
         public int Frame { get; set; }
         public int LagCount { get { return 0; } set { return; } }
