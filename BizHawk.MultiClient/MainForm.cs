@@ -1453,6 +1453,7 @@ namespace BizHawk.MultiClient
 				PerformLayout();
 				Global.RenderPanel.Resized = true;
 				InFullscreen = true;
+                statusStrip1.Visible = false;
 			}
 			else
 			{
@@ -1463,6 +1464,7 @@ namespace BizHawk.MultiClient
 				PerformLayout();
 				FrameBufferResized();
 				InFullscreen = false;
+                statusStrip1.Visible = true;
 			}
 		}
 
