@@ -21,8 +21,9 @@ namespace BizHawk.MultiClient
         public const string MOVIEVERSION = "MovieVersion";
         public const string PLATFORM = "Platform";
         public const string GAMENAME = "GameName";
+        public const string AUTHOR = "Author";
 
-        public static string MovieVersion = "v0.0.1";
+        public static string MovieVersion = "BizHawk v0.0.1";
 
         public MovieHeader() //All required fields will be set to default values
         {
@@ -30,14 +31,16 @@ namespace BizHawk.MultiClient
             HeaderParams.Add(MOVIEVERSION, "v1.0.0");
             HeaderParams.Add(PLATFORM, "");
             HeaderParams.Add(GAMENAME, "");
+            HeaderParams.Add(AUTHOR, "");
         }
 
-        public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName)
+        public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName, string Author)
         {
             HeaderParams.Add("EmulationVersion", EmulatorVersion);
             HeaderParams.Add("MovieVersion", MovieVersion);
             HeaderParams.Add("Platform", Platform);
             HeaderParams.Add("GameName", GameName);
+            HeaderParams.Add("Author", Author);
         }
 
         /// <summary>
