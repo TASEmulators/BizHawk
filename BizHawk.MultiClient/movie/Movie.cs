@@ -19,6 +19,10 @@ namespace BizHawk.MultiClient
 
         public int lastLog;
 
+        //TODO:
+        //Author field, needs to be passed in by a record or play dialog
+        //A PreLoad() function that will read just header info of the file
+
         public Movie(string filename, MOVIEMODE m)
         {
             Filename = filename;    //TODO: Validate that file is writable
@@ -36,7 +40,7 @@ namespace BizHawk.MultiClient
         {
             MovieMode = MOVIEMODE.RECORD;
             Log.Clear();
-            Header = new MovieHeader("v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name);
+            Header = new MovieHeader("v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "");
         }
 
         public void StartPlayback()

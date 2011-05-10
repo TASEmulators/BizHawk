@@ -28,16 +28,29 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayMovie));
             this.Cancel = new System.Windows.Forms.Button();
             this.OK = new System.Windows.Forms.Button();
             this.BrowseMovies = new System.Windows.Forms.Button();
+            this.MovieView = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+            this.DetailsView = new System.Windows.Forms.ListView();
+            this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Cancel
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(234, 250);
+            this.Cancel.Location = new System.Drawing.Point(595, 353);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 0;
@@ -48,7 +61,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(143, 250);
+            this.OK.Location = new System.Drawing.Point(504, 353);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 1;
@@ -58,7 +71,7 @@
             // 
             // BrowseMovies
             // 
-            this.BrowseMovies.Location = new System.Drawing.Point(234, 34);
+            this.BrowseMovies.Location = new System.Drawing.Point(12, 353);
             this.BrowseMovies.Name = "BrowseMovies";
             this.BrowseMovies.Size = new System.Drawing.Size(75, 23);
             this.BrowseMovies.TabIndex = 2;
@@ -66,20 +79,112 @@
             this.BrowseMovies.UseVisualStyleBackColor = true;
             this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
             // 
+            // MovieView
+            // 
+            this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.MovieView.GridLines = true;
+            this.MovieView.Location = new System.Drawing.Point(12, 28);
+            this.MovieView.Name = "MovieView";
+            this.MovieView.Size = new System.Drawing.Size(346, 303);
+            this.MovieView.TabIndex = 3;
+            this.MovieView.UseCompatibleStateImageBehavior = false;
+            this.MovieView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "File";
+            this.columnHeader1.Width = 129;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "System";
+            this.columnHeader2.Width = 46;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Game";
+            this.columnHeader3.Width = 75;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Author";
+            this.columnHeader4.Width = 92;
+            // 
+            // DetailsView
+            // 
+            this.DetailsView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5,
+            this.columnHeader6});
+            this.DetailsView.GridLines = true;
+            this.DetailsView.Location = new System.Drawing.Point(15, 19);
+            this.DetailsView.Name = "DetailsView";
+            this.DetailsView.Size = new System.Drawing.Size(228, 226);
+            this.DetailsView.TabIndex = 4;
+            this.DetailsView.UseCompatibleStateImageBehavior = false;
+            this.DetailsView.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Header";
+            this.columnHeader5.Width = 102;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Value";
+            this.columnHeader6.Width = 121;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.button2);
+            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.DetailsView);
+            this.groupBox1.Location = new System.Drawing.Point(379, 28);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(259, 303);
+            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Details";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(15, 251);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Comments";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(125, 251);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Subtitles";
+            this.button2.UseVisualStyleBackColor = true;
+            // 
             // PlayMovie
             // 
             this.AcceptButton = this.OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(321, 290);
+            this.ClientSize = new System.Drawing.Size(682, 393);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.MovieView);
             this.Controls.Add(this.BrowseMovies);
             this.Controls.Add(this.OK);
             this.Controls.Add(this.Cancel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PlayMovie";
             this.Text = "Play Movie";
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -89,5 +194,16 @@
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button BrowseMovies;
+        private System.Windows.Forms.ListView MovieView;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ListView DetailsView;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
