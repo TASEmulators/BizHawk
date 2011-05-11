@@ -21,13 +21,27 @@ namespace BizHawk.MultiClient
 
         //TODO:
         //Author field, needs to be passed in by a record or play dialog
-        //A PreLoad() function that will read just header info of the file
 
         public Movie(string filename, MOVIEMODE m)
         {
             Filename = filename;    //TODO: Validate that file is writable
             MovieMode = m;
             lastLog = 0;
+        }
+
+        public string GetFilePath() 
+        {
+            return Filename;
+        }
+
+        public string GetSysID()
+        {
+            return Header.GetHeaderLine(MovieHeader.PLATFORM);
+        }
+
+        public string GetGameName()
+        {
+            return Header.GetHeaderLine(MovieHeader.GAMENAME);
         }
 
         public void StopMovie()
@@ -85,6 +99,7 @@ namespace BizHawk.MultiClient
 
         private void WriteText()
         {
+            if (Filename.Length == 0) return;   //Nothing to write
             int length = Log.GetMovieLength();
             
             using (StreamWriter sw = new StreamWriter(Filename))
@@ -171,6 +186,63 @@ namespace BizHawk.MultiClient
 
             return true;
             
+        }
+
+        public bool PreLoadText()
+        {
+            var file = new FileInfo(Filename);
+            
+            if (file.Exists == false)
+                return false;
+            else
+            {
+                Header.Clear();
+                Log.Clear();
+            }
+
+            using (StreamReader sr = file.OpenText())
+            {
+                string str = "";
+
+                while ((str = sr.ReadLine()) != null)
+                {
+                    if (str == "")
+                    {
+                        continue;
+                    }
+                    else if (str.Contains(MovieHeader.EMULATIONVERSION))
+                    {
+                        str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
+                        Header.AddHeaderLine(MovieHeader.EMULATIONVERSION, str);
+                    }
+                    else if (str.Contains(MovieHeader.MOVIEVERSION))
+                    {
+                        str = ParseHeader(str, MovieHeader.MOVIEVERSION);
+                        Header.AddHeaderLine(MovieHeader.MOVIEVERSION, str);
+                    }
+                    else if (str.Contains(MovieHeader.PLATFORM))
+                    {
+                        str = ParseHeader(str, MovieHeader.PLATFORM);
+                        Header.AddHeaderLine(MovieHeader.PLATFORM, str);
+                    }
+                    else if (str.Contains(MovieHeader.GAMENAME))
+                    {
+                        str = ParseHeader(str, MovieHeader.GAMENAME);
+                        Header.AddHeaderLine(MovieHeader.GAMENAME, str);
+                    }
+                    else if (str[0] == '|')
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Header.Comments.Add(str);
+                    }
+
+                }
+            }
+            
+            return true;
         }
 
         private bool LoadBinary()

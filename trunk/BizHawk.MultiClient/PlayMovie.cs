@@ -15,12 +15,35 @@ namespace BizHawk.MultiClient
         //TODO: Think about this: .\Movies is the default folder, when shoudl this be created? On load (no platform specific folders do this)
         //Upon open file dialog? that's weird, record movie? more often people will use play movie first
         //Never? then the path default must be .\ not .\movies
+        //TODO: after browse & update, focus on the movie just added
+        //Make MovieView not allow multiselect
+        //This is a modal dialog, implement it as modeless
+        //  In order to do this, this dialog will have to restart the rom
 
         List<Movie> MovieList = new List<Movie>();
 
         public PlayMovie()
         {
             InitializeComponent();
+            MovieView.QueryItemText += new QueryItemTextHandler(MovieView_QueryItemText);
+            MovieView.QueryItemBkColor += new QueryItemBkColorHandler(MovieView_QueryItemBkColor);
+            MovieView.VirtualMode = true;
+        }
+
+        void MovieView_QueryItemText(int index, int column, out string text)
+        {
+            text = "";
+            if (column == 0) //File
+                text = Path.GetFileName(MovieList[index].GetFilePath());
+            if (column == 1) //System
+                text = MovieList[index].GetSysID();
+            if (column == 2) //Game
+                text = MovieList[index].GetGameName();
+        }
+
+        private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
+        {
+
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -30,6 +53,10 @@ namespace BizHawk.MultiClient
 
         private void OK_Click(object sender, EventArgs e)
         {
+            Global.MainForm.UserMovie = MovieList[MovieView.SelectedIndices[0]];
+            Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom);
+            Global.MainForm.UserMovie.LoadMovie();
+            Global.MainForm.UserMovie.StartPlayback();
             this.Close();
         }
 
@@ -48,15 +75,41 @@ namespace BizHawk.MultiClient
                 if (!file.Exists)
                     return;
                 else
+                {
                     PreLoadMovieFile(file);
-
-                
+                    MovieView.ItemCount = MovieList.Count;
+                    UpdateList();
+                    MovieView.SelectedIndices.Clear();
+                    MovieView.setSelection(MovieList.Count-1);
+                }
             }
         }
 
         private void PreLoadMovieFile(FileInfo path)
         {
+            Movie m = new Movie(path.FullName, MOVIEMODE.INACTIVE);
+            m.PreLoadText();
+            MovieList.Add(m);
+        }
 
+        private void UpdateList()
+        {
+            MovieView.Refresh();
+            UpdateMovieCount();
+        }
+
+        private void UpdateMovieCount()
+        {
+            int x = MovieList.Count;
+            if (x == 1)
+                MovieCount.Text = x.ToString() + " movie";
+            else
+                MovieCount.Text = x.ToString() + " movies";
+        }
+
+        private void PlayMovie_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }

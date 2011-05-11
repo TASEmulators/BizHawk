@@ -303,7 +303,7 @@ namespace BizHawk.MultiClient
 
         private string MakeFrameCounter()
         {
-            if (Global.MainForm.InputLog.GetMovieMode() == MOVIEMODE.PLAY) //TODO: use user movie not input log (input log will never be allowed to be played back)
+            if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
             {
                 return Global.Emulator.Frame.ToString() + " " + Global.MainForm.InputLog.lastLog.ToString() 
                     + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
