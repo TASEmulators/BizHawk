@@ -19,10 +19,11 @@ namespace BizHawk.MultiClient
 	{
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
-		private string CurrentlyOpenRom;
+		public string CurrentlyOpenRom;
 
         //TODO: adelikat: can this be the official file extension?
         public Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
+        public Movie UserMovie = new Movie("", MOVIEMODE.INACTIVE);
 
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
@@ -65,7 +66,6 @@ namespace BizHawk.MultiClient
 				using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
 				    return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
-            //InputLog.StartPlayback(); //Debug switch this on to play back log.tas
 			Global.MainForm = this;
 
 			Database.LoadDatabase("gamedb.txt");
@@ -83,6 +83,7 @@ namespace BizHawk.MultiClient
 		    {
                 CloseGame();
                 InputLog.StopMovie();
+                UserMovie.StopMovie();
                 SaveConfig();
 		    };
 
@@ -99,7 +100,6 @@ namespace BizHawk.MultiClient
 
 			InitControls();
 			Global.Emulator = new NullEmulator();
-            //InputLog.StopMovie();
             Global.ActiveController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
@@ -541,7 +541,7 @@ namespace BizHawk.MultiClient
 		    Global.ActiveController.MovieMode = false;
 		}
 
-		private bool LoadRom(string path)
+		public bool LoadRom(string path)
 		{
 			using (var file = new HawkFile(path))
 			{
@@ -636,16 +636,15 @@ namespace BizHawk.MultiClient
 				{
 					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 				}
-		
 
-				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-					InputLog.StartNewRecording(); //TODO: Uncomment and check for a user movie selected?
-				
-                else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-				{
-					InputLog.LoadMovie();   //TODO: Debug
-					InputLog.StartPlayback(); //TODO: Debug
-				}
+                //Remove this block once movie selection is more polished, input log should only be playback through the same mechanism as any other movie file
+                if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+                {
+                    InputLog.LoadMovie();   //TODO: Debug 
+                    InputLog.StartPlayback(); //TODO: Debug
+                }
+                else
+                    InputLog.StartNewRecording(); //(Keep this line)
                 
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -697,8 +696,9 @@ namespace BizHawk.MultiClient
 				writer.Close();
 			}
 			Global.Emulator = new NullEmulator();
-            //InputLog.StopMovie();
             Global.ActiveController = Global.NullControls;
+            UserMovie.StopMovie();
+            InputLog.StopMovie();
 		}
 
 		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
@@ -976,7 +976,11 @@ namespace BizHawk.MultiClient
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
-                if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
+
+                //TODO: clean up this movie code, use a function or an object to manage the togglign of two movies
+                if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+                else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
                     Global.ActiveController.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame) + 1);
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
@@ -984,7 +988,9 @@ namespace BizHawk.MultiClient
                 HexEditor1.UpdateValues();
                 NESNameTableViewer1.UpdateValues();
                 NESPPU1.UpdateValues();
-                if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+                    UserMovie.GetMnemonic();
+                else if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
                     InputLog.GetMnemonic();
 			}
 

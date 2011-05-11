@@ -127,7 +127,9 @@ namespace BizHawk.MultiClient
 		private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			PlayMovie p = new PlayMovie();
-			p.ShowDialog();
+			DialogResult d = p.ShowDialog();
+            if (d == DialogResult.OK)
+                LoadRom(CurrentlyOpenRom);
 		}
 
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
