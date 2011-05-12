@@ -175,6 +175,16 @@ namespace BizHawk.MultiClient
                         str = ParseHeader(str, MovieHeader.GAMENAME);
                         Header.AddHeaderLine(MovieHeader.GAMENAME, str);
                     }
+                    else if (str.Contains(MovieHeader.RERECORDS))
+                    {
+                        str = ParseHeader(str, MovieHeader.RERECORDS);
+                        Header.AddHeaderLine(MovieHeader.RERECORDS, str);
+                    }
+                    else if (str.Contains(MovieHeader.AUTHOR))
+                    {
+                        str = ParseHeader(str, MovieHeader.AUTHOR);
+                        Header.AddHeaderLine(MovieHeader.AUTHOR, str);
+                    }
                     else if (str[0] == '|')
                     {
                         Log.AddFrame(str);
@@ -212,6 +222,7 @@ namespace BizHawk.MultiClient
                     {
                         continue;
                     }
+                        //TODO: don't reiterate this entire if chain, make a function called by this and loadmovie
                     else if (str.Contains(MovieHeader.EMULATIONVERSION))
                     {
                         str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
@@ -231,6 +242,16 @@ namespace BizHawk.MultiClient
                     {
                         str = ParseHeader(str, MovieHeader.GAMENAME);
                         Header.AddHeaderLine(MovieHeader.GAMENAME, str);
+                    }
+                    else if (str.Contains(MovieHeader.RERECORDS))
+                    {
+                        str = ParseHeader(str, MovieHeader.RERECORDS);
+                        Header.AddHeaderLine(MovieHeader.RERECORDS, str);
+                    }
+                    else if (str.Contains(MovieHeader.AUTHOR))
+                    {
+                        str = ParseHeader(str, MovieHeader.AUTHOR);
+                        Header.AddHeaderLine(MovieHeader.AUTHOR, str);
                     }
                     else if (str[0] == '|')
                     {
@@ -286,6 +307,11 @@ namespace BizHawk.MultiClient
                 if (line[0] == '|')
                     Log.AddFrame(line);
             }
+        }
+
+        public void IncrementRerecordCount()
+        {
+            rerecordCount++;
         }
     }
 }

@@ -149,7 +149,11 @@ namespace BizHawk.MultiClient
 
 		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+            if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                LoadRom(CurrentlyOpenRom);
+                UserMovie.StartPlayback();
+            }
 		}
 
 
