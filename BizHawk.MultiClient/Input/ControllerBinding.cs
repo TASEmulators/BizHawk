@@ -242,74 +242,85 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "SMS Controller")
             {
-                if (mnemonic[1]  != '.') programmaticallyPressedButtons.Add("P1 Up");
-                if (mnemonic[2]  != '.') programmaticallyPressedButtons.Add("P1 Down");
-                if (mnemonic[3]  != '.') programmaticallyPressedButtons.Add("P1 Left");
-                if (mnemonic[4]  != '.') programmaticallyPressedButtons.Add("P1 Right");
-                if (mnemonic[5]  != '.') programmaticallyPressedButtons.Add("P1 B1");
-                if (mnemonic[6]  != '.') programmaticallyPressedButtons.Add("P1 B2");
+                if (mnemonic.Length < 8) return;
+                //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
+                if (mnemonic[3]  != '.') programmaticallyPressedButtons.Add("P1 Up");
+                if (mnemonic[4]  != '.') programmaticallyPressedButtons.Add("P1 Down");
+                if (mnemonic[5]  != '.') programmaticallyPressedButtons.Add("P1 Left");
+                if (mnemonic[6]  != '.') programmaticallyPressedButtons.Add("P1 Right");
+                if (mnemonic[7]  != '.') programmaticallyPressedButtons.Add("P1 B1");
+                if (mnemonic[8]  != '.') programmaticallyPressedButtons.Add("P1 B2");
 
-                if (mnemonic[8]  != '.') programmaticallyPressedButtons.Add("P2 Up");
-                if (mnemonic[9]  != '.') programmaticallyPressedButtons.Add("P2 Down");
-                if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("P2 Left");
-                if (mnemonic[11] != '.') programmaticallyPressedButtons.Add("P2 Right");
-                if (mnemonic[12] != '.') programmaticallyPressedButtons.Add("P2 B1");
-                if (mnemonic[13] != '.') programmaticallyPressedButtons.Add("P2 B2");
-
-                if (mnemonic[15] != '.') programmaticallyPressedButtons.Add("Pause");
-                if (mnemonic[16] != '.') programmaticallyPressedButtons.Add("Reset");
-            }
-
-            if (type.Name == "PC Engine Controller")
-            {
-                if (mnemonic[1]  != '.') programmaticallyPressedButtons.Add("P1 Up");
-                if (mnemonic[2]  != '.') programmaticallyPressedButtons.Add("P1 Down");
-                if (mnemonic[3]  != '.') programmaticallyPressedButtons.Add("P1 Left");
-                if (mnemonic[4]  != '.') programmaticallyPressedButtons.Add("P1 Right");
-                if (mnemonic[5]  != '.') programmaticallyPressedButtons.Add("P1 B1");
-                if (mnemonic[6]  != '.') programmaticallyPressedButtons.Add("P1 B2");
-                if (mnemonic[7]  != '.') programmaticallyPressedButtons.Add("P1 Run");
-                if (mnemonic[8]  != '.') programmaticallyPressedButtons.Add("P1 Select");
-
-                if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("P2 Up");
-                if (mnemonic[11] != '.') programmaticallyPressedButtons.Add("P2 Down");
+                if (mnemonic.Length < 15) return;
+                if (mnemonic[10]  != '.') programmaticallyPressedButtons.Add("P2 Up");
+                if (mnemonic[11]  != '.') programmaticallyPressedButtons.Add("P2 Down");
                 if (mnemonic[12] != '.') programmaticallyPressedButtons.Add("P2 Left");
                 if (mnemonic[13] != '.') programmaticallyPressedButtons.Add("P2 Right");
                 if (mnemonic[14] != '.') programmaticallyPressedButtons.Add("P2 B1");
                 if (mnemonic[15] != '.') programmaticallyPressedButtons.Add("P2 B2");
-                if (mnemonic[16] != '.') programmaticallyPressedButtons.Add("P2 Run");
-                if (mnemonic[17] != '.') programmaticallyPressedButtons.Add("P2 Select");
 
-                if (mnemonic[19] != '.') programmaticallyPressedButtons.Add("P3 Up");
-                if (mnemonic[20] != '.') programmaticallyPressedButtons.Add("P3 Down");
-                if (mnemonic[21] != '.') programmaticallyPressedButtons.Add("P3 Left");
-                if (mnemonic[22] != '.') programmaticallyPressedButtons.Add("P3 Right");
-                if (mnemonic[23] != '.') programmaticallyPressedButtons.Add("P3 B1");
-                if (mnemonic[24] != '.') programmaticallyPressedButtons.Add("P3 B2");
-                if (mnemonic[25] != '.') programmaticallyPressedButtons.Add("P3 Run");
-                if (mnemonic[26] != '.') programmaticallyPressedButtons.Add("P3 Select");
+                if (mnemonic.Length < 18) return;
+                if (mnemonic[17] != '.') programmaticallyPressedButtons.Add("Pause");
+                if (mnemonic[18] != '.') programmaticallyPressedButtons.Add("Reset");
+            }
 
-                if (mnemonic[28] != '.') programmaticallyPressedButtons.Add("P4 Up");
-                if (mnemonic[29] != '.') programmaticallyPressedButtons.Add("P4 Down");
-                if (mnemonic[30] != '.') programmaticallyPressedButtons.Add("P4 Left");
-                if (mnemonic[31] != '.') programmaticallyPressedButtons.Add("P4 Right");
-                if (mnemonic[32] != '.') programmaticallyPressedButtons.Add("P4 B1");
-                if (mnemonic[33] != '.') programmaticallyPressedButtons.Add("P4 B2");
-                if (mnemonic[34] != '.') programmaticallyPressedButtons.Add("P4 Run");
-                if (mnemonic[35] != '.') programmaticallyPressedButtons.Add("P4 Select");
+            if (type.Name == "PC Engine Controller")
+            {
+                if (mnemonic.Length < 10) return;
+                //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
+                if (mnemonic[3]  != '.') programmaticallyPressedButtons.Add("P1 Up");
+                if (mnemonic[4]  != '.') programmaticallyPressedButtons.Add("P1 Down");
+                if (mnemonic[5]  != '.') programmaticallyPressedButtons.Add("P1 Left");
+                if (mnemonic[6]  != '.') programmaticallyPressedButtons.Add("P1 Right");
+                if (mnemonic[7]  != '.') programmaticallyPressedButtons.Add("P1 B1");
+                if (mnemonic[8]  != '.') programmaticallyPressedButtons.Add("P1 B2");
+                if (mnemonic[9]  != '.') programmaticallyPressedButtons.Add("P1 Run");
+                if (mnemonic[10]  != '.') programmaticallyPressedButtons.Add("P1 Select");
 
-                if (mnemonic[37] != '.') programmaticallyPressedButtons.Add("P5 Up");
-                if (mnemonic[38] != '.') programmaticallyPressedButtons.Add("P5 Down");
-                if (mnemonic[39] != '.') programmaticallyPressedButtons.Add("P5 Left");
-                if (mnemonic[40] != '.') programmaticallyPressedButtons.Add("P5 Right");
-                if (mnemonic[41] != '.') programmaticallyPressedButtons.Add("P5 B1");
-                if (mnemonic[42] != '.') programmaticallyPressedButtons.Add("P5 B2");
-                if (mnemonic[43] != '.') programmaticallyPressedButtons.Add("P5 Run");
-                if (mnemonic[44] != '.') programmaticallyPressedButtons.Add("P5 Select");
+                if (mnemonic.Length < 19) return;
+                if (mnemonic[12] != '.') programmaticallyPressedButtons.Add("P2 Up");
+                if (mnemonic[13] != '.') programmaticallyPressedButtons.Add("P2 Down");
+                if (mnemonic[14] != '.') programmaticallyPressedButtons.Add("P2 Left");
+                if (mnemonic[15] != '.') programmaticallyPressedButtons.Add("P2 Right");
+                if (mnemonic[16] != '.') programmaticallyPressedButtons.Add("P2 B1");
+                if (mnemonic[17] != '.') programmaticallyPressedButtons.Add("P2 B2");
+                if (mnemonic[18] != '.') programmaticallyPressedButtons.Add("P2 Run");
+                if (mnemonic[19] != '.') programmaticallyPressedButtons.Add("P2 Select");
+
+                if (mnemonic.Length < 28) return;
+                if (mnemonic[21] != '.') programmaticallyPressedButtons.Add("P3 Up");
+                if (mnemonic[22] != '.') programmaticallyPressedButtons.Add("P3 Down");
+                if (mnemonic[23] != '.') programmaticallyPressedButtons.Add("P3 Left");
+                if (mnemonic[24] != '.') programmaticallyPressedButtons.Add("P3 Right");
+                if (mnemonic[25] != '.') programmaticallyPressedButtons.Add("P3 B1");
+                if (mnemonic[26] != '.') programmaticallyPressedButtons.Add("P3 B2");
+                if (mnemonic[27] != '.') programmaticallyPressedButtons.Add("P3 Run");
+                if (mnemonic[28] != '.') programmaticallyPressedButtons.Add("P3 Select");
+
+                if (mnemonic.Length < 37) return;
+                if (mnemonic[30] != '.') programmaticallyPressedButtons.Add("P4 Up");
+                if (mnemonic[31] != '.') programmaticallyPressedButtons.Add("P4 Down");
+                if (mnemonic[32] != '.') programmaticallyPressedButtons.Add("P4 Left");
+                if (mnemonic[33] != '.') programmaticallyPressedButtons.Add("P4 Right");
+                if (mnemonic[34] != '.') programmaticallyPressedButtons.Add("P4 B1");
+                if (mnemonic[35] != '.') programmaticallyPressedButtons.Add("P4 B2");
+                if (mnemonic[36] != '.') programmaticallyPressedButtons.Add("P4 Run");
+                if (mnemonic[37] != '.') programmaticallyPressedButtons.Add("P4 Select");
+
+                if (mnemonic.Length < 46) return;
+                if (mnemonic[39] != '.') programmaticallyPressedButtons.Add("P5 Up");
+                if (mnemonic[40] != '.') programmaticallyPressedButtons.Add("P5 Down");
+                if (mnemonic[41] != '.') programmaticallyPressedButtons.Add("P5 Left");
+                if (mnemonic[42] != '.') programmaticallyPressedButtons.Add("P5 Right");
+                if (mnemonic[43] != '.') programmaticallyPressedButtons.Add("P5 B1");
+                if (mnemonic[44] != '.') programmaticallyPressedButtons.Add("P5 B2");
+                if (mnemonic[45] != '.') programmaticallyPressedButtons.Add("P5 Run");
+                if (mnemonic[46] != '.') programmaticallyPressedButtons.Add("P5 Select");
             }
 
             if (type.Name == "NES Controls")
             {
+                if (mnemonic.Length < 10) return;
                 //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
                 if (mnemonic[3] != '.') programmaticallyPressedButtons.Add("Right");
                 if (mnemonic[4] != '.') programmaticallyPressedButtons.Add("Left");
