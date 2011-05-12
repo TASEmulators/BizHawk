@@ -1067,10 +1067,25 @@ namespace BizHawk.MultiClient
 
 			var reader = new StreamReader(path);
 			Global.Emulator.LoadStateText(reader);
+
+            
             //TODO: more logic regarding each movie mode
-            if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-                InputLog.LoadLogFromSavestateText(reader);
-			reader.Close();
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+                {
+                    UserMovie.LoadLogFromSavestateText(reader);
+                    UserMovie.
+                }
+            }
+            else
+            {
+                if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                    InputLog.LoadLogFromSavestateText(reader);
+            }
+			
+            
+            reader.Close();
 			Global.RenderPanel.AddMessage("Loaded state: " + name);
 		}
 

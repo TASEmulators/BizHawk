@@ -59,6 +59,11 @@ namespace BizHawk.MultiClient
                 HeaderParams.Add(key, value);
         }
 
+        public void UpdateRerecordCount(int count)
+        {
+            //TODO
+        }
+
         public bool RemoveHeaderLine(string key)
         {
             return HeaderParams.Remove(key);
