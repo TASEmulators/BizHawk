@@ -130,9 +130,21 @@ namespace BizHawk.MultiClient
 			DialogResult d = p.ShowDialog();
 		}
 
+        public void StopUserMovie()
+        {
+            if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+                UserMovie.StopMovie();
+        }
+
+        public void StopInputLog()
+        {
+            if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                InputLog.StopMovie();  
+        }
+
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            InputLog.StopMovie();   //TODO: stop user movie if it exists, and start InputLog logging, else do nothing
+            StopUserMovie();
 		}
 
 		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
