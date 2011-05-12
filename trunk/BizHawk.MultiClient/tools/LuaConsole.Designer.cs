@@ -40,11 +40,17 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.turnOffAllScriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -56,13 +62,7 @@
             this.OutputBox = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.NumberOfScripts = new System.Windows.Forms.Label();
-            this.insertSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.turnOffAllScriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -82,6 +82,7 @@
             this.LuaListView.TabIndex = 0;
             this.LuaListView.UseCompatibleStateImageBehavior = false;
             this.LuaListView.View = System.Windows.Forms.View.Details;
+            this.LuaListView.SelectedIndexChanged += new System.EventHandler(this.LuaListView_SelectedIndexChanged);
             this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
             // 
             // Script
@@ -157,6 +158,33 @@
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.saveAsToolStripMenuItem.Text = "&Save As...";
             // 
+            // recentToolStripMenuItem
+            // 
+            this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noneToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.clearToolStripMenuItem});
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            // 
+            // noneToolStripMenuItem
+            // 
+            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.noneToolStripMenuItem.Text = "None";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -192,6 +220,18 @@
             this.toggleToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.toggleToolStripMenuItem.Text = "Toggle";
             // 
+            // insertSeparatorToolStripMenuItem
+            // 
+            this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
+            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
+            // 
+            // turnOffAllScriptsToolStripMenuItem
+            // 
+            this.turnOffAllScriptsToolStripMenuItem.Name = "turnOffAllScriptsToolStripMenuItem";
+            this.turnOffAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.turnOffAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
+            // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -206,24 +246,24 @@
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
             // 
             // moveUpToolStripMenuItem
             // 
             this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.moveUpToolStripMenuItem.Text = "Move Up";
             // 
             // moveDownToolStripMenuItem
             // 
             this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.moveDownToolStripMenuItem.Text = "Move Down";
             // 
             // optionsToolStripMenuItem
@@ -278,49 +318,10 @@
             this.NumberOfScripts.TabIndex = 4;
             this.NumberOfScripts.Text = " 0 Scripts     ";
             // 
-            // insertSeparatorToolStripMenuItem
-            // 
-            this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
-            this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
-            // 
-            // turnOffAllScriptsToolStripMenuItem
-            // 
-            this.turnOffAllScriptsToolStripMenuItem.Name = "turnOffAllScriptsToolStripMenuItem";
-            this.turnOffAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.turnOffAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
-            // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
-            // 
-            // recentToolStripMenuItem
-            // 
-            this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noneToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.clearToolStripMenuItem});
-            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.recentToolStripMenuItem.Text = "Recent";
-            // 
-            // noneToolStripMenuItem
-            // 
-            this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.noneToolStripMenuItem.Text = "None";
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
-            // 
-            // clearToolStripMenuItem
-            // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
             // 
             // LuaConsole
             // 

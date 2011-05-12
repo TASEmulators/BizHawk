@@ -62,6 +62,11 @@ namespace BizHawk.MultiClient
         private void LuaListView_QueryItemText(int index, int column, out string text)
         {
             text = "";
+            if (column == 0)
+                text = Path.GetFileNameWithoutExtension(luaList[index].Path); //TODO: how about a list of Names and allow the user to name them?
+            if (column == 1)
+                text = luaList[index].Path;
+
         }
 
         private void LuaConsole_Load(object sender, EventArgs e)
@@ -131,6 +136,8 @@ namespace BizHawk.MultiClient
         {
             LuaFiles l = new LuaFiles("", path, true);
             luaList.Add(l);
+            LuaListView.ItemCount = luaList.Count;
+            LuaListView.Refresh();
 
             LuaImp.DoLuaFile(path);
         }
@@ -201,6 +208,11 @@ namespace BizHawk.MultiClient
         private void LuaListView_DoubleClick(object sender, EventArgs e)
         {
             Toggle();
+        }
+
+        private void LuaListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
