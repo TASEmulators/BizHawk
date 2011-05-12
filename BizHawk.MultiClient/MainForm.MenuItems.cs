@@ -128,8 +128,6 @@ namespace BizHawk.MultiClient
 		{
 			PlayMovie p = new PlayMovie();
 			DialogResult d = p.ShowDialog();
-            if (d == DialogResult.OK)
-                LoadRom(CurrentlyOpenRom);
 		}
 
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)

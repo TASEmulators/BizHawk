@@ -240,6 +240,7 @@ namespace BizHawk.MultiClient
                     }
 
                 }
+                sr.Close();
             }
             
             return true;

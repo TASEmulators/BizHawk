@@ -305,8 +305,8 @@ namespace BizHawk.MultiClient
         {
             if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
             {
-                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.InputLog.lastLog.ToString() 
-                    + "/" + Global.MainForm.InputLog.GetMovieLength().ToString();
+                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString() 
+                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
             }
             else
             {
