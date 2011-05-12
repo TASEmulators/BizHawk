@@ -179,6 +179,8 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.readonlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -617,6 +619,8 @@
             // movieToolStripMenuItem
             // 
             this.movieToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.readonlyToolStripMenuItem,
+            this.toolStripSeparator15,
             this.recentToolStripMenuItem,
             this.recordMovieToolStripMenuItem,
             this.playMovieToolStripMenuItem,
@@ -1367,6 +1371,18 @@
             this.EmuStatus.Size = new System.Drawing.Size(162, 17);
             this.EmuStatus.Text = "Currently emulating: ur mom";
             // 
+            // readonlyToolStripMenuItem
+            // 
+            this.readonlyToolStripMenuItem.Name = "readonlyToolStripMenuItem";
+            this.readonlyToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.readonlyToolStripMenuItem.Text = "Read-only";
+            this.readonlyToolStripMenuItem.Click += new System.EventHandler(this.readonlyToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator15
+            // 
+            this.toolStripSeparator15.Name = "toolStripSeparator15";
+            this.toolStripSeparator15.Size = new System.Drawing.Size(179, 6);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1543,6 +1559,8 @@
         private System.Windows.Forms.ToolStripMenuItem disableSaveslotKeysOnLoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pathsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+        private System.Windows.Forms.ToolStripMenuItem readonlyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
     }
 }
 

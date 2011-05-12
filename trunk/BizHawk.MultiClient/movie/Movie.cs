@@ -18,6 +18,7 @@ namespace BizHawk.MultiClient
         private MOVIEMODE MovieMode = new MOVIEMODE();
 
         public int lastLog;
+        public int rerecordCount;
 
         //TODO:
         //Author field, needs to be passed in by a record or play dialog
@@ -27,6 +28,7 @@ namespace BizHawk.MultiClient
             Filename = filename;    //TODO: Validate that file is writable
             MovieMode = m;
             lastLog = 0;
+            rerecordCount = 0;
         }
 
         public string GetFilePath() 
@@ -55,7 +57,7 @@ namespace BizHawk.MultiClient
         {
             MovieMode = MOVIEMODE.RECORD;
             Log.Clear();
-            Header = new MovieHeader("BizHawk v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "");
+            Header = new MovieHeader("BizHawk v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "", 0);
         }
 
         public void StartPlayback()
@@ -181,7 +183,6 @@ namespace BizHawk.MultiClient
                     {
                         Header.Comments.Add(str);
                     }
-                    
                 }
             }
 

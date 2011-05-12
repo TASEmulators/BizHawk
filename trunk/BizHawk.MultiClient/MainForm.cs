@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
         //TODO: adelikat: can this be the official file extension?
         public Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
         public Movie UserMovie = new Movie("", MOVIEMODE.INACTIVE);
+        public bool ReadOnly = true;    //Global Movie Read only setting
 
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
@@ -1682,6 +1683,20 @@ namespace BizHawk.MultiClient
                 stopMovieToolStripMenuItem.Enabled = true;
                 playFromBeginningToolStripMenuItem.Enabled = true;
             }
+
+            if (ReadOnly)
+                readonlyToolStripMenuItem.Checked = true;
+            else
+                readonlyToolStripMenuItem.Checked = false;
+        }
+
+        private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ReadOnly ^= true;
+            if (ReadOnly)
+                Global.RenderPanel.AddMessage("Movie read-only mode");
+            else
+                Global.RenderPanel.AddMessage("Movie read+write mode");
         }
 	}
 }
