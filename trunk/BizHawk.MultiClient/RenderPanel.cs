@@ -303,12 +303,16 @@ namespace BizHawk.MultiClient
 
         private string MakeFrameCounter()
         {
+            //TODO: remove rerecord count code and make it its own display option
             if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
             {
-                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString() 
-                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
+                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString()
+                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString() + "    Rerecord count: " + Global.MainForm.UserMovie.GetRerecordCount();
             }
-            else
+            else if (Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+                return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString()
+                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString() + "    Rerecord count: " + Global.MainForm.UserMovie.GetRerecordCount();
+            else 
             {
                 return Global.Emulator.Frame.ToString();
             }
