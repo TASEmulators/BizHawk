@@ -1669,5 +1669,19 @@ namespace BizHawk.MultiClient
         {
             Global.Config.DisplayInput ^= true;
         }
+
+        private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+            {
+                stopMovieToolStripMenuItem.Enabled = false;
+                playFromBeginningToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                stopMovieToolStripMenuItem.Enabled = true;
+                playFromBeginningToolStripMenuItem.Enabled = true;
+            }
+        }
 	}
 }

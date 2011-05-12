@@ -46,15 +46,16 @@ namespace BizHawk.MultiClient
 
         public void StopMovie()
         {
-            MovieMode = MOVIEMODE.INACTIVE;
-            WriteMovie();
+            if (MovieMode == MOVIEMODE.RECORD)
+                WriteMovie();
+            MovieMode = MOVIEMODE.INACTIVE;            
         }
 
         public void StartNewRecording()
         {
             MovieMode = MOVIEMODE.RECORD;
             Log.Clear();
-            Header = new MovieHeader("v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "");
+            Header = new MovieHeader("BizHawk v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "");
         }
 
         public void StartPlayback()
