@@ -1075,7 +1075,7 @@ namespace BizHawk.MultiClient
                 if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
                 {
                     UserMovie.LoadLogFromSavestateText(reader);
-                    UserMovie.
+                    UserMovie.IncrementRerecordCount();
                 }
             }
             else
