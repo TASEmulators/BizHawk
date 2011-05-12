@@ -312,6 +312,7 @@ namespace BizHawk.MultiClient
         public void IncrementRerecordCount()
         {
             rerecordCount++;
+            Header.UpdateRerecordCount(rerecordCount);
         }
     }
 }
