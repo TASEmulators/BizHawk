@@ -992,8 +992,7 @@ namespace BizHawk.MultiClient
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
-
-                //TODO: clean up this movie code, use a function or an object to manage the togglign of two movies
+                
                 if (MovieActive())
                 {
                     Movie m = GetActiveMovie();
