@@ -451,10 +451,24 @@ namespace BizHawk.MultiClient
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
+        private bool IsValidMovieExtension(string ext)
+        {
+            switch (ext.ToUpper())
+            {
+                case ".TAS":   //Bizhawk
+                case ".FM2":   //FCUEX
+                case ".MC2":   //PCEjin
+                case ".STATE": //Savestates
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (Path.GetExtension(filePaths[0]) == ".tas")
+            if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
             {
                 Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
                 StartNewMovie(m);
@@ -645,14 +659,8 @@ namespace BizHawk.MultiClient
 					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 				}
 
-                //Remove this block once movie selection is more polished, input log should only be playback through the same mechanism as any other movie file
-                if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-                {
-                    InputLog.LoadMovie();   //TODO: Debug 
-                    InputLog.StartPlayback(); //TODO: Debug
-                }
-                else
-                    InputLog.StartNewRecording(); //(Keep this line)
+                //TODO: autoload movie logic goes here
+                InputLog.StartNewRecording(); //(Keep this line)
                 
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -986,16 +994,21 @@ namespace BizHawk.MultiClient
 					genSound = true;
 
                 //TODO: clean up this movie code, use a function or an object to manage the togglign of two movies
-                if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
-                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
-                else if (InputLog.GetMovieMode() == MOVIEMODE.PLAY)
-                    Global.ActiveController.SetControllersAsMnemonic(InputLog.GetInputFrame(Global.Emulator.Frame) + 1);
+                if (MovieActive())
+                {
+                    Movie m = GetActiveMovie();
+                    if (m.GetMovieLength() == Global.Emulator.Frame && m.GetMovieMode() == MOVIEMODE.PLAY)
+                        m.SetMovieFinished();
+                    if (m.GetMovieMode() == MOVIEMODE.PLAY)
+                        Global.ActiveController.SetControllersAsMnemonic(m.GetInputFrame(Global.Emulator.Frame) + 1);                    
+                }
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
                 HexEditor1.UpdateValues();
                 NESNameTableViewer1.UpdateValues();
                 NESPPU1.UpdateValues();
+
                 if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
                     UserMovie.GetMnemonic();
                 else if (InputLog.GetMovieMode() ==  MOVIEMODE.RECORD)
@@ -1729,6 +1742,26 @@ namespace BizHawk.MultiClient
             LoadRom(Global.MainForm.CurrentlyOpenRom);
             UserMovie.LoadMovie();
             UserMovie.StartPlayback();
+        }
+
+        public Movie GetActiveMovie()
+        {
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+                return UserMovie;
+            else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+                return InputLog;
+            else
+                return null;
+        }
+
+        public bool MovieActive()
+        {
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+                return true;
+            else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+                return true;
+            else
+                return false;
         }
 	}
 }
