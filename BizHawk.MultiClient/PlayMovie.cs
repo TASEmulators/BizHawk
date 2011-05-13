@@ -111,5 +111,19 @@ namespace BizHawk.MultiClient
         {
             
         }
+
+        private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DetailsView.Items.Clear();
+            int x = MovieView.SelectedIndices[0];
+            Dictionary<string, string> h = MovieList[x].GetHeaderInfo();
+            
+            foreach (var kvp in h)
+            {
+                ListViewItem item = new ListViewItem(kvp.Key);
+                item.SubItems.Add(kvp.Value);
+                DetailsView.Items.Add(item);
+            }
+        }
     }
 }

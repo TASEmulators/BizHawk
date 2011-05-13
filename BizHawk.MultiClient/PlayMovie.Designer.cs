@@ -102,6 +102,7 @@
             this.MovieView.TabIndex = 3;
             this.MovieView.UseCompatibleStateImageBehavior = false;
             this.MovieView.View = System.Windows.Forms.View.Details;
+            this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
             // 
             // columnHeader1
             // 

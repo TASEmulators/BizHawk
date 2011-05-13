@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
         //GameName -  Which game
         //TODO: GUID, checksum of game, other stuff
 
-        Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
+        public Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
         public List<string> Comments = new List<string>();
         
         public const string EMULATIONVERSION = "EmulationVersion";
@@ -79,11 +79,6 @@ namespace BizHawk.MultiClient
             string value = "";
             HeaderParams.TryGetValue(key, out value);
             return value;
-        }
-
-        public Dictionary<string, string> GetHeaderInfo()
-        {
-            return HeaderParams;
         }
     }
 }
