@@ -1517,6 +1517,7 @@ namespace BizHawk.MultiClient
 			displayFrameCounterToolStripMenuItem.Checked = Global.Config.DisplayFrameCounter;
 			displayLagCounterToolStripMenuItem.Checked = Global.Config.DisplayLagCounter;
 			displayInputToolStripMenuItem.Checked = Global.Config.DisplayInput;
+            displayRerecordCountToolStripMenuItem.Checked = Global.Config.DisplayRerecordCount;
 
             displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FPSBinding;
             displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FrameCounterBinding;
