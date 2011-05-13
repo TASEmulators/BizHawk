@@ -330,14 +330,6 @@ namespace BizHawk.MultiClient
                 if (mnemonic[8] != '.') programmaticallyPressedButtons.Add("Select");
                 if (mnemonic[9] != '.') programmaticallyPressedButtons.Add("B");
                 if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("A");
-                
-                
-                
-                
-                
-                
-                
-                
             }
         }
     }

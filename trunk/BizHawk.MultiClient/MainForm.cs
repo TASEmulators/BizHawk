@@ -998,7 +998,10 @@ namespace BizHawk.MultiClient
                 {
                     Movie m = GetActiveMovie();
                     if (m.GetMovieLength() == Global.Emulator.Frame && m.GetMovieMode() == MOVIEMODE.PLAY)
+                    {
                         m.SetMovieFinished();
+                        Global.ActiveController.MovieMode = false;
+                    }
                     if (m.GetMovieMode() == MOVIEMODE.PLAY)
                         Global.ActiveController.SetControllersAsMnemonic(m.GetInputFrame(Global.Emulator.Frame) + 1);                    
                 }
