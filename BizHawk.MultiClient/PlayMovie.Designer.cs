@@ -121,7 +121,7 @@
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Author";
+            this.columnHeader4.Text = "Length";
             this.columnHeader4.Width = 97;
             // 
             // DetailsView
