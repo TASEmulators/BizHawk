@@ -454,7 +454,14 @@ namespace BizHawk.MultiClient
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			LoadRom(filePaths[0]);
+            if (Path.GetExtension(filePaths[0]) == ".tas")
+            {
+                Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
+                StartNewMovie(m);
+                
+            }
+            else
+			    LoadRom(filePaths[0]);
 		}
 
 		public bool IsNullEmulator()
@@ -1712,6 +1719,16 @@ namespace BizHawk.MultiClient
                 Global.RenderPanel.AddMessage("Movie read-only mode");
             else
                 Global.RenderPanel.AddMessage("Movie read+write mode");
+        }
+
+        public void StartNewMovie(Movie m)
+        {
+            
+            UserMovie = m;
+            InputLog.StopMovie();
+            LoadRom(Global.MainForm.CurrentlyOpenRom);
+            UserMovie.LoadMovie();
+            UserMovie.StartPlayback();
         }
 	}
 }
