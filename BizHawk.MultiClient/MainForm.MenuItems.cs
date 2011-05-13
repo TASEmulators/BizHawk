@@ -560,5 +560,10 @@ namespace BizHawk.MultiClient
             PathConfig p = new PathConfig();
             p.ShowDialog();
         }
+
+        private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.DisplayRerecordCount ^= true;
+        }
 	}
 }

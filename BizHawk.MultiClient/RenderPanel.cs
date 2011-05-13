@@ -299,6 +299,13 @@ namespace BizHawk.MultiClient
                 }
                 
             }
+            if (Global.Config.DisplayRerecordCount)
+            {
+                MessageFont.DrawString(null, MakeRerecordCount(), Global.Config.DispRecx + 1,
+                     Global.Config.DispRecy + 1, new Color4(Color.Black));
+                MessageFont.DrawString(null, MakeRerecordCount(), Global.Config.DispRecx,
+                    Global.Config.DispRecy, Color.FromArgb(Global.Config.MessagesColor));
+            }
         }
 
         private string MakeFrameCounter()
@@ -312,11 +319,11 @@ namespace BizHawk.MultiClient
             else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
             {
                 return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString()
-                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString() + "    Rerecord count: " + Global.MainForm.UserMovie.GetRerecordCount();
+                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
             }
             else if (Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
                 return Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString()
-                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString() + "    Rerecord count: " + Global.MainForm.UserMovie.GetRerecordCount();
+                    + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
             else
             {
                 return Global.Emulator.Frame.ToString();
@@ -373,6 +380,17 @@ namespace BizHawk.MultiClient
             string tmp = Global.MainForm.wasPressed;
             tmp = tmp.Replace(".", " ");
             tmp = tmp.Replace("|", "");
+            return tmp;
+        }
+
+        public string MakeRerecordCount()
+        {
+            string tmp = "";
+            if (Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                tmp += "Rerecord Count: ";
+                tmp += Global.MainForm.GetActiveMovie().GetRerecordCount().ToString();
+            }
             return tmp;
         }
     }

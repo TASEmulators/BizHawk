@@ -107,6 +107,9 @@
         public bool DisplayInput = false;
         public int DispInpx = 0;
         public int DispInpy = 24;
+        public bool DisplayRerecordCount = false;
+        public int DispRecx = 0;
+        public int DispRecy = 48;
 		public bool ForceGDI = false;
 
         // Sound options
