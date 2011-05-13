@@ -268,10 +268,18 @@ namespace BizHawk.MultiClient
             if (Global.Config.DisplayInput)
             {
                 string input = MakeLastInputDisplay();
+                Color c;
+                if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+                {
+                    c = Color.Gray;
+                }
+                else
+                    c = Color.FromArgb(Global.Config.MessagesColor);
+                
                 MessageFont.DrawString(null, input, Global.Config.DispInpx+2, Global.Config.DispInpy+2, new Color4(Color.Black));
                 MessageFont.DrawString(null, input, Global.Config.DispInpx+1, Global.Config.DispInpy+1, Color.FromArgb(Global.Config.LastInputColor));
                 input = MakeInputDisplay();
-                MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, Color.FromArgb(Global.Config.MessagesColor));
+                MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, c);
             }
 
             if (Global.Config.DisplayFPS)
