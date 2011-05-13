@@ -107,7 +107,7 @@ namespace BizHawk.MultiClient
             
             using (StreamWriter sw = new StreamWriter(Filename))
             {          
-                foreach (KeyValuePair<string, string> kvp in Header.GetHeaderInfo())
+                foreach (KeyValuePair<string, string> kvp in Header.HeaderParams)
                 {
                     sw.WriteLine(kvp.Key + " " + kvp.Value);
                 }
@@ -318,6 +318,11 @@ namespace BizHawk.MultiClient
         public int GetRerecordCount()
         {
             return rerecordCount;
+        }
+
+        public Dictionary<string, string> GetHeaderInfo()
+        {
+            return Header.HeaderParams;
         }
     }
 }
