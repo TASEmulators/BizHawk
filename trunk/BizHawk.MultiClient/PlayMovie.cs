@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 
         private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
         {
-            
+           
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -72,12 +72,23 @@ namespace BizHawk.MultiClient
                     return;
                 else
                 {
-                    PreLoadMovieFile(file);
-                    MovieView.ItemCount = MovieList.Count;
-                    UpdateList();
-                    MovieView.SelectedIndices.Clear();
-                    MovieView.setSelection(MovieList.Count-1);
+                    AddMovieToList(ofd.FileName);
                 }
+            }
+        }
+
+        private void AddMovieToList(string filename)
+        {
+            var file = new FileInfo(filename);
+            if (!file.Exists)
+                return;
+            else
+            {
+                PreLoadMovieFile(file);
+                MovieView.ItemCount = MovieList.Count;
+                UpdateList();
+                MovieView.SelectedIndices.Clear();
+                MovieView.setSelection(MovieList.Count - 1);
             }
         }
 
@@ -105,7 +116,13 @@ namespace BizHawk.MultiClient
 
         private void PlayMovie_Load(object sender, EventArgs e)
         {
-            
+            string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+            if (!Directory.Exists(d))
+                Directory.CreateDirectory(d);
+            foreach (string f in Directory.GetFiles(d, "*.tas"))
+            {
+                AddMovieToList(f);
+            }
         }
 
         private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
