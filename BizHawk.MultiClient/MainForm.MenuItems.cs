@@ -132,8 +132,11 @@ namespace BizHawk.MultiClient
 
         public void StopUserMovie()
         {
-            if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
                 UserMovie.StopMovie();
+                Global.ActiveController.MovieMode = false;
+            }
         }
 
         public void StopInputLog()
