@@ -4,4 +4,3 @@ We use Visual Studio 2008 but Visual C# 2008 Express edition also works.
 
 ==Dependencies==
  * DirectX SDK, can be found [http://www.microsoft.com/downloads/en/details.aspx?displaylang=en&FamilyID=3021d52b-514e-41d3-ad02-438a3ba730ba here]
- * Slim DX developer SDK, can be found [http://slimdx.googlecode.com/files/SlimDX%20SDK%20%28March%202011%29.exe here]
