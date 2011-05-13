@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 
         private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
         {
-
+            
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -53,10 +53,7 @@ namespace BizHawk.MultiClient
 
         private void OK_Click(object sender, EventArgs e)
         {
-            Global.MainForm.UserMovie = MovieList[MovieView.SelectedIndices[0]];
-            Global.MainForm.LoadRom(Global.MainForm.CurrentlyOpenRom);
-            Global.MainForm.UserMovie.LoadMovie();
-            Global.MainForm.UserMovie.StartPlayback();
+            Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]]);
             this.Close();
         }
 
@@ -124,6 +121,16 @@ namespace BizHawk.MultiClient
                 item.SubItems.Add(kvp.Value);
                 DetailsView.Items.Add(item);
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //TODO: a comments viewer/editor
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //TODO: a subtitle viewer/editor
         }
     }
 }
