@@ -16,7 +16,6 @@ namespace BizHawk.MultiClient
         //Upon open file dialog? that's weird, record movie? more often people will use play movie first
         //Never? then the path default must be .\ not .\movies
         //TODO: after browse & update, focus on the movie just added
-        //Make MovieView not allow multiselect
         //This is a modal dialog, implement it as modeless
         //  In order to do this, this dialog will have to restart the rom
 
