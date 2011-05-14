@@ -330,5 +330,10 @@ namespace BizHawk.MultiClient
             if (MovieMode == MOVIEMODE.PLAY)
                 MovieMode = MOVIEMODE.FINISHED;
         }
+
+        public bool SetHeaderLine(string key, string value)
+        {
+            return Header.SetHeaderLine(key, value);
+        }
     }
 }

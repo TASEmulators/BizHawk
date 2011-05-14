@@ -660,6 +660,7 @@ namespace BizHawk.MultiClient
 				}
 
                 //TODO: autoload movie logic goes here
+                InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
                 InputLog.StartNewRecording(); //(Keep this line)
                 
 				//setup the throttle based on platform's specifications
