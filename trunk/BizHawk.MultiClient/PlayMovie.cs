@@ -18,6 +18,8 @@ namespace BizHawk.MultiClient
         //TODO: after browse & update, focus on the movie just added
         //This is a modal dialog, implement it as modeless
         //  In order to do this, this dialog will have to restart the rom
+        // Option to include subdirectories
+        // Option to include savestate files (that have an input log)
 
         List<Movie> MovieList = new List<Movie>();
 
@@ -120,9 +122,11 @@ namespace BizHawk.MultiClient
             if (!Directory.Exists(d))
                 Directory.CreateDirectory(d);
             foreach (string f in Directory.GetFiles(d, "*.tas"))
-            {
                 AddMovieToList(f);
-            }
+            foreach (string f in Directory.GetFiles(d, "*.fm2"))
+                AddMovieToList(f);
+            foreach (string f in Directory.GetFiles(d, "*.mc2"))
+                AddMovieToList(f);
         }
 
         private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
