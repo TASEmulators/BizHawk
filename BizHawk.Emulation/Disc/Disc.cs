@@ -283,10 +283,19 @@ namespace BizHawk.Disc
 				}
 		}
 
-		//main api for reading a 2352-byte LBA from a disc
-		public void ReadLBA(int fad, byte[] buffer, int offset)
+		//main api for reading a 2352-byte LBA from a disc.
+		//this starts at the beginning of the disc (at the lead-in)
+		//so add 150 to get to a FAD-address in the user data area
+		public void ReadLBA(int lba, byte[] buffer, int offset)
 		{
-			Sectors[fad].Sector.Read(buffer, offset);
+			if (lba < 150) { 
+				//lead-in area not supported yet
+				//in the future it will return something to mate with the 
+				//subchannel data which we will load or calculate from the TOC
+				return;
+			}
+
+			Sectors[lba-150].Sector.Read(buffer, offset);
 		}
 
 		//main api for reading the TOC from a disc
