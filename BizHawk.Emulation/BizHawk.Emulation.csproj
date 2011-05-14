@@ -163,10 +163,12 @@
     <Compile Include="Database\Database.cs" />
     <Compile Include="Disc\CCD_format.cs" />
     <Compile Include="Disc\CUE_format.cs" />
+    <Compile Include="Disc\Disc.API.cs" />
     <Compile Include="Disc\Disc.cs" />
     <Compile Include="Disc\DiscTOC.cs" />
     <Compile Include="Disc\ECM.cs" />
     <Compile Include="Disc\FFmpeg.cs" />
+    <Compile Include="Disc\Subcode.cs" />
     <Compile Include="Disc\TOC_format.cs" />
     <Compile Include="Interfaces\Base Implementations\Game.cs" />
     <Compile Include="Interfaces\Base Implementations\IPS.cs" />
