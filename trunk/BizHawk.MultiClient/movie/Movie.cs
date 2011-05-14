@@ -335,5 +335,73 @@ namespace BizHawk.MultiClient
         {
             return Header.SetHeaderLine(key, value);
         }
+
+        private decimal GetSeconds()
+        {
+            const decimal NES_PAL = (decimal)50.006977968268290849;
+            const decimal NES_NTSC = (decimal)60.098813897440515532;
+            const decimal PCE_PAL = (decimal)(50.0); //TODO ?
+            const decimal PCE_NTSC = (decimal)(7159090.90909090 / 455 / 263); //~59.826
+            const decimal SMS_PAL = (decimal)60.0;
+            const decimal SMS_NTSC = (decimal)50.0;
+            const decimal GEN = (decimal)60.0;
+
+            //const decimal REAL_SMS_NTSC = (decimal)(3579545 / 262.0 / 228.0);
+            //const decimal REAL_SMS_PAL =  (decimal)(3546893 / 313.0 / 228.0);
+            const decimal NGP = (decimal)(6144000.0 / (515 * 198));
+            const decimal VBOY = (decimal)(20000000 / (259 * 384 * 4));  //~50.273
+            const decimal LYNX = (decimal)59.8;
+            const decimal WSWAN = (decimal)(3072000.0 / (159 * 256));
+            decimal seconds = 0;
+            int frames = Log.Length();
+
+            if (frames == 0)
+                return seconds;
+
+            bool pal = false; //TODO: pal flag
+
+            switch (Header.GetHeaderLine(MovieHeader.PLATFORM))
+            {
+                case "GG":
+                case "SG":
+                case "SMS":
+                    if (pal)
+                        return frames / SMS_PAL;
+                    else
+                        return frames / SMS_NTSC;
+                case "FDS":
+                case "NES":
+                case "SNES":
+                    if (pal)
+                        return frames / NES_PAL;
+                    else
+                        return frames / NES_NTSC;
+                case "PCE":
+                    if (pal)
+                        return frames / PCE_PAL;
+                    else
+                        return frames / PCE_NTSC;
+                case "GEN":
+                    return frames / GEN;
+                
+                //One Day!
+                case "VBOY":
+                    return frames / VBOY;
+                case "NGP":
+                    return frames / NGP;
+                case "LYNX":
+                    return frames / LYNX;
+                case "WSWAN":
+                    return frames / WSWAN;
+                //********
+
+                case "":
+                default:
+                    if (pal)
+                        return (decimal)(frames / 50.0);
+                    else
+                        return (decimal)(frames / 60.0);
+            }
+        }
     }
 }
