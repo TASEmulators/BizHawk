@@ -16,13 +16,13 @@ namespace BizHawk.MultiClient
 
         public Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
         public List<string> Comments = new List<string>();
-        
-        public const string EMULATIONVERSION = "EmulationVersion";
+
+        public const string EMULATIONVERSION = "emuVersion";
         public const string MOVIEVERSION = "MovieVersion";
         public const string PLATFORM = "Platform";
         public const string GAMENAME = "GameName";
         public const string AUTHOR = "Author";
-        public const string RERECORDS = "Rerecords";
+        public const string RERECORDS = "rerecordCount";
 
         public static string MovieVersion = "BizHawk v0.0.1";
 
@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void AddHeaderLine(string key, string value) //TODO: check for redundancy and return bool?
+        public void AddHeaderLine(string key, string value)
         {
             string temp = value;
             
@@ -61,7 +61,7 @@ namespace BizHawk.MultiClient
 
         public void UpdateRerecordCount(int count)
         {
-            //TODO
+            HeaderParams[RERECORDS] = count.ToString();
         }
 
         public bool RemoveHeaderLine(string key)
@@ -79,6 +79,17 @@ namespace BizHawk.MultiClient
             string value = "";
             HeaderParams.TryGetValue(key, out value);
             return value;
+        }
+
+        public bool SetHeaderLine(string key, string value)
+        {
+            string test = "";
+            if (!(HeaderParams.TryGetValue(test, out value)))
+                return false;
+
+            HeaderParams[key] = value;
+
+            return true;
         }
     }
 }
