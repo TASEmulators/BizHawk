@@ -11,7 +11,11 @@ namespace BizHawk.MultiClient
     {
         public static string GetExePathAbsolute()
         {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            string p = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            if (p.Substring(0, 6) == "file:\\")
+                p = p.Remove(0, 6);
+            string z = p;
+            return p;
         }
 
         public static string GetBasePathAbsolute()
