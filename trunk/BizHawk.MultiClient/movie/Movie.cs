@@ -331,9 +331,9 @@ namespace BizHawk.MultiClient
                 MovieMode = MOVIEMODE.FINISHED;
         }
 
-        public bool SetHeaderLine(string key, string value)
+        public void SetHeaderLine(string key, string value)
         {
-            return Header.SetHeaderLine(key, value);
+            Header.SetHeaderLine(key, value);
         }
 
         public string GetTime()
@@ -346,7 +346,7 @@ namespace BizHawk.MultiClient
             if (hours > 0)
                 time += MakeDigits(hours) + ":";
             time += MakeDigits(minutes) + ":";
-            time += Math.Round(sec, 2).ToString();
+            time += Math.Round((decimal)sec, 2).ToString();
             return time;
         }
 
@@ -369,7 +369,7 @@ namespace BizHawk.MultiClient
         private double GetSeconds()
         {
             const double NES_PAL = 50.006977968268290849;
-            const double NES_NTSC = 60.098813897440515532;
+            const double NES_NTSC = (double)60.098813897440515532;
             const double PCE_PAL = 50.0; //TODO ?
             const double PCE_NTSC = (7159090.90909090 / 455 / 263); //~59.826
             const double SMS_PAL = 60.0;
@@ -383,7 +383,7 @@ namespace BizHawk.MultiClient
             const double LYNX = 59.8;
             const double WSWAN = (3072000.0 / (159 * 256));
             double seconds = 0;
-            double frames = Log.Length();
+            double frames = (double)Log.Length();
 
             if (frames < 1)
                 return seconds;
