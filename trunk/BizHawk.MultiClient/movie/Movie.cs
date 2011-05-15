@@ -336,26 +336,56 @@ namespace BizHawk.MultiClient
             return Header.SetHeaderLine(key, value);
         }
 
-        private decimal GetSeconds()
+        public string GetTime()
         {
-            const decimal NES_PAL = (decimal)50.006977968268290849;
-            const decimal NES_NTSC = (decimal)60.098813897440515532;
-            const decimal PCE_PAL = (decimal)(50.0); //TODO ?
-            const decimal PCE_NTSC = (decimal)(7159090.90909090 / 455 / 263); //~59.826
-            const decimal SMS_PAL = (decimal)60.0;
-            const decimal SMS_NTSC = (decimal)50.0;
-            const decimal GEN = (decimal)60.0;
+            string time = "";
+            double seconds = GetSeconds();
+            int hours = ((int)seconds) / 3600;
+            int minutes = (((int)seconds) / 60) % 60;
+            double sec = seconds % 60;
+            if (hours > 0)
+                time += MakeDigits(hours) + ":";
+            time += MakeDigits(minutes) + ":";
+            time += Math.Round(sec, 2).ToString();
+            return time;
+        }
 
-            //const decimal REAL_SMS_NTSC = (decimal)(3579545 / 262.0 / 228.0);
-            //const decimal REAL_SMS_PAL =  (decimal)(3546893 / 313.0 / 228.0);
-            const decimal NGP = (decimal)(6144000.0 / (515 * 198));
-            const decimal VBOY = (decimal)(20000000 / (259 * 384 * 4));  //~50.273
-            const decimal LYNX = (decimal)59.8;
-            const decimal WSWAN = (decimal)(3072000.0 / (159 * 256));
-            decimal seconds = 0;
-            int frames = Log.Length();
+        private string MakeDigits(decimal num)
+        {
+            if (num < 10)
+                return "0" + num.ToString();
+            else
+                return num.ToString();
+        }
 
-            if (frames == 0)
+        private string MakeDigits(int num)
+        {
+            if (num < 10)
+                return "0" + num.ToString();
+            else
+                return num.ToString();
+        }
+
+        private double GetSeconds()
+        {
+            const double NES_PAL = 50.006977968268290849;
+            const double NES_NTSC = 60.098813897440515532;
+            const double PCE_PAL = 50.0; //TODO ?
+            const double PCE_NTSC = (7159090.90909090 / 455 / 263); //~59.826
+            const double SMS_PAL = 60.0;
+            const double SMS_NTSC = 50.0;
+            const double GEN = 60.0;
+
+            //const double REAL_SMS_NTSC = (3579545 / 262.0 / 228.0);
+            //const double REAL_SMS_PAL =  (3546893 / 313.0 / 228.0);
+            const double NGP = (6144000.0 / (515 * 198));
+            const double VBOY = (20000000 / (259 * 384 * 4));  //~50.273
+            const double LYNX = 59.8;
+            const double WSWAN = (3072000.0 / (159 * 256));
+            double seconds = 0;
+            double frames = Log.Length();
+
+            if (frames < 1)
                 return seconds;
 
             bool pal = false; //TODO: pal flag
@@ -398,9 +428,9 @@ namespace BizHawk.MultiClient
                 case "":
                 default:
                     if (pal)
-                        return (decimal)(frames / 50.0);
+                        return frames / 50.0;
                     else
-                        return (decimal)(frames / 60.0);
+                        return frames / 60.0;
             }
         }
     }

@@ -40,6 +40,8 @@ namespace BizHawk.MultiClient
                 text = MovieList[index].GetSysID();
             if (column == 2) //Game
                 text = MovieList[index].GetGameName();
+            if (column == 3) //Time
+                text = MovieList[index].GetTime();
         }
 
         private void MovieView_QueryItemBkColor(int index, int column, ref Color color)
@@ -97,7 +99,8 @@ namespace BizHawk.MultiClient
         private void PreLoadMovieFile(FileInfo path)
         {
             Movie m = new Movie(path.FullName, MOVIEMODE.INACTIVE);
-            m.PreLoadText();
+            //m.PreLoadText();
+            m.LoadMovie();
             MovieList.Add(m);
         }
 
