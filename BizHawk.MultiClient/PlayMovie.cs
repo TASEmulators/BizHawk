@@ -101,6 +101,10 @@ namespace BizHawk.MultiClient
             Movie m = new Movie(path.FullName, MOVIEMODE.INACTIVE);
             //m.PreLoadText();
             m.LoadMovie();
+            if (path.Extension.ToUpper() == ".FM2")
+                m.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+            else if (path.Extension.ToUpper() == ".MC2")
+                m.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
             MovieList.Add(m);
         }
 

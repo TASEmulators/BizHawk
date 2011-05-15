@@ -81,15 +81,9 @@ namespace BizHawk.MultiClient
             return value;
         }
 
-        public bool SetHeaderLine(string key, string value)
+        public void SetHeaderLine(string key, string value)
         {
-            string test = "";
-            if (!(HeaderParams.TryGetValue(test, out value)))
-                return false;
-
             HeaderParams[key] = value;
-
-            return true;
         }
     }
 }
