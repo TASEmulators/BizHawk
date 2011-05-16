@@ -375,7 +375,6 @@ namespace BizHawk.MultiClient
         {   //Should these be placed somewhere more accessible?  Perhaps as a public dictionary object in MainForm?
             const double NES_PAL = 50.006977968268290849;
             const double NES_NTSC = (double)60.098813897440515532;
-            const double PCE_PAL = 50.0; //TODO ?
             const double PCE_NTSC = (7159090.90909090 / 455 / 263); //~59.826
             const double SMS_PAL = 60.0;
             const double SMS_NTSC = 50.0;
@@ -412,10 +411,7 @@ namespace BizHawk.MultiClient
                     else
                         return frames / NES_NTSC;
                 case "PCE":
-                    if (pal)
-                        return frames / PCE_PAL;
-                    else
-                        return frames / PCE_NTSC;
+                    return frames / PCE_NTSC;
                 case "GEN":
                     return frames / GEN;
                 
