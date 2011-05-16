@@ -314,6 +314,23 @@ namespace BizHawk.MultiClient
                 MessageFont.DrawString(null, MakeRerecordCount(), Global.Config.DispRecx,
                     Global.Config.DispRecy, Color.FromArgb(Global.Config.MessagesColor));
             }
+            
+            //TODO: clean this up or replace with simple draw symbols
+            if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY
+                || Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+            {
+                MessageFont.DrawString(null, "Playback", 208 + 1,
+                     0 + 1, new Color4(Color.Black));
+                MessageFont.DrawString(null, "Playback", 208,
+                    0, new Color4(Color.Red));
+            }
+            else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+            {
+                AlertFont.DrawString(null, "Recording", 208 + 1,
+                         0 + 1, new Color4(Color.Black));
+                AlertFont.DrawString(null, "Recording", 208,
+                    0, new Color4(Color.Red));
+            }
         }
 
         private string MakeFrameCounter()

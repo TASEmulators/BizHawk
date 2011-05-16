@@ -12,6 +12,15 @@ namespace BizHawk.MultiClient
 {
     public partial class RecordMovie : Form
     {
+        //TODO: on OK check that the user actually selected a movie (text box != empty?)
+        //Have an editiable listview for header info and any other settings, or appropriate widgets
+        //Some header/settings that needs to be editable:
+        //  System ID
+        //  Game
+        //  Author (very important)
+        //  Some comments?
+        //  Platform specific bools like PAL vs NTSC or an FDS flag, etc
+
         Movie MovieToRecord;
 
         public RecordMovie()
@@ -21,8 +30,7 @@ namespace BizHawk.MultiClient
 
         private void OK_Click(object sender, EventArgs e)
         {
-            Global.MainForm.UserMovie = MovieToRecord;
-            Global.MainForm.UserMovie.StartNewRecording();
+            Global.MainForm.StartNewMovie(MovieToRecord, true);
             this.Close();
         }
 

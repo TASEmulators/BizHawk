@@ -120,22 +120,28 @@ namespace BizHawk.MultiClient
 
 		private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			RecordMovie r = new RecordMovie();
-			r.ShowDialog();
+            RecordMovie();
 		}
 
 		private void playMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			PlayMovie p = new PlayMovie();
-			DialogResult d = p.ShowDialog();
+            PlayMovie();
 		}
 
         public void StopUserMovie()
         {
+            string message = "Movie ";
+            if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+                message += "recording ";
+            else if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY
+                || UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+                message += "playback ";
+            message += "stopped.";
             if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
             {
                 UserMovie.StopMovie();
                 Global.ActiveController.MovieMode = false;
+                Global.RenderPanel.AddMessage(message);
             }
         }
 
@@ -152,11 +158,7 @@ namespace BizHawk.MultiClient
 
 		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-            if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
-            {
-                LoadRom(CurrentlyOpenRom);
-                UserMovie.StartPlayback();
-            }
+            PlayMovieFromBeginning();
 		}
 
 
