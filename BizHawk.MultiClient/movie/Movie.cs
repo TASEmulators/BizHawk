@@ -338,7 +338,7 @@ namespace BizHawk.MultiClient
 
         public void SetHeaderLine(string key, string value)
         {
-            Header.AddHeaderLine(key, value);
+            Header.SetHeaderLine(key, value);
         }
 
         public string GetTime()

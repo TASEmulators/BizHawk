@@ -53,7 +53,10 @@ namespace BizHawk.MultiClient
         /// <param name="value"></param>
         public void AddHeaderLine(string key, string value)
         {
-            HeaderParams.Add(key, value);
+            string temp = value;
+
+            if(!HeaderParams.TryGetValue(key, out temp)) //TODO: does a failed attempt mess with value?
+                HeaderParams.Add(key, value);
         }
 
         public void UpdateRerecordCount(int count)
@@ -76,6 +79,11 @@ namespace BizHawk.MultiClient
             string value = "";
             HeaderParams.TryGetValue(key, out value);
             return value;
+        }
+
+        public void SetHeaderLine(string key, string value)
+        {
+            HeaderParams[key] = value;
         }
     }
 }
