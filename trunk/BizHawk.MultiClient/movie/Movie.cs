@@ -57,7 +57,7 @@ namespace BizHawk.MultiClient
         {
             MovieMode = MOVIEMODE.RECORD;
             Log.Clear();
-            Header = new MovieHeader("BizHawk v1.0.0", MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "", 0);
+            Header = new MovieHeader(MainForm.EMUVERSION, MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "", 0);
         }
 
         public void StartPlayback()
@@ -87,9 +87,14 @@ namespace BizHawk.MultiClient
         }
 
         //Movie editing tools may like to have something like this
-        public void AddMovieRecord(string record)
+        public void AddFrame(string record)
         {
             Log.AddFrame(record);
+        }
+
+        public void AddFrameAt(string record, int frame)
+        {
+            Log.AddFrameAt(record, frame);
         }
 
         public void WriteMovie()
@@ -255,7 +260,7 @@ namespace BizHawk.MultiClient
                     }
                     else if (str[0] == '|')
                     {
-                        break;
+                        break;//This right?
                     }
                     else
                     {
@@ -267,7 +272,7 @@ namespace BizHawk.MultiClient
             }
             
             return true;
-        }
+        }//Also this method is never called, can delete?  What is purpose?
 
         private bool LoadBinary()
         {
@@ -306,7 +311,7 @@ namespace BizHawk.MultiClient
                 if (line == "[/Input]") break;
                 if (line[0] == '|')
                     Log.AddFrame(line);
-            }
+            }//can this be reduced to just if(line[0] == '|')  Log.AddFrame(line)   ??
         }
 
         public void IncrementRerecordCount()
@@ -333,7 +338,7 @@ namespace BizHawk.MultiClient
 
         public void SetHeaderLine(string key, string value)
         {
-            Header.SetHeaderLine(key, value);
+            Header.AddHeaderLine(key, value);
         }
 
         public string GetTime()
@@ -367,7 +372,7 @@ namespace BizHawk.MultiClient
         }
 
         private double GetSeconds()
-        {
+        {   //Should these be placed somewhere more accessible?  Perhaps as a public dictionary object in MainForm?
             const double NES_PAL = 50.006977968268290849;
             const double NES_NTSC = (double)60.098813897440515532;
             const double PCE_PAL = 50.0; //TODO ?

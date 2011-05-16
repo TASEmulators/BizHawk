@@ -16,7 +16,8 @@ namespace BizHawk.MultiClient
         
         public MovieLog()
         {
-            
+            //Should this class initialize with an empty string to MovieRecords so that first frame is index 1?
+            //MovieRecords.Add("");
         }
 
         public int Length()
@@ -39,9 +40,15 @@ namespace BizHawk.MultiClient
             MovieRecords.Add(frame);
         }
 
+        public void AddFrameAt(string frame, int frameNum)
+        {
+            MovieRecords.Insert(frameNum, frame);
+        }
+
         public void Truncate(int frame)
         {
-            //TODO
+            if (frame >= 0 && frame < Length())
+            { MovieRecords.RemoveRange(frame,Length() - frame); }
         }
 
         public string GetFrame(int frameCount) //Frame count is 0 based here, should it be?
