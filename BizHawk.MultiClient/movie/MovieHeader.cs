@@ -28,7 +28,7 @@ namespace BizHawk.MultiClient
 
         public MovieHeader() //All required fields will be set to default values
         {
-            HeaderParams.Add(EMULATIONVERSION, "BizHawk v1.0.0");
+            HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);//"BizHawk v1.0.0");
             HeaderParams.Add(MOVIEVERSION, MovieVersion);
             HeaderParams.Add(PLATFORM, "");
             HeaderParams.Add(GAMENAME, "");

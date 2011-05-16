@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm : Form
 	{
+        public const string EMUVERSION = "BizHawk v1.0.0";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
