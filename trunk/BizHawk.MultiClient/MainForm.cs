@@ -1083,6 +1083,56 @@ namespace BizHawk.MultiClient
             Global.RenderPanel.AddMessage(sfd.FileName + " saved");
         }
 
+        private void HandleMovieLoadState(StreamReader reader)
+        {
+            //Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
+            if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+            {
+                if (ReadOnly)
+                {
+                    UserMovie.WriteMovie();
+                    UserMovie.StartPlayback();
+                    //run loadstate-readonly function
+                }
+                else
+                {
+                    UserMovie.LoadLogFromSavestateText(reader);
+                }
+            }
+            else if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+            {
+                if (ReadOnly)
+                {
+                    //do a loadstate-read-only function which will check timeline & other factors to determine it is from this movie
+                }
+                else
+                {
+                    //switch to record mode
+                    //LoadLogFromSavestateText()
+                }
+            }
+            else if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+            {
+                if (ReadOnly)
+                {
+                    //If frame count of savestate less than movie length, loadstate-read-only()
+                    //  and switch to Movie play mode
+                    //Else loadstate as if no movie (and no input log?)
+                }
+                else
+                {
+                    //If frame count of savestate less than movie length, LoadLogFromSavestateText()
+                    //  and switch to movie record mode
+                    //Else load as if no movie
+                }
+            }
+            else
+            {
+                if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                    InputLog.LoadLogFromSavestateText(reader);
+            }
+        }
+
 		private void LoadState(string name)
 		{
 			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
@@ -1091,24 +1141,7 @@ namespace BizHawk.MultiClient
 
 			var reader = new StreamReader(path);
 			Global.Emulator.LoadStateText(reader);
-
-            
-            //TODO: more logic regarding each movie mode
-            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
-            {
-                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
-                {
-                    UserMovie.LoadLogFromSavestateText(reader);
-                    UserMovie.IncrementRerecordCount();
-                }
-            }
-            else
-            {
-                if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-                    InputLog.LoadLogFromSavestateText(reader);
-            }
-			
-            
+            HandleMovieLoadState(reader);
             reader.Close();
 			Global.RenderPanel.AddMessage("Loaded state: " + name);
 		}
@@ -1132,6 +1165,7 @@ namespace BizHawk.MultiClient
 
             var reader = new StreamReader(ofd.FileName);
             Global.Emulator.LoadStateText(reader);
+            HandleMovieLoadState(reader);
             reader.Close();
             Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
         }
