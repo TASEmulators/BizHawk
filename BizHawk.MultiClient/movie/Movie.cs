@@ -302,6 +302,7 @@ namespace BizHawk.MultiClient
 
         public void LoadLogFromSavestateText(TextReader reader)
         {
+            //We are in record mode so replace the movie log with the one from the savestate
             Log.Clear();
             while (true)
             {
@@ -311,7 +312,10 @@ namespace BizHawk.MultiClient
                 if (line == "[/Input]") break;
                 if (line[0] == '|')
                     Log.AddFrame(line);
-            }//can this be reduced to just if(line[0] == '|')  Log.AddFrame(line)   ??
+            }
+            //TODO: we can truncate the movie down to the current frame now (in case the savestate has a larger input log)
+            //However, VBA will load it all, then truncate on the next frame, do we want that?
+            IncrementRerecordCount();
         }
 
         public void IncrementRerecordCount()
