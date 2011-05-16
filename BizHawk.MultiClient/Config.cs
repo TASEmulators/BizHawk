@@ -280,6 +280,11 @@
         public string FPSBinding = "";
         public string LagCounterBinding = "";
         public string InputDisplayBinding = "";
+        public string ReadOnlyToggleBinding = "Q";
+        public string PlayMovieBinding = "";
+        public string RecordMovieBinding = "";
+        public string StopMovieBinding = "";
+        public string PlayBeginningBinding = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;

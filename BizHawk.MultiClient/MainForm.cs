@@ -267,7 +267,8 @@ namespace BizHawk.MultiClient
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
                 "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
-                "Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input"}
+                "Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
+                "Play Movie", "Record Movie", "Stop Movie", "Play Beginning"}
 		};
 
 		private void InitControls()
@@ -330,6 +331,11 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Display FrameCounter", Global.Config.FrameCounterBinding);
             controls.BindMulti("Display LagCounter", Global.Config.LagCounterBinding);
             controls.BindMulti("Display Input", Global.Config.InputDisplayBinding);
+            controls.BindMulti("Toggle Read Only", Global.Config.ReadOnlyToggleBinding);
+            controls.BindMulti("Play Movie", Global.Config.PlayMovieBinding);
+            controls.BindMulti("Record Movie", Global.Config.RecordMovieBinding);
+            controls.BindMulti("Stop Movie", Global.Config.StopMovieBinding);
+            controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
 
 			Global.ClientControls = controls;
 
@@ -472,7 +478,7 @@ namespace BizHawk.MultiClient
             if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
             {
                 Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
-                StartNewMovie(m);
+                StartNewMovie(m, false);
                 
             }
             else
@@ -901,6 +907,36 @@ namespace BizHawk.MultiClient
             {
                 ToggleInputDisplay();
                 Global.ClientControls.UnpressButton("Display Input");
+            }
+
+            if (Global.ClientControls["Toggle Read Only"])
+            {
+                ToggleReadOnly();
+                Global.ClientControls.UnpressButton("Toggle Read Only");
+            }
+
+            if (Global.ClientControls["Play Movie"])
+            {
+                PlayMovie();
+                Global.ClientControls.UnpressButton("Play Movie");
+            }
+
+            if (Global.ClientControls["Record Movie"])
+            {
+                RecordMovie();
+                Global.ClientControls.UnpressButton("Record Movie");
+            }
+
+            if (Global.ClientControls["Stop Movie"])
+            {
+                StopUserMovie();
+                Global.ClientControls.UnpressButton("Stop Movie");
+            }
+
+            if (Global.ClientControls["Play Beginning"])
+            {
+                PlayMovieFromBeginning();
+                Global.ClientControls.UnpressButton("Play Beginning");
             }
         }
                 
@@ -1764,7 +1800,7 @@ namespace BizHawk.MultiClient
                 readonlyToolStripMenuItem.Checked = false;
         }
 
-        private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
+        public void ToggleReadOnly()
         {
             ReadOnly ^= true;
             if (ReadOnly)
@@ -1773,14 +1809,22 @@ namespace BizHawk.MultiClient
                 Global.RenderPanel.AddMessage("Movie read+write mode");
         }
 
-        public void StartNewMovie(Movie m)
+        private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToggleReadOnly();
+        }
+
+        public void StartNewMovie(Movie m, bool record)
         {
             
             UserMovie = m;
             InputLog.StopMovie();
             LoadRom(Global.MainForm.CurrentlyOpenRom);
             UserMovie.LoadMovie();
-            UserMovie.StartPlayback();
+            if (record)
+                UserMovie.StartNewRecording();
+            else
+                UserMovie.StartPlayback();
         }
 
         public Movie GetActiveMovie()
@@ -1801,6 +1845,27 @@ namespace BizHawk.MultiClient
                 return true;
             else
                 return false;
+        }
+
+        private void PlayMovie()
+        {
+            PlayMovie p = new PlayMovie();
+            DialogResult d = p.ShowDialog();
+        }
+
+        private void RecordMovie()
+        {
+            RecordMovie r = new RecordMovie();
+            r.ShowDialog();
+        }
+
+        public void PlayMovieFromBeginning()
+        {
+            if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                LoadRom(CurrentlyOpenRom);
+                UserMovie.StartPlayback();
+            }
         }
 	}
 }

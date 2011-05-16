@@ -31,6 +31,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
             this.hotkeyTabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.IDW_InputDisplay = new BizHawk.MultiClient.InputWidget();
+            this.label62 = new System.Windows.Forms.Label();
+            this.IDW_LagCounter = new BizHawk.MultiClient.InputWidget();
+            this.label61 = new System.Windows.Forms.Label();
+            this.IDW_FrameCounter = new BizHawk.MultiClient.InputWidget();
+            this.label60 = new System.Windows.Forms.Label();
             this.IDW_DisplayFPS = new BizHawk.MultiClient.InputWidget();
             this.label59 = new System.Windows.Forms.Label();
             this.IDW_CloseROM = new BizHawk.MultiClient.InputWidget();
@@ -126,6 +132,8 @@
             this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
+            this.label63 = new System.Windows.Forms.Label();
             this.IDW_TOGGLEMTRACK = new BizHawk.MultiClient.InputWidget();
             this.IDW_MTDECPLAYER = new BizHawk.MultiClient.InputWidget();
             this.IDW_MTINCPLAYER = new BizHawk.MultiClient.InputWidget();
@@ -154,12 +162,14 @@
             this.IDB_SAVE = new System.Windows.Forms.Button();
             this.IDB_CANCEL = new System.Windows.Forms.Button();
             this.label38 = new System.Windows.Forms.Label();
-            this.IDW_FrameCounter = new BizHawk.MultiClient.InputWidget();
-            this.label60 = new System.Windows.Forms.Label();
-            this.IDW_LagCounter = new BizHawk.MultiClient.InputWidget();
-            this.label61 = new System.Windows.Forms.Label();
-            this.IDW_InputDisplay = new BizHawk.MultiClient.InputWidget();
-            this.label62 = new System.Windows.Forms.Label();
+            this.IDW_RECORDMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label64 = new System.Windows.Forms.Label();
+            this.IDW_PLAYMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label65 = new System.Windows.Forms.Label();
+            this.IDW_STOPMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label66 = new System.Windows.Forms.Label();
+            this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
+            this.label67 = new System.Windows.Forms.Label();
             this.hotkeyTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -221,6 +231,60 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // IDW_InputDisplay
+            // 
+            this.IDW_InputDisplay.AcceptsTab = true;
+            this.IDW_InputDisplay.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_InputDisplay.Location = new System.Drawing.Point(295, 178);
+            this.IDW_InputDisplay.Name = "IDW_InputDisplay";
+            this.IDW_InputDisplay.Size = new System.Drawing.Size(100, 20);
+            this.IDW_InputDisplay.TabIndex = 23;
+            // 
+            // label62
+            // 
+            this.label62.AutoSize = true;
+            this.label62.Location = new System.Drawing.Point(209, 181);
+            this.label62.Name = "label62";
+            this.label62.Size = new System.Drawing.Size(68, 13);
+            this.label62.TabIndex = 24;
+            this.label62.Text = "Input Display";
+            // 
+            // IDW_LagCounter
+            // 
+            this.IDW_LagCounter.AcceptsTab = true;
+            this.IDW_LagCounter.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_LagCounter.Location = new System.Drawing.Point(295, 153);
+            this.IDW_LagCounter.Name = "IDW_LagCounter";
+            this.IDW_LagCounter.Size = new System.Drawing.Size(100, 20);
+            this.IDW_LagCounter.TabIndex = 21;
+            // 
+            // label61
+            // 
+            this.label61.AutoSize = true;
+            this.label61.Location = new System.Drawing.Point(209, 156);
+            this.label61.Name = "label61";
+            this.label61.Size = new System.Drawing.Size(65, 13);
+            this.label61.TabIndex = 22;
+            this.label61.Text = "Lag Counter";
+            // 
+            // IDW_FrameCounter
+            // 
+            this.IDW_FrameCounter.AcceptsTab = true;
+            this.IDW_FrameCounter.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_FrameCounter.Location = new System.Drawing.Point(295, 129);
+            this.IDW_FrameCounter.Name = "IDW_FrameCounter";
+            this.IDW_FrameCounter.Size = new System.Drawing.Size(100, 20);
+            this.IDW_FrameCounter.TabIndex = 19;
+            // 
+            // label60
+            // 
+            this.label60.AutoSize = true;
+            this.label60.Location = new System.Drawing.Point(209, 132);
+            this.label60.Name = "label60";
+            this.label60.Size = new System.Drawing.Size(76, 13);
+            this.label60.TabIndex = 20;
+            this.label60.Text = "Frame Counter";
             // 
             // IDW_DisplayFPS
             // 
@@ -1071,6 +1135,16 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.IDW_PLAYBEGINNING);
+            this.tabPage3.Controls.Add(this.label67);
+            this.tabPage3.Controls.Add(this.IDW_STOPMOVIE);
+            this.tabPage3.Controls.Add(this.label66);
+            this.tabPage3.Controls.Add(this.IDW_PLAYMOVIE);
+            this.tabPage3.Controls.Add(this.label65);
+            this.tabPage3.Controls.Add(this.IDW_RECORDMOVIE);
+            this.tabPage3.Controls.Add(this.label64);
+            this.tabPage3.Controls.Add(this.IDW_TOGGLEREADONLY);
+            this.tabPage3.Controls.Add(this.label63);
             this.tabPage3.Controls.Add(this.IDW_TOGGLEMTRACK);
             this.tabPage3.Controls.Add(this.IDW_MTDECPLAYER);
             this.tabPage3.Controls.Add(this.IDW_MTINCPLAYER);
@@ -1086,8 +1160,26 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(590, 315);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "MultiTrack";
+            this.tabPage3.Text = "Movie";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // IDW_TOGGLEREADONLY
+            // 
+            this.IDW_TOGGLEREADONLY.AcceptsTab = true;
+            this.IDW_TOGGLEREADONLY.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 126);
+            this.IDW_TOGGLEREADONLY.Name = "IDW_TOGGLEREADONLY";
+            this.IDW_TOGGLEREADONLY.Size = new System.Drawing.Size(100, 20);
+            this.IDW_TOGGLEREADONLY.TabIndex = 78;
+            // 
+            // label63
+            // 
+            this.label63.AutoSize = true;
+            this.label63.Location = new System.Drawing.Point(6, 129);
+            this.label63.Name = "label63";
+            this.label63.Size = new System.Drawing.Size(86, 13);
+            this.label63.TabIndex = 77;
+            this.label63.Text = "Toggle read-only";
             // 
             // IDW_TOGGLEMTRACK
             // 
@@ -1357,59 +1449,77 @@
             this.label38.TabIndex = 3;
             this.label38.Text = "* Escape clears a key mapping";
             // 
-            // IDW_FrameCounter
+            // IDW_RECORDMOVIE
             // 
-            this.IDW_FrameCounter.AcceptsTab = true;
-            this.IDW_FrameCounter.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_FrameCounter.Location = new System.Drawing.Point(295, 129);
-            this.IDW_FrameCounter.Name = "IDW_FrameCounter";
-            this.IDW_FrameCounter.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FrameCounter.TabIndex = 19;
+            this.IDW_RECORDMOVIE.AcceptsTab = true;
+            this.IDW_RECORDMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_RECORDMOVIE.Location = new System.Drawing.Point(105, 152);
+            this.IDW_RECORDMOVIE.Name = "IDW_RECORDMOVIE";
+            this.IDW_RECORDMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_RECORDMOVIE.TabIndex = 80;
             // 
-            // label60
+            // label64
             // 
-            this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(209, 132);
-            this.label60.Name = "label60";
-            this.label60.Size = new System.Drawing.Size(76, 13);
-            this.label60.TabIndex = 20;
-            this.label60.Text = "Frame Counter";
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(6, 155);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(73, 13);
+            this.label64.TabIndex = 79;
+            this.label64.Text = "Record movie";
             // 
-            // IDW_LagCounter
+            // IDW_PLAYMOVIE
             // 
-            this.IDW_LagCounter.AcceptsTab = true;
-            this.IDW_LagCounter.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_LagCounter.Location = new System.Drawing.Point(295, 153);
-            this.IDW_LagCounter.Name = "IDW_LagCounter";
-            this.IDW_LagCounter.Size = new System.Drawing.Size(100, 20);
-            this.IDW_LagCounter.TabIndex = 21;
+            this.IDW_PLAYMOVIE.AcceptsTab = true;
+            this.IDW_PLAYMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_PLAYMOVIE.Location = new System.Drawing.Point(105, 178);
+            this.IDW_PLAYMOVIE.Name = "IDW_PLAYMOVIE";
+            this.IDW_PLAYMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PLAYMOVIE.TabIndex = 82;
             // 
-            // label61
+            // label65
             // 
-            this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(209, 156);
-            this.label61.Name = "label61";
-            this.label61.Size = new System.Drawing.Size(65, 13);
-            this.label61.TabIndex = 22;
-            this.label61.Text = "Lag Counter";
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(6, 181);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(58, 13);
+            this.label65.TabIndex = 81;
+            this.label65.Text = "Play movie";
             // 
-            // IDW_InputDisplay
+            // IDW_STOPMOVIE
             // 
-            this.IDW_InputDisplay.AcceptsTab = true;
-            this.IDW_InputDisplay.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_InputDisplay.Location = new System.Drawing.Point(295, 178);
-            this.IDW_InputDisplay.Name = "IDW_InputDisplay";
-            this.IDW_InputDisplay.Size = new System.Drawing.Size(100, 20);
-            this.IDW_InputDisplay.TabIndex = 23;
+            this.IDW_STOPMOVIE.AcceptsTab = true;
+            this.IDW_STOPMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_STOPMOVIE.Location = new System.Drawing.Point(105, 204);
+            this.IDW_STOPMOVIE.Name = "IDW_STOPMOVIE";
+            this.IDW_STOPMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_STOPMOVIE.TabIndex = 84;
             // 
-            // label62
+            // label66
             // 
-            this.label62.AutoSize = true;
-            this.label62.Location = new System.Drawing.Point(209, 181);
-            this.label62.Name = "label62";
-            this.label62.Size = new System.Drawing.Size(68, 13);
-            this.label62.TabIndex = 24;
-            this.label62.Text = "Input Display";
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(6, 207);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(60, 13);
+            this.label66.TabIndex = 83;
+            this.label66.Text = "Stop movie";
+            // 
+            // IDW_PLAYBEGINNING
+            // 
+            this.IDW_PLAYBEGINNING.AcceptsTab = true;
+            this.IDW_PLAYBEGINNING.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_PLAYBEGINNING.Location = new System.Drawing.Point(105, 230);
+            this.IDW_PLAYBEGINNING.Name = "IDW_PLAYBEGINNING";
+            this.IDW_PLAYBEGINNING.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PLAYBEGINNING.TabIndex = 86;
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(6, 233);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(99, 13);
+            this.label67.TabIndex = 85;
+            this.label67.Text = "Play from beginning";
             // 
             // HotkeyWindow
             // 
@@ -1426,6 +1536,7 @@
             this.MinimizeBox = false;
             this.Name = "HotkeyWindow";
             this.Text = "Configure Hotkeys";
+            this.Load += new System.EventHandler(this.HotkeyWindow_Load);
             this.hotkeyTabs.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
@@ -1573,5 +1684,15 @@
         private System.Windows.Forms.Label label61;
         private InputWidget IDW_FrameCounter;
         private System.Windows.Forms.Label label60;
+        private InputWidget IDW_TOGGLEREADONLY;
+        private System.Windows.Forms.Label label63;
+        private InputWidget IDW_PLAYMOVIE;
+        private System.Windows.Forms.Label label65;
+        private InputWidget IDW_RECORDMOVIE;
+        private System.Windows.Forms.Label label64;
+        private InputWidget IDW_STOPMOVIE;
+        private System.Windows.Forms.Label label66;
+        private InputWidget IDW_PLAYBEGINNING;
+        private System.Windows.Forms.Label label67;
     }
 }

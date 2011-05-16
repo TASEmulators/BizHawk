@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 
         private void OK_Click(object sender, EventArgs e)
         {
-            Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]]);
+            Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
             this.Close();
         }
 

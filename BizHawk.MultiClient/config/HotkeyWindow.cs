@@ -74,6 +74,11 @@ namespace BizHawk.MultiClient.tools
             IDW_FrameCounter.Text = Global.Config.FrameCounterBinding;
             IDW_LagCounter.Text = Global.Config.LagCounterBinding;
             IDW_InputDisplay.Text = Global.Config.InputDisplayBinding;
+            IDW_TOGGLEREADONLY.Text = Global.Config.ReadOnlyToggleBinding;
+            IDW_PLAYMOVIE.Text = Global.Config.PlayMovieBinding;
+            IDW_RECORDMOVIE.Text = Global.Config.RecordMovieBinding;
+            IDW_STOPMOVIE.Text = Global.Config.StopMovieBinding;
+            IDW_PLAYBEGINNING.Text = Global.Config.PlayBeginningBinding;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -143,6 +148,11 @@ namespace BizHawk.MultiClient.tools
             Global.Config.FrameCounterBinding = IDW_FrameCounter.Text;
             Global.Config.LagCounterBinding = IDW_LagCounter.Text;
             Global.Config.InputDisplayBinding = IDW_InputDisplay.Text;
+            Global.Config.ReadOnlyToggleBinding = IDW_TOGGLEREADONLY.Text;
+            Global.Config.PlayMovieBinding = IDW_PLAYMOVIE.Text;
+            Global.Config.RecordMovieBinding = IDW_RECORDMOVIE.Text;
+            Global.Config.StopMovieBinding = IDW_STOPMOVIE.Text;
+            Global.Config.PlayBeginningBinding = IDW_PLAYBEGINNING.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -151,6 +161,11 @@ namespace BizHawk.MultiClient.tools
         private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
             hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus(); 
+        }
+
+        private void HotkeyWindow_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
