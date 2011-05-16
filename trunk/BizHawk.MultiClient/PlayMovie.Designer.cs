@@ -103,6 +103,7 @@
             this.MovieView.UseCompatibleStateImageBehavior = false;
             this.MovieView.View = System.Windows.Forms.View.Details;
             this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
+            this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
             // 
             // columnHeader1
             // 

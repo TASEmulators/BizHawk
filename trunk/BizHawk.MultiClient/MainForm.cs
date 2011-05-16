@@ -1128,10 +1128,12 @@ namespace BizHawk.MultiClient
                 {
                     UserMovie.WriteMovie();
                     UserMovie.StartPlayback();
+                    Global.ActiveController.MovieMode = true;
                     //run loadstate-readonly function
                 }
                 else
                 {
+                    Global.ActiveController.MovieMode = false;
                     UserMovie.LoadLogFromSavestateText(reader);
                 }
             }
@@ -1143,8 +1145,9 @@ namespace BizHawk.MultiClient
                 }
                 else
                 {
-                    //switch to record mode
-                    //LoadLogFromSavestateText()
+                    UserMovie.StartNewRecording();
+                    Global.ActiveController.MovieMode = false;
+                    UserMovie.LoadLogFromSavestateText(reader);
                 }
             }
             else if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
@@ -1798,6 +1801,12 @@ namespace BizHawk.MultiClient
                 readonlyToolStripMenuItem.Checked = true;
             else
                 readonlyToolStripMenuItem.Checked = false;
+
+            readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ReadOnlyToggleBinding;
+            recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RecordMovieBinding;
+            playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
+            stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
+            playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
         }
 
         public void ToggleReadOnly()

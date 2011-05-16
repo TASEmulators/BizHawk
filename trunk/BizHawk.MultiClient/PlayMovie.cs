@@ -54,9 +54,14 @@ namespace BizHawk.MultiClient
             this.Close();
         }
 
-        private void OK_Click(object sender, EventArgs e)
+        private void Run()
         {
             Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
+        }
+
+        private void OK_Click(object sender, EventArgs e)
+        {
+            Run();
             this.Close();
         }
 
@@ -158,6 +163,12 @@ namespace BizHawk.MultiClient
         private void button2_Click(object sender, EventArgs e)
         {
             //TODO: a subtitle viewer/editor
+        }
+
+        private void MovieView_DoubleClick(object sender, EventArgs e)
+        {
+            Run();
+            this.Close();
         }
     }
 }
