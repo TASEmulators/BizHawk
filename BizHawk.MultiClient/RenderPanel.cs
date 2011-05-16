@@ -292,18 +292,19 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.DisplayLagCounter)
             {
-                MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
-                    Global.Config.DispLagy + 1, new Color4(Color.Black));
-                
                 if (Global.Emulator.IsLagFrame)
                 {
+                    AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
+                        Global.Config.DispLagy + 1, new Color4(Color.Black));
                     AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
-                    Global.Config.DispLagy, Color.FromArgb(Global.Config.AlertMessageColor));
+                        Global.Config.DispLagy, Color.FromArgb(Global.Config.AlertMessageColor));
                 }
                 else
                 {
+                    MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
+                        Global.Config.DispLagy + 1, new Color4(Color.Black));
                     MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
-                    Global.Config.DispLagy, Color.FromArgb(Global.Config.MessagesColor));
+                        Global.Config.DispLagy, Color.FromArgb(Global.Config.MessagesColor));
                 }
                 
             }
