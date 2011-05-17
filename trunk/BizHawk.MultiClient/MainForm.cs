@@ -1093,9 +1093,15 @@ namespace BizHawk.MultiClient
 			Global.Emulator.SaveStateText(writer);
             //TODO: logic surrounding the behavior of movie modes & settings
             //TODO: refactor save/loadstate as functions to automatically include this behavior too
-            InputLog.DumpLogIntoSavestateText(writer);
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                UserMovie.DumpLogIntoSavestateText(writer);
+            }
+            else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+                InputLog.DumpLogIntoSavestateText(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
+            Global.RenderPanel.AddMessage("Saved state: " + name);
 		}
 
         private void SaveStateAs()

@@ -304,6 +304,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < Log.Length(); x++)
                 writer.WriteLine(Log.GetFrame(x));
             writer.WriteLine("[/Input]");
+            Global.RenderPanel.AddMessage(Log.Length().ToString() + " input frames saved.");
         }
 
         public void LoadLogFromSavestateText(TextReader reader)
