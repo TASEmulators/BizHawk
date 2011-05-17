@@ -347,7 +347,8 @@ namespace BizHawk.MultiClient
                     + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
             }
             else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
-                return "E" + Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString();
+                return "E" + Global.Emulator.Frame.ToString() + " " + Global.MainForm.UserMovie.lastLog.ToString() +
+                    " length: " + Global.MainForm.UserMovie.GetMovieLength().ToString();
             else
             {
                 return Global.Emulator.Frame.ToString();
