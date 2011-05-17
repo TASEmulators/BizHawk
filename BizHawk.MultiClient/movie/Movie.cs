@@ -31,6 +31,12 @@ namespace BizHawk.MultiClient
             rerecordCount = 0;
         }
 
+        public Movie()
+        {
+            Filename = ""; //Note: note this must be populated before playing movie
+            MovieMode = MOVIEMODE.INACTIVE;
+        }
+
         public string GetFilePath() 
         {
             return Filename;
@@ -431,6 +437,33 @@ namespace BizHawk.MultiClient
                     else
                         return frames / 60.0;
             }
+        }
+
+        public int CheckTimeLines(StreamReader reader)
+        {
+            //This function will compare the movie data to the savestate movie data to see if they match
+            //TODO: Will eventually check header data too such as GUI
+            MovieLog l = new MovieLog();
+            string line;
+            while (true)
+            {
+                line = reader.ReadLine();
+                if (line.Trim() == "") continue;
+                else if (line == "[Input]") continue;
+                else if (line == "[/Input]") break;
+                else if (line[0] == '|')
+                    l.AddFrame(line);
+            }
+
+            for (int x = 0; x < Log.Length(); x++)
+            {
+                string xs = Log.GetFrame(x);
+                string ys = l.GetFrame(x);
+                //if (Log.GetFrame(x) != l.GetFrame(x))
+                if (xs != ys)
+                    return x;
+            }
+            return -1;
         }
     }
 }

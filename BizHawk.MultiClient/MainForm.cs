@@ -1126,10 +1126,15 @@ namespace BizHawk.MultiClient
             {
                 if (ReadOnly)
                 {
-                    UserMovie.WriteMovie();
-                    UserMovie.StartPlayback();
-                    Global.ActiveController.MovieMode = true;
-                    //run loadstate-readonly function
+                    int x = UserMovie.CheckTimeLines(reader);
+                    //if (x >= 0)
+                    //    MessageBox.Show("Savestate input log does not match the movie at frame " + (x+1).ToString() + "!", "Timeline error", MessageBoxButtons.OK); //TODO: replace with a not annoying message once savestate logic is running smoothly
+                    //else
+                    {
+                        UserMovie.WriteMovie();
+                        UserMovie.StartPlayback();
+                        Global.ActiveController.MovieMode = true;
+                    }
                 }
                 else
                 {
@@ -1141,7 +1146,9 @@ namespace BizHawk.MultiClient
             {
                 if (ReadOnly)
                 {
-                    //do a loadstate-read-only function which will check timeline & other factors to determine it is from this movie
+                    int x = UserMovie.CheckTimeLines(reader);
+                    //if (x >= 0)
+                    //    MessageBox.Show("Savestate input log does not match the movie at frame " + (x+1).ToString() + "!", "Timeline error", MessageBoxButtons.OK); //TODO: replace with a not annoying message once savestate logic is running smoothly
                 }
                 else
                 {
