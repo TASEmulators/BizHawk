@@ -207,7 +207,7 @@ namespace BizHawk.MultiClient
                 for (int i = 1; i < 3; i++)
                 {
                     if (mnemonic.Length < (1+7*i)) return;
-                    //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
+                    //if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
                     if (mnemonic[(i - 1) * 7 +3] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Up");
                     if (mnemonic[(i - 1) * 7 + 4] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Down");
                     if (mnemonic[(i - 1) * 7 + 5] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Left");
@@ -239,7 +239,7 @@ namespace BizHawk.MultiClient
             if (type.Name == "NES Controls")
             {
                 if (mnemonic.Length < 10) return;
-                //if (mnemonic[1] != '.') programmaticallyPressedButtons.Add("Reset");
+                //if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
                 if (mnemonic[3] != '.') programmaticallyPressedButtons.Add("Right");
                 if (mnemonic[4] != '.') programmaticallyPressedButtons.Add("Left");
                 if (mnemonic[5] != '.') programmaticallyPressedButtons.Add("Down");
