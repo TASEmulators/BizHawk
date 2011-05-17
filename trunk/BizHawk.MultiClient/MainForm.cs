@@ -1165,17 +1165,40 @@ namespace BizHawk.MultiClient
             }
             else if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
             {
+                //TODO: have the input log kick in upon movie finished mode and stop upon movie resume
                 if (ReadOnly)
                 {
-                    //If frame count of savestate less than movie length, loadstate-read-only()
-                    //  and switch to Movie play mode
-                    //Else loadstate as if no movie (and no input log?)
+                    if (Global.Emulator.Frame > UserMovie.GetMovieLength())
+                    {
+                        Global.ActiveController.MovieMode = false;
+                        //Post movie savestate
+                        //There is no movie data to load, and the movie will stay in movie finished mode
+                        //So do nothing
+                    }
+                    else
+                    {
+                        int x = UserMovie.CheckTimeLines(reader);
+                        UserMovie.StartPlayback();
+                        Global.ActiveController.MovieMode = true;
+                        //if (x >= 0)
+                        //    MessageBox.Show("Savestate input log does not match the movie at frame " + (x+1).ToString() + "!", "Timeline error", MessageBoxButtons.OK); //TODO: replace with a not annoying message once savestate logic is running smoothly
+                    }
                 }
                 else
                 {
-                    //If frame count of savestate less than movie length, LoadLogFromSavestateText()
-                    //  and switch to movie record mode
-                    //Else load as if no movie
+                    if (Global.Emulator.Frame > UserMovie.GetMovieLength())
+                    {
+                        Global.ActiveController.MovieMode = false;
+                        //Post movie savestate
+                        //There is no movie data to load, and the movie will stay in movie finished mode
+                        //So do nothing
+                    }
+                    else
+                    {
+                        UserMovie.StartNewRecording();
+                        Global.ActiveController.MovieMode = false;
+                        UserMovie.LoadLogFromSavestateText(reader);
+                    }
                 }
             }
             else
