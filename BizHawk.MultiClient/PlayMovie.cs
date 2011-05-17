@@ -12,14 +12,11 @@ namespace BizHawk.MultiClient
 {
     public partial class PlayMovie : Form
     {
-        //TODO: Think about this: .\Movies is the default folder, when shoudl this be created? On load (no platform specific folders do this)
-        //Upon open file dialog? that's weird, record movie? more often people will use play movie first
-        //Never? then the path default must be .\ not .\movies
-        //TODO: after browse & update, focus on the movie just added
+        //TODO: after browse & update, focus on the movie just added, and show stats
         //This is a modal dialog, implement it as modeless
-        //  In order to do this, this dialog will have to restart the rom
         // Option to include subdirectories
         // Option to include savestate files (that have an input log)
+        
 
         List<Movie> MovieList = new List<Movie>();
 
@@ -61,6 +58,7 @@ namespace BizHawk.MultiClient
 
         private void OK_Click(object sender, EventArgs e)
         {
+            Global.MainForm.ReadOnly = ReadOnlyCheckBox.Checked;
             Run();
             this.Close();
         }

@@ -44,6 +44,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.MovieCount = new System.Windows.Forms.Label();
+            this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -189,6 +190,18 @@
             this.MovieCount.TabIndex = 7;
             this.MovieCount.Text = "        ";
             // 
+            // ReadOnlyCheckBox
+            // 
+            this.ReadOnlyCheckBox.AutoSize = true;
+            this.ReadOnlyCheckBox.Checked = true;
+            this.ReadOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ReadOnlyCheckBox.Location = new System.Drawing.Point(131, 370);
+            this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
+            this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
+            this.ReadOnlyCheckBox.TabIndex = 8;
+            this.ReadOnlyCheckBox.Text = "Read only";
+            this.ReadOnlyCheckBox.UseVisualStyleBackColor = true;
+            // 
             // PlayMovie
             // 
             this.AcceptButton = this.OK;
@@ -196,6 +209,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(715, 401);
+            this.Controls.Add(this.ReadOnlyCheckBox);
             this.Controls.Add(this.MovieCount);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.MovieView);
@@ -231,5 +245,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label MovieCount;
+        private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
     }
 }

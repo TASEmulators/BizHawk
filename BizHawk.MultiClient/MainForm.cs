@@ -1831,7 +1831,10 @@ namespace BizHawk.MultiClient
             LoadRom(Global.MainForm.CurrentlyOpenRom);
             UserMovie.LoadMovie();
             if (record)
+            {
                 UserMovie.StartNewRecording();
+                ReadOnly = false;
+            }
             else
                 UserMovie.StartPlayback();
         }
