@@ -163,6 +163,8 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "PC Engine Controller")
             {
+                input.Append("."); //TODO: reset goes here
+                input.Append("|");
                 for (int i = 1; i < 6; i++)
                 {
                     input.Append(IsPressed("P" + i.ToString() + " Up") ? "U" : ".");
