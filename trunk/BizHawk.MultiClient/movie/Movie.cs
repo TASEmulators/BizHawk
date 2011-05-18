@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
 
         private MOVIEMODE MovieMode = new MOVIEMODE();
 
+        public int Frames = 0;
         public int lastLog;
         public int rerecordCount;
 
@@ -234,14 +235,15 @@ namespace BizHawk.MultiClient
             using (StreamReader sr = file.OpenText())
             {
                 string str = "";
-
+                int length = 0;
                 while ((str = sr.ReadLine()) != null)
                 {
+                    length += str.Length + 1;
                     if (str == "")
                     {
                         continue;
                     }
-                        //TODO: don't reiterate this entire if chain, make a function called by this and loadmovie
+                    //TODO: don't reiterate this entire if chain, make a function called by this and loadmovie
                     else if (str.Contains(MovieHeader.EMULATIONVERSION))
                     {
                         str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
@@ -274,13 +276,16 @@ namespace BizHawk.MultiClient
                     }
                     else if (str[0] == '|')
                     {
-                        break;//This right?
+                        int line = str.Length + 1;
+                        length -= line;
+                        int lines = (int)file.Length - length;
+                        this.Frames = lines / line;
+                        break; //This right?
                     }
                     else
                     {
                         Header.Comments.Add(str);
                     }
-
                 }
                 sr.Close();
             }
