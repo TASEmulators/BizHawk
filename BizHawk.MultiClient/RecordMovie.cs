@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
     public partial class RecordMovie : Form
     {
         //TODO: on OK check that the user actually selected a movie (text box != empty?)
+        //Allow relative paths in record textbox
         //Have an editiable listview for header info and any other settings, or appropriate widgets
         //Some header/settings that needs to be editable:
         //  System ID
@@ -21,6 +22,7 @@ namespace BizHawk.MultiClient
         //  Some comments?
         //  Platform specific bools like PAL vs NTSC or an FDS flag, etc
 
+
         Movie MovieToRecord;
 
         public RecordMovie()
@@ -28,8 +30,23 @@ namespace BizHawk.MultiClient
             InitializeComponent();
         }
 
+        private string MakePath()
+        {
+            string path = RecordBox.Text;
+            int x = path.LastIndexOf('\\');
+            if (path.LastIndexOf('\\') == -1)
+            {
+                path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + RecordBox.Text;
+                return path;
+            }
+            else
+                return path;
+        }
+
         private void OK_Click(object sender, EventArgs e)
         {
+            string path = MakePath();
+            MovieToRecord = new Movie(RecordBox.Text, MOVIEMODE.RECORD);
             Global.MainForm.StartNewMovie(MovieToRecord, true);
             this.Close();
         }
@@ -52,8 +69,6 @@ namespace BizHawk.MultiClient
             Global.Sound.StartSound();
             if (result == DialogResult.OK)
             {
-                var file = new FileInfo(sfd.FileName);
-                MovieToRecord = new Movie(sfd.FileName, MOVIEMODE.RECORD);
                 RecordBox.Text = sfd.FileName;
             }
         }
