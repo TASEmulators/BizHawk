@@ -38,7 +38,7 @@ namespace BizHawk.MultiClient
             if (column == 2) //Game
                 text = MovieList[index].GetGameName();
             if (column == 3) //Time
-                text = MovieList[index].GetTime();
+                text = MovieList[index].GetTime(true);
         }
 
         private void MovieView_QueryItemBkColor(int index, int column, ref Color color)

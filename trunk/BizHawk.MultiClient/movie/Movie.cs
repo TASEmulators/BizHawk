@@ -280,7 +280,7 @@ namespace BizHawk.MultiClient
                         length -= line;
                         int lines = (int)file.Length - length;
                         this.Frames = lines / line;
-                        break; //This right?
+                        break;
                     }
                     else
                     {
@@ -365,10 +365,15 @@ namespace BizHawk.MultiClient
             Header.SetHeaderLine(key, value);
         }
 
-        public string GetTime()
+        public string GetTime(bool preLoad)
         {
             string time = "";
-            double seconds = GetSeconds();
+            
+            double seconds;
+            if (preLoad)
+                seconds = GetSeconds(Frames);
+            else
+                seconds = GetSeconds(Log.Length());
             int hours = ((int)seconds) / 3600;
             int minutes = (((int)seconds) / 60) % 60;
             double sec = seconds % 60;
@@ -395,7 +400,7 @@ namespace BizHawk.MultiClient
                 return num.ToString();
         }
 
-        private double GetSeconds()
+        private double GetSeconds(int frameCount)
         {   //Should these be placed somewhere more accessible?  Perhaps as a public dictionary object in MainForm?
             const double NES_PAL = 50.006977968268290849;
             const double NES_NTSC = (double)60.098813897440515532;
@@ -407,8 +412,7 @@ namespace BizHawk.MultiClient
             const double LYNX = 59.8;
             const double WSWAN = (3072000.0 / (159 * 256));
             double seconds = 0;
-            double frames = (double)Log.Length();
-
+            double frames = (double)frameCount;
             if (frames < 1)
                 return seconds;
 
