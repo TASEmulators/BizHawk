@@ -102,7 +102,7 @@ namespace BizHawk.MultiClient
         private void PreLoadMovieFile(FileInfo path)
         {
             Movie m = new Movie(path.FullName, MOVIEMODE.INACTIVE);
-            //m.PreLoadText();
+            m.PreLoadText();
             m.LoadMovie();
             if (path.Extension.ToUpper() == ".FM2")
                 m.SetHeaderLine(MovieHeader.PLATFORM, "NES");
