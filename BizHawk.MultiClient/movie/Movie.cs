@@ -190,6 +190,14 @@ namespace BizHawk.MultiClient
                     {
                         str = ParseHeader(str, MovieHeader.RERECORDS);
                         Header.AddHeaderLine(MovieHeader.RERECORDS, str);
+                        try
+                        {
+                            rerecordCount = int.Parse(str);
+                        }
+                        catch
+                        {
+                            rerecordCount = 0;
+                        }
                     }
                     else if (str.Contains(MovieHeader.AUTHOR))
                     {
