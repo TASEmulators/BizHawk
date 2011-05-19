@@ -259,6 +259,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        private void LoadMoviesFromRecent(string movie)
+        {
+            Movie m = new Movie(movie, MOVIEMODE.PLAY);
+            ReadOnly = true;
+            StartNewMovie(m, false);
+            /*
+            bool r = true; // LoadRom(rom);
+            if (!r)
+            {
+                Global.Sound.StopSound();
+                DialogResult result = MessageBox.Show("Could not open " + movie + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                    Global.Config.RecentMovies.Remove(movie);
+                Global.Sound.StartSound();
+            }
+             */ //TODO: make StartNewMovie or Movie constructor 
+        }
+
 		public static ControllerDefinition ClientControlsDef = new ControllerDefinition
 		{
 			Name = "Emulator Frontend Controls",
@@ -1281,6 +1299,20 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        private void UpdateAutoLoadRecentMovie()
+        {
+            if (Global.Config.AutoLoadMostRecentMovie == true)
+            {
+                autoloadMostRecentToolStripMenuItem1.Checked = false;
+                Global.Config.AutoLoadMostRecentMovie = false;
+            }
+            else
+            {
+                autoloadMostRecentToolStripMenuItem1.Checked = true;
+                Global.Config.AutoLoadMostRecentMovie = true;
+            }
+        }
+
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			if (IsNullEmulator())
@@ -1398,58 +1430,6 @@ namespace BizHawk.MultiClient
 			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
             openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenROM;
             closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.CloseROM;
-		}
-
-		private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			//Clear out recent Roms list
-			//repopulate it with an up to date list
-			recentROMToolStripMenuItem.DropDownItems.Clear();
-
-			if (Global.Config.RecentRoms.IsEmpty())
-			{
-				recentROMToolStripMenuItem.DropDownItems.Add("None");
-			}
-			else
-			{
-				for (int x = 0; x < Global.Config.RecentRoms.Length(); x++)
-				{
-					string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
-					var item = new ToolStripMenuItem();
-					item.Text = path;
-					item.Click += (o, ev) => LoadRomFromRecent(path);
-					recentROMToolStripMenuItem.DropDownItems.Add(item);
-				}
-			}
-
-			recentROMToolStripMenuItem.DropDownItems.Add("-");
-
-			var clearitem = new ToolStripMenuItem();
-			clearitem.Text = "&Clear";
-			clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
-			recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
-
-			var auto = new ToolStripMenuItem();
-			auto.Text = "&Autoload Most Recent";
-			auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
-			if (Global.Config.AutoLoadMostRecentRom == true)
-				auto.Checked = true;
-			else
-				auto.Checked = false;
-			recentROMToolStripMenuItem.DropDownItems.Add(auto);
-		}
-
-		public void LoadRamWatch()
-		{
-			if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
-			{
-				RamWatch1 = new RamWatch();
-				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
-					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
-				RamWatch1.Show();
-			}
-			else
-				RamWatch1.Focus();
 		}
 
 		public void LoadRamSearch()
@@ -1866,6 +1846,7 @@ namespace BizHawk.MultiClient
             InputLog.StopMovie();
             LoadRom(Global.MainForm.CurrentlyOpenRom);
             UserMovie.LoadMovie();
+            Global.Config.RecentMovies.Add(m.GetFilePath());
             if (record)
             {
                 UserMovie.StartNewRecording();
@@ -1914,6 +1895,19 @@ namespace BizHawk.MultiClient
                 LoadRom(CurrentlyOpenRom);
                 UserMovie.StartPlayback();
             }
+        }
+
+        public void LoadRamWatch()
+        {
+            if (!RamWatch1.IsHandleCreated || RamWatch1.IsDisposed)
+            {
+                RamWatch1 = new RamWatch();
+                if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
+                    RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+                RamWatch1.Show();
+            }
+            else
+                RamWatch1.Focus();
         }
 	}
 }

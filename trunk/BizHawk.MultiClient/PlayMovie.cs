@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
         //This is a modal dialog, implement it as modeless
         // Option to include subdirectories
         // Option to include savestate files (that have an input log)
-        
+        //Clicking column headers should sort info
 
         List<Movie> MovieList = new List<Movie>();
 

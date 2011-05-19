@@ -570,5 +570,84 @@ namespace BizHawk.MultiClient
         {
             Global.Config.DisplayRerecordCount ^= true;
         }
+
+        private void recentROMToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            //Clear out recent Roms list
+            //repopulate it with an up to date list
+            recentROMToolStripMenuItem.DropDownItems.Clear();
+
+            if (Global.Config.RecentRoms.IsEmpty())
+            {
+                recentROMToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < Global.Config.RecentRoms.Length(); x++)
+                {
+                    string path = Global.Config.RecentRoms.GetRecentFileByPosition(x);
+                    var item = new ToolStripMenuItem();
+                    item.Text = path;
+                    item.Click += (o, ev) => LoadRomFromRecent(path);
+                    recentROMToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+
+            recentROMToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => Global.Config.RecentRoms.Clear();
+            recentROMToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Autoload Most Recent";
+            auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
+            if (Global.Config.AutoLoadMostRecentRom == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentROMToolStripMenuItem.DropDownItems.Add(auto);
+        }
+
+        private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            //Clear out recent Movies list
+            //repopulate it with an up to date list
+
+            recentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Global.Config.RecentMovies.IsEmpty())
+            {
+                recentToolStripMenuItem.DropDownItems.Add("None");
+            }
+            else
+            {
+                for (int x = 0; x < Global.Config.RecentMovies.Length(); x++)
+                {
+                    string path = Global.Config.RecentMovies.GetRecentFileByPosition(x);
+                    var item = new ToolStripMenuItem();
+                    item.Text = path;
+                    item.Click += (o, ev) => LoadMoviesFromRecent(path);
+                    recentToolStripMenuItem.DropDownItems.Add(item);
+                }
+            }
+
+            recentToolStripMenuItem.DropDownItems.Add("-");
+
+            var clearitem = new ToolStripMenuItem();
+            clearitem.Text = "&Clear";
+            clearitem.Click += (o, ev) => Global.Config.RecentMovies.Clear();
+            recentToolStripMenuItem.DropDownItems.Add(clearitem);
+
+            var auto = new ToolStripMenuItem();
+            auto.Text = "&Autoload Most Recent";
+            auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
+            if (Global.Config.AutoLoadMostRecentMovie == true)
+                auto.Checked = true;
+            else
+                auto.Checked = false;
+            recentToolStripMenuItem.DropDownItems.Add(auto);
+        }
 	}
 }
