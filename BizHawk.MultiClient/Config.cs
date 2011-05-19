@@ -141,6 +141,11 @@
         public int RamWatchPrevWidth = -1;
         public int RamWatchChangeWidth = -1;
         public int RamWatchNotesWidth = -1;
+        public int RamWatchAddressIndex = 0;
+        public int RamWatchValueIndex = 1;
+        public int RamWatchPrevIndex = 2;
+        public int RamWatchChangeIndex = 3;
+        public int RamWatchNotesIndex = 4;
 
         // RamSearch Settings
         public bool AutoLoadRamSearch = false;
