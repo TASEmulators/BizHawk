@@ -81,7 +81,13 @@ namespace BizHawk.MultiClient
         public void GetMnemonic()
         {
             if (MovieMode == MOVIEMODE.RECORD)
+            {
+                if (Global.Emulator.Frame < Log.Length())
+                {
+                    Log.Truncate(Global.Emulator.Frame);
+                }
                 Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+            }
         }
 
         public string GetInputFrame(int frame)
