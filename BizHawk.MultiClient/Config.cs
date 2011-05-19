@@ -225,6 +225,7 @@
 
         //Movie Settings
         public RecentFiles RecentMovies = new RecentFiles(8);
+        public bool AutoLoadMostRecentMovie = false;
 
         //TI83
         public bool TI83disableSaveSlotKeys = true;
