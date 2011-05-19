@@ -36,7 +36,12 @@ namespace BizHawk.MultiClient
             int x = path.LastIndexOf('\\');
             if (path.LastIndexOf('\\') == -1)
             {
-                path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + RecordBox.Text;
+                if (path[0] != '\\') 
+                    path = path.Insert(0, "\\");
+                path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + path;
+                
+                if (path[path.Length-4] != '.') //If no file extension, add .tas
+                    path += ".tas";
                 return path;
             }
             else
@@ -46,7 +51,7 @@ namespace BizHawk.MultiClient
         private void OK_Click(object sender, EventArgs e)
         {
             string path = MakePath();
-            MovieToRecord = new Movie(RecordBox.Text, MOVIEMODE.RECORD);
+            MovieToRecord = new Movie(path, MOVIEMODE.RECORD);
             Global.MainForm.StartNewMovie(MovieToRecord, true);
             this.Close();
         }
