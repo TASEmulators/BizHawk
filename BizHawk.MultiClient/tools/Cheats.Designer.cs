@@ -51,10 +51,14 @@
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.disableAllCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadCheatFileByGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveCheatsOnCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsOnOffLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -89,14 +93,10 @@
             this.Value = new System.Windows.Forms.ColumnHeader();
             this.Domain = new System.Windows.Forms.ColumnHeader();
             this.On = new System.Windows.Forms.ColumnHeader();
-            this.disableAllCheatsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.autoloadDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveCheatsOnCloseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CheatsMenu.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.AddCheatGroup.SuspendLayout();
@@ -185,18 +185,18 @@
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.noneToolStripMenuItem.Text = "None";
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(107, 6);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             // 
             // toolStripSeparator1
@@ -280,6 +280,18 @@
             this.moveDownToolStripMenuItem.Text = "Move &Down";
             this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
             // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(198, 6);
+            // 
+            // disableAllCheatsToolStripMenuItem
+            // 
+            this.disableAllCheatsToolStripMenuItem.Name = "disableAllCheatsToolStripMenuItem";
+            this.disableAllCheatsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.disableAllCheatsToolStripMenuItem.Text = "Disable all Cheats";
+            this.disableAllCheatsToolStripMenuItem.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem_Click);
+            // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -295,13 +307,6 @@
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
             // 
-            // saveWindowPositionToolStripMenuItem
-            // 
-            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
-            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-            // 
             // LoadCheatFileByGameToolStripMenuItem
             // 
             this.LoadCheatFileByGameToolStripMenuItem.Name = "LoadCheatFileByGameToolStripMenuItem";
@@ -309,12 +314,33 @@
             this.LoadCheatFileByGameToolStripMenuItem.Text = "Load Cheat File by Game";
             this.LoadCheatFileByGameToolStripMenuItem.Click += new System.EventHandler(this.LoadCheatFileByGameToolStripMenuItem_Click);
             // 
+            // saveCheatsOnCloseToolStripMenuItem
+            // 
+            this.saveCheatsOnCloseToolStripMenuItem.Name = "saveCheatsOnCloseToolStripMenuItem";
+            this.saveCheatsOnCloseToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.saveCheatsOnCloseToolStripMenuItem.Text = "Save Cheats on Close";
+            this.saveCheatsOnCloseToolStripMenuItem.Click += new System.EventHandler(this.saveCheatsOnCloseToolStripMenuItem_Click);
+            // 
             // CheatsOnOffLoadToolStripMenuItem
             // 
             this.CheatsOnOffLoadToolStripMenuItem.Name = "CheatsOnOffLoadToolStripMenuItem";
             this.CheatsOnOffLoadToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
             this.CheatsOnOffLoadToolStripMenuItem.Text = "Disable Cheats on Load";
             this.CheatsOnOffLoadToolStripMenuItem.Click += new System.EventHandler(this.CheatsOnOffLoadToolStripMenuItem_Click);
+            // 
+            // autoloadDialogToolStripMenuItem
+            // 
+            this.autoloadDialogToolStripMenuItem.Name = "autoloadDialogToolStripMenuItem";
+            this.autoloadDialogToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.autoloadDialogToolStripMenuItem.Text = "Auto-load Dialog";
+            this.autoloadDialogToolStripMenuItem.Click += new System.EventHandler(this.autoloadDialogToolStripMenuItem_Click);
+            // 
+            // saveWindowPositionToolStripMenuItem
+            // 
+            this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+            this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+            this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+            this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -325,7 +351,7 @@
             // 
             this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
             this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+            this.restoreWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
             this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
             // 
             // toolStrip1
@@ -647,18 +673,6 @@
             this.On.Text = "On";
             this.On.Width = 40;
             // 
-            // disableAllCheatsToolStripMenuItem
-            // 
-            this.disableAllCheatsToolStripMenuItem.Name = "disableAllCheatsToolStripMenuItem";
-            this.disableAllCheatsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.disableAllCheatsToolStripMenuItem.Text = "Disable all Cheats";
-            this.disableAllCheatsToolStripMenuItem.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(198, 6);
-            // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -667,13 +681,6 @@
             this.disableAllCheatsToolStripMenuItem1});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(171, 70);
-            // 
-            // disableAllCheatsToolStripMenuItem1
-            // 
-            this.disableAllCheatsToolStripMenuItem1.Name = "disableAllCheatsToolStripMenuItem1";
-            this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
-            this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
-            this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
             // 
             // toggleToolStripMenuItem
             // 
@@ -689,19 +696,12 @@
             this.removeSelectedToolStripMenuItem.Text = "Remove Selected";
             this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
             // 
-            // autoloadDialogToolStripMenuItem
+            // disableAllCheatsToolStripMenuItem1
             // 
-            this.autoloadDialogToolStripMenuItem.Name = "autoloadDialogToolStripMenuItem";
-            this.autoloadDialogToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.autoloadDialogToolStripMenuItem.Text = "Auto-load Dialog";
-            this.autoloadDialogToolStripMenuItem.Click += new System.EventHandler(this.autoloadDialogToolStripMenuItem_Click);
-            // 
-            // saveCheatsOnCloseToolStripMenuItem
-            // 
-            this.saveCheatsOnCloseToolStripMenuItem.Name = "saveCheatsOnCloseToolStripMenuItem";
-            this.saveCheatsOnCloseToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-            this.saveCheatsOnCloseToolStripMenuItem.Text = "Save Cheats on Close";
-            this.saveCheatsOnCloseToolStripMenuItem.Click += new System.EventHandler(this.saveCheatsOnCloseToolStripMenuItem_Click);
+            this.disableAllCheatsToolStripMenuItem1.Name = "disableAllCheatsToolStripMenuItem1";
+            this.disableAllCheatsToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+            this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
+            this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
             // 
             // Cheats
             // 
