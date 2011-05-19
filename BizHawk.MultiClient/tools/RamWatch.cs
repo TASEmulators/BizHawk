@@ -112,6 +112,7 @@ namespace BizHawk.MultiClient
 
         public void SaveConfigSettings()
         {
+            ColumnPositionSet();
             Global.Config.RamWatchAddressWidth = WatchListView.Columns[Global.Config.RamWatchAddressIndex].Width;
             Global.Config.RamWatchValueWidth = WatchListView.Columns[Global.Config.RamWatchValueIndex].Width;
             Global.Config.RamWatchPrevWidth = WatchListView.Columns[Global.Config.RamWatchPrevIndex].Width;
@@ -818,7 +819,9 @@ namespace BizHawk.MultiClient
             ColumnPositionSet();
 
             showPreviousValueToolStripMenuItem.Checked = false;
+            Global.Config.RamWatchShowPrevColumn = false;
             showChangeCountsToolStripMenuItem.Checked = true;
+            Global.Config.RamWatchShowChangeColumn = true;
             WatchListView.Columns[0].Width = defaultAddressWidth;
             WatchListView.Columns[1].Width = defaultValueWidth;
             WatchListView.Columns[2].Width = 0;
@@ -1292,17 +1295,33 @@ namespace BizHawk.MultiClient
         private void ColumnReorder(object sender, ColumnReorderedEventArgs e)
         {
             ColumnHeader header = e.Header;
+            
+            int lowIndex = 0;
+            int highIndex = 0;
+            int changeIndex = 0;
+            if (e.NewDisplayIndex > e.OldDisplayIndex)
+            {
+                changeIndex = -1;
+                highIndex = e.NewDisplayIndex;
+                lowIndex = e.OldDisplayIndex;
+            }
+            else
+            {
+                changeIndex = 1;
+                highIndex = e.OldDisplayIndex;
+                lowIndex = e.NewDisplayIndex;
+            }
 
-            if (Global.Config.RamWatchAddressIndex >= e.NewDisplayIndex && Global.Config.RamWatchAddressIndex < e.OldDisplayIndex)
-                Global.Config.RamWatchAddressIndex++;
-            if (Global.Config.RamWatchValueIndex >= e.NewDisplayIndex && Global.Config.RamWatchValueIndex < e.OldDisplayIndex)
-                Global.Config.RamWatchValueIndex++;
-            if (Global.Config.RamWatchPrevIndex >= e.NewDisplayIndex && Global.Config.RamWatchPrevIndex < e.OldDisplayIndex)
-                Global.Config.RamWatchPrevIndex++;
-            if (Global.Config.RamWatchChangeIndex >= e.NewDisplayIndex && Global.Config.RamWatchChangeIndex < e.OldDisplayIndex)
-                Global.Config.RamWatchChangeIndex++;
-            if (Global.Config.RamWatchNotesIndex >= e.NewDisplayIndex && Global.Config.RamWatchNotesIndex < e.OldDisplayIndex)
-                Global.Config.RamWatchNotesIndex++;
+            if (Global.Config.RamWatchAddressIndex >= lowIndex && Global.Config.RamWatchAddressIndex <= highIndex)
+                Global.Config.RamWatchAddressIndex += changeIndex;
+            if (Global.Config.RamWatchValueIndex >= lowIndex && Global.Config.RamWatchValueIndex <= highIndex)
+                Global.Config.RamWatchValueIndex += changeIndex;
+            if (Global.Config.RamWatchPrevIndex >= lowIndex && Global.Config.RamWatchPrevIndex <= highIndex)
+                Global.Config.RamWatchPrevIndex += changeIndex;
+            if (Global.Config.RamWatchChangeIndex >= lowIndex && Global.Config.RamWatchChangeIndex <= highIndex)
+                Global.Config.RamWatchChangeIndex += changeIndex;
+            if (Global.Config.RamWatchNotesIndex >= lowIndex && Global.Config.RamWatchNotesIndex <= highIndex)
+                Global.Config.RamWatchNotesIndex += changeIndex;
 
             if(header.Text == "Address")
                 Global.Config.RamWatchAddressIndex = e.NewDisplayIndex;

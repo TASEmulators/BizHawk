@@ -223,13 +223,15 @@ namespace BizHawk.MultiClient
 
         private void LoadConfigSettings()
         {
+            ColumnPositionSet();
+
             defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = Size.Height;
-            defaultNameWidth = CheatListView.Columns[0].Width;
-            defaultAddressWidth = CheatListView.Columns[1].Width;
-            defaultValueWidth = CheatListView.Columns[2].Width;
-            defaultDomainWidth = CheatListView.Columns[3].Width;
-            defaultOnWidth = CheatListView.Columns[4].Width;
+            defaultNameWidth = CheatListView.Columns[Global.Config.CheatsNameIndex].Width;
+            defaultAddressWidth = CheatListView.Columns[Global.Config.CheatsAddressIndex].Width;
+            defaultValueWidth = CheatListView.Columns[Global.Config.CheatsValueIndex].Width;
+            defaultDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
+            defaultOnWidth = CheatListView.Columns[Global.Config.CheatsOnIndex].Width;
 
             if (Global.Config.CheatsSaveWindowPosition && Global.Config.CheatsWndx >= 0 && Global.Config.CheatsWndy >= 0)
                 Location = new Point(Global.Config.CheatsWndx, Global.Config.CheatsWndy);
@@ -240,29 +242,30 @@ namespace BizHawk.MultiClient
             }
 
             if (Global.Config.CheatsNameWidth > 0)
-                CheatListView.Columns[0].Width = Global.Config.CheatsNameWidth;
+                CheatListView.Columns[Global.Config.CheatsNameIndex].Width = Global.Config.CheatsNameWidth;
             if (Global.Config.CheatsAddressWidth > 0)
-                CheatListView.Columns[1].Width = Global.Config.CheatsAddressWidth;
+                CheatListView.Columns[Global.Config.CheatsAddressIndex].Width = Global.Config.CheatsAddressWidth;
             if (Global.Config.CheatsValueWidth > 0)
-                CheatListView.Columns[2].Width = Global.Config.CheatsValueWidth;
+                CheatListView.Columns[Global.Config.CheatsValueIndex].Width = Global.Config.CheatsValueWidth;
             if (Global.Config.CheatsDomainWidth > 0)
-                CheatListView.Columns[3].Width = Global.Config.CheatsDomainWidth;
+                CheatListView.Columns[Global.Config.CheatsDomainIndex].Width = Global.Config.CheatsDomainWidth;
             if (Global.Config.CheatsOnWidth > 0)
-                CheatListView.Columns[4].Width = Global.Config.CheatsOnWidth;
+                CheatListView.Columns[Global.Config.CheatsOnIndex].Width = Global.Config.CheatsOnWidth;            
         }
 
         public void SaveConfigSettings()
         {
+            ColumnPositionSet();
             Global.Config.CheatsWndx = this.Location.X;
             Global.Config.CheatsWndy = this.Location.Y;
             Global.Config.CheatsWidth = this.Right - this.Left;
             Global.Config.CheatsHeight = this.Bottom - this.Top;
 
-            Global.Config.CheatsNameWidth = CheatListView.Columns[0].Width;
-            Global.Config.CheatsAddressWidth = CheatListView.Columns[1].Width;
-            Global.Config.CheatsValueWidth = CheatListView.Columns[2].Width;
-            Global.Config.CheatsDomainWidth = CheatListView.Columns[3].Width;
-            Global.Config.CheatsOnWidth = CheatListView.Columns[4].Width;
+            Global.Config.CheatsNameWidth = CheatListView.Columns[Global.Config.CheatsNameIndex].Width;
+            Global.Config.CheatsAddressWidth = CheatListView.Columns[Global.Config.CheatsAddressIndex].Width;
+            Global.Config.CheatsValueWidth = CheatListView.Columns[Global.Config.CheatsValueIndex].Width;
+            Global.Config.CheatsDomainWidth = CheatListView.Columns[Global.Config.CheatsDomainIndex].Width;
+            Global.Config.CheatsOnWidth = CheatListView.Columns[Global.Config.CheatsOnIndex].Width;
 
             if (Global.Config.CheatsAutoSaveOnClose)
             {
@@ -861,6 +864,12 @@ namespace BizHawk.MultiClient
         private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+            Global.Config.CheatsNameIndex = 0;
+            Global.Config.CheatsAddressIndex = 1;
+            Global.Config.CheatsValueIndex = 2;
+            Global.Config.CheatsDomainIndex = 3;
+            Global.Config.CheatsOnIndex = 4;
+            ColumnPositionSet();
             CheatListView.Columns[0].Width = defaultNameWidth;
             CheatListView.Columns[1].Width = defaultAddressWidth;
             CheatListView.Columns[2].Width = defaultValueWidth;
@@ -952,6 +961,88 @@ namespace BizHawk.MultiClient
         private void saveCheatsOnCloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.CheatsAutoSaveOnClose ^= true;
+        }
+
+        private void ColumnReorder(object sender, ColumnReorderedEventArgs e)
+        {
+            ColumnHeader header = e.Header;
+
+            int lowIndex = 0;
+            int highIndex = 0;
+            int changeIndex = 0;
+            if (e.NewDisplayIndex > e.OldDisplayIndex)
+            {
+                changeIndex = -1;
+                highIndex = e.NewDisplayIndex;
+                lowIndex = e.OldDisplayIndex;
+            }
+            else
+            {
+                changeIndex = 1;
+                highIndex = e.OldDisplayIndex;
+                lowIndex = e.NewDisplayIndex;
+            }
+
+
+            if (Global.Config.CheatsNameIndex >= lowIndex && Global.Config.CheatsNameIndex <= highIndex)
+                Global.Config.CheatsNameIndex += changeIndex;
+            if (Global.Config.CheatsAddressIndex >= lowIndex && Global.Config.CheatsAddressIndex <= highIndex)
+                Global.Config.CheatsAddressIndex += changeIndex;
+            if (Global.Config.CheatsValueIndex >= lowIndex && Global.Config.CheatsValueIndex <= highIndex)
+                Global.Config.CheatsValueIndex += changeIndex;
+            if (Global.Config.CheatsDomainIndex >= lowIndex && Global.Config.CheatsDomainIndex <= highIndex)
+                Global.Config.CheatsDomainIndex += changeIndex;
+            if (Global.Config.CheatsOnIndex >= lowIndex && Global.Config.CheatsOnIndex <= highIndex)
+                Global.Config.CheatsOnIndex += changeIndex;
+
+            if (header.Text == "Name")
+                Global.Config.CheatsNameIndex = e.NewDisplayIndex;
+            else if (header.Text == "Address")
+                Global.Config.CheatsAddressIndex = e.NewDisplayIndex;
+            else if (header.Text == "Value")
+                Global.Config.CheatsValueIndex = e.NewDisplayIndex;
+            else if (header.Text == "Domain")
+                Global.Config.CheatsDomainIndex = e.NewDisplayIndex;
+            else if (header.Text == "On")
+                Global.Config.CheatsOnIndex = e.NewDisplayIndex;
+        }
+
+        private void ColumnPositionSet()
+        {
+            List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
+            int i = 0;
+            for (i = 0; i < CheatListView.Columns.Count; i++)
+                columnHeaders.Add(CheatListView.Columns[i]);
+
+            CheatListView.Columns.Clear();
+
+            i = 0;
+            do
+            {
+                string column = "";
+                if (Global.Config.CheatsNameIndex == i)
+                    column = "Name";
+                else if (Global.Config.CheatsAddressIndex == i)
+                    column = "Address";
+                else if (Global.Config.CheatsValueIndex == i)
+                    column = "Value";
+                else if (Global.Config.CheatsDomainIndex == i)
+                    column = "Domain";
+                else if (Global.Config.CheatsOnIndex == i)
+                    column = "On";
+
+                for (int k = 0; k < columnHeaders.Count(); k++)
+                {
+                    if (columnHeaders[k].Text == column)
+                    {
+                        CheatListView.Columns.Add(columnHeaders[k]);
+                        columnHeaders.Remove(columnHeaders[k]);
+                        break;
+
+                    }
+                }
+                i++;
+            } while (columnHeaders.Count() > 0);
         }
     }
 }
