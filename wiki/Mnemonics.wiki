@@ -1,0 +1,12 @@
+#Documentation of movie mnemonics by platform
+TODO: clean up this page
+
+==NES==
+|reset|RLDUTSBA|
+
+
+==PCE==
+|reset|UDLR12NS|UDLR12NS|UDLR12NS|UDLR12NS|
+
+==SMS/GG/SG-1000==
+|UDLR12|UDLR12|Pause Reset|
