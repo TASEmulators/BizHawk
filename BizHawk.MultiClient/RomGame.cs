@@ -110,15 +110,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-                    case "SMS": return "SMS/SaveRAM/" + Name + ".SaveRAM";
+                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS") + Name + ".SaveRAM";
                     case "GG":  return "Game Gear/SaveRAM/" + Name + ".SaveRAM";
                     case "SG":  return "SG-1000/SaveRAM/" + Name + ".SaveRAM";
-                    case "SGX": return "TurboGrafx/SaveRAM/" + Name + ".SaveRAM";
-                    case "PCE": return "TurboGrafx/SaveRAM/" + Name + ".SaveRAM";
-                    case "GB":  return "Gameboy/SaveRAM/" + Name + ".SaveRAM";
-                    case "GEN": return "Genesis/SaveRAM/" + Name + ".SaveRAM";
-                    case "NES": return "NES/SaveRAM/" + Name + ".SaveRAM";
-                    case "TI83": return "TI83/SaveRAM/" + "TI83" + ".SaveRAM";
+                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
+                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
+                    case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB") + Name + ".SaveRAM";
+                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN") + Name + ".SaveRAM";
+                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES") + Name + ".SaveRAM";
+                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83") + Name + ".SaveRAM";
                     default:    return "";
                 }
             }
@@ -130,15 +130,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-                    case "SMS": return "SMS/State/" + Name;
+                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") + "/" + Name;
                     case "GG":  return "Game Gear/State/" + Name;
                     case "SG":  return "SG-1000/State/" + Name;
-                    case "PCE": return "TurboGrafx/State/" + Name;
-                    case "SGX": return "TurboGrafx/State/" + Name;
-                    case "GB":  return "Gameboy/State/" + Name;
-                    case "GEN": return "Genesis/State/" + Name;
-                    case "NES": return "NES/State/" + Name;
-                    case "TI83": return "TI83/State/" + "TI83";
+                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
+                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
+                    case "GB":  return PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") + "/" + Name;
+                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN") + "/" + Name;
+                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES") + "/" + Name;
+                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83") + "/" + Name;
                     default:    return "";
                 }
                 
@@ -147,6 +147,7 @@ namespace BizHawk.MultiClient
 
         public string MoviePrefix
         {
+            //Obsolete because there is one singular Movie path
             get
             {
                 switch (System)
@@ -171,15 +172,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-                    case "SMS": return "SMS/Screenshot/" + Name;
+                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS") + "/" + Name;
                     case "GG":  return "Game Gear/Screenshot/" + Name;
                     case "SG":  return "SG-1000/Screenshot/" + Name;
-                    case "PCE": return "TurboGrafx/Screenshot/" + Name;
-                    case "SGX": return "TurboGrafx/Screenshot/" + Name;
-                    case "GB":  return "Gameboy/Screenshot/" + Name;
-                    case "GEN": return "Genesis/Screenshot/" + Name;
-                    case "NES": return "NES/Screenshot/" + Name;
-                    case "TI83": return "TI83/Screenshot/" + "TI83";
+                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + Name;
+                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + Name;
+                    case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB") + "/" + Name;
+                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN") + "/" + Name;
+                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES") + "/" + Name;
+                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83") + "/" + Name;
                     default:    return "";
                 }
             }
