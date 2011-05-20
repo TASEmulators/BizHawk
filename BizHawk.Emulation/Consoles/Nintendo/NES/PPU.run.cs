@@ -323,10 +323,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							int patternNumber = oam->oam[1];
 							int patternAddress;
 
-							//create deterministic dummy fetch pattern
+							//create deterministic dummy fetch pattern.
 							if (oam->present==0)
 							{
-								patternNumber = 0;
+								//according to nintendulator:
+								//* On the first empty sprite slot, read the Y-coordinate of sprite #63 followed by $FF for the remaining 7 cycles
+								//* On all subsequent empty sprite slots, read $FF for all 8 reads
+								//well, we shall just read $FF and that is good enough for now to make mmc3 work
+								patternNumber = 0xFF;
 								line = 0;
 							}
 

@@ -23,11 +23,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
 
-		bool _irq_apu;
+		bool _irq_apu, _irq_cart;
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
+		public bool irq_cart { get { return _irq_cart; } set { _irq_cart = value; sync_irq(); } }
 		void sync_irq()
 		{
-			cpu.IRQ = _irq_apu;
+			cpu.IRQ = _irq_apu || _irq_cart;
 		}
 
 		//user configuration 

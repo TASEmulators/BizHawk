@@ -8,8 +8,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		class MMC3 : IDisposable
 		{
+			NES.NESBoardBase board;
 			public MMC3(NES.NESBoardBase board, int num_prg_banks)
 			{
+				this.board = board;
 				bank_regs[8] = (byte)(num_prg_banks - 1);
 				bank_regs[9] = (byte)(num_prg_banks - 2);
 			}
@@ -23,11 +25,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//state
 			int chr_mode, prg_mode, reg_addr;
 			public NES.NESBoardBase.EMirrorType mirror;
+			int ppubus_state, ppubus_statecounter;
 
 			//this contains the 8 programmable regs and 2 more at the end to represent PRG banks -2 and -1; and 4 more at the end to break down chr regs 0 and 1
 			ByteBuffer bank_regs = new ByteBuffer(14);
 			ByteBuffer prg_lookup = new ByteBuffer(new byte[] { 6, 7, 9, 8, 9, 7, 6, 8 });
 			ByteBuffer chr_lookup = new ByteBuffer(new byte[] { 10, 11, 12, 13, 2, 3, 4, 5 });
+			byte irq_reload, irq_counter;
+			bool irq_pending, irq_enable;
+
+			void SyncIRQ()
+			{
+				board.NES.irq_cart = irq_pending;
+			}
 
 			public void WritePRG(int addr, byte value)
 			{
@@ -55,16 +65,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//wram enable/protect
 						break;
 					case 0x4000: //$C000
-						//IRQ reload
+						irq_reload = value;
 						break;
 					case 0x4001: //$C001
-						//IRQ clear
+						irq_counter = 0;
 						break;
 					case 0x6000: //$E000
-						//IRQ ack/disable
+						irq_enable = false;
+						irq_pending = false;
+						SyncIRQ();
 						break;
 					case 0x6001: //$E001
-						//IRQ enable
+						irq_enable = true;
+						SyncIRQ();
 						break;
 				}
 			}
@@ -83,6 +96,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					bank_1k ^= 4;
 				bank_1k = bank_regs[chr_lookup[bank_1k]];
 				return bank_1k;
+			}
+
+			void ClockIRQ()
+			{
+				if(irq_counter == 0)
+					irq_counter = irq_reload;
+				else {
+					irq_counter--;
+					//Console.WriteLine(irq_counter);
+					if (irq_counter == 0)
+					{
+						if (irq_enable)
+							irq_pending = true;
+						SyncIRQ();
+					}
+				}
+			}
+
+			//TODO - this should be determined from NES timestamps to correctly emulate ppu writes interfering
+			public void Tick_PPU(int addr)
+			{
+				ppubus_statecounter++;
+				int state = (addr >> 12)&1;
+				if(ppubus_state == 0 && ppubus_statecounter > 1 && state == 1)
+				{
+					ppubus_statecounter = 0;
+					ClockIRQ();
+				}
+				if(ppubus_state != state)
+				{
+					ppubus_state = state;
+				}
 			}
 
 		}
@@ -115,6 +160,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPPU(int addr)
 		{
+			mmc3.Tick_PPU(addr);
 			if (addr < 0x2000)
 			{
 				int bank_1k = mmc3.Get_CHRBank_1K(addr);
@@ -129,6 +175,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePPU(int addr, byte value)
 		{
+			mmc3.Tick_PPU(addr);
 			base.WritePPU(addr, value);
 		}
 
