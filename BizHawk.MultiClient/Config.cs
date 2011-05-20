@@ -172,6 +172,14 @@
         public int RamSearchPreviousAs = 0;
         public bool RamSearchPreviewMode = true;
         public bool AlwaysExludeRamWatch = false;
+        public int RamSearchAddressWidth = -1;
+        public int RamSearchValueWidth = -1;
+        public int RamSearchPrevWidth = -1;
+        public int RamSearchChangesWidth = -1;
+        public int RamSearchAddressIndex = 0;
+        public int RamSearchValueIndex = 1;
+        public int RamSearchPrevIndex = 2;
+        public int RamSearchChangesIndex = 3;
 
         // HexEditor Settings
         public bool AutoLoadHexEditor = false;

@@ -1329,7 +1329,7 @@ namespace BizHawk.MultiClient
                 Global.Config.RamWatchValueIndex = e.NewDisplayIndex;
             else if (header.Text == "Prev")
                 Global.Config.RamWatchPrevIndex = e.NewDisplayIndex;
-            else if (header.Text == "ChangeCounts")
+            else if (header.Text == "Changes")
                 Global.Config.RamWatchChangeIndex = e.NewDisplayIndex;
             else if (header.Text == "Notes")
                 Global.Config.RamWatchNotesIndex = e.NewDisplayIndex;                    
