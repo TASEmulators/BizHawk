@@ -132,6 +132,14 @@
             this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
             this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
+            this.label67 = new System.Windows.Forms.Label();
+            this.IDW_STOPMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label66 = new System.Windows.Forms.Label();
+            this.IDW_PLAYMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label65 = new System.Windows.Forms.Label();
+            this.IDW_RECORDMOVIE = new BizHawk.MultiClient.InputWidget();
+            this.label64 = new System.Windows.Forms.Label();
             this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
             this.label63 = new System.Windows.Forms.Label();
             this.IDW_TOGGLEMTRACK = new BizHawk.MultiClient.InputWidget();
@@ -162,14 +170,6 @@
             this.IDB_SAVE = new System.Windows.Forms.Button();
             this.IDB_CANCEL = new System.Windows.Forms.Button();
             this.label38 = new System.Windows.Forms.Label();
-            this.IDW_RECORDMOVIE = new BizHawk.MultiClient.InputWidget();
-            this.label64 = new System.Windows.Forms.Label();
-            this.IDW_PLAYMOVIE = new BizHawk.MultiClient.InputWidget();
-            this.label65 = new System.Windows.Forms.Label();
-            this.IDW_STOPMOVIE = new BizHawk.MultiClient.InputWidget();
-            this.label66 = new System.Windows.Forms.Label();
-            this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
-            this.label67 = new System.Windows.Forms.Label();
             this.hotkeyTabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -1163,19 +1163,91 @@
             this.tabPage3.Text = "Movie";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // IDW_PLAYBEGINNING
+            // 
+            this.IDW_PLAYBEGINNING.AcceptsTab = true;
+            this.IDW_PLAYBEGINNING.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_PLAYBEGINNING.Location = new System.Drawing.Point(105, 113);
+            this.IDW_PLAYBEGINNING.Name = "IDW_PLAYBEGINNING";
+            this.IDW_PLAYBEGINNING.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PLAYBEGINNING.TabIndex = 72;
+            // 
+            // label67
+            // 
+            this.label67.AutoSize = true;
+            this.label67.Location = new System.Drawing.Point(6, 116);
+            this.label67.Name = "label67";
+            this.label67.Size = new System.Drawing.Size(99, 13);
+            this.label67.TabIndex = 85;
+            this.label67.Text = "Play from beginning";
+            // 
+            // IDW_STOPMOVIE
+            // 
+            this.IDW_STOPMOVIE.AcceptsTab = true;
+            this.IDW_STOPMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_STOPMOVIE.Location = new System.Drawing.Point(105, 87);
+            this.IDW_STOPMOVIE.Name = "IDW_STOPMOVIE";
+            this.IDW_STOPMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_STOPMOVIE.TabIndex = 71;
+            // 
+            // label66
+            // 
+            this.label66.AutoSize = true;
+            this.label66.Location = new System.Drawing.Point(6, 90);
+            this.label66.Name = "label66";
+            this.label66.Size = new System.Drawing.Size(60, 13);
+            this.label66.TabIndex = 83;
+            this.label66.Text = "Stop movie";
+            // 
+            // IDW_PLAYMOVIE
+            // 
+            this.IDW_PLAYMOVIE.AcceptsTab = true;
+            this.IDW_PLAYMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_PLAYMOVIE.Location = new System.Drawing.Point(105, 35);
+            this.IDW_PLAYMOVIE.Name = "IDW_PLAYMOVIE";
+            this.IDW_PLAYMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_PLAYMOVIE.TabIndex = 69;
+            // 
+            // label65
+            // 
+            this.label65.AutoSize = true;
+            this.label65.Location = new System.Drawing.Point(6, 38);
+            this.label65.Name = "label65";
+            this.label65.Size = new System.Drawing.Size(58, 13);
+            this.label65.TabIndex = 81;
+            this.label65.Text = "Play movie";
+            // 
+            // IDW_RECORDMOVIE
+            // 
+            this.IDW_RECORDMOVIE.AcceptsTab = true;
+            this.IDW_RECORDMOVIE.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_RECORDMOVIE.Location = new System.Drawing.Point(105, 61);
+            this.IDW_RECORDMOVIE.Name = "IDW_RECORDMOVIE";
+            this.IDW_RECORDMOVIE.Size = new System.Drawing.Size(100, 20);
+            this.IDW_RECORDMOVIE.TabIndex = 70;
+            // 
+            // label64
+            // 
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(6, 64);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(73, 13);
+            this.label64.TabIndex = 79;
+            this.label64.Text = "Record movie";
+            // 
             // IDW_TOGGLEREADONLY
             // 
             this.IDW_TOGGLEREADONLY.AcceptsTab = true;
             this.IDW_TOGGLEREADONLY.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 126);
+            this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 9);
             this.IDW_TOGGLEREADONLY.Name = "IDW_TOGGLEREADONLY";
             this.IDW_TOGGLEREADONLY.Size = new System.Drawing.Size(100, 20);
-            this.IDW_TOGGLEREADONLY.TabIndex = 78;
+            this.IDW_TOGGLEREADONLY.TabIndex = 68;
             // 
             // label63
             // 
             this.label63.AutoSize = true;
-            this.label63.Location = new System.Drawing.Point(6, 129);
+            this.label63.Location = new System.Drawing.Point(6, 12);
             this.label63.Name = "label63";
             this.label63.Size = new System.Drawing.Size(86, 13);
             this.label63.TabIndex = 77;
@@ -1185,33 +1257,33 @@
             // 
             this.IDW_TOGGLEMTRACK.AcceptsTab = true;
             this.IDW_TOGGLEMTRACK.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_TOGGLEMTRACK.Location = new System.Drawing.Point(105, 9);
+            this.IDW_TOGGLEMTRACK.Location = new System.Drawing.Point(324, 6);
             this.IDW_TOGGLEMTRACK.Name = "IDW_TOGGLEMTRACK";
             this.IDW_TOGGLEMTRACK.Size = new System.Drawing.Size(100, 20);
-            this.IDW_TOGGLEMTRACK.TabIndex = 68;
+            this.IDW_TOGGLEMTRACK.TabIndex = 80;
             // 
             // IDW_MTDECPLAYER
             // 
             this.IDW_MTDECPLAYER.AcceptsTab = true;
             this.IDW_MTDECPLAYER.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_MTDECPLAYER.Location = new System.Drawing.Point(105, 100);
+            this.IDW_MTDECPLAYER.Location = new System.Drawing.Point(324, 110);
             this.IDW_MTDECPLAYER.Name = "IDW_MTDECPLAYER";
             this.IDW_MTDECPLAYER.Size = new System.Drawing.Size(100, 20);
-            this.IDW_MTDECPLAYER.TabIndex = 76;
+            this.IDW_MTDECPLAYER.TabIndex = 84;
             // 
             // IDW_MTINCPLAYER
             // 
             this.IDW_MTINCPLAYER.AcceptsTab = true;
             this.IDW_MTINCPLAYER.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_MTINCPLAYER.Location = new System.Drawing.Point(105, 78);
+            this.IDW_MTINCPLAYER.Location = new System.Drawing.Point(324, 84);
             this.IDW_MTINCPLAYER.Name = "IDW_MTINCPLAYER";
             this.IDW_MTINCPLAYER.Size = new System.Drawing.Size(100, 20);
-            this.IDW_MTINCPLAYER.TabIndex = 75;
+            this.IDW_MTINCPLAYER.TabIndex = 83;
             // 
             // label43
             // 
             this.label43.AutoSize = true;
-            this.label43.Location = new System.Drawing.Point(6, 103);
+            this.label43.Location = new System.Drawing.Point(225, 113);
             this.label43.Name = "label43";
             this.label43.Size = new System.Drawing.Size(91, 13);
             this.label43.TabIndex = 74;
@@ -1220,7 +1292,7 @@
             // label42
             // 
             this.label42.AutoSize = true;
-            this.label42.Location = new System.Drawing.Point(6, 81);
+            this.label42.Location = new System.Drawing.Point(225, 87);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(86, 13);
             this.label42.TabIndex = 73;
@@ -1229,7 +1301,7 @@
             // label41
             // 
             this.label41.AutoSize = true;
-            this.label41.Location = new System.Drawing.Point(6, 59);
+            this.label41.Location = new System.Drawing.Point(225, 61);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(66, 13);
             this.label41.TabIndex = 71;
@@ -1238,7 +1310,7 @@
             // label40
             // 
             this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(6, 35);
+            this.label40.Location = new System.Drawing.Point(225, 35);
             this.label40.Name = "label40";
             this.label40.Size = new System.Drawing.Size(51, 13);
             this.label40.TabIndex = 69;
@@ -1247,7 +1319,7 @@
             // label39
             // 
             this.label39.AutoSize = true;
-            this.label39.Location = new System.Drawing.Point(6, 12);
+            this.label39.Location = new System.Drawing.Point(225, 9);
             this.label39.Name = "label39";
             this.label39.Size = new System.Drawing.Size(93, 13);
             this.label39.TabIndex = 67;
@@ -1257,19 +1329,19 @@
             // 
             this.IDW_SELECTNONE.AcceptsTab = true;
             this.IDW_SELECTNONE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_SELECTNONE.Location = new System.Drawing.Point(105, 56);
+            this.IDW_SELECTNONE.Location = new System.Drawing.Point(324, 58);
             this.IDW_SELECTNONE.Name = "IDW_SELECTNONE";
             this.IDW_SELECTNONE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_SELECTNONE.TabIndex = 72;
+            this.IDW_SELECTNONE.TabIndex = 82;
             // 
             // IDW_MTSELECTALL
             // 
             this.IDW_MTSELECTALL.AcceptsTab = true;
             this.IDW_MTSELECTALL.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_MTSELECTALL.Location = new System.Drawing.Point(105, 32);
+            this.IDW_MTSELECTALL.Location = new System.Drawing.Point(324, 32);
             this.IDW_MTSELECTALL.Name = "IDW_MTSELECTALL";
             this.IDW_MTSELECTALL.Size = new System.Drawing.Size(100, 20);
-            this.IDW_MTSELECTALL.TabIndex = 70;
+            this.IDW_MTSELECTALL.TabIndex = 81;
             // 
             // tabPage4
             // 
@@ -1448,78 +1520,6 @@
             this.label38.Size = new System.Drawing.Size(153, 13);
             this.label38.TabIndex = 3;
             this.label38.Text = "* Escape clears a key mapping";
-            // 
-            // IDW_RECORDMOVIE
-            // 
-            this.IDW_RECORDMOVIE.AcceptsTab = true;
-            this.IDW_RECORDMOVIE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_RECORDMOVIE.Location = new System.Drawing.Point(105, 152);
-            this.IDW_RECORDMOVIE.Name = "IDW_RECORDMOVIE";
-            this.IDW_RECORDMOVIE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_RECORDMOVIE.TabIndex = 80;
-            // 
-            // label64
-            // 
-            this.label64.AutoSize = true;
-            this.label64.Location = new System.Drawing.Point(6, 155);
-            this.label64.Name = "label64";
-            this.label64.Size = new System.Drawing.Size(73, 13);
-            this.label64.TabIndex = 79;
-            this.label64.Text = "Record movie";
-            // 
-            // IDW_PLAYMOVIE
-            // 
-            this.IDW_PLAYMOVIE.AcceptsTab = true;
-            this.IDW_PLAYMOVIE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_PLAYMOVIE.Location = new System.Drawing.Point(105, 178);
-            this.IDW_PLAYMOVIE.Name = "IDW_PLAYMOVIE";
-            this.IDW_PLAYMOVIE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_PLAYMOVIE.TabIndex = 82;
-            // 
-            // label65
-            // 
-            this.label65.AutoSize = true;
-            this.label65.Location = new System.Drawing.Point(6, 181);
-            this.label65.Name = "label65";
-            this.label65.Size = new System.Drawing.Size(58, 13);
-            this.label65.TabIndex = 81;
-            this.label65.Text = "Play movie";
-            // 
-            // IDW_STOPMOVIE
-            // 
-            this.IDW_STOPMOVIE.AcceptsTab = true;
-            this.IDW_STOPMOVIE.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_STOPMOVIE.Location = new System.Drawing.Point(105, 204);
-            this.IDW_STOPMOVIE.Name = "IDW_STOPMOVIE";
-            this.IDW_STOPMOVIE.Size = new System.Drawing.Size(100, 20);
-            this.IDW_STOPMOVIE.TabIndex = 84;
-            // 
-            // label66
-            // 
-            this.label66.AutoSize = true;
-            this.label66.Location = new System.Drawing.Point(6, 207);
-            this.label66.Name = "label66";
-            this.label66.Size = new System.Drawing.Size(60, 13);
-            this.label66.TabIndex = 83;
-            this.label66.Text = "Stop movie";
-            // 
-            // IDW_PLAYBEGINNING
-            // 
-            this.IDW_PLAYBEGINNING.AcceptsTab = true;
-            this.IDW_PLAYBEGINNING.BackColor = System.Drawing.SystemColors.Window;
-            this.IDW_PLAYBEGINNING.Location = new System.Drawing.Point(105, 230);
-            this.IDW_PLAYBEGINNING.Name = "IDW_PLAYBEGINNING";
-            this.IDW_PLAYBEGINNING.Size = new System.Drawing.Size(100, 20);
-            this.IDW_PLAYBEGINNING.TabIndex = 86;
-            // 
-            // label67
-            // 
-            this.label67.AutoSize = true;
-            this.label67.Location = new System.Drawing.Point(6, 233);
-            this.label67.Name = "label67";
-            this.label67.Size = new System.Drawing.Size(99, 13);
-            this.label67.TabIndex = 85;
-            this.label67.Text = "Play from beginning";
             // 
             // HotkeyWindow
             // 
