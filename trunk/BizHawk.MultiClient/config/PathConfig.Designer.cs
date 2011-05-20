@@ -182,6 +182,25 @@
             this.GGBrowseSaveRAM = new System.Windows.Forms.Button();
             this.GGSaveRAMDescription = new System.Windows.Forms.Label();
             this.GGSaveRAMBox = new System.Windows.Forms.TextBox();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.SGCheatsDescription = new System.Windows.Forms.Label();
+            this.SGBrowseCheats = new System.Windows.Forms.Button();
+            this.SGCheatsBox = new System.Windows.Forms.TextBox();
+            this.SGBaseBox = new System.Windows.Forms.TextBox();
+            this.SGBaseDescription = new System.Windows.Forms.Label();
+            this.SGBrowseBase = new System.Windows.Forms.Button();
+            this.SGROMsBox = new System.Windows.Forms.TextBox();
+            this.SGScreenshotsBox = new System.Windows.Forms.TextBox();
+            this.SGBrowseSavestates = new System.Windows.Forms.Button();
+            this.SGScreenshotsDescription = new System.Windows.Forms.Label();
+            this.SGSavestatesDescription = new System.Windows.Forms.Label();
+            this.SGBrowseScreenshots = new System.Windows.Forms.Button();
+            this.SGSavestatesBox = new System.Windows.Forms.TextBox();
+            this.SGBrowseSaveRAM = new System.Windows.Forms.Button();
+            this.SGSaveRAMDescription = new System.Windows.Forms.Label();
+            this.SGROMsDescription = new System.Windows.Forms.Label();
+            this.SGSaveRAMBox = new System.Windows.Forms.TextBox();
+            this.SGROMsBrowse = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -191,6 +210,7 @@
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
             this.tabPage8.SuspendLayout();
+            this.tabPage9.SuspendLayout();
             this.SuspendLayout();
             // 
             // Cancel
@@ -585,6 +605,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage9);
             this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
@@ -1887,6 +1908,214 @@
             this.GGSaveRAMBox.Size = new System.Drawing.Size(280, 20);
             this.GGSaveRAMBox.TabIndex = 30;
             // 
+            // tabPage9
+            // 
+            this.tabPage9.Controls.Add(this.SGCheatsDescription);
+            this.tabPage9.Controls.Add(this.SGBrowseCheats);
+            this.tabPage9.Controls.Add(this.SGCheatsBox);
+            this.tabPage9.Controls.Add(this.SGBaseBox);
+            this.tabPage9.Controls.Add(this.SGBaseDescription);
+            this.tabPage9.Controls.Add(this.SGBrowseBase);
+            this.tabPage9.Controls.Add(this.SGROMsBox);
+            this.tabPage9.Controls.Add(this.SGScreenshotsBox);
+            this.tabPage9.Controls.Add(this.SGBrowseSavestates);
+            this.tabPage9.Controls.Add(this.SGScreenshotsDescription);
+            this.tabPage9.Controls.Add(this.SGSavestatesDescription);
+            this.tabPage9.Controls.Add(this.SGBrowseScreenshots);
+            this.tabPage9.Controls.Add(this.SGSavestatesBox);
+            this.tabPage9.Controls.Add(this.SGBrowseSaveRAM);
+            this.tabPage9.Controls.Add(this.SGSaveRAMDescription);
+            this.tabPage9.Controls.Add(this.SGROMsDescription);
+            this.tabPage9.Controls.Add(this.SGSaveRAMBox);
+            this.tabPage9.Controls.Add(this.SGROMsBrowse);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Size = new System.Drawing.Size(435, 251);
+            this.tabPage9.TabIndex = 8;
+            this.tabPage9.Text = "SG-1000";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // SGCheatsDescription
+            // 
+            this.SGCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGCheatsDescription.AutoSize = true;
+            this.SGCheatsDescription.Location = new System.Drawing.Point(360, 183);
+            this.SGCheatsDescription.Name = "SGCheatsDescription";
+            this.SGCheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.SGCheatsDescription.TabIndex = 41;
+            this.SGCheatsDescription.Text = "Cheats";
+            // 
+            // SGBrowseCheats
+            // 
+            this.SGBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBrowseCheats.Location = new System.Drawing.Point(300, 178);
+            this.SGBrowseCheats.Name = "SGBrowseCheats";
+            this.SGBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.SGBrowseCheats.TabIndex = 40;
+            this.SGBrowseCheats.Text = "Browse";
+            this.SGBrowseCheats.UseVisualStyleBackColor = true;
+            this.SGBrowseCheats.Click += new System.EventHandler(this.SGBrowseCheats_Click);
+            // 
+            // SGCheatsBox
+            // 
+            this.SGCheatsBox.AcceptsTab = true;
+            this.SGCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGCheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.SGCheatsBox.Name = "SGCheatsBox";
+            this.SGCheatsBox.Size = new System.Drawing.Size(280, 20);
+            this.SGCheatsBox.TabIndex = 39;
+            // 
+            // SGBaseBox
+            // 
+            this.SGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBaseBox.Location = new System.Drawing.Point(13, 21);
+            this.SGBaseBox.Name = "SGBaseBox";
+            this.SGBaseBox.Size = new System.Drawing.Size(280, 20);
+            this.SGBaseBox.TabIndex = 36;
+            // 
+            // SGBaseDescription
+            // 
+            this.SGBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBaseDescription.AutoSize = true;
+            this.SGBaseDescription.Location = new System.Drawing.Point(360, 25);
+            this.SGBaseDescription.Name = "SGBaseDescription";
+            this.SGBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.SGBaseDescription.TabIndex = 38;
+            this.SGBaseDescription.Text = "Base";
+            // 
+            // SGBrowseBase
+            // 
+            this.SGBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBrowseBase.Location = new System.Drawing.Point(300, 20);
+            this.SGBrowseBase.Name = "SGBrowseBase";
+            this.SGBrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.SGBrowseBase.TabIndex = 37;
+            this.SGBrowseBase.Text = "Browse";
+            this.SGBrowseBase.UseVisualStyleBackColor = true;
+            this.SGBrowseBase.Click += new System.EventHandler(this.SGBrowseBase_Click);
+            // 
+            // SGROMsBox
+            // 
+            this.SGROMsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGROMsBox.Location = new System.Drawing.Point(13, 59);
+            this.SGROMsBox.Name = "SGROMsBox";
+            this.SGROMsBox.Size = new System.Drawing.Size(280, 20);
+            this.SGROMsBox.TabIndex = 30;
+            // 
+            // SGScreenshotsBox
+            // 
+            this.SGScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGScreenshotsBox.Location = new System.Drawing.Point(13, 149);
+            this.SGScreenshotsBox.Name = "SGScreenshotsBox";
+            this.SGScreenshotsBox.Size = new System.Drawing.Size(280, 20);
+            this.SGScreenshotsBox.TabIndex = 33;
+            // 
+            // SGBrowseSavestates
+            // 
+            this.SGBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBrowseSavestates.Location = new System.Drawing.Point(300, 88);
+            this.SGBrowseSavestates.Name = "SGBrowseSavestates";
+            this.SGBrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.SGBrowseSavestates.TabIndex = 25;
+            this.SGBrowseSavestates.Text = "Browse";
+            this.SGBrowseSavestates.UseVisualStyleBackColor = true;
+            this.SGBrowseSavestates.Click += new System.EventHandler(this.SGBrowseSavestates_Click);
+            // 
+            // SGScreenshotsDescription
+            // 
+            this.SGScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGScreenshotsDescription.AutoSize = true;
+            this.SGScreenshotsDescription.Location = new System.Drawing.Point(360, 153);
+            this.SGScreenshotsDescription.Name = "SGScreenshotsDescription";
+            this.SGScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.SGScreenshotsDescription.TabIndex = 35;
+            this.SGScreenshotsDescription.Text = "Screenshots";
+            // 
+            // SGSavestatesDescription
+            // 
+            this.SGSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGSavestatesDescription.AutoSize = true;
+            this.SGSavestatesDescription.Location = new System.Drawing.Point(360, 93);
+            this.SGSavestatesDescription.Name = "SGSavestatesDescription";
+            this.SGSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.SGSavestatesDescription.TabIndex = 26;
+            this.SGSavestatesDescription.Text = "Savestates";
+            // 
+            // SGBrowseScreenshots
+            // 
+            this.SGBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBrowseScreenshots.Location = new System.Drawing.Point(300, 148);
+            this.SGBrowseScreenshots.Name = "SGBrowseScreenshots";
+            this.SGBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.SGBrowseScreenshots.TabIndex = 34;
+            this.SGBrowseScreenshots.Text = "Browse";
+            this.SGBrowseScreenshots.UseVisualStyleBackColor = true;
+            this.SGBrowseScreenshots.Click += new System.EventHandler(this.SGBrowseScreenshots_Click);
+            // 
+            // SGSavestatesBox
+            // 
+            this.SGSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGSavestatesBox.Location = new System.Drawing.Point(13, 89);
+            this.SGSavestatesBox.Name = "SGSavestatesBox";
+            this.SGSavestatesBox.Size = new System.Drawing.Size(280, 20);
+            this.SGSavestatesBox.TabIndex = 24;
+            // 
+            // SGBrowseSaveRAM
+            // 
+            this.SGBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGBrowseSaveRAM.Location = new System.Drawing.Point(300, 118);
+            this.SGBrowseSaveRAM.Name = "SGBrowseSaveRAM";
+            this.SGBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.SGBrowseSaveRAM.TabIndex = 28;
+            this.SGBrowseSaveRAM.Text = "Browse";
+            this.SGBrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.SGBrowseSaveRAM.Click += new System.EventHandler(this.SGBrowseSaveRAM_Click);
+            // 
+            // SGSaveRAMDescription
+            // 
+            this.SGSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGSaveRAMDescription.AutoSize = true;
+            this.SGSaveRAMDescription.Location = new System.Drawing.Point(360, 123);
+            this.SGSaveRAMDescription.Name = "SGSaveRAMDescription";
+            this.SGSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.SGSaveRAMDescription.TabIndex = 29;
+            this.SGSaveRAMDescription.Text = "Save RAM";
+            // 
+            // SGROMsDescription
+            // 
+            this.SGROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGROMsDescription.AutoSize = true;
+            this.SGROMsDescription.Location = new System.Drawing.Point(360, 63);
+            this.SGROMsDescription.Name = "SGROMsDescription";
+            this.SGROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.SGROMsDescription.TabIndex = 32;
+            this.SGROMsDescription.Text = "ROMs";
+            // 
+            // SGSaveRAMBox
+            // 
+            this.SGSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGSaveRAMBox.Location = new System.Drawing.Point(13, 119);
+            this.SGSaveRAMBox.Name = "SGSaveRAMBox";
+            this.SGSaveRAMBox.Size = new System.Drawing.Size(280, 20);
+            this.SGSaveRAMBox.TabIndex = 27;
+            // 
+            // SGROMsBrowse
+            // 
+            this.SGROMsBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.SGROMsBrowse.Location = new System.Drawing.Point(300, 58);
+            this.SGROMsBrowse.Name = "SGROMsBrowse";
+            this.SGROMsBrowse.Size = new System.Drawing.Size(54, 23);
+            this.SGROMsBrowse.TabIndex = 31;
+            this.SGROMsBrowse.Text = "Browse";
+            this.SGROMsBrowse.UseVisualStyleBackColor = true;
+            this.SGROMsBrowse.Click += new System.EventHandler(this.SGROMsBrowse_Click);
+            // 
             // PathConfig
             // 
             this.AcceptButton = this.OK;
@@ -1923,6 +2152,8 @@
             this.tabPage7.PerformLayout();
             this.tabPage8.ResumeLayout(false);
             this.tabPage8.PerformLayout();
+            this.tabPage9.ResumeLayout(false);
+            this.tabPage9.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2084,5 +2315,24 @@
         private System.Windows.Forms.Button GGBrowseSaveRAM;
         private System.Windows.Forms.Label GGSaveRAMDescription;
         private System.Windows.Forms.TextBox GGSaveRAMBox;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.Label SGCheatsDescription;
+        private System.Windows.Forms.Button SGBrowseCheats;
+        private System.Windows.Forms.TextBox SGCheatsBox;
+        private System.Windows.Forms.TextBox SGBaseBox;
+        private System.Windows.Forms.Label SGBaseDescription;
+        private System.Windows.Forms.Button SGBrowseBase;
+        private System.Windows.Forms.TextBox SGROMsBox;
+        private System.Windows.Forms.TextBox SGScreenshotsBox;
+        private System.Windows.Forms.Button SGBrowseSavestates;
+        private System.Windows.Forms.Label SGScreenshotsDescription;
+        private System.Windows.Forms.Label SGSavestatesDescription;
+        private System.Windows.Forms.Button SGBrowseScreenshots;
+        private System.Windows.Forms.TextBox SGSavestatesBox;
+        private System.Windows.Forms.Button SGBrowseSaveRAM;
+        private System.Windows.Forms.Label SGSaveRAMDescription;
+        private System.Windows.Forms.Label SGROMsDescription;
+        private System.Windows.Forms.TextBox SGSaveRAMBox;
+        private System.Windows.Forms.Button SGROMsBrowse;
     }
 }

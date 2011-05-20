@@ -61,7 +61,9 @@ namespace BizHawk.MultiClient
                 case "NES":
                     return Global.Config.BaseNES;
                 case "SG":
+                    return Global.Config.BaseSG;
                 case "GG":
+                    return Global.Config.BaseGG;
                 case "SMS":
                     return Global.Config.BaseSMS;
                 case "SGX":

@@ -111,8 +111,8 @@ namespace BizHawk.MultiClient
                 switch (System)
                 {
                     case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS") + Name + ".SaveRAM";
-                    case "GG":  return "Game Gear/SaveRAM/" + Name + ".SaveRAM";
-                    case "SG":  return "SG-1000/SaveRAM/" + Name + ".SaveRAM";
+                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG") + Name + ".SaveRAM";
+                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG") + Name + ".SaveRAM";
                     case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
                     case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
                     case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB") + Name + ".SaveRAM";
@@ -131,8 +131,8 @@ namespace BizHawk.MultiClient
                 switch (System)
                 {
                     case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") + "/" + Name;
-                    case "GG":  return "Game Gear/State/" + Name;
-                    case "SG":  return "SG-1000/State/" + Name;
+                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG") + "/" + Name;
+                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG") + "/" + Name;
                     case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
                     case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
                     case "GB":  return PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") + "/" + Name;
@@ -173,8 +173,8 @@ namespace BizHawk.MultiClient
                 switch (System)
                 {
                     case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS") + "/" + Name;
-                    case "GG":  return "Game Gear/Screenshot/" + Name;
-                    case "SG":  return "SG-1000/Screenshot/" + Name;
+                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG") + "/" + Name;
+                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG") + "/" + Name;
                     case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + Name;
                     case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + Name;
                     case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB") + "/" + Name;
