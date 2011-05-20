@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		public interface INESBoard
+		public interface INESBoard : IDisposable
 		{
 			void Create(NES nes);
 			bool Configure(NES.EDetectionOrigin origin);
@@ -59,6 +59,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < 4; i++) ser.Sync("mirroring" + i, ref mirroring[i]);
 			}
 
+			public virtual void Dispose() { }
 
 			int[] mirroring = new int[4];
 			protected void SetMirroring(int a, int b, int c, int d)
@@ -179,6 +180,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				foreach (int i in valid) if (value == i) return;
 				Assert(false, "unhandled {0} size", name);
 			}
+			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
 		}
 
 		//this will be used to track classes that implement boards
