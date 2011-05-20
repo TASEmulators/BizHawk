@@ -32,10 +32,20 @@ namespace BizHawk.MultiClient
         //Reset window position item
         int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
+        int defaultAddressWidth;
+        int defaultValueWidth;
+        int defaultPrevWidth;
+        int defaultChangesWidth;
         string currentSearchFile = "";
 
         public void SaveConfigSettings()
         {
+            ColumnPositionSet();
+            Global.Config.RamSearchAddressWidth = SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width;
+            Global.Config.RamSearchValueWidth = SearchListView.Columns[Global.Config.RamSearchValueIndex].Width;
+            Global.Config.RamSearchPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
+            Global.Config.RamSearchChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
+
             Global.Config.RamSearchWndx = this.Location.X;
             Global.Config.RamSearchWndy = this.Location.Y;
             Global.Config.RamSearchWidth = this.Right - this.Left;
@@ -76,8 +86,14 @@ namespace BizHawk.MultiClient
 
         private void LoadConfigSettings()
         {
+            ColumnPositionSet();
+
             defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
             defaultHeight = this.Size.Height;
+            defaultAddressWidth = SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width;
+            defaultValueWidth = SearchListView.Columns[Global.Config.RamSearchValueIndex].Width;
+            defaultPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
+            defaultChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
 
             if (Domain.Endian == Endian.Big)
             {
@@ -97,6 +113,15 @@ namespace BizHawk.MultiClient
             {
                 this.Size = new System.Drawing.Size(Global.Config.RamSearchWidth, Global.Config.RamSearchHeight);
             }
+
+            if (Global.Config.RamSearchAddressWidth > 0)
+                SearchListView.Columns[Global.Config.RamSearchAddressIndex].Width = Global.Config.RamSearchAddressWidth;
+            if (Global.Config.RamSearchValueWidth > 0)
+                SearchListView.Columns[Global.Config.RamSearchValueIndex].Width = Global.Config.RamSearchValueWidth;
+            if (Global.Config.RamSearchPrevWidth > 0)
+                SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width = Global.Config.RamSearchPrevWidth;
+            if (Global.Config.RamSearchChangesWidth > 0)
+                SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width = Global.Config.RamSearchChangesWidth;
         }
 
         private void SetMemoryDomainMenu()
@@ -268,6 +293,16 @@ namespace BizHawk.MultiClient
         private void restoreOriginalWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+            Global.Config.RamSearchAddressIndex = 0;
+            Global.Config.RamSearchValueIndex = 1;
+            Global.Config.RamSearchPrevIndex = 2;
+            Global.Config.RamSearchChangesIndex = 3;
+            ColumnPositionSet();
+
+            SearchListView.Columns[0].Width = defaultAddressWidth;
+            SearchListView.Columns[1].Width = defaultValueWidth;
+            SearchListView.Columns[2].Width = defaultPrevWidth;
+            SearchListView.Columns[3].Width = defaultChangesWidth;
         }
 
         private void NewSearchtoolStripButton_Click(object sender, EventArgs e)
@@ -1898,6 +1933,80 @@ namespace BizHawk.MultiClient
         private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
             CheckDomainMenuItems();
+        }
+
+        private void SearchListView_ColumnReordered(object sender, ColumnReorderedEventArgs e)
+        {
+            ColumnHeader header = e.Header;
+
+            int lowIndex = 0;
+            int highIndex = 0;
+            int changeIndex = 0;
+            if (e.NewDisplayIndex > e.OldDisplayIndex)
+            {
+                changeIndex = -1;
+                highIndex = e.NewDisplayIndex;
+                lowIndex = e.OldDisplayIndex;
+            }
+            else
+            {
+                changeIndex = 1;
+                highIndex = e.OldDisplayIndex;
+                lowIndex = e.NewDisplayIndex;
+            }
+
+            if (Global.Config.RamSearchAddressIndex >= lowIndex && Global.Config.RamSearchAddressIndex <= highIndex)
+                Global.Config.RamSearchAddressIndex += changeIndex;
+            if (Global.Config.RamSearchValueIndex >= lowIndex && Global.Config.RamSearchValueIndex <= highIndex)
+                Global.Config.RamSearchValueIndex += changeIndex;
+            if (Global.Config.RamSearchPrevIndex >= lowIndex && Global.Config.RamSearchPrevIndex <= highIndex)
+                Global.Config.RamSearchPrevIndex += changeIndex;
+            if (Global.Config.RamSearchChangesIndex >= lowIndex && Global.Config.RamSearchChangesIndex <= highIndex)
+                Global.Config.RamSearchChangesIndex += changeIndex;
+
+            if (header.Text == "Address")
+                Global.Config.RamSearchAddressIndex = e.NewDisplayIndex;
+            else if (header.Text == "Value")
+                Global.Config.RamSearchValueIndex = e.NewDisplayIndex;
+            else if (header.Text == "Prev")
+                Global.Config.RamSearchPrevIndex = e.NewDisplayIndex;
+            else if (header.Text == "Changes")
+                Global.Config.RamSearchChangesIndex = e.NewDisplayIndex; 
+        }
+
+        private void ColumnPositionSet()
+        {
+            List<ColumnHeader> columnHeaders = new List<ColumnHeader>();
+            int i = 0;
+            for (i = 0; i < SearchListView.Columns.Count; i++)
+                columnHeaders.Add(SearchListView.Columns[i]);
+
+            SearchListView.Columns.Clear();
+
+            i = 0;
+            do
+            {
+                string column = "";
+                if (Global.Config.RamSearchAddressIndex == i)
+                    column = "Address";
+                else if (Global.Config.RamSearchValueIndex == i)
+                    column = "Value";
+                else if (Global.Config.RamSearchPrevIndex == i)
+                    column = "Prev";
+                else if (Global.Config.RamSearchChangesIndex == i)
+                    column = "Changes";
+
+                for (int k = 0; k < columnHeaders.Count(); k++)
+                {
+                    if (columnHeaders[k].Text == column)
+                    {
+                        SearchListView.Columns.Add(columnHeaders[k]);
+                        columnHeaders.Remove(columnHeaders[k]);
+                        break;
+                    }
+                }
+                i++;
+            } while (columnHeaders.Count() > 0);
         }
     }
 }
