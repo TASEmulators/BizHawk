@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
 
         private string MakeDefaultFilename()
         {
-            return Global.Config.LastRomPath + "\\" + Global.Game.Name + ".cht";
+            return GetCheatsPath() + "\\" + Global.Game.Name + ".cht";
         }
 
         private void ClearFields()
@@ -378,7 +378,7 @@ namespace BizHawk.MultiClient
                 sfd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
             else if (!(Global.Emulator is NullEmulator))
                 sfd.FileName = Global.Game.Name;
-            sfd.InitialDirectory = Global.Config.LastRomPath;
+            sfd.InitialDirectory = GetCheatsPath();
             sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
             sfd.RestoreDirectory = true;
             Global.Sound.StopSound();
@@ -503,12 +503,52 @@ namespace BizHawk.MultiClient
             SaveAs();
         }
 
+        public string GetCheatsPath()
+        {
+            string path;
+            switch (Global.Emulator.SystemId)
+            {
+                case "NES":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathNESCheats, "NES");
+                    break;
+                case "SMS":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathSMSCheats, "SMS");
+                    break;
+                case "SG":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathSGCheats, "SG");
+                    break;
+                case "GG":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGGCheats, "GG");
+                    break;
+                case "GEN":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisCheats, "GEN");
+                    break;
+                case "SFX":
+                case "PCE":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "GB");
+                    break;
+                case "GB":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGBCheats, "GB");
+                    break;
+                case "TI83":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathTI83Cheats, "TI83");
+                    break;
+                default:
+                    path = PathManager.GetBasePathAbsolute();
+                    break;
+            }
+            var f = new FileInfo(path);
+            if (f.Directory.Exists == false)
+                f.Directory.Create();
+            return path;
+        }
+
         private FileInfo GetFileFromUser()
         {
             var ofd = new OpenFileDialog();
             if (currentCheatFile.Length > 0)
                 ofd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
-            ofd.InitialDirectory = Global.Config.LastRomPath;
+            ofd.InitialDirectory = GetCheatsPath();
             ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
             ofd.RestoreDirectory = true;
 
