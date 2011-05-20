@@ -65,6 +65,13 @@ namespace BizHawk.MultiClient
             Sega8ScreenshotsBox.Text = Global.Config.PathSMSScreenshots;
             Sega8CheatsBox.Text = Global.Config.PathSMSCheats;
 
+            GGBaseBox.Text = Global.Config.BaseGG;
+            GGROMBox.Text = Global.Config.PathGGROMs;
+            GGSavestatesBox.Text = Global.Config.PathGGSavestates;
+            GGSaveRAMBox.Text = Global.Config.PathGGSaveRAM;
+            GGScreenshotsBox.Text = Global.Config.PathGGScreenshots;
+            GGCheatsBox.Text = Global.Config.PathGGCheats;
+
             PCEBaseBox.Text = Global.Config.BasePCE;
             PCEROMsBox.Text = Global.Config.PathPCEROMs;
             PCESavestatesBox.Text = Global.Config.PathPCESavestates;
@@ -101,8 +108,62 @@ namespace BizHawk.MultiClient
 
         private void SaveSettings()
         {
+            Global.Config.UseRecentForROMs = RecentForROMs.Checked;
             Global.Config.BasePath = BasePathBox.Text;
+
+            Global.Config.BaseNES = NESBaseBox.Text;
+            Global.Config.PathNESROMs = NESROMsBox.Text;
+            Global.Config.PathNESSavestates = NESSavestatesBox.Text;
+            Global.Config.PathNESSaveRAM = NESSaveRAMBox.Text;
+            Global.Config.PathNESScreenshots = NESScreenshotsBox.Text;
+            Global.Config.PathNESCheats = NESCheatsBox.Text;
+
+            Global.Config.BaseSMS = Sega8BaseBox.Text;
+            Global.Config.PathSMSROMs = Sega8ROMsBox.Text;
+            Global.Config.PathSMSSavestates = Sega8SavestatesBox.Text;
+            Global.Config.PathSMSSaveRAM = Sega8SaveRAMBox.Text;
+            Global.Config.PathSMSScreenshots = Sega8ScreenshotsBox.Text;
+            Global.Config.PathSMSCheats = Sega8CheatsBox.Text;
+
+            Global.Config.BaseGG = GGBaseBox.Text;
+            Global.Config.PathGGROMs = GGROMBox.Text;
+            Global.Config.PathGGSavestates = GGSavestatesBox.Text;
+            Global.Config.PathGGSaveRAM = GGSaveRAMBox.Text;
+            Global.Config.PathGGScreenshots = GGScreenshotsBox.Text;
+            Global.Config.PathGGCheats = GGCheatsBox.Text;
+
+            Global.Config.BasePCE = PCEBaseBox.Text;
+            Global.Config.PathPCEROMs = PCEROMsBox.Text;
+            Global.Config.PathPCESavestates = PCESavestatesBox.Text;
+            Global.Config.PathPCESaveRAM = PCESaveRAMBox.Text;
+            Global.Config.PathPCEScreenshots = PCEScreenshotsBox.Text;
+            Global.Config.PathPCECheats =PCECheatsBox.Text;
+
+            Global.Config.BaseGenesis = GenesisBaseBox.Text;
+            Global.Config.PathGenesisROMs = GenesisROMsBox.Text;
+            Global.Config.PathGenesisScreenshots = GenesisSavestatesBox.Text;
+            Global.Config.PathGenesisSaveRAM = GenesisSaveRAMBox.Text;
+            Global.Config.PathGenesisScreenshots = GenesisScreenshotsBox.Text;
+            Global.Config.PathGenesisCheats = GenesisCheatsBox.Text;
+
+            Global.Config.BaseGameboy = GBBaseBox.Text;
+            Global.Config.PathGBROMs = GBROMsBox.Text;
+            Global.Config.PathGBSavestates = GBSavestatesBox.Text;
+            Global.Config.PathGBSaveRAM = GBSaveRAMBox.Text;
+            Global.Config.PathGBScreenshots = GBScreenshotsBox.Text;
+            Global.Config.PathGBCheats = GBCheatsBox.Text;
+
+            Global.Config.BaseTI83 = TI83BaseBox.Text;
+            Global.Config.PathTI83ROMs = TI83ROMsBox.Text;
+            Global.Config.PathTI83Savestates = TI83SavestatesBox.Text;
+            Global.Config.PathTI83SaveRAM = TI83SaveRAMBox.Text;
+            Global.Config.PathTI83Screenshots = TI83ScreenshotsBox.Text;
+            Global.Config.PathTI83Cheats = TI83CheatsBox.Text;
+
+            Global.Config.MoviesPath = MoviesBox.Text;
+            Global.Config.LuaPath = LuaBox.Text;
             Global.Config.WatchPath = WatchBox.Text;
+            Global.Config.AVIPath = AVIBox.Text;
         }
 
         private void Cancel_Click(object sender, EventArgs e)
@@ -131,6 +192,8 @@ namespace BizHawk.MultiClient
                 BrowseNESROMs.Enabled = false;
                 Sega8ROMsBox.Enabled = false;
                 Sega8BrowseROMs.Enabled = false;
+                GGROMBox.Enabled = false;
+                GGROMsDescription.Enabled = false;
                 GenesisROMsBox.Enabled = false;
                 GenesisBrowseROMs.Enabled = false;
                 PCEROMsBox.Enabled = false;
@@ -153,6 +216,8 @@ namespace BizHawk.MultiClient
                 BrowseNESROMs.Enabled = true;
                 Sega8ROMsBox.Enabled = true;
                 Sega8BrowseROMs.Enabled = true;
+                GGROMBox.Enabled = true;
+                GGROMsDescription.Enabled = true;
                 GenesisROMsBox.Enabled = true;
                 GenesisBrowseROMs.Enabled = true;
                 PCEROMsBox.Enabled = true;
@@ -394,6 +459,36 @@ namespace BizHawk.MultiClient
         private void TI83BrowseBox_Click(object sender, EventArgs e)
         {
             BrowseFolder(TI83CheatsBox, TI83CheatsDescription.Text, "TI83");
+        }
+
+        private void GGBrowseBase_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGBaseBox, GGBaseDescription.Text, "GG");
+        }
+
+        private void GGBrowseROMs_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGROMBox, GGROMsDescription.Text, "GG");
+        }
+
+        private void GGBrowseSavestates_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGSavestatesBox, GGSavestatesDescription.Text, "GG");
+        }
+
+        private void GGBrowseSaveRAM_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGSaveRAMBox, GGSaveRAMDescription.Text, "GG");
+        }
+
+        private void GGBrowseScreenshots_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGScreenshotsBox, GGScreenshotsDescription.Text, "GG");
+        }
+
+        private void GGBrowseCheats_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(GGCheatsBox, GGCheatsDescription.Text, "GG");
         }
     }
 }

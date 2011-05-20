@@ -163,6 +163,25 @@
             this.BaseDescription = new System.Windows.Forms.Label();
             this.RecentForROMs = new System.Windows.Forms.CheckBox();
             this.SaveButton = new System.Windows.Forms.Button();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.GGCheatsDescription = new System.Windows.Forms.Label();
+            this.GGBrowseCheats = new System.Windows.Forms.Button();
+            this.GGCheatsBox = new System.Windows.Forms.TextBox();
+            this.GGBaseBox = new System.Windows.Forms.TextBox();
+            this.GGScreenshotsBox = new System.Windows.Forms.TextBox();
+            this.GGBaseDescription = new System.Windows.Forms.Label();
+            this.GGScreenshotsDescription = new System.Windows.Forms.Label();
+            this.GGBrowseBase = new System.Windows.Forms.Button();
+            this.GGBrowseScreenshots = new System.Windows.Forms.Button();
+            this.GGROMBox = new System.Windows.Forms.TextBox();
+            this.GGBrowseSavestates = new System.Windows.Forms.Button();
+            this.GGSavestatesDescription = new System.Windows.Forms.Label();
+            this.GGROMsDescription = new System.Windows.Forms.Label();
+            this.GGSavestatesBox = new System.Windows.Forms.TextBox();
+            this.GGBrowseROMs = new System.Windows.Forms.Button();
+            this.GGBrowseSaveRAM = new System.Windows.Forms.Button();
+            this.GGSaveRAMDescription = new System.Windows.Forms.Label();
+            this.GGSaveRAMBox = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -171,6 +190,7 @@
             this.tabPage5.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabPage7.SuspendLayout();
+            this.tabPage8.SuspendLayout();
             this.SuspendLayout();
             // 
             // Cancel
@@ -565,6 +585,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage8);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
@@ -1659,6 +1680,213 @@
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
             // 
+            // tabPage8
+            // 
+            this.tabPage8.Controls.Add(this.GGCheatsDescription);
+            this.tabPage8.Controls.Add(this.GGBrowseCheats);
+            this.tabPage8.Controls.Add(this.GGCheatsBox);
+            this.tabPage8.Controls.Add(this.GGBaseBox);
+            this.tabPage8.Controls.Add(this.GGScreenshotsBox);
+            this.tabPage8.Controls.Add(this.GGBaseDescription);
+            this.tabPage8.Controls.Add(this.GGScreenshotsDescription);
+            this.tabPage8.Controls.Add(this.GGBrowseBase);
+            this.tabPage8.Controls.Add(this.GGBrowseScreenshots);
+            this.tabPage8.Controls.Add(this.GGROMBox);
+            this.tabPage8.Controls.Add(this.GGBrowseSavestates);
+            this.tabPage8.Controls.Add(this.GGSavestatesDescription);
+            this.tabPage8.Controls.Add(this.GGROMsDescription);
+            this.tabPage8.Controls.Add(this.GGSavestatesBox);
+            this.tabPage8.Controls.Add(this.GGBrowseROMs);
+            this.tabPage8.Controls.Add(this.GGBrowseSaveRAM);
+            this.tabPage8.Controls.Add(this.GGSaveRAMDescription);
+            this.tabPage8.Controls.Add(this.GGSaveRAMBox);
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Size = new System.Drawing.Size(435, 251);
+            this.tabPage8.TabIndex = 7;
+            this.tabPage8.Text = "G. Gear";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // GGCheatsDescription
+            // 
+            this.GGCheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGCheatsDescription.AutoSize = true;
+            this.GGCheatsDescription.Location = new System.Drawing.Point(360, 183);
+            this.GGCheatsDescription.Name = "GGCheatsDescription";
+            this.GGCheatsDescription.Size = new System.Drawing.Size(40, 13);
+            this.GGCheatsDescription.TabIndex = 44;
+            this.GGCheatsDescription.Text = "Cheats";
+            // 
+            // GGBrowseCheats
+            // 
+            this.GGBrowseCheats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseCheats.Location = new System.Drawing.Point(300, 178);
+            this.GGBrowseCheats.Name = "GGBrowseCheats";
+            this.GGBrowseCheats.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseCheats.TabIndex = 43;
+            this.GGBrowseCheats.Text = "Browse";
+            this.GGBrowseCheats.UseVisualStyleBackColor = true;
+            this.GGBrowseCheats.Click += new System.EventHandler(this.GGBrowseCheats_Click);
+            // 
+            // GGCheatsBox
+            // 
+            this.GGCheatsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGCheatsBox.Location = new System.Drawing.Point(13, 179);
+            this.GGCheatsBox.Name = "GGCheatsBox";
+            this.GGCheatsBox.Size = new System.Drawing.Size(280, 20);
+            this.GGCheatsBox.TabIndex = 42;
+            // 
+            // GGBaseBox
+            // 
+            this.GGBaseBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBaseBox.Location = new System.Drawing.Point(13, 21);
+            this.GGBaseBox.Name = "GGBaseBox";
+            this.GGBaseBox.Size = new System.Drawing.Size(280, 20);
+            this.GGBaseBox.TabIndex = 39;
+            // 
+            // GGScreenshotsBox
+            // 
+            this.GGScreenshotsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGScreenshotsBox.Location = new System.Drawing.Point(13, 149);
+            this.GGScreenshotsBox.Name = "GGScreenshotsBox";
+            this.GGScreenshotsBox.Size = new System.Drawing.Size(280, 20);
+            this.GGScreenshotsBox.TabIndex = 36;
+            // 
+            // GGBaseDescription
+            // 
+            this.GGBaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBaseDescription.AutoSize = true;
+            this.GGBaseDescription.Location = new System.Drawing.Point(360, 25);
+            this.GGBaseDescription.Name = "GGBaseDescription";
+            this.GGBaseDescription.Size = new System.Drawing.Size(31, 13);
+            this.GGBaseDescription.TabIndex = 41;
+            this.GGBaseDescription.Text = "Base";
+            // 
+            // GGScreenshotsDescription
+            // 
+            this.GGScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGScreenshotsDescription.AutoSize = true;
+            this.GGScreenshotsDescription.Location = new System.Drawing.Point(360, 153);
+            this.GGScreenshotsDescription.Name = "GGScreenshotsDescription";
+            this.GGScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
+            this.GGScreenshotsDescription.TabIndex = 38;
+            this.GGScreenshotsDescription.Text = "Screenshots";
+            // 
+            // GGBrowseBase
+            // 
+            this.GGBrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseBase.Location = new System.Drawing.Point(300, 20);
+            this.GGBrowseBase.Name = "GGBrowseBase";
+            this.GGBrowseBase.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseBase.TabIndex = 40;
+            this.GGBrowseBase.Text = "Browse";
+            this.GGBrowseBase.UseVisualStyleBackColor = true;
+            this.GGBrowseBase.Click += new System.EventHandler(this.GGBrowseBase_Click);
+            // 
+            // GGBrowseScreenshots
+            // 
+            this.GGBrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseScreenshots.Location = new System.Drawing.Point(300, 148);
+            this.GGBrowseScreenshots.Name = "GGBrowseScreenshots";
+            this.GGBrowseScreenshots.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseScreenshots.TabIndex = 37;
+            this.GGBrowseScreenshots.Text = "Browse";
+            this.GGBrowseScreenshots.UseVisualStyleBackColor = true;
+            this.GGBrowseScreenshots.Click += new System.EventHandler(this.GGBrowseScreenshots_Click);
+            // 
+            // GGROMBox
+            // 
+            this.GGROMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGROMBox.Location = new System.Drawing.Point(13, 59);
+            this.GGROMBox.Name = "GGROMBox";
+            this.GGROMBox.Size = new System.Drawing.Size(280, 20);
+            this.GGROMBox.TabIndex = 33;
+            // 
+            // GGBrowseSavestates
+            // 
+            this.GGBrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseSavestates.Location = new System.Drawing.Point(300, 88);
+            this.GGBrowseSavestates.Name = "GGBrowseSavestates";
+            this.GGBrowseSavestates.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseSavestates.TabIndex = 28;
+            this.GGBrowseSavestates.Text = "Browse";
+            this.GGBrowseSavestates.UseVisualStyleBackColor = true;
+            this.GGBrowseSavestates.Click += new System.EventHandler(this.GGBrowseSavestates_Click);
+            // 
+            // GGSavestatesDescription
+            // 
+            this.GGSavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGSavestatesDescription.AutoSize = true;
+            this.GGSavestatesDescription.Location = new System.Drawing.Point(360, 93);
+            this.GGSavestatesDescription.Name = "GGSavestatesDescription";
+            this.GGSavestatesDescription.Size = new System.Drawing.Size(60, 13);
+            this.GGSavestatesDescription.TabIndex = 29;
+            this.GGSavestatesDescription.Text = "Savestates";
+            // 
+            // GGROMsDescription
+            // 
+            this.GGROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGROMsDescription.AutoSize = true;
+            this.GGROMsDescription.Location = new System.Drawing.Point(360, 63);
+            this.GGROMsDescription.Name = "GGROMsDescription";
+            this.GGROMsDescription.Size = new System.Drawing.Size(37, 13);
+            this.GGROMsDescription.TabIndex = 35;
+            this.GGROMsDescription.Text = "ROMs";
+            // 
+            // GGSavestatesBox
+            // 
+            this.GGSavestatesBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGSavestatesBox.Location = new System.Drawing.Point(13, 89);
+            this.GGSavestatesBox.Name = "GGSavestatesBox";
+            this.GGSavestatesBox.Size = new System.Drawing.Size(280, 20);
+            this.GGSavestatesBox.TabIndex = 27;
+            // 
+            // GGBrowseROMs
+            // 
+            this.GGBrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseROMs.Location = new System.Drawing.Point(300, 58);
+            this.GGBrowseROMs.Name = "GGBrowseROMs";
+            this.GGBrowseROMs.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseROMs.TabIndex = 34;
+            this.GGBrowseROMs.Text = "Browse";
+            this.GGBrowseROMs.UseVisualStyleBackColor = true;
+            this.GGBrowseROMs.Click += new System.EventHandler(this.GGBrowseROMs_Click);
+            // 
+            // GGBrowseSaveRAM
+            // 
+            this.GGBrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGBrowseSaveRAM.Location = new System.Drawing.Point(300, 118);
+            this.GGBrowseSaveRAM.Name = "GGBrowseSaveRAM";
+            this.GGBrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
+            this.GGBrowseSaveRAM.TabIndex = 31;
+            this.GGBrowseSaveRAM.Text = "Browse";
+            this.GGBrowseSaveRAM.UseVisualStyleBackColor = true;
+            this.GGBrowseSaveRAM.Click += new System.EventHandler(this.GGBrowseSaveRAM_Click);
+            // 
+            // GGSaveRAMDescription
+            // 
+            this.GGSaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGSaveRAMDescription.AutoSize = true;
+            this.GGSaveRAMDescription.Location = new System.Drawing.Point(360, 123);
+            this.GGSaveRAMDescription.Name = "GGSaveRAMDescription";
+            this.GGSaveRAMDescription.Size = new System.Drawing.Size(59, 13);
+            this.GGSaveRAMDescription.TabIndex = 32;
+            this.GGSaveRAMDescription.Text = "Save RAM";
+            // 
+            // GGSaveRAMBox
+            // 
+            this.GGSaveRAMBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.GGSaveRAMBox.Location = new System.Drawing.Point(13, 119);
+            this.GGSaveRAMBox.Name = "GGSaveRAMBox";
+            this.GGSaveRAMBox.Size = new System.Drawing.Size(280, 20);
+            this.GGSaveRAMBox.TabIndex = 30;
+            // 
             // PathConfig
             // 
             this.AcceptButton = this.OK;
@@ -1693,6 +1921,8 @@
             this.tabPage6.PerformLayout();
             this.tabPage7.ResumeLayout(false);
             this.tabPage7.PerformLayout();
+            this.tabPage8.ResumeLayout(false);
+            this.tabPage8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1835,5 +2065,24 @@
         private System.Windows.Forms.Button TI83BrowseBox;
         private System.Windows.Forms.TextBox TI83CheatsBox;
         private System.Windows.Forms.Button SaveButton;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.Label GGCheatsDescription;
+        private System.Windows.Forms.Button GGBrowseCheats;
+        private System.Windows.Forms.TextBox GGCheatsBox;
+        private System.Windows.Forms.TextBox GGBaseBox;
+        private System.Windows.Forms.TextBox GGScreenshotsBox;
+        private System.Windows.Forms.Label GGBaseDescription;
+        private System.Windows.Forms.Label GGScreenshotsDescription;
+        private System.Windows.Forms.Button GGBrowseBase;
+        private System.Windows.Forms.Button GGBrowseScreenshots;
+        private System.Windows.Forms.TextBox GGROMBox;
+        private System.Windows.Forms.Button GGBrowseSavestates;
+        private System.Windows.Forms.Label GGSavestatesDescription;
+        private System.Windows.Forms.Label GGROMsDescription;
+        private System.Windows.Forms.TextBox GGSavestatesBox;
+        private System.Windows.Forms.Button GGBrowseROMs;
+        private System.Windows.Forms.Button GGBrowseSaveRAM;
+        private System.Windows.Forms.Label GGSaveRAMDescription;
+        private System.Windows.Forms.TextBox GGSaveRAMBox;
     }
 }
