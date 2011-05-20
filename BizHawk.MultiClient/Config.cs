@@ -44,6 +44,13 @@
         public string PathGGScreenshots = ".\\Screenshots";
         public string PathGGCheats = ".\\Cheats";
 
+        public string BaseSG = ".\\GG";
+        public string PathSGROMs = ".";
+        public string PathSGSavestates = ".\\State";
+        public string PathSGSaveRAM = ".\\SaveRAM";
+        public string PathSGScreenshots = ".\\Screenshots";
+        public string PathSGCheats = ".\\Cheats";
+
         public string BaseGenesis = ".\\Genesis";
         public string PathGenesisROMs = ".";
         public string PathGenesisSavestates = ".\\State";

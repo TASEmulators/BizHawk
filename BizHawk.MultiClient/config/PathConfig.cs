@@ -72,6 +72,13 @@ namespace BizHawk.MultiClient
             GGScreenshotsBox.Text = Global.Config.PathGGScreenshots;
             GGCheatsBox.Text = Global.Config.PathGGCheats;
 
+            SGBaseBox.Text = Global.Config.BaseSG;
+            SGROMsBox.Text = Global.Config.PathSGROMs;
+            SGSavestatesBox.Text = Global.Config.PathSGSavestates;
+            SGSaveRAMBox.Text = Global.Config.PathSGSaveRAM;
+            SGScreenshotsBox.Text = Global.Config.PathSGScreenshots;
+            SGCheatsBox.Text = Global.Config.PathSGCheats;
+
             PCEBaseBox.Text = Global.Config.BasePCE;
             PCEROMsBox.Text = Global.Config.PathPCEROMs;
             PCESavestatesBox.Text = Global.Config.PathPCESavestates;
@@ -131,6 +138,13 @@ namespace BizHawk.MultiClient
             Global.Config.PathGGSaveRAM = GGSaveRAMBox.Text;
             Global.Config.PathGGScreenshots = GGScreenshotsBox.Text;
             Global.Config.PathGGCheats = GGCheatsBox.Text;
+
+            Global.Config.BaseSG = SGBaseBox.Text;
+            Global.Config.PathSGROMs = SGROMsBox.Text;
+            Global.Config.PathSGSavestates = SGSavestatesBox.Text;
+            Global.Config.PathSGSaveRAM = SGSaveRAMBox.Text;
+            Global.Config.PathSGScreenshots = SGScreenshotsBox.Text;
+            Global.Config.PathSGCheats = SGCheatsBox.Text;
 
             Global.Config.BasePCE = PCEBaseBox.Text;
             Global.Config.PathPCEROMs = PCEROMsBox.Text;
@@ -194,6 +208,8 @@ namespace BizHawk.MultiClient
                 Sega8BrowseROMs.Enabled = false;
                 GGROMBox.Enabled = false;
                 GGROMsDescription.Enabled = false;
+                SGROMsBox.Enabled = false;
+                SGROMsDescription.Enabled = false;
                 GenesisROMsBox.Enabled = false;
                 GenesisBrowseROMs.Enabled = false;
                 PCEROMsBox.Enabled = false;
@@ -218,6 +234,8 @@ namespace BizHawk.MultiClient
                 Sega8BrowseROMs.Enabled = true;
                 GGROMBox.Enabled = true;
                 GGROMsDescription.Enabled = true;
+                SGROMsBox.Enabled = true;
+                SGROMsDescription.Enabled = true;
                 GenesisROMsBox.Enabled = true;
                 GenesisBrowseROMs.Enabled = true;
                 PCEROMsBox.Enabled = true;
@@ -463,7 +481,7 @@ namespace BizHawk.MultiClient
 
         private void GGBrowseBase_Click(object sender, EventArgs e)
         {
-            BrowseFolder(GGBaseBox, GGBaseDescription.Text, "GG");
+            BrowseFolder(GGBaseBox, GGBaseDescription.Text);
         }
 
         private void GGBrowseROMs_Click(object sender, EventArgs e)
@@ -489,6 +507,36 @@ namespace BizHawk.MultiClient
         private void GGBrowseCheats_Click(object sender, EventArgs e)
         {
             BrowseFolder(GGCheatsBox, GGCheatsDescription.Text, "GG");
+        }
+
+        private void SGBrowseBase_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGBaseBox, SGBaseDescription.Text);
+        }
+
+        private void SGROMsBrowse_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGROMsBox, SGROMsDescription.Text, "SG");
+        }
+
+        private void SGBrowseSavestates_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGSavestatesBox, SGSavestatesDescription.Text, "SG");
+        }
+
+        private void SGBrowseSaveRAM_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGSaveRAMBox, SGSaveRAMDescription.Text, "SG");
+        }
+
+        private void SGBrowseScreenshots_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGScreenshotsBox, SGScreenshotsDescription.Text, "SG");
+        }
+
+        private void SGBrowseCheats_Click(object sender, EventArgs e)
+        {
+            BrowseFolder(SGCheatsBox, SGCheatsDescription.Text, "SG");
         }
     }
 }
