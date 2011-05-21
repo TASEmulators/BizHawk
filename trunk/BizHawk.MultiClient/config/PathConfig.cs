@@ -14,14 +14,11 @@ namespace BizHawk.MultiClient
     public partial class PathConfig : Form
     {
         //TODO:
-        //Rom loading should check for always use Recent for ROMs
-        //  Make a path manager function to handle this
         //Make all base path text boxes not allow  %recent%
         //All path text boxes should do some kind of error checking
-        //TODO config path under base, config will default to %exe%
+        //config path under base, config will default to %exe%
         //Think of other modifiers (perhaps all environment paths?)
         //If enough modifiers, path boxes can do a pull down of suggestions when user types %
-        //Game Gear and SG-1000 need their own path config
 
         //******************
         //Modifiers

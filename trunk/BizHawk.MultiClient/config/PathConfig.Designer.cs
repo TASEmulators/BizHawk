@@ -217,7 +217,7 @@
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(381, 390);
+            this.Cancel.Location = new System.Drawing.Point(398, 390);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 202;
@@ -228,7 +228,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(300, 390);
+            this.OK.Location = new System.Drawing.Point(317, 390);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 201;
@@ -242,14 +242,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.WatchBox.Location = new System.Drawing.Point(13, 89);
             this.WatchBox.Name = "WatchBox";
-            this.WatchBox.Size = new System.Drawing.Size(280, 20);
+            this.WatchBox.Size = new System.Drawing.Size(297, 20);
             this.WatchBox.TabIndex = 124;
             // 
             // WatchDescription
             // 
             this.WatchDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.WatchDescription.AutoSize = true;
-            this.WatchDescription.Location = new System.Drawing.Point(360, 93);
+            this.WatchDescription.Location = new System.Drawing.Point(377, 93);
             this.WatchDescription.Name = "WatchDescription";
             this.WatchDescription.Size = new System.Drawing.Size(71, 13);
             this.WatchDescription.TabIndex = 17;
@@ -258,7 +258,7 @@
             // BrowseWatch
             // 
             this.BrowseWatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseWatch.Location = new System.Drawing.Point(300, 88);
+            this.BrowseWatch.Location = new System.Drawing.Point(317, 88);
             this.BrowseWatch.Name = "BrowseWatch";
             this.BrowseWatch.Size = new System.Drawing.Size(54, 23);
             this.BrowseWatch.TabIndex = 125;
@@ -272,14 +272,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.MoviesBox.Location = new System.Drawing.Point(13, 21);
             this.MoviesBox.Name = "MoviesBox";
-            this.MoviesBox.Size = new System.Drawing.Size(280, 20);
+            this.MoviesBox.Size = new System.Drawing.Size(297, 20);
             this.MoviesBox.TabIndex = 120;
             // 
             // MoviesDescription
             // 
             this.MoviesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.MoviesDescription.AutoSize = true;
-            this.MoviesDescription.Location = new System.Drawing.Point(360, 25);
+            this.MoviesDescription.Location = new System.Drawing.Point(377, 25);
             this.MoviesDescription.Name = "MoviesDescription";
             this.MoviesDescription.Size = new System.Drawing.Size(41, 13);
             this.MoviesDescription.TabIndex = 13;
@@ -288,7 +288,7 @@
             // BrowseMovies
             // 
             this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseMovies.Location = new System.Drawing.Point(300, 20);
+            this.BrowseMovies.Location = new System.Drawing.Point(317, 20);
             this.BrowseMovies.Name = "BrowseMovies";
             this.BrowseMovies.Size = new System.Drawing.Size(54, 23);
             this.BrowseMovies.TabIndex = 121;
@@ -302,14 +302,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.LuaBox.Location = new System.Drawing.Point(13, 59);
             this.LuaBox.Name = "LuaBox";
-            this.LuaBox.Size = new System.Drawing.Size(280, 20);
+            this.LuaBox.Size = new System.Drawing.Size(297, 20);
             this.LuaBox.TabIndex = 122;
             // 
             // LuaDescription
             // 
             this.LuaDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.LuaDescription.AutoSize = true;
-            this.LuaDescription.Location = new System.Drawing.Point(360, 63);
+            this.LuaDescription.Location = new System.Drawing.Point(377, 63);
             this.LuaDescription.Name = "LuaDescription";
             this.LuaDescription.Size = new System.Drawing.Size(25, 13);
             this.LuaDescription.TabIndex = 9;
@@ -318,7 +318,7 @@
             // BrowseLua
             // 
             this.BrowseLua.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseLua.Location = new System.Drawing.Point(300, 58);
+            this.BrowseLua.Location = new System.Drawing.Point(317, 58);
             this.BrowseLua.Name = "BrowseLua";
             this.BrowseLua.Size = new System.Drawing.Size(54, 23);
             this.BrowseLua.TabIndex = 123;
@@ -573,7 +573,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.AVIBox.Location = new System.Drawing.Point(13, 119);
             this.AVIBox.Name = "AVIBox";
-            this.AVIBox.Size = new System.Drawing.Size(280, 20);
+            this.AVIBox.Size = new System.Drawing.Size(297, 20);
             this.AVIBox.TabIndex = 126;
             this.AVIBox.TabStop = false;
             // 
@@ -581,7 +581,7 @@
             // 
             this.AVIDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AVIDescription.AutoSize = true;
-            this.AVIDescription.Location = new System.Drawing.Point(360, 123);
+            this.AVIDescription.Location = new System.Drawing.Point(377, 123);
             this.AVIDescription.Name = "AVIDescription";
             this.AVIDescription.Size = new System.Drawing.Size(60, 13);
             this.AVIDescription.TabIndex = 22;
@@ -590,7 +590,7 @@
             // BrowseAVI
             // 
             this.BrowseAVI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseAVI.Location = new System.Drawing.Point(300, 118);
+            this.BrowseAVI.Location = new System.Drawing.Point(317, 118);
             this.BrowseAVI.Name = "BrowseAVI";
             this.BrowseAVI.Size = new System.Drawing.Size(54, 23);
             this.BrowseAVI.TabIndex = 127;
@@ -615,7 +615,7 @@
             this.tabControl1.Location = new System.Drawing.Point(13, 97);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(443, 277);
+            this.tabControl1.Size = new System.Drawing.Size(460, 277);
             this.tabControl1.TabIndex = 23;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -1857,7 +1857,7 @@
             this.tabPage6.Controls.Add(this.TI83SaveRAMBox);
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size(435, 251);
+            this.tabPage6.Size = new System.Drawing.Size(452, 251);
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "TI83";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -1866,7 +1866,7 @@
             // 
             this.TI83CheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83CheatsDescription.AutoSize = true;
-            this.TI83CheatsDescription.Location = new System.Drawing.Point(360, 183);
+            this.TI83CheatsDescription.Location = new System.Drawing.Point(377, 183);
             this.TI83CheatsDescription.Name = "TI83CheatsDescription";
             this.TI83CheatsDescription.Size = new System.Drawing.Size(40, 13);
             this.TI83CheatsDescription.TabIndex = 39;
@@ -1875,7 +1875,7 @@
             // TI83BrowseBox
             // 
             this.TI83BrowseBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseBox.Location = new System.Drawing.Point(300, 178);
+            this.TI83BrowseBox.Location = new System.Drawing.Point(317, 178);
             this.TI83BrowseBox.Name = "TI83BrowseBox";
             this.TI83BrowseBox.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseBox.TabIndex = 113;
@@ -1889,7 +1889,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83CheatsBox.Location = new System.Drawing.Point(13, 179);
             this.TI83CheatsBox.Name = "TI83CheatsBox";
-            this.TI83CheatsBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83CheatsBox.Size = new System.Drawing.Size(297, 20);
             this.TI83CheatsBox.TabIndex = 112;
             // 
             // TI83BaseBox
@@ -1898,7 +1898,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BaseBox.Location = new System.Drawing.Point(13, 21);
             this.TI83BaseBox.Name = "TI83BaseBox";
-            this.TI83BaseBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83BaseBox.Size = new System.Drawing.Size(297, 20);
             this.TI83BaseBox.TabIndex = 102;
             // 
             // TI83ScreenshotsBox
@@ -1907,14 +1907,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ScreenshotsBox.Location = new System.Drawing.Point(13, 149);
             this.TI83ScreenshotsBox.Name = "TI83ScreenshotsBox";
-            this.TI83ScreenshotsBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83ScreenshotsBox.Size = new System.Drawing.Size(297, 20);
             this.TI83ScreenshotsBox.TabIndex = 110;
             // 
             // TI83BaseDescription
             // 
             this.TI83BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83BaseDescription.AutoSize = true;
-            this.TI83BaseDescription.Location = new System.Drawing.Point(360, 25);
+            this.TI83BaseDescription.Location = new System.Drawing.Point(377, 25);
             this.TI83BaseDescription.Name = "TI83BaseDescription";
             this.TI83BaseDescription.Size = new System.Drawing.Size(31, 13);
             this.TI83BaseDescription.TabIndex = 36;
@@ -1924,7 +1924,7 @@
             // 
             this.TI83ScreenshotsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ScreenshotsDescription.AutoSize = true;
-            this.TI83ScreenshotsDescription.Location = new System.Drawing.Point(360, 153);
+            this.TI83ScreenshotsDescription.Location = new System.Drawing.Point(377, 153);
             this.TI83ScreenshotsDescription.Name = "TI83ScreenshotsDescription";
             this.TI83ScreenshotsDescription.Size = new System.Drawing.Size(66, 13);
             this.TI83ScreenshotsDescription.TabIndex = 33;
@@ -1933,7 +1933,7 @@
             // TI83BrowseBase
             // 
             this.TI83BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseBase.Location = new System.Drawing.Point(300, 20);
+            this.TI83BrowseBase.Location = new System.Drawing.Point(317, 20);
             this.TI83BrowseBase.Name = "TI83BrowseBase";
             this.TI83BrowseBase.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseBase.TabIndex = 103;
@@ -1944,7 +1944,7 @@
             // TI83BrowseScreenshots
             // 
             this.TI83BrowseScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseScreenshots.Location = new System.Drawing.Point(300, 148);
+            this.TI83BrowseScreenshots.Location = new System.Drawing.Point(317, 148);
             this.TI83BrowseScreenshots.Name = "TI83BrowseScreenshots";
             this.TI83BrowseScreenshots.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseScreenshots.TabIndex = 111;
@@ -1959,13 +1959,13 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ROMsBox.Location = new System.Drawing.Point(13, 59);
             this.TI83ROMsBox.Name = "TI83ROMsBox";
-            this.TI83ROMsBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83ROMsBox.Size = new System.Drawing.Size(297, 20);
             this.TI83ROMsBox.TabIndex = 104;
             // 
             // TI83BrowseSavestates
             // 
             this.TI83BrowseSavestates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseSavestates.Location = new System.Drawing.Point(300, 88);
+            this.TI83BrowseSavestates.Location = new System.Drawing.Point(317, 88);
             this.TI83BrowseSavestates.Name = "TI83BrowseSavestates";
             this.TI83BrowseSavestates.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseSavestates.TabIndex = 107;
@@ -1977,7 +1977,7 @@
             // 
             this.TI83SavestatesDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SavestatesDescription.AutoSize = true;
-            this.TI83SavestatesDescription.Location = new System.Drawing.Point(360, 93);
+            this.TI83SavestatesDescription.Location = new System.Drawing.Point(377, 93);
             this.TI83SavestatesDescription.Name = "TI83SavestatesDescription";
             this.TI83SavestatesDescription.Size = new System.Drawing.Size(60, 13);
             this.TI83SavestatesDescription.TabIndex = 24;
@@ -1987,7 +1987,7 @@
             // 
             this.TI83ROMsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83ROMsDescription.AutoSize = true;
-            this.TI83ROMsDescription.Location = new System.Drawing.Point(360, 63);
+            this.TI83ROMsDescription.Location = new System.Drawing.Point(377, 63);
             this.TI83ROMsDescription.Name = "TI83ROMsDescription";
             this.TI83ROMsDescription.Size = new System.Drawing.Size(37, 13);
             this.TI83ROMsDescription.TabIndex = 30;
@@ -1999,13 +1999,13 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SavestatesBox.Location = new System.Drawing.Point(13, 89);
             this.TI83SavestatesBox.Name = "TI83SavestatesBox";
-            this.TI83SavestatesBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83SavestatesBox.Size = new System.Drawing.Size(297, 20);
             this.TI83SavestatesBox.TabIndex = 106;
             // 
             // TI83BrowseROMs
             // 
             this.TI83BrowseROMs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseROMs.Location = new System.Drawing.Point(300, 58);
+            this.TI83BrowseROMs.Location = new System.Drawing.Point(317, 58);
             this.TI83BrowseROMs.Name = "TI83BrowseROMs";
             this.TI83BrowseROMs.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseROMs.TabIndex = 105;
@@ -2016,7 +2016,7 @@
             // TI83BrowseSaveRAM
             // 
             this.TI83BrowseSaveRAM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(300, 118);
+            this.TI83BrowseSaveRAM.Location = new System.Drawing.Point(317, 118);
             this.TI83BrowseSaveRAM.Name = "TI83BrowseSaveRAM";
             this.TI83BrowseSaveRAM.Size = new System.Drawing.Size(54, 23);
             this.TI83BrowseSaveRAM.TabIndex = 109;
@@ -2028,7 +2028,7 @@
             // 
             this.TI83SaveRAMDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SaveRAMDescription.AutoSize = true;
-            this.TI83SaveRAMDescription.Location = new System.Drawing.Point(360, 123);
+            this.TI83SaveRAMDescription.Location = new System.Drawing.Point(377, 123);
             this.TI83SaveRAMDescription.Name = "TI83SaveRAMDescription";
             this.TI83SaveRAMDescription.Size = new System.Drawing.Size(59, 13);
             this.TI83SaveRAMDescription.TabIndex = 27;
@@ -2041,7 +2041,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.TI83SaveRAMBox.Location = new System.Drawing.Point(13, 119);
             this.TI83SaveRAMBox.Name = "TI83SaveRAMBox";
-            this.TI83SaveRAMBox.Size = new System.Drawing.Size(280, 20);
+            this.TI83SaveRAMBox.Size = new System.Drawing.Size(297, 20);
             this.TI83SaveRAMBox.TabIndex = 108;
             // 
             // tabPage7
@@ -2060,7 +2060,7 @@
             this.tabPage7.Controls.Add(this.MoviesDescription);
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size(435, 251);
+            this.tabPage7.Size = new System.Drawing.Size(452, 251);
             this.tabPage7.TabIndex = 6;
             this.tabPage7.Text = "Tools";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -2071,13 +2071,13 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.BasePathBox.Location = new System.Drawing.Point(29, 27);
             this.BasePathBox.Name = "BasePathBox";
-            this.BasePathBox.Size = new System.Drawing.Size(203, 20);
+            this.BasePathBox.Size = new System.Drawing.Size(298, 20);
             this.BasePathBox.TabIndex = 0;
             // 
             // BrowseBase
             // 
             this.BrowseBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseBase.Location = new System.Drawing.Point(238, 25);
+            this.BrowseBase.Location = new System.Drawing.Point(334, 25);
             this.BrowseBase.Name = "BrowseBase";
             this.BrowseBase.Size = new System.Drawing.Size(54, 23);
             this.BrowseBase.TabIndex = 1;
@@ -2089,7 +2089,7 @@
             // 
             this.BaseDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.BaseDescription.AutoSize = true;
-            this.BaseDescription.Location = new System.Drawing.Point(298, 31);
+            this.BaseDescription.Location = new System.Drawing.Point(394, 30);
             this.BaseDescription.Name = "BaseDescription";
             this.BaseDescription.Size = new System.Drawing.Size(63, 13);
             this.BaseDescription.TabIndex = 25;
@@ -2122,7 +2122,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(468, 425);
+            this.ClientSize = new System.Drawing.Size(485, 425);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.RecentForROMs);
             this.Controls.Add(this.BasePathBox);
