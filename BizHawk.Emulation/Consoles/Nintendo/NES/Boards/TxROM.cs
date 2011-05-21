@@ -213,21 +213,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "NES-TSROM": //super mario bros. 3 USA
-					AssertPrg(128,256,512); AssertChr(128,256); AssertVram(0); AssertWram(8);
-					AssertBattery(false);
-				    break;
-				case "NES-TGROM": //mega man 4
+				case "NES-TBROM":
+                    AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TEROM":
+                    AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TFROM":
+                    AssertPrg(128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TGROM": //mega man 4
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(0);
+                    AssertBattery(false);
 					break;
 				case "NES-TKROM": //kirby's adventure
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					break;
 				case "NES-TLROM": //mega man 3
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
 					break;
                 case "NES-TL1ROM": //Double dragon 2
                     AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TL2ROM":
+                    AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TQROM":
+                    AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NESTR1-ROM":
+                    AssertPrg(128); AssertChr(64); AssertVram(2); AssertWram(0);
+                    AssertBattery(false);
+                    break;
+                case "NES-TSROM": //super mario bros. 3 USA
+                    AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
+                    AssertBattery(false);
+                    break;
+                case "NES-TVROM":
+                    AssertPrg(64); AssertChr(64); AssertVram(4); AssertWram(0);
+                    AssertBattery(false);
                     break;
 				default:
 					return false;
