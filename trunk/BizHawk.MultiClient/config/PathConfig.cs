@@ -178,6 +178,8 @@ namespace BizHawk.MultiClient
             Global.Config.LuaPath = LuaBox.Text;
             Global.Config.WatchPath = WatchBox.Text;
             Global.Config.AVIPath = AVIBox.Text;
+
+            BasePathBox.Focus();
         }
 
         private void Cancel_Click(object sender, EventArgs e)

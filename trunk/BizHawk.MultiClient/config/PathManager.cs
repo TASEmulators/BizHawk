@@ -205,5 +205,47 @@ namespace BizHawk.MultiClient
             else
                 return false;
         }
+
+        public static string GetRomsPath(string sysID)
+        {
+            string path = "";
+
+            if (Global.Config.UseRecentForROMs)
+                return Environment.SpecialFolder.Recent.ToString(); 
+
+            switch (sysID)
+            {
+                case "NES":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
+                    break;
+                case "SMS":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathSMSROMs, "SMS");
+                    break;
+                case "SG":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathSGROMs, "SG");
+                    break;
+                case "GG":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGGROMs, "GG");
+                    break;
+                case "GEN":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisROMs, "GEN");
+                    break;
+                case "SFX":
+                case "PCE":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathPCEROMs, "GB");
+                    break;
+                case "GB":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
+                    break;
+                case "TI83":
+                    path = PathManager.MakeAbsolutePath(Global.Config.PathTI83ROMs, "TI83");
+                    break;
+                default:
+                    path = PathManager.GetBasePathAbsolute();
+                    break;
+            }
+
+            return path;
+        }
     }
 }
