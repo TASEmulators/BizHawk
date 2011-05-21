@@ -1819,16 +1819,15 @@ namespace BizHawk.MultiClient
                 playFromBeginningToolStripMenuItem.Enabled = true;
             }
 
-            if (ReadOnly)
-                readonlyToolStripMenuItem.Checked = true;
-            else
-                readonlyToolStripMenuItem.Checked = false;
+            readonlyToolStripMenuItem.Checked = ReadOnly;
+            bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
 
             readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ReadOnlyToggleBinding;
             recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RecordMovieBinding;
             playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
             stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
             playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
+            
         }
 
         public void ToggleReadOnly()
@@ -1931,6 +1930,11 @@ namespace BizHawk.MultiClient
         private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.RunInBackground ^= true;
+        }
+
+        private void bindSavestatesToMoviesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.BindSavestatesToMovies ^= true;
         }
 	}
 }
