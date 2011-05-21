@@ -226,6 +226,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-TLROM": //mega man 3
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(0);
 					break;
+                case "NES-TL1ROM": //Double dragon 2
+                    AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+                    break;
 				default:
 					return false;
 			}
