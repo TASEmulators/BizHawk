@@ -196,6 +196,61 @@ namespace BizHawk.MultiClient
                 return input.ToString();
             }
 
+            if (type.Name == "TI83 Controls")
+            {
+                input.Append(IsPressed("0") ? "0" : ".");
+                input.Append(IsPressed("1") ? "1" : ".");
+                input.Append(IsPressed("2") ? "2" : ".");
+                input.Append(IsPressed("3") ? "3" : ".");
+                input.Append(IsPressed("4") ? "4" : ".");
+                input.Append(IsPressed("5") ? "5" : ".");
+                input.Append(IsPressed("6") ? "6" : ".");
+                input.Append(IsPressed("7") ? "7" : ".");
+                input.Append(IsPressed("8") ? "8" : ".");
+                input.Append(IsPressed("9") ? "9" : ".");
+                input.Append(IsPressed("DOT") ? "`" : ".");
+                input.Append(IsPressed("ON") ? "O" : ".");
+                input.Append(IsPressed("ENTER") ? "=" : ".");
+                input.Append(IsPressed("UP") ? "U" : ".");
+                input.Append(IsPressed("DOWN") ? "D" : ".");
+                input.Append(IsPressed("LEFT") ? "L" : ".");
+                input.Append(IsPressed("RIGHT") ? "R": ".");
+                input.Append(IsPressed("PLUS") ? "+": ".");
+                input.Append(IsPressed("MINUS") ? "_": ".");
+                input.Append(IsPressed("MULTIPLY") ? "*": ".");
+                input.Append(IsPressed("DIVIDE") ? "/": ".");
+                input.Append(IsPressed("CLEAR") ? "c": ".");
+                input.Append(IsPressed("EXP") ? "^": ".");
+                input.Append(IsPressed("DASH") ? "-": ".");
+                input.Append(IsPressed("PARAOPEN") ? "(" : ".");
+                input.Append(IsPressed("PARACLOSE") ? ")" : ".");
+                input.Append(IsPressed("TAN") ? "T" : ".");
+                input.Append(IsPressed("VARS") ? "V" : ".");
+                input.Append(IsPressed("COS") ? "C" : ".");
+                input.Append(IsPressed("PRGM") ? "P" : ".");
+                input.Append(IsPressed("STAT") ? "s" : ".");
+                input.Append(IsPressed("MATRIX") ? "m" : ".");
+                input.Append(IsPressed("X") ? "X" : ".");
+                input.Append(IsPressed("STO") ? ">" : ".");
+                input.Append(IsPressed("LN") ? "n" : ".");
+                input.Append(IsPressed("LOG") ? "L" : ".");
+                input.Append(IsPressed("SQUARED") ? "2" : ".");
+                input.Append(IsPressed("NEG1") ? "1" : ".");
+                input.Append(IsPressed("MATH") ? "H" : ".");
+                input.Append(IsPressed("ALPHA") ? "A" : ".");
+                input.Append(IsPressed("GRAPH") ? "G" : ".");
+                input.Append(IsPressed("TRACE") ? "t" : ".");
+                input.Append(IsPressed("ZOOM") ? "Z" : ".");
+                input.Append(IsPressed("WINDOW") ? "W" : ".");
+                input.Append(IsPressed("Y") ? "Y" : ".");
+                input.Append(IsPressed("2ND") ? "&" : ".");
+                input.Append(IsPressed("MODE") ? "O" : ".");
+                input.Append(IsPressed("DEL") ? "D" : ".");
+                input.Append(IsPressed("COMMA") ? "," : ".");
+                input.Append(IsPressed("SIN") ? "S" : ".");
+                input.Append("|.|"); //TODO: perhaps ON should go here?
+                return input.ToString();
+            }
             return "?";
         }
 
@@ -208,9 +263,9 @@ namespace BizHawk.MultiClient
             {
                 for (int i = 1; i < 3; i++)
                 {
-                    if (mnemonic.Length < (1+7*i)) return;
+                    if (mnemonic.Length < (1 + 7 * i)) return;
                     //if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
-                    if (mnemonic[(i - 1) * 7 +3] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Up");
+                    if (mnemonic[(i - 1) * 7 + 3] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Up");
                     if (mnemonic[(i - 1) * 7 + 4] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Down");
                     if (mnemonic[(i - 1) * 7 + 5] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Left");
                     if (mnemonic[(i - 1) * 7 + 6] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Right");
@@ -250,6 +305,112 @@ namespace BizHawk.MultiClient
                 if (mnemonic[8] != '.') programmaticallyPressedButtons.Add("Select");
                 if (mnemonic[9] != '.') programmaticallyPressedButtons.Add("B");
                 if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("A");
+            }
+
+            if (type.Name == "TI83 Controls") ;
+            {
+                if (mnemonic.Length < 50) return;
+
+                if (mnemonic[1] != '.')
+                    programmaticallyPressedButtons.Add("0");
+                if (mnemonic[2] != '.')
+                    programmaticallyPressedButtons.Add("1");
+                if (mnemonic[3] != '.')
+                    programmaticallyPressedButtons.Add("2");
+                if (mnemonic[4] != '.')
+                    programmaticallyPressedButtons.Add("3");
+                if (mnemonic[5] != '.')
+                    programmaticallyPressedButtons.Add("4");
+                if (mnemonic[6] != '.')
+                    programmaticallyPressedButtons.Add("5");
+                if (mnemonic[7] != '.')
+                    programmaticallyPressedButtons.Add("6");
+                if (mnemonic[8] != '.')
+                    programmaticallyPressedButtons.Add("7");
+                if (mnemonic[9] != '.')
+                    programmaticallyPressedButtons.Add("8");
+                if (mnemonic[10] != '.')
+                    programmaticallyPressedButtons.Add("9");
+                if (mnemonic[11] != '.')
+                    programmaticallyPressedButtons.Add("DOT");
+                if (mnemonic[12] != '.')
+                    programmaticallyPressedButtons.Add("ON");
+                if (mnemonic[13] != '.')
+                    programmaticallyPressedButtons.Add("ENTER");
+                if (mnemonic[14] != '.')
+                    programmaticallyPressedButtons.Add("UP");
+                if (mnemonic[15] != '.')
+                    programmaticallyPressedButtons.Add("DOWN");
+                if (mnemonic[16] != '.')
+                    programmaticallyPressedButtons.Add("LEFT");
+                if (mnemonic[17] != '.')
+                    programmaticallyPressedButtons.Add("RIGHT");
+                if (mnemonic[18] != '.')
+                    programmaticallyPressedButtons.Add("PLUS");
+                if (mnemonic[19] != '.')
+                    programmaticallyPressedButtons.Add("MINUS");
+                if (mnemonic[20] != '.')
+                    programmaticallyPressedButtons.Add("MULTIPLY");
+                if (mnemonic[21] != '.')
+                    programmaticallyPressedButtons.Add("DIVIDE");
+                if (mnemonic[22] != '.')
+                    programmaticallyPressedButtons.Add("CLEAR");
+                if (mnemonic[23] != '.')
+                    programmaticallyPressedButtons.Add("EXP");
+                if (mnemonic[24] != '.')
+                    programmaticallyPressedButtons.Add("DASH");
+                if (mnemonic[25] != '.')
+                    programmaticallyPressedButtons.Add("PARAOPEN");
+                if (mnemonic[26] != '.')
+                    programmaticallyPressedButtons.Add("PARACLOSE");
+                if (mnemonic[27] != '.')
+                    programmaticallyPressedButtons.Add("TAN");
+                if (mnemonic[28] != '.')
+                    programmaticallyPressedButtons.Add("VARS");
+                if (mnemonic[29] != '.')
+                    programmaticallyPressedButtons.Add("COS");
+                if (mnemonic[30] != '.')
+                    programmaticallyPressedButtons.Add("PGRM");
+                if (mnemonic[31] != '.')
+                    programmaticallyPressedButtons.Add("STAT");
+                if (mnemonic[32] != '.')
+                    programmaticallyPressedButtons.Add("MATRIX");
+                if (mnemonic[33] != '.')
+                    programmaticallyPressedButtons.Add("X");
+                if (mnemonic[34] != '.')
+                    programmaticallyPressedButtons.Add("STO");
+                if (mnemonic[35] != '.')
+                    programmaticallyPressedButtons.Add("LN");
+                if (mnemonic[36] != '.')
+                    programmaticallyPressedButtons.Add("LOG");
+                if (mnemonic[37] != '.')
+                    programmaticallyPressedButtons.Add("SQUARED");
+                if (mnemonic[38] != '.')
+                    programmaticallyPressedButtons.Add("NEG");
+                if (mnemonic[39] != '.')
+                    programmaticallyPressedButtons.Add("MATH");
+                if (mnemonic[40] != '.')
+                    programmaticallyPressedButtons.Add("ALPHA");
+                if (mnemonic[41] != '.')
+                    programmaticallyPressedButtons.Add("GRAPH");
+                if (mnemonic[42] != '.')
+                    programmaticallyPressedButtons.Add("TRACE");
+                if (mnemonic[43] != '.')
+                    programmaticallyPressedButtons.Add("ZOOM");
+                if (mnemonic[44] != '.')
+                    programmaticallyPressedButtons.Add("WINDOW");
+                if (mnemonic[45] != '.')
+                    programmaticallyPressedButtons.Add("Y");
+                if (mnemonic[46] != '.')
+                    programmaticallyPressedButtons.Add("2ND");
+                if (mnemonic[47] != '.')
+                    programmaticallyPressedButtons.Add("MODE");
+                if (mnemonic[48] != '.')
+                    programmaticallyPressedButtons.Add("DEL");
+                if (mnemonic[49] != '.')
+                    programmaticallyPressedButtons.Add("COMMA");
+                if (mnemonic[50] != '.')
+                    programmaticallyPressedButtons.Add("SIN");
             }
         }
     }
