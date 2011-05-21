@@ -36,7 +36,7 @@ namespace BizHawk.MultiClient
 			if (file.Extension == "SMD")
 				RomData = DeInterleaveSMD(RomData);
 
-            var info = Database.GetGameInfo(RomData, file.Name);
+			var info = Database.GetGameInfo(RomData, file.Name);
             name = info.Name;
             System = info.System;
             options = new List<string>(info.GetOptions());
