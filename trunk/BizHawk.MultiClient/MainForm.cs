@@ -1080,23 +1080,28 @@ namespace BizHawk.MultiClient
 
 		}
 
+        private void MakeScreenshot(string path)
+        {
+            var video = Global.Emulator.VideoProvider;
+            var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
+
+            var framebuf = video.GetVideoBuffer();
+            for (int y = 0; y < video.BufferHeight; y++)
+                for (int x = 0; x < video.BufferWidth; x++)
+                    image.SetPixel(x, y, Color.FromArgb(framebuf[(y * video.BufferWidth) + x]));
+
+            var f = new FileInfo(path);
+            if (f.Directory.Exists == false)
+                f.Directory.Create();
+
+            Global.RenderPanel.AddMessage(f.Name + " saved.");
+
+            image.Save(f.FullName, ImageFormat.Png);
+        }
+
 		private void TakeScreenshot()
 		{
-			var video = Global.Emulator.VideoProvider;
-			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
-
-			var framebuf = video.GetVideoBuffer();
-			for (int y = 0; y < video.BufferHeight; y++)
-				for (int x = 0; x < video.BufferWidth; x++)
-					image.SetPixel(x, y, Color.FromArgb(framebuf[(y * video.BufferWidth) + x]));
-
-			var f = new FileInfo(String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
-			if (f.Directory.Exists == false)
-				f.Directory.Create();
-
-			Global.RenderPanel.AddMessage(f.Name + " saved.");
-
-			image.Save(f.FullName, ImageFormat.Png);
+			MakeScreenshot(String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
 		}
 
 		private void SaveState(string name)
@@ -1676,7 +1681,7 @@ namespace BizHawk.MultiClient
         private void OpenROM()
         {
             var ofd = new OpenFileDialog();
-            ofd.InitialDirectory = Global.Config.LastRomPath;
+            ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
             ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
             ofd.RestoreDirectory = true;
 
