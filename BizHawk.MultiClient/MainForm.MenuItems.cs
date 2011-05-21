@@ -649,5 +649,24 @@ namespace BizHawk.MultiClient
                 auto.Checked = false;
             recentToolStripMenuItem.DropDownItems.Add(auto);
         }
+
+        private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string path = String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+            
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = Path.GetDirectoryName(path);
+            sfd.FileName = Path.GetFileName(path);
+            sfd.Filter = "PNG File (*.png)|*.png";
+
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result != DialogResult.OK)
+                return;
+            MakeScreenshot(sfd.FileName);
+
+            MakeScreenshot(path);
+        }
 	}
 }
