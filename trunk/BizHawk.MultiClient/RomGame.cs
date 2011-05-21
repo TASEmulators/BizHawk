@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -128,17 +129,20 @@ namespace BizHawk.MultiClient
         {
             get
             {
+                string Bind = "";
+                if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.FINISHED) //TODO: what about movie finished?
+                    Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.GetFilePath());
                 switch (System)
                 {
-                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") + "/" + Name;
-                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG") + "/" + Name;
-                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG") + "/" + Name;
-                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
-                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name;
-                    case "GB":  return PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") + "/" + Name;
-                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN") + "/" + Name;
-                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES") + "/" + Name;
-                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83") + "/" + Name;
+                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") + "/" + Name + Bind;
+                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG") + "/" + Name + Bind;
+                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG") + "/" + Name + Bind;
+                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name + Bind;
+                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name + Bind;
+                    case "GB":  return PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") + "/" + Name + Bind;
+                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN") + "/" + Name + Bind;
+                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES") + "/" + Name + Bind;
+                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83") + "/" + Name + Bind;
                     default:    return "";
                 }
                 
