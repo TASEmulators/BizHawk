@@ -130,6 +130,16 @@ namespace BizHawk.MultiClient
 			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
 				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
 
+            if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty())
+            {
+                Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
+                ReadOnly = true;
+                StartNewMovie(m, false);
+                InputLog.StopMovie();
+                UserMovie.StartPlayback();
+                //LoadMoviesFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+            }
+
 			if (cmdLoadState != null && Global.Game != null)
 				LoadState("QuickSave" + cmdLoadState);
 

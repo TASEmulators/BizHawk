@@ -642,7 +642,7 @@ namespace BizHawk.MultiClient
 
             var auto = new ToolStripMenuItem();
             auto.Text = "&Autoload Most Recent";
-            auto.Click += (o, ev) => UpdateAutoLoadRecentRom();
+            auto.Click += (o, ev) => UpdateAutoLoadRecentMovie();
             if (Global.Config.AutoLoadMostRecentMovie == true)
                 auto.Checked = true;
             else
