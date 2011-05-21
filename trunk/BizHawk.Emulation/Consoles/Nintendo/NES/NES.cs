@@ -29,7 +29,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Nobunaga's Ambition - black screen
 		//Knight Rider - very glitchy and seems to be a good timing case!
 		//Dragon warrior 3/4 certainly need some additional work done to the mapper wiring to get to the super big PRG (probably SXROM too)
-
+        //Kirby's Adventure - bottom menu wobbles
+        //Adventures of Lolo 2 - black screen
+        //Indiana Jones Temple of Doom - Puase menu flickering (in FCEUX as well, haven't tested other emulators)
+        //Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game)
+        //High Speed - garbled graphics
 		public NES()
 		{
 			BootGodDB.Initialize();

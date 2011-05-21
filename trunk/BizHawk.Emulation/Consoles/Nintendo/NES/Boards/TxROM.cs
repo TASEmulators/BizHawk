@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                     AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
                     AssertBattery(false);
                     break;
-                case "NES-TEROM":
+                case "NES-TEROM": //Adv of lolo 2
                     AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
                     AssertBattery(false);
                     break;
@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
                     AssertPrg(128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
                     AssertBattery(false);
                     break;
-                case "NES-TGROM": //mega man 4
+                case "NES-TGROM": //mega man 4 & 6
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(0);
                     AssertBattery(false);
 					break;
