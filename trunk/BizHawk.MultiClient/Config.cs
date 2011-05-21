@@ -95,6 +95,7 @@
         public bool StartPaused = false;
         public int MainWndx = -1; //Negative numbers will be ignored
         public int MainWndy = -1;
+        public bool RunInBackground = true;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

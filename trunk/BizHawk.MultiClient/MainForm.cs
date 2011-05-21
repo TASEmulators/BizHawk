@@ -1664,7 +1664,8 @@ namespace BizHawk.MultiClient
 
 		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
+            runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
+            pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
             enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
@@ -1913,6 +1914,23 @@ namespace BizHawk.MultiClient
             }
             else
                 RamWatch1.Focus();
+        }
+
+        private void MainForm_Deactivate(object sender, EventArgs e)
+        {
+            if (!Global.Config.RunInBackground)
+                PauseEmulator();
+        }
+
+        private void MainForm_Activated(object sender, EventArgs e)
+        {
+            if (!Global.Config.RunInBackground)
+                UnpauseEmulator();
+        }
+
+        private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RunInBackground ^= true;
         }
 	}
 }
