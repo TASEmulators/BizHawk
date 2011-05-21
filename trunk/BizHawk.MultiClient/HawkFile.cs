@@ -37,9 +37,14 @@ namespace BizHawk.MultiClient
 		public bool IsBound { get { return boundStream != null; } }
 
 		/// <summary>
+		/// returns the complete canonical full path ("c:\path\to\archive|member") of the bound file
+		/// </summary>
+		public string CanonicalFullPath { get { return MakeCanonicalName(rootPath,memberPath); } }
+
+		/// <summary>
 		/// returns the complete canonical name ("archive|member") of the bound file
 		/// </summary>
-		public string CanonicalName { get { return MakeCanonicalName(rootPath,memberPath); } }
+		public string CanonicalName { get { return MakeCanonicalName(Path.GetFileName(rootPath), memberPath); } }
 
 		/// <summary>
 		/// returns the virtual name of the bound file (disregarding the archive)
@@ -168,7 +173,7 @@ namespace BizHawk.MultiClient
 			extractor.ExtractFile(archiveIndex, boundStream);
 			boundStream.Position = 0;
 			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
-			Console.WriteLine("bound " + CanonicalName);
+			Console.WriteLine("bound " + CanonicalFullPath);
 			
 			return this;
 		}
@@ -189,7 +194,7 @@ namespace BizHawk.MultiClient
 		void BindRoot()
 		{
 			boundStream = rootStream;
-			Console.WriteLine("bound " + CanonicalName);
+			Console.WriteLine("bound " + CanonicalFullPath);
 		}
 
 		/// <summary>

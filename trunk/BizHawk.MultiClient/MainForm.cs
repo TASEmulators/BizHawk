@@ -675,7 +675,7 @@ namespace BizHawk.MultiClient
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
-				Global.Config.RecentRoms.Add(file.CanonicalName);
+				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(game.SaveRamPath))
 					LoadSaveRam();
 
