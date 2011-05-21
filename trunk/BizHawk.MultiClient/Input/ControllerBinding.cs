@@ -307,7 +307,7 @@ namespace BizHawk.MultiClient
                 if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("A");
             }
 
-            if (type.Name == "TI83 Controls") ;
+            if (type.Name == "TI83 Controls")
             {
                 if (mnemonic.Length < 50) return;
 
