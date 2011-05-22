@@ -718,9 +718,11 @@ namespace BizHawk.MultiClient
 					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
 				}
 
-                //TODO: autoload movie logic goes here
-                InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
-                InputLog.StartNewRecording(); //(Keep this line)
+                if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+                {
+                    InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+                    CreateNewInputLog(true);
+                }
                 
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
