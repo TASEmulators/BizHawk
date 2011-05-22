@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.tools
+namespace BizHawk.MultiClient
 {
     public partial class TAStudio : Form
     {
@@ -75,6 +75,27 @@ namespace BizHawk.MultiClient.tools
         private void restoreWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            Global.MainForm.StopUserMovie();
+        }
+
+        private void FrameAdvanceButton_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void RewindButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PauseButton_Click(object sender, EventArgs e)
+        {
+
+            Global.MainForm.TogglePause();
         }
     }
 }

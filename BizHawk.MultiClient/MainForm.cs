@@ -57,6 +57,7 @@ namespace BizHawk.MultiClient
         public Cheats Cheats1 = new Cheats();
         public ToolBox ToolBox1 = new ToolBox();
         public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
+        public TAStudio TAStudio1 = new TAStudio();
 
 		public MainForm(string[] args)
 		{
@@ -279,6 +280,11 @@ namespace BizHawk.MultiClient
 		{
 			EmulatorPaused = false;
 		}
+
+        public void TogglePause()
+        {
+            EmulatorPaused ^= true;
+        }
 
 		private void LoadRomFromRecent(string rom)
 		{
@@ -1974,6 +1980,22 @@ namespace BizHawk.MultiClient
         {
             if (!Global.Config.RunInBackground)
                 UnpauseEmulator();
+        }
+
+        public void LoadTAStudio()
+        {
+            if (!TAStudio1.IsHandleCreated || TAStudio1.IsDisposed)
+            {
+                TAStudio1 = new TAStudio();
+                TAStudio1.Show();
+            }
+            else
+                TAStudio1.Focus();
+        }
+
+        private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadTAStudio();
         }
 	}
 }

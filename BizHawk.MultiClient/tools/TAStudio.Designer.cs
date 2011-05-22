@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.tools
+﻿namespace BizHawk.MultiClient
 {
     partial class TAStudio
     {
@@ -31,28 +31,37 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudio));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveProjectAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.newProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.nToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.importTASFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TASView = new VirtualListView();
+            this.TASView = new BizHawk.VirtualListView();
             this.UpcolumnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.DowncolumnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.LeftcolumnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.RightcolumnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.nToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.StopButton = new System.Windows.Forms.ToolStripButton();
+            this.FrameAdvanceButton = new System.Windows.Forms.ToolStripButton();
+            this.RewindButton = new System.Windows.Forms.ToolStripButton();
+            this.PauseButton = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
+            this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -63,7 +72,7 @@
             this.settingsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(541, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(699, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -83,6 +92,12 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
+            // newProjectToolStripMenuItem
+            // 
+            this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
+            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.newProjectToolStripMenuItem.Text = "New Project";
+            // 
             // openProjectToolStripMenuItem
             // 
             this.openProjectToolStripMenuItem.Name = "openProjectToolStripMenuItem";
@@ -101,11 +116,32 @@
             this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.saveProjectAsToolStripMenuItem.Text = "Save Project As";
             // 
-            // newProjectToolStripMenuItem
+            // recentToolStripMenuItem
             // 
-            this.newProjectToolStripMenuItem.Name = "newProjectToolStripMenuItem";
-            this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.newProjectToolStripMenuItem.Text = "New Project";
+            this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.nToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.clearToolStripMenuItem});
+            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
+            this.recentToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.recentToolStripMenuItem.Text = "Recent";
+            // 
+            // nToolStripMenuItem
+            // 
+            this.nToolStripMenuItem.Name = "nToolStripMenuItem";
+            this.nToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.nToolStripMenuItem.Text = "None";
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+            // 
+            // clearToolStripMenuItem
+            // 
+            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.clearToolStripMenuItem.Text = "Clear";
             // 
             // toolStripSeparator1
             // 
@@ -117,6 +153,11 @@
             this.importTASFileToolStripMenuItem.Name = "importTASFileToolStripMenuItem";
             this.importTASFileToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.importTASFileToolStripMenuItem.Text = "Import TAS file";
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(158, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -164,8 +205,10 @@
             this.LeftcolumnHeader1,
             this.RightcolumnHeader1});
             this.TASView.GridLines = true;
+            this.TASView.ItemCount = 0;
             this.TASView.Location = new System.Drawing.Point(12, 38);
             this.TASView.Name = "TASView";
+            this.TASView.selectedItem = -1;
             this.TASView.Size = new System.Drawing.Size(399, 424);
             this.TASView.TabIndex = 1;
             this.TASView.UseCompatibleStateImageBehavior = false;
@@ -191,43 +234,84 @@
             this.RightcolumnHeader1.Text = "R";
             this.RightcolumnHeader1.Width = 21;
             // 
-            // recentToolStripMenuItem
+            // toolStripContainer1
             // 
-            this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.nToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.clearToolStripMenuItem});
-            this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-            this.recentToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-            this.recentToolStripMenuItem.Text = "Recent";
             // 
-            // toolStripSeparator2
+            // toolStripContainer1.ContentPanel
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(158, 6);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(150, 150);
+            this.toolStripContainer1.Location = new System.Drawing.Point(470, 65);
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.Size = new System.Drawing.Size(150, 175);
+            this.toolStripContainer1.TabIndex = 2;
+            this.toolStripContainer1.Text = "toolStripContainer1";
             // 
-            // nToolStripMenuItem
+            // toolStripContainer1.TopToolStripPanel
             // 
-            this.nToolStripMenuItem.Name = "nToolStripMenuItem";
-            this.nToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.nToolStripMenuItem.Text = "None";
+            this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
             // 
-            // toolStripSeparator3
+            // toolStrip1
             // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StopButton,
+            this.RewindButton,
+            this.FrameAdvanceButton,
+            this.PauseButton});
+            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(133, 25);
+            this.toolStrip1.TabIndex = 0;
             // 
-            // clearToolStripMenuItem
+            // StopButton
             // 
-            this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.clearToolStripMenuItem.Text = "Clear";
+            this.StopButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.StopButton.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+            this.StopButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.StopButton.Name = "StopButton";
+            this.StopButton.Size = new System.Drawing.Size(23, 22);
+            this.StopButton.Text = "toolStripButton1";
+            this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
+            // 
+            // FrameAdvanceButton
+            // 
+            this.FrameAdvanceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.FrameAdvanceButton.Image = global::BizHawk.MultiClient.Properties.Resources.Debugger;
+            this.FrameAdvanceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.FrameAdvanceButton.Name = "FrameAdvanceButton";
+            this.FrameAdvanceButton.Size = new System.Drawing.Size(23, 22);
+            this.FrameAdvanceButton.Text = ">";
+            this.FrameAdvanceButton.ToolTipText = "Frame Advance";
+            this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
+            // 
+            // RewindButton
+            // 
+            this.RewindButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.RewindButton.Image = ((System.Drawing.Image)(resources.GetObject("RewindButton.Image")));
+            this.RewindButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.RewindButton.Name = "RewindButton";
+            this.RewindButton.Size = new System.Drawing.Size(23, 22);
+            this.RewindButton.Text = "<";
+            this.RewindButton.ToolTipText = "Rewind";
+            this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
+            // 
+            // PauseButton
+            // 
+            this.PauseButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.PauseButton.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+            this.PauseButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.PauseButton.Name = "PauseButton";
+            this.PauseButton.Size = new System.Drawing.Size(23, 22);
+            this.PauseButton.Text = "Pause Button";
+            this.PauseButton.ToolTipText = "Pause";
+            this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
             // 
             // TAStudio
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(541, 474);
+            this.ClientSize = new System.Drawing.Size(699, 474);
+            this.Controls.Add(this.toolStripContainer1);
             this.Controls.Add(this.TASView);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -237,6 +321,12 @@
             this.Load += new System.EventHandler(this.TAStudio_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer1.TopToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ResumeLayout(false);
+            this.toolStripContainer1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -267,5 +357,11 @@
         private System.Windows.Forms.ToolStripMenuItem nToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton StopButton;
+        private System.Windows.Forms.ToolStripButton FrameAdvanceButton;
+        private System.Windows.Forms.ToolStripButton RewindButton;
+        private System.Windows.Forms.ToolStripButton PauseButton;
     }
 }
