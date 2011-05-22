@@ -523,8 +523,8 @@ namespace BizHawk.MultiClient
                 case ".TAS":   //Bizhawk
                 case ".FM2":   //FCUEX
                 case ".MC2":   //PCEjin
-                case ".STATE": //Savestates
-                    return true;
+                //case ".STATE": //Savestates
+                //    return true;
                 default:
                     return false;
             }
@@ -537,10 +537,12 @@ namespace BizHawk.MultiClient
             {
                 Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
                 StartNewMovie(m, false);
-                
+
             }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".STATE")
+                LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
             else
-			    LoadRom(filePaths[0]);
+                LoadRom(filePaths[0]);
 		}
 
 		public bool IsNullEmulator()
@@ -1285,17 +1287,22 @@ namespace BizHawk.MultiClient
             }
         }
 
+        private void LoadStateFile(string path, string name)
+        {
+            var reader = new StreamReader(path);
+			Global.Emulator.LoadStateText(reader);
+            HandleMovieLoadState(reader);
+            reader.Close();
+			Global.RenderPanel.AddMessage("Loaded state: " + name);
+        }
+
 		private void LoadState(string name)
 		{
 			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
 			if (File.Exists(path) == false)
 				return;
 
-			var reader = new StreamReader(path);
-			Global.Emulator.LoadStateText(reader);
-            HandleMovieLoadState(reader);
-            reader.Close();
-			Global.RenderPanel.AddMessage("Loaded state: " + name);
+			LoadStateFile(path, name);
 		}
 
         private void LoadStateAs()
@@ -1315,11 +1322,7 @@ namespace BizHawk.MultiClient
             if (File.Exists(ofd.FileName) == false)
                 return;
 
-            var reader = new StreamReader(ofd.FileName);
-            Global.Emulator.LoadStateText(reader);
-            HandleMovieLoadState(reader);
-            reader.Close();
-            Global.RenderPanel.AddMessage(ofd.FileName + " loaded");
+            LoadStateFile(ofd.FileName, Path.GetFileName(ofd.FileName));
         }
 	
 		private void SaveSlotSelectedMessage()
