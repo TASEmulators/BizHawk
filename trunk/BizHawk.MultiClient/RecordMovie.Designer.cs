@@ -71,12 +71,15 @@
             // 
             // RecordBox
             // 
+            this.RecordBox.AllowDrop = true;
             this.RecordBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.RecordBox.Location = new System.Drawing.Point(13, 40);
             this.RecordBox.Name = "RecordBox";
             this.RecordBox.Size = new System.Drawing.Size(277, 20);
             this.RecordBox.TabIndex = 3;
+            this.RecordBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragDrop);
+            this.RecordBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragEnter);
             // 
             // RecordMovie
             // 

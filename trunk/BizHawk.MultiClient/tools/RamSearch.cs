@@ -2011,5 +2011,20 @@ namespace BizHawk.MultiClient
                 i++;
             } while (columnHeaders.Count() > 0);
         }
+
+        private void RamSearch_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void RamSearch_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filePaths[0].Contains(".wch")) //TODO: a less lazy way to check file extension?
+            {
+                LoadSearchFile(filePaths[0], false, false, searchList);
+                DisplaySearchList();
+            }
+        }
     }
 }

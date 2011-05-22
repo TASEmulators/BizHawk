@@ -14,6 +14,9 @@ namespace BizHawk.MultiClient
     public partial class LuaConsole : Form
     {
         //TODO: remember column widths
+        //TODO: recent menu
+        //TODO: drag & drop for .lua files
+
 
         int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
         int defaultHeight;
