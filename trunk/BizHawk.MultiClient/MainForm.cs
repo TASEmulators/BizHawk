@@ -189,7 +189,7 @@ namespace BizHawk.MultiClient
                 m = MOVIEMODE.RECORD;
             else
                 m = MOVIEMODE.INACTIVE;
-            InputLog = new Movie(Global.Config.MoviesPath + "\\log.tas", m);
+            InputLog = new Movie(PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + "\\log.tas", m);
         }
 
 		void SyncPresentationMode()
@@ -1148,6 +1148,16 @@ namespace BizHawk.MultiClient
 			MakeScreenshot(String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
 		}
 
+        private void HandleMovieSaveState(StreamWriter writer)
+        {
+            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+            {
+                UserMovie.DumpLogIntoSavestateText(writer);
+            }
+            else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+                InputLog.DumpLogIntoSavestateText(writer);
+        }
+
 		private void SaveState(string name)
 		{
 			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
@@ -1158,14 +1168,7 @@ namespace BizHawk.MultiClient
 
 			var writer = new StreamWriter(path);
 			Global.Emulator.SaveStateText(writer);
-            //TODO: logic surrounding the behavior of movie modes & settings
-            //TODO: refactor save/loadstate as functions to automatically include this behavior too
-            if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
-            {
-                UserMovie.DumpLogIntoSavestateText(writer);
-            }
-            else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
-                InputLog.DumpLogIntoSavestateText(writer);
+            HandleMovieSaveState(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
             Global.RenderPanel.AddMessage("Saved state: " + name);
@@ -1188,6 +1191,7 @@ namespace BizHawk.MultiClient
             var writer = new StreamWriter(sfd.FileName);
 
             Global.Emulator.SaveStateText(writer);
+            HandleMovieSaveState(writer);
             writer.Close();
             Global.RenderPanel.AddMessage(sfd.FileName + " saved");
         }
