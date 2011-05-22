@@ -87,7 +87,7 @@ namespace BizHawk.MultiClient
 
         private void AddMovieToList(string filename)
         {
-            var file = new FileInfo(filename);
+            var file = new HawkFile(filename);
             if (!file.Exists)
                 return;
             else
@@ -100,9 +100,9 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void PreLoadMovieFile(FileInfo path)
+        private void PreLoadMovieFile(HawkFile path)
         {
-            Movie m = new Movie(path.FullName, MOVIEMODE.INACTIVE);
+            Movie m = new Movie(path.CanonicalFullPath, MOVIEMODE.INACTIVE);
             m.PreLoadText();
             //m.LoadMovie();
             if (path.Extension.ToUpper() == ".FM2")

@@ -80,7 +80,8 @@ namespace BizHawk.MultiClient
 
         private void RecordMovie_Load(object sender, EventArgs e)
         {
-
+            StartFromCombo.SelectedIndex = 0;
+            //TODO: populate combo with savestate slots that currently exist
         }
 
         private void RecordBox_DragEnter(object sender, DragEventArgs e)
