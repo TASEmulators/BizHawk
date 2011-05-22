@@ -217,5 +217,15 @@ namespace BizHawk.MultiClient
         {
 
         }
+
+        private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

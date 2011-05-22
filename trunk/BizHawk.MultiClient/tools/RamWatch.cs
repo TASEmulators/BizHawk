@@ -354,7 +354,7 @@ namespace BizHawk.MultiClient
             return 0;
         }
 
-        bool LoadWatchFile(string path, bool append)
+        public bool LoadWatchFile(string path, bool append)
         {
             int y, z;
             var file = new FileInfo(path);
@@ -516,9 +516,11 @@ namespace BizHawk.MultiClient
 
         void MoveUp()
         {
+            if (WatchListView.SelectedIndices.Count == 0)
+                return;
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             Watch temp = new Watch();
-            if (indexes[0] == 0) return;
+            if (indexes.Count == 0) return;
             foreach (int index in indexes)
             {
                 temp = watchList[index];
@@ -545,7 +547,7 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
             Watch temp = new Watch();
-
+            if (indexes.Count == 0) return;
             foreach (int index in indexes)
             {
                 temp = watchList[index];
