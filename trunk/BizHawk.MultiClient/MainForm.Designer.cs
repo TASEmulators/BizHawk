@@ -190,6 +190,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tAStudioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -1272,6 +1273,7 @@
             this.rAMSearchToolStripMenuItem,
             this.rAMPokeToolStripMenuItem,
             this.hexEditorToolStripMenuItem,
+            this.tAStudioToolStripMenuItem,
             this.toolStripSeparator11,
             this.luaConsoleToolStripMenuItem,
             this.cheatsToolStripMenuItem});
@@ -1283,59 +1285,59 @@
             // toolBoxToolStripMenuItem
             // 
             this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
-            this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.toolBoxToolStripMenuItem.Text = "&Tool Box";
             this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(149, 6);
             // 
             // rAMWatchToolStripMenuItem
             // 
             this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
             this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
             // 
             // rAMSearchToolStripMenuItem
             // 
             this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
             this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
             // 
             // rAMPokeToolStripMenuItem
             // 
             this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
             this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
             // 
             // hexEditorToolStripMenuItem
             // 
             this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
             this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
             // 
             // luaConsoleToolStripMenuItem
             // 
             this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.luaConsoleToolStripMenuItem.Text = "Lua Console";
             this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
             // 
             // cheatsToolStripMenuItem
             // 
             this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.cheatsToolStripMenuItem.Text = "Cheats";
             this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
             // 
@@ -1460,6 +1462,13 @@
             this.EmuStatus.Name = "EmuStatus";
             this.EmuStatus.Size = new System.Drawing.Size(143, 17);
             this.EmuStatus.Text = "Currently emulating: ur mom";
+            // 
+            // tAStudioToolStripMenuItem
+            // 
+            this.tAStudioToolStripMenuItem.Name = "tAStudioToolStripMenuItem";
+            this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tAStudioToolStripMenuItem.Text = "&TAStudio";
+            this.tAStudioToolStripMenuItem.Click += new System.EventHandler(this.tAStudioToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1651,6 +1660,7 @@
         private System.Windows.Forms.ToolStripMenuItem runInBackgroundToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bindSavestatesToMoviesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem acceptBackgroundInputToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tAStudioToolStripMenuItem;
     }
 }
 
