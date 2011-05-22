@@ -22,8 +22,8 @@ namespace BizHawk.MultiClient
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
 
-        //TODO: adelikat: can this be the official file extension?
-        public Movie InputLog = new Movie("log.tas", MOVIEMODE.RECORD);   //This movie is always recording while user is playing
+        //Movie variables
+        public Movie InputLog  = new Movie("", MOVIEMODE.INACTIVE);
         public Movie UserMovie = new Movie("", MOVIEMODE.INACTIVE);
         public bool ReadOnly = true;    //Global Movie Read only setting
 
@@ -138,7 +138,7 @@ namespace BizHawk.MultiClient
                 Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
                 ReadOnly = true;
                 StartNewMovie(m, false);
-                InputLog.StopMovie();
+                CreateNewInputLog(false);
                 UserMovie.StartPlayback();
                 Global.Config.RecentMovies.Add(cmdMovie);
             }
@@ -147,8 +147,12 @@ namespace BizHawk.MultiClient
                 Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
                 ReadOnly = true;
                 StartNewMovie(m, false);
-                InputLog.StopMovie();
                 UserMovie.StartPlayback();
+                CreateNewInputLog(false);
+            }
+            else
+            {
+                CreateNewInputLog(true);
             }
 
 			if (cmdLoadState != null && Global.Game != null)
@@ -177,6 +181,16 @@ namespace BizHawk.MultiClient
 			if (Global.Config.StartPaused)
 				PauseEmulator();
 		}
+
+        void CreateNewInputLog(bool active)
+        {
+            MOVIEMODE m;
+            if (active)
+                m = MOVIEMODE.RECORD;
+            else
+                m = MOVIEMODE.INACTIVE;
+            InputLog = new Movie(Global.Config.MoviesPath + "\\log.tas", m);
+        }
 
 		void SyncPresentationMode()
 		{
