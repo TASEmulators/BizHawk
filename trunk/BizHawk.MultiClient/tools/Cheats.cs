@@ -1096,7 +1096,7 @@ namespace BizHawk.MultiClient
         private void Cheats_DragDrop(object sender, DragEventArgs e)
         {
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (filePaths[0].Contains(".cht")) //TODO: a less lazy way to check file extension?
+            if (Path.GetExtension(filePaths[0]) == (".cht"))
             {
                 LoadCheatFile(filePaths[0], false);
                 DisplayCheatsList();
