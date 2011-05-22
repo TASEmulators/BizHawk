@@ -109,13 +109,16 @@ namespace BizHawk.MultiClient
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
+            string cmdMovie = null;
 			for (int i = 0; i < args.Length; i++)
 			{
 				string arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				else
-					cmdRom = arg;
+                if (arg.StartsWith("--load-slot="))
+                    cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+                else if (arg.StartsWith("--movie="))
+                    cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+                else
+                    cmdRom = arg;
 			}
 
 			if (cmdRom != null)
@@ -124,20 +127,28 @@ namespace BizHawk.MultiClient
 				LoadRom(cmdRom);
 				if (Global.Game == null)
 				{
-					MessageBox.Show("Failed to load rom specified on commandline");
+					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
 				}
 			}
 			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
 				LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
 
-            if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty())
+            if (cmdMovie != null)
+            {
+                Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
+                ReadOnly = true;
+                StartNewMovie(m, false);
+                InputLog.StopMovie();
+                UserMovie.StartPlayback();
+                Global.Config.RecentMovies.Add(cmdMovie);
+            }
+            else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty())
             {
                 Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
                 ReadOnly = true;
                 StartNewMovie(m, false);
                 InputLog.StopMovie();
                 UserMovie.StartPlayback();
-                //LoadMoviesFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
             }
 
 			if (cmdLoadState != null && Global.Game != null)
