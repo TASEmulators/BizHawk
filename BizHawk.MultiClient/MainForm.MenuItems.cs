@@ -579,7 +579,10 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.RecentRoms.IsEmpty())
             {
-                recentROMToolStripMenuItem.DropDownItems.Add("None");
+                var none = new ToolStripMenuItem();
+                none.Enabled = false;
+                none.Text = "None";
+                recentROMToolStripMenuItem.DropDownItems.Add(none);
             }
             else
             {
@@ -619,7 +622,10 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.RecentMovies.IsEmpty())
             {
-                recentToolStripMenuItem.DropDownItems.Add("None");
+                var none = new ToolStripMenuItem();
+                none.Enabled = false;
+                none.Text = "None";
+                recentToolStripMenuItem.DropDownItems.Add(none);
             }
             else
             {

@@ -1424,7 +1424,10 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.RecentSearches.IsEmpty())
             {
-                recentToolStripMenuItem.DropDownItems.Add("None");
+                var none = new ToolStripMenuItem();
+                none.Enabled = false;
+                none.Text = "None";
+                recentToolStripMenuItem.DropDownItems.Add(none);
             }
             else
             {

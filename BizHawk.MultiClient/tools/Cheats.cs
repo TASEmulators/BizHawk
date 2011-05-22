@@ -199,7 +199,10 @@ namespace BizHawk.MultiClient
 
             if (Global.Config.RecentCheats.IsEmpty())
             {
-                recentToolStripMenuItem.DropDownItems.Add("None");
+                var none = new ToolStripMenuItem();
+                none.Enabled = false;
+                none.Text = "None";
+                recentToolStripMenuItem.DropDownItems.Add(none);
             }
             else
             {
