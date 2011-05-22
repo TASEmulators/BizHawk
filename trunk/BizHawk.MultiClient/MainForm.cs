@@ -1085,16 +1085,24 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
                 
-                if (MovieActive())
+                if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
                 {
-                    Movie m = GetActiveMovie();
-                    if (m.GetMovieLength() == Global.Emulator.Frame && m.GetMovieMode() == MOVIEMODE.PLAY)
+                    if (UserMovie.GetMovieLength() == Global.Emulator.Frame)
                     {
-                        m.SetMovieFinished();
+                        UserMovie.SetMovieFinished();
                         Global.ActiveController.MovieMode = false;
                     }
-                    if (m.GetMovieMode() == MOVIEMODE.PLAY)
-                        Global.ActiveController.SetControllersAsMnemonic(m.GetInputFrame(Global.Emulator.Frame) + 1);                    
+                    else 
+                        Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+                }
+                
+                if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+                {
+                    if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
+                    {
+                        UserMovie.StartPlayback();
+                        Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+                    }
                 }
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
