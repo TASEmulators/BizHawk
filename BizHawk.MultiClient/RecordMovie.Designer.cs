@@ -33,6 +33,9 @@
             this.OK = new System.Windows.Forms.Button();
             this.Browse = new System.Windows.Forms.Button();
             this.RecordBox = new System.Windows.Forms.TextBox();
+            this.StartFromCombo = new System.Windows.Forms.ComboBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // Cancel
@@ -81,6 +84,29 @@
             this.RecordBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragDrop);
             this.RecordBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragEnter);
             // 
+            // StartFromCombo
+            // 
+            this.StartFromCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.StartFromCombo.FormattingEnabled = true;
+            this.StartFromCombo.Items.AddRange(new object[] {
+            "Power-On",
+            "Now"});
+            this.StartFromCombo.Location = new System.Drawing.Point(7, 19);
+            this.StartFromCombo.MaxDropDownItems = 32;
+            this.StartFromCombo.Name = "StartFromCombo";
+            this.StartFromCombo.Size = new System.Drawing.Size(161, 21);
+            this.StartFromCombo.TabIndex = 4;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.StartFromCombo);
+            this.groupBox1.Location = new System.Drawing.Point(13, 96);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(179, 55);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Start from";
+            // 
             // RecordMovie
             // 
             this.AcceptButton = this.OK;
@@ -88,6 +114,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(374, 273);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.RecordBox);
             this.Controls.Add(this.Browse);
             this.Controls.Add(this.OK);
@@ -98,6 +125,7 @@
             this.Name = "RecordMovie";
             this.Text = "Record Movie";
             this.Load += new System.EventHandler(this.RecordMovie_Load);
+            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,5 +137,7 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.Button Browse;
         private System.Windows.Forms.TextBox RecordBox;
+        private System.Windows.Forms.ComboBox StartFromCombo;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
