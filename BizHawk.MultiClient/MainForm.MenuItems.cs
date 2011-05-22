@@ -392,13 +392,6 @@ namespace BizHawk.MultiClient
             OpenROM();
 		}
 
-		private void replayInputLogToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			InputLog.StopMovie();
-			InputLog.StartPlayback();
-			LoadRom(CurrentlyOpenRom);
-		}
-
 		private void PPUViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadNESPPU();
