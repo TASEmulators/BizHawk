@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
         private static Keyboard keyboard;
         private static KeyboardState state = new KeyboardState();
         private static List<Key> unpressedKeys = new List<Key>();
-
+        
         public static void Initialize()
         {
             if (dinput == null)
@@ -18,8 +18,10 @@ namespace BizHawk.MultiClient
 
             if (keyboard == null || keyboard.Disposed)
                 keyboard = new Keyboard(dinput);
-
-            keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Foreground | CooperativeLevel.Nonexclusive);
+            if (Global.Config.AcceptBackgroundInput)
+                keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+            else
+                keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Foreground | CooperativeLevel.Nonexclusive);
         }
 
         public static void Update()
