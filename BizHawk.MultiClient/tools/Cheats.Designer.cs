@@ -227,6 +227,7 @@
             this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
             this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.cheatsToolStripMenuItem.Text = "&Cheats";
+            this.cheatsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.cheatsToolStripMenuItem_DropDownOpened);
             // 
             // addCheatToolStripMenuItem
             // 

@@ -282,7 +282,7 @@ namespace BizHawk.MultiClient
             }
         }
 
-        private void DisplayCheatsList()
+        public void DisplayCheatsList()
         {
             UpdateNumberOfCheats();
             CheatListView.ItemCount = cheatList.Count;
@@ -292,7 +292,7 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             Cheat temp = new Cheat();
-            if (indexes[0] == 0) return;
+            if (indexes.Count == 0) return;
             foreach (int index in indexes)
             {
                 temp = cheatList[index];
@@ -319,7 +319,7 @@ namespace BizHawk.MultiClient
         {
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             Cheat temp = new Cheat();
-
+            if (indexes.Count == 0) return;
             foreach (int index in indexes)
             {
                 temp = cheatList[index];
@@ -576,7 +576,7 @@ namespace BizHawk.MultiClient
             return Global.Emulator.MemoryDomains[0];
         }
 
-        bool LoadCheatFile(string path, bool append)
+        public bool LoadCheatFile(string path, bool append)
         {
             int y;
             var file = new FileInfo(path);
@@ -715,6 +715,7 @@ namespace BizHawk.MultiClient
 
         private void RemoveCheat()
         {
+            if (cheatList.Count == 0) return;
             Changes();
             ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
             if (indexes.Count > 0)
@@ -1100,6 +1101,26 @@ namespace BizHawk.MultiClient
             {
                 LoadCheatFile(filePaths[0], false);
                 DisplayCheatsList();
+            }
+        }
+
+        private void cheatsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            
+            ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                moveDownToolStripMenuItem.Enabled = false;
+                moveUpToolStripMenuItem.Enabled = false;
+                removeCheatToolStripMenuItem.Enabled = false;
+                duplicateToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                moveDownToolStripMenuItem.Enabled = true;
+                moveUpToolStripMenuItem.Enabled = true;
+                removeCheatToolStripMenuItem.Enabled = true;
+                duplicateToolStripMenuItem.Enabled = true;
             }
         }
     }

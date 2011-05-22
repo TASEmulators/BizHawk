@@ -541,6 +541,18 @@ namespace BizHawk.MultiClient
             }
             else if (Path.GetExtension(filePaths[0]).ToUpper() == ".STATE")
                 LoadStateFile(filePaths[0], Path.GetFileName(filePaths[0]));
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".CHT")
+            {
+                LoadCheatsWindow();
+                Cheats1.LoadCheatFile(filePaths[0], false);
+                Cheats1.DisplayCheatsList();
+            }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".WCH")
+            {
+                LoadRamWatch();
+                RamWatch1.LoadWatchFile(filePaths[0], false);
+                RamWatch1.DisplayWatchList();
+            }
             else
                 LoadRom(filePaths[0]);
 		}
