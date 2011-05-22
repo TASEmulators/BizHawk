@@ -1043,7 +1043,7 @@ namespace BizHawk.MultiClient
         private void RamWatch_DragDrop(object sender, DragEventArgs e)
         {
             string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (filePaths[0].Contains(".wch")) //TODO: a less lazy way to check file extension?
+            if (Path.GetExtension(filePaths[0]) == (".wch")) 
             {
                 LoadWatchFile(filePaths[0], false);
                 DisplayWatchList();
