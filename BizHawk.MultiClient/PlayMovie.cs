@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
         // Option to include subdirectories
         // Option to include savestate files (that have an input log)
         //Clicking column headers should sort info
+        //AddMovieToList should check for duplicates and not add them
 
         List<Movie> MovieList = new List<Movie>();
 
@@ -167,6 +168,22 @@ namespace BizHawk.MultiClient
         {
             Run();
             this.Close();
+        }
+
+        private void MovieView_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void MovieView_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string path in filePaths)
+            {
+                if (Path.GetExtension(path) == ".tas" || Path.GetExtension(path) == ".fm2" ||
+                    Path.GetExtension(path) == ".mc2")
+                    AddMovieToList(path);
+            }
         }
     }
 }

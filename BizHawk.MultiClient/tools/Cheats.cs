@@ -1087,5 +1087,20 @@ namespace BizHawk.MultiClient
                 i++;
             } while (columnHeaders.Count() > 0);
         }
+
+        private void Cheats_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void Cheats_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (filePaths[0].Contains(".cht")) //TODO: a less lazy way to check file extension?
+            {
+                LoadCheatFile(filePaths[0], false);
+                DisplayCheatsList();
+            }
+        }
     }
 }

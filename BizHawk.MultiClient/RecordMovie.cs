@@ -82,5 +82,16 @@ namespace BizHawk.MultiClient
         {
 
         }
+
+        private void RecordBox_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+        }
+
+        private void RecordBox_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            RecordBox.Text = filePaths[0];
+        }
     }
 }
