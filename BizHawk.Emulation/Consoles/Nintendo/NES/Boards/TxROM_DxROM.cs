@@ -2,9 +2,12 @@
 using System.IO;
 using System.Diagnostics;
 
+//TODO - mapper 118 and 119 need to be gracefully worked in here.
+//but we might want to break them down into a new board type and reuse class mmc3. be sure to try that to see how it goes
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	public class TxROM : NES.NESBoardBase
+	public class TxROM_DxROM : NES.NESBoardBase
 	{
 		class MMC3 : IDisposable
 		{
@@ -100,9 +103,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void ClockIRQ()
 			{
-				if(irq_counter == 0)
+				if (irq_counter == 0)
 					irq_counter = irq_reload;
-				else {
+				else
+				{
 					irq_counter--;
 					//Console.WriteLine(irq_counter);
 					if (irq_counter == 0)
@@ -118,13 +122,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public void Tick_PPU(int addr)
 			{
 				ppubus_statecounter++;
-				int state = (addr >> 12)&1;
-				if(ppubus_state == 0 && ppubus_statecounter > 1 && state == 1)
+				int state = (addr >> 12) & 1;
+				if (ppubus_state == 0 && ppubus_statecounter > 1 && state == 1)
 				{
 					ppubus_statecounter = 0;
 					ClockIRQ();
 				}
-				if(ppubus_state != state)
+				if (ppubus_state != state)
 				{
 					ppubus_state = state;
 				}
@@ -134,7 +138,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//configuration
 		int prg_mask, chr_mask;
-		int wram_mask;
+		int wram_mask, vram_mask;
+		int vram_bytes;
+		bool fourscreen;
 
 		//state
 		MMC3 mmc3;
@@ -170,13 +176,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return VROM[addr];
 				else return VRAM[addr];
 			}
+			else if (fourscreen)
+			{
+				int myaddr = addr - 0x2000;
+				if (myaddr < vram_bytes)
+					return VRAM[myaddr];
+				else
+					return base.ReadPPU(addr);
+			}
 			else return base.ReadPPU(addr);
 		}
 
 		public override void WritePPU(int addr, byte value)
 		{
 			mmc3.Tick_PPU(addr);
-			base.WritePPU(addr, value);
+			if (fourscreen)
+			{
+				if (addr >= 0x2000)
+				{
+					int myaddr = addr - 0x2000;
+					if (myaddr < vram_bytes)
+						VRAM[myaddr] = value;
+					else
+						base.WritePPU(addr, value);
+				}
+				else base.WritePPU(addr, value);
+			}
+			else base.WritePPU(addr, value);
 		}
 
 		public override byte ReadWRAM(int addr)
@@ -213,53 +239,64 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
-				case "NES-TBROM":
-                    AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TEROM": //Adv of lolo 2
-                    AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TFROM":
-                    AssertPrg(128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TGROM": //mega man 4 & 6
+				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
+					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TEROM": //Adv of lolo 2
+					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TFROM": //legacy of the wizard
+					AssertPrg(128); AssertChr(32, 64); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TGROM": //mega man 4 & 6
 					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(0);
-                    AssertBattery(false);
+					AssertBattery(false);
 					break;
 				case "NES-TKROM": //kirby's adventure
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					break;
 				case "NES-TLROM": //mega man 3
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
+					AssertBattery(false);
 					break;
-                case "NES-TL1ROM": //Double dragon 2
-                    AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TL2ROM":
-                    AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TQROM":
-                    AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NESTR1-ROM":
-                    AssertPrg(128); AssertChr(64); AssertVram(2); AssertWram(0);
-                    AssertBattery(false);
-                    break;
-                case "NES-TSROM": //super mario bros. 3 USA
-                    AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
-                    AssertBattery(false);
-                    break;
-                case "NES-TVROM":
-                    AssertPrg(64); AssertChr(64); AssertVram(4); AssertWram(0);
-                    AssertBattery(false);
-                    break;
+				case "NES-TL1ROM": //Double dragon 2
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TL2ROM": //batman (U) ?
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TQROM": //{mapper 119} high speed - ALMOST POSITIVELTY NEEDS WORK 
+					AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-TR1ROM": //gauntlet (U) - someone please test this
+					AssertPrg(128); AssertChr(64); AssertVram(2); AssertWram(0);
+					fourscreen = true;
+					AssertBattery(false);
+					break;
+				case "NES-TSROM": //super mario bros. 3 (U)
+					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
+					AssertBattery(false);
+					break;
+				case "NES-TVROM": //rad racer II (U)
+					AssertPrg(64); AssertChr(64); AssertVram(8); AssertWram(0);
+					fourscreen = true;
+					AssertBattery(false);
+					break;
+				case "NES-B4": //batman (U)
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					AssertBattery(false);
+					break;
+				case "NES-DRROM": //gauntlet (U) sometimes
+					AssertPrg(128); AssertChr(64); AssertVram(2); AssertWram(0);
+					fourscreen = true;
+					AssertBattery(false);
+					break;
 				default:
 					return false;
 			}
@@ -272,6 +309,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_mask = num_chr_banks - 1;
 
 			wram_mask = (Cart.wram_size * 1024) - 1;
+			vram_mask = (Cart.vram_size * 1024) - 1;
+			vram_bytes = Cart.vram_size * 1024;
 
 			mmc3 = new MMC3(this, num_prg_banks);
 			SetMirrorType(EMirrorType.Vertical);
