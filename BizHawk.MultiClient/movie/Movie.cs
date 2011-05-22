@@ -112,6 +112,7 @@ namespace BizHawk.MultiClient
 
         public void WriteMovie()
         {
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
             if (IsText)
                 WriteText();
             else
