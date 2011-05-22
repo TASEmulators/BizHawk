@@ -96,6 +96,7 @@
             this.playFromBeginningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.replayInputLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.bindSavestatesToMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -189,7 +190,7 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.bindSavestatesToMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.acceptBackgroundInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -730,6 +731,13 @@
             this.replayInputLogToolStripMenuItem.Text = "Replay Input Log";
             this.replayInputLogToolStripMenuItem.Click += new System.EventHandler(this.replayInputLogToolStripMenuItem_Click);
             // 
+            // bindSavestatesToMoviesToolStripMenuItem
+            // 
+            this.bindSavestatesToMoviesToolStripMenuItem.Name = "bindSavestatesToMoviesToolStripMenuItem";
+            this.bindSavestatesToMoviesToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
+            this.bindSavestatesToMoviesToolStripMenuItem.Text = "Bind Savestates to Movies";
+            this.bindSavestatesToMoviesToolStripMenuItem.Click += new System.EventHandler(this.bindSavestatesToMoviesToolStripMenuItem_Click);
+            // 
             // screenshotToolStripMenuItem
             // 
             this.screenshotToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1026,7 +1034,8 @@
             this.startPausedToolStripMenuItem,
             this.enableRewindToolStripMenuItem,
             this.forceGDIPPresentationToolStripMenuItem,
-            this.runInBackgroundToolStripMenuItem});
+            this.runInBackgroundToolStripMenuItem,
+            this.acceptBackgroundInputToolStripMenuItem});
             this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
             this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.gUIToolStripMenuItem.Text = "GUI";
@@ -1454,12 +1463,12 @@
             this.EmuStatus.Size = new System.Drawing.Size(143, 17);
             this.EmuStatus.Text = "Currently emulating: ur mom";
             // 
-            // bindSavestatesToMoviesToolStripMenuItem
+            // acceptBackgroundInputToolStripMenuItem
             // 
-            this.bindSavestatesToMoviesToolStripMenuItem.Name = "bindSavestatesToMoviesToolStripMenuItem";
-            this.bindSavestatesToMoviesToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
-            this.bindSavestatesToMoviesToolStripMenuItem.Text = "Bind Savestates to Movies";
-            this.bindSavestatesToMoviesToolStripMenuItem.Click += new System.EventHandler(this.bindSavestatesToMoviesToolStripMenuItem_Click);
+            this.acceptBackgroundInputToolStripMenuItem.Name = "acceptBackgroundInputToolStripMenuItem";
+            this.acceptBackgroundInputToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.acceptBackgroundInputToolStripMenuItem.Text = "Accept Background Input";
+            this.acceptBackgroundInputToolStripMenuItem.Click += new System.EventHandler(this.acceptBackgroundInputToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -1651,6 +1660,7 @@
         private System.Windows.Forms.ToolStripMenuItem screenshotAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem runInBackgroundToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bindSavestatesToMoviesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem acceptBackgroundInputToolStripMenuItem;
     }
 }
 

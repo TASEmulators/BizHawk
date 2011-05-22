@@ -233,7 +233,6 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-				
                 Input.Update();
 				CheckHotkeys();
                 
@@ -1691,6 +1690,7 @@ namespace BizHawk.MultiClient
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
             enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
+            acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1946,16 +1946,6 @@ namespace BizHawk.MultiClient
         {
             if (!Global.Config.RunInBackground)
                 UnpauseEmulator();
-        }
-
-        private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.RunInBackground ^= true;
-        }
-
-        private void bindSavestatesToMoviesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.BindSavestatesToMovies ^= true;
         }
 	}
 }

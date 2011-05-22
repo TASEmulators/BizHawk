@@ -674,5 +674,21 @@ namespace BizHawk.MultiClient
 
             MakeScreenshot(path);
         }
+
+        private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.RunInBackground ^= true;
+        }
+
+        private void bindSavestatesToMoviesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.BindSavestatesToMovies ^= true;
+        }
+
+        private void acceptBackgroundInputToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.AcceptBackgroundInput ^= true;
+            MessageBox.Show("Background input settings will take effect the next time Bizhawk loads", "Background input property change", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
 	}
 }
