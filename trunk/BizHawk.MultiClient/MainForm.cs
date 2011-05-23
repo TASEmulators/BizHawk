@@ -1740,6 +1740,7 @@ namespace BizHawk.MultiClient
             enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
             acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
+            singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -2011,6 +2012,11 @@ namespace BizHawk.MultiClient
         private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadTAStudio();
+        }
+
+        private void singleInstanceModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.SingleInstanceMode ^= true;
         }
 	}
 }
