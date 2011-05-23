@@ -66,12 +66,12 @@ namespace BizHawk.MultiClient
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () => {
-				using (HawkFile NesCartFile = new HawkFile("NesCarts.7z").BindFirst())
+				using (HawkFile NesCartFile = new HawkFile(PathManager.GetExePathAbsolute() + "\\NesCarts.7z").BindFirst())
 				    return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
 			Global.MainForm = this;
 
-			Database.LoadDatabase("gamedb.txt");
+			Database.LoadDatabase(PathManager.GetExePathAbsolute() + "\\gamedb.txt");
 
 			SyncPresentationMode();
 
