@@ -97,6 +97,7 @@
         public int MainWndy = -1;
         public bool RunInBackground = true;
         public bool AcceptBackgroundInput = false;
+        public bool SingleInstanceMode = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
