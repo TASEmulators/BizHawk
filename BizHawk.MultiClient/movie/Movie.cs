@@ -333,6 +333,7 @@ namespace BizHawk.MultiClient
             while (true)
             {
                 string line = reader.ReadLine();
+                if (line == null) break;
                 if (line.Trim() == "") continue;
                 if (line == "[Input]") continue;
                 if (line == "[/Input]") break;
