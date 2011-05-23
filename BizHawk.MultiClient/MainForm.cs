@@ -1191,7 +1191,6 @@ namespace BizHawk.MultiClient
             HandleMovieSaveState(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
-            Global.RenderPanel.AddMessage("Saved state: " + name);
 		}
 
         private void SaveStateAs()
