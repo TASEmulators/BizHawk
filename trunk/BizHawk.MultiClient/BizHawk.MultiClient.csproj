@@ -29,6 +29,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <ApplicationIcon>corphawk.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -507,6 +508,7 @@
     <None Include="images\calculator.png" />
     <None Include="images\NESController.png" />
     <None Include="images\NESControllerIcon.png" />
+    <Content Include="corphawk.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
