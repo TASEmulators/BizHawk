@@ -26,13 +26,24 @@ namespace BizHawk.MultiClient
         {
             Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
             Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
-			Global.Sound.StartSound();
+            Global.Config.SoundVolume = SoundVolBar.Value;
+            Global.Sound.StartSound();
             this.Close();
         }
 
         private void Cancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            SoundVolNumeric.Value = SoundVolBar.Value;
+        }
+
+        private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
+        {
+            SoundVolBar.Value = (int)SoundVolNumeric.Value;
         }
     }
 }
