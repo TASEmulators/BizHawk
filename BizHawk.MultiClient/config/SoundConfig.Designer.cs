@@ -33,11 +33,11 @@
             this.SoundOnCheckBox = new System.Windows.Forms.CheckBox();
             this.MuteFrameAdvance = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
             this.SoundVolBar = new System.Windows.Forms.TrackBar();
+            this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // Cancel
@@ -94,14 +94,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Volume";
             // 
-            // SoundVolNumeric
-            // 
-            this.SoundVolNumeric.Location = new System.Drawing.Point(16, 190);
-            this.SoundVolNumeric.Name = "SoundVolNumeric";
-            this.SoundVolNumeric.Size = new System.Drawing.Size(59, 20);
-            this.SoundVolNumeric.TabIndex = 0;
-            this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
-            // 
             // SoundVolBar
             // 
             this.SoundVolBar.LargeChange = 10;
@@ -109,10 +101,18 @@
             this.SoundVolBar.Maximum = 100;
             this.SoundVolBar.Name = "SoundVolBar";
             this.SoundVolBar.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.SoundVolBar.Size = new System.Drawing.Size(45, 164);
+            this.SoundVolBar.Size = new System.Drawing.Size(42, 164);
             this.SoundVolBar.TabIndex = 1;
             this.SoundVolBar.TickFrequency = 10;
             this.SoundVolBar.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // SoundVolNumeric
+            // 
+            this.SoundVolNumeric.Location = new System.Drawing.Point(16, 190);
+            this.SoundVolNumeric.Name = "SoundVolNumeric";
+            this.SoundVolNumeric.Size = new System.Drawing.Size(59, 20);
+            this.SoundVolNumeric.TabIndex = 0;
+            this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
             // 
             // SoundConfig
             // 
@@ -127,12 +127,13 @@
             this.Controls.Add(this.OK);
             this.Controls.Add(this.Cancel);
             this.Name = "SoundConfig";
+            this.ShowIcon = false;
             this.Text = "Sound Configuration";
             this.Load += new System.EventHandler(this.SoundConfig_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

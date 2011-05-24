@@ -32,12 +32,12 @@ namespace BizHawk.MultiClient
 
             var desc = new SoundBufferDescription();
             desc.Format = format;
-            desc.Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2;
+            desc.Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume;
             desc.SizeInBytes = BufferSize;
-
             DSoundBuffer = new SecondarySoundBuffer(device, desc);
+            ChangeVolume(Global.Config.SoundVolume);
             SoundBuffer = new byte[BufferSize];
-
+            
             disposed = false;
         }
 
@@ -52,7 +52,6 @@ namespace BizHawk.MultiClient
 			needDiscard = true;
 
             DSoundBuffer.Write(SoundBuffer, 0, LockFlags.EntireBuffer);
-
             DSoundBuffer.CurrentPlayPosition = 0;
             DSoundBuffer.Play(0, PlayFlags.Looping);
         }
@@ -149,6 +148,19 @@ namespace BizHawk.MultiClient
 
 			soundoffset += samplesNeeded * 2;
 			soundoffset %= BufferSize;
+        }
+
+        /// <summary>
+        /// Range: 0-100
+        /// </summary>
+        /// <param name="vol"></param>
+        public void ChangeVolume(int vol)
+        {
+            if (vol > 100)
+                vol = 100;
+            if (vol < 0)
+                vol = 0;
+            DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 50);
         }
     }
 }
