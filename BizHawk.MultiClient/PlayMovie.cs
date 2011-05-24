@@ -20,6 +20,8 @@ namespace BizHawk.MultiClient
         //AddMovieToList should check for duplicates and not add them
 
         List<Movie> MovieList = new List<Movie>();
+        bool sortReverse;
+        string sortedCol;
 
         public PlayMovie()
         {
@@ -27,6 +29,8 @@ namespace BizHawk.MultiClient
             MovieView.QueryItemText += new QueryItemTextHandler(MovieView_QueryItemText);
             MovieView.QueryItemBkColor += new QueryItemBkColorHandler(MovieView_QueryItemBkColor);
             MovieView.VirtualMode = true;
+            sortReverse = false;
+            sortedCol = "";
         }
 
         void MovieView_QueryItemText(int index, int column, out string text)
@@ -97,6 +101,8 @@ namespace BizHawk.MultiClient
                 UpdateList();
                 MovieView.SelectedIndices.Clear();
                 MovieView.setSelection(MovieList.Count - 1);
+                sortReverse = false;
+                sortedCol = "";
             }
         }
 
@@ -194,19 +200,25 @@ namespace BizHawk.MultiClient
         private void OrderColumn(int columnToOrder)
         {
             string columnName = MovieView.Columns[columnToOrder].Text;
-
+            if (sortedCol.CompareTo(columnName) != 0)
+                sortReverse = false;
             InsertionSort(MovieList, columnName);
+            sortedCol = columnName;
+            sortReverse = !(sortReverse);
             MovieView.Refresh();
         }
 
         private void InsertionSort(List<Movie> smallList, string parameter)
         {
+            int sort = 1;
+            if (sortReverse)
+                sort = -1;
             for (int i = 0; i < smallList.Count; i++)
             {
                 int smallest = i;
                 for (int k = i + 1; k < smallList.Count; k++)
                 {
-                    if (smallList[smallest].CompareTo(smallList[k], parameter) == 1)
+                    if (smallList[smallest].CompareTo(smallList[k], parameter) == sort)
                         smallest = k;
                 }
 
