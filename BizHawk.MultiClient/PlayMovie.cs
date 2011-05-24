@@ -202,73 +202,11 @@ namespace BizHawk.MultiClient
             string columnName = MovieView.Columns[columnToOrder].Text;
             if (sortedCol.CompareTo(columnName) != 0)
                 sortReverse = false;
-            MergeSort(MovieList, 0, MovieList.Count, columnName);
+            MovieList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
             sortedCol = columnName;
             sortReverse = !(sortReverse);
             MovieView.Refresh();
         }
 
-        private void MergeSort(List<Movie> movieList, int low, int high, string parameter)
-        {
-            int sort = 1;
-            if (sortReverse)
-                sort = -1;
-
-            if (high - low < 15)
-                InsertionSort(movieList, parameter);
-            else
-            {
-                int mid = Convert.ToInt32(((high - low) / 2) + low);
-                MergeSort(movieList, low, mid, parameter);
-                MergeSort(movieList, mid + 1, high, parameter);
-
-                int trackLow = low;
-                int trackHigh = mid+1;
-                List<Movie> sortedList = new List<Movie>();
-                for (int i = low; i <= high ; i++)
-                {
-                    
-                    if ((trackHigh > high) || (movieList[trackLow].CompareTo(movieList[trackHigh], parameter) == sort))
-                    {
-                        sortedList.Add(movieList[trackLow]);
-                        trackLow++;
-                    }
-                    else
-                    {
-                        sortedList.Add(movieList[trackHigh]);
-                        trackHigh++;
-                    }
-                }
-
-                for (int i = low; i <= high; i++)
-                {
-                    movieList[i] = sortedList[i];
-                }
-            }
-        }
-
-        private void InsertionSort(List<Movie> smallList, string parameter)
-        {
-            int sort = 1;
-            if (sortReverse)
-                sort = -1;
-
-            for (int i = 0; i < smallList.Count; i++)
-            {
-                int smallest = i;
-                for (int k = i + 1; k < smallList.Count; k++)
-                {
-                    if (smallList[smallest].CompareTo(smallList[k], parameter) == sort)
-                        smallest = k;
-                }
-
-                if (i != smallest)
-                {
-                    Movie temp = smallList[i];
-                    smallList[i] = smallList[smallest];
-                    smallList[smallest] = temp;
-                }
-            }
-        }
     }
 }
