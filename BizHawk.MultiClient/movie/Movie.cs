@@ -490,5 +490,118 @@ namespace BizHawk.MultiClient
             }
             return -1;
         }
+
+        public int CompareTo(Movie Other, string parameter)
+        {
+            int compare = 0;
+            if (parameter == "File")
+            {
+                compare = CompareFileName(Other);
+                if (compare == 0)
+                {
+                    compare = CompareSysID(Other);
+                    if (compare == 0)
+                    {
+                        compare = CompareGameName(Other);
+                        if (compare == 0)
+                            compare = CompareLength(Other);
+                    }
+                }
+            }
+            else if (parameter == "SysID")
+            {
+                compare = CompareSysID(Other);
+                if (compare == 0)
+                {
+                    compare = CompareFileName(Other);
+                    if (compare == 0)
+                    {
+                        compare = CompareGameName(Other);
+                        if (compare == 0)
+                            compare = CompareLength(Other);
+                    }
+                }
+            }
+            else if (parameter == "Game")
+            {
+                compare = CompareGameName(Other);
+                if (compare == 0)
+                {
+                    compare = CompareFileName(Other);
+                    if (compare == 0)
+                    {
+                        compare = CompareSysID(Other);
+                        if (compare == 0)
+                            compare = CompareLength(Other);
+                    }
+                }
+            }
+            else if (parameter == "Length")
+            {
+                compare = CompareLength(Other);
+                if (compare == 0)
+                {
+                    compare = CompareFileName(Other);
+                    if (compare == 0)
+                    {
+                        compare = CompareSysID(Other);
+                        if (compare == 0)
+                            compare = CompareGameName(Other);
+                    }
+                }
+            }
+            return compare;
+        }
+
+        private int CompareFileName(Movie Other)
+        {
+            string otherName = Path.GetFileName(Other.GetFilePath());
+            string thisName = Path.GetFileName(this.Filename);
+
+            return thisName.CompareTo(otherName);
+        }
+
+        private int CompareSysID(Movie Other)
+        {
+            string otherSysID = Other.GetSysID();
+            string thisSysID = this.GetSysID();
+
+            if (thisSysID == null && otherSysID == null)
+                return 0;
+            else if (thisSysID == null)
+                return -1;
+            else if (otherSysID == null)
+                return 1;
+            else
+                return thisSysID.CompareTo(otherSysID);
+        }
+
+        private int CompareGameName(Movie Other)
+        {
+            string otherGameName = Other.GetGameName();
+            string thisGameName = this.GetGameName();
+
+            if (thisGameName == null && otherGameName == null)
+                return 0;
+            else if (thisGameName == null)
+                return -1;
+            else if (otherGameName == null)
+                return 1;
+            else
+                return thisGameName.CompareTo(otherGameName);
+        }
+
+        private int CompareLength(Movie Other)
+        {
+            int otherLength = Other.Frames;
+            int thisLength = this.Frames;
+
+            if (thisLength < otherLength)
+                return -1;
+            else if (thisLength > otherLength)
+                return 1;
+            else
+                return 0;
+        }
     }
 }
