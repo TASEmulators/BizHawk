@@ -185,5 +185,38 @@ namespace BizHawk.MultiClient
                     AddMovieToList(path);
             }
         }
+
+        private void MovieView_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            OrderColumn(e.Column);
+        }
+
+        private void OrderColumn(int columnToOrder)
+        {
+            string columnName = MovieView.Columns[columnToOrder].Text;
+
+            InsertionSort(MovieList, columnName);
+            MovieView.Refresh();
+        }
+
+        private void InsertionSort(List<Movie> smallList, string parameter)
+        {
+            for (int i = 0; i < smallList.Count; i++)
+            {
+                int smallest = i;
+                for (int k = i + 1; k < smallList.Count; k++)
+                {
+                    if (smallList[smallest].CompareTo(smallList[k], parameter) == 1)
+                        smallest = k;
+                }
+
+                if (i != smallest)
+                {
+                    Movie temp = smallList[i];
+                    smallList[i] = smallList[smallest];
+                    smallList[smallest] = temp;
+                }
+            }
+        }
     }
 }

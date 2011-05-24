@@ -103,6 +103,7 @@
             this.MovieView.TabIndex = 3;
             this.MovieView.UseCompatibleStateImageBehavior = false;
             this.MovieView.View = System.Windows.Forms.View.Details;
+            this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
             this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
             this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
             this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
