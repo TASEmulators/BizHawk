@@ -160,6 +160,21 @@ namespace BizHawk.MultiClient
                 vol = 100;
             if (vol < 0)
                 vol = 0;
+            if (Global.Config.SoundEnabled)
+                SoundEnabledChanged();
+            else
+                DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 50);
+            
+        }
+
+        /// <summary>
+        /// Uses Global.Config.SoundEnabled, this just notifies the object to read it
+        /// </summary>
+        public void SoundEnabledChanged()
+        {
+            int vol = Global.Config.SoundVolume;
+            if (Global.Config.SoundEnabled)
+                vol = -5000;
             DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 50);
         }
     }
