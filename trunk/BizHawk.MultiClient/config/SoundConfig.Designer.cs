@@ -32,10 +32,10 @@
             this.OK = new System.Windows.Forms.Button();
             this.SoundOnCheckBox = new System.Windows.Forms.CheckBox();
             this.MuteFrameAdvance = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SoundVolGroup = new System.Windows.Forms.GroupBox();
             this.SoundVolBar = new System.Windows.Forms.TrackBar();
             this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
-            this.groupBox1.SuspendLayout();
+            this.SoundVolGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
             this.SuspendLayout();
@@ -72,6 +72,7 @@
             this.SoundOnCheckBox.TabIndex = 2;
             this.SoundOnCheckBox.Text = "Sound On";
             this.SoundOnCheckBox.UseVisualStyleBackColor = true;
+            this.SoundOnCheckBox.CheckedChanged += new System.EventHandler(this.SoundOnCheckBox_CheckedChanged);
             // 
             // MuteFrameAdvance
             // 
@@ -83,16 +84,16 @@
             this.MuteFrameAdvance.Text = "Mute Frame Advance";
             this.MuteFrameAdvance.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // SoundVolGroup
             // 
-            this.groupBox1.Controls.Add(this.SoundVolBar);
-            this.groupBox1.Controls.Add(this.SoundVolNumeric);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(90, 219);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Volume";
+            this.SoundVolGroup.Controls.Add(this.SoundVolBar);
+            this.SoundVolGroup.Controls.Add(this.SoundVolNumeric);
+            this.SoundVolGroup.Location = new System.Drawing.Point(12, 12);
+            this.SoundVolGroup.Name = "SoundVolGroup";
+            this.SoundVolGroup.Size = new System.Drawing.Size(90, 219);
+            this.SoundVolGroup.TabIndex = 4;
+            this.SoundVolGroup.TabStop = false;
+            this.SoundVolGroup.Text = "Volume";
             // 
             // SoundVolBar
             // 
@@ -121,7 +122,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(355, 286);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.SoundVolGroup);
             this.Controls.Add(this.MuteFrameAdvance);
             this.Controls.Add(this.SoundOnCheckBox);
             this.Controls.Add(this.OK);
@@ -130,8 +131,8 @@
             this.ShowIcon = false;
             this.Text = "Sound Configuration";
             this.Load += new System.EventHandler(this.SoundConfig_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.SoundVolGroup.ResumeLayout(false);
+            this.SoundVolGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
             this.ResumeLayout(false);
@@ -145,7 +146,7 @@
         private System.Windows.Forms.Button OK;
         private System.Windows.Forms.CheckBox SoundOnCheckBox;
         private System.Windows.Forms.CheckBox MuteFrameAdvance;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox SoundVolGroup;
         private System.Windows.Forms.NumericUpDown SoundVolNumeric;
         private System.Windows.Forms.TrackBar SoundVolBar;
     }

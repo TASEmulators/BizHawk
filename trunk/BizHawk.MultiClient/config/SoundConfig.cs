@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
             MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
             SoundVolBar.Value = Global.Config.SoundVolume;
             SoundVolNumeric.Value = Global.Config.SoundVolume;
+            SetEnabledState();
         }
 
         private void OK_Click(object sender, EventArgs e)
@@ -30,6 +31,7 @@ namespace BizHawk.MultiClient
             Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
             Global.Config.SoundVolume = SoundVolBar.Value;
             Global.Sound.ChangeVolume(Global.Config.SoundVolume);
+            Global.Sound.SoundEnabledChanged();
             Global.Sound.StartSound();
             this.Close();
         }
@@ -47,6 +49,25 @@ namespace BizHawk.MultiClient
         private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
         {
             SoundVolBar.Value = (int)SoundVolNumeric.Value;
+        }
+
+        private void SoundOnCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SetEnabledState();
+        }
+
+        private void SetEnabledState()
+        {
+            if (SoundOnCheckBox.Checked)
+            {
+                SoundVolGroup.Enabled = true;
+                MuteFrameAdvance.Enabled = true;
+            }
+            else
+            {
+                SoundVolGroup.Enabled = false;
+                MuteFrameAdvance.Enabled = false;
+            }
         }
     }
 }
