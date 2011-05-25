@@ -161,7 +161,7 @@ namespace BizHawk.MultiClient
             if (vol < 0)
                 vol = 0;
             if (Global.Config.SoundEnabled)
-                SoundEnabledChanged();
+                UpdateSoundSettings();
             else
                 DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 50);
             
@@ -170,12 +170,33 @@ namespace BizHawk.MultiClient
         /// <summary>
         /// Uses Global.Config.SoundEnabled, this just notifies the object to read it
         /// </summary>
-        public void SoundEnabledChanged()
+        public void UpdateSoundSettings()
         {
             int vol = Global.Config.SoundVolume;
             if (Global.Config.SoundEnabled)
                 vol = -5000;
             DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 50);
+
+            switch (Global.Config.SoundSampleRateIndex)
+            {
+                case 0:
+                    DSoundBuffer.Format.SamplesPerSecond = 22050;
+                    break;
+                case 1:
+                    DSoundBuffer.Format.SamplesPerSecond = 32000;
+                    break;
+                default:
+                case 2:
+                    DSoundBuffer.Format.SamplesPerSecond = 44100;
+                    break;
+                case 3:
+                    DSoundBuffer.Format.SamplesPerSecond = 48000;
+                    break;
+                case 4:
+                    DSoundBuffer.Format.SamplesPerSecond = 96000;
+                    break;
+            }
+            
         }
     }
 }

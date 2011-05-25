@@ -35,9 +35,12 @@
             this.SoundVolGroup = new System.Windows.Forms.GroupBox();
             this.SoundVolBar = new System.Windows.Forms.TrackBar();
             this.SoundVolNumeric = new System.Windows.Forms.NumericUpDown();
+            this.SampleRateCombo = new System.Windows.Forms.ComboBox();
+            this.SampleRateBox = new System.Windows.Forms.GroupBox();
             this.SoundVolGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
+            this.SampleRateBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // Cancel
@@ -115,6 +118,31 @@
             this.SoundVolNumeric.TabIndex = 0;
             this.SoundVolNumeric.ValueChanged += new System.EventHandler(this.SoundVolNumeric_ValueChanged);
             // 
+            // SampleRateCombo
+            // 
+            this.SampleRateCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SampleRateCombo.FormattingEnabled = true;
+            this.SampleRateCombo.Items.AddRange(new object[] {
+            "22050",
+            "32000",
+            "44100",
+            "48000",
+            "96000"});
+            this.SampleRateCombo.Location = new System.Drawing.Point(6, 19);
+            this.SampleRateCombo.Name = "SampleRateCombo";
+            this.SampleRateCombo.Size = new System.Drawing.Size(121, 21);
+            this.SampleRateCombo.TabIndex = 5;
+            // 
+            // SampleRateBox
+            // 
+            this.SampleRateBox.Controls.Add(this.SampleRateCombo);
+            this.SampleRateBox.Location = new System.Drawing.Point(127, 71);
+            this.SampleRateBox.Name = "SampleRateBox";
+            this.SampleRateBox.Size = new System.Drawing.Size(135, 53);
+            this.SampleRateBox.TabIndex = 6;
+            this.SampleRateBox.TabStop = false;
+            this.SampleRateBox.Text = "Sample Rate";
+            // 
             // SoundConfig
             // 
             this.AcceptButton = this.OK;
@@ -122,6 +150,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(355, 286);
+            this.Controls.Add(this.SampleRateBox);
             this.Controls.Add(this.SoundVolGroup);
             this.Controls.Add(this.MuteFrameAdvance);
             this.Controls.Add(this.SoundOnCheckBox);
@@ -135,6 +164,7 @@
             this.SoundVolGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).EndInit();
+            this.SampleRateBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,5 +179,7 @@
         private System.Windows.Forms.GroupBox SoundVolGroup;
         private System.Windows.Forms.NumericUpDown SoundVolNumeric;
         private System.Windows.Forms.TrackBar SoundVolBar;
+        private System.Windows.Forms.ComboBox SampleRateCombo;
+        private System.Windows.Forms.GroupBox SampleRateBox;
     }
 }

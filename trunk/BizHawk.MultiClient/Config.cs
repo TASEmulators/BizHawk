@@ -133,6 +133,7 @@
         public bool SoundEnabled = true;
         public bool MuteFrameAdvance = true;
         public int SoundVolume = 100; //Range 0-100
+        public int SoundSampleRateIndex = 2; //0 = 22050, 1 = 32000, 2 = 44100, 3 = 48000, 4 = 960000
 
         // Lua Console
         public RecentFiles RecentLua = new RecentFiles(8);
