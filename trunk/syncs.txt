@@ -1,7 +1,8 @@
-NES - In general, it's very laggy, and doesn't seem to want to turbo.
+NES - In general, it's very laggy, and doesn't seem to want to turbo. Audio is always messed up in some way.
 
+Adventures of Lolo (1268M) fails. Odd audio.
 The Bugs Bunny Crazy Castle (3155S) has issues with emulating the bass track of the sound. It holds notes way longer than necessary. Also, in FCEUX, the dead enemies kick their legs even after I collect the last carrot. Here, they remain static. It's almost like a drone. That said, it syncs perfectly.
-Journey to Silius (1014M) fails to sync miserably, which is a bad sign as it's console verified. Also, I can only hear the melody and drum tracks.
+Journey to Silius (1014M) fails to sync nearly instantly, which is a bad sign as it's console verified. Also, I can only hear the melody and drum tracks...I'll presume all audio is emulated incorrectly by Bizhawk with NES games.
 
 PCE
 
