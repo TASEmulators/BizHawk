@@ -1,3 +1,9 @@
+NES - In general, it's very laggy, and doesn't seem to want to turbo.
+
+The Bugs Bunny Crazy Castle (3155S) has issues with emulating the bass track of the sound. It holds notes way longer than necessary. Also, in FCEUX, the dead enemies kick their legs even after I collect the last carrot. Here, they remain static. It's almost like a drone. That said, it syncs perfectly.
+
+PCE
+
 Bonk's Adventure (1631M) desyncs on level 1-2 at ~3000 frames.
 Dungeon Explorer (1645M) does nothing more than get past the title screen.
 Madoo Granzort (1432M) desyncs after hitting the first boss a few times at ~3500 frames.
