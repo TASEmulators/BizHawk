@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (!Cart.wram_battery) return null;
 				return WRAM;
-				//some boards have a pram that is backed-up or not backed-up. need to handle that somehow
+				//some boards have a wram that is backed-up or not backed-up. need to handle that somehow
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}
 		}

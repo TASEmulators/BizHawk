@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else SetMirrorType(EMirrorType.OneScreenB);
 			}
 
-			protected void SetMirrorType(EMirrorType mirrorType)
+			public void SetMirrorType(EMirrorType mirrorType)
 			{
 				switch (mirrorType)
 				{
