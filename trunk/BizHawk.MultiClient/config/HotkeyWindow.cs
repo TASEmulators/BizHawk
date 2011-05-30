@@ -79,6 +79,8 @@ namespace BizHawk.MultiClient.tools
             IDW_RECORDMOVIE.Text = Global.Config.RecordMovieBinding;
             IDW_STOPMOVIE.Text = Global.Config.StopMovieBinding;
             IDW_PLAYBEGINNING.Text = Global.Config.PlayBeginningBinding;
+            IDW_VOLUP.Text = Global.Config.VolUpBinding;
+            IDW_VOLDOWN.Text = Global.Config.VolDownBinding;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -153,6 +155,8 @@ namespace BizHawk.MultiClient.tools
             Global.Config.RecordMovieBinding = IDW_RECORDMOVIE.Text;
             Global.Config.StopMovieBinding = IDW_STOPMOVIE.Text;
             Global.Config.PlayBeginningBinding = IDW_PLAYBEGINNING.Text;
+            Global.Config.VolUpBinding = IDW_VOLUP.Text;
+            Global.Config.VolDownBinding = IDW_VOLDOWN.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();
