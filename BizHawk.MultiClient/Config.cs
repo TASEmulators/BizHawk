@@ -325,6 +325,8 @@
         public string RecordMovieBinding = "";
         public string StopMovieBinding = "";
         public string PlayBeginningBinding = "";
+        public string VolUpBinding = "";
+        public string VolDownBinding = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;

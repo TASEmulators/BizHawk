@@ -31,6 +31,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
             this.hotkeyTabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label69 = new System.Windows.Forms.Label();
+            this.IDW_VOLDOWN = new BizHawk.MultiClient.InputWidget();
+            this.label68 = new System.Windows.Forms.Label();
+            this.IDW_VOLUP = new BizHawk.MultiClient.InputWidget();
             this.IDW_InputDisplay = new BizHawk.MultiClient.InputWidget();
             this.label62 = new System.Windows.Forms.Label();
             this.IDW_LagCounter = new BizHawk.MultiClient.InputWidget();
@@ -194,6 +198,10 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label69);
+            this.tabPage1.Controls.Add(this.IDW_VOLDOWN);
+            this.tabPage1.Controls.Add(this.label68);
+            this.tabPage1.Controls.Add(this.IDW_VOLUP);
             this.tabPage1.Controls.Add(this.IDW_InputDisplay);
             this.tabPage1.Controls.Add(this.label62);
             this.tabPage1.Controls.Add(this.IDW_LagCounter);
@@ -232,6 +240,42 @@
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label69
+            // 
+            this.label69.AutoSize = true;
+            this.label69.Location = new System.Drawing.Point(6, 207);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(73, 13);
+            this.label69.TabIndex = 28;
+            this.label69.Text = "Volume Down";
+            // 
+            // IDW_VOLDOWN
+            // 
+            this.IDW_VOLDOWN.AcceptsTab = true;
+            this.IDW_VOLDOWN.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_VOLDOWN.Location = new System.Drawing.Point(93, 204);
+            this.IDW_VOLDOWN.Name = "IDW_VOLDOWN";
+            this.IDW_VOLDOWN.Size = new System.Drawing.Size(100, 20);
+            this.IDW_VOLDOWN.TabIndex = 9;
+            // 
+            // label68
+            // 
+            this.label68.AutoSize = true;
+            this.label68.Location = new System.Drawing.Point(7, 181);
+            this.label68.Name = "label68";
+            this.label68.Size = new System.Drawing.Size(59, 13);
+            this.label68.TabIndex = 26;
+            this.label68.Text = "Volume Up";
+            // 
+            // IDW_VOLUP
+            // 
+            this.IDW_VOLUP.AcceptsTab = true;
+            this.IDW_VOLUP.BackColor = System.Drawing.SystemColors.Window;
+            this.IDW_VOLUP.Location = new System.Drawing.Point(93, 178);
+            this.IDW_VOLUP.Name = "IDW_VOLUP";
+            this.IDW_VOLUP.Size = new System.Drawing.Size(100, 20);
+            this.IDW_VOLUP.TabIndex = 8;
+            // 
             // IDW_InputDisplay
             // 
             this.IDW_InputDisplay.AcceptsTab = true;
@@ -239,7 +283,7 @@
             this.IDW_InputDisplay.Location = new System.Drawing.Point(295, 178);
             this.IDW_InputDisplay.Name = "IDW_InputDisplay";
             this.IDW_InputDisplay.Size = new System.Drawing.Size(100, 20);
-            this.IDW_InputDisplay.TabIndex = 23;
+            this.IDW_InputDisplay.TabIndex = 57;
             // 
             // label62
             // 
@@ -257,7 +301,7 @@
             this.IDW_LagCounter.Location = new System.Drawing.Point(295, 153);
             this.IDW_LagCounter.Name = "IDW_LagCounter";
             this.IDW_LagCounter.Size = new System.Drawing.Size(100, 20);
-            this.IDW_LagCounter.TabIndex = 21;
+            this.IDW_LagCounter.TabIndex = 56;
             // 
             // label61
             // 
@@ -275,7 +319,7 @@
             this.IDW_FrameCounter.Location = new System.Drawing.Point(295, 129);
             this.IDW_FrameCounter.Name = "IDW_FrameCounter";
             this.IDW_FrameCounter.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FrameCounter.TabIndex = 19;
+            this.IDW_FrameCounter.TabIndex = 55;
             // 
             // label60
             // 
@@ -293,7 +337,7 @@
             this.IDW_DisplayFPS.Location = new System.Drawing.Point(294, 104);
             this.IDW_DisplayFPS.Name = "IDW_DisplayFPS";
             this.IDW_DisplayFPS.Size = new System.Drawing.Size(100, 20);
-            this.IDW_DisplayFPS.TabIndex = 17;
+            this.IDW_DisplayFPS.TabIndex = 54;
             // 
             // label59
             // 
@@ -311,7 +355,7 @@
             this.IDW_CloseROM.Location = new System.Drawing.Point(295, 80);
             this.IDW_CloseROM.Name = "IDW_CloseROM";
             this.IDW_CloseROM.Size = new System.Drawing.Size(100, 20);
-            this.IDW_CloseROM.TabIndex = 15;
+            this.IDW_CloseROM.TabIndex = 53;
             // 
             // label58
             // 
@@ -329,7 +373,7 @@
             this.IDW_OpenROM.Location = new System.Drawing.Point(295, 56);
             this.IDW_OpenROM.Name = "IDW_OpenROM";
             this.IDW_OpenROM.Size = new System.Drawing.Size(100, 20);
-            this.IDW_OpenROM.TabIndex = 10;
+            this.IDW_OpenROM.TabIndex = 52;
             // 
             // label57
             // 
@@ -365,7 +409,7 @@
             this.IDW_FULLSCREEN.Location = new System.Drawing.Point(295, 32);
             this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
             this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
-            this.IDW_FULLSCREEN.TabIndex = 9;
+            this.IDW_FULLSCREEN.TabIndex = 51;
             // 
             // IDW_SCREENSHOT
             // 
@@ -374,7 +418,7 @@
             this.IDW_SCREENSHOT.Location = new System.Drawing.Point(295, 8);
             this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
             this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
-            this.IDW_SCREENSHOT.TabIndex = 8;
+            this.IDW_SCREENSHOT.TabIndex = 50;
             // 
             // label44
             // 
@@ -1694,5 +1738,9 @@
         private System.Windows.Forms.Label label66;
         private InputWidget IDW_PLAYBEGINNING;
         private System.Windows.Forms.Label label67;
+        private System.Windows.Forms.Label label69;
+        private InputWidget IDW_VOLDOWN;
+        private System.Windows.Forms.Label label68;
+        private InputWidget IDW_VOLUP;
     }
 }

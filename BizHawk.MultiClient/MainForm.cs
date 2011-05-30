@@ -326,7 +326,7 @@ namespace BizHawk.MultiClient
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
                 "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
                 "Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
-                "Play Movie", "Record Movie", "Stop Movie", "Play Beginning"}
+                "Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down"}
 		};
 
 		private void InitControls()
@@ -394,6 +394,8 @@ namespace BizHawk.MultiClient
             controls.BindMulti("Record Movie", Global.Config.RecordMovieBinding);
             controls.BindMulti("Stop Movie", Global.Config.StopMovieBinding);
             controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
+            controls.BindMulti("Volume Up", Global.Config.VolUpBinding);
+            controls.BindMulti("Volume Down", Global.Config.VolDownBinding);
 
 			Global.ClientControls = controls;
 
@@ -1011,6 +1013,18 @@ namespace BizHawk.MultiClient
             {
                 PlayMovieFromBeginning();
                 Global.ClientControls.UnpressButton("Play Beginning");
+            }
+
+            if (Global.ClientControls["Volume Up"])
+            {
+                VolumeUp();
+                Global.ClientControls.UnpressButton("Volume Up");
+            }
+
+            if (Global.ClientControls["Volume Down"])
+            {
+                VolumeDown();
+                Global.ClientControls.UnpressButton("Volume Down");
             }
         }
                 
@@ -2016,6 +2030,24 @@ namespace BizHawk.MultiClient
         private void singleInstanceModeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Global.Config.SingleInstanceMode ^= true;
+        }
+
+        private void VolumeUp()
+        {
+            Global.Config.SoundVolume += 10;
+            if (Global.Config.SoundVolume > 100)
+                Global.Config.SoundVolume = 100;
+            Global.Sound.ChangeVolume(Global.Config.SoundVolume);
+            Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+        }
+
+        private void VolumeDown()
+        {
+            Global.Config.SoundVolume -= 10;
+            if (Global.Config.SoundVolume < 0)
+                Global.Config.SoundVolume = 0;
+            Global.Sound.ChangeVolume(Global.Config.SoundVolume);
+            Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
         }
 	}
 }
