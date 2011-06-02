@@ -308,5 +308,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 					return null;
 			}
 		}
+
+        public void Dispose() {}
     }
 }

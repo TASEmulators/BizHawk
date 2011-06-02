@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BizHawk
 {
-    public interface IEmulator
+    public interface IEmulator : IDisposable
     {
         IVideoProvider VideoProvider { get; }
         ISoundProvider SoundProvider { get; }

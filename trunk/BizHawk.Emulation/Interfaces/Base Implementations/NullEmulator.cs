@@ -29,9 +29,6 @@ namespace BizHawk
         public ControllerDefinition ControllerDefinition { get { return NullController; } }
         public IController Controller { get; set; }
 
-        //public string GetControllersAsMnemonic() { return "|.|.|"; }
-        //public void SetControllersAsMnemonic(string mnemonic) { return; }
-
         public int Frame { get; set; }
         public int LagCount { get { return 0; } set { return; } }
         public bool IsLagFrame { get { return false; } }
@@ -53,10 +50,18 @@ namespace BizHawk
         private IList<MemoryDomain> memoryDomains;
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-
+        public void Dispose() { }
 		public object Query(EmulatorQuery query)
 		{
 			return null;
 		}
+    }
+
+    public class NullSound : ISoundProvider
+    {
+        public static readonly NullSound SilenceProvider = new NullSound();
+
+        public void GetSamples(short[] samples) { }
+        public void DiscardSamples() { }
     }
 }

@@ -195,5 +195,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		{
 			return null;
 		}
+
+        public void Dispose() {}
     }
 }

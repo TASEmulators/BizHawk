@@ -855,5 +855,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			return null;
 		}
+
+        public void Dispose() {}
     }
 }
