@@ -379,5 +379,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 return DisplayType == DisplayType.NTSC ? 60d : 50d;
 			return null;
 		}
+
+        public void Dispose() {}
     }
 }

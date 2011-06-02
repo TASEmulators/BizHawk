@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -720,6 +719,7 @@ namespace BizHawk.MultiClient
 				}
 
 				CloseGame();
+                Global.Emulator.Dispose();
 				Global.Emulator = nextEmulator;
 				Global.Game = game;
 				SyncControls();
@@ -795,6 +795,7 @@ namespace BizHawk.MultiClient
 				writer.Write(Global.Emulator.SaveRam, 0, len);
 				writer.Close();
 			}
+            Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
             Global.ActiveController = Global.NullControls;
             UserMovie.StopMovie();
@@ -1151,11 +1152,10 @@ namespace BizHawk.MultiClient
                     InputLog.GetMnemonic();
 			}
 
-			if(genSound)
+			if (genSound)
 				Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
 			else
-				Global.Sound.UpdateSound(new NullEmulator()); //generates silence
-
+				Global.Sound.UpdateSound(NullSound.SilenceProvider);
 		}
 
         private void MakeScreenshot(string path)
