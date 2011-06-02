@@ -68,6 +68,8 @@ namespace BizHawk.Disc
 
 	public partial class Disc
 	{
+		//TODO - separate these into Read_2352 and Read_2048 (optimizations can be made by ISector implementors depending on what is requested)
+		//(for example, avoiding the 2048 byte sector creating the ECC data and then immediately discarding it)
 		public interface ISector
 		{
 			int Read(byte[] buffer, int offset);
@@ -278,7 +280,7 @@ namespace BizHawk.Disc
 			using(FileStream fs = new FileStream(binPath,FileMode.Create,FileAccess.Write,FileShare.None))
 				for (int i = 0; i < Sectors.Count; i++)
 				{
-					ReadLBA(i, temp, 0);
+					ReadLBA_2352(i, temp, 0);
 					fs.Write(temp, 0, 2352);
 				}
 		}
