@@ -165,16 +165,16 @@ namespace BizHawk.MultiClient
             {
                 input.Append("."); //TODO: reset goes here
                 input.Append("|");
-                for (int i = 1; i < 6; i++)
+                for (int player = 1; player < 6; player++)
                 {
-                    input.Append(IsPressed("P" + i.ToString() + " Up") ? "U" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " Down") ? "D" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " Left") ? "L" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " Right") ? "R" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " B1") ? "1" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " B2") ? "2" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " Run") ? "R" : ".");
-                    input.Append(IsPressed("P" + i.ToString() + " Select") ? "S" : ".");
+                    input.Append(IsPressed("P" + player + " Up")     ? "U" : ".");
+                    input.Append(IsPressed("P" + player + " Down")   ? "D" : ".");
+                    input.Append(IsPressed("P" + player + " Left")   ? "L" : ".");
+                    input.Append(IsPressed("P" + player + " Right")  ? "R" : ".");
+                    input.Append(IsPressed("P" + player + " B1")     ? "1" : ".");
+                    input.Append(IsPressed("P" + player + " B2")     ? "2" : ".");
+                    input.Append(IsPressed("P" + player + " Run")    ? "R" : ".");
+                    input.Append(IsPressed("P" + player + " Select") ? "S" : ".");
                     input.Append("|");
                 }
                 return input.ToString();
@@ -182,16 +182,16 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "NES Controls")
             {
-                input.Append(IsPressed("Reset") ? "r" : ".");
+                input.Append(IsPressed("Reset")  ? "r" : ".");
                 input.Append("|");
-                input.Append(IsPressed("Right") ? "R" : ".");
-                input.Append(IsPressed("Left") ? "L" : ".");
-                input.Append(IsPressed("Down") ? "D" : ".");
-                input.Append(IsPressed("Up") ? "U" : ".");
-                input.Append(IsPressed("Start") ? "S" : ".");
+                input.Append(IsPressed("Right")  ? "R" : ".");
+                input.Append(IsPressed("Left")   ? "L" : ".");
+                input.Append(IsPressed("Down")   ? "D" : ".");
+                input.Append(IsPressed("Up")     ? "U" : ".");
+                input.Append(IsPressed("Start")  ? "S" : ".");
                 input.Append(IsPressed("Select") ? "s" : ".");
-                input.Append(IsPressed("B") ? "B" : ".");
-                input.Append(IsPressed("A") ? "A" : ".");
+                input.Append(IsPressed("B")      ? "B" : ".");
+                input.Append(IsPressed("A")      ? "A" : ".");
                 input.Append("|");
                 return input.ToString();
             }
@@ -261,35 +261,37 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "SMS Controller")
             {
-                for (int i = 1; i < 3; i++)
-                {
-                    if (mnemonic.Length < (1 + 7 * i)) return;
-                    //if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
-                    if (mnemonic[(i - 1) * 7 + 3] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Up");
-                    if (mnemonic[(i - 1) * 7 + 4] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Down");
-                    if (mnemonic[(i - 1) * 7 + 5] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Left");
-                    if (mnemonic[(i - 1) * 7 + 6] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Right");
-                    if (mnemonic[(i - 1) * 7 + 7] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " B1");
-                    if (mnemonic[(i - 1) * 7 + 8] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " B2");
-                }
-                if (mnemonic.Length < 18) return;
-                if (mnemonic[17] != '.') programmaticallyPressedButtons.Add("Pause");
-                if (mnemonic[18] != '.') programmaticallyPressedButtons.Add("Reset");
+                if (mnemonic[1] != '.')  programmaticallyPressedButtons.Add("P1 Up");
+                if (mnemonic[2] != '.')  programmaticallyPressedButtons.Add("P1 Down");
+                if (mnemonic[3] != '.')  programmaticallyPressedButtons.Add("P1 Left");
+                if (mnemonic[4] != '.')  programmaticallyPressedButtons.Add("P1 Right");
+                if (mnemonic[5] != '.')  programmaticallyPressedButtons.Add("P1 B1");
+                if (mnemonic[6] != '.')  programmaticallyPressedButtons.Add("P1 B2");
+
+                if (mnemonic[8] != '.')  programmaticallyPressedButtons.Add("P2 Up");
+                if (mnemonic[9] != '.')  programmaticallyPressedButtons.Add("P2 Down");
+                if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("P2 Left");
+                if (mnemonic[11] != '.') programmaticallyPressedButtons.Add("P2 Right");
+                if (mnemonic[12] != '.') programmaticallyPressedButtons.Add("P2 B1");
+                if (mnemonic[13] != '.') programmaticallyPressedButtons.Add("P2 B2");
+
+                if (mnemonic[15] != '.') programmaticallyPressedButtons.Add("Pause");
+                if (mnemonic[16] != '.') programmaticallyPressedButtons.Add("Reset");
             }
 
             if (type.Name == "PC Engine Controller")
             {
-                for (int i = 1; i < 6; i++)
+                for (int i = 1; i <= 5; i++)
                 {
                     if (mnemonic.Length < (1 + i * 9)) return;
-                    if (mnemonic[(i - 1) * 9 + 3] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Up");
-                    if (mnemonic[(i - 1) * 9 + 4] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Down");
-                    if (mnemonic[(i - 1) * 9 + 5] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Left");
-                    if (mnemonic[(i - 1) * 9 + 6] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Right");
-                    if (mnemonic[(i - 1) * 9 + 7] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " B1");
-                    if (mnemonic[(i - 1) * 9 + 8] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " B2");
-                    if (mnemonic[(i - 1) * 9 + 9] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Run");
-                    if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i.ToString() + " Select");
+                    if (mnemonic[(i - 1) * 9 + 3] != '.')  programmaticallyPressedButtons.Add("P" + i + " Up");
+                    if (mnemonic[(i - 1) * 9 + 4] != '.')  programmaticallyPressedButtons.Add("P" + i + " Down");
+                    if (mnemonic[(i - 1) * 9 + 5] != '.')  programmaticallyPressedButtons.Add("P" + i + " Left");
+                    if (mnemonic[(i - 1) * 9 + 6] != '.')  programmaticallyPressedButtons.Add("P" + i + " Right");
+                    if (mnemonic[(i - 1) * 9 + 7] != '.')  programmaticallyPressedButtons.Add("P" + i + " B1");
+                    if (mnemonic[(i - 1) * 9 + 8] != '.')  programmaticallyPressedButtons.Add("P" + i + " B2");
+                    if (mnemonic[(i - 1) * 9 + 9] != '.')  programmaticallyPressedButtons.Add("P" + i + " Run");
+                    if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
                 }
             }
 
