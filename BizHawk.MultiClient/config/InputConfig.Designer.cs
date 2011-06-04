@@ -38,6 +38,7 @@
             this.ControllComboBox = new System.Windows.Forms.ComboBox();
             this.SystemGroupBox = new System.Windows.Forms.GroupBox();
             this.SystemComboBox = new System.Windows.Forms.ComboBox();
+            this.AllowLR = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
             this.ControllerSelectGroupBox.SuspendLayout();
             this.SystemGroupBox.SuspendLayout();
@@ -46,7 +47,7 @@
             // OK
             // 
             this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(260, 284);
+            this.OK.Location = new System.Drawing.Point(261, 309);
             this.OK.Name = "OK";
             this.OK.Size = new System.Drawing.Size(75, 23);
             this.OK.TabIndex = 0;
@@ -58,7 +59,7 @@
             // 
             this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(350, 284);
+            this.Cancel.Location = new System.Drawing.Point(351, 309);
             this.Cancel.Name = "Cancel";
             this.Cancel.Size = new System.Drawing.Size(75, 23);
             this.Cancel.TabIndex = 1;
@@ -73,7 +74,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 68);
             this.ButtonsGroupBox.Name = "ButtonsGroupBox";
-            this.ButtonsGroupBox.Size = new System.Drawing.Size(240, 239);
+            this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 264);
             this.ButtonsGroupBox.TabIndex = 2;
             this.ButtonsGroupBox.TabStop = false;
             this.ButtonsGroupBox.Text = "Buttons";
@@ -83,7 +84,7 @@
             this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.ControllerImage.Location = new System.Drawing.Point(258, 73);
+            this.ControllerImage.Location = new System.Drawing.Point(259, 73);
             this.ControllerImage.Name = "ControllerImage";
             this.ControllerImage.Size = new System.Drawing.Size(169, 202);
             this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -92,11 +93,13 @@
             // 
             // ControllerSelectGroupBox
             // 
+            this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
             this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
             this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 12);
             this.ControllerSelectGroupBox.Name = "ControllerSelectGroupBox";
-            this.ControllerSelectGroupBox.Size = new System.Drawing.Size(239, 50);
+            this.ControllerSelectGroupBox.Size = new System.Drawing.Size(240, 50);
             this.ControllerSelectGroupBox.TabIndex = 4;
             this.ControllerSelectGroupBox.TabStop = false;
             this.ControllerSelectGroupBox.Text = "Controller";
@@ -125,8 +128,9 @@
             // 
             // SystemGroupBox
             // 
+            this.SystemGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SystemGroupBox.Controls.Add(this.SystemComboBox);
-            this.SystemGroupBox.Location = new System.Drawing.Point(258, 12);
+            this.SystemGroupBox.Location = new System.Drawing.Point(259, 12);
             this.SystemGroupBox.Name = "SystemGroupBox";
             this.SystemGroupBox.Size = new System.Drawing.Size(158, 50);
             this.SystemGroupBox.TabIndex = 6;
@@ -150,11 +154,22 @@
             this.SystemComboBox.TabIndex = 2;
             this.SystemComboBox.SelectedIndexChanged += new System.EventHandler(this.SystemComboBox_SelectedIndexChanged);
             // 
+            // AllowLR
+            // 
+            this.AllowLR.AutoSize = true;
+            this.AllowLR.Location = new System.Drawing.Point(261, 286);
+            this.AllowLR.Name = "AllowLR";
+            this.AllowLR.Size = new System.Drawing.Size(107, 17);
+            this.AllowLR.TabIndex = 7;
+            this.AllowLR.Text = "Allow L+R / U+D";
+            this.AllowLR.UseVisualStyleBackColor = true;
+            // 
             // InputConfig
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(439, 319);
+            this.ClientSize = new System.Drawing.Size(440, 344);
+            this.Controls.Add(this.AllowLR);
             this.Controls.Add(this.SystemGroupBox);
             this.Controls.Add(this.ControllerSelectGroupBox);
             this.Controls.Add(this.ControllerImage);
@@ -173,6 +188,7 @@
             this.ControllerSelectGroupBox.PerformLayout();
             this.SystemGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -187,5 +203,6 @@
         private System.Windows.Forms.CheckBox IDX_CONTROLLERENABLED;
         private System.Windows.Forms.GroupBox SystemGroupBox;
         private System.Windows.Forms.ComboBox SystemComboBox;
+        private System.Windows.Forms.CheckBox AllowLR;
     }
 }

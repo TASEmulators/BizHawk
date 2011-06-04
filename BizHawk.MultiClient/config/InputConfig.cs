@@ -629,6 +629,7 @@ namespace BizHawk.MultiClient
         {
             prevWidth = Size.Width;
             prevHeight = Size.Height;
+            AllowLR.Checked = Global.Config.AllowUD_LR;
 
             if(Global.Game != null)
 				switch (Global.Game.System)
@@ -667,6 +668,7 @@ namespace BizHawk.MultiClient
                UpdateAll();
             }
 			this.DialogResult = DialogResult.OK;
+            Global.Config.AllowUD_LR = AllowLR.Checked;
             this.Close();
         }
 
