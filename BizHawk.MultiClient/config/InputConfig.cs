@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
         public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
         public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
         public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X,T,0", "Y=", "Z" };
-        public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Start", "Select" };
+        public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start"};
         public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON", 
             "ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS", 
             "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW",
@@ -566,8 +566,9 @@ namespace BizHawk.MultiClient
             ButtonMappings[3] = TruncateButtonMapping(Global.Config.NESController[jpad].Right);
             ButtonMappings[4] = TruncateButtonMapping(Global.Config.NESController[jpad].A);
             ButtonMappings[5] = TruncateButtonMapping(Global.Config.NESController[jpad].B);
-            ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
-            ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
+            ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
+            ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
+            
             IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
             Changed = true;
             Labels.Clear();
