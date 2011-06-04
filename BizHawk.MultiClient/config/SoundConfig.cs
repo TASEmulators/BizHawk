@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
             MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
             SoundVolBar.Value = Global.Config.SoundVolume;
             SoundVolNumeric.Value = Global.Config.SoundVolume;
-            SampleRateCombo.SelectedIndex = Global.Config.SoundSampleRateIndex;
             UpdateSoundDialog();
         }
 
@@ -32,7 +31,6 @@ namespace BizHawk.MultiClient
             Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
             Global.Config.SoundVolume = SoundVolBar.Value;
             Global.Sound.ChangeVolume(Global.Config.SoundVolume);
-            Global.Config.SoundSampleRateIndex = SampleRateCombo.SelectedIndex;
             Global.Sound.UpdateSoundSettings();
             Global.Sound.StartSound();
             this.Close();
@@ -63,13 +61,11 @@ namespace BizHawk.MultiClient
             if (SoundOnCheckBox.Checked)
             {
                 SoundVolGroup.Enabled = true;
-                SampleRateBox.Enabled = true;
                 MuteFrameAdvance.Enabled = true;
             }
             else
             {
                 SoundVolGroup.Enabled = false;
-                SampleRateBox.Enabled = false;
                 MuteFrameAdvance.Enabled = false;
             }
         }
