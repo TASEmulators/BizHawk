@@ -554,6 +554,10 @@ namespace BizHawk.MultiClient
                 RamWatch1.LoadWatchFile(filePaths[0], false);
                 RamWatch1.DisplayWatchList();
             }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".FCM")
+            {
+                UserMovie = MovieConvert.ConvertFCM(filePaths[0]);
+            }
             else
                 LoadRom(filePaths[0]);
 		}
