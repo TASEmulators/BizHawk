@@ -126,11 +126,14 @@ namespace BizHawk.MultiClient
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             BinaryReader r = new BinaryReader(fs);
 
-            UInt32 signature = r.ReadUInt32();
-            //4 asci encoded chars, convert.  If not MMV\0 then error
+            byte[] signatureBytes = new byte[4];
+            for (int x = 0; x < 4; x++)
+                signatureBytes[x] = r.ReadByte();
+            string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+            if (signature != "MMV\0")
+                return null; //TODO: invalid movie type error
 
             UInt32 version = r.ReadUInt32();
-            //TODO: 4 ascii encoded chars, format properly
             m.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
 
             UInt32 framecount = r.ReadUInt32();
@@ -139,50 +142,64 @@ namespace BizHawk.MultiClient
             m.SetHeaderLine(MovieHeader.RERECORDS, rerecords.ToString());
 
             UInt32 IsFromReset = r.ReadUInt32();
-            //TODO: we don't support movies that fail to start from reset
+            if (IsFromReset == 0)
+                return null; //TODO: Movies from savestate not supported error
 
             UInt32 stateOffset = r.ReadUInt32();
             UInt32 inputDataOffset = r.ReadUInt32();
             UInt32 inputPacketSize = r.ReadUInt32();
             
-            byte[] authorBytes = new byte[24];
-            for (int x = 0; x < 24; x++)
+            byte[] authorBytes = new byte[64];
+            for (int x = 0; x < 64; x++)
                 authorBytes[x] = r.ReadByte();
 
-            string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
+            string author = System.Text.Encoding.UTF8.GetString(authorBytes);
             //TODO: remove null characters
             m.SetHeaderLine(MovieHeader.AUTHOR, author);
 
             //4-byte little endian flags
-            r.ReadBit(); //First bit unused
+            byte flags = r.ReadByte(); 
 
-            bool pal = r.ReadBit();
+            bool pal;
+            if ((int)(flags & 2) > 0)
+                pal = true;
+            else 
+                pal = false;
             m.SetHeaderLine("PAL", pal.ToString());
 
-            bool japan = r.ReadBit();
+            bool japan;
+            if ((int)(flags & 4) > 0)
+                japan = true;
+            else
+                japan = false;
             m.SetHeaderLine("Japan", japan.ToString());
 
-            bool gamegear = r.ReadBit();
-            if (gamegear)
+            bool gamegear;
+            if ((int)(flags & 8) > 0)
+            {
+                gamegear = true;
                 m.SetHeaderLine(MovieHeader.PLATFORM, "GG");
+            }
             else
+            {
+                gamegear = false;
                 m.SetHeaderLine(MovieHeader.PLATFORM, "SMS");
-            
-            for (int x = 0; x < 28; x++)
-                r.ReadBit();     //Unused
+            }
 
-            byte[] romnameBytes = new byte[64];
-            for (int x = 0; x < 64; x++)
+            r.ReadBytes(3); //Unused flags
+
+            byte[] romnameBytes = new byte[128];
+            for (int x = 0; x < 128; x++)
                 romnameBytes[x] = r.ReadByte();
             string romname = System.Text.Encoding.UTF8.GetString(romnameBytes.ToArray());
             //TODO: remove null characters
             m.SetHeaderLine(MovieHeader.GAMENAME, romname);
 
-            byte[] MD5Bytes = new byte[64];
-            for (int x = 0; x < 8; x++)
+            byte[] MD5Bytes = new byte[16];
+            for (int x = 0; x < 16; x++)
                 MD5Bytes[x] = r.ReadByte();
             string MD5 = System.Text.Encoding.UTF8.GetString(MD5Bytes.ToArray());
-            //TODO: remove null characters
+            //TODO: format correctly
             m.SetHeaderLine("MD5", MD5);
 
             
