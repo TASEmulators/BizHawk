@@ -1,5 +1,7 @@
 ﻿//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb
 
+//todo - read http://wiki.nesdev.com/w/index.php/PPU_sprite_priority
+
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -85,17 +87,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return;
 				}
 
-				Reg2002_vblank_active = 1;
+				Reg2002_vblank_active_pending = true;
 				ppuphase = PPUPHASE.VBL;
 
-				//Not sure if this is correct.  According to Matt Conte and my own tests, it is.
-				//Timing is probably off, though.
+				//Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
 				//NOTE:  Not having this here breaks a Super Donkey Kong game.
 				reg_2003 = 0;
-				const int delay = 20; //fceu used 12 here but I couldnt get it to work in marble madness and pirates.
 
-				runppu(delay); //X6502_Run(12);
-				if (reg_2000.vblank_nmi_gen) TriggerNMI();
+				//fceu/fceux had 12 here, but 15 was required to pass blargg's 05-nmi_timing.nes
+				const int delay = 15;
+				runppu(3);
+				bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
+				runppu(delay - 3);
+				if (nmi_destiny) TriggerNMI();
 				if (PAL)
 					runppu(70 * (kLineTime) - delay);
 				else
@@ -103,17 +107,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				//this seems to run just before the dummy scanline begins
 				clear_2002();
-				//this early out caused metroid to fail to boot. I am leaving it here as a reminder of what not to do
-				//if(!PPUON) { runppu(kLineTime*242); goto finish; }
-
-				//There are 2 conditions that update all 5 PPU scroll counters with the
-				//contents of the latches adjacent to them. The first is after a write to
-				//2006/2. The second, is at the beginning of scanline 20, when the PPU starts
-				//rendering data for the first time in a frame (this update won't happen if
-				//all rendering is disabled via 2001.3 and 2001.4).
-
-				//if(PPUON)
-				//	ppur.install_latches();
 
 				TempOAM* oams = stackalloc TempOAM[128];
 				int* oamcounts = stackalloc int[2];
@@ -142,6 +135,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//two of those tiles were read in the last scanline.
 					for (int xt = 0; xt < 32; xt++)
 					{
+						if (sl == 31 && xt == 31)
+						{
+							int zzz = 9;
+						}
 						Read_bgdata(ref bgdata[xt + 2]);
 
 						//ok, we're also going to draw here.
@@ -205,11 +202,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 											//transparent pixel bailout
 											if (spixel == 0) continue;
 
+											//TODO - make sure we dont trigger spritehit if the edges are masked for either BG or OBJ
 											//spritehit:
 											//1. is it sprite#0?
 											//2. is the bg pixel nonzero?
 											//then, it is spritehit.
-											if (oam->index == 0 && (pixel & 3) != 0 && rasterpos < 255)
+											if (oam->index == 0)
+											{
+												int zzz = 9;
+											}
+											if (oam->index == 0 && pixel != 0 && rasterpos < 255)
 											{
 												Reg2002_objhit = true;
 											}
@@ -397,20 +399,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					ppuphase = PPUPHASE.BG;
 
-					//fetch BG: two tiles for next line
-					for (int xt = 0; xt < 2; xt++)
-						Read_bgdata(ref bgdata[xt]);
-
 					//I'm unclear of the reason why this particular access to memory is made.
 					//The nametable address that is accessed 2 times in a row here, is also the
 					//same nametable address that points to the 3rd tile to be rendered on the
 					//screen (or basically, the first nametable address that will be accessed when
 					//the PPU is fetching background data on the next scanline).
 					//(not implemented yet)
-					runppu(kFetchTime*2);
+					runppu(kFetchTime * 2);
 					if (sl == 0)
 					{
-						if (idleSynch && reg_2001.PPUON && !PAL)
+						if (idleSynch && reg_2001.show_bg && !PAL)
 							ppur.status.end_cycle = 340;
 						else
 							ppur.status.end_cycle = 341;
@@ -418,7 +416,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					else
 						ppur.status.end_cycle = 341;
-					//runppu(kFetchTime);
+
+					//fetch BG: two tiles for next line
+					for (int xt = 0; xt < 2; xt++)
+						Read_bgdata(ref bgdata[xt]);
 
 					//After memory access 170, the PPU simply rests for 4 cycles (or the
 					//equivelant of half a memory access cycle) before repeating the whole

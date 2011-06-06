@@ -18,12 +18,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             //when the ppu issues a write it goes through here and into the game board
 			public void ppubus_write(int addr, byte value)
 			{
+				nes.board.AddressPPU(addr);
 				nes.board.WritePPU(addr, value);
 			}
 
 			//when the ppu issues a read it goes through here and into the game board
 			public byte ppubus_read(int addr)
 			{
+				nes.board.AddressPPU(addr);
 				//apply freeze
                 if (ppubus_freeze[addr].IsFrozen)
                     return ppubus_freeze[addr].value;
@@ -89,17 +91,48 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				nes.cpu.NMI = true;
 			}
 
+			public void TickCpu()
+			{
+				if (NMI_PendingCycles > 0)
+				{
+					NMI_PendingCycles--;
+					if (NMI_PendingCycles == 0)
+					{
+						TriggerNMI();
+					}
+				}
+			}
+
 			void runppu(int x)
 			{
 				//pputime+=x;
 
 				//DON'T LIKE THIS....
 				ppur.status.cycle += x;
-				if (ppur.status.cycle > ppur.status.end_cycle)
+				while(ppur.status.cycle >= ppur.status.end_cycle)
 					ppur.status.cycle -= ppur.status.end_cycle;
+
+				if(x == 0) return;
+
+				nes.RunCpu(1);
+				x--;
+
+				if (Reg2002_vblank_active_pending)
+				{
+					if (Reg2002_vblank_active_pending)
+						Reg2002_vblank_active = 1;
+					Reg2002_vblank_active_pending = false;
+				}
+
+				if (Reg2002_vblank_clear_pending)
+				{
+					Reg2002_vblank_active = 0;
+					Reg2002_vblank_clear_pending = false;
+				}
+
 				
+				if (x == 0) return;
 				nes.RunCpu(x);
-				//pputime -= cputodo<<2;
 			}
 
 			//hack

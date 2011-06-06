@@ -96,13 +96,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 				cycles <<= 4;
 
+
+			//tricky logic to try to run one instruction at a time
 			cpu_accumulate += cycles;
-			if (cpu_accumulate >= 48)
+			int cpu_cycles = cpu_accumulate / 48;
+			for (; ; )
 			{
-				int todo = cpu_accumulate / 48;
-				cpu_accumulate -= todo * 48;
+				if (cpu_cycles == 0) break;
+				int need_cpu = -cpu.PendingCycles + 1;
+				if (cpu_cycles < need_cpu) break;
+				if (need_cpu == 0) need_cpu = 1;
+				int todo = need_cpu;
+				cpu_cycles -= todo;
+				cpu_accumulate -= 48*todo;
 				cpu.Execute(todo);
 				apu.Run(todo);
+				ppu.TickCpu();
 			}
 		}
 

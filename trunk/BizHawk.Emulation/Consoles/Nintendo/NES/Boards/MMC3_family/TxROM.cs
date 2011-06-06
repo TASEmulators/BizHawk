@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "TXROM-HOMEBREW":
+					break;
 				case "NES-TBROM": //tecmo world cup soccer (DE) [untested]
 					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
 					AssertBattery(false);

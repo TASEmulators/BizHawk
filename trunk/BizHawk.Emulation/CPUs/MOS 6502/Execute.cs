@@ -17,16 +17,27 @@ namespace BizHawk.Emulation.CPUs.M6502
             PendingCycles += cycles;
             while (PendingCycles > 0)
             {
-               if (NMI)
-               {
-                   TriggerException(ExceptionType.NMI);
-                   NMI = false;
-               }
-               if (IRQ && !FlagI)
-               {
-                   TriggerException(ExceptionType.IRQ);
-               }
-
+                if (NMI)
+                {
+                    TriggerException(ExceptionType.NMI);
+                    NMI = false;
+                }
+                if (IRQ && !FlagI)
+                {
+                    if (SEI_Pending)
+                        FlagI = true;
+                    TriggerException(ExceptionType.IRQ);
+                }
+                if (CLI_Pending)
+                {
+                    FlagI = false;
+                    CLI_Pending = false;
+                }
+                if (SEI_Pending)
+                {
+                    FlagI = true;
+                    SEI_Pending = false;
+                }
                 if(debug) Console.WriteLine(State());
 
                 ushort this_pc = PC;
@@ -209,7 +220,15 @@ TriggerException(ExceptionType.BRK);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x28: // PLP
-                        P = ReadMemory((ushort)(++S + 0x100));
+                        //handle I flag differently. sort of a sloppy way to do the job, but it does finish it off.
+                        value8 = ReadMemory((ushort)(++S + 0x100));
+                        if ((value8 & 0x04) != 0 && !FlagI)
+                        	SEI_Pending = true;
+                        if ((value8 & 0x04) == 0 && FlagI)
+                        	CLI_Pending = true;
+                        value8 &= unchecked((byte)~0x04);
+                        P &= 0x04;
+                        P |= value8;
 FlagT = true;//this seems wrong
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -431,7 +450,8 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x58: // CLI
-                        FlagI = false;
+                        //FlagI = false;
+                        CLI_Pending = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x59: // EOR addr,Y
@@ -594,7 +614,8 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x78: // SEI
-                        FlagI = true;
+                        //FlagI = true;
+                        SEI_Pending = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x79: // ADC addr,Y
