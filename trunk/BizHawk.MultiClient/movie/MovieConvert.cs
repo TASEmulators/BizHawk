@@ -105,7 +105,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < frameCount; x++)
             {
                 byte joy = r.ReadByte();
-                string frame = "|";
+                
                 
                 //Read each byte of controller one data
 
