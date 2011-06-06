@@ -556,7 +556,18 @@ namespace BizHawk.MultiClient
             }
             else if (Path.GetExtension(filePaths[0]).ToUpper() == ".FCM")
             {
+                //TODO: error checking of some kind and don't play on error
+                LoadRom(CurrentlyOpenRom);
                 UserMovie = MovieConvert.ConvertFCM(filePaths[0]);
+                UserMovie.StartPlayback();
+
+            }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
+            {
+                //TODO: error checking of some kind and don't play on error
+                LoadRom(CurrentlyOpenRom);
+                UserMovie = MovieConvert.ConvertMMV(filePaths[0]);
+                UserMovie.StartPlayback();
             }
             else
                 LoadRom(filePaths[0]);

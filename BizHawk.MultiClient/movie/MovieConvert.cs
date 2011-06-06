@@ -122,7 +122,7 @@ namespace BizHawk.MultiClient
         public static Movie ConvertMMV(string path)
         {
             Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
+            
             FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             BinaryReader r = new BinaryReader(fs);
 
@@ -131,7 +131,7 @@ namespace BizHawk.MultiClient
 
             UInt32 version = r.ReadUInt32();
             //TODO: 4 ascii encoded chars, format properly
-            m.SetHeaderLine(MovieHeader.MovieVersion, "Dega version " + version.ToString());
+            m.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
 
             UInt32 framecount = r.ReadUInt32();
             
@@ -156,15 +156,69 @@ namespace BizHawk.MultiClient
             //4-byte little endian flags
             r.ReadBit(); //First bit unused
 
-            int pal = r.ReadBit();
-            int japan = r.ReadBit();
-            int gamegear = r.ReadBit();
+            bool pal = r.ReadBit();
+            m.SetHeaderLine("PAL", pal.ToString());
 
+            bool japan = r.ReadBit();
+            m.SetHeaderLine("Japan", japan.ToString());
+
+            bool gamegear = r.ReadBit();
+            if (gamegear)
+                m.SetHeaderLine(MovieHeader.PLATFORM, "GG");
+            else
+                m.SetHeaderLine(MovieHeader.PLATFORM, "SMS");
+            
             for (int x = 0; x < 28; x++)
                 r.ReadBit();     //Unused
 
-            
+            byte[] romnameBytes = new byte[64];
+            for (int x = 0; x < 64; x++)
+                romnameBytes[x] = r.ReadByte();
+            string romname = System.Text.Encoding.UTF8.GetString(romnameBytes.ToArray());
+            //TODO: remove null characters
+            m.SetHeaderLine(MovieHeader.GAMENAME, romname);
 
+            byte[] MD5Bytes = new byte[64];
+            for (int x = 0; x < 8; x++)
+                MD5Bytes[x] = r.ReadByte();
+            string MD5 = System.Text.Encoding.UTF8.GetString(MD5Bytes.ToArray());
+            //TODO: remove null characters
+            m.SetHeaderLine("MD5", MD5);
+
+            
+            for (int x = 0; x < (framecount); x++)
+            {
+                //TODO: use StringBuilder
+                
+                string frame = "|";
+                char start;
+                byte tmp;
+
+                tmp = r.ReadByte();
+                if ((int)(tmp & 1) > 0) frame += "U"; else frame += ".";
+                if ((int)(tmp & 2) > 0) frame += "D"; else frame += ".";
+                if ((int)(tmp & 4) > 0) frame += "L"; else frame += ".";
+                if ((int)(tmp & 8) > 0) frame += "R"; else frame += ".";
+                if ((int)(tmp & 16) > 0) frame += "1"; else frame += ".";
+                if ((int)(tmp & 32) > 0) frame += "2|"; else frame += ".|";
+                
+                if ((int)(tmp & 64) > 0 && (!gamegear)) start = 'P'; else start = '.';
+                if ((int)(tmp & 128)> 0 && gamegear) start = 'P'; else start = '.';
+
+                //Controller 2
+                tmp = r.ReadByte();
+                if ((int)(tmp & 1) > 0) frame += "U"; else frame += ".";
+                if ((int)(tmp & 2) > 0) frame += "D"; else frame += ".";
+                if ((int)(tmp & 4) > 0) frame += "L"; else frame += ".";
+                if ((int)(tmp & 8) > 0) frame += "R"; else frame += ".";
+                if ((int)(tmp & 16) > 0) frame += "1"; else frame += ".";
+                if ((int)(tmp & 32) > 0) frame += "2|"; else frame += ".|";
+
+                frame += start;
+                frame += ".|";
+                m.AddFrame(frame);
+            }
+            m.WriteMovie();
             return m;
         }
 
