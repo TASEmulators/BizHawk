@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -28,36 +29,62 @@ namespace BizHawk.MultiClient
             Global.Config.NESNameTableWndy = this.Location.Y;
         }
 
-        public void UpdateValues()
+        public unsafe void UpdateValues()
         {
-            int NTAddr;
-            int AttributeAddr;
             if (!(Global.Emulator is NES)) return;
             if (!this.IsHandleCreated || this.IsDisposed) return;
+			NES.PPU ppu = (Global.Emulator as NES).ppu;
 
-            for (int table = 0; table < 4; table++)
-            {
-                for (int y = 0; y < 30; y++)
-                {
-                    for (int x = 0; x < 32; x++)
-                    {
-                        NTAddr = (y * 32) + x;
-                        AttributeAddr = 0x3C0 + ((y >> 2) << 3) + (x >> 2);
+			BitmapData bmpdata = NameTableView.nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* dptr = (int*)bmpdata.Scan0.ToPointer();
+			int pitch = bmpdata.Stride / 4;
+			int pt_add = ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
+			//TODO - buffer all the data from the ppu, because it will be read multiple times and that is slow
 
-                        for (int i = 0; i < 8; i++)
-                        {
-                            for (int j = 0; j < 8; j++)
-                            {
-                                int cvalue = Nes.LookupColor(Nes.ppu.PALRAM[5]);
+			int ytable = 0, yline=0;
+			for (int y = 0; y < 480; y++)
+			{
+				if (y == 240)
+				{
+					ytable += 2;
+					yline = 240;
+				}
+				for (int x = 0; x < 512; x++, dptr++)
+				{
+					int table = (x >> 8) + ytable;
+					int ntaddr = (table << 10);
+					int px = x & 255;
+					int py = y - yline;
+					int tx = px>>3;
+					int ty = py>>3;
+					int ntbyte_ptr = ntaddr + (ty * 32) + tx;
+					int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
+					int nt = ppu.ppubus_peek(ntbyte_ptr + 0x2000);
+					
+					int at = ppu.ppubus_peek(atbyte_ptr + 0x2000);
+					if((ty&1)!=0) at >>= 4;
+					if((tx&1)!=0) at >>= 2;
+					at &= 0x03;
+					at <<= 2;
 
-                                Color color = Color.FromArgb(cvalue);
-                                this.NameTableView.nametables.SetPixel((x * 8) + i, (y * 8) + j, color);
-                            }
-                        }
-                    }
-                }
-            }
+					int bgpx = x & 7;
+					int bgpy = y & 7;
+					int pt_addr = (nt << 4) + bgpy + pt_add;
+					int pt_0 = ppu.ppubus_peek(pt_addr);
+					int pt_1 = ppu.ppubus_peek(pt_addr + 8);
+					int pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
+					pixel |= at;
+
+					pixel = ppu.PALRAM[pixel];
+					int cvalue = Nes.LookupColor(pixel);
+					*dptr = cvalue;
+				}
+				dptr += pitch - 512;
+			}
+
+			NameTableView.nametables.UnlockBits(bmpdata);
+
             NameTableView.Refresh();
         }
 

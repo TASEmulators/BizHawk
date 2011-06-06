@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 
 		private byte GetBit(int address, int bit)
 		{
-			byte value = Nes.ppu.ppubus_read(address);
+			byte value = Nes.ppu.ppubus_peek(address);
 			return (byte)(((value >> (7 - bit)) & 1));
 		}
 

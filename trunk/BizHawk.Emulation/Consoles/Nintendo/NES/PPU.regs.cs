@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			};
 
-			class Reg_2000
+			public class Reg_2000
 			{
 				PPU ppu;
 				public Reg_2000(PPU ppu)
@@ -299,7 +299,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int NMI_PendingCycles;
 			byte PPUGenLatch;
 			public PPUREGS ppur;
-			Reg_2000 reg_2000;
+			public Reg_2000 reg_2000;
 			Reg_2001 reg_2001;
 			byte reg_2003;
 			byte[] OAM;
