@@ -82,7 +82,8 @@ namespace M6502
 
         private void CLI(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "FlagI = false;");
+            w.WriteLine(Spaces + "//FlagI = false;");
+            w.WriteLine(Spaces + "CLI_Pending = true;");
             w.WriteLine(Spaces + "PendingCycles -= {0}; TotalExecutedCycles += {0};", op.Cycles);
         }
 
@@ -244,7 +245,15 @@ namespace M6502
 
         private void PLP(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "P = ReadMemory((ushort)(++S + 0x100));");
+            w.WriteLine(Spaces + "//handle I flag differently. sort of a sloppy way to do the job, but it does finish it off.");
+            w.WriteLine(Spaces + "value8 = ReadMemory((ushort)(++S + 0x100));");
+            w.WriteLine(Spaces + "if ((value8 & 0x04) != 0 && !FlagI)");
+            w.WriteLine(Spaces + "\tSEI_Pending = true;");
+            w.WriteLine(Spaces + "if ((value8 & 0x04) == 0 && FlagI)");
+            w.WriteLine(Spaces + "\tCLI_Pending = true;");
+            w.WriteLine(Spaces + "value8 &= unchecked((byte)~0x04);");
+            w.WriteLine(Spaces + "P &= 0x04;");
+            w.WriteLine(Spaces + "P |= value8;");
 w.WriteLine("FlagT = true;//this seems wrong");//this seems wrong
             w.WriteLine(Spaces + "PendingCycles -= {0}; TotalExecutedCycles += {0};", op.Cycles);
         }
@@ -333,7 +342,8 @@ w.WriteLine("FlagT = true;// this seems wrong");//this seems wrong
 
         private void SEI(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "FlagI = true;");
+            w.WriteLine(Spaces + "//FlagI = true;");
+            w.WriteLine(Spaces + "SEI_Pending = true;");
             w.WriteLine(Spaces + "PendingCycles -= {0}; TotalExecutedCycles += {0};", op.Cycles);
         }
 

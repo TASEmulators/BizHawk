@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bool Configure(NES.EDetectionOrigin origin);
 			byte ReadPRG(int addr);
 			byte ReadPPU(int addr); byte PeekPPU(int addr);
+			void AddressPPU(int addr);
 			byte ReadWRAM(int addr);
 			byte ReadEXP(int addr);
 			void WritePRG(int addr, byte value);
@@ -140,6 +141,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+			public virtual void AddressPPU(int addr) { }
 			public virtual byte PeekPPU(int addr) { return ReadPPU(addr); }
 
 			public virtual byte ReadPPU(int addr)

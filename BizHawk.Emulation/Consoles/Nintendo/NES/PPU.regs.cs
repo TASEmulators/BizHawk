@@ -294,6 +294,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
 			Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
 			Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
+			bool Reg2002_vblank_active_pending; //set of Reg2002_vblank_active is pending
+			bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
+			int NMI_PendingCycles;
 			byte PPUGenLatch;
 			public PPUREGS ppur;
 			Reg_2000 reg_2000;
@@ -324,11 +327,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//PPU CONTROL (write)
 			void write_2000(byte value)
 			{
-				if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active))
+				if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 				{
 					//if we just unleashed the vblank interrupt then activate it now
-					//FCEUX would use a "trigger NMI2" here in order to result in some delay effect
-					TriggerNMI();
+					NMI_PendingCycles = 2;
 				}
 				reg_2000.Value = value;
 			}
@@ -354,12 +356,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int ret = (Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (PPUGenLatch & 0x1F);
 
 				Reg2002_vblank_active = 0;
+				Reg2002_vblank_active_pending = false;
 
 				return (byte)ret;
 			}
 			void clear_2002()
 			{
-				Reg2002_vblank_active = Reg2002_objhit = Reg2002_objoverflow = 0;
+				Reg2002_objhit = Reg2002_objoverflow = 0;
+				Reg2002_vblank_clear_pending = true;
 			}
 
 			//OAM ADDRESS (write)
@@ -378,7 +382,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				OAM[reg_2003] = value;
 				reg_2003++;
 			}
-			byte read_2004() { return 0xFF; /* TODO !!!!!! THIS IS UGLY. WE SHOULD PASTE IT IN OR REWRITE IT BUT WE NEED TO ASK QEED FOR TEST CASES*/ }
+			byte read_2004() {
+				return OAM[reg_2003];
+			}
 
 			//SCROLL (write)
 			void write_2005(byte value)
@@ -414,6 +420,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._vt |= (value >> 5);
 					ppur._ht = value & 31;
 					ppur.install_latches();
+
+					nes.board.AddressPPU(ppur.get_2007access());
 				}
 				vtoggle ^= true;
 			}
@@ -443,6 +451,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 
 				ppur.increment2007(reg_2000.vram_incr32 != 0);
+				int newaddr = ppur.get_2007access() & 0x3FFF;
+				nes.board.AddressPPU(newaddr);
 			}
 			byte read_2007()
 			{
@@ -462,6 +472,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 
 				ppur.increment2007(reg_2000.vram_incr32 != 0);
+				
+				int newaddr = ppur.get_2007access() & 0x3FFF;
+				nes.board.AddressPPU(newaddr);
 
 				return ret;
 			}

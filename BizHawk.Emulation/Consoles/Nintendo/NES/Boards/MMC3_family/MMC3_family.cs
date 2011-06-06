@@ -22,6 +22,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			bank_regs[8] = (byte)(num_prg_banks - 1);
 			bank_regs[9] = (byte)(num_prg_banks - 2);
+			bank_regs[0] = 0;
+			bank_regs[1] = 1;
+			bank_regs[2] = 2;
+			bank_regs[3] = 3;
+			bank_regs[4] = 4;
+			bank_regs[5] = 5;
+			sync_2k_chr();
 		}
 
 		public void Dispose()
@@ -34,9 +41,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public int chr_mode, prg_mode, reg_addr;
 
 		//this contains the 8 programmable regs and 2 more at the end to represent PRG banks -2 and -1; and 4 more at the end to break down chr regs 0 and 1
+		//in other words:
+		//0: chr reg 0 (not used directly)
+		//1: chr reg 1 (not used directly)
+		//2,3,4,5: chr reg 2,3,4,5
+		//6,7: prg reg 6,7
+		//8,9: prg reg -2,-1
+		//10: chr reg 0A
+		//11: chr reg 0B
+		//12: chr reg 1A
+		//13: chr reg 1B
 		ByteBuffer bank_regs = new ByteBuffer(14);
 		ByteBuffer prg_lookup = new ByteBuffer(new byte[] { 6, 7, 9, 8, 9, 7, 6, 8 });
 		ByteBuffer chr_lookup = new ByteBuffer(new byte[] { 10, 11, 12, 13, 2, 3, 4, 5 });
+
+		void sync_2k_chr()
+		{
+			bank_regs[10] = (byte)((bank_regs[0] & ~1) + 0);
+			bank_regs[11] = (byte)((bank_regs[0] & ~1) + 1);
+			bank_regs[12] = (byte)((bank_regs[1] & ~1) + 0);
+			bank_regs[13] = (byte)((bank_regs[1] & ~1) + 1);
+		}
 
 		public virtual void WritePRG(int addr, byte value)
 		{
@@ -49,11 +74,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x0001: //$8001
 					bank_regs[reg_addr] = value;
-					//setup the 2K chr regs
-					bank_regs[10] = (byte)((bank_regs[0] & ~1) + 0);
-					bank_regs[11] = (byte)((bank_regs[0] & ~1) + 1);
-					bank_regs[12] = (byte)((bank_regs[1] & ~1) + 0);
-					bank_regs[13] = (byte)((bank_regs[1] & ~1) + 1);
+					sync_2k_chr();
 					break;
 			}
 		}
@@ -114,37 +135,49 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x2001: //$A001
 					//wram enable/protect
 					break;
-				case 0x4000: //$C000
+				case 0x4000: //$C000 - IRQ Reload value
 					irq_reload = value;
 					break;
-				case 0x4001: //$C001
+				case 0x4001: //$C001 - IRQ Clear
 					irq_counter = 0;
 					break;
-				case 0x6000: //$E000
+				case 0x6000: //$E000 - IRQ Acknowledge / Disable
 					irq_enable = false;
 					irq_pending = false;
 					SyncIRQ();
 					break;
-				case 0x6001: //$E001
+				case 0x6001: //$E001 - IRQ Enable
 					irq_enable = true;
 					SyncIRQ();
 					break;
 			}
 		}
 
+		void IRQ_EQ_Pass()
+		{
+			if (irq_enable)
+				irq_pending = true;
+			SyncIRQ();
+		}
+
 		void ClockIRQ()
 		{
 			if (irq_counter == 0)
+			{
 				irq_counter = irq_reload;
+
+				//TODO - MMC3 variant behaviour??? not sure
+				//was needed to pass 2-details.nes
+				if (irq_counter == 0)
+					IRQ_EQ_Pass();
+			}
 			else
 			{
 				irq_counter--;
 				//Console.WriteLine(irq_counter);
 				if (irq_counter == 0)
 				{
-					if (irq_enable)
-						irq_pending = true;
-					SyncIRQ();
+					IRQ_EQ_Pass();
 				}
 			}
 		}
@@ -240,24 +273,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//state
 		protected MMC3 mmc3;
+
+		public override void AddressPPU(int addr)
+		{
+			mmc3.Tick_PPU(addr);
+		}
 		
-		public override byte ReadPPU(int addr)
-		{
-			mmc3.Tick_PPU(addr);
-			return base.ReadPPU(addr);
-		}
-
-		public override void WritePPU(int addr, byte value)
-		{
-			mmc3.Tick_PPU(addr);
-			base.WritePPU(addr, value);
-		}
-
-		public override void WritePRG(int addr, byte value)
-		{
-			base.WritePRG(addr, value);
-		}
-
 		protected override void BaseSetup()
 		{
 			wram_mask = (Cart.wram_size * 1024) - 1;

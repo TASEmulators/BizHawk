@@ -224,6 +224,7 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
     <Content Include="Notes.txt" />

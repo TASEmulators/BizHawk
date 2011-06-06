@@ -362,17 +362,27 @@ namespace M6502
             w.WriteLine("            PendingCycles += cycles;");
             w.WriteLine("            while (PendingCycles > 0)");
             w.WriteLine("            {");
-
-            w.WriteLine("               if (NMI)");
-            w.WriteLine("               {");
-            w.WriteLine("                   TriggerException(ExceptionType.NMI);");
-            w.WriteLine("                   NMI = false;");
-            w.WriteLine("               }");
-			w.WriteLine("               if (IRQ && !FlagI)");
-			w.WriteLine("               {");
-			w.WriteLine("                   TriggerException(ExceptionType.IRQ);");
-			w.WriteLine("               }");
-            w.WriteLine("");
+            w.WriteLine("                if (NMI)");
+            w.WriteLine("                {");
+            w.WriteLine("                    TriggerException(ExceptionType.NMI);");
+            w.WriteLine("                    NMI = false;");
+            w.WriteLine("                }");
+            w.WriteLine("                if (IRQ && !FlagI)");
+            w.WriteLine("                {");
+            w.WriteLine("                    if (SEI_Pending)");
+            w.WriteLine("                        FlagI = true;");
+            w.WriteLine("                    TriggerException(ExceptionType.IRQ);");
+            w.WriteLine("                }");
+            w.WriteLine("                if (CLI_Pending)");
+            w.WriteLine("                {");
+            w.WriteLine("                    FlagI = false;");
+            w.WriteLine("                    CLI_Pending = false;");
+            w.WriteLine("                }");
+            w.WriteLine("                if (SEI_Pending)");
+            w.WriteLine("                {");
+            w.WriteLine("                    FlagI = true;");
+            w.WriteLine("                    SEI_Pending = false;");
+            w.WriteLine("                }");
 
             w.WriteLine("                if(debug) Console.WriteLine(State());");
             w.WriteLine("");

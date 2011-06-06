@@ -55,12 +55,16 @@ static string ClassifyTable = @"
 1	32	32	8	0	NES-SEROM; lolo
 1	128	0	8	0	NES-SNROM; zelda
 1	128	128	8	0	NES-SKROM; zelda 2
-1	128	0	8	8	NES-SNROM; some of blargg's tests (apu)
-1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests)
+1	32	0	8	8	NROM-HOMEBREW; instr_timing.nes
+1	64	0	8	8	NROM-HOMEBREW; instr_misc.nes
+1	80	0	8	8	NROM-HOMEBREW; blargg's cpu_interrupts.nes
+1	128	0	8	8	NES-SNROM; some of blargg's tests (apu) [TODO recheck as NROM-HOMEBREW]
+1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests) [TODO recheck as NROM-HOMEBREW]
 2	128	0	8	0	NES-UNROM; mega man
 2	256	0	8	0	NES-UOROM; paperboy 2
 3	32	32	8	0	NES-CNROM; adventure island
 4	128	128	8	0	NES-TSROM; double dragon 2 (should be TL1ROM but maybe this will work)
+4	32	8	8	0	TXROM-HOMEBREW; blargg's mmc3 tests
 7	128	0	8	0	NES-ANROM; marble madness
 7	256	0	8	8	NES-AOROM; battletoads
 11	32	16	8	0	Discrete_74x377

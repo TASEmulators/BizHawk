@@ -63,7 +63,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WritePRG(int addr, byte value)
 		{
 			if (ROM != null && bus_conflict) value = HandleNormalPRGConflict(addr,value);
-			prg = (value*2) & prg_mask;
+			int prg_bank = value & 7;
+			prg = (prg_bank * 2) & prg_mask;
 			if ((value & 0x10) == 0)
 				SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
 			else

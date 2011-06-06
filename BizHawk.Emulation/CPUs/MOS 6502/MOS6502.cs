@@ -103,6 +103,9 @@ namespace BizHawk.Emulation.CPUs.M6502
 
         public bool IRQ;
         public bool NMI;
+		public bool CLI_Pending;
+		public bool SEI_Pending;
+		public bool EscapeRequest;
 
 		public void SyncState(Serializer ser)
 		{
