@@ -158,6 +158,7 @@ namespace BizHawk.MultiClient
                 input.Append("|");
                 input.Append(IsPressed("Pause")    ? "P" : ".");
                 input.Append(IsPressed("Reset")    ? "R" : ".");
+                input.Append("|");
                 return input.ToString();
             }
 
