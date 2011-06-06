@@ -111,14 +111,23 @@ namespace BizHawk.MultiClient
 			string cmdLoadState = null;
             string cmdMovie = null;
 			for (int i = 0; i < args.Length; i++)
-			{
+	 		{
+				//for some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
+				if (args[i] == ">")
+				{
+					i++;
+					string stdout = args[i];
+					Console.SetOut(new StreamWriter(stdout));
+					continue;
+				}
+
 				string arg = args[i].ToLower();
-                if (arg.StartsWith("--load-slot="))
-                    cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-                else if (arg.StartsWith("--movie="))
-                    cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-                else
-                    cmdRom = arg;
+				if (arg.StartsWith("--load-slot="))
+					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+				else if (arg.StartsWith("--movie="))
+					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+				else
+					cmdRom = arg;
 			}
 
 			if (cmdRom != null)
