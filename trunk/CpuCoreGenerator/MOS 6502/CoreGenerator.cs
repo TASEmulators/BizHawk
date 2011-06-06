@@ -95,20 +95,20 @@ namespace M6502
             Set(0x65, "ADC", AddrMode.ZeroPage , 3);
             Set(0x75, "ADC", AddrMode.ZeroPageX, 4);
             Set(0x6D, "ADC", AddrMode.Absolute , 4);
-            Set(0x7D, "ADC", AddrMode.AbsoluteX_P, 4);//+
-            Set(0x79, "ADC", AddrMode.AbsoluteY_P, 4);//+
+            Set(0x7D, "ADC", AddrMode.AbsoluteX_P, 4);
+            Set(0x79, "ADC", AddrMode.AbsoluteY_P, 4);
             Set(0x61, "ADC", AddrMode.IndirectX, 6);
-            Set(0x71, "ADC", AddrMode.IndirectY_P, 5);//+
+            Set(0x71, "ADC", AddrMode.IndirectY_P, 5);
 
             // AND
             Set(0x29, "AND", AddrMode.Immediate, 2);
             Set(0x25, "AND", AddrMode.ZeroPage , 3);
             Set(0x35, "AND", AddrMode.ZeroPageX, 4);
             Set(0x2D, "AND", AddrMode.Absolute , 4);
-            Set(0x3D, "AND", AddrMode.AbsoluteX_P, 4);//+
-            Set(0x39, "AND", AddrMode.AbsoluteY_P, 4);//+
+            Set(0x3D, "AND", AddrMode.AbsoluteX_P, 4);
+            Set(0x39, "AND", AddrMode.AbsoluteY_P, 4);
             Set(0x21, "AND", AddrMode.IndirectX, 6);
-            Set(0x31, "AND", AddrMode.IndirectY_P, 5);//+
+            Set(0x31, "AND", AddrMode.IndirectY_P, 5);
 
             // Arithmatic Shift Left
             Set(0x0A, "ASL", AddrMode.Accumulator, 2);
@@ -139,10 +139,10 @@ namespace M6502
             Set(0xC5, "CMP", AddrMode.ZeroPage , 3);
             Set(0xD5, "CMP", AddrMode.ZeroPageX, 4);
             Set(0xCD, "CMP", AddrMode.Absolute , 4);
-            Set(0xDD, "CMP", AddrMode.AbsoluteX_P, 4);//+
-            Set(0xD9, "CMP", AddrMode.AbsoluteY_P, 4);//+
+            Set(0xDD, "CMP", AddrMode.AbsoluteX_P, 4);
+            Set(0xD9, "CMP", AddrMode.AbsoluteY_P, 4);
             Set(0xC1, "CMP", AddrMode.IndirectX, 6);
-            Set(0xD1, "CMP", AddrMode.IndirectY_P, 5);//+
+            Set(0xD1, "CMP", AddrMode.IndirectY_P, 5);
 
             // Compare X register
             Set(0xE0, "CPX", AddrMode.Immediate, 2);
@@ -165,10 +165,10 @@ namespace M6502
             Set(0x45, "EOR", AddrMode.ZeroPage , 3);
             Set(0x55, "EOR", AddrMode.ZeroPageX, 4);
             Set(0x4D, "EOR", AddrMode.Absolute , 4);
-            Set(0x5D, "EOR", AddrMode.AbsoluteX_P, 4);//+
-            Set(0x59, "EOR", AddrMode.AbsoluteY_P, 4);//+
+            Set(0x5D, "EOR", AddrMode.AbsoluteX_P, 4);
+            Set(0x59, "EOR", AddrMode.AbsoluteY_P, 4);
             Set(0x41, "EOR", AddrMode.IndirectX, 6);
-            Set(0x51, "EOR", AddrMode.IndirectY_P, 5);//+
+            Set(0x51, "EOR", AddrMode.IndirectY_P, 5);
             
             // Flag Instructions
             Set(0x18, "CLC", AddrMode.Implicit, 2); // Clear Carry
@@ -197,24 +197,24 @@ namespace M6502
             Set(0xA5, "LDA", AddrMode.ZeroPage , 3);
             Set(0xB5, "LDA", AddrMode.ZeroPageX, 4);
             Set(0xAD, "LDA", AddrMode.Absolute , 4);
-            Set(0xBD, "LDA", AddrMode.AbsoluteX_P, 4);//+
-            Set(0xB9, "LDA", AddrMode.AbsoluteY_P, 4);//+
+            Set(0xBD, "LDA", AddrMode.AbsoluteX_P, 4);
+            Set(0xB9, "LDA", AddrMode.AbsoluteY_P, 4);
             Set(0xA1, "LDA", AddrMode.IndirectX, 6);
-            Set(0xB1, "LDA", AddrMode.IndirectY_P, 5);//+
+            Set(0xB1, "LDA", AddrMode.IndirectY_P, 5);
 
             // Load X register
             Set(0xA2, "LDX", AddrMode.Immediate, 2);
             Set(0xA6, "LDX", AddrMode.ZeroPage , 3);
             Set(0xB6, "LDX", AddrMode.ZeroPageY, 4);
             Set(0xAE, "LDX", AddrMode.Absolute , 4);
-            Set(0xBE, "LDX", AddrMode.AbsoluteY_P, 4);//+
+            Set(0xBE, "LDX", AddrMode.AbsoluteY_P, 4);
 
             // Load Y register
             Set(0xA0, "LDY", AddrMode.Immediate, 2);
             Set(0xA4, "LDY", AddrMode.ZeroPage , 3);
             Set(0xB4, "LDY", AddrMode.ZeroPageX, 4);
             Set(0xAC, "LDY", AddrMode.Absolute , 4);
-            Set(0xBC, "LDY", AddrMode.AbsoluteX_P, 4);//+
+            Set(0xBC, "LDY", AddrMode.AbsoluteX_P, 4);
 
             // Logical Shift Right
             Set(0x4A, "LSR", AddrMode.Accumulator, 2);
@@ -265,10 +265,10 @@ namespace M6502
             Set(0x05, "ORA", AddrMode.ZeroPage , 3);
             Set(0x15, "ORA", AddrMode.ZeroPageX, 4);
             Set(0x0D, "ORA", AddrMode.Absolute , 4);
-            Set(0x1D, "ORA", AddrMode.AbsoluteX_P, 4);//+
-            Set(0x19, "ORA", AddrMode.AbsoluteY_P, 4);//+
+            Set(0x1D, "ORA", AddrMode.AbsoluteX_P, 4);
+            Set(0x19, "ORA", AddrMode.AbsoluteY_P, 4);
             Set(0x01, "ORA", AddrMode.IndirectX, 6);
-            Set(0x11, "ORA", AddrMode.IndirectY_P, 5);//+
+            Set(0x11, "ORA", AddrMode.IndirectY_P, 5);
 
             // Register instructions
             Set(0xAA, "TAX", AddrMode.Implicit, 2); // Transfer A to X
@@ -305,10 +305,10 @@ namespace M6502
             Set(0xE5, "SBC", AddrMode.ZeroPage , 3);
             Set(0xF5, "SBC", AddrMode.ZeroPageX, 4);
             Set(0xED, "SBC", AddrMode.Absolute , 4);
-            Set(0xFD, "SBC", AddrMode.AbsoluteX_P, 4);//+
-            Set(0xF9, "SBC", AddrMode.AbsoluteY_P, 4);//+
+            Set(0xFD, "SBC", AddrMode.AbsoluteX_P, 4);
+            Set(0xF9, "SBC", AddrMode.AbsoluteY_P, 4);
             Set(0xE1, "SBC", AddrMode.IndirectX, 6);
-            Set(0xF1, "SBC", AddrMode.IndirectY_P, 5);//+
+            Set(0xF1, "SBC", AddrMode.IndirectY_P, 5);
 
             // Store Accumulator
             Set(0x85, "STA", AddrMode.ZeroPage , 3);
