@@ -16,7 +16,13 @@ namespace BizHawk.MultiClient
             BinaryReader r = new BinaryReader(fs);
             //TODO: if fail to open...do some kind of error
 
-            UInt32 magic = r.ReadUInt32();
+            byte[] signatureBytes = new byte[4];
+            for (int x = 0; x < 4; x++)
+                signatureBytes[x] = r.ReadByte();
+            string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+            if (signature.Substring(0, 3) != "FCM")
+                return null; //TODO: invalid movie type error
+
             
             UInt32 version = r.ReadUInt32();
             m.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
@@ -25,7 +31,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < 4; x++)
                 flags[x] = r.ReadByte();
 
-            UInt32 InputLength = r.ReadUInt32();
+            UInt32 frameCount = r.ReadUInt32();
             
             UInt32 rerecords = r.ReadUInt32();
             m.SetHeaderLine(MovieHeader.RERECORDS, rerecords.ToString());
@@ -35,7 +41,7 @@ namespace BizHawk.MultiClient
             UInt32 firstFrameOffset = r.ReadUInt32();
 
             byte[] romCheckSum = r.ReadBytes(16);
-            //TODO: ROM checksum movie header line
+            //TODO: ROM checksum movie header line (MD5)
 
             UInt32 EmuVersion = r.ReadUInt32();
             m.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
@@ -85,9 +91,9 @@ namespace BizHawk.MultiClient
             { } //this movie starts from savestate, freak out here
 
             //Advance to first byte of input data
-            byte[] throwaway = new byte[firstFrameOffset];
-            r.Read(throwaway, 0, (int)firstFrameOffset);
-
+            //byte[] throwaway = new byte[firstFrameOffset];
+            //r.Read(throwaway, 0, (int)firstFrameOffset);
+            r.BaseStream.Position = firstFrameOffset;
             //moviedatasize stuff
 
             //read frame data
@@ -96,20 +102,17 @@ namespace BizHawk.MultiClient
             //TODO: use stringbuilder class for speed
             string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
             string frame = "|0|"; //TODO: read reset command rather than hard code it off
-            for (int x = 0; x < InputLength; x++)
+            for (int x = 0; x < frameCount; x++)
             {
-                for (int y = 0; y < 8; y++) //TODO: read all controllers!
-                {
-                    //TODO: Check for reset or power-on on first frame
-                    int z = r.ReadBit();
-                    if (z > 0)
-                        frame += ButtonLookup[y];
-                    else
-                        frame += ".";
-                }
+                byte joy = r.ReadByte();
+                string frame = "|";
+                
+                //Read each byte of controller one data
+
+
                 frame += "|";
-                for (int y = 0; y < 24; y++)
-                    r.ReadBit();    //lose 3 remaining controllers for now
+
+                r.ReadBytes(3); //Lose remaining controllers for now
                 m.AddFrame(frame);
             }
 
