@@ -13,10 +13,13 @@ namespace M6502
         ZeroPageY,
         Absolute,
         AbsoluteX,
+        AbsoluteX_P, //* page-crossing penalty
         AbsoluteY,
+        AbsoluteY_P,//* page-crossing penalty
         Indirect,
         IndirectX,
         IndirectY,
+        IndirectY_P,
         Relative
     }
 
@@ -40,10 +43,13 @@ namespace M6502
                     case AddrMode.ZeroPageY:   return 2;
                     case AddrMode.Absolute:    return 3;
                     case AddrMode.AbsoluteX:   return 3;
+                    case AddrMode.AbsoluteX_P: return 3;
                     case AddrMode.AbsoluteY:   return 3;
+                    case AddrMode.AbsoluteY_P: return 3;
                     case AddrMode.Indirect:    return 3;
                     case AddrMode.IndirectX:   return 2;
                     case AddrMode.IndirectY:   return 2;
+                    case AddrMode.IndirectY_P: return 2;
                     case AddrMode.Relative:    return 2;
                     default:
                         return -1;    
@@ -55,19 +61,22 @@ namespace M6502
         {
             switch (AddressMode)
             {
-                case AddrMode.Implicit:    return Instruction;
-                case AddrMode.Accumulator: return Instruction+" A";
-                case AddrMode.Immediate:   return Instruction+" #nn";
-                case AddrMode.ZeroPage:    return Instruction+" zp";
-                case AddrMode.ZeroPageX:   return Instruction + " zp,X";
-                case AddrMode.ZeroPageY:   return Instruction + " zp,Y";
-                case AddrMode.Absolute:    return Instruction + " addr";
-                case AddrMode.AbsoluteX:   return Instruction + " addr,X";
-                case AddrMode.AbsoluteY:   return Instruction + " addr,Y";
-                case AddrMode.Indirect:    return Instruction + " (addr)";
-                case AddrMode.IndirectX:   return Instruction + " (addr,X)";
-                case AddrMode.IndirectY:   return Instruction + " (addr),Y";
-                case AddrMode.Relative:    return Instruction + " +/-rel";
+                case AddrMode.Implicit:     return Instruction;
+                case AddrMode.Accumulator:  return Instruction+" A";
+                case AddrMode.Immediate:    return Instruction+" #nn";
+                case AddrMode.ZeroPage:     return Instruction+" zp";
+                case AddrMode.ZeroPageX:    return Instruction + " zp,X";
+                case AddrMode.ZeroPageY:    return Instruction + " zp,Y";
+                case AddrMode.Absolute:     return Instruction + " addr";
+                case AddrMode.AbsoluteX:    return Instruction + " addr,X";
+                case AddrMode.AbsoluteX_P:  return Instruction + " addr,X*";
+                case AddrMode.AbsoluteY:    return Instruction + " addr,Y";
+                case AddrMode.AbsoluteY_P:  return Instruction + " addr,Y*";
+                case AddrMode.Indirect:     return Instruction + " (addr)";
+                case AddrMode.IndirectX:    return Instruction + " (addr,X)";
+                case AddrMode.IndirectY:    return Instruction + " (addr),Y";
+                case AddrMode.IndirectY_P:  return Instruction + " (addr),Y*";
+                case AddrMode.Relative:     return Instruction + " +/-rel";
                 default: return Instruction;
             }
         }
@@ -86,20 +95,20 @@ namespace M6502
             Set(0x65, "ADC", AddrMode.ZeroPage , 3);
             Set(0x75, "ADC", AddrMode.ZeroPageX, 4);
             Set(0x6D, "ADC", AddrMode.Absolute , 4);
-            Set(0x7D, "ADC", AddrMode.AbsoluteX, 4);//+
-            Set(0x79, "ADC", AddrMode.AbsoluteY, 4);//+
+            Set(0x7D, "ADC", AddrMode.AbsoluteX_P, 4);//+
+            Set(0x79, "ADC", AddrMode.AbsoluteY_P, 4);//+
             Set(0x61, "ADC", AddrMode.IndirectX, 6);
-            Set(0x71, "ADC", AddrMode.IndirectY, 5);//+
+            Set(0x71, "ADC", AddrMode.IndirectY_P, 5);//+
 
             // AND
             Set(0x29, "AND", AddrMode.Immediate, 2);
-            Set(0x25, "AND", AddrMode.ZeroPage , 2);
-            Set(0x35, "AND", AddrMode.ZeroPageX, 3);
+            Set(0x25, "AND", AddrMode.ZeroPage , 3);
+            Set(0x35, "AND", AddrMode.ZeroPageX, 4);
             Set(0x2D, "AND", AddrMode.Absolute , 4);
-            Set(0x3D, "AND", AddrMode.AbsoluteX, 4);//+
-            Set(0x39, "AND", AddrMode.AbsoluteY, 4);//+
+            Set(0x3D, "AND", AddrMode.AbsoluteX_P, 4);//+
+            Set(0x39, "AND", AddrMode.AbsoluteY_P, 4);//+
             Set(0x21, "AND", AddrMode.IndirectX, 6);
-            Set(0x31, "AND", AddrMode.IndirectY, 5);//+
+            Set(0x31, "AND", AddrMode.IndirectY_P, 5);//+
 
             // Arithmatic Shift Left
             Set(0x0A, "ASL", AddrMode.Accumulator, 2);
@@ -130,19 +139,19 @@ namespace M6502
             Set(0xC5, "CMP", AddrMode.ZeroPage , 3);
             Set(0xD5, "CMP", AddrMode.ZeroPageX, 4);
             Set(0xCD, "CMP", AddrMode.Absolute , 4);
-            Set(0xDD, "CMP", AddrMode.AbsoluteX, 4);//+
-            Set(0xD9, "CMP", AddrMode.AbsoluteY, 4);//+
+            Set(0xDD, "CMP", AddrMode.AbsoluteX_P, 4);//+
+            Set(0xD9, "CMP", AddrMode.AbsoluteY_P, 4);//+
             Set(0xC1, "CMP", AddrMode.IndirectX, 6);
-            Set(0xD1, "CMP", AddrMode.IndirectY, 5);//+
+            Set(0xD1, "CMP", AddrMode.IndirectY_P, 5);//+
 
             // Compare X register
             Set(0xE0, "CPX", AddrMode.Immediate, 2);
-            Set(0xE4, "CPX", AddrMode.ZeroPage , 2);
+            Set(0xE4, "CPX", AddrMode.ZeroPage , 3);
             Set(0xEC, "CPX", AddrMode.Absolute , 4);
 
             // Compare Y register
             Set(0xC0, "CPY", AddrMode.Immediate, 2);
-            Set(0xC4, "CPY", AddrMode.ZeroPage , 2);
+            Set(0xC4, "CPY", AddrMode.ZeroPage , 3);
             Set(0xCC, "CPY", AddrMode.Absolute , 4);
 
             // DEC
@@ -156,10 +165,10 @@ namespace M6502
             Set(0x45, "EOR", AddrMode.ZeroPage , 3);
             Set(0x55, "EOR", AddrMode.ZeroPageX, 4);
             Set(0x4D, "EOR", AddrMode.Absolute , 4);
-            Set(0x5D, "EOR", AddrMode.AbsoluteX, 4);//+
-            Set(0x59, "EOR", AddrMode.AbsoluteY, 4);//+
+            Set(0x5D, "EOR", AddrMode.AbsoluteX_P, 4);//+
+            Set(0x59, "EOR", AddrMode.AbsoluteY_P, 4);//+
             Set(0x41, "EOR", AddrMode.IndirectX, 6);
-            Set(0x51, "EOR", AddrMode.IndirectY, 5);//+
+            Set(0x51, "EOR", AddrMode.IndirectY_P, 5);//+
             
             // Flag Instructions
             Set(0x18, "CLC", AddrMode.Implicit, 2); // Clear Carry
@@ -188,24 +197,24 @@ namespace M6502
             Set(0xA5, "LDA", AddrMode.ZeroPage , 3);
             Set(0xB5, "LDA", AddrMode.ZeroPageX, 4);
             Set(0xAD, "LDA", AddrMode.Absolute , 4);
-            Set(0xBD, "LDA", AddrMode.AbsoluteX, 4);//+
-            Set(0xB9, "LDA", AddrMode.AbsoluteY, 4);//+
+            Set(0xBD, "LDA", AddrMode.AbsoluteX_P, 4);//+
+            Set(0xB9, "LDA", AddrMode.AbsoluteY_P, 4);//+
             Set(0xA1, "LDA", AddrMode.IndirectX, 6);
-            Set(0xB1, "LDA", AddrMode.IndirectY, 5);//+
+            Set(0xB1, "LDA", AddrMode.IndirectY_P, 5);//+
 
             // Load X register
             Set(0xA2, "LDX", AddrMode.Immediate, 2);
             Set(0xA6, "LDX", AddrMode.ZeroPage , 3);
             Set(0xB6, "LDX", AddrMode.ZeroPageY, 4);
             Set(0xAE, "LDX", AddrMode.Absolute , 4);
-            Set(0xBE, "LDX", AddrMode.AbsoluteY, 4);//+
+            Set(0xBE, "LDX", AddrMode.AbsoluteY_P, 4);//+
 
             // Load Y register
             Set(0xA0, "LDY", AddrMode.Immediate, 2);
             Set(0xA4, "LDY", AddrMode.ZeroPage , 3);
             Set(0xB4, "LDY", AddrMode.ZeroPageX, 4);
             Set(0xAC, "LDY", AddrMode.Absolute , 4);
-            Set(0xBC, "LDY", AddrMode.AbsoluteX, 4);//+
+            Set(0xBC, "LDY", AddrMode.AbsoluteX_P, 4);//+
 
             // Logical Shift Right
             Set(0x4A, "LSR", AddrMode.Accumulator, 2);
@@ -253,13 +262,13 @@ namespace M6502
 
             // Bitwise OR with Accumulator
             Set(0x09, "ORA", AddrMode.Immediate, 2);
-            Set(0x05, "ORA", AddrMode.ZeroPage , 2);
-            Set(0x15, "ORA", AddrMode.ZeroPageX, 3);
+            Set(0x05, "ORA", AddrMode.ZeroPage , 3);
+            Set(0x15, "ORA", AddrMode.ZeroPageX, 4);
             Set(0x0D, "ORA", AddrMode.Absolute , 4);
-            Set(0x1D, "ORA", AddrMode.AbsoluteX, 4);//+
-            Set(0x19, "ORA", AddrMode.AbsoluteY, 4);//+
+            Set(0x1D, "ORA", AddrMode.AbsoluteX_P, 4);//+
+            Set(0x19, "ORA", AddrMode.AbsoluteY_P, 4);//+
             Set(0x01, "ORA", AddrMode.IndirectX, 6);
-            Set(0x11, "ORA", AddrMode.IndirectY, 5);//+
+            Set(0x11, "ORA", AddrMode.IndirectY_P, 5);//+
 
             // Register instructions
             Set(0xAA, "TAX", AddrMode.Implicit, 2); // Transfer A to X
@@ -296,10 +305,10 @@ namespace M6502
             Set(0xE5, "SBC", AddrMode.ZeroPage , 3);
             Set(0xF5, "SBC", AddrMode.ZeroPageX, 4);
             Set(0xED, "SBC", AddrMode.Absolute , 4);
-            Set(0xFD, "SBC", AddrMode.AbsoluteX, 4);//+
-            Set(0xF9, "SBC", AddrMode.AbsoluteY, 4);//+
+            Set(0xFD, "SBC", AddrMode.AbsoluteX_P, 4);//+
+            Set(0xF9, "SBC", AddrMode.AbsoluteY_P, 4);//+
             Set(0xE1, "SBC", AddrMode.IndirectX, 6);
-            Set(0xF1, "SBC", AddrMode.IndirectY, 5);//+
+            Set(0xF1, "SBC", AddrMode.IndirectY_P, 5);//+
 
             // Store Accumulator
             Set(0x85, "STA", AddrMode.ZeroPage , 3);
@@ -395,7 +404,13 @@ namespace M6502
             for (int i = 0; i < 256; i++)
             {
                 if (Opcodes[i] != null)
+                {
+                    if (i == 0x91)
+                    {
+                        int zzz = 9;
+                    }
                     EmulateOpcode(w, i);
+                }
             }
 
             w.WriteLine("                   default:");
@@ -480,8 +495,6 @@ namespace M6502
 
         private void GetValue8(OpcodeInfo op, TextWriter w, string dest)
         {
-            // TODO it APPEARS that the +1 opcode penalty applies to all AbsoluteX, AbsoluteY, and IndirectY
-            // but this is not completely clear. the doc has some exceptions, but are they real?
             switch (op.AddressMode)
             {
                 case AddrMode.Immediate:
@@ -494,21 +507,33 @@ namespace M6502
                     w.WriteLine(Spaces + dest + " = ReadMemory((byte)(ReadMemory(PC++)+Y));"); break;
                 case AddrMode.Absolute:
                     w.WriteLine(Spaces + dest + " = ReadMemory(ReadWord(PC)); PC += 2;"); break;
+                case AddrMode.AbsoluteX_P:
+                    w.WriteLine(Spaces + "temp16 = ReadWord(PC);");
+                    w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(temp16+X));");
+                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) ");
+                    w.WriteLine(Spaces + "    { PendingCycles--; TotalExecutedCycles++; }");
+                    w.WriteLine(Spaces + "PC += 2;");
+                    break;
                 case AddrMode.AbsoluteX:
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(ReadWord(PC)+X));");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
+                    w.WriteLine(Spaces + "PC += 2;");
+                    break;
+                case AddrMode.AbsoluteY_P:
+                    w.WriteLine(Spaces + "temp16 = ReadWord(PC);");
+                    w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(temp16+Y));");
+                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) ");
                     w.WriteLine(Spaces + "    { PendingCycles--; TotalExecutedCycles++; }");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.AbsoluteY:
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(ReadWord(PC)+Y));");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
-                    w.WriteLine(Spaces + "    { PendingCycles--; TotalExecutedCycles++; }");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.IndirectX:
                     w.WriteLine(Spaces + dest + " = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));"); break;
                 case AddrMode.IndirectY:
+                    w.WriteLine(Spaces + dest + " = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+Y)));"); break;
+                case AddrMode.IndirectY_P:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
                     w.WriteLine(Spaces + dest + " = ReadMemory((ushort)(temp16+Y));");
                     w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) ");
@@ -546,6 +571,8 @@ namespace M6502
                 case AddrMode.IndirectX:
                     w.WriteLine(Spaces + dest + " = ReadWordPageWrap((byte)(ReadMemory(PC++)+X));"); break;
                 case AddrMode.IndirectY:
+                    w.WriteLine(Spaces + dest + " = ReadWordPageWrap((byte)(ReadMemory(PC++)+Y));"); break;
+                case AddrMode.IndirectY_P:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
                     w.WriteLine(Spaces + dest + " = (ushort)(temp16+Y);");
                     w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) ");
