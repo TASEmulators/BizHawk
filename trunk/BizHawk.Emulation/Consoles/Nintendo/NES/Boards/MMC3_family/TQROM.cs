@@ -16,6 +16,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-TQROM": //high speed and pinbot
 					AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
 					break;
+				case "NES-TQROM-BAD": //high speed bad dumps
+					Cart.vram_size = 8;
+					Cart.wram_size = 0;
+					AssertPrg(128); AssertChr(128);
+					break;
 				default:
 					return false;
 			}

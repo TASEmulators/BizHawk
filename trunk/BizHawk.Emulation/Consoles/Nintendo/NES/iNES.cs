@@ -73,6 +73,7 @@ static string ClassifyTable = @"
 13	32	0	8	16	NES-CPROM; videomation
 66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
 66	128	32	8	0	NES-GNROM; gumshoe
+119	128	128	8	0	NES-TQROM-BAD; high speed (U)
 ";
 }
 
