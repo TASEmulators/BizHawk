@@ -41,6 +41,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			videoProvider = new MyVideoProvider(this);
 		}
 
+		public void WriteLogTimestamp()
+		{
+			Console.Write("[{0:d5}:{1:d3}:{2:d3}]", Frame, ppu.ppur.status.sl, ppu.ppur.status.cycle);
+		}
+		public void LogLine(string format, params object[] args)
+		{
+			Console.WriteLine("[{0:d5}:{1:d3}:{2:d3}] {3}", Frame, ppu.ppur.status.sl, ppu.ppur.status.cycle, string.Format(format, args));
+		}
+
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
 		{
 			if (domain == NESWatch.EDomain.Sysbus)

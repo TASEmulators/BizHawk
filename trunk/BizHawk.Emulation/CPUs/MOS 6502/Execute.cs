@@ -60,7 +60,7 @@ TriggerException(ExceptionType.BRK);
                         value8 = ReadMemory(ReadMemory(PC++));
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x06: // ASL zp
                         value16 = ReadMemory(PC++);
@@ -117,7 +117,7 @@ TriggerException(ExceptionType.BRK);
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x11: // ORA (addr),Y
+                    case 0x11: // ORA (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -133,7 +133,7 @@ TriggerException(ExceptionType.BRK);
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         A |= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 3; TotalExecutedCycles += 3;
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x16: // ASL zp,X
                         value16 = (byte)(ReadMemory(PC++)+X);
@@ -148,9 +148,10 @@ TriggerException(ExceptionType.BRK);
                         FlagC = false;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x19: // ORA addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x19: // ORA addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A |= value8;
@@ -163,9 +164,10 @@ TriggerException(ExceptionType.BRK);
                     case 0x1C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0x1D: // ORA addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x1D: // ORA addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A |= value8;
@@ -174,8 +176,6 @@ TriggerException(ExceptionType.BRK);
                         break;
                     case 0x1E: // ASL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = ReadMemory(value16);
                         FlagC = (value8 & 0x80) != 0;
@@ -208,7 +208,7 @@ TriggerException(ExceptionType.BRK);
                         value8 = ReadMemory(ReadMemory(PC++));
                         A &= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 2; TotalExecutedCycles += 2;
+                        PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x26: // ROL zp
                         value16 = ReadMemory(PC++);
@@ -278,7 +278,7 @@ FlagT = true;//this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x31: // AND (addr),Y
+                    case 0x31: // AND (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -294,7 +294,7 @@ FlagT = true;//this seems wrong
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         A &= value8;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 3; TotalExecutedCycles += 3;
+                        PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x36: // ROL zp,X
                         value16 = (byte)(ReadMemory(PC++)+X);
@@ -309,9 +309,10 @@ FlagT = true;//this seems wrong
                         FlagC = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x39: // AND addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x39: // AND addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A &= value8;
@@ -324,9 +325,10 @@ FlagT = true;//this seems wrong
                     case 0x3C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0x3D: // AND addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x3D: // AND addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A &= value8;
@@ -335,8 +337,6 @@ FlagT = true;//this seems wrong
                         break;
                     case 0x3E: // ROL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = temp8 = ReadMemory(value16);
                         value8 = (byte)((value8 << 1) | (P & 1));
@@ -422,7 +422,7 @@ FlagT = true;// this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x51: // EOR (addr),Y
+                    case 0x51: // EOR (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -454,9 +454,10 @@ FlagT = true;// this seems wrong
                         CLI_Pending = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x59: // EOR addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x59: // EOR addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A ^= value8;
@@ -469,9 +470,10 @@ FlagT = true;// this seems wrong
                     case 0x5C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0x5D: // EOR addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x5D: // EOR addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         A ^= value8;
@@ -480,8 +482,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x5E: // LSR addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = ReadMemory(value16);
                         FlagC = (value8 & 1) != 0;
@@ -580,7 +580,7 @@ FlagT = true;// this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x71: // ADC (addr),Y
+                    case 0x71: // ADC (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -618,9 +618,10 @@ FlagT = true;// this seems wrong
                         SEI_Pending = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0x79: // ADC addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x79: // ADC addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = value8 + A + (FlagC ? 1 : 0);
@@ -636,9 +637,10 @@ FlagT = true;// this seems wrong
                     case 0x7C: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0x7D: // ADC addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0x7D: // ADC addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = value8 + A + (FlagC ? 1 : 0);
@@ -650,8 +652,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x7E: // ROR addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = temp8 = ReadMemory(value16);
                         value8 = (byte)((value8 >> 1) | ((P & 1)<<7));
@@ -664,7 +664,8 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x81: // STA (addr,X)
-                        value16 = ReadWordPageWrap((byte)(ReadMemory(PC++)+X));
+                        temp16 = ReadWordPageWrap(ReadMemory(PC++));
+                        value16 = (ushort)(temp16+X);
                         WriteMemory(value16, A);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
@@ -727,8 +728,6 @@ FlagT = true;// this seems wrong
                     case 0x91: // STA (addr),Y
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value16 = (ushort)(temp16+Y);
-                        if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         WriteMemory(value16, A);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
@@ -754,8 +753,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x99: // STA addr,Y
                         value16 = (ushort)(ReadWord(PC)+Y);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         WriteMemory(value16, A);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
@@ -766,8 +763,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x9D: // STA addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         WriteMemory(value16, A);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
@@ -843,7 +838,7 @@ FlagT = true;// this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xB1: // LDA (addr),Y
+                    case 0xB1: // LDA (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         A = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -870,9 +865,10 @@ FlagT = true;// this seems wrong
                         FlagV = false;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xB9: // LDA addr,Y
-                        A = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xB9: // LDA addr,Y*
+                        temp16 = ReadWord(PC);
+                        A = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
@@ -883,25 +879,28 @@ FlagT = true;// this seems wrong
                         P = (byte)((P & 0x7D) | TableNZ[X]);
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xBC: // LDY addr,X
-                        Y = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xBC: // LDY addr,X*
+                        temp16 = ReadWord(PC);
+                        Y = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[Y]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0xBD: // LDA addr,X
-                        A = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xBD: // LDA addr,X*
+                        temp16 = ReadWord(PC);
+                        A = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0xBE: // LDX addr,Y
-                        X = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xBE: // LDX addr,Y*
+                        temp16 = ReadWord(PC);
+                        X = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         P = (byte)((P & 0x7D) | TableNZ[X]);
@@ -929,7 +928,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 2;
+                        PendingCycles -= 3;
                         break;
                     case 0xC5: // CMP zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -992,7 +991,7 @@ FlagT = true;// this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xD1: // CMP (addr),Y
+                    case 0xD1: // CMP (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -1023,9 +1022,10 @@ FlagT = true;// this seems wrong
                         FlagD = false;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xD9: // CMP addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xD9: // CMP addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value16 = (ushort) (A - value8);
@@ -1039,9 +1039,10 @@ FlagT = true;// this seems wrong
                     case 0xDC: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0xDD: // CMP addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xDD: // CMP addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value16 = (ushort) (A - value8);
@@ -1051,8 +1052,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0xDE: // DEC addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) - 1);
                         WriteMemory(value16, value8);
@@ -1083,7 +1082,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 2;
+                        PendingCycles -= 3;
                         break;
                     case 0xE5: // SBC zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -1151,7 +1150,7 @@ FlagT = true;// this seems wrong
                         }
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xF1: // SBC (addr),Y
+                    case 0xF1: // SBC (addr),Y*
                         temp16 = ReadWordPageWrap(ReadMemory(PC++));
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
@@ -1186,9 +1185,10 @@ FlagT = true;// this seems wrong
                         FlagD = true;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
-                    case 0xF9: // SBC addr,Y
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xF9: // SBC addr,Y*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+Y));
+                        if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = A - value8 - (FlagC?0:1);
@@ -1204,9 +1204,10 @@ FlagT = true;// this seems wrong
                     case 0xFC: // NOP (addr,X)
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
-                    case 0xFD: // SBC addr,X
-                        value8 = ReadMemory((ushort)(ReadWord(PC)+X));
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
+                    case 0xFD: // SBC addr,X*
+                        temp16 = ReadWord(PC);
+                        value8 = ReadMemory((ushort)(temp16+X));
+                        if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = A - value8 - (FlagC?0:1);
@@ -1218,8 +1219,6 @@ FlagT = true;// this seems wrong
                         break;
                     case 0xFE: // INC addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
-                        if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) 
-                            { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         value8 = (byte)(ReadMemory(value16) + 1);
                         WriteMemory(value16, value8);
