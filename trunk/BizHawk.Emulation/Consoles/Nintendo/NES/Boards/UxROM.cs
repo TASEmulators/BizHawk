@@ -31,7 +31,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-UNROM": //mega man
 				case "HVC-UNROM": 
 				case "KONAMI-UNROM":
-					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0);
+					AssertPrg(128); AssertChr(0); AssertVram(8);
+					//AssertWram(0); //JJ - Tobidase Daisakusen Part 2 (J) includes WRAM
 					break;
 
 				case "NES-UOROM": //paperboy 2

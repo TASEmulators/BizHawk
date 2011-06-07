@@ -16,8 +16,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 
         //Game issues:
-        //JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
-        //Castlevania II (U) - Black screen only
         //Zelda II (U) - Black screen only
         //Bard's Tale - The Tales of the Unkown (U) - Black screen only
         //Dragon Warrior (SAROM) - Black screen only
@@ -35,6 +33,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//Game issues for tester to check off
 		//3-D World Runner - UNROM - weird lines in gameplay (OK i think - should be similar to other emulators now)
+		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
+
 		public NES()
 		{
 			BootGodDB.Initialize();
