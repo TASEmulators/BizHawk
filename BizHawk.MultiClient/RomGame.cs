@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
         public string System;
 
         private string name;
+		private string filesystemSafeName;
         private List<string> options;
         private const int BankSize = 4096;
 
@@ -41,6 +42,11 @@ namespace BizHawk.MultiClient
             System = info.System;
             options = new List<string>(info.GetOptions());
             CheckForPatchOptions();
+
+			//build a safe filesystem name for use in auxilary files (savestates, saveram, etc)
+			filesystemSafeName = file.CanonicalName.Replace("|", "+");
+			filesystemSafeName = Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+
 
 			if (patch != null)
 			{
@@ -104,6 +110,7 @@ namespace BizHawk.MultiClient
 		public byte[] GetFileData() { return FileData; }
         public IList<string> GetOptions() { return options; }
 		public string Name { get { return name; } set { name = value; } }
+		public string FilesystemSafeName { get { return filesystemSafeName; } }
 
         public string SaveRamPath
         {
@@ -111,15 +118,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), Name + ".SaveRAM");
-					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), Name + ".SaveRAM");
-                    case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), Name + ".SaveRAM");
-                    case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), Name + ".SaveRAM");
-                    case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), Name + ".SaveRAM");
-                    case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), Name + ".SaveRAM");
-                    case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), Name + ".SaveRAM");
-                    case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), Name + ".SaveRAM");
-                    case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), Name + ".SaveRAM");
+					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), filesystemSafeName + ".SaveRAM");
+					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), filesystemSafeName + ".SaveRAM");
+					case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), filesystemSafeName + ".SaveRAM");
+					case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), filesystemSafeName + ".SaveRAM");
+					case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), filesystemSafeName + ".SaveRAM");
+					case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), filesystemSafeName + ".SaveRAM");
+					case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), filesystemSafeName + ".SaveRAM");
+					case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), filesystemSafeName + ".SaveRAM");
+					case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), filesystemSafeName + ".SaveRAM");
                     default:    return "";
                 }
             }
@@ -130,19 +137,19 @@ namespace BizHawk.MultiClient
             get
             {
                 string Bind = "";
-                if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.FINISHED) //TODO: what about movie finished?
+				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.FINISHED && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE) //TODO: what about movie finished?
                     Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.GetFilePath());
                 switch (System)
                 {
-                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") + "/" + Name + Bind;
-                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG") + "/" + Name + Bind;
-                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG") + "/" + Name + Bind;
-                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name + Bind;
-                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") + "/" + Name + Bind;
-                    case "GB":  return PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") + "/" + Name + Bind;
-                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN") + "/" + Name + Bind;
-                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES") + "/" + Name + Bind;
-                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83") + "/" + Name + Bind;
+					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS") ,filesystemSafeName + Bind);
+					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG") ,filesystemSafeName + Bind);
+					case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG") ,filesystemSafeName + Bind);
+					case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") ,filesystemSafeName + Bind);
+					case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE") ,filesystemSafeName + Bind);
+					case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB") ,filesystemSafeName + Bind);
+					case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN") ,filesystemSafeName + Bind);
+					case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES") ,filesystemSafeName + Bind);
+					case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), filesystemSafeName + Bind);
                     default:    return "";
                 }
                 
@@ -156,15 +163,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-                    case "SMS": return "SMS/Movie/" + Name;
-                    case "GG":  return "Game Gear/Movie/" + Name;
-                    case "SG":  return "SG-1000/Movie/" + Name;
-                    case "PCE": return "TurboGrafx/Movie/" + Name;
-                    case "SGX": return "TurboGrafx/Movie/" + Name;
-                    case "GB":  return "Gameboy/Movie/" + Name;
-                    case "GEN": return "Genesis/Movie/" + Name;
-                    case "NES": return "NES/Movie/" + Name;
-                    case "TI83": return "TI83/Movie/" + Name;
+					case "SMS": return "SMS/Movie/" + filesystemSafeName;
+					case "GG": return "Game Gear/Movie/" + filesystemSafeName;
+					case "SG": return "SG-1000/Movie/" + filesystemSafeName;
+					case "PCE": return "TurboGrafx/Movie/" + filesystemSafeName;
+					case "SGX": return "TurboGrafx/Movie/" + filesystemSafeName;
+					case "GB": return "Gameboy/Movie/" + filesystemSafeName;
+					case "GEN": return "Genesis/Movie/" + filesystemSafeName;
+					case "NES": return "NES/Movie/" + filesystemSafeName;
+					case "TI83": return "TI83/Movie/" + filesystemSafeName;
                     default:    return "";
                 }
             }

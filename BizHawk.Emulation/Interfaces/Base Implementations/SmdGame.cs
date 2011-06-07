@@ -6,8 +6,10 @@ namespace BizHawk
 {
     /// <summary>
     /// Loader for .SMD Genesis ROM format (Super Magic Drive)
+	/// THIS CLASS IS NOT USED RIGHT NOW
+	/// I dont think it is architecturally going to last.
     /// </summary>
-    public sealed class SmdGame : IGame
+    public sealed class SmdGame //: IGame
     {
         public byte[] RomData;
         private string name;
