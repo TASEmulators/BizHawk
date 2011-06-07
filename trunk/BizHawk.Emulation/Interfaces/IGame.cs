@@ -7,6 +7,11 @@ namespace BizHawk
         byte[] GetRomData();
 		byte[] GetFileData();
         IList<string> GetOptions();
-        string Name { get; }
+        
+		//only use this for cosmetic purposes
+		string Name { get; }
+
+		//use this for path-building purposes
+		string FilesystemSafeName { get; }
     }
 }

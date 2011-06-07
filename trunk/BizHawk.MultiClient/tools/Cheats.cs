@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
 
         private string MakeDefaultFilename()
         {
-            return GetCheatsPath() + "\\" + Global.Game.Name + ".cht";
+			return Path.Combine(GetCheatsPath(), Global.Game.FilesystemSafeName + ".cht");
         }
 
         private void ClearFields()

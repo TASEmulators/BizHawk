@@ -4,7 +4,11 @@ using System.IO;
 
 namespace BizHawk
 {
-    public sealed class Game : IGame
+	/// <summary>
+	/// THIS CLASS IS NOT USED RIGHT NOW. 
+	/// I dont think it is architecturally going to last.
+	/// </summary>
+    public sealed class Game //: IGame
     {
         public byte[] RomData;
         private string name;
