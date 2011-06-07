@@ -90,6 +90,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		protected void RunCpu(int ppu_cycles)
 		{
+			//not being used right now. maybe needed later.
+			//Timestamp += ppu_cycles;
+
 			int cycles = ppu_cycles;
 			if (ppu.PAL)
 			    cycles *= 15;
@@ -111,7 +114,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cpu_accumulate -= 48*todo;
 				cpu.Execute(todo);
 				apu.Run(todo);
-				ppu.TickCpu();
+				ppu.PostCpuInstruction(todo);
 			}
 		}
 

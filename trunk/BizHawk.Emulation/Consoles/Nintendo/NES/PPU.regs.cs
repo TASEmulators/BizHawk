@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
 			bool Reg2002_vblank_active_pending; //set of Reg2002_vblank_active is pending
 			bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
-			int NMI_PendingCycles;
+			int NMI_PendingInstructions;
 			byte PPUGenLatch;
 			public PPUREGS ppur;
 			public Reg_2000 reg_2000;
@@ -330,7 +330,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 				{
 					//if we just unleashed the vblank interrupt then activate it now
-					NMI_PendingCycles = 2;
+					NMI_PendingInstructions = 2;
 				}
 				reg_2000.Value = value;
 			}
@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				byte ret = VRAMBuffer;
 
 				//in any case, we read from the ppu bus
-				VRAMBuffer = ppubus_read(addr);
+				VRAMBuffer = ppubus_read(addr,false);
 
 				//but reads from the palette are implemented in the PPU and return immediately
 				if ((addr & 0x3F00) == 0x3F00)

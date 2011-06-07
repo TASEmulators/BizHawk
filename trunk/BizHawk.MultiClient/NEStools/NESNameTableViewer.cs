@@ -63,8 +63,8 @@ namespace BizHawk.MultiClient
 					int nt = ppu.ppubus_peek(ntbyte_ptr + 0x2000);
 					
 					int at = ppu.ppubus_peek(atbyte_ptr + 0x2000);
-					if((ty&1)!=0) at >>= 4;
-					if((tx&1)!=0) at >>= 2;
+					if((ty&2)!=0) at >>= 4;
+					if((tx&2)!=0) at >>= 2;
 					at &= 0x03;
 					at <<= 2;
 
@@ -74,7 +74,11 @@ namespace BizHawk.MultiClient
 					int pt_0 = ppu.ppubus_peek(pt_addr);
 					int pt_1 = ppu.ppubus_peek(pt_addr + 8);
 					int pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
-					pixel |= at;
+					
+					//if the pixel is transparent, draw the backdrop color
+					//TODO - consider making this optional? nintendulator does it and fceux doesnt need to do it due to buggy palette logic which creates the same effect
+					if(pixel!=0)
+						pixel |= at;
 
 					pixel = ppu.PALRAM[pixel];
 					int cvalue = Nes.LookupColor(pixel);

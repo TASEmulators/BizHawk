@@ -115,15 +115,6 @@ namespace BizHawk.MultiClient
             }
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
-
-            //Nametable viewer
-            for (int i = 0; i < 30; i++)
-            {
-                for (int j = 0; j < 32; j++)
-                {
-                    int v = Nes.ppu.ppubus_read(0x2000 + i + j);
-                }
-            }
 		}
 
         private void NESPPU_Load(object sender, EventArgs e)

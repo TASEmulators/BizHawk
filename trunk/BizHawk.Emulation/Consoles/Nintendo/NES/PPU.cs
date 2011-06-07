@@ -23,14 +23,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			//when the ppu issues a read it goes through here and into the game board
-			public byte ppubus_read(int addr)
+			public byte ppubus_read(int addr, bool ppu)
 			{
+				//speculative -- hardware doesnt touch the bus when the PPU is disabled
+				//(without this, smb3 title screen creates garbage when skipped)
+				if (!reg_2001.PPUON && ppu)
+					return 0xFF;
+
 				nes.board.AddressPPU(addr);
 				//apply freeze
-                if (ppubus_freeze[addr].IsFrozen)
-                    return ppubus_freeze[addr].value;
-                else
-                    return nes.board.ReadPPU(addr);
+				if (ppubus_freeze[addr].IsFrozen)
+					return ppubus_freeze[addr].value;
+				else
+					return nes.board.ReadPPU(addr);
 			}
 
 			//debug tools peek into the ppu through this
@@ -91,12 +96,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				nes.cpu.NMI = true;
 			}
 
-			public void TickCpu()
+			//this gets called once after each cpu instruction executes.
+			//anything that needs to happen at instruction granularity can get checked here
+			//to save having to check it at ppu cycle granularity
+			public void PostCpuInstruction(int todo)
 			{
-				if (NMI_PendingCycles > 0)
+				if (NMI_PendingInstructions > 0)
 				{
-					NMI_PendingCycles--;
-					if (NMI_PendingCycles == 0)
+					NMI_PendingInstructions--;
+					if (NMI_PendingInstructions <= 0)
 					{
 						TriggerNMI();
 					}
@@ -105,34 +113,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void runppu(int x)
 			{
-				//pputime+=x;
-
-				//DON'T LIKE THIS....
 				ppur.status.cycle += x;
 				while(ppur.status.cycle >= ppur.status.end_cycle)
 					ppur.status.cycle -= ppur.status.end_cycle;
 
-				if(x == 0) return;
-
-				nes.RunCpu(1);
-				x--;
-
-				if (Reg2002_vblank_active_pending)
+				//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
+				for (int i = 0; i < x; i++)
 				{
+					//might not actually run a cpu cycle if there are none to be run right now
+					nes.RunCpu(1);
+
 					if (Reg2002_vblank_active_pending)
-						Reg2002_vblank_active = 1;
-					Reg2002_vblank_active_pending = false;
-				}
+					{
+						if (Reg2002_vblank_active_pending)
+							Reg2002_vblank_active = 1;
+						Reg2002_vblank_active_pending = false;
+					}
 
-				if (Reg2002_vblank_clear_pending)
-				{
-					Reg2002_vblank_active = 0;
-					Reg2002_vblank_clear_pending = false;
-				}
+					if (Reg2002_vblank_clear_pending)
+					{
+						Reg2002_vblank_active = 0;
+						Reg2002_vblank_clear_pending = false;
+					}
 
-				
-				if (x == 0) return;
-				nes.RunCpu(x);
+					nes.board.ClockPPU();
+				}
 			}
 
 			//hack

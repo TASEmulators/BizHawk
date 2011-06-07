@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int use_ram = (bank_1k >> 6) & 1;
 				if (use_ram == 1)
 				{
-					mmc3.Tick_PPU(addr);
 					addr = ((bank_1k&0x3f) << 10) | (addr & 0x3FF);
 					addr &= 0x1FFF;
 					return VRAM[addr];
@@ -52,7 +51,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int use_ram = (bank_1k >> 6) & 1;
 				if (use_ram == 1)
 				{
-					mmc3.Tick_PPU(addr);
 					addr = ((bank_1k & 0x3f) << 10) | (addr & 0x3FF);
 					addr &= 0x1FFF;
 					VRAM[addr] = value;

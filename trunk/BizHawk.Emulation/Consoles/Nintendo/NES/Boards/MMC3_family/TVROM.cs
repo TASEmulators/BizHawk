@@ -30,7 +30,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPPU(int addr)
 		{
-			mmc3.Tick_PPU(addr);
 			if (addr < 0x2000)
 			{
 				//read patterns from mapper controlled area
@@ -44,7 +43,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePPU(int addr, byte value)
 		{
-			mmc3.Tick_PPU(addr);
 			if (addr < 0x2000)
 			{
 				//nothing wired here
