@@ -1,20 +1,31 @@
 look for tests here: http://wiki.nesdev.com/w/index.php/Emulator_tests
 
-blargg's MMC3: 
+==blargg's tests==
+
+MMC3: 
 	FAIL for 4 and 6. i think 4 might not fail until some invisible PPU operations are correct. neither nintendulator or fceux pass these.
 
-blargg's ppu tests: 
+ppu tests: 
 	PASS for all but power_up_palette.nes which is lame
 
-blargg's ppu_vbl_nmi:
+ppu_vbl_nmi:
 	FAIL for 9. But hardly anyone passes this.....
 	
-blargg's sprite hit tests:
+sprite hit tests:
 	FAIL for 9 and 10. fceux passes 10 (oldppu) and nintendulator passes both. 
-	boath are not going to work any time soon due to sprite pattern decoding being separate from BG pattern fetching instead of interleaved.
+	both are not going to work any time soon due to sprite pattern decoding being separate from BG pattern fetching instead of interleaved.
+
+cpu_timing_test.nes
+	PASS
+	
+official_only.nes
+	PASS
 	
 all_instrs.nes
 	FAIL (freezes emu??). I think this requires undocumented instructions.
+	
+instr_timing.nes
+	PASS	
 	
 cpu_interrupts.nes
 	PASS
@@ -22,11 +33,10 @@ cpu_interrupts.nes
 instr_misc.nes
 	PASS
 	
-instr_timing.nes
-	PASS
+=============
 	
 nestest.nes
 	PASS
-	
-official_only.nes
-	PASS
+
+NEStress.nes
+	FAIL in several cases, but this test is not highly regarded and may be inaccurate.

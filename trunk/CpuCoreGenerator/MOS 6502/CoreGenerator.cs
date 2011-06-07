@@ -575,8 +575,8 @@ namespace M6502
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.IndirectX:
-                    w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
-                    w.WriteLine(Spaces + dest + " = (ushort)(temp16+X);");
+                    w.WriteLine(Spaces + "temp8 = (byte)(ReadMemory(PC++) + X);");
+                    w.WriteLine(Spaces + dest + " = ReadWordPageWrap(temp8);");
                     break;
                 case AddrMode.IndirectY:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
