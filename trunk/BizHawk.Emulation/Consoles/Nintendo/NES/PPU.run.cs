@@ -283,22 +283,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					oamcounts[scanslot] = oamcount;
 
-					//FV is clocked by the PPU's horizontal blanking impulse, and therefore will increment every scanline.
-					//well, according to (which?) tests, maybe at the end of hblank.
-					//but, according to what it took to get crystalis working, it is at the beginning of hblank.
-
-					//this is done at cycle 251
-					//rendering scanline, it doesn't need to be scanline 0,
-					//because on the first scanline when the increment is 0, the vs_scroll is reloaded.
-					//if(PPUON && sl != 0)
-					//	ppur.increment_vs();
-
-					//todo - think about clearing oams to a predefined value to force deterministic behavior
-
-					//so.. this is the end of hblank. latch horizontal scroll values
-					//do it cycle at 251
-					if (reg_2001.PPUON && sl != 0)
-						ppur.install_h_latches();
+	
 
 					ppuphase = PPUPHASE.OBJ;
 
@@ -354,29 +339,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							//so we just need the line offset for the second pattern
 							patternAddress += line & 7;
 
-							//garbage nametable fetches
-							//reset the scroll counter, happens at cycle 304
-							//TODO - compact this logic
-							if (realSprite)
+							//garbage nametable fetches + scroll resets
+							int garbage_todo = 2;
+							if (reg_2001.PPUON)
 							{
-								if ((sl == 0) && reg_2001.PPUON)
+								if (sl == 0 && ppur.status.cycle == 304)
 								{
-									if (ppur.status.cycle == 304)
-									{
-										runppu(1);
-										ppur.install_latches();
-										runppu(1);
-									}
-									else
-										runppu(kFetchTime);
+									runppu(1);
+									ppur.install_latches();
+									runppu(1);
+									garbage_todo = 0;
 								}
-								else
-									runppu(kFetchTime);
+								if ((sl != 0) && ppur.status.cycle == 256)
+								{
+									runppu(1);
+									//at 257: 3d world runner is ugly if we do this at 256
+									ppur.install_h_latches();
+									runppu(1);
+									garbage_todo = 0;
+								}
 							}
-
-							//..etc.. hacks about dragon's lair, MMC3, crystalis and SMB3. this should be implemented through the board
+							if (realSprite) runppu(garbage_todo);
 
 							if (realSprite) runppu(kFetchTime);
+
+							//TODO - fake sprites should not come through ppubus_read but rather peek it
+							//(at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
 
 							//pattern table fetches
 							int addr = patternAddress;
@@ -398,6 +386,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					} //sprite pattern fetch loop
 
 					ppuphase = PPUPHASE.BG;
+
+					//so.. this is the end of hblank. latch horizontal scroll values
+					//do it cycle at 251
+					if (reg_2001.PPUON && sl != 0)
+						ppur.install_h_latches();
 
 					//I'm unclear of the reason why this particular access to memory is made.
 					//The nametable address that is accessed 2 times in a row here, is also the
