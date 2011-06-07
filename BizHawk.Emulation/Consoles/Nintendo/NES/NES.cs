@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 
         //Game issues:
-        //3-D World Runner - UNROM - weird lines in gameplay (scanlines off?)
         //JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
         //Castlevania II (U) - Black screen only
         //Zelda II (U) - Black screen only
@@ -24,7 +23,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Dragon Warrior (SAROM) - Black screen only
         //Family Feud - Fails to get past intro screen
         //Air Wolf - Black screen
-        //Boyo and His Blob - Hangs on intro screen
         //Goal = graphics garble (looks identical to Zelda 2 problem)
         //Nobunaga's Ambition - black screen
 		//Knight Rider - very glitchy and seems to be a good timing case!
@@ -34,6 +32,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
         //Indiana Jones Temple of Doom - Puase menu flickering (in FCEUX as well, haven't tested other emulators)
         //Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game)
         //High Speed - garbled graphics
+
+		//Game issues for tester to check off
+		//3-D World Runner - UNROM - weird lines in gameplay (OK i think - should be similar to other emulators now)
 		public NES()
 		{
 			BootGodDB.Initialize();
