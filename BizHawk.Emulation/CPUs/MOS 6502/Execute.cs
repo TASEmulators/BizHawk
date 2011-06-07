@@ -664,8 +664,8 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x81: // STA (addr,X)
-                        temp16 = ReadWordPageWrap(ReadMemory(PC++));
-                        value16 = (ushort)(temp16+X);
+                        temp8 = (byte)(ReadMemory(PC++) + X);
+                        value16 = ReadWordPageWrap(temp8);
                         WriteMemory(value16, A);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
