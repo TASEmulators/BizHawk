@@ -15,11 +15,11 @@ namespace M6502
         AbsoluteX,
         AbsoluteX_P, //* page-crossing penalty
         AbsoluteY,
-        AbsoluteY_P,//* page-crossing penalty
+        AbsoluteY_P, //* page-crossing penalty
         Indirect,
         IndirectX,
         IndirectY,
-        IndirectY_P,
+        IndirectY_P, //* page-crossing penalty
         Relative
     }
 
@@ -405,10 +405,6 @@ namespace M6502
             {
                 if (Opcodes[i] != null)
                 {
-                    if (i == 0x91)
-                    {
-                        int zzz = 9;
-                    }
                     EmulateOpcode(w, i);
                 }
             }
@@ -558,20 +554,34 @@ namespace M6502
                     w.WriteLine(Spaces + dest + " = ReadWord(PC); PC += 2;"); break;
                 case AddrMode.AbsoluteX:
                     w.WriteLine(Spaces + dest + " = (ushort)(ReadWord(PC)+X);");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
+                    w.WriteLine(Spaces + "PC += 2;");
+                    break;
+                case AddrMode.AbsoluteX_P:
+                    w.WriteLine(Spaces + "temp16 = ReadWord(PC);");
+                    w.WriteLine(Spaces + dest + " = (ushort)(temp16+X);");
+                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) ");
                     w.WriteLine(Spaces + "    { PendingCycles--; TotalExecutedCycles++; }");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.AbsoluteY:
                     w.WriteLine(Spaces + dest + " = (ushort)(ReadWord(PC)+Y);");
-                    w.WriteLine(Spaces + "if ((PC & 0xFF00) != ((PC+Y) & 0xFF00)) ");
+                    w.WriteLine(Spaces + "PC += 2;");
+                    break;
+                case AddrMode.AbsoluteY_P:
+                    w.WriteLine(Spaces + "temp16 = ReadWord(PC);");
+                    w.WriteLine(Spaces + dest + " = (ushort)(temp16+Y);");
+                    w.WriteLine(Spaces + "if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) ");
                     w.WriteLine(Spaces + "    { PendingCycles--; TotalExecutedCycles++; }");
                     w.WriteLine(Spaces + "PC += 2;");
                     break;
                 case AddrMode.IndirectX:
-                    w.WriteLine(Spaces + dest + " = ReadWordPageWrap((byte)(ReadMemory(PC++)+X));"); break;
+                    w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
+                    w.WriteLine(Spaces + dest + " = (ushort)(temp16+X);");
+                    break;
                 case AddrMode.IndirectY:
-                    w.WriteLine(Spaces + dest + " = ReadWordPageWrap((byte)(ReadMemory(PC++)+Y));"); break;
+                    w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
+                    w.WriteLine(Spaces + dest + " = (ushort)(temp16+Y);");
+                    break;
                 case AddrMode.IndirectY_P:
                     w.WriteLine(Spaces + "temp16 = ReadWordPageWrap(ReadMemory(PC++));");
                     w.WriteLine(Spaces + dest + " = (ushort)(temp16+Y);");
