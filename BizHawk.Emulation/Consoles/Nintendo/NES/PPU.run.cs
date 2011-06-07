@@ -27,11 +27,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void Read_bgdata(ref BGDataRecord bgdata) {
 				int addr = ppur.get_ntread();
-				bgdata.nt = ppubus_read(addr);
+				bgdata.nt = ppubus_read(addr, true);
 				runppu(kFetchTime);
 
 				addr = ppur.get_atread();
-				byte at = ppubus_read(addr);
+				byte at = ppubus_read(addr, true);
 
 				//modify at to get appropriate palette shift
 				if((ppur.vt&2)!=0) at >>= 4;
@@ -53,10 +53,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				runppu(1);
 
 				addr = ppur.get_ptread(bgdata.nt);
-				bgdata.pt_0 = ppubus_read(addr);
+				bgdata.pt_0 = ppubus_read(addr, true);
 				runppu(kFetchTime);
 				addr |= 8;
-				bgdata.pt_1 = ppubus_read(addr);
+				bgdata.pt_1 = ppubus_read(addr, true);
 				runppu(kFetchTime);
 			}
 
@@ -380,11 +380,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							//pattern table fetches
 							int addr = patternAddress;
-							oam->patterns[0] = ppubus_read(addr);
+							oam->patterns[0] = ppubus_read(addr, true);
 							if (realSprite) runppu(kFetchTime);
 
 							addr += 8;
-							oam->patterns[1] = ppubus_read(addr);
+							oam->patterns[1] = ppubus_read(addr, true);
 							if (realSprite) runppu(kFetchTime);
 
 							//hflip
@@ -405,7 +405,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//screen (or basically, the first nametable address that will be accessed when
 					//the PPU is fetching background data on the next scanline).
 					//(not implemented yet)
-					runppu(kFetchTime * 2);
 					if (sl == 0)
 					{
 						if (idleSynch && reg_2001.show_bg && !PAL)
@@ -420,6 +419,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//fetch BG: two tiles for next line
 					for (int xt = 0; xt < 2; xt++)
 						Read_bgdata(ref bgdata[xt]);
+
+					runppu(kFetchTime * 2);
 
 					//After memory access 170, the PPU simply rests for 4 cycles (or the
 					//equivelant of half a memory access cycle) before repeating the whole

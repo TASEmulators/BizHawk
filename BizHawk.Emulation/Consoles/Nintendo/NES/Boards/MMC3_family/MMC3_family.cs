@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		//state
 		public NES.NESBoardBase.EMirrorType mirror;
-		int ppubus_state, ppubus_statecounter;
+		int a12_old;
 		byte irq_reload, irq_counter;
 		bool irq_pending, irq_enable;
 
@@ -147,6 +147,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					SyncIRQ();
 					break;
 				case 0x6001: //$E001 - IRQ Enable
+					//board.NES.LogLine("irq en");
 					irq_enable = true;
 					SyncIRQ();
 					break;
@@ -156,7 +157,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		void IRQ_EQ_Pass()
 		{
 			if (irq_enable)
+			{
+				//board.NES.LogLine("mmc3 IRQ");
 				irq_pending = true;
+			}
 			SyncIRQ();
 		}
 
@@ -174,7 +178,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				irq_counter--;
-				//Console.WriteLine(irq_counter);
 				if (irq_counter == 0)
 				{
 					IRQ_EQ_Pass();
@@ -182,20 +185,48 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		//TODO - this should be determined from NES timestamps to correctly emulate ppu writes interfering
-		public void Tick_PPU(int addr)
+		//it really seems like these should be the same but i cant seem to unify them.
+		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
+		//the hint, of course, is that the countdown value is the same.
+		//will someone else try to unify them?
+		int separator_counter;
+		int irq_countdown;
+
+		public void ClockPPU()
 		{
-			ppubus_statecounter++;
-			int state = (addr >> 12) & 1;
-			if (ppubus_state == 0 && ppubus_statecounter > 1 && state == 1)
+			if (separator_counter > 0)
+				separator_counter--;
+
+			if (irq_countdown > 0)
 			{
-				ppubus_statecounter = 0;
-				ClockIRQ();
+				irq_countdown--;
+				if (irq_countdown == 0)
+				{
+					//board.NES.LogLine("ClockIRQ");
+					ClockIRQ();
+				}
 			}
-			if (ppubus_state != state)
+		}
+
+
+		public void AddressPPU(int addr)
+		{
+			int a12 = (addr >> 12) & 1;
+			bool rising_edge = (a12 == 1 && a12_old == 0);
+			if (rising_edge)
 			{
-				ppubus_state = state;
+				if (separator_counter > 0)
+				{
+					separator_counter = 15;
+				}
+				else
+				{
+					separator_counter = 15;
+					irq_countdown = 15;
+				}
 			}
+
+			a12_old = a12;
 		}
 
 	}
@@ -276,9 +307,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void AddressPPU(int addr)
 		{
-			mmc3.Tick_PPU(addr);
+			mmc3.AddressPPU(addr);
 		}
-		
+
+		public override void ClockPPU()
+		{
+			mmc3.ClockPPU();
+		}
+
 		protected override void BaseSetup()
 		{
 			wram_mask = (Cart.wram_size * 1024) - 1;
