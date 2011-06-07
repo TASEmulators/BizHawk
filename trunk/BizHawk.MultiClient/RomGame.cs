@@ -111,15 +111,15 @@ namespace BizHawk.MultiClient
             {
                 switch (System)
                 {
-                    case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS") + Name + ".SaveRAM";
-                    case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG") + Name + ".SaveRAM";
-                    case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG") + Name + ".SaveRAM";
-                    case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
-                    case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE") + Name + ".SaveRAM";
-                    case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB") + Name + ".SaveRAM";
-                    case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN") + Name + ".SaveRAM";
-                    case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES") + Name + ".SaveRAM";
-                    case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83") + Name + ".SaveRAM";
+					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), Name + ".SaveRAM");
+					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), Name + ".SaveRAM");
+                    case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), Name + ".SaveRAM");
+                    case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), Name + ".SaveRAM");
+                    case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), Name + ".SaveRAM");
+                    case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), Name + ".SaveRAM");
+                    case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), Name + ".SaveRAM");
+                    case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), Name + ".SaveRAM");
+                    case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), Name + ".SaveRAM");
                     default:    return "";
                 }
             }
