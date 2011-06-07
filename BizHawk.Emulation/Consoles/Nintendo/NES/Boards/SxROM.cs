@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 				{
 					//"not tested very well yet! had to guess!
-					return (prg+1) & 0xF;
+					return prg + 1;
 				}
 			else if (prg_slot == 0)
 				if (PRG_A14 == 0)
@@ -148,8 +148,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public int Get_CHRBank_4K(int addr)
 		{
 			int CHR_A12 = (addr >> 12) & 1;
+			int CHR_A14 = (addr >> 14) & 1;
 			if (chr_mode == 0)
-				return chr_0;
+				if (CHR_A12 == 0)
+					return chr_0;
+				else return chr_0 + 1;
 			else if (CHR_A12 == 0)
 				return chr_0;
 			else return chr_1;

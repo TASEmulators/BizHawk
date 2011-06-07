@@ -16,24 +16,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 
         //Game issues:
-        //Zelda II (U) - Black screen only
-        //Bard's Tale - The Tales of the Unkown (U) - Black screen only
-        //Dragon Warrior (SAROM) - Black screen only
-        //Family Feud - Fails to get past intro screen
-        //Air Wolf - Black screen
-        //Goal = graphics garble (looks identical to Zelda 2 problem)
-        //Nobunaga's Ambition - black screen
-		//Knight Rider - very glitchy and seems to be a good timing case!
+        //Air Wolf - Black screen (seems to be mapped properly, and not frozen, but graphics just dont show up. must be ppu bug)
 		//Dragon warrior 3/4 certainly need some additional work done to the mapper wiring to get to the super big PRG (probably SXROM too)
-        //Kirby's Adventure - bottom menu wobbles
-        //Adventures of Lolo 2 - black screen
-        //Indiana Jones Temple of Doom - Puase menu flickering (in FCEUX as well, haven't tested other emulators)
-        //Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game)
-        //High Speed - garbled graphics
+		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
 
-		//Game issues for tester to check off
+		//---
+		//Game issues for tester to check off.
+		//we have three compatibility levels, so you may want to leave games off the 'broken' list even though theyre still broken (aka level 2 'as good as any other emu)
+		//1. broken
+		//2. as good as any other emu
+		//3. more fixed than other emus
+
+		//Indiana Jones Temple of Doom - Pause menu flickering (in FCEUX as well, haven't tested other emulators) [looks same in nintendulator, i think this is OK]
 		//3-D World Runner - UNROM - weird lines in gameplay (OK i think - should be similar to other emulators now)
 		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
+		//Knight Rider - very glitchy and seems to be a good timing case! (seems to run same as nintendulator and fceux now.. which may not be entirely accurate)
 
 		public NES()
 		{
