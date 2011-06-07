@@ -62,6 +62,7 @@ static string ClassifyTable = @"
 1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests) [TODO recheck as NROM-HOMEBREW]
 2	128	0	8	0	NES-UNROM; mega man
 2	256	0	8	0	NES-UOROM; paperboy 2
+2	128	0	8	8	HVC-UNROM; JJ - Tobidase Daisakusen Part 2 (J)
 3	32	32	8	0	NES-CNROM; adventure island
 4	128	128	8	0	NES-TSROM; double dragon 2 (should be TL1ROM but maybe this will work)
 4	32	8	8	0	TXROM-HOMEBREW; blargg's mmc3 tests
