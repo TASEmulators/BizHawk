@@ -439,6 +439,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					addr &= 0x1F;
 					byte color = (byte)(value & 0x3F); //are these bits really unwired? can they be read back somehow?
 
+					//this little hack will help you debug things while the screen is black
+					//color = (byte)(addr & 0x3F);
+
 					PALRAM[addr] = color;
 					if ((addr & 3) == 0)
 					{
