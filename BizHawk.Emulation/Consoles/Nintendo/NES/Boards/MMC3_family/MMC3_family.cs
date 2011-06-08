@@ -10,7 +10,9 @@
 //mappers handled by this:
 //004,095,118,119,206
 
-//TODO - redo this with the 0xFF bank idea from Sunsoft-4
+//fceux contains a comment in mmc3.cpp:
+//Code for emulating iNES mappers 4,12,44,45,47,49,52,74,114,115,116,118,119,165,205,214,215,245,249,250,254
+
 
 using System;
 using System.IO;
@@ -20,50 +22,41 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	public class Namcot109 : IDisposable
 	{
-		public Namcot109(int num_prg_banks)
+		protected NES.NESBoardBase board;
+		public Namcot109(NES.NESBoardBase board)
 		{
-			bank_regs[8] = (byte)(num_prg_banks - 1);
-			bank_regs[9] = (byte)(num_prg_banks - 2);
-			bank_regs[0] = 0;
-			bank_regs[1] = 1;
-			bank_regs[2] = 2;
-			bank_regs[3] = 3;
-			bank_regs[4] = 4;
-			bank_regs[5] = 5;
-			sync_2k_chr();
+			this.board = board;
+
+			prg_regs_8k[0] = 0;
+			prg_regs_8k[1] = 1;
+			prg_regs_8k[2] = 0xFE; //constant
+			prg_regs_8k[3] = 0xFF; //constant
+			prg_regs_8k[4+0] = 0xFE; //constant
+			prg_regs_8k[4+1] = 1;
+			prg_regs_8k[4+2] = 0;
+			prg_regs_8k[4+3] = 0xFF; //constant
+
+			chr_regs_1k[0] = 0;
+			chr_regs_1k[1] = 1;
+			chr_regs_1k[2] = 2;
+			chr_regs_1k[3] = 3;
+			chr_regs_1k[4] = 4;
+			chr_regs_1k[5] = 5;
+			chr_regs_1k[6] = 6;
+			chr_regs_1k[7] = 7;
 		}
 
 		public void Dispose()
 		{
-			bank_regs.Dispose();
-			prg_lookup.Dispose();
+			chr_regs_1k.Dispose();
+			prg_regs_8k.Dispose();
 		}
 
 		//state
 		public int chr_mode, prg_mode, reg_addr;
 
-		//this contains the 8 programmable regs and 2 more at the end to represent PRG banks -2 and -1; and 4 more at the end to break down chr regs 0 and 1
-		//in other words:
-		//0: chr reg 0 (not used directly)
-		//1: chr reg 1 (not used directly)
-		//2,3,4,5: chr reg 2,3,4,5
-		//6,7: prg reg 6,7
-		//8,9: prg reg -2,-1
-		//10: chr reg 0A
-		//11: chr reg 0B
-		//12: chr reg 1A
-		//13: chr reg 1B
-		ByteBuffer bank_regs = new ByteBuffer(14);
-		ByteBuffer prg_lookup = new ByteBuffer(new byte[] { 6, 7, 9, 8, 9, 7, 6, 8 });
-		ByteBuffer chr_lookup = new ByteBuffer(new byte[] { 10, 11, 12, 13, 2, 3, 4, 5 });
-
-		void sync_2k_chr()
-		{
-			bank_regs[10] = (byte)((bank_regs[0] & ~1) + 0);
-			bank_regs[11] = (byte)((bank_regs[0] & ~1) + 1);
-			bank_regs[12] = (byte)((bank_regs[1] & ~1) + 0);
-			bank_regs[13] = (byte)((bank_regs[1] & ~1) + 1);
-		}
+		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		ByteBuffer prg_regs_8k = new ByteBuffer(8);
 
 		public virtual void WritePRG(int addr, byte value)
 		{
@@ -71,12 +64,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case 0x0000: //$8000
 					chr_mode = (value >> 7) & 1;
+					chr_mode <<= 2;
 					prg_mode = (value >> 6) & 1;
+					prg_mode <<= 2;
 					reg_addr = (value & 7);
 					break;
 				case 0x0001: //$8001
-					bank_regs[reg_addr] = value;
-					sync_2k_chr();
+					switch (reg_addr)
+					{
+						case 0: chr_regs_1k[0] = (byte)(value & ~1); chr_regs_1k[1] = (byte)(value | 1); break;
+						case 1: chr_regs_1k[2] = (byte)(value & ~1); chr_regs_1k[3] = (byte)(value | 1); break;
+						case 2: chr_regs_1k[4] = value; break;
+						case 3: chr_regs_1k[5] = value; break;
+						case 4: chr_regs_1k[6] = value; break;
+						case 5: chr_regs_1k[7] = value; break;
+						case 6: prg_regs_8k[0] = value; prg_regs_8k[4 + 2] = value; break;
+						case 7: prg_regs_8k[1] = value; prg_regs_8k[4 + 1] = value; break;
+					}
 					break;
 			}
 		}
@@ -84,16 +88,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public int Get_PRGBank_8K(int addr)
 		{
 			int bank_8k = addr >> 13;
-			bank_8k = bank_regs[prg_lookup[prg_mode * 4 + bank_8k]];
+			bank_8k += prg_mode;
+			bank_8k = prg_regs_8k[bank_8k];
 			return bank_8k;
 		}
 
 		public int Get_CHRBank_1K(int addr)
 		{
 			int bank_1k = addr >> 10;
-			if (chr_mode == 1)
-				bank_1k ^= 4;
-			bank_1k = bank_regs[chr_lookup[bank_1k]];
+			bank_1k ^= chr_mode;
+			bank_1k = chr_regs_1k[bank_1k];
 			return bank_1k;
 		}
 
@@ -102,11 +106,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public class MMC3 : Namcot109
 	{
-		NES.NESBoardBase board;
 		public MMC3(NES.NESBoardBase board, int num_prg_banks)
-			: base(num_prg_banks)
+			: base(board)
 		{
-			this.board = board;
 		}
 
 		//state
@@ -244,13 +246,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		protected Namcot109 mapper;
+
+		int MapCHR(int addr)
+		{
+			int bank_1k = mapper.Get_CHRBank_1K(addr);
+			bank_1k &= chr_mask;
+			addr = (bank_1k << 10) | (addr & 0x3FF);
+			return addr;
+		}
+
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				int bank_1k = mapper.Get_CHRBank_1K(addr);
-				bank_1k &= chr_mask;
-				addr = (bank_1k << 10) | (addr & 0x3FF);
+				addr = MapCHR(addr);
 				if (VROM != null)
 					return VROM[addr];
 				else return VRAM[addr];
@@ -260,6 +269,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePPU(int addr, byte value)
 		{
+			if (addr < 0x2000)
+			{
+				if (VRAM == null) return;
+				addr = MapCHR(addr);
+				VRAM[addr] = value;
+			}
 			base.WritePPU(addr, value);
 		}
 
@@ -333,9 +348,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		protected override void BaseSetup()
 		{
-			int num_prg_banks = Cart.prg_size / 8;
-			mapper = new Namcot109(num_prg_banks);
-
+			mapper = new Namcot109(this);
 			base.BaseSetup();
 		}
 	}

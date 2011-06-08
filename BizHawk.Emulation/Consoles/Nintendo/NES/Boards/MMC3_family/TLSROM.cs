@@ -20,6 +20,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(8);
 					AssertBattery(true);
 					break;
+				case "TENGEN-800037": //Alien Syndrome (U)
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
+					break;
 				default:
 					return false;
 			}

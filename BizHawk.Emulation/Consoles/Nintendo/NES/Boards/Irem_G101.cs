@@ -77,14 +77,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr)
 			{
 				//$8000-$8007:  [PPPP PPPP]    PRG Reg 0
-				case 0x0000:
-				case 0x0001:
-				case 0x0002:
-				case 0x0003:
-				case 0x0004:
-				case 0x0005:
-				case 0x0006:
-				case 0x0007:
+				case 0x0000: case 0x0001: case 0x0002: case 0x0003:
+				case 0x0004: case 0x0005: case 0x0006: case 0x0007:
 					prg_regs_8k[0] = value;
 					prg_regs_8k[4 + 2] = value;
 					break;
@@ -92,14 +86,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//$9000-$9007:  [.... ..PM]
 				//P = PRG Mode
 				//M = Mirroring (0=Vert, 1=Horz) **Ignore for Major League**
-				case 0x1000:
-				case 0x1001:
-				case 0x1002:
-				case 0x1003:
-				case 0x1004:
-				case 0x1005:
-				case 0x1006:
-				case 0x1007:
+				case 0x1000: case 0x1001: case 0x1002: case 0x1003:
+				case 0x1004: case 0x1005: case 0x1006: case 0x1007:
 					prg_mode = (value >> 1) & 1;
 					prg_mode <<= 2;
 					mirror_mode = value & 1;
@@ -107,27 +95,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 
 				//$A000-$A007:  [PPPP PPPP]    PRG Reg 1
-				case 0x2000:
-				case 0x2001:
-				case 0x2002:
-				case 0x2003:
-				case 0x2004:
-				case 0x2005:
-				case 0x2006:
-				case 0x2007:
+				case 0x2000: case 0x2001: case 0x2002: case 0x2003:
+				case 0x2004: case 0x2005: case 0x2006: case 0x2007:
 					prg_regs_8k[1] = value;
 					prg_regs_8k[4 + 1] = value;
 					break;
 
 				//$B000-$B007:  [CCCC CCCC]    CHR Regs
-				case 0x3000:
-				case 0x3001:
-				case 0x3002:
-				case 0x3003:
-				case 0x3004:
-				case 0x3005:
-				case 0x3006:
-				case 0x3007:
+				case 0x3000: case 0x3001: case 0x3002: case 0x3003:
+				case 0x3004: case 0x3005: case 0x3006: case 0x3007:
 					chr_regs_1k[addr - 0x3000] = value;
 					break;
 			}
