@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Daiku no Gen San 2
 	//Spartan X 2
 
+	//NOTE - fceux support for this mapper has some kind of -4 cpu cycle delay built into the timer. not sure yet whether we need that
+
 	class Irem_H3001 : NES.NESBoardBase
 	{
 		//configuration
@@ -21,6 +23,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		ushort irq_counter, irq_reload;
 		int clock_counter;
 
+		public override void Dispose()
+		{
+			base.Dispose();
+			prg_regs_8k.Dispose();
+			chr_regs_1k.Dispose();
+		}
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//configure
@@ -28,6 +37,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "IREM-H3001":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertVram(0); AssertWram(0);
+					break;
+				case "IREM-H3001-FLEX":
 					break;
 				default:
 					return false;
@@ -43,11 +54,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return true;
 		}
 
-		public override void Dispose()
-		{
-			prg_regs_8k.Dispose();
-			chr_regs_1k.Dispose();
-		}
 
 		public override void ClockPPU()
 		{

@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections.Generic;
 
 //TODO - consider bytebuffer for mirroring
+//TODO - could stringpool the bootgod DB for a pedantic optimization
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
@@ -223,6 +224,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public bool wram_battery;
 
 			public string board_type;
+			public string pcb;
 
 			public string sha1;
 			public string system;
@@ -230,7 +232,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public override string ToString()
 			{
-				return string.Format("pr={0},ch={1},wr={2},vr={3},ba={4},pa={5}|{6},brd={7},map={8},sys={9}", prg_size, chr_size, wram_size, vram_size, wram_battery?1:0, pad_h, pad_v, board_type, mapper, system);
+				return string.Format("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},pa={6}|{7},brd={8},sys={9}", mapper, prg_size, chr_size, wram_size, vram_size, wram_battery ? 1 : 0, pad_h, pad_v, board_type, system);
 			}
 		}
 
@@ -241,10 +243,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			public string name;
 			public List<CartInfo> carts = new List<CartInfo>();
-			public override string ToString()
-			{
-				return string.Format("name={0}", name);
-			}
 		}
 
 		/// <summary>
@@ -371,6 +369,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "board")
 							{
 								currCart.board_type = xmlreader.GetAttribute("type");
+								currCart.pcb = xmlreader.GetAttribute("pcb");
 								int mapper = byte.Parse(xmlreader.GetAttribute("mapper"));
 								if (validate && mapper > 255) throw new Exception("didnt expect mapper>255!");
 								currCart.mapper = (byte)mapper;

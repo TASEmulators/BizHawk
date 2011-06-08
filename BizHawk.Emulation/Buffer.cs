@@ -69,7 +69,15 @@ namespace BizHawk
 	{
 		public ByteBuffer(int amt) : base(amt) { }
 		public ByteBuffer(byte[] arr) : base(arr) { }
-		public byte this[int index] { get { return Read08(index); } set { Write08(index, value); } }
+		public byte this[int index]
+		{
+			#if DEBUG
+				get { return arr[index]; }
+				set { arr[index] = value; }
+			#else
+				set { Write08(index, value); } 
+				get { return Read08(index);}
+			#endif
+		}
 	}
-
 }
