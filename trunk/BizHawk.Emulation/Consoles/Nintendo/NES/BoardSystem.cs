@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 
+//TODO - consider bytebuffer for mirroring
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES

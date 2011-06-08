@@ -10,6 +10,8 @@
 //mappers handled by this:
 //004,095,118,119,206
 
+//TODO - redo this with the 0xFF bank idea from Sunsoft-4
+
 using System;
 using System.IO;
 using System.Diagnostics;
