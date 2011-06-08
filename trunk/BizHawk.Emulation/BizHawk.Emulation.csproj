@@ -91,6 +91,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft4.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs">
       <SubType>Code</SubType>
     </Compile>

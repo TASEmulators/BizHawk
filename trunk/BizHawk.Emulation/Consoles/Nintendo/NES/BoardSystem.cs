@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			int ApplyMirroring(int addr)
+			protected int ApplyMirroring(int addr)
 			{
 				int block = (addr >> 10) & 3;
 				block = mirroring[block];
