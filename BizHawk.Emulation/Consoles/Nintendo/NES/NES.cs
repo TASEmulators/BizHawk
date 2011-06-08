@@ -409,7 +409,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 				{
-					Console.WriteLine("Chose board from nescartdb: " + choice.board_type);
+					Console.WriteLine("Chose board from nescartdb:");
+					Console.WriteLine(choice);
 					origin = EDetectionOrigin.BootGodDB;
 				}
 

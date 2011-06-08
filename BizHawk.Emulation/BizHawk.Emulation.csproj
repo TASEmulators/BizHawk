@@ -97,6 +97,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\Taito_TC0190FMC.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
       <SubType>Code</SubType>
     </Compile>
