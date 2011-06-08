@@ -571,11 +571,26 @@ namespace BizHawk.MultiClient
                 UserMovie.StartPlayback();
 
             }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".SMV")
+            {
+                //TODO: error checking of some kind and don't play on error
+                LoadRom(CurrentlyOpenRom);
+                UserMovie = MovieConvert.ConvertSMV(filePaths[0]);
+                UserMovie.StartPlayback();
+
+            }
             else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
             {
                 //TODO: error checking of some kind and don't play on error
                 LoadRom(CurrentlyOpenRom);
                 UserMovie = MovieConvert.ConvertMMV(filePaths[0]);
+                UserMovie.StartPlayback();
+            }
+            else if (Path.GetExtension(filePaths[0]).ToUpper() == ".VBM")
+            {
+                //TODO: error checking of some kind and don't play on error
+                LoadRom(CurrentlyOpenRom);
+                UserMovie = MovieConvert.ConvertVBM(filePaths[0]);
                 UserMovie.StartPlayback();
             }
             else

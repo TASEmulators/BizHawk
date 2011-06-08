@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
         public const string GAMENAME = "GameName";
         public const string AUTHOR = "Author";
         public const string RERECORDS = "rerecordCount";
+        public const string GUID = "GUID";
 
         public static string MovieVersion = "BizHawk v0.0.1";
 
@@ -34,6 +35,7 @@ namespace BizHawk.MultiClient
             HeaderParams.Add(GAMENAME, "");
             HeaderParams.Add(AUTHOR, "");
             HeaderParams.Add(RERECORDS, "0");
+            HeaderParams.Add(GUID, ""); //TODO: Generate one
         }
 
         public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName, string Author, int rerecords)
@@ -44,6 +46,7 @@ namespace BizHawk.MultiClient
             HeaderParams.Add(GAMENAME, GameName);
             HeaderParams.Add(AUTHOR, Author);
             HeaderParams.Add(RERECORDS, rerecords.ToString());
+            HeaderParams.Add(GUID, "");  //TODO: Generate one
         }
 
         /// <summary>
