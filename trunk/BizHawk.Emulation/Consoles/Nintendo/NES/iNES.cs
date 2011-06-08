@@ -25,6 +25,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//if it didnt work, try again with a different wram size. because iNES is weird that way
 					key = string.Format("{0}	{1}	{2}	{3}	{4}", cartInfo.mapper, cartInfo.prg_size, cartInfo.chr_size, 8, cartInfo.vram_size);
 					Table.TryGetValue(key, out board);
+					//if it still didnt work, look for one with empty keys, to detect purely based on mapper
+					key = string.Format("{0}	{1}	{2}	{3}	{4}", cartInfo.mapper, -1,-1,-1,-1);
+					Table.TryGetValue(key, out board);
 				}
 				return board;
 			}
@@ -89,6 +92,7 @@ static string ClassifyTable = @"
 7	128	0	8	0	NES-ANROM; marble madness
 7	256	0	8	8	NES-AOROM; battletoads
 13	32	0	8	16	NES-CPROM; videomation
+65	-1	-1	-1	-1	IREM-H3001-FLEX; //Ai Sensei No Oshiete - Watashi No Hoshi (J).nes
 66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
 66	128	32	8	0	NES-GNROM; gumshoe
 68	128	256	8	0	SUNSOFT-4; After Burner 2 (J)
@@ -173,7 +177,7 @@ static string ClassifyTable = @"
 				//let's not put a lot of hacks in here. that's what the databases are for.
 				//for example of one not to add: videomation hack to change vram = 8 -> 16
 
-				Console.WriteLine("iNES: map:{0}, mirror:{1}, PRG:{2}, CHR:{3}, WRAM:{4}, VRAM:{5}, bat:{6}", ret.mapper, mirroring, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0);
+				Console.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}",ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring);
 
 				return ret;
 			}
