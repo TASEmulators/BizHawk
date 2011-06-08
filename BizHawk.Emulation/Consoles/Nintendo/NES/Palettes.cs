@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			static float[] gtmul = { 0.915f, 1.086f, 0.98f, 1.026f, 0.908f, 0.987f, 0.75f };
 			static float[] btmul = { 0.743f, 0.882f, 0.653f, 1.277f, 0.979f, 0.101f, 0.75f };
 
-				public static void ApplyDeemphasis(ref int r, ref int g, ref int b, int deemph_bits)
+			public static void ApplyDeemphasis(ref int r, ref int g, ref int b, int deemph_bits)
 			{
 				//DEEMPH BITS MAY BE ORDERED WRONG. PLEASE CHECK
 				if (deemph_bits == 0) return;

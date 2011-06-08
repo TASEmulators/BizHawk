@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 
         //Game issues:
-        //Air Wolf - Black screen (seems to be mapped properly, and not frozen, but graphics just dont show up. must be ppu bug)
 		//Dragon warrior 3/4 certainly need some additional work done to the mapper wiring to get to the super big PRG (probably SXROM too)
 		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
 
@@ -35,6 +34,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//------
 		//zeromus's new notes:
 		//AD&D Hillsfar (U).nes black screen
+		//Air Wolf - big graphical glitch. seems to be a real bug, but it should never have been released with this. need to verify for sure that it is a real bug?
 
 		public NES()
 		{
@@ -425,6 +425,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine("Final game detection results:");
 				Console.WriteLine(choice);
 				Console.WriteLine("\"" + game_name + "\"");
+				if (choice.bad)
+				{
+					Console.WriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
+					Console.WriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
+				}
 
 				Console.WriteLine("END NES rom analysis");
 				Console.WriteLine("------");

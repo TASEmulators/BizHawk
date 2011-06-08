@@ -222,6 +222,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public short wram_size, vram_size;
 			public byte pad_h, pad_v, mapper;
 			public bool wram_battery;
+			public bool bad;
 
 			public string board_type;
 			public string pcb;
@@ -305,7 +306,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (dict.ContainsKey("PAD_V"))
 				cart.pad_h = byte.Parse(dict["PAD_V"]);
 			if (dict.ContainsKey("bad"))
-				Console.WriteLine("rom is flagged as BAD!");
+				cart.bad = true;
 
 			return cart;
 		}

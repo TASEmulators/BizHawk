@@ -210,7 +210,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int d = i >> 6;
 				int c = i & 63;
-				if (d >= 7) continue;
 				int r = palette[c, 0];
 				int g = palette[c, 1];
 				int b = palette[c, 2];
