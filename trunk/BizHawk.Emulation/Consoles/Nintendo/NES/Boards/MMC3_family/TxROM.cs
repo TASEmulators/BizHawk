@@ -71,6 +71,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertBattery(false);
 					break;
 				case "NES-TKROM": //kirby's adventure
+				case "HVC-TKROM": //Akuma No Shoutaijou (J)
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					break;
 				case "NES-TLROM": //mega man 3
@@ -88,6 +89,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "NES-TSROM": //super mario bros. 3 (U)
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
+					AssertBattery(false);
+					break;
+				case "ACCLAIM-MC-ACC": //alien 3 (U)
+					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
 				case "NES-B4": //batman (U)
