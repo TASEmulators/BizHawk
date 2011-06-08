@@ -33,8 +33,8 @@ namespace BizHawk.MultiClient
 
             UInt32 frameCount = r.ReadUInt32();
             
-            UInt32 rerecords = r.ReadUInt32();
-            m.SetHeaderLine(MovieHeader.RERECORDS, rerecords.ToString());
+            m.rerecordCount = (int)r.ReadUInt32();
+            m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
 
             UInt32 movieDataSize = r.ReadUInt32();
             UInt32 savestateOffset = r.ReadUInt32();
@@ -141,8 +141,8 @@ namespace BizHawk.MultiClient
 
             UInt32 framecount = r.ReadUInt32();
             
-            UInt32 rerecords = r.ReadUInt32();
-            m.SetHeaderLine(MovieHeader.RERECORDS, rerecords.ToString());
+            m.rerecordCount = (int)r.ReadUInt32();
+            m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
 
             UInt32 IsFromReset = r.ReadUInt32();
             if (IsFromReset == 0)
@@ -249,25 +249,120 @@ namespace BizHawk.MultiClient
             return converted;
         }
 
-        public static string ConvertSMV(string path)
+        public static Movie ConvertSMV(string path)
         {
-            string converted = Path.ChangeExtension(path, ".tas");
-            
-            return converted;
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            BinaryReader r = new BinaryReader(fs);
+
+            byte[] signatureBytes = new byte[4];
+            for (int x = 0; x < 4; x++)
+                signatureBytes[x] = r.ReadByte();
+            string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+            if (signature.Substring(0, 3) != "SMV")
+                return null; //TODO: invalid movie type error
+
+            UInt32 version = r.ReadUInt32();
+
+            switch (version)
+            {
+                case 1:
+                    return ConvertSMV143(r, path);
+                case 4:
+                    return ConvertSMV151(r, path);
+                case 5:
+                    return ConvertSMV152(r, path);
+                default:
+                    return null; //TODO: version not recognized error
+            }
         }
 
-        public static string ConvertGMV(string path)
+        private static Movie ConvertSMV152(BinaryReader r, string path)
         {
-            string converted = Path.ChangeExtension(path, ".tas");
-            
-            return converted;
+            Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            UInt32 GUID = r.ReadUInt32();
+
+            return m;
         }
 
-        public static string ConvertVBM(string path)
+        private static Movie ConvertSMV151(BinaryReader r, string path)
         {
-            string converted = Path.ChangeExtension(path, ".tas");
-            
-            return converted;
+            Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            return m;
+        }
+
+        private static Movie ConvertSMV143(BinaryReader r, string path)
+        {
+            Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            UInt32 GUID = r.ReadUInt32();
+            m.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
+            m.rerecordCount = (int)r.ReadUInt32();
+            m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+
+            UInt32 framecount = r.ReadUInt32();
+            byte ControllerFlags = r.ReadByte();
+
+            int numControllers;
+            if ((int)(ControllerFlags & 16) > 0)
+                numControllers = 5;
+            else if ((int)(ControllerFlags & 8) > 0)
+                numControllers = 4;
+            else if ((int)(ControllerFlags & 4) > 0)
+                numControllers = 3;
+            else if ((int)(ControllerFlags & 2) > 0)
+                numControllers = 2;
+            else
+                numControllers = 1;
+
+            byte MovieFlags = r.ReadByte();
+
+            if ((int)(MovieFlags & 1) == 0)
+                return null; //TODO: Savestate movies not supported error
+
+            if ((int)(MovieFlags & 2) > 0)
+            {
+                m.SetHeaderLine("PAL", "True");
+            }
+
+            byte SyncOptions = r.ReadByte();
+            byte SyncOptions2 = r.ReadByte();
+            //TODO: these
+
+            UInt32 SavestateOffset = r.ReadUInt32();
+            UInt32 FrameDataOffset = r.ReadUInt32();
+
+            //TODO: get extra rom info
+
+            r.BaseStream.Position = FrameDataOffset;
+            for (int x = 0; x < framecount; x++)
+            {
+                //TODO: FF FF for all controllers = Reset
+                string frame = "|0|";
+                for (int y = 0; y < numControllers; y++)
+                {
+                    UInt16 fd = r.ReadUInt16();
+                }
+                
+
+            }
+
+            return m;
+        }
+
+        public static Movie ConvertGMV(string path)
+        {
+            Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            return m;
+        }
+
+        public static Movie ConvertVBM(string path)
+        {
+            Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            return m;
         }
     }
 }

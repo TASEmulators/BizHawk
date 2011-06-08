@@ -70,7 +70,6 @@ namespace BizHawk.MultiClient
         public void StartPlayback()
         {
             MovieMode = MOVIEMODE.PLAY;
-            //TODO:...something else should be done here
         }
 
         public MOVIEMODE GetMovieMode()
