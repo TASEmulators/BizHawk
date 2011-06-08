@@ -32,6 +32,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
 		//Knight Rider - very glitchy and seems to be a good timing case! (seems to run same as nintendulator and fceux now.. which may not be entirely accurate)
 
+		//------
+		//zeromus's new notes:
+		//AD&D Hillsfar (U).nes black screen
+
 		public NES()
 		{
 			BootGodDB.Initialize();
@@ -372,7 +376,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						choice = IdentifyFromGameDB(hash_md5);
 						if (choice == null)
+						{
 							choice = IdentifyFromGameDB(hash_sha1);
+						}
 					}
 					if (choice == null)
 					{

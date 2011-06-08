@@ -47,6 +47,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
+//if a board is in here then it is either
+//1. bad dump (and we should have put it in the gamedb.txt instead)
+//2. not in bootgod's DB yet
+//3. homebrew/hacks
+//it is worth keeping around for homebrew's sake.
+//games not in bootgod's DB are probably bad dumps, but a lot of them are in goodNES. not sure what to do about those.
+//
+//but, in general it is very hard to know whether to put it in here or gamedb.txt. i keep going through various phases.
+//this should really just be a backstop for if we've been too lazy to put them all in gamedb.txt
+//it would really be sort of cool if we had every goodnes rom listed in gamedb.txt.
+
+//i think the philosophy is, we should have an iNES guess for everything we have examples of, as well as an overriding gamedb.txt entry
+//so when going on mass compatibility sweeps, we should enter in both at once even if it pollutes this with incomprehensible stuff.
+//but make sure you always put a test case with each of these to justify it!
+
+//one thing to keep in mind though: bad dumps should not ruin the assertions on board types. override them in gamedb.txt to the correct parameters.
+//or, if necessary, add a new hacky board type.
+
 //MAP PRG CHR WRAM VRAM BOARD
 static string ClassifyTable = @"
 0	16	0	8	8	NROM-HOMEBREW; some of blargg's test (sprite tests)
@@ -66,14 +84,13 @@ static string ClassifyTable = @"
 3	32	32	8	0	NES-CNROM; adventure island
 4	128	128	8	0	NES-TSROM; double dragon 2 (should be TL1ROM but maybe this will work)
 4	32	8	8	0	TXROM-HOMEBREW; blargg's mmc3 tests
+4	256	256	8	0	NES-TKROM; Aces - Iron Eagle 3 (J)
+4	512	128	8	0	NES-TKROM; Pool of radiance (J)
 7	128	0	8	0	NES-ANROM; marble madness
 7	256	0	8	8	NES-AOROM; battletoads
-11	32	16	8	0	Discrete_74x377
-11	16	32	8	0	Discrete_74x377
 13	32	0	8	16	NES-CPROM; videomation
 66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
 66	128	32	8	0	NES-GNROM; gumshoe
-119	128	128	8	0	NES-TQROM-BAD; high speed (U)
 ";
 }
 
