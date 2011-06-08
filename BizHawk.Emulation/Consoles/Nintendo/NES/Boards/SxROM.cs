@@ -24,8 +24,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	class MMC1
 	{
-		public MMC1()
+		NES.NESBoardBase board;
+		public MMC1(NES.NESBoardBase board)
 		{
+			this.board = board;
+
 			//collect data about whether this is required here:
 			//kid icarus requires it
 			//zelda doesnt; nor megaman2; nor blastermaster; nor metroid
@@ -120,8 +123,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					wram_disable = (value >> 4) & 1;
 					break;
 			}
-			//Console.WriteLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
-			//Console.WriteLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
+			//board.NES.LogLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
+			//board.NES.LogLine("mapping.. prg_mode={0}, prg_slot{1}, prg={2}", prg_mode, prg_slot, prg);
 		}
 
 		public int Get_PRGBank(int addr)
@@ -254,69 +257,70 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-SCROM": //mechanized attack
 				case "NES-SC1ROM": //knight rider
 					AssertPrg(64); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SEROM": //lolo
 				case "HVC-SEROM": //dr. mario
 					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SFROM": //bubble bobble
-					AssertPrg(128,256); AssertChr(16,32,64); AssertVram(0); AssertWram(0);
-				    break;
+					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
+					break;
 				case "NES-SGROM": //bionic commando
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(0);
-				    break;
+					break;
 				case "NES-SHROM": //family feud
 				case "NES-SH1ROM": //airwolf
 					AssertPrg(32); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
 					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
-				    break;
+					break;
 				case "NES-SJROM": //air fortress
-					AssertPrg(128,256); AssertChr(16,32,64); AssertVram(0); AssertWram(8);
-				    break;
+					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8);
+					break;
 				case "NES-SKROM": //zelda 2
+				case "HVC-SKROM": //ad&d dragons of flame (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(8);
-				    break;
+					break;
 				case "NES-SLROM": //castlevania 2
+				case "KONAMI-SLROM": //bayou billy
+				case "HVC-SLROM": //Adventures of Lolo 2 (J)
 					AssertPrg(128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SL1ROM": //hoops
 					AssertPrg(64, 128, 256); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SL2ROM": //blaster master
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SL3ROM": //goal!
 					AssertPrg(256); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "NES-SLRROM": //tecmo bowl
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
-				    break;
+					break;
 				case "HVC-SMROM": //Hokkaidou Rensa Satsujin: Okhotsu ni Shoyu  
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
-				    break;
+					break;
 				case "NES-SNROM": //dragon warrior 2
-				case "HVC-SNROM": 
-					//prg=16 is unexpected but blargg's tests use it
-					AssertPrg(16, 128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
-					//TODO - consider making a unique board type for homebrew, as i discover how more of them are working
+				case "HVC-SNROM":
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
 				case "NES-SOROM": //Nobunaga's Ambition
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
-				    break;
+					break;
 				case "NES-SUROM": //dragon warrior 4
 				case "HVC-SUROM":
 					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
-				    break;
+					break;
 				case "HVC-SXROM": //final fantasy 1& 2
-					AssertPrg(128,256,512); AssertChr(0); AssertVram(8); AssertWram(32);
-				    break;
+					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
+					break;
 				default:
 					return false;
 			}
 
-			mmc1 = new MMC1();
+			mmc1 = new MMC1(this);
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			wram_mask = (Cart.wram_size*1024) - 1;
