@@ -537,7 +537,7 @@ namespace BizHawk
 
 	}
 
-	public class Serializer
+	public unsafe class Serializer
 	{
 		BinaryReader br;
 		BinaryWriter bw;
@@ -597,6 +597,34 @@ namespace BizHawk
 		{
 			if (IsReader) val = (T)Enum.Parse(typeof(T), tr.ReadLine().Split(' ')[1]);
 			else tw.WriteLine("{0} {1}", name, val.ToString());
+		}
+
+		unsafe void SyncBuffer(string name, int elemsize, int len, void* ptr)
+		{
+			if (IsReader)
+			{
+				byte[] temp = null;
+				Sync(name, ref temp, false);
+				int todo = Math.Min(temp.Length, len * elemsize);
+				System.Runtime.InteropServices.Marshal.Copy(temp, 0, new IntPtr(ptr), todo);
+			}
+			else
+			{
+				int todo = len * elemsize;
+				byte[] temp = new byte[todo];
+				System.Runtime.InteropServices.Marshal.Copy(new IntPtr(ptr), temp, 0, todo);
+				Sync(name, ref temp, false);
+			}
+		}
+
+		public unsafe void Sync(string name, ref ByteBuffer byteBuf)
+		{
+			SyncBuffer(name, 1, byteBuf.len, byteBuf.ptr);
+		}
+
+		public unsafe void Sync(string name, ref IntBuffer byteBuf)
+		{
+			SyncBuffer(name, 4, byteBuf.len, byteBuf.ptr);
 		}
 
 		public void Sync(string name, ref byte[] val, bool use_null)

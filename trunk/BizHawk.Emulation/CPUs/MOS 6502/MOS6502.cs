@@ -105,7 +105,6 @@ namespace BizHawk.Emulation.CPUs.M6502
         public bool NMI;
 		public bool CLI_Pending;
 		public bool SEI_Pending;
-		public bool EscapeRequest;
 
 		public void SyncState(Serializer ser)
 		{
@@ -118,6 +117,8 @@ namespace BizHawk.Emulation.CPUs.M6502
 			ser.Sync("S", ref S);
 			ser.Sync("NMI", ref NMI);
 			ser.Sync("IRQ", ref IRQ);
+			ser.Sync("CLI_Pending", ref CLI_Pending);
+			ser.Sync("SEI_Pending", ref SEI_Pending);
 			ser.Sync("TotalExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("PendingCycles", ref PendingCycles);
 			ser.EndSection();

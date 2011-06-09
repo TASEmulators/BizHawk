@@ -44,10 +44,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return nes.board.PeekPPU(addr);
 			}
 
-			enum PPUPHASE {
+			public enum PPUPHASE
+			{
 				VBL, BG, OBJ
 			};
-			PPUPHASE ppuphase;
+			public PPUPHASE ppuphase;
 
 			NES nes;
 			public PPU(NES nes)
@@ -59,29 +60,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//state
 			int ppudead; //measured in frames
 			bool idleSynch;
+			int NMI_PendingInstructions;
+			byte PPUGenLatch;
+			bool vtoggle;
+			byte VRAMBuffer;
+			byte[] OAM;
+			public byte[] PALRAM;
 
 			public void SyncState(Serializer ser)
 			{
+				byte temp8;
+
 				ser.Sync("ppudead", ref ppudead);
 				ser.Sync("idleSynch", ref idleSynch);
+				ser.Sync("NMI_PendingInstructions", ref NMI_PendingInstructions);
+				ser.Sync("PPUGenLatch", ref PPUGenLatch);
+				ser.Sync("vtoggle", ref vtoggle);
+				ser.Sync("VRAMBuffer", ref VRAMBuffer);
+
+				ser.Sync("OAM", ref OAM, false);
+				ser.Sync("PALRAM", ref PALRAM, false);
+
 				ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
 				ser.Sync("Reg2002_objhit", ref Reg2002_objhit);
 				ser.Sync("Reg2002_vblank_active", ref Reg2002_vblank_active);
-				ser.Sync("PPUGenLatch", ref PPUGenLatch);
-				ser.Sync("reg_2003", ref reg_2003);
-				ser.Sync("OAM", ref OAM, false);
-				ser.Sync("PALRAM", ref PALRAM, false);
-				ser.Sync("vtoggle", ref vtoggle);
-				ser.Sync("VRAMBuffer", ref VRAMBuffer);
+				ser.Sync("Reg2002_vblank_active_pending", ref Reg2002_vblank_active_pending);
+				ser.Sync("Reg2002_vblank_clear_pending", ref Reg2002_vblank_clear_pending);
 				ppur.SyncState(ser);
+				temp8 = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp8); reg_2000.Value = temp8;
+				temp8 = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp8); reg_2001.Value = temp8;
+				ser.Sync("reg_2003", ref reg_2003);
 
+				//don't sync framebuffer into binary (rewind) states
 				if(ser.IsText)
 					ser.Sync("xbuf", ref xbuf, false);
-
-				byte temp;
-
-				temp = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp); reg_2000.Value = temp;
-				temp = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp); reg_2001.Value = temp;
 			}
 
 			public void Reset()
@@ -113,13 +125,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			void runppu(int x)
 			{
-				ppur.status.cycle += x;
-				while(ppur.status.cycle >= ppur.status.end_cycle)
-					ppur.status.cycle -= ppur.status.end_cycle;
-
 				//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
 				for (int i = 0; i < x; i++)
 				{
+					ppur.status.cycle++;
+					if (ppur.status.cycle == ppur.status.end_cycle)
+						ppur.status.cycle = 0;
+
 					//might not actually run a cpu cycle if there are none to be run right now
 					nes.RunCpu(1);
 

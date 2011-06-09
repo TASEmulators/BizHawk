@@ -2,6 +2,8 @@
 
 //todo - read http://wiki.nesdev.com/w/index.php/PPU_sprite_priority
 
+//TODO - correctly emulate PPU OFF state
+
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -89,6 +91,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				Reg2002_vblank_active_pending = true;
 				ppuphase = PPUPHASE.VBL;
+				ppur.status.sl = 241;
 
 				//Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
 				//NOTE:  Not having this here breaks a Super Donkey Kong game.
@@ -113,11 +116,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int oamslot=0;
 				int oamcount=0;
 
-				//capture the initial xscroll
-				//int xscroll = ppur.fh;
 				//render 241 scanlines (including 1 dummy at beginning)
 				for (int sl = 0; sl < 241; sl++)
 				{
+					//TODO - correctly emulate PPU OFF state
+					if (!reg_2001.PPUON)
+					{
+						runppu(kLineTime);
+						continue;
+					}
+
 					ppur.status.sl = sl;
 
 					int yp = sl - 1;
@@ -135,10 +143,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//two of those tiles were read in the last scanline.
 					for (int xt = 0; xt < 32; xt++)
 					{
-						if (sl == 31 && xt == 31)
-						{
-							int zzz = 9;
-						}
 						Read_bgdata(ref bgdata[xt + 2]);
 
 						//ok, we're also going to draw here.
@@ -301,7 +305,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						bool realSprite = (s < 8);
 
 						TempOAM* oam = &oams[(scanslot << 6) + s];
-						//fixed (TempOAM* oam = &oams[scanslot, s])
 						{
 							int line = yp - oam->oam[0];
 							if ((oam->oam[2] & 0x80) != 0) //vflip
@@ -424,8 +427,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				
 				} //scanline loop
 
-				//hacks...
-				//if (MMC5Hack && PPUON) MMC5_hb(240);
+				ppur.status.sl = 241;
 
 				//idle for one line
 				runppu(kLineTime);
