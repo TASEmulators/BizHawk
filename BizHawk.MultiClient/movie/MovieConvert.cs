@@ -316,6 +316,7 @@ namespace BizHawk.MultiClient
             else
                 numControllers = 1;
 
+
             byte MovieFlags = r.ReadByte();
 
             if ((int)(MovieFlags & 1) == 0)
