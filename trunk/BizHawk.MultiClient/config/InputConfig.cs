@@ -611,11 +611,13 @@ namespace BizHawk.MultiClient
             TempBox = TextBoxes[5] as InputWidget;
             Global.Config.NESController[prev].B = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].B);
             TempBox.Dispose();
-            TempBox = TextBoxes[6] as InputWidget;
+			TempBox = TextBoxes[6] as InputWidget;
+			Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
+			TempBox.Dispose();
+			TempBox = TextBoxes[7] as InputWidget;
             Global.Config.NESController[prev].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Start);
             TempBox.Dispose();
-            TempBox = TextBoxes[7] as InputWidget;
-            Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
+            
             Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
 
             TempBox.Dispose();
