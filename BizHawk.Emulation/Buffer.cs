@@ -80,4 +80,20 @@ namespace BizHawk
 			#endif
 		}
 	}
+
+	public class IntBuffer : CBuffer<int>
+	{
+		public IntBuffer(int amt) : base(amt) { }
+		public IntBuffer(int[] arr) : base(arr) { }
+		public int this[int index]
+		{
+			#if DEBUG
+				get { return arr[index]; }
+				set { arr[index] = value; }
+			#else
+				set { Write32(index, value); } 
+				get { return Write32(index);}
+			#endif
+		}
+	}
 }

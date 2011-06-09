@@ -294,18 +294,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Bit Reg2002_objoverflow;  //Sprite overflow. The PPU can handle only eight sprites on one scanline and sets this bit if it starts drawing sprites.
 			Bit Reg2002_objhit; //Sprite 0 overlap.  Set when a nonzero pixel of sprite 0 is drawn overlapping a nonzero background pixel.  Used for raster timing.
 			Bit Reg2002_vblank_active;  //Vertical blank start (0: has not started; 1: has started)
-			bool Reg2002_vblank_active_pending; //set of Reg2002_vblank_active is pending
+			bool Reg2002_vblank_active_pending; //set if Reg2002_vblank_active is pending
 			bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
-			int NMI_PendingInstructions;
-			byte PPUGenLatch;
 			public PPUREGS ppur;
 			public Reg_2000 reg_2000;
 			Reg_2001 reg_2001;
 			byte reg_2003;
-			byte[] OAM;
-			public byte[] PALRAM;
-			bool vtoggle;
-			byte VRAMBuffer;
 			void regs_reset()
 			{
 				//TODO - would like to reconstitute the entire PPU instead of all this..

@@ -70,6 +70,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\CxROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\ExROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\GxROM.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -228,6 +229,7 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Consoles\Nintendo\Docs\notes_for_disch.txt" />
     <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />

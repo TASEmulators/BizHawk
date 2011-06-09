@@ -266,6 +266,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SGROM": //bionic commando
+				case "HVC-SGROM": //Ankoku Shinwa - Yamato Takeru Densetsu (J)
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 				case "NES-SHROM": //family feud
