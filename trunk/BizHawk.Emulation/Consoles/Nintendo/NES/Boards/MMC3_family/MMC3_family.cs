@@ -20,8 +20,14 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	// this is the base class for the MMC3 mapper
 	public class Namcot109 : IDisposable
 	{
+		//state
+		public int chr_mode, prg_mode, reg_addr;
+		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		ByteBuffer prg_regs_8k = new ByteBuffer(8);
+
 		protected NES.NESBoardBase board;
 		public Namcot109(NES.NESBoardBase board)
 		{
@@ -52,11 +58,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_regs_8k.Dispose();
 		}
 
-		//state
-		public int chr_mode, prg_mode, reg_addr;
-
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(8);
+		public virtual void SyncState(Serializer ser)
+		{
+			ser.Sync("chr_mode", ref chr_mode);
+			ser.Sync("prg_mode", ref prg_mode);
+			ser.Sync("reg_addr", ref reg_addr);
+			ser.Sync("chr_regs_1k", ref chr_regs_1k);
+			ser.Sync("prg_regs_8k", ref prg_regs_8k);
+		}
 
 		public virtual void WritePRG(int addr, byte value)
 		{
@@ -106,16 +115,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public class MMC3 : Namcot109
 	{
+		//state
+		public byte mirror;
+		int a12_old;
+		byte irq_reload, irq_counter;
+		bool irq_pending, irq_enable;
+		
+		//it really seems like these should be the same but i cant seem to unify them.
+		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
+		//the hint, of course, is that the countdown value is the same.
+		//will someone else try to unify them?
+		int separator_counter;
+		int irq_countdown;
+
+		public NES.NESBoardBase.EMirrorType MirrorType { get { return mirror == 0 ? NES.NESBoardBase.EMirrorType.Vertical : NES.NESBoardBase.EMirrorType.Horizontal; } }
+
 		public MMC3(NES.NESBoardBase board, int num_prg_banks)
 			: base(board)
 		{
 		}
 
-		//state
-		public NES.NESBoardBase.EMirrorType mirror;
-		int a12_old;
-		byte irq_reload, irq_counter;
-		bool irq_pending, irq_enable;
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("mirror", ref mirror);
+			ser.Sync("mirror", ref a12_old);
+			ser.Sync("irq_reload", ref irq_reload);
+			ser.Sync("irq_counter", ref irq_counter);
+			ser.Sync("irq_pending", ref irq_pending);
+			ser.Sync("irq_enable", ref irq_enable);
+			ser.Sync("separator_counter", ref separator_counter);
+			ser.Sync("irq_countdown", ref irq_countdown);
+		}
 
 		void SyncIRQ()
 		{
@@ -132,9 +163,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x2000: //$A000
 					//mirroring
-					if ((value & 1) == 0) mirror = NES.NESBoardBase.EMirrorType.Vertical;
-					else mirror = NES.NESBoardBase.EMirrorType.Horizontal;
-					board.SetMirrorType(mirror);
+					mirror = (byte)(value & 1);
+					board.SetMirrorType(MirrorType);
 					break;
 				case 0x2001: //$A001
 					//wram enable/protect
@@ -189,13 +219,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		//it really seems like these should be the same but i cant seem to unify them.
-		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
-		//the hint, of course, is that the countdown value is the same.
-		//will someone else try to unify them?
-		int separator_counter;
-		int irq_countdown;
-
 		public void ClockPPU()
 		{
 			if (separator_counter > 0)
@@ -237,6 +260,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public abstract class MMC3_Family_Board_Base : NES.NESBoardBase
 	{
+		protected Namcot109 mapper;
+
 		//configuration
 		protected int prg_mask, chr_mask;
 
@@ -245,7 +270,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mapper.Dispose();
 		}
 
-		protected Namcot109 mapper;
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			mapper.SyncState(ser);
+		}
 
 		int MapCHR(int addr)
 		{

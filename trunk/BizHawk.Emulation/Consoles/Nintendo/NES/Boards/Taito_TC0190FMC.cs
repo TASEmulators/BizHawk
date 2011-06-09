@@ -28,6 +28,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			chr_regs_1k.Dispose();
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg_regs_8k", ref prg_regs_8k);
+			ser.Sync("chr_regs_1k", ref chr_regs_1k);
+			ser.Sync("mirror_mode", ref mirror_mode);
+		}
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			//configure
