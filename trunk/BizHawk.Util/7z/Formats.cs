@@ -493,7 +493,10 @@ namespace SevenZip
             {"4D-5A",							                                InArchiveFormat.PE},
             {"7F-45-4C-46",							                            InArchiveFormat.Elf},
             {"78",                                                              InArchiveFormat.Dmg},
-            {"63-6F-6E-65-63-74-69-78",                                         InArchiveFormat.Vhd}};
+            {"63-6F-6E-65-63-74-69-78",                                         InArchiveFormat.Vhd},
+			{"4E-45-53", InArchiveFormat.None}
+			};
+
             #endregion
 
         internal static Dictionary<InArchiveFormat, string> InSignatureFormatsReversed;
