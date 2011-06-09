@@ -13,21 +13,14 @@ using System.Diagnostics;
 
 //TODO - tweak nametable / chr viewer to be more useful
 
+//FUTURE - we may need to split this into a separate MMC5 class. but for now it is just a pain.
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class MMC5
-	{
-		NES.NESBoardBase board;
-		public MMC5(NES.NESBoardBase board)
-		{
-			this.board = board;
-		}
-	}
-
 	public class ExROM : NES.NESBoardBase
 	{
 		//configuraton
-		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from ExROM later into mmc5 class)
+		int prg_bank_mask_8k, chr_bank_mask_1k; //board setup (to be isolated from mmc5 code later, when we need the separate mmc5 class)
 
 		//state
 		int irq_target, irq_counter;
@@ -51,6 +44,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void SyncState(Serializer ser)
 		{
+			base.SyncState(ser);
 			ser.Sync("irq_target", ref irq_target);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);

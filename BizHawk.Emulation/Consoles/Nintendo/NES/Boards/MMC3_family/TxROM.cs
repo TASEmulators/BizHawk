@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WritePRG(int addr, byte value)
 		{
 			base.WritePRG(addr, value);
-			SetMirrorType(mmc3.mirror);  //often redundant, but gets the job done
+			SetMirrorType(mmc3.MirrorType);  //often redundant, but gets the job done
 		}
 	
 		public override byte[] SaveRam
