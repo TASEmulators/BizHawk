@@ -9,6 +9,8 @@ using BizHawk.Emulation.Sound;
 //http://wiki.nesdev.com/w/index.php/APU_Pulse
 //sequencer ref: http://wiki.nesdev.com/w/index.php/APU_Frame_Counter
 
+//TODO - refactor length counter to be separate component
+
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 
@@ -60,6 +62,26 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				//misc..
 				int lenctr_en;
+
+				public void SyncState(Serializer ser)
+				{
+					ser.Sync("duty_cnt", ref duty_cnt);
+					ser.Sync("env_loop", ref env_loop);
+					ser.Sync("env_constant", ref env_constant);
+					ser.Sync("env_cnt_value", ref env_cnt_value);
+
+					ser.Sync("sweep_en", ref sweep_en);
+					ser.Sync("sweep_divider_cnt", ref sweep_divider_cnt);
+					ser.Sync("sweep_negate", ref sweep_negate);
+					ser.Sync("sweep_shiftcount", ref sweep_shiftcount);
+					ser.Sync("sweep_reload", ref sweep_reload);
+
+					ser.Sync("len_cnt", ref len_cnt);
+					ser.Sync("timer_raw_reload_value", ref timer_raw_reload_value);
+					ser.Sync("timer_reload_value", ref timer_reload_value);
+
+					ser.Sync("lenctr_en", ref lenctr_en);
+				}
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
@@ -238,6 +260,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int env_output, env_start_flag, env_divider, env_counter;
 				bool noise_bit = true;
 
+				public void SyncState(Serializer ser)
+				{
+					ser.Sync("env_cnt_value", ref env_cnt_value);
+					ser.Sync("env_loop", ref env_loop);
+					ser.Sync("env_constant", ref env_constant);
+					ser.Sync("mode_cnt", ref mode_cnt);
+					ser.Sync("period_cnt", ref period_cnt);
+
+					ser.Sync("mode_cnt", ref mode_cnt);
+					ser.Sync("period_cnt", ref period_cnt);
+
+					ser.Sync("lenctr_en", ref lenctr_en);
+
+					ser.Sync("shift_register", ref shift_register);
+					ser.Sync("timer_counter", ref timer_counter);
+					ser.Sync("sample", ref sample);
+
+					ser.Sync("env_output", ref env_output);
+					ser.Sync("env_start_flag", ref env_start_flag);
+					ser.Sync("env_divider", ref env_divider);
+					ser.Sync("env_counter", ref env_counter);
+					ser.Sync("noise_bit", ref noise_bit);
+				}
+
+
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
 				public void WriteReg(int addr, byte val)
@@ -334,7 +381,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int linear_counter_reload, control_flag;
 				//reg1 (n/a)
 				//reg2/3
-				int timer_cnt, length_counter_load, halt_flag;
+				int timer_cnt, halt_flag, len_cnt;
+
+				//misc..
+				int lenctr_en;
+				int linear_counter, timer, timer_cnt_reload;
+				int seq;
+				public int sample;
+
+				public void SyncState(Serializer ser)
+				{
+					ser.Sync("linear_counter_reload", ref linear_counter_reload);
+					ser.Sync("control_flag", ref control_flag);
+					ser.Sync("timer_cnt", ref timer_cnt);
+					ser.Sync("halt_flag", ref halt_flag);
+					ser.Sync("len_cnt", ref len_cnt);
+
+					ser.Sync("lenctr_en", ref lenctr_en);
+					ser.Sync("linear_counter", ref linear_counter);
+					ser.Sync("timer", ref timer);
+					ser.Sync("timer_cnt_reload", ref timer_cnt_reload);
+					ser.Sync("seq", ref seq);
+					ser.Sync("sample", ref sample);
+				}
+
+				public bool IsLenCntNonZero() { return len_cnt > 0; }
+
+				public void set_lenctr_en(int value)
+				{
+					lenctr_en = value;
+					//if the length counter is not enabled, then we must disable the length system in this way
+					if (lenctr_en == 0) len_cnt = 0;
+				}
 
 				public void WriteReg(int addr, byte val)
 				{
@@ -352,16 +430,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 3:
 							timer_cnt = (timer_cnt & 0xFF) | ((val & 0x7) << 8);
 							timer_cnt_reload = timer_cnt + 1;
-							length_counter_load = (val>>3)&0x1F;
+							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
 							halt_flag = 1;
+
+							//allow the lenctr_en to kill the len_cnt
+							set_lenctr_en(lenctr_en);
 							break;
 					}
 					//Console.WriteLine("tri timer_reload_value: {0}", timer_cnt_reload);
 				}
-
-				int linear_counter, timer, timer_cnt_reload;
-				int seq;
-				public int sample;
 
 				public void Run()
 				{
@@ -370,7 +447,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//except when linear counter or
 					//length counter is 0
 
-					bool en = length_counter_load != 0 && linear_counter != 0;
+					bool en = len_cnt != 0 && linear_counter != 0;
 
 					//length counter and linear counter 
 					//is clocked in frame counter.
@@ -392,6 +469,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				
 				public void clock_length_and_sweep()
 				{
+					//env_loopdoubles as "halt length counter"
+					if (len_cnt > 0)
+						len_cnt--;
 				}
 
 				public void clock_linear_counter()
@@ -410,6 +490,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						halt_flag = 0;
 					}
 				}
+			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("sequencer_counter", ref sequencer_counter);
+				ser.Sync("sequencer_step", ref sequencer_step);
+				ser.Sync("sequencer_mode", ref sequencer_mode);
+				ser.Sync("sequencer_irq_inhibit", ref sequencer_irq_inhibit);
+				pulse[0].SyncState(ser);
+				pulse[1].SyncState(ser);
+				triangle.SyncState(ser);
+				noise.SyncState(ser);
 			}
 
 			PulseUnit[] pulse = { new PulseUnit(0), new PulseUnit(1) };
@@ -503,7 +595,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					case 0x4015:
 						pulse[0].set_lenctr_en(val & 1);
 						pulse[1].set_lenctr_en((val >> 1) & 1);
-						//todo - triangle length counter?
+						triangle.set_lenctr_en((val >> 2) & 1);
 						noise.set_lenctr_en((val >> 3) & 1);
 						break;
 					case 0x4017:
@@ -527,7 +619,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						int dmc_irq_flag = 0; //todo
 						int dmc_nonzero = 0; //todo
 						int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
-						int tri_nonzero = 0; //todo
+						int tri_nonzero = triangle.IsLenCntNonZero() ? 1 : 0;
 						int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
 						int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
 						int ret = (dmc_irq_flag << 7) | ((nes.irq_apu?1:0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero<<2) | (pulse1_nonzero<<1) | (pulse0_nonzero);
