@@ -91,8 +91,8 @@ namespace BizHawk
 				get { return arr[index]; }
 				set { arr[index] = value; }
 			#else
-				set { Write32(index, value); } 
-				get { return Write32(index);}
+				set { Write32(index, (uint) value); }
+				get { return (int)Read32(index);}
 			#endif
 		}
 	}
