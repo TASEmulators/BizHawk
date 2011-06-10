@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		partial class PPU
 		{
-			class Reg_2001
+			public class Reg_2001
 			{
 				public Bit color_disable; //Color disable (0: normal color; 1: AND all palette entries with 110000, effectively producing a monochrome display)
 				public Bit show_bg_leftmost; //Show leftmost 8 pixels of background
@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bool Reg2002_vblank_clear_pending; //ppu's clear of vblank flag is pending
 			public PPUREGS ppur;
 			public Reg_2000 reg_2000;
-			Reg_2001 reg_2001;
+			public Reg_2001 reg_2001;
 			byte reg_2003;
 			void regs_reset()
 			{
@@ -387,11 +387,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					ppur._ht= value >> 3;
 					ppur.fh = value & 7;
+					//nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
 				}
 				else
 				{
 					ppur._vt = value >> 3;
 					ppur._fv = value & 7;
+					//nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
 				}
 				vtoggle ^= true;
 			}
@@ -407,6 +409,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._h = (value >> 2) & 1;
 					ppur._v = (value >> 3) & 1;
 					ppur._fv = (value >> 4) & 3;
+					//nes.LogLine("scroll wrote fv = {0}", ppur._fv);
 				}
 				else
 				{
@@ -414,6 +417,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._vt |= (value >> 5);
 					ppur._ht = value & 31;
 					ppur.install_latches();
+					//nes.LogLine("scroll wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 
 					nes.board.AddressPPU(ppur.get_2007access());
 				}

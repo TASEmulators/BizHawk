@@ -119,12 +119,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//render 241 scanlines (including 1 dummy at beginning)
 				for (int sl = 0; sl < 241; sl++)
 				{
-					//TODO - correctly emulate PPU OFF state
-					if (!reg_2001.PPUON)
-					{
-						runppu(kLineTime);
-						continue;
-					}
+					//if (!reg_2001.PPUON)
+					//{
+					//    runppu(kLineTime);
+					//    continue;
+					//}
 
 					ppur.status.sl = sl;
 
@@ -211,10 +210,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 											//1. is it sprite#0?
 											//2. is the bg pixel nonzero?
 											//then, it is spritehit.
-											if (oam->index == 0)
-											{
-												int zzz = 9;
-											}
 											if (oam->index == 0 && pixel != 0 && rasterpos < 255)
 											{
 												Reg2002_objhit = true;
@@ -239,7 +234,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 								}//oamcount loop
 
-								xbuf[target] = PaletteAdjustPixel(pixelcolor);
+								if (reg_2001.PPUON)
+									xbuf[target] = PaletteAdjustPixel(pixelcolor);
+
 								target++;
 
 							} //loop across 8 pixels
@@ -292,17 +289,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppuphase = PPUPHASE.OBJ;
 
 					//fetch sprite patterns
-					for (int s = 0; s < MAXSPRITES; s++)
+					int oam_todo = oamcount;
+					if (oam_todo < 8)
+						oam_todo = 8;
+					for (int s = 0; s < oam_todo; s++)
 					{
-						//if we have hit our eight sprite pattern and we dont have any more sprites, then bail
-						if (s == oamcount && s >= 8)
-							break;
-
 						//if this is a real sprite sprite, then it is not above the 8 sprite limit.
 						//this is how we support the no 8 sprite limit feature.
 						//not that at some point we may need a virtual CALL_PPUREAD which just peeks and doesnt increment any counters
 						//this could be handy for the debugging tools also
 						bool realSprite = (s < 8);
+						bool junksprite = (s >= oamcount);
+
+						if (!reg_2001.PPUON)
+							junksprite = true;
 
 						TempOAM* oam = &oams[(scanslot << 6) + s];
 						{
@@ -369,20 +369,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							//TODO - fake sprites should not come through ppubus_read but rather peek it
 							//(at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
 
-							//pattern table fetches
-							int addr = patternAddress;
-							oam->patterns[0] = ppubus_read(addr, true);
-							if (realSprite) runppu(kFetchTime);
-
-							addr += 8;
-							oam->patterns[1] = ppubus_read(addr, true);
-							if (realSprite) runppu(kFetchTime);
-
-							//hflip
-							if ((oam->oam[2] & 0x40) == 0)
+							if (junksprite)
 							{
-								oam->patterns[0] = BITREV.byte_8[oam->patterns[0]];
-								oam->patterns[1] = BITREV.byte_8[oam->patterns[1]];
+								if (realSprite)
+								{
+									ppubus_read(patternAddress, true);
+									ppubus_read(patternAddress, true);
+									runppu(kFetchTime * 2);
+								}
+							}
+							else
+							{
+								int addr = patternAddress;
+								oam->patterns[0] = ppubus_read(addr, true);
+								if (realSprite) runppu(kFetchTime);
+
+								addr += 8;
+								oam->patterns[1] = ppubus_read(addr, true);
+								if (realSprite) runppu(kFetchTime);
+
+								//hflip
+								if ((oam->oam[2] & 0x40) == 0)
+								{
+									oam->patterns[0] = BITREV.byte_8[oam->patterns[0]];
+									oam->patterns[1] = BITREV.byte_8[oam->patterns[1]];
+								}
 							}
 						} //c# fixed oam
 					
