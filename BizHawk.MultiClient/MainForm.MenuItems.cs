@@ -683,5 +683,17 @@ namespace BizHawk.MultiClient
             Global.Config.AcceptBackgroundInput ^= true;
             MessageBox.Show("Background input settings will take effect the next time Bizhawk loads", "Background input property change", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void displayStatusBarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.DisplayStatusBar ^= true;
+            displayStatusBarToolStripMenuItem.Checked = Global.Config.DisplayStatusBar;
+            if (!InFullscreen)
+            {
+                statusStrip1.Visible = Global.Config.DisplayStatusBar;
+                PerformLayout();
+                FrameBufferResized();
+            }
+        }
 	}
 }

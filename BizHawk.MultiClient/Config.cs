@@ -129,6 +129,7 @@
         public int DispRecx = 0;
         public int DispRecy = 48;
 		public bool ForceGDI = false;
+        public bool DisplayStatusBar = true;    
 
         // Sound options
         public bool SoundEnabled = true;
