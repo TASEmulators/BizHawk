@@ -104,6 +104,7 @@
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
 		public int FrameSkip = 0;
 		public int SpeedPercent = 100;
+        public int SpeedPercentAlternate = 400;
 		public bool LimitFramerate = true;
 		public bool AutoMinimizeSkipping = true;
 		public bool DisplayVSync = false;
@@ -265,11 +266,12 @@
         public bool TI83ToolTips = true;
         
         // Client Hotkey Bindings
-        public string HardResetBinding = "LeftShift+Tab"; //TODO: This needs to be Ctrl+R but how?
+        public string HardResetBinding = "LeftControl+R"; //TODO: This needs to be Ctrl+R but how?
         public string FastForwardBinding = "J1 B6, Tab";
         public string RewindBinding = "J1 B5, LeftShift+R, RightShift+R";
         public string EmulatorPauseBinding = "Pause";
         public string FrameAdvanceBinding = "F";
+        public string UnthrottleBinding = "LeftShift+Tab";
         public string ScreenshotBinding = "F12";
         public string ToggleFullscreenBinding = "LeftAlt+Return, RightAlt+Return";
         public string QuickSave = "I";

@@ -35,11 +35,14 @@ namespace BizHawk.MultiClient
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused;
 		int runloop_fps;
+		int runloop_last_fps;
 		bool runloop_frameadvance;
 		DateTime runloop_second;
+        bool runloop_last_ff;
         public string wasPressed = "";  //Last frame mnemonic
 		
 		Throttle throttle = new Throttle();
+        bool unthrottled = false;
 		int rewindCredits;
 
 		//For handling automatic pausing when entering the menu
@@ -243,12 +246,27 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        void SyncThrottle()
+        {
+            throttle.signal_unthrottle = unthrottled;
+            if(Global.ClientControls["Fast Forward"])
+                throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
+            else
+                throttle.SetSpeedPercent(Global.Config.SpeedPercent);
+        }
+
+        void SetSpeedPercentAlternate(int value)
+        {
+            Global.Config.SpeedPercentAlternate = value;
+            SyncThrottle();
+            Global.RenderPanel.AddMessage("Alternate Speed: " + value + "%");
+        }
 
 		void SetSpeedPercent(int value)
 		{
 			Global.Config.SpeedPercent = value;
-			throttle.SetSpeedPercent(value);
-            Global.RenderPanel.AddMessage(value + "% Speed");
+            SyncThrottle();
+            Global.RenderPanel.AddMessage("Speed: " + value + "%");
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -334,7 +352,7 @@ namespace BizHawk.MultiClient
 		{
 			Name = "Emulator Frontend Controls",
 			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", 
-                "Emulator Pause", "Frame Advance", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
+                "Emulator Pause", "Frame Advance", "Unthrottle", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
                 "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
                 "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
                 "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
@@ -351,6 +369,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
+            controls.BindMulti("Unthrottle", Global.Config.UnthrottleBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
 			controls.BindMulti("Quick Save State", Global.Config.QuickSave);
@@ -805,7 +824,7 @@ namespace BizHawk.MultiClient
 					if (o is double)
 						throttle.SetCoreFps((double)o);
 					else throttle.SetCoreFps(60);
-					SetSpeedPercent(Global.Config.SpeedPercent);
+                    SyncThrottle();
 				}
 				RamSearch1.Restart();
                 RamWatch1.Restart();
@@ -890,6 +909,13 @@ namespace BizHawk.MultiClient
                     else
                         PauseEmulator();
                 }
+            }
+
+            if (Global.ClientControls.IsPressed("Unthrottle"))
+            {
+                Global.ClientControls.UnpressButton("Unthrottle");
+                unthrottled ^= true;
+                Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
             }
 
             if (Global.ClientControls["Hard Reset"])
@@ -1083,7 +1109,7 @@ namespace BizHawk.MultiClient
                 
 		void StepRunLoop_Throttle()
 		{
-			throttle.signal_fastForward = Global.ClientControls["Fast Forward"];
+            SyncThrottle();
 			throttle.signal_frameAdvance = runloop_frameadvance;
 			throttle.signal_continuousframeAdvancing = runloop_frameProgress;
 
@@ -1120,7 +1146,7 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
-                wasPressed = Global.ActiveController.GetControllersAsMnemonic();
+				wasPressed = Global.ActiveController.GetControllersAsMnemonic();
 			}
 			else
 			{
@@ -1159,12 +1185,23 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				runloop_fps++;
+				bool ff = Global.ClientControls["Fast Forward"];
+				bool updateFpsString = (runloop_last_ff != ff);
+				runloop_last_ff = ff;
+				
 				if ((DateTime.Now - runloop_second).TotalSeconds > 1)
 				{
+					runloop_last_fps = runloop_fps;
 					runloop_second = DateTime.Now;
-					Global.RenderPanel.FPS = runloop_fps;
-					Global.RenderPanel.FPS = runloop_fps;
 					runloop_fps = 0;
+					updateFpsString = true;
+				}
+
+				if (updateFpsString)
+				{
+					string fps_string = runloop_last_fps + " fps";
+					if (ff) fps_string += " >>";
+					Global.RenderPanel.FPS = fps_string;
 				}
 
 				if(!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
@@ -1865,10 +1902,15 @@ namespace BizHawk.MultiClient
 			miFrameskip8.Checked = Global.Config.FrameSkip == 8;
 			miFrameskip9.Checked = Global.Config.FrameSkip == 9;
 			miSpeed100.Checked = Global.Config.SpeedPercent == 100;
-			miSpeed150.Checked = Global.Config.SpeedPercent == 150;
+            miSpeed100.Image = (Global.Config.SpeedPercentAlternate == 100) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+            miSpeed150.Checked = Global.Config.SpeedPercent == 150;
+            miSpeed150.Image = (Global.Config.SpeedPercentAlternate == 150) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miSpeed200.Checked = Global.Config.SpeedPercent == 200;
+            miSpeed200.Image = (Global.Config.SpeedPercentAlternate == 200) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miSpeed75.Checked = Global.Config.SpeedPercent == 75;
+            miSpeed75.Image = (Global.Config.SpeedPercentAlternate == 75) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miSpeed50.Checked = Global.Config.SpeedPercent == 50;
+            miSpeed50.Image = (Global.Config.SpeedPercentAlternate == 50) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
 			miAutoMinimizeSkipping.Enabled = !miFrameskip0.Checked;
 			if (!miAutoMinimizeSkipping.Enabled) miAutoMinimizeSkipping.Checked = true;
 		}

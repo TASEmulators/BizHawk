@@ -67,11 +67,16 @@ namespace BizHawk.MultiClient
 		private void miFrameskip8_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 8; }
 		private void miFrameskip9_Click(object sender, EventArgs e) { Global.Config.FrameSkip = 9; }
 
-		private void miSpeed50_Click(object sender, EventArgs e) { SetSpeedPercent(50); }
-		private void miSpeed75_Click(object sender, EventArgs e) { SetSpeedPercent(75); }
-		private void miSpeed100_Click(object sender, EventArgs e) { SetSpeedPercent(100); }
-		private void miSpeed150_Click(object sender, EventArgs e) { SetSpeedPercent(150); }
-		private void miSpeed200_Click(object sender, EventArgs e) { SetSpeedPercent(200); }
+        void ClickSpeedItem(int num)
+        {
+            if ((Control.ModifierKeys & Keys.Control) != 0) SetSpeedPercentAlternate(num);
+            else SetSpeedPercent(num);
+        }
+		private void miSpeed50_Click(object sender, EventArgs e) { ClickSpeedItem(50); }
+        private void miSpeed75_Click(object sender, EventArgs e) { ClickSpeedItem(75); }
+        private void miSpeed100_Click(object sender, EventArgs e) { ClickSpeedItem(100); }
+        private void miSpeed150_Click(object sender, EventArgs e) { ClickSpeedItem(150); }
+        private void miSpeed200_Click(object sender, EventArgs e) { ClickSpeedItem(200); }
 
 		private void pauseWhenMenuActivatedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
