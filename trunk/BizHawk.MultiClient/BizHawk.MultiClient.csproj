@@ -176,6 +176,12 @@
     <Compile Include="NEStools\NESGameGenie.designer.cs">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
     </Compile>
+    <Compile Include="NEStools\NESGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NEStools\NESGraphicsConfig.Designer.cs">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="NEStools\NESNameTableViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -391,6 +397,9 @@
     <EmbeddedResource Include="NEStools\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NEStools\NESGraphicsConfig.resx">
+      <DependentUpon>NESGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NEStools\NESNameTableViewer.resx">
       <DependentUpon>NESNameTableViewer.cs</DependentUpon>

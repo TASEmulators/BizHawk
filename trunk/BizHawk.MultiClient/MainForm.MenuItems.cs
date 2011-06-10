@@ -700,5 +700,11 @@ namespace BizHawk.MultiClient
                 FrameBufferResized();
             }
         }
+
+		private void graphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NESGraphicsConfig g = new NESGraphicsConfig();
+			g.ShowDialog();
+		}
 	}
 }
