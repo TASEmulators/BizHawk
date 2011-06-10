@@ -644,10 +644,13 @@ namespace M6502
                 case AddrMode.ZeroPageY:   mstr = "string.Format(\"" + op.Instruction + " ${0:X2},Y\", ReadMemory(++pc))"; break;
                 case AddrMode.Absolute:    mstr = "string.Format(\"" + op.Instruction + " ${0:X4}\", ReadWord(++pc))"; break;
                 case AddrMode.AbsoluteX:   mstr = "string.Format(\"" + op.Instruction + " ${0:X4},X\", ReadWord(++pc))"; break;
+                case AddrMode.AbsoluteX_P: mstr = "string.Format(\"" + op.Instruction + " ${0:X4},X *\", ReadWord(++pc))"; break;
                 case AddrMode.AbsoluteY:   mstr = "string.Format(\"" + op.Instruction + " ${0:X4},Y\", ReadWord(++pc))"; break;
+                case AddrMode.AbsoluteY_P: mstr = "string.Format(\"" + op.Instruction + " ${0:X4},Y *\", ReadWord(++pc))"; break;    
                 case AddrMode.Indirect:    mstr = "string.Format(\"" + op.Instruction + " (${0:X4})\", ReadWord(++pc))"; break;
                 case AddrMode.IndirectX:   mstr = "string.Format(\"" + op.Instruction + " (${0:X2},X)\", ReadMemory(++pc))"; break;
                 case AddrMode.IndirectY:   mstr = "string.Format(\"" + op.Instruction + " (${0:X2}),Y\", ReadMemory(++pc))"; break;
+                case AddrMode.IndirectY_P: mstr = "string.Format(\"" + op.Instruction + " (${0:X2}),Y *\", ReadMemory(++pc))"; break;    
                 case AddrMode.Relative:    mstr = "string.Format(\"" + op.Instruction + " {0}\", (sbyte)ReadMemory(++pc))"; break;
                 default:                   mstr = @"""?"""; break;
             }
