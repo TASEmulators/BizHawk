@@ -15,10 +15,11 @@ namespace BizHawk
 		public void* ptr;
 		public byte* byteptr;
 		public int len;
+		public int itemsize;
 
-		public static CBuffer<T> malloc(int amt)
+		public static CBuffer<T> malloc(int amt, int itemsize)
 		{
-			return new CBuffer<T>(amt);
+			return new CBuffer<T>(amt, itemsize);
 		}
 
 		public void Write08(uint addr, byte val) { byteptr[addr] = val; }
@@ -38,21 +39,25 @@ namespace BizHawk
 		public uint Read32(int addr) { return *(uint*)(byteptr + addr); }
 		public ulong Read64(int addr) { return *(ulong*)(byteptr + addr); }
 
-		public CBuffer(T[] arr)
+		public CBuffer(T[] arr, int itemsize)
 		{
+			this.itemsize = itemsize;
 			len = arr.Length;
 			this.arr = arr;
 			hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
 			ptr = hnd.AddrOfPinnedObject().ToPointer();
 			byteptr = (byte*)ptr;
+			Util.memset(byteptr, 0, len*itemsize);
 		}
-		public CBuffer(int amt)
+		public CBuffer(int amt, int itemsize)
 		{
+			this.itemsize = itemsize;
 			len = amt;
 			arr = new T[amt];
 			hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
 			ptr = hnd.AddrOfPinnedObject().ToPointer();
 			byteptr = (byte*)ptr;
+			Util.memset(byteptr, 0, len * itemsize);
 		}
 
 		public void Dispose()
@@ -67,8 +72,8 @@ namespace BizHawk
 
 	public class ByteBuffer : CBuffer<byte>
 	{
-		public ByteBuffer(int amt) : base(amt) { }
-		public ByteBuffer(byte[] arr) : base(arr) { }
+		public ByteBuffer(int amt) : base(amt,1) { }
+		public ByteBuffer(byte[] arr) : base(arr,1) { }
 		public byte this[int index]
 		{
 			#if DEBUG
@@ -83,16 +88,16 @@ namespace BizHawk
 
 	public class IntBuffer : CBuffer<int>
 	{
-		public IntBuffer(int amt) : base(amt) { }
-		public IntBuffer(int[] arr) : base(arr) { }
+		public IntBuffer(int amt) : base(amt, 4) { }
+		public IntBuffer(int[] arr) : base(arr,4) { }
 		public int this[int index]
 		{
 			#if DEBUG
 				get { return arr[index]; }
 				set { arr[index] = value; }
 			#else
-				set { Write32(index, (uint) value); }
-				get { return (int)Read32(index);}
+				set { Write32(index<<2, (uint) value); }
+				get { return (int)Read32(index<<2);}
 			#endif
 		}
 	}

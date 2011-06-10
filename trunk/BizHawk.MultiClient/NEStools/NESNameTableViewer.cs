@@ -11,27 +11,27 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
-    public partial class NESNameTableViewer : Form
-    {
-        int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
-        int defaultHeight;
-        NES Nes;
+	public partial class NESNameTableViewer : Form
+	{
+		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultHeight;
+		NES Nes;
 
 		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
 
 
-        public NESNameTableViewer()
-        {
-            InitializeComponent();
-            Closing += (o, e) => SaveConfigSettings();
+		public NESNameTableViewer()
+		{
+			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
 			Callback.Callback = () => Generate();
-        }
+		}
 
-        private void SaveConfigSettings()
-        {
-            Global.Config.NESNameTableWndx = this.Location.X;
-            Global.Config.NESNameTableWndy = this.Location.Y;
-        }
+		private void SaveConfigSettings()
+		{
+			Global.Config.NESNameTableWndx = this.Location.X;
+			Global.Config.NESNameTableWndy = this.Location.Y;
+		}
 
 		unsafe void Generate()
 		{
@@ -98,54 +98,54 @@ namespace BizHawk.MultiClient
 			NameTableView.Refresh();
 		}
 
-        public void UpdateValues()
-        {
-            if (!(Global.Emulator is NES)) return;
+		public void UpdateValues()
+		{
+			if (!(Global.Emulator is NES)) return;
 			NES.PPU ppu = (Global.Emulator as NES).ppu;
 			ppu.NTViewCallback = Callback;
-        }
+		}
 
-        public void Restart()
-        {
-            if (!(Global.Emulator is NES)) this.Close();
-            Nes = Global.Emulator as NES;
-        }
+		public void Restart()
+		{
+			if (!(Global.Emulator is NES)) this.Close();
+			Nes = Global.Emulator as NES;
+		}
 
-        private void NESNameTableViewer_Load(object sender, EventArgs e)
-        {
-            defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-            defaultHeight = this.Size.Height;
+		private void NESNameTableViewer_Load(object sender, EventArgs e)
+		{
+			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = this.Size.Height;
 
-            if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
-                this.Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
+			if (Global.Config.NESNameTableSaveWindowPosition && Global.Config.NESNameTableWndx >= 0 && Global.Config.NESNameTableWndy >= 0)
+				this.Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
 
-            Nes = Global.Emulator as NES;
-        }
+			Nes = Global.Emulator as NES;
+		}
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 
-        private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.AutoLoadNESNameTable ^= true;
-        }
+		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadNESNameTable ^= true;
+		}
 
-        private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.NESNameTableSaveWindowPosition ^= true;
-        }
+		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NESNameTableSaveWindowPosition ^= true;
+		}
 
-        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadNESNameTable;
-            saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESNameTableSaveWindowPosition;
-        }
+		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadNESNameTable;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESNameTableSaveWindowPosition;
+		}
 
 		private void txtScanline_TextChanged(object sender, EventArgs e)
 		{
-			int temp=0;
+			int temp = 0;
 			if (int.TryParse(txtScanline.Text, out temp))
 			{
 				Callback.Scanline = temp;
@@ -158,5 +158,15 @@ namespace BizHawk.MultiClient
 			if (Nes.ppu.NTViewCallback == Callback)
 				Nes.ppu.NTViewCallback = null;
 		}
-    }
+
+
+		private void rbNametable_CheckedChanged(object sender, EventArgs e)
+		{
+			if (rbNametableNW.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_2000;
+			if (rbNametableNE.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_2400;
+			if (rbNametableSW.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_2800;
+			if (rbNametableSE.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_2C00;
+			if (rbNametableAll.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_ALL;
+		}
+	}
 }

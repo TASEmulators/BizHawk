@@ -156,13 +156,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				else
 					bank_1k = b_banks_1k[bank_1k];
 
-			//bank_1k = NES.Frame;
-
 			//something like this..?
 			//bool special_sel = NES.ppu.reg_2000.obj_size_16 && NES.ppu.ppuphase == NES.PPU.PPUPHASE.OBJ;
 			//bool a_sel = special_sel || (!a_sel && ab_mode == 0);
-
-
 
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
