@@ -187,6 +187,11 @@ namespace BizHawk.MultiClient
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 
+            if (Global.Config.DisplayStatusBar == false)
+                statusStrip1.Visible = false;
+            else
+                displayStatusBarToolStripMenuItem.Checked = true;
+
 			if (Global.Config.StartPaused)
 				PauseEmulator();
 		}
@@ -1711,25 +1716,24 @@ namespace BizHawk.MultiClient
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
 				MainMenuStrip.Visible = false;
+                statusStrip1.Visible = false;
 				PerformLayout();
 				Global.RenderPanel.Resized = true;
 				InFullscreen = true;
-                statusStrip1.Visible = false;
 			}
 			else
 			{
 				FormBorderStyle = FormBorderStyle.FixedSingle;
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
+                statusStrip1.Visible = Global.Config.DisplayStatusBar;
 				Location = WindowedLocation;
 				PerformLayout();
 				FrameBufferResized();
 				InFullscreen = false;
-                statusStrip1.Visible = true;
 			}
 		}
 
-	
 		private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			displayFPSToolStripMenuItem.Checked = Global.Config.DisplayFPS;
