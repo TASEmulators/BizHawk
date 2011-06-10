@@ -130,6 +130,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					int yp = sl - 1;
 					ppuphase = PPUPHASE.BG;
 
+					if (NTViewCallback != null && yp == NTViewCallback.Scanline) NTViewCallback.Callback();
+					if (PPUViewCallback != null && yp == PPUViewCallback.Scanline) PPUViewCallback.Callback();
+
 					//twiddle the oam buffers
 					int scanslot = oamslot ^ 1;
 					int renderslot = oamslot;

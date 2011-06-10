@@ -26,10 +26,13 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		NES Nes;
 
+		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
+
 		public NESPPU()
 		{
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
+			Callback.Callback = () => Generate();
 		}
 
 		private void SaveConfigSettings()
@@ -60,9 +63,8 @@ namespace BizHawk.MultiClient
 			return (byte)(((value >> (7 - bit)) & 1));
 		}
 
-		public unsafe void UpdateValues()
+		unsafe void Generate()
 		{
-			if (!(Global.Emulator is NES)) return;
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
 			//Pattern Viewer
@@ -72,49 +74,56 @@ namespace BizHawk.MultiClient
 				PaletteView.spritePalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]));
 			}
 			PaletteView.Refresh();
-            
+
 			//Pattern Viewer
-            int b0 = 0;
-            int b1 = 0;
-            byte value;
-            int cvalue;
-            int pal;
+			int b0 = 0;
+			int b1 = 0;
+			byte value;
+			int cvalue;
+			int pal;
 
 			System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 			int* framebuf = (int*)bmpdata.Scan0.ToPointer();
-            for (int z = 0; z < 2; z++)
-            {
-                if (z == 0)
-                    pal = PatternView.Pal0;
-                else
-                    pal = PatternView.Pal1;
+			for (int z = 0; z < 2; z++)
+			{
+				if (z == 0)
+					pal = PatternView.Pal0;
+				else
+					pal = PatternView.Pal1;
 
-                for (int i = 0; i < 16; i++)
-                {
-                    for (int j = 0; j < 16; j++)
-                    {
-                        for (int x = 0; x < 8; x++)
-                        {
-                            for (int y = 0; y < 8; y++)
-                            {
-                                b0 = GetBit((z*0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
-                                b1 = GetBit((z*0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+				for (int i = 0; i < 16; i++)
+				{
+					for (int j = 0; j < 16; j++)
+					{
+						for (int x = 0; x < 8; x++)
+						{
+							for (int y = 0; y < 8; y++)
+							{
+								b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
+								b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
 
-                                value = (byte)(b0 + (b1 << 1));
+								value = (byte)(b0 + (b1 << 1));
 
-                                cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
-                                
-                                Color color = Color.FromArgb(cvalue);
+								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
 
-                                int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-                                framebuf[adr + (z*128)] = color.ToArgb();
-                            }
-                        }
-                    }
-                }
-            }
+								Color color = Color.FromArgb(cvalue);
+
+								int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
+								framebuf[adr + (z * 128)] = color.ToArgb();
+							}
+						}
+					}
+				}
+			}
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
+		}
+
+		public unsafe void UpdateValues()
+		{
+			if (!(Global.Emulator is NES)) return;
+			NES.PPU ppu = (Global.Emulator as NES).ppu;
+			ppu.PPUViewCallback = Callback;
 		}
 
         private void NESPPU_Load(object sender, EventArgs e)
@@ -338,5 +347,21 @@ namespace BizHawk.MultiClient
 
             UpdateTableLabels();
         }
+
+		private void txtScanline_TextChanged(object sender, EventArgs e)
+		{
+			int temp = 0;
+			if (int.TryParse(txtScanline.Text, out temp))
+			{
+				Callback.Scanline = temp;
+			}
+		}
+
+		private void NESPPU_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			if (Nes == null) return;
+			if (Nes.ppu.PPUViewCallback == Callback)
+				Nes.ppu.PPUViewCallback = null;
+		}
 	}
 }
