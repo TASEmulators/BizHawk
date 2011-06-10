@@ -479,6 +479,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
             //ser.SyncFixedString("input", ref inp, 32);
 			board.SyncState(ser);
 			ppu.SyncState(ser);
+			apu.SyncState(ser);
 			ser.EndSection();
 		}
 
