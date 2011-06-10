@@ -159,7 +159,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							for (int xp = 0; xp < 8; xp++, rasterpos++)
 							{
-
 								//bg pos is different from raster pos due to its offsetability.
 								//so adjust for that here
 								int bgpos = rasterpos + ppur.fh;
@@ -199,11 +198,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 											if (!renderspritenow) continue;
 
-											//bail out if we already have a pixel from a higher priority sprite
+											//bail out if we already have a pixel from a higher priority sprite.
+											//notice that we continue looping anyway, so that we can shift down the patterns
 											if (havepixel) continue;
 
 											//transparent pixel bailout
 											if (spixel == 0) continue;
+
+											havepixel = true;
 
 											//TODO - make sure we dont trigger spritehit if the edges are masked for either BG or OBJ
 											//spritehit:
@@ -214,19 +216,25 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 											{
 												Reg2002_objhit = true;
 											}
-											havepixel = true;
 
-
+											bool drawsprite = true;
 											//priority handling
 											if ((oam->oam[2] & 0x20) != 0)
 											{
-												//behind background:
-												if ((pixel & 3) != 0) continue;
+												//if in front of BG:
+												if ((pixel & 3) != 0)
+												{
+													drawsprite = false;
+												}	
 											}
 
-											//bring in the palette bits and palettize
-											spixel |= (oam->oam[2] & 3) << 2;
-											pixelcolor = PALRAM[0x10 + spixel];
+											if (drawsprite)
+											{
+												//bring in the palette bits and palettize
+												spixel |= (oam->oam[2] & 3) << 2;
+												//save it for use in the framebuffer
+												pixelcolor = PALRAM[0x10 + spixel];
+											}
 										} //rasterpos in sprite range
 
 									} //c# fixed oam ptr
