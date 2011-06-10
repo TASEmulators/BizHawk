@@ -403,6 +403,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (NES.ppu.ppur.status.cycle != 336)
 				return;
+			if (!NES.ppu.reg_2001.PPUON)
+				return;
 
 			int sl = NES.ppu.ppur.status.sl + 1;
 

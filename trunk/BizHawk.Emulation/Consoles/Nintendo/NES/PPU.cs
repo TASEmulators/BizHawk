@@ -25,8 +25,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//when the ppu issues a read it goes through here and into the game board
 			public byte ppubus_read(int addr, bool ppu)
 			{
-				//speculative -- hardware doesnt touch the bus when the PPU is disabled
-				//(without this, smb3 title screen creates garbage when skipped)
+				//hardware doesnt touch the bus when the PPU is disabled
 				if (!reg_2001.PPUON && ppu)
 					return 0xFF;
 
@@ -155,7 +154,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//hack
 			public bool PAL = false;
 			bool SPRITELIMIT = true;
-			const int MAXSPRITES = 8;
 
 	
 		}
