@@ -13,9 +13,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		public partial class PPU
 		{
-            public MemoryDomain.FreezeData[] ppubus_freeze = new MemoryDomain.FreezeData[16384];
+			public class DebugCallback
+			{
+				public int Scanline;
+				//public int Dot; //not supported
+				public Action Callback;
+			}
 
-            //when the ppu issues a write it goes through here and into the game board
+			public DebugCallback NTViewCallback;
+			public DebugCallback PPUViewCallback;
+
+			public MemoryDomain.FreezeData[] ppubus_freeze = new MemoryDomain.FreezeData[16384];
+
+			//when the ppu issues a write it goes through here and into the game board
 			public void ppubus_write(int addr, byte value)
 			{
 				nes.board.AddressPPU(addr);
