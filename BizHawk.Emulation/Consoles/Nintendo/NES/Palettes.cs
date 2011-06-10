@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	partial class NES
 	{
-		static class Palettes
+		public static class Palettes
 		{
 			static float[] rtmul = { 1.239f, 0.794f, 1.019f, 0.905f, 1.023f, 0.741f, 0.75f };
 			static float[] gtmul = { 0.915f, 1.086f, 0.98f, 1.026f, 0.908f, 0.987f, 0.75f };
@@ -27,6 +27,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (r > 0xFF) r = 0xFF;
 				if (g > 0xFF) g = 0xFF;
 				if (b > 0xFF) b = 0xFF;
+			}
+
+			/// <summary>
+			/// Loads a simple 192 byte (64 entry RGB888) palette which is FCEUX format (and probably other emulators as well)
+			/// </summary>
+			/// <param name="fileContents">192 bytes, the contents of the palette file</param>
+			public static int[,] Load_FCEUX_Palette(byte[] fileContents)
+			{
+				if (fileContents.Length != 192) return null;
+				int[,] ret = new int[64, 3];
+				int i=0;
+				for (int c = 0; c < 64; c++)
+				{
+					for(int z=0;z<3;z++)
+						ret[c,z] = fileContents[i++];
+				}
+				return ret;
 			}
 
 			const int SHIFT = 2;

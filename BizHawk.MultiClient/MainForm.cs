@@ -740,7 +740,15 @@ namespace BizHawk.MultiClient
                             LoadTI83KeyPad();
 						break;
 					case "NES":
-						nextEmulator = new NES();
+						{
+							NES nes = new NES();
+							nextEmulator = nes;
+							string palette_file = @"C:\svn\fceux\fceu\output\palettes\FCEU-15-nitsuja_new.pal";
+							if (HawkFile.ExistsAt(palette_file))
+							{
+								nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette_file)));
+							}
+						}
 						break;
 					case "GB":
 						nextEmulator = new Gameboy();

@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// sets the provided palette as current
 		/// </summary>
-		void SetPalette(int[,] pal)
+		public void SetPalette(int[,] pal)
 		{
 			Array.Copy(pal,palette,64*3);
 			for(int i=0;i<64*8;i++)
