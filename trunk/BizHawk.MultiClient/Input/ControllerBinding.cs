@@ -75,12 +75,30 @@ namespace BizHawk.MultiClient
                 removeFromForcePressedButtons.Add(button);
                 return true;
             }
-            if (unpressedButtons.Contains(button))
+            if (unpressedButtons.Contains(button)) 
             {
                 if (IsPressedActually(button) == false)
                     unpressedButtons.Remove(button);
 
                 return false;
+            }
+
+            if (Global.Config.AllowUD_LR == false)
+            {
+                string prefix;
+
+                if (button.Contains("Down"))
+                {
+                    prefix = button.GetPrecedingString("Down");
+                    if (IsPressed(prefix + "Up"))
+                        return false;
+                }
+                if (button.Contains("Right"))
+                {
+                    prefix = button.GetPrecedingString("Right");
+                    if (IsPressed(prefix + "Left"))
+                        return false;
+                }
             }
 
             return IsPressedActually(button);
@@ -164,7 +182,7 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "PC Engine Controller")
             {
-                input.Append("."); //TODO: reset goes here
+                input.Append("."); //TODO: reset goes here   - the turbografx DOES NOT HAVE A RESET BUTTON. but I assume this is for pcejin movie file compatibility, which is a fools errand anyway......... I'll leave it for now, but marked for deletion
                 input.Append("|");
                 for (int player = 1; player < 6; player++)
                 {

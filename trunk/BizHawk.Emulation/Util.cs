@@ -55,6 +55,16 @@ namespace BizHawk
             return true;
         }
 
+        public static string GetPrecedingString(this string str, string value)
+        {
+            int index = str.IndexOf(value);
+            if (index < 0)
+                return null;
+            if (index == 0)
+                return "";
+            return str.Substring(0, index);
+        }
+
         public static bool In(this string str, params string[] options)
         {
             foreach (string opt in options)
@@ -534,7 +544,6 @@ namespace BizHawk
 			string precision = "2";
 			return String.Format("{0:N" + precision + "}{1}", size, suffix);
 		}
-
 	}
 
 	public unsafe class Serializer
@@ -584,7 +593,7 @@ namespace BizHawk
 				else tr.ReadLine();
 		}
 
-		public unsafe void SyncEnum<T>(string name, ref T val) where T : struct
+		public void SyncEnum<T>(string name, ref T val) where T : struct
 		{
 			if (typeof(T).BaseType != typeof(System.Enum))
 				throw new InvalidOperationException();
@@ -593,13 +602,13 @@ namespace BizHawk
 			else bw.Write(Convert.ToInt32(val));
 		}
 
-		public unsafe void SyncEnumText<T>(string name, ref T val) where T : struct
+		public void SyncEnumText<T>(string name, ref T val) where T : struct
 		{
 			if (IsReader) val = (T)Enum.Parse(typeof(T), tr.ReadLine().Split(' ')[1]);
 			else tw.WriteLine("{0} {1}", name, val.ToString());
 		}
 
-		unsafe void SyncBuffer(string name, int elemsize, int len, void* ptr)
+		void SyncBuffer(string name, int elemsize, int len, void* ptr)
 		{
 			if (IsReader)
 			{
@@ -617,12 +626,12 @@ namespace BizHawk
 			}
 		}
 
-		public unsafe void Sync(string name, ref ByteBuffer byteBuf)
+		public void Sync(string name, ref ByteBuffer byteBuf)
 		{
 			SyncBuffer(name, 1, byteBuf.len, byteBuf.ptr);
 		}
 
-		public unsafe void Sync(string name, ref IntBuffer byteBuf)
+		public void Sync(string name, ref IntBuffer byteBuf)
 		{
 			SyncBuffer(name, 4, byteBuf.len, byteBuf.ptr);
 		}
@@ -843,8 +852,6 @@ namespace BizHawk
 		void Write(ref bool val) { bw.Write(val); }
 		void ReadText(string name, ref bool val) { val = bool.Parse(tr.ReadLine().Split(' ')[1]); }
 		void WriteText(string name, ref bool val) { tw.WriteLine("{0} {1}", name, val); }
-
-
 	}
 
 
@@ -945,8 +952,6 @@ namespace BizHawk
 		/// </summary>
 		public IList<K> Keys { get { return new List<K>(dictionary.Keys); } }
 
-
-
 		public L this[K key]
 		{
 			get
@@ -962,6 +967,4 @@ namespace BizHawk
 			}
 		}
 	}
-
-
 }
