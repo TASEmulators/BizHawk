@@ -194,6 +194,8 @@
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
+			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
+			this.graphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -212,7 +214,7 @@
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 23);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
@@ -1379,7 +1381,9 @@
             this.debuggerToolStripMenuItem,
             this.pPUViewerToolStripMenuItem,
             this.nametableViewerToolStripMenuItem,
-            this.gameGenieCodesToolStripMenuItem});
+            this.gameGenieCodesToolStripMenuItem,
+            this.toolStripSeparator17,
+            this.graphicsSettingsToolStripMenuItem});
 			this.NESToolStripMenuItem.Name = "NESToolStripMenuItem";
 			this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 17);
 			this.NESToolStripMenuItem.Text = "&NES";
@@ -1493,6 +1497,18 @@
 			// 
 			this.EmuStatus.Name = "EmuStatus";
 			this.EmuStatus.Size = new System.Drawing.Size(0, 17);
+			// 
+			// toolStripSeparator17
+			// 
+			this.toolStripSeparator17.Name = "toolStripSeparator17";
+			this.toolStripSeparator17.Size = new System.Drawing.Size(225, 6);
+			// 
+			// graphicsSettingsToolStripMenuItem
+			// 
+			this.graphicsSettingsToolStripMenuItem.Name = "graphicsSettingsToolStripMenuItem";
+			this.graphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
+			this.graphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
+			this.graphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.graphicsSettingsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -1688,6 +1704,8 @@
         private System.Windows.Forms.ToolStripMenuItem singleInstanceModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem displayStatusBarToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
+		private System.Windows.Forms.ToolStripMenuItem graphicsSettingsToolStripMenuItem;
     }
 }
 
