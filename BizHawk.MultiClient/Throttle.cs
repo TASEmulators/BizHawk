@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
 		public bool skipnextframe;
 
 		public bool signal_frameAdvance;
-		public bool signal_fastForward;
+		public bool signal_unthrottle;
 		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
 
 		public int cfg_frameskiprate { get { return Global.Config.FrameSkip; } }
@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 				framestoskip = 0; // otherwise switches to lower frameskip rates will lag behind
 			}
 
-			if (!skipnextframe || forceFrameSkip == 0 || signal_frameAdvance || (signal_continuousframeAdvancing && !signal_fastForward))
+			if (!skipnextframe || forceFrameSkip == 0 || signal_frameAdvance || (signal_continuousframeAdvancing && !signal_unthrottle))
 			{
 				framesskipped = 0;
 
@@ -54,7 +54,7 @@ namespace BizHawk.MultiClient
 				//NDS_SkipNextFrame();
 			}
 
-			if (signal_fastForward)
+			if (signal_unthrottle)
 			{
 				if (framesskipped < ffSkipRate)
 				{
@@ -147,9 +147,10 @@ namespace BizHawk.MultiClient
 			SetSpeedPercent(pct);
 		}
 
-		int pct = 100;
+		int pct = -1;
 		public void SetSpeedPercent(int percent)
 		{
+            if (pct == percent) return;
 			pct = percent;
 			float fraction = percent / 100.0f;
 			desiredfps = (ulong)(core_desiredfps * fraction);
@@ -286,7 +287,7 @@ namespace BizHawk.MultiClient
 			AutoFrameSkip_BeforeThrottle();
 
 		waiter:
-			if (signal_fastForward)
+			if (signal_unthrottle)
 				return;
 
 			ulong ttime = GetCurTime();

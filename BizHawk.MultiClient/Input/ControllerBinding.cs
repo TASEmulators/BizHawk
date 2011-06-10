@@ -104,7 +104,7 @@ namespace BizHawk.MultiClient
             return IsPressedActually(button);
         }
 
-        private bool IsPressedActually(string button)
+        public bool IsPressedActually(string button)
         {
             bool sticky = stickyButtons[button];
 
