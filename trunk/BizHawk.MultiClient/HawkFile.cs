@@ -11,6 +11,29 @@ namespace BizHawk.MultiClient
 
     public class HawkFile : IDisposable
     {
+		public static bool ExistsAt(string path)
+		{
+			using (var file = new HawkFile(path))
+			{
+				return file.Exists;
+			}
+		}
+
+		public static byte[] ReadAllBytes(string path)
+		{
+			using (var file = new HawkFile(path))
+			{
+				if (!file.Exists) throw new FileNotFoundException(path);
+				using (Stream stream = file.GetStream())
+				{
+					MemoryStream ms = new MemoryStream((int)stream.Length);
+					stream.CopyTo(ms);
+					return ms.GetBuffer();
+				}
+			}
+		}
+
+
 		/// <summary>
 		/// returns whether a bound file exists. if there is no bound file, it can't exist
 		/// </summary>
@@ -90,7 +113,8 @@ namespace BizHawk.MultiClient
 		public HawkFile(string path)
         {
 			string autobind = null;
-			if (IsCanonicalArchivePath(path))
+			bool isArchivePath = IsCanonicalArchivePath(path);
+			if (isArchivePath)
 			{
 				string[] parts = path.Split('|');
 				path = parts[0];
@@ -114,7 +138,13 @@ namespace BizHawk.MultiClient
 				//bind it later with the desired extensions.
 			}
 
-			if (autobind != null)
+			if (autobind == null)
+			{
+				//non-archive files can be automatically bound this way
+				if (!isArchivePath)
+					BindRoot();
+			}
+			else
 			{
 				autobind = autobind.ToUpperInvariant();
 				for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
@@ -189,7 +219,7 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
-		/// causes the root to be bound (in the case of non-archive files
+		/// causes the root to be bound (in the case of non-archive files)
 		/// </summary>
 		void BindRoot()
 		{
