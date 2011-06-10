@@ -335,7 +335,7 @@
         public bool SmsForceStereoSeparation = false;
 
         public string SmsReset = "Tab";
-        public string SmsPause = "J1 B10, Space";
+        public string SmsPause = "J1 B8, Space";
         public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
         // PCEngine Settings
@@ -347,9 +347,9 @@
         public string GenP1Left = "J1 Left, LeftArrow";
         public string GenP1Right = "J1 Right, RightArrow";
         public string GenP1A = "J1 B1, Z";
-        public string GenP1B = "J1 B2, X";
-        public string GenP1C = "J1 B9, C";
-        public string GenP1Start = "J1 B10, Return";
+        public string GenP1B = "J1 B3, X";
+        public string GenP1C = "J1 B4, C";
+        public string GenP1Start = "J1 B8, Return";
 
         //GameBoy Settings
         public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -418,10 +418,10 @@
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
                 Right = "J1 Right, RightArrow";
-                I = "J1 B1, Z";
-                II = "J1 B2, X";
-                Run = "J1 B10, C";
-                Select = "J1 B9, V";
+                I = "J1 B1, X";
+                II = "J1 B2, Z";
+                Run = "J1 B8, C";
+                Select = "J1 B7, V";
             }
             else
             {
@@ -459,10 +459,10 @@
                 Down = "J1 Down, DownArrow";
                 Left = "J1 Left, LeftArrow";
                 Right = "J1 Right, RightArrow";
-                A = "J1 B1, X";
-                B = "J1 B2, Z";
-                Start = "J1 B10, Return";
-                Select = "J1 B9, Space";
+                A = "J1 B2, X";
+                B = "J1 B1, Z";
+                Start = "J1 B8, Return";
+                Select = "J1 B7, Space";
             }
             else
             {
