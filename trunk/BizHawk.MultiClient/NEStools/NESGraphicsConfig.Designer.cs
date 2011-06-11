@@ -39,14 +39,14 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.ClipLeftAndRightCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.ChangeBGColor = new System.Windows.Forms.Button();
+			this.BackGroundColorNumber = new System.Windows.Forms.TextBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.BackgroundColorPanel = new System.Windows.Forms.Panel();
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.BackGroundColorNumber = new System.Windows.Forms.TextBox();
-			this.ChangeBGColor = new System.Windows.Forms.Button();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -60,7 +60,7 @@
 			this.OK.Location = new System.Drawing.Point(213, 403);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 0;
+			this.OK.TabIndex = 40;
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
@@ -72,7 +72,7 @@
 			this.Cancel.Location = new System.Drawing.Point(294, 403);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 1;
+			this.Cancel.TabIndex = 45;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			// 
@@ -82,7 +82,7 @@
 			this.AllowMoreSprites.Location = new System.Drawing.Point(9, 19);
 			this.AllowMoreSprites.Name = "AllowMoreSprites";
 			this.AllowMoreSprites.Size = new System.Drawing.Size(203, 17);
-			this.AllowMoreSprites.TabIndex = 2;
+			this.AllowMoreSprites.TabIndex = 15;
 			this.AllowMoreSprites.Text = "Allow more than 8 sprites per scanline";
 			this.AllowMoreSprites.UseVisualStyleBackColor = true;
 			// 
@@ -109,7 +109,7 @@
 			this.AutoLoadPalette.Location = new System.Drawing.Point(6, 73);
 			this.AutoLoadPalette.Name = "AutoLoadPalette";
 			this.AutoLoadPalette.Size = new System.Drawing.Size(135, 17);
-			this.AutoLoadPalette.TabIndex = 3;
+			this.AutoLoadPalette.TabIndex = 10;
 			this.AutoLoadPalette.Text = "Load this file on startup";
 			this.AutoLoadPalette.UseVisualStyleBackColor = true;
 			// 
@@ -137,7 +137,7 @@
 			this.BrowsePalette.Location = new System.Drawing.Point(271, 44);
 			this.BrowsePalette.Name = "BrowsePalette";
 			this.BrowsePalette.Size = new System.Drawing.Size(75, 23);
-			this.BrowsePalette.TabIndex = 0;
+			this.BrowsePalette.TabIndex = 5;
 			this.BrowsePalette.Text = "&Browse...";
 			this.BrowsePalette.UseVisualStyleBackColor = true;
 			this.BrowsePalette.Click += new System.EventHandler(this.BrowsePalette_Click);
@@ -160,7 +160,7 @@
 			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(9, 42);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);
-			this.ClipLeftAndRightCheckBox.TabIndex = 3;
+			this.ClipLeftAndRightCheckBox.TabIndex = 20;
 			this.ClipLeftAndRightCheckBox.Text = "Clip Left and Right Sides (8 pixels)";
 			this.ClipLeftAndRightCheckBox.UseVisualStyleBackColor = true;
 			// 
@@ -182,6 +182,43 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Background and Sprites";
 			// 
+			// ChangeBGColor
+			// 
+			this.ChangeBGColor.Location = new System.Drawing.Point(136, 98);
+			this.ChangeBGColor.Name = "ChangeBGColor";
+			this.ChangeBGColor.Size = new System.Drawing.Size(52, 23);
+			this.ChangeBGColor.TabIndex = 35;
+			this.ChangeBGColor.Text = "Change";
+			this.ChangeBGColor.UseVisualStyleBackColor = true;
+			this.ChangeBGColor.Click += new System.EventHandler(this.ChangeBGColor_Click);
+			// 
+			// BackGroundColorNumber
+			// 
+			this.BackGroundColorNumber.Location = new System.Drawing.Point(62, 100);
+			this.BackGroundColorNumber.MaxLength = 8;
+			this.BackGroundColorNumber.Name = "BackGroundColorNumber";
+			this.BackGroundColorNumber.ReadOnly = true;
+			this.BackGroundColorNumber.Size = new System.Drawing.Size(59, 20);
+			this.BackGroundColorNumber.TabIndex = 5;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(43, 102);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(18, 13);
+			this.label3.TabIndex = 4;
+			this.label3.Text = "0x";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(9, 79);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(246, 13);
+			this.label2.TabIndex = 3;
+			this.label2.Text = "Background color when Backgrounds are disabled";
+			// 
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.BackgroundColorPanel);
@@ -201,59 +238,26 @@
 			// DispBackground
 			// 
 			this.DispBackground.AutoSize = true;
+			this.DispBackground.Checked = true;
+			this.DispBackground.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.DispBackground.Location = new System.Drawing.Point(9, 42);
 			this.DispBackground.Name = "DispBackground";
 			this.DispBackground.Size = new System.Drawing.Size(121, 17);
-			this.DispBackground.TabIndex = 1;
+			this.DispBackground.TabIndex = 30;
 			this.DispBackground.Text = "Display Background";
 			this.DispBackground.UseVisualStyleBackColor = true;
 			// 
 			// DispSprites
 			// 
 			this.DispSprites.AutoSize = true;
+			this.DispSprites.Checked = true;
+			this.DispSprites.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.DispSprites.Location = new System.Drawing.Point(9, 19);
 			this.DispSprites.Name = "DispSprites";
 			this.DispSprites.Size = new System.Drawing.Size(95, 17);
-			this.DispSprites.TabIndex = 0;
+			this.DispSprites.TabIndex = 25;
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 79);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(246, 13);
-			this.label2.TabIndex = 3;
-			this.label2.Text = "Background color when Backgrounds are disabled";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(43, 102);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(18, 13);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "0x";
-			// 
-			// BackGroundColorNumber
-			// 
-			this.BackGroundColorNumber.Location = new System.Drawing.Point(62, 100);
-			this.BackGroundColorNumber.MaxLength = 8;
-			this.BackGroundColorNumber.Name = "BackGroundColorNumber";
-			this.BackGroundColorNumber.ReadOnly = true;
-			this.BackGroundColorNumber.Size = new System.Drawing.Size(59, 20);
-			this.BackGroundColorNumber.TabIndex = 5;
-			// 
-			// ChangeBGColor
-			// 
-			this.ChangeBGColor.Location = new System.Drawing.Point(136, 98);
-			this.ChangeBGColor.Name = "ChangeBGColor";
-			this.ChangeBGColor.Size = new System.Drawing.Size(52, 23);
-			this.ChangeBGColor.TabIndex = 6;
-			this.ChangeBGColor.Text = "Change";
-			this.ChangeBGColor.UseVisualStyleBackColor = true;
-			this.ChangeBGColor.Click += new System.EventHandler(this.ChangeBGColor_Click);
 			// 
 			// NESGraphicsConfig
 			// 
@@ -270,6 +274,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "NESGraphicsConfig";
+			this.ShowIcon = false;
 			this.Text = "NES Graphics Settings";
 			this.Load += new System.EventHandler(this.NESGraphicsConfig_Load);
 			this.groupBox1.ResumeLayout(false);

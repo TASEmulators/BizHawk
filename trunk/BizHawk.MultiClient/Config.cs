@@ -29,6 +29,7 @@
         public string PathNESSaveRAM = ".\\SaveRAM";
         public string PathNESScreenshots = ".\\Screenshots";
         public string PathNESCheats = ".\\Cheats";
+		public string PathNESPalette = ".\\Palettes";
 
         public string BaseSMS = ".\\SMS";
         public string PathSMSROMs = ".";

@@ -764,7 +764,7 @@ namespace BizHawk.MultiClient
 						{
 							NES nes = new NES();
 							nextEmulator = nes;
-							if (Global.Config.NESAutoLoadPalette && HawkFile.ExistsAt(Global.Config.NESPaletteFile))
+							if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 && HawkFile.ExistsAt(Global.Config.NESPaletteFile))
 							{
 								nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
 							}
