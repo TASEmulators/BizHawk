@@ -46,6 +46,7 @@ namespace BizHawk.MultiClient
 		private void DisplayList()
 		{
 			TASView.ItemCount = Global.MainForm.UserMovie.GetMovieLength();
+			TASView.ensureVisible(Global.Emulator.Frame);
 		}
 
 		private void TAStudio_Load(object sender, EventArgs e)
@@ -123,7 +124,7 @@ namespace BizHawk.MultiClient
 
 		private void checkBox1_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.MainForm.ToggleReadOnly();
+			Global.MainForm.SetReadOnly(ReadOnlyCheckBox.Checked);
 			if (ReadOnlyCheckBox.Checked)
 			{
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
@@ -139,6 +140,34 @@ namespace BizHawk.MultiClient
 		private void toolStripButton1_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.PlayMovieFromBeginning();
+		}
+
+		private void RewindToBeginning_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void FastForwardToEnd_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Global.MainForm.ReadOnly)
+			{
+				insertFrameToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				insertFrameToolStripMenuItem.Enabled = true;
+			}
+		}
+
+		private void insertFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MainForm.ReadOnly)
+				return;
 		}
 	}
 }

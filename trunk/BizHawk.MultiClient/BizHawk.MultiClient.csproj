@@ -520,6 +520,10 @@
     <Content Include="corphawk.ico" />
     <None Include="images\FastForward.png" />
     <None Include="images\ReadOnly.png" />
+    <None Include="images\Back.png" />
+    <None Include="images\BackMore.png" />
+    <None Include="images\Forward.png" />
+    <None Include="images\ForwardMore.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
