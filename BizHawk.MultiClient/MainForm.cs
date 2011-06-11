@@ -1252,6 +1252,7 @@ namespace BizHawk.MultiClient
 				HexEditor1.UpdateValues();
 				NESNameTableViewer1.UpdateValues();
 				NESPPU1.UpdateValues();
+				TAStudio1.UpdateValues();
 
 				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
 					UserMovie.GetMnemonic();
