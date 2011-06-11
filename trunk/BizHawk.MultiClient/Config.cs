@@ -216,6 +216,15 @@
         public int NESNameTableWndx = -1;
         public int NESNameTableWndy = -1;
 
+		// NES Graphics settings
+		public bool NESAllowMoreThanEightSprites = false;
+		public bool NESClipLeftAndRight = false;
+		public bool NESAutoLoadPalette = true;
+		public bool NESDispBackground = true;
+		public bool NESDispSprites = true;
+		public int NESBackgroundColor = 0;
+		public string NESPaletteFile = "";
+
         // Cheats Dialog
         public bool AutoLoadCheats = false;
         public bool CheatsSaveWindowPosition = true;
