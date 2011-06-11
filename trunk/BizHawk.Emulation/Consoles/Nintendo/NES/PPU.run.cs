@@ -245,8 +245,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 								}//oamcount loop
 
-								if (reg_2001.PPUON)
-									xbuf[target] = PaletteAdjustPixel(pixelcolor);
+								xbuf[target] = PaletteAdjustPixel(pixelcolor);
 
 								target++;
 
