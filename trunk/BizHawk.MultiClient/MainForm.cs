@@ -24,6 +24,10 @@ namespace BizHawk.MultiClient
 		//Movie variables
 		public Movie InputLog = new Movie("", MOVIEMODE.INACTIVE);
 		public Movie UserMovie = new Movie("", MOVIEMODE.INACTIVE);
+		
+		public bool PressFrameAdvance = false;
+		public bool PressRewind = false;
+
 		public bool ReadOnly = true;    //Global Movie Read only setting
 
 		//the currently selected savestate slot
@@ -1127,7 +1131,7 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.ClientControls["Frame Advance"])
+			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)
@@ -1148,6 +1152,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 				wasPressed = Global.ActiveController.GetControllersAsMnemonic();
+				PressFrameAdvance = false;
 			}
 			else
 			{
@@ -1166,7 +1171,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"])
+			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
 			{
 				rewindCredits += Global.Config.SpeedPercent;
 				int rewindTodo = rewindCredits / 100;
@@ -1179,6 +1184,8 @@ namespace BizHawk.MultiClient
 				}
 				else
 					runFrame = false;
+
+				PressRewind = false;
 			}
 			else rewindCredits = 0;
 
