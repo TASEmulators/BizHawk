@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public NES()
 		{
+			CoreOutputComm = new CoreOutputComm();
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
@@ -126,6 +127,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			NESWatch[] watches;
 		}
 
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
+
 		class MyVideoProvider : IVideoProvider
 		{
 			NES emu;
@@ -137,10 +141,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int[] pixels = new int[256 * 240];
 			public int[] GetVideoBuffer()
 			{
+				int backdrop = emu.CoreInputComm.NES_BackdropColor;
+				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
 				for (int i = 0; i < 256*240; i++)
 				{
-                    pixels[i] = emu.palette_compiled[emu.ppu.xbuf[i]];
+					short pixel = emu.ppu.xbuf[i];
+					if((pixel&0x8000)!=0 && useBackdrop)
+					{
+						pixels[i] = backdrop;
+					}
+                    else pixels[i] = emu.palette_compiled[pixel&0x7FFF];
 				}
 				return pixels;
 			}
@@ -325,12 +336,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public string SystemId { get { return "NES"; } }
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-
-
-		public object Query(EmulatorQuery query)
-		{
-			return null;
-		}
 
 		public string GameName { get { return game_name; } }
 

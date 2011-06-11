@@ -157,8 +157,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							int rasterpos = xstart;
 
 							//check all the conditions that can cause things to render in these 8px
-							bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
-							bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
+							bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost) && nes.CoreInputComm.NES_ShowOBJ;
+							bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost) && nes.CoreInputComm.NES_ShowBG;
 
 							for (int xp = 0; xp < 8; xp++, rasterpos++)
 							{
@@ -176,10 +176,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 									byte pt_0 = bgdata[bgtile].pt_0;
 									byte pt_1 = bgdata[bgtile].pt_1;
 									pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
-									if(pixel != 0)
-										 pixel |= bgdata[bgtile].at;
+									if (pixel != 0)
+										pixel |= bgdata[bgtile].at;
+									pixelcolor = PALRAM[pixel];
 								}
-								pixelcolor = PALRAM[pixel];
+								else
+								{
+									pixelcolor = PALRAM[pixel];
+									pixelcolor |= 0x8000;
+								}
 
 								//look for a sprite to be drawn
 								bool havepixel = false;
@@ -272,9 +277,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								//set the flag and bail out.
 								if (oamcount >= 8 && reg_2001.PPUON)
 								{
-									Reg2002_objoverflow = true;
-									if (SPRITELIMIT)
+									//should we set this flag anyway??
+									if (!nes.CoreInputComm.NES_UnlimitedSprites)
+									{
+										Reg2002_objoverflow = true;
 										break;
+									}
 								}
 
 								//just copy some bytes into the internal sprite buffer

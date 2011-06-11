@@ -313,6 +313,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public TI83()
 		{
+			CoreOutputComm = new CoreOutputComm();
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
 			cpu.ReadHardware = ReadHardware;
@@ -332,6 +333,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			Console.WriteLine("NMI");
 			cpu.NonMaskableInterrupt = false;
 		}
+
+
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
 
 		protected byte[] vram = new byte[0x300];
 		class MyVideoProvider : IVideoProvider
@@ -568,12 +573,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-
-
-		public object Query(EmulatorQuery query)
-		{
-			return null;
-		}
 
         public void Dispose() { }
     }

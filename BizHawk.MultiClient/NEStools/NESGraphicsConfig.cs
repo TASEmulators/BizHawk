@@ -42,7 +42,8 @@ namespace BizHawk.MultiClient
 			PalettePath.Text = Global.Config.NESPaletteFile;
 			DispSprites.Checked = Global.Config.NESDispSprites;
 			DispBackground.Checked = Global.Config.NESDispBackground;
-			BGColorDialog.Color = Color.FromArgb(Global.Config.NESBackgroundColor);
+			BGColorDialog.Color = Color.FromArgb(unchecked(Global.Config.NESBackgroundColor | (int)0xFF000000));
+			checkUseBackdropColor.Checked = (Global.Config.NESBackgroundColor & 0xFF000000) != 0;
 			SetColorBox();
 		}
 
@@ -89,6 +90,9 @@ namespace BizHawk.MultiClient
 			Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
 			Global.Config.NESDispSprites = DispSprites.Checked;
 			Global.Config.NESDispBackground = DispBackground.Checked;
+			Global.Config.NESBackgroundColor = BGColorDialog.Color.ToArgb();
+			if (!checkUseBackdropColor.Checked)
+				Global.Config.NESBackgroundColor &= 0x00FFFFFF;
 
 			this.Close();
 		}
@@ -96,7 +100,7 @@ namespace BizHawk.MultiClient
 		private void SetColorBox()
 		{
 			int color = BGColorDialog.Color.ToArgb();
-			BackGroundColorNumber.Text = String.Format("{0:X8}", color);
+			BackGroundColorNumber.Text = String.Format("#{0:X8}", color).Substring(2,6);
 			BackgroundColorPanel.BackColor = BGColorDialog.Color;
 		}
 

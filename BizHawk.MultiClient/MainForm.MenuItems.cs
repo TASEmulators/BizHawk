@@ -705,6 +705,7 @@ namespace BizHawk.MultiClient
 		{
 			NESGraphicsConfig g = new NESGraphicsConfig();
 			g.ShowDialog();
+			SyncCoreInputComm();
 		}
 	}
 }

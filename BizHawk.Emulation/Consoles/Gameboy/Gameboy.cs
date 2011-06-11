@@ -262,6 +262,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
         public Gameboy()
         {
+			CoreOutputComm = new CoreOutputComm();
         }
 
         public void LoadGame(IGame game)
@@ -637,6 +638,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
             //Cpu.ExecuteCycles(4096);
         }
 
+
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
+
         public IVideoProvider VideoProvider
         {
 			get { return new NullEmulator(); }
@@ -849,12 +854,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
-
-
-		public object Query(EmulatorQuery query)
-		{
-			return null;
-		}
 
         public void Dispose() {}
     }

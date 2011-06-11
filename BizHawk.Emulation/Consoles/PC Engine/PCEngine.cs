@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public PCEngine(NecSystemType type)
         {
+			CoreOutputComm = new CoreOutputComm();
             Type = type;
             Controller = NullController.GetNullController();
             Cpu = new HuC6280();
@@ -123,6 +124,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             else
                 islag = false;
         }
+
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
 
         public IVideoProvider VideoProvider
         {
@@ -297,17 +301,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private IList<MemoryDomain> memoryDomains;
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-
-		public object Query(EmulatorQuery query)
-		{
-			switch (query)
-			{
-				case EmulatorQuery.VsyncRate:
-					return 60.0;
-				default:
-					return null;
-			}
-		}
 
         public void Dispose() {}
     }

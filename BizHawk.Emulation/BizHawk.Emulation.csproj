@@ -190,6 +190,7 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\Base Implementations\SmdGame.cs" />
+    <Compile Include="Interfaces\CoreComms.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />

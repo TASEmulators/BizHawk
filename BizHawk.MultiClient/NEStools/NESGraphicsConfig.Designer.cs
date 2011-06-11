@@ -41,13 +41,13 @@
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.ChangeBGColor = new System.Windows.Forms.Button();
 			this.BackGroundColorNumber = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.BackgroundColorPanel = new System.Windows.Forms.Panel();
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
+			this.checkUseBackdropColor = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -157,6 +157,7 @@
 			// ClipLeftAndRightCheckBox
 			// 
 			this.ClipLeftAndRightCheckBox.AutoSize = true;
+			this.ClipLeftAndRightCheckBox.Enabled = false;
 			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(9, 42);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);
@@ -168,9 +169,9 @@
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.checkUseBackdropColor);
 			this.groupBox3.Controls.Add(this.ChangeBGColor);
 			this.groupBox3.Controls.Add(this.BackGroundColorNumber);
-			this.groupBox3.Controls.Add(this.label3);
 			this.groupBox3.Controls.Add(this.label2);
 			this.groupBox3.Controls.Add(this.groupBox4);
 			this.groupBox3.Controls.Add(this.DispBackground);
@@ -180,11 +181,11 @@
 			this.groupBox3.Size = new System.Drawing.Size(352, 128);
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Background and Sprites";
+			this.groupBox3.Text = "BG and Sprites";
 			// 
 			// ChangeBGColor
 			// 
-			this.ChangeBGColor.Location = new System.Drawing.Point(136, 98);
+			this.ChangeBGColor.Location = new System.Drawing.Point(112, 98);
 			this.ChangeBGColor.Name = "ChangeBGColor";
 			this.ChangeBGColor.Size = new System.Drawing.Size(52, 23);
 			this.ChangeBGColor.TabIndex = 35;
@@ -194,30 +195,21 @@
 			// 
 			// BackGroundColorNumber
 			// 
-			this.BackGroundColorNumber.Location = new System.Drawing.Point(62, 100);
+			this.BackGroundColorNumber.Location = new System.Drawing.Point(47, 100);
 			this.BackGroundColorNumber.MaxLength = 8;
 			this.BackGroundColorNumber.Name = "BackGroundColorNumber";
 			this.BackGroundColorNumber.ReadOnly = true;
 			this.BackGroundColorNumber.Size = new System.Drawing.Size(59, 20);
 			this.BackGroundColorNumber.TabIndex = 5;
 			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(43, 102);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(18, 13);
-			this.label3.TabIndex = 4;
-			this.label3.Text = "0x";
-			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(9, 79);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(246, 13);
+			this.label2.Size = new System.Drawing.Size(178, 13);
 			this.label2.TabIndex = 3;
-			this.label2.Text = "Background color when Backgrounds are disabled";
+			this.label2.Text = "Backdrop color when BG is disabled";
 			// 
 			// groupBox4
 			// 
@@ -242,9 +234,9 @@
 			this.DispBackground.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.DispBackground.Location = new System.Drawing.Point(9, 42);
 			this.DispBackground.Name = "DispBackground";
-			this.DispBackground.Size = new System.Drawing.Size(121, 17);
+			this.DispBackground.Size = new System.Drawing.Size(78, 17);
 			this.DispBackground.TabIndex = 30;
-			this.DispBackground.Text = "Display Background";
+			this.DispBackground.Text = "Display BG";
 			this.DispBackground.UseVisualStyleBackColor = true;
 			// 
 			// DispSprites
@@ -258,6 +250,18 @@
 			this.DispSprites.TabIndex = 25;
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
+			// 
+			// checkUseBackdropColor
+			// 
+			this.checkUseBackdropColor.AutoSize = true;
+			this.checkUseBackdropColor.Checked = true;
+			this.checkUseBackdropColor.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkUseBackdropColor.Location = new System.Drawing.Point(170, 100);
+			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
+			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
+			this.checkUseBackdropColor.TabIndex = 36;
+			this.checkUseBackdropColor.Text = "Enable";
+			this.checkUseBackdropColor.UseVisualStyleBackColor = true;
 			// 
 			// NESGraphicsConfig
 			// 
@@ -306,9 +310,9 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.Panel BackgroundColorPanel;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox BackGroundColorNumber;
 		private System.Windows.Forms.Button ChangeBGColor;
 		private System.Windows.Forms.ColorDialog BGColorDialog;
+		private System.Windows.Forms.CheckBox checkUseBackdropColor;
 	}
 }
