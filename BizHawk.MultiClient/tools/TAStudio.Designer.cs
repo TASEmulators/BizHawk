@@ -45,24 +45,27 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.insertFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASView = new BizHawk.VirtualListView();
+			this.Frame = new System.Windows.Forms.ColumnHeader();
 			this.Log = new System.Windows.Forms.ColumnHeader();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
-			this.FrameAdvanceButton = new System.Windows.Forms.ToolStripButton();
 			this.PauseButton = new System.Windows.Forms.ToolStripButton();
+			this.FrameAdvanceButton = new System.Windows.Forms.ToolStripButton();
+			this.FastFowardToEnd = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
 			this.StopButton = new System.Windows.Forms.ToolStripButton();
+			this.PlayMovieFromBeginning = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.Frame = new System.Windows.Forms.ColumnHeader();
 			this.menuStrip1.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
@@ -177,9 +180,20 @@
 			// 
 			// editToolStripMenuItem
 			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insertFrameToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.editToolStripMenuItem.Text = "&Edit";
+			this.editToolStripMenuItem.DropDownOpened += new System.EventHandler(this.editToolStripMenuItem_DropDownOpened);
+			// 
+			// insertFrameToolStripMenuItem
+			// 
+			this.insertFrameToolStripMenuItem.Name = "insertFrameToolStripMenuItem";
+			this.insertFrameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.insertFrameToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.insertFrameToolStripMenuItem.Text = "Insert Frame";
+			this.insertFrameToolStripMenuItem.Click += new System.EventHandler(this.insertFrameToolStripMenuItem_Click);
 			// 
 			// settingsToolStripMenuItem
 			// 
@@ -228,6 +242,10 @@
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
 			// 
+			// Frame
+			// 
+			this.Frame.Text = "Frame";
+			// 
 			// Log
 			// 
 			this.Log.Text = "Log";
@@ -238,10 +256,10 @@
 			// 
 			// toolStripContainer1.ContentPanel
 			// 
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(150, 125);
+			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(172, 125);
 			this.toolStripContainer1.Location = new System.Drawing.Point(427, 38);
 			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(150, 175);
+			this.toolStripContainer1.Size = new System.Drawing.Size(172, 175);
 			this.toolStripContainer1.TabIndex = 2;
 			this.toolStripContainer1.Text = "toolStripContainer1";
 			// 
@@ -254,36 +272,37 @@
 			// 
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripButton1,
+            this.RewindToBeginning,
             this.RewindButton,
             this.PauseButton,
-            this.FrameAdvanceButton});
+            this.FrameAdvanceButton,
+            this.FastFowardToEnd});
 			this.toolStrip1.Location = new System.Drawing.Point(3, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(102, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(125, 25);
 			this.toolStrip1.TabIndex = 0;
+			// 
+			// RewindToBeginning
+			// 
+			this.RewindToBeginning.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RewindToBeginning.Image = global::BizHawk.MultiClient.Properties.Resources.BackMore;
+			this.RewindToBeginning.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RewindToBeginning.Name = "RewindToBeginning";
+			this.RewindToBeginning.Size = new System.Drawing.Size(23, 22);
+			this.RewindToBeginning.Text = "<<";
+			this.RewindToBeginning.ToolTipText = "Rewind to Beginning";
+			this.RewindToBeginning.Click += new System.EventHandler(this.RewindToBeginning_Click);
 			// 
 			// RewindButton
 			// 
-			this.RewindButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.RewindButton.Image = ((System.Drawing.Image)(resources.GetObject("RewindButton.Image")));
+			this.RewindButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RewindButton.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
 			this.RewindButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RewindButton.Name = "RewindButton";
 			this.RewindButton.Size = new System.Drawing.Size(23, 22);
 			this.RewindButton.Text = "<";
 			this.RewindButton.ToolTipText = "Rewind";
 			this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
-			// 
-			// FrameAdvanceButton
-			// 
-			this.FrameAdvanceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.FrameAdvanceButton.Image = global::BizHawk.MultiClient.Properties.Resources.Debugger;
-			this.FrameAdvanceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
-			this.FrameAdvanceButton.Size = new System.Drawing.Size(23, 22);
-			this.FrameAdvanceButton.Text = ">";
-			this.FrameAdvanceButton.ToolTipText = "Frame Advance";
-			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
 			// 
 			// PauseButton
 			// 
@@ -296,15 +315,38 @@
 			this.PauseButton.ToolTipText = "Pause";
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
 			// 
+			// FrameAdvanceButton
+			// 
+			this.FrameAdvanceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FrameAdvanceButton.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
+			this.FrameAdvanceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
+			this.FrameAdvanceButton.Size = new System.Drawing.Size(23, 22);
+			this.FrameAdvanceButton.Text = ">";
+			this.FrameAdvanceButton.ToolTipText = "Frame Advance";
+			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
+			// 
+			// FastFowardToEnd
+			// 
+			this.FastFowardToEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FastFowardToEnd.Image = global::BizHawk.MultiClient.Properties.Resources.ForwardMore;
+			this.FastFowardToEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FastFowardToEnd.Name = "FastFowardToEnd";
+			this.FastFowardToEnd.Size = new System.Drawing.Size(23, 22);
+			this.FastFowardToEnd.Text = ">>";
+			this.FastFowardToEnd.ToolTipText = "Fast Foward To End";
+			this.FastFowardToEnd.Click += new System.EventHandler(this.FastForwardToEnd_Click);
+			// 
 			// toolStrip2
 			// 
 			this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.StopButton,
+            this.PlayMovieFromBeginning,
             this.toolStripSeparator4});
 			this.toolStrip2.Location = new System.Drawing.Point(3, 25);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(39, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(62, 25);
 			this.toolStrip2.TabIndex = 1;
 			// 
 			// StopButton
@@ -315,6 +357,16 @@
 			this.StopButton.Name = "StopButton";
 			this.StopButton.Size = new System.Drawing.Size(23, 22);
 			this.StopButton.Text = "Stop Movie";
+			// 
+			// PlayMovieFromBeginning
+			// 
+			this.PlayMovieFromBeginning.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.PlayMovieFromBeginning.Image = ((System.Drawing.Image)(resources.GetObject("PlayMovieFromBeginning.Image")));
+			this.PlayMovieFromBeginning.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PlayMovieFromBeginning.Name = "PlayMovieFromBeginning";
+			this.PlayMovieFromBeginning.Size = new System.Drawing.Size(23, 22);
+			this.PlayMovieFromBeginning.Text = "|";
+			this.PlayMovieFromBeginning.ToolTipText = "Rewind to Beginning";
 			// 
 			// toolStripSeparator4
 			// 
@@ -328,28 +380,13 @@
 			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
 			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(583, 38);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(605, 38);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(22, 22);
 			this.ReadOnlyCheckBox.TabIndex = 3;
 			this.toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Read-only");
 			this.ReadOnlyCheckBox.UseVisualStyleBackColor = false;
 			this.ReadOnlyCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButton1.Text = "|";
-			this.toolStripButton1.ToolTipText = "Rewind to Beginning";
-			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-			// 
-			// Frame
-			// 
-			this.Frame.Text = "Frame";
 			// 
 			// TAStudio
 			// 
@@ -413,7 +450,10 @@
 		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripButton toolStripButton1;
 		private System.Windows.Forms.ColumnHeader Frame;
+		private System.Windows.Forms.ToolStripButton RewindToBeginning;
+		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
+		private System.Windows.Forms.ToolStripButton PlayMovieFromBeginning;
+		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
     }
 }

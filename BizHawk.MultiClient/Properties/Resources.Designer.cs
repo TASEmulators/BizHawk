@@ -60,6 +60,20 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Back {
+            get {
+                object obj = ResourceManager.GetObject("Back", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap BackMore {
+            get {
+                object obj = ResourceManager.GetObject("BackMore", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap BuilderDialog_delete {
             get {
                 object obj = ResourceManager.GetObject("BuilderDialog_delete", resourceCulture);
@@ -119,6 +133,20 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap FindHS {
             get {
                 object obj = ResourceManager.GetObject("FindHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Forward {
+            get {
+                object obj = ResourceManager.GetObject("Forward", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ForwardMore {
+            get {
+                object obj = ResourceManager.GetObject("ForwardMore", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

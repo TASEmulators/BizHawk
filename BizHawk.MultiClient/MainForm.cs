@@ -2035,6 +2035,15 @@ namespace BizHawk.MultiClient
 				Global.RenderPanel.AddMessage("Movie read+write mode");
 		}
 
+		public void SetReadOnly(bool read_only)
+		{
+			ReadOnly = read_only;
+			if (ReadOnly)
+				Global.RenderPanel.AddMessage("Movie read-only mode");
+			else
+				Global.RenderPanel.AddMessage("Movie read+write mode");
+		}
+
 		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ToggleReadOnly();
