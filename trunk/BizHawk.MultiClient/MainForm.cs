@@ -77,6 +77,8 @@ namespace BizHawk.MultiClient
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
 			Global.MainForm = this;
+			Global.CoreInputComm = new CoreInputComm();
+			SyncCoreInputComm();
 
 			Database.LoadDatabase(PathManager.GetExePathAbsolute() + "\\gamedb.txt");
 
@@ -212,6 +214,14 @@ namespace BizHawk.MultiClient
 			else
 				m = MOVIEMODE.INACTIVE;
 			InputLog = new Movie(PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + "\\log.tas", m);
+		}
+
+		void SyncCoreInputComm()
+		{
+			Global.CoreInputComm.NES_BackdropColor = Global.Config.NESBackgroundColor;
+			Global.CoreInputComm.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
+			Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground;
+			Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites;
 		}
 
 		void SyncPresentationMode()
@@ -786,6 +796,7 @@ namespace BizHawk.MultiClient
 
 				try
 				{
+					nextEmulator.CoreInputComm = Global.CoreInputComm;
 					nextEmulator.LoadGame(game);
 				}
 				catch (Exception ex)
@@ -825,10 +836,7 @@ namespace BizHawk.MultiClient
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				{
-					object o = Global.Emulator.Query(EmulatorQuery.VsyncRate);
-					if (o is double)
-						throttle.SetCoreFps((double)o);
-					else throttle.SetCoreFps(60);
+					throttle.SetCoreFps( Global.Emulator.CoreOutputComm.VsyncRate);
 					SyncThrottle();
 				}
 				RamSearch1.Restart();
@@ -1931,7 +1939,7 @@ namespace BizHawk.MultiClient
 
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config = ConfigService.Load<Config>("config.ini");
+			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.RenderPanel.AddMessage("Saved loaded");
 		}
 
@@ -1953,7 +1961,7 @@ namespace BizHawk.MultiClient
 				RamSearch1.SaveConfigSettings();
 			if (!HexEditor1.IsDisposed)
 				HexEditor1.SaveConfigSettings();
-			ConfigService.Save("config.ini", Global.Config);
+			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
 		private void PreviousSlot()

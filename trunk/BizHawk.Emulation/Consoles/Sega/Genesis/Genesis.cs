@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public Genesis(bool sega360)
         {
+			CoreOutputComm = new CoreOutputComm();
+
             if (sega360) MainCPU = new MC68K(this);
             _MainCPU = new M68000();
             SoundCPU = new Z80A();
@@ -127,9 +129,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 }
             }
             PSG.EndFrame(SoundCPU.TotalExecutedCycles);
-        }
+		}
 
-        public IVideoProvider VideoProvider
+
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
+
+
+		public IVideoProvider VideoProvider
         {
             get { return VDP; }
         }
@@ -190,11 +197,6 @@ namespace BizHawk.Emulation.Consoles.Sega
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
 
-
-		public object Query(EmulatorQuery query)
-		{
-			return null;
-		}
 
         public void Dispose() {}
     }

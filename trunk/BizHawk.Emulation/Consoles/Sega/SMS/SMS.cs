@@ -58,6 +58,11 @@ namespace BizHawk.Emulation.Consoles.Sega
         public DisplayType DisplayType { get; set; }
         public bool DeterministicEmulation { get; set; }
 
+		public SMS()
+		{
+			CoreOutputComm = new CoreOutputComm();
+		}
+
         public void Init()
         {
             if (Controller == null)
@@ -111,6 +116,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             RomBanks = (byte)(RomData.Length/BankSize);
             Options = game.GetOptions();
             DisplayType = DisplayType.NTSC;
+			CoreOutputComm.VsyncRate = DisplayType == DisplayType.NTSC ? 60d : 50d;
             foreach (string option in Options)
             {
                 var args = option.Split('=');
@@ -324,6 +330,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         }
 
         public IVideoProvider VideoProvider { get { return Vdp; } }
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
 
         private ISoundProvider ActiveSoundProvider;
         public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
@@ -371,14 +379,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
-
-        // TODO I have concerns about this .Query thing- at least for target fps, but I leave it for now
-		public object Query(EmulatorQuery query)
-		{
-            if (query == EmulatorQuery.VsyncRate)
-                return DisplayType == DisplayType.NTSC ? 60d : 50d;
-			return null;
-		}
 
         public void Dispose() {}
     }

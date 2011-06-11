@@ -33,8 +33,9 @@ namespace BizHawk
         void LoadStateBinary(BinaryReader reader);
         byte[] SaveStateBinary();
 
-		//arbitrary extensible query mechanism
-		object Query(EmulatorQuery query);
+		//arbitrary extensible core comm mechanism
+		CoreInputComm CoreInputComm { get; set; }
+		CoreOutputComm CoreOutputComm { get; }
 
         // ----- Client Debugging API stuff -----
         IList<MemoryDomain> MemoryDomains { get; }
@@ -100,9 +101,4 @@ namespace BizHawk
     public enum Endian { Big, Little, Unknown }
 
     public enum DisplayType { NTSC, PAL }
-
-	public enum EmulatorQuery
-	{
-		VsyncRate
-	}
 }

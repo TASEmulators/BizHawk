@@ -11,6 +11,8 @@ namespace BizHawk
 
         private int[] frameBuffer = new int[256 * 192];
         private Random rand = new Random();
+		public CoreInputComm CoreInputComm { get; set; }
+		public CoreOutputComm CoreOutputComm { get; private set; }
         public IVideoProvider VideoProvider { get { return this; } }
         public ISoundProvider SoundProvider { get { return this; } }
         public NullEmulator()
@@ -51,10 +53,6 @@ namespace BizHawk
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
         public void Dispose() { }
-		public object Query(EmulatorQuery query)
-		{
-			return null;
-		}
     }
 
     public class NullSound : ISoundProvider

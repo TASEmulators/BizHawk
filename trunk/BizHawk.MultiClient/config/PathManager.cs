@@ -18,10 +18,22 @@ namespace BizHawk.MultiClient
             return p;
         }
 
+		/// <summary>
+		/// Makes a path relative to the %exe% dir
+		/// </summary>
+		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, ""); }
+
+		/// <summary>
+		/// The location of the default INI file
+		/// </summary>
+		public static string DefaultIniPath { get { return MakeProgramRelativePath("config.ini"); } }
+
+		/// <summary>
+		/// Gets absolute base as derived from EXE
+		/// </summary>
+		/// <returns></returns>
         public static string GetBasePathAbsolute()
         {
-            //Gets absolute base as derived from EXE
-
             if (Global.Config.BasePath.Length < 1) //If empty, then EXE path
                 return GetExePathAbsolute();
 
