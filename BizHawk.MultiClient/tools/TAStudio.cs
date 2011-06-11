@@ -84,12 +84,12 @@ namespace BizHawk.MultiClient
 
         private void FrameAdvanceButton_Click(object sender, EventArgs e)
         {
-            
+			Global.MainForm.PressFrameAdvance = true;
         }
 
         private void RewindButton_Click(object sender, EventArgs e)
         {
-
+			Global.MainForm.PressRewind = true;
         }
 
         private void PauseButton_Click(object sender, EventArgs e)
