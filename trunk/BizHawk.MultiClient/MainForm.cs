@@ -193,6 +193,8 @@ namespace BizHawk.MultiClient
 				LoadNESDebugger();
 			if (Global.Config.NESGGAutoload && Global.Emulator is NES)
 				LoadGameGenieEC();
+			if (Global.Config.AutoloadTAStudio)
+				LoadTAStudio();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
