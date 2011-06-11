@@ -14,9 +14,6 @@ namespace BizHawk.MultiClient
 	public partial class NESGraphicsConfig : Form
 	{
 		//TODO:
-		//Add restriction on for load event for nes
-		//Add restriction on Main form menu item for nes
-		//Add palette config in NES path config
 		//Hook up allow > 8 scan lines
 		//Hook up Clip L+R Sides
 		//Hook up Disp Background
@@ -24,7 +21,6 @@ namespace BizHawk.MultiClient
 		//Hook up BG color
 		//Allow selection of palette file from archive
 		//Hotkeys for BG & Sprite display toggle
-		//allow null in box
 		//select all on enter event for palette config
 		//NTSC fileter settings? Hue, Tint (This should probably be a multiclient thing, not a nes specific thing?)
 		//Color panel isn't loading color on load
@@ -53,7 +49,7 @@ namespace BizHawk.MultiClient
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetPlatformBase("NES");
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESPalette, "NES");
 			ofd.Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -66,23 +62,33 @@ namespace BizHawk.MultiClient
 
 		private void OK_Click(object sender, EventArgs e)
 		{
-			string path = PathManager.MakeAbsolutePath(PalettePath.Text, "NES");
-			palette = new HawkFile(PalettePath.Text);
-
-			if (palette != null && palette.Exists)
+			if (PalettePath.Text.Length > 0)
 			{
-				if (Global.Config.NESPaletteFile != palette.Name)
+				string path = PathManager.MakeAbsolutePath(PalettePath.Text, "NES");
+				palette = new HawkFile(PalettePath.Text);
+
+				if (palette != null && palette.Exists)
 				{
-					Global.Config.NESPaletteFile = palette.Name;
-					nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
-					Global.RenderPanel.AddMessage("Palette file loaded: " + palette.Name);
+					if (Global.Config.NESPaletteFile != palette.Name)
+					{
+						Global.Config.NESPaletteFile = palette.Name;
+						nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
+						Global.RenderPanel.AddMessage("Palette file loaded: " + palette.Name);
+					}
 				}
-				Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
-				Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
-				Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
-				 Global.Config.NESDispSprites = DispSprites.Checked;
-				Global.Config.NESDispBackground = DispBackground.Checked;
 			}
+			else
+			{
+				Global.Config.NESPaletteFile = "";
+				nes.SetPalette(NES.Palettes.FCEUX_Standard);
+				Global.RenderPanel.AddMessage("Standard Palette set");
+			}
+
+			Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
+			Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
+			Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
+			Global.Config.NESDispSprites = DispSprites.Checked;
+			Global.Config.NESDispBackground = DispBackground.Checked;
 
 			this.Close();
 		}
