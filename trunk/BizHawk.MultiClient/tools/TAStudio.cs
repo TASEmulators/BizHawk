@@ -23,20 +23,36 @@ namespace BizHawk.MultiClient
 			TASView.VirtualMode = true;
 		}
 
+		public void UpdateValues()
+		{
+			DisplayList();
+		}
+
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-
+			if (index == Global.Emulator.Frame)
+				color = Color.LightGreen;
 		}
 
 		private void TASView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
+			if (column == 0)
+				text = String.Format("{0:#,##0}", index);
+			if (column == 1)
+				text = Global.MainForm.UserMovie.GetInputFrame(index);
+		}
+
+		private void DisplayList()
+		{
+			TASView.ItemCount = Global.MainForm.UserMovie.GetMovieLength();
 		}
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
+			DisplayList();
 		}
 
 		private void LoadConfigSettings()

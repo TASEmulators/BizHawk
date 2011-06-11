@@ -62,6 +62,7 @@
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.Frame = new System.Windows.Forms.ColumnHeader();
 			this.menuStrip1.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
@@ -215,10 +216,11 @@
 			// TASView
 			// 
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Frame,
             this.Log});
 			this.TASView.GridLines = true;
 			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(12, 38);
+			this.TASView.Location = new System.Drawing.Point(22, 38);
 			this.TASView.Name = "TASView";
 			this.TASView.selectedItem = -1;
 			this.TASView.Size = new System.Drawing.Size(399, 424);
@@ -345,6 +347,10 @@
 			this.toolStripButton1.ToolTipText = "Rewind to Beginning";
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
+			// Frame
+			// 
+			this.Frame.Text = "Frame";
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -408,5 +414,6 @@
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripButton toolStripButton1;
+		private System.Windows.Forms.ColumnHeader Frame;
     }
 }
