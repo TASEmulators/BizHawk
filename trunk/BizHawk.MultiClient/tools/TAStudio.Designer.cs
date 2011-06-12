@@ -66,11 +66,16 @@
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.insertFrameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -81,7 +86,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(699, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(721, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -237,7 +242,7 @@
 			this.TASView.Location = new System.Drawing.Point(22, 38);
 			this.TASView.Name = "TASView";
 			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(399, 424);
+			this.TASView.Size = new System.Drawing.Size(335, 424);
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
@@ -256,10 +261,10 @@
 			// 
 			// toolStripContainer1.ContentPanel
 			// 
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(172, 125);
-			this.toolStripContainer1.Location = new System.Drawing.Point(427, 38);
+			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(172, 39);
+			this.toolStripContainer1.Location = new System.Drawing.Point(373, 38);
 			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(172, 175);
+			this.toolStripContainer1.Size = new System.Drawing.Size(172, 89);
 			this.toolStripContainer1.TabIndex = 2;
 			this.toolStripContainer1.Text = "toolStripContainer1";
 			// 
@@ -380,7 +385,7 @@
 			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
 			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(605, 38);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(551, 38);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(22, 22);
 			this.ReadOnlyCheckBox.TabIndex = 3;
@@ -388,11 +393,37 @@
 			this.ReadOnlyCheckBox.UseVisualStyleBackColor = false;
 			this.ReadOnlyCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
 			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insertFrameToolStripMenuItem1,
+            this.toolStripSeparator5,
+            this.selectAllToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(148, 54);
+			// 
+			// insertFrameToolStripMenuItem1
+			// 
+			this.insertFrameToolStripMenuItem1.Name = "insertFrameToolStripMenuItem1";
+			this.insertFrameToolStripMenuItem1.Size = new System.Drawing.Size(147, 22);
+			this.insertFrameToolStripMenuItem1.Text = "Insert Frame";
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(144, 6);
+			// 
+			// selectAllToolStripMenuItem
+			// 
+			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.selectAllToolStripMenuItem.Text = "Select All";
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(699, 474);
+			this.ClientSize = new System.Drawing.Size(721, 474);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.toolStripContainer1);
 			this.Controls.Add(this.TASView);
@@ -412,6 +443,7 @@
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);
 			this.toolStrip2.PerformLayout();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -455,5 +487,9 @@
 		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
 		private System.Windows.Forms.ToolStripButton PlayMovieFromBeginning;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }

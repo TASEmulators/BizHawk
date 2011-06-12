@@ -128,12 +128,12 @@ namespace BizHawk.MultiClient
 			if (ReadOnlyCheckBox.Checked)
 			{
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
-				//TODO: set tooltip text to "In Read-Only Mode)
+				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
 			}
 			else
 			{
 				ReadOnlyCheckBox.BackColor = Color.LightCoral;
-				//TOD: set tooltip text to "In Read+Write Mode"
+				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
 			}
 		}
 
@@ -144,7 +144,8 @@ namespace BizHawk.MultiClient
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
-
+			Global.MainForm.Rewind(Global.Emulator.Frame);
+			DisplayList();
 		}
 
 		private void FastForwardToEnd_Click(object sender, EventArgs e)
