@@ -1162,7 +1162,8 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
-				wasPressed = Global.ActiveController.GetControllersAsMnemonic();
+
+				wasPressed = (TAStudio1.Enabled) ? TAStudio1.GetMnemonic() : Global.ActiveController.GetControllersAsMnemonic();
 				PressFrameAdvance = false;
 			}
 			else
@@ -1236,7 +1237,9 @@ namespace BizHawk.MultiClient
 						Global.ActiveController.MovieMode = false;
 					}
 					else
+					{
 						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+					}
 				}
 
 				if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
