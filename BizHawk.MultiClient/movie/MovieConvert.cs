@@ -113,7 +113,7 @@ namespace BizHawk.MultiClient
                 frame += "|";
 
                 r.ReadBytes(3); //Lose remaining controllers for now
-                m.AddFrame(frame);
+                m.AppendFrame(frame);
             }
 
 
@@ -236,7 +236,7 @@ namespace BizHawk.MultiClient
 
                 frame += start;
                 frame += ".|";
-                m.AddFrame(frame);
+                m.AppendFrame(frame);
             }
             m.WriteMovie();
             return m;

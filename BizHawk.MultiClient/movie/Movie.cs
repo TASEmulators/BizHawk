@@ -85,9 +85,9 @@ namespace BizHawk.MultiClient
 				{
 					Log.Truncate(Global.Emulator.Frame);
 				}
-				if (Global.MainForm.TAStudio1.Engaged)
-					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
-				else
+//				if (Global.MainForm.TAStudio1.Engaged)
+//					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
+//				else
 					Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
 			}
 		}
@@ -102,12 +102,12 @@ namespace BizHawk.MultiClient
 		}
 
 		//Movie editing tools may like to have something like this
-		public void AddFrame(string record)
+		public void AppendFrame(string record)
 		{
 			Log.AddFrame(record);
 		}
 
-		public void AddFrameAt(string record, int frame)
+		public void InsertFrame(string record, int frame)
 		{
 			Log.AddFrameAt(record, frame);
 		}
