@@ -39,6 +39,7 @@ namespace BizHawk.MultiClient
 			this.PU.Location = ButtonPoints[0];
 			this.PU.TabIndex = 1;
 			this.PU.UseVisualStyleBackColor = true;
+			this.PU.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.PD = new CheckBox();
 			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
@@ -48,6 +49,7 @@ namespace BizHawk.MultiClient
 			this.PD.Location = ButtonPoints[1];
 			this.PD.TabIndex = 4;
 			this.PD.UseVisualStyleBackColor = true;
+			this.PD.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.PR = new CheckBox();
 			this.PR.Appearance = System.Windows.Forms.Appearance.Button;
@@ -57,6 +59,7 @@ namespace BizHawk.MultiClient
 			this.PR.Location = ButtonPoints[3];
 			this.PR.TabIndex = 3;
 			this.PR.UseVisualStyleBackColor = true;
+			this.PR.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.PL = new CheckBox();
 			this.PL.Appearance = System.Windows.Forms.Appearance.Button;
@@ -66,6 +69,7 @@ namespace BizHawk.MultiClient
 			this.PL.Location = ButtonPoints[2];
 			this.PL.TabIndex = 2;
 			this.PL.UseVisualStyleBackColor = true;
+			this.PL.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.B1 = new CheckBox();
 			this.B1.Appearance = System.Windows.Forms.Appearance.Button;
@@ -75,6 +79,7 @@ namespace BizHawk.MultiClient
 			this.B1.Text = "s";
 			this.B1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B1.UseVisualStyleBackColor = true;
+			this.B1.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.B2 = new CheckBox();
 			this.B2.Appearance = System.Windows.Forms.Appearance.Button;
@@ -84,6 +89,7 @@ namespace BizHawk.MultiClient
 			this.B2.Text = "S";
 			this.B2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B2.UseVisualStyleBackColor = true;
+			this.B2.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.B3 = new CheckBox();
 			this.B3.Appearance = System.Windows.Forms.Appearance.Button;
@@ -93,6 +99,7 @@ namespace BizHawk.MultiClient
 			this.B3.Text = "B";
 			this.B3.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B3.UseVisualStyleBackColor = true;
+			this.B3.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.B4 = new CheckBox();
 			this.B4.Appearance = System.Windows.Forms.Appearance.Button;
@@ -102,6 +109,7 @@ namespace BizHawk.MultiClient
 			this.B4.Text = "A";
 			this.B4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.B4.UseVisualStyleBackColor = true;
+			this.B4.CheckedChanged += new System.EventHandler(this.Buttons_CheckedChanged);
 
 			this.Controls.Add(this.PU);
 			this.Controls.Add(this.PD);
@@ -158,6 +166,28 @@ namespace BizHawk.MultiClient
 			input.Append(B4.Checked ? "A" : ".");
 			input.Append("|");
 			return input.ToString();
+		}
+
+		private void Buttons_CheckedChanged(object sender, EventArgs e)
+		{
+			if (Global.Emulator.SystemId != "NES") return;
+			if (sender == PU)
+				Global.ActiveController.SetSticky("Up", PU.Checked);
+			else if (sender == PD)
+				Global.ActiveController.SetSticky("Down", PD.Checked);
+			else if (sender == PL)
+				Global.ActiveController.SetSticky("Left", PL.Checked);
+			else if (sender == PR)
+				Global.ActiveController.SetSticky("Right", PR.Checked);
+			else if (sender == B1)
+				Global.ActiveController.SetSticky("Select", B1.Checked);
+			else if (sender == B2)
+				Global.ActiveController.SetSticky("Start", B2.Checked);
+			else if (sender == B3)
+				Global.ActiveController.SetSticky("B", B3.Checked);
+			else if (sender == B4)
+				Global.ActiveController.SetSticky("A", B4.Checked);
+
 		}
 	}
 }

@@ -109,5 +109,7 @@ namespace BizHawk.MultiClient
 			if (BGColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
+
+
 	}
 }
