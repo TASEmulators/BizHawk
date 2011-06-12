@@ -354,7 +354,7 @@
             this.toolStripSeparator4});
 			this.toolStrip2.Location = new System.Drawing.Point(3, 25);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(62, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(93, 25);
 			this.toolStrip2.TabIndex = 1;
 			// 
 			// StopButton
@@ -375,6 +375,7 @@
 			this.PlayMovieFromBeginning.Size = new System.Drawing.Size(23, 22);
 			this.PlayMovieFromBeginning.Text = "|";
 			this.PlayMovieFromBeginning.ToolTipText = "Rewind to Beginning";
+			this.PlayMovieFromBeginning.Click += new System.EventHandler(this.PlayMovieFromBeginning_Click);
 			// 
 			// toolStripSeparator4
 			// 

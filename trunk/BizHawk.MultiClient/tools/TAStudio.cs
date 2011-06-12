@@ -11,6 +11,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class TAStudio : Form
 	{
+		//TODO:
+		//Right-click - Go to current frame
+		//Clicking a frame should go there
+
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		
@@ -80,6 +84,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveConfigSettings()
 		{
+			Engaged = false;
 			Global.Config.TASWndx = this.Location.X;
 			Global.Config.TASWndy = this.Location.Y;
 			Global.Config.TASWidth = this.Right - this.Left;
@@ -185,6 +190,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MainForm.ReadOnly)
 				return;
+		}
+
+		private void PlayMovieFromBeginning_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
