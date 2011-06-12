@@ -2104,7 +2104,7 @@ namespace BizHawk.MultiClient
 
 		public void PlayMovieFromBeginning()
 		{
-			if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
 			{
 				LoadRom(CurrentlyOpenRom);
 				UserMovie.StartPlayback();

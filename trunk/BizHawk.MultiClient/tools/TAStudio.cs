@@ -12,13 +12,16 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
-		//Crash when closing TASStudio
 		//Right-click - Go to current frame
 		//Clicking a frame should go there
 		//Multiple timeline system
 		//Macro listview
 		//	Double click brings up a macro editing window
 		//NES Controls virtualpad (Power-on & Reset, eventually FDS options)
+		//SMS virtualpad
+		//PCE virtualpad
+		//Dynamic virtualpad system based on platform
+		//ensureVisible when recording
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -41,7 +44,11 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			DisplayList();
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				TASView.ItemCount = 0;
+			else
+				DisplayList();
 		}
 
 		public string GetMnemonic()
