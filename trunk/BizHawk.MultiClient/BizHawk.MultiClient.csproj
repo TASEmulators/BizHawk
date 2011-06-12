@@ -276,7 +276,7 @@
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Pad.cs">
+    <Compile Include="tools\VirtualPad.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\HexEditor.cs">
@@ -351,6 +351,9 @@
     </Compile>
     <Compile Include="tools\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\VirtualPadNES.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Watch.cs" />
   </ItemGroup>
@@ -436,8 +439,8 @@
       <DependentUpon>Cheats.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\Pad.resx">
-      <DependentUpon>Pad.cs</DependentUpon>
+    <EmbeddedResource Include="tools\VirtualPad.resx">
+      <DependentUpon>VirtualPad.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor.resx">

@@ -71,7 +71,7 @@
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.Pad1 = new BizHawk.MultiClient.VirtualPad();
+			this.Pad1 = new BizHawk.MultiClient.VirtualPadNES();
 			this.menuStrip1.SuspendLayout();
 			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
 			this.toolStripContainer1.SuspendLayout();
@@ -89,7 +89,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(844, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(789, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -354,7 +354,7 @@
             this.toolStripSeparator4});
 			this.toolStrip2.Location = new System.Drawing.Point(3, 25);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(93, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(62, 25);
 			this.toolStrip2.TabIndex = 1;
 			// 
 			// StopButton
@@ -428,7 +428,7 @@
 			this.groupBox1.Controls.Add(this.Pad1);
 			this.groupBox1.Location = new System.Drawing.Point(373, 108);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(445, 280);
+			this.groupBox1.Size = new System.Drawing.Size(401, 197);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Controllers";
@@ -438,14 +438,14 @@
 			this.Pad1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.Pad1.Location = new System.Drawing.Point(6, 19);
 			this.Pad1.Name = "Pad1";
-			this.Pad1.Size = new System.Drawing.Size(176, 80);
+			this.Pad1.Size = new System.Drawing.Size(174, 74);
 			this.Pad1.TabIndex = 0;
 			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(844, 474);
+			this.ClientSize = new System.Drawing.Size(789, 474);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.toolStripContainer1);
@@ -516,6 +516,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private VirtualPad Pad1;
+		private VirtualPadNES Pad1;
     }
 }

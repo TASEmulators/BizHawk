@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//Crash when closing TASStudio
 		//Right-click - Go to current frame
 		//Clicking a frame should go there
 
@@ -36,9 +37,8 @@ namespace BizHawk.MultiClient
 
 		public string GetMnemonic()
 		{
-			StringBuilder str = new StringBuilder("");
+			StringBuilder str = new StringBuilder("|0|"); //TODO: Control Command virtual pad
 			str.Append(Pad1.GetMnemonic());
-			//Loop through active controllers and append string data
 			return str.ToString();
 		}
 
