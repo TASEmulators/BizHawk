@@ -13,6 +13,8 @@ namespace BizHawk.MultiClient
 	{
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
+		
+		public bool Engaged; //When engaged the Client will listen to TAStudio for input
 
 		public TAStudio()
 		{
@@ -26,6 +28,14 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			DisplayList();
+		}
+
+		public string GetMnemonic()
+		{
+			StringBuilder str = new StringBuilder("");
+			str.Append(Pad1.GetMnemonic());
+			//Loop through active controllers and append string data
+			return str.ToString();
 		}
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
@@ -51,6 +61,12 @@ namespace BizHawk.MultiClient
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
+			//TODO: don't engage until new/open project
+			//
+			Engaged = true;
+			Global.RenderPanel.AddMessage("TAStudio engaged");
+			//
+
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
 			DisplayList();
@@ -169,11 +185,6 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MainForm.ReadOnly)
 				return;
-		}
-
-		private void Pad1_Paint(object sender, PaintEventArgs e)
-		{
-
 		}
 	}
 }
