@@ -39,6 +39,7 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.ClipLeftAndRightCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.checkUseBackdropColor = new System.Windows.Forms.CheckBox();
 			this.ChangeBGColor = new System.Windows.Forms.Button();
 			this.BackGroundColorNumber = new System.Windows.Forms.TextBox();
 			this.label2 = new System.Windows.Forms.Label();
@@ -47,7 +48,6 @@
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
-			this.checkUseBackdropColor = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -183,6 +183,18 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "BG and Sprites";
 			// 
+			// checkUseBackdropColor
+			// 
+			this.checkUseBackdropColor.AutoSize = true;
+			this.checkUseBackdropColor.Checked = true;
+			this.checkUseBackdropColor.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkUseBackdropColor.Location = new System.Drawing.Point(170, 100);
+			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
+			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
+			this.checkUseBackdropColor.TabIndex = 36;
+			this.checkUseBackdropColor.Text = "Enable";
+			this.checkUseBackdropColor.UseVisualStyleBackColor = true;
+			// 
 			// ChangeBGColor
 			// 
 			this.ChangeBGColor.Location = new System.Drawing.Point(112, 98);
@@ -250,18 +262,6 @@
 			this.DispSprites.TabIndex = 25;
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
-			// 
-			// checkUseBackdropColor
-			// 
-			this.checkUseBackdropColor.AutoSize = true;
-			this.checkUseBackdropColor.Checked = true;
-			this.checkUseBackdropColor.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkUseBackdropColor.Location = new System.Drawing.Point(170, 100);
-			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
-			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
-			this.checkUseBackdropColor.TabIndex = 36;
-			this.checkUseBackdropColor.Text = "Enable";
-			this.checkUseBackdropColor.UseVisualStyleBackColor = true;
 			// 
 			// NESGraphicsConfig
 			// 
