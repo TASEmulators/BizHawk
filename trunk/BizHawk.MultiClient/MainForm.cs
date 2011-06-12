@@ -1163,7 +1163,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				wasPressed = (TAStudio1.Enabled) ? TAStudio1.GetMnemonic() : Global.ActiveController.GetControllersAsMnemonic();
+				wasPressed = (TAStudio1.Engaged) ? TAStudio1.GetMnemonic() : Global.ActiveController.GetControllersAsMnemonic();
 				PressFrameAdvance = false;
 			}
 			else
