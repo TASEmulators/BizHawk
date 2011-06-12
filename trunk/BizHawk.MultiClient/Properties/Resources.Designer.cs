@@ -74,6 +74,20 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap BlueDown {
+            get {
+                object obj = ResourceManager.GetObject("BlueDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap BlueUp {
+            get {
+                object obj = ResourceManager.GetObject("BlueUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap BuilderDialog_delete {
             get {
                 object obj = ResourceManager.GetObject("BuilderDialog_delete", resourceCulture);
