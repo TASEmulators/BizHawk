@@ -433,6 +433,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine("Final game detection results:");
 				Console.WriteLine(choice);
 				Console.WriteLine("\"" + game_name + "\"");
+				Console.WriteLine("Implemented by: class " + boardType.Name);
 				if (choice.bad)
 				{
 					Console.WriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
