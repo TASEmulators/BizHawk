@@ -854,7 +854,7 @@ namespace BizHawk.MultiClient
 						Global.RenderPanel.AddMessage("Cheats file loaded");
 				}
 				Cheats1.Restart();
-				CurrentlyOpenRom = path;
+				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
 				return true;
 			}
