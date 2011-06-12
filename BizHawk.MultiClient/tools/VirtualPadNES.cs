@@ -8,43 +8,26 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-	public class VirtualPad : Panel
+	public class VirtualPadNES : VirtualPad
 	{
-		public enum ControllerType { NES, SMS, PCE }
-		Point[] NESPoints = new Point[8];
-		public ControllerType Controller;
 
-		public CheckBox PU;
-		public CheckBox PD;
-		public CheckBox PL;
-		public CheckBox PR;
-		public CheckBox B1;
-		public CheckBox B2;
-		public CheckBox B3;
-		public CheckBox B4;
-		public CheckBox B5;
-		public CheckBox B6;
-		public CheckBox B7;
-		public CheckBox B8;
-
-		public VirtualPad()
+		public VirtualPadNES()
 		{
-			Controller = ControllerType.NES; //Default
-			NESPoints[0] = new Point(14, 2);
-			NESPoints[1] = new Point(14, 46);
-			NESPoints[2] = new Point(2, 24);
-			NESPoints[3] = new Point(24, 24);
-			NESPoints[4] = new Point(52, 24);
-			NESPoints[5] = new Point(74, 24);
-			NESPoints[6] = new Point(122, 24);
-			NESPoints[7] = new Point(146, 24);
+			ButtonPoints[0] = new Point(14, 2);
+			ButtonPoints[1] = new Point(14, 46);
+			ButtonPoints[2] = new Point(2, 24);
+			ButtonPoints[3] = new Point(24, 24);
+			ButtonPoints[4] = new Point(52, 24);
+			ButtonPoints[5] = new Point(74, 24);
+			ButtonPoints[6] = new Point(122, 24);
+			ButtonPoints[7] = new Point(146, 24);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			this.BorderStyle = BorderStyle.Fixed3D;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.VirtualPad_Paint);
-			this.Size = new Size(174, 164);
+			this.Size = new Size(174, 74);
 
 			Point n = new Point(this.Size);
 
@@ -53,16 +36,16 @@ namespace BizHawk.MultiClient
 			this.PU.AutoSize = true;
 			this.PU.Image = global::BizHawk.MultiClient.Properties.Resources.BlueUp;
 			this.PU.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PU.Location = NESPoints[0];
+			this.PU.Location = ButtonPoints[0];
 			this.PU.TabIndex = 1;
-			this.PU.UseVisualStyleBackColor = true; ;
+			this.PU.UseVisualStyleBackColor = true;
 
 			this.PD = new CheckBox();
 			this.PD.Appearance = System.Windows.Forms.Appearance.Button;
 			this.PD.AutoSize = true;
 			this.PD.Image = global::BizHawk.MultiClient.Properties.Resources.BlueDown;
 			this.PD.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PD.Location = NESPoints[1];
+			this.PD.Location = ButtonPoints[1];
 			this.PD.TabIndex = 4;
 			this.PD.UseVisualStyleBackColor = true;
 
@@ -71,7 +54,7 @@ namespace BizHawk.MultiClient
 			this.PR.AutoSize = true;
 			this.PR.Image = global::BizHawk.MultiClient.Properties.Resources.Forward;
 			this.PR.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PR.Location = NESPoints[3];
+			this.PR.Location = ButtonPoints[3];
 			this.PR.TabIndex = 3;
 			this.PR.UseVisualStyleBackColor = true;
 
@@ -80,14 +63,14 @@ namespace BizHawk.MultiClient
 			this.PL.AutoSize = true;
 			this.PL.Image = global::BizHawk.MultiClient.Properties.Resources.Back;
 			this.PL.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.PL.Location = NESPoints[2];
+			this.PL.Location = ButtonPoints[2];
 			this.PL.TabIndex = 2;
 			this.PL.UseVisualStyleBackColor = true;
 
 			this.B1 = new CheckBox();
 			this.B1.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B1.AutoSize = true;
-			this.B1.Location = NESPoints[4];
+			this.B1.Location = ButtonPoints[4];
 			this.B1.TabIndex = 5;
 			this.B1.Text = "s";
 			this.B1.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -96,7 +79,7 @@ namespace BizHawk.MultiClient
 			this.B2 = new CheckBox();
 			this.B2.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B2.AutoSize = true;
-			this.B2.Location = NESPoints[5];
+			this.B2.Location = ButtonPoints[5];
 			this.B2.TabIndex = 6;
 			this.B2.Text = "S";
 			this.B2.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -105,7 +88,7 @@ namespace BizHawk.MultiClient
 			this.B3 = new CheckBox();
 			this.B3.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B3.AutoSize = true;
-			this.B3.Location = NESPoints[6];
+			this.B3.Location = ButtonPoints[6];
 			this.B3.TabIndex = 7;
 			this.B3.Text = "B";
 			this.B3.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -114,7 +97,7 @@ namespace BizHawk.MultiClient
 			this.B4 = new CheckBox();
 			this.B4.Appearance = System.Windows.Forms.Appearance.Button;
 			this.B4.AutoSize = true;
-			this.B4.Location = NESPoints[7];
+			this.B4.Location = ButtonPoints[7];
 			this.B4.TabIndex = 8;
 			this.B4.Text = "A";
 			this.B4.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -161,21 +144,7 @@ namespace BizHawk.MultiClient
 
 		}
 
-		public string GetMnemonic()
-		{
-			switch (Controller)
-			{
-				default:
-				case ControllerType.NES:
-					return GetMnemonicNES();
-				case ControllerType.PCE:
-					return GetMnemonicPCE();
-				case ControllerType.SMS:
-					return GetMnemonicSMS();
-			}
-		}
-
-		public string GetMnemonicNES()
+		public override string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("|0|"); //TODO: Reset button
 			input.Append(PR.Checked ? "R" : ".");
@@ -189,16 +158,6 @@ namespace BizHawk.MultiClient
 			input.Append(B4.Checked ? "A" : ".");
 			input.Append("|");
 			return input.ToString();
-		}
-
-		private string GetMnemonicPCE()
-		{
-			return "";
-		}
-
-		private string GetMnemonicSMS()
-		{
-			return "";
 		}
 	}
 }
