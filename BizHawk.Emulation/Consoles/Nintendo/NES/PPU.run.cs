@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							//check all the conditions that can cause things to render in these 8px
 							bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
-							bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost) && nes.CoreInputComm.NES_ShowBG;
+							bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
 
 							for (int xp = 0; xp < 8; xp++, rasterpos++)
 							{
@@ -185,6 +185,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 									pixelcolor = PALRAM[pixel];
 									pixelcolor |= 0x8000;
 								}
+
+								if (!nes.CoreInputComm.NES_ShowBG)
+									pixelcolor = 0x8000;
 
 								//look for a sprite to be drawn
 								bool havepixel = false;
