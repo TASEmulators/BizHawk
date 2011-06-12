@@ -276,6 +276,9 @@
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Pad.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\HexEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -433,6 +436,10 @@
       <DependentUpon>Cheats.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\Pad.resx">
+      <DependentUpon>Pad.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor.resx">
       <DependentUpon>HexEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -524,6 +531,8 @@
     <None Include="images\BackMore.png" />
     <None Include="images\Forward.png" />
     <None Include="images\ForwardMore.png" />
+    <None Include="images\BlueDown.png" />
+    <None Include="images\BlueUp.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />

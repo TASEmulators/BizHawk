@@ -170,5 +170,10 @@ namespace BizHawk.MultiClient
 			if (Global.MainForm.ReadOnly)
 				return;
 		}
+
+		private void Pad1_Paint(object sender, PaintEventArgs e)
+		{
+
+		}
 	}
 }
