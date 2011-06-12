@@ -878,6 +878,7 @@ namespace BizHawk.MultiClient
 
 				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
 				int len = Util.SaveRamBytesUsed(Global.Emulator.SaveRam);
+				//int len = Global.Emulator.SaveRam.Length;
 				writer.Write(Global.Emulator.SaveRam, 0, len);
 				writer.Close();
 			}

@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//check UNIF for more information.. it may specify board and MMC1 rev independently because boards may have any MMC1 rev
 	//in that case, we need to capture MMC1 rev in the game database (maybe add a new `chip` parameter)
 
+	//TODO - this could be refactored to use more recent techniques (bank regs instead of nested if/then)
+
 	//Final Fantasy
 	//Mega Man 2
 	//Blaster Master
@@ -22,7 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Zelda 2
 	//Castlevania 2
 
-	class MMC1
+	public class MMC1
 	{
 		NES.NESBoardBase board;
 		public MMC1(NES.NESBoardBase board)
@@ -76,6 +78,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			prg_mode = 1;
 			prg_slot = 1;
+			chr_mode = 1;
+			mirror = NES.NESBoardBase.EMirrorType.Horizontal;
 		}
 
 		public void Write(int addr, byte value)
@@ -165,11 +169,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public class SxROM : NES.NESBoardBase
 	{
 		//configuration
-		int prg_mask, chr_mask;
-		int vram_mask, wram_mask;
+		protected int prg_mask, chr_mask;
+		protected int vram_mask, wram_mask;
 
 		//state
-		MMC1 mmc1;
+		protected MMC1 mmc1;
 
 		public override void WritePRG(int addr, byte value)
 		{
@@ -231,8 +235,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (!Cart.wram_battery) return null;
 				return WRAM;
-				//some boards have a wram that is backed-up or not backed-up. need to handle that somehow
-				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}
 		}
 
@@ -245,7 +247,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
-			//analyze board type
 			switch (Cart.board_type)
 			{
 				case "NES-SAROM": //dragon warrior
@@ -307,29 +308,139 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-SNROM":
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
-				case "NES-SOROM": //Nobunaga's Ambition
-					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
-					break;
-				case "NES-SUROM": //dragon warrior 4
-				case "HVC-SUROM":
-					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
-					break;
-				case "HVC-SXROM": //final fantasy 1& 2
-					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
-					break;
 				default:
 					return false;
 			}
 
+			BaseConfigure();
+
+			return true;
+		}
+
+		protected void BaseConfigure()
+		{
 			mmc1 = new MMC1(this);
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			wram_mask = (Cart.wram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			SetMirrorType(mmc1.mirror);
+		}
 
+	} //class SxROM
+
+
+	class SoROM : SuROM
+	{
+		//this uses a CHR bit to select WRAM banks
+		//TODO - only the latter 8KB is supposed to be battery backed
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			switch (Cart.board_type)
+			{
+				case "NES-SOROM": //Nobunaga's Ambition
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(16);
+					break;
+				default: return false;
+			}
+
+			BaseConfigure();
 			return true;
 		}
 
+		int Map_WRAM(int addr)
+		{
+			//$A000-BFFF:  [...R ...C]
+			//  R = PRG-RAM page select
+			//  C = CHR reg 0
+			//* BUT THIS IS WRONG ??? R IS ONE BIT LOWER !!!??? ?!? *
+			int chr_bank = mmc1.Get_CHRBank_4K(0);
+			int ofs = addr & ((8 * 1024) - 1);
+			int wram_bank_8k = (chr_bank >> 3) & 1;
+			return (wram_bank_8k << 13) | ofs;
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			base.WriteWRAM(Map_WRAM(addr), value);
+		}
+
+		public override byte ReadWRAM(int addr)
+		{
+			return base.ReadWRAM(Map_WRAM(addr));
+		}
+
 	}
+
+	class SXROM : SuROM
+	{
+		//SXROM's PRG behaves similar to SuROM (and so inherits from it)
+		//it also has some WRAM select bits like SoROM
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			switch (Cart.board_type)
+			{
+				case "HVC-SXROM": //final fantasy 1& 2
+					AssertPrg(128, 256, 512); AssertChr(0); AssertVram(8); AssertWram(32);
+					break;
+				default: return false;
+			}
+
+			BaseConfigure();
+			return true;
+		}
+
+		int Map_WRAM(int addr)
+		{
+			//$A000-BFFF:  [...P RR..]
+			//  P = PRG-ROM 256k block select (just like on SUROM)
+			//  R = PRG-RAM page select (selects 8k @ $6000-7FFF, just like SOROM)
+			int chr_bank = mmc1.Get_CHRBank_4K(0);
+			int ofs = addr & ((8 * 1024) - 1);
+			int wram_bank_8k = (chr_bank >> 2) & 3;
+			return (wram_bank_8k << 13) | ofs;
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			base.WriteWRAM(Map_WRAM(addr), value);
+		}
+
+		public override byte ReadWRAM(int addr)
+		{
+			return base.ReadWRAM(Map_WRAM(addr));
+		}
+	}
+
+	class SuROM : SxROM
+	{
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			//SUROM uses CHR A16 to control the upper address line (PRG A18) of its 512KB PRG ROM.
+
+			switch (Cart.board_type)
+			{
+				case "NES-SUROM": //dragon warrior 4
+				case "HVC-SUROM":
+					AssertPrg(512); AssertChr(0); AssertVram(8); AssertWram(8);
+					break;
+				default: return false;
+			}
+
+			BaseConfigure();
+			return true;
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			int bank = mmc1.Get_PRGBank(addr);
+			int chr_bank = mmc1.Get_CHRBank_4K(0);
+			int bank_bit18 = chr_bank >> 4;
+			bank |= (bank_bit18 << 4);
+			bank &= prg_mask;
+			addr = (bank << 14) | (addr & 0x3FFF);
+			return ROM[addr];
+		}
+	}
+
 }
