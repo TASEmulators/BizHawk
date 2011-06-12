@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							int rasterpos = xstart;
 
 							//check all the conditions that can cause things to render in these 8px
-							bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost) && nes.CoreInputComm.NES_ShowOBJ;
+							bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
 							bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost) && nes.CoreInputComm.NES_ShowBG;
 
 							for (int xp = 0; xp < 8; xp++, rasterpos++)
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 												}	
 											}
 
-											if (drawsprite)
+											if (drawsprite && nes.CoreInputComm.NES_ShowOBJ)
 											{
 												//bring in the palette bits and palettize
 												spixel |= (oam->oam[2] & 3) << 2;
