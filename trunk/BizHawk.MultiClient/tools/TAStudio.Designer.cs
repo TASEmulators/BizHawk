@@ -50,20 +50,14 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TASView = new BizHawk.VirtualListView();
-			this.Frame = new System.Windows.Forms.ColumnHeader();
-			this.Log = new System.Windows.Forms.ColumnHeader();
-			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
 			this.PauseButton = new System.Windows.Forms.ToolStripButton();
 			this.FrameAdvanceButton = new System.Windows.Forms.ToolStripButton();
 			this.FastFowardToEnd = new System.Windows.Forms.ToolStripButton();
-			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.StopButton = new System.Windows.Forms.ToolStripButton();
-			this.PlayMovieFromBeginning = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -72,11 +66,11 @@
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.Pad1 = new BizHawk.MultiClient.VirtualPadNES();
+			this.TASView = new BizHawk.VirtualListView();
+			this.Frame = new System.Windows.Forms.ColumnHeader();
+			this.Log = new System.Windows.Forms.ColumnHeader();
 			this.menuStrip1.SuspendLayout();
-			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
-			this.toolStripContainer1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			this.toolStrip2.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
@@ -89,7 +83,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(789, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(815, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -235,47 +229,6 @@
 			this.autoloadToolStripMenuItem.Text = "Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
-			// TASView
-			// 
-			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Frame,
-            this.Log});
-			this.TASView.GridLines = true;
-			this.TASView.ItemCount = 0;
-			this.TASView.Location = new System.Drawing.Point(22, 38);
-			this.TASView.Name = "TASView";
-			this.TASView.selectedItem = -1;
-			this.TASView.Size = new System.Drawing.Size(335, 424);
-			this.TASView.TabIndex = 1;
-			this.TASView.UseCompatibleStateImageBehavior = false;
-			this.TASView.View = System.Windows.Forms.View.Details;
-			// 
-			// Frame
-			// 
-			this.Frame.Text = "Frame";
-			// 
-			// Log
-			// 
-			this.Log.Text = "Log";
-			this.Log.Width = 150;
-			// 
-			// toolStripContainer1
-			// 
-			// 
-			// toolStripContainer1.ContentPanel
-			// 
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(172, 3);
-			this.toolStripContainer1.Location = new System.Drawing.Point(373, 38);
-			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(172, 53);
-			this.toolStripContainer1.TabIndex = 2;
-			this.toolStripContainer1.Text = "toolStripContainer1";
-			// 
-			// toolStripContainer1.TopToolStripPanel
-			// 
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip2);
-			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
@@ -284,10 +237,12 @@
             this.RewindButton,
             this.PauseButton,
             this.FrameAdvanceButton,
-            this.FastFowardToEnd});
-			this.toolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.FastFowardToEnd,
+            this.toolStripSeparator6,
+            this.StopButton});
+			this.toolStrip1.Location = new System.Drawing.Point(37, 27);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(125, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(154, 25);
 			this.toolStrip1.TabIndex = 0;
 			// 
 			// RewindToBeginning
@@ -345,17 +300,10 @@
 			this.FastFowardToEnd.ToolTipText = "Fast Foward To End";
 			this.FastFowardToEnd.Click += new System.EventHandler(this.FastForwardToEnd_Click);
 			// 
-			// toolStrip2
+			// toolStripSeparator6
 			// 
-			this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
-			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StopButton,
-            this.PlayMovieFromBeginning,
-            this.toolStripSeparator4});
-			this.toolStrip2.Location = new System.Drawing.Point(3, 25);
-			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(62, 25);
-			this.toolStrip2.TabIndex = 1;
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// StopButton
 			// 
@@ -365,22 +313,7 @@
 			this.StopButton.Name = "StopButton";
 			this.StopButton.Size = new System.Drawing.Size(23, 22);
 			this.StopButton.Text = "Stop Movie";
-			// 
-			// PlayMovieFromBeginning
-			// 
-			this.PlayMovieFromBeginning.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.PlayMovieFromBeginning.Image = ((System.Drawing.Image)(resources.GetObject("PlayMovieFromBeginning.Image")));
-			this.PlayMovieFromBeginning.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.PlayMovieFromBeginning.Name = "PlayMovieFromBeginning";
-			this.PlayMovieFromBeginning.Size = new System.Drawing.Size(23, 22);
-			this.PlayMovieFromBeginning.Text = "|";
-			this.PlayMovieFromBeginning.ToolTipText = "Rewind to Beginning";
-			this.PlayMovieFromBeginning.Click += new System.EventHandler(this.PlayMovieFromBeginning_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+			this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
 			// 
 			// ReadOnlyCheckBox
 			// 
@@ -389,7 +322,7 @@
 			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
 			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(551, 38);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(12, 27);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(22, 22);
 			this.ReadOnlyCheckBox.TabIndex = 3;
@@ -426,9 +359,9 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.Pad1);
-			this.groupBox1.Location = new System.Drawing.Point(373, 108);
+			this.groupBox1.Location = new System.Drawing.Point(300, 55);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(401, 197);
+			this.groupBox1.Size = new System.Drawing.Size(367, 197);
 			this.groupBox1.TabIndex = 4;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Controllers";
@@ -441,16 +374,41 @@
 			this.Pad1.Size = new System.Drawing.Size(174, 74);
 			this.Pad1.TabIndex = 0;
 			// 
+			// TASView
+			// 
+			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Frame,
+            this.Log});
+			this.TASView.GridLines = true;
+			this.TASView.ItemCount = 0;
+			this.TASView.Location = new System.Drawing.Point(12, 55);
+			this.TASView.Name = "TASView";
+			this.TASView.selectedItem = -1;
+			this.TASView.Size = new System.Drawing.Size(282, 452);
+			this.TASView.TabIndex = 1;
+			this.TASView.UseCompatibleStateImageBehavior = false;
+			this.TASView.View = System.Windows.Forms.View.Details;
+			// 
+			// Frame
+			// 
+			this.Frame.Text = "Frame";
+			this.Frame.Width = 47;
+			// 
+			// Log
+			// 
+			this.Log.Text = "Log";
+			this.Log.Width = 201;
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(789, 474);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.ReadOnlyCheckBox);
-			this.Controls.Add(this.toolStripContainer1);
-			this.Controls.Add(this.TASView);
+			this.ClientSize = new System.Drawing.Size(815, 519);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.ReadOnlyCheckBox);
+			this.Controls.Add(this.TASView);
+			this.Controls.Add(this.groupBox1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "TAStudio";
@@ -458,14 +416,8 @@
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
-			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
-			this.toolStripContainer1.ResumeLayout(false);
-			this.toolStripContainer1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			this.toolStrip2.ResumeLayout(false);
-			this.toolStrip2.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -494,22 +446,17 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem nToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
 		private System.Windows.Forms.ToolStrip toolStrip1;
         private System.Windows.Forms.ToolStripButton FrameAdvanceButton;
         private System.Windows.Forms.ToolStripButton RewindButton;
-        private System.Windows.Forms.ToolStripButton PauseButton;
-		private System.Windows.Forms.ToolStrip toolStrip2;
-		private System.Windows.Forms.ToolStripButton StopButton;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripButton PauseButton;
 		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ColumnHeader Frame;
 		private System.Windows.Forms.ToolStripButton RewindToBeginning;
 		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
-		private System.Windows.Forms.ToolStripButton PlayMovieFromBeginning;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem1;
@@ -517,5 +464,7 @@
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private VirtualPadNES Pad1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripButton StopButton;
     }
 }

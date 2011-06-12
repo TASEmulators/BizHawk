@@ -15,11 +15,20 @@ namespace BizHawk.MultiClient
 		//Crash when closing TASStudio
 		//Right-click - Go to current frame
 		//Clicking a frame should go there
+		//Multiple timeline system
+		//Macro listview
+		//	Double click brings up a macro editing window
+		//NES Controls virtualpad (Power-on & Reset, eventually FDS options)
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		
 		public bool Engaged; //When engaged the Client will listen to TAStudio for input
+
+		//Movie header object - to have the main project header data
+		//List<string> MacroFiles - list of .macro files (simply log files)
+		//List<string> TimeLines - list of .tas files
+		//List<string> Bookmarks - list of savestate files
 
 		public TAStudio()
 		{
@@ -190,11 +199,6 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MainForm.ReadOnly)
 				return;
-		}
-
-		private void PlayMovieFromBeginning_Click(object sender, EventArgs e)
-		{
-
 		}
 	}
 }
