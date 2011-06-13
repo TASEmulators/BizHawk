@@ -19,16 +19,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "HVC-NROM-256": //super mario bros.
 				case "NES-NROM-256": //10 yard fight
-					AssertPrg(32); AssertChr(8); AssertVram(0); AssertWram(0,8);
-					break;
-
 				case "HVC-RROM": //balloon fight
 				case "HVC-NROM-128":
 				case "IREM-NROM-128":
 				case "KONAMI-NROM-128":
 				case "NES-NROM-128":
 				case "NAMCOT-3301":
-					AssertPrg(16); AssertChr(8); AssertVram(0); AssertWram(0,8);
+				case "HVC-HROM": //Donkey Kong Jr. (J)
+				case "JALECO-JF-01": //Exerion (J)
+					AssertPrg(16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 
 				case "NROM-HOMEBREW":
@@ -38,7 +37,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-			if (origin != NES.EDetectionOrigin.INES) AssertWram(0);
 
 			prg_byte_mask = (Cart.prg_size*1024) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);

@@ -87,6 +87,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
+				case "HVC-TNROM": //Final Fantasy 3 (J)
+					AssertPrg(128, 256, 512); AssertChr(0, 8); AssertVram(0, 8); AssertWram(8);
+					break;
 				case "NES-TSROM": //super mario bros. 3 (U)
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					AssertBattery(false);

@@ -9,14 +9,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Crystal Mines
 	//Metal Fighter
 
-	public class Discrete_74x377 : NES.NESBoardBase
+	public class IC_74x377 : NES.NESBoardBase
 	{
 		//configuration
-		int prg_mask, chr_mask;
+		int prg_bank_mask_32k, chr_bank_mask_8k;
 		bool bus_conflict = true;
 
 		//state
-		int prg, chr;
+		int prg_bank_32k, chr_bank_8k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -31,22 +31,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
-			
-			prg_mask = (Cart.prg_size/8/2)-1;
-			chr_mask = (Cart.chr_size / 8 - 1);
+
+			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
 
 			return true;
 		}
 		public override byte ReadPRG(int addr)
 		{
-			return ROM[addr + (prg<<15)];
+			return ROM[addr + (prg_bank_32k << 15)];
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[addr + (chr << 13)];
+				return VROM[addr + (chr_bank_8k << 13)];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -60,15 +60,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Debug.Assert(old_value == value, "Found a test case of Discrete_74x377 bus conflict. please report.");
 			}
 
-			prg = (value & 3) & prg_mask;
-			chr = (value >> 4) & chr_mask;
+			prg_bank_32k = (value & 3) & prg_bank_mask_32k;
+			chr_bank_8k = ((value >> 4) & 0xF) & chr_bank_mask_8k;
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr", ref chr);
-			ser.Sync("prg", ref prg);
+			ser.Sync("prg_bank_32k", ref prg_bank_32k);
+			ser.Sync("chr_bank_8k", ref chr_bank_8k);
 		}
 
 	}
