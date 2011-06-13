@@ -64,10 +64,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CPROM.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Consoles\Nintendo\NES\Boards\CxROM.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\ExROM.cs" />
@@ -80,6 +80,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Irem_G101.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Irem_H3001.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Jaleco-JF_11_14.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\DRROM.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Sound\Utilities\Waves.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Consoles\Nintendo\Docs\compatibility.txt" />
     <Content Include="Consoles\Nintendo\Docs\notes_for_disch.txt" />
     <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />

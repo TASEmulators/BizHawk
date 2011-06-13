@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	 * Life Span: October 1986 - April 1987
 PCB Class: Jaleco-JF-11
 		   Jaleco-JF-14
-iNES Mapper #140
+iNES Mapper 140
 
 JF-11
 PRG-ROM: 128kb

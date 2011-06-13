@@ -91,13 +91,20 @@ static string ClassifyTable = @"
 4	512	128	8	0	NES-TKROM; Pool of radiance (J)
 7	128	0	8	0	NES-ANROM; marble madness
 7	256	0	8	8	NES-AOROM; battletoads
+11	-1	-1	-1	-1	Discrete_74x377-FLEX; Bible Adventures (U) ?
 13	32	0	8	16	NES-CPROM; videomation
 65	-1	-1	-1	-1	IREM-H3001-FLEX; //Ai Sensei No Oshiete - Watashi No Hoshi (J).nes
 66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
 66	128	32	8	0	NES-GNROM; gumshoe
 68	128	256	8	0	SUNSOFT-4; After Burner 2 (J)
+69	-1	-1	-1	-1	MAPPER069-FLEX; Gimmick! (J)
+71	-1	-1	-1	-1	CAMERICA-BF9093; Micro Machines (U)
+79	-1	-1	-1	-1	AVE-NINA-06; Blackjack (U)
+113	-1	-1	-1	-1	AVE-NINA-06; ???
+232	-1	-1	-1	-1	CAMERICA-ALGQ; Quattro Adventure
 ";
 }
+//;232	-1	-1	-1	-1	Camerica_BF9096-FLEX; Quattro Adventure
 
 		unsafe struct iNES_HEADER
 		{

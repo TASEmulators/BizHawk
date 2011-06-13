@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
     /*
 PCB Class: Unknown
-iNES Mapper #242
+iNES Mapper 242
 PRG-ROM: 32KB
 PRG-RAM: None
 CHR-ROM: 16KB
