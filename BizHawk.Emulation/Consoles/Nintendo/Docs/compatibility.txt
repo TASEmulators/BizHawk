@@ -108,6 +108,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 201	Multicart	Junk
 203	Multicart	Junk
 205	Multicart	Junk
+*206 Namcot109	Complete (missing from disch docs)
 207	Misc (J)	Nothing
 209	Garbage		{{See 090}}
 210	Namcot106	{{See 019}}
