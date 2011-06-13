@@ -2289,5 +2289,8 @@ sha1:0AE47BD83202A5A2235B0BC16278F56D66038AB5		Deathbots (U)	NES		board=AVE-NINA
 ;these roms are in goodNES but theyre junk
 sha1:4D6117577CE301BB987C5C32FEEF7B132A21B046		Afro Man (Mega Man 3 Hack) (UNL)	NES		board=TXROM-HOMEBREW;PRG=256;CHR=128;WRAM=8
 
+;other assorted roms
+sha1:92D9695FEB774F60965A8303CFE3E6AAEE7B7B62		Magic Dragon (Unl)	NES		board=Mapper107;PRG=128;CHR=64;WRAM=8;PAD_H=1
+
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt

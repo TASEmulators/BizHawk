@@ -83,7 +83,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 096	Misc (J)	Nothing
 097	Misc (J)	Nothing (easy)
 105	NES-EVENT	~NEEDED~
-107	Misc		Nothing (easy)
+107	Unlicensed	Complete
 112 Misc (CN)	Nothing
 113	=USELESS=	Junk
 115	MMC3Variant	Nothing

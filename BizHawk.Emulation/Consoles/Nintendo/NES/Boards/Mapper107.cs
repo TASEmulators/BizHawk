@@ -4,60 +4,66 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-/*
-Registers:
----------------------------
-I do not know whether or not this mapper suffers from bus conflicts.  Use caution!
+	class Mapper107 : NES.NESBoardBase
+	{
+		//configuration
+		int prg_bank_mask_32k, chr_bank_mask_8k;
 
-  $8000-FFFF:  [PPPP PPP.]
-               [CCCC CCCC]
-    P = Selects 32k PRG @ $8000
-    C = Selects 8k CHR @ $0000
+		//state
+		int prg_bank_32k, chr_bank_8k;
 
-This is very strange.  Bits 1-7 seem to be used by both CHR and PRG.
- 
-Games:
-    Magic Dragon
-*/
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg_bank_32k", ref prg_bank_32k);
+			ser.Sync("chr_bank_8k", ref chr_bank_8k);
+		}
 
-    class Mapper107 : NES.NESBoardBase
-    {
-        int prg, chr;
-        public override bool Configure(NES.EDetectionOrigin origin)
-        {
-            //configure
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			//configure
 			switch (Cart.board_type)
 			{
 				case "Mapper107":
+					AssertPrg(128); AssertChr(64); AssertWram(8); AssertVram(0); AssertBattery(false);
 					break;
 				default:
 					return false;
 			}
-            return true;
+
+			prg_bank_mask_32k = (Cart.prg_size / 32) - 1;
+			chr_bank_mask_8k = (Cart.chr_size / 8) - 1;
+
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
+			return true;
+		}
+
+		public override byte ReadPPU(int addr)
+        {
+			if (addr < 0x2000)
+			{
+				int ofs = addr & ((1 << 13) - 1);
+				addr = (chr_bank_8k << 13) | ofs;
+				return VROM[addr];
+			}
+			else return base.ReadPPU(addr);
         }
 
-        public override byte ReadPPU(int addr)
-        {
-            return VRAM[addr + (chr * 0x2000)];
-        }
+		public override byte ReadPRG(int addr)
+		{
+			int ofs = addr & ((1 << 15) - 1);
+			addr = (prg_bank_32k << 15) | ofs;
+			return ROM[addr];
+		}
 
-        public override byte ReadPRG(int addr)
-        {
-            return VROM[addr + (prg * 0x8000)];
-        }
+		public override void WritePRG(int addr, byte value)
+		{
+			chr_bank_8k = value;
+			prg_bank_32k = value >> 1;
+			chr_bank_8k &= chr_bank_mask_8k;
+			prg_bank_32k &= prg_bank_mask_32k;
+		}
 
-        public override void WriteWRAM(int addr, byte value)
-        {
-            chr = value;
-            prg = addr >> 1;
-            base.WriteWRAM(addr, value);
-        }
-
-		public override void SyncState(Serializer ser)
-        {
-			base.SyncState(ser);
-            ser.Sync("prg", ref prg);
-            ser.Sync("chr", ref chr);
-        }
-    }
+	}
 }
