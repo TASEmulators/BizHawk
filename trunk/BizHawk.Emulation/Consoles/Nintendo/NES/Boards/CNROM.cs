@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	//Bump 'n' Jump
 	//Cybernoid
 
-	public class CxROM : NES.NESBoardBase
+	public class CNROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_mask,chr_mask;
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "NES-CNROM": //adventure island
 				case "HVC-CNROM":
-					AssertPrg(16, 32); AssertChr(16,32);
+					AssertPrg(16, 32); AssertChr(8,16,32);
 					break;
 
 				default:

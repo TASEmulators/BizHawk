@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
     /*
      * Life Span: April 1986 - July 1986
 PCB Class: SUNSOFT-1
-iNES Mapper #184
+iNES Mapper 184
 PRG-ROM: 32KB
 PRG-RAM: None
 CHR-ROM: 16KB

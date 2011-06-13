@@ -16,8 +16,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static readonly bool USE_DATABASE = true;
 
         //Game issues:
-		//Dragon warrior 3/4 certainly need some additional work done to the mapper wiring to get to the super big PRG (probably SXROM too)
 		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
+		//Bigfoot (U) seems not to work
+		//Bill and ted's excellent video game adventure (U) doesnt work until more detailed emulation exists (check 001.txt)
 
 		//---
 		//Game issues for tester to check off.
@@ -381,6 +382,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Console.WriteLine("headerless rom hash: {0}", hash_sha1);
 				Console.WriteLine("headerless rom hash: {0}", hash_md5);
 
+				Type boardType = null;
 				CartInfo choice = null;
 				if(USE_DATABASE)
 					choice = IdentifyFromBootGodDB(hash_sha1);
@@ -403,8 +405,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						string iNES_board = iNESBoardDetector.Detect(choice);
 						if (iNES_board == null)
 							throw new Exception("couldnt identify NES rom");
-						Console.WriteLine("Chose board from iNES heuristics: " + iNES_board);
 						choice.board_type = iNES_board;
+
+						//try spinning up a board with 8K wram and with 0K wram to see if one answers
+						try
+						{
+							boardType = FindBoard(choice, origin);
+						}
+						catch { }
+						if (boardType == null)
+						{
+							if (choice.wram_size == 8) choice.wram_size = 0;
+							else if (choice.wram_size == 0) choice.wram_size = 8;
+							try
+							{
+								boardType = FindBoard(choice, origin);
+							}
+							catch { }
+							if (boardType != null)
+								Console.WriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
+						}
+
+						Console.WriteLine("Chose board from iNES heuristics: " + iNES_board);
 						choice.game.name = game.Name;
 						origin = EDetectionOrigin.INES;
 					}
@@ -425,7 +447,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				game_name = choice.game.name;
 
 				//find a INESBoard to handle this
-				Type boardType = null;
 				boardType = FindBoard(choice, origin);
 				if (boardType == null)
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);

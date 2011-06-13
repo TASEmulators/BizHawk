@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//mapper 11
+	//mapper 011
 
 	//Crystal Mines
 	//Metal Fighter
@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "Discrete_74x377-FLEX":
+					break;
 				case "COLORDREAMS-74*377":
 					AssertPrg(32,64,128); AssertChr(16,32,64,128); AssertVram(0); AssertWram(0);
 					break;
