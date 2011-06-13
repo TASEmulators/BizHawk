@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//generally mapper3
+	//generally mapper 3
 
 	//Solomon's Key
 	//Arkanoid
@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WritePRG(int addr, byte value)
 		{
 			if (bus_conflict) value = HandleNormalPRGConflict(addr,value);
+			value &= 3;
 			chr = value&chr_mask;
 			//Console.WriteLine("at {0}, set chr={1}", NES.ppu.ppur.status.sl, chr);
 		}

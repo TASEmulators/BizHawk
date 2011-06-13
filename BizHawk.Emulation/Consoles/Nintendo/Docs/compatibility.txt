@@ -21,7 +21,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 004	MMC3		Decent
 005	ExRom=MMC5	Minimal
 007	AxROM		Good
-009	PxROM=MMC2	~NEEDED~
+009	PxROM=MMC2	Complete
 010	MMC4		Needed (easy once 009 is done)
 011	Misc		Complete
 013	CPROM		Complete
@@ -98,7 +98,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 180	Misc (J)	Nothing
 182	MMC3Variant	Nothing
 184	Sunsoft-1	Complete
-185	Misc (J)	Nothing
+185	Misc (J)	{{See 003}} This one will be an organizational pain as the games need additional data in gamedb
 189	MMC3Variant	Nothing
 191	Pirate		Junk
 192	Pirate		Junk

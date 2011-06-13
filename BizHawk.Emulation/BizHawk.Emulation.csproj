@@ -94,6 +94,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\PxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft4.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs">
