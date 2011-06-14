@@ -93,6 +93,12 @@ namespace BizHawk
 			return (b & (1 << index)) != 0;
 		}
 
+		public static bool Bit(this int b, int index)
+		{
+			return (b & (1 << index)) != 0;
+		}
+
+
         public static string GetPrecedingString(this string str, string value)
         {
             int index = str.IndexOf(value);
