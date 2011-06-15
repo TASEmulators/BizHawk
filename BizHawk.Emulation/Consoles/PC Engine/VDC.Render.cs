@@ -26,20 +26,21 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void ExecFrame(bool render)
         {
-            latchedDisplayStartLine = DisplayStartLine;
-            ActiveLine = 0 - latchedDisplayStartLine;
-            ScanLine = 0;
+            for (ScanLine = 0; ScanLine < 263;)
+            {
+                latchedDisplayStartLine = DisplayStartLine;
+                ActiveLine = ScanLine - latchedDisplayStartLine;
 
-            int hds = (Registers[HSR] >> 8) & 0x7F;
-            int hde = (Registers[HDR] >> 8) & 0x7F;
-            int vds = Registers[VPR] >> 8;
-            int vsw = Registers[VPR] & 0x1F;
+                int hds = (Registers[HSR] >> 8) & 0x7F;
+                int hde = (Registers[HDR] >> 8) & 0x7F;
+                int vds = Registers[VPR] >> 8;
+                int vsw = Registers[VPR] & 0x1F;
 
-            int VBlankScanline = vds + vsw + Registers[VDW] + 1;
-            if (VBlankScanline > 261)
-                VBlankScanline = 261;
+                int VBlankScanline = vds + vsw + Registers[VDW] + 1;
+                if (VBlankScanline > 261)
+                    VBlankScanline = 261;
 
-            int hblankCycles = (hds + hde + 2) * 8;
+                int hblankCycles = (hds + hde + 2) * 8;
 
             switch (vce.DotClock)
             {
@@ -48,12 +49,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 2: hblankCycles = (hblankCycles*2)/3; break;
             }
 
-            for (; ScanLine < 263;)
-            {
                 //Log.Note("VDC","ScanLine {0} (ActiveLine {1}, RCR {2}, BGY {3})",ScanLine, ActiveLine, RCRCount, BackgroundY);
-                bool InActiveDisplay = false;
-                if (ScanLine >= latchedDisplayStartLine && ScanLine < latchedDisplayStartLine + FrameHeight)
-                    InActiveDisplay = true;
 
                 if (ActiveLine == 0)
                     BackgroundY = Registers[BYR];
@@ -69,19 +65,32 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
 
                 cpu.Execute(hblankCycles);
-                
-                if (InActiveDisplay && render)
-                    RenderScanLine();
+
+                bool InActiveDisplay = false;
+                if (ScanLine >= latchedDisplayStartLine && ScanLine < latchedDisplayStartLine + FrameHeight)
+                    InActiveDisplay = true;
+
+                if (InActiveDisplay)
+                {
+                    if (ActiveLine == 0)
+                        BackgroundY = Registers[BYR];
+                    else
+                    {
+                        BackgroundY++;
+                        BackgroundY &= 0x01FF;
+                    }
+                    if (render) RenderScanLine();
+                }
 
                 if (ScanLine == VBlankScanline && VBlankInterruptEnabled)
                     StatusByte |= StatusVerticalBlanking;
-                
+
                 cpu.Execute(2);
 
                 if ((StatusByte & StatusVerticalBlanking) > 0)
                     cpu.IRQ1Assert = true;
 
-                cpu.Execute(455-hblankCycles-2);
+                cpu.Execute(455 - hblankCycles - 2);
 
                 if (ScanLine == VBlankScanline)
                     UpdateSpriteAttributeTable();
@@ -91,8 +100,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 ScanLine++;
                 ActiveLine++;
-                BackgroundY++;
-                BackgroundY &= 0x01FF;
             }
         }
 
