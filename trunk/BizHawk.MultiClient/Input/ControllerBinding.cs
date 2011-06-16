@@ -186,8 +186,9 @@ namespace BizHawk.MultiClient
                 input.Append("|");
                 for (int player = 1; player < 6; player++)
                 {
-                    if (!Global.MultiTrack.isActive || (Global.MultiTrack.CurrentPlayer == player) || Global.MultiTrack.RecordAll)
+                    if (!Global.MultiTrack.isActive)
                     {
+                        //If we aren't in multitrack, just send all inputs as normal.
                         input.Append(IsPressed("P" + player.ToString() + " Up") ? "U" : ".");
                         input.Append(IsPressed("P" + player.ToString() + " Down") ? "D" : ".");
                         input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
@@ -198,15 +199,28 @@ namespace BizHawk.MultiClient
                         input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
                         input.Append("|");
                     }
+                    else if ((Global.MultiTrack.CurrentPlayer == player) || Global.MultiTrack.RecordAll)
+                    {
+                        //If we are recording the current player, copy player 1's input to the current players input. 
+                        input.Append(IsPressed("P1 Up") ? "U" : ".");
+                        input.Append(IsPressed("P1 Down") ? "D" : ".");
+                        input.Append(IsPressed("P1 Left") ? "L" : ".");
+                        input.Append(IsPressed("P1 Right") ? "R" : ".");
+                        input.Append(IsPressed("P1 B1") ? "1" : ".");
+                        input.Append(IsPressed("P1 B2") ? "2" : ".");
+                        input.Append(IsPressed("P1 Run") ? "R" : ".");
+                        input.Append(IsPressed("P1 Select") ? "S" : ".");
+                        input.Append("|");
+                    }
                     else
                     {
-                        if (Global.Emulator.Frame < MainForm.InputLog.Log.Length())
+                        if (Global.Emulator.Frame < InputLog.Log.Length()) //If there is input left in the log
                         {
-                            //Use old frame
+                            //Use old frame's input
                         }
                         else
                         {
-                            //Add blank frame
+                            //Add blank frame of input
                             for (int buttoncount = 0; buttoncount < 8; buttoncount++);
                                 input.Append(".");
                             input.Append("|");
