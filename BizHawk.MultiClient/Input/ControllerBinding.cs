@@ -186,7 +186,7 @@ namespace BizHawk.MultiClient
                 input.Append("|");
                 for (int player = 1; player < 6; player++)
                 {
-                    if (!Global.MultiTrack.isActive)
+                    if (!Global.MultiTrack.isActive || (Global.MultiTrack.CurrentPlayer == player) || Global.MultiTrack.RecordAll)
                     {
                         input.Append(IsPressed("P" + player.ToString() + " Up") ? "U" : ".");
                         input.Append(IsPressed("P" + player.ToString() + " Down") ? "D" : ".");
@@ -198,15 +198,21 @@ namespace BizHawk.MultiClient
                         input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
                         input.Append("|");
                     }
-                    input.Append(IsPressed("P" + player.ToString() + " Up")     ? "U" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " Down")   ? "D" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " Right") ? "R" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " B1") ? "1" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " B2") ? "2" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " Run") ? "R" : ".");
-                    input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
-                    input.Append("|");
+                    else
+                    {
+                        if (Global.Emulator.Frame < MainForm.InputLog.Log.Length())
+                        {
+                            //Use old frame
+                        }
+                        else
+                        {
+                            //Add blank frame
+                            for (int buttoncount = 0; buttoncount < 8; buttoncount++);
+                                input.Append(".");
+                            input.Append("|");
+                        }
+                    }
+                   
                 }
                 return input.ToString();
             }

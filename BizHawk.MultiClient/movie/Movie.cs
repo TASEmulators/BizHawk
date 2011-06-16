@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 	public class Movie
 	{
 		private MovieHeader Header = new MovieHeader();
-		private MovieLog Log = new MovieLog();
+		public MovieLog Log = new MovieLog();
 
 		private bool IsText = true;
 		private string Filename;
@@ -80,8 +80,9 @@ namespace BizHawk.MultiClient
 		public void GetMnemonic()
 		{
 			if (MovieMode == MOVIEMODE.RECORD)
-			{
-				if (Global.Emulator.Frame < Log.Length())
+			{                
+                //DON'T TRUNCATE! MESSES WITH MULTITRACK!
+				if (Global.Emulator.Frame < Log.Length()) 
 				{
 					Log.Truncate(Global.Emulator.Frame);
 				}
