@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
             InitializeComponent();
             Labels = new ArrayList();
             TextBoxes = new ArrayList();
-            Changed = false;
+            Changed = false;            
         }
 
         private string TruncateButtonMapping(string button)

@@ -186,14 +186,26 @@ namespace BizHawk.MultiClient
                 input.Append("|");
                 for (int player = 1; player < 6; player++)
                 {
-                    input.Append(IsPressed("P" + player + " Up")     ? "U" : ".");
-                    input.Append(IsPressed("P" + player + " Down")   ? "D" : ".");
-                    input.Append(IsPressed("P" + player + " Left")   ? "L" : ".");
-                    input.Append(IsPressed("P" + player + " Right")  ? "R" : ".");
-                    input.Append(IsPressed("P" + player + " B1")     ? "1" : ".");
-                    input.Append(IsPressed("P" + player + " B2")     ? "2" : ".");
-                    input.Append(IsPressed("P" + player + " Run")    ? "R" : ".");
-                    input.Append(IsPressed("P" + player + " Select") ? "S" : ".");
+                    if (!Global.MultiTrack.isActive)
+                    {
+                        input.Append(IsPressed("P" + player.ToString() + " Up") ? "U" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " Down") ? "D" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " Right") ? "R" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " B1") ? "1" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " B2") ? "2" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " Run") ? "R" : ".");
+                        input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
+                        input.Append("|");
+                    }
+                    input.Append(IsPressed("P" + player.ToString() + " Up")     ? "U" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Down")   ? "D" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Right") ? "R" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " B1") ? "1" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " B2") ? "2" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Run") ? "R" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
                     input.Append("|");
                 }
                 return input.ToString();
