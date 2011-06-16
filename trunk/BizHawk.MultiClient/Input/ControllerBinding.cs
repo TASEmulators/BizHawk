@@ -276,9 +276,7 @@ namespace BizHawk.MultiClient
 
         public void SetControllersAsMnemonic(string mnemonic)
         {
-            MovieMode = true;
-            if (mnemonic == "")
-                return;
+            MovieMode = true;            
             programmaticallyPressedButtons.Clear();
 
             if (type.Name == "SMS Controller")
@@ -303,7 +301,7 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "PC Engine Controller")
             {
-                if (!Global.MultiTrack.isActive || (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY))
+                if (!Global.MainForm.UserMovie.MultiTrack.isActive || (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY))
                 {
                     for (int i = 1; i < 6; i++)
                     {
@@ -319,10 +317,11 @@ namespace BizHawk.MultiClient
                     }
                 }
                 else
-                {                    
+                {
+                    Console.WriteLine(mnemonic);
                     for (int i = 1; i < 6; i++)
                     {
-                        if ((Global.MultiTrack.CurrentPlayer == i) || Global.MultiTrack.RecordAll)
+                        if ((Global.MainForm.UserMovie.MultiTrack.CurrentPlayer == i) || Global.MainForm.UserMovie.MultiTrack.RecordAll)
                         {
                             if (IsPressedActually("P1 Up")) programmaticallyPressedButtons.Add("P" + i + " Up");
                             if (IsPressedActually("P1 Down")) programmaticallyPressedButtons.Add("P" + i + " Down");
@@ -335,15 +334,17 @@ namespace BizHawk.MultiClient
                         }
                         else
                         {
-                            if (mnemonic.Length < (1 + i * 9)) return;
-                            if (mnemonic[(i - 1) * 9 + 3] != '.') programmaticallyPressedButtons.Add("P" + i + " Up");
-                            if (mnemonic[(i - 1) * 9 + 4] != '.') programmaticallyPressedButtons.Add("P" + i + " Down");
-                            if (mnemonic[(i - 1) * 9 + 5] != '.') programmaticallyPressedButtons.Add("P" + i + " Left");
-                            if (mnemonic[(i - 1) * 9 + 6] != '.') programmaticallyPressedButtons.Add("P" + i + " Right");
-                            if (mnemonic[(i - 1) * 9 + 7] != '.') programmaticallyPressedButtons.Add("P" + i + " B1");
-                            if (mnemonic[(i - 1) * 9 + 8] != '.') programmaticallyPressedButtons.Add("P" + i + " B2");
-                            if (mnemonic[(i - 1) * 9 + 9] != '.') programmaticallyPressedButtons.Add("P" + i + " Run");
-                            if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
+                            if (mnemonic.Length >= (1 + i * 9))
+                            {
+                                if (mnemonic[(i - 1) * 9 + 3] != '.') programmaticallyPressedButtons.Add("P" + i + " Up");
+                                if (mnemonic[(i - 1) * 9 + 4] != '.') programmaticallyPressedButtons.Add("P" + i + " Down");
+                                if (mnemonic[(i - 1) * 9 + 5] != '.') programmaticallyPressedButtons.Add("P" + i + " Left");
+                                if (mnemonic[(i - 1) * 9 + 6] != '.') programmaticallyPressedButtons.Add("P" + i + " Right");
+                                if (mnemonic[(i - 1) * 9 + 7] != '.') programmaticallyPressedButtons.Add("P" + i + " B1");
+                                if (mnemonic[(i - 1) * 9 + 8] != '.') programmaticallyPressedButtons.Add("P" + i + " B2");
+                                if (mnemonic[(i - 1) * 9 + 9] != '.') programmaticallyPressedButtons.Add("P" + i + " Run");
+                                if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
+                            }
                         }
                     }
                 }

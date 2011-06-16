@@ -1129,42 +1129,53 @@ namespace BizHawk.MultiClient
 			}
             if (Global.ClientControls["Toggle MultiTrack"])
             {
-                Global.MultiTrack.isActive = !Global.MultiTrack.isActive;
-                Global.MultiTrack.RecordAll = false;
-                Global.MultiTrack.CurrentPlayer = 0;
+                Global.MainForm.UserMovie.MultiTrack.isActive = !Global.MainForm.UserMovie.MultiTrack.isActive;
+                if (Global.MainForm.UserMovie.MultiTrack.isActive)
+                {
+                    Global.RenderPanel.AddMessage("MultiTrack Enabled");
+                    Global.RenderPanel.MT = "Recording None";                       
+                }
+                else
+                    Global.RenderPanel.AddMessage("MultiTrack Disabled");
+                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
                 Global.ClientControls.UnpressButton("Toggle MultiTrack");
             }
             if (Global.ClientControls["Increment Player"])
             {
-                Global.MultiTrack.CurrentPlayer++;
-                Global.MultiTrack.RecordAll = false;
-                if (Global.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
+                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+                if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
                 {
-                    Global.MultiTrack.CurrentPlayer = 1;
+                    Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
                 }
-                Global.ClientControls.UnpressButton("Decrement Player");
+                Global.ClientControls.UnpressButton("Increment Player");
+                Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
             }
             if (Global.ClientControls["Decrement Player"])
             {
-                Global.MultiTrack.CurrentPlayer--;
-                Global.MultiTrack.RecordAll = false;
-                if (Global.MultiTrack.CurrentPlayer < 1) 
+                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
+                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+                if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
                 {
-                    Global.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+                    Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
                 }
                 Global.ClientControls.UnpressButton("Decrement Player");
+                Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
             }
             if (Global.ClientControls["Record All"])
             {
-                Global.MultiTrack.CurrentPlayer = 0;
-                Global.MultiTrack.RecordAll = true;               
+                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+                Global.MainForm.UserMovie.MultiTrack.RecordAll = true;               
                 Global.ClientControls.UnpressButton("Record All");
+                Global.RenderPanel.MT = "Recording All";
             }
             if (Global.ClientControls["Record None"])
             {
-                Global.MultiTrack.CurrentPlayer = 0;
-                Global.MultiTrack.RecordAll = false;
+                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
                 Global.ClientControls.UnpressButton("Record None");
+                Global.RenderPanel.MT = "Recording None"; 
             }
 		}
 
@@ -1295,7 +1306,7 @@ namespace BizHawk.MultiClient
 						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
 					}
 				}
-                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && Global.MultiTrack.isActive)
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && Global.MainForm.UserMovie.MultiTrack.isActive)
                 {
                     Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
                 }
