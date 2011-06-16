@@ -11,12 +11,13 @@ namespace BizHawk.MultiClient
 	{
 		private MovieHeader Header = new MovieHeader();
 		private MovieLog Log = new MovieLog();
-
+        
 		private bool IsText = true;
 		private string Filename;
 
 		private MOVIEMODE MovieMode = new MOVIEMODE();
 
+        public MultitrackRecording MultiTrack = new MultitrackRecording();
 		public int Frames = 0;
 		public int lastLog;
 		public int rerecordCount;
@@ -83,18 +84,30 @@ namespace BizHawk.MultiClient
 
 		public void GetMnemonic()
 		{
-			if (MovieMode == MOVIEMODE.RECORD)
-			{                
-                //DON'T TRUNCATE! MESSES WITH MULTITRACK!
-				if (Global.Emulator.Frame < Log.Length()) 
-				{
-					Log.Truncate(Global.Emulator.Frame);
-				}
-//				if (Global.MainForm.TAStudio1.Engaged)
-//					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
-//				else
-					Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-			}
+            if (Global.MainForm.UserMovie.MultiTrack.isActive)
+            {
+                if (MovieMode == MOVIEMODE.RECORD)
+                {
+             
+                    if (Global.Emulator.Frame < Log.Length())                                                                
+                        Log.AddFrameAt(Global.ActiveController.GetControllersAsMnemonic(),Global.Emulator.Frame-1);
+                    else
+                        Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+                }
+            }
+            else
+                if (MovieMode == MOVIEMODE.RECORD)
+                {
+             
+                    if (Global.Emulator.Frame < Log.Length())
+                    {
+                        Log.Truncate(Global.Emulator.Frame);
+                    }
+                    //				if (Global.MainForm.TAStudio1.Engaged)
+                    //					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
+                    //				else
+                    Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+                }
 		}
 
 		public string GetInputFrame(int frame)

@@ -110,6 +110,7 @@ namespace BizHawk.MultiClient
 		bool Resized { get; set; }
 		void AddMessage(string msg);
 		string FPS { get; set; }
+        string MT { get; set; }  
 	}
 
 	public class SysdrawingRenderPanel : IRenderer
@@ -117,6 +118,7 @@ namespace BizHawk.MultiClient
 		public bool Resized { get; set; }
 		public void Dispose() { }
 		public string FPS { get; set; }
+        public string MT { get; set; }  
 		public void Render(IVideoProvider video)
 		{
 			Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
@@ -146,7 +148,7 @@ namespace BizHawk.MultiClient
 		public Color BackgroundColor { get; set; }
 		public bool Resized { get; set; }
 		public string FPS { get; set; }
-
+        public string MT { get; set; }  
 		private Direct3D d3d;
 		private Device Device;
 		private Control backingControl;
@@ -281,7 +283,13 @@ namespace BizHawk.MultiClient
 				input = MakeInputDisplay();
 				MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, c);
 			}
-
+            if (Global.MainForm.UserMovie.MultiTrack.isActive)
+            {
+                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1,
+                    Global.Config.DispFPSy + 1, new Color4(Color.Black));
+                MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
+                    Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
+            }
 			if (Global.Config.DisplayFPS)
 			{
 				MessageFont.DrawString(null, FPS, Global.Config.DispFPSx + 1,
