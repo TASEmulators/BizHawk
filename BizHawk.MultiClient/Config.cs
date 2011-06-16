@@ -118,18 +118,23 @@
         public bool DisplayFPS = false;
         public int DispFPSx = 0;
         public int DispFPSy = 0;
+		public int DispFPSanchor = 0;	//0 = UL, 1 = UR, 2 = DL, 3 = DR
         public bool DisplayFrameCounter = false;
         public int DispFrameCx = 0;
         public int DispFrameCy = 12;
+		public int DispFrameanchor = 0;
         public bool DisplayLagCounter = false;
         public int DispLagx = 0;
         public int DispLagy = 36;
+		public int DispLaganchor = 0;
         public bool DisplayInput = false;
         public int DispInpx = 0;
         public int DispInpy = 24;
+		public int DispInpanchor = 0;
         public bool DisplayRerecordCount = false;
         public int DispRecx = 0;
         public int DispRecy = 48;
+		public int DispRecanchor = 0;
 		public bool ForceGDI = false;
         public bool DisplayStatusBar = true;    
 
