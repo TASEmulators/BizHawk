@@ -446,6 +446,11 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
 			controls.BindMulti("Volume Up", Global.Config.VolUpBinding);
 			controls.BindMulti("Volume Down", Global.Config.VolDownBinding);
+            controls.BindMulti("Toggle MultiTrack", Global.Config.ToggleMultiTrack);
+            controls.BindMulti("Record All", Global.Config.MTRecordAll);
+            controls.BindMulti("Record None", Global.Config.MTRecordNone);
+            controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
+            controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
 
 			Global.ClientControls = controls;
 
@@ -1121,6 +1126,45 @@ namespace BizHawk.MultiClient
 				VolumeDown();
 				Global.ClientControls.UnpressButton("Volume Down");
 			}
+            if (Global.ClientControls["Toggle MultiTrack"])
+            {
+                Global.MultiTrack.isActive = !Global.MultiTrack.isActive;
+                Global.MultiTrack.RecordAll = false;
+                Global.MultiTrack.CurrentPlayer = 0;
+                Global.ClientControls.UnpressButton("Toggle MultiTrack");
+            }
+            if (Global.ClientControls["Increment Player"])
+            {
+                Global.MultiTrack.CurrentPlayer++;
+                Global.MultiTrack.RecordAll = false;
+                if (Global.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+                {
+                    Global.MultiTrack.CurrentPlayer = 1;
+                }
+                Global.ClientControls.UnpressButton("Decrement Player");
+            }
+            if (Global.ClientControls["Decrement Player"])
+            {
+                Global.MultiTrack.CurrentPlayer--;
+                Global.MultiTrack.RecordAll = false;
+                if (Global.MultiTrack.CurrentPlayer < 1) 
+                {
+                    Global.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+                }
+                Global.ClientControls.UnpressButton("Decrement Player");
+            }
+            if (Global.ClientControls["Record All"])
+            {
+                Global.MultiTrack.CurrentPlayer = 0;
+                Global.MultiTrack.RecordAll = true;               
+                Global.ClientControls.UnpressButton("Record All");
+            }
+            if (Global.ClientControls["Record None"])
+            {
+                Global.MultiTrack.CurrentPlayer = 0;
+                Global.MultiTrack.RecordAll = false;
+                Global.ClientControls.UnpressButton("Record None");
+            }
 		}
 
 		void StepRunLoop_Throttle()

@@ -82,6 +82,11 @@ namespace BizHawk.MultiClient.tools
             IDW_PLAYBEGINNING.Text = Global.Config.PlayBeginningBinding;
             IDW_VOLUP.Text = Global.Config.VolUpBinding;
             IDW_VOLDOWN.Text = Global.Config.VolDownBinding;
+            IDW_TOGGLEMTRACK.Text = Global.Config.ToggleMultiTrack;
+            IDW_SELECTNONE.Text = Global.Config.MTRecordNone;
+            IDW_MTSELECTALL.Text = Global.Config.MTRecordAll;
+            IDW_MTINCPLAYER.Text = Global.Config.MTIncrementPlayer;
+            IDW_MTDECPLAYER.Text = Global.Config.MTDecrementPlayer;
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -159,6 +164,12 @@ namespace BizHawk.MultiClient.tools
             Global.Config.PlayBeginningBinding = IDW_PLAYBEGINNING.Text;
             Global.Config.VolUpBinding = IDW_VOLUP.Text;
             Global.Config.VolDownBinding = IDW_VOLDOWN.Text;
+
+            Global.Config.ToggleMultiTrack = IDW_TOGGLEMTRACK.Text;
+            Global.Config.MTRecordAll = IDW_MTSELECTALL.Text;
+            Global.Config.MTRecordNone = IDW_SELECTNONE.Text;
+            Global.Config.MTIncrementPlayer = IDW_MTINCPLAYER.Text;
+            Global.Config.MTDecrementPlayer = IDW_MTDECPLAYER.Text;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

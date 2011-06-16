@@ -346,6 +346,11 @@
         public string PlayBeginningBinding = "";
         public string VolUpBinding = "";
         public string VolDownBinding = "";
+        public string ToggleMultiTrack = "";
+        public string MTRecordAll = "";
+        public string MTRecordNone = "";
+        public string MTIncrementPlayer = "";
+        public string MTDecrementPlayer = "";
         
         // SMS / GameGear Settings
         public bool SmsEnableFM = true;
