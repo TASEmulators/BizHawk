@@ -22,5 +22,6 @@ namespace BizHawk.MultiClient
 		public static Controller NESControls;
         public static Controller ActiveController;
         public static Controller NullControls;
+        public static MultitrackRecording MultiTrack;
     }
 }
