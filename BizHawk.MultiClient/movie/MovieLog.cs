@@ -8,7 +8,7 @@ namespace BizHawk.MultiClient
     /// <summary>
     /// Represents the controller key presses of a movie
     /// </summary>
-    class MovieLog
+    public class MovieLog
     {
         //TODO: Insert(int frame) not useful for convenctional tasing but TAStudio will want it
 
