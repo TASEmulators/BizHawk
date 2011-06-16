@@ -1250,6 +1250,10 @@ namespace BizHawk.MultiClient
 						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
 					}
 				}
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && Global.MultiTrack.isActive)
+                {
+                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+                }
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();

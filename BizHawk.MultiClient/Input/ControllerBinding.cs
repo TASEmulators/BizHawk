@@ -185,47 +185,16 @@ namespace BizHawk.MultiClient
                 input.Append("."); //TODO: reset goes here   - the turbografx DOES NOT HAVE A RESET BUTTON. but I assume this is for pcejin movie file compatibility, which is a fools errand anyway......... I'll leave it for now, but marked for deletion
                 input.Append("|");
                 for (int player = 1; player < 6; player++)
-                {
-                    if (!Global.MultiTrack.isActive)
-                    {
-                        //If we aren't in multitrack, just send all inputs as normal.
-                        input.Append(IsPressed("P" + player.ToString() + " Up") ? "U" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " Down") ? "D" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " Right") ? "R" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " B1") ? "1" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " B2") ? "2" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " Run") ? "R" : ".");
-                        input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
-                        input.Append("|");
-                    }
-                    else if ((Global.MultiTrack.CurrentPlayer == player) || Global.MultiTrack.RecordAll)
-                    {
-                        //If we are recording the current player, copy player 1's input to the current players input. 
-                        input.Append(IsPressed("P1 Up") ? "U" : ".");
-                        input.Append(IsPressed("P1 Down") ? "D" : ".");
-                        input.Append(IsPressed("P1 Left") ? "L" : ".");
-                        input.Append(IsPressed("P1 Right") ? "R" : ".");
-                        input.Append(IsPressed("P1 B1") ? "1" : ".");
-                        input.Append(IsPressed("P1 B2") ? "2" : ".");
-                        input.Append(IsPressed("P1 Run") ? "R" : ".");
-                        input.Append(IsPressed("P1 Select") ? "S" : ".");
-                        input.Append("|");
-                    }
-                    else
-                    {
-                        if (Global.Emulator.Frame < InputLog.Log.Length()) //If there is input left in the log
-                        {
-                            //Use old frame's input
-                        }
-                        else
-                        {
-                            //Add blank frame of input
-                            for (int buttoncount = 0; buttoncount < 8; buttoncount++);
-                                input.Append(".");
-                            input.Append("|");
-                        }
-                    }
+                {            
+                    input.Append(IsPressed("P" + player.ToString() + " Up") ? "U" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Down") ? "D" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Left") ? "L" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Right") ? "R" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " B1") ? "1" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " B2") ? "2" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Run") ? "R" : ".");
+                    input.Append(IsPressed("P" + player.ToString() + " Select") ? "S" : ".");
+                    input.Append("|");                    
                    
                 }
                 return input.ToString();
@@ -308,6 +277,8 @@ namespace BizHawk.MultiClient
         public void SetControllersAsMnemonic(string mnemonic)
         {
             MovieMode = true;
+            if (mnemonic == "")
+                return;
             programmaticallyPressedButtons.Clear();
 
             if (type.Name == "SMS Controller")
@@ -332,17 +303,49 @@ namespace BizHawk.MultiClient
 
             if (type.Name == "PC Engine Controller")
             {
-                for (int i = 1; i <= 5; i++)
+                if (!Global.MultiTrack.isActive || (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY))
                 {
-                    if (mnemonic.Length < (1 + i * 9)) return;
-                    if (mnemonic[(i - 1) * 9 + 3] != '.')  programmaticallyPressedButtons.Add("P" + i + " Up");
-                    if (mnemonic[(i - 1) * 9 + 4] != '.')  programmaticallyPressedButtons.Add("P" + i + " Down");
-                    if (mnemonic[(i - 1) * 9 + 5] != '.')  programmaticallyPressedButtons.Add("P" + i + " Left");
-                    if (mnemonic[(i - 1) * 9 + 6] != '.')  programmaticallyPressedButtons.Add("P" + i + " Right");
-                    if (mnemonic[(i - 1) * 9 + 7] != '.')  programmaticallyPressedButtons.Add("P" + i + " B1");
-                    if (mnemonic[(i - 1) * 9 + 8] != '.')  programmaticallyPressedButtons.Add("P" + i + " B2");
-                    if (mnemonic[(i - 1) * 9 + 9] != '.')  programmaticallyPressedButtons.Add("P" + i + " Run");
-                    if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
+                    for (int i = 1; i < 6; i++)
+                    {
+                        if (mnemonic.Length < (1 + i * 9)) return;
+                        if (mnemonic[(i - 1) * 9 + 3] != '.') programmaticallyPressedButtons.Add("P" + i + " Up");
+                        if (mnemonic[(i - 1) * 9 + 4] != '.') programmaticallyPressedButtons.Add("P" + i + " Down");
+                        if (mnemonic[(i - 1) * 9 + 5] != '.') programmaticallyPressedButtons.Add("P" + i + " Left");
+                        if (mnemonic[(i - 1) * 9 + 6] != '.') programmaticallyPressedButtons.Add("P" + i + " Right");
+                        if (mnemonic[(i - 1) * 9 + 7] != '.') programmaticallyPressedButtons.Add("P" + i + " B1");
+                        if (mnemonic[(i - 1) * 9 + 8] != '.') programmaticallyPressedButtons.Add("P" + i + " B2");
+                        if (mnemonic[(i - 1) * 9 + 9] != '.') programmaticallyPressedButtons.Add("P" + i + " Run");
+                        if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
+                    }
+                }
+                else
+                {                    
+                    for (int i = 1; i < 6; i++)
+                    {
+                        if ((Global.MultiTrack.CurrentPlayer == i) || Global.MultiTrack.RecordAll)
+                        {
+                            if (IsPressedActually("P1 Up")) programmaticallyPressedButtons.Add("P" + i + " Up");
+                            if (IsPressedActually("P1 Down")) programmaticallyPressedButtons.Add("P" + i + " Down");
+                            if (IsPressedActually("P1 Left")) programmaticallyPressedButtons.Add("P" + i + " Left");
+                            if (IsPressedActually("P1 Right")) programmaticallyPressedButtons.Add("P" + i + " Right");
+                            if (IsPressedActually("P1 B1")) programmaticallyPressedButtons.Add("P" + i + " B1");
+                            if (IsPressedActually("P1 B2")) programmaticallyPressedButtons.Add("P" + i + " B2");
+                            if (IsPressedActually("P1 Run")) programmaticallyPressedButtons.Add("P" + i + " Run");
+                            if (IsPressedActually("P1 Select")) programmaticallyPressedButtons.Add("P" + i + " Select");
+                        }
+                        else
+                        {
+                            if (mnemonic.Length < (1 + i * 9)) return;
+                            if (mnemonic[(i - 1) * 9 + 3] != '.') programmaticallyPressedButtons.Add("P" + i + " Up");
+                            if (mnemonic[(i - 1) * 9 + 4] != '.') programmaticallyPressedButtons.Add("P" + i + " Down");
+                            if (mnemonic[(i - 1) * 9 + 5] != '.') programmaticallyPressedButtons.Add("P" + i + " Left");
+                            if (mnemonic[(i - 1) * 9 + 6] != '.') programmaticallyPressedButtons.Add("P" + i + " Right");
+                            if (mnemonic[(i - 1) * 9 + 7] != '.') programmaticallyPressedButtons.Add("P" + i + " B1");
+                            if (mnemonic[(i - 1) * 9 + 8] != '.') programmaticallyPressedButtons.Add("P" + i + " B2");
+                            if (mnemonic[(i - 1) * 9 + 9] != '.') programmaticallyPressedButtons.Add("P" + i + " Run");
+                            if (mnemonic[(i - 1) * 9 + 10] != '.') programmaticallyPressedButtons.Add("P" + i + " Select");
+                        }
+                    }
                 }
             }
 

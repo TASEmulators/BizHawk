@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 	public class Movie
 	{
 		private MovieHeader Header = new MovieHeader();
-		public MovieLog Log = new MovieLog();
+		private MovieLog Log = new MovieLog();
 
 		private bool IsText = true;
 		private string Filename;
@@ -52,6 +52,10 @@ namespace BizHawk.MultiClient
 		{
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
+        public int GetLength()
+        {
+            return Log.Length();
+        }
 
 		public void StopMovie()
 		{
