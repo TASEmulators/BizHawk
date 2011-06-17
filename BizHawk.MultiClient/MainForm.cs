@@ -1136,7 +1136,7 @@ namespace BizHawk.MultiClient
                     Global.RenderPanel.MT = "Recording None";                       
                 }
                 else
-                    Global.RenderPanel.AddMessage("MultiTrack Disabled");
+                   Global.RenderPanel.AddMessage("MultiTrack Disabled");
                 Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
                 Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
                 Global.ClientControls.UnpressButton("Toggle MultiTrack");
@@ -1306,9 +1306,10 @@ namespace BizHawk.MultiClient
 						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
 					}
 				}
-                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && Global.MainForm.UserMovie.MultiTrack.isActive)
-                {
-                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.isActive)
+                {					
+                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
+					//Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
                 }
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				RamWatch1.UpdateValues();
@@ -1318,10 +1319,13 @@ namespace BizHawk.MultiClient
 				NESPPU1.UpdateValues();
 				TAStudio1.UpdateValues();
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
-					UserMovie.GetMnemonic();
-				else if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-					InputLog.GetMnemonic();
+                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+                {
+                    UserMovie.GetMnemonic();
+					//Console.WriteLine("In: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
+                }
+                else if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+                    InputLog.GetMnemonic();
 			}
 
 			if (genSound)

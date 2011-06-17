@@ -39,7 +39,13 @@ namespace BizHawk.MultiClient
         {
             MovieRecords.Add(frame);
         }
-
+        public void ReplaceFrameAt(string frame, int frameNum)
+        {
+            if (MovieRecords.Count > frameNum) 
+                MovieRecords[frameNum] = frame;
+            else
+                MovieRecords.Insert(frameNum, frame);        
+        }
         public void AddFrameAt(string frame, int frameNum)
         {
             MovieRecords.Insert(frameNum, frame);

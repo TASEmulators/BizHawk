@@ -84,30 +84,30 @@ namespace BizHawk.MultiClient
 
 		public void GetMnemonic()
 		{
-			if (MultiTrack.isActive)
-			{
-				if (MovieMode == MOVIEMODE.RECORD)
-				{
-
-					if (Global.Emulator.Frame < Log.Length())
-						Log.AddFrameAt(Global.ActiveController.GetControllersAsMnemonic(), Global.Emulator.Frame - 1);
-					else
-						Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-				}
-			}
-			else
-				if (MovieMode == MOVIEMODE.RECORD)
-				{
-
-					if (Global.Emulator.Frame < Log.Length())
-					{
-						Log.Truncate(Global.Emulator.Frame);
-					}
-					//				if (Global.MainForm.TAStudio1.Engaged)
-					//					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
-					//				else
-					Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-				}
+            if (MultiTrack.isActive)
+            {
+                if (MovieMode == MOVIEMODE.RECORD)
+                {
+             
+                    if (Global.Emulator.Frame < Log.Length())                                                                
+                        Log.ReplaceFrameAt(Global.ActiveController.GetControllersAsMnemonic(),Global.Emulator.Frame);
+                    else
+                        Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+                }
+            }
+            else
+                if (MovieMode == MOVIEMODE.RECORD)
+                {
+             
+                    if (Global.Emulator.Frame < Log.Length())
+                    {
+                        Log.Truncate(Global.Emulator.Frame);
+                    }
+                    //				if (Global.MainForm.TAStudio1.Engaged)
+                    //					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
+                    //				else
+                    Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+                }
 		}
 
 		public string GetInputFrame(int frame)
@@ -349,17 +349,37 @@ namespace BizHawk.MultiClient
 		public void LoadLogFromSavestateText(TextReader reader)
 		{
 			//We are in record mode so replace the movie log with the one from the savestate
-			Log.Clear();
-			while (true)
-			{
-				string line = reader.ReadLine();
-				if (line == null) break;
-				if (line.Trim() == "") continue;
-				if (line == "[Input]") continue;
-				if (line == "[/Input]") break;
-				if (line[0] == '|')
-					Log.AddFrame(line);
-			}
+            if (!MultiTrack.isActive)
+            {
+                Log.Clear();
+                while (true)
+                {
+                    string line = reader.ReadLine();
+                    if (line == null) break;
+                    if (line.Trim() == "") continue;
+                    if (line == "[Input]") continue;
+                    if (line == "[/Input]") break;
+                    if (line[0] == '|')
+                        Log.AddFrame(line);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (true)
+                {
+                    string line = reader.ReadLine();
+                    if (line == null) break;
+                    if (line.Trim() == "") continue;
+                    if (line == "[Input]") continue;
+                    if (line == "[/Input]") break;
+                    if (line[0] == '|')
+                    {
+                        Log.ReplaceFrameAt(line, i);
+                        i++;
+                    }
+                }
+            }
 			//TODO: we can truncate the movie down to the current frame now (in case the savestate has a larger input log)
 			//However, VBA will load it all, then truncate on the next frame, do we want that?
 			IncrementRerecordCount();
