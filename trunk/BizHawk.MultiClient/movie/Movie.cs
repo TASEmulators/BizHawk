@@ -84,30 +84,30 @@ namespace BizHawk.MultiClient
 
 		public void GetMnemonic()
 		{
-            if (Global.MainForm.UserMovie.MultiTrack.isActive)
-            {
-                if (MovieMode == MOVIEMODE.RECORD)
-                {
-             
-                    if (Global.Emulator.Frame < Log.Length())                                                                
-                        Log.AddFrameAt(Global.ActiveController.GetControllersAsMnemonic(),Global.Emulator.Frame-1);
-                    else
-                        Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-                }
-            }
-            else
-                if (MovieMode == MOVIEMODE.RECORD)
-                {
-             
-                    if (Global.Emulator.Frame < Log.Length())
-                    {
-                        Log.Truncate(Global.Emulator.Frame);
-                    }
-                    //				if (Global.MainForm.TAStudio1.Engaged)
-                    //					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
-                    //				else
-                    Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-                }
+			if (MultiTrack.isActive)
+			{
+				if (MovieMode == MOVIEMODE.RECORD)
+				{
+
+					if (Global.Emulator.Frame < Log.Length())
+						Log.AddFrameAt(Global.ActiveController.GetControllersAsMnemonic(), Global.Emulator.Frame - 1);
+					else
+						Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+				}
+			}
+			else
+				if (MovieMode == MOVIEMODE.RECORD)
+				{
+
+					if (Global.Emulator.Frame < Log.Length())
+					{
+						Log.Truncate(Global.Emulator.Frame);
+					}
+					//				if (Global.MainForm.TAStudio1.Engaged)
+					//					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
+					//				else
+					Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
+				}
 		}
 
 		public string GetInputFrame(int frame)
