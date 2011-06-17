@@ -317,8 +317,7 @@ namespace BizHawk.MultiClient
                     }
                 }
                 else
-                {
-                    Console.WriteLine(mnemonic);
+                {                    
                     for (int i = 1; i < 6; i++)
                     {
                         if ((Global.MainForm.UserMovie.MultiTrack.CurrentPlayer == i) || Global.MainForm.UserMovie.MultiTrack.RecordAll)
