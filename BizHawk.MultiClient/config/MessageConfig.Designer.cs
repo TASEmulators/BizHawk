@@ -463,7 +463,7 @@
             0,
             0,
             0});
-			this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
+			this.XNumeric.Click += new System.EventHandler(this.XNumeric_Click);
 			// 
 			// YNumeric
 			// 
@@ -482,7 +482,7 @@
             0,
             0,
             0});
-			this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
+			this.YNumeric.Click += new System.EventHandler(this.YNumeric_Click);
 			// 
 			// label1
 			// 

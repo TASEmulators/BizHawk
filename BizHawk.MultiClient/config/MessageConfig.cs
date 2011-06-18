@@ -17,6 +17,8 @@ namespace BizHawk.MultiClient
 		//Deal with typing into Numerics properly
 		//Have some method of binding a display object to top/bottom/left/right instead of an absolute position
 		//Bug: restore defaults doesn't restore the y value of whatever radio is checked
+		//Implement Rerecord Counter config
+		//Implemetn Multitrack messages counter config
 
 		int DispFPSx = Global.Config.DispFPSx;
 		int DispFPSy = Global.Config.DispFPSy;
@@ -147,6 +149,8 @@ namespace BizHawk.MultiClient
 			}
 
 			PositionPanel.Refresh();
+			XNumeric.Refresh();
+			YNumeric.Refresh();
 			SetPositionLabels();
 		}
 
@@ -165,7 +169,7 @@ namespace BizHawk.MultiClient
 			Global.Config.LastInputColor = LastInputColor;
 
 			Global.Config.DispFPSanchor = DispFPSanchor;
-			Global.Config.DispFPSanchor = DispFrameanchor;
+			Global.Config.DispFrameanchor = DispFrameanchor;
 			Global.Config.DispLaganchor = DispLaganchor;
 			Global.Config.DispInpanchor = DispInputanchor;
 			Global.Config.DispRecanchor = DispRecanchor;
@@ -220,16 +224,6 @@ namespace BizHawk.MultiClient
 			py = (int)YNumeric.Value;
 			SetPositionLabels();
 			PositionPanel.Refresh();
-		}
-
-		private void XNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			XNumericChange();
-		}
-
-		private void YNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			YNumericChange();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
@@ -360,9 +354,6 @@ namespace BizHawk.MultiClient
 			DispInputanchor = Global.Config.DispInpanchor;
 			DispRecanchor = Global.Config.DispRecanchor;
 			
-			//TODO: anchors
-
-
 			SetMaxXY();
 			MessageColorDialog.Color = Color.FromArgb(MessageColor);
 			AlertColorDialog.Color = Color.FromArgb(AlertColor);
@@ -447,6 +438,16 @@ namespace BizHawk.MultiClient
 				else if (InputDisplayRadio.Checked)
 					DispInputanchor = 3;
 			}
+		}
+
+		private void XNumeric_Click(object sender, EventArgs e)
+		{
+			XNumericChange();
+		}
+
+		private void YNumeric_Click(object sender, EventArgs e)
+		{
+			YNumericChange();
 		}
 	}
 }
