@@ -254,23 +254,57 @@ namespace BizHawk.MultiClient
 			Device.Present(Present.DoNotWait);
 		}
 
+		private int GetX(int x, int anchor)
+		{
+			switch (anchor)
+			{
+				default:
+				case 0:
+				case 2:
+					return x;
+				case 1:
+				case 3:
+					return backingControl.Size.Width - Global.Emulator.VideoProvider.BufferWidth + x;
+			}
+		}
+
+		private int GetY(int y, int anchor)
+		{
+			switch (anchor)
+			{
+				default:
+				case 0:
+				case 1:
+					return y;
+				case 2:
+				case 3:
+					return backingControl.Size.Height - Global.Emulator.VideoProvider.BufferHeight + y;
+			}
+		}
+
+
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
 		/// </summary>
 		public void DrawScreenInfo()
 		{
+			int x, y;
 			//TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
 			if (Global.Config.DisplayFrameCounter)
 			{
-				MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx + 1,
-					Global.Config.DispFrameCy + 1, new Color4(Color.Black));
-				MessageFont.DrawString(null, MakeFrameCounter(), Global.Config.DispFrameCx,
-					Global.Config.DispFrameCy, Color.FromArgb(Global.Config.MessagesColor));
+				x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor);
+				y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor);
+				MessageFont.DrawString(null, MakeFrameCounter(), x + 1,
+					y + 1, new Color4(Color.Black));
+				MessageFont.DrawString(null, MakeFrameCounter(), x,
+					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 			if (Global.Config.DisplayInput)
 			{
 				string input = MakeLastInputDisplay();
 				Color c;
+				x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
+				y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
 				if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
 				{
 					c = Color.Gray;
@@ -278,28 +312,32 @@ namespace BizHawk.MultiClient
 				else
 					c = Color.FromArgb(Global.Config.MessagesColor);
 
-				MessageFont.DrawString(null, input, Global.Config.DispInpx + 2, Global.Config.DispInpy + 2, new Color4(Color.Black));
-				MessageFont.DrawString(null, input, Global.Config.DispInpx + 1, Global.Config.DispInpy + 1, Color.FromArgb(Global.Config.LastInputColor));
+				MessageFont.DrawString(null, input, x + 2, y + 2, new Color4(Color.Black));
+				MessageFont.DrawString(null, input, x + 1, y + 1, Color.FromArgb(Global.Config.LastInputColor));
 				input = MakeInputDisplay();
-				MessageFont.DrawString(null, input, Global.Config.DispInpx, Global.Config.DispInpy, c);
+				MessageFont.DrawString(null, input, x, y, c);
 			}
             if (Global.MainForm.UserMovie.MultiTrack.isActive)
             {
-                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1,
+                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
                     Global.Config.DispFPSy + 1, new Color4(Color.Black));
                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
                     Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
             }
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
-				MessageFont.DrawString(null, FPS, Global.Config.DispFPSx + 1,
-					Global.Config.DispFPSy + 1, new Color4(Color.Black));
-				MessageFont.DrawString(null, FPS, Global.Config.DispFPSx,
-					Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
+				x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor);
+				y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor);
+				MessageFont.DrawString(null, FPS, x + 1,
+					y + 1, new Color4(Color.Black));
+				MessageFont.DrawString(null, FPS, x,
+					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
 			if (Global.Config.DisplayLagCounter)
 			{
+				x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor);
+				y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor);
 				if (Global.Emulator.IsLagFrame)
 				{
 					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
@@ -309,19 +347,21 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
-						Global.Config.DispLagy + 1, new Color4(Color.Black));
-					MessageFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
-						Global.Config.DispLagy, Color.FromArgb(Global.Config.MessagesColor));
+					MessageFont.DrawString(null, MakeLagCounter(), x + 1,
+						y + 1, new Color4(Color.Black));
+					MessageFont.DrawString(null, MakeLagCounter(), x,
+						y, Color.FromArgb(Global.Config.MessagesColor));
 				}
 
 			}
 			if (Global.Config.DisplayRerecordCount)
 			{
-				MessageFont.DrawString(null, MakeRerecordCount(), Global.Config.DispRecx + 1,
-					 Global.Config.DispRecy + 1, new Color4(Color.Black));
-				MessageFont.DrawString(null, MakeRerecordCount(), Global.Config.DispRecx,
-					Global.Config.DispRecy, Color.FromArgb(Global.Config.MessagesColor));
+				x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor);
+				y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor);
+				MessageFont.DrawString(null, MakeRerecordCount(), x + 1,
+					 y + 1, new Color4(Color.Black));
+				MessageFont.DrawString(null, MakeRerecordCount(), x,
+					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
 			//TODO: clean this up or replace with simple draw symbols
