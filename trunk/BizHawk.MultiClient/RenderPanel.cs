@@ -162,6 +162,7 @@ namespace BizHawk.MultiClient
 			d3d = direct3D;
 			backingControl = control;
 			control.DoubleClick += (o, e) => Global.MainForm.ToggleFullscreen();
+			control.MouseClick += (o, e) => Global.MainForm.MainForm_MouseClick(o, e);
 		}
 
 		private void DestroyDevice()
