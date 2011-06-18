@@ -134,23 +134,35 @@ namespace BizHawk.MultiClient
 		{
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			if (IsText)
-				WriteText();
+				WriteText(Filename);
 			else
-				WriteBinary();
+				WriteBinary(Filename);
 		}
 
-		private void WriteText()
+		public void WriteBackup()
 		{
-			if (Filename.Length == 0) return;   //Nothing to write
+			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
+			string BackupName = Filename;
+			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
+			Global.RenderPanel.AddMessage("Backup movie saved to " + BackupName);
+			if (IsText)
+				WriteText(BackupName);
+			else
+				WriteBinary(BackupName);
+
+		}
+
+		private void WriteText(string file)
+		{
+			if (file.Length == 0) return;   //Nothing to write
 			int length = Log.GetMovieLength();
 
-			using (StreamWriter sw = new StreamWriter(Filename))
+			using (StreamWriter sw = new StreamWriter(file))
 			{
 				foreach (KeyValuePair<string, string> kvp in Header.HeaderParams)
 				{
 					sw.WriteLine(kvp.Key + " " + kvp.Value);
 				}
-
 
 				for (int x = 0; x < length; x++)
 				{
@@ -159,7 +171,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void WriteBinary()
+		private void WriteBinary(string file)
 		{
 
 		}
