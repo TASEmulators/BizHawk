@@ -101,6 +101,7 @@
         public bool SingleInstanceMode = false;
         public bool AllowUD_LR = false;
 		public bool ShowContextMenu = true;
+		public bool EnableBackupMovies = true;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

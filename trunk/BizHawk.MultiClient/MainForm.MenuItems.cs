@@ -825,6 +825,11 @@ namespace BizHawk.MultiClient
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			UserMovie.WriteBackup();
-		}	
+		}
+	
+		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.EnableBackupMovies ^= true;
+		}
 	}
 }

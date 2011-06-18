@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
         
 		private bool IsText = true;
 		private string Filename;
+		public bool MakeBackup = true; //Flag for making backup before altering movie
 
 		private MOVIEMODE MovieMode = new MOVIEMODE();
 
@@ -68,6 +69,11 @@ namespace BizHawk.MultiClient
 		public void StartNewRecording()
 		{
 			MovieMode = MOVIEMODE.RECORD;
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
+			{
+				WriteBackup();
+				MakeBackup = false;
+			}
 			Log.Clear();
 			Header = new MovieHeader(MainForm.EMUVERSION, MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "", 0);
 		}
@@ -103,9 +109,6 @@ namespace BizHawk.MultiClient
                     {
                         Log.Truncate(Global.Emulator.Frame);
                     }
-                    //				if (Global.MainForm.TAStudio1.Engaged)
-                    //					Log.AddFrame(Global.MainForm.TAStudio1.GetMnemonic());
-                    //				else
                     Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
                 }
 		}
@@ -363,7 +366,12 @@ namespace BizHawk.MultiClient
 			//We are in record mode so replace the movie log with the one from the savestate
             if (!MultiTrack.isActive)
             {
-                Log.Clear();
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
+				{
+					WriteBackup();
+					MakeBackup = false;
+				}
+				Log.Clear();
                 while (true)
                 {
                     string line = reader.ReadLine();
