@@ -1294,7 +1294,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
 					}
 				}
 
@@ -1303,7 +1303,7 @@ namespace BizHawk.MultiClient
 					if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
 					{
 						UserMovie.StartPlayback();
-						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame) + 1);
+						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
 					}
 				}
                 if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.isActive)
