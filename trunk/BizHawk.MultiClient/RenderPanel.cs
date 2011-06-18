@@ -290,7 +290,7 @@ namespace BizHawk.MultiClient
                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
                     Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
             }
-			if (Global.Config.DisplayFPS)
+			if (Global.Config.DisplayFPS && FPS != null)
 			{
 				MessageFont.DrawString(null, FPS, Global.Config.DispFPSx + 1,
 					Global.Config.DispFPSy + 1, new Color4(Color.Black));
