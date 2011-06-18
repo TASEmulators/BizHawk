@@ -707,5 +707,115 @@ namespace BizHawk.MultiClient
 			g.ShowDialog();
 			SyncCoreInputComm();
 		}
+
+		public void MainForm_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
+			{
+				Point p = new Point(e.X, e.Y + this.menuStrip1.Height);
+				Point po = this.PointToScreen(p);
+				contextMenuStrip1.Show(po);
+			}
+		}
+
+		private void openRomToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenROM();
+		}
+
+		private void loadLastROMToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+		}
+
+		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ShowContextMenu ^= true;
+		}
+
+		private void recordMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			RecordMovie();
+		}
+
+		private void playMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PlayMovie();
+		}
+
+		private void loadLastMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadMoviesFromRecent(Global.Config.RecentMovies.GetRecentFileByPosition(0));
+		}
+
+		private void undoLoadstateToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			//TODO
+		}
+
+		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			//TODO
+		}
+
+		private void screenshotToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			TakeScreenshot();
+		}
+
+		private void closeROMToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			CloseROM();
+		}
+
+		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (IsNullEmulator())
+			{
+				contextMenuStrip1.Items[0].Visible = true;
+				contextMenuStrip1.Items[1].Visible = true;
+				contextMenuStrip1.Items[2].Visible = false;
+				contextMenuStrip1.Items[3].Visible = false;
+				contextMenuStrip1.Items[4].Visible = false;
+				contextMenuStrip1.Items[5].Visible = false;
+				contextMenuStrip1.Items[6].Visible = false;
+				contextMenuStrip1.Items[7].Visible = false;
+				contextMenuStrip1.Items[8].Visible = false;
+				contextMenuStrip1.Items[9].Visible = false;
+				contextMenuStrip1.Items[10].Visible = false;
+				contextMenuStrip1.Items[11].Visible = false;
+			}
+			else
+			{
+				contextMenuStrip1.Items[0].Visible = false;
+				contextMenuStrip1.Items[1].Visible = false;
+				contextMenuStrip1.Items[2].Visible = false;
+
+				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				{
+					contextMenuStrip1.Items[3].Visible = true;
+					contextMenuStrip1.Items[4].Visible = true;
+					contextMenuStrip1.Items[5].Visible = true;
+				}
+				else
+				{
+					contextMenuStrip1.Items[3].Visible = false;
+					contextMenuStrip1.Items[4].Visible = false;
+					contextMenuStrip1.Items[5].Visible = false;
+				}
+				
+				contextMenuStrip1.Items[6].Visible = true;
+				contextMenuStrip1.Items[7].Visible = true;
+				contextMenuStrip1.Items[8].Visible = true;
+
+				contextMenuStrip1.Items[9].Visible = true;
+				contextMenuStrip1.Items[10].Visible = true;
+				contextMenuStrip1.Items[11].Visible = true;
+			}
+			
+			//TODO:
+			contextMenuStrip1.Items[7].Enabled = false;
+			contextMenuStrip1.Items[8].Enabled = false;
+		}	
 	}
 }
