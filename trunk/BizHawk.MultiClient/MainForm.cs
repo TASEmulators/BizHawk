@@ -581,8 +581,7 @@ namespace BizHawk.MultiClient
 				case ".TAS":   //Bizhawk
 				case ".FM2":   //FCUEX
 				case ".MC2":   //PCEjin
-				//case ".STATE": //Savestates
-				//    return true;
+				    return true;
 				default:
 					return false;
 			}
