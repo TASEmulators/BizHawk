@@ -1929,6 +1929,7 @@ namespace BizHawk.MultiClient
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
+			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -2237,6 +2238,31 @@ namespace BizHawk.MultiClient
 				Global.Config.SoundVolume = 0;
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+		}
+
+		public void MainForm_MouseClick(object sender, MouseEventArgs e)
+		{
+			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
+			{
+				Point p = new Point(e.X, e.Y + this.menuStrip1.Height);
+				Point po = this.PointToScreen(p);
+				contextMenuStrip1.Show(po);
+			}
+		}
+
+		private void openRomToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			OpenROM();
+		}
+
+		private void loadLastROMToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadRomFromRecent(Global.Config.RecentRoms.GetRecentFileByPosition(0));
+		}
+
+		private void enableContextMenuToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ShowContextMenu ^= true;
 		}
 	}
 }
