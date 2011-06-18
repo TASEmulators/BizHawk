@@ -818,11 +818,10 @@ namespace BizHawk.MultiClient
 				Global.Game = game;
 				SyncControls();
 
-				//if (game.System == "NES")
-				//{
-				//	Global.Game.Name = (Global.Emulator as NES).GameName;
-				//}
-				//adelikat: Disabling this because it causes invalid characters (such as :) in file paths, why do we want these lines
+				if (game.System == "NES")
+				{
+					Global.Game.Name = (Global.Emulator as NES).GameName;
+				}
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();

@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 				MakeBackup = false;
 			}
 			Log.Clear();
-			Header = new MovieHeader(MainForm.EMUVERSION, MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.Name, "", 0);
+			Header = new MovieHeader(MainForm.EMUVERSION, MovieHeader.MovieVersion, Global.Emulator.SystemId, Global.Game.FilesystemSafeName, "", 0);
 		}
 
 		public void StartPlayback()

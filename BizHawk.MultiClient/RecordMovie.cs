@@ -66,7 +66,7 @@ namespace BizHawk.MultiClient
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
             sfd.DefaultExt = ".tas";
-            sfd.FileName = Global.Game.Name;
+            sfd.FileName = Global.Game.FilesystemSafeName;
             sfd.Filter = "Movie files (*.tas)|*.TAS";
 
             Global.Sound.StopSound();
