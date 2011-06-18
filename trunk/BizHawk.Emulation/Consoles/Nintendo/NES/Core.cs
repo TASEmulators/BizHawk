@@ -46,8 +46,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
 			ports = new IPortDevice[2];
-			ports[0] = new JoypadPortDevice(this);
-			ports[1] = new NullPortDevice();
+			ports[0] = new JoypadPortDevice(this,0);
+			ports[1] = new JoypadPortDevice(this,1);
 
 			//fceux uses this technique, which presumably tricks some games into thinking the memory is randomized
 			for (int i = 0; i < 0x800; i++)
@@ -66,8 +66,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool resetSignal;
 		public void FrameAdvance(bool render)
 		{
-            lagged = true;
-            if (resetSignal)
+			lagged = true;
+			if (resetSignal)
 			{
 				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
 				apu.WriteReg(0x4015, 0);
@@ -79,13 +79,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
 			ppu.FrameAdvance();
-            if (lagged)
-            {
-                _lagcount++;
-                islag = true;
-            }
-            else
-                islag = false;
+			if (lagged)
+			{
+				_lagcount++;
+				islag = true;
+			}
+			else
+				islag = false;
 		}
 
 		protected void RunCpu(int ppu_cycles)
@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x4014: /*OAM DMA*/ break;
 				case 0x4015: return apu.ReadReg(addr); break;
 				case 0x4016:
+				case 0x4017:
 					return read_joyport(addr);
-				case 0x4017: return apu.ReadReg(addr); break;
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
 					break;
@@ -179,13 +179,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			//read joystick port
 			//many todos here
-			if (addr == 0x4016)
-			{
-                lagged = false;
-                byte ret = ports[0].Read();
-				return ret;
-			}
-			else return 0;
+            lagged = false;
+			byte ret;
+			if(addr == 0x4016)
+                ret = ports[0].Read();
+			else ret = ports[1].Read();
+			return ret;
 		}
 
 		void Exec_OAMDma(byte val)
