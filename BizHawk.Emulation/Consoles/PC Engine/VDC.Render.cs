@@ -31,8 +31,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 latchedDisplayStartLine = DisplayStartLine;
                 ActiveLine = ScanLine - latchedDisplayStartLine;
 
-                int hds = (Registers[HSR] >> 8) & 0x7F;
-                int hde = (Registers[HDR] >> 8) & 0x7F;
                 int vds = Registers[VPR] >> 8;
                 int vsw = Registers[VPR] & 0x1F;
 
@@ -40,16 +38,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (VBlankScanline > 261)
                     VBlankScanline = 261;
 
-                int hblankCycles = (hds + hde + 2) * 8;
-
-            switch (vce.DotClock)
-            {
-                case 0: hblankCycles = (hblankCycles * 4) / 3; break;
-                case 1: break;
-                case 2: hblankCycles = (hblankCycles*2)/3; break;
-            }
-
-                //Log.Note("VDC","ScanLine {0} (ActiveLine {1}, RCR {2}, BGY {3})",ScanLine, ActiveLine, RCRCount, BackgroundY);
+                const int hblankCycles = 79;
 
                 if (ActiveLine == 0)
                     BackgroundY = Registers[BYR];
