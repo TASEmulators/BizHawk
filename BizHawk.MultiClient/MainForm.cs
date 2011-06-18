@@ -2086,6 +2086,7 @@ namespace BizHawk.MultiClient
 
 			readonlyToolStripMenuItem.Checked = ReadOnly;
 			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
+			automaticallyBackupMoviesToolStripMenuItem.Checked = Global.Config.EnableBackupMovies;
 
 			readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ReadOnlyToggleBinding;
 			recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RecordMovieBinding;
