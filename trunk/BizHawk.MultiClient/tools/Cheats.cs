@@ -380,7 +380,7 @@ namespace BizHawk.MultiClient
             if (currentCheatFile.Length > 0)
                 sfd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
             else if (!(Global.Emulator is NullEmulator))
-                sfd.FileName = Global.Game.Name;
+                sfd.FileName = Global.Game.FilesystemSafeName;
             sfd.InitialDirectory = GetCheatsPath();
             sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
             sfd.RestoreDirectory = true;

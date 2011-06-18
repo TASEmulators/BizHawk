@@ -1275,7 +1275,7 @@ namespace BizHawk.MultiClient
             }
             else if (!(Global.Emulator is NullEmulator))
             {
-                sfd.FileName = Global.Game.Name;
+                sfd.FileName = Global.Game.FilesystemSafeName;
                 sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
             }
             else
