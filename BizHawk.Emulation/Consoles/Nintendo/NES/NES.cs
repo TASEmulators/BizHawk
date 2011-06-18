@@ -194,9 +194,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			int state;
 			NES nes;
-			public JoypadPortDevice(NES nes)
+			int player;
+			public JoypadPortDevice(NES nes, int player)
 			{
 				this.nes = nes;
+				this.player = player;
 			}
 			void Strobe()
 			{
