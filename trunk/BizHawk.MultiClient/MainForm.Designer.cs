@@ -205,6 +205,7 @@
 			this.recordMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.playMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.makeMovieBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.undoLoadstateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoSavestateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1543,6 +1544,7 @@
             this.recordMovieToolStripMenuItem1,
             this.playMovieToolStripMenuItem1,
             this.loadLastMovieToolStripMenuItem,
+            this.makeMovieBackupToolStripMenuItem,
             this.toolStripSeparator19,
             this.undoLoadstateToolStripMenuItem,
             this.undoSavestateToolStripMenuItem,
@@ -1550,84 +1552,91 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(163, 242);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 264);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// openRomToolStripMenuItem1
 			// 
 			this.openRomToolStripMenuItem1.Name = "openRomToolStripMenuItem1";
-			this.openRomToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+			this.openRomToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.openRomToolStripMenuItem1.Text = "Open Rom";
 			this.openRomToolStripMenuItem1.Click += new System.EventHandler(this.openRomToolStripMenuItem1_Click);
 			// 
 			// loadLastROMToolStripMenuItem
 			// 
 			this.loadLastROMToolStripMenuItem.Name = "loadLastROMToolStripMenuItem";
-			this.loadLastROMToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.loadLastROMToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.loadLastROMToolStripMenuItem.Text = "Load Last ROM";
 			this.loadLastROMToolStripMenuItem.Click += new System.EventHandler(this.loadLastROMToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator18
 			// 
 			this.toolStripSeparator18.Name = "toolStripSeparator18";
-			this.toolStripSeparator18.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator18.Size = new System.Drawing.Size(175, 6);
 			// 
 			// recordMovieToolStripMenuItem1
 			// 
 			this.recordMovieToolStripMenuItem1.Name = "recordMovieToolStripMenuItem1";
-			this.recordMovieToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+			this.recordMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.recordMovieToolStripMenuItem1.Text = "Record Movie";
 			this.recordMovieToolStripMenuItem1.Click += new System.EventHandler(this.recordMovieToolStripMenuItem1_Click);
 			// 
 			// playMovieToolStripMenuItem1
 			// 
 			this.playMovieToolStripMenuItem1.Name = "playMovieToolStripMenuItem1";
-			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.playMovieToolStripMenuItem1.Text = "Play Movie";
 			this.playMovieToolStripMenuItem1.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
 			// 
 			// loadLastMovieToolStripMenuItem
 			// 
 			this.loadLastMovieToolStripMenuItem.Name = "loadLastMovieToolStripMenuItem";
-			this.loadLastMovieToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.loadLastMovieToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.loadLastMovieToolStripMenuItem.Text = "Load Last Movie";
 			this.loadLastMovieToolStripMenuItem.Click += new System.EventHandler(this.loadLastMovieToolStripMenuItem_Click);
+			// 
+			// makeMovieBackupToolStripMenuItem
+			// 
+			this.makeMovieBackupToolStripMenuItem.Name = "makeMovieBackupToolStripMenuItem";
+			this.makeMovieBackupToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.makeMovieBackupToolStripMenuItem.Text = "Make Movie Backup";
+			this.makeMovieBackupToolStripMenuItem.Click += new System.EventHandler(this.makeMovieBackupToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(175, 6);
 			// 
 			// undoLoadstateToolStripMenuItem
 			// 
 			this.undoLoadstateToolStripMenuItem.Name = "undoLoadstateToolStripMenuItem";
-			this.undoLoadstateToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.undoLoadstateToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.undoLoadstateToolStripMenuItem.Text = "Undo Loadstate";
 			this.undoLoadstateToolStripMenuItem.Click += new System.EventHandler(this.undoLoadstateToolStripMenuItem_Click);
 			// 
 			// undoSavestateToolStripMenuItem
 			// 
 			this.undoSavestateToolStripMenuItem.Name = "undoSavestateToolStripMenuItem";
-			this.undoSavestateToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.undoSavestateToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.undoSavestateToolStripMenuItem.Text = "Undo Savestate";
 			this.undoSavestateToolStripMenuItem.Click += new System.EventHandler(this.undoSavestateToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator20
 			// 
 			this.toolStripSeparator20.Name = "toolStripSeparator20";
-			this.toolStripSeparator20.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator20.Size = new System.Drawing.Size(175, 6);
 			// 
 			// screenshotToolStripMenuItem1
 			// 
 			this.screenshotToolStripMenuItem1.Name = "screenshotToolStripMenuItem1";
-			this.screenshotToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+			this.screenshotToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.screenshotToolStripMenuItem1.Text = "Screenshot";
 			this.screenshotToolStripMenuItem1.Click += new System.EventHandler(this.screenshotToolStripMenuItem1_Click);
 			// 
 			// closeROMToolStripMenuItem1
 			// 
 			this.closeROMToolStripMenuItem1.Name = "closeROMToolStripMenuItem1";
-			this.closeROMToolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+			this.closeROMToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.closeROMToolStripMenuItem1.Text = "Close ROM";
 			this.closeROMToolStripMenuItem1.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
 			// 
@@ -1843,6 +1852,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator20;
 		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem closeROMToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem makeMovieBackupToolStripMenuItem;
     }
 }
 
