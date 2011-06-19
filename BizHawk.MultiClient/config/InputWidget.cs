@@ -22,7 +22,9 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Text = Bindings[0].ToString();
+				Text = "";
+				for (int x = 0; x < Bindings.Count; x++)
+					Text += Bindings[x].ToString();
 			}
 			Update();
 		}
