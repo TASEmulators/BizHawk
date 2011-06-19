@@ -23,6 +23,18 @@
                 if ((addr & ~1) == 0x1FF400)   return IOBuffer;
                 if (addr == 0x1FF402)          { IOBuffer = (byte) (Cpu.IRQControlByte  | (IOBuffer & 0xF8)); return IOBuffer; }
                 if (addr == 0x1FF403)          { IOBuffer = (byte) (Cpu.ReadIrqStatus() | (IOBuffer & 0xF8)); return IOBuffer; }
+                if (addr >= 0x1FF800)          return ReadCD(addr);
+            }
+
+            if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
+            {
+                if (BramEnabled && BramLocked == false)
+                {
+                    System.Console.WriteLine("READ BRAM[{0}] ; ret {1:X2}", addr & 0x7FF, BRAM[addr & 0x7FF]);
+                    return BRAM[addr & 0x7FF];
+                }
+                System.Console.WriteLine("attemped BRAM read while locked");
+                return 0xFF;
             }
 
             Log.Error("MEM", "UNHANDLED READ: {0:X6}", addr);
@@ -49,8 +61,21 @@
                          addr <  0x1FF400)     { IOBuffer = value; WriteInput(value); }
                 else if (addr == 0x1FF402)     { IOBuffer = value; Cpu.WriteIrqControl(value); }
                 else if (addr == 0x1FF403)     { IOBuffer = value; Cpu.WriteIrqStatus(); }
+                else if (addr >= 0x1FF800)     { WriteCD(addr, value); }
                 else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
             }
+
+            else if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
+            {
+                if (BramEnabled && BramLocked == false)
+                {
+                    System.Console.WriteLine("WRITE BRAM[{0}] : {1:X2}", addr & 0x7FF, value);
+                    BRAM[addr & 0x7FF] = value;
+                    SaveRamModified = true;
+                }
+                else System.Console.WriteLine("attemped BRAM write while locked!");
+            }
+
             else 
                 Log.Error("MEM","UNHANDLED WRITE: {0:X6}:{1:X2}",addr,value);
         }

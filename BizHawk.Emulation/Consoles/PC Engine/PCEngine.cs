@@ -31,6 +31,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
         private bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
         private bool TurboCD    { get { return Type == NecSystemType.TurboCD; } }
+        
+        // BRAM
+        private bool BramEnabled = false;
+        private bool BramLocked = true;
+        private byte[] BRAM;
 
         // Memory system
         public byte[] Ram;
@@ -92,6 +97,18 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 RomData = game.GetRomData();
                 RomLength = RomData.Length;
             }
+
+            if (game.GetOptions().Contains("BRAM"))
+            {
+                BramEnabled = true;
+                BRAM = new byte[2048]; 
+                Console.WriteLine("ENABLE BRAM!");
+
+                // pre-format BRAM
+                BRAM[0] = 0x48; BRAM[1] = 0x55; BRAM[2] = 0x42; BRAM[3] = 0x4D;
+                BRAM[4] = 0x00; BRAM[5] = 0x88; BRAM[6] = 0x10; BRAM[7] = 0x80;
+            }
+
             Cpu.ResetPC();
             SetupMemoryDomains();
         }
@@ -144,14 +161,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveRam
         {
-            get { throw new NotImplementedException(); }
+            get { return BRAM; }
         }
 
-        public bool SaveRamModified
-        {
-            get { return false; }
-            set { throw new NotImplementedException(); }
-        }
+        public bool SaveRamModified { get; set; }
 
         public void SaveStateText(TextWriter writer)
         {
@@ -275,7 +288,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveStateBinary()
         {
-            var buf = new byte[SuperGrafx ? 166552 : 75854];
+            int buflen = SuperGrafx ? 166552 : 75854;
+            if (BramEnabled) buflen += 2048;
+
+            var buf = new byte[buflen];
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);

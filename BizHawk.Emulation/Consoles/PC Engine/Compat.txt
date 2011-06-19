@@ -11,19 +11,20 @@ General:
 
 Air Zonk          - Fully playable, doesn't freeze, but some gfx/timing issues
 Battle Ace        - Some gfx glitches
+Cadash            - Minor raster issue. Timing sensitive game.
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
+Coryoon           - Recent VDC updates broke scrolling. Generally timing sensitive game.
 Cross Wiber       - Minor; Raster on wrong line 
 Davis Cup Tennis  - Some timing issue, splash screen is too slow
 Dungeon Explorer  - Freeze in 'intro' - gfx corruption in-game 
 Fighting Run      - Corruption issues
-Gunboat           - Crash / CPU Break (Needs BRAM)
 Legend of Hero Ton- Slight gfx- check top of screen
 Lode Runner       - Freezes in new game 
 Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
 MML Demo          - Echo channels are too loud (equal volume!)
-Outrun            - Raster issues, music slows when paused
+Outrun            - OK currently but timing sensitive game for future testing
 Paranoia          - Game hits BREAK on 3rd level. need to investigate
-Populous          - Game freezes on starting new game - *** NEEDS BATTERY SAVERAM ***
+Populous          - Game freezes on starting new game - unclear if related to battery RAM
 Power Drift       - Timing glitch... starting new game runs slower than it should
 Power Tennis      - Elaborate intro screen doesnt display right
 Raiden            - Sprites and BG get out of sync with current timing
