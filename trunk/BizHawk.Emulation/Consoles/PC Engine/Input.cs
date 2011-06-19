@@ -63,8 +63,8 @@
 
             if (Region == "Japan") value |= 0x40;
 
-            if (Type != NecSystemType.TurboCD)
-                value |= 0x80;
+            /*if (Type != NecSystemType.TurboCD)
+                value |= 0x80;*/
 
             return value;
         }

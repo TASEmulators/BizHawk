@@ -111,6 +111,7 @@
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.run.cs" />
+    <Compile Include="Consoles\PC Engine\TurboCD.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
