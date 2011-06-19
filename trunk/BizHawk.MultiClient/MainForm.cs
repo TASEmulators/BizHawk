@@ -2239,6 +2239,5 @@ namespace BizHawk.MultiClient
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
-
 	}
 }

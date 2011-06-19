@@ -205,6 +205,7 @@
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.recordMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.playMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.stopMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.makeMovieBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
@@ -1552,6 +1553,7 @@
             this.toolStripSeparator18,
             this.recordMovieToolStripMenuItem1,
             this.playMovieToolStripMenuItem1,
+            this.stopMovieToolStripMenuItem1,
             this.loadLastMovieToolStripMenuItem,
             this.makeMovieBackupToolStripMenuItem,
             this.toolStripSeparator19,
@@ -1561,7 +1563,7 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 264);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 286);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			// 
@@ -1597,6 +1599,13 @@
 			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.playMovieToolStripMenuItem1.Text = "Play Movie";
 			this.playMovieToolStripMenuItem1.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
+			// 
+			// stopMovieToolStripMenuItem1
+			// 
+			this.stopMovieToolStripMenuItem1.Name = "stopMovieToolStripMenuItem1";
+			this.stopMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
+			this.stopMovieToolStripMenuItem1.Text = "Stop Movie";
+			this.stopMovieToolStripMenuItem1.Click += new System.EventHandler(this.stopMovieToolStripMenuItem1_Click);
 			// 
 			// loadLastMovieToolStripMenuItem
 			// 
@@ -1864,6 +1873,7 @@
 		private System.Windows.Forms.ToolStripMenuItem closeROMToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem makeMovieBackupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem automaticallyBackupMoviesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem1;
     }
 }
 

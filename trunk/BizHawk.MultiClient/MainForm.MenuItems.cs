@@ -792,6 +792,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[10].Visible = false;
 				contextMenuStrip1.Items[11].Visible = false;
 				contextMenuStrip1.Items[12].Visible = false;
+				contextMenuStrip1.Items[13].Visible = false;
 			}
 			else
 			{
@@ -803,30 +804,32 @@ namespace BizHawk.MultiClient
 				{
 					contextMenuStrip1.Items[3].Visible = true;
 					contextMenuStrip1.Items[4].Visible = true;
-					contextMenuStrip1.Items[5].Visible = true;
-					contextMenuStrip1.Items[6].Visible = false;
-					contextMenuStrip1.Items[7].Visible = true;
+					contextMenuStrip1.Items[5].Visible = false;
+					contextMenuStrip1.Items[6].Visible = true;
+					contextMenuStrip1.Items[7].Visible = false;
+					contextMenuStrip1.Items[8].Visible = true;
 				}
 				else
 				{
 					contextMenuStrip1.Items[3].Visible = false;
 					contextMenuStrip1.Items[4].Visible = false;
-					contextMenuStrip1.Items[5].Visible = false;
-					contextMenuStrip1.Items[6].Visible = true;
+					contextMenuStrip1.Items[5].Visible = true;
+					contextMenuStrip1.Items[6].Visible = false;
 					contextMenuStrip1.Items[7].Visible = true;
+					contextMenuStrip1.Items[8].Visible = true;
 				}
 
-				contextMenuStrip1.Items[8].Visible = true;
 				contextMenuStrip1.Items[9].Visible = true;
-
 				contextMenuStrip1.Items[10].Visible = true;
+
 				contextMenuStrip1.Items[11].Visible = true;
 				contextMenuStrip1.Items[12].Visible = true;
+				contextMenuStrip1.Items[13].Visible = true;
 			}
 			
 			//TODO:
-			contextMenuStrip1.Items[7].Enabled = false;
-			contextMenuStrip1.Items[8].Enabled = false;
+			contextMenuStrip1.Items[9].Enabled = false;
+			contextMenuStrip1.Items[10].Enabled = false;
 		}
 
 
@@ -846,6 +849,11 @@ namespace BizHawk.MultiClient
 		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.EnableBackupMovies ^= true;
+		}
+
+		private void stopMovieToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			StopUserMovie();
 		}
 	}
 }
