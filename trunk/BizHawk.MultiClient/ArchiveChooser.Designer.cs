@@ -28,88 +28,89 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.lvMembers = new System.Windows.Forms.ListView();
-            this.colSize = new System.Windows.Forms.ColumnHeader();
-            this.colName = new System.Windows.Forms.ColumnHeader();
-            this.flowLayoutPanel1.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.btnCancel);
-            this.flowLayoutPanel1.Controls.Add(this.btnOK);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 276);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(528, 29);
-            this.flowLayoutPanel1.TabIndex = 0;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(450, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(369, 3);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 0;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // lvMembers
-            // 
-            this.lvMembers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+			this.btnCancel = new System.Windows.Forms.Button();
+			this.btnOK = new System.Windows.Forms.Button();
+			this.lvMembers = new System.Windows.Forms.ListView();
+			this.colSize = new System.Windows.Forms.ColumnHeader();
+			this.colName = new System.Windows.Forms.ColumnHeader();
+			this.flowLayoutPanel1.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// flowLayoutPanel1
+			// 
+			this.flowLayoutPanel1.AutoSize = true;
+			this.flowLayoutPanel1.Controls.Add(this.btnCancel);
+			this.flowLayoutPanel1.Controls.Add(this.btnOK);
+			this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+			this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 276);
+			this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+			this.flowLayoutPanel1.Size = new System.Drawing.Size(528, 29);
+			this.flowLayoutPanel1.TabIndex = 0;
+			// 
+			// btnCancel
+			// 
+			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.btnCancel.Location = new System.Drawing.Point(450, 3);
+			this.btnCancel.Name = "btnCancel";
+			this.btnCancel.Size = new System.Drawing.Size(75, 23);
+			this.btnCancel.TabIndex = 1;
+			this.btnCancel.Text = "Cancel";
+			this.btnCancel.UseVisualStyleBackColor = true;
+			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			// 
+			// btnOK
+			// 
+			this.btnOK.Location = new System.Drawing.Point(369, 3);
+			this.btnOK.Name = "btnOK";
+			this.btnOK.Size = new System.Drawing.Size(75, 23);
+			this.btnOK.TabIndex = 0;
+			this.btnOK.Text = "OK";
+			this.btnOK.UseVisualStyleBackColor = true;
+			this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+			// 
+			// lvMembers
+			// 
+			this.lvMembers.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colSize,
             this.colName});
-            this.lvMembers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvMembers.FullRowSelect = true;
-            this.lvMembers.GridLines = true;
-            this.lvMembers.Location = new System.Drawing.Point(0, 0);
-            this.lvMembers.Name = "lvMembers";
-            this.lvMembers.Size = new System.Drawing.Size(528, 276);
-            this.lvMembers.TabIndex = 0;
-            this.lvMembers.UseCompatibleStateImageBehavior = false;
-            this.lvMembers.View = System.Windows.Forms.View.Details;
-            this.lvMembers.ItemActivate += new System.EventHandler(this.lvMembers_ItemActivate);
-            // 
-            // colSize
-            // 
-            this.colSize.Text = "Size";
-            // 
-            // colName
-            // 
-            this.colName.Text = "Name";
-            this.colName.Width = 409;
-            // 
-            // ArchiveChooser
-            // 
-            this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(528, 305);
-            this.Controls.Add(this.lvMembers);
-            this.Controls.Add(this.flowLayoutPanel1);
-            this.Name = "ArchiveChooser";
-            this.ShowIcon = false;
-            this.Text = "Choose File From Archive";
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
+			this.lvMembers.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lvMembers.FullRowSelect = true;
+			this.lvMembers.GridLines = true;
+			this.lvMembers.Location = new System.Drawing.Point(0, 0);
+			this.lvMembers.Name = "lvMembers";
+			this.lvMembers.Size = new System.Drawing.Size(528, 276);
+			this.lvMembers.TabIndex = 0;
+			this.lvMembers.UseCompatibleStateImageBehavior = false;
+			this.lvMembers.View = System.Windows.Forms.View.Details;
+			this.lvMembers.ItemActivate += new System.EventHandler(this.lvMembers_ItemActivate);
+			// 
+			// colSize
+			// 
+			this.colSize.Text = "Size";
+			// 
+			// colName
+			// 
+			this.colName.Text = "Name";
+			this.colName.Width = 409;
+			// 
+			// ArchiveChooser
+			// 
+			this.AcceptButton = this.btnOK;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.btnCancel;
+			this.ClientSize = new System.Drawing.Size(528, 305);
+			this.Controls.Add(this.lvMembers);
+			this.Controls.Add(this.flowLayoutPanel1);
+			this.Name = "ArchiveChooser";
+			this.ShowIcon = false;
+			this.Text = "Choose File From Archive";
+			this.Load += new System.EventHandler(this.ArchiveChooser_Load);
+			this.flowLayoutPanel1.ResumeLayout(false);
+			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 

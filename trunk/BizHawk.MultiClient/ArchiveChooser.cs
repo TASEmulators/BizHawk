@@ -51,5 +51,10 @@ namespace BizHawk.MultiClient
 			DialogResult = DialogResult.OK;
 			Close();
 		}
+
+		private void ArchiveChooser_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

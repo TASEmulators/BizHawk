@@ -10,353 +10,353 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-    public partial class HexEditor : Form
-    {
-        //TODO:
-        //different back color for frozen addresses
-        //Find text box - autohighlights matches, and shows total matches
-        //Users can customize background, & text colors
-        //Tool strip
-        //Text box showing currently highlighted address(es) & total
-        //Show num addresses in group box title (show "address" if 1 address)
-        //big font for currently mouse over'ed value?
-        //Unfreeze All items - this one is tricky though, the dialog should keep track of
-        //  which addresses were frozen using this dialog (its own cheatList), and only 
-        //  remove those from the Cheats window cheat list
+	public partial class HexEditor : Form
+	{
+		//TODO:
+		//different back color for frozen addresses
+		//Find text box - autohighlights matches, and shows total matches
+		//Users can customize background, & text colors
+		//Tool strip
+		//Text box showing currently highlighted address(es) & total
+		//Show num addresses in group box title (show "address" if 1 address)
+		//big font for currently mouse over'ed value?
+		//Unfreeze All items - this one is tricky though, the dialog should keep track of
+		//  which addresses were frozen using this dialog (its own cheatList), and only 
+		//  remove those from the Cheats window cheat list
 
-        int defaultWidth;
-        int defaultHeight;
-        List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+		int defaultWidth;
+		int defaultHeight;
+		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 
 
-        public HexEditor()
-        {
-            InitializeComponent();
-            Closing += (o, e) => SaveConfigSettings();
-        }
+		public HexEditor()
+		{
+			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
+		}
 
-        public void SaveConfigSettings()
-        {
-            if (Global.Config.HexEditorSaveWindowPosition)
-            {
-                Global.Config.HexEditorWndx = this.Location.X;
-                Global.Config.HexEditorWndy = this.Location.Y;
-                Global.Config.HexEditorWidth = this.Right - this.Left;
-                Global.Config.HexEditorHeight = this.Bottom - this.Top;
-            }
-        }
+		public void SaveConfigSettings()
+		{
+			if (Global.Config.HexEditorSaveWindowPosition)
+			{
+				Global.Config.HexEditorWndx = this.Location.X;
+				Global.Config.HexEditorWndy = this.Location.Y;
+				Global.Config.HexEditorWidth = this.Right - this.Left;
+				Global.Config.HexEditorHeight = this.Bottom - this.Top;
+			}
+		}
 
-        private void HexEditor_Load(object sender, EventArgs e)
-        {
-            defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-            defaultHeight = this.Size.Height;
-            if (Global.Config.HexEditorSaveWindowPosition)
-            {
-                if (Global.Config.HexEditorSaveWindowPosition && Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
-                    this.Location = new Point(Global.Config.HexEditorWndx, Global.Config.HexEditorWndy);
+		private void HexEditor_Load(object sender, EventArgs e)
+		{
+			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = this.Size.Height;
+			if (Global.Config.HexEditorSaveWindowPosition)
+			{
+				if (Global.Config.HexEditorSaveWindowPosition && Global.Config.HexEditorWndx >= 0 && Global.Config.HexEditorWndy >= 0)
+					this.Location = new Point(Global.Config.HexEditorWndx, Global.Config.HexEditorWndy);
 
-                if (Global.Config.HexEditorWidth >= 0 && Global.Config.HexEditorHeight >= 0)
-                {
-                    this.Size = new System.Drawing.Size(Global.Config.HexEditorWidth, Global.Config.HexEditorHeight);
-                }
-            }
-            SetMemoryDomainMenu();
-        }
+				if (Global.Config.HexEditorWidth >= 0 && Global.Config.HexEditorHeight >= 0)
+				{
+					this.Size = new System.Drawing.Size(Global.Config.HexEditorWidth, Global.Config.HexEditorHeight);
+				}
+			}
+			SetMemoryDomainMenu();
+		}
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 
-        public void UpdateValues()
-        {
-            if (!this.IsHandleCreated || this.IsDisposed) return;
-            MemoryViewer.Refresh();
-        }
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			MemoryViewer.Refresh();
+		}
 
-        public void Restart()
-        {
-            if (!this.IsHandleCreated || this.IsDisposed) return;
-            SetMemoryDomainMenu(); //Calls update routines
-            MemoryViewer.ResetScrollBar();
-        }
+		public void Restart()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			SetMemoryDomainMenu(); //Calls update routines
+			MemoryViewer.ResetScrollBar();
+		}
 
-        private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
-        }
+		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
+		}
 
-        private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.AutoLoadHexEditor ^= true;
-        }
+		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadHexEditor ^= true;
+		}
 
-        private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            enToolStripMenuItem.Checked = MemoryViewer.BigEndian;
-            switch (MemoryViewer.GetDataSize())
-            {
-                default:
-                case 1:
-                    byteToolStripMenuItem.Checked = true;
-                    byteToolStripMenuItem1.Checked = false;
-                    byteToolStripMenuItem2.Checked = false;
-                    break;
-                case 2:
-                    byteToolStripMenuItem.Checked = false;
-                    byteToolStripMenuItem1.Checked = true;
-                    byteToolStripMenuItem2.Checked = false;
-                    break;
-                case 4:
-                    byteToolStripMenuItem.Checked = false;
-                    byteToolStripMenuItem1.Checked = false;
-                    byteToolStripMenuItem2.Checked = true;
-                    break;
-            }
+		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			enToolStripMenuItem.Checked = MemoryViewer.BigEndian;
+			switch (MemoryViewer.GetDataSize())
+			{
+				default:
+				case 1:
+					byteToolStripMenuItem.Checked = true;
+					byteToolStripMenuItem1.Checked = false;
+					byteToolStripMenuItem2.Checked = false;
+					break;
+				case 2:
+					byteToolStripMenuItem.Checked = false;
+					byteToolStripMenuItem1.Checked = true;
+					byteToolStripMenuItem2.Checked = false;
+					break;
+				case 4:
+					byteToolStripMenuItem.Checked = false;
+					byteToolStripMenuItem1.Checked = false;
+					byteToolStripMenuItem2.Checked = true;
+					break;
+			}
 
-            if (MemoryViewer.GetHighlightedAddress() >= 0)
-            {
-                addToRamWatchToolStripMenuItem1.Enabled = true;
-                freezeAddressToolStripMenuItem.Enabled = true;
-            }
-            else
-            {
-                addToRamWatchToolStripMenuItem1.Enabled = false;
-                freezeAddressToolStripMenuItem.Enabled = false;
-            }
-        }
+			if (MemoryViewer.GetHighlightedAddress() >= 0)
+			{
+				addToRamWatchToolStripMenuItem1.Enabled = true;
+				freezeAddressToolStripMenuItem.Enabled = true;
+			}
+			else
+			{
+				addToRamWatchToolStripMenuItem1.Enabled = false;
+				freezeAddressToolStripMenuItem.Enabled = false;
+			}
+		}
 
-        private void SetMemoryDomain(int pos)
-        {
-            if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
-            {
-                MemoryViewer.SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
-            }
-            UpdateDomainString();
-            MemoryViewer.ResetScrollBar();
-        }
+		private void SetMemoryDomain(int pos)
+		{
+			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
+			{
+				MemoryViewer.SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
+			}
+			UpdateDomainString();
+			MemoryViewer.ResetScrollBar();
+		}
 
-        private void UpdateDomainString()
-        {
-            string memoryDomain = MemoryViewer.GetMemoryDomainStr();
-            string systemID = Global.Emulator.SystemId;
-            MemoryViewer.Text = systemID + " " + memoryDomain;
-        }
+		private void UpdateDomainString()
+		{
+			string memoryDomain = MemoryViewer.GetMemoryDomainStr();
+			string systemID = Global.Emulator.SystemId;
+			MemoryViewer.Text = systemID + " " + memoryDomain;
+		}
 
-        private void SetMemoryDomainMenu()
-        {
-            memoryDomainsToolStripMenuItem.DropDownItems.Clear();
-            if (Global.Emulator.MemoryDomains.Count > 0)
-            {
-                for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-                {
-                    string str = Global.Emulator.MemoryDomains[x].ToString();
-                    var item = new ToolStripMenuItem();
-                    item.Text = str;
-                    {
-                        int z = x;
-                        item.Click += (o, ev) => SetMemoryDomain(z);
-                    }
-                    if (x == 0)
-                    {
-                        SetMemoryDomain(x);
-                    }
-                    memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
-                    domainMenuItems.Add(item);
-                }
-            }
-            else
-                memoryDomainsToolStripMenuItem.Enabled = false;
-        }
+		private void SetMemoryDomainMenu()
+		{
+			memoryDomainsToolStripMenuItem.DropDownItems.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				{
+					string str = Global.Emulator.MemoryDomains[x].ToString();
+					var item = new ToolStripMenuItem();
+					item.Text = str;
+					{
+						int z = x;
+						item.Click += (o, ev) => SetMemoryDomain(z);
+					}
+					if (x == 0)
+					{
+						SetMemoryDomain(x);
+					}
+					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
+					domainMenuItems.Add(item);
+				}
+			}
+			else
+				memoryDomainsToolStripMenuItem.Enabled = false;
+		}
 
-        public void GoToAddress(int address)
-        {
-            if (address < MemoryViewer.GetSize())
-            {
-                MemoryViewer.SetHighlighted(address);
-                MemoryViewer.Refresh();
-            }
-        }
+		public void GoToAddress(int address)
+		{
+			if (address < MemoryViewer.GetSize())
+			{
+				MemoryViewer.SetHighlighted(address);
+				MemoryViewer.Refresh();
+			}
+		}
 
-        private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            InputPrompt i = new InputPrompt();
-            i.Text = "Go to Address";
-            i.SetMessage("Enter a hexadecimal value");
-            i.ShowDialog();
+		private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InputPrompt i = new InputPrompt();
+			i.Text = "Go to Address";
+			i.SetMessage("Enter a hexadecimal value");
+			i.ShowDialog();
 
-            if (i.UserOK)
-            {
-                if (InputValidate.IsValidHexNumber(i.UserText))
-                {
-                    GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
-                }
-            }
-        }
+			if (i.UserOK)
+			{
+				if (InputValidate.IsValidHexNumber(i.UserText))
+				{
+					GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
+				}
+			}
+		}
 
-        
 
-        private void HexEditor_Resize(object sender, EventArgs e)
-        {
-            MemoryViewer.SetUpScrollBar();
-            MemoryViewer.Refresh();
-        }
 
-        private void byteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MemoryViewer.SetDataSize(1);
-        }
+		private void HexEditor_Resize(object sender, EventArgs e)
+		{
+			MemoryViewer.SetUpScrollBar();
+			MemoryViewer.Refresh();
+		}
 
-        private void byteToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            MemoryViewer.SetDataSize(2);
-        }
+		private void byteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MemoryViewer.SetDataSize(1);
+		}
 
-        private void byteToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            MemoryViewer.SetDataSize(4);
-        }
+		private void byteToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			MemoryViewer.SetDataSize(2);
+		}
 
-        private void enToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MemoryViewer.BigEndian ^= true;
-        }
+		private void byteToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			MemoryViewer.SetDataSize(4);
+		}
 
-        private void MemoryViewer_Paint(object sender, PaintEventArgs e)
-        {
+		private void enToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MemoryViewer.BigEndian ^= true;
+		}
 
-        }
+		private void MemoryViewer_Paint(object sender, PaintEventArgs e)
+		{
 
-        private void AddToRamWatch()
-        {
-            //Add to RAM Watch
-            int address = MemoryViewer.GetPointedAddress();
-            if (address >= 0)
-            {
-                Watch w = new Watch();
-                w.address = address;
+		}
 
-                switch (MemoryViewer.GetDataSize())
-                {
-                    default:
-                    case 1:
-                        w.type = atype.BYTE;
-                        break;
-                    case 2:
-                        w.type = atype.WORD;
-                        break;
-                    case 4:
-                        w.type = atype.DWORD;
-                        break;
-                }
+		private void AddToRamWatch()
+		{
+			//Add to RAM Watch
+			int address = MemoryViewer.GetPointedAddress();
+			if (address >= 0)
+			{
+				Watch w = new Watch();
+				w.address = address;
 
-                w.bigendian = MemoryViewer.BigEndian;
-                w.signed = asigned.HEX;
+				switch (MemoryViewer.GetDataSize())
+				{
+					default:
+					case 1:
+						w.type = atype.BYTE;
+						break;
+					case 2:
+						w.type = atype.WORD;
+						break;
+					case 4:
+						w.type = atype.DWORD;
+						break;
+				}
 
-                Global.MainForm.LoadRamWatch();
-                Global.MainForm.RamWatch1.AddWatch(w);
-            }
-        }
+				w.bigendian = MemoryViewer.BigEndian;
+				w.signed = asigned.HEX;
 
-        private void MemoryViewer_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            AddToRamWatch();
-        }
+				Global.MainForm.LoadRamWatch();
+				Global.MainForm.RamWatch1.AddWatch(w);
+			}
+		}
 
-        private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int p = MemoryViewer.GetPointedAddress();
-            if (p >= 0)
-            {
-                InputPrompt i = new InputPrompt();
-                i.Text = "Poke " + String.Format("{0:X}", p);
-                i.SetMessage("Enter a hexadecimal value");
-                i.ShowDialog();
+		private void MemoryViewer_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			AddToRamWatch();
+		}
 
-                if (i.UserOK)
-                {
-                    if (InputValidate.IsValidHexNumber(i.UserText))
-                    {
-                        int value = int.Parse(i.UserText, NumberStyles.HexNumber);
-                        MemoryViewer.HighlightPointed();
-                        MemoryViewer.PokeHighlighted(value);
-                    }
-                }
-            }
-        }
+		private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			int p = MemoryViewer.GetPointedAddress();
+			if (p >= 0)
+			{
+				InputPrompt i = new InputPrompt();
+				i.Text = "Poke " + String.Format("{0:X}", p);
+				i.SetMessage("Enter a hexadecimal value");
+				i.ShowDialog();
 
-        private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddToRamWatch();
-        }
+				if (i.UserOK)
+				{
+					if (InputValidate.IsValidHexNumber(i.UserText))
+					{
+						int value = int.Parse(i.UserText, NumberStyles.HexNumber);
+						MemoryViewer.HighlightPointed();
+						MemoryViewer.PokeHighlighted(value);
+					}
+				}
+			}
+		}
 
-        private void addToRamWatchToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            AddToRamWatch();
-        }
+		private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddToRamWatch();
+		}
 
-        private void saveWindowsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.HexEditorSaveWindowPosition ^= true;
-        }
+		private void addToRamWatchToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			AddToRamWatch();
+		}
 
-        private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
-            saveWindowsSettingsToolStripMenuItem.Checked = Global.Config.HexEditorSaveWindowPosition;
-        }
+		private void saveWindowsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.HexEditorSaveWindowPosition ^= true;
+		}
 
-        private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FreezeAddress();
-        }
+		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadHexEditor;
+			saveWindowsSettingsToolStripMenuItem.Checked = Global.Config.HexEditorSaveWindowPosition;
+		}
 
-        private void FreezeAddress()
-        {
-            int address = MemoryViewer.GetPointedAddress();
-            if (address >= 0)
-            {
-                Cheat c = new Cheat();
-                c.address = address;
-                c.value = MemoryViewer.GetPointedValue();
-                c.domain = MemoryViewer.GetDomain();
-                //TODO: multibyte
-                switch (MemoryViewer.GetDataSize())
-                {
-                    default:
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 4:
-                        break;
-                }
+		private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FreezeAddress();
+		}
 
-                //w.bigendian = MemoryViewer.BigEndian;
+		private void FreezeAddress()
+		{
+			int address = MemoryViewer.GetPointedAddress();
+			if (address >= 0)
+			{
+				Cheat c = new Cheat();
+				c.address = address;
+				c.value = MemoryViewer.GetPointedValue();
+				c.domain = MemoryViewer.GetDomain();
+				//TODO: multibyte
+				switch (MemoryViewer.GetDataSize())
+				{
+					default:
+					case 1:
+						break;
+					case 2:
+						break;
+					case 4:
+						break;
+				}
 
-                Global.MainForm.Cheats1.AddCheat(c);
-            }
-        }
+				//w.bigendian = MemoryViewer.BigEndian;
 
-        private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FreezeAddress();
-        }
+				Global.MainForm.Cheats1.AddCheat(c);
+			}
+		}
 
-        private void CheckDomainMenuItems()
-        {
-            for (int x = 0; x < domainMenuItems.Count; x++)
-            {
-                if (MemoryViewer.GetDomain().Name == domainMenuItems[x].Text)
-                    domainMenuItems[x].Checked = true;
-                else
-                    domainMenuItems[x].Checked = false;
-            }
-        }
+		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			FreezeAddress();
+		}
 
-        private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-        {
-            CheckDomainMenuItems();
-        }
-    }
+		private void CheckDomainMenuItems()
+		{
+			for (int x = 0; x < domainMenuItems.Count; x++)
+			{
+				if (MemoryViewer.GetDomain().Name == domainMenuItems[x].Text)
+					domainMenuItems[x].Checked = true;
+				else
+					domainMenuItems[x].Checked = false;
+			}
+		}
+
+		private void memoryDomainsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			CheckDomainMenuItems();
+		}
+	}
 }
