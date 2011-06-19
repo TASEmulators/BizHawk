@@ -106,22 +106,13 @@ namespace BizHawk.MultiClient
 
         public bool IsPressedActually(string button)
         {
-			try
-			{
-				bool sticky = stickyButtons[button];
+			bool sticky = stickyButtons[button];
 
-				foreach (var control in bindings[button])
-					if (Input.IsPressed(control))
-						return sticky ? false : true;
+			foreach (var control in bindings[button])
+				if (Input.IsPressed(control))
+					return sticky ? false : true;
 
-				return sticky ? true : false;
-			}
-			catch
-			{
-				int x = 0;
-				x++;
-			}
-			return true;
+			return sticky ? true : false;
         }
 
         public float GetFloat(string name)
