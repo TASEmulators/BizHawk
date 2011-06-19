@@ -27,6 +27,11 @@ namespace BizHawk.MultiClient
 
         public static string MovieVersion = "BizHawk v0.0.1";
 
+		public static string MakeGUID()
+		{
+			return System.Guid.NewGuid().ToString();
+		}
+
         public MovieHeader() //All required fields will be set to default values
         {
             HeaderParams.Add(EMULATIONVERSION, MainForm.EMUVERSION);
@@ -35,7 +40,7 @@ namespace BizHawk.MultiClient
             HeaderParams.Add(GAMENAME, "");
             HeaderParams.Add(AUTHOR, "");
             HeaderParams.Add(RERECORDS, "0");
-            HeaderParams.Add(GUID, System.Guid.NewGuid().ToString());
+            HeaderParams.Add(GUID, MakeGUID());
         }
 
         public MovieHeader(string EmulatorVersion, string MovieVersion, string Platform, string GameName, string Author, int rerecords)
@@ -46,7 +51,7 @@ namespace BizHawk.MultiClient
             HeaderParams.Add(GAMENAME, GameName);
             HeaderParams.Add(AUTHOR, Author);
             HeaderParams.Add(RERECORDS, rerecords.ToString());
-            HeaderParams.Add(GUID, System.Guid.NewGuid().ToString());
+            HeaderParams.Add(GUID, MakeGUID());
         }
 
         /// <summary>
