@@ -2010,7 +2010,7 @@ FFD92458		Body Conquest II	PCE
 599EAD9B		Bonk's Adventure	PCE
 64301FF1		Bonk's Revenge	PCE
 9913A9DE		Bonk 3 - Bonk's Big Adventure	PCE
-605BE213		Boxy Boy	PCE
+605BE213		Boxy Boy	PCE		BRAM
 CCA08B02		Bravoman	PCE
 C9D7426A		Break In	PCE
 0D766139		Bubblegum Crash	PCE
@@ -2018,9 +2018,11 @@ C9D7426A		Break In	PCE
 D233C05A		Burning Angels	PCE
 47AFE6D7		Bloody Wolf	PCE
 BB0B3AEF		Cadash	PCE
-3F9F95A4		CD-ROM System V1.00 (J)	PCE
-D634D931		CD-ROM System V2.00 (U)	PCE
-283B74E0		CD-ROM System V2.10 (J)	PCE
+3F9F95A4		CD-ROM System Card V1.00 (J)	PCE		BRAM
+FF2A5EC3		CD-ROM System Card V2.00 (U)	PCE		BRAM
+283B74E0		CD-ROM System Card V2.10 (J)	PCE		BRAM
+6D9A73EF		CD-ROM Super System Card V3.00 (J)	PCE		BRAM
+2B5B75FE		CD-ROM Super System Card V3.00 (U)	PCE		BRAM
 9EDC0AEA		Champion Wrestler	PCE
 15EE889A		Champions Forever Boxing	PCE
 6F4FD790		Chase HQ (J)	PCE
@@ -2081,7 +2083,7 @@ E749A22C		Gokuraku Chuka Taisen	PCE
 4BD38F17		Gomola Speed	PCE
 0517DA65		Gradius	PCE
 FAE0FC60		Order of the Griffon	PCE
-F370B58E		Gunboat	PCE
+F370B58E		Gunboat	PCE		BRAM
 A17D4D7E		Gunhed	PCE
 BA4D0DD4		Hana Taka Daka	PCE
 BF3E2CC7		Hani in the Sky	PCE
@@ -2158,7 +2160,7 @@ BB4429B6		Paranoia	PCE
 E6458212		Parasol Stars	PCE
 647718F9		Parodius	PCE
 740491C2		PC Denjin - Punkic Cyborgs	PCE
-4938B8BB		Populous	PCE
+4938B8BB		Populous	PCE		BRAM
 25E0F6E9		Power Drift	PCE
 BE8B6E3B		Power Gate	PCE
 04A85769		Power League	PCE
@@ -2234,6 +2236,7 @@ B77F2E2F		Zero 4 Champ	PCE
 67AAB7A1		Zipang	PCE
 DA9A2DC9	V	Battle Royale (bad dump)	PCE
 7AA9D4DC	V	Blazing Lazers (bad dump)	PCE
+D634D931	V	CD-ROM System V2.00 (U) (bad dump)	PCE
 AC4DFBE5	V	Darkwing Duck (bad dump)	PCE
 4F8AEA16	V	Davis Cup Tennis (bad dump)	PCE
 F9C3EFD4	V	Dungeon Explorer (bad dump)	PCE
