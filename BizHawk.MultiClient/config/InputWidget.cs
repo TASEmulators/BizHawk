@@ -13,6 +13,9 @@ namespace BizHawk.MultiClient
 		}
 
 		public List<IBinding> Bindings = new List<IBinding>();
+		bool ctrlWasPressed = false;
+		bool altWasPressed = false;
+		bool shiftWasPressed = false;
 
 		void UpdateLabel()
 		{
@@ -50,6 +53,78 @@ namespace BizHawk.MultiClient
 				UpdateLabel();
 			}
 			this.Parent.SelectNextControl(this, true, true, true, true);
+		}
+
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.ControlKey)
+			{
+				if (ctrlWasPressed)
+				{
+					KeyboardBinding kb = new KeyboardBinding();
+					kb.key = Keys.ControlKey;
+					Bindings.Clear();
+					Bindings.Add(kb);
+					UpdateLabel();
+					this.Parent.SelectNextControl(this, true, true, true, true);
+					ctrlWasPressed = false;
+					shiftWasPressed = false;
+					altWasPressed = false;
+				}
+				else
+				{
+					ctrlWasPressed = true;
+					shiftWasPressed = false;
+					altWasPressed = false;
+					BackColor = SystemColors.ControlLight;
+				}
+			}
+			else if (e.KeyData == Keys.ShiftKey)
+			{
+				if (shiftWasPressed)
+				{
+					KeyboardBinding kb = new KeyboardBinding();
+					kb.key = Keys.ShiftKey;
+					Bindings.Clear();
+					Bindings.Add(kb);
+					UpdateLabel();
+					this.Parent.SelectNextControl(this, true, true, true, true);
+					ctrlWasPressed = false;
+					shiftWasPressed = false;
+					altWasPressed = false;
+				}
+				else
+				{
+					shiftWasPressed = true;
+					altWasPressed = false;
+					ctrlWasPressed = false;
+					BackColor = SystemColors.ControlLight;
+				}
+			}
+			else if (e.KeyData == Keys.Menu)
+			{
+				if (altWasPressed)
+				{
+					KeyboardBinding kb = new KeyboardBinding();
+					kb.key = Keys.Menu;
+					Bindings.Clear();
+					Bindings.Add(kb);
+					UpdateLabel();
+					this.Parent.SelectNextControl(this, true, true, true, true);
+					ctrlWasPressed = false;
+					shiftWasPressed = false;
+					altWasPressed = false;
+				}
+				else
+				{
+					altWasPressed = true;
+					ctrlWasPressed = false;
+					shiftWasPressed = false;
+					BackColor = SystemColors.ControlLight;
+				}
+			}
+
+			base.OnKeyUp(e);
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -91,6 +166,12 @@ namespace BizHawk.MultiClient
 			string str = "";
 			
 			str += key.ToString();
+			if (str.Length == 10 && str == "ControlKey")
+				str = "LeftControl";
+			if (str.Length == 4 && str == "Menu")
+				str = "LeftAlt";
+			if (str.Length == 8 && str == "ShiftKey")
+				str = "LeftShift";
 			if (str.Length == 2 && str == "Up")
 				str = "UpArrow";
 			if (str.Length == 4 && str == "Down")
