@@ -199,6 +199,9 @@
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
+			this.PlayRecordStatus = new System.Windows.Forms.ToolStripDropDownButton();
+			this.PauseStrip = new System.Windows.Forms.ToolStripDropDownButton();
+			this.DumpError = new System.Windows.Forms.ToolStripDropDownButton();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openRomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1532,7 +1535,10 @@
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.EmuStatus});
+            this.DumpError,
+            this.EmuStatus,
+            this.PlayRecordStatus,
+            this.PauseStrip});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 386);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(470, 22);
@@ -1544,6 +1550,38 @@
 			// 
 			this.EmuStatus.Name = "EmuStatus";
 			this.EmuStatus.Size = new System.Drawing.Size(0, 17);
+			// 
+			// PlayRecordStatus
+			// 
+			this.PlayRecordStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+			this.PlayRecordStatus.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
+			this.PlayRecordStatus.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PlayRecordStatus.Name = "PlayRecordStatus";
+			this.PlayRecordStatus.ShowDropDownArrow = false;
+			this.PlayRecordStatus.Size = new System.Drawing.Size(4, 20);
+			this.PlayRecordStatus.Text = "Movie is in play mode";
+			// 
+			// PauseStrip
+			// 
+			this.PauseStrip.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.PauseStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+			this.PauseStrip.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.PauseStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PauseStrip.Name = "PauseStrip";
+			this.PauseStrip.ShowDropDownArrow = false;
+			this.PauseStrip.Size = new System.Drawing.Size(4, 20);
+			this.PauseStrip.Text = "toolStripDropDownButton1";
+			this.PauseStrip.ToolTipText = "Emulator is paused";
+			// 
+			// DumpError
+			// 
+			this.DumpError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
+			this.DumpError.Image = global::BizHawk.MultiClient.Properties.Resources.WarningHS;
+			this.DumpError.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DumpError.Name = "DumpError";
+			this.DumpError.ShowDropDownArrow = false;
+			this.DumpError.Size = new System.Drawing.Size(4, 20);
+			this.DumpError.Text = "Bad ROM Dump in use";
 			// 
 			// contextMenuStrip1
 			// 
@@ -1563,7 +1601,7 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 286);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 264);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			// 
@@ -1874,6 +1912,9 @@
 		private System.Windows.Forms.ToolStripMenuItem makeMovieBackupToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem automaticallyBackupMoviesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripDropDownButton PauseStrip;
+		private System.Windows.Forms.ToolStripDropDownButton PlayRecordStatus;
+		private System.Windows.Forms.ToolStripDropDownButton DumpError;
     }
 }
 
