@@ -9,8 +9,8 @@ namespace BizHawk.MultiClient
 	//split into "bind" and "open (the bound thing)"
 	//scan archive to flatten interior directories down to a path (maintain our own archive item list)
 
-    public class HawkFile : IDisposable
-    {
+	public class HawkFile : IDisposable
+	{
 		public static bool ExistsAt(string path)
 		{
 			using (var file = new HawkFile(path))
@@ -62,7 +62,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// returns the complete canonical full path ("c:\path\to\archive|member") of the bound file
 		/// </summary>
-		public string CanonicalFullPath { get { return MakeCanonicalName(rootPath,memberPath); } }
+		public string CanonicalFullPath { get { return MakeCanonicalName(rootPath, memberPath); } }
 
 		/// <summary>
 		/// returns the complete canonical name ("archive|member") of the bound file
@@ -72,7 +72,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// returns the virtual name of the bound file (disregarding the archive)
 		/// </summary>
-		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(rootPath,memberPath)); } }
+		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(rootPath, memberPath)); } }
 
 		/// <summary>
 		/// returns the extension of Name
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 		List<ArchiveItem> archiveItems;
 
 		public HawkFile(string path)
-        {
+		{
 			string autobind = null;
 			bool isArchivePath = IsCanonicalArchivePath(path);
 			if (isArchivePath)
@@ -121,11 +121,11 @@ namespace BizHawk.MultiClient
 				autobind = parts[1];
 			}
 
-            var fi = new FileInfo(path);
+			var fi = new FileInfo(path);
 
 			rootExists = fi.Exists;
 			if (fi.Exists == false)
-                return;
+				return;
 
 			rootPath = path;
 			exists = true;
@@ -158,7 +158,7 @@ namespace BizHawk.MultiClient
 
 				exists = false;
 			}
-        }
+		}
 
 		/// <summary>
 		/// is the supplied path a canonical name including an archive?
@@ -204,7 +204,7 @@ namespace BizHawk.MultiClient
 			boundStream.Position = 0;
 			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
 			Console.WriteLine("bound " + CanonicalFullPath);
-			
+
 			return this;
 		}
 
@@ -244,7 +244,7 @@ namespace BizHawk.MultiClient
 			return BindByExtensionCore(false, extensions);
 		}
 
-			/// <summary>
+		/// <summary>
 		/// Binds the first item in the archive (or the file itself) if the extension matches one of the supplied templates.
 		/// You probably should not use this. use BindSoleItemOf or the archive chooser instead
 		/// </summary>
@@ -308,7 +308,7 @@ namespace BizHawk.MultiClient
 		}
 
 		private void AnalyzeArchive(string path)
-        {
+		{
 			SevenZip.FileChecker.ThrowExceptions = false;
 			int offset;
 			bool isExecutable;
@@ -326,17 +326,17 @@ namespace BizHawk.MultiClient
 					archiveItems = null;
 				}
 			}
-        }
+		}
 
-        public void Dispose()
-        {
+		public void Dispose()
+		{
 			Unbind();
-			
+
 			if (extractor != null) extractor.Dispose();
 			if (rootStream != null) rootStream.Dispose();
 
 			extractor = null;
 			rootStream = null;
 		}
-    }
+	}
 }
