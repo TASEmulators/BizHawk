@@ -169,7 +169,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			new ControllerDefinition
 			{
 				Name = "NES Controls",
-				BoolButtons = { "A","B","Select","Start","Left","Up","Down","Right", "Reset" }
+				BoolButtons = { "P1 A","P1 B","P1 Select","P1 Start","P1 Left","P1 Up","P1 Down","P1 Right", "Reset", 
+				"P2 A", "P2 B", "P2 Select", "P2 Start", "P2 Up", "P2 Down", "P2 Left", "P2 Right"}
 			};
 
 		public ControllerDefinition ControllerDefinition { get { return NESController; } }
@@ -203,7 +204,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void Strobe()
 			{
 				value = 0;
-				foreach (string str in new string[] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" })
+				foreach (string str in new string[] { "P" + (player + 1).ToString() + " Right", "P" + (player + 1).ToString() + " Left", 
+					"P" + (player + 1).ToString() +  " Down", "P" + (player + 1).ToString() +  " Up", "P" + (player + 1).ToString() +  " Start", 
+					"P" + (player + 1).ToString() +  " Select", "P" + (player + 1).ToString() +  " B", "P" + (player + 1).ToString() +  " A" })
 				{
 					value <<= 1;
 					value |= nes.Controller.IsPressed(str) ? 1 : 0;

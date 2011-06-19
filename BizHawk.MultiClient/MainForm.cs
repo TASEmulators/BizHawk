@@ -489,16 +489,16 @@ namespace BizHawk.MultiClient
 
 			var nesControls = new Controller(NES.NESController);
 			nesControls.BindMulti("Reset", Global.Config.NESReset);
-			for (int i = 0; i < 1 /*TODO*/; i++)
+			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
-				nesControls.BindMulti("Up", Global.Config.NESController[i].Up);
-				nesControls.BindMulti("Down", Global.Config.NESController[i].Down);
-				nesControls.BindMulti("Left", Global.Config.NESController[i].Left);
-				nesControls.BindMulti("Right", Global.Config.NESController[i].Right);
-				nesControls.BindMulti("A", Global.Config.NESController[i].A);
-				nesControls.BindMulti("B", Global.Config.NESController[i].B);
-				nesControls.BindMulti("Select", Global.Config.NESController[i].Select);
-				nesControls.BindMulti("Start", Global.Config.NESController[i].Start);
+				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
+				nesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESController[i].Down);
+				nesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.NESController[i].Left);
+				nesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.NESController[i].Right);
+				nesControls.BindMulti("P" + (i + 1) + " A", Global.Config.NESController[i].A);
+				nesControls.BindMulti("P" + (i + 1) + " B", Global.Config.NESController[i].B);
+				nesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESController[i].Select);
+				nesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESController[i].Start);
 			}
 			Global.NESControls = nesControls;
 
