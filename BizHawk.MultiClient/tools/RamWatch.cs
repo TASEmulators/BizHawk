@@ -1389,9 +1389,9 @@ namespace BizHawk.MultiClient
 			string columnName = WatchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			watchList.Sort((x, y) => x.CompareTo(y, columnName));//* (sortReverse ? -1 : 1));
-			//sortedCol = columnName;
-			//sortReverse = !(sortReverse);
+			watchList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			sortedCol = columnName;
+			sortReverse = !(sortReverse);
 			WatchListView.Refresh();
 		}
 
