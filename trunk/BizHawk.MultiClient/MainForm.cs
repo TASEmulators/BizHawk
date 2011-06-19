@@ -322,16 +322,23 @@ namespace BizHawk.MultiClient
 		private void PauseEmulator()
 		{
 			EmulatorPaused = true;
+			PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.Image;
 		}
 
 		private void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
+			PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.None;
 		}
 
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
+			if (EmulatorPaused)
+				PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			else
+				PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.None;
+
 		}
 
 		private void LoadRomFromRecent(string rom)
