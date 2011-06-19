@@ -37,6 +37,14 @@ namespace BizHawk.MultiClient
             if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
             if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
             if (control.StartsWith("J4 ")) return GetGamePad(3, control.Substring(3));
+			//Key z = Key.n
+			Key z = Key.NumberPad4;
+			Key y = Key.LeftArrow;
+			if (z == Key.LeftArrow || y == Key.LeftArrow)
+			{
+				int x = 0;
+				x++;
+			}
             Key k = (Key) Enum.Parse(typeof(Key), control, true);
             return KeyInput.IsPressed(k);
         }
