@@ -1,3 +1,5 @@
+06/19/2011 - MTPO = sync, smb = sync, fist of the north star = doesn't sync (and is very sync unstable in fceu versions)
+
 NES - In general, it's very laggy, and doesn't seem to want to turbo. Audio is always messed up in some way.
 
 Adventures of Lolo (1268M) fails. Odd audio.
