@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 {
     //TODO: 
     //Sizing event should change prevWidth & prevHeight
-    
+    //Remove AppendMapping and TruncateMapping functions
 
     public partial class InputConfig : Form
     {
@@ -42,19 +42,16 @@ namespace BizHawk.MultiClient
 
         private string TruncateButtonMapping(string button)
         {
-            //all config button mappings have the name followed by a comma & space, then key mapping, remove up through the space
-            int x = button.LastIndexOf(',');
-            if (x != -1)
-                return button.Substring(x + 2, button.Length - (x + 2));
-            else
-                return "";
+            //adelikat: This function is a relic from before mappings were saved via JSON, this function should be squashed
+            return button; //.Substring(x + 2, button.Length - (x + 2));
         }
         private string AppendButtonMapping(string button, string oldmap)
         {
-            int x = oldmap.LastIndexOf(',');
-            if (x != -1)
-                return oldmap.Substring(0, x + 2) + button;
-            else
+			//adelikat: Another relic, remove this
+			//int x = oldmap.LastIndexOf(',');
+			//if (x != -1)
+			//    return oldmap.Substring(0, x + 2) + button;
+			//else
                 return button;
         }
 
