@@ -361,28 +361,28 @@
 			this.showChangeCountsToolStripMenuItem.Checked = true;
 			this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
-			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.showChangeCountsToolStripMenuItem.Text = "Change Counts";
 			this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
 			// 
 			// showPreviousValueToolStripMenuItem
 			// 
 			this.showPreviousValueToolStripMenuItem.Name = "showPreviousValueToolStripMenuItem";
-			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.showPreviousValueToolStripMenuItem.Text = "Previous Value";
 			this.showPreviousValueToolStripMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
 			// 
 			// prevValueShowsChangeAmountToolStripMenuItem
 			// 
 			this.prevValueShowsChangeAmountToolStripMenuItem.Name = "prevValueShowsChangeAmountToolStripMenuItem";
-			this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value  as change";
 			this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(203, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(200, 6);
 			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
@@ -416,6 +416,7 @@
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
+			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.ColumnReorder);
 			this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
