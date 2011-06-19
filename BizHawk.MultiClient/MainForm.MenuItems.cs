@@ -770,6 +770,13 @@ namespace BizHawk.MultiClient
 
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
+			if (EmulatorPaused)
+				wasPaused = true;
+			else
+				wasPaused = false;
+			didMenuPause = true;
+			PauseEmulator();
+
 			if (IsNullEmulator())
 			{
 				contextMenuStrip1.Items[0].Visible = true;
@@ -820,6 +827,15 @@ namespace BizHawk.MultiClient
 			//TODO:
 			contextMenuStrip1.Items[7].Enabled = false;
 			contextMenuStrip1.Items[8].Enabled = false;
+		}
+
+
+		private void contextMenuStrip1_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+		{
+			if (!wasPaused)
+			{
+				UnpauseEmulator();
+			}
 		}
 
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
