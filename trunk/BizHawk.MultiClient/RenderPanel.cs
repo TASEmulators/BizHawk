@@ -375,18 +375,22 @@ namespace BizHawk.MultiClient
 			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY
 				|| Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
 			{
-				MessageFont.DrawString(null, "Playback", 208 + 1,
+				MessageFont.DrawString(null, "Play", backingControl.Size.Width-47,
 					 0 + 1, new Color4(Color.Black));
-				MessageFont.DrawString(null, "Playback", 208,
+				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
 					0, new Color4(Color.Red));
 			}
 			else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
 			{
-				AlertFont.DrawString(null, "Recording", 208 + 1,
+				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 65,
 						 0 + 1, new Color4(Color.Black));
-				AlertFont.DrawString(null, "Recording", 208,
+				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 64,
 					0, new Color4(Color.Red));
 			}
+
+			
+
+			
 		}
 
 		private string MakeFrameCounter()
