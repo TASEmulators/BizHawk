@@ -17,8 +17,8 @@ namespace BizHawk.MultiClient
 	public partial class RamWatch : Form
 	{
 		//TODO: 
-		//Restore window size should restore column order as well
 		//When receiving a watch from a different domain, should something be done?
+		//when sorting, "Prev as Change" option not taken into account
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -34,6 +34,9 @@ namespace BizHawk.MultiClient
 		string currentWatchFile = "";
 		bool changes = false;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+
+		string sortedCol;
+		bool sortReverse;
 
 		public void Restart()
 		{
@@ -132,6 +135,8 @@ namespace BizHawk.MultiClient
 			WatchListView.QueryItemBkColor += new QueryItemBkColorHandler(WatchListView_QueryItemBkColor);
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		protected override void OnClosing(CancelEventArgs e)
@@ -312,6 +317,8 @@ namespace BizHawk.MultiClient
 				currentWatchFile = "";
 				changes = false;
 				MessageLabel.Text = "";
+				sortReverse = false;
+				sortedCol = "";
 			}
 		}
 
@@ -1375,6 +1382,22 @@ namespace BizHawk.MultiClient
 				}
 				i++;
 			} while (columnHeaders.Count() > 0);
+		}
+
+		private void OrderColumn(int columnToOrder)
+		{
+			string columnName = WatchListView.Columns[columnToOrder].Text;
+			if (sortedCol.CompareTo(columnName) != 0)
+				sortReverse = false;
+			watchList.Sort((x, y) => x.CompareTo(y, columnName));//* (sortReverse ? -1 : 1));
+			//sortedCol = columnName;
+			//sortReverse = !(sortReverse);
+			WatchListView.Refresh();
+		}
+
+		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
+		{
+			OrderColumn(e.Column);
 		}
 	}
 }
