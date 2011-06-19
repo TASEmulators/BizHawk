@@ -55,12 +55,8 @@ namespace BizHawk
 		public static GameInfo CheckDatabase(string hash)
 		{
 			GameInfo ret = null;
-			if (!db.TryGetValue(hash, out ret))
-			{
-				//try removing hash type identifier
-				hash = RemoveHashType(hash);
-				db.TryGetValue(hash, out ret);
-			}
+			hash = RemoveHashType(hash);
+			db.TryGetValue(hash, out ret);
 			return ret;
 		}
 
@@ -114,6 +110,10 @@ namespace BizHawk
         {
 			GameInfo ret;
 			string hash = string.Format("{0:X8}", CRC32.Calculate(RomData));
+			if (db.TryGetValue(hash, out ret))
+				return ret;
+
+			hash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(RomData));
 			if (db.TryGetValue(hash, out ret))
 				return ret;
 
