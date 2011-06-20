@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NAMCOT-3405": //side pocket (J)
 					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0);
 					throw new Exception("TODO - test please");
-					break;
+					//break;
 				case "NAMCOT-3406": //karnov (J)
 					AssertPrg(128); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NAMCOT-3413": //pro yakyuu family stadium (J)
 					AssertPrg(64); AssertChr(32); AssertVram(0); AssertWram(0);
 					throw new Exception("TODO - test please");
-					break;
+					//break;
 				case "NAMCOT-3414": //family boxing (J)
 					AssertPrg(64); AssertChr(64); AssertVram(0); AssertWram(0);
 					break;
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//(is this game older than the other namcot 109 games?)
 					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
 					throw new Exception("TODO - test please");
-					break;
+					//break;
 
 				default:
 					return false;

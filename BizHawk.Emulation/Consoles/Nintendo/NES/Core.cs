@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
 					return apu.ReadReg(addr);
 				case 0x4014: /*OAM DMA*/ break;
-				case 0x4015: return apu.ReadReg(addr); break;
+				case 0x4015: return apu.ReadReg(addr); 
 				case 0x4016:
 				case 0x4017:
 					return read_joyport(addr);
