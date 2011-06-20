@@ -37,6 +37,21 @@ namespace BizHawk.MultiClient
 			if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
 			if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
 			if (control.StartsWith("J4 ")) return GetGamePad(3, control.Substring(3));
+
+			if (control.Contains("RightShift"))
+				control = control.Replace("RightShift", "LeftShift");
+			if (control.Contains("RightControl"))
+				control = control.Replace("RightControl", "LeftControl");
+			if (control.Contains("RightAlt"))
+				control = control.Replace("RightAlt", "LeftAlt");
+			
+			if (control.Contains("Shift") && control != "LeftShift")
+				control = control.Replace("Shift", "LeftShift");
+			if (control.Contains("Control") && control != "LeftControl")
+				control = control.Replace("Control", "LeftControl");
+			if (control.Contains("Alt") && control != "LeftAlt")
+				control = control.Replace("Alt", "LeftAlt");
+
 			Key k = (Key)Enum.Parse(typeof(Key), control, true);
 			return KeyInput.IsPressed(k);
 		}
