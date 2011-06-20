@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
+//this rule is not supported correctly: `The first track number can be greater than one, but all track numbers after the first must be sequential.`
+
 namespace BizHawk.Disc
 {
 	partial class Disc
@@ -17,157 +19,202 @@ namespace BizHawk.Disc
 			var session = new DiscTOC.Session();
 			session.num = 1;
 			TOC.Sessions.Add(session);
+			var pregap_sector = new Sector_Zero();
 
-			int track_counter = 1;
-			int curr_lba = 0;
+			int curr_track = 1;
+
 			foreach (var cue_file in cue.Files)
 			{
-				//make a raw file blob for the source binfile
+				//structural validation
+				if (cue_file.Tracks.Count < 1) throw new Cue.CueBrokenException("`You must specify at least one track per file.`");
+
+				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
+
+				//make a blob for the file
 				Blob_RawFile blob = new Blob_RawFile();
 				blob.PhysicalPath = Path.Combine(cueDir, cue_file.Path);
 				Blobs.Add(blob);
 
-				//structural validation
-				if (cue_file.Tracks.Count < 1) throw new Cue.CueBrokenException("Found a cue file with no tracks");
+				int blob_length_lba = (int)(blob.Length / blob_sectorsize);
+				int blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
 
-				//structural validation: every track must be the same type with cue/bin (i think)
-				var trackType = cue_file.Tracks[0].TrackType;
-				for (int i = 1; i < cue_file.Tracks.Count; i++)
+				//TODO - make CueTimestamp better, and also make it a struct, and also just make it DiscTimestamp
+				//TODO - wav handling
+				//TODO - mp3 decode
+
+				//start timekeeping for the blob. every time we hit an index, this will advance
+				int blob_timestamp = 0;
+
+				//for each track within the file, create an index 0 if it is missing.
+				//also check to make sure there is an index 1
+				for (int t = 0; t < cue_file.Tracks.Count; t++)
 				{
-					if (cue_file.Tracks[i].TrackType != trackType) throw new Cue.CueBrokenException("cue has different track types per datafile (not supported now; maybe never)");
+					var cue_track = cue_file.Tracks[t];
+					if (!cue_track.Indexes.ContainsKey(1))
+						throw new Cue.CueBrokenException("Track was missing an index 01");
+					if (!cue_track.Indexes.ContainsKey(0))
+					{
+						//index 0 will default to the same as index 1.
+						//i am not sure whether it is valid to have two indexes with the same timestamp.
+						//we will do this to simplify some processing, but we can purge it in a later pass if we need to.
+						var cti = new Cue.CueTrackIndex(0);
+						cue_track.Indexes[0] = cti;
+						cti.Timestamp = cue_track.Indexes[1].Timestamp;
+					}
 				}
 
-				//structural validaton: make sure file is a correct size and analyze its length
-				long flen = new FileInfo(blob.PhysicalPath).Length;
-				int numlba;
-				int leftover = 0;
-				switch (trackType)
+				//validate that the first index in the file is 00:00:00
+				if (cue_file.Tracks[0].Indexes[0].Timestamp.LBA != 0) throw new Cue.CueBrokenException("`The first index of a file must start at 00:00:00.`");
+
+
+				//for each track within the file:
+				for (int t = 0; t < cue_file.Tracks.Count; t++)
 				{
-					case Cue.ECueTrackType.Audio:
-						numlba = (int)(flen / 2352);
-						leftover = (int)(flen - numlba * 2352);
-						break;
+					var cue_track = cue_file.Tracks[t];
 
-					case Cue.ECueTrackType.Mode1_2352:
-					case Cue.ECueTrackType.Mode2_2352:
-						if (flen % 2352 != 0) throw new Cue.CueBrokenException("Found a modeN_2352 cue file that is wrongly-sized");
-						numlba = (int)(flen / 2352);
-						break;
-					case Cue.ECueTrackType.Mode1_2048:
-						if (flen % 2048 != 0) throw new Cue.CueBrokenException("Found a modeN_2048 cue file that is wrongly-sized");
-						numlba = (int)(flen / 2048);
-						break;
+					//record the disc LBA that this sector started on
+					int track_disc_lba_start = Sectors.Count;
 
-					default: throw new InvalidOperationException();
-				}
+					//record the pregap location. it will default to the start of the track unless we supplied a pregap command
+					int track_disc_pregap_lba = track_disc_lba_start;
 
-				List<DiscTOC.Track> new_toc_tracks = new List<DiscTOC.Track>();
-				for (int i = 0; i < cue_file.Tracks.Count; i++)
-				{
-					bool last_track = (i == cue_file.Tracks.Count - 1);
+					//enforce a rule of our own: every track within the file must have the same sector size
+					//we do know that files can change between track types within a file, but we're not sure what to do if the sector size changes
+					if (Cue.BINSectorSizeForTrackType(cue_track.TrackType) != blob_sectorsize) throw new Cue.CueBrokenException("Found different sector sizes within a cue file. We don't know how to handle that.");
 
-					var cue_track = cue_file.Tracks[i];
-					if (cue_track.TrackNum != track_counter) throw new Cue.CueBrokenException("Missing a track in the middle of the cue");
-					track_counter++;
-
-					DiscTOC.Track toc_track = new DiscTOC.Track();
-					toc_track.num = track_counter;
+					//check integrity of track sequence and setup data structures
+					//TODO - check for skipped tracks in cue parser instead
+					if (cue_track.TrackNum != curr_track) throw new Cue.CueBrokenException("Found a cue with skipped tracks");
+					var toc_track = new DiscTOC.Track();
+					toc_track.num = curr_track;
+					toc_track.TrackType = cue_track.TrackType;
 					session.Tracks.Add(toc_track);
-					new_toc_tracks.Add(toc_track);
 
-					//analyze indices
-					int idx;
-					for (idx = 0; idx <= 99; idx++)
+					//check whether a pregap is requested. 
+					//when this happens for the first track in a file, some empty sectors are generated
+					//when it happens for any other track, its just another way of specifying index 0 LBA
+					if (cue_track.PreGap.LBA > 0)
 					{
-						if (!cue_track.Indexes.ContainsKey(idx))
-						{
-							if (idx == 0) continue;
-							if (idx == 1) throw new Cue.CueBrokenException("cue track is missing an index 1");
-							break;
-						}
-						var cue_index = cue_track.Indexes[idx];
-						//todo - add pregap/postgap from cue?
+						if (t == 0)
+							for (int i = 0; i < cue_track.PreGap.LBA; i++)
+							{
+								Sectors.Add(new SectorEntry(pregap_sector));
+							}
+						else track_disc_pregap_lba -= cue_track.PreGap.LBA;
+					}
 
-						DiscTOC.Index toc_index = new DiscTOC.Index();
-						toc_index.num = idx;
+					//look ahead to the next track's index 0 so we can see how long this track's last index is
+					//or, for the last track, use the length of the file
+					int track_length_lba;
+					if (t == cue_file.Tracks.Count - 1)
+						track_length_lba = blob_length_lba - blob_timestamp;
+					else track_length_lba = cue_file.Tracks[t + 1].Indexes[0].Timestamp.LBA - blob_timestamp;
+					//toc_track.length_lba = track_length_lba; //xxx
+
+					//find out how many indexes we have
+					int num_indexes = 0;
+					for (num_indexes = 0; num_indexes <= 99; num_indexes++)
+						if (!cue_track.Indexes.ContainsKey(num_indexes)) break;
+
+					//for each index, calculate length of index and then emit it
+					for (int index = 0; index < num_indexes; index++)
+					{
+						bool is_last_index = index == num_indexes - 1;
+
+						//install index into hierarchy
+						var toc_index = new DiscTOC.Index();
+						toc_index.num = index;
 						toc_track.Indexes.Add(toc_index);
-						toc_index.lba = cue_index.Timestamp.LBA + curr_lba;
+						if (index == 0) toc_index.lba = track_disc_pregap_lba;
+						else toc_index.lba = Sectors.Count; 
+
+						//toc_index.lba += 150; //TODO - consider whether to add 150 here
+						
+						//calculate length of the index
+						//if it is the last index then we use our calculation from before, otherwise we check the next index
+						int index_length_lba;
+						if (is_last_index)
+							index_length_lba = track_disc_lba_start + track_length_lba - blob_timestamp;
+						else index_length_lba = cue_track.Indexes[index + 1].Timestamp.LBA - blob_timestamp;
+
+						//emit sectors
+						for (int lba = 0; lba < index_length_lba; lba++)
+						{
+							bool is_last_lba_in_index = (lba == index_length_lba-1);
+							bool is_last_lba_in_track = is_last_lba_in_index && is_last_index;
+
+							switch (cue_track.TrackType)
+							{
+								case ETrackType.Audio:  //all 2352 bytes are present
+								case ETrackType.Mode1_2352: //2352 bytes are present, containing 2048 bytes of user data as well as ECM
+								case ETrackType.Mode2_2352: //2352 bytes are present, containing 2336 bytes of user data, with no ECM
+									{
+										//these cases are all 2352 bytes
+										//in all these cases, either no ECM is present or ECM is provided.
+										//so we just emit a Sector_Raw
+										Sector_RawBlob sector_rawblob = new Sector_RawBlob();
+										sector_rawblob.Blob = blob;
+										sector_rawblob.Offset = (long)blob_timestamp * 2352;
+										Sector_Raw sector_raw = new Sector_Raw();
+										sector_raw.BaseSector = sector_rawblob;
+										//take care to handle final sectors that are too short.
+										if (is_last_lba_in_track && blob_leftover>0)
+										{
+											Sector_ZeroPad sector_zeropad = new Sector_ZeroPad();
+											sector_zeropad.BaseSector = sector_rawblob;
+											sector_zeropad.BaseLength = 2352 - blob_leftover;
+											sector_raw.BaseSector = sector_zeropad;
+											Sectors.Add(new SectorEntry(sector_raw));
+										}
+										Sectors.Add(new SectorEntry(sector_raw));
+										break;
+									}
+								case ETrackType.Mode1_2048:
+									//2048 bytes are present. ECM needs to be generated to create a full sector
+									{
+										//ECM needs to know the sector number so we have to record that here
+										int curr_disc_lba = Sectors.Count;
+										var sector_2048 = new Sector_Mode1_2048(curr_disc_lba + 150);
+										sector_2048.Blob = new ECMCacheBlob(blob);
+										sector_2048.Offset = (long)blob_timestamp * 2048;
+										if (blob_leftover > 0) throw new Cue.CueBrokenException("TODO - Incomplete 2048 byte/sector bin files (iso files) not yet supported.");
+										break;
+									}
+							} //switch(TrackType)
+
+							//we've emitted an LBA, so consume it from the blob
+							blob_timestamp++;
+
+						} //lba emit loop
+
+					} //index loop
+
+					//check whether a postgap is requested. if it is, we need to generate silent sectors
+					for (int i = 0; i < cue_track.PostGap.LBA; i++)
+					{
+						Sectors.Add(new SectorEntry(pregap_sector));
 					}
 
-					//look for extra indices (i.e. gaps)
-					for (; idx <= 99; idx++)
-					{
-						if (cue_track.Indexes.ContainsKey(idx))
-							throw new Cue.CueBrokenException("cue track is has an index gap");
-					}
+					//we're done with the track now.
+					//record its length:
+					toc_track.length_lba = Sectors.Count - track_disc_lba_start;
+					curr_track++;
+
 				} //track loop
+			} //file loop
 
-				//analyze length of each track and index
-				DiscTOC.Index last_toc_index = null;
-				foreach (var toc_track in new_toc_tracks)
-				{
-					foreach (var toc_index in toc_track.Indexes)
-					{
-						if (last_toc_index != null)
-							last_toc_index.length_lba = toc_index.lba - last_toc_index.lba;
-						last_toc_index = toc_index;
-					}
-				}
-				if (last_toc_index != null)
-					last_toc_index.length_lba = (curr_lba + numlba) - last_toc_index.lba;
 
-				//generate the sectors from this file
-				long curr_src_addr = 0;
-				for (int i = 0; i < numlba; i++)
-				{
-					ISector sector;
-					switch (trackType)
-					{
-						case Cue.ECueTrackType.Audio:
-						//all 2352 bytes are present
-						case Cue.ECueTrackType.Mode1_2352:
-						//2352 bytes are present, containing 2048 bytes of user data as well as ECM
-						case Cue.ECueTrackType.Mode2_2352:
-							//2352 bytes are present, containing 2336 bytes of user data, replacing ECM
-							{
-								Sector_RawBlob sector_rawblob = new Sector_RawBlob();
-								sector_rawblob.Blob = blob;
-								sector_rawblob.Offset = curr_src_addr;
-								curr_src_addr += 2352;
-								Sector_Raw sector_raw = new Sector_Raw();
-								sector_raw.BaseSector = sector_rawblob;
-								if (i == numlba - 1 && leftover != 0)
-								{
-									Sector_ZeroPad sector_zeropad = new Sector_ZeroPad();
-									sector_zeropad.BaseSector = sector_rawblob;
-									sector_zeropad.BaseLength = 2352 - leftover;
-									sector_raw.BaseSector = sector_zeropad;
-								}
-								sector = sector_raw;
-								break;
-							}
-						case Cue.ECueTrackType.Mode1_2048:
-							//2048 bytes are present. ECM needs to be generated to create a full sector
-							{
-								var sector_2048 = new Sector_Mode1_2048(i + 150);
-								sector_2048.Blob = new ECMCacheBlob(blob);
-								sector_2048.Offset = curr_src_addr;
-								curr_src_addr += 2048;
-								sector = sector_2048;
-								break;
-							}
-						default: throw new InvalidOperationException();
-					}
-					SectorEntry se = new SectorEntry();
-					se.Sector = sector;
-					Sectors.Add(se);
-				}
-
-				curr_lba += numlba;
-
-			} //done analyzing cue datafiles
-
-			TOC.AnalyzeLengthsFromIndexLengths();
+			//finally, analyze the length of the sessions and the entire disc by summing the lengths of the tracks
+			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
+			//but rather by the difference in lbas between start and end
+			TOC.length_lba = 0;
+			foreach (var toc_session in TOC.Sessions)
+			{
+				var firstTrack = toc_session.Tracks[0];
+				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
+				session.length_lba = lastTrack.Indexes[1].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
+				TOC.length_lba += toc_session.length_lba;
+			}
 		}
 	}
 
@@ -205,23 +252,69 @@ namespace BizHawk.Disc
 
 		public List<CueFile> Files = new List<CueFile>();
 
-		public enum ECueTrackType
+		public static int BINSectorSizeForTrackType(ETrackType type)
 		{
-			Mode1_2352,
-			Mode1_2048,
-			Mode2_2352,
-			Audio
+			switch(type)
+			{
+				case ETrackType.Mode1_2352:
+				case ETrackType.Mode2_2352:
+				case ETrackType.Audio:
+					return 2352;
+				case ETrackType.Mode1_2048:
+					return 2048;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public static string TrackTypeStringForTrackType(ETrackType type)
+		{
+			switch (type)
+			{
+				case ETrackType.Mode1_2352: return "MODE1/2352";
+				case ETrackType.Mode2_2352: return "MODE2/2352";
+				case ETrackType.Audio: return "AUDIO";
+				case ETrackType.Mode1_2048: return "MODE1/2048";
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		public static string RedumpTypeStringForTrackType(ETrackType type)
+		{
+			switch (type)
+			{
+				case ETrackType.Mode1_2352: return "Data/Mode 1";
+				case ETrackType.Mode1_2048: throw new InvalidOperationException("guh dunno what to put here");
+				case ETrackType.Mode2_2352: return "Data/Mode 2";
+				case ETrackType.Audio: return "Audio";
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
 		}
 
 		public class CueTrack
 		{
-			public ECueTrackType TrackType;
+			public ETrackType TrackType;
 			public int TrackNum;
+			public CueTimestamp PreGap = new CueTimestamp();
+			public CueTimestamp PostGap = new CueTimestamp();
 			public Dictionary<int, CueTrackIndex> Indexes = new Dictionary<int, CueTrackIndex>();
 		}
 
 		public class CueTimestamp
 		{
+			/// <summary>
+			/// creates timestamp of 00:00:00
+			/// </summary>
+			public CueTimestamp()
+			{
+				Value = "00:00:00";
+			}
+
+			/// <summary>
+			/// creates a timestamp from a string in the form mm:ss:ff
+			/// </summary>
 			public CueTimestamp(string value) { 
 				this.Value = value;
 				MIN = int.Parse(value.Substring(0, 2));
@@ -231,12 +324,26 @@ namespace BizHawk.Disc
 			}
 			public readonly string Value;
 			public readonly int MIN, SEC, FRAC, LBA;
+
+			/// <summary>
+			/// creates timestamp from supplied LBA
+			/// </summary>
+			public CueTimestamp(int LBA)
+			{
+				this.LBA = LBA;
+				MIN = LBA / (60*75);
+				SEC = (LBA / 75)%60;
+				FRAC = LBA % 75;
+				Value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
+			}
 		}
 
 		public class CueTrackIndex
 		{
+			public CueTrackIndex(int num) { IndexNum = num; }
 			public int IndexNum;
 			public CueTimestamp Timestamp;
+			public int ZeroLBA;
 		}
 
 		public class CueBrokenException : Exception
@@ -254,6 +361,9 @@ namespace BizHawk.Disc
 			File.ReadAllText(cuePath);
 			TextReader tr = new StreamReader(cuePath);
 
+			bool track_has_pregap = false;
+			bool track_has_postgap = false;
+			int last_index_num = -1;
 			CueFile currFile = null;
 			CueTrack currTrack = null;
 			int state = 0;
@@ -294,44 +404,60 @@ namespace BizHawk.Disc
 							if (!int.TryParse(strtracknum, out tracknum))
 								throw new CueBrokenException("malformed track number");
 							if (clp.EOF) throw new CueBrokenException("invalid cue structure");
+							if (tracknum < 0 || tracknum > 99) throw new CueBrokenException("`All track numbers must be between 1 and 99 inclusive.`");
 							string strtracktype = clp.ReadToken().ToUpper();
 							currTrack = new CueTrack();
 							switch (strtracktype)
 							{
-								case "MODE1/2352": currTrack.TrackType = ECueTrackType.Mode1_2352; break;
-								case "MODE1/2048": currTrack.TrackType = ECueTrackType.Mode1_2048; break;
-								case "MODE2/2352": currTrack.TrackType = ECueTrackType.Mode2_2352; break;
-								case "AUDIO": currTrack.TrackType = ECueTrackType.Audio; break;
+								case "MODE1/2352": currTrack.TrackType = ETrackType.Mode1_2352; break;
+								case "MODE1/2048": currTrack.TrackType = ETrackType.Mode1_2048; break;
+								case "MODE2/2352": currTrack.TrackType = ETrackType.Mode2_2352; break;
+								case "AUDIO": currTrack.TrackType = ETrackType.Audio; break;
 								default:
 									throw new CueBrokenException("unhandled track type");
 							}
 							currTrack.TrackNum = tracknum;
 							currFile.Tracks.Add(currTrack);
+							track_has_pregap = false;
+							track_has_postgap = false;
+							last_index_num = -1;
 							break;
 						}
 					case "INDEX":
 						{
 							if (currTrack == null) throw new CueBrokenException("invalid cue structure");
 							if (clp.EOF) throw new CueBrokenException("invalid cue structure");
+							if (track_has_postgap) throw new CueBrokenException("`The POSTGAP command must appear after all INDEX commands for the current track.`");
 							string strindexnum = clp.ReadToken();
 							int indexnum;
 							if (!int.TryParse(strindexnum, out indexnum))
 								throw new CueBrokenException("malformed index number");
 							if (clp.EOF) throw new CueBrokenException("invalid cue structure (missing index timestamp)");
 							string str_timestamp = clp.ReadToken();
-							CueTrackIndex cti = new CueTrackIndex();
-							cti.Timestamp = new CueTimestamp(str_timestamp); ;
+							if(indexnum <0 || indexnum>99) throw new CueBrokenException("`All index numbers must be between 0 and 99 inclusive.`");
+							if (indexnum != 1 && indexnum != last_index_num + 1) throw new CueBrokenException("`The first index must be 0 or 1 with all other indexes being sequential to the first one.`");
+							last_index_num = indexnum;
+							CueTrackIndex cti = new CueTrackIndex(indexnum);
+							cti.Timestamp = new CueTimestamp(str_timestamp);
 							cti.IndexNum = indexnum;
 							currTrack.Indexes[indexnum] = cti;
 							break;
 						}
 					case "PREGAP":
+						if (track_has_pregap) throw new CueBrokenException("`Only one PREGAP command is allowed per track.`");
+						if (currTrack.Indexes.Count > 0) throw new CueBrokenException("`The PREGAP command must appear after a TRACK command, but before any INDEX commands.`");
+						currTrack.PreGap = new CueTimestamp(clp.ReadToken());
+						track_has_pregap = true;
+						break;
 					case "POSTGAP":
-						throw new CueBrokenException("cue postgap/pregap command not supported yet");
+						if (track_has_pregap) throw new CueBrokenException("`Only one POSTGAP command is allowed per track.`");
+						track_has_postgap = true;
+						currTrack.PostGap = new CueTimestamp(clp.ReadToken());
+						break;
 					default:
 						throw new CueBrokenException("unsupported cue command: " + key);
 				}
-			}
+			} //end cue parsing loop
 		}
 
 

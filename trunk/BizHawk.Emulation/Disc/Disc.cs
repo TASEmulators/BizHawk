@@ -14,6 +14,9 @@ using System.Collections.Generic;
 //apparently cdrdao is the ultimate linux tool for doing this stuff but it doesnt support DAO96 (or other DAO modes) that would be necessary to extract P-Q subchannels
 //(cdrdao only supports R-W)
 
+//here is a featureset list of windows cd burning programs (useful for cuesheet compatibility info)
+//http://www.dcsoft.com/cue_mastering_progs.htm
+
 //good
 //http://linux-sxs.org/bedtime/cdapi.html
 //http://en.wikipedia.org/wiki/Track_%28CD%29
@@ -65,7 +68,6 @@ using System.Collections.Generic;
 
 namespace BizHawk.Disc
 {
-
 	public partial class Disc
 	{
 		//TODO - separate these into Read_2352 and Read_2048 (optimizations can be made by ISector implementors depending on what is requested)
@@ -83,10 +85,20 @@ namespace BizHawk.Disc
 
 		class Blob_RawFile : IBlob
 		{
-			public string PhysicalPath;
+			public string PhysicalPath { 
+				get { return physicalPath; }
+				set
+				{
+					physicalPath = value;
+					length = new FileInfo(physicalPath).Length;
+				}
+			}
+			string physicalPath;
+			long length;
+
 			public long Offset;
 
-			FileStream fs;
+			BufferedStream fs;
 			public void Dispose()
 			{
 				if (fs != null)
@@ -97,12 +109,21 @@ namespace BizHawk.Disc
 			}
 			public int Read(long byte_pos, byte[] buffer, int offset, int count)
 			{
+				//use quite a large buffer, because normally we will be reading these sequentially
+				const int buffersize = 2352 * 75 * 2;
 				if (fs == null)
-					fs = new FileStream(PhysicalPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
 				long target = byte_pos + Offset;
 				if(fs.Position != target)
 					fs.Position = target;
 				return fs.Read(buffer, offset, count);
+			}
+			public long Length
+			{
+				get
+				{
+					return length;
+				}
 			}
 		}
 
@@ -122,6 +143,16 @@ namespace BizHawk.Disc
 			public int Read(byte[] buffer, int offset)
 			{
 				return Blob.Read(Offset, buffer, offset, 2352);
+			}
+		}
+
+		class Sector_Zero : ISector
+		{
+			public int Read(byte[] buffer, int offset)
+			{
+				for (int i = 0; i < 2352; i++)
+					buffer[offset + i] = 0;
+				return 2352;
 			}
 		}
 
@@ -229,6 +260,7 @@ namespace BizHawk.Disc
 		//this is a physical 2352 byte sector.
 		public class SectorEntry
 		{
+			public SectorEntry(ISector sec) { this.Sector = sec; }
 			public ISector Sector;
 		}
 
@@ -256,7 +288,7 @@ namespace BizHawk.Disc
 			blob.PhysicalPath = fiIso.FullName;
 			Blobs.Add(blob);
 			int num_lba = (int)(fiIso.Length / 2048);
-			index.length_lba = num_lba;
+			//index.length_lba = num_lba;
 			if (fiIso.Length % 2048 != 0)
 				throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
 
@@ -266,12 +298,67 @@ namespace BizHawk.Disc
 				Sector_Mode1_2048 sector = new Sector_Mode1_2048(i+150);
 				sector.Blob = ecmCacheBlob;
 				sector.Offset = i * 2048;
-				SectorEntry se = new SectorEntry();
-				se.Sector = sector;
-				Sectors.Add(se);
+				Sectors.Add(new SectorEntry(sector));
 			}
 
 			TOC.AnalyzeLengthsFromIndexLengths();
+		}
+
+		
+		public CueBin DumpCueBin(string baseName, CueBinPrefs prefs)
+		{
+			if (TOC.Sessions.Count > 1)
+				throw new NotSupportedException("can't dump cue+bin with more than 1 session yet");
+
+			CueBin ret = new CueBin();
+			ret.baseName = baseName;
+			ret.disc = this;
+
+			if (!prefs.OneBinPerTrack)
+			{
+				string cue = TOC.GenerateCUE(prefs);
+				var bfd = new CueBin.BinFileDescriptor();
+				bfd.name = baseName + ".bin";
+				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
+				ret.bins.Add(bfd);
+				for (int i = 0; i < TOC.length_lba; i++)
+				{
+					bfd.lbas.Add(i+150);
+					bfd.lba_zeros.Add(false);
+				}
+			}
+			else
+			{
+				StringBuilder sbCue = new StringBuilder();
+				
+				for (int i = 0; i < TOC.Sessions[0].Tracks.Count; i++)
+				{
+					var track = TOC.Sessions[0].Tracks[i];
+					var bfd = new CueBin.BinFileDescriptor();
+					bfd.name = baseName + string.Format(" (Track {0:D2}).bin", track.num);
+					ret.bins.Add(bfd);
+					int lba=0;
+
+					for (; lba < track.length_lba; lba++)
+					{
+						int thislba = track.Indexes[0].lba + lba;
+						bfd.lbas.Add(thislba + 150);
+						bfd.lba_zeros.Add(false);
+					}
+					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
+
+					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
+					foreach (var index in track.Indexes)
+					{
+						int x = index.lba - track.Indexes[0].lba;
+						sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(x).Value);
+					}
+				}
+
+				ret.cue = sbCue.ToString();
+			}
+
+			return ret;
 		}
 
 		public void DumpBin_2352(string binPath)
@@ -280,7 +367,7 @@ namespace BizHawk.Disc
 			using(FileStream fs = new FileStream(binPath,FileMode.Create,FileAccess.Write,FileShare.None))
 				for (int i = 0; i < Sectors.Count; i++)
 				{
-					ReadLBA_2352(i, temp, 0);
+					ReadLBA_2352(150+i, temp, 0);
 					fs.Write(temp, 0, 2352);
 				}
 		}
@@ -300,4 +387,129 @@ namespace BizHawk.Disc
 		}
 	}
 
+	public enum ETrackType
+	{
+		Mode1_2352,
+		Mode1_2048,
+		Mode2_2352,
+		Audio
+	}
+
+
+	public class CueBinPrefs
+	{
+		/// <summary>
+		/// Controls general operations: should the output be split into several bins, or just use one?
+		/// </summary>
+		public bool OneBinPerTrack;
+
+		/// <summary>
+		/// turn this on to dump bins instead of just cues
+		/// </summary>
+		public bool ReallyDumpBin;
+
+		/// <summary>
+		/// generate remarks and other annotations to help humans understand whats going on, but which will confuse many cue parsers
+		/// </summary>
+		public bool AnnotateCue;
+
+		/// <summary>
+		/// you may find that some cue parsers are upset by index 00
+		/// if thats the case, then we can emit pregaps instead.
+		/// you might also want to use this to save disk space (without pregap commands, the pregap must be stored as empty sectors)
+		/// </summary>
+		public bool PreferPregapCommand = false;
+
+		/// <summary>
+		/// some cue parsers cant handle sessions. better not emit a session command then. multi-session discs will then be broken
+		/// </summary>
+		public bool SingleSession;
+	}
+
+	/// <summary>
+	/// Encapsulates an in-memory cue+bin (complete cuesheet and a little registry of files)
+	/// it will be based on a disc (fro mwhich it can read sectors to avoid burning through extra memory)
+	/// TODO - we must merge this with whatever reads in cue+bin
+	/// </summary>
+	public class CueBin
+	{
+		public string cue;
+		public string baseName;
+		public Disc disc;
+
+		public class BinFileDescriptor
+		{
+			public string name;
+			public List<int> lbas = new List<int>();
+			public List<bool> lba_zeros = new List<bool>();
+		}
+
+		public List<BinFileDescriptor> bins = new List<BinFileDescriptor>();
+
+		public string CreateRedumpReport()
+		{
+			if (disc.TOC.Sessions[0].Tracks.Count != bins.Count)
+				throw new InvalidOperationException("Cannot generate redump report on CueBin lacking OneBinPerTrack property");
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < disc.TOC.Sessions[0].Tracks.Count; i++)
+			{
+				var track = disc.TOC.Sessions[0].Tracks[i];
+				var bfd = bins[i];
+				
+				//dump the track
+				byte[] dump = new byte[track.length_lba * 2352];
+				for (int lba = 0; lba < track.length_lba; lba++)
+					disc.ReadLBA_2352(bfd.lbas[lba],dump,lba*2352);
+				string crc32 = string.Format("{0:X8}", CRC32.Calculate(dump));
+				string md5 = Util.Hash_MD5(dump, 0, dump.Length);
+				string sha1 = Util.Hash_SHA1(dump, 0, dump.Length);
+
+				int pregap = track.Indexes[1].lba - track.Indexes[0].lba;
+				Cue.CueTimestamp pregap_ts = new Cue.CueTimestamp(pregap);
+				Cue.CueTimestamp len_ts = new Cue.CueTimestamp(track.length_lba);
+				sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n", 
+					i, 
+					Cue.RedumpTypeStringForTrackType(track.TrackType),
+					pregap_ts.Value,
+					len_ts.Value,
+					track.length_lba,
+					track.length_lba*Cue.BINSectorSizeForTrackType(track.TrackType),
+					crc32,
+					md5,
+					sha1
+					);
+			}
+			return sb.ToString();
+		}
+
+		public void Dump(string directory, CueBinPrefs prefs)
+		{
+			string cuePath = Path.Combine(directory, baseName + ".cue");
+			File.WriteAllText(cuePath, cue);
+			if(prefs.ReallyDumpBin)
+				foreach (var bfd in bins)
+				{
+					byte[] temp = new byte[2352];
+					byte[] empty = new byte[2352];
+					string trackBinFile = bfd.name;
+					string trackBinPath = Path.Combine(directory, trackBinFile);
+					using (FileStream fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None))
+					{
+						for(int i=0;i<bfd.lbas.Count;i++)
+						{
+							int lba = bfd.lbas[i];
+							if (bfd.lba_zeros[i])
+							{
+								fs.Write(empty, 0, 2352);
+							}
+							else
+							{
+								disc.ReadLBA_2352(lba, temp, 0);
+								fs.Write(temp, 0, 2352);
+							}
+						}
+					}
+				}
+		}
+	}
 }

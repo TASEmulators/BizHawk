@@ -73,14 +73,14 @@ namespace BizHawk.MultiClient
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (HawkFile NesCartFile = new HawkFile(PathManager.GetExePathAbsolute() + "\\NesCarts.7z").BindFirst())
+				using (HawkFile NesCartFile = new HawkFile(PathManager.GetExeDirectoryAbsolute() + "\\NesCarts.7z").BindFirst())
 					return Util.ReadAllBytes(NesCartFile.GetStream());
 			};
 			Global.MainForm = this;
 			Global.CoreInputComm = new CoreInputComm();
 			SyncCoreInputComm();
 
-			Database.LoadDatabase(PathManager.GetExePathAbsolute() + "\\gamedb.txt");
+			Database.LoadDatabase(PathManager.GetExeDirectoryAbsolute() + "\\gamedb.txt");
 
 			SyncPresentationMode();
 

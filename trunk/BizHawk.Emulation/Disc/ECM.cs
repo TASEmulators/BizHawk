@@ -65,7 +65,7 @@
 		public unsafe static void ecc_generate(byte[] sector, int sector_offset, bool zeroaddress, byte[] dest, int dest_offset)
 		{
 		  byte address0=0,address1=0,address2=0,address3=0;
-			byte i;
+			//byte i;
 		  /* Save the address and zero it out */
 		  if(zeroaddress)
 		  {
