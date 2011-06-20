@@ -16,15 +16,18 @@ namespace BizHawk.Disc
 
 			//the length of the track (should be the sum of all track lengths)
 			public int length_lba;
+			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
 
 		public class Track
 		{
+			public ETrackType TrackType;
 			public int num;
 			public List<Index> Indexes = new List<Index>();
 
 			//the length of the track (should be the sum of all index lengths)
 			public int length_lba;
+			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
 
 		public class Index
@@ -33,29 +36,33 @@ namespace BizHawk.Disc
 			public int lba;
 
 			//the length of the section
-			public int length_lba;
+			//public int length_lba;
+			//public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
 
-		public static string FormatLBA(int lba)
-		{
-			return string.Format("{0} ({1:D2}:{2:D2}:{3:D2})", lba, lba / 60 / 75, (lba / 75) % 60, lba % 75);
-		}
-
-		public string DebugPrint()
+		public string GenerateCUE(CueBinPrefs prefs)
 		{
 			StringBuilder sb = new StringBuilder();
 			foreach (var session in Sessions)
 			{
-				sb.AppendFormat("SESSION {0:D2} (length={1})\n", session.num, session.length_lba);
+				if (!prefs.SingleSession)
+				{
+					//dont want to screw around with sessions for now
+					if (prefs.AnnotateCue) sb.AppendFormat("SESSION {0:D2} (length={1})\n", session.num, session.length_lba);
+					else sb.AppendFormat("SESSION {0:D2}\n", session.num);
+				}
 				foreach (var track in session.Tracks)
 				{
-					sb.AppendFormat("  TRACK {0:D2} (length={1})\n", track.num, track.length_lba);
+					if (prefs.AnnotateCue) sb.AppendFormat("  TRACK {0:D2} {1} (length={2})\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType), track.length_lba);
+					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
 					foreach (var index in track.Indexes)
 					{
-						sb.AppendFormat("    INDEX {0:D2}: {1}\n", index.num, FormatLBA(index.lba));
+						//if (prefs.PreferPregapCommand && index.num == 0)
+						//    sb.AppendFormat("    PREGAP {0}\n", new Cue.CueTimestamp(index.length_lba).Value);
+						//else 
+						sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(index.lba).Value);
 					}
 				}
-				sb.AppendFormat("-EOF-\n");
 			}
 
 			return sb.ToString();
@@ -66,17 +73,15 @@ namespace BizHawk.Disc
 
 		public void AnalyzeLengthsFromIndexLengths()
 		{
+			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
+			//but rather by the difference in lbas between start and end
+			length_lba = 0;
 			foreach (var session in Sessions)
 			{
-				foreach (var track in session.Tracks)
-				{
-					int track_size = 0;
-					foreach (var index in track.Indexes)
-						track_size += index.length_lba;
-					track.length_lba += track_size;
-					session.length_lba += track_size;
-					length_lba += track_size;
-				}
+				var firstTrack = session.Tracks[0];
+				var lastTrack = session.Tracks[session.Tracks.Count - 1];
+				session.length_lba = lastTrack.Indexes[0].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
+				length_lba += session.length_lba;
 			}
 		}
 	}

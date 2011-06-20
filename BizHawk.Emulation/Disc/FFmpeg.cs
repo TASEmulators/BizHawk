@@ -1,426 +1,373 @@
-﻿////http://jasonjano.wordpress.com/2010/02/09/a-simple-c-wrapper-for-ffmpeg/
+﻿//http://jasonjano.wordpress.com/2010/02/09/a-simple-c-wrapper-for-ffmpeg/
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Web;
-//using System.IO;
-//using System.Diagnostics;
-//using System.Configuration;
-//using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.IO;
+using System.Diagnostics;
+using System.Configuration;
+using System.Text.RegularExpressions;
 
-//namespace ffMpeg
-//{
-//    public class Converter
-//    {
-//        #region Properties
-//        public string _ffExe;
+namespace ffMpeg
+{
+	public class Converter
+	{
+		public static string _ffExe;
+		public string WorkingPath; //i.e. temp
 
-//        //i.e. temp
-//        public string WorkingPath;
+		public Converter()
+		{
+			Initialize();
+		}
 
-//        #endregion
+		#region Initialization
+		private void Initialize()
+		{
+		}
 
-//        #region Constructors
-//        public Converter()
-//        {
-//            Initialize();
-//        }
-//        public Converter(string ffmpegExePath)
-//        {
-//            _ffExe = ffmpegExePath;
-//            Initialize();
-//        }
-//        #endregion
+		private string GetWorkingFile()
+		{
+			//try the stated directory
+			if (File.Exists(_ffExe))
+			{
+				return _ffExe;
+			}
 
-//        #region Initialization
-//        private void Initialize()
-//        {
-//        }
+			//oops, that didn't work, try the base directory
+			if (File.Exists(Path.GetFileName(_ffExe)))
+			{
+				return Path.GetFileName(_ffExe);
+			}
 
-//        private string GetWorkingFile()
-//        {
-//            //try the stated directory
-//            if (File.Exists(_ffExe))
-//            {
-//                return _ffExe;
-//            }
+			//well, now we are really unlucky, let's just return null
+			return null;
+		}
+		#endregion
 
-//            //oops, that didn't work, try the base directory
-//            if (File.Exists(Path.GetFileName(_ffExe)))
-//            {
-//                return Path.GetFileName(_ffExe);
-//            }
+		#region Get the File without creating a file lock
+		public static System.Drawing.Image LoadImageFromFile(string fileName)
+		{
+			System.Drawing.Image theImage = null;
+			using (FileStream fileStream = new FileStream(fileName, FileMode.Open,
+			FileAccess.Read))
+			{
+				byte[] img;
+				img = new byte[fileStream.Length];
+				fileStream.Read(img, 0, img.Length);
+				fileStream.Close();
+				theImage = System.Drawing.Image.FromStream(new MemoryStream(img));
+				img = null;
+			}
+			GC.Collect();
+			return theImage;
+		}
 
-//            //well, now we are really unlucky, let's just return null
-//            return null;
-//        }
-//        #endregion
+		public static MemoryStream LoadMemoryStreamFromFile(string fileName)
+		{
+			MemoryStream ms = null;
+			using (FileStream fileStream = new FileStream(fileName, FileMode.Open,
+			FileAccess.Read))
+			{
+				byte[] fil;
+				fil = new byte[fileStream.Length];
+				fileStream.Read(fil, 0, fil.Length);
+				fileStream.Close();
+				ms = new MemoryStream(fil);
+			}
+			GC.Collect();
+			return ms;
+		}
+		#endregion
 
-//        #region Get the File without creating a file lock
-//        public static System.Drawing.Image LoadImageFromFile(string fileName)
-//        {
-//            System.Drawing.Image theImage = null;
-//            using (FileStream fileStream = new FileStream(fileName, FileMode.Open,
-//            FileAccess.Read))
-//            {
-//                byte[] img;
-//                img = new byte[fileStream.Length];
-//                fileStream.Read(img, 0, img.Length);
-//                fileStream.Close();
-//                theImage = System.Drawing.Image.FromStream(new MemoryStream(img));
-//                img = null;
-//            }
-//            GC.Collect();
-//            return theImage;
-//        }
+		#region Run the process
+		private string RunProcess(string Parameters)
+		{
+			//create a process info
+			ProcessStartInfo oInfo = new ProcessStartInfo(_ffExe, Parameters);
+			oInfo.UseShellExecute = false;
+			oInfo.CreateNoWindow = true;
+			oInfo.RedirectStandardOutput = true;
+			oInfo.RedirectStandardError = true;
 
-//        public static MemoryStream LoadMemoryStreamFromFile(string fileName)
-//        {
-//            MemoryStream ms = null;
-//            using (FileStream fileStream = new FileStream(fileName, FileMode.Open,
-//            FileAccess.Read))
-//            {
-//                byte[] fil;
-//                fil = new byte[fileStream.Length];
-//                fileStream.Read(fil, 0, fil.Length);
-//                fileStream.Close();
-//                ms = new MemoryStream(fil);
-//            }
-//            GC.Collect();
-//            return ms;
-//        }
-//        #endregion
+			//Create the output and streamreader to get the output
+			string output = null; StreamReader srOutput = null;
 
-//        #region Run the process
-//        private string RunProcess(string Parameters)
-//        {
-//            //create a process info
-//            ProcessStartInfo oInfo = new ProcessStartInfo(this._ffExe, Parameters);
-//            oInfo.UseShellExecute = false;
-//            oInfo.CreateNoWindow = true;
-//            oInfo.RedirectStandardOutput = true;
-//            oInfo.RedirectStandardError = true;
+			//try the process
+			try
+			{
+				//run the process
+				Process proc = System.Diagnostics.Process.Start(oInfo);
 
-//            //Create the output and streamreader to get the output
-//            string output = null; StreamReader srOutput = null;
+				proc.WaitForExit();
 
-//            //try the process
-//            try
-//            {
-//                //run the process
-//                Process proc = System.Diagnostics.Process.Start(oInfo);
+				//get the output
+				srOutput = proc.StandardError;
 
-//                proc.WaitForExit();
+				//now put it in a string
+				output = srOutput.ReadToEnd();
 
-//                //get the output
-//                srOutput = proc.StandardError;
+				proc.Close();
+			}
+			catch (Exception)
+			{
+				output = string.Empty;
+			}
+			finally
+			{
+				//now, if we succeded, close out the streamreader
+				if (srOutput != null)
+				{
+					srOutput.Close();
+					srOutput.Dispose();
+				}
+			}
+			return output;
+		}
+		#endregion
 
-//                //now put it in a string
-//                output = srOutput.ReadToEnd();
+		#region GetVideoInfo
+		public VideoFile GetVideoInfo(MemoryStream inputFile, string Filename)
+		{
+			string tempfile = Path.Combine(this.WorkingPath, System.Guid.NewGuid().ToString() + Path.GetExtension(Filename));
+			FileStream fs = File.Create(tempfile);
+			inputFile.WriteTo(fs);
+			fs.Flush();
+			fs.Close();
+			GC.Collect();
 
-//                proc.Close();
-//            }
-//            catch (Exception)
-//            {
-//                output = string.Empty;
-//            }
-//            finally
-//            {
-//                //now, if we succeded, close out the streamreader
-//                if (srOutput != null)
-//                {
-//                    srOutput.Close();
-//                    srOutput.Dispose();
-//                }
-//            }
-//            return output;
-//        }
-//        #endregion
+			VideoFile vf = null;
+			try
+			{
+				vf = new VideoFile(tempfile);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 
-//        #region GetVideoInfo
-//        public VideoFile GetVideoInfo(MemoryStream inputFile, string Filename)
-//        {
-//            string tempfile = Path.Combine(this.WorkingPath, System.Guid.NewGuid().ToString() + Path.GetExtension(Filename));
-//            FileStream fs = File.Create(tempfile);
-//            inputFile.WriteTo(fs);
-//            fs.Flush();
-//            fs.Close();
-//            GC.Collect();
+			GetVideoInfo(vf);
 
-//            VideoFile vf = null;
-//            try
-//            {
-//                vf = new VideoFile(tempfile);
-//            }
-//            catch (Exception ex)
-//            {
-//                throw ex;
-//            }
+			try
+			{
+				File.Delete(tempfile);
+			}
+			catch (Exception)
+			{
 
-//            GetVideoInfo(vf);
+			}
 
-//            try
-//            {
-//                File.Delete(tempfile);
-//            }
-//            catch (Exception)
-//            {
+			return vf;
+		}
+		public VideoFile GetVideoInfo(string inputPath)
+		{
+			VideoFile vf = null;
+			try
+			{
+				vf = new VideoFile(inputPath);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			GetVideoInfo(vf);
+			return vf;
+		}
+		public void GetVideoInfo(VideoFile input)
+		{
+			//set up the parameters for video info
+			string Params = string.Format("-i \"{0}\"", input.Path);
+			string output = RunProcess(Params);
+			input.RawInfo = output;
 
-//            }
+			//get duration
+			Regex re = new Regex("[D|d]uration:.((\\d|:|\\.)*)");
+			Match m = re.Match(input.RawInfo);
 
-//            return vf;
-//        }
-//        public VideoFile GetVideoInfo(string inputPath)
-//        {
-//            VideoFile vf = null;
-//            try
-//            {
-//                vf = new VideoFile(inputPath);
-//            }
-//            catch (Exception ex)
-//            {
-//                throw ex;
-//            }
-//            GetVideoInfo(vf);
-//            return vf;
-//        }
-//        public void GetVideoInfo(VideoFile input)
-//        {
-//            //set up the parameters for video info
-//            string Params = string.Format("-i {0}", input.Path);
-//            string output = RunProcess(Params);
-//            input.RawInfo = output;
+			if (m.Success)
+			{
+				string duration = m.Groups[1].Value;
+				string[] timepieces = duration.Split(new char[] { ':', '.' });
+				if (timepieces.Length == 4)
+				{
+					input.Duration = new TimeSpan(0, Convert.ToInt16(timepieces[0]), Convert.ToInt16(timepieces[1]), Convert.ToInt16(timepieces[2]), Convert.ToInt16(timepieces[3]));
+				}
+			}
 
-//            //get duration
-//            Regex re = new Regex("[D|d]uration:.((\\d|:|\\.)*)");
-//            Match m = re.Match(input.RawInfo);
+			//get audio bit rate
+			re = new Regex("[B|b]itrate:.((\\d|:)*)");
+			m = re.Match(input.RawInfo);
+			double kb = 0.0;
+			if (m.Success)
+			{
+				Double.TryParse(m.Groups[1].Value, out kb);
+			}
+			input.BitRate = kb;
 
-//            if (m.Success)
-//            {
-//                string duration = m.Groups[1].Value;
-//                string[] timepieces = duration.Split(new char[] { ':', '.' });
-//                if (timepieces.Length == 4)
-//                {
-//                    input.Duration = new TimeSpan(0, Convert.ToInt16(timepieces[0]), Convert.ToInt16(timepieces[1]), Convert.ToInt16(timepieces[2]), Convert.ToInt16(timepieces[3]));
-//                }
-//            }
+			//get the audio format
+			re = new Regex("[A|a]udio:.*");
+			m = re.Match(input.RawInfo);
+			if (m.Success)
+			{
+				input.AudioFormat = m.Value;
+			}
 
-//            //get audio bit rate
-//            re = new Regex("[B|b]itrate:.((\\d|:)*)");
-//            m = re.Match(input.RawInfo);
-//            double kb = 0.0;
-//            if (m.Success)
-//            {
-//                Double.TryParse(m.Groups[1].Value, out kb);
-//            }
-//            input.BitRate = kb;
+			//get the video format
+			re = new Regex("[V|v]ideo:.*");
+			m = re.Match(input.RawInfo);
+			if (m.Success)
+			{
+				input.VideoFormat = m.Value;
+			}
 
-//            //get the audio format
-//            re = new Regex("[A|a]udio:.*");
-//            m = re.Match(input.RawInfo);
-//            if (m.Success)
-//            {
-//                input.AudioFormat = m.Value;
-//            }
+			//get the video format
+			re = new Regex("(\\d{2,3})x(\\d{2,3})");
+			m = re.Match(input.RawInfo);
+			if (m.Success)
+			{
+				int width = 0; int height = 0;
+				int.TryParse(m.Groups[1].Value, out width);
+				int.TryParse(m.Groups[2].Value, out height);
+				input.Width = width;
+				input.Height = height;
+			}
+			input.infoGathered = true;
+		}
+		#endregion
 
-//            //get the video format
-//            re = new Regex("[V|v]ideo:.*");
-//            m = re.Match(input.RawInfo);
-//            if (m.Success)
-//            {
-//                input.VideoFormat = m.Value;
-//            }
+		#region Convert to FLV
+		public OutputPackage ConvertToFLV(MemoryStream inputFile, string Filename)
+		{
+			string tempfile = Path.Combine(this.WorkingPath, System.Guid.NewGuid().ToString() + Path.GetExtension(Filename));
+			FileStream fs = File.Create(tempfile);
+			inputFile.WriteTo(fs);
+			fs.Flush();
+			fs.Close();
+			GC.Collect();
 
-//            //get the video format
-//            re = new Regex("(\\d{2,3})x(\\d{2,3})");
-//            m = re.Match(input.RawInfo);
-//            if (m.Success)
-//            {
-//                int width = 0; int height = 0;
-//                int.TryParse(m.Groups[1].Value, out width);
-//                int.TryParse(m.Groups[2].Value, out height);
-//                input.Width = width;
-//                input.Height = height;
-//            }
-//            input.infoGathered = true;
-//        }
-//        #endregion
+			VideoFile vf = null;
+			try
+			{
+				vf = new VideoFile(tempfile);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 
-//        #region Convert to FLV
-//        public OutputPackage ConvertToFLV(MemoryStream inputFile, string Filename)
-//        {
-//            string tempfile = Path.Combine(this.WorkingPath, System.Guid.NewGuid().ToString() + Path.GetExtension(Filename));
-//            FileStream fs = File.Create(tempfile);
-//            inputFile.WriteTo(fs);
-//            fs.Flush();
-//            fs.Close();
-//            GC.Collect();
+			OutputPackage oo = ConvertToFLV(vf);
 
-//            VideoFile vf = null;
-//            try
-//            {
-//                vf = new VideoFile(tempfile);
-//            }
-//            catch (Exception ex)
-//            {
-//                throw ex;
-//            }
+			try
+			{
+				File.Delete(tempfile);
+			}
+			catch (Exception)
+			{
 
-//            OutputPackage oo = ConvertToFLV(vf);
+			}
 
-//            try
-//            {
-//                File.Delete(tempfile);
-//            }
-//            catch (Exception)
-//            {
+			return oo;
+		}
+		public OutputPackage ConvertToFLV(string inputPath)
+		{
+			VideoFile vf = null;
+			try
+			{
+				vf = new VideoFile(inputPath);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
 
-//            }
+			OutputPackage oo = ConvertToFLV(vf);
+			return oo;
+		}
+		public OutputPackage ConvertToFLV(VideoFile input)
+		{
+			if (!input.infoGathered)
+			{
+				GetVideoInfo(input);
+			}
+			OutputPackage ou = new OutputPackage();
 
-//            return oo;
-//        }
-//        public OutputPackage ConvertToFLV(string inputPath)
-//        {
-//            VideoFile vf = null;
-//            try
-//            {
-//                vf = new VideoFile(inputPath);
-//            }
-//            catch (Exception ex)
-//            {
-//                throw ex;
-//            }
+			string filename = System.Guid.NewGuid().ToString() + ".flv";
+			string finalpath = Path.Combine(this.WorkingPath, filename);
+			string Params = string.Format("-i \"{0}\" -y -ar 22050 -ab 64 -f flv \"{1}\"", input.Path, finalpath);
+			string output = RunProcess(Params);
 
-//            OutputPackage oo = ConvertToFLV(vf);
-//            return oo;
-//        }
-//        public OutputPackage ConvertToFLV(VideoFile input)
-//        {
-//            if (!input.infoGathered)
-//            {
-//                GetVideoInfo(input);
-//            }
-//            OutputPackage ou = new OutputPackage();
+			if (File.Exists(finalpath))
+			{
+				ou.VideoStream = LoadMemoryStreamFromFile(finalpath);
+				try
+				{
+					File.Delete(finalpath);
+				}
+				catch (Exception) { }
+			}
+			return ou;
+		}
+		#endregion
+	}
 
-//            //set up the parameters for getting a previewimage
-//            string filename = System.Guid.NewGuid().ToString() + ".jpg";
-//            int secs;
+	public class VideoFile
+	{
+		#region Properties
+		private string _Path;
+		public string Path
+		{
+			get
+			{
+				return _Path;
+			}
+			set
+			{
+				_Path = value;
+			}
+		}
 
-//            //divide the duration in 3 to get a preview image in the middle of the clip
-//            //instead of a black image from the beginning.
-//            secs = (int)Math.Round(TimeSpan.FromTicks(input.Duration.Ticks / 3).TotalSeconds, 0);
+		public TimeSpan Duration { get; set; }
+		public double BitRate { get; set; }
+		public string AudioFormat { get; set; }
+		public string VideoFormat { get; set; }
+		public int Height { get; set; }
+		public int Width { get; set; }
+		public string RawInfo { get; set; }
+		public bool infoGathered { get; set; }
+		#endregion
 
-//            string finalpath = Path.Combine(this.WorkingPath, filename);
-//            string Params = string.Format("-i {0} {1} -vcodec mjpeg -ss {2} -vframes 1 -an -f rawvideo", input.Path, finalpath, secs);
-//            string output = RunProcess(Params);
+		#region Constructors
+		public VideoFile(string path)
+		{
+			_Path = path;
+			Initialize();
+		}
+		#endregion
 
-//            ou.RawOutput = output;
+		#region Initialization
+		private void Initialize()
+		{
+			this.infoGathered = false;
+			//first make sure we have a value for the video file setting
+			if (string.IsNullOrEmpty(_Path))
+			{
+				throw new Exception("Could not find the location of the video file");
+			}
 
-//            if (File.Exists(finalpath))
-//            {
-//                ou.PreviewImage = LoadImageFromFile(finalpath);
-//                try
-//                {
-//                    File.Delete(finalpath);
-//                }
-//                catch (Exception) { }
-//            }
-//            else
-//            { //try running again at frame 1 to get something
-//                Params = string.Format("-i {0} {1} -vcodec mjpeg -ss {2} -vframes 1 -an -f rawvideo", input.Path, finalpath, 1);
-//                output = RunProcess(Params);
+			//Now see if the video file exists
+			if (!File.Exists(_Path))
+			{
+				throw new Exception("The video file " + _Path + " does not exist.");
+			}
+		}
+		#endregion
+	}
 
-//                ou.RawOutput = output;
-
-//                if (File.Exists(finalpath))
-//                {
-//                    ou.PreviewImage = LoadImageFromFile(finalpath);
-//                    try
-//                    {
-//                        File.Delete(finalpath);
-//                    }
-//                    catch (Exception) { }
-//                }
-//            }
-
-//            finalpath = Path.Combine(this.WorkingPath, filename);
-//            filename = System.Guid.NewGuid().ToString() + ".flv";
-//            Params = string.Format("-i {0} -y -ar 22050 -ab 64 -f flv {1}", input.Path, finalpath);
-//            output = RunProcess(Params);
-
-//            if (File.Exists(finalpath))
-//            {
-//                ou.VideoStream = LoadMemoryStreamFromFile(finalpath);
-//                try
-//                {
-//                    File.Delete(finalpath);
-//                }
-//                catch (Exception) { }
-//            }
-//            return ou;
-//        }
-//        #endregion
-//    }
-
-//    public class VideoFile
-//    {
-//        #region Properties
-//        private string _Path;
-//        public string Path
-//        {
-//            get
-//            {
-//                return _Path;
-//            }
-//            set
-//            {
-//                _Path = value;
-//            }
-//        }
-
-//        public TimeSpan Duration { get; set; }
-//        public double BitRate { get; set; }
-//        public string AudioFormat { get; set; }
-//        public string VideoFormat { get; set; }
-//        public int Height { get; set; }
-//        public int Width { get; set; }
-//        public string RawInfo { get; set; }
-//        public bool infoGathered { get; set; }
-//        #endregion
-
-//        #region Constructors
-//        public VideoFile(string path)
-//        {
-//            _Path = path;
-//            Initialize();
-//        }
-//        #endregion
-
-//        #region Initialization
-//        private void Initialize()
-//        {
-//            this.infoGathered = false;
-//            //first make sure we have a value for the video file setting
-//            if (string.IsNullOrEmpty(_Path))
-//            {
-//                throw new Exception("Could not find the location of the video file");
-//            }
-
-//            //Now see if the video file exists
-//            if (!File.Exists(_Path))
-//            {
-//                throw new Exception("The video file " + _Path + " does not exist.");
-//            }
-//        }
-//        #endregion
-//    }
-
-//    public class OutputPackage
-//    {
-//        public MemoryStream VideoStream { get; set; }
-//        public System.Drawing.Image PreviewImage { get; set; }
-//        public string RawOutput { get; set; }
-//        public bool Success { get; set; }
-//    }
-//}
+	public class OutputPackage
+	{
+		public MemoryStream VideoStream { get; set; }
+		public System.Drawing.Image PreviewImage { get; set; }
+		public string RawOutput { get; set; }
+		public bool Success { get; set; }
+	}
+}
