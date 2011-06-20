@@ -167,11 +167,11 @@ namespace BizHawk.MultiClient
 			
 			str += key.ToString();
 			if (str.Length == 10 && str == "ControlKey")
-				str = "LeftControl";
+				str = "Control";
 			if (str.Length == 4 && str == "Menu")
-				str = "LeftAlt";
+				str = "Alt";
 			if (str.Length == 8 && str == "ShiftKey")
-				str = "LeftShift";
+				str = "Shift";
 			if (str.Length == 2 && str == "Up")
 				str = "UpArrow";
 			if (str.Length == 4 && str == "Down")
@@ -214,11 +214,11 @@ namespace BizHawk.MultiClient
 				str = "LeftBracket";
 
 			if ((modifiers & Keys.Shift) != 0)
-				str = str.Insert(0, "LeftShift + ");
+				str = str.Insert(0, "Shift + ");
 			if ((modifiers & Keys.Control) != 0)
-				str = str.Insert(0, "LeftControl + ");
+				str = str.Insert(0, "Control + ");
 			if ((modifiers & Keys.Alt) != 0)
-				str = str.Insert(0, "LeftAlt + ");
+				str = str.Insert(0, "Alt + ");
 
 			return str;
 		}

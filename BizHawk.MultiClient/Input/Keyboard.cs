@@ -53,6 +53,14 @@ namespace BizHawk.MultiClient
 				return false;
 			if (state.IsPressed(key))
 				return true;
+			
+			if (key == Key.LeftShift && state.IsPressed(Key.RightShift))
+				return true;
+			if (key == Key.LeftControl && state.IsPressed(Key.RightControl))
+				return true;
+			if (key == Key.LeftAlt && state.IsPressed(Key.RightAlt))
+				return true;
+
 			return false;
 		}
 
