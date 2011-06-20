@@ -412,6 +412,24 @@ namespace BizHawk
 
     public static class Util
     {
+		public static string Hash_MD5(byte[] data, int offset, int len)
+		{
+			using (var md5 = System.Security.Cryptography.MD5.Create())
+			{
+				md5.TransformFinalBlock(data, offset, len);
+				return Util.BytesToHexString(md5.Hash);
+			}
+		}
+
+		public static string Hash_SHA1(byte[] data, int offset, int len)
+		{
+			using (var sha1 = System.Security.Cryptography.SHA1.Create())
+			{
+				sha1.TransformFinalBlock(data, offset, len);
+				return Util.BytesToHexString(sha1.Hash);
+			}
+		}
+
 		public static bool IsPowerOfTwo(int x)
 		{
 			if (x == 0) return true;
