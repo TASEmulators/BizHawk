@@ -9,9 +9,9 @@ namespace BizHawk.MultiClient
 {
     public static class PathManager
     {
-        public static string GetExePathAbsolute()
+        public static string GetExeDirectoryAbsolute()
         {
-            string p = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+            string p = Path.GetDirectoryName(Assembly.GetEntryAssembly().GetName().CodeBase);
             if (p.Substring(0, 6) == "file:\\")
                 p = p.Remove(0, 6);
             string z = p;
@@ -35,35 +35,35 @@ namespace BizHawk.MultiClient
         public static string GetBasePathAbsolute()
         {
             if (Global.Config.BasePath.Length < 1) //If empty, then EXE path
-                return GetExePathAbsolute();
+                return GetExeDirectoryAbsolute();
 
             if (Global.Config.BasePath.Length >= 5 && 
                 Global.Config.BasePath.Substring(0, 5) == "%exe%")
-                    return GetExePathAbsolute();
+                    return GetExeDirectoryAbsolute();
             if (Global.Config.BasePath[0] == '.')
             {
                 if (Global.Config.BasePath.Length == 1)
-                    return GetExePathAbsolute();
+                    return GetExeDirectoryAbsolute();
                 else
                 {
                     if (Global.Config.BasePath.Length == 2 &&
                         Global.Config.BasePath == ".\\")
-                        return GetExePathAbsolute();
+                        return GetExeDirectoryAbsolute();
                     else
                     {
                         string tmp = Global.Config.BasePath;
                         tmp = tmp.Remove(0, 1);
-                        tmp = tmp.Insert(0, GetExePathAbsolute());
+                        tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
                         return tmp;
                     }
                 }
             }
 
             if (Global.Config.BasePath.Substring(0, 2) == "..")
-                return RemoveParents(Global.Config.BasePath, GetExePathAbsolute());
+                return RemoveParents(Global.Config.BasePath, GetExeDirectoryAbsolute());
 
             //In case of error, return EXE path
-            return GetExePathAbsolute();
+            return GetExeDirectoryAbsolute();
         }
 
         public static string GetPlatformBase(string system)
@@ -107,11 +107,11 @@ namespace BizHawk.MultiClient
             if (path.Length >= 5 && path.Substring(0, 5) == "%exe%")
             {
                 if (path.Length == 5)
-                    return GetExePathAbsolute();
+                    return GetExeDirectoryAbsolute();
                 else
                 {
                     string tmp = path.Remove(0, 5);
-                    tmp = tmp.Insert(0, GetExePathAbsolute());
+                    tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
                     return tmp;
                 }
             }
@@ -151,12 +151,12 @@ namespace BizHawk.MultiClient
                     if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
                         return path;
                     else
-                        return GetExePathAbsolute(); //bad path
+                        return GetExeDirectoryAbsolute(); //bad path
                 }
             }
 
             //all pad paths default to EXE
-            return GetExePathAbsolute();
+            return GetExeDirectoryAbsolute();
         }
 
         public static string RemoveParents(string path, string workingpath)
