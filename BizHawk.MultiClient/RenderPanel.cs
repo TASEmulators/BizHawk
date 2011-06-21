@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
@@ -222,7 +223,28 @@ namespace BizHawk.MultiClient
 			Device.Present(Present.DoNotWait);
 		}
 
-		public void Render(IVideoProvider video)
+        public void Render(IVideoProvider video)
+        {
+            try
+            {
+                RenderExec(video);
+            } catch (Direct3D9Exception) {
+                // Wait until device is available or user gets annoyed and closes app
+                Result r;
+                do
+                {
+                    r = Device.TestCooperativeLevel();
+                    Thread.Sleep(100);
+                } while (r == ResultCode.DeviceLost);
+
+                // lets try recovery!
+                DestroyDevice();
+                CreateDevice();
+                RenderExec(video);
+            }
+        }
+
+		private void RenderExec(IVideoProvider video)
 		{
 			if (video == null)
 			{
