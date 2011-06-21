@@ -284,7 +284,7 @@
 		public bool TI83ToolTips = true;
 
 		// Client Hotkey Bindings
-		public string HardResetBinding = "Control+R"; 
+		public string HardResetBinding = "Ctrl+R"; 
 		public string FastForwardBinding = "J1 B6, Tab";
 		public string RewindBinding = "J1 B5, Shift+R";
 		public string EmulatorPauseBinding = "Pause";
@@ -335,8 +335,8 @@
 		public string HexEditor = "";
 		public string LuaConsole = "";
 		public string Cheats = "";
-		public string OpenROM = "Control+O";
-		public string CloseROM = "Control+W";
+		public string OpenROM = "Ctrl+O";
+		public string CloseROM = "Ctrl+W";
 		public string FrameCounterBinding = "";
 		public string FPSBinding = "";
 		public string LagCounterBinding = "";

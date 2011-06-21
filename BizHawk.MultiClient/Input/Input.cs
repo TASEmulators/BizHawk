@@ -44,10 +44,14 @@ namespace BizHawk.MultiClient
 				control = control.Replace("RightControl", "LeftControl");
 			if (control.Contains("RightAlt"))
 				control = control.Replace("RightAlt", "LeftAlt");
+			if (control.Contains("Ctrl"))
+				control = control.Replace("Ctrl", "LeftControl");
 			
 			if (control.Contains("Shift") && control != "LeftShift")
 				control = control.Replace("Shift", "LeftShift");
-			if (control.Contains("Control") && control != "LeftControl")
+			if (control.Contains("Control") && control.Trim() != "LeftControl")
+				control = control.Replace("Control", "LeftControl");
+			if (control.Contains("Ctrl") && control.Trim() != "LeftControl")
 				control = control.Replace("Control", "LeftControl");
 			if (control.Contains("Alt") && control != "LeftAlt")
 				control = control.Replace("Alt", "LeftAlt");

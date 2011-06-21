@@ -167,7 +167,7 @@ namespace BizHawk.MultiClient
 			
 			str += key.ToString();
 			if (str.Length == 10 && str == "ControlKey")
-				str = "Control";
+				str = "Ctrl";
 			if (str.Length == 4 && str == "Menu")
 				str = "Alt";
 			if (str.Length == 8 && str == "ShiftKey")
@@ -216,7 +216,7 @@ namespace BizHawk.MultiClient
 			if ((modifiers & Keys.Shift) != 0)
 				str = str.Insert(0, "Shift + ");
 			if ((modifiers & Keys.Control) != 0)
-				str = str.Insert(0, "Control + ");
+				str = str.Insert(0, "Ctrl + ");
 			if ((modifiers & Keys.Alt) != 0)
 				str = str.Insert(0, "Alt + ");
 
