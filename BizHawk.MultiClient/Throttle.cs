@@ -144,16 +144,20 @@ namespace BizHawk.MultiClient
 		public void SetCoreFps(double desired_fps)
 		{
 			core_desiredfps = (ulong)(65536 * desired_fps);
-			SetSpeedPercent(pct);
+			int target_pct = pct;
+			pct = -1;
+			SetSpeedPercent(target_pct);
 		}
 
 		int pct = -1;
 		public void SetSpeedPercent(int percent)
 		{
-            if (pct == percent) return;
+			//Console.WriteLine("throttle set percent " + percent);
+			if (pct == percent) return;
 			pct = percent;
 			float fraction = percent / 100.0f;
 			desiredfps = (ulong)(core_desiredfps * fraction);
+			//Console.WriteLine("throttle set desiredfps " + desiredfps);
 			desiredspf = 65536.0f / desiredfps;
 			AutoFrameSkip_IgnorePreviousDelay();
 		}
