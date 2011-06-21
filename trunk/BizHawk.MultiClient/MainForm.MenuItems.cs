@@ -826,7 +826,18 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[12].Visible = true;
 				contextMenuStrip1.Items[13].Visible = true;
 			}
-			
+
+			if (Global.Config.RecentRoms.Length() == 0)
+				contextMenuStrip1.Items[1].Enabled = false;
+			else
+				contextMenuStrip1.Items[1].Enabled = true;
+
+			if (Global.Config.RecentMovies.Length() == 0)
+				contextMenuStrip1.Items[6].Enabled = false;
+			else
+				contextMenuStrip1.Items[6].Enabled = true;
+
+
 			//TODO:
 			contextMenuStrip1.Items[9].Enabled = false;
 			contextMenuStrip1.Items[10].Enabled = false;
