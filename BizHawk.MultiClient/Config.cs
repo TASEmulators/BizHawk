@@ -284,14 +284,14 @@
 		public bool TI83ToolTips = true;
 
 		// Client Hotkey Bindings
-		public string HardResetBinding = "LeftControl+R"; //TODO: This needs to be Ctrl+R but how?
+		public string HardResetBinding = "Control+R"; 
 		public string FastForwardBinding = "J1 B6, Tab";
-		public string RewindBinding = "J1 B5, LeftShift+R, RightShift+R";
+		public string RewindBinding = "J1 B5, Shift+R";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
-		public string UnthrottleBinding = "LeftShift+Tab";
+		public string UnthrottleBinding = "Shift+Tab";
 		public string ScreenshotBinding = "F12";
-		public string ToggleFullscreenBinding = "LeftAlt+Return, RightAlt+Return";
+		public string ToggleFullscreenBinding = "Alt+Return";
 		public string QuickSave = "I";
 		public string QuickLoad = "P";
 		public string SelectSlot0 = "0";
@@ -304,16 +304,16 @@
 		public string SelectSlot7 = "7";
 		public string SelectSlot8 = "8";
 		public string SelectSlot9 = "9";
-		public string SaveSlot0 = "LeftShift+F10";
-		public string SaveSlot1 = "LeftShift+F1";
-		public string SaveSlot2 = "LeftShift+F2";
-		public string SaveSlot3 = "LeftShift+F3";
-		public string SaveSlot4 = "LeftShift+F4";
-		public string SaveSlot5 = "LeftShift+F5";
-		public string SaveSlot6 = "LeftShift+F6";
-		public string SaveSlot7 = "LeftShift+F7";
-		public string SaveSlot8 = "LeftShift+F8";
-		public string SaveSlot9 = "LeftShift+F9";
+		public string SaveSlot0 = "Shift+F10";
+		public string SaveSlot1 = "Shift+F1";
+		public string SaveSlot2 = "Shift+F2";
+		public string SaveSlot3 = "Shift+F3";
+		public string SaveSlot4 = "Shift+F4";
+		public string SaveSlot5 = "Shift+F5";
+		public string SaveSlot6 = "Shift+F6";
+		public string SaveSlot7 = "Shift+F7";
+		public string SaveSlot8 = "Shift+F8";
+		public string SaveSlot9 = "Shift+F9";
 		public string LoadSlot0 = "F10";
 		public string LoadSlot1 = "F1";
 		public string LoadSlot2 = "F2";
@@ -335,8 +335,8 @@
 		public string HexEditor = "";
 		public string LuaConsole = "";
 		public string Cheats = "";
-		public string OpenROM = "LeftControl+O";
-		public string CloseROM = "LeftControl+W";
+		public string OpenROM = "Control+O";
+		public string CloseROM = "Control+W";
 		public string FrameCounterBinding = "";
 		public string FPSBinding = "";
 		public string LagCounterBinding = "";
