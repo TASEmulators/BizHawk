@@ -206,7 +206,13 @@ namespace BizHawk.MultiClient
 					DeviceWindowHandle = backingControl.Handle,
 					PresentationInterval = Global.Config.DisplayVSync ? PresentInterval.One : PresentInterval.Immediate
 				};
-			Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, CreateFlags.HardwareVertexProcessing, pp);
+
+			var flags = CreateFlags.SoftwareVertexProcessing;
+			if ((d3d.GetDeviceCaps(0, DeviceType.Hardware).DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
+			{
+				flags = CreateFlags.HardwareVertexProcessing;
+			}
+			Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, flags, pp);
 			Sprite = new Sprite(Device);
 			Texture = new ImageTexture(Device);
 			MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
