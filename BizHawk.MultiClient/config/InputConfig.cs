@@ -40,11 +40,6 @@ namespace BizHawk.MultiClient
 			Changed = false;
 		}
 
-		private string TruncateButtonMapping(string button)
-		{
-			//adelikat: This function is a relic from before mappings were saved via JSON, this function should be squashed
-			return button; //.Substring(x + 2, button.Length - (x + 2));
-		}
 		private string AppendButtonMapping(string button, string oldmap)
 		{
 			//adelikat: Another relic, remove this
@@ -64,14 +59,14 @@ namespace BizHawk.MultiClient
 			this.SystemComboBox.SelectedIndex = 0;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[SMSControlList.Length];
-			ButtonMappings[0] = TruncateButtonMapping(Global.Config.SMSController[jpad].Up);
-			ButtonMappings[1] = TruncateButtonMapping(Global.Config.SMSController[jpad].Down);
-			ButtonMappings[2] = TruncateButtonMapping(Global.Config.SMSController[jpad].Left);
-			ButtonMappings[3] = TruncateButtonMapping(Global.Config.SMSController[jpad].Right);
-			ButtonMappings[4] = TruncateButtonMapping(Global.Config.SMSController[jpad].B1);
-			ButtonMappings[5] = TruncateButtonMapping(Global.Config.SMSController[jpad].B2);
-			ButtonMappings[6] = TruncateButtonMapping(Global.Config.SmsPause);
-			ButtonMappings[7] = TruncateButtonMapping(Global.Config.SmsReset);
+			ButtonMappings[0] = Global.Config.SMSController[jpad].Up;
+			ButtonMappings[1] = Global.Config.SMSController[jpad].Down;
+			ButtonMappings[2] = Global.Config.SMSController[jpad].Left;
+			ButtonMappings[3] = Global.Config.SMSController[jpad].Right;
+			ButtonMappings[4] = Global.Config.SMSController[jpad].B1;
+			ButtonMappings[5] = Global.Config.SMSController[jpad].B2;
+			ButtonMappings[6] = Global.Config.SmsPause;
+			ButtonMappings[7] = Global.Config.SmsReset;
 			IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad].Enabled;
 			Changed = true;
 			Labels.Clear();
@@ -135,14 +130,14 @@ namespace BizHawk.MultiClient
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[PCEControlList.Length];
-			ButtonMappings[0] = TruncateButtonMapping(Global.Config.PCEController[jpad].Up);
-			ButtonMappings[1] = TruncateButtonMapping(Global.Config.PCEController[jpad].Down);
-			ButtonMappings[2] = TruncateButtonMapping(Global.Config.PCEController[jpad].Left);
-			ButtonMappings[3] = TruncateButtonMapping(Global.Config.PCEController[jpad].Right);
-			ButtonMappings[4] = TruncateButtonMapping(Global.Config.PCEController[jpad].I);
-			ButtonMappings[5] = TruncateButtonMapping(Global.Config.PCEController[jpad].II);
-			ButtonMappings[6] = TruncateButtonMapping(Global.Config.PCEController[jpad].Run);
-			ButtonMappings[7] = TruncateButtonMapping(Global.Config.PCEController[jpad].Select);
+			ButtonMappings[0] = Global.Config.PCEController[jpad].Up;
+			ButtonMappings[1] = Global.Config.PCEController[jpad].Down;
+			ButtonMappings[2] = Global.Config.PCEController[jpad].Left;
+			ButtonMappings[3] = Global.Config.PCEController[jpad].Right;
+			ButtonMappings[4] = Global.Config.PCEController[jpad].I;
+			ButtonMappings[5] = Global.Config.PCEController[jpad].II;
+			ButtonMappings[6] = Global.Config.PCEController[jpad].Run;
+			ButtonMappings[7] = Global.Config.PCEController[jpad].Select;
 			IDX_CONTROLLERENABLED.Checked = Global.Config.PCEController[jpad].Enabled;
 			Labels.Clear();
 			TextBoxes.Clear();
@@ -485,14 +480,14 @@ namespace BizHawk.MultiClient
 			this.Text = ControllerStr + "Gameboy";
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
 			string[] ButtonMappings = new string[NESControlList.Length];
-			ButtonMappings[0] = TruncateButtonMapping(Global.Config.GameBoyController.Up);
-			ButtonMappings[1] = TruncateButtonMapping(Global.Config.GameBoyController.Down);
-			ButtonMappings[2] = TruncateButtonMapping(Global.Config.GameBoyController.Left);
-			ButtonMappings[3] = TruncateButtonMapping(Global.Config.GameBoyController.Right);
-			ButtonMappings[4] = TruncateButtonMapping(Global.Config.GameBoyController.A);
-			ButtonMappings[5] = TruncateButtonMapping(Global.Config.GameBoyController.B);
-			ButtonMappings[6] = TruncateButtonMapping(Global.Config.GameBoyController.Start);
-			ButtonMappings[7] = TruncateButtonMapping(Global.Config.GameBoyController.Select);
+			ButtonMappings[0] = Global.Config.GameBoyController.Up;
+			ButtonMappings[1] = Global.Config.GameBoyController.Down;
+			ButtonMappings[2] = Global.Config.GameBoyController.Left;
+			ButtonMappings[3] = Global.Config.GameBoyController.Right;
+			ButtonMappings[4] = Global.Config.GameBoyController.A;
+			ButtonMappings[5] = Global.Config.GameBoyController.B;
+			ButtonMappings[6] = Global.Config.GameBoyController.Start;
+			ButtonMappings[7] = Global.Config.GameBoyController.Select;
 			IDX_CONTROLLERENABLED.Enabled = false;
 			Changed = true;
 			Labels.Clear();
@@ -557,14 +552,14 @@ namespace BizHawk.MultiClient
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[NESControlList.Length];
-			ButtonMappings[0] = TruncateButtonMapping(Global.Config.NESController[jpad].Up);
-			ButtonMappings[1] = TruncateButtonMapping(Global.Config.NESController[jpad].Down);
-			ButtonMappings[2] = TruncateButtonMapping(Global.Config.NESController[jpad].Left);
-			ButtonMappings[3] = TruncateButtonMapping(Global.Config.NESController[jpad].Right);
-			ButtonMappings[4] = TruncateButtonMapping(Global.Config.NESController[jpad].A);
-			ButtonMappings[5] = TruncateButtonMapping(Global.Config.NESController[jpad].B);
-			ButtonMappings[6] = TruncateButtonMapping(Global.Config.NESController[jpad].Select);
-			ButtonMappings[7] = TruncateButtonMapping(Global.Config.NESController[jpad].Start);
+			ButtonMappings[0] = Global.Config.NESController[jpad].Up;
+			ButtonMappings[1] = Global.Config.NESController[jpad].Down;
+			ButtonMappings[2] = Global.Config.NESController[jpad].Left;
+			ButtonMappings[3] = Global.Config.NESController[jpad].Right;
+			ButtonMappings[4] = Global.Config.NESController[jpad].A;
+			ButtonMappings[5] = Global.Config.NESController[jpad].B;
+			ButtonMappings[6] = Global.Config.NESController[jpad].Select;
+			ButtonMappings[7] = Global.Config.NESController[jpad].Start;
 
 			IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
 			Changed = true;
