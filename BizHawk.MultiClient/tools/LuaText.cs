@@ -17,7 +17,7 @@ namespace BizHawk.MultiClient.tools
         public Color color;
         public Color outline;
         public String message;
-        private Device device;
+        //private Device device;
 
         public LuaText()
         {
