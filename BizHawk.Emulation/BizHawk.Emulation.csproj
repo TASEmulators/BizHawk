@@ -82,6 +82,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Jaleco-JF_11_14.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper240.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper095.cs" />
