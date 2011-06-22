@@ -102,9 +102,9 @@ static string ClassifyTable = @"
 79	-1	-1	-1	-1	AVE-NINA-06; Blackjack (U)
 113	-1	-1	-1	-1	AVE-NINA-06; ???
 232	-1	-1	-1	-1	CAMERICA-ALGQ; Quattro Adventure
+240	-1	-1	-1	-1	MAPPER240
 ";
 }
-//;232	-1	-1	-1	-1	Camerica_BF9096-FLEX; Quattro Adventure
 
 		unsafe struct iNES_HEADER
 		{
