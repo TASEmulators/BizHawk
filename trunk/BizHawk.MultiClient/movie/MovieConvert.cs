@@ -100,7 +100,7 @@ namespace BizHawk.MultiClient
             //TODO: special commands like fds disk switch, etc, and power/reset
 
             //TODO: use stringbuilder class for speed
-            string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
+            //string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
             string frame = "|0|"; //TODO: read reset command rather than hard code it off
             for (int x = 0; x < frameCount; x++)
             {
@@ -340,7 +340,7 @@ namespace BizHawk.MultiClient
             for (int x = 0; x < framecount; x++)
             {
                 //TODO: FF FF for all controllers = Reset
-                string frame = "|0|";
+                //string frame = "|0|";
                 for (int y = 0; y < numControllers; y++)
                 {
                     UInt16 fd = r.ReadUInt16();
