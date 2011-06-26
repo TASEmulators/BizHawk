@@ -682,6 +682,7 @@ namespace BizHawk.MultiClient
 				SaveWatchFile(file.FullName);
 				currentWatchFile = file.FullName;
 				MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
+				Global.Config.RecentWatches.Add(file.FullName);
 			}
 		}
 
