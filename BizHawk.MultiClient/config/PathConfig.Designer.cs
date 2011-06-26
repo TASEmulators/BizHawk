@@ -68,6 +68,9 @@
 			this.BrowseAVI = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.NESPaletteDescription = new System.Windows.Forms.Label();
+			this.NESBrowsePalette = new System.Windows.Forms.Button();
+			this.NESPaletteBox = new System.Windows.Forms.TextBox();
 			this.NESCheatsDescription = new System.Windows.Forms.Label();
 			this.NESBrowseCheats = new System.Windows.Forms.Button();
 			this.NESCheatsBox = new System.Windows.Forms.TextBox();
@@ -201,9 +204,6 @@
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
-			this.NESPaletteBox = new System.Windows.Forms.TextBox();
-			this.NESBrowsePalette = new System.Windows.Forms.Button();
-			this.NESPaletteDescription = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -652,6 +652,37 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "NES";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// NESPaletteDescription
+			// 
+			this.NESPaletteDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.NESPaletteDescription.AutoSize = true;
+			this.NESPaletteDescription.Location = new System.Drawing.Point(360, 212);
+			this.NESPaletteDescription.Name = "NESPaletteDescription";
+			this.NESPaletteDescription.Size = new System.Drawing.Size(40, 13);
+			this.NESPaletteDescription.TabIndex = 26;
+			this.NESPaletteDescription.Text = "Palette";
+			// 
+			// NESBrowsePalette
+			// 
+			this.NESBrowsePalette.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.NESBrowsePalette.Location = new System.Drawing.Point(299, 208);
+			this.NESBrowsePalette.Name = "NESBrowsePalette";
+			this.NESBrowsePalette.Size = new System.Drawing.Size(54, 23);
+			this.NESBrowsePalette.TabIndex = 25;
+			this.NESBrowsePalette.Text = "Browse";
+			this.NESBrowsePalette.UseVisualStyleBackColor = true;
+			this.NESBrowsePalette.Click += new System.EventHandler(this.NESBrowsePalette_Click);
+			// 
+			// NESPaletteBox
+			// 
+			this.NESPaletteBox.AcceptsTab = true;
+			this.NESPaletteBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.NESPaletteBox.Location = new System.Drawing.Point(13, 209);
+			this.NESPaletteBox.Name = "NESPaletteBox";
+			this.NESPaletteBox.Size = new System.Drawing.Size(280, 20);
+			this.NESPaletteBox.TabIndex = 24;
 			// 
 			// NESCheatsDescription
 			// 
@@ -2121,37 +2152,6 @@
 			this.SaveButton.Text = "&Save";
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
-			// 
-			// NESPaletteBox
-			// 
-			this.NESPaletteBox.AcceptsTab = true;
-			this.NESPaletteBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.NESPaletteBox.Location = new System.Drawing.Point(13, 209);
-			this.NESPaletteBox.Name = "NESPaletteBox";
-			this.NESPaletteBox.Size = new System.Drawing.Size(280, 20);
-			this.NESPaletteBox.TabIndex = 24;
-			// 
-			// NESBrowsePalette
-			// 
-			this.NESBrowsePalette.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.NESBrowsePalette.Location = new System.Drawing.Point(299, 208);
-			this.NESBrowsePalette.Name = "NESBrowsePalette";
-			this.NESBrowsePalette.Size = new System.Drawing.Size(54, 23);
-			this.NESBrowsePalette.TabIndex = 25;
-			this.NESBrowsePalette.Text = "Browse";
-			this.NESBrowsePalette.UseVisualStyleBackColor = true;
-			this.NESBrowsePalette.Click += new System.EventHandler(this.NESBrowsePalette_Click);
-			// 
-			// NESPaletteDescription
-			// 
-			this.NESPaletteDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.NESPaletteDescription.AutoSize = true;
-			this.NESPaletteDescription.Location = new System.Drawing.Point(360, 212);
-			this.NESPaletteDescription.Name = "NESPaletteDescription";
-			this.NESPaletteDescription.Size = new System.Drawing.Size(40, 13);
-			this.NESPaletteDescription.TabIndex = 26;
-			this.NESPaletteDescription.Text = "Palette";
 			// 
 			// PathConfig
 			// 

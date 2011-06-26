@@ -60,6 +60,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap AudioHS {
+            get {
+                object obj = ResourceManager.GetObject("AudioHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Back {
             get {
                 object obj = ResourceManager.GetObject("Back", resourceCulture);
@@ -133,6 +140,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Close {
             get {
                 object obj = ResourceManager.GetObject("Close", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap CopyFolderHS {
+            get {
+                object obj = ResourceManager.GetObject("CopyFolderHS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -231,6 +245,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Lua {
             get {
                 object obj = ResourceManager.GetObject("Lua", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MessageConfig {
+            get {
+                object obj = ResourceManager.GetObject("MessageConfig", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

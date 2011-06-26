@@ -35,10 +35,10 @@
 			this.RecordBox = new System.Windows.Forms.TextBox();
 			this.StartFromCombo = new System.Windows.Forms.ComboBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.AuthorBox = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.AuthorBox = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -46,7 +46,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(394, 139);
+			this.Cancel.Location = new System.Drawing.Point(391, 139);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -57,7 +57,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(301, 139);
+			this.OK.Location = new System.Drawing.Point(310, 139);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -68,11 +68,11 @@
 			// Browse
 			// 
 			this.Browse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.Browse.Location = new System.Drawing.Point(389, 11);
+			this.Browse.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.Browse.Location = new System.Drawing.Point(423, 13);
 			this.Browse.Name = "Browse";
-			this.Browse.Size = new System.Drawing.Size(62, 23);
+			this.Browse.Size = new System.Drawing.Size(25, 23);
 			this.Browse.TabIndex = 2;
-			this.Browse.Text = "&Browse...";
 			this.Browse.UseVisualStyleBackColor = true;
 			this.Browse.Click += new System.EventHandler(this.button1_Click);
 			// 
@@ -83,7 +83,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.RecordBox.Location = new System.Drawing.Point(83, 13);
 			this.RecordBox.Name = "RecordBox";
-			this.RecordBox.Size = new System.Drawing.Size(300, 20);
+			this.RecordBox.Size = new System.Drawing.Size(334, 20);
 			this.RecordBox.TabIndex = 3;
 			this.RecordBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragDrop);
 			this.RecordBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragEnter);
@@ -98,7 +98,7 @@
 			this.StartFromCombo.Location = new System.Drawing.Point(83, 65);
 			this.StartFromCombo.MaxDropDownItems = 32;
 			this.StartFromCombo.Name = "StartFromCombo";
-			this.StartFromCombo.Size = new System.Drawing.Size(199, 21);
+			this.StartFromCombo.Size = new System.Drawing.Size(152, 21);
 			this.StartFromCombo.TabIndex = 4;
 			// 
 			// groupBox1
@@ -114,9 +114,19 @@
 			this.groupBox1.Controls.Add(this.RecordBox);
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(457, 112);
+			this.groupBox1.Size = new System.Drawing.Size(454, 112);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
+			// 
+			// AuthorBox
+			// 
+			this.AuthorBox.AllowDrop = true;
+			this.AuthorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.AuthorBox.Location = new System.Drawing.Point(83, 39);
+			this.AuthorBox.Name = "AuthorBox";
+			this.AuthorBox.Size = new System.Drawing.Size(365, 20);
+			this.AuthorBox.TabIndex = 7;
 			// 
 			// label3
 			// 
@@ -145,23 +155,13 @@
 			this.label1.TabIndex = 4;
 			this.label1.Text = "File:";
 			// 
-			// AuthorBox
-			// 
-			this.AuthorBox.AllowDrop = true;
-			this.AuthorBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.AuthorBox.Location = new System.Drawing.Point(83, 39);
-			this.AuthorBox.Name = "AuthorBox";
-			this.AuthorBox.Size = new System.Drawing.Size(300, 20);
-			this.AuthorBox.TabIndex = 7;
-			// 
 			// RecordMovie
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(485, 174);
+			this.ClientSize = new System.Drawing.Size(478, 174);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);

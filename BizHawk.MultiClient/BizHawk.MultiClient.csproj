@@ -554,6 +554,9 @@
     <None Include="images\GameController.png" />
     <None Include="images\HotKeys.png" />
     <None Include="images\Close.png" />
+    <None Include="images\CopyFolderHS.png" />
+    <None Include="images\MessageConfig.png" />
+    <None Include="images\AudioHS.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
