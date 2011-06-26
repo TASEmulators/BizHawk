@@ -379,6 +379,7 @@
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
+			this.TASView.FullRowSelect = true;
 			this.TASView.GridLines = true;
 			this.TASView.ItemCount = 0;
 			this.TASView.Location = new System.Drawing.Point(12, 55);

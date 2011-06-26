@@ -2053,5 +2053,10 @@ namespace BizHawk.MultiClient
 		{
 			OrderColumn(e.Column);
 		}
+
+		private void toolStripButton1_MouseDown(object sender, MouseEventArgs e)
+		{
+			DoSearch();
+		}
 	}
 }
