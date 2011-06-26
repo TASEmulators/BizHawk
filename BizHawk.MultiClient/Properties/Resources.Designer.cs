@@ -179,6 +179,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap GameController {
+            get {
+                object obj = ResourceManager.GetObject("GameController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap GBController {
             get {
                 object obj = ResourceManager.GetObject("GBController", resourceCulture);
@@ -189,6 +196,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap GENController {
             get {
                 object obj = ResourceManager.GetObject("GENController", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap HotKeys {
+            get {
+                object obj = ResourceManager.GetObject("HotKeys", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -321,6 +335,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap restart {
             get {
                 object obj = ResourceManager.GetObject("restart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Save {
+            get {
+                object obj = ResourceManager.GetObject("Save", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

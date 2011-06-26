@@ -181,7 +181,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "InputConfig";
-			this.ShowIcon = false;
 			this.Text = "Configure Controllers";
 			this.Load += new System.EventHandler(this.InputConfig_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).EndInit();
