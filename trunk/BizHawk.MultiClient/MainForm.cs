@@ -2246,5 +2246,15 @@ namespace BizHawk.MultiClient
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
 			Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
+
+		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE) return;
+			
+			EditSubtitlesForm s = new EditSubtitlesForm();
+			s.ReadOnly = ReadOnly;
+			s.GetMovie(UserMovie);
+			s.ShowDialog();
+		}
 	}
 }

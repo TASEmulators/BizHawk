@@ -793,6 +793,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[11].Visible = false;
 				contextMenuStrip1.Items[12].Visible = false;
 				contextMenuStrip1.Items[13].Visible = false;
+				contextMenuStrip1.Items[14].Visible = false;
 			}
 			else
 			{
@@ -807,7 +808,8 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[5].Visible = false;
 					contextMenuStrip1.Items[6].Visible = true;
 					contextMenuStrip1.Items[7].Visible = false;
-					contextMenuStrip1.Items[8].Visible = true;
+					contextMenuStrip1.Items[8].Visible = false;
+					contextMenuStrip1.Items[9].Visible = true;
 				}
 				else
 				{
@@ -817,14 +819,23 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[6].Visible = false;
 					contextMenuStrip1.Items[7].Visible = true;
 					contextMenuStrip1.Items[8].Visible = true;
+					contextMenuStrip1.Items[9].Visible = true;
+					if (ReadOnly == true)
+					{
+						contextMenuStrip1.Items[8].Text = "View Subtitles";
+					}
+					else
+					{
+						contextMenuStrip1.Items[8].Text = "Edit Subtitles";
+					}
 				}
 
-				contextMenuStrip1.Items[9].Visible = true;
 				contextMenuStrip1.Items[10].Visible = true;
-
 				contextMenuStrip1.Items[11].Visible = true;
+
 				contextMenuStrip1.Items[12].Visible = true;
 				contextMenuStrip1.Items[13].Visible = true;
+				contextMenuStrip1.Items[14].Visible = true;
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)
@@ -839,8 +850,8 @@ namespace BizHawk.MultiClient
 
 
 			//TODO:
-			contextMenuStrip1.Items[9].Enabled = false;
 			contextMenuStrip1.Items[10].Enabled = false;
+			contextMenuStrip1.Items[11].Enabled = false;
 		}
 
 

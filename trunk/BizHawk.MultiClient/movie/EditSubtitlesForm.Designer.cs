@@ -31,21 +31,21 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditSubtitlesForm));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.SubGrid = new System.Windows.Forms.DataGridView();
 			this.Frame = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.X = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Y = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Color = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Message = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(439, 216);
+			this.Cancel.Location = new System.Drawing.Point(485, 216);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -56,7 +56,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(358, 216);
+			this.OK.Location = new System.Drawing.Point(404, 216);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -64,24 +64,24 @@
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
 			// 
-			// dataGridView1
+			// SubGrid
 			// 
-			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.SubGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.ControlLight;
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+			this.SubGrid.BackgroundColor = System.Drawing.SystemColors.ControlLight;
+			this.SubGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.SubGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Frame,
             this.X,
             this.Y,
             this.Length,
             this.Color,
             this.Message});
-			this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(502, 198);
-			this.dataGridView1.TabIndex = 2;
+			this.SubGrid.Location = new System.Drawing.Point(12, 12);
+			this.SubGrid.Name = "SubGrid";
+			this.SubGrid.Size = new System.Drawing.Size(548, 198);
+			this.SubGrid.TabIndex = 2;
 			// 
 			// Frame
 			// 
@@ -109,21 +109,22 @@
 			this.Length.HeaderText = "Length";
 			this.Length.MaxInputLength = 5;
 			this.Length.Name = "Length";
-			this.Length.Width = 33;
+			this.Length.Width = 50;
 			// 
 			// Color
 			// 
 			this.Color.HeaderText = "Color";
 			this.Color.MaxInputLength = 8;
 			this.Color.Name = "Color";
-			this.Color.Width = 40;
+			this.Color.Width = 60;
 			// 
 			// Message
 			// 
+			this.Message.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.Message.HeaderText = "Message";
 			this.Message.MaxInputLength = 255;
+			this.Message.MinimumWidth = 25;
 			this.Message.Name = "Message";
-			this.Message.Width = 250;
 			// 
 			// EditSubtitlesForm
 			// 
@@ -131,15 +132,15 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(526, 251);
-			this.Controls.Add(this.dataGridView1);
+			this.ClientSize = new System.Drawing.Size(572, 251);
+			this.Controls.Add(this.SubGrid);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "EditSubtitlesForm";
 			this.Text = "Edit Subtitles";
 			this.Load += new System.EventHandler(this.EditSubtitlesForm_Load);
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -148,7 +149,7 @@
 
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button OK;
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private System.Windows.Forms.DataGridView SubGrid;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Frame;
 		private System.Windows.Forms.DataGridViewTextBoxColumn X;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Y;
