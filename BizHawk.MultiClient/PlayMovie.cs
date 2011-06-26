@@ -167,7 +167,9 @@ namespace BizHawk.MultiClient
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			//TODO: a subtitle viewer/editor
+			EditSubtitlesForm s = new EditSubtitlesForm();
+			s.ReadOnly = true;
+			s.Show();
 		}
 
 		private void MovieView_DoubleClick(object sender, EventArgs e)
