@@ -104,6 +104,7 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -362,6 +363,7 @@
             this.showPreviousValueToolStripMenuItem,
             this.prevValueShowsChangeAmountToolStripMenuItem,
             this.toolStripSeparator7,
+            this.saveWindowPositionToolStripMenuItem,
             this.restoreWindowSizeToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -780,6 +782,13 @@
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
 			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AllowDrop = true;
@@ -886,5 +895,6 @@
         private System.Windows.Forms.ToolStripMenuItem memoryDomainsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.Label MemDomainLabel;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
     }
 }

@@ -1129,6 +1129,7 @@ namespace BizHawk.MultiClient
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			prevValueShowsChangeAmountToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeFromPrev;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
 		}
 
 		private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1402,6 +1403,11 @@ namespace BizHawk.MultiClient
 		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
+		}
+
+		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchSaveWindowPosition ^= true;
 		}
 	}
 }
