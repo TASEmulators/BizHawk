@@ -270,6 +270,7 @@
             this.Previous,
             this.Changes});
 			this.SearchListView.ContextMenuStrip = this.contextMenuStrip1;
+			this.SearchListView.FullRowSelect = true;
 			this.SearchListView.GridLines = true;
 			this.SearchListView.ItemCount = 0;
 			this.SearchListView.LabelEdit = true;
@@ -742,6 +743,7 @@
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButton1.Text = "Search";
+			this.toolStripButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolStripButton1_MouseDown);
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// toolStripSeparator7
@@ -938,7 +940,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(116, 67);
+			this.label1.Location = new System.Drawing.Point(116, 65);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(18, 13);
 			this.label1.TabIndex = 10;
