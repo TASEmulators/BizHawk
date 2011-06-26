@@ -402,6 +402,7 @@ namespace BizHawk.MultiClient
 				SaveCheatFile(file.FullName);
 				currentCheatFile = file.FullName;
 				MessageLabel.Text = Path.GetFileName(currentCheatFile) + " saved.";
+				Global.Config.RecentCheats.Add(currentCheatFile);
 			}
 		}
 

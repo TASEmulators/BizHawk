@@ -1312,6 +1312,7 @@ namespace BizHawk.MultiClient
 				SaveSearchFile(file.FullName);
 				currentSearchFile = file.FullName;
 				OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
+				Global.Config.RecentSearches.Add(currentSearchFile);
 			}
 		}
 
