@@ -130,9 +130,23 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap CutHS {
+            get {
+                object obj = ResourceManager.GetObject("CutHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Debugger {
             get {
                 object obj = ResourceManager.GetObject("Debugger", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Duplicate {
+            get {
+                object obj = ResourceManager.GetObject("Duplicate", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -186,6 +200,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap LoadConfig {
+            get {
+                object obj = ResourceManager.GetObject("LoadConfig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Lua {
             get {
                 object obj = ResourceManager.GetObject("Lua", resourceCulture);
@@ -207,9 +228,23 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap NewFile {
+            get {
+                object obj = ResourceManager.GetObject("NewFile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.IO.UnmanagedMemoryStream nothawk {
             get {
                 return ResourceManager.GetStream("nothawk", resourceCulture);
+            }
+        }
+        
+        internal static System.Drawing.Bitmap OpenFile {
+            get {
+                object obj = ResourceManager.GetObject("OpenFile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -241,9 +276,30 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Previous {
+            get {
+                object obj = ResourceManager.GetObject("Previous", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap PrintPreviewHS {
+            get {
+                object obj = ResourceManager.GetObject("PrintPreviewHS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ReadOnly {
             get {
                 object obj = ResourceManager.GetObject("ReadOnly", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap redo {
+            get {
+                object obj = ResourceManager.GetObject("redo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -255,9 +311,30 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Refresh1 {
+            get {
+                object obj = ResourceManager.GetObject("Refresh1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap restart {
             get {
                 object obj = ResourceManager.GetObject("restart", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SaveAs {
+            get {
+                object obj = ResourceManager.GetObject("SaveAs", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SaveConfig {
+            get {
+                object obj = ResourceManager.GetObject("SaveConfig", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -279,6 +356,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Stop {
             get {
                 object obj = ResourceManager.GetObject("Stop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap TAStudio {
+            get {
+                object obj = ResourceManager.GetObject("TAStudio", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -358,5 +358,10 @@ namespace BizHawk.MultiClient
 		{
 			CheckDomainMenuItems();
 		}
+
+		private void dumpToFileToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
