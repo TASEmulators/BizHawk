@@ -821,33 +821,33 @@
 			// pauseToolStripMenuItem
 			// 
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.pauseToolStripMenuItem.Text = "&Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
 			// 
 			// powerToolStripMenuItem
 			// 
 			this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-			this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.powerToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.powerToolStripMenuItem.Text = "Power Cycle";
 			this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.resetToolStripMenuItem.Text = "&Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(141, 6);
 			// 
 			// sega8bitToolStripMenuItem
 			// 
@@ -856,7 +856,7 @@
             this.overclockWhenKnownSafeToolStripMenuItem,
             this.forceStereoSeparationToolStripMenuItem});
 			this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
-			this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
 			// 
 			// enableFMChipToolStripMenuItem
@@ -1032,6 +1032,7 @@
 			// 
 			// controllersToolStripMenuItem
 			// 
+			this.controllersToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
 			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.controllersToolStripMenuItem.Text = "&Controllers...";
@@ -1039,6 +1040,7 @@
 			// 
 			// hotkeysToolStripMenuItem
 			// 
+			this.hotkeysToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
 			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.hotkeysToolStripMenuItem.Text = "&Hotkeys...";
@@ -1321,7 +1323,7 @@
 			// 
 			// saveConfigToolStripMenuItem
 			// 
-			this.saveConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveConfig;
+			this.saveConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
 			this.saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
 			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveConfigToolStripMenuItem.Text = "Save Config";
@@ -1356,20 +1358,20 @@
 			// 
 			this.toolBoxToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.ToolBox;
 			this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
-			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.toolBoxToolStripMenuItem.Text = "&Tool Box";
 			this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(140, 6);
 			// 
 			// rAMWatchToolStripMenuItem
 			// 
 			this.rAMWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
 			this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
 			// 
@@ -1377,7 +1379,7 @@
 			// 
 			this.rAMSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
 			this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
 			// 
@@ -1385,7 +1387,7 @@
 			// 
 			this.rAMPokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
 			this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
 			// 
@@ -1393,7 +1395,7 @@
 			// 
 			this.hexEditorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
 			this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
 			// 
@@ -1401,20 +1403,20 @@
 			// 
 			this.tAStudioToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
 			this.tAStudioToolStripMenuItem.Name = "tAStudioToolStripMenuItem";
-			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.tAStudioToolStripMenuItem.Text = "&TAStudio";
 			this.tAStudioToolStripMenuItem.Click += new System.EventHandler(this.tAStudioToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
 			// 
 			// luaConsoleToolStripMenuItem
 			// 
 			this.luaConsoleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lua;
 			this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.luaConsoleToolStripMenuItem.Text = "Lua Console";
 			this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
 			// 
@@ -1422,7 +1424,7 @@
 			// 
 			this.cheatsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
 			this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.cheatsToolStripMenuItem.Text = "Cheats";
 			this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
 			// 
