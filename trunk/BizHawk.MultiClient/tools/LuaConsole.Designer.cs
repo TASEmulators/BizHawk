@@ -64,6 +64,12 @@
 			this.NumberOfScripts = new System.Windows.Forms.Label();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.stopAllScriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoloadConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.removeScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.insertSeperatorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.insertSeperatorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -179,18 +185,18 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
@@ -247,6 +253,7 @@
 			// 
 			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.removeToolStripMenuItem,
+            this.insertSeperatorToolStripMenuItem,
             this.toolStripSeparator2,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem});
@@ -258,19 +265,20 @@
 			// 
 			this.removeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-			this.removeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.removeToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.removeToolStripMenuItem.Text = "Remove";
+			this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(162, 6);
 			// 
 			// moveUpToolStripMenuItem
 			// 
 			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.moveUpToolStripMenuItem.Text = "Move Up";
 			this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
 			// 
@@ -278,7 +286,7 @@
 			// 
 			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.moveDownToolStripMenuItem.Text = "Move Down";
 			this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
 			// 
@@ -286,6 +294,8 @@
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveWindowPositionToolStripMenuItem,
+            this.autoloadConsoleToolStripMenuItem,
+            this.toolStripSeparator5,
             this.restoreWindowSizeToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
@@ -308,7 +318,7 @@
 			// 
 			// OutputBox
 			// 
-			this.OutputBox.Location = new System.Drawing.Point(6, 19);
+			this.OutputBox.Location = new System.Drawing.Point(6, 17);
 			this.OutputBox.Name = "OutputBox";
 			this.OutputBox.ReadOnly = true;
 			this.OutputBox.Size = new System.Drawing.Size(246, 253);
@@ -337,9 +347,12 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.removeScriptToolStripMenuItem,
+            this.insertSeperatorToolStripMenuItem1,
+            this.toolStripSeparator4,
             this.stopAllScriptsToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(176, 76);
 			// 
 			// stopAllScriptsToolStripMenuItem
 			// 
@@ -348,6 +361,47 @@
 			this.stopAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.stopAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
 			this.stopAllScriptsToolStripMenuItem.Click += new System.EventHandler(this.stopAllScriptsToolStripMenuItem_Click);
+			// 
+			// autoloadConsoleToolStripMenuItem
+			// 
+			this.autoloadConsoleToolStripMenuItem.Name = "autoloadConsoleToolStripMenuItem";
+			this.autoloadConsoleToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadConsoleToolStripMenuItem.Text = "Autoload Console";
+			this.autoloadConsoleToolStripMenuItem.Click += new System.EventHandler(this.autoloadConsoleToolStripMenuItem_Click);
+			// 
+			// removeScriptToolStripMenuItem
+			// 
+			this.removeScriptToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
+			this.removeScriptToolStripMenuItem.Name = "removeScriptToolStripMenuItem";
+			this.removeScriptToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.removeScriptToolStripMenuItem.Text = "Remove script";
+			this.removeScriptToolStripMenuItem.Click += new System.EventHandler(this.removeScriptToolStripMenuItem_Click);
+			// 
+			// insertSeperatorToolStripMenuItem
+			// 
+			this.insertSeperatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.insertSeperatorToolStripMenuItem.Name = "insertSeperatorToolStripMenuItem";
+			this.insertSeperatorToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.insertSeperatorToolStripMenuItem.Text = "Insert Seperator";
+			this.insertSeperatorToolStripMenuItem.Click += new System.EventHandler(this.insertSeperatorToolStripMenuItem_Click);
+			// 
+			// insertSeperatorToolStripMenuItem1
+			// 
+			this.insertSeperatorToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
+			this.insertSeperatorToolStripMenuItem1.Name = "insertSeperatorToolStripMenuItem1";
+			this.insertSeperatorToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.insertSeperatorToolStripMenuItem1.Text = "Insert Seperator";
+			this.insertSeperatorToolStripMenuItem1.Click += new System.EventHandler(this.insertSeperatorToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(172, 6);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
 			// 
 			// LuaConsole
 			// 
@@ -408,5 +462,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopAllScriptsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoloadConsoleToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem removeScriptToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem insertSeperatorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem insertSeperatorToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
