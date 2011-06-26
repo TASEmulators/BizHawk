@@ -355,7 +355,7 @@ namespace BizHawk.MultiClient
 			if (type.Name == "NES Controls")
 			{
 				if (mnemonic.Length < 10) return;
-				//if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
+				if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
 				if (mnemonic[3] != '.') programmaticallyPressedButtons.Add("P1 Right");
 				if (mnemonic[4] != '.') programmaticallyPressedButtons.Add("P1 Left");
 				if (mnemonic[5] != '.') programmaticallyPressedButtons.Add("P1 Down");
