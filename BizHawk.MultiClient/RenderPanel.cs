@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 		bool Resized { get; set; }
 		void AddMessage(string msg);
 		string FPS { get; set; }
-        string MT { get; set; }  
+		string MT { get; set; }
 	}
 
 	public class SysdrawingRenderPanel : IRenderer
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 		public bool Resized { get; set; }
 		public void Dispose() { }
 		public string FPS { get; set; }
-        public string MT { get; set; }  
+		public string MT { get; set; }
 		public void Render(IVideoProvider video)
 		{
 			Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
@@ -149,7 +149,7 @@ namespace BizHawk.MultiClient
 		public Color BackgroundColor { get; set; }
 		public bool Resized { get; set; }
 		public string FPS { get; set; }
-        public string MT { get; set; }  
+		public string MT { get; set; }
 		private Direct3D d3d;
 		private Device Device;
 		private Control backingControl;
@@ -229,26 +229,28 @@ namespace BizHawk.MultiClient
 			Device.Present(Present.DoNotWait);
 		}
 
-        public void Render(IVideoProvider video)
-        {
-            try
-            {
-                RenderExec(video);
-            } catch (Direct3D9Exception) {
-                // Wait until device is available or user gets annoyed and closes app
-                Result r;
-                do
-                {
-                    r = Device.TestCooperativeLevel();
-                    Thread.Sleep(100);
-                } while (r == ResultCode.DeviceLost);
+		public void Render(IVideoProvider video)
+		{
+			try
+			{
+				RenderExec(video);
+			}
+			catch (Direct3D9Exception)
+			{
+				// Wait until device is available or user gets annoyed and closes app
+				Result r;
+				do
+				{
+					r = Device.TestCooperativeLevel();
+					Thread.Sleep(100);
+				} while (r == ResultCode.DeviceLost);
 
-                // lets try recovery!
-                DestroyDevice();
-                CreateDevice();
-                RenderExec(video);
-            }
-        }
+				// lets try recovery!
+				DestroyDevice();
+				CreateDevice();
+				RenderExec(video);
+			}
+		}
 
 		private void RenderExec(IVideoProvider video)
 		{
@@ -352,13 +354,13 @@ namespace BizHawk.MultiClient
 				input = MakeInputDisplay();
 				MessageFont.DrawString(null, input, x, y, c);
 			}
-            if (Global.MainForm.UserMovie.MultiTrack.isActive)
-            {
-                 MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
-                    Global.Config.DispFPSy + 1, new Color4(Color.Black));
-                MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
-                    Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
-            }
+			if (Global.MainForm.UserMovie.MultiTrack.isActive)
+			{
+				MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
+				   Global.Config.DispFPSy + 1, new Color4(Color.Black));
+				MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
+					Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
+			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
 				x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor);
@@ -403,7 +405,7 @@ namespace BizHawk.MultiClient
 			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY
 				|| Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
 			{
-				MessageFont.DrawString(null, "Play", backingControl.Size.Width-47,
+				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 47,
 					 0 + 1, new Color4(Color.Black));
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
 					0, new Color4(Color.Red));
@@ -416,9 +418,12 @@ namespace BizHawk.MultiClient
 					0, new Color4(Color.Red));
 			}
 
-			
+			//TODO: read subtitle positioning, implement multiple subtitles at once feature
+			MessageFont.DrawString(null, Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame), 0 + 1,
+						0 + 1, new Color4(Color.Black));
+			MessageFont.DrawString(null, Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame), 0 ,
+						0, new Color4(Color.White));
 
-			
 		}
 
 		private string MakeFrameCounter()

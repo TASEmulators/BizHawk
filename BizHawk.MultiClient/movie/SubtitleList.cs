@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace BizHawk.MultiClient
 {
-	class SubtitleList
+	public class SubtitleList
 	{
 		private List<Subtitle> subs = new List<Subtitle>();
 
@@ -25,12 +25,13 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x < subs.Count; x++)
 			{
-				if (subs[x].Frame + subs[x].Duration >= frame)
+				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
 					return subs[x].Message;
 			}
 			return "";
 		}
 
+		//TODO
 		public Point GetSubtitlePoint(int frame)
 		{
 			Point p = new Point(0, 0);
@@ -51,18 +52,24 @@ namespace BizHawk.MultiClient
 			int x = subtitleStr.IndexOf(' ');
 			if (x <= 0) return false;
 
-			string str = subtitleStr.Substring(x, subtitleStr.Length - x);
+			string str = subtitleStr.Substring(x + 1, subtitleStr.Length - x - 1);
+			string frame = str.Substring(0, str.IndexOf(' '));
 			try
 			{
-				s.Frame = Int16.Parse(str);
+				s.Frame = Int16.Parse(frame);
 			}
 			catch
 			{
 				return false;
 			}
 
-			x = str.IndexOf(' ');
-
+			//TODO: actually attempt to parse these things and supply with default values if they don't exist
+			s.X = 0;
+			s.Y = 0;
+			s.Duration = 120;
+			s.Message = str;
+			s.Color = 0xFFFFFFFF;
+			subs.Add(s);
 
 			return true;
 		}
