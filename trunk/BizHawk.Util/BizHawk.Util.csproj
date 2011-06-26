@@ -101,6 +101,9 @@
     <Compile Include="TextDebugView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -30,7 +30,7 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RamSearch));
-			this.SearchtoolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.SearchtoolStrip1 = new ToolStripEx();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.saveToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -54,7 +54,7 @@
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -92,7 +92,7 @@
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStrip1 = new ToolStripEx();
 			this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
@@ -101,7 +101,7 @@
 			this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
-			this.toolStrip2 = new System.Windows.Forms.ToolStrip();
+			this.toolStrip2 = new ToolStripEx();
 			this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
 			this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
