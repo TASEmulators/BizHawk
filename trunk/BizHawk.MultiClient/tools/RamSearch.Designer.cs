@@ -196,7 +196,7 @@
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -346,7 +346,7 @@
 			// 
 			// removeSelectedToolStripMenuItem1
 			// 
-			this.removeSelectedToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.removeSelectedToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem1.Name = "removeSelectedToolStripMenuItem1";
 			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
 			this.removeSelectedToolStripMenuItem1.Text = "Remove Selected";
@@ -567,7 +567,7 @@
 			// 
 			// removeSelectedToolStripMenuItem
 			// 
-			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
 			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.removeSelectedToolStripMenuItem.Text = "&Remove selected";

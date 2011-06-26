@@ -63,8 +63,10 @@
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.stopAllScriptsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// LuaListView
@@ -135,6 +137,7 @@
 			this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.newToolStripMenuItem.Text = "&New";
+			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
 			// openToolStripMenuItem
 			// 
@@ -227,7 +230,7 @@
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 
-			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
+			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
 			this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.insertSeparatorToolStripMenuItem.Text = "Insert Separator";
@@ -238,6 +241,7 @@
 			this.turnOffAllScriptsToolStripMenuItem.Name = "turnOffAllScriptsToolStripMenuItem";
 			this.turnOffAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.turnOffAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
+			this.turnOffAllScriptsToolStripMenuItem.Click += new System.EventHandler(this.turnOffAllScriptsToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -252,29 +256,29 @@
 			// 
 			// removeToolStripMenuItem
 			// 
-			this.removeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.removeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-			this.removeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.removeToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.removeToolStripMenuItem.Text = "Remove";
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
 			// 
 			// moveUpToolStripMenuItem
 			// 
-			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
+			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.moveUpToolStripMenuItem.Text = "Move Up";
 			this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
 			// 
 			// moveDownToolStripMenuItem
 			// 
-			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
+			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.moveDownToolStripMenuItem.Text = "Move Down";
 			this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
 			// 
@@ -332,8 +336,18 @@
 			// 
 			// contextMenuStrip1
 			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.stopAllScriptsToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(176, 48);
+			// 
+			// stopAllScriptsToolStripMenuItem
+			// 
+			this.stopAllScriptsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.stopAllScriptsToolStripMenuItem.Name = "stopAllScriptsToolStripMenuItem";
+			this.stopAllScriptsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.stopAllScriptsToolStripMenuItem.Text = "Turn Off All Scripts";
+			this.stopAllScriptsToolStripMenuItem.Click += new System.EventHandler(this.stopAllScriptsToolStripMenuItem_Click);
 			// 
 			// LuaConsole
 			// 
@@ -352,6 +366,7 @@
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -392,5 +407,6 @@
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem stopAllScriptsToolStripMenuItem;
     }
 }

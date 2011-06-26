@@ -281,7 +281,7 @@
 			// 
 			// removeWatchToolStripMenuItem
 			// 
-			this.removeWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.removeWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeWatchToolStripMenuItem.Name = "removeWatchToolStripMenuItem";
 			this.removeWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
 			this.removeWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -317,7 +317,7 @@
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 
-			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
+			this.insertSeparatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.insertSeparatorToolStripMenuItem.Name = "insertSeparatorToolStripMenuItem";
 			this.insertSeparatorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
 			this.insertSeparatorToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -339,7 +339,7 @@
 			// 
 			// moveUpToolStripMenuItem
 			// 
-			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
+			this.moveUpToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
 			this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Up)));
 			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -348,7 +348,7 @@
 			// 
 			// moveDownToolStripMenuItem
 			// 
-			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
+			this.moveDownToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
 			this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Down)));
 			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -491,7 +491,7 @@
 			// 
 			// removeToolStripMenuItem
 			// 
-			this.removeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.removeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
 			this.removeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
 			this.removeToolStripMenuItem.Text = "&Remove";
@@ -535,7 +535,7 @@
 			// 
 			// insertSeperatorToolStripMenuItem
 			// 
-			this.insertSeperatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
+			this.insertSeperatorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.insertSeperatorToolStripMenuItem.Name = "insertSeperatorToolStripMenuItem";
 			this.insertSeperatorToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
 			this.insertSeperatorToolStripMenuItem.Text = "&Insert Separator";
@@ -543,7 +543,7 @@
 			// 
 			// moveUpToolStripMenuItem1
 			// 
-			this.moveUpToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
+			this.moveUpToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
 			this.moveUpToolStripMenuItem1.Name = "moveUpToolStripMenuItem1";
 			this.moveUpToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
 			this.moveUpToolStripMenuItem1.Text = "Move &Up";
@@ -551,7 +551,7 @@
 			// 
 			// moveDownToolStripMenuItem1
 			// 
-			this.moveDownToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
+			this.moveDownToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
 			this.moveDownToolStripMenuItem1.Name = "moveDownToolStripMenuItem1";
 			this.moveDownToolStripMenuItem1.Size = new System.Drawing.Size(227, 22);
 			this.moveDownToolStripMenuItem1.Text = "Move &Down";
@@ -666,7 +666,7 @@
 			// cutToolStripButton
 			// 
 			this.cutToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
+			this.cutToolStripButton.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.cutToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.cutToolStripButton.Name = "cutToolStripButton";
 			this.cutToolStripButton.Size = new System.Drawing.Size(23, 22);
@@ -720,7 +720,7 @@
 			// toolStripButton1
 			// 
 			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.InserSeparator;
+			this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.InsertSeparator;
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -736,7 +736,7 @@
 			// MoveUpStripButton1
 			// 
 			this.MoveUpStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveUpStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_moveup;
+			this.MoveUpStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveUp;
 			this.MoveUpStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpStripButton1.Name = "MoveUpStripButton1";
 			this.MoveUpStripButton1.Size = new System.Drawing.Size(23, 22);
@@ -746,7 +746,7 @@
 			// MoveDownStripButton1
 			// 
 			this.MoveDownStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.MoveDownStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_movedown;
+			this.MoveDownStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.MoveDown;
 			this.MoveDownStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveDownStripButton1.Name = "MoveDownStripButton1";
 			this.MoveDownStripButton1.Size = new System.Drawing.Size(23, 22);

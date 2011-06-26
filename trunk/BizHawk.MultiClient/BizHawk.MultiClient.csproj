@@ -557,6 +557,10 @@
     <None Include="images\CopyFolderHS.png" />
     <None Include="images\MessageConfig.png" />
     <None Include="images\AudioHS.png" />
+    <None Include="images\Delete.png" />
+    <None Include="images\MoveDown.png" />
+    <None Include="images\MoveUp.png" />
+    <None Include="images\InsertSeparator.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />

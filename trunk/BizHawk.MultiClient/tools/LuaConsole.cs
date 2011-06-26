@@ -77,11 +77,15 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 		}
 
-		public void Restart()
+		private void StopAllScripts()
 		{
-			//Stop all Lua scripts
 			for (int x = 0; x < luaList.Count; x++)
 				luaList[x].Enabled = false;
+		}
+
+		public void Restart()
+		{
+			StopAllScripts();
 		}
 
 		private void SaveConfigSettings()
@@ -122,9 +126,13 @@ namespace BizHawk.MultiClient
 			var ofd = new OpenFileDialog();
 			if (lastLuaFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(lastLuaFile);
-			ofd.InitialDirectory = Global.Config.LuaPath;
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
 			ofd.Filter = "Lua Scripts (*.lua)|*.lua|All Files|*.*";
 			ofd.RestoreDirectory = true;
+			
+			
+			if (!Directory.Exists(ofd.InitialDirectory))
+				Directory.CreateDirectory(ofd.InitialDirectory);
 
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
@@ -151,8 +159,13 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				LoadLuaFile(file.FullName);
-				//DisplayLuaList();
+				DisplayLuaList();
 			}
+		}
+
+		public void DisplayLuaList()
+		{
+			LuaListView.ItemCount = luaList.Count;
 		}
 
 		private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -236,6 +249,21 @@ namespace BizHawk.MultiClient
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void newToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void turnOffAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopAllScripts();
+		}
+
+		private void stopAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			StopAllScripts();
 		}
 	}
 }

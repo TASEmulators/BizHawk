@@ -118,15 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="BuilderDialog_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\BuilderDialog_delete.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BuilderDialog_movedown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\BuilderDialog_movedown.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="BuilderDialog_moveup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\BuilderDialog_moveup.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="FindHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\FindHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -138,9 +129,6 @@
   </data>
   <data name="NESController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\NESController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="InserSeparator" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\InserSeparator.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="PCEngineController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\config\ControllerImages\PCEngineController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -729,7 +717,19 @@
   <data name="CopyFolderHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\CopyFolderHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Delete.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="InsertSeparator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\InsertSeparator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="MessageConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\MessageConfig.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\MoveDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MoveUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\MoveUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
