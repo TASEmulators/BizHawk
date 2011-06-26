@@ -570,6 +570,7 @@
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.IDW_SS1);
 			this.tabPage2.Controls.Add(this.label50);
 			this.tabPage2.Controls.Add(this.label49);
 			this.tabPage2.Controls.Add(this.label48);
@@ -609,7 +610,6 @@
 			this.tabPage2.Controls.Add(this.IDW_PREVIOUSSLOT);
 			this.tabPage2.Controls.Add(this.IDW_LOADNAMEDSTATE);
 			this.tabPage2.Controls.Add(this.IDW_SAVENAMEDSTATE);
-			this.tabPage2.Controls.Add(this.IDW_SS1);
 			this.tabPage2.Controls.Add(this.IDW_ST7);
 			this.tabPage2.Controls.Add(this.IDW_ST0);
 			this.tabPage2.Controls.Add(this.IDW_ST9);
@@ -1201,6 +1201,7 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.IDW_TOGGLEREADONLY);
 			this.tabPage3.Controls.Add(this.IDW_PLAYBEGINNING);
 			this.tabPage3.Controls.Add(this.label67);
 			this.tabPage3.Controls.Add(this.label66);
@@ -1215,7 +1216,6 @@
 			this.tabPage3.Controls.Add(this.IDW_STOPMOVIE);
 			this.tabPage3.Controls.Add(this.IDW_PLAYMOVIE);
 			this.tabPage3.Controls.Add(this.IDW_RECORDMOVIE);
-			this.tabPage3.Controls.Add(this.IDW_TOGGLEREADONLY);
 			this.tabPage3.Controls.Add(this.IDW_TOGGLEMTRACK);
 			this.tabPage3.Controls.Add(this.IDW_MTDECPLAYER);
 			this.tabPage3.Controls.Add(this.IDW_MTINCPLAYER);
@@ -1411,6 +1411,7 @@
 			// 
 			// tabPage4
 			// 
+			this.tabPage4.Controls.Add(this.IDW_RamWatch);
 			this.tabPage4.Controls.Add(this.IDW_TOOLBOX);
 			this.tabPage4.Controls.Add(this.label46);
 			this.tabPage4.Controls.Add(this.label56);
@@ -1424,7 +1425,6 @@
 			this.tabPage4.Controls.Add(this.IDW_HexEditor);
 			this.tabPage4.Controls.Add(this.IDW_RamPoke);
 			this.tabPage4.Controls.Add(this.IDW_RamSearch);
-			this.tabPage4.Controls.Add(this.IDW_RamWatch);
 			this.tabPage4.Location = new System.Drawing.Point(4, 28);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Size = new System.Drawing.Size(605, 315);
