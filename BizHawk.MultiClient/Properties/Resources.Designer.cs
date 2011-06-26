@@ -95,27 +95,6 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap BuilderDialog_delete {
-            get {
-                object obj = ResourceManager.GetObject("BuilderDialog_delete", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap BuilderDialog_movedown {
-            get {
-                object obj = ResourceManager.GetObject("BuilderDialog_movedown", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap BuilderDialog_moveup {
-            get {
-                object obj = ResourceManager.GetObject("BuilderDialog_moveup", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap calculator {
             get {
                 object obj = ResourceManager.GetObject("calculator", resourceCulture);
@@ -161,6 +140,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Debugger {
             get {
                 object obj = ResourceManager.GetObject("Debugger", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Delete {
+            get {
+                object obj = ResourceManager.GetObject("Delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -228,9 +214,9 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap InserSeparator {
+        internal static System.Drawing.Bitmap InsertSeparator {
             get {
-                object obj = ResourceManager.GetObject("InserSeparator", resourceCulture);
+                object obj = ResourceManager.GetObject("InsertSeparator", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -252,6 +238,20 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap MessageConfig {
             get {
                 object obj = ResourceManager.GetObject("MessageConfig", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MoveDown {
+            get {
+                object obj = ResourceManager.GetObject("MoveDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MoveUp {
+            get {
+                object obj = ResourceManager.GetObject("MoveUp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
