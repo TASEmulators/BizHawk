@@ -150,6 +150,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="movie\EditSubtitlesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="movie\EditSubtitlesForm.Designer.cs">
+      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\Movie.cs" />
     <Compile Include="movie\MovieConvert.cs" />
     <Compile Include="movie\MovieHeader.cs" />
@@ -399,6 +405,9 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="movie\EditSubtitlesForm.resx">
+      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="NEStools\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>
       <SubType>Designer</SubType>
