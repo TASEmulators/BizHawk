@@ -325,6 +325,7 @@
 			// 
 			// startNewSearchToolStripMenuItem
 			// 
+			this.startNewSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
 			this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
@@ -332,6 +333,7 @@
 			// 
 			// searchToolStripMenuItem2
 			// 
+			this.searchToolStripMenuItem2.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
 			this.searchToolStripMenuItem2.Size = new System.Drawing.Size(175, 22);
 			this.searchToolStripMenuItem2.Text = "&Search";
@@ -344,6 +346,7 @@
 			// 
 			// removeSelectedToolStripMenuItem1
 			// 
+			this.removeSelectedToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
 			this.removeSelectedToolStripMenuItem1.Name = "removeSelectedToolStripMenuItem1";
 			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
 			this.removeSelectedToolStripMenuItem1.Text = "Remove Selected";
@@ -351,6 +354,7 @@
 			// 
 			// addToRamWatchToolStripMenuItem
 			// 
+			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
 			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "Add to Ram Watch";
@@ -358,6 +362,7 @@
 			// 
 			// pokeAddressToolStripMenuItem1
 			// 
+			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
 			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
 			this.pokeAddressToolStripMenuItem1.Text = "Poke Address";
@@ -365,6 +370,7 @@
 			// 
 			// freezeAddressToolStripMenuItem1
 			// 
+			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
 			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
 			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
 			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
@@ -401,6 +407,7 @@
 			// 
 			// newSearchToolStripMenuItem
 			// 
+			this.newSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
 			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.newSearchToolStripMenuItem.Text = "&New Search";
@@ -413,6 +420,7 @@
 			// 
 			// openToolStripMenuItem
 			// 
+			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
@@ -421,6 +429,7 @@
 			// 
 			// saveToolStripMenuItem
 			// 
+			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.saveToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
@@ -445,6 +454,7 @@
 			// 
 			// TruncateFromFileToolStripMenuItem
 			// 
+			this.TruncateFromFileToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromFile;
 			this.TruncateFromFileToolStripMenuItem.Name = "TruncateFromFileToolStripMenuItem";
 			this.TruncateFromFileToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.TruncateFromFileToolStripMenuItem.Text = "&Truncate from File...";
@@ -526,6 +536,7 @@
 			// 
 			// searchToolStripMenuItem1
 			// 
+			this.searchToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.searchToolStripMenuItem1.Name = "searchToolStripMenuItem1";
 			this.searchToolStripMenuItem1.Size = new System.Drawing.Size(218, 22);
 			this.searchToolStripMenuItem1.Text = "&Search";
@@ -533,6 +544,7 @@
 			// 
 			// undoToolStripMenuItem
 			// 
+			this.undoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
@@ -540,6 +552,7 @@
 			// 
 			// copyValueToPrevToolStripMenuItem
 			// 
+			this.copyValueToPrevToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
 			this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
@@ -554,6 +567,7 @@
 			// 
 			// removeSelectedToolStripMenuItem
 			// 
+			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.BuilderDialog_delete;
 			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
 			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.removeSelectedToolStripMenuItem.Text = "&Remove selected";
@@ -573,6 +587,7 @@
 			// 
 			// addSelectedToRamWatchToolStripMenuItem
 			// 
+			this.addSelectedToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addSelectedToRamWatchToolStripMenuItem.Name = "addSelectedToRamWatchToolStripMenuItem";
 			this.addSelectedToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.addSelectedToRamWatchToolStripMenuItem.Text = "&Add selected to Ram Watch";
@@ -580,6 +595,7 @@
 			// 
 			// pokeAddressToolStripMenuItem
 			// 
+			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
 			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
@@ -587,6 +603,7 @@
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
