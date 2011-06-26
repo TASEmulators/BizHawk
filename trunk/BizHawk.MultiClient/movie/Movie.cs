@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 	{
 		private MovieHeader Header = new MovieHeader();
 		private MovieLog Log = new MovieLog();
-		private SubtitleList Subtitles = new SubtitleList();
+		public SubtitleList Subtitles = new SubtitleList();
 
 		private bool IsText = true;
 		private string Filename;
@@ -24,16 +24,6 @@ namespace BizHawk.MultiClient
 		public int Frames = 0;
 		public int lastLog;
 		public int rerecordCount;
-
-		public string GetSubtitle(int frame)
-		{
-			return Subtitles.GetSubtitle(frame);
-		}
-
-		public Point GetSutitlePoint(int frame)
-		{
-			return Subtitles.GetSubtitlePoint(frame);
-		}
 
 		public Movie(string filename, MOVIEMODE m)
 		{
