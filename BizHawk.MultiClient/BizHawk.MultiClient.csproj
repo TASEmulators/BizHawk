@@ -155,6 +155,8 @@
     <Compile Include="movie\MovieHeader.cs" />
     <Compile Include="movie\MovieLog.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
+    <Compile Include="movie\Subtitle.cs" />
+    <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="MruStack.cs" />
     <Compile Include="NameStateForm.cs">
       <SubType>Form</SubType>

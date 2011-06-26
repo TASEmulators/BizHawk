@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Drawing;
 
 namespace BizHawk.MultiClient
 {
@@ -11,6 +12,7 @@ namespace BizHawk.MultiClient
 	{
 		private MovieHeader Header = new MovieHeader();
 		private MovieLog Log = new MovieLog();
+		private SubtitleList Subtitles = new SubtitleList();
 
 		private bool IsText = true;
 		private string Filename;
@@ -23,8 +25,15 @@ namespace BizHawk.MultiClient
 		public int lastLog;
 		public int rerecordCount;
 
-		//TODO:
-		//Author field, needs to be passed in play dialog
+		public string GetSubtitle(int frame)
+		{
+			return Subtitles.GetSubtitle(frame);
+		}
+
+		public Point GetSutitlePoint(int frame)
+		{
+			return Subtitles.GetSubtitlePoint(frame);
+		}
 
 		public Movie(string filename, MOVIEMODE m)
 		{
@@ -246,6 +255,10 @@ namespace BizHawk.MultiClient
 					{
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
+					}
+					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					{
+						Subtitles.AddSubtitle(str);
 					}
 					else if (str[0] == '|')
 					{
