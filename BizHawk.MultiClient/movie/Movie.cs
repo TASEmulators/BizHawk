@@ -319,6 +319,10 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
 					}
+					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					{
+						Subtitles.AddSubtitle(str);
+					}
 					else if (str[0] == '|')
 					{
 						int line = str.Length + 1;

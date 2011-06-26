@@ -14,6 +14,25 @@ namespace BizHawk.MultiClient
 		{
 
 		}
+
+		public SubtitleList(Movie m)
+		{
+			if (m.Subtitles.Count() == 0) return;
+
+			for (int x = 0; x < m.Subtitles.Count(); x++)
+			{
+				Subtitle s = new Subtitle(m.Subtitles.GetSubtitleByIndex(x));
+				subs.Add(s);
+			}
+		}
+
+		public Subtitle GetSubtitleByIndex(int index)
+		{
+			if (index >= subs.Count || index < 0) return new Subtitle();
+
+			return subs[index];
+		}
+
 		/// <summary>
 		/// Manages the logic of what subtitle should be displayed on any given frame based on frame & duration
 		/// </summary>
@@ -29,6 +48,11 @@ namespace BizHawk.MultiClient
 					return subs[x].Message;
 			}
 			return "";
+		}
+
+		public int Count()
+		{
+			return subs.Count;
 		}
 
 		//TODO

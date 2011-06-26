@@ -33,5 +33,15 @@ namespace BizHawk.MultiClient
 			Duration = dur;
 			Color = color;
 		}
+
+		public Subtitle(Subtitle s)
+		{
+			Message = s.Message;
+			Frame = s.Frame;
+			X = s.X;
+			Y = s.Y;
+			Duration = s.Duration;
+			Color = s.Color;
+		}
 	}
 }

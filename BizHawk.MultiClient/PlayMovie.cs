@@ -58,6 +58,7 @@ namespace BizHawk.MultiClient
 
 		private void Run()
 		{
+			//TODO: check for selected index!
 			Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
@@ -167,8 +168,10 @@ namespace BizHawk.MultiClient
 
 		private void button2_Click(object sender, EventArgs e)
 		{
+			//TODO: check for selected index first!
 			EditSubtitlesForm s = new EditSubtitlesForm();
 			s.ReadOnly = true;
+			s.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
 			s.Show();
 		}
 
