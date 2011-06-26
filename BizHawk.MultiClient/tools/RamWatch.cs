@@ -639,7 +639,10 @@ namespace BizHawk.MultiClient
 			if (string.Compare(currentWatchFile, "") == 0) return;
 
 			if (changes)
+			{
 				SaveWatchFile(currentWatchFile);
+				MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
+			}
 		}
 
 		private FileInfo GetSaveFileFromUser()
