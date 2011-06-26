@@ -148,6 +148,7 @@
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public bool AutoLoadLua = false;
+		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;
 		public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
 		public int LuaConsoleWndy = -1;

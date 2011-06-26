@@ -58,7 +58,9 @@ namespace BizHawk.MultiClient
 		{
 			if (luaList[index].IsSeparator)
 				color = Color.DarkGray;
-			else if (!luaList[index].Enabled)
+			else if (luaList[index].Enabled)
+				color = Color.Cyan;
+			else 
 				color = this.BackColor;
 		}
 
@@ -160,6 +162,7 @@ namespace BizHawk.MultiClient
 			{
 				LoadLuaFile(file.FullName);
 				DisplayLuaList();
+				UpdateNumberOfScripts();
 			}
 		}
 
@@ -176,6 +179,7 @@ namespace BizHawk.MultiClient
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
+			autoloadConsoleToolStripMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -212,11 +216,11 @@ namespace BizHawk.MultiClient
 
 			int L = luaList.Count;
 			if (L == 1)
-				message += L.ToString() + " cheat (" + active.ToString() + " active)";
+				message += L.ToString() + " script (" + active.ToString() + " active)";
 			else if (L == 0)
-				message += L.ToString() + " cheats";
+				message += L.ToString() + " script";
 			else
-				message += L.ToString() + " cheats (" + active.ToString() + " active)";
+				message += L.ToString() + " scripts (" + active.ToString() + " active)";
 
 			NumberOfScripts.Text = message;
 		}
@@ -233,12 +237,12 @@ namespace BizHawk.MultiClient
 
 		private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			MoveUp();
 		}
 
 		private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			MoveDown();
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -264,6 +268,125 @@ namespace BizHawk.MultiClient
 		private void stopAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			StopAllScripts();
+		}
+
+		private void autoloadConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLuaConsole ^= true;
+		}
+
+		private void removeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RemoveScript();
+		}
+
+		private void RemoveScript()
+		{
+			if (luaList.Count == 0) return;
+			//Changes();
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				foreach (int index in indexes)
+				{
+					luaList.Remove(luaList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+				}
+				DisplayLuaList();
+			}
+		}
+
+		private void removeScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RemoveScript();
+		}
+
+		private void insertSeperatorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InsertSeparator();
+		}
+
+		private void InsertSeparator()
+		{
+			LuaFiles f = new LuaFiles(true);
+			f.IsSeparator = true;
+
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			int x;
+			if (indexes.Count > 0)
+			{
+				x = indexes[0];
+				if (indexes[0] > 0)
+					luaList.Insert(indexes[0], f);
+			}
+			else
+				luaList.Add(f);
+			DisplayLuaList();
+			LuaListView.Refresh();
+		}
+
+		private void insertSeperatorToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			InsertSeparator();
+		}
+
+		private void MoveUp()
+		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			LuaFiles temp = new LuaFiles(false);
+			if (indexes.Count == 0) return;
+			foreach (int index in indexes)
+			{
+				temp = luaList[index];
+				luaList.Remove(luaList[index]);
+				luaList.Insert(index - 1, temp);
+
+				//Note: here it will get flagged many times redundantly potentially, 
+				//but this avoids it being flagged falsely when the user did not select an index
+				//Changes();
+			}
+			List<int> i = new List<int>();
+			for (int z = 0; z < indexes.Count; z++)
+				i.Add(indexes[z] - 1);
+
+			LuaListView.SelectedIndices.Clear();
+			for (int z = 0; z < i.Count; z++)
+				LuaListView.SelectItem(i[z], true);
+
+
+			DisplayLuaList();
+		}
+
+		private void MoveDown()
+		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			LuaFiles temp = new LuaFiles(false);
+			if (indexes.Count == 0) return;
+			foreach (int index in indexes)
+			{
+				temp = luaList[index];
+
+				if (index < luaList.Count - 1)
+				{
+
+					luaList.Remove(luaList[index]);
+					luaList.Insert(index + 1, temp);
+
+				}
+
+				//Note: here it will get flagged many times redundantly potnetially, 
+				//but this avoids it being flagged falsely when the user did not select an index
+				//Changes();
+			}
+
+			List<int> i = new List<int>();
+			for (int z = 0; z < indexes.Count; z++)
+				i.Add(indexes[z] + 1);
+
+			LuaListView.SelectedIndices.Clear();
+			//for (int z = 0; z < i.Count; z++)
+			//CheatListView.SelectItem(i[z], true); //TODO
+
+			DisplayLuaList();
 		}
 	}
 }
