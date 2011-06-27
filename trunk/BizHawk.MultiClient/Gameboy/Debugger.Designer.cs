@@ -89,8 +89,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// btnRun
 			// 
-			this.btnRun.Location = new System.Drawing.Point(377, 2);
+			this.btnRun.Location = new System.Drawing.Point(377, 27);
 			this.btnRun.Name = "btnRun";
 			this.btnRun.Size = new System.Drawing.Size(75, 23);
 			this.btnRun.TabIndex = 1;
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// btnStepInto
 			// 
-			this.btnStepInto.Location = new System.Drawing.Point(458, 2);
+			this.btnStepInto.Location = new System.Drawing.Point(458, 27);
 			this.btnStepInto.Name = "btnStepInto";
 			this.btnStepInto.Size = new System.Drawing.Size(75, 23);
 			this.btnStepInto.TabIndex = 2;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(369, 63);
+			this.label1.Location = new System.Drawing.Point(376, 90);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(23, 13);
 			this.label1.TabIndex = 3;
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(428, 63);
+			this.label2.Location = new System.Drawing.Point(435, 90);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(24, 13);
 			this.label2.TabIndex = 4;
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(367, 83);
+			this.label3.Location = new System.Drawing.Point(374, 110);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(25, 13);
 			this.label3.TabIndex = 5;
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(428, 83);
+			this.label4.Location = new System.Drawing.Point(435, 110);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(24, 13);
 			this.label4.TabIndex = 6;
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(428, 104);
+			this.label5.Location = new System.Drawing.Point(435, 131);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(24, 13);
 			this.label5.TabIndex = 7;
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(367, 104);
+			this.label6.Location = new System.Drawing.Point(374, 131);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(24, 13);
 			this.label6.TabIndex = 8;
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegAF
 			// 
 			this.txtRegAF.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegAF.Location = new System.Drawing.Point(392, 60);
+			this.txtRegAF.Location = new System.Drawing.Point(399, 87);
 			this.txtRegAF.MaxLength = 4;
 			this.txtRegAF.Name = "txtRegAF";
 			this.txtRegAF.Size = new System.Drawing.Size(34, 20);
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegDE
 			// 
 			this.txtRegDE.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegDE.Location = new System.Drawing.Point(392, 80);
+			this.txtRegDE.Location = new System.Drawing.Point(399, 107);
 			this.txtRegDE.MaxLength = 4;
 			this.txtRegDE.Name = "txtRegDE";
 			this.txtRegDE.Size = new System.Drawing.Size(34, 20);
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegPC
 			// 
 			this.txtRegPC.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegPC.Location = new System.Drawing.Point(452, 100);
+			this.txtRegPC.Location = new System.Drawing.Point(459, 127);
 			this.txtRegPC.MaxLength = 4;
 			this.txtRegPC.Name = "txtRegPC";
 			this.txtRegPC.Size = new System.Drawing.Size(34, 20);
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegSP
 			// 
 			this.txtRegSP.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegSP.Location = new System.Drawing.Point(392, 100);
+			this.txtRegSP.Location = new System.Drawing.Point(399, 127);
 			this.txtRegSP.MaxLength = 4;
 			this.txtRegSP.Name = "txtRegSP";
 			this.txtRegSP.Size = new System.Drawing.Size(34, 20);
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegHL
 			// 
 			this.txtRegHL.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegHL.Location = new System.Drawing.Point(452, 80);
+			this.txtRegHL.Location = new System.Drawing.Point(459, 107);
 			this.txtRegHL.MaxLength = 4;
 			this.txtRegHL.Name = "txtRegHL";
 			this.txtRegHL.Size = new System.Drawing.Size(34, 20);
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtRegBC
 			// 
 			this.txtRegBC.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtRegBC.Location = new System.Drawing.Point(452, 60);
+			this.txtRegBC.Location = new System.Drawing.Point(459, 87);
 			this.txtRegBC.MaxLength = 4;
 			this.txtRegBC.Name = "txtRegBC";
 			this.txtRegBC.Size = new System.Drawing.Size(34, 20);
@@ -242,7 +242,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.tableLayoutPanel1);
-			this.groupBox1.Location = new System.Drawing.Point(370, 149);
+			this.groupBox1.Location = new System.Drawing.Point(372, 175);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(96, 59);
 			this.groupBox1.TabIndex = 16;
@@ -361,10 +361,26 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanel2.Controls.Add(this.vScrollBar1, 1, 0);
 			this.tableLayoutPanel2.Controls.Add(this.viewDisassembly, 0, 0);
-			this.tableLayoutPanel2.Location = new System.Drawing.Point(2, 2);
+			this.tableLayoutPanel2.Location = new System.Drawing.Point(7, 31);
 			this.tableLayoutPanel2.Name = "tableLayoutPanel2";
 			this.tableLayoutPanel2.RowCount = 1;
 			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
+			this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 205F));
 			this.tableLayoutPanel2.Size = new System.Drawing.Size(350, 205);
 			this.tableLayoutPanel2.TabIndex = 19;
 			// 
@@ -390,7 +406,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// btnSeekPC
 			// 
-			this.btnSeekPC.Location = new System.Drawing.Point(489, 100);
+			this.btnSeekPC.Location = new System.Drawing.Point(496, 127);
 			this.btnSeekPC.Name = "btnSeekPC";
 			this.btnSeekPC.Size = new System.Drawing.Size(52, 20);
 			this.btnSeekPC.TabIndex = 20;
@@ -400,7 +416,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// btnSeekUser
 			// 
-			this.btnSeekUser.Location = new System.Drawing.Point(489, 124);
+			this.btnSeekUser.Location = new System.Drawing.Point(496, 151);
 			this.btnSeekUser.Name = "btnSeekUser";
 			this.btnSeekUser.Size = new System.Drawing.Size(52, 20);
 			this.btnSeekUser.TabIndex = 21;
@@ -411,7 +427,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtSeekUser
 			// 
 			this.txtSeekUser.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtSeekUser.Location = new System.Drawing.Point(452, 123);
+			this.txtSeekUser.Location = new System.Drawing.Point(459, 150);
 			this.txtSeekUser.MaxLength = 4;
 			this.txtSeekUser.Name = "txtSeekUser";
 			this.txtSeekUser.Size = new System.Drawing.Size(34, 20);
@@ -463,7 +479,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// btnBreak
 			// 
-			this.btnBreak.Location = new System.Drawing.Point(377, 27);
+			this.btnBreak.Location = new System.Drawing.Point(377, 56);
 			this.btnBreak.Name = "btnBreak";
 			this.btnBreak.Size = new System.Drawing.Size(75, 23);
 			this.btnBreak.TabIndex = 29;
@@ -474,7 +490,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtFrame
 			// 
 			this.txtFrame.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtFrame.Location = new System.Drawing.Point(775, 21);
+			this.txtFrame.Location = new System.Drawing.Point(775, 39);
 			this.txtFrame.MaxLength = 4;
 			this.txtFrame.Name = "txtFrame";
 			this.txtFrame.ReadOnly = true;
@@ -484,7 +500,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(730, 24);
+			this.label13.Location = new System.Drawing.Point(730, 42);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(39, 13);
 			this.label13.TabIndex = 32;
@@ -493,7 +509,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(739, 44);
+			this.label14.Location = new System.Drawing.Point(739, 62);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(30, 13);
 			this.label14.TabIndex = 33;
@@ -502,7 +518,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(742, 66);
+			this.label15.Location = new System.Drawing.Point(742, 84);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(27, 13);
 			this.label15.TabIndex = 34;
@@ -511,7 +527,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtLine
 			// 
 			this.txtLine.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtLine.Location = new System.Drawing.Point(775, 43);
+			this.txtLine.Location = new System.Drawing.Point(775, 61);
 			this.txtLine.MaxLength = 4;
 			this.txtLine.Name = "txtLine";
 			this.txtLine.ReadOnly = true;
@@ -521,7 +537,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// txtDot
 			// 
 			this.txtDot.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.txtDot.Location = new System.Drawing.Point(775, 65);
+			this.txtDot.Location = new System.Drawing.Point(775, 83);
 			this.txtDot.MaxLength = 4;
 			this.txtDot.Name = "txtDot";
 			this.txtDot.ReadOnly = true;
@@ -532,7 +548,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Controls.Add(this.panelMemory);
-			this.panel1.Location = new System.Drawing.Point(5, 225);
+			this.panel1.Location = new System.Drawing.Point(5, 240);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(545, 181);
 			this.panel1.TabIndex = 38;
@@ -626,7 +642,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// viewTiles0x8000
 			// 
-			this.viewTiles0x8000.Location = new System.Drawing.Point(561, 215);
+			this.viewTiles0x8000.Location = new System.Drawing.Point(564, 215);
 			this.viewTiles0x8000.Name = "viewTiles0x8000";
 			this.viewTiles0x8000.Size = new System.Drawing.Size(128, 128);
 			this.viewTiles0x8000.TabIndex = 41;
@@ -634,7 +650,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			// viewBG
 			// 
-			this.viewBG.Location = new System.Drawing.Point(564, 27);
+			this.viewBG.Location = new System.Drawing.Point(564, 35);
 			this.viewBG.Name = "viewBG";
 			this.viewBG.Size = new System.Drawing.Size(160, 144);
 			this.viewBG.TabIndex = 23;
@@ -680,16 +696,16 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
 			this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
 			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
 			this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
 			// 
 			// Debugger
 			// 
@@ -702,27 +718,28 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.Controls.Add(this.viewTiles0x9000);
 			this.Controls.Add(this.label16);
 			this.Controls.Add(this.label7);
-			this.Controls.Add(this.viewTiles0x8000);
 			this.Controls.Add(this.checkViewObj);
+			this.Controls.Add(this.viewTiles0x8000);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.checkViewBg);
-			this.Controls.Add(this.label13);
 			this.Controls.Add(this.txtDot);
+			this.Controls.Add(this.label13);
+			this.Controls.Add(this.btnBreak);
 			this.Controls.Add(this.txtLine);
 			this.Controls.Add(this.label15);
 			this.Controls.Add(this.label14);
-			this.Controls.Add(this.btnBreak);
 			this.Controls.Add(this.txtFrame);
-			this.Controls.Add(this.tableLayoutPanel2);
 			this.Controls.Add(this.label10);
-			this.Controls.Add(this.txtSeekUser);
+			this.Controls.Add(this.tableLayoutPanel2);
 			this.Controls.Add(this.listBreakpoints);
+			this.Controls.Add(this.txtSeekUser);
 			this.Controls.Add(this.viewBG);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnSeekUser);
 			this.Controls.Add(this.btnSeekPC);
 			this.Controls.Add(this.btnStepInto);
 			this.Controls.Add(this.txtRegAF);
+			this.Controls.Add(this.btnRun);
 			this.Controls.Add(this.txtRegSP);
 			this.Controls.Add(this.txtRegHL);
 			this.Controls.Add(this.txtRegBC);
@@ -733,7 +750,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.btnRun);
 			this.Controls.Add(this.label1);
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
