@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using BizHawk.Core;
+using BizHawk.MultiClient;
 
 namespace BizHawk.Emulation.Consoles.Gameboy
 {
@@ -382,6 +383,21 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			{
 				return KeyStates.Toggled == (GetKeyState(key) & KeyStates.Toggled);
 			}
+		}
+
+		private void Debugger_Load(object sender, EventArgs e)
+		{
+
+		}
+
+		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoloadGBDebugger ^= true; 
+		}
+
+		private void settingsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			autoloadToolStripMenuItem.Checked = Global.Config.AutoloadGBDebugger;
 		}
 
 	}

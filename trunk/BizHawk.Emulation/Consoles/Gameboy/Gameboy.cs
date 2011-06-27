@@ -4,8 +4,8 @@ using BizHawk.Emulation.CPUs.Z80GB;
 
 namespace BizHawk.Emulation.Consoles.Gameboy
 {
-    public partial class Gameboy : IEmulator
-    {
+	public partial class Gameboy : IEmulator
+	{
 		public interface IDebuggerAPI
 		{
 			void DoEvents();
@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public ECartType CartType;
 		public ESystemType SystemType;
-		
+
 		public struct TCartFlags
-	    {
+		{
 			public bool GBC; //cart indicates itself as GBC aware
 			public bool SGB; //cart indicates itself as SGB aware
 		}
@@ -75,12 +75,12 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			return SetBit8(variable, bit, val != 0);
 		}
 
-    	static bool GetBit8(byte variable, int bit)
+		static bool GetBit8(byte variable, int bit)
 		{
 			return (variable & (1 << bit)) != 0;
 		}
 
-    	public class TRegisters
+		public class TRegisters
 		{
 			Gameboy gb;
 			public TRegisters(Gameboy gb)
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				STAT = new TSTAT(gb);
 			}
 
-    		public bool BiosMapped = true;
+			public bool BiosMapped = true;
 			public class TLCDC
 			{
 				byte val;
@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 					if ((val & 0x10) == 0)
 					{
 						int ret = SetBit8(0, 0, right) | SetBit8(0, 1, left) | SetBit8(0, 2, up) | SetBit8(0, 3, down);
-						return (byte) (~ret);
+						return (byte)(~ret);
 					}
-					else if((val & 0x10) == 0)
+					else if ((val & 0x10) == 0)
 					{
 						int ret = SetBit8(0, 0, a) | SetBit8(0, 1, b) | SetBit8(0, 2, select) | SetBit8(0, 3, start);
 						return (byte)(~ret);
@@ -213,12 +213,12 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				sanity++;
 				if (sanity == 100000)
 				{
-					if(DebuggerAPI != null) DebuggerAPI.DoEvents();
+					if (DebuggerAPI != null) DebuggerAPI.DoEvents();
 					if (DebugBreak) break;
 					sanity = 0;
 				}
 			}
-			
+
 			DebugBreak = false;
 		}
 
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			}
 		}
 
-    	public void DetachBios()
+		public void DetachBios()
 		{
 			Registers.BiosMapped = false;
 			Cpu.ReadMemory = ReadMemory;
@@ -250,24 +250,24 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public TSound Sound;
 
-        public byte[] Rom;
+		public byte[] Rom;
 		public byte[] WRam;
 		public byte[] SRam;
 		public byte[] VRam;
 		public byte[] HRam;
 		public byte[] OAM;
 
-        public Z80 Cpu;
+		public Z80 Cpu;
 		public MemoryMapper Mapper;
 
-        public Gameboy()
-        {
+		public Gameboy()
+		{
 			CoreOutputComm = new CoreOutputComm();
-        }
+		}
 
-        public void LoadGame(IGame game)
-        {
-            Rom = game.GetRomData();
+		public void LoadGame(IGame game)
+		{
+			Rom = game.GetRomData();
 
 			//inspect mapper and GBC flags
 			CartType = (ECartType)Rom[0x0147];
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			CartFlags.SGB = Rom[0x0146] == 0x03;
 
 			HardReset();
-        }
+		}
 
 		public bool BootFromBios = true;
 
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			//we speculate that the bios unmaps itself after the first read of 0x100
 			if (addr < 0x100)
 				return Bios[addr];
-			else if(addr == 0x100)
+			else if (addr == 0x100)
 				DetachBios();
 			return ReadMemory(addr);
 		}
@@ -365,9 +365,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			else return "HRAM";
 		}
 
-    	public byte ReadMemory(ushort addr)
-        {
-        	if (addr < 0x8000)
+		public byte ReadMemory(ushort addr)
+		{
+			if (addr < 0x8000)
 				return Rom[addr];
 			else if (addr < 0xA000)
 				return VRam[addr - 0x8000];
@@ -388,7 +388,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			else if (addr < 0xFFFF)
 				return HRam[addr - 0xFF80];
 			else return ReadRegister(addr);
-        }
+		}
 
 		public byte ReadRegister(ushort addr)
 		{
@@ -421,7 +421,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				case 0xFF14: //REG_NR14 - Sound Mode 1 register, Frequency hi (R/W)
 					return 0xFF;
 
-					//0xFF15 ???????????????
+				//0xFF15 ???????????????
 
 				case 0xFF16: //REG_NR21 - Sound Mode 2 register, Sound Length; Wave Pattern Duty (R/W)
 					return 0xFF;
@@ -458,14 +458,22 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 					return 0xFF;
 				case 0xFF26: //REG_NR52 - Sound on/off (R/W) (Value at reset: $F1-GB, $F0-SGB)
 					return 0xFF;
-				case 0xFF30: return Sound.WavePatternRam[0x00]; case 0xFF31: return Sound.WavePatternRam[0x01];
-				case 0xFF32: return Sound.WavePatternRam[0x02]; case 0xFF33: return Sound.WavePatternRam[0x03];
-				case 0xFF34: return Sound.WavePatternRam[0x04]; case 0xFF35: return Sound.WavePatternRam[0x05];
-				case 0xFF36: return Sound.WavePatternRam[0x06]; case 0xFF37: return Sound.WavePatternRam[0x07];
-				case 0xFF38: return Sound.WavePatternRam[0x08]; case 0xFF39: return Sound.WavePatternRam[0x09];
-				case 0xFF3A: return Sound.WavePatternRam[0x0A]; case 0xFF3B: return Sound.WavePatternRam[0x0B];
-				case 0xFF3C: return Sound.WavePatternRam[0x0C]; case 0xFF3D: return Sound.WavePatternRam[0x0D];
-				case 0xFF3E: return Sound.WavePatternRam[0x0E]; case 0xFF3F: return Sound.WavePatternRam[0x0F];
+				case 0xFF30: return Sound.WavePatternRam[0x00];
+				case 0xFF31: return Sound.WavePatternRam[0x01];
+				case 0xFF32: return Sound.WavePatternRam[0x02];
+				case 0xFF33: return Sound.WavePatternRam[0x03];
+				case 0xFF34: return Sound.WavePatternRam[0x04];
+				case 0xFF35: return Sound.WavePatternRam[0x05];
+				case 0xFF36: return Sound.WavePatternRam[0x06];
+				case 0xFF37: return Sound.WavePatternRam[0x07];
+				case 0xFF38: return Sound.WavePatternRam[0x08];
+				case 0xFF39: return Sound.WavePatternRam[0x09];
+				case 0xFF3A: return Sound.WavePatternRam[0x0A];
+				case 0xFF3B: return Sound.WavePatternRam[0x0B];
+				case 0xFF3C: return Sound.WavePatternRam[0x0C];
+				case 0xFF3D: return Sound.WavePatternRam[0x0D];
+				case 0xFF3E: return Sound.WavePatternRam[0x0E];
+				case 0xFF3F: return Sound.WavePatternRam[0x0F];
 				case 0xFF40: //REG_LCDC - LCD Control (R/W) (value $91 at reset)
 					return Registers.LCDC.Read();
 				case 0xFF41: //REG_STAT - LCDC Status   (R/W)
@@ -566,14 +574,22 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 					return;
 				case 0xFF26: //REG_NR52 - Sound on/off (R/W) (Value at reset: $F1-GB, $F0-SGB)
 					return;
-				case 0xFF30: Sound.WavePatternRam[0x00] = value; break; case 0xFF31: Sound.WavePatternRam[0x01] = value; break;
-				case 0xFF32: Sound.WavePatternRam[0x02] = value; break; case 0xFF33: Sound.WavePatternRam[0x03] = value; break;
-				case 0xFF34: Sound.WavePatternRam[0x04] = value; break; case 0xFF35: Sound.WavePatternRam[0x05] = value; break;
-				case 0xFF36: Sound.WavePatternRam[0x06] = value; break; case 0xFF37: Sound.WavePatternRam[0x07] = value; break;
-				case 0xFF38: Sound.WavePatternRam[0x08] = value; break; case 0xFF39: Sound.WavePatternRam[0x09] = value; break;
-				case 0xFF3A: Sound.WavePatternRam[0x0A] = value; break; case 0xFF3B: Sound.WavePatternRam[0x0B] = value; break;
-				case 0xFF3C: Sound.WavePatternRam[0x0C] = value; break; case 0xFF3D: Sound.WavePatternRam[0x0D] = value; break;
-				case 0xFF3E: Sound.WavePatternRam[0x0E] = value; break; case 0xFF3F: Sound.WavePatternRam[0x0F] = value; break;
+				case 0xFF30: Sound.WavePatternRam[0x00] = value; break;
+				case 0xFF31: Sound.WavePatternRam[0x01] = value; break;
+				case 0xFF32: Sound.WavePatternRam[0x02] = value; break;
+				case 0xFF33: Sound.WavePatternRam[0x03] = value; break;
+				case 0xFF34: Sound.WavePatternRam[0x04] = value; break;
+				case 0xFF35: Sound.WavePatternRam[0x05] = value; break;
+				case 0xFF36: Sound.WavePatternRam[0x06] = value; break;
+				case 0xFF37: Sound.WavePatternRam[0x07] = value; break;
+				case 0xFF38: Sound.WavePatternRam[0x08] = value; break;
+				case 0xFF39: Sound.WavePatternRam[0x09] = value; break;
+				case 0xFF3A: Sound.WavePatternRam[0x0A] = value; break;
+				case 0xFF3B: Sound.WavePatternRam[0x0B] = value; break;
+				case 0xFF3C: Sound.WavePatternRam[0x0C] = value; break;
+				case 0xFF3D: Sound.WavePatternRam[0x0D] = value; break;
+				case 0xFF3E: Sound.WavePatternRam[0x0E] = value; break;
+				case 0xFF3F: Sound.WavePatternRam[0x0F] = value; break;
 				case 0xFF40: //REG_LCDC - LCD Control (R/W) (value $91 at reset)
 					Registers.LCDC.Write(value);
 					break;
@@ -608,8 +624,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			}
 		}
 
-    	public void WriteMemory(ushort addr, byte value)
-        {
+		public void WriteMemory(ushort addr, byte value)
+		{
 			if (addr < 0x8000)
 				return;
 			else if (addr < 0xA000)
@@ -627,80 +643,81 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			else if (addr < 0xFF00)
 				return;
 			else if (addr < 0xFF80)
-				WriteRegister(addr,value);
+				WriteRegister(addr, value);
 			else if (addr < 0xFFFF)
 				HRam[addr - 0xFF80] = value;
 			else WriteRegister(addr, value);
-        }
+		}
 
 		public void FrameAdvance(bool render)
-        {
-            //Cpu.ExecuteCycles(4096);
-        }
+		{
+			Cpu.ExecuteCycles(4096);
+		}
 
 
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 
-        public IVideoProvider VideoProvider
-        {
+		public IVideoProvider VideoProvider
+		{
 			get { return new NullEmulator(); }
-        }
+		}
 
-        public ISoundProvider SoundProvider
-        {
+		public ISoundProvider SoundProvider
+		{
 			get { return new NullEmulator(); }
-        }
+		}
 
-        public int Frame
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public int Frame
+		{
+			get { return 0; }
+			//get { throw new NotImplementedException(); }
+		}
 
-        public int LagCount { get { return -1; } set { return; } } //TODO: implement
-        public bool IsLagFrame { get { return false; } } //TODO: implement
+		public int LagCount { get { return -1; } set { return; } } //TODO: implement
+		public bool IsLagFrame { get { return false; } } //TODO: implement
 
-        public byte[] SaveRam
-        {
-            get { throw new NotImplementedException(); }
-        }
+		public byte[] SaveRam
+		{
+			get { throw new NotImplementedException(); }
+		}
 
-        public bool SaveRamModified
-        {
-            get
-            {
+		public bool SaveRamModified
+		{
+			get
+			{
 				return false;
-            }
-            set
-            {
-                
-            }
-        }
+			}
+			set
+			{
 
-        public void SaveStateText(System.IO.TextWriter writer)
-        {
-            throw new NotImplementedException();
-        }
+			}
+		}
 
-        public void LoadStateText(System.IO.TextReader reader)
-        {
-            throw new NotImplementedException();
-        }
+		public void SaveStateText(System.IO.TextWriter writer)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void SaveStateBinary(System.IO.BinaryWriter writer)
-        {
-            
-        }
+		public void LoadStateText(System.IO.TextReader reader)
+		{
+			throw new NotImplementedException();
+		}
 
-        public void LoadStateBinary(System.IO.BinaryReader reader)
-        {
-            throw new NotImplementedException();
-        }
+		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		{
 
-        public byte[] SaveStateBinary()
-        {
+		}
+
+		public void LoadStateBinary(System.IO.BinaryReader reader)
+		{
+			throw new NotImplementedException();
+		}
+
+		public byte[] SaveStateBinary()
+		{
 			return new byte[0];
-        }
+		}
 
 		public void RenderOBJLine(int line, byte[] output, bool limit)
 		{
@@ -723,10 +740,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			for (int i = sprites.Count - 1; i >= 0; i--)
 			{
 				int s = sprites[i];
-				int y = OAM[s*4 + 0];
-				int x = OAM[s*4 + 1];
-				int pat = OAM[s*4 + 2];
-				byte flags = OAM[s*4 + 3];
+				int y = OAM[s * 4 + 0];
+				int x = OAM[s * 4 + 1];
+				int pat = OAM[s * 4 + 2];
+				byte flags = OAM[s * 4 + 3];
 				bool priority = GetBit8(flags, 7);
 				bool yflip = GetBit8(flags, 6);
 				bool xflip = GetBit8(flags, 5);
@@ -736,7 +753,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				x -= 8;
 
 				int sprline = line - y;
-				if(yflip)
+				if (yflip)
 					sprline = height - sprline - 1;
 
 				if (height == 16) pat = ~1;
@@ -770,7 +787,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 					lobits &= 1;
 					hibits &= 1;
 					int pixel = lobits | (hibits << 1);
-					output[x] = (byte) pixel;
+					output[x] = (byte)pixel;
 				}
 			}
 
@@ -808,7 +825,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			}
 		}
 
-    	public void RenderBGLine(int line, byte[] output, bool scroll)
+		public void RenderBGLine(int line, byte[] output, bool scroll)
 		{
 			ushort tilemap = Registers.LCDC.BgTileMapAddr;
 			ushort tiledata = Registers.LCDC.TileDataAddr;
@@ -816,7 +833,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			int tileAdjust = (Registers.LCDC.TileData == TRegisters.TLCDC.ETileData.Region_8800_97FF ? 128 : 0);
 
 			int py = line;
-			if(scroll) line += Registers.SCY;
+			if (scroll) line += Registers.SCY;
 			py &= 0xFF;
 			int ty = py >> 3;
 			int tyr = py & 7;
@@ -825,7 +842,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			for (int x = 0; x < 160; x++)
 			{
 				int px = x;
-				if(scroll) px += Registers.SCX;
+				if (scroll) px += Registers.SCX;
 				px &= 0xFF;
 				int tx = px >> 3;
 				int txr = px & 7;
@@ -834,8 +851,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				int tileNum = ReadMemory((ushort)tileAddr);
 				tileNum = (tileNum + tileAdjust) & 0xFF;
 				ushort patternAddr = (ushort)(tiledata + (tileNum << 4));
-				patternAddr += (ushort)(tyr<<1);
-				
+				patternAddr += (ushort)(tyr << 1);
+
 				int lobits = ReadMemory(patternAddr);
 				patternAddr += 1;
 				int hibits = ReadMemory(patternAddr);
@@ -849,12 +866,12 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		}
 
-        public bool DeterministicEmulation { get; set; }
-        public string SystemId { get { return "GB"; } }
+		public bool DeterministicEmulation { get; set; }
+		public string SystemId { get { return "GB"; } }
 
-        public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
-        public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
+		public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
+		public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
 
-        public void Dispose() {}
-    }
+		public void Dispose() { }
+	}
 }

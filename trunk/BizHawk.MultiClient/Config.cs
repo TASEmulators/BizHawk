@@ -234,6 +234,10 @@
 		public int NESBackgroundColor = 0;
 		public string NESPaletteFile = "";
 
+		//GB Debugger settings
+		public bool AutoloadGBDebugger = false;
+		public bool GBDebuggerSaveWindowPosition = true;
+
 		// Cheats Dialog
 		public bool AutoLoadCheats = false;
 		public bool CheatsSaveWindowPosition = true;
