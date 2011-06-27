@@ -752,20 +752,37 @@ namespace BizHawk.MultiClient
 					Global.ActiveController = Global.NullControls;
 					break;
 			}
-			Global.Emulator.Controller = Global.ActiveController;
-			Global.ActiveController.MovieMode = false;
+
+			RewireInputChain();
+			Global.MovieMode = false;
+		}
+
+		void RewireInputChain()
+		{
+			//insert turbo and lua here?
+			Global.MultitrackRewiringControllerAdapter.Source = Global.ActiveController;
+			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
+			Global.MovieControllerAdapter.SetSource(Global.MovieInputSourceAdapter);
+			Global.ControllerOutput = Global.MovieControllerAdapter;
+			Global.Emulator.Controller = Global.ControllerOutput;
 		}
 
 		public bool LoadRom(string path)
 		{
-			using (var file = new HawkFile(path))
+			using (var file = new HawkFile())
 			{
+				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES", "ROM" };
+
+				//lets not use this unless we need to
+				//file.NonArchiveExtensions = romExtensions;
+				file.Open(path);
+
 				//if the provided file doesnt even exist, give up!
 				if (!file.Exists) return false;
 
 				//try binding normal rom extensions first
 				if (!file.IsBound)
-					file.BindSoleItemOf("SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES", "ROM");
+					file.BindSoleItemOf(romExtensions);
 
 				//if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
@@ -1150,8 +1167,8 @@ namespace BizHawk.MultiClient
 			}
             if (Global.ClientControls["Toggle MultiTrack"])
             {
-                Global.MainForm.UserMovie.MultiTrack.isActive = !Global.MainForm.UserMovie.MultiTrack.isActive;
-                if (Global.MainForm.UserMovie.MultiTrack.isActive)
+                Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
+                if (Global.MainForm.UserMovie.MultiTrack.IsActive)
                 {
                     Global.RenderPanel.AddMessage("MultiTrack Enabled");
                     Global.RenderPanel.MT = "Recording None";                       
@@ -1240,7 +1257,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				wasPressed = (TAStudio1.Engaged) ? TAStudio1.GetMnemonic() : Global.ActiveController.GetControllersAsMnemonic();
+				wasPressed = Global.GetOutputControllersAsMnemonic();
 				PressFrameAdvance = false;
 			}
 			else
@@ -1306,33 +1323,59 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
+
+				if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+				{
+					UserMovie.LatchInputFromLog();
+				}
+
+				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+				{
+					UserMovie.LatchInputFromPlayer();
+					UserMovie.CommitFrame();
+				}
+
+				if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY && UserMovie.MultiTrack.IsActive)
+				{
+					UserMovie.LatchMultitrackPlayerInput();
+					UserMovie.CommitFrame();
+				}
+
+				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				{
+					UserMovie.LatchInputFromPlayer();
+				}
+				
 				if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
 				{
 					if (UserMovie.GetMovieLength() == Global.Emulator.Frame)
 					{
 						UserMovie.SetMovieFinished();
-						Global.ActiveController.MovieMode = false;
-					}
-					else
-					{
-						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+						Global.MovieMode = false;
 					}
 				}
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
-				{
-					if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
-					{
-						UserMovie.StartPlayback();
-						Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
-					}
-				}
-                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.isActive)
-                {					
-                    Global.ActiveController.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
-					//Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
-                }
+				//if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+				//{
+				//    if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
+				//    {
+				//        UserMovie.StartPlayback();
+				//        Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+				//    }
+				//}
+				//if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.isActive)
+				//{					
+				//    Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
+				//    //Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
+				//}
+
+				//TODO multitrack
+
+
+				//=======================================
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
+				//=======================================
+
 				RamWatch1.UpdateValues();
 				RamSearch1.UpdateValues();
 				HexEditor1.UpdateValues();
@@ -1340,13 +1383,6 @@ namespace BizHawk.MultiClient
 				NESPPU1.UpdateValues();
 				TAStudio1.UpdateValues();
 
-                if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
-                {
-                    UserMovie.GetMnemonic();
-					//Console.WriteLine("In: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
-                }
-                else if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
-                    InputLog.GetMnemonic();
 			}
 
 			if (genSound)
@@ -1440,12 +1476,12 @@ namespace BizHawk.MultiClient
 					{
 						UserMovie.WriteMovie();
 						UserMovie.StartPlayback();
-						Global.ActiveController.MovieMode = true;
+						Global.MovieMode = true;
 					}
 				}
 				else
 				{
-					Global.ActiveController.MovieMode = false;
+					Global.MovieMode = false;
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
 			}
@@ -1460,7 +1496,7 @@ namespace BizHawk.MultiClient
 				else
 				{
 					UserMovie.StartNewRecording();
-					Global.ActiveController.MovieMode = false;
+					Global.MovieMode = false;
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
 			}
@@ -1471,7 +1507,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Global.Emulator.Frame > UserMovie.GetMovieLength())
 					{
-						Global.ActiveController.MovieMode = false;
+						Global.MovieMode = false;
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
 						//So do nothing
@@ -1480,7 +1516,7 @@ namespace BizHawk.MultiClient
 					{
 						int x = UserMovie.CheckTimeLines(reader);
 						UserMovie.StartPlayback();
-						Global.ActiveController.MovieMode = true;
+						Global.MovieMode = true;
 						//if (x >= 0)
 						//    MessageBox.Show("Savestate input log does not match the movie at frame " + (x+1).ToString() + "!", "Timeline error", MessageBoxButtons.OK); //TODO: replace with a not annoying message once savestate logic is running smoothly
 					}
@@ -1489,7 +1525,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Global.Emulator.Frame > UserMovie.GetMovieLength())
 					{
-						Global.ActiveController.MovieMode = false;
+						Global.MovieMode = false;
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
 						//So do nothing
@@ -1497,7 +1533,7 @@ namespace BizHawk.MultiClient
 					else
 					{
 						UserMovie.StartNewRecording();
-						Global.ActiveController.MovieMode = false;
+						Global.MovieMode = false;
 						UserMovie.LoadLogFromSavestateText(reader);
 					}
 				}

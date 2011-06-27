@@ -80,6 +80,7 @@ namespace BizHawk.MultiClient
             if ((int)(flags[0] & 4) > 0)
                 pal = true;
 
+			m.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
             m.SetHeaderLine("PAL", pal.ToString());
 
             //Power on vs reset

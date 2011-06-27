@@ -354,7 +354,7 @@ namespace BizHawk.MultiClient
 				input = MakeInputDisplay();
 				MessageFont.DrawString(null, input, x, y, c);
 			}
-			if (Global.MainForm.UserMovie.MultiTrack.isActive)
+			if (Global.MainForm.UserMovie.MultiTrack.IsActive)
 			{
 				MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
 				   Global.Config.DispFPSy + 1, new Color4(Color.Black));
@@ -486,7 +486,7 @@ namespace BizHawk.MultiClient
 
 		public string MakeInputDisplay()
 		{
-			string tmp = Global.ActiveController.GetControllersAsMnemonic();
+			string tmp = Global.GetOutputControllersAsMnemonic();
 			tmp = tmp.Replace(".", " ");
 			tmp = tmp.Replace("|", "");
 			return tmp;

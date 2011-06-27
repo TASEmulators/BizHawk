@@ -7,12 +7,12 @@ namespace BizHawk.MultiClient
 {
     public class MultitrackRecording
     {
-        public bool isActive;        
+        public bool IsActive;        
         public int CurrentPlayer;
         public bool RecordAll;
         public MultitrackRecording()
         {
-            isActive = false;
+            IsActive = false;
             CurrentPlayer = 0;
             RecordAll = false;
         }

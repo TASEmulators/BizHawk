@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient.tools
 
 		private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus();
+			//hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus();
 		}
 
 		private void HotkeyWindow_Load(object sender, EventArgs e)
