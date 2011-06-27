@@ -538,6 +538,11 @@ namespace BizHawk
 							break;
 					}
 					break;
+					//it is conceivable that you will need this. you wouldnt be able to conceive of why, though. obscure message loop flakiness when exceptions are thrown from the message loop...
+				//case (int)WindowsMessage.WM_SETFOCUS:
+				//    if(SelectedIndices.Count>0 && SelectedIndices[0] >= VirtualListSize)
+				//        messageProcessed = true;
+				//    break;
 				default:
 					break;
 			}
