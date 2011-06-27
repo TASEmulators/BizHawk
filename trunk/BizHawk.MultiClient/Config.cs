@@ -15,6 +15,7 @@
 			NESController[1] = new NESControllerTemplate(false);
 			NESController[2] = new NESControllerTemplate(false);
 			NESController[3] = new NESControllerTemplate(false);
+			GameBoyController = new NESControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 		}
 
@@ -390,6 +391,9 @@
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
+
+		//GB settings
+		public GBControllerTemplate GBController = new GBControllerTemplate();
 	}
 
 	public class SMSControllerTemplate
@@ -481,6 +485,47 @@
 		public bool Enabled;
 		public NESControllerTemplate() { }
 		public NESControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "J1 Up, UpArrow";
+				Down = "J1 Down, DownArrow";
+				Left = "J1 Left, LeftArrow";
+				Right = "J1 Right, RightArrow";
+				A = "J1 B2, X";
+				B = "J1 B1, Z";
+				Start = "J1 B8, Return";
+				Select = "J1 B7, Space";
+			}
+			else
+			{
+				Enabled = false;
+				Up = "";
+				Down = "";
+				Right = "";
+				Left = "";
+				A = "";
+				B = "";
+				Start = "";
+				Select = "";
+			}
+		}
+	}
+
+	public class GBControllerTemplate
+	{
+		public string Up;
+		public string Down;
+		public string Left;
+		public string Right;
+		public string A;
+		public string B;
+		public string Start;
+		public string Select;
+		public bool Enabled;
+		public GBControllerTemplate() { }
+		public GBControllerTemplate(bool defaults)
 		{
 			if (defaults)
 			{

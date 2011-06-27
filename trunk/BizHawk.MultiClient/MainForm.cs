@@ -509,6 +509,18 @@ namespace BizHawk.MultiClient
 			}
 			Global.NESControls = nesControls;
 
+			var gbControls = new Controller(Gameboy.GbController);
+			gbControls.BindMulti("Up", Global.Config.GBController.Up);
+			gbControls.BindMulti("Down", Global.Config.GBController.Down);
+			gbControls.BindMulti("Left", Global.Config.GBController.Left);
+			gbControls.BindMulti("Right", Global.Config.GBController.Right);
+			gbControls.BindMulti("A", Global.Config.GBController.A);
+			gbControls.BindMulti("B", Global.Config.GBController.B);
+			gbControls.BindMulti("Select", Global.Config.GBController.Select);
+			gbControls.BindMulti("Start", Global.Config.GBController.Start);
+			Global.GBControls = gbControls;
+
+
 			var genControls = new Controller(Genesis.GenesisController);
 			genControls.BindMulti("P1 Up", Global.Config.GenP1Up);
 			genControls.BindMulti("P1 Left", Global.Config.GenP1Left);

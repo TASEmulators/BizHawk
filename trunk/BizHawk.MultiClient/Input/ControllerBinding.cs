@@ -200,6 +200,19 @@ namespace BizHawk.MultiClient
 				return input.ToString();
 			}
 
+			if (type.Name == "Gameboy Controller")
+			{
+				input.Append("|");
+				input.Append(IsPressed("Right") ? "R" : ".");
+				input.Append(IsPressed("Left") ? "L" : ".");
+				input.Append(IsPressed("Down") ? "D" : ".");
+				input.Append(IsPressed("Up") ? "U" : ".");
+				input.Append(IsPressed("Start") ? "S" : ".");
+				input.Append(IsPressed("Select") ? "s" : ".");
+				input.Append(IsPressed("B") ? "B" : ".");
+				input.Append(IsPressed("A") ? "A" : ".");
+			}
+
 			if (type.Name == "NES Controls")
 			{
 				input.Append(IsPressed("Reset") ? "r" : ".");
@@ -374,6 +387,20 @@ namespace BizHawk.MultiClient
 				if (mnemonic[17] != '.') programmaticallyPressedButtons.Add("P2 Select");
 				if (mnemonic[18] != '.') programmaticallyPressedButtons.Add("P2 B");
 				if (mnemonic[19] != '.') programmaticallyPressedButtons.Add("P2 A");
+			}
+
+			if (type.Name == "Gameboy Controller")
+			{
+				if (mnemonic.Length < 10) return;
+				//if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
+				if (mnemonic[3] != '.') programmaticallyPressedButtons.Add("P1 Right");
+				if (mnemonic[4] != '.') programmaticallyPressedButtons.Add("P1 Left");
+				if (mnemonic[5] != '.') programmaticallyPressedButtons.Add("P1 Down");
+				if (mnemonic[6] != '.') programmaticallyPressedButtons.Add("P1 Up");
+				if (mnemonic[7] != '.') programmaticallyPressedButtons.Add("P1 Start");
+				if (mnemonic[8] != '.') programmaticallyPressedButtons.Add("P1 Select");
+				if (mnemonic[9] != '.') programmaticallyPressedButtons.Add("P1 B");
+				if (mnemonic[10] != '.') programmaticallyPressedButtons.Add("P1 A");
 			}
 
 			if (type.Name == "TI83 Controls")
