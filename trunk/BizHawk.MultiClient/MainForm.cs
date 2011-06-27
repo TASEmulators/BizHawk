@@ -64,7 +64,6 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
-		public Debugger GBDebugger1 = new Debugger(null);
 
 		public MainForm(string[] args)
 		{
