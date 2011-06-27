@@ -6,6 +6,11 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 {
 	public partial class Gameboy : IEmulator
 	{
+		
+		private int _lagcount = 0;
+		private bool lagged = true;
+		private bool islag = false;
+
 		public interface IDebuggerAPI
 		{
 			void DoEvents();
@@ -326,7 +331,27 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			Registers = new TRegisters(this);
 
 			Registers.LCDC.Poke(0x91);
+			SetupMemoryDomains();
 		}
+
+		private IList<MemoryDomain> memoryDomains;
+
+		private void SetupMemoryDomains()
+		{
+			//TODO: WRAM (0 & 1? or both?)
+			//TODO: VRAM
+			//TODO: OAM
+			//TODO: HRAM
+			var domains = new List<MemoryDomain>(1);
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)addr),
+				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+			domains.Add(SystemBusDomain);
+			memoryDomains = domains.AsReadOnly();
+		}
+
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 		public byte ReadMemoryBios(ushort addr)
 		{
@@ -651,9 +676,18 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public void FrameAdvance(bool render)
 		{
+			lagged = true;
+			Controller.UpdateControls(Frame++);
 			Cpu.ExecuteCycles(4096);
-		}
 
+			if (lagged)
+			{
+				_lagcount++;
+				islag = true;
+			}
+			else
+				islag = false;
+		}
 
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
@@ -668,14 +702,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			get { return new NullEmulator(); }
 		}
 
-		public int Frame
-		{
-			get { return 0; }
-			//get { throw new NotImplementedException(); }
-		}
+		public int Frame { get; set; }
 
-		public int LagCount { get { return -1; } set { return; } } //TODO: implement
-		public bool IsLagFrame { get { return false; } } //TODO: implement
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public bool IsLagFrame { get { return islag; } }
 
 		public byte[] SaveRam
 		{
@@ -868,9 +898,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GB"; } }
-
-		public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
-		public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
 
 		public void Dispose() { }
 	}
