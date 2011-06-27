@@ -49,7 +49,7 @@
 			this.Cancel.Location = new System.Drawing.Point(391, 139);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 0;
+			this.Cancel.TabIndex = 1;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
@@ -60,7 +60,7 @@
 			this.OK.Location = new System.Drawing.Point(310, 139);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 1;
+			this.OK.TabIndex = 0;
 			this.OK.Text = "&Ok";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
@@ -72,7 +72,7 @@
 			this.Browse.Location = new System.Drawing.Point(423, 13);
 			this.Browse.Name = "Browse";
 			this.Browse.Size = new System.Drawing.Size(25, 23);
-			this.Browse.TabIndex = 2;
+			this.Browse.TabIndex = 1;
 			this.Browse.UseVisualStyleBackColor = true;
 			this.Browse.Click += new System.EventHandler(this.button1_Click);
 			// 
@@ -84,7 +84,7 @@
 			this.RecordBox.Location = new System.Drawing.Point(83, 13);
 			this.RecordBox.Name = "RecordBox";
 			this.RecordBox.Size = new System.Drawing.Size(334, 20);
-			this.RecordBox.TabIndex = 3;
+			this.RecordBox.TabIndex = 0;
 			this.RecordBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragDrop);
 			this.RecordBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecordBox_DragEnter);
 			// 
@@ -99,7 +99,7 @@
 			this.StartFromCombo.MaxDropDownItems = 32;
 			this.StartFromCombo.Name = "StartFromCombo";
 			this.StartFromCombo.Size = new System.Drawing.Size(152, 21);
-			this.StartFromCombo.TabIndex = 4;
+			this.StartFromCombo.TabIndex = 3;
 			// 
 			// groupBox1
 			// 
@@ -115,7 +115,7 @@
 			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(454, 112);
-			this.groupBox1.TabIndex = 5;
+			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			// 
 			// AuthorBox
@@ -126,7 +126,7 @@
 			this.AuthorBox.Location = new System.Drawing.Point(83, 39);
 			this.AuthorBox.Name = "AuthorBox";
 			this.AuthorBox.Size = new System.Drawing.Size(365, 20);
-			this.AuthorBox.TabIndex = 7;
+			this.AuthorBox.TabIndex = 2;
 			// 
 			// label3
 			// 
@@ -134,7 +134,7 @@
 			this.label3.Location = new System.Drawing.Point(36, 41);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(41, 13);
-			this.label3.TabIndex = 6;
+			this.label3.TabIndex = 2;
 			this.label3.Text = "Author:";
 			// 
 			// label2
