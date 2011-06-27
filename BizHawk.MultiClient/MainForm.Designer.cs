@@ -197,6 +197,8 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.DumpError = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -234,11 +236,12 @@
             this.toolsToolStripMenuItem,
             this.NESToolStripMenuItem,
             this.tI83ToolStripMenuItem,
+            this.gBToolStripMenuItem,
             this.helpToolStripMenuItem});
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 40);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
@@ -1554,6 +1557,21 @@
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
+			// gBToolStripMenuItem
+			// 
+			this.gBToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.debuggerToolStripMenuItem1});
+			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
+			this.gBToolStripMenuItem.Size = new System.Drawing.Size(32, 17);
+			this.gBToolStripMenuItem.Text = "GB";
+			// 
+			// debuggerToolStripMenuItem1
+			// 
+			this.debuggerToolStripMenuItem1.Name = "debuggerToolStripMenuItem1";
+			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.debuggerToolStripMenuItem1.Text = "Debugger";
+			this.debuggerToolStripMenuItem1.Click += new System.EventHandler(this.debuggerToolStripMenuItem1_Click);
+			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -1624,7 +1642,7 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 308);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 286);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			// 
@@ -1949,6 +1967,8 @@
 		private System.Windows.Forms.ToolStripDropDownButton DumpError;
 		private System.Windows.Forms.ToolStripMenuItem viewSubtitlesToolStripMenuItem;
 		private MenuStripEx menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem gBToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem debuggerToolStripMenuItem1;
     }
 }
 

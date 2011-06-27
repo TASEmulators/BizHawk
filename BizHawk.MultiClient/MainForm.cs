@@ -64,6 +64,7 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public Debugger GBDebugger1 = new Debugger(null);
 
 		public MainForm(string[] args)
 		{
@@ -686,14 +687,22 @@ namespace BizHawk.MultiClient
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					NESToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = false;
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
 					tI83ToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = false;
+					break;
+				case "GB": //TODO: SGB, etc?
+					NESToolStripMenuItem.Visible = false;
+					tI83ToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = true;
 					break;
 				default:
 					tI83ToolStripMenuItem.Visible = false;
 					NESToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = false;
 					break;
 			}
 		}
@@ -835,11 +844,6 @@ namespace BizHawk.MultiClient
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(game.SaveRamPath))
 					LoadSaveRam();
-
-				if (game.System == "GB")
-				{
-					new BizHawk.Emulation.Consoles.Gameboy.Debugger(Global.Emulator as Gameboy).Show();
-				}
 
 				if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
 				{
@@ -2255,6 +2259,15 @@ namespace BizHawk.MultiClient
 			s.ReadOnly = ReadOnly;
 			s.GetMovie(UserMovie);
 			s.ShowDialog();
+		}
+
+		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
+				gbDebugger.Show();
+			}
 		}
 	}
 }

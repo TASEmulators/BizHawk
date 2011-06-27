@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.label12 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+			this.viewDisassembly = new BizHawk.Core.ViewportPanel();
 			this.btnSeekPC = new System.Windows.Forms.Button();
 			this.btnSeekUser = new System.Windows.Forms.Button();
 			this.txtSeekUser = new System.Windows.Forms.TextBox();
@@ -74,22 +75,28 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.txtLine = new System.Windows.Forms.TextBox();
 			this.txtDot = new System.Windows.Forms.TextBox();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.panelMemory = new BizHawk.Core.ScrollableViewportPanel();
 			this.checkViewBg = new System.Windows.Forms.CheckBox();
 			this.checkViewObj = new System.Windows.Forms.CheckBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.checkViewObjNoLimit = new System.Windows.Forms.CheckBox();
 			this.lblInputActive = new System.Windows.Forms.Label();
-			this.viewTiles0x9000 = new ViewportPanel();
-			this.viewTiles0x8000 = new ViewportPanel();
-			this.panelMemory = new ScrollableViewportPanel();
-			this.viewDisassembly = new ViewportPanel();
-			this.viewBG = new ViewportPanel();
+			this.viewTiles0x9000 = new BizHawk.Core.ViewportPanel();
+			this.viewTiles0x8000 = new BizHawk.Core.ViewportPanel();
+			this.viewBG = new BizHawk.Core.ViewportPanel();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.groupBox1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.tableLayoutPanel2.SuspendLayout();
 			this.menuContextBreakpoints.SuspendLayout();
 			this.panel1.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnRun
@@ -372,6 +379,15 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.vScrollBar1.TabIndex = 20;
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			// 
+			// viewDisassembly
+			// 
+			this.viewDisassembly.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.viewDisassembly.Location = new System.Drawing.Point(3, 3);
+			this.viewDisassembly.Name = "viewDisassembly";
+			this.viewDisassembly.Size = new System.Drawing.Size(328, 199);
+			this.viewDisassembly.TabIndex = 0;
+			this.viewDisassembly.Paint += new System.Windows.Forms.PaintEventHandler(this.viewDisassembly_Paint);
+			// 
 			// btnSeekPC
 			// 
 			this.btnSeekPC.Location = new System.Drawing.Point(489, 100);
@@ -405,7 +421,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// 
 			this.listBreakpoints.ContextMenuStrip = this.menuContextBreakpoints;
 			this.listBreakpoints.FormattingEnabled = true;
-			this.listBreakpoints.Location = new System.Drawing.Point(915, 245);
+			this.listBreakpoints.Location = new System.Drawing.Point(564, 386);
 			this.listBreakpoints.Name = "listBreakpoints";
 			this.listBreakpoints.Size = new System.Drawing.Size(120, 95);
 			this.listBreakpoints.TabIndex = 25;
@@ -434,7 +450,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(912, 227);
+			this.label10.Location = new System.Drawing.Point(561, 370);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(63, 13);
 			this.label10.TabIndex = 26;
@@ -521,6 +537,19 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.panel1.Size = new System.Drawing.Size(545, 181);
 			this.panel1.TabIndex = 38;
 			// 
+			// panelMemory
+			// 
+			this.panelMemory.AutoSize = true;
+			this.panelMemory.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panelMemory.Location = new System.Drawing.Point(0, 0);
+			this.panelMemory.Name = "panelMemory";
+			this.panelMemory.ScrollLargeChange = 10;
+			this.panelMemory.ScrollMax = 4095;
+			this.panelMemory.Size = new System.Drawing.Size(541, 177);
+			this.panelMemory.TabIndex = 37;
+			this.panelMemory.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMemory_Paint);
+			this.panelMemory.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panelMemory_Scroll);
+			// 
 			// checkViewBg
 			// 
 			this.checkViewBg.AutoSize = true;
@@ -603,28 +632,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.viewTiles0x8000.TabIndex = 41;
 			this.viewTiles0x8000.Paint += new System.Windows.Forms.PaintEventHandler(this.viewTiles0x8000_Paint);
 			// 
-			// panelMemory
-			// 
-			this.panelMemory.AutoSize = true;
-			this.panelMemory.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panelMemory.Location = new System.Drawing.Point(0, 0);
-			this.panelMemory.Name = "panelMemory";
-			this.panelMemory.ScrollLargeChange = 10;
-			this.panelMemory.ScrollMax = 4095;
-			this.panelMemory.Size = new System.Drawing.Size(541, 177);
-			this.panelMemory.TabIndex = 37;
-			this.panelMemory.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMemory_Paint);
-			this.panelMemory.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panelMemory_Scroll);
-			// 
-			// viewDisassembly
-			// 
-			this.viewDisassembly.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.viewDisassembly.Location = new System.Drawing.Point(3, 3);
-			this.viewDisassembly.Name = "viewDisassembly";
-			this.viewDisassembly.Size = new System.Drawing.Size(328, 199);
-			this.viewDisassembly.TabIndex = 0;
-			this.viewDisassembly.Paint += new System.Windows.Forms.PaintEventHandler(this.viewDisassembly_Paint);
-			// 
 			// viewBG
 			// 
 			this.viewBG.Location = new System.Drawing.Point(564, 27);
@@ -638,11 +645,58 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.viewBG.Enter += new System.EventHandler(this.viewBG_Enter);
 			this.viewBG.KeyDown += new System.Windows.Forms.KeyEventHandler(this.viewBG_KeyDown);
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(867, 24);
+			this.menuStrip1.TabIndex = 47;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// settingsToolStripMenuItem
+			// 
+			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoloadToolStripMenuItem,
+            this.saveWindowPositionToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.restoreWindowSizeToolStripMenuItem});
+			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+			this.settingsToolStripMenuItem.Text = "&Settings";
+			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.settingsToolStripMenuItem_DropDownOpened);
+			// 
+			// autoloadToolStripMenuItem
+			// 
+			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadToolStripMenuItem.Text = "Autoload";
+			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+			// 
+			// restoreWindowSizeToolStripMenuItem
+			// 
+			this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
+			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.restoreWindowSizeToolStripMenuItem.Text = "Restore Window Size";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+			// 
 			// Debugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1065, 483);
+			this.ClientSize = new System.Drawing.Size(867, 483);
+			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.lblInputActive);
 			this.Controls.Add(this.checkViewObjNoLimit);
 			this.Controls.Add(this.viewTiles0x9000);
@@ -659,10 +713,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.Controls.Add(this.label14);
 			this.Controls.Add(this.btnBreak);
 			this.Controls.Add(this.txtFrame);
-			this.Controls.Add(this.label10);
 			this.Controls.Add(this.tableLayoutPanel2);
-			this.Controls.Add(this.listBreakpoints);
+			this.Controls.Add(this.label10);
 			this.Controls.Add(this.txtSeekUser);
+			this.Controls.Add(this.listBreakpoints);
 			this.Controls.Add(this.viewBG);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnSeekUser);
@@ -682,8 +736,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.Controls.Add(this.btnRun);
 			this.Controls.Add(this.label1);
 			this.KeyPreview = true;
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Debugger";
-			this.Text = "Debugger";
+			this.Text = "Game Boy Debugger";
+			this.Load += new System.EventHandler(this.Debugger_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.tableLayoutPanel1.ResumeLayout(false);
@@ -692,6 +748,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			this.menuContextBreakpoints.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -753,6 +811,12 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.CheckBox checkViewObjNoLimit;
 		private System.Windows.Forms.Label lblInputActive;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
 
 	}
 }
