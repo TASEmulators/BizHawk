@@ -138,6 +138,7 @@
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="Input\Keyboard.cs" />
     <Compile Include="LuaImplementation.cs" />
     <Compile Include="MainForm.cs">

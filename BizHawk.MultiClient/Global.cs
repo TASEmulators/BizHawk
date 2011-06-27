@@ -21,7 +21,31 @@ namespace BizHawk.MultiClient
 		public static Controller TI83Controls;
 		public static Controller NESControls;
 		public static Controller GBControls;
-		public static Controller ActiveController;
 		public static Controller NullControls;
+
+		//TODO should have one of these per movie!!!! should not be global.
+		public static MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
+		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
+
+		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
+
+		//user -> ActiveController -> TurboAdapter(TBD) -> Lua(?) -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> MovieInputController -> ControllerOutput(1) -> Game
+		//(1)->Input Display
+		
+		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
+		public static Controller ActiveController;
+		
+		//the "output" port for the controller chain. 
+		public static IController ControllerOutput;
+
+		public static string GetOutputControllersAsMnemonic()
+		{
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(Global.ControllerOutput);
+			return mg.GetControllersAsMnemonic();
+		}
+
+		//TODO - wtf is this being used for
+		public static bool MovieMode;
 	}
 }

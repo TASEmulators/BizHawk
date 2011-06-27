@@ -87,29 +87,54 @@ namespace BizHawk.MultiClient
 			return MovieMode;
 		}
 
-		public void GetMnemonic()
+		public void LatchMultitrackPlayerInput()
 		{
-			if (MultiTrack.isActive)
+			if (MultiTrack.IsActive)
 			{
-				if (MovieMode == MOVIEMODE.RECORD)
-				{
-
-					if (Global.Emulator.Frame < Log.Length())
-						Log.ReplaceFrameAt(Global.ActiveController.GetControllersAsMnemonic(), Global.Emulator.Frame);
-					else
-						Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-				}
+				Global.MultitrackRewiringControllerAdapter.PlayerSource = 1;
+				Global.MultitrackRewiringControllerAdapter.PlayerTargetMask = 1 << (MultiTrack.CurrentPlayer);
+				if (MultiTrack.RecordAll) Global.MultitrackRewiringControllerAdapter.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
 			}
-			else
-				if (MovieMode == MOVIEMODE.RECORD)
-				{
+			else Global.MultitrackRewiringControllerAdapter.PlayerSource = -1;
 
-					if (Global.Emulator.Frame < Log.Length())
-					{
-						Log.Truncate(Global.Emulator.Frame);
-					}
-					Log.AddFrame(Global.ActiveController.GetControllersAsMnemonic());
-				}
+			if (MultiTrack.RecordAll)
+				Global.MovieControllerAdapter.LatchFromSource();
+			else
+				Global.MovieControllerAdapter.LatchPlayerFromSource(MultiTrack.CurrentPlayer);
+		}
+
+		public void LatchInputFromPlayer()
+		{
+			Global.MovieControllerAdapter.LatchFromSource();
+		}
+
+		/// <summary>
+		/// latch input from the log, if available
+		/// </summary>
+		public void LatchInputFromLog()
+		{
+			string loggedFrame = GetInputFrame(Global.Emulator.Frame);
+			if(loggedFrame != "")
+				Global.MovieControllerAdapter.SetControllersAsMnemonic(loggedFrame);
+		}
+
+		public void CommitFrame()
+		{
+			//if (MultiTrack.IsActive)
+			//{
+			//}
+			//else
+			//    if (Global.Emulator.Frame < Log.Length())
+			//    {
+			//        Log.Truncate(Global.Emulator.Frame);
+			//    }
+
+			//REMOVED TRUNCATION!!!!
+			//WHY DO IT HERE??? DO IT WHEN WE LOAD THE SAVESTATE IN READ+WRITE MODE! JESUS
+
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(Global.MovieInputSourceAdapter);
+			Log.SetFrameAt(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
 		}
 
 		public string GetInputFrame(int frame)
@@ -129,7 +154,7 @@ namespace BizHawk.MultiClient
 
 		public void InsertFrame(string record, int frame)
 		{
-			Log.AddFrameAt(record, frame);
+			Log.SetFrameAt(frame, record);
 		}
 
 		public void WriteMovie()
@@ -371,7 +396,7 @@ namespace BizHawk.MultiClient
 		public void LoadLogFromSavestateText(TextReader reader)
 		{
 			//We are in record mode so replace the movie log with the one from the savestate
-			if (!MultiTrack.isActive)
+			if (!MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
 				{
@@ -402,7 +427,7 @@ namespace BizHawk.MultiClient
 					if (line == "[/Input]") break;
 					if (line[0] == '|')
 					{
-						Log.ReplaceFrameAt(line, i);
+						Log.SetFrameAt(i,line);
 						i++;
 					}
 				}

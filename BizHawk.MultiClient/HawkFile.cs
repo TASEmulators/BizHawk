@@ -101,6 +101,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		/// <summary>
+		/// these extensions won't even be tried as archives (removes spurious archive detects since some of the signatures are pretty damn weak)
+		/// </summary>
+		public string[] NonArchiveExtensions = new string[] { };
+
 		//---
 		bool exists;
 		bool rootExists;
@@ -110,8 +115,14 @@ namespace BizHawk.MultiClient
 		SevenZip.SevenZipExtractor extractor;
 		List<ArchiveItem> archiveItems;
 
-		public HawkFile(string path)
+		public HawkFile()
 		{
+		}
+
+		public void Open(string path)
+		{
+			if (rootPath != null) throw new InvalidOperationException("Don't reopen a HawkFile.");
+
 			string autobind = null;
 			bool isArchivePath = IsCanonicalArchivePath(path);
 			if (isArchivePath)
@@ -158,6 +169,11 @@ namespace BizHawk.MultiClient
 
 				exists = false;
 			}
+		}
+
+		public HawkFile(string path)
+		{
+			Open(path);
 		}
 
 		/// <summary>
@@ -312,6 +328,10 @@ namespace BizHawk.MultiClient
 			SevenZip.FileChecker.ThrowExceptions = false;
 			int offset;
 			bool isExecutable;
+			foreach(string ext in NonArchiveExtensions)
+				if(Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower())
+					return;
+			
 			if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
 			{
 				extractor = new SevenZip.SevenZipExtractor(path);

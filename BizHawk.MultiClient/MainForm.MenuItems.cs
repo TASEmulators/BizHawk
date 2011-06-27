@@ -145,7 +145,7 @@ namespace BizHawk.MultiClient
 			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
 			{
 				UserMovie.StopMovie();
-				Global.ActiveController.MovieMode = false;
+				Global.MovieMode = false;
 				Global.RenderPanel.AddMessage(message);
 			}
 		}

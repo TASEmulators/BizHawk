@@ -92,18 +92,20 @@ namespace BizHawk.MultiClient
 
 		private void AddMovieToList(string filename)
 		{
-			var file = new HawkFile(filename);
-			if (!file.Exists)
-				return;
-			else
+			using (var file = new HawkFile(filename))
 			{
-				PreLoadMovieFile(file);
-				MovieView.ItemCount = MovieList.Count;
-				UpdateList();
-				MovieView.SelectedIndices.Clear();
-				MovieView.setSelection(MovieList.Count - 1);
-				sortReverse = false;
-				sortedCol = "";
+				if (!file.Exists)
+					return;
+				else
+				{
+					PreLoadMovieFile(file);
+					MovieView.ItemCount = MovieList.Count;
+					UpdateList();
+					MovieView.SelectedIndices.Clear();
+					MovieView.setSelection(MovieList.Count - 1);
+					sortReverse = false;
+					sortedCol = "";
+				}
 			}
 		}
 
@@ -150,6 +152,8 @@ namespace BizHawk.MultiClient
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			DetailsView.Items.Clear();
+			if (MovieView.SelectedIndices.Count < 1) return;
+
 			int x = MovieView.SelectedIndices[0];
 			Dictionary<string, string> h = MovieList[x].GetHeaderInfo();
 

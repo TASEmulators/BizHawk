@@ -211,7 +211,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					value <<= 1;
 					value |= nes.Controller.IsPressed(str) ? 1 : 0;
 				}
-				//Console.WriteLine("STROBE");
 			}
 			public override void Write(int value)
 			{
