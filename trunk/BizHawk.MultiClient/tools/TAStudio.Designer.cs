@@ -50,7 +50,7 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
 			this.PauseButton = new System.Windows.Forms.ToolStripButton();
@@ -448,7 +448,7 @@
         private System.Windows.Forms.ToolStripMenuItem nToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
-		private System.Windows.Forms.ToolStrip toolStrip1;
+		private ToolStripEx toolStrip1;
         private System.Windows.Forms.ToolStripButton FrameAdvanceButton;
         private System.Windows.Forms.ToolStripButton RewindButton;
 		private System.Windows.Forms.ToolStripButton PauseButton;
