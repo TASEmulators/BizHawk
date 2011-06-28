@@ -115,7 +115,7 @@ namespace BizHawk.MultiClient
 			Global.ActiveController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
-
+			RewireInputChain();
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
