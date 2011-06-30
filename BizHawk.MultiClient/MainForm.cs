@@ -377,13 +377,13 @@ namespace BizHawk.MultiClient
 		{
 			Name = "Emulator Frontend Controls",
 			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", 
-                "Emulator Pause", "Frame Advance", "Unthrottle", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
-                "SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
-                "SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-                "LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
-                "Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
-                "Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-                "Decrement Player"}
+				"Emulator Pause", "Frame Advance", "Unthrottle", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
+				"SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
+				"SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
+				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
+				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
+				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
+				"Soft Reset", "Decrement Player"}
 		};
 
 		private void InitControls()
@@ -454,11 +454,12 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Play Beginning", Global.Config.PlayBeginningBinding);
 			controls.BindMulti("Volume Up", Global.Config.VolUpBinding);
 			controls.BindMulti("Volume Down", Global.Config.VolDownBinding);
-            controls.BindMulti("Toggle MultiTrack", Global.Config.ToggleMultiTrack);
-            controls.BindMulti("Record All", Global.Config.MTRecordAll);
-            controls.BindMulti("Record None", Global.Config.MTRecordNone);
-            controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
-            controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
+			controls.BindMulti("Toggle MultiTrack", Global.Config.ToggleMultiTrack);
+			controls.BindMulti("Record All", Global.Config.MTRecordAll);
+			controls.BindMulti("Record None", Global.Config.MTRecordNone);
+			controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
+			controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
+			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
 
 			Global.ClientControls = controls;
 
@@ -495,7 +496,7 @@ namespace BizHawk.MultiClient
 			Global.PCEControls = pceControls;
 
 			var nesControls = new Controller(NES.NESController);
-			nesControls.BindMulti("Reset", Global.Config.NESReset);
+			//nesControls.BindMulti("Reset", Global.Config.NESReset); //Let multiclient handle all resets the same
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
 				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
@@ -583,8 +584,6 @@ namespace BizHawk.MultiClient
 			TI83Controls.BindMulti("2ND", Global.Config.TI83Controller[0].SECOND);
 			TI83Controls.BindMulti("MODE", Global.Config.TI83Controller[0].MODE);
 			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].DEL);
-			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].COMMA);
-			TI83Controls.BindMulti("DEL", Global.Config.TI83Controller[0].SIN);
 			Global.TI83Controls = TI83Controls;
 		}
 
@@ -1165,56 +1164,63 @@ namespace BizHawk.MultiClient
 				VolumeDown();
 				Global.ClientControls.UnpressButton("Volume Down");
 			}
-            if (Global.ClientControls["Toggle MultiTrack"])
-            {
-                Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
-                if (Global.MainForm.UserMovie.MultiTrack.IsActive)
-                {
-                    Global.RenderPanel.AddMessage("MultiTrack Enabled");
-                    Global.RenderPanel.MT = "Recording None";                       
-                }
-                else
-                   Global.RenderPanel.AddMessage("MultiTrack Disabled");
-                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-                Global.ClientControls.UnpressButton("Toggle MultiTrack");
-            }
-            if (Global.ClientControls["Increment Player"])
-            {
-                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
-                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-                if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
-                {
-                    Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
-                }
-                Global.ClientControls.UnpressButton("Increment Player");
-                Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
-            }
-            if (Global.ClientControls["Decrement Player"])
-            {
-                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
-                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-                if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
-                {
-                    Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
-                }
-                Global.ClientControls.UnpressButton("Decrement Player");
-                Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
-            }
-            if (Global.ClientControls["Record All"])
-            {
-                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-                Global.MainForm.UserMovie.MultiTrack.RecordAll = true;               
-                Global.ClientControls.UnpressButton("Record All");
-                Global.RenderPanel.MT = "Recording All";
-            }
-            if (Global.ClientControls["Record None"])
-            {
-                Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-                Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-                Global.ClientControls.UnpressButton("Record None");
-                Global.RenderPanel.MT = "Recording None"; 
-            }
+
+			if (Global.ClientControls["Soft Reset"])
+			{
+				SoftReset();
+				Global.ClientControls.UnpressButton("Soft Reset");
+			}
+
+			if (Global.ClientControls["Toggle MultiTrack"])
+			{
+				Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
+				if (Global.MainForm.UserMovie.MultiTrack.IsActive)
+				{
+					Global.RenderPanel.AddMessage("MultiTrack Enabled");
+					Global.RenderPanel.MT = "Recording None";
+				}
+				else
+				Global.RenderPanel.AddMessage("MultiTrack Disabled");
+				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+				Global.ClientControls.UnpressButton("Toggle MultiTrack");
+			}
+			if (Global.ClientControls["Increment Player"])
+			{
+				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
+				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+				if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+				{
+					Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
+				}
+				Global.ClientControls.UnpressButton("Increment Player");
+				Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+			}
+			if (Global.ClientControls["Decrement Player"])
+			{
+				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
+				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+				if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
+				{
+					Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+				}
+				Global.ClientControls.UnpressButton("Decrement Player");
+				Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+			}
+			if (Global.ClientControls["Record All"])
+			{
+				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+				Global.MainForm.UserMovie.MultiTrack.RecordAll = true;
+				Global.ClientControls.UnpressButton("Record All");
+				Global.RenderPanel.MT = "Recording All";
+			}
+			if (Global.ClientControls["Record None"])
+			{
+				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+				Global.ClientControls.UnpressButton("Record None");
+				Global.RenderPanel.MT = "Recording None"; 
+			}
 		}
 
 		void StepRunLoop_Throttle()
@@ -2315,6 +2321,12 @@ namespace BizHawk.MultiClient
 				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
 				gbDebugger.Show();
 			}
+		}
+
+		private void SoftReset()
+		{
+			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+				Global.ActiveController.ForceButton("Reset");
 		}
 	}
 }
