@@ -544,5 +544,10 @@ namespace BizHawk.MultiClient
 		{
 			BrowseFolder(NESPaletteBox, NESPaletteDescription.Text, "NES");
 		}
+
+		private void tabPage4_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
