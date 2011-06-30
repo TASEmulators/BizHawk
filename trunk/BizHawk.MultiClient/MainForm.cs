@@ -154,20 +154,30 @@ namespace BizHawk.MultiClient
 
 			if (cmdMovie != null)
 			{
-				Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
-				ReadOnly = true;
-				StartNewMovie(m, false);
-				CreateNewInputLog(false);
-				UserMovie.StartPlayback();
-				Global.Config.RecentMovies.Add(cmdMovie);
+				if (Global.Game == null)
+					OpenROM();
+				if (Global.Game != null)
+				{
+					Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
+					ReadOnly = true;
+					StartNewMovie(m, false);
+					CreateNewInputLog(false);
+					UserMovie.StartPlayback();
+					Global.Config.RecentMovies.Add(cmdMovie);
+				}
 			}
 			else if (Global.Config.AutoLoadMostRecentMovie && !Global.Config.RecentMovies.IsEmpty())
 			{
-				Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
-				ReadOnly = true;
-				StartNewMovie(m, false);
-				UserMovie.StartPlayback();
-				CreateNewInputLog(false);
+				if (Global.Game == null)
+					OpenROM();
+				if (Global.Game != null)
+				{
+					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
+					ReadOnly = true;
+					StartNewMovie(m, false);
+					UserMovie.StartPlayback();
+					CreateNewInputLog(false);
+				}
 			}
 			else
 			{
