@@ -64,6 +64,10 @@ namespace BizHawk.MultiClient
 					MovieToRecord.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 
 				Global.MainForm.StartNewMovie(MovieToRecord, true);
+
+				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;
+				if (DefaultAuthorCheckBox.Checked)
+					Global.Config.DefaultAuthor = AuthorBox.Text;
 				this.Close();
 			}
 			else
@@ -96,6 +100,9 @@ namespace BizHawk.MultiClient
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
 			StartFromCombo.SelectedIndex = 0;
+			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
+			if (Global.Config.UseDefaultAuthor)
+				AuthorBox.Text = Global.Config.DefaultAuthor;
 			//TODO: populate combo with savestate slots that currently exist
 		}
 
