@@ -102,6 +102,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap camera {
+            get {
+                object obj = ResourceManager.GetObject("camera", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap cheat {
             get {
                 object obj = ResourceManager.GetObject("cheat", resourceCulture);
@@ -182,6 +189,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap ForwardMore {
             get {
                 object obj = ResourceManager.GetObject("ForwardMore", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Fullscreen {
+            get {
+                object obj = ResourceManager.GetObject("Fullscreen", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
