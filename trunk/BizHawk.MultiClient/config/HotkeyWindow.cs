@@ -87,6 +87,7 @@ namespace BizHawk.MultiClient.tools
 			IDW_MTSELECTALL.Text = Global.Config.MTRecordAll;
 			IDW_MTINCPLAYER.Text = Global.Config.MTIncrementPlayer;
 			IDW_MTDECPLAYER.Text = Global.Config.MTDecrementPlayer;
+			IDW_RESET.Text = Global.Config.SoftResetBinding;
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -170,6 +171,7 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.MTRecordNone = IDW_SELECTNONE.Text;
 			Global.Config.MTIncrementPlayer = IDW_MTINCPLAYER.Text;
 			Global.Config.MTDecrementPlayer = IDW_MTDECPLAYER.Text;
+			Global.Config.SoftResetBinding = IDW_RESET.Text;
 
 			this.DialogResult = DialogResult.OK;
 			this.Close();

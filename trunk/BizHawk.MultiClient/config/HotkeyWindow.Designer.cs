@@ -68,6 +68,7 @@
 			this.label31 = new System.Windows.Forms.Label();
 			this.IDW_QuickSave = new BizHawk.MultiClient.InputWidget();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.IDW_SS1 = new BizHawk.MultiClient.InputWidget();
 			this.label50 = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.label48 = new System.Windows.Forms.Label();
@@ -107,7 +108,6 @@
 			this.IDW_PREVIOUSSLOT = new BizHawk.MultiClient.InputWidget();
 			this.IDW_LOADNAMEDSTATE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SAVENAMEDSTATE = new BizHawk.MultiClient.InputWidget();
-			this.IDW_SS1 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_ST7 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_ST0 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_ST9 = new BizHawk.MultiClient.InputWidget();
@@ -138,6 +138,7 @@
 			this.IDW_SS3 = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SS2 = new BizHawk.MultiClient.InputWidget();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
 			this.IDW_PLAYBEGINNING = new BizHawk.MultiClient.InputWidget();
 			this.label67 = new System.Windows.Forms.Label();
 			this.label66 = new System.Windows.Forms.Label();
@@ -152,13 +153,13 @@
 			this.IDW_STOPMOVIE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_PLAYMOVIE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_RECORDMOVIE = new BizHawk.MultiClient.InputWidget();
-			this.IDW_TOGGLEREADONLY = new BizHawk.MultiClient.InputWidget();
 			this.IDW_TOGGLEMTRACK = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MTDECPLAYER = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MTINCPLAYER = new BizHawk.MultiClient.InputWidget();
 			this.IDW_SELECTNONE = new BizHawk.MultiClient.InputWidget();
 			this.IDW_MTSELECTALL = new BizHawk.MultiClient.InputWidget();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.IDW_RamWatch = new BizHawk.MultiClient.InputWidget();
 			this.IDW_TOOLBOX = new BizHawk.MultiClient.InputWidget();
 			this.label46 = new System.Windows.Forms.Label();
 			this.label56 = new System.Windows.Forms.Label();
@@ -172,10 +173,11 @@
 			this.IDW_HexEditor = new BizHawk.MultiClient.InputWidget();
 			this.IDW_RamPoke = new BizHawk.MultiClient.InputWidget();
 			this.IDW_RamSearch = new BizHawk.MultiClient.InputWidget();
-			this.IDW_RamWatch = new BizHawk.MultiClient.InputWidget();
 			this.IDB_SAVE = new System.Windows.Forms.Button();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
+			this.IDW_RESET = new BizHawk.MultiClient.InputWidget();
+			this.label71 = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -200,6 +202,8 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label71);
+			this.tabPage1.Controls.Add(this.IDW_RESET);
 			this.tabPage1.Controls.Add(this.label70);
 			this.tabPage1.Controls.Add(this.IDW_UNTHROTTLE);
 			this.tabPage1.Controls.Add(this.label69);
@@ -247,7 +251,7 @@
 			// label70
 			// 
 			this.label70.AutoSize = true;
-			this.label70.Location = new System.Drawing.Point(6, 130);
+			this.label70.Location = new System.Drawing.Point(408, 58);
 			this.label70.Name = "label70";
 			this.label70.Size = new System.Drawing.Size(53, 13);
 			this.label70.TabIndex = 59;
@@ -257,10 +261,10 @@
 			// 
 			this.IDW_UNTHROTTLE.AcceptsTab = true;
 			this.IDW_UNTHROTTLE.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_UNTHROTTLE.Location = new System.Drawing.Point(92, 128);
+			this.IDW_UNTHROTTLE.Location = new System.Drawing.Point(494, 56);
 			this.IDW_UNTHROTTLE.Name = "IDW_UNTHROTTLE";
 			this.IDW_UNTHROTTLE.Size = new System.Drawing.Size(100, 20);
-			this.IDW_UNTHROTTLE.TabIndex = 58;
+			this.IDW_UNTHROTTLE.TabIndex = 105;
 			// 
 			// label69
 			// 
@@ -278,7 +282,7 @@
 			this.IDW_VOLDOWN.Location = new System.Drawing.Point(494, 33);
 			this.IDW_VOLDOWN.Name = "IDW_VOLDOWN";
 			this.IDW_VOLDOWN.Size = new System.Drawing.Size(100, 20);
-			this.IDW_VOLDOWN.TabIndex = 9;
+			this.IDW_VOLDOWN.TabIndex = 101;
 			// 
 			// label68
 			// 
@@ -296,7 +300,7 @@
 			this.IDW_VOLUP.Location = new System.Drawing.Point(494, 7);
 			this.IDW_VOLUP.Name = "IDW_VOLUP";
 			this.IDW_VOLUP.Size = new System.Drawing.Size(100, 20);
-			this.IDW_VOLUP.TabIndex = 8;
+			this.IDW_VOLUP.TabIndex = 100;
 			// 
 			// IDW_InputDisplay
 			// 
@@ -455,15 +459,15 @@
 			// 
 			this.IDW_REWIND.AcceptsTab = true;
 			this.IDW_REWIND.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_REWIND.Location = new System.Drawing.Point(92, 104);
+			this.IDW_REWIND.Location = new System.Drawing.Point(92, 130);
 			this.IDW_REWIND.Name = "IDW_REWIND";
 			this.IDW_REWIND.Size = new System.Drawing.Size(100, 20);
-			this.IDW_REWIND.TabIndex = 5;
+			this.IDW_REWIND.TabIndex = 6;
 			// 
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(6, 107);
+			this.label37.Location = new System.Drawing.Point(6, 133);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(43, 13);
 			this.label37.TabIndex = 4;
@@ -548,7 +552,7 @@
 			this.IDW_QuickLoad.Location = new System.Drawing.Point(92, 178);
 			this.IDW_QuickLoad.Name = "IDW_QuickLoad";
 			this.IDW_QuickLoad.Size = new System.Drawing.Size(100, 20);
-			this.IDW_QuickLoad.TabIndex = 7;
+			this.IDW_QuickLoad.TabIndex = 9;
 			// 
 			// label31
 			// 
@@ -566,7 +570,7 @@
 			this.IDW_QuickSave.Location = new System.Drawing.Point(92, 154);
 			this.IDW_QuickSave.Name = "IDW_QuickSave";
 			this.IDW_QuickSave.Size = new System.Drawing.Size(100, 20);
-			this.IDW_QuickSave.TabIndex = 6;
+			this.IDW_QuickSave.TabIndex = 7;
 			// 
 			// tabPage2
 			// 
@@ -646,6 +650,14 @@
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Save States";
 			this.tabPage2.UseVisualStyleBackColor = true;
+			// 
+			// IDW_SS1
+			// 
+			this.IDW_SS1.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_SS1.Location = new System.Drawing.Point(88, 6);
+			this.IDW_SS1.Name = "IDW_SS1";
+			this.IDW_SS1.Size = new System.Drawing.Size(100, 20);
+			this.IDW_SS1.TabIndex = 61;
 			// 
 			// label50
 			// 
@@ -988,14 +1000,6 @@
 			this.IDW_SAVENAMEDSTATE.Size = new System.Drawing.Size(100, 20);
 			this.IDW_SAVENAMEDSTATE.TabIndex = 119;
 			// 
-			// IDW_SS1
-			// 
-			this.IDW_SS1.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SS1.Location = new System.Drawing.Point(88, 6);
-			this.IDW_SS1.Name = "IDW_SS1";
-			this.IDW_SS1.Size = new System.Drawing.Size(100, 20);
-			this.IDW_SS1.TabIndex = 61;
-			// 
 			// IDW_ST7
 			// 
 			this.IDW_ST7.Location = new System.Drawing.Point(468, 150);
@@ -1229,6 +1233,15 @@
 			this.tabPage3.Text = "Movie";
 			this.tabPage3.UseVisualStyleBackColor = true;
 			// 
+			// IDW_TOGGLEREADONLY
+			// 
+			this.IDW_TOGGLEREADONLY.AcceptsTab = true;
+			this.IDW_TOGGLEREADONLY.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 9);
+			this.IDW_TOGGLEREADONLY.Name = "IDW_TOGGLEREADONLY";
+			this.IDW_TOGGLEREADONLY.Size = new System.Drawing.Size(100, 20);
+			this.IDW_TOGGLEREADONLY.TabIndex = 68;
+			// 
 			// IDW_PLAYBEGINNING
 			// 
 			this.IDW_PLAYBEGINNING.AcceptsTab = true;
@@ -1355,15 +1368,6 @@
 			this.IDW_RECORDMOVIE.Size = new System.Drawing.Size(100, 20);
 			this.IDW_RECORDMOVIE.TabIndex = 70;
 			// 
-			// IDW_TOGGLEREADONLY
-			// 
-			this.IDW_TOGGLEREADONLY.AcceptsTab = true;
-			this.IDW_TOGGLEREADONLY.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_TOGGLEREADONLY.Location = new System.Drawing.Point(105, 9);
-			this.IDW_TOGGLEREADONLY.Name = "IDW_TOGGLEREADONLY";
-			this.IDW_TOGGLEREADONLY.Size = new System.Drawing.Size(100, 20);
-			this.IDW_TOGGLEREADONLY.TabIndex = 68;
-			// 
 			// IDW_TOGGLEMTRACK
 			// 
 			this.IDW_TOGGLEMTRACK.AcceptsTab = true;
@@ -1431,6 +1435,15 @@
 			this.tabPage4.TabIndex = 3;
 			this.tabPage4.Text = "Tools";
 			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// IDW_RamWatch
+			// 
+			this.IDW_RamWatch.AcceptsTab = true;
+			this.IDW_RamWatch.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RamWatch.Location = new System.Drawing.Point(87, 13);
+			this.IDW_RamWatch.Name = "IDW_RamWatch";
+			this.IDW_RamWatch.Size = new System.Drawing.Size(100, 20);
+			this.IDW_RamWatch.TabIndex = 69;
 			// 
 			// IDW_TOOLBOX
 			// 
@@ -1547,15 +1560,6 @@
 			this.IDW_RamSearch.Size = new System.Drawing.Size(100, 20);
 			this.IDW_RamSearch.TabIndex = 71;
 			// 
-			// IDW_RamWatch
-			// 
-			this.IDW_RamWatch.AcceptsTab = true;
-			this.IDW_RamWatch.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_RamWatch.Location = new System.Drawing.Point(87, 13);
-			this.IDW_RamWatch.Name = "IDW_RamWatch";
-			this.IDW_RamWatch.Size = new System.Drawing.Size(100, 20);
-			this.IDW_RamWatch.TabIndex = 69;
-			// 
 			// IDB_SAVE
 			// 
 			this.IDB_SAVE.Location = new System.Drawing.Point(441, 9);
@@ -1586,6 +1590,24 @@
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 3;
 			this.label38.Text = "* Escape clears a key mapping";
+			// 
+			// IDW_RESET
+			// 
+			this.IDW_RESET.AcceptsTab = true;
+			this.IDW_RESET.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RESET.Location = new System.Drawing.Point(92, 107);
+			this.IDW_RESET.Name = "IDW_RESET";
+			this.IDW_RESET.Size = new System.Drawing.Size(100, 20);
+			this.IDW_RESET.TabIndex = 5;
+			// 
+			// label71
+			// 
+			this.label71.AutoSize = true;
+			this.label71.Location = new System.Drawing.Point(6, 110);
+			this.label71.Name = "label71";
+			this.label71.Size = new System.Drawing.Size(57, 13);
+			this.label71.TabIndex = 61;
+			this.label71.Text = "Soft Reset";
 			// 
 			// HotkeyWindow
 			// 
@@ -1766,5 +1788,7 @@
         private InputWidget IDW_VOLUP;
         private System.Windows.Forms.Label label70;
         private InputWidget IDW_UNTHROTTLE;
+		private InputWidget IDW_RESET;
+		private System.Windows.Forms.Label label71;
     }
 }

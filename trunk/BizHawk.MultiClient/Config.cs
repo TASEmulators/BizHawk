@@ -356,6 +356,7 @@
 		public string PlayBeginningBinding = "";
 		public string VolUpBinding = "";
 		public string VolDownBinding = "";
+		public string SoftResetBinding = "";
 		public string ToggleMultiTrack = "";
 		public string MTRecordAll = "";
 		public string MTRecordNone = "";
