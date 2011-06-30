@@ -292,7 +292,7 @@
 		public bool TI83ToolTips = true;
 
 		// Client Hotkey Bindings
-		public string HardResetBinding = "Ctrl+R"; 
+		public string HardResetBinding = "Ctrl+R";
 		public string FastForwardBinding = "J1 B6, Tab";
 		public string RewindBinding = "J1 B5, Shift+R";
 		public string EmulatorPauseBinding = "Pause";
