@@ -39,6 +39,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.DefaultAuthorCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -105,6 +106,7 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.DefaultAuthorCheckBox);
 			this.groupBox1.Controls.Add(this.AuthorBox);
 			this.groupBox1.Controls.Add(this.StartFromCombo);
 			this.groupBox1.Controls.Add(this.Browse);
@@ -155,6 +157,16 @@
 			this.label1.TabIndex = 4;
 			this.label1.Text = "File:";
 			// 
+			// DefaultAuthorCheckBox
+			// 
+			this.DefaultAuthorCheckBox.AutoSize = true;
+			this.DefaultAuthorCheckBox.Location = new System.Drawing.Point(327, 64);
+			this.DefaultAuthorCheckBox.Name = "DefaultAuthorCheckBox";
+			this.DefaultAuthorCheckBox.Size = new System.Drawing.Size(121, 17);
+			this.DefaultAuthorCheckBox.TabIndex = 6;
+			this.DefaultAuthorCheckBox.Text = "Make default author";
+			this.DefaultAuthorCheckBox.UseVisualStyleBackColor = true;
+			// 
 			// RecordMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -189,5 +201,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox AuthorBox;
+		private System.Windows.Forms.CheckBox DefaultAuthorCheckBox;
     }
 }

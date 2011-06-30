@@ -280,6 +280,8 @@
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public bool AutoLoadMostRecentMovie = false;
 		public bool BindSavestatesToMovies = true;
+		public string DefaultAuthor = "default user";
+		public bool UseDefaultAuthor = true;
 
 		//TI83
 		public bool TI83disableSaveSlotKeys = true;
