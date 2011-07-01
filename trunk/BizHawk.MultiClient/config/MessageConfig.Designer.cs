@@ -30,6 +30,8 @@
         {
 			this.OK = new System.Windows.Forms.Button();
 			this.MessageTypeBox = new System.Windows.Forms.GroupBox();
+			this.RerecLabel = new System.Windows.Forms.Label();
+			this.RerecordsRadio = new System.Windows.Forms.RadioButton();
 			this.MessLabel = new System.Windows.Forms.Label();
 			this.InpLabel = new System.Windows.Forms.Label();
 			this.LagLabel = new System.Windows.Forms.Label();
@@ -87,7 +89,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(418, 371);
+			this.OK.Location = new System.Drawing.Point(418, 403);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -97,6 +99,8 @@
 			// 
 			// MessageTypeBox
 			// 
+			this.MessageTypeBox.Controls.Add(this.RerecLabel);
+			this.MessageTypeBox.Controls.Add(this.RerecordsRadio);
 			this.MessageTypeBox.Controls.Add(this.MessLabel);
 			this.MessageTypeBox.Controls.Add(this.InpLabel);
 			this.MessageTypeBox.Controls.Add(this.LagLabel);
@@ -109,14 +113,35 @@
 			this.MessageTypeBox.Controls.Add(this.FPSRadio);
 			this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
 			this.MessageTypeBox.Name = "MessageTypeBox";
-			this.MessageTypeBox.Size = new System.Drawing.Size(177, 139);
+			this.MessageTypeBox.Size = new System.Drawing.Size(177, 187);
 			this.MessageTypeBox.TabIndex = 2;
 			this.MessageTypeBox.TabStop = false;
 			this.MessageTypeBox.Text = "Message Type";
 			// 
+			// RerecLabel
+			// 
+			this.RerecLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.RerecLabel.AutoSize = true;
+			this.RerecLabel.Location = new System.Drawing.Point(126, 141);
+			this.RerecLabel.Name = "RerecLabel";
+			this.RerecLabel.Size = new System.Drawing.Size(49, 13);
+			this.RerecLabel.TabIndex = 11;
+			this.RerecLabel.Text = "255, 255";
+			// 
+			// RerecordsRadio
+			// 
+			this.RerecordsRadio.AutoSize = true;
+			this.RerecordsRadio.Location = new System.Drawing.Point(6, 137);
+			this.RerecordsRadio.Name = "RerecordsRadio";
+			this.RerecordsRadio.Size = new System.Drawing.Size(74, 17);
+			this.RerecordsRadio.TabIndex = 10;
+			this.RerecordsRadio.Text = "Rerecords";
+			this.RerecordsRadio.UseVisualStyleBackColor = true;
+			this.RerecordsRadio.CheckedChanged += new System.EventHandler(this.MessagesRadio_CheckedChanged);
+			// 
 			// MessLabel
 			// 
-			this.MessLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.MessLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.MessLabel.AutoSize = true;
 			this.MessLabel.Location = new System.Drawing.Point(126, 116);
 			this.MessLabel.Name = "MessLabel";
@@ -126,7 +151,7 @@
 			// 
 			// InpLabel
 			// 
-			this.InpLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.InpLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.InpLabel.AutoSize = true;
 			this.InpLabel.Location = new System.Drawing.Point(126, 92);
 			this.InpLabel.Name = "InpLabel";
@@ -136,7 +161,7 @@
 			// 
 			// LagLabel
 			// 
-			this.LagLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.LagLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.LagLabel.AutoSize = true;
 			this.LagLabel.Location = new System.Drawing.Point(126, 68);
 			this.LagLabel.Name = "LagLabel";
@@ -146,7 +171,7 @@
 			// 
 			// FCLabel
 			// 
-			this.FCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.FCLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.FCLabel.AutoSize = true;
 			this.FCLabel.Location = new System.Drawing.Point(126, 44);
 			this.FCLabel.Name = "FCLabel";
@@ -156,7 +181,7 @@
 			// 
 			// FpsPosLabel
 			// 
-			this.FpsPosLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.FpsPosLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.FpsPosLabel.AutoSize = true;
 			this.FpsPosLabel.Location = new System.Drawing.Point(126, 20);
 			this.FpsPosLabel.Name = "FpsPosLabel";
@@ -239,7 +264,7 @@
 			this.groupBox2.Controls.Add(this.ColorText);
 			this.groupBox2.Controls.Add(this.button1);
 			this.groupBox2.Controls.Add(this.MessageColorBox);
-			this.groupBox2.Location = new System.Drawing.Point(12, 173);
+			this.groupBox2.Location = new System.Drawing.Point(12, 205);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(177, 192);
 			this.groupBox2.TabIndex = 4;
@@ -413,7 +438,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(499, 371);
+			this.Cancel.Location = new System.Drawing.Point(499, 403);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 5;
@@ -424,7 +449,7 @@
 			// ResetDefaultsButton
 			// 
 			this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 371);
+			this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 403);
 			this.ResetDefaultsButton.Name = "ResetDefaultsButton";
 			this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
 			this.ResetDefaultsButton.TabIndex = 6;
@@ -575,7 +600,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(612, 406);
+			this.ClientSize = new System.Drawing.Size(612, 438);
 			this.Controls.Add(this.ResetDefaultsButton);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.groupBox2);
@@ -650,5 +675,7 @@
 		private System.Windows.Forms.RadioButton BL;
 		private System.Windows.Forms.RadioButton TR;
 		private System.Windows.Forms.RadioButton TL;
+		private System.Windows.Forms.Label RerecLabel;
+		private System.Windows.Forms.RadioButton RerecordsRadio;
     }
 }
