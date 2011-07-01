@@ -266,6 +266,7 @@
     <Compile Include="RecordMovie.Designer.cs">
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
+    <Compile Include="SavestateManager.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="config\HotkeyWindow.cs">
       <SubType>Form</SubType>

@@ -192,60 +192,70 @@ namespace BizHawk.MultiClient
 		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 1;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot2ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 2;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot3ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 3;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot4ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 4;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot5ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 5;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot6ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 6;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot7ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 7;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot8ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 8;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot9ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 9;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot10ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 0;
+			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
@@ -694,7 +704,7 @@ namespace BizHawk.MultiClient
 			displayStatusBarToolStripMenuItem.Checked = Global.Config.DisplayStatusBar;
 			if (!InFullscreen)
 			{
-				statusStrip1.Visible = Global.Config.DisplayStatusBar;
+				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
 				PerformLayout();
 				FrameBufferResized();
 			}

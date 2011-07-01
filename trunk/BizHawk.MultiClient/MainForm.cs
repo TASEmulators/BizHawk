@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
+		SavestateManager StateSlots = new SavestateManager();
 
 		//Movie variables
 		public Movie InputLog = new Movie("", MOVIEMODE.INACTIVE);
@@ -68,7 +69,7 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			InitializeComponent();
-
+			UpdateStatusSlots();
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
@@ -210,7 +211,7 @@ namespace BizHawk.MultiClient
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 
 			if (Global.Config.DisplayStatusBar == false)
-				statusStrip1.Visible = false;
+				StatusSlot0.Visible = false;
 			else
 				displayStatusBarToolStripMenuItem.Checked = true;
 
@@ -909,6 +910,7 @@ namespace BizHawk.MultiClient
 				Cheats1.Restart();
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
+				UpdateStatusSlots();
 				return true;
 			}
 		}
@@ -1025,6 +1027,7 @@ namespace BizHawk.MultiClient
 				{
 					SaveSlot = i;
 					SaveSlotSelectedMessage();
+					UpdateStatusSlots();
 					Global.ClientControls.UnpressButton("SelectSlot" + i.ToString());
 				}
 			}
@@ -1454,6 +1457,7 @@ namespace BizHawk.MultiClient
 			HandleMovieSaveState(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
+			UpdateStatusSlots();
 		}
 
 		private void SaveStateAs()
@@ -1476,6 +1480,7 @@ namespace BizHawk.MultiClient
 			HandleMovieSaveState(writer);
 			writer.Close();
 			Global.RenderPanel.AddMessage(sfd.FileName + " saved");
+			UpdateStatusSlots();
 		}
 
 		private void HandleMovieLoadState(StreamReader reader)
@@ -1921,7 +1926,7 @@ namespace BizHawk.MultiClient
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
 				MainMenuStrip.Visible = false;
-				statusStrip1.Visible = false;
+				StatusSlot0.Visible = false;
 				PerformLayout();
 				Global.RenderPanel.Resized = true;
 				InFullscreen = true;
@@ -1931,7 +1936,7 @@ namespace BizHawk.MultiClient
 				FormBorderStyle = FormBorderStyle.FixedSingle;
 				WindowState = FormWindowState.Normal;
 				MainMenuStrip.Visible = true;
-				statusStrip1.Visible = Global.Config.DisplayStatusBar;
+				StatusSlot0.Visible = Global.Config.DisplayStatusBar;
 				Location = WindowedLocation;
 				PerformLayout();
 				FrameBufferResized();
@@ -2044,6 +2049,7 @@ namespace BizHawk.MultiClient
 			Cheats1.Restart();
 			Text = "BizHawk";
 			HandlePlatformMenus();
+			UpdateStatusSlots();
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2338,5 +2344,54 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 				Global.ActiveController.ForceButton("Reset");
 		}
+
+		public void UpdateStatusSlots()
+		{
+			StateSlots.Update();
+			StatusSlot1.Enabled = StateSlots.HasSlot(1);
+			StatusSlot2.Enabled = StateSlots.HasSlot(2);
+			StatusSlot3.Enabled = StateSlots.HasSlot(3);
+			StatusSlot4.Enabled = StateSlots.HasSlot(4);
+			StatusSlot5.Enabled = StateSlots.HasSlot(5);
+			StatusSlot6.Enabled = StateSlots.HasSlot(6);
+			StatusSlot7.Enabled = StateSlots.HasSlot(7);
+			StatusSlot8.Enabled = StateSlots.HasSlot(8);
+			StatusSlot9.Enabled = StateSlots.HasSlot(9);
+			StatusSlot10.Enabled = StateSlots.HasSlot(0);
+
+
+			StatusSlot1.BackColor = SystemColors.Control;
+			StatusSlot2.BackColor = SystemColors.Control;
+			StatusSlot3.BackColor = SystemColors.Control;
+			StatusSlot4.BackColor = SystemColors.Control;
+			StatusSlot5.BackColor = SystemColors.Control;
+			StatusSlot6.BackColor = SystemColors.Control;
+			StatusSlot7.BackColor = SystemColors.Control;
+			StatusSlot8.BackColor = SystemColors.Control;
+			StatusSlot9.BackColor = SystemColors.Control;
+			StatusSlot10.BackColor = SystemColors.Control;
+
+			if (SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlLightLight;
+			if (SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
+		}
+
+		private void StatusSlot1_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
+		private void StatusSlot2_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
+		private void StatusSlot3_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
+		private void StatusSlot4_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
+		private void StatusSlot5_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
+		private void StatusSlot6_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
+		private void StatusSlot7_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
+		private void StatusSlot8_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
+		private void StatusSlot9_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
+		private void StatusSlot10_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
 	}
 }
