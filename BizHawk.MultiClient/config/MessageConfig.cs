@@ -17,8 +17,7 @@ namespace BizHawk.MultiClient
 		//Deal with typing into Numerics properly
 		//Have some method of binding a display object to top/bottom/left/right instead of an absolute position
 		//Bug: restore defaults doesn't restore the y value of whatever radio is checked
-		//Implement Rerecord Counter config
-		//Implemetn Multitrack messages counter config
+		//Implement Multitrack messages counter config
 
 		int DispFPSx = Global.Config.DispFPSx;
 		int DispFPSy = Global.Config.DispFPSy;
@@ -28,6 +27,8 @@ namespace BizHawk.MultiClient
 		int DispLagy = Global.Config.DispLagy;
 		int DispInpx = Global.Config.DispInpx;
 		int DispInpy = Global.Config.DispInpy;
+		int DispRerecx = Global.Config.DispRecx;
+		int DispRerecy = Global.Config.DispRecy;
 		int MessageColor = Global.Config.MessagesColor;
 		int AlertColor = Global.Config.AlertMessageColor;
 		int LastInputColor = Global.Config.LastInputColor;
@@ -147,6 +148,14 @@ namespace BizHawk.MultiClient
 				px = 0;
 				py = 0;
 			}
+			else if (RerecordsRadio.Checked)
+			{
+				XNumeric.Value = DispRecx;
+				YNumeric.Value = DispRecy;
+				px = DispRecx;
+				py = DispRecy;
+				SetAnchorRadio(DispRecanchor);
+			}
 
 			PositionPanel.Refresh();
 			XNumeric.Refresh();
@@ -164,6 +173,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLagy = DispLagy;
 			Global.Config.DispInpx = DispInpx;
 			Global.Config.DispInpy = DispInpy;
+			Global.Config.DispRecx = DispRecx;
+			Global.Config.DispRecy = DispRecy;
 			Global.Config.MessagesColor = MessageColor;
 			Global.Config.AlertMessageColor = AlertColor;
 			Global.Config.LastInputColor = LastInputColor;
@@ -208,6 +219,12 @@ namespace BizHawk.MultiClient
 		}
 
 		private void MessagesRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			SetPositionInfo();
+		}
+
+
+		private void RerecordsRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			SetPositionInfo();
 		}
@@ -309,10 +326,16 @@ namespace BizHawk.MultiClient
 			{
 				//TODO
 			}
+			else if (RerecordsRadio.Checked)
+			{
+				DispRecx = px;
+				DispRecy = py;
+			}
 			FpsPosLabel.Text = DispFPSx.ToString() + ", " + DispFPSy.ToString();
 			FCLabel.Text = DispFrameCx.ToString() + ", " + DispFrameCy.ToString();
 			LagLabel.Text = DispLagx.ToString() + ", " + DispLagy.ToString();
 			InpLabel.Text = DispInpx.ToString() + ", " + DispInpy.ToString();
+			RerecLabel.Text = DispRecx.ToString() + ", " + DispRecy.ToString();
 			MessLabel.Text = "0, 0";
 		}
 
@@ -326,6 +349,8 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLagy = 36;
 			Global.Config.DispInpx = 0;
 			Global.Config.DispInpy = 24;
+			Global.Config.DispRecx = 0;
+			Global.Config.DispRecy = 48;
 			Global.Config.MessagesColor = -1;
 			Global.Config.AlertMessageColor = -65536;
 			Global.Config.LastInputColor = -23296;
@@ -344,6 +369,9 @@ namespace BizHawk.MultiClient
 			DispLagy = Global.Config.DispLagy;
 			DispInpx = Global.Config.DispInpx;
 			DispInpy = Global.Config.DispInpy;
+			DispRecx = Global.Config.DispRecx;
+			DispRecy = Global.Config.DispRecy;
+
 			MessageColor = Global.Config.MessagesColor;
 			AlertColor = Global.Config.AlertMessageColor;
 			LastInputColor = Global.Config.LastInputColor;
@@ -392,6 +420,8 @@ namespace BizHawk.MultiClient
 					DispLaganchor = 0;
 				else if (InputDisplayRadio.Checked)
 					DispInputanchor = 0;
+				else if (RerecordsRadio.Checked)
+					DispRecanchor = 0;
 			}
 		}
 
@@ -407,6 +437,8 @@ namespace BizHawk.MultiClient
 					DispLaganchor = 1;
 				else if (InputDisplayRadio.Checked)
 					DispInputanchor = 1;
+				else if (RerecordsRadio.Checked)
+					DispRecanchor = 1;
 			}
 		}
 
@@ -422,6 +454,8 @@ namespace BizHawk.MultiClient
 					DispLaganchor = 2;
 				else if (InputDisplayRadio.Checked)
 					DispInputanchor = 2;
+				else if (RerecordsRadio.Checked)
+					DispRecanchor = 2;
 			}
 		}
 
@@ -437,6 +471,8 @@ namespace BizHawk.MultiClient
 					DispLaganchor = 3;
 				else if (InputDisplayRadio.Checked)
 					DispInputanchor = 3;
+				else if (RerecordsRadio.Checked)
+					DispRecanchor = 3;
 			}
 		}
 
