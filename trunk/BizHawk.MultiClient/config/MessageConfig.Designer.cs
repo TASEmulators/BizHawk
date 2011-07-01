@@ -43,24 +43,21 @@
 			this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
 			this.FPSRadio = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.MovieColorText = new System.Windows.Forms.TextBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.MovieColorPanel = new System.Windows.Forms.Panel();
+			this.LInputColorPanel = new System.Windows.Forms.Panel();
+			this.AlertColorPanel = new System.Windows.Forms.Panel();
+			this.ColorPanel = new System.Windows.Forms.Panel();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.LInputText = new System.Windows.Forms.TextBox();
-			this.ChangeLInput = new System.Windows.Forms.Button();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.LInputColorPanel = new System.Windows.Forms.Panel();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.AlertColorText = new System.Windows.Forms.TextBox();
-			this.ChangeAlertColor = new System.Windows.Forms.Button();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.AlertColorPanel = new System.Windows.Forms.Panel();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.ColorText = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.MessageColorBox = new System.Windows.Forms.GroupBox();
-			this.ColorPanel = new System.Windows.Forms.Panel();
 			this.MessageColorDialog = new System.Windows.Forms.ColorDialog();
 			this.Cancel = new System.Windows.Forms.Button();
 			this.ResetDefaultsButton = new System.Windows.Forms.Button();
@@ -76,11 +73,10 @@
 			this.TL = new System.Windows.Forms.RadioButton();
 			this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
+			this.MovieColorDialog = new System.Windows.Forms.ColorDialog();
+			this.label10 = new System.Windows.Forms.Label();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.groupBox3.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			this.MessageColorBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
 			this.PositionGroupBox.SuspendLayout();
@@ -89,7 +85,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(418, 403);
+			this.OK.Location = new System.Drawing.Point(418, 434);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -249,27 +245,83 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.label10);
+			this.groupBox2.Controls.Add(this.MovieColorText);
+			this.groupBox2.Controls.Add(this.label9);
+			this.groupBox2.Controls.Add(this.MovieColorPanel);
+			this.groupBox2.Controls.Add(this.LInputColorPanel);
+			this.groupBox2.Controls.Add(this.AlertColorPanel);
+			this.groupBox2.Controls.Add(this.ColorPanel);
 			this.groupBox2.Controls.Add(this.label7);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.LInputText);
-			this.groupBox2.Controls.Add(this.ChangeLInput);
-			this.groupBox2.Controls.Add(this.groupBox3);
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.AlertColorText);
-			this.groupBox2.Controls.Add(this.ChangeAlertColor);
-			this.groupBox2.Controls.Add(this.groupBox1);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.ColorText);
-			this.groupBox2.Controls.Add(this.button1);
-			this.groupBox2.Controls.Add(this.MessageColorBox);
 			this.groupBox2.Location = new System.Drawing.Point(12, 205);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(177, 192);
+			this.groupBox2.Size = new System.Drawing.Size(177, 223);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Message Colors";
+			// 
+			// MovieColorText
+			// 
+			this.MovieColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.MovieColorText.Location = new System.Drawing.Point(45, 186);
+			this.MovieColorText.MaxLength = 8;
+			this.MovieColorText.Name = "MovieColorText";
+			this.MovieColorText.ReadOnly = true;
+			this.MovieColorText.Size = new System.Drawing.Size(59, 20);
+			this.MovieColorText.TabIndex = 20;
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(28, 189);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(18, 13);
+			this.label9.TabIndex = 19;
+			this.label9.Text = "0x";
+			// 
+			// MovieColorPanel
+			// 
+			this.MovieColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.MovieColorPanel.Location = new System.Drawing.Point(6, 186);
+			this.MovieColorPanel.Name = "MovieColorPanel";
+			this.MovieColorPanel.Size = new System.Drawing.Size(20, 20);
+			this.MovieColorPanel.TabIndex = 8;
+			this.MovieColorPanel.DoubleClick += new System.EventHandler(this.MovieColorPanel_DoubleClick);
+			// 
+			// LInputColorPanel
+			// 
+			this.LInputColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.LInputColorPanel.Location = new System.Drawing.Point(6, 139);
+			this.LInputColorPanel.Name = "LInputColorPanel";
+			this.LInputColorPanel.Size = new System.Drawing.Size(20, 20);
+			this.LInputColorPanel.TabIndex = 7;
+			this.LInputColorPanel.DoubleClick += new System.EventHandler(this.LInputColorPanel_DoubleClick);
+			// 
+			// AlertColorPanel
+			// 
+			this.AlertColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.AlertColorPanel.Location = new System.Drawing.Point(6, 90);
+			this.AlertColorPanel.Name = "AlertColorPanel";
+			this.AlertColorPanel.Size = new System.Drawing.Size(20, 20);
+			this.AlertColorPanel.TabIndex = 7;
+			this.AlertColorPanel.DoubleClick += new System.EventHandler(this.AlertColorPanel_DoubleClick);
+			// 
+			// ColorPanel
+			// 
+			this.ColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.ColorPanel.Location = new System.Drawing.Point(6, 43);
+			this.ColorPanel.Name = "ColorPanel";
+			this.ColorPanel.Size = new System.Drawing.Size(20, 20);
+			this.ColorPanel.TabIndex = 7;
+			this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
 			// 
 			// label7
 			// 
@@ -299,32 +351,6 @@
 			this.LInputText.Size = new System.Drawing.Size(59, 20);
 			this.LInputText.TabIndex = 16;
 			// 
-			// ChangeLInput
-			// 
-			this.ChangeLInput.Location = new System.Drawing.Point(110, 136);
-			this.ChangeLInput.Name = "ChangeLInput";
-			this.ChangeLInput.Size = new System.Drawing.Size(52, 23);
-			this.ChangeLInput.TabIndex = 15;
-			this.ChangeLInput.Text = "Change";
-			this.ChangeLInput.UseVisualStyleBackColor = true;
-			this.ChangeLInput.Click += new System.EventHandler(this.ChangeLInput_Click);
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.LInputColorPanel);
-			this.groupBox3.Location = new System.Drawing.Point(1, 131);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(28, 28);
-			this.groupBox3.TabIndex = 14;
-			this.groupBox3.TabStop = false;
-			// 
-			// LInputColorPanel
-			// 
-			this.LInputColorPanel.Location = new System.Drawing.Point(4, 8);
-			this.LInputColorPanel.Name = "LInputColorPanel";
-			this.LInputColorPanel.Size = new System.Drawing.Size(20, 16);
-			this.LInputColorPanel.TabIndex = 7;
-			// 
 			// label6
 			// 
 			this.label6.AutoSize = true;
@@ -353,36 +379,10 @@
 			this.AlertColorText.Size = new System.Drawing.Size(59, 20);
 			this.AlertColorText.TabIndex = 11;
 			// 
-			// ChangeAlertColor
-			// 
-			this.ChangeAlertColor.Location = new System.Drawing.Point(110, 87);
-			this.ChangeAlertColor.Name = "ChangeAlertColor";
-			this.ChangeAlertColor.Size = new System.Drawing.Size(52, 23);
-			this.ChangeAlertColor.TabIndex = 10;
-			this.ChangeAlertColor.Text = "Change";
-			this.ChangeAlertColor.UseVisualStyleBackColor = true;
-			this.ChangeAlertColor.Click += new System.EventHandler(this.ChangeAlertColor_Click);
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.AlertColorPanel);
-			this.groupBox1.Location = new System.Drawing.Point(1, 82);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(28, 28);
-			this.groupBox1.TabIndex = 9;
-			this.groupBox1.TabStop = false;
-			// 
-			// AlertColorPanel
-			// 
-			this.AlertColorPanel.Location = new System.Drawing.Point(4, 8);
-			this.AlertColorPanel.Name = "AlertColorPanel";
-			this.AlertColorPanel.Size = new System.Drawing.Size(20, 16);
-			this.AlertColorPanel.TabIndex = 7;
-			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(1, 24);
+			this.label4.Location = new System.Drawing.Point(6, 27);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(80, 13);
 			this.label4.TabIndex = 8;
@@ -407,38 +407,11 @@
 			this.ColorText.Size = new System.Drawing.Size(59, 20);
 			this.ColorText.TabIndex = 2;
 			// 
-			// button1
-			// 
-			this.button1.Location = new System.Drawing.Point(110, 40);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(52, 23);
-			this.button1.TabIndex = 1;
-			this.button1.Text = "Change";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// MessageColorBox
-			// 
-			this.MessageColorBox.Controls.Add(this.ColorPanel);
-			this.MessageColorBox.Location = new System.Drawing.Point(1, 35);
-			this.MessageColorBox.Name = "MessageColorBox";
-			this.MessageColorBox.Size = new System.Drawing.Size(28, 28);
-			this.MessageColorBox.TabIndex = 0;
-			this.MessageColorBox.TabStop = false;
-			// 
-			// ColorPanel
-			// 
-			this.ColorPanel.Location = new System.Drawing.Point(4, 8);
-			this.ColorPanel.Name = "ColorPanel";
-			this.ColorPanel.Size = new System.Drawing.Size(20, 16);
-			this.ColorPanel.TabIndex = 7;
-			this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
-			// 
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(499, 403);
+			this.Cancel.Location = new System.Drawing.Point(499, 434);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 5;
@@ -449,7 +422,7 @@
 			// ResetDefaultsButton
 			// 
 			this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 403);
+			this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 434);
 			this.ResetDefaultsButton.Name = "ResetDefaultsButton";
 			this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
 			this.ResetDefaultsButton.TabIndex = 6;
@@ -594,13 +567,22 @@
 			this.TL.UseVisualStyleBackColor = true;
 			this.TL.Click += new System.EventHandler(this.TL_CheckedChanged);
 			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(3, 170);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(86, 13);
+			this.label10.TabIndex = 21;
+			this.label10.Text = "Movie messages";
+			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(612, 438);
+			this.ClientSize = new System.Drawing.Size(612, 469);
 			this.Controls.Add(this.ResetDefaultsButton);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.groupBox2);
@@ -616,9 +598,6 @@
 			this.MessageTypeBox.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.MessageColorBox.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
 			this.PositionGroupBox.ResumeLayout(false);
@@ -636,8 +615,7 @@
         private System.Windows.Forms.RadioButton LagCounterRadio;
         private System.Windows.Forms.RadioButton FrameCounterRadio;
         private System.Windows.Forms.RadioButton FPSRadio;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ColorDialog MessageColorDialog;
         private System.Windows.Forms.Button Cancel;
         private System.Windows.Forms.Label MessLabel;
@@ -646,9 +624,7 @@
         private System.Windows.Forms.Label FCLabel;
         private System.Windows.Forms.Label FpsPosLabel;
         private System.Windows.Forms.Button ResetDefaultsButton;
-        private System.Windows.Forms.TextBox ColorText;
-        private System.Windows.Forms.GroupBox MessageColorBox;
-        private System.Windows.Forms.Panel ColorPanel;
+		private System.Windows.Forms.TextBox ColorText;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Panel PositionPanel;
         private System.Windows.Forms.NumericUpDown XNumeric;
@@ -657,17 +633,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox PositionGroupBox;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox AlertColorText;
-        private System.Windows.Forms.Button ChangeAlertColor;
-        private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.TextBox AlertColorText;
         private System.Windows.Forms.Panel AlertColorPanel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox LInputText;
-        private System.Windows.Forms.Button ChangeLInput;
-        private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.TextBox LInputText;
         private System.Windows.Forms.Panel LInputColorPanel;
         private System.Windows.Forms.ColorDialog AlertColorDialog;
         private System.Windows.Forms.ColorDialog LInputColorDialog;
@@ -677,5 +649,11 @@
 		private System.Windows.Forms.RadioButton TL;
 		private System.Windows.Forms.Label RerecLabel;
 		private System.Windows.Forms.RadioButton RerecordsRadio;
+		private System.Windows.Forms.Panel ColorPanel;
+		private System.Windows.Forms.TextBox MovieColorText;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Panel MovieColorPanel;
+		private System.Windows.Forms.ColorDialog MovieColorDialog;
+		private System.Windows.Forms.Label label10;
     }
 }
