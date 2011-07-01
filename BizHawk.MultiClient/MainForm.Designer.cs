@@ -199,11 +199,22 @@
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.StatusSlot0 = new System.Windows.Forms.StatusStrip();
 			this.DumpError = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatus = new System.Windows.Forms.ToolStripDropDownButton();
 			this.PauseStrip = new System.Windows.Forms.ToolStripDropDownButton();
+			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot2 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot3 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot4 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot5 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot6 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot7 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot8 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot9 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.StatusSlot10 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openRomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -221,7 +232,7 @@
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
-			this.statusStrip1.SuspendLayout();
+			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -1575,19 +1586,30 @@
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
-			// statusStrip1
+			// StatusSlot0
 			// 
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.StatusSlot0.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DumpError,
             this.EmuStatus,
             this.PlayRecordStatus,
-            this.PauseStrip});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 386);
-			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(470, 22);
-			this.statusStrip1.SizingGrip = false;
-			this.statusStrip1.TabIndex = 1;
-			this.statusStrip1.Text = "statusStrip1";
+            this.PauseStrip,
+            this.toolStripStatusLabel1,
+            this.StatusSlot1,
+            this.StatusSlot2,
+            this.StatusSlot3,
+            this.StatusSlot4,
+            this.StatusSlot5,
+            this.StatusSlot6,
+            this.StatusSlot7,
+            this.StatusSlot8,
+            this.StatusSlot9,
+            this.StatusSlot10});
+			this.StatusSlot0.Location = new System.Drawing.Point(0, 386);
+			this.StatusSlot0.Name = "StatusSlot0";
+			this.StatusSlot0.Size = new System.Drawing.Size(470, 22);
+			this.StatusSlot0.SizingGrip = false;
+			this.StatusSlot0.TabIndex = 1;
+			this.StatusSlot0.Text = "0";
 			// 
 			// DumpError
 			// 
@@ -1625,6 +1647,83 @@
 			this.PauseStrip.Size = new System.Drawing.Size(4, 20);
 			this.PauseStrip.Text = "toolStripDropDownButton1";
 			this.PauseStrip.ToolTipText = "Emulator is paused";
+			// 
+			// toolStripStatusLabel1
+			// 
+			this.toolStripStatusLabel1.BackColor = System.Drawing.SystemColors.Control;
+			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+			this.toolStripStatusLabel1.Size = new System.Drawing.Size(56, 17);
+			this.toolStripStatusLabel1.Text = "Save slots";
+			// 
+			// StatusSlot1
+			// 
+			this.StatusSlot1.Name = "StatusSlot1";
+			this.StatusSlot1.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot1.Text = "1";
+			this.StatusSlot1.Click += new System.EventHandler(this.StatusSlot1_Click);
+			// 
+			// StatusSlot2
+			// 
+			this.StatusSlot2.Name = "StatusSlot2";
+			this.StatusSlot2.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot2.Text = "2";
+			this.StatusSlot2.Click += new System.EventHandler(this.StatusSlot2_Click);
+			// 
+			// StatusSlot3
+			// 
+			this.StatusSlot3.Name = "StatusSlot3";
+			this.StatusSlot3.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot3.Text = "3";
+			this.StatusSlot3.Click += new System.EventHandler(this.StatusSlot3_Click);
+			// 
+			// StatusSlot4
+			// 
+			this.StatusSlot4.Name = "StatusSlot4";
+			this.StatusSlot4.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot4.Text = "4";
+			this.StatusSlot4.Click += new System.EventHandler(this.StatusSlot4_Click);
+			// 
+			// StatusSlot5
+			// 
+			this.StatusSlot5.Name = "StatusSlot5";
+			this.StatusSlot5.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot5.Text = "5";
+			this.StatusSlot5.Click += new System.EventHandler(this.StatusSlot5_Click);
+			// 
+			// StatusSlot6
+			// 
+			this.StatusSlot6.Name = "StatusSlot6";
+			this.StatusSlot6.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot6.Text = "6";
+			this.StatusSlot6.Click += new System.EventHandler(this.StatusSlot6_Click);
+			// 
+			// StatusSlot7
+			// 
+			this.StatusSlot7.Name = "StatusSlot7";
+			this.StatusSlot7.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot7.Text = "7";
+			this.StatusSlot7.Click += new System.EventHandler(this.StatusSlot7_Click);
+			// 
+			// StatusSlot8
+			// 
+			this.StatusSlot8.Name = "StatusSlot8";
+			this.StatusSlot8.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot8.Text = "8";
+			this.StatusSlot8.Click += new System.EventHandler(this.StatusSlot8_Click);
+			// 
+			// StatusSlot9
+			// 
+			this.StatusSlot9.Name = "StatusSlot9";
+			this.StatusSlot9.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot9.Text = "9";
+			this.StatusSlot9.Click += new System.EventHandler(this.StatusSlot9_Click);
+			// 
+			// StatusSlot10
+			// 
+			this.StatusSlot10.Name = "StatusSlot10";
+			this.StatusSlot10.Size = new System.Drawing.Size(13, 17);
+			this.StatusSlot10.Text = "0";
+			this.StatusSlot10.Click += new System.EventHandler(this.StatusSlot10_Click);
 			// 
 			// contextMenuStrip1
 			// 
@@ -1757,7 +1856,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(470, 408);
-			this.Controls.Add(this.statusStrip1);
+			this.Controls.Add(this.StatusSlot0);
 			this.Controls.Add(this.menuStrip1);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1773,8 +1872,8 @@
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.statusStrip1.ResumeLayout(false);
-			this.statusStrip1.PerformLayout();
+			this.StatusSlot0.ResumeLayout(false);
+			this.StatusSlot0.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -1920,7 +2019,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolBoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
         private System.Windows.Forms.ToolStripMenuItem switchToFullscreenToolStripMenuItem;
-        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.StatusStrip StatusSlot0;
         private System.Windows.Forms.ToolStripStatusLabel EmuStatus;
         private System.Windows.Forms.ToolStripMenuItem messagesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tI83ToolStripMenuItem;
@@ -1973,6 +2072,17 @@
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem gBToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem debuggerToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot1;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot2;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot3;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot4;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot5;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot6;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot7;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot8;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot9;
+		private System.Windows.Forms.ToolStripStatusLabel StatusSlot10;
     }
 }
 
