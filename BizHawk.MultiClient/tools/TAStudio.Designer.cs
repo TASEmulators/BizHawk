@@ -135,6 +135,7 @@
             this.nToolStripMenuItem,
             this.toolStripSeparator3,
             this.clearToolStripMenuItem});
+			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
@@ -142,18 +143,18 @@
 			// nToolStripMenuItem
 			// 
 			this.nToolStripMenuItem.Name = "nToolStripMenuItem";
-			this.nToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.nToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.nToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
@@ -231,6 +232,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RewindToBeginning,
