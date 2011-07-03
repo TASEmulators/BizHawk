@@ -149,6 +149,7 @@
 			// 
 			// SearchtoolStrip1
 			// 
+			this.SearchtoolStrip1.ClickThrough = true;
 			this.SearchtoolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.SearchtoolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripButton,
@@ -379,6 +380,7 @@
 			// 
 			// menuStrip1
 			// 
+			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.searchToolStripMenuItem,
@@ -468,6 +470,7 @@
             this.toolStripSeparator2,
             this.clearToolStripMenuItem,
             this.autoLoadToolStripMenuItem});
+			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
@@ -476,24 +479,24 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(132, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// autoLoadToolStripMenuItem
 			// 
 			this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.autoLoadToolStripMenuItem.Text = "Auto-Load";
 			// 
 			// toolStripSeparator4
@@ -705,6 +708,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewSearchtoolStripButton,
@@ -795,6 +799,7 @@
 			// 
 			// toolStrip2
 			// 
+			this.toolStrip2.ClickThrough = true;
 			this.toolStrip2.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DataSizetoolStripSplitButton1,
@@ -1215,8 +1220,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip SearchtoolStrip1;
-        private System.Windows.Forms.ToolStripButton openToolStripButton;
+		private System.Windows.Forms.ToolStripButton openToolStripButton;
         private System.Windows.Forms.ToolStripButton saveToolStripButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
         private System.Windows.Forms.ToolStripButton cutToolStripButton;
@@ -1226,16 +1230,13 @@
         private System.Windows.Forms.ColumnHeader Address;
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Previous;
-        private System.Windows.Forms.ColumnHeader Changes;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ColumnHeader Changes;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-        private System.Windows.Forms.ToolStrip toolStrip1;
+		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.ToolStripButton NewSearchtoolStripButton;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
-        private System.Windows.Forms.ToolStripButton UndotoolStripButton;
-        private System.Windows.Forms.ToolStrip toolStrip2;
+		private System.Windows.Forms.ToolStripButton UndotoolStripButton;
         private System.Windows.Forms.ToolStripSplitButton DataSizetoolStripSplitButton1;
         private System.Windows.Forms.ToolStripMenuItem byteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bytesToolStripMenuItem;
@@ -1321,5 +1322,9 @@
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pokeAddressToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem1;
+		private ToolStripEx SearchtoolStrip1;
+		private MenuStripEx menuStrip1;
+		private ToolStripEx toolStrip1;
+		private ToolStripEx toolStrip2;
     }
 }

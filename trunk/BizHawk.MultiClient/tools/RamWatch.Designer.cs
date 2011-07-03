@@ -63,6 +63,7 @@
 			this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.prevValueShowsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.VirtualListView();
 			this.Address = new System.Windows.Forms.ColumnHeader();
@@ -104,7 +105,6 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -188,6 +188,7 @@
             this.toolStripSeparator4,
             this.clearToolStripMenuItem,
             this.autoLoadToolStripMenuItem});
+			this.recentToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
@@ -196,24 +197,24 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(132, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// autoLoadToolStripMenuItem
 			// 
 			this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.autoLoadToolStripMenuItem.Text = "Auto-Load";
 			// 
 			// toolStripSeparator1
@@ -397,6 +398,13 @@
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
 			this.toolStripSeparator7.Size = new System.Drawing.Size(200, 6);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
@@ -587,6 +595,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newToolStripButton,
             this.openToolStripButton,
@@ -781,13 +790,6 @@
 			this.MemDomainLabel.Name = "MemDomainLabel";
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
-			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 

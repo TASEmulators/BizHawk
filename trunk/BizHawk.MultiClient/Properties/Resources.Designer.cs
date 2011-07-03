@@ -353,6 +353,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Recent {
+            get {
+                object obj = ResourceManager.GetObject("Recent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap redo {
             get {
                 object obj = ResourceManager.GetObject("redo", resourceCulture);

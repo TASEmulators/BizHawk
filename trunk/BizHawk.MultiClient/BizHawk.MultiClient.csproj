@@ -576,6 +576,7 @@
     <None Include="images\InsertSeparator.png" />
     <None Include="images\Fullscreen.png" />
     <None Include="images\camera.png" />
+    <None Include="images\Recent.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
