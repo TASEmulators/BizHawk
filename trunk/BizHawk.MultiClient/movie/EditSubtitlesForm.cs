@@ -95,5 +95,16 @@ namespace BizHawk.MultiClient
 				c.Value = s.Message;
 			}
 		}
+
+		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			//TODO: if no index slected, return
+			SubtitleMaker s = new SubtitleMaker();
+			s.sub = new Subtitle();	//TODO: function that grabs subtitle from selected index
+			if (s.ShowDialog() == DialogResult.OK)
+			{
+				//selected index, replace (needs new function)
+			}
+		}
 	}
 }
