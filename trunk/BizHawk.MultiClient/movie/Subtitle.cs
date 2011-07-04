@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 			Message = "";
 			X = 0;
 			Y = 0;
-			Duration = 0;
+			Duration = 120;
 			Frame = 0;
 			Color = 0xFFFFFFFF;
 		}
