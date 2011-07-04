@@ -195,5 +195,12 @@ namespace BizHawk.MultiClient
 		{
 			subs.Clear();
 		}
+
+		public void Remove(int index)
+		{
+			if (index >= subs.Count) return;
+
+			subs.RemoveAt(index);
+		}
 	}
 }
