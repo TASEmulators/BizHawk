@@ -191,6 +191,11 @@ namespace BizHawk.MultiClient
 					sw.WriteLine(kvp.Key + " " + kvp.Value);
 				}
 
+				for (int x = 0; x < Header.Comments.Count; x++)
+				{
+					sw.WriteLine(Header.Comments[x]);
+				}
+
 				for (int x = 0; x < Subtitles.Count(); x++)
 				{
 					sw.WriteLine(Subtitles.GetSubtitleText(x));
@@ -699,6 +704,11 @@ namespace BizHawk.MultiClient
 				return 1;
 			else
 				return 0;
+		}
+
+		public List<string> GetComments()
+		{
+			return Header.Comments;
 		}
 	}
 }

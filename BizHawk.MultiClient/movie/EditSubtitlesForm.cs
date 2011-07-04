@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
 		//TODO: Tooltips on cells explaining format
 		//TODO: Parse hex on color when saving
 		//TODO: try/catch on parsing int
+		//TODO: display color in hex when loading from movie
 
 		public EditSubtitlesForm()
 		{

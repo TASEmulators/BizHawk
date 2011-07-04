@@ -138,6 +138,12 @@
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="movie\EditCommentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="movie\EditCommentsForm.Designer.cs">
+      <DependentUpon>EditCommentsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\InputAdapters.cs" />
     <Compile Include="Input\Keyboard.cs" />
     <Compile Include="LuaImplementation.cs" />
@@ -407,6 +413,9 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="movie\EditCommentsForm.resx">
+      <DependentUpon>EditCommentsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="movie\EditSubtitlesForm.resx">
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
     </EmbeddedResource>
