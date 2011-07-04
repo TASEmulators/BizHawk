@@ -362,7 +362,159 @@ namespace BizHawk.MultiClient
 
         public static Movie ConvertVBM(string path)
         {
+            //Converts vbm to native text based format.
             Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            BinaryReader r = new BinaryReader(fs);
+
+            //0xoffset
+            //0x00
+            UInt32 signature = r.ReadUInt32();  //always 56 42 4D 1A  (VBM\x1A)
+            if (signature != 0x56424D1A) { }      //TODO Throw exception: file is not VBM
+
+            UInt32 versionno = r.ReadUInt32();  //always 1
+            UInt32 uid = r.ReadUInt32();        //time of recording
+            m.SetHeaderLine(MovieHeader.GUID, uid.ToString());
+            UInt32 framecount = r.ReadUInt32();
+            m.Frames = (int) framecount;
+
+
+            //0x10
+            UInt32 rerecordcount = r.ReadUInt32();
+            m.rerecordCount = (int)rerecordcount;
+            m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+            Byte moviestartflags = r.ReadByte();
+            
+
+
+            bool startfromquicksave = false;
+            bool startfromsram = false;
+
+            if ((moviestartflags & 0x01) > 0) startfromquicksave = true;
+            if ((moviestartflags & 0x02) > 0) startfromsram = true;
+
+            if (startfromquicksave & startfromsram) 
+            {
+                //TODO: Throw exception: movie file invalid
+            }
+
+            //0x15
+            Byte controllerflags = r.ReadByte();
+
+            int numControllers;                   //number of controllers changes for SGB
+
+            if ((controllerflags & 0x08) > 0) numControllers = 4;
+            else if ((controllerflags & 0x04) > 0) numControllers = 3;
+            else if ((controllerflags & 0x02) > 0) numControllers = 2;
+            else numControllers = 1;
+
+            //0x16
+            Byte systemflags = r.ReadByte();    //what system is it?
+
+            bool is_gba = false;
+            bool is_gbc = false;
+            bool is_sgb = false;
+            bool is_gb = false;
+
+            if ((systemflags & 0x04) > 0) is_sgb = true;     
+            if ((systemflags & 0x02) > 0) is_gbc = true;
+            if ((systemflags & 0x01) > 0) is_gba = true;
+            else is_gb = true;
+
+            if (is_gb & is_gbc & is_gba & is_sgb)
+            {
+                //TODO: throw exception: movie file invalid
+            }
+            //TODO: set platform in header
+
+            //0x17
+            Byte flags = r.ReadByte();  //emulation flags
+
+            //placeholder for reserved bit (set to 0)
+            bool echoramfix = false;
+            bool gbchdma5fix = false;
+            bool lagreduction = false;
+            //placeholder for unsupported bit
+            bool rtcenable = false;
+            bool skipbiosfile = false;
+            bool usebiosfile = false;
+
+            if ((flags & 0x40) > 0) echoramfix = true;
+            if ((flags & 0x20) > 0) gbchdma5fix = true;
+            if ((flags & 0x10) > 0) lagreduction  = true;
+            if ((flags & 0x08) > 0) { } //TODO: Throw exception: movie file invalid
+            if ((flags & 0x04) > 0) rtcenable = true;
+            if ((flags & 0x02) > 0) skipbiosfile = true;
+            if ((flags & 0x01) > 0) usebiosfile = true;
+
+            //0x18
+            UInt32 winsavetype = r.ReadUInt32();
+            UInt32 winflashsize = r.ReadUInt32();
+
+            //0x20
+            UInt32 gbemulatortype = r.ReadUInt32();
+
+            char[] internalgamename = r.ReadChars(0x0C);
+            string gamename = new String(internalgamename);
+            m.SetHeaderLine(MovieHeader.GAMENAME, gamename);
+
+            //0x30
+            Byte minorversion = r.ReadByte();
+            Byte internalcrc = r.ReadByte();
+            UInt16 internalchacksum = r.ReadUInt16();
+            UInt32 unitcode = r.ReadUInt32();
+            UInt32 saveoffset = r.ReadUInt32();         //set to 0 if unused
+            UInt32 controllerdataoffset = r.ReadUInt32();
+
+            //0x40  start info.
+            char[] authorsname = r.ReadChars(0x40);         //vbm specification states these strings 
+            string author = new String(authorsname);        //are locale dependant.
+            m.SetHeaderLine(MovieHeader.AUTHOR, author);
+
+            //0x80
+            char[] moviedescription = r.ReadChars(0x80);
+
+            //0x0100
+            //End of VBM header
+            
+            //if there is no SRAM or savestate, the controller data should start at 0x0100 by default,
+            //but this is not buaranteed
+
+            //TODO: implement start data. There are no specifics on the googlecode page as to how long
+            //the SRAM or savestate should be.
+
+            UInt32 framesleft = framecount;
+
+            r.BaseStream.Position = controllerdataoffset;    //advances to controller data.
+
+            int currentoffset = (int)controllerdataoffset;
+
+            for (int i = 1; i <= framecount; i++)
+            {
+                UInt16 controllerstate = r.ReadUInt16();
+                string frame = "|.|"; //TODO: reset goes here
+                if ((controllerstate & 0x0010) > 0) frame += "R"; else frame += ".";
+                if ((controllerstate & 0x0020) > 0) frame += "L"; else frame += ".";
+                if ((controllerstate & 0x0080) > 0) frame += "D"; else frame += ".";
+                if ((controllerstate & 0x0040) > 0) frame += "U"; else frame += ".";
+                if ((controllerstate & 0x0008) > 0) frame += "S"; else frame += ".";
+                if ((controllerstate & 0x0004) > 0) frame += "s"; else frame += ".";
+                if ((controllerstate & 0x0002) > 0) frame += "B"; else frame += ".";
+                if ((controllerstate & 0x0001) > 0) frame += "A"; else frame += ".";
+                frame += "|";
+
+
+                m.AppendFrame(frame);
+
+            }
+
+            m.WriteMovie();
+
+            //format: |.|RLDUSsBA| according to "GetControllersAsMnemonic()"
+            //note: this is GBC or less ONLY, not GBA (no L or R button)
+            //we need to change this when we add reset or whatever.
+            //VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 
             return m;
         }
