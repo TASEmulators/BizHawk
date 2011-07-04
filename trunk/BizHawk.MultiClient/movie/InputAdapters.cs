@@ -71,7 +71,7 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "Gameboy Controller")
 			{
-				input.Append("|");
+				input.Append(".|"); //TODO: reset goes here
 				input.Append(IsBasePressed("Right") ? "R" : ".");
 				input.Append(IsBasePressed("Left") ? "L" : ".");
 				input.Append(IsBasePressed("Down") ? "D" : ".");
@@ -80,6 +80,9 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 				input.Append(IsBasePressed("B") ? "B" : ".");
 				input.Append(IsBasePressed("A") ? "A" : ".");
+                input.Append("|");
+
+                return input.ToString();
 			}
 
 			if (ControlType == "NES Controls")
