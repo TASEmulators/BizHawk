@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 		}
 
 		public List<IBinding> Bindings = new List<IBinding>();
+		public bool AutoTab = true;
 		bool ctrlWasPressed = false;
 		bool altWasPressed = false;
 		bool shiftWasPressed = false;
@@ -52,7 +53,8 @@ namespace BizHawk.MultiClient
 				Bindings.Clear();
 				UpdateLabel();
 			}
-			this.Parent.SelectNextControl(this, true, true, true, true);
+			if (AutoTab)
+				this.Parent.SelectNextControl(this, true, true, true, true);
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)

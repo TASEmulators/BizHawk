@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
 			this.hotkeyTabs = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label71 = new System.Windows.Forms.Label();
+			this.IDW_RESET = new BizHawk.MultiClient.InputWidget();
 			this.label70 = new System.Windows.Forms.Label();
 			this.IDW_UNTHROTTLE = new BizHawk.MultiClient.InputWidget();
 			this.label69 = new System.Windows.Forms.Label();
@@ -176,8 +178,7 @@
 			this.IDB_SAVE = new System.Windows.Forms.Button();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
-			this.IDW_RESET = new BizHawk.MultiClient.InputWidget();
-			this.label71 = new System.Windows.Forms.Label();
+			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -247,6 +248,24 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// label71
+			// 
+			this.label71.AutoSize = true;
+			this.label71.Location = new System.Drawing.Point(6, 110);
+			this.label71.Name = "label71";
+			this.label71.Size = new System.Drawing.Size(57, 13);
+			this.label71.TabIndex = 61;
+			this.label71.Text = "Soft Reset";
+			// 
+			// IDW_RESET
+			// 
+			this.IDW_RESET.AcceptsTab = true;
+			this.IDW_RESET.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RESET.Location = new System.Drawing.Point(92, 107);
+			this.IDW_RESET.Name = "IDW_RESET";
+			this.IDW_RESET.Size = new System.Drawing.Size(100, 20);
+			this.IDW_RESET.TabIndex = 5;
 			// 
 			// label70
 			// 
@@ -1591,29 +1610,23 @@
 			this.label38.TabIndex = 3;
 			this.label38.Text = "* Escape clears a key mapping";
 			// 
-			// IDW_RESET
+			// AutoTabCheckBox
 			// 
-			this.IDW_RESET.AcceptsTab = true;
-			this.IDW_RESET.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_RESET.Location = new System.Drawing.Point(92, 107);
-			this.IDW_RESET.Name = "IDW_RESET";
-			this.IDW_RESET.Size = new System.Drawing.Size(100, 20);
-			this.IDW_RESET.TabIndex = 5;
-			// 
-			// label71
-			// 
-			this.label71.AutoSize = true;
-			this.label71.Location = new System.Drawing.Point(6, 110);
-			this.label71.Name = "label71";
-			this.label71.Size = new System.Drawing.Size(57, 13);
-			this.label71.TabIndex = 61;
-			this.label71.Text = "Soft Reset";
+			this.AutoTabCheckBox.AutoSize = true;
+			this.AutoTabCheckBox.Location = new System.Drawing.Point(552, 362);
+			this.AutoTabCheckBox.Name = "AutoTabCheckBox";
+			this.AutoTabCheckBox.Size = new System.Drawing.Size(70, 17);
+			this.AutoTabCheckBox.TabIndex = 100;
+			this.AutoTabCheckBox.Text = "Auto Tab";
+			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
+			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
 			// HotkeyWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(637, 380);
+			this.Controls.Add(this.AutoTabCheckBox);
 			this.Controls.Add(this.label38);
 			this.Controls.Add(this.IDB_CANCEL);
 			this.Controls.Add(this.IDB_SAVE);
@@ -1790,5 +1803,6 @@
         private InputWidget IDW_UNTHROTTLE;
 		private InputWidget IDW_RESET;
 		private System.Windows.Forms.Label label71;
+		private System.Windows.Forms.CheckBox AutoTabCheckBox;
     }
 }
