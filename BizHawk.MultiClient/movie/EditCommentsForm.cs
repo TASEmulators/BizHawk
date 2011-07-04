@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!ReadOnly)
 			{
+				selectedMovie.ClearComments();
 				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
 				{
 					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];

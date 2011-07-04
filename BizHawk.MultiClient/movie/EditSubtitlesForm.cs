@@ -47,7 +47,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!ReadOnly)
 			{
-				//Save subtitles to movie object & write to disk
+				selectedMovie.Subtitles.ClearSubtitles();
 				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
 				{
 					Subtitle s = new Subtitle();
