@@ -57,7 +57,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		/// <param name="frame"></param>
 		/// <returns></returns>
-		public string GetSubtitle(int frame) 
+		public string GetSubtitleMessage(int frame) 
 		{
 			if (subs.Count == 0) return "";
 
@@ -67,6 +67,18 @@ namespace BizHawk.MultiClient
 					return subs[x].Message;
 			}
 			return "";
+		}
+
+		public Subtitle GetSubtitle(int frame)
+		{
+			if (subs.Count == 0) return new Subtitle();
+
+			for (int x = 0; x < subs.Count; x++)
+			{
+				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
+					return subs[x];
+			}
+			return new Subtitle();
 		}
 
 		public int Count()
@@ -141,9 +153,34 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 
-			s.Duration = 120;
+			x = str.IndexOf(' ');
+			if (x <= 0) return false;
+			string Duration = str.Substring(0, x);
+			str = str.Substring(x + 1, str.Length - x - 1);
+			try
+			{
+				s.Duration = int.Parse(Duration);
+			}
+			catch
+			{
+				return false;
+			}
+
+			//TODO: parse hex!
+			x = str.IndexOf(' ');
+			if (x <= 0) return false;
+			string Color = str.Substring(0, x);
+			str = str.Substring(x + 1, str.Length - x - 1);
+			try
+			{
+				s.Color = uint.Parse(Color);
+			}
+			catch
+			{
+				return false;
+			}
+			
 			s.Message = str;
-			s.Color = 0xFFFFFFFF;
 			subs.Add(s);
 
 			return true;
