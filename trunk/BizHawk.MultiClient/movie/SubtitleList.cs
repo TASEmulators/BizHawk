@@ -116,5 +116,10 @@ namespace BizHawk.MultiClient
 
 			return true;
 		}
+
+		public void AddSubtitle(Subtitle s)
+		{
+			subs.Add(s);
+		}
 	}
 }
