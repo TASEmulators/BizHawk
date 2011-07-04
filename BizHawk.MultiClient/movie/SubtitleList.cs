@@ -95,20 +95,52 @@ namespace BizHawk.MultiClient
 			int x = subtitleStr.IndexOf(' ');
 			if (x <= 0) return false;
 
+			//remove "subtitle"
 			string str = subtitleStr.Substring(x + 1, subtitleStr.Length - x - 1);
-			string frame = str.Substring(0, str.IndexOf(' '));
+			
+			x = str.IndexOf(' ');
+			if (x <= 0) return false;
+			
+			string frame = str.Substring(0, x);
+			str = str.Substring(x + 1, str.Length - x - 1);
+			
 			try
 			{
-				s.Frame = Int16.Parse(frame);
+				s.Frame = int.Parse(frame);
 			}
 			catch
 			{
 				return false;
 			}
 
-			//TODO: actually attempt to parse these things and supply with default values if they don't exist
-			s.X = 0;
-			s.Y = 0;
+			x = str.IndexOf(' ');
+			if (x <= 0) return false;
+			string X = str.Substring(0, x);
+			str = str.Substring(x + 1, str.Length - x - 1);
+			try
+			{
+				s.X = int.Parse(X);
+			}
+			catch
+			{
+				s.Message = str; //Assume it is a FCEUX subtitle
+				subs.Add(s);
+				return true;
+			}
+
+			x = str.IndexOf(' ');
+			if (x <= 0) return false;
+			string Y = str.Substring(0, x);
+			str = str.Substring(x + 1, str.Length - x - 1);
+			try
+			{
+				s.Y = int.Parse(Y);
+			}
+			catch
+			{
+				return false;
+			}
+
 			s.Duration = 120;
 			s.Message = str;
 			s.Color = 0xFFFFFFFF;
