@@ -1350,13 +1350,14 @@ namespace BizHawk.MultiClient
 
 				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
 				{
-					UserMovie.LatchInputFromPlayer();
-					UserMovie.CommitFrame();
-				}
-
-				if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY && UserMovie.MultiTrack.IsActive)
-				{
-					UserMovie.LatchMultitrackPlayerInput();
+					if (UserMovie.MultiTrack.IsActive)
+					{
+						UserMovie.LatchMultitrackPlayerInput();
+					}
+					else
+					{
+						UserMovie.LatchInputFromPlayer();
+					}
 					UserMovie.CommitFrame();
 				}
 
