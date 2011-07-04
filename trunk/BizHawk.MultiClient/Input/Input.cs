@@ -83,7 +83,24 @@ namespace BizHawk.MultiClient
 
 		public static string GetPressedKey()
 		{
-			//for (int j = 0; j < GamePad.Devices.Count; j++)
+            // Poll Joystick input
+			for (int j = 0; j < GamePad.Devices.Count; j++)
+			{
+                if (GamePad.Devices[j].Up)    return "J" + (j+1) + " Up";
+                if (GamePad.Devices[j].Down)  return "J" + (j+1) + " Down";
+                if (GamePad.Devices[j].Left)  return "J" + (j+1) + " Left";
+                if (GamePad.Devices[j].Right) return "J" + (j+1) + " Right";
+
+			    var buttons = GamePad.Devices[j].Buttons;
+                for (int b=0; b<buttons.Length; b++)
+                {
+                    if (buttons[b])
+                        return "J" + (j+1) + " B" + (b+1);
+                }
+			}
+
+            // TODO: poll keyboard input
+
 			return null;
 		}
 	}
