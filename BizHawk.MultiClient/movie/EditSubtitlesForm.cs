@@ -12,6 +12,11 @@ namespace BizHawk.MultiClient
 	public partial class EditSubtitlesForm : Form
 	{
 		public bool ReadOnly;
+		private Movie selectedMovie = new Movie();
+
+		//TODO: Tooltips on cells explaining format
+		//TODO: Parse hex on color when saving
+		//TODO: try/catch on parsing int
 
 		public EditSubtitlesForm()
 		{
@@ -42,12 +47,31 @@ namespace BizHawk.MultiClient
 			if (!ReadOnly)
 			{
 				//Save subtitles to movie object & write to disk
+				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
+				{
+					Subtitle s = new Subtitle();
+					DataGridViewCell c = SubGrid.Rows[x].Cells[0];
+					//TODO: try/catch parsing
+					s.Frame = int.Parse(c.Value.ToString());
+					c = SubGrid.Rows[x].Cells[1];
+					s.X = int.Parse(c.Value.ToString());
+					c = SubGrid.Rows[x].Cells[2];
+					s.Y = int.Parse(c.Value.ToString());
+					c = SubGrid.Rows[x].Cells[3];
+					s.Duration = int.Parse(c.Value.ToString());
+					c = SubGrid.Rows[x].Cells[4];
+					s.Color = uint.Parse(c.Value.ToString());
+					c = SubGrid.Rows[x].Cells[5];
+					s.Message = c.Value.ToString();
+					selectedMovie.Subtitles.AddSubtitle(s);
+				}
 			}
 			this.Close();
 		}
 
 		public void GetMovie(Movie m)
 		{
+			selectedMovie = m;
 			SubtitleList subs = new SubtitleList(m);
 			if (subs.Count() == 0) return;
 
