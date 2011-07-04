@@ -757,9 +757,34 @@ namespace BizHawk.MultiClient
 			LoadMoviesFromRecent(Global.Config.RecentMovies.GetRecentFileByPosition(0));
 		}
 
-		private void undoLoadstateToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AddSubtitleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//TODO
+			SubtitleMaker s = new SubtitleMaker();
+			s.DisableFrame();
+			int index = -1;
+			Subtitle sub = new Subtitle();
+			for (int x = 0; x < UserMovie.Subtitles.Count(); x++)
+			{
+				sub = UserMovie.Subtitles.GetSubtitleByIndex(x);
+				if (Global.Emulator.Frame == sub.Frame)
+				{
+					index = x;
+					break;
+				}
+			}
+			if (index < 0)
+			{
+				sub = new Subtitle();
+				sub.Frame = Global.Emulator.Frame;
+			}
+			s.sub = sub;
+
+			if (s.ShowDialog() == DialogResult.OK)
+			{
+				if (index >= 0)
+					UserMovie.Subtitles.Remove(index);
+				UserMovie.Subtitles.AddSubtitle(s.sub);
+			}
 		}
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
@@ -836,15 +861,16 @@ namespace BizHawk.MultiClient
 					{
 						contextMenuStrip1.Items[8].Text = "View Subtitles";
 						contextMenuStrip1.Items[9].Text = "View Comments";
+						contextMenuStrip1.Items[11].Visible = false;
 					}
 					else
 					{
 						contextMenuStrip1.Items[8].Text = "Edit Subtitles";
 						contextMenuStrip1.Items[9].Text = "Edit Comments";
+						contextMenuStrip1.Items[11].Visible = true;
 					}
 				}
 
-				contextMenuStrip1.Items[11].Visible = true;
 				contextMenuStrip1.Items[12].Visible = true;
 
 				contextMenuStrip1.Items[13].Visible = true;
@@ -864,8 +890,7 @@ namespace BizHawk.MultiClient
 
 
 			//TODO:
-			contextMenuStrip1.Items[10].Enabled = false;
-			contextMenuStrip1.Items[11].Enabled = false;
+			contextMenuStrip1.Items[12].Enabled = false;
 		}
 
 

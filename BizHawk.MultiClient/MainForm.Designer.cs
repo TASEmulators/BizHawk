@@ -1749,7 +1749,7 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 330);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 308);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			// 
@@ -1832,8 +1832,8 @@
 			// 
 			this.undoLoadstateToolStripMenuItem.Name = "undoLoadstateToolStripMenuItem";
 			this.undoLoadstateToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.undoLoadstateToolStripMenuItem.Text = "Undo Loadstate";
-			this.undoLoadstateToolStripMenuItem.Click += new System.EventHandler(this.undoLoadstateToolStripMenuItem_Click);
+			this.undoLoadstateToolStripMenuItem.Text = "Add Subtitle";
+			this.undoLoadstateToolStripMenuItem.Click += new System.EventHandler(this.AddSubtitleToolStripMenuItem_Click);
 			// 
 			// undoSavestateToolStripMenuItem
 			// 

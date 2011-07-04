@@ -64,6 +64,7 @@
 			// Cancel
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.Cancel.Location = new System.Drawing.Point(348, 164);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
@@ -166,6 +167,7 @@
 			this.ColorPanel.Name = "ColorPanel";
 			this.ColorPanel.Size = new System.Drawing.Size(56, 19);
 			this.ColorPanel.TabIndex = 35;
+			this.ColorPanel.TabStop = true;
 			this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
 			// 
 			// label5
@@ -206,8 +208,10 @@
 			// 
 			// SubtitleMaker
 			// 
+			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(435, 199);
 			this.Controls.Add(this.label6);
 			this.Controls.Add(this.FrameNumeric);
