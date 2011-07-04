@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
 				{
 					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
-					selectedMovie.AddComment("comment " + c.ToString());
+					selectedMovie.AddComment("comment " + c.Value.ToString());
 				}
 				selectedMovie.WriteMovie();
 			}
@@ -54,11 +54,17 @@ namespace BizHawk.MultiClient
 		{
 			selectedMovie = m;
 			List<string> comments = m.GetComments();
+			if (comments.Count == 0) return;
+
 			for (int x = 0; x < comments.Count; x++)
 			{
-				DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
+				string str = comments[x];
+				if (str.Length >= 7 && str.Substring(0, 7) == "comment")
+					str = str.Remove(0, 7);
 				CommentGrid.Rows.Add();
-				c.Value = comments[x];
+				DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
+				
+				c.Value = str;
 			}
 		}
 	}
