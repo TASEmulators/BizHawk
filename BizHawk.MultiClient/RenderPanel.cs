@@ -419,11 +419,11 @@ namespace BizHawk.MultiClient
 			}
 
 			//TODO: read subtitle positioning, implement multiple subtitles at once feature
-			MessageFont.DrawString(null, Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame), 0 + 1,
-						0 + 1, new Color4(Color.Black));
-			MessageFont.DrawString(null, Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame), 0 ,
-						0, new Color4(Color.White));
-
+			Subtitle s = new Subtitle(Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame));
+			MessageFont.DrawString(null, s.Message, s.X + 1,
+						s.Y + 1, new Color4(Color.Black));
+			MessageFont.DrawString(null, s.Message, s.X,
+						s.Y, new Color4(Color.White));//Color.FromArgb((int)s.Color));
 		}
 
 		private string MakeFrameCounter()
