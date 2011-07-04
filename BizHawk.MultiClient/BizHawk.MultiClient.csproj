@@ -170,6 +170,12 @@
     <Compile Include="movie\MultitrackRecording.cs" />
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
+    <Compile Include="movie\SubtitleMaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="movie\SubtitleMaker.Designer.cs">
+      <DependentUpon>SubtitleMaker.cs</DependentUpon>
+    </Compile>
     <Compile Include="MruStack.cs" />
     <Compile Include="NameStateForm.cs">
       <SubType>Form</SubType>
@@ -418,6 +424,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="movie\EditSubtitlesForm.resx">
       <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="movie\SubtitleMaker.resx">
+      <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NEStools\NESDebugger.resx">
       <DependentUpon>NESDebugger.cs</DependentUpon>

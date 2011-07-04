@@ -82,6 +82,7 @@
 			this.SubGrid.Name = "SubGrid";
 			this.SubGrid.Size = new System.Drawing.Size(548, 198);
 			this.SubGrid.TabIndex = 2;
+			this.SubGrid.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SubGrid_MouseDoubleClick);
 			// 
 			// Frame
 			// 
