@@ -14,10 +14,7 @@ namespace BizHawk.MultiClient
 		public bool ReadOnly;
 		private Movie selectedMovie = new Movie();
 
-		//TODO: Tooltips on cells explaining format
 		//TODO: Parse hex on color when saving
-		//TODO: try/catch on parsing int
-		//TODO: display color in hex when loading from movie
 		//TODO: color if color cell = value of color cell
 
 		public EditSubtitlesForm()
@@ -44,6 +41,14 @@ namespace BizHawk.MultiClient
 			this.Close();
 		}
 
+		private void ShowError(int row, int column)
+		{
+			DataGridViewCell c = SubGrid.Rows[row].Cells[column];
+			string error = "Unable to parse value: " + c.Value.ToString();
+			string caption = "Parse Error Row " + row.ToString() + " Column " + column.ToString();
+			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
 		private void OK_Click(object sender, EventArgs e)
 		{
 			if (!ReadOnly)
@@ -52,18 +57,24 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < SubGrid.Rows.Count - 1; x++)
 				{
 					Subtitle s = new Subtitle();
+					
 					DataGridViewCell c = SubGrid.Rows[x].Cells[0];
-					//TODO: try/catch parsing
-					s.Frame = int.Parse(c.Value.ToString());
+					try { s.Frame = int.Parse(c.Value.ToString()); }
+					catch { ShowError(x, 0); return; }
 					c = SubGrid.Rows[x].Cells[1];
-					s.X = int.Parse(c.Value.ToString());
+					try { s.X = int.Parse(c.Value.ToString()); }
+					catch { ShowError(x, 1); return; }
 					c = SubGrid.Rows[x].Cells[2];
-					s.Y = int.Parse(c.Value.ToString());
+					try { s.Y = int.Parse(c.Value.ToString()); }
+					catch { ShowError(x, 2); return; }
 					c = SubGrid.Rows[x].Cells[3];
-					s.Duration = int.Parse(c.Value.ToString());
+					try { s.Duration = int.Parse(c.Value.ToString()); }
+					catch { ShowError(x, 3); return; }
 					c = SubGrid.Rows[x].Cells[4];
-					s.Color = uint.Parse(c.Value.ToString());
-					c = SubGrid.Rows[x].Cells[5];
+					try { s.Color = uint.Parse(c.Value.ToString()); }
+					catch { ShowError(x, 4); return; }
+					try { c = SubGrid.Rows[x].Cells[5]; }
+					catch { ShowError(x, 5); return; }
 					s.Message = c.Value.ToString();
 					selectedMovie.Subtitles.AddSubtitle(s);
 				}
@@ -91,7 +102,8 @@ namespace BizHawk.MultiClient
 				c = SubGrid.Rows[x].Cells[3];
 				c.Value = s.Duration;
 				c = SubGrid.Rows[x].Cells[4];
-				c.Value = s.Color; //TODO: view in hex
+				c.Value = String.Format("{0:X8}", s.Color);
+				c.Style.BackColor = Color.FromArgb((int)s.Color);
 				c = SubGrid.Rows[x].Cells[5];
 				c.Value = s.Message;
 			}
@@ -109,7 +121,8 @@ namespace BizHawk.MultiClient
 			c = SubGrid.Rows[index].Cells[3];
 			c.Value = s.Duration;
 			c = SubGrid.Rows[index].Cells[4];
-			c.Value = s.Color; //TODO: view in hex
+			c.Value = String.Format("{0:X8}", s.Color);
+			c.Style.BackColor = Color.FromArgb((int)s.Color);
 			c = SubGrid.Rows[index].Cells[5];
 			c.Value = s.Message;
 		}

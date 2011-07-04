@@ -145,11 +145,6 @@
 			this.DurationNumeric.Name = "DurationNumeric";
 			this.DurationNumeric.Size = new System.Drawing.Size(56, 20);
 			this.DurationNumeric.TabIndex = 30;
-			this.DurationNumeric.Value = new decimal(new int[] {
-            9999,
-            0,
-            0,
-            0});
 			// 
 			// label4
 			// 
