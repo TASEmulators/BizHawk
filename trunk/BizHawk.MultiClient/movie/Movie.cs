@@ -281,7 +281,7 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
 					}
-					else if (str.Contains(MovieHeader.GUID))
+					else if (str.ToUpper().Contains(MovieHeader.GUID))
 					{
 						str = ParseHeader(str, MovieHeader.GUID);
 						Header.AddHeaderLine(MovieHeader.GUID, str);
@@ -363,7 +363,7 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
 					}
-					else if (str.Contains(MovieHeader.GUID))
+					else if (str.ToUpper().Contains(MovieHeader.GUID))
 					{
 						str = ParseHeader(str, MovieHeader.GUID);
 						Header.AddHeaderLine(MovieHeader.GUID, str);
