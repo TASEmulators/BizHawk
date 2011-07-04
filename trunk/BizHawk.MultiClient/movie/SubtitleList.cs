@@ -121,5 +121,10 @@ namespace BizHawk.MultiClient
 		{
 			subs.Add(s);
 		}
+
+		public void ClearSubtitles()
+		{
+			subs.Clear();
+		}
 	}
 }

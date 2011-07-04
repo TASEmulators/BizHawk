@@ -741,5 +741,10 @@ namespace BizHawk.MultiClient
 		{
 			Header.Comments.Add(comment);
 		}
+
+		public void ClearComments()
+		{
+			Header.Comments.Clear();
+		}
 	}
 }
