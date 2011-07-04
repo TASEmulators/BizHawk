@@ -184,7 +184,29 @@ namespace BizHawk.MultiClient.tools
 
 		private void HotkeyWindow_Load(object sender, EventArgs e)
 		{
+			AutoTabCheckBox.Checked = Global.Config.HotkeyConfigAutoTab;
+			SetAutoTab();
+		}
 
+		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.HotkeyConfigAutoTab = AutoTabCheckBox.Checked;
+			SetAutoTab();
+		}
+
+		private void SetAutoTab()
+		{
+			for (int x = 0; x < hotkeyTabs.TabPages.Count; x++)
+			{
+				for (int y = 0; y < hotkeyTabs.TabPages[x].Controls.Count; y++)
+				{
+					if (hotkeyTabs.TabPages[x].Controls[y] is InputWidget)
+					{
+						InputWidget w = hotkeyTabs.TabPages[x].Controls[y] as InputWidget;
+						w.AutoTab = AutoTabCheckBox.Checked;
+					}
+				}
+			}
 		}
 	}
 }
