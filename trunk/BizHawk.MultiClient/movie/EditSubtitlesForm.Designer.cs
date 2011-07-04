@@ -36,7 +36,7 @@
 			this.X = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Y = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.Color = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.DispColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Message = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).BeginInit();
 			this.SuspendLayout();
@@ -76,7 +76,7 @@
             this.X,
             this.Y,
             this.Length,
-            this.Color,
+            this.DispColor,
             this.Message});
 			this.SubGrid.Location = new System.Drawing.Point(12, 12);
 			this.SubGrid.Name = "SubGrid";
@@ -89,6 +89,7 @@
 			this.Frame.HeaderText = "Frame";
 			this.Frame.MaxInputLength = 7;
 			this.Frame.Name = "Frame";
+			this.Frame.ToolTipText = "The first frame the subtitle will be displayed (integer)";
 			this.Frame.Width = 75;
 			// 
 			// X
@@ -96,6 +97,7 @@
 			this.X.HeaderText = "X";
 			this.X.MaxInputLength = 3;
 			this.X.Name = "X";
+			this.X.ToolTipText = "Screen coordinate (absolute)";
 			this.X.Width = 30;
 			// 
 			// Y
@@ -103,6 +105,7 @@
 			this.Y.HeaderText = "Y";
 			this.Y.MaxInputLength = 3;
 			this.Y.Name = "Y";
+			this.Y.ToolTipText = "Screen coordinate (absolute)";
 			this.Y.Width = 30;
 			// 
 			// Length
@@ -110,14 +113,16 @@
 			this.Length.HeaderText = "Length";
 			this.Length.MaxInputLength = 5;
 			this.Length.Name = "Length";
+			this.Length.ToolTipText = "How long subtitle will be displayed";
 			this.Length.Width = 50;
 			// 
-			// Color
+			// DispColor
 			// 
-			this.Color.HeaderText = "Color";
-			this.Color.MaxInputLength = 8;
-			this.Color.Name = "Color";
-			this.Color.Width = 60;
+			this.DispColor.HeaderText = "Color";
+			this.DispColor.MaxInputLength = 8;
+			this.DispColor.Name = "DispColor";
+			this.DispColor.ToolTipText = "Color of subtitle text";
+			this.DispColor.Width = 60;
 			// 
 			// Message
 			// 
@@ -126,6 +131,7 @@
 			this.Message.MaxInputLength = 255;
 			this.Message.MinimumWidth = 25;
 			this.Message.Name = "Message";
+			this.Message.ToolTipText = "What will be displayed";
 			// 
 			// EditSubtitlesForm
 			// 
@@ -155,7 +161,7 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn X;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Y;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Length;
-		private System.Windows.Forms.DataGridViewTextBoxColumn Color;
+		private System.Windows.Forms.DataGridViewTextBoxColumn DispColor;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Message;
 	}
 }
