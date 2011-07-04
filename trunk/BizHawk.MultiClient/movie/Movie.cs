@@ -281,9 +281,18 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
 					}
+					else if (str.Contains(MovieHeader.GUID))
+					{
+						str = ParseHeader(str, MovieHeader.GUID);
+						Header.AddHeaderLine(MovieHeader.GUID, str);
+					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
+					}
+					else if (str.StartsWith("comment"))
+					{
+						Header.Comments.Add(str);
 					}
 					else if (str[0] == '|')
 					{
@@ -354,9 +363,18 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.AUTHOR);
 						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
 					}
+					else if (str.Contains(MovieHeader.GUID))
+					{
+						str = ParseHeader(str, MovieHeader.GUID);
+						Header.AddHeaderLine(MovieHeader.GUID, str);
+					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
+					}
+					else if (str.StartsWith("comment"))
+					{
+						Header.Comments.Add(str.Substring(8, str.Length - 8));
 					}
 					else if (str[0] == '|')
 					{
@@ -709,6 +727,19 @@ namespace BizHawk.MultiClient
 		public List<string> GetComments()
 		{
 			return Header.Comments;
+		}
+
+		public bool HasComments()
+		{
+			if (Header.Comments.Count > 0)
+				return true;
+			else
+				return false;
+		}
+
+		public void AddComment(string comment)
+		{
+			Header.Comments.Add(comment);
 		}
 	}
 }

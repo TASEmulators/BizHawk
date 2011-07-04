@@ -2393,5 +2393,15 @@ namespace BizHawk.MultiClient
 		private void StatusSlot8_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
 		private void StatusSlot9_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
 		private void StatusSlot10_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
+
+		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE) return;
+
+			EditCommentsForm c = new EditCommentsForm();
+			c.ReadOnly = ReadOnly;
+			c.GetMovie(UserMovie);
+			c.ShowDialog();
+		}
 	}
 }

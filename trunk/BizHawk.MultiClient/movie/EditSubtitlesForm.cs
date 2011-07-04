@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 					s.Message = c.Value.ToString();
 					selectedMovie.Subtitles.AddSubtitle(s);
 				}
+				selectedMovie.WriteMovie();
 			}
 			this.Close();
 		}

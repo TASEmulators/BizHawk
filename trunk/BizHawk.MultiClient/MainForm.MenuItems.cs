@@ -803,6 +803,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[12].Visible = false;
 				contextMenuStrip1.Items[13].Visible = false;
 				contextMenuStrip1.Items[14].Visible = false;
+				contextMenuStrip1.Items[15].Visible = false;
 			}
 			else
 			{
@@ -818,7 +819,8 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[6].Visible = true;
 					contextMenuStrip1.Items[7].Visible = false;
 					contextMenuStrip1.Items[8].Visible = false;
-					contextMenuStrip1.Items[9].Visible = true;
+					contextMenuStrip1.Items[9].Visible = false;
+					contextMenuStrip1.Items[10].Visible = true;
 				}
 				else
 				{
@@ -829,22 +831,25 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[7].Visible = true;
 					contextMenuStrip1.Items[8].Visible = true;
 					contextMenuStrip1.Items[9].Visible = true;
+					contextMenuStrip1.Items[10].Visible = true;
 					if (ReadOnly == true)
 					{
 						contextMenuStrip1.Items[8].Text = "View Subtitles";
+						contextMenuStrip1.Items[9].Text = "View Comments";
 					}
 					else
 					{
 						contextMenuStrip1.Items[8].Text = "Edit Subtitles";
+						contextMenuStrip1.Items[9].Text = "Edit Comments";
 					}
 				}
 
-				contextMenuStrip1.Items[10].Visible = true;
 				contextMenuStrip1.Items[11].Visible = true;
-
 				contextMenuStrip1.Items[12].Visible = true;
+
 				contextMenuStrip1.Items[13].Visible = true;
 				contextMenuStrip1.Items[14].Visible = true;
+				contextMenuStrip1.Items[15].Visible = true;
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)

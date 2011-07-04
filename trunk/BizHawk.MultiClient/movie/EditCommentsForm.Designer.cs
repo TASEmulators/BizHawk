@@ -1,4 +1,4 @@
-﻿namespace BizHawk.MultiClient.movie
+﻿namespace BizHawk.MultiClient
 {
 	partial class EditCommentsForm
 	{

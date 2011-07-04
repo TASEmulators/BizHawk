@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.MultiClient.movie
+namespace BizHawk.MultiClient
 {
 	public partial class EditCommentsForm : Form
 	{
@@ -40,7 +40,12 @@ namespace BizHawk.MultiClient.movie
 		{
 			if (!ReadOnly)
 			{
-
+				for (int x = 0; x < CommentGrid.Rows.Count - 1; x++)
+				{
+					DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
+					selectedMovie.AddComment("comment " + c.ToString());
+				}
+				selectedMovie.WriteMovie();
 			}
 			this.Close();
 		}
@@ -49,9 +54,10 @@ namespace BizHawk.MultiClient.movie
 		{
 			selectedMovie = m;
 			List<string> comments = m.GetComments();
-			for (int x = 0; x < c.Count; x++)
+			for (int x = 0; x < comments.Count; x++)
 			{
 				DataGridViewCell c = CommentGrid.Rows[x].Cells[0];
+				CommentGrid.Rows.Add();
 				c.Value = comments[x];
 			}
 		}
