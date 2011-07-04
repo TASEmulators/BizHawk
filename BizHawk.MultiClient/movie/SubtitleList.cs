@@ -33,6 +33,25 @@ namespace BizHawk.MultiClient
 			return subs[index];
 		}
 
+		public string GetSubtitleText(int index)
+		{
+			if (index >= subs.Count || index < 0) return "";
+
+			StringBuilder sb = new StringBuilder("subtitle ");
+			sb.Append(subs[index].Frame.ToString());
+			sb.Append(" ");
+			sb.Append(subs[index].X.ToString());
+			sb.Append(" ");
+			sb.Append(subs[index].Y.ToString());
+			sb.Append(" ");
+			sb.Append(subs[index].Duration.ToString());
+			sb.Append(" ");
+			sb.Append(subs[index].Color.ToString());
+			sb.Append(" ");
+			sb.Append(subs[index].Message);
+			return sb.ToString();
+		}
+
 		/// <summary>
 		/// Manages the logic of what subtitle should be displayed on any given frame based on frame & duration
 		/// </summary>
