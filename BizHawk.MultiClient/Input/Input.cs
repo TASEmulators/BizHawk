@@ -99,9 +99,7 @@ namespace BizHawk.MultiClient
                 }
 			}
 
-            // TODO: poll keyboard input
-
-			return null;
+		    return KeyInput.GetPressedKey();
 		}
 	}
 }
