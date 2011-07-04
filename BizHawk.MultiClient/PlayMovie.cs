@@ -163,11 +163,24 @@ namespace BizHawk.MultiClient
 				item.SubItems.Add(kvp.Value);
 				DetailsView.Items.Add(item);
 			}
+			if (MovieList[x].HasComments())
+				button1.Enabled = true;
+			else
+				button1.Enabled = false;
+
+			if (MovieList[x].Subtitles.Count() > 0)
+				button2.Enabled = true;
+			else
+				button2.Enabled = false;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			//TODO: a comments viewer/editor
+			//TODO: check for selected index first!
+			EditCommentsForm c = new EditCommentsForm();
+			c.ReadOnly = true;
+			c.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
+			c.Show();
 		}
 
 		private void button2_Click(object sender, EventArgs e)
