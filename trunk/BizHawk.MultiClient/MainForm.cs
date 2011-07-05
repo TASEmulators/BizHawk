@@ -406,7 +406,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
 			controls.BindMulti("Emulator Pause", Global.Config.EmulatorPauseBinding);
 			controls.BindMulti("Frame Advance", Global.Config.FrameAdvanceBinding);
-			controls.BindMulti("Unthrottle", Global.Config.UnthrottleBinding);
+			controls.BindMulti("Unthrottle", Global.Config.TurboBinding);
 			controls.BindMulti("Screenshot", Global.Config.ScreenshotBinding);
 			controls.BindMulti("Toggle Fullscreen", Global.Config.ToggleFullscreenBinding);
 			controls.BindMulti("Quick Save State", Global.Config.QuickSave);

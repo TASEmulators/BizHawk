@@ -299,7 +299,7 @@
 		public string RewindBinding = "J1 B5, Shift+R";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
-		public string UnthrottleBinding = "Shift+Tab";
+		public string TurboBinding = "Shift+Tab";
 		public string ScreenshotBinding = "F12";
 		public string ToggleFullscreenBinding = "Alt+Return";
 		public string QuickSave = "I";
