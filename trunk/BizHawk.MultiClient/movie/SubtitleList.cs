@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -201,6 +202,15 @@ namespace BizHawk.MultiClient
 			if (index >= subs.Count) return;
 
 			subs.RemoveAt(index);
+		}
+
+		public void WriteText(StreamWriter sw)
+		{
+			int length = subs.Count;
+			for (int x = 0; x < length; x++)
+			{
+				sw.WriteLine(GetSubtitleText(x));
+			}
 		}
 	}
 }

@@ -186,25 +186,9 @@ namespace BizHawk.MultiClient
 
 			using (StreamWriter sw = new StreamWriter(file))
 			{
-				foreach (KeyValuePair<string, string> kvp in Header.HeaderParams)
-				{
-					sw.WriteLine(kvp.Key + " " + kvp.Value);
-				}
-
-				for (int x = 0; x < Header.Comments.Count; x++)
-				{
-					sw.WriteLine(Header.Comments[x]);
-				}
-
-				for (int x = 0; x < Subtitles.Count(); x++)
-				{
-					sw.WriteLine(Subtitles.GetSubtitleText(x));
-				}
-
-				for (int x = 0; x < length; x++)
-				{
-					sw.WriteLine(Log.GetFrame(x));
-				}
+				Header.WriteText(sw);
+				Subtitles.WriteText(sw);
+				Log.WriteText(sw);
 			}
 		}
 
