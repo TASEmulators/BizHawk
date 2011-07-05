@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -92,6 +93,19 @@ namespace BizHawk.MultiClient
 		public void SetHeaderLine(string key, string value)
 		{
 			HeaderParams[key] = value;
+		}
+
+		public void WriteText(StreamWriter sw)
+		{
+			foreach (KeyValuePair<string, string> kvp in HeaderParams)
+			{
+				sw.WriteLine(kvp.Key + " " + kvp.Value);
+			}
+
+			for (int x = 0; x < Comments.Count; x++)
+			{
+				sw.WriteLine(Comments[x]);
+			}
 		}
 	}
 }
