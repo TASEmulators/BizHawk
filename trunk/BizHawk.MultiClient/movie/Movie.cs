@@ -129,8 +129,9 @@ namespace BizHawk.MultiClient
 			//        Log.Truncate(Global.Emulator.Frame);
 			//    }
 
-			//REMOVED TRUNCATION!!!!
-			//WHY DO IT HERE??? DO IT WHEN WE LOAD THE SAVESTATE IN READ+WRITE MODE! JESUS
+			//TODO: truncation here instead of loadstate will make VBA stil loadstates
+			//(Where an entire movie is loaded then truncated on the next frame
+			//this allows users to restore a movie with any savestate from that "timeline"
 
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			mg.SetSource(Global.MovieInputSourceAdapter);
@@ -293,6 +294,10 @@ namespace BizHawk.MultiClient
 
 		}
 
+		/// <summary>
+		/// Load Header information only for displaying file information in dialogs such as play movie
+		/// </summary>
+		/// <returns></returns>
 		public bool PreLoadText()
 		{
 			var file = new FileInfo(Filename);
@@ -377,7 +382,7 @@ namespace BizHawk.MultiClient
 			}
 
 			return true;
-		}//Also this method is never called, can delete?  What is purpose?
+		}
 
 		private bool LoadBinary()
 		{
@@ -444,8 +449,10 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			//TODO: we can truncate the movie down to the current frame now (in case the savestate has a larger input log)
-			//However, VBA will load it all, then truncate on the next frame, do we want that?
+			if (Global.Emulator.Frame < Log.Length())
+			{
+				Log.Truncate(Global.Emulator.Frame);
+			}
 			IncrementRerecordCount();
 		}
 
@@ -512,7 +519,7 @@ namespace BizHawk.MultiClient
 		}
 
 		private double GetSeconds(int frameCount)
-		{   //Should these be placed somewhere more accessible?  Perhaps as a public dictionary object in MainForm?
+		{
 			const double NES_PAL = 50.006977968268290849;
 			const double NES_NTSC = (double)60.098813897440515532;
 			const double PCE = (7159090.90909090 / 455 / 263); //~59.826
