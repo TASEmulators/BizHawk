@@ -53,8 +53,13 @@ namespace BizHawk.MultiClient
 				Bindings.Clear();
 				UpdateLabel();
 			}
+
+			if (e.KeyCode == Keys.F4)
+				e.Handled = false;
+
 			if (AutoTab)
 				this.Parent.SelectNextControl(this, true, true, true, true);
+			
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
@@ -168,6 +173,9 @@ namespace BizHawk.MultiClient
 			string str = "";
 			
 			str += key.ToString();
+			if (str.Length == 2 && str == "F4") //Don't allow mapping of alt+f4
+				if ((modifiers & Keys.Alt) != 0)
+					return "";
 			if (str.Length == 10 && str == "ControlKey")
 				str = "Ctrl";
 			if (str.Length == 4 && str == "Menu")
