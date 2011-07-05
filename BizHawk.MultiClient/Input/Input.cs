@@ -19,13 +19,47 @@ namespace BizHawk.MultiClient
 
 		public static bool IsPressed(string control)
 		{
-			string[] controls = control.Split('+');
-			for (int i = 0; i < controls.Length; i++)
-			{
-				if (IsPressedSingle(controls[i]) == false)
-					return false;
-			}
-			return true;
+            // Check joystick first, its easier
+            if (control.StartsWith("J1 ")) return GetGamePad(0, control.Substring(3));
+            if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
+            if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
+            if (control.StartsWith("J4 ")) return GetGamePad(3, control.Substring(3));
+
+            // Keyboard time. 
+            // Keyboard bindings are significantly less free-form than they were previously. 
+            // They are no longer just a list of keys which must be pressed simultaneously.
+            // Bindings are assumed to be in the form of 0, 1, 2, or 3 modifiers (Ctrl, Alt, Shift),
+            // plus one non-modifier key, which is at the end.
+            // It is not possible to bind to two non-modifier keys together as a chorded hotkey.
+
+
+		    int lastCombinerPosition = control.LastIndexOf('+');
+            if (lastCombinerPosition < 0)
+            {
+                // No modifiers in this key binding.
+
+                // Verify that no modifiers are currently pressed.
+                if (KeyInput.CtrlModifier || KeyInput.ShiftModifier || KeyInput.AltModifier)
+                    return false;
+
+                Key k = (Key) Enum.Parse(typeof (Key), control, true);
+                return KeyInput.IsPressed(k);
+            }
+
+            // 1 or more modifiers present in binding. First, lets identify the non-modifier key and check if it's pressed.
+		    string nonModifierString = control.Substring(lastCombinerPosition+1);
+            Key nonModifierKey = (Key)Enum.Parse(typeof(Key), nonModifierString, true);
+            if (KeyInput.IsPressed(nonModifierKey) == false)
+                return false; // non-modifier key isn't pressed anyway, exit out
+
+            // non-modifier key IS pressed, now we need to ensure the modifiers match exactly
+            if (control.Contains("Ctrl+") ^ KeyInput.CtrlModifier) return false;
+            if (control.Contains("Shift+") ^ KeyInput.ShiftModifier) return false;
+            if (control.Contains("Alt+") ^ KeyInput.AltModifier) return false;
+
+            // You have passed all my tests, you may consider yourself pressed.
+            // Man, I'm winded.
+		    return true;
 		}
 
 		private static bool IsPressedSingle(string control)
