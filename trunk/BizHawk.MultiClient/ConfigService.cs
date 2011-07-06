@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 
 namespace BizHawk.MultiClient
@@ -20,7 +22,7 @@ namespace BizHawk.MultiClient
 						config = (T)s.Deserialize(r, typeof(T));
 					}
 			}
-			catch { }
+            catch (Exception e) { MessageBox.Show(e.ToString()); }
 			if (config == null) return new T();
 			else return config;
 		}
