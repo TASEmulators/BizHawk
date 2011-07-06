@@ -883,9 +883,12 @@ namespace BizHawk.MultiClient
 				if (File.Exists(game.SaveRamPath))
 					LoadSaveRam();
 
-				if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
 				{
 					InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+					InputLog.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
+					InputLog.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
+					InputLog.SetHeaderLine(MovieHeader.AUTHOR, Global.Config.DefaultAuthor);
 					CreateNewInputLog(true);
 				}
 
