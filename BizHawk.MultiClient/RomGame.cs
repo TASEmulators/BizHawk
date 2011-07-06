@@ -137,7 +137,7 @@ namespace BizHawk.MultiClient
             get
             {
                 string Bind = "";
-				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.FINISHED && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE) //TODO: what about movie finished?
+				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
                     Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.GetFilePath());
                 switch (System)
                 {
