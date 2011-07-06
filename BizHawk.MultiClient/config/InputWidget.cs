@@ -224,11 +224,11 @@ namespace BizHawk.MultiClient
 				str = "LeftBracket";
 
 			if ((modifiers & Keys.Shift) != 0)
-				str = str.Insert(0, "Shift + ");
+				str = str.Insert(0, "Shift+");
 			if ((modifiers & Keys.Control) != 0)
-				str = str.Insert(0, "Ctrl + ");
+				str = str.Insert(0, "Ctrl+");
 			if ((modifiers & Keys.Alt) != 0)
-				str = str.Insert(0, "Alt + ");
+				str = str.Insert(0, "Alt+");
 
 			return str;
 		}
