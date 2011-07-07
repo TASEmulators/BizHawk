@@ -7,9 +7,11 @@ namespace BizHawk.MultiClient
 {
 	public class InputWidget : TextBox
 	{
-		public InputWidget()
+        private Timer timer = new Timer();
+        public InputWidget()
 		{
 			this.ContextMenu = new ContextMenu();
+            this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 		}
 
 		public List<IBinding> Bindings = new List<IBinding>();
@@ -17,6 +19,33 @@ namespace BizHawk.MultiClient
 		bool ctrlWasPressed = false;
 		bool altWasPressed = false;
 		bool shiftWasPressed = false;
+
+        string TempBindingStr = ""; //TODO: remove me, this is for a proof of concept
+
+        protected override void OnEnter(EventArgs e)
+        {
+            timer.Start();
+            base.OnEnter(e);
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            timer.Stop();
+            this.Text = TempBindingStr;
+            base.OnLeave(e);
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            TempBindingStr = Input.GetPressedKey();
+            if (TempBindingStr != null)
+            {
+                int x = 0;
+                x++;
+                int y = x;
+            }
+        }
+        
 
 		void UpdateLabel()
 		{
@@ -35,7 +64,8 @@ namespace BizHawk.MultiClient
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			e.Handled = true;
+			/*
+            e.Handled = true;
 			if (e.KeyCode == Keys.ControlKey) return;
 			if (e.KeyCode == Keys.ShiftKey) return;
 			if (e.KeyCode == Keys.Menu) return;
@@ -59,7 +89,7 @@ namespace BizHawk.MultiClient
 
 			if (AutoTab)
 				this.Parent.SelectNextControl(this, true, true, true, true);
-			
+			*/
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
