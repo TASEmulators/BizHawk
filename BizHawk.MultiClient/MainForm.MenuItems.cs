@@ -695,7 +695,6 @@ namespace BizHawk.MultiClient
 		private void acceptBackgroundInputToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AcceptBackgroundInput ^= true;
-			MessageBox.Show("Background input settings will take effect the next time Bizhawk loads", "Background input property change", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void displayStatusBarToolStripMenuItem_Click(object sender, EventArgs e)

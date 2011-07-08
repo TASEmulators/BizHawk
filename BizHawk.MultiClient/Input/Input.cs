@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 using SlimDX.DirectInput;
 
 namespace BizHawk.MultiClient
@@ -19,6 +20,9 @@ namespace BizHawk.MultiClient
 
 		public static bool IsPressed(string control)
 		{
+            if (Global.Config.AcceptBackgroundInput == false && Form.ActiveForm == null)
+                return false; // application isn't active and background input is disabled
+
             // Check joystick first, its easier
             if (control.StartsWith("J1 ")) return GetGamePad(0, control.Substring(3));
             if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));

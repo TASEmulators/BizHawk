@@ -14,15 +14,12 @@ namespace BizHawk.MultiClient
 
 		public static void Initialize()
 		{
-			if (dinput == null)
+			if (dinput == null) 
 				dinput = new DirectInput();
 
 			if (keyboard == null || keyboard.Disposed)
 				keyboard = new Keyboard(dinput);
-			if (Global.Config.AcceptBackgroundInput)
-				keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
-			else
-				keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Foreground | CooperativeLevel.Nonexclusive);
+			keyboard.SetCooperativeLevel(Global.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
 		}
 
 		public static void Update()

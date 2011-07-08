@@ -370,7 +370,7 @@
 		public bool SmsAllowOverlock = false;
 		public bool SmsForceStereoSeparation = false;
 
-		public string SmsReset = "Tab";
+		public string SmsReset = "R";
 		public string SmsPause = "J1 B8, Space";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
