@@ -37,16 +37,15 @@ namespace BizHawk.MultiClient
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            Input.Update();
             TempBindingStr = Input.GetPressedKey();
             if (TempBindingStr != null)
             {
-                int x = 0;
-                x++;
-                int y = x;
+                // just for debugging. not really sure how to rebind from inside the timer?
+                MessageBox.Show(TempBindingStr);
             }
         }
         
-
 		void UpdateLabel()
 		{
 			if (Bindings.Count == 0)
