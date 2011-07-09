@@ -7,7 +7,10 @@ namespace BizHawk.MultiClient
 {
 	public class InputWidget : TextBox
 	{
+		//TODO: when binding, make sure that the new key combo is not in one of the other bindings
+
 		int MaxBind = 4; //Max number of bindings allowed
+		int pos = 0;	 //Which mapping the widget will listen for
 		private Timer timer = new Timer();
 		public bool AutoTab = true;
 		string[] Bindings = new string[4];
@@ -39,6 +42,7 @@ namespace BizHawk.MultiClient
 
 		protected override void OnEnter(EventArgs e)
 		{
+			pos = 0;
 			timer.Start();
 			base.OnEnter(e);
 			Input.Update();
@@ -74,7 +78,8 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Alt+F4")
 					return;
 
-				Bindings[0] = TempBindingStr;
+				Bindings[pos] = TempBindingStr;
+				wasPressed = TempBindingStr;
 				UpdateLabel();
 				Increment();
 			}
@@ -103,6 +108,13 @@ namespace BizHawk.MultiClient
 		{
 			if (AutoTab)
 				this.Parent.SelectNextControl(this, true, true, true, true);
+			else
+			{
+				if (pos == MaxBind - 1)
+				    pos = 0;
+				else
+				    pos++;
+			}
 		}
 
 		public void ClearBindings()
