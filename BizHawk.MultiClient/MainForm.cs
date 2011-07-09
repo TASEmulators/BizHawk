@@ -111,7 +111,8 @@ namespace BizHawk.MultiClient
 				if (Global.Sound != null) Global.Sound.StartSound();
 			};
 
-			InitControls();
+            Input.Initialize();
+            InitControls();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
@@ -399,7 +400,6 @@ namespace BizHawk.MultiClient
 
 		private void InitControls()
 		{
-			Input.Initialize();
 			var controls = new Controller(ClientControlsDef);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
 			controls.BindMulti("Rewind", Global.Config.RewindBinding);
