@@ -113,6 +113,15 @@ namespace BizHawk.MultiClient
             }
         }
 
+		public static System.Windows.Forms.Keys GetModifierKeysAsKeys()
+		{
+			System.Windows.Forms.Keys ret = System.Windows.Forms.Keys.None;
+			if (ShiftModifier) ret |= System.Windows.Forms.Keys.Shift;
+			if (CtrlModifier) ret |= System.Windows.Forms.Keys.Control;
+			if (AltModifier) ret |= System.Windows.Forms.Keys.Alt;
+			return ret;
+		}
+
         public static string GetModifierKeys()
         {
             StringBuilder sb = new StringBuilder(16);
