@@ -81,7 +81,7 @@ namespace BizHawk.MultiClient
 		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 
 
-		HashSet<string> Ignore = new HashSet<string>(new[] { "LeftShift", "RightShift" });
+		HashSet<string> Ignore = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 		void HandleButton(string button, bool newState)
 		{
 			if (Ignore.Contains(button)) return;
