@@ -1399,12 +1399,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				//=======================================
 
-				RamWatch1.UpdateValues();
-				RamSearch1.UpdateValues();
-				HexEditor1.UpdateValues();
-				NESNameTableViewer1.UpdateValues();
-				NESPPU1.UpdateValues();
-				TAStudio1.UpdateValues();
+				UpdateTools();
 
 			}
 
@@ -1412,6 +1407,19 @@ namespace BizHawk.MultiClient
 				Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
 			else
 				Global.Sound.UpdateSound(NullSound.SilenceProvider);
+		}
+
+		/// <summary>
+		/// Update all tools that are frame dependent like Ram Search
+		/// </summary>
+		public void UpdateTools()
+		{
+			RamWatch1.UpdateValues();
+			RamSearch1.UpdateValues();
+			HexEditor1.UpdateValues();
+			NESNameTableViewer1.UpdateValues();
+			NESPPU1.UpdateValues();
+			TAStudio1.UpdateValues();
 		}
 
 		private void MakeScreenshot(string path)
@@ -1575,6 +1583,7 @@ namespace BizHawk.MultiClient
 			var reader = new StreamReader(path);
 			Global.Emulator.LoadStateText(reader);
 			HandleMovieLoadState(reader);
+			UpdateTools();
 			reader.Close();
 			Global.RenderPanel.AddMessage("Loaded state: " + name);
 		}
