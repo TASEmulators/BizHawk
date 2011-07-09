@@ -30,7 +30,6 @@ namespace BizHawk.MultiClient
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			InitializeBindings();
 			tooltip1.AutoPopDelay = 2000;
-			FlagDuplicate("Ur mom's button");
 		}
 
 		public InputWidget(int maxBindings)

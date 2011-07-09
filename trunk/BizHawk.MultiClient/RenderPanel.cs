@@ -338,7 +338,6 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.DisplayInput)
 			{
-				string input = MakeLastInputDisplay();
 				Color c;
 				x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
 				y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
@@ -349,9 +348,8 @@ namespace BizHawk.MultiClient
 				else
 					c = Color.FromArgb(Global.Config.MessagesColor);
 
-				MessageFont.DrawString(null, input, x + 2, y + 2, new Color4(Color.Black));
-				MessageFont.DrawString(null, input, x + 1, y + 1, Color.FromArgb(Global.Config.LastInputColor));
-				input = MakeInputDisplay();
+				string input = MakeInputDisplay();
+				MessageFont.DrawString(null, input, x + 1, y + 1, Color.Black);
 				MessageFont.DrawString(null, input, x, y, c);
 			}
 			if (Global.MainForm.UserMovie.MultiTrack.IsActive)
@@ -484,14 +482,6 @@ namespace BizHawk.MultiClient
 		public string MakeInputDisplay()
 		{
 			string tmp = Global.GetOutputControllersAsMnemonic();
-			tmp = tmp.Replace(".", " ");
-			tmp = tmp.Replace("|", "");
-			return tmp;
-		}
-
-		public string MakeLastInputDisplay()
-		{
-			string tmp = Global.MainForm.wasPressed;
 			tmp = tmp.Replace(".", " ");
 			tmp = tmp.Replace("|", "");
 			return tmp;
