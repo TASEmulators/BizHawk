@@ -334,22 +334,22 @@ namespace BizHawk.MultiClient
 		private void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
 		}
 
 		private void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
-			PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.None;
+			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 		}
 
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
 			if (EmulatorPaused)
-				PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
 			else
-				PauseStrip.DisplayStyle = ToolStripItemDisplayStyle.None;
+				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 
 		}
 
