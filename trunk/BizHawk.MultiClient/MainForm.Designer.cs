@@ -1643,12 +1643,12 @@
 			// PauseStrip
 			// 
 			this.PauseStrip.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.PauseStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.None;
-			this.PauseStrip.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+			this.PauseStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PauseStrip.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
 			this.PauseStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.PauseStrip.Name = "PauseStrip";
 			this.PauseStrip.ShowDropDownArrow = false;
-			this.PauseStrip.Size = new System.Drawing.Size(4, 20);
+			this.PauseStrip.Size = new System.Drawing.Size(20, 20);
 			this.PauseStrip.Text = "toolStripDropDownButton1";
 			this.PauseStrip.ToolTipText = "Emulator is paused";
 			// 
