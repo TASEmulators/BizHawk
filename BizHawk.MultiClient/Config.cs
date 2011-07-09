@@ -104,6 +104,7 @@
 		public bool ShowContextMenu = true;
 		public bool EnableBackupMovies = true;
 		public bool HotkeyConfigAutoTab = true;
+		public bool InputConfigAutoTab = true;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
