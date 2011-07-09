@@ -39,6 +39,7 @@
 			this.SystemGroupBox = new System.Windows.Forms.GroupBox();
 			this.SystemComboBox = new System.Windows.Forms.ComboBox();
 			this.AllowLR = new System.Windows.Forms.CheckBox();
+			this.AutoTab = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.ControllerImage)).BeginInit();
 			this.ControllerSelectGroupBox.SuspendLayout();
 			this.SystemGroupBox.SuspendLayout();
@@ -47,7 +48,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(261, 309);
+			this.OK.Location = new System.Drawing.Point(261, 320);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -59,7 +60,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(351, 309);
+			this.Cancel.Location = new System.Drawing.Point(351, 320);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -72,9 +73,9 @@
 			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 68);
+			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
-			this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 264);
+			this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 259);
 			this.ButtonsGroupBox.TabIndex = 2;
 			this.ButtonsGroupBox.TabStop = false;
 			this.ButtonsGroupBox.Text = "Buttons";
@@ -84,7 +85,7 @@
 			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.ControllerImage.Location = new System.Drawing.Point(259, 73);
+			this.ControllerImage.Location = new System.Drawing.Point(259, 84);
 			this.ControllerImage.Name = "ControllerImage";
 			this.ControllerImage.Size = new System.Drawing.Size(169, 202);
 			this.ControllerImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -97,7 +98,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
 			this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
-			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 12);
+			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 28);
 			this.ControllerSelectGroupBox.Name = "ControllerSelectGroupBox";
 			this.ControllerSelectGroupBox.Size = new System.Drawing.Size(240, 50);
 			this.ControllerSelectGroupBox.TabIndex = 4;
@@ -130,7 +131,7 @@
 			// 
 			this.SystemGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SystemGroupBox.Controls.Add(this.SystemComboBox);
-			this.SystemGroupBox.Location = new System.Drawing.Point(259, 12);
+			this.SystemGroupBox.Location = new System.Drawing.Point(259, 28);
 			this.SystemGroupBox.Name = "SystemGroupBox";
 			this.SystemGroupBox.Size = new System.Drawing.Size(158, 50);
 			this.SystemGroupBox.TabIndex = 6;
@@ -158,18 +159,30 @@
 			// 
 			this.AllowLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AllowLR.AutoSize = true;
-			this.AllowLR.Location = new System.Drawing.Point(261, 286);
+			this.AllowLR.Location = new System.Drawing.Point(261, 297);
 			this.AllowLR.Name = "AllowLR";
 			this.AllowLR.Size = new System.Drawing.Size(107, 17);
 			this.AllowLR.TabIndex = 7;
 			this.AllowLR.Text = "Allow L+R / U+D";
 			this.AllowLR.UseVisualStyleBackColor = true;
 			// 
+			// AutoTab
+			// 
+			this.AutoTab.AutoSize = true;
+			this.AutoTab.Location = new System.Drawing.Point(19, 5);
+			this.AutoTab.Name = "AutoTab";
+			this.AutoTab.Size = new System.Drawing.Size(70, 17);
+			this.AutoTab.TabIndex = 8;
+			this.AutoTab.Text = "Auto Tab";
+			this.AutoTab.UseVisualStyleBackColor = true;
+			this.AutoTab.CheckedChanged += new System.EventHandler(this.AutoTab_CheckedChanged);
+			// 
 			// InputConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(440, 344);
+			this.ClientSize = new System.Drawing.Size(440, 355);
+			this.Controls.Add(this.AutoTab);
 			this.Controls.Add(this.AllowLR);
 			this.Controls.Add(this.SystemGroupBox);
 			this.Controls.Add(this.ControllerSelectGroupBox);
@@ -204,5 +217,6 @@
         private System.Windows.Forms.GroupBox SystemGroupBox;
         private System.Windows.Forms.ComboBox SystemComboBox;
         private System.Windows.Forms.CheckBox AllowLR;
+		private System.Windows.Forms.CheckBox AutoTab;
     }
 }

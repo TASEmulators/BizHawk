@@ -621,6 +621,8 @@ namespace BizHawk.MultiClient
 		}
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
+			AutoTab.Checked = Global.Config.InputConfigAutoTab;
+			SetAutoTab();
 			prevWidth = Size.Width;
 			prevHeight = Size.Height;
 			AllowLR.Checked = Global.Config.AllowUD_LR;
@@ -775,6 +777,24 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			Changed = false;
+		}
+
+		private void AutoTab_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.HotkeyConfigAutoTab = AutoTab.Checked;
+			SetAutoTab();
+		}
+
+		private void SetAutoTab()
+		{
+			for (int x = 0; x < ButtonsGroupBox.Controls.Count; x++)
+			{
+				if (ButtonsGroupBox.Controls[x] is InputWidget)
+				{
+					InputWidget w = ButtonsGroupBox.Controls[x] as InputWidget;
+					w.AutoTab = AutoTab.Checked;
+				}
+			}
 		}
 	}
 
