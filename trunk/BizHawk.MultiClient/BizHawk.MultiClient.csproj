@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BizHawk.MultiClient</RootNamespace>
     <AssemblyName>BizHawk.MultiClient</AssemblyName>
@@ -138,6 +138,7 @@
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="LogConsole.cs" />
     <Compile Include="movie\EditCommentsForm.cs">
       <SubType>Form</SubType>
     </Compile>
