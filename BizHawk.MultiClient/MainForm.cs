@@ -2422,5 +2422,10 @@ namespace BizHawk.MultiClient
 			c.GetMovie(UserMovie);
 			c.ShowDialog();
 		}
+
+		private void PauseStrip_Click(object sender, EventArgs e)
+		{
+			TogglePause();
+		}
 	}
 }
