@@ -130,16 +130,29 @@ namespace BizHawk.MultiClient
 		}
 
 		// Advances to the next widget or the next binding depending on the autotab setting
-		private void Increment()
+		public void Increment()
 		{
 			if (AutoTab)
 				this.Parent.SelectNextControl(this, true, true, true, true);
 			else
 			{
 				if (pos == MaxBind - 1)
-				    pos = 0;
+					pos = 0;
 				else
-				    pos++;
+					pos++;
+			}
+		}
+
+		public void Decrement()
+		{
+			if (AutoTab)
+				this.Parent.SelectNextControl(this, false, true, true, true);
+			else
+			{
+				if (pos == 0)
+					pos = MaxBind - 1;
+				else
+					pos--;
 			}
 		}
 
@@ -224,7 +237,16 @@ namespace BizHawk.MultiClient
 			}
 
 			base.WndProc(ref m);
-		}  
+		}
+
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			if (e.Delta > 0)
+				Decrement();
+			else
+				Increment();
+			base.OnMouseWheel(e);
+		}
 
 		protected override void OnGotFocus(EventArgs e)
 		{
