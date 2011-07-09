@@ -78,11 +78,25 @@ namespace BizHawk.MultiClient
 				if (TempBindingStr == "Alt+F4")
 					return;
 
-				Bindings[pos] = TempBindingStr;
-				wasPressed = TempBindingStr;
-				UpdateLabel();
-				Increment();
+				if (!IsDuplicate(TempBindingStr))
+				{
+					Bindings[pos] = TempBindingStr;
+					wasPressed = TempBindingStr;
+					UpdateLabel();
+					Increment();
+				}
 			}
+		}
+
+		public bool IsDuplicate(string binding)
+		{
+			for (int x = 0; x < MaxBind; x++)
+			{
+				if (Bindings[x] == binding)
+					return true;
+			}
+
+			return false;
 		}
 
 		protected override void OnKeyUp(KeyEventArgs e)
