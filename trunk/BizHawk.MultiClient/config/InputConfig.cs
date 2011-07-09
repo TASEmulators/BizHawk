@@ -80,7 +80,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (i * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
@@ -150,7 +150,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (i * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (i * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
@@ -285,7 +285,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(190, 20 + (c * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 				c++;
@@ -300,7 +300,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(348, 20 + (c * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 				c++;
@@ -501,7 +501,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (i * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
@@ -574,7 +574,7 @@ namespace BizHawk.MultiClient
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (i * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.Text = ButtonMappings[i];
+				TempTextBox.SetBindings(ButtonMappings[i]);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
