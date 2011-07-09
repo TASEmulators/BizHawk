@@ -194,11 +194,7 @@ namespace BizHawk.MultiClient
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			if (keyData == Keys.Tab)
-			{
-				ReadKeys();
-			}
-			return false;
+			return true;
 		}
 	}
 }
