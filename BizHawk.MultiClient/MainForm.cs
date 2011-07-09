@@ -44,7 +44,6 @@ namespace BizHawk.MultiClient
 		bool runloop_frameadvance;
 		DateTime runloop_second;
 		bool runloop_last_ff;
-		public string wasPressed = "";  //Last frame mnemonic
 
 		Throttle throttle = new Throttle();
 		bool unthrottled = false;
@@ -1203,8 +1202,6 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
-
-				wasPressed = Global.GetOutputControllersAsMnemonic();
 				PressFrameAdvance = false;
 			}
 			else
