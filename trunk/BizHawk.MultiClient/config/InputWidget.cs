@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.MultiClient
 {
@@ -16,11 +17,21 @@ namespace BizHawk.MultiClient
 		string[] Bindings = new string[4];
 		string wasPressed = "";
 		
+		[DllImport("user32")]
+		private static extern bool HideCaret(IntPtr hWnd);
+
 		public InputWidget()
 		{
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			InitializeBindings();
+		//	this.OnGotFocus
+		}
+
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			HideCaret(this.Handle);
+			base.OnMouseClick(e);
 		}
 
 		public InputWidget(int maxBindings)
@@ -44,7 +55,6 @@ namespace BizHawk.MultiClient
 		{
 			pos = 0;
 			timer.Start();
-			base.OnEnter(e);
 			Input.Update();
 			wasPressed = Input.GetPressedKey();
 		}
@@ -81,10 +91,10 @@ namespace BizHawk.MultiClient
 				if (!IsDuplicate(TempBindingStr))
 				{
 					Bindings[pos] = TempBindingStr;
-					wasPressed = TempBindingStr;
-					UpdateLabel();
-					Increment();
 				}
+				wasPressed = TempBindingStr;
+				UpdateLabel();
+				Increment();
 			}
 		}
 
@@ -182,7 +192,8 @@ namespace BizHawk.MultiClient
 
 		protected override void OnGotFocus(EventArgs e)
 		{
-			base.OnGotFocus(e);
+			//base.OnGotFocus(e);
+			HideCaret(this.Handle);
 			BackColor = Color.Pink;
 		}
 
