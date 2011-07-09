@@ -16,7 +16,11 @@ namespace BizHawk.MultiClient
 		public bool AutoTab = true;
 		string[] Bindings = new string[4];
 		string wasPressed = "";
-		
+		ToolTip tooltip1 = new ToolTip();
+		public string ButtonName;
+		Color HighlightedColor = Color.Pink;
+		Color RegularColor = SystemColors.Window;
+
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
 
@@ -25,13 +29,8 @@ namespace BizHawk.MultiClient
 			this.ContextMenu = new ContextMenu();
 			this.timer.Tick += new System.EventHandler(this.Timer_Tick);
 			InitializeBindings();
-		//	this.OnGotFocus
-		}
-
-		protected override void OnMouseClick(MouseEventArgs e)
-		{
-			HideCaret(this.Handle);
-			base.OnMouseClick(e);
+			tooltip1.AutoPopDelay = 2000;
+			FlagDuplicate("Ur mom's button");
 		}
 
 		public InputWidget(int maxBindings)
@@ -41,6 +40,28 @@ namespace BizHawk.MultiClient
 			MaxBind = maxBindings;
 			Bindings = new string[MaxBind];
 			InitializeBindings();
+			tooltip1.AutoPopDelay = 2000;
+		}
+
+		public void FlagDuplicate(string duplicateName)
+		{
+			RegularColor = Color.Cyan;
+			HighlightedColor = Color.Violet;
+			BackColor = RegularColor;
+			tooltip1.SetToolTip(this, "same mapping as " + duplicateName);
+		}
+
+		public void UnflagDuplicate()
+		{
+			HighlightedColor = Color.Pink;
+			RegularColor = SystemColors.Window;
+			tooltip1.SetToolTip(this, "");
+		}
+
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			HideCaret(this.Handle);
+			base.OnMouseClick(e);
 		}
 
 		private void InitializeBindings()
@@ -252,13 +273,14 @@ namespace BizHawk.MultiClient
 		{
 			//base.OnGotFocus(e);
 			HideCaret(this.Handle);
-			BackColor = Color.Pink;
+			BackColor = HighlightedColor;
 		}
 
 		protected override void OnLostFocus(EventArgs e)
 		{
+			UnflagDuplicate();
+			BackColor = RegularColor;
 			base.OnLostFocus(e);
-			BackColor = SystemColors.Window;
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
