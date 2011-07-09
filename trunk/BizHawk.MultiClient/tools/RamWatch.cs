@@ -239,7 +239,8 @@ namespace BizHawk.MultiClient
 			}
 			if (column == 3) //Change Counts
 			{
-				text = watchList[index].changecount.ToString();
+				if (watchList[index].type != atype.SEPARATOR)
+					text = watchList[index].changecount.ToString();
 			}
 			if (column == 4) //Notes
 			{
@@ -455,7 +456,8 @@ namespace BizHawk.MultiClient
 			if (r.userSelected == true)
 			{
 				watchList.Add(r.watch);
-				DisplayWatchList(); //TODO: Do I need these calls?
+				Changes();
+				DisplayWatchList();
 			}
 		}
 
