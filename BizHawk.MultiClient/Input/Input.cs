@@ -1,143 +1,187 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
 using SlimDX.DirectInput;
 
+//maybe todo - split into an event processor class (which can grab events from the main input class and be used to step through them independently)
+
 namespace BizHawk.MultiClient
 {
-	public static class Input
+	public class Input
 	{
+		public static Input Instance { get; private set; }
+		Thread UpdateThread;
+
+		private Input()
+		{
+			UpdateThread = new Thread(UpdateThreadProc);
+			UpdateThread.IsBackground = true;
+			UpdateThread.Start();
+		}
+
 		public static void Initialize()
 		{
 			KeyInput.Initialize();
 			GamePad.Initialize();
+			Instance = new Input();
 		}
 
-		public static void Update()
+		public enum InputEventType
 		{
-			KeyInput.Update();
-			GamePad.UpdateAll();
+			Press, Release
 		}
-
-		public static bool IsPressed(string control)
+		public struct LogicalButton
 		{
-            if (Global.Config.AcceptBackgroundInput == false && Form.ActiveForm == null)
-                return false; // application isn't active and background input is disabled
-
-            // Check joystick first, its easier
-            if (control.StartsWith("J1 ")) return GetGamePad(0, control.Substring(3));
-            if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
-            if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
-            if (control.StartsWith("J4 ")) return GetGamePad(3, control.Substring(3));
-
-            // Keyboard time. 
-            // Keyboard bindings are significantly less free-form than they were previously. 
-            // They are no longer just a list of keys which must be pressed simultaneously.
-            // Bindings are assumed to be in the form of 0, 1, 2, or 3 modifiers (Ctrl, Alt, Shift),
-            // plus one non-modifier key, which is at the end.
-            // It is not possible to bind to two non-modifier keys together as a chorded hotkey.
-
-
-		    int lastCombinerPosition = control.LastIndexOf('+');
-            if (lastCombinerPosition < 0)
-            {
-                // No modifiers in this key binding.
-
-                // Verify that no modifiers are currently pressed.
-                if (KeyInput.CtrlModifier || KeyInput.ShiftModifier || KeyInput.AltModifier)
-                    return false;
-
-                Key k = (Key) Enum.Parse(typeof (Key), control, true);
-                return KeyInput.IsPressed(k);
-            }
-
-            // 1 or more modifiers present in binding. First, lets identify the non-modifier key and check if it's pressed.
-		    string nonModifierString = control.Substring(lastCombinerPosition+1);
-            Key nonModifierKey = (Key)Enum.Parse(typeof(Key), nonModifierString, true);
-            if (KeyInput.IsPressed(nonModifierKey) == false)
-                return false; // non-modifier key isn't pressed anyway, exit out
-
-            // non-modifier key IS pressed, now we need to ensure the modifiers match exactly
-            if (control.Contains("Ctrl+") ^ KeyInput.CtrlModifier) return false;
-            if (control.Contains("Shift+") ^ KeyInput.ShiftModifier) return false;
-            if (control.Contains("Alt+") ^ KeyInput.AltModifier) return false;
-
-            // You have passed all my tests, you may consider yourself pressed.
-            // Man, I'm winded.
-		    return true;
-		}
-
-		private static bool IsPressedSingle(string control)
-		{
-			if (string.IsNullOrEmpty(control))
-				return false;
-
-			if (control.StartsWith("J1 ")) return GetGamePad(0, control.Substring(3));
-			if (control.StartsWith("J2 ")) return GetGamePad(1, control.Substring(3));
-			if (control.StartsWith("J3 ")) return GetGamePad(2, control.Substring(3));
-			if (control.StartsWith("J4 ")) return GetGamePad(3, control.Substring(3));
-
-			if (control.Contains("RightShift"))
-				control = control.Replace("RightShift", "LeftShift");
-			if (control.Contains("RightControl"))
-				control = control.Replace("RightControl", "LeftControl");
-			if (control.Contains("RightAlt"))
-				control = control.Replace("RightAlt", "LeftAlt");
-			if (control.Contains("Ctrl"))
-				control = control.Replace("Ctrl", "LeftControl");
-			
-			if (control.Contains("Shift") && control != "LeftShift")
-				control = control.Replace("Shift", "LeftShift");
-			if (control.Contains("Control") && control.Trim() != "LeftControl")
-				control = control.Replace("Control", "LeftControl");
-			if (control.Contains("Ctrl") && control.Trim() != "LeftControl")
-				control = control.Replace("Control", "LeftControl");
-			if (control.Contains("Alt") && control != "LeftAlt")
-				control = control.Replace("Alt", "LeftAlt");
-
-			Key k = (Key)Enum.Parse(typeof(Key), control, true);
-			return KeyInput.IsPressed(k);
-		}
-
-		private static bool GetGamePad(int index, string control)
-		{
-			if (index >= GamePad.Devices.Count)
-				return false;
-
-			if (control == "Up") return GamePad.Devices[index].Up;
-			if (control == "Down") return GamePad.Devices[index].Down;
-			if (control == "Left") return GamePad.Devices[index].Left;
-			if (control == "Right") return GamePad.Devices[index].Right;
-
-			if (control.StartsWith("B"))
+			public LogicalButton(string button, Keys modifiers)
 			{
-				int buttonIndex = int.Parse(control.Substring(1)) - 1;
-				if (buttonIndex >= GamePad.Devices[index].Buttons.Length)
-					return false;
-				return GamePad.Devices[index].Buttons[buttonIndex];
+				Button = button;
+				Modifiers = modifiers;
+			}
+			public string Button;
+			public Keys Modifiers;
+
+			public override string ToString()
+			{
+				string ret = "";
+				if ((Modifiers & Keys.Control) != 0) ret += "Ctrl+";
+				if ((Modifiers & Keys.Alt) != 0) ret += "Alt+";
+				if ((Modifiers & Keys.Shift) != 0) ret += "Shift+";
+				ret += Button;
+				return ret;
+			}
+		}
+		public class InputEvent
+		{
+			public LogicalButton LogicalButton;
+			public InputEventType EventType;
+		}
+
+		
+		//coalesces events back into instantaneous states
+		class InputCoalescer
+		{
+			public void Receive(InputEvent ie)
+			{
+				bool state = ie.EventType == InputEventType.Press;
+				State[ie.LogicalButton.ToString()] = state;
+				LogicalButton unmodified = ie.LogicalButton;
+				unmodified.Modifiers = Keys.None;
+				UnmodifiedState[unmodified.ToString()] = state;
 			}
 
-			return false;
+			public WorkingDictionary<string, bool> State = new WorkingDictionary<string, bool>();
+
+			public WorkingDictionary<string, bool> UnmodifiedState = new WorkingDictionary<string, bool>();
 		}
 
-		public static string GetPressedKey()
+		InputCoalescer Coalescer = new InputCoalescer();
+
+
+		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
+
+
+		HashSet<string> Ignore = new HashSet<string>(new[] { "LeftShift", "RightShift" });
+		void HandleButton(string button, bool newState)
 		{
-            // Poll Joystick input
-			for (int j = 0; j < GamePad.Devices.Count; j++)
+			if (Ignore.Contains(button)) return;
+			if (LastState[button] && newState) return;
+			if (!LastState[button] && !newState) return;
+
+			var ie = new InputEvent();
+			ie.EventType = newState ? InputEventType.Press : InputEventType.Release;
+			ie.LogicalButton = new LogicalButton(button, _Modifiers);
+			_NewEvents.Add(ie);
+			LastState[button] = newState;
+		}
+
+		Keys _Modifiers;
+		List<InputEvent> _NewEvents = new List<InputEvent>();
+
+		//TODO - maybe need clearevents for various purposes? maybe not.
+		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
+		public InputEvent DequeueEvent()
+		{
+			lock (this)
 			{
-                if (GamePad.Devices[j].Up)    return "J" + (j+1) + " Up";
-                if (GamePad.Devices[j].Down)  return "J" + (j+1) + " Down";
-                if (GamePad.Devices[j].Left)  return "J" + (j+1) + " Left";
-                if (GamePad.Devices[j].Right) return "J" + (j+1) + " Right";
-
-			    var buttons = GamePad.Devices[j].Buttons;
-                for (int b=0; b<buttons.Length; b++)
-                {
-                    if (buttons[b])
-                        return "J" + (j+1) + " B" + (b+1);
-                }
+				if (InputEvents.Count == 0) return null;
+				else return InputEvents.Dequeue();
 			}
+		}
+		void EnqueueEvent(InputEvent ie)
+		{
+			lock (this)
+			{
+				InputEvents.Enqueue(ie);
+				Coalescer.Receive(ie);
+			}
+		}
 
-		    return KeyInput.GetPressedKey();
+		public bool CheckState(string button) { lock (this) return Coalescer.State[button]; }
+		public bool CheckStateUnmodified(string button) { lock (this) return Coalescer.UnmodifiedState[button]; }
+
+		void UpdateThreadProc()
+		{
+			for(;;)
+			{
+				KeyInput.Update();
+				GamePad.UpdateAll();
+
+				_Modifiers = KeyInput.GetModifierKeysAsKeys();
+				_NewEvents.Clear();
+
+				//analyze keys
+				foreach (var key in KeyInput.State.PressedKeys) HandleButton(key.ToString(), true);
+				foreach (var key in KeyInput.State.ReleasedKeys) HandleButton(key.ToString(), false);
+				
+				//analyze joysticks
+				for (int i = 0; i < GamePad.Devices.Count; i++)
+				{
+					var pad = GamePad.Devices[i];
+					string jname = "J" + (i + 1) + " ";
+					HandleButton(jname + "Up", pad.Up);
+					HandleButton(jname + "Down", pad.Down);
+					HandleButton(jname + "Left", pad.Left);
+					HandleButton(jname + "Right", pad.Right);
+
+					for (int b = 0; b < pad.Buttons.Length; b++)
+						HandleButton(jname + "B" + (b + 1), pad.Buttons[b]);
+				}
+
+				bool swallow = (Global.Config.AcceptBackgroundInput == false && Form.ActiveForm == null);
+
+				foreach (var ie in _NewEvents)
+				{
+					//events are swallowed in some cases:
+					if (ie.EventType == InputEventType.Press && swallow)
+					{ }
+					else
+						EnqueueEvent(ie);
+				}
+
+				//arbitrary selection of polling frequency:
+				Thread.Sleep(10);
+			}
+		}
+
+
+		public void Update()
+		{
+			//TODO - for some reason, we may want to control when the next event processing step happens
+			//so i will leave this method here for now..
+		}
+
+		public bool IsPressed(string control)
+		{
+			return Instance.CheckState(control);
+		}
+
+		public string GetNextPressedButtonOrNull()
+		{
+			InputEvent ie = Instance.DequeueEvent();
+			if (ie == null) return null;
+			if (ie.EventType == InputEventType.Release) return null;
+			return ie.LogicalButton.ToString();
 		}
 	}
 }

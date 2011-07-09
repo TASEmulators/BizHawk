@@ -14,6 +14,20 @@ namespace BizHawk.MultiClient
 		private List<string> removeFromForcePressedButtons = new List<string>();
 		private List<string> programmaticallyPressedButtons = new List<string>();
 
+		public List<string> SearchBindings(string button)
+		{
+			var ret = new List<string>();
+			foreach (var kvp in bindings)
+			{
+				foreach (var bound_button in kvp.Value)
+				{
+					if (bound_button == button)
+						ret.Add(kvp.Key);
+				}
+			}
+			return ret;
+		}
+
 		public Controller(ControllerDefinition definition)
 		{
 			type = definition;
@@ -67,6 +81,7 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 
+			//zeromus - TODO - this is gross!!! 
 			if (Global.Config.AllowUD_LR == false)
 			{
 				string prefix;
@@ -93,7 +108,7 @@ namespace BizHawk.MultiClient
 			bool sticky = stickyButtons[button];
 
 			foreach (var control in bindings[button])
-				if (Input.IsPressed(control))
+				if (Input.Instance.IsPressed(control))
 					return sticky ? false : true;
 
 			return sticky ? true : false;

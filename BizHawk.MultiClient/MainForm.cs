@@ -314,7 +314,7 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-				Input.Update();
+				Input.Instance.Update();
 				CheckHotkeys();
 
 				StepRunLoop_Core();
@@ -956,27 +956,198 @@ namespace BizHawk.MultiClient
 		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
 		public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
 
+		void OnSelectSlot(int num)
+		{
+			SaveSlot = num;
+			SaveSlotSelectedMessage();
+			UpdateStatusSlots(); 
+		}
+
 		public void CheckHotkeys()
 		{
-			if (Global.ClientControls["ToolBox"])
+			for(;;)
 			{
-				LoadToolBox();
-				Global.ClientControls.UnpressButton("ToolBox");
-			}
+				var ie = Input.Instance.DequeueEvent();
+				if(ie == null) break;
 
-			if (Global.ClientControls["Quick Save State"])
-			{
-				if (!IsNullEmulator())
-					SaveState("QuickSave" + SaveSlot.ToString());
-				Global.ClientControls.UnpressButton("Quick Save State");
-			}
+				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-			if (Global.ClientControls["Quick Load State"])
-			{
-				if (!IsNullEmulator())
-					LoadState("QuickSave" + SaveSlot.ToString());
-				Global.ClientControls.UnpressButton("Quick Load State");
-			}
+				//TODO - deal with these later somehow
+				if(ie.EventType == Input.InputEventType.Release) return;
+
+				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				foreach(var trigger in triggers)
+				{
+					//todo - could have these in a table somehow ?
+					switch (trigger)
+					{
+						case "ToolBox":
+							LoadToolBox();
+							break;
+						
+						case "Quick Save State":
+							if (!IsNullEmulator())
+								SaveState("QuickSave" + SaveSlot.ToString());
+							break;
+
+						case "Quick Load State":
+							if (!IsNullEmulator())
+								LoadState("QuickSave" + SaveSlot.ToString());
+							break;
+
+						case "Unthrottle":
+							unthrottled ^= true;
+							Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
+							break;
+
+						case "Hard Reset":
+							LoadRom(CurrentlyOpenRom);
+							break;
+
+						case "Screenshot":
+							TakeScreenshot();
+							break;
+
+						case "SaveSlot0": if (!IsNullEmulator()) SaveState("QuickSave0"); break;
+						case "SaveSlot1": if (!IsNullEmulator()) SaveState("QuickSave1"); break;
+						case "SaveSlot2": if (!IsNullEmulator()) SaveState("QuickSave2"); break;
+						case "SaveSlot3": if (!IsNullEmulator()) SaveState("QuickSave3"); break;
+						case "SaveSlot4": if (!IsNullEmulator()) SaveState("QuickSave4"); break;
+						case "SaveSlot5": if (!IsNullEmulator()) SaveState("QuickSave5"); break;
+						case "SaveSlot6": if (!IsNullEmulator()) SaveState("QuickSave6"); break;
+						case "SaveSlot7": if (!IsNullEmulator()) SaveState("QuickSave7"); break;
+						case "SaveSlot8": if (!IsNullEmulator()) SaveState("QuickSave8"); break;
+						case "SaveSlot9": if (!IsNullEmulator()) SaveState("QuickSave9"); break;
+						case "LoadSlot0": if (!IsNullEmulator()) LoadState("QuickSave0"); break;
+						case "LoadSlot1": if (!IsNullEmulator()) LoadState("QuickSave1"); break;
+						case "LoadSlot2": if (!IsNullEmulator()) LoadState("QuickSave2"); break;
+						case "LoadSlot3": if (!IsNullEmulator()) LoadState("QuickSave3"); break;
+						case "LoadSlot4": if (!IsNullEmulator()) LoadState("QuickSave4"); break;
+						case "LoadSlot5": if (!IsNullEmulator()) LoadState("QuickSave5"); break;
+						case "LoadSlot6": if (!IsNullEmulator()) LoadState("QuickSave6"); break;
+						case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
+						case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
+						case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
+						case "SelectSlot0": OnSelectSlot(0); break;
+						case "SelectSlot1": OnSelectSlot(1); break;
+						case "SelectSlot2": OnSelectSlot(2); break;
+						case "SelectSlot3": OnSelectSlot(3); break;
+						case "SelectSlot4": OnSelectSlot(4); break;
+						case "SelectSlot5": OnSelectSlot(5); break;
+						case "SelectSlot6": OnSelectSlot(6); break;
+						case "SelectSlot7": OnSelectSlot(7); break;
+						case "SelectSlot8": OnSelectSlot(8); break;
+						case "SelectSlot9": OnSelectSlot(9); break;
+
+						case "Toggle Fullscreen": ToggleFullscreen(); break;
+						case "Save Named State": SaveStateAs(); break;
+						case "Load Named State": LoadStateAs(); break;
+						case "Previous Slot": PreviousSlot(); break;
+						case "Next Slot": NextSlot(); break;
+						case "Ram Watch": LoadRamWatch(); break;
+						case "Ram Search": LoadRamSearch(); break;
+						case "Ram Poke":
+							{
+								RamPoke r = new RamPoke();
+								r.Show();
+								break;
+							}
+						case "Hex Editor": LoadHexEditor(); break;
+						case "Lua Console":
+							{
+								var window = new BizHawk.MultiClient.tools.LuaWindow();
+								window.Show();
+								break;
+							}
+						case "Cheats": LoadCheatsWindow(); break;
+						case "Open ROM":
+							{
+								OpenROM();
+								break;
+							}
+
+						case "Close ROM": CloseROM(); break;
+					
+						case "Display FPS": ToggleFPS(); break;
+
+						case "Display FrameCounter": ToggleFrameCounter(); break;
+						case "Display LagCounter": ToggleLagCounter(); break;
+						case "Display Input": ToggleInputDisplay(); break;
+						case "Toggle Read Only": ToggleReadOnly(); break;
+						case "Play Movie": 
+							{
+								PlayMovie();
+								break;
+							}
+						case "Record Movie":
+							{
+								RecordMovie();
+								break;
+							}
+
+						case "Stop Movie": StopUserMovie(); break;
+						case "Play Beginning": PlayMovieFromBeginning(); break;
+						case "Volume Up": VolumeUp(); break;
+						case "Volume Down": VolumeDown(); break;
+						case "Soft Reset": SoftReset(); break;
+
+						case "Toggle MultiTrack":
+							{
+								Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
+								if (Global.MainForm.UserMovie.MultiTrack.IsActive)
+								{
+									Global.RenderPanel.AddMessage("MultiTrack Enabled");
+									Global.RenderPanel.MT = "Recording None";
+								}
+								else
+								Global.RenderPanel.AddMessage("MultiTrack Disabled");
+								Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+								Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+								break;
+							}
+						case "Increment Player":
+							{
+								Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
+								Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+								if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+								{
+									Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
+								}
+								Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+								break;
+							}
+
+						case "Decrement Player":
+							{
+								Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
+								Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+								if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
+								{
+									Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+								}
+								Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+								break;
+							}
+						case "Record All":
+							{
+								Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+								Global.MainForm.UserMovie.MultiTrack.RecordAll = true;
+								Global.RenderPanel.MT = "Recording All";
+								break;
+							}
+						case "Record None":
+							{
+								Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+								Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+								Global.RenderPanel.MT = "Recording None"; 
+								break;
+							}
+
+					} //switch(trigger)
+				
+				} //foreach triggered hotkey
+			
+			} //foreach event
 
 			//the pause hotkey is ignored when we are frame advancing
 			if (!Global.ClientControls.IsPressed("Frame Advance"))
@@ -991,258 +1162,6 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (Global.ClientControls.IsPressed("Unthrottle"))
-			{
-				Global.ClientControls.UnpressButton("Unthrottle");
-				unthrottled ^= true;
-				Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
-			}
-
-			if (Global.ClientControls["Hard Reset"])
-			{
-				Global.ClientControls.UnpressButton("Hard Reset");
-				LoadRom(CurrentlyOpenRom);
-			}
-
-			if (Global.ClientControls["Screenshot"])
-			{
-				Global.ClientControls.UnpressButton("Screenshot");
-				TakeScreenshot();
-			}
-
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["SaveSlot" + i.ToString()])
-				{
-					if (!IsNullEmulator())
-						SaveState("QuickSave" + i.ToString());
-					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
-					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
-				}
-			}
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["LoadSlot" + i.ToString()])
-				{
-					if (!IsNullEmulator())
-						LoadState("QuickSave" + i.ToString());
-					Global.ClientControls.UnpressButton("LoadSlot" + i.ToString());
-					Global.ClientControls.UnpressButton("SaveSlot" + i.ToString());
-				}
-			}
-			for (int i = 0; i < 10; i++)
-			{
-				if (Global.ClientControls["SelectSlot" + i.ToString()])
-				{
-					SaveSlot = i;
-					SaveSlotSelectedMessage();
-					UpdateStatusSlots();
-					Global.ClientControls.UnpressButton("SelectSlot" + i.ToString());
-				}
-			}
-
-			if (Global.ClientControls["Toggle Fullscreen"])
-			{
-				Global.ClientControls.UnpressButton("Toggle Fullscreen");
-				ToggleFullscreen();
-			}
-
-			if (Global.ClientControls["Save Named State"])
-			{
-				SaveStateAs();
-				Global.ClientControls.UnpressButton("Save Named State");
-			}
-
-			if (Global.ClientControls["Load Named State"])
-			{
-				LoadStateAs();
-				Global.ClientControls.UnpressButton("Load Named State");
-			}
-
-			if (Global.ClientControls["Previous Slot"])
-			{
-				PreviousSlot();
-				Global.ClientControls.UnpressButton("Previous Slot");
-			}
-
-			if (Global.ClientControls["Next Slot"])
-			{
-				NextSlot();
-				Global.ClientControls.UnpressButton("Next Slot");
-			}
-
-			if (Global.ClientControls["Ram Watch"])
-			{
-				LoadRamWatch();
-				Global.ClientControls.UnpressButton("Ram Watch");
-			}
-
-			if (Global.ClientControls["Ram Search"])
-			{
-				LoadRamSearch();
-				Global.ClientControls.UnpressButton("Ram Search");
-			}
-
-			if (Global.ClientControls["Ram Poke"])
-			{
-				RamPoke r = new RamPoke();
-				r.Show();
-				Global.ClientControls.UnpressButton("Ram Poke");
-			}
-
-			if (Global.ClientControls["Hex Editor"])
-			{
-				LoadHexEditor();
-				Global.ClientControls.UnpressButton("Hex Editor");
-			}
-
-			if (Global.ClientControls["Lua Console"])
-			{
-				var window = new BizHawk.MultiClient.tools.LuaWindow();
-				window.Show();
-				Global.ClientControls.UnpressButton("Lua Console");
-			}
-
-			if (Global.ClientControls["Cheats"])
-			{
-				LoadCheatsWindow();
-				Global.ClientControls.UnpressButton("Cheats");
-			}
-
-			if (Global.ClientControls["Open ROM"])
-			{
-				OpenROM();
-				Global.ClientControls.UnpressButton("Open ROM");
-			}
-
-			if (Global.ClientControls["Close ROM"])
-			{
-				CloseROM();
-				Global.ClientControls.UnpressButton("Close ROM");
-			}
-			//"Display LagCounter", "Display Input"}
-			if (Global.ClientControls["Display FPS"])
-			{
-				ToggleFPS();
-				Global.ClientControls.UnpressButton("Display FPS");
-			}
-
-			if (Global.ClientControls["Display FrameCounter"])
-			{
-				ToggleFrameCounter();
-				Global.ClientControls.UnpressButton("Display FrameCounter");
-			}
-
-			if (Global.ClientControls["Display LagCounter"])
-			{
-				ToggleLagCounter();
-				Global.ClientControls.UnpressButton("Display LagCounter");
-			}
-
-			if (Global.ClientControls["Display Input"])
-			{
-				ToggleInputDisplay();
-				Global.ClientControls.UnpressButton("Display Input");
-			}
-
-			if (Global.ClientControls["Toggle Read Only"])
-			{
-				ToggleReadOnly();
-				Global.ClientControls.UnpressButton("Toggle Read Only");
-			}
-
-			if (Global.ClientControls["Play Movie"])
-			{
-				PlayMovie();
-				Global.ClientControls.UnpressButton("Play Movie");
-			}
-
-			if (Global.ClientControls["Record Movie"])
-			{
-				RecordMovie();
-				Global.ClientControls.UnpressButton("Record Movie");
-			}
-
-			if (Global.ClientControls["Stop Movie"])
-			{
-				StopUserMovie();
-				Global.ClientControls.UnpressButton("Stop Movie");
-			}
-
-			if (Global.ClientControls["Play Beginning"])
-			{
-				PlayMovieFromBeginning();
-				Global.ClientControls.UnpressButton("Play Beginning");
-			}
-
-			if (Global.ClientControls["Volume Up"])
-			{
-				VolumeUp();
-				Global.ClientControls.UnpressButton("Volume Up");
-			}
-
-			if (Global.ClientControls["Volume Down"])
-			{
-				VolumeDown();
-				Global.ClientControls.UnpressButton("Volume Down");
-			}
-
-			if (Global.ClientControls["Soft Reset"])
-			{
-				SoftReset();
-				Global.ClientControls.UnpressButton("Soft Reset");
-			}
-
-			if (Global.ClientControls["Toggle MultiTrack"])
-			{
-				Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
-				if (Global.MainForm.UserMovie.MultiTrack.IsActive)
-				{
-					Global.RenderPanel.AddMessage("MultiTrack Enabled");
-					Global.RenderPanel.MT = "Recording None";
-				}
-				else
-				Global.RenderPanel.AddMessage("MultiTrack Disabled");
-				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-				Global.ClientControls.UnpressButton("Toggle MultiTrack");
-			}
-			if (Global.ClientControls["Increment Player"])
-			{
-				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
-				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-				if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
-				{
-					Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
-				}
-				Global.ClientControls.UnpressButton("Increment Player");
-				Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
-			}
-			if (Global.ClientControls["Decrement Player"])
-			{
-				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
-				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-				if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
-				{
-					Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
-				}
-				Global.ClientControls.UnpressButton("Decrement Player");
-				Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
-			}
-			if (Global.ClientControls["Record All"])
-			{
-				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-				Global.MainForm.UserMovie.MultiTrack.RecordAll = true;
-				Global.ClientControls.UnpressButton("Record All");
-				Global.RenderPanel.MT = "Recording All";
-			}
-			if (Global.ClientControls["Record None"])
-			{
-				Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-				Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-				Global.ClientControls.UnpressButton("Record None");
-				Global.RenderPanel.MT = "Recording None"; 
-			}
 		}
 
 		void StepRunLoop_Throttle()
