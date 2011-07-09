@@ -295,8 +295,8 @@
 
 		// Client Hotkey Bindings
 		public string HardResetBinding = "Ctrl+R";
-		public string FastForwardBinding = "J1 B6, Tab";
-		public string RewindBinding = "J1 B5, Shift+R";
+		public string FastForwardBinding = "Tab, J1 B6";
+		public string RewindBinding = "Shift+R, J1 B5";
 		public string EmulatorPauseBinding = "Pause";
 		public string FrameAdvanceBinding = "F";
 		public string TurboBinding = "Shift+Tab";
@@ -370,22 +370,22 @@
 		public bool SmsAllowOverlock = false;
 		public bool SmsForceStereoSeparation = false;
 
-		public string SmsReset = "R";
-		public string SmsPause = "J1 B8, Space";
+		public string SmsReset = "C";
+		public string SmsPause = "V, J1 B8";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 
 		// PCEngine Settings
 		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-		public string GenP1Up = "J1 Up, UpArrow";
-		public string GenP1Down = "J1 Down, DownArrow";
-		public string GenP1Left = "J1 Left, LeftArrow";
-		public string GenP1Right = "J1 Right, RightArrow";
-		public string GenP1A = "J1 B1, Z";
-		public string GenP1B = "J1 B3, X";
-		public string GenP1C = "J1 B4, C";
-		public string GenP1Start = "J1 B8, Return";
+		public string GenP1Up = "UpArrow, J1 Up";
+		public string GenP1Down = "DownArrow, J1 Down";
+		public string GenP1Left = "LeftArrow, J1 Left";
+		public string GenP1Right = "RightArrow, J1 Right";
+		public string GenP1A = "Z, J1 B1";
+		public string GenP1B = "X, J1 B3";
+		public string GenP1C = "C, J1 B4";
+		public string GenP1Start = "Return, J1 B8";
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -416,12 +416,12 @@
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "J1 Up, UpArrow";
-				Down = "J1 Down, DownArrow";
-				Left = "J1 Left, LeftArrow";
-				Right = "J1 Right, RightArrow";
-				B1 = "J1 B1, Z";
-				B2 = "J1 B2, X";
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				B1 = "Z, J1 B1";
+				B2 = "X, J1 B2";
 			}
 			else
 			{
@@ -453,14 +453,14 @@
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "J1 Up, UpArrow";
-				Down = "J1 Down, DownArrow";
-				Left = "J1 Left, LeftArrow";
-				Right = "J1 Right, RightArrow";
-				I = "J1 B1, X";
-				II = "J1 B2, Z";
-				Run = "J1 B8, C";
-				Select = "J1 B7, V";
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				I = "X, J1 B1";
+				II = "Z, J1 B2";
+				Run = "C, J1 B8";
+				Select = "V, J1 B7";
 			}
 			else
 			{
@@ -494,14 +494,14 @@
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "J1 Up, UpArrow";
-				Down = "J1 Down, DownArrow";
-				Left = "J1 Left, LeftArrow";
-				Right = "J1 Right, RightArrow";
-				A = "J1 B2, X";
-				B = "J1 B1, Z";
-				Start = "J1 B8, Return";
-				Select = "J1 B7, Space";
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				A = "X, J1 B2";
+				B = "Z, J1 B1";
+				Start = "Return, J1 B8";
+				Select = "Space, J1 B7";
 			}
 			else
 			{
@@ -535,14 +535,14 @@
 			if (defaults)
 			{
 				Enabled = true;
-				Up = "J1 Up, UpArrow";
-				Down = "J1 Down, DownArrow";
-				Left = "J1 Left, LeftArrow";
-				Right = "J1 Right, RightArrow";
-				A = "J1 B2, X";
-				B = "J1 B1, Z";
-				Start = "J1 B8, Return";
-				Select = "J1 B7, Space";
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				A = "X, J1 B2";
+				B = "Z, J1 B1";
+				Start = "Return, J1 B8";
+				Select = "Space, J1 B7";
 			}
 			else
 			{
