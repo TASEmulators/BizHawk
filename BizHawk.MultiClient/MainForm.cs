@@ -69,7 +69,13 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			InitializeComponent();
-			UpdateStatusSlots();
+            if (Global.Config.ShowLogWindow)
+            {
+                LogConsole.ShowConsole();
+                displayLogWindowToolStripMenuItem.Checked = true;
+            }
+
+		    UpdateStatusSlots();
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>

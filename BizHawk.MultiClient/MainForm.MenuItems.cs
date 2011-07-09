@@ -1,16 +1,8 @@
 using System;
-using System.Threading;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using BizHawk.Core;
-using BizHawk.Emulation.Consoles.Sega;
-using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
-using BizHawk.Emulation.Consoles.Gameboy;
-using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
@@ -915,5 +907,15 @@ namespace BizHawk.MultiClient
 		{
 			StopUserMovie();
 		}
+
+        private void displayLogWindowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.ShowLogWindow ^= true;
+            displayLogWindowToolStripMenuItem.Checked = Global.Config.ShowLogWindow;
+            if (Global.Config.ShowLogWindow)
+                LogConsole.ShowConsole();
+            else
+                LogConsole.HideConsole();
+        }
 	}
 }
