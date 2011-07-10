@@ -139,6 +139,7 @@ namespace BizHawk.MultiClient
 				UserMovie.StopMovie();
 				Global.MovieMode = false;
 				Global.RenderPanel.AddMessage(message);
+				SetMainformMovieInfo();
 			}
 		}
 

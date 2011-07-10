@@ -744,4 +744,10 @@
   <data name="Blank" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Blank.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="GreenCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\GreenCheck.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RecordHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\RecordHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
