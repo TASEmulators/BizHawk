@@ -38,6 +38,8 @@ namespace BizHawk.MultiClient
 		//the "output" port for the controller chain. 
 		public static IController ControllerOutput;
 
+		public static Input.InputCoalescer InputCoalescer;
+
 		public static string GetOutputControllersAsMnemonic()
 		{
 			MnemonicsGenerator mg = new MnemonicsGenerator();

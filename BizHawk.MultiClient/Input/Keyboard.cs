@@ -62,27 +62,6 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
-		public static string GetPressedKey()
-		{
-			if (state.PressedKeys.Count == 0)
-				return null;
-
-		    Key? key = null;
-            for (int i=0; i<state.PressedKeys.Count; i++)
-            {
-                if (state.PressedKeys[i].IsModifier())
-                    continue;
-                key = state.PressedKeys[i];
-                break;
-            }
-
-            if (key == null)
-                return null;
-
-		    string keystr = GetModifierKeys() ?? "";
-		    return keystr + key;
-		}
-
 	    public static bool ShiftModifier
 	    {
 	        get
@@ -113,24 +92,15 @@ namespace BizHawk.MultiClient
             }
         }
 
-		public static System.Windows.Forms.Keys GetModifierKeysAsKeys()
+		public static Input.ModifierKey GetModifierKeysAsKeys()
 		{
-			System.Windows.Forms.Keys ret = System.Windows.Forms.Keys.None;
-			if (ShiftModifier) ret |= System.Windows.Forms.Keys.Shift;
-			if (CtrlModifier) ret |= System.Windows.Forms.Keys.Control;
-			if (AltModifier) ret |= System.Windows.Forms.Keys.Alt;
+			Input.ModifierKey ret = Input.ModifierKey.None;
+			if (ShiftModifier) ret |= Input.ModifierKey.Shift;
+			if (CtrlModifier) ret |= Input.ModifierKey.Control;
+			if (AltModifier) ret |= Input.ModifierKey.Alt;
 			return ret;
 		}
 
-        public static string GetModifierKeys()
-        {
-            StringBuilder sb = new StringBuilder(16);
-            if (ShiftModifier) sb.Append("Shift+");
-            if (CtrlModifier) sb.Append("Ctrl+");
-            if (AltModifier) sb.Append("Alt+");
-            if (sb.Length == 0) return null;
-            return sb.ToString();
-        }
 	}
 
     internal static class KeyExtensions

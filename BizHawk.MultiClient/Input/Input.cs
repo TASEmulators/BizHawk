@@ -8,8 +8,42 @@ using SlimDX.DirectInput;
 
 namespace BizHawk.MultiClient
 {
+
 	public class Input
 	{
+		public enum ModifierKey
+		{
+			// Summary:
+			//     The bitmask to extract modifiers from a key value.
+			Modifiers = -65536,
+			//
+			// Summary:
+			//     No key pressed.
+			None = 0,
+			//
+			// Summary:
+			//     The SHIFT modifier key.
+			Shift = 65536,
+			//
+			// Summary:
+			//     The CTRL modifier key.
+			Control = 131072,
+			//
+			// Summary:
+			//     The ALT modifier key.
+			Alt = 262144,
+		}
+
+		//coalesces events back into instantaneous states
+		public class InputCoalescer : SimpleController
+		{
+			public void Receive(Input.InputEvent ie)
+			{
+				bool state = ie.EventType == InputEventType.Press;
+				Buttons[ie.LogicalButton.ToString()] = state;
+			}
+		}
+
 		public static Input Instance { get; private set; }
 		Thread UpdateThread;
 
@@ -33,20 +67,20 @@ namespace BizHawk.MultiClient
 		}
 		public struct LogicalButton
 		{
-			public LogicalButton(string button, Keys modifiers)
+			public LogicalButton(string button, ModifierKey modifiers)
 			{
 				Button = button;
 				Modifiers = modifiers;
 			}
 			public string Button;
-			public Keys Modifiers;
+			public ModifierKey Modifiers;
 
 			public override string ToString()
 			{
 				string ret = "";
-				if ((Modifiers & Keys.Control) != 0) ret += "Ctrl+";
-				if ((Modifiers & Keys.Alt) != 0) ret += "Alt+";
-				if ((Modifiers & Keys.Shift) != 0) ret += "Shift+";
+				if ((Modifiers & ModifierKey.Control) != 0) ret += "Ctrl+";
+				if ((Modifiers & ModifierKey.Alt) != 0) ret += "Alt+";
+				if ((Modifiers & ModifierKey.Shift) != 0) ret += "Shift+";
 				ret += Button;
 				return ret;
 			}
@@ -57,24 +91,7 @@ namespace BizHawk.MultiClient
 			public InputEventType EventType;
 		}
 
-		
-		//coalesces events back into instantaneous states
-		class InputCoalescer
-		{
-			public void Receive(InputEvent ie)
-			{
-				bool state = ie.EventType == InputEventType.Press;
-				State[ie.LogicalButton.ToString()] = state;
-				LogicalButton unmodified = ie.LogicalButton;
-				unmodified.Modifiers = Keys.None;
-				UnmodifiedState[unmodified.ToString()] = state;
-			}
-
-			public WorkingDictionary<string, bool> State = new WorkingDictionary<string, bool>();
-
-			public WorkingDictionary<string, bool> UnmodifiedState = new WorkingDictionary<string, bool>();
-		}
-
+	
 		InputCoalescer Coalescer = new InputCoalescer();
 
 
@@ -95,7 +112,7 @@ namespace BizHawk.MultiClient
 			LastState[button] = newState;
 		}
 
-		Keys _Modifiers;
+		ModifierKey _Modifiers;
 		List<InputEvent> _NewEvents = new List<InputEvent>();
 
 		//TODO - maybe need clearevents for various purposes? maybe not.
@@ -117,8 +134,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public bool CheckState(string button) { lock (this) return Coalescer.State[button]; }
-		public bool CheckStateUnmodified(string button) { lock (this) return Coalescer.UnmodifiedState[button]; }
+		public bool CheckState(string button) { lock (this) return Coalescer.IsPressed(button); }
 
 		void UpdateThreadProc()
 		{

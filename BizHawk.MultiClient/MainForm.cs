@@ -280,10 +280,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		bool _HACK_KEY_FF;
+
 		void SyncThrottle()
 		{
 			throttle.signal_unthrottle = unthrottled;
-			if (Global.ClientControls["Fast Forward"])
+			if (_HACK_KEY_FF)
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
 			else
 				throttle.SetSpeedPercent(Global.Config.SpeedPercent);
@@ -775,6 +777,8 @@ namespace BizHawk.MultiClient
 		void RewireInputChain()
 		{
 			//insert turbo and lua here?
+			Global.InputCoalescer = new Input.InputCoalescer();
+			Global.InputCoalescer.Type = Global.ActiveController.Type;
 			Global.MultitrackRewiringControllerAdapter.Source = Global.ActiveController;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.MovieControllerAdapter.SetSource(Global.MovieInputSourceAdapter);
@@ -972,11 +976,26 @@ namespace BizHawk.MultiClient
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				//TODO - deal with these later somehow
-				if(ie.EventType == Input.InputEventType.Release) return;
-
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
+				if (triggers.Count == 0)
+				{
+					//no hotkeys or player inputs bound this, so mutate it to an unmodified key
+					var mutated_ie = new Input.InputEvent();
+					mutated_ie.EventType = ie.EventType;
+					mutated_ie.LogicalButton = ie.LogicalButton;
+					mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
+					Global.InputCoalescer.Receive(mutated_ie);
+				}
 				foreach(var trigger in triggers)
 				{
+					if(trigger == "Fast Forward")
+					{
+						_HACK_KEY_FF = ie.EventType == Input.InputEventType.Press;
+						continue;
+					}
+
+					if(ie.EventType == Input.InputEventType.Release) continue;
+
 					//todo - could have these in a table somehow ?
 					switch (trigger)
 					{
@@ -1148,18 +1167,19 @@ namespace BizHawk.MultiClient
 			
 			} //foreach event
 
+			//TODO - 
 			//the pause hotkey is ignored when we are frame advancing
-			if (!Global.ClientControls.IsPressed("Frame Advance"))
-			{
-				if (Global.ClientControls["Emulator Pause"])
-				{
-					Global.ClientControls.UnpressButton("Emulator Pause");
-					if (EmulatorPaused)
-						UnpauseEmulator();
-					else
-						PauseEmulator();
-				}
-			}
+			//if (!Input.Instance.IsPressed("Frame Advance"))
+			//{
+			//    if (Global.ClientControls["Emulator Pause"])
+			//    {
+			//        Global.ClientControls.UnpressButton("Emulator Pause");
+			//        if (EmulatorPaused)
+			//            UnpauseEmulator();
+			//        else
+			//            PauseEmulator();
+			//    }
+			//}
 
 		}
 
@@ -1243,7 +1263,7 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				runloop_fps++;
-				bool ff = Global.ClientControls["Fast Forward"];
+				bool ff = _HACK_KEY_FF;
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
 
@@ -1267,6 +1287,7 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
+				Global.ActiveController.LatchFromPhysical(Global.InputCoalescer);
 
 				if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
 				{

@@ -4,6 +4,18 @@ using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
+
+	public class SimpleController : IController
+	{
+		public ControllerDefinition Type { get; set; }
+
+		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
+		public bool this[string button] { get { return Buttons[button]; } set { Buttons[button] = value; } }
+		public bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+	}
+
 	public class MnemonicsGenerator
 	{
 		IController Source;
