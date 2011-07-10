@@ -292,6 +292,9 @@
 		public bool UseDefaultAuthor = true;
 		public bool DisplaySubtitles = true;
 
+		//Play Movie Dialog
+		public bool PlayMovie_IncludeSubdir = true;
+
 		//TI83
 		public bool TI83disableSaveSlotKeys = true;
 		public bool TI83autoloadKeyPad = true;
