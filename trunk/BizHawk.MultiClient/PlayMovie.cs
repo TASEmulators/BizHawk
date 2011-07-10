@@ -12,11 +12,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		//TODO: after browse & update, focus on the movie just added, and show stats
+		//Highlight movie on load that maches rom name
 		// Option to include subdirectories
 		// Option to include savestate files (that have an input log)
-		//AddMovieToList should check for duplicates and not add them
-
+		
 		List<Movie> MovieList = new List<Movie>();
 		bool sortReverse;
 		string sortedCol;
@@ -56,7 +55,8 @@ namespace BizHawk.MultiClient
 
 		private void Run()
 		{
-			//TODO: check for selected index!
+			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
+			if (indexes.Count == 0) return;
 			Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
@@ -83,30 +83,47 @@ namespace BizHawk.MultiClient
 					return;
 				else
 				{
-					AddMovieToList(ofd.FileName);
+					int x = AddMovieToList(ofd.FileName);
+					if (x > 0)
+					{
+						MovieView.SelectedIndices.Clear();
+						MovieView.setSelection(x);
+						MovieView.SelectItem(x, true);
+					}
 				}
-				MovieView.SelectedIndices.Clear();
-				MovieView.setSelection(MovieList.Count - 1);
-				MovieView.SelectItem(MovieView.Items.Count - 1, true);
 			}
 		}
 
-		private void AddMovieToList(string filename)
+		private int AddMovieToList(string filename)
 		{
 			using (var file = new HawkFile(filename))
 			{
 				if (!file.Exists)
-					return;
+					return 0;
 				else
 				{
-					PreLoadMovieFile(file);
-					MovieView.ItemCount = MovieList.Count;
-					UpdateList();
-					
-					sortReverse = false;
-					sortedCol = "";
+					int x = IsDuplicate(filename);
+					if (x == 0)
+					{
+						PreLoadMovieFile(file);
+						MovieView.ItemCount = MovieList.Count;
+						UpdateList();
+
+						sortReverse = false;
+						sortedCol = "";
+						x = MovieList.Count - 1;
+					}
+					return x;
 				}
 			}
+		}
+
+		private int IsDuplicate(string filename)
+		{
+			for (int x = 0; x < MovieList.Count; x++)
+				if (MovieList[x].GetFilePath() == filename)
+					return x;
+			return 0;
 		}
 
 		private void PreLoadMovieFile(HawkFile path)
@@ -176,7 +193,8 @@ namespace BizHawk.MultiClient
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			//TODO: check for selected index first!
+			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
+			if (indexes.Count == 0) return;
 			EditCommentsForm c = new EditCommentsForm();
 			c.ReadOnly = true;
 			c.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
@@ -185,7 +203,8 @@ namespace BizHawk.MultiClient
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			//TODO: check for selected index first!
+			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
+			if (indexes.Count == 0) return;
 			EditSubtitlesForm s = new EditSubtitlesForm();
 			s.ReadOnly = true;
 			s.GetMovie(MovieList[MovieView.SelectedIndices[0]]);
