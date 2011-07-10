@@ -326,7 +326,6 @@ namespace BizHawk.MultiClient
 		public void DrawScreenInfo()
 		{
 			int x, y;
-			//TODO: If movie loaded use that frame counter, and also display total movie frame count if read-only
 			if (Global.Config.DisplayFrameCounter)
 			{
 				x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor);
@@ -343,7 +342,7 @@ namespace BizHawk.MultiClient
 				y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
 				if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
 				{
-					c = Color.Gray;
+					c = Color.FromArgb(Global.Config.MovieInput);
 				}
 				else
 					c = Color.FromArgb(Global.Config.MessagesColor);
