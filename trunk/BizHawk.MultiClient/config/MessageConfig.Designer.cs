@@ -43,6 +43,11 @@
 			this.FrameCounterRadio = new System.Windows.Forms.RadioButton();
 			this.FPSRadio = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.MovieInputText = new System.Windows.Forms.TextBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.MovieInputColor = new System.Windows.Forms.Panel();
+			this.label10 = new System.Windows.Forms.Label();
 			this.MovieColorText = new System.Windows.Forms.TextBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.MovieColorPanel = new System.Windows.Forms.Panel();
@@ -74,7 +79,7 @@
 			this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieColorDialog = new System.Windows.Forms.ColorDialog();
-			this.label10 = new System.Windows.Forms.Label();
+			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -245,6 +250,10 @@
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.label12);
+			this.groupBox2.Controls.Add(this.MovieInputText);
+			this.groupBox2.Controls.Add(this.label11);
+			this.groupBox2.Controls.Add(this.MovieInputColor);
 			this.groupBox2.Controls.Add(this.label10);
 			this.groupBox2.Controls.Add(this.MovieColorText);
 			this.groupBox2.Controls.Add(this.label9);
@@ -263,15 +272,61 @@
 			this.groupBox2.Controls.Add(this.ColorText);
 			this.groupBox2.Location = new System.Drawing.Point(12, 205);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(177, 223);
+			this.groupBox2.Size = new System.Drawing.Size(177, 252);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Message Colors";
 			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(1, 170);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(63, 13);
+			this.label12.TabIndex = 24;
+			this.label12.Text = "Movie Input";
+			// 
+			// MovieInputText
+			// 
+			this.MovieInputText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.MovieInputText.Location = new System.Drawing.Point(45, 187);
+			this.MovieInputText.MaxLength = 8;
+			this.MovieInputText.Name = "MovieInputText";
+			this.MovieInputText.ReadOnly = true;
+			this.MovieInputText.Size = new System.Drawing.Size(59, 20);
+			this.MovieInputText.TabIndex = 23;
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(28, 190);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(18, 13);
+			this.label11.TabIndex = 22;
+			this.label11.Text = "0x";
+			// 
+			// MovieInputColor
+			// 
+			this.MovieInputColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.MovieInputColor.Location = new System.Drawing.Point(4, 187);
+			this.MovieInputColor.Name = "MovieInputColor";
+			this.MovieInputColor.Size = new System.Drawing.Size(20, 20);
+			this.MovieInputColor.TabIndex = 9;
+			this.MovieInputColor.DoubleClick += new System.EventHandler(this.MovieInputColor_DoubleClick);
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(3, 214);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(86, 13);
+			this.label10.TabIndex = 21;
+			this.label10.Text = "Movie messages";
+			// 
 			// MovieColorText
 			// 
 			this.MovieColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.MovieColorText.Location = new System.Drawing.Point(45, 186);
+			this.MovieColorText.Location = new System.Drawing.Point(45, 229);
 			this.MovieColorText.MaxLength = 8;
 			this.MovieColorText.Name = "MovieColorText";
 			this.MovieColorText.ReadOnly = true;
@@ -281,7 +336,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(28, 189);
+			this.label9.Location = new System.Drawing.Point(28, 234);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(18, 13);
 			this.label9.TabIndex = 19;
@@ -290,7 +345,7 @@
 			// MovieColorPanel
 			// 
 			this.MovieColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.MovieColorPanel.Location = new System.Drawing.Point(6, 186);
+			this.MovieColorPanel.Location = new System.Drawing.Point(4, 229);
 			this.MovieColorPanel.Name = "MovieColorPanel";
 			this.MovieColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.MovieColorPanel.TabIndex = 8;
@@ -422,7 +477,7 @@
 			// ResetDefaultsButton
 			// 
 			this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ResetDefaultsButton.Location = new System.Drawing.Point(12, 434);
+			this.ResetDefaultsButton.Location = new System.Drawing.Point(195, 434);
 			this.ResetDefaultsButton.Name = "ResetDefaultsButton";
 			this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
 			this.ResetDefaultsButton.TabIndex = 6;
@@ -567,15 +622,6 @@
 			this.TL.UseVisualStyleBackColor = true;
 			this.TL.Click += new System.EventHandler(this.TL_CheckedChanged);
 			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(3, 170);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(86, 13);
-			this.label10.TabIndex = 21;
-			this.label10.Text = "Movie messages";
-			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -655,5 +701,10 @@
 		private System.Windows.Forms.Panel MovieColorPanel;
 		private System.Windows.Forms.ColorDialog MovieColorDialog;
 		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.TextBox MovieInputText;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Panel MovieInputColor;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
     }
 }
