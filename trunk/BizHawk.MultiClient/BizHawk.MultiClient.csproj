@@ -597,6 +597,8 @@
     <None Include="images\camera.png" />
     <None Include="images\Recent.png" />
     <None Include="images\Blank.png" />
+    <None Include="images\RecordHS.png" />
+    <None Include="images\GreenCheck.png" />
     <Content Include="logo.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />

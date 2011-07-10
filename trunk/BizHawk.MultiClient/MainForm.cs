@@ -169,7 +169,6 @@ namespace BizHawk.MultiClient
 					ReadOnly = true;
 					StartNewMovie(m, false);
 					CreateNewInputLog(false);
-					UserMovie.StartPlayback();
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
@@ -182,7 +181,6 @@ namespace BizHawk.MultiClient
 					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
 					ReadOnly = true;
 					StartNewMovie(m, false);
-					UserMovie.StartPlayback();
 					CreateNewInputLog(false);
 				}
 			}
@@ -653,31 +651,26 @@ namespace BizHawk.MultiClient
 			{
 				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				UserMovie = MovieConvert.ConvertFCM(filePaths[0]);
-				UserMovie.StartPlayback();
-
+				StartNewMovie(MovieConvert.ConvertFCM(filePaths[0]), false);
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".SMV")
 			{
 				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				UserMovie = MovieConvert.ConvertSMV(filePaths[0]);
-				UserMovie.StartPlayback();
+				StartNewMovie(MovieConvert.ConvertSMV(filePaths[0]), false);
 
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
 			{
 				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				UserMovie = MovieConvert.ConvertMMV(filePaths[0]);
-				UserMovie.StartPlayback();
+				StartNewMovie(MovieConvert.ConvertMMV(filePaths[0]), false);
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".VBM")
 			{
 				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				UserMovie = MovieConvert.ConvertVBM(filePaths[0]);
-				UserMovie.StartPlayback();
+				StartNewMovie(MovieConvert.ConvertVBM(filePaths[0]), false);
 			}
 			else
 				LoadRom(filePaths[0]);
@@ -928,7 +921,25 @@ namespace BizHawk.MultiClient
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
 				UpdateStatusSlots();
+				UpdateDumpIcon();
 				return true;
+			}
+		}
+
+		private void UpdateDumpIcon()
+		{
+			if (Global.Game != null)
+			{
+				//TODO: check ROM dump and display warning icon
+				//DumpError.Image = BizHawk.MultiClient.Properties.Resources.WarningHS;
+				//DumpError.ToolTipText = "Warning: Bad ROM Dump";
+				DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
+				DumpError.ToolTipText = "Verified good dump";
+			}
+			else
+			{
+				DumpError.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				DumpError.ToolTipText = "";
 			}
 		}
 
@@ -1470,6 +1481,7 @@ namespace BizHawk.MultiClient
 					{
 						UserMovie.WriteMovie();
 						UserMovie.StartPlayback();
+						SetMainformMovieInfo();
 						Global.MovieMode = true;
 					}
 				}
@@ -1490,6 +1502,7 @@ namespace BizHawk.MultiClient
 				else
 				{
 					UserMovie.StartNewRecording();
+					SetMainformMovieInfo();
 					Global.MovieMode = false;
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
@@ -1510,6 +1523,7 @@ namespace BizHawk.MultiClient
 					{
 						int x = UserMovie.CheckTimeLines(reader);
 						UserMovie.StartPlayback();
+						SetMainformMovieInfo();
 						Global.MovieMode = true;
 						//if (x >= 0)
 						//    MessageBox.Show("Savestate input log does not match the movie at frame " + (x+1).ToString() + "!", "Timeline error", MessageBoxButtons.OK); //TODO: replace with a not annoying message once savestate logic is running smoothly
@@ -1528,6 +1542,7 @@ namespace BizHawk.MultiClient
 					{
 						UserMovie.StartNewRecording();
 						Global.MovieMode = false;
+						SetMainformMovieInfo();
 						UserMovie.LoadLogFromSavestateText(reader);
 					}
 				}
@@ -2025,6 +2040,7 @@ namespace BizHawk.MultiClient
 			Text = "BizHawk";
 			HandlePlatformMenus();
 			UpdateStatusSlots();
+			UpdateDumpIcon();
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2173,6 +2189,28 @@ namespace BizHawk.MultiClient
 			ToggleReadOnly();
 		}
 
+		public void SetMainformMovieInfo()
+		{
+			if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY || UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+			{
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.GetFilePath());
+				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
+				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
+			}
+			else if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			{
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.GetFilePath());
+				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
+				PlayRecordStatus.ToolTipText = "Movie is in record mode";
+			}
+			else
+			{
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
+				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+				PlayRecordStatus.ToolTipText = "";
+			}
+		}
+
 		public void StartNewMovie(Movie m, bool record)
 		{
 
@@ -2181,13 +2219,17 @@ namespace BizHawk.MultiClient
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
 			UserMovie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.GetFilePath());
+
 			if (record)
 			{
 				UserMovie.StartNewRecording();
 				ReadOnly = false;
 			}
 			else
+			{
 				UserMovie.StartPlayback();
+			}
+			SetMainformMovieInfo();
 		}
 
 		public Movie GetActiveMovie()
@@ -2228,6 +2270,7 @@ namespace BizHawk.MultiClient
 			{
 				LoadRom(CurrentlyOpenRom);
 				UserMovie.StartPlayback();
+				SetMainformMovieInfo();
 			}
 		}
 

@@ -228,6 +228,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap GreenCheck {
+            get {
+                object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap HotKeys {
             get {
                 object obj = ResourceManager.GetObject("HotKeys", resourceCulture);
@@ -363,6 +370,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Recent {
             get {
                 object obj = ResourceManager.GetObject("Recent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap RecordHS {
+            get {
+                object obj = ResourceManager.GetObject("RecordHS", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
