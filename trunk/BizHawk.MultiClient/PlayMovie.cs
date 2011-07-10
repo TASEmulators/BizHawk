@@ -13,10 +13,8 @@ namespace BizHawk.MultiClient
 	public partial class PlayMovie : Form
 	{
 		//TODO: after browse & update, focus on the movie just added, and show stats
-		//This is a modal dialog, implement it as modeless
 		// Option to include subdirectories
 		// Option to include savestate files (that have an input log)
-		//Clicking column headers should sort info
 		//AddMovieToList should check for duplicates and not add them
 
 		List<Movie> MovieList = new List<Movie>();
@@ -87,6 +85,9 @@ namespace BizHawk.MultiClient
 				{
 					AddMovieToList(ofd.FileName);
 				}
+				MovieView.SelectedIndices.Clear();
+				MovieView.setSelection(MovieList.Count - 1);
+				MovieView.SelectItem(MovieView.Items.Count - 1, true);
 			}
 		}
 
@@ -101,8 +102,7 @@ namespace BizHawk.MultiClient
 					PreLoadMovieFile(file);
 					MovieView.ItemCount = MovieList.Count;
 					UpdateList();
-					MovieView.SelectedIndices.Clear();
-					MovieView.setSelection(MovieList.Count - 1);
+					
 					sortReverse = false;
 					sortedCol = "";
 				}

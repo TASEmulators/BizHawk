@@ -599,6 +599,10 @@
     <None Include="images\Blank.png" />
     <None Include="images\RecordHS.png" />
     <None Include="images\GreenCheck.png" />
+    <None Include="images\RetroQuestion.png" />
+    <None Include="images\ExclamationRed.png" />
+    <None Include="images\Translation.png" />
+    <None Include="images\HomeBrew.png" />
     <Content Include="logo.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />

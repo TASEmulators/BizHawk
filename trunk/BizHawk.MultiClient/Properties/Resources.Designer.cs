@@ -172,6 +172,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ExclamationRed {
+            get {
+                object obj = ResourceManager.GetObject("ExclamationRed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap FastForward {
             get {
                 object obj = ResourceManager.GetObject("FastForward", resourceCulture);
@@ -231,6 +238,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap GreenCheck {
             get {
                 object obj = ResourceManager.GetObject("GreenCheck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap HomeBrew {
+            get {
+                object obj = ResourceManager.GetObject("HomeBrew", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -409,6 +423,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap RetroQuestion {
+            get {
+                object obj = ResourceManager.GetObject("RetroQuestion", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Save {
             get {
                 object obj = ResourceManager.GetObject("Save", resourceCulture);
@@ -482,6 +503,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap ToolBox {
             get {
                 object obj = ResourceManager.GetObject("ToolBox", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Translation {
+            get {
+                object obj = ResourceManager.GetObject("Translation", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

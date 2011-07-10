@@ -930,14 +930,36 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Game != null)
 			{
-                if (Global.Game.Status == RomStatus.BadDump)
-                {
-                    DumpError.Image = BizHawk.MultiClient.Properties.Resources.WarningHS;
-                    DumpError.ToolTipText = "Warning: Bad ROM Dump";
-                } else {
-                    DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
-                    DumpError.ToolTipText = "Verified good dump";
-                }
+				if (Global.Game.Status == RomStatus.BadDump)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+					DumpError.ToolTipText = "Warning: Bad ROM Dump";
+				}
+				else if (Global.Game.Status == RomStatus.Overdump)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+					DumpError.ToolTipText = "Warning: Overdump";
+				}
+				else if (Global.Game.Status == RomStatus.NotInDatabase)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.RetroQuestion;
+					DumpError.ToolTipText = "Warning: Unknown ROM";
+				}
+				else if (Global.Game.Status == RomStatus.TranslatedRom)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.Translation;
+					DumpError.ToolTipText = "Translated ROM";
+				}
+				else if (Global.Game.Status == RomStatus.Homebrew)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.HomeBrew;
+					DumpError.ToolTipText = "Homebrew ROM";
+				}
+				else
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
+					DumpError.ToolTipText = "Verified good dump";
+				}
 			}
 			else
 			{
