@@ -1,13 +1,28 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 using SlimDX.DirectInput;
 
-//maybe todo - split into an event processor class (which can grab events from the main input class and be used to step through them independently)
-
 namespace BizHawk.MultiClient
 {
+	//coalesces events back into instantaneous states
+	public class InputCoalescer : SimpleController
+	{
+		public void Receive(Input.InputEvent ie)
+		{
+			bool state = ie.EventType == Input.InputEventType.Press;
+			Buttons[ie.LogicalButton.ToString()] = state;
+			//when a button is released, all modified variants of it are released as well
+			if (!state)
+			{
+				var releases = Buttons.Where((kvp) => kvp.Key.Contains("+") && kvp.Key.EndsWith(ie.LogicalButton.Button)).ToArray();
+				foreach (var kvp in releases)
+					Buttons[kvp.Key] = false;
+			}
+		}
+	}
 
 	public class Input
 	{
@@ -32,16 +47,6 @@ namespace BizHawk.MultiClient
 			// Summary:
 			//     The ALT modifier key.
 			Alt = 262144,
-		}
-
-		//coalesces events back into instantaneous states
-		public class InputCoalescer : SimpleController
-		{
-			public void Receive(Input.InputEvent ie)
-			{
-				bool state = ie.EventType == InputEventType.Press;
-				Buttons[ie.LogicalButton.ToString()] = state;
-			}
 		}
 
 		public static Input Instance { get; private set; }
@@ -92,9 +97,6 @@ namespace BizHawk.MultiClient
 		}
 
 	
-		InputCoalescer Coalescer = new InputCoalescer();
-
-
 		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 
 
@@ -115,7 +117,8 @@ namespace BizHawk.MultiClient
 		ModifierKey _Modifiers;
 		List<InputEvent> _NewEvents = new List<InputEvent>();
 
-		//TODO - maybe need clearevents for various purposes? maybe not.
+		//TODO - maybe need clearevents for various purposes. perhaps when returning from modal dialogs?
+
 		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
 		public InputEvent DequeueEvent()
 		{
@@ -128,13 +131,8 @@ namespace BizHawk.MultiClient
 		void EnqueueEvent(InputEvent ie)
 		{
 			lock (this)
-			{
 				InputEvents.Enqueue(ie);
-				Coalescer.Receive(ie);
-			}
 		}
-
-		public bool CheckState(string button) { lock (this) return Coalescer.IsPressed(button); }
 
 		void UpdateThreadProc()
 		{
@@ -187,14 +185,10 @@ namespace BizHawk.MultiClient
 			//so i will leave this method here for now..
 		}
 
-		public bool IsPressed(string control)
-		{
-			return Instance.CheckState(control);
-		}
-
+		//returns the next Press event, if available. should be useful
 		public string GetNextPressedButtonOrNull()
 		{
-			InputEvent ie = Instance.DequeueEvent();
+			InputEvent ie = DequeueEvent();
 			if (ie == null) return null;
 			if (ie.EventType == InputEventType.Release) return null;
 			return ie.LogicalButton.ToString();
