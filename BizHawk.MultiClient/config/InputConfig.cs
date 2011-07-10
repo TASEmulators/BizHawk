@@ -11,7 +11,6 @@ using System.Windows.Forms;
 namespace BizHawk.MultiClient
 {
 	//TODO: 
-	//Sizing event should change prevWidth & prevHeight
 	//Remove AppendMapping and TruncateMapping functions
 
 	public partial class InputConfig : Form
@@ -56,7 +55,7 @@ namespace BizHawk.MultiClient
 			InputWidget TempTextBox;
 			this.Text = ControllerStr + "SMS / GG / SG-1000";
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
-			this.SystemComboBox.SelectedIndex = 0;
+
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[SMSControlList.Length];
 			ButtonMappings[0] = Global.Config.SMSController[jpad].Up;
@@ -633,24 +632,24 @@ namespace BizHawk.MultiClient
 					case "SMS":
 					case "SG":
 					case "GG":
-						this.SystemComboBox.SelectedIndex = 0;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("SMS / GG / SG-1000");
 						break;
 					case "PCE":
 					case "SGX":
-						this.SystemComboBox.SelectedIndex = 1;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("PC Engine / SGX");
 						break;
 					case "GB":
-						this.SystemComboBox.SelectedIndex = 2;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Gameboy");
 						break;
 					case "GEN":
-						this.SystemComboBox.SelectedIndex = 3;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Sega Genesis");
 						break;
 					case "TI83":
-						this.SystemComboBox.SelectedIndex = 4;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("TI-83");
 						break;
 
 					case "NES":
-						this.SystemComboBox.SelectedIndex = 5;
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("NES");
 						break;
 					default:
 						this.SystemComboBox.SelectedIndex = 0;
@@ -706,8 +705,8 @@ namespace BizHawk.MultiClient
 					joypads = 1;
 					if (this.Width < 690)
 						this.Width = 690;
-					if (this.Height < 540)
-						this.Height = 540;
+					if (this.Height < 556)
+						this.Height = 556;
 					break;
 				case "NES":
 					joypads = 4;

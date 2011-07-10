@@ -143,12 +143,12 @@
 			this.SystemComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.SystemComboBox.FormattingEnabled = true;
 			this.SystemComboBox.Items.AddRange(new object[] {
-            "SMS / GG / SG-1000",
-            "PC Engine / SGX",
+            "NES",
             "Gameboy",
+            "SMS / GG / SG-1000",
             "Sega Genesis",
-            "TI-83",
-            "NES"});
+            "PC Engine / SGX",
+            "TI-83"});
 			this.SystemComboBox.Location = new System.Drawing.Point(6, 19);
 			this.SystemComboBox.Name = "SystemComboBox";
 			this.SystemComboBox.Size = new System.Drawing.Size(146, 21);
