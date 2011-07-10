@@ -242,6 +242,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Hack {
+            get {
+                object obj = ResourceManager.GetObject("Hack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap HomeBrew {
             get {
                 object obj = ResourceManager.GetObject("HomeBrew", resourceCulture);

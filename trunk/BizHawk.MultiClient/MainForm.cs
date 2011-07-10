@@ -955,6 +955,11 @@ namespace BizHawk.MultiClient
 					DumpError.Image = BizHawk.MultiClient.Properties.Resources.HomeBrew;
 					DumpError.ToolTipText = "Homebrew ROM";
 				}
+				else if (Global.Game.Status == RomStatus.Hack)
+				{
+					DumpError.Image = BizHawk.MultiClient.Properties.Resources.Hack;
+					DumpError.ToolTipText = "Hacked ROM";
+				}
 				else
 				{
 					DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
