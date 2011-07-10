@@ -216,6 +216,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public class CartInfo
 		{
 			public GameInfo game;
+			public BizHawk.GameInfo DB_GameInfo;
 
 			public short chr_size;
 			public short prg_size;
@@ -291,6 +292,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//try generating a bootgod cart descriptor from the game database
 			var dict = gi.ParseOptionsDictionary();
 			game.name = gi.Name;
+			cart.DB_GameInfo = gi;
 			cart.game = game;
 			cart.board_type = dict["board"];
 			if (dict.ContainsKey("PRG"))

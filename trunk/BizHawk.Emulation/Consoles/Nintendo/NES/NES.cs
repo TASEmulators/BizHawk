@@ -349,10 +349,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			None, BootGodDB, GameDB, INES
 		}
 
+		StringWriter LoadReport;
+		void LoadWriteLine(string format, params object[] arg)
+		{
+			Console.WriteLine(format, arg);
+			LoadReport.WriteLine(format, arg);
+		}
+		void LoadWriteLine(object arg) { LoadWriteLine("{0}",arg); }
+
 		public unsafe void LoadGame(IGame game)
 		{
-			Console.WriteLine("------");
-			Console.WriteLine("BEGIN NES rom analysis:");
+			LoadReport = new StringWriter();
+			LoadWriteLine("------");
+			LoadWriteLine("BEGIN NES rom analysis:");
 			byte[] file = game.GetFileData();
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
 			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
@@ -379,12 +388,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					hash_md5 = "md5:" + Util.BytesToHexString(md5.Hash);
 				}
 
-				Console.WriteLine("Found iNES header:");
+				LoadWriteLine("Found iNES header:");
 				CartInfo iNesHeaderInfo = header->Analyze();
-				Console.WriteLine("Since this is iNES we can confidently parse PRG/CHR banks to hash.");
+				LoadWriteLine("Since this is iNES we can confidently parse PRG/CHR banks to hash.");
 
-				Console.WriteLine("headerless rom hash: {0}", hash_sha1);
-				Console.WriteLine("headerless rom hash: {0}", hash_md5);
+				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+				LoadWriteLine("headerless rom hash: {0}", hash_md5);
 
 				Type boardType = null;
 				CartInfo choice = null;
@@ -392,7 +401,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					choice = IdentifyFromBootGodDB(hash_sha1);
 				if (choice == null)
 				{
-					Console.WriteLine("Could not locate game in nescartdb");
+					LoadWriteLine("Could not locate game in nescartdb");
 					if (USE_DATABASE)
 					{
 						choice = IdentifyFromGameDB(hash_md5);
@@ -403,8 +412,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					if (choice == null)
 					{
-						Console.WriteLine("Could not locate game in bizhawk gamedb");
-						Console.WriteLine("Attempting inference from iNES header");
+						LoadWriteLine("Could not locate game in bizhawk gamedb");
+						LoadWriteLine("Attempting inference from iNES header");
 						choice = iNesHeaderInfo;
 						string iNES_board = iNESBoardDetector.Detect(choice);
 						if (iNES_board == null)
@@ -427,23 +436,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							}
 							catch { }
 							if (boardType != null)
-								Console.WriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
+								LoadWriteLine("Ambiguous iNES wram size resolved as {0}k", choice.wram_size);
 						}
 
-						Console.WriteLine("Chose board from iNES heuristics: " + iNES_board);
+						LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
 						choice.game.name = game.Name;
 						origin = EDetectionOrigin.INES;
 					}
 					else
 					{
 						origin = EDetectionOrigin.GameDB;
-						Console.WriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
+						LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
 					}
 				}
 				else
 				{
-					Console.WriteLine("Chose board from nescartdb:");
-					Console.WriteLine(choice);
+					LoadWriteLine("Chose board from nescartdb:");
+					LoadWriteLine(choice);
 					origin = EDetectionOrigin.BootGodDB;
 				}
 
@@ -455,24 +464,54 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (boardType == null)
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
-				Console.WriteLine("Final game detection results:");
-				Console.WriteLine(choice);
-				Console.WriteLine("\"" + game_name + "\"");
-				Console.WriteLine("Implemented by: class " + boardType.Name);
+				if(choice.DB_GameInfo != null)
+					if(choice.DB_GameInfo.Status == RomStatus.BadDump)
+						choice.bad = true;
+
+				LoadWriteLine("Final game detection results:");
+				LoadWriteLine(choice);
+				LoadWriteLine("\"" + game_name + "\"");
+				LoadWriteLine("Implemented by: class " + boardType.Name);
 				if (choice.bad)
 				{
-					Console.WriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
-					Console.WriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
+					LoadWriteLine("~~ ONE WAY OR ANOTHER, THIS DUMP IS KNOWN TO BE *BAD* ~~");
+					LoadWriteLine("~~ YOU SHOULD FIND A BETTER FILE ~~");
 				}
 
-				Console.WriteLine("END NES rom analysis");
-				Console.WriteLine("------");
+				LoadWriteLine("END NES rom analysis");
+				LoadWriteLine("------");
 
 				board = (INESBoard)Activator.CreateInstance(boardType);
 
 				cart = choice;
 				board.Create(this);
 				board.Configure(origin);
+
+				if (origin == EDetectionOrigin.BootGodDB)
+				{
+					CoreOutputComm.RomStatus = RomStatus.GoodDump;
+					CoreOutputComm.RomStatusAnnotation = "Identified from BootGod's database";
+				}
+				if (origin == EDetectionOrigin.INES)
+				{
+					CoreOutputComm.RomStatus = RomStatus.NotInDatabase;
+					CoreOutputComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
+				}
+				if (origin == EDetectionOrigin.GameDB)
+				{
+					if (choice.bad)
+					{
+						CoreOutputComm.RomStatus = RomStatus.BadDump;
+					}
+					else
+					{
+						CoreOutputComm.RomStatus = choice.DB_GameInfo.Status;
+					}
+				}
+
+				LoadReport.Flush();
+				CoreOutputComm.RomStatusDetails = LoadReport.ToString();
+
 
 				//create the board's rom and vrom
 				board.ROM = new byte[choice.prg_size * 1024];
@@ -492,6 +531,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				HardReset();
 				SetupMemoryDomains();
 			}
+
 		}
 
 		void SyncState(Serializer ser)

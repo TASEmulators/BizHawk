@@ -12,6 +12,9 @@ namespace BizHawk
 	public class CoreOutputComm
 	{
 		public double VsyncRate = 60;
+		public RomStatus RomStatus;
+		public string RomStatusAnnotation;
+		public string RomStatusDetails;
 	}
 
 }

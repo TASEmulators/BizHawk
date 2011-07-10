@@ -139,6 +139,12 @@
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
+    <Compile Include="LogWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogWindow.Designer.cs">
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\EditCommentsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -420,6 +426,9 @@
     <EmbeddedResource Include="images\BuilderDialog_moveup.bmp" />
     <EmbeddedResource Include="images\InserSeparator.bmp" />
     <EmbeddedResource Include="images\search.ico" />
+    <EmbeddedResource Include="LogWindow.resx">
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="movie\EditCommentsForm.resx">
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -865,6 +865,10 @@ namespace BizHawk.MultiClient
 				try
 				{
 					nextEmulator.CoreInputComm = Global.CoreInputComm;
+
+					//this is a bit hacky, but many cores do not take responsibility for setting this, so we need to set it for them.
+					nextEmulator.CoreOutputComm.RomStatus = game.Status;
+
 					nextEmulator.LoadGame(game);
 				}
 				catch (Exception ex)
@@ -928,49 +932,52 @@ namespace BizHawk.MultiClient
 
 		private void UpdateDumpIcon()
 		{
-			if (Global.Game != null)
+			DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			DumpStatus.ToolTipText = "";
+
+			if (Global.Emulator == null) return;
+
+			var status = Global.Emulator.CoreOutputComm.RomStatus;
+			string annotation = "";
+			if (status == RomStatus.BadDump)
 			{
-				if (Global.Game.Status == RomStatus.BadDump)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
-					DumpError.ToolTipText = "Warning: Bad ROM Dump";
-				}
-				else if (Global.Game.Status == RomStatus.Overdump)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
-					DumpError.ToolTipText = "Warning: Overdump";
-				}
-				else if (Global.Game.Status == RomStatus.NotInDatabase)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.RetroQuestion;
-					DumpError.ToolTipText = "Warning: Unknown ROM";
-				}
-				else if (Global.Game.Status == RomStatus.TranslatedRom)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.Translation;
-					DumpError.ToolTipText = "Translated ROM";
-				}
-				else if (Global.Game.Status == RomStatus.Homebrew)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.HomeBrew;
-					DumpError.ToolTipText = "Homebrew ROM";
-				}
-				else if (Global.Game.Status == RomStatus.Hack)
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.Hack;
-					DumpError.ToolTipText = "Hacked ROM";
-				}
-				else
-				{
-					DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
-					DumpError.ToolTipText = "Verified good dump";
-				}
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+				annotation = "Warning: Bad ROM Dump";
+			}
+			else if (status == RomStatus.Overdump)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.ExclamationRed;
+				annotation = "Warning: Overdump";
+			}
+			else if (status == RomStatus.NotInDatabase)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.RetroQuestion;
+				annotation = "Warning: Unknown ROM";
+			}
+			else if (status == RomStatus.TranslatedRom)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Translation;
+				annotation = "Translated ROM";
+			}
+			else if (status == RomStatus.Homebrew)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.HomeBrew;
+				annotation = "Homebrew ROM";
+			}
+			else if (Global.Game.Status == RomStatus.Hack)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Hack;
+				annotation = "Hacked ROM";
 			}
 			else
 			{
-				DumpError.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-				DumpError.ToolTipText = "";
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
+				annotation = "Verified good dump";
 			}
+			if (!string.IsNullOrEmpty(Global.Emulator.CoreOutputComm.RomStatusAnnotation))
+				annotation = Global.Emulator.CoreOutputComm.RomStatusAnnotation;
+
+			DumpStatus.ToolTipText = annotation;
 		}
 
 		private void LoadSaveRam()
@@ -2523,5 +2530,8 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.DisplaySubtitles ^= true;
 		}
+
+
+
 	}
 }
