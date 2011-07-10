@@ -930,11 +930,14 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Game != null)
 			{
-				//TODO: check ROM dump and display warning icon
-				//DumpError.Image = BizHawk.MultiClient.Properties.Resources.WarningHS;
-				//DumpError.ToolTipText = "Warning: Bad ROM Dump";
-				DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
-				DumpError.ToolTipText = "Verified good dump";
+                if (Global.Game.Status == RomStatus.BadDump)
+                {
+                    DumpError.Image = BizHawk.MultiClient.Properties.Resources.WarningHS;
+                    DumpError.ToolTipText = "Warning: Bad ROM Dump";
+                } else {
+                    DumpError.Image = BizHawk.MultiClient.Properties.Resources.GreenCheck;
+                    DumpError.ToolTipText = "Verified good dump";
+                }
 			}
 			else
 			{

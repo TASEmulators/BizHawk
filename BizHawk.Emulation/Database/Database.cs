@@ -6,17 +6,29 @@ using System.Threading;
 
 namespace BizHawk
 {
+    public enum RomStatus
+    {
+        GoodDump,
+        BadDump,
+        Homebrew,
+        TranslatedRom,
+        BIOS,
+        Overdump,
+        NotInDatabase
+    }
+
+    public enum HashType
+    {
+        CRC32, MD5
+    }
+
     public class GameInfo
     {
         public string Name;
         public string System;
         public string MetaData;
         public string hash;
-
-		public enum HashType
-		{
-			CRC32, MD5
-		}
+        public RomStatus Status;
 
         public string[] GetOptions()
         {
@@ -93,6 +105,17 @@ namespace BizHawk
                         var Game = new GameInfo();
 						//remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
 						Game.hash = RemoveHashType(items[0].ToUpper());
+                        switch (items[1].Trim())
+                        {
+                            case "B": Game.Status = RomStatus.BadDump; break;
+                            case "V": Game.Status = RomStatus.BadDump; break;
+                            case "T": Game.Status = RomStatus.TranslatedRom; break;
+                            case "O": Game.Status = RomStatus.Overdump; break;
+                            case "I": Game.Status = RomStatus.BIOS; break;
+                            case "D": Game.Status = RomStatus.Homebrew; break;
+                            case "H": Game.Status = RomStatus.Homebrew; break;
+                            default: Game.Status = RomStatus.GoodDump; break;
+                        }
                         Game.Name = items[2];
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
@@ -124,6 +147,7 @@ namespace BizHawk
             var Game = new GameInfo();
             Game.hash = hash;
             Game.MetaData = "NotInDatabase";
+            Game.Status = RomStatus.NotInDatabase;
             Console.WriteLine("Game was not in DB. CRC: {0:X8} ", CRC32.Calculate(RomData));
 
             string ext = Path.GetExtension(fileName).ToUpperInvariant();
