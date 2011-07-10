@@ -8,6 +8,14 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
+		private void DumpStatus_Click(object sender, EventArgs e)
+		{
+			string details = Global.Emulator.CoreOutputComm.RomStatusDetails;
+			if(string.IsNullOrEmpty(details)) return;
+			var lw = new LogWindow();
+			lw.ShowReport("Dump Status Report",details);
+		}
+
 		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RamPoke r = new RamPoke();
