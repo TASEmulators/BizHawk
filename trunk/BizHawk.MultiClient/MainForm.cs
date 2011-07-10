@@ -1886,6 +1886,7 @@ namespace BizHawk.MultiClient
 			displayLagCounterToolStripMenuItem.Checked = Global.Config.DisplayLagCounter;
 			displayInputToolStripMenuItem.Checked = Global.Config.DisplayInput;
 			displayRerecordCountToolStripMenuItem.Checked = Global.Config.DisplayRerecordCount;
+			displaySubtitlesToolStripMenuItem.Checked = Global.Config.DisplaySubtitles;
 
 			displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FPSBinding;
 			displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FrameCounterBinding;
@@ -2342,6 +2343,11 @@ namespace BizHawk.MultiClient
 		private void PauseStrip_Click(object sender, EventArgs e)
 		{
 			TogglePause();
+		}
+
+		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisplaySubtitles ^= true;
 		}
 	}
 }
