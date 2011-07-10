@@ -68,11 +68,11 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			InitializeComponent();
-            if (Global.Config.ShowLogWindow)
-            {
-                LogConsole.ShowConsole();
-                displayLogWindowToolStripMenuItem.Checked = true;
-            }
+			if (Global.Config.ShowLogWindow)
+			{
+				LogConsole.ShowConsole();
+				displayLogWindowToolStripMenuItem.Checked = true;
+			}
 
 		    UpdateStatusSlots();
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
@@ -1389,19 +1389,19 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				//if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
-				//{
-				//    if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
-				//    {
-				//        UserMovie.StartPlayback();
-				//        Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
-				//    }
-				//}
-				//if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.isActive)
-				//{					
-				//    Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
-				//    //Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
-				//}
+				if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+				{
+					if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
+					{
+						UserMovie.StartPlayback();
+						Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+					}
+				}
+				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.IsActive)
+				{					
+					Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
+					Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
+				}
 
 				//TODO multitrack
 
