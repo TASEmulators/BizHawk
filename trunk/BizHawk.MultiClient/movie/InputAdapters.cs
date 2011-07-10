@@ -4,6 +4,39 @@ using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
+	//filters input for things called Up and Down while considering the client's AllowUD_LR option.
+	//this is a bit gross but it is unclear how to do it more nicely
+	public class UD_LR_ControllerAdapter : IController
+	{
+		public ControllerDefinition Type { get { return Source.Type; } }
+		public IController Source;
+
+		public bool this[string button] { get { return IsPressed(button); } }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+		public bool IsPressed(string button)
+		{
+			if (Global.Config.AllowUD_LR == true)
+				return Source.IsPressed(button);
+
+			string prefix;
+
+			if (button.Contains("Down"))
+			{
+				prefix = button.GetPrecedingString("Down");
+				if (Source.IsPressed(prefix + "Up"))
+					return false;
+			}
+			if (button.Contains("Right"))
+			{
+				prefix = button.GetPrecedingString("Right");
+				if (Source.IsPressed(prefix + "Left"))
+					return false;
+			}
+
+			return Source.IsPressed(button);
+		}
+	}
 
 	public class SimpleController : IController
 	{

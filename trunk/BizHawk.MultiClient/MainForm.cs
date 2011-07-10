@@ -281,6 +281,7 @@ namespace BizHawk.MultiClient
 		}
 
 		bool _HACK_KEY_FF;
+		bool _HACK_KEY_REWIND;
 
 		void SyncThrottle()
 		{
@@ -779,7 +780,8 @@ namespace BizHawk.MultiClient
 			//insert turbo and lua here?
 			Global.InputCoalescer = new Input.InputCoalescer();
 			Global.InputCoalescer.Type = Global.ActiveController.Type;
-			Global.MultitrackRewiringControllerAdapter.Source = Global.ActiveController;
+			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
+			Global.MultitrackRewiringControllerAdapter.Source = Global.UD_LR_ControllerAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.MovieControllerAdapter.SetSource(Global.MovieInputSourceAdapter);
 			Global.ControllerOutput = Global.MovieControllerAdapter;
@@ -993,6 +995,11 @@ namespace BizHawk.MultiClient
 						_HACK_KEY_FF = ie.EventType == Input.InputEventType.Press;
 						continue;
 					}
+					if (trigger == "Rewind")
+					{
+						_HACK_KEY_REWIND = ie.EventType == Input.InputEventType.Press;
+						continue;
+					}
 
 					if(ie.EventType == Input.InputEventType.Release) continue;
 
@@ -1160,26 +1167,16 @@ namespace BizHawk.MultiClient
 								Global.RenderPanel.MT = "Recording None"; 
 								break;
 							}
+						case "Emulator Pause":
+						//used to be here: (the pause hotkey is ignored when we are frame advancing)
+							TogglePause();
+							break;
 
 					} //switch(trigger)
 				
 				} //foreach triggered hotkey
 			
 			} //foreach event
-
-			//TODO - 
-			//the pause hotkey is ignored when we are frame advancing
-			//if (!Input.Instance.IsPressed("Frame Advance"))
-			//{
-			//    if (Global.ClientControls["Emulator Pause"])
-			//    {
-			//        Global.ClientControls.UnpressButton("Emulator Pause");
-			//        if (EmulatorPaused)
-			//            UnpauseEmulator();
-			//        else
-			//            PauseEmulator();
-			//    }
-			//}
 
 		}
 
@@ -1241,7 +1238,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
+			if (Global.Config.RewindEnabled && _HACK_KEY_REWIND || PressRewind)
 			{
 				rewindCredits += Global.Config.SpeedPercent;
 				int rewindTodo = rewindCredits / 100;

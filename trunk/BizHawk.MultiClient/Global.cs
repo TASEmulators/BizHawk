@@ -39,6 +39,7 @@ namespace BizHawk.MultiClient
 		public static IController ControllerOutput;
 
 		public static Input.InputCoalescer InputCoalescer;
+		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
 
 		public static string GetOutputControllersAsMnemonic()
 		{

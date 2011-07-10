@@ -10,7 +10,6 @@ namespace BizHawk.MultiClient
 		private static DirectInput dinput;
 		private static Keyboard keyboard;
 		private static KeyboardState state = new KeyboardState();
-		private static List<Key> unpressedKeys = new List<Key>();
 
 		public static void Initialize()
 		{
@@ -32,23 +31,13 @@ namespace BizHawk.MultiClient
 			state = keyboard.GetCurrentState();
 			if (Result.Last.IsFailure)
 				return;
-
-			unpressedKeys.RemoveAll(key => state.IsReleased(key));
 		}
 
 		public static KeyboardState State { get { return state; } }
 
-		public static void Unpress(Key key)
-		{
-			if (unpressedKeys.Contains(key))
-				return;
-			unpressedKeys.Add(key);
-		}
-
+		
 		public static bool IsPressed(Key key)
 		{
-			if (unpressedKeys.Contains(key))
-				return false;
 			if (state.IsPressed(key))
 				return true;
 			
