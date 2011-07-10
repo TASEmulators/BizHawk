@@ -602,6 +602,7 @@
     <None Include="images\ExclamationRed.png" />
     <None Include="images\Translation.png" />
     <None Include="images\HomeBrew.png" />
+    <None Include="images\Hack.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
