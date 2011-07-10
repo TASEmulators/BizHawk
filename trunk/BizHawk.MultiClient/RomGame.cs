@@ -10,6 +10,7 @@ namespace BizHawk.MultiClient
 		public byte[] RomData;
 		public byte[] FileData;
 		public string System;
+        public RomStatus Status { get; private set; }
 
 		private string name;
 		private string filesystemSafeName;
@@ -40,6 +41,7 @@ namespace BizHawk.MultiClient
 			var info = Database.GetGameInfo(RomData, file.Name);
 			name = info.Name;
 			System = info.System;
+		    Status = info.Status;
 			options = new List<string>(info.GetOptions());
 			CheckForPatchOptions();
 
