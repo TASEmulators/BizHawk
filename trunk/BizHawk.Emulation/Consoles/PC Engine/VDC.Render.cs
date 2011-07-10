@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void ExecFrame(bool render)
         {
-            for (ScanLine = 0; ScanLine < 263;)
+            for (ScanLine = 0; ScanLine < 263; )
             {
                 latchedDisplayStartLine = DisplayStartLine;
                 ActiveLine = ScanLine - latchedDisplayStartLine;
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 if ((Registers[DCR] & 1) > 0)
                 {
-                    Log.Note("VDC","FIRING SATB DMA COMPLETION IRQ");
+                    Log.Note("VDC", "FIRING SATB DMA COMPLETION IRQ");
                     StatusByte |= StatusVramSatDmaComplete;
                     cpu.IRQ1Assert = true;
                 }
@@ -167,6 +167,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 return;
 
             Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
+            bool Sprite4ColorMode = Sprite4ColorModeEnabled;
 
             for (int i = 0; i < 64; i++)
             {
@@ -184,6 +185,15 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 bool priority = (flags & 0x80) != 0;
                 bool hflip = (flags & 0x0800) != 0;
                 bool vflip = (flags & 0x8000) != 0;
+
+                int colorMask = 0xFF;
+                if (Sprite4ColorMode)
+                {
+                    if ((SpriteAttributeTable[(i * 4) + 2] & 1) == 0)
+                        colorMask = 0x03;
+                    else
+                        colorMask = 0x0C;
+                }
 
                 if (width == 32)
                     patternNo &= 0x1FE;
@@ -259,7 +269,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     {
                         for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
                         {
-                            byte pixel = SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)];
+                            byte pixel = (byte)(SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)] & colorMask);
+                            if (colorMask == 0x0C)
+                                pixel >>= 2;
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
@@ -274,7 +286,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                         x += 16;
                         for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
                         {
-                            byte pixel = SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)];
+                            byte pixel = (byte)(SpriteBuffer[(patternNo * 256) + (yofs * 16) + (xs - x)] & colorMask);
+                            if (colorMask == 0x0C)
+                                pixel >>= 2;
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
@@ -293,7 +307,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             patternNo++;
                         for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
                         {
-                            byte pixel = SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)];
+                            byte pixel = (byte)(SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)] & colorMask);
+                            if (colorMask == 0x0C)
+                                pixel >>= 2;
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
@@ -307,7 +323,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             x += 16;
                             for (int xs = x >= 0 ? x : 0; xs < x + 16 && xs >= 0 && xs < FrameWidth; xs++)
                             {
-                                byte pixel = SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)];
+                                byte pixel = (byte)(SpriteBuffer[(patternNo * 256) + (yofs * 16) + 15 - (xs - x)] & colorMask);
+                                if (colorMask == 0x0C)
+                                    pixel >>= 2;
                                 if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                                 {
                                     InterSpritePriorityBuffer[xs] = 1;

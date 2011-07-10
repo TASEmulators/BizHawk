@@ -17,7 +17,6 @@ Coryoon           - Recent VDC updates broke scrolling. Generally timing sensiti
 Cross Wiber       - Minor; Raster on wrong line
 Davis Cup Tennis  - Some timing issue, splash screen is too slow
 Dungeon Explorer  - Freeze in 'intro'
-Fighting Run      - Requires 4-color mode emulation of MWR register
 Legend of Hero Ton- Slight gfx- check top of screen
 Lode Runner       - Freezes in new game 
 Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
