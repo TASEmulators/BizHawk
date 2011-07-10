@@ -1,9 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
@@ -14,17 +11,22 @@ namespace BizHawk.MultiClient
 
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool FreeConsole();
-
-        public static bool ConsoleVisible { get; private set; }
+        
+        public static bool ConsoleVisible 
+        { 
+            get; 
+            private set; 
+        }
 
         public static void ShowConsole()
         {
             if (ConsoleVisible) return;
             AllocConsole();
             ConsoleVisible = true;
-            var sout = new StreamWriter(Console.OpenStandardOutput());
-            sout.AutoFlush = true;
+            var sout = new StreamWriter(Console.OpenStandardOutput()) {AutoFlush = true};
             Console.SetOut(sout);
+            Console.Title = "BizHawk Message Log";
+            
         }
 
         public static void HideConsole()

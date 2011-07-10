@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void StepMine()
         {
-            _MainCPU.Exec();
+            _MainCPU.Step();
         }
 
         public void StepHis()
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 if (VDP.ScanLine < 224)
                     VDP.RenderLine();
 
-                MainCPU.Execute(488);
+                _MainCPU.ExecuteCycles(488);
                 if (Z80Runnable)
                 {
                     //Console.WriteLine("running z80");
@@ -131,10 +131,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             PSG.EndFrame(SoundCPU.TotalExecutedCycles);
 		}
 
-
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
-
 
 		public IVideoProvider VideoProvider
         {
@@ -196,7 +194,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
         public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
-
 
         public void Dispose() {}
     }

@@ -109,13 +109,25 @@ namespace BizHawk.Emulation.CPUs.M68K
         public Action[] Opcodes = new Action[0x10000];
         public ushort op;
 
-        public void Exec()
+        public void Step()
         {
             Console.WriteLine(Disassemble(PC));
 
             op = (ushort) ReadWord(PC);
             PC += 2;
             Opcodes[op]();
+        }
+
+        public void ExecuteCycles(int cycles)
+        {
+            PendingCycles += cycles;
+            while (PendingCycles > 0)
+            {
+                Console.WriteLine(Disassemble(PC));
+                op = (ushort)ReadWord(PC);
+                PC += 2;
+                Opcodes[op]();
+            }
         }
     }
 

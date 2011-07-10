@@ -837,7 +837,7 @@ namespace BizHawk.MultiClient
 						nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
 						break;
 					case "GEN":
-						nextEmulator = new Genesis(false);//TODO
+						nextEmulator = new Genesis(true);//TODO
 						break;
 					case "TI83":
 						nextEmulator = new TI83();
@@ -1202,7 +1202,7 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
+			if (/*Global.ClientControls["Frame Advance"] || PressFrameAdvance*/KeyInput.IsPressed(SlimDX.DirectInput.Key.F))
 			{
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)

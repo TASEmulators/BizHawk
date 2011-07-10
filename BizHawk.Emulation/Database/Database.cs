@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -98,7 +97,7 @@ namespace BizHawk
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
                         db[Game.hash] = Game;
-                    } catch (Exception)
+                    } catch
                     {
                         Console.WriteLine("Error parsing database entry: "+line);
                     }
@@ -125,6 +124,7 @@ namespace BizHawk
             var Game = new GameInfo();
             Game.hash = hash;
             Game.MetaData = "NotInDatabase";
+            Console.WriteLine("Game was not in DB. CRC: {0:X8} ", CRC32.Calculate(RomData));
 
             string ext = Path.GetExtension(fileName).ToUpperInvariant();
 

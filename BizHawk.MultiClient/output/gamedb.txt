@@ -1,4 +1,7 @@
 ;CRC	Status	Name	System ID	Notes	MetaData	Configurations
+
+; ************ Sega Master System / Sega Mark III ************
+
 F0F35C22	 	20 em 1 (BR)	SMS			
 241F2707	D	20 in 1 menu [beta]	SMS	SMS newbie		
 A581402E	D	64-Color Palette Test Program	SMS	Charles MacDonald		
@@ -1256,6 +1259,8 @@ A463DDFA	D	Zoom Effect #1 1	SMS	Charles MacDonald
 B97E110A	D	Zoom Effect #1 2	SMS	Charles MacDonald
 980FDC4B	D	Zoom Effect #1 3	SMS	Charles MacDonald
 
+; ************ Sega Game Gear ************
+
 F85A8CE8	 	5 in 1 Fun Pak	GG	
 1D17D2A0	 	Aa Harimanada (JP)	GG	
 1D01F999	 	The Addams Family	GG	
@@ -1897,6 +1902,8 @@ F397F041	 	Zoop [A]	GG	Product code 88830 (Europe?)
 3247FF8B	 	Zoop [B]	GG	Product code 139048 (US?)
 590F9C54	D	Zoop'em Up	GG	
 
+; ************ Sega-Game 1000 ************
+
 26ECD094	 	The Black Onyx	SG	
 D8A87095	 	Bank Panic	SG	
 EA0F2691	 	Bomb Jack	SG	
@@ -1980,6 +1987,8 @@ E2FD5201	 	Yamato	SG
 905467E4	 	Zaxxon	SG	
 BC5D20DF	 	Zippy Race	SG	
 093830D8	 	Zoom 909 (JP)	SG	
+
+; ************ NEC TurboGrafx-16 / PC-Engine ************
 
 FDE08D6D		1943	PCE
 C8C7D63E		Altered Beast	PCE
@@ -2255,15 +2264,56 @@ C4751503	V	Impossamole (bad dump)	PCE
 C4EB68A5	V	World Court Tennis (bad dump)	PCE
 D5C782F2	V	Bonk's Adventure (bad dump)	PCE
 
+; ************ NEC SuperGrafx ************
+
 8C4588E2		1941	SGX
 4C2126B0		Aldynes	SGX
 3B13AF61		Battle Ace	SGX
 B486A8ED		Dai Makai Mura	SGX
 1F041166		Madoo Granzort	SGX
 
+; ************ TI-83 ************
+
 D4448D09BBFDE687C04F9E3310E023AB		ti83_1.rom	TI83		initPC=6ce
 
-;--nes--;
+; ************ Genesis / MegaDrive ************
+
+F3D65BAA		Air Busters		GEN
+778A0F00		Alex Kidd in the Enchanted Castle	GEN
+7CD8169E		Atomic Robo Kid	GEN
+73DC0DD8		Decap Attack	GEN
+5F0BD984		Fatal Labyrinth	GEN
+5D8BF68B		Gaiares	GEN
+D15F5C3C		Galaxy Force II	GEN
+9F88A32E		Gods	GEN
+E8182B90		Golden Axe	GEN
+725E0A18		Golden Axe II	GEN
+CE36E6CC		Kid Chameleon	GEN
+F015C2AD		Lemmings	GEN
+7BA49EDB		The Lost Vikings	GEN
+79EBA28A		Marble Madness	GEN
+6A70791B		Michael Jackson's Moonwalker	GEN
+8F7DE05A		Might and Magic	GEN
+6EF7104A		Might and Magic III: Isles of Terra	GEN
+58A7F7B4		MUSHA Aleste	GEN
+EE7D9F4A		OutRun	GEN
+0D07D0EF		Phantasy Star 2	GEN
+733DCDD5		Phantasy Star 3: Generations of Doom	GEN
+FE236442		Phantasy Star 4: The End of the Millenium	GEN
+88C8DD94		Quackshot Starring Donald Duck	GEN
+EC6CD5F0		Road Blasters	GEN
+F1E22F43		Sagaia	GEN
+713D377B		Shadow Blasters	GEN
+BB6CF9BB		Shove It! The Warehouse Game	GEN
+F9394E97		Sonic the Hedgehog	GEN
+BFF227C6		Streets of Rage	GEN
+CB2201A3		Super Hang-On	GEN
+EA1BC9AB		Sword of Vermillion	GEN
+0A7148BF		Thunder Force II	GEN
+
+520644C0	V	Strider (Bad dump)	GEN
+
+; ************ NES / Famicom ************
 ;these games seem to be in goodNES but not bootgod's DB. maybe secretly bad dumps or unknown variants.
 sha1:22E6986903141495BA4589AC65982F3FB4D0E37B		Adventures of Lolo (U)	NES		board=NES-SEROM;PRG=32;CHR=32
 sha1:99C18C91F051BFBA6836A7B6B213C77569D83767		After Burner 2 (J)	NES		board=SUNSOFT-4;PRG=128;CHR=256;WRAM=8
