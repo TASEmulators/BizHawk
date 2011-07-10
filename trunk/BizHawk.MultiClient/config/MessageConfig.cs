@@ -32,6 +32,8 @@ namespace BizHawk.MultiClient
 		int LastInputColor = Global.Config.LastInputColor;
 		int DispRecx = Global.Config.DispRecx;
 		int DispRecy = Global.Config.DispRecy;
+		int DispMultix = Global.Config.DispMultix;
+		int DispMultiy = Global.Config.DispMultiy;
 
 		int MessageColor = Global.Config.MessagesColor;
 		int AlertColor = Global.Config.AlertMessageColor;
@@ -43,6 +45,7 @@ namespace BizHawk.MultiClient
 		int DispLaganchor = Global.Config.DispLaganchor;
 		int DispInputanchor = Global.Config.DispInpanchor;
 		int DispRecanchor = Global.Config.DispRecanchor;
+		int DispMultiAnchor = Global.Config.DispMultianchor;
 
 		public Brush brush = Brushes.Black;
 		int px = 0;
@@ -169,6 +172,14 @@ namespace BizHawk.MultiClient
 				py = DispRecy;
 				SetAnchorRadio(DispRecanchor);
 			}
+			else if (MultitrackRadio.Checked)
+			{
+				XNumeric.Value = DispMultix;
+				YNumeric.Value = DispMultiy;
+				px = DispMultix;
+				py = DispMultiy;
+				SetAnchorRadio(DispMultiAnchor);
+			}
 
 			PositionPanel.Refresh();
 			XNumeric.Refresh();
@@ -188,6 +199,9 @@ namespace BizHawk.MultiClient
 			Global.Config.DispInpy = DispInpy;
 			Global.Config.DispRecx = DispRecx;
 			Global.Config.DispRecy = DispRecy;
+			Global.Config.DispMultix = DispMultix;
+			Global.Config.DispMultiy = DispMultiy;
+
 			Global.Config.MessagesColor = MessageColor;
 			Global.Config.AlertMessageColor = AlertColor;
 			Global.Config.LastInputColor = LastInputColor;
@@ -199,6 +213,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DispLaganchor = DispLaganchor;
 			Global.Config.DispInpanchor = DispInputanchor;
 			Global.Config.DispRecanchor = DispRecanchor;
+			Global.Config.DispMultianchor = DispMultiAnchor;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
@@ -232,8 +247,12 @@ namespace BizHawk.MultiClient
 			SetPositionInfo();
 		}
 
-
 		private void RerecordsRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			SetPositionInfo();
+		}
+
+		private void MultitrackRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			SetPositionInfo();
 		}
@@ -339,6 +358,11 @@ namespace BizHawk.MultiClient
 			{
 				DispRecx = px;
 				DispRecy = py;
+			}
+			else if (MultitrackRadio.Checked)
+			{
+				DispMultix = px;
+				DispMultiy = py;
 			}
 			FpsPosLabel.Text = DispFPSx.ToString() + ", " + DispFPSy.ToString();
 			FCLabel.Text = DispFrameCx.ToString() + ", " + DispFrameCy.ToString();

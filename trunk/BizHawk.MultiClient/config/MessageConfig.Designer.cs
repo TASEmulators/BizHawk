@@ -80,6 +80,8 @@
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
+			this.MultitrackRadio = new System.Windows.Forms.RadioButton();
+			this.MultitrackLabel = new System.Windows.Forms.Label();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -100,6 +102,8 @@
 			// 
 			// MessageTypeBox
 			// 
+			this.MessageTypeBox.Controls.Add(this.MultitrackLabel);
+			this.MessageTypeBox.Controls.Add(this.MultitrackRadio);
 			this.MessageTypeBox.Controls.Add(this.RerecLabel);
 			this.MessageTypeBox.Controls.Add(this.RerecordsRadio);
 			this.MessageTypeBox.Controls.Add(this.MessLabel);
@@ -622,6 +626,28 @@
 			this.TL.UseVisualStyleBackColor = true;
 			this.TL.Click += new System.EventHandler(this.TL_CheckedChanged);
 			// 
+			// MultitrackRadio
+			// 
+			this.MultitrackRadio.AutoSize = true;
+			this.MultitrackRadio.Location = new System.Drawing.Point(6, 161);
+			this.MultitrackRadio.Name = "MultitrackRadio";
+			this.MultitrackRadio.Size = new System.Drawing.Size(71, 17);
+			this.MultitrackRadio.TabIndex = 12;
+			this.MultitrackRadio.TabStop = true;
+			this.MultitrackRadio.Text = "Multitrack";
+			this.MultitrackRadio.UseVisualStyleBackColor = true;
+			this.MultitrackRadio.CheckedChanged += new System.EventHandler(this.MultitrackRadio_CheckedChanged);
+			// 
+			// MultitrackLabel
+			// 
+			this.MultitrackLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.MultitrackLabel.AutoSize = true;
+			this.MultitrackLabel.Location = new System.Drawing.Point(126, 163);
+			this.MultitrackLabel.Name = "MultitrackLabel";
+			this.MultitrackLabel.Size = new System.Drawing.Size(49, 13);
+			this.MultitrackLabel.TabIndex = 13;
+			this.MultitrackLabel.Text = "255, 255";
+			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
@@ -706,5 +732,7 @@
 		private System.Windows.Forms.Panel MovieInputColor;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.ColorDialog MovieInputColorDialog;
+		private System.Windows.Forms.Label MultitrackLabel;
+		private System.Windows.Forms.RadioButton MultitrackRadio;
     }
 }
