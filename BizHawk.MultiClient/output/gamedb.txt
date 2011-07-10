@@ -641,7 +641,7 @@ A06D065C	D	NanoWars 8k	SMS	Haroldo O. Pinheiro; v0.7
 5B5F9106	 	Nekyuu Kousien (JP)	SMS		FM
 C660FF34	 	The New Zealand Story	SMS	
 FBC66CBF	B	The New Zealand Story (bad byte)	SMS	
-383E7EBD	H	New Duel	SMS	losinggeneration; SMS Power 8-bit Coding Comptetition 2011 Entry
+383E7EBD	D	New Duel	SMS	losinggeneration; SMS Power 8-bit Coding Comptetition 2011 Entry
 82AE5ACD	D	Nine Pixels	SMS	Heliophobe; SMS Power Sega 8-bit Coding Competition 2006 entry
 1B1D8CC2	 	Ninja Gaiden	SMS	
 C28E542F	T	Ninja Gaiden (DE)	SMS	Star-Trans; v1.00
@@ -821,7 +821,7 @@ C264580F	D	Raster Effect Test	SMS	Charles MacDonald
 F42E145C	 	Quest for the Shaven Yak Starring Ren Hoek & Stimpy (BR)	SMS	
 3BE7F641	 	Renegade	SMS	
 E3EC5B2D	T	Renegade (BR)	SMS	
-BC6AC56D	H	Rental Car	SMS	aypok & playgeneration; SMS Power Coding Competition 2011
+BC6AC56D	D	Rental Car	SMS	aypok & playgeneration; SMS Power Coding Competition 2011
 79AC8E7F	 	Rescue Mission	SMS		FM
 BB039219	F	Rescue Mission (f)	SMS	F	FM
 B876FC74	 	Road Rash	SMS	
@@ -1148,7 +1148,7 @@ DE9F8517	 	Ultima IV [Proto]	SMS		FM
 39540619	B	Vampire (bad byte)	SMS	
 720B6973	T	Vampire (FR)	SMS	Terminus Traduction; v1.00
 2F7D2CEA	D	VDP Tester	SMS	FluBBa
-81E6A219	H	VG Fighter	SMS	vingazole; SMS Power Coding Competition 2011
+81E6A219	D	VG Fighter	SMS	vingazole; SMS Power Coding Competition 2011
 D6FB6417	D	Video Mode Test Program	SMS	Charles MacDonald
 DFB0B161	 	Vigilante	SMS		FM
 A986542B	T	Vigilante (FR)	SMS	Terminus Traduction; v1.00	FM
@@ -1991,7 +1991,7 @@ E2FD5201	 	Yamato	SG
 905467E4	 	Zaxxon	SG	
 BC5D20DF	 	Zippy Race	SG	
 093830D8	 	Zoom 909 (JP)	SG	
-AF29BBA8	H	Snake	SG	Wickeycolumbus; SMS Power Coding Competition 2011
+AF29BBA8	D	Snake	SG	Wickeycolumbus; SMS Power Coding Competition 2011
 
 ; ************ NEC TurboGrafx-16 / PC-Engine ************
 

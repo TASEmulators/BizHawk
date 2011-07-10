@@ -12,6 +12,7 @@ namespace BizHawk
         BadDump,
         Homebrew,
         TranslatedRom,
+        Hack,
         BIOS,
         Overdump,
         NotInDatabase
@@ -113,7 +114,7 @@ namespace BizHawk
                             case "O": Game.Status = RomStatus.Overdump; break;
                             case "I": Game.Status = RomStatus.BIOS; break;
                             case "D": Game.Status = RomStatus.Homebrew; break;
-                            case "H": Game.Status = RomStatus.Homebrew; break;
+                            case "H": Game.Status = RomStatus.Hack; break;
                             default: Game.Status = RomStatus.GoodDump; break;
                         }
                         Game.Name = items[2];
