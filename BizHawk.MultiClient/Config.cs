@@ -286,6 +286,7 @@
 		public bool BindSavestatesToMovies = true;
 		public string DefaultAuthor = "default user";
 		public bool UseDefaultAuthor = true;
+		public bool DisplaySubtitles = true;
 
 		//TI83
 		public bool TI83disableSaveSlotKeys = true;
