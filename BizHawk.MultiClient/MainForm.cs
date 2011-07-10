@@ -997,9 +997,6 @@ namespace BizHawk.MultiClient
 			InputLog.StopMovie();
 		}
 
-		[System.Security.SuppressUnmanagedCodeSecurity, DllImport("User32.dll", CharSet = CharSet.Auto)]
-		public static extern bool PeekMessage(out Message msg, IntPtr hWnd, UInt32 msgFilterMin, UInt32 msgFilterMax, UInt32 flags);
-
 		void OnSelectSlot(int num)
 		{
 			SaveSlot = num;
@@ -1015,19 +1012,47 @@ namespace BizHawk.MultiClient
 				var ie = Input.Instance.DequeueEvent();
 				if(ie == null) break;
 
+				//useful debugging:
+				//Console.WriteLine(ie);
+
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
 				//look for client control bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
-					//no hotkeys or player inputs bound this, so mutate it to an unmodified key and assign it for use as a game controller input
+					bool sys_hotkey = false;
+
+					//maybe it is a system alt-key which hasnt been overridden
+					if (ie.EventType == Input.InputEventType.Press)
+					{
+						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
+						{
+							char c = ie.LogicalButton.Button.ToLower()[0];
+							if (c >= 'a' && c <= 'z' || c==' ')
+							{
+								SendAltKeyChar(c);
+								sys_hotkey = true;
+							}
+						}
+						if (ie.LogicalButton.Alt && ie.LogicalButton.Button == "Space")
+						{
+							SendPlainAltKey(32);
+							sys_hotkey = true;
+						}
+					}
+					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
+	
+					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
 					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
-					var mutated_ie = new Input.InputEvent();
-					mutated_ie.EventType = ie.EventType;
-					mutated_ie.LogicalButton = ie.LogicalButton;
-					mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
-					Global.ControllerInputCoalescer.Receive(mutated_ie);
+					if (!sys_hotkey)
+					{
+						var mutated_ie = new Input.InputEvent();
+						mutated_ie.EventType = ie.EventType;
+						mutated_ie.LogicalButton = ie.LogicalButton;
+						mutated_ie.LogicalButton.Modifiers = Input.ModifierKey.None;
+						Global.ControllerInputCoalescer.Receive(mutated_ie);
+					}
 				}
 
 				bool handled = false;
@@ -1989,6 +2014,43 @@ namespace BizHawk.MultiClient
 
 			switchToFullscreenToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleFullscreenBinding;
 		}
+
+		//--alt key hacks
+
+		protected override void WndProc(ref Message m)
+		{
+			//this is necessary to trap plain alt keypresses so that only our hotkey system gets them
+			if (m.Msg == 0x0112) //WM_SYSCOMMAND
+				if (m.WParam.ToInt32() == 0xF100) //SC_KEYMENU
+					return;
+			base.WndProc(ref m);
+		}
+
+		protected override bool ProcessDialogChar(char charCode)
+		{
+			//this is necessary to trap alt+char combinations so that only our hotkey system gets them
+			if ((Control.ModifierKeys & Keys.Alt) != 0)
+				return true;
+			else return base.ProcessDialogChar(charCode);
+		}
+
+		//sends a simulation of a plain alt key keystroke
+		void SendPlainAltKey(int lparam)
+		{
+			Message m = new Message();
+			m.WParam = new IntPtr(0xF100); //SC_KEYMENU
+			m.LParam = new IntPtr(lparam);
+			m.Msg = 0x0112; //WM_SYSCOMMAND
+			m.HWnd = Handle;
+			base.WndProc(ref m);
+		}
+
+		//sends an alt+mnemonic combination
+		void SendAltKeyChar(char c)
+		{
+			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, menuStrip1, new object[] { c });
+		}
+
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
 		{
