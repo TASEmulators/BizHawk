@@ -14,10 +14,10 @@ Battle Ace        - Some gfx glitches
 Cadash            - Minor raster issue. Timing sensitive game.
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
 Coryoon           - Recent VDC updates broke scrolling. Generally timing sensitive game.
-Cross Wiber       - Minor; Raster on wrong line 
+Cross Wiber       - Minor; Raster on wrong line
 Davis Cup Tennis  - Some timing issue, splash screen is too slow
-Dungeon Explorer  - Freeze in 'intro' - gfx corruption in-game 
-Fighting Run      - Corruption issues
+Dungeon Explorer  - Freeze in 'intro'
+Fighting Run      - Requires 4-color mode emulation of MWR register
 Legend of Hero Ton- Slight gfx- check top of screen
 Lode Runner       - Freezes in new game 
 Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
@@ -50,11 +50,10 @@ Jack Nicholas Golf- Some screens are too tall and reveal bad gfx below the inten
 Metal Stoker      - Tearing when scrolling vertically at bottom of screen - screen too tall?
 Side Arms         - Screen is like 4 pixels too tall
 
-
 Stuff I Fixed That's Not In Other Docs:
 
 + Street Fighter II special mapper
-+ Populous has special BRAM / saveRAM (I have not yet fixed this) - Gunboat appears to be the same
++ Populous has special BRAM / saveRAM (I have not yet fixed this)
 + After Burner - There is a 1-instruction delay on changes to IRQ Control Byte taking effect
 + There is a one-instruction delay on changes to the I flag taking effect
   - Affects (Not a complete list): Blodia, Body Conquest 2, Champions Forever Boxing,
@@ -64,3 +63,5 @@ Stuff I Fixed That's Not In Other Docs:
     to me that this delay is ALWAYS present.
 + Writing to the SATB location register of the VDC requests a VRAM->SAT DMA even if the SAT DMA
   bit is disabled in the DCR.
++ This is in other docs, but Fighting Run requires full MWR register emulation including the various
+  4 color modes. It appears to be the only game that requires this, and it's a shitty game. :(
