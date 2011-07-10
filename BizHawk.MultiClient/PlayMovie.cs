@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		// Option to include subdirectories
 		// Option to include savestate files (that have an input log)
 		
 		List<Movie> MovieList = new List<Movie>();
@@ -160,7 +159,7 @@ namespace BizHawk.MultiClient
 			//Pull out matching names
 			for (int x = 0; x < MovieList.Count; x++)
 			{
-				if (Global.Game.FilesystemSafeName == Path.GetFileNameWithoutExtension(MovieList[x].GetGameName()))
+				if (Global.Game.FilesystemSafeName == MovieList[x].GetGameName())
 					Indexes.Add(x);
 			}
 			if (Indexes.Count == 0) return;
@@ -214,15 +213,31 @@ namespace BizHawk.MultiClient
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
+			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
+
 			foreach (string f in Directory.GetFiles(d, "*.tas"))
 				AddMovieToList(f);
 			foreach (string f in Directory.GetFiles(d, "*.fm2"))
 				AddMovieToList(f);
 			foreach (string f in Directory.GetFiles(d, "*.mc2"))
 				AddMovieToList(f);
+
+			if (Global.Config.PlayMovie_IncludeSubdir)
+			{
+				string[] subs = Directory.GetDirectories(d);
+				foreach (string dir in subs)
+				{
+					foreach (string f in Directory.GetFiles(dir, "*.tas"))
+						AddMovieToList(f);
+					foreach (string f in Directory.GetFiles(dir, "*.fm2"))
+						AddMovieToList(f);
+					foreach (string f in Directory.GetFiles(dir, "*.mc2"))
+						AddMovieToList(f);
+				}
+			}
 
 			PreHighlightMovie();
 		}
@@ -308,6 +323,11 @@ namespace BizHawk.MultiClient
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			MovieView.Refresh();
+		}
+
+		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
 		}
 
 	}

@@ -45,6 +45,7 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.MovieCount = new System.Windows.Forms.Label();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
+			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -52,7 +53,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(628, 361);
+			this.Cancel.Location = new System.Drawing.Point(628, 352);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -63,7 +64,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(537, 361);
+			this.OK.Location = new System.Drawing.Point(547, 352);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -73,7 +74,8 @@
 			// 
 			// BrowseMovies
 			// 
-			this.BrowseMovies.Location = new System.Drawing.Point(12, 366);
+			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.BrowseMovies.Location = new System.Drawing.Point(12, 352);
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(75, 23);
 			this.BrowseMovies.TabIndex = 2;
@@ -132,6 +134,9 @@
 			// 
 			// DetailsView
 			// 
+			this.DetailsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.DetailsView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader6});
@@ -139,7 +144,7 @@
 			this.DetailsView.GridLines = true;
 			this.DetailsView.Location = new System.Drawing.Point(15, 19);
 			this.DetailsView.Name = "DetailsView";
-			this.DetailsView.Size = new System.Drawing.Size(228, 226);
+			this.DetailsView.Size = new System.Drawing.Size(228, 242);
 			this.DetailsView.TabIndex = 4;
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
 			this.DetailsView.View = System.Windows.Forms.View.Details;
@@ -156,6 +161,8 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.button2);
 			this.groupBox1.Controls.Add(this.button1);
 			this.groupBox1.Controls.Add(this.DetailsView);
@@ -168,8 +175,9 @@
 			// 
 			// button2
 			// 
+			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button2.Enabled = false;
-			this.button2.Location = new System.Drawing.Point(125, 251);
+			this.button2.Location = new System.Drawing.Point(125, 267);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 6;
@@ -179,8 +187,9 @@
 			// 
 			// button1
 			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.button1.Enabled = false;
-			this.button1.Location = new System.Drawing.Point(15, 251);
+			this.button1.Location = new System.Drawing.Point(15, 267);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 5;
@@ -191,7 +200,7 @@
 			// MovieCount
 			// 
 			this.MovieCount.AutoSize = true;
-			this.MovieCount.Location = new System.Drawing.Point(13, 338);
+			this.MovieCount.Location = new System.Drawing.Point(12, 9);
 			this.MovieCount.Name = "MovieCount";
 			this.MovieCount.Size = new System.Drawing.Size(31, 13);
 			this.MovieCount.TabIndex = 7;
@@ -199,15 +208,28 @@
 			// 
 			// ReadOnlyCheckBox
 			// 
+			this.ReadOnlyCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.Checked = true;
 			this.ReadOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(131, 370);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(444, 356);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
 			this.ReadOnlyCheckBox.TabIndex = 8;
 			this.ReadOnlyCheckBox.Text = "Read only";
 			this.ReadOnlyCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// IncludeSubDirectories
+			// 
+			this.IncludeSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.IncludeSubDirectories.AutoSize = true;
+			this.IncludeSubDirectories.Location = new System.Drawing.Point(107, 356);
+			this.IncludeSubDirectories.Name = "IncludeSubDirectories";
+			this.IncludeSubDirectories.Size = new System.Drawing.Size(131, 17);
+			this.IncludeSubDirectories.TabIndex = 9;
+			this.IncludeSubDirectories.Text = "Include Subdirectories";
+			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
+			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
 			// 
 			// PlayMovie
 			// 
@@ -215,7 +237,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(715, 401);
+			this.ClientSize = new System.Drawing.Size(715, 387);
+			this.Controls.Add(this.IncludeSubDirectories);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.MovieCount);
 			this.Controls.Add(this.groupBox1);
@@ -253,5 +276,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label MovieCount;
         private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
+		private System.Windows.Forms.CheckBox IncludeSubDirectories;
     }
 }
