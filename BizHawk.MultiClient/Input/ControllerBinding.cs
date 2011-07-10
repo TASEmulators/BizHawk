@@ -81,52 +81,8 @@ namespace BizHawk.MultiClient
 
 		public bool IsPressed(string button)
 		{
-			//if (forcePressedButtons.Contains(button))
-			//{
-			//    removeFromForcePressedButtons.Add(button);
-			//    return true;
-			//}
-			//if (unpressedButtons.Contains(button))
-			//{
-			//    if (IsPressedActually(button) == false)
-			//        unpressedButtons.Remove(button);
-
-			//    return false;
-			//}
-
-			////zeromus - TODO - this is gross!!! 
-			//if (Global.Config.AllowUD_LR == false)
-			//{
-			//    string prefix;
-
-			//    if (button.Contains("Down"))
-			//    {
-			//        prefix = button.GetPrecedingString("Down");
-			//        if (IsPressed(prefix + "Up"))
-			//            return false;
-			//    }
-			//    if (button.Contains("Right"))
-			//    {
-			//        prefix = button.GetPrecedingString("Right");
-			//        if (IsPressed(prefix + "Left"))
-			//            return false;
-			//    }
-			//}
-
-			//return IsPressedActually(button);
 			return stickyButtons[button];
 		}
-
-		//public bool IsPressedActually(string button)
-		//{
-		//    bool sticky = stickyButtons[button];
-
-		//    foreach (var control in bindings[button])
-		//        if (Input.Instance.IsPressed(control))
-		//            return sticky ? false : true;
-
-		//    return sticky ? true : false;
-		//}
 
 		public float GetFloat(string name)
 		{
@@ -138,18 +94,8 @@ namespace BizHawk.MultiClient
 			unpressedButtons.Add(name);
 		}
 
-		private int frameNumber;
-
 		public void UpdateControls(int frame)
 		{
-			//if (frame != frameNumber)
-			//{
-			//    // update
-			//    unpressedButtons.RemoveAll(button => IsPressedActually(button) == false);
-			//    forcePressedButtons.RemoveAll(button => removeFromForcePressedButtons.Contains(button));
-			//    removeFromForcePressedButtons.Clear();
-			//}
-			//frameNumber = frame;
 		}
 
 		public void SetSticky(string button, bool sticky)
