@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public bool RasterCompareInterruptEnabled   { get { return (Registers[CR] & 0x04) != 0; } }
         public bool SpriteOverflowInterruptEnabled  { get { return (Registers[CR] & 0x02) != 0; } }
         public bool SpriteCollisionInterruptEnabled { get { return (Registers[CR] & 0x01) != 0; } }
+        public bool Sprite4ColorModeEnabled         { get { return (Registers[MWR] & 0x0C) != 0; } }
 
         public int BatWidth  { get { switch((Registers[MWR] >> 4) & 3) { case 0: return 32; case 1: return 64; default: return 128; } } }
         public int BatHeight { get { return ((Registers[MWR] & 0x40) == 0) ? 32 : 64; } }
