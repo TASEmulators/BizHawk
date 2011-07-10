@@ -12,7 +12,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		//Highlight movie on load that maches rom name
 		// Option to include subdirectories
 		// Option to include savestate files (that have an input log)
 		
@@ -153,6 +152,66 @@ namespace BizHawk.MultiClient
 				MovieCount.Text = x.ToString() + " movies";
 		}
 
+		private void PreHighlightMovie()
+		{
+			if (Global.Game == null) return;
+			List<int> Indexes = new List<int>();
+			
+			//Pull out matching names
+			for (int x = 0; x < MovieList.Count; x++)
+			{
+				if (Global.Game.FilesystemSafeName == Path.GetFileNameWithoutExtension(MovieList[x].GetGameName()))
+					Indexes.Add(x);
+			}
+			if (Indexes.Count == 0) return;
+			if (Indexes.Count == 1)
+			{
+				HighlightMovie(Indexes[0]);
+				return;
+			}
+
+			//Prefer tas files
+			List<int> TAS = new List<int>();
+			for (int x = 0; x < Indexes.Count; x++)
+			{
+				if (Path.GetExtension(MovieList[Indexes[x]].GetFilePath()).ToUpper() == ".TAS")
+					TAS.Add(x);
+			}
+			if (TAS.Count == 1)
+			{
+				HighlightMovie(TAS[0]);
+				return;
+			}
+			if (TAS.Count > 1)
+				Indexes = new List<int>(TAS);
+
+			//Final tie breaker - Last used file
+			DateTime t = new DateTime();
+			FileInfo f = new FileInfo(MovieList[Indexes[0]].GetFilePath());
+			t = f.LastAccessTime;
+			int mostRecent = Indexes[0];
+			for (int x = 1; x < Indexes.Count; x++)
+			{
+				f = new FileInfo(MovieList[Indexes[0]].GetFilePath());
+				if (f.LastAccessTime > t)
+				{
+					t = f.LastAccessTime;
+					mostRecent = Indexes[x];
+				}
+			}
+
+			HighlightMovie(mostRecent);
+			return;
+
+		}
+
+		private void HighlightMovie(int index)
+		{
+			MovieView.SelectedIndices.Clear();
+			MovieView.setSelection(index);
+			MovieView.SelectItem(index, true);
+		}
+
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
@@ -164,6 +223,8 @@ namespace BizHawk.MultiClient
 				AddMovieToList(f);
 			foreach (string f in Directory.GetFiles(d, "*.mc2"))
 				AddMovieToList(f);
+
+			PreHighlightMovie();
 		}
 
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
