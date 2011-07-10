@@ -39,6 +39,20 @@ namespace BizHawk.MultiClient
 			Changed = false;
 		}
 
+
+		protected override void OnShown(EventArgs e)
+		{
+			Input.Instance.EnableIgnoreModifiers = true;
+			base.OnShown(e);
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			Input.Instance.EnableIgnoreModifiers = false;
+		}
+
+
 		private string AppendButtonMapping(string button, string oldmap)
 		{
 			//adelikat: Another relic, remove this

@@ -80,30 +80,50 @@ namespace BizHawk.MultiClient
 			public string Button;
 			public ModifierKey Modifiers;
 
+			public bool Alt { get { return ((Modifiers & ModifierKey.Alt) != 0); } }
+			public bool Control { get { return ((Modifiers & ModifierKey.Control) != 0); } }
+			public bool Shift { get { return ((Modifiers & ModifierKey.Shift) != 0); } }
+
 			public override string ToString()
 			{
 				string ret = "";
-				if ((Modifiers & ModifierKey.Control) != 0) ret += "Ctrl+";
-				if ((Modifiers & ModifierKey.Alt) != 0) ret += "Alt+";
-				if ((Modifiers & ModifierKey.Shift) != 0) ret += "Shift+";
+				if (Control) ret += "Ctrl+";
+				if (Alt) ret += "Alt+";
+				if (Shift) ret += "Shift+";
 				ret += Button;
 				return ret;
+			}
+			public override bool Equals(object obj)
+			{
+				var other = (LogicalButton)obj;
+				return other == this;
+			}
+			public static bool operator==(LogicalButton lhs, LogicalButton rhs)
+			{
+				return lhs.Button == rhs.Button && lhs.Modifiers == rhs.Modifiers;
+			}
+			public static bool operator !=(LogicalButton lhs, LogicalButton rhs)
+			{
+				return !(lhs == rhs);
 			}
 		}
 		public class InputEvent
 		{
 			public LogicalButton LogicalButton;
 			public InputEventType EventType;
+			public override string ToString()
+			{
+				return string.Format("{0}:{1}", EventType.ToString(), LogicalButton.ToString());
+			}
 		}
 
-	
+		WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
 		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 
-
-		HashSet<string> Ignore = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
+		HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
 		void HandleButton(string button, bool newState)
 		{
-			if (Ignore.Contains(button)) return;
+			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
 			if (LastState[button] && newState) return;
 			if (!LastState[button] && !newState) return;
 
@@ -112,6 +132,29 @@ namespace BizHawk.MultiClient
 			ie.LogicalButton = new LogicalButton(button, _Modifiers);
 			_NewEvents.Add(ie);
 			LastState[button] = newState;
+
+			////track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
+			////this is an interesting idea, which we may need later, but not yet.
+			////for example, you may see this series of events: press:ctrl+c, release:ctrl, release:c
+			////but you might would rather have press:ctr+c, release:ctrl+c
+			////this code relates the releases to the original presses.
+			//if (newState)
+			//{
+			//    ModifierState[button] = ie.LogicalButton;
+			//}
+			//else
+			//{
+			//    if (ModifierState[button] != null)
+			//    {
+			//        LogicalButton alreadyReleased = ie.LogicalButton;
+			//        ie = new InputEvent();
+			//        ie.LogicalButton = (LogicalButton)ModifierState[button];
+			//        ie.EventType = InputEventType.Release;
+			//        if(ie.LogicalButton != alreadyReleased)
+			//            _NewEvents.Add(ie);
+			//    }
+			//    ModifierState[button] = null;
+			//}
 		}
 
 		ModifierKey _Modifiers;
@@ -131,12 +174,14 @@ namespace BizHawk.MultiClient
 		void EnqueueEvent(InputEvent ie)
 		{
 			lock (this)
+			{
 				InputEvents.Enqueue(ie);
+			}
 		}
 
 		void UpdateThreadProc()
 		{
-			for(;;)
+			for (; ; )
 			{
 				KeyInput.Update();
 				GamePad.UpdateAll();
@@ -147,7 +192,7 @@ namespace BizHawk.MultiClient
 				//analyze keys
 				foreach (var key in KeyInput.State.PressedKeys) HandleButton(key.ToString(), true);
 				foreach (var key in KeyInput.State.ReleasedKeys) HandleButton(key.ToString(), false);
-				
+
 				//analyze joysticks
 				for (int i = 0; i < GamePad.Devices.Count; i++)
 				{
@@ -193,5 +238,11 @@ namespace BizHawk.MultiClient
 			if (ie.EventType == InputEventType.Release) return null;
 			return ie.LogicalButton.ToString();
 		}
+
+		//controls whether modifier keys will be ignored as key press events
+		//this should be used by hotkey binders, but we may want modifier key events
+		//to get triggered in the main form
+		public bool EnableIgnoreModifiers = false;
+
 	}
 }

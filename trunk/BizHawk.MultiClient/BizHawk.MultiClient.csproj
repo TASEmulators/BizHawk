@@ -560,7 +560,6 @@
     <None Include="images\textdoc.png" />
     <None Include="images\calculator.png" />
     <None Include="images\NESControllerIcon.png" />
-    <Content Include="corphawk.ico" />
     <None Include="images\FastForward.png" />
     <None Include="images\ReadOnly.png" />
     <None Include="images\Back.png" />
