@@ -670,8 +670,6 @@ namespace BizHawk.MultiClient
 			if (result != DialogResult.OK)
 				return;
 			MakeScreenshot(sfd.FileName);
-
-			MakeScreenshot(path);
 		}
 
 		private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1352,7 +1352,18 @@ namespace BizHawk.MultiClient
 			var framebuf = video.GetVideoBuffer();
 			for (int y = 0; y < video.BufferHeight; y++)
 				for (int x = 0; x < video.BufferWidth; x++)
-					image.SetPixel(x, y, Color.FromArgb(framebuf[(y * video.BufferWidth) + x]));
+				{
+					int col = framebuf[(y * video.BufferWidth) + x];
+
+					if (Global.Emulator is TI83)
+					{
+						if (col == 0)
+							col = Color.Black.ToArgb();
+						else
+							col = Color.White.ToArgb();
+					}
+					image.SetPixel(x, y, Color.FromArgb(col));
+				}
 
 			var f = new FileInfo(path);
 			if (f.Directory.Exists == false)

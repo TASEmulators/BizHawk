@@ -27,16 +27,16 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		bool m_CursorMoved;
 		//-------
 
-        public byte ReadMemory(ushort addr)
-        {
+		public byte ReadMemory(ushort addr)
+		{
 			int romPage = romPageLow3Bits | (romPageHighBit << 3);
 			//Console.WriteLine("read memory: {0:X4}", addr);
 			if (addr < 0x4000)
 				return rom[addr]; //ROM zero-page
 			else if (addr < 0x8000)
-				return rom[romPage*0x4000+addr-0x4000]; //other rom page
+				return rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else return ram[addr - 0x8000];
-        }
+		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					m_LinkState = m_LinkOutput ^ 3;
 					break;
 				case 1: //PORT_KEYBOARD:
-                    lagged = false;
+					lagged = false;
 					keyboardMask = value;
 					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			switch (addr)
 			{
 				case 0: //PORT_LINK
-					return (byte)((romPageHighBit << 4) | (m_LinkState<<2) | m_LinkOutput);
+					return (byte)((romPageHighBit << 4) | (m_LinkState << 2) | m_LinkOutput);
 				case 1: //PORT_KEYBOARD:
 					//Console.WriteLine("read PORT_KEYBOARD");
 					return ReadKeyboard();
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		byte ReadKeyboard()
 		{
 			//ref TI-9X
-			
+
 			int ret = 0xFF;
 			//Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
 			if ((keyboardMask & 1) == 0)
@@ -146,12 +146,12 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			if ((keyboardMask & 4) == 0)
 			{
 				if (Controller.IsPressed("DASH")) ret ^= 1;
-                if (Controller.IsPressed("3")) ret ^= 2;
+				if (Controller.IsPressed("3")) ret ^= 2;
 				if (Controller.IsPressed("6")) ret ^= 4;
 				if (Controller.IsPressed("9")) ret ^= 8;
-                if (Controller.IsPressed("PARACLOSE")) ret ^= 16;
-                if (Controller.IsPressed("TAN")) ret ^= 32;
-                if (Controller.IsPressed("VARS")) ret ^= 64;
+				if (Controller.IsPressed("PARACLOSE")) ret ^= 16;
+				if (Controller.IsPressed("TAN")) ret ^= 32;
+				if (Controller.IsPressed("VARS")) ret ^= 64;
 			}
 			if ((keyboardMask & 8) == 0)
 			{
@@ -159,10 +159,10 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				if (Controller.IsPressed("2")) ret ^= 2;
 				if (Controller.IsPressed("5")) ret ^= 4;
 				if (Controller.IsPressed("8")) ret ^= 8;
-                if (Controller.IsPressed("PARAOPEN")) ret ^= 16;
-                if (Controller.IsPressed("COS")) ret ^= 32;
-                if (Controller.IsPressed("PRGM")) ret ^= 64;
-                if (Controller.IsPressed("STAT")) ret ^= 128;
+				if (Controller.IsPressed("PARAOPEN")) ret ^= 16;
+				if (Controller.IsPressed("COS")) ret ^= 32;
+				if (Controller.IsPressed("PRGM")) ret ^= 64;
+				if (Controller.IsPressed("STAT")) ret ^= 128;
 			}
 			if ((keyboardMask & 16) == 0)
 			{
@@ -170,35 +170,35 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				if (Controller.IsPressed("1")) ret ^= 2;
 				if (Controller.IsPressed("4")) ret ^= 4;
 				if (Controller.IsPressed("7")) ret ^= 8;
-                if (Controller.IsPressed("COMMA")) ret ^= 16;
-                if (Controller.IsPressed("SIN")) ret ^= 32;
-                if (Controller.IsPressed("MATRIX")) ret ^= 64;
-                if (Controller.IsPressed("X")) ret ^= 128;
+				if (Controller.IsPressed("COMMA")) ret ^= 16;
+				if (Controller.IsPressed("SIN")) ret ^= 32;
+				if (Controller.IsPressed("MATRIX")) ret ^= 64;
+				if (Controller.IsPressed("X")) ret ^= 128;
 			}
 
-            if ((keyboardMask & 32) == 0)
-            {
-                if (Controller.IsPressed("STO")) ret ^= 2;
-                if (Controller.IsPressed("LN")) ret ^= 4;
-                if (Controller.IsPressed("LOG")) ret ^= 8;
-                if (Controller.IsPressed("SQUARED")) ret ^= 16;
-                if (Controller.IsPressed("NEG1")) ret ^= 32;
-                if (Controller.IsPressed("MATH")) 
-                    ret ^= 64;
-                if (Controller.IsPressed("ALPHA")) ret ^= 128;
-            }
+			if ((keyboardMask & 32) == 0)
+			{
+				if (Controller.IsPressed("STO")) ret ^= 2;
+				if (Controller.IsPressed("LN")) ret ^= 4;
+				if (Controller.IsPressed("LOG")) ret ^= 8;
+				if (Controller.IsPressed("SQUARED")) ret ^= 16;
+				if (Controller.IsPressed("NEG1")) ret ^= 32;
+				if (Controller.IsPressed("MATH"))
+					ret ^= 64;
+				if (Controller.IsPressed("ALPHA")) ret ^= 128;
+			}
 
-            if ((keyboardMask & 64) == 0)
-            {
-                if (Controller.IsPressed("GRAPH")) ret ^= 1;
-                if (Controller.IsPressed("TRACE")) ret ^= 2;
-                if (Controller.IsPressed("ZOOM")) ret ^= 4;
-                if (Controller.IsPressed("WINDOW")) ret ^= 8;
-                if (Controller.IsPressed("Y")) ret ^= 16;
-                if (Controller.IsPressed("2ND")) ret ^= 32;
-                if (Controller.IsPressed("MODE")) ret ^= 64;
-                if (Controller.IsPressed("DEL")) ret ^= 128;
-            }
+			if ((keyboardMask & 64) == 0)
+			{
+				if (Controller.IsPressed("GRAPH")) ret ^= 1;
+				if (Controller.IsPressed("TRACE")) ret ^= 2;
+				if (Controller.IsPressed("ZOOM")) ret ^= 4;
+				if (Controller.IsPressed("WINDOW")) ret ^= 8;
+				if (Controller.IsPressed("Y")) ret ^= 16;
+				if (Controller.IsPressed("2ND")) ret ^= 32;
+				if (Controller.IsPressed("MODE")) ret ^= 64;
+				if (Controller.IsPressed("DEL")) ret ^= 128;
+			}
 
 			return (byte)ret;
 
@@ -347,21 +347,23 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				this.emu = emu;
 			}
 
-			public int[] GetVideoBuffer() {
+			public int[] GetVideoBuffer()
+			{
 				//unflatten bit buffer
-				int[] pixels = new int[96*64];
-				int i=0;
-				for(int y=0;y<64;y++)
+				int[] pixels = new int[96 * 64];
+				int i = 0;
+				for (int y = 0; y < 64; y++)
 					for (int x = 0; x < 96; x++)
 					{
 						int offset = y * 96 + x;
 						int bufbyte = offset >> 3;
 						int bufbit = offset & 7;
 						int bit = ((emu.vram[bufbyte] >> (7 - bufbit)) & 1);
-						if(bit==0)
-							pixels[i++] = 0xFFFFFF;
+						if (bit == 0)
+							unchecked { pixels[i++] = (int)0xFFFFFFFF; }
 						else
 							pixels[i++] = 0;
+							
 					}
 				return pixels;
 			}
@@ -369,7 +371,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			public int BufferHeight { get { return 64; } }
 			public int BackgroundColor { get { return 0; } }
 		}
-		public IVideoProvider VideoProvider { get { return new MyVideoProvider(this); } }
+		public IVideoProvider VideoProvider { 
+			get { return new MyVideoProvider(this); } }
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 
@@ -382,9 +385,9 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					"DOWN","LEFT","UP","RIGHT",
 					"PLUS","MINUS","MULTIPLY","DIVIDE",
 					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
-                    "COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
-                    "STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
-                    "GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
+					"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
+					"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
+					"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
 				}
 			};
 
@@ -394,7 +397,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public IController Controller
 		{
 			get { return controller; }
-			set { controller = value;  }
+			set { controller = value; }
 		}
 		//configuration
 		ushort startPC;
@@ -407,19 +410,19 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				//different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
 				//if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
 				//else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
-	
+
 				if (opt.StartsWith("initPC"))
-				startPC = ushort.Parse(opt.Split('=')[1], NumberStyles.HexNumber);
+					startPC = ushort.Parse(opt.Split('=')[1], NumberStyles.HexNumber);
 			}
 
 			HardReset();
-            SetupMemoryDomains();
+			SetupMemoryDomains();
 		}
 
 		public void FrameAdvance(bool render)
 		{
-            lagged = true;
-            //I eyeballed this speed
+			lagged = true;
+			//I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
 				onPressed = Controller.IsPressed("ON");
@@ -427,28 +430,28 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				cpu.ExecuteCycles(10000);
 				cpu.Interrupt = true;
 			}
-            Controller.UpdateControls(Frame++);
-            if (lagged)
-            {
-                _lagcount++;
-                islag = true;
-            }
-            else
-                islag = false;
+			Controller.UpdateControls(Frame++);
+			if (lagged)
+			{
+				_lagcount++;
+				islag = true;
+			}
+			else
+				islag = false;
 		}
 
 		public void HardReset()
 		{
 			cpu.Reset();
 			ram = new byte[0x8000];
-			for(int i=0;i<0x8000;i++)
+			for (int i = 0; i < 0x8000; i++)
 				ram[i] = 0xFF;
 			cpu.RegisterPC = startPC;
 
 			cpu.IFF1 = false;
 			cpu.IFF2 = false;
 			cpu.InterruptMode = 2;
-			
+
 			maskOn = false;
 			romPageHighBit = 0;
 			romPageLow3Bits = 0;
@@ -459,13 +462,13 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			disp_x = disp_y = 0;
 		}
 
-        private int _lagcount = 0;
-        private bool lagged = true;
-        private bool islag = false;
-		public int Frame {get; set;}
-        public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-        public bool IsLagFrame { get { return islag; } }
-		
+		private int _lagcount = 0;
+		private bool lagged = true;
+		private bool islag = false;
+		public int Frame { get; set; }
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public bool IsLagFrame { get { return islag; } }
+
 		public bool DeterministicEmulation { get { return true; } set { } }
 
 		public byte[] SaveRam { get { return null; } }
@@ -477,70 +480,70 @@ namespace BizHawk.Emulation.Consoles.Calculator
 
 		public void SaveStateText(TextWriter writer)
 		{
-            writer.WriteLine("[TI83]\n");
-            writer.WriteLine("Frame {0}", Frame);
-            cpu.SaveStateText(writer);
-            writer.Write("RAM ");
-            ram.SaveAsHex(writer);
-            writer.WriteLine ("romPageLow3Bits {0}", romPageLow3Bits);
-            writer.WriteLine("romPageHighBit {0}", romPageHighBit);
-            writer.WriteLine("disp_mode {0}", disp_mode);
-            writer.WriteLine("disp_move {0}", disp_move);
-            writer.WriteLine("disp_x {0}", disp_x);
-            writer.WriteLine("disp_y {0}", disp_y);
-            writer.WriteLine("m_CursorMoved {0}", m_CursorMoved);
-            writer.WriteLine("maskOn {0}", maskOn);
-            writer.WriteLine("onPressed {0}", onPressed);
-            writer.WriteLine("keyboardMask {0}", keyboardMask);
-            writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
-            writer.WriteLine("m_LinkState {0}", m_LinkState);
-            writer.WriteLine("lag {0}", _lagcount);
-            writer.WriteLine("[/TI83]");
+			writer.WriteLine("[TI83]\n");
+			writer.WriteLine("Frame {0}", Frame);
+			cpu.SaveStateText(writer);
+			writer.Write("RAM ");
+			ram.SaveAsHex(writer);
+			writer.WriteLine("romPageLow3Bits {0}", romPageLow3Bits);
+			writer.WriteLine("romPageHighBit {0}", romPageHighBit);
+			writer.WriteLine("disp_mode {0}", disp_mode);
+			writer.WriteLine("disp_move {0}", disp_move);
+			writer.WriteLine("disp_x {0}", disp_x);
+			writer.WriteLine("disp_y {0}", disp_y);
+			writer.WriteLine("m_CursorMoved {0}", m_CursorMoved);
+			writer.WriteLine("maskOn {0}", maskOn);
+			writer.WriteLine("onPressed {0}", onPressed);
+			writer.WriteLine("keyboardMask {0}", keyboardMask);
+			writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
+			writer.WriteLine("m_LinkState {0}", m_LinkState);
+			writer.WriteLine("lag {0}", _lagcount);
+			writer.WriteLine("[/TI83]");
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-            while (true)
-            {
-                string[] args = reader.ReadLine().Split(' ');
-                if (args[0].Trim() == "") continue;
-                if (args[0] == "[TI83]") continue;
-                if (args[0] == "[/TI83]") break;
-                if (args[0] == "Frame")
-                    Frame = int.Parse(args[1]);
-                else if (args[0] == "[Z80]")
-                    cpu.LoadStateText(reader);
-                else if (args[0] == "RAM")
-                    ram.ReadFromHex(args[1]);
-                else if (args[0] == "romPageLow3Bits")
-                    romPageLow3Bits = int.Parse(args[1]);
-                else if (args[0] == "romPageHighBit")
-                    romPageHighBit = int.Parse(args[1]);
-                else if (args[0] == "disp_mode")
-                    disp_mode = int.Parse(args[1]);
-                else if (args[0] == "disp_move")
-                    disp_move = int.Parse(args[1]);
-                else if (args[0] == "disp_x")
-                    disp_x = uint.Parse(args[1]);
-                else if (args[0] == "disp_y")
-                    disp_y = uint.Parse(args[1]);
-                else if (args[0] == "m_CursorMoved")
-                    m_CursorMoved = bool.Parse(args[1]);
-                else if (args[0] == "maskOn")
-                    maskOn = bool.Parse(args[1]);
-                else if (args[0] == "onPressed")
-                    onPressed = bool.Parse(args[1]);
-                else if (args[0] == "keyboardMask")
-                    keyboardMask = int.Parse(args[1]);
-                else if (args[0] == "m_LinkOutput")
-                    m_LinkOutput = int.Parse(args[1]);
-                else if (args[0] == "m_LinkState")
-                    m_LinkState = int.Parse(args[1]);
-                else if (args[0] == "lag")
-                    _lagcount = int.Parse(args[1]);
-                else
-                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
-            }
+			while (true)
+			{
+				string[] args = reader.ReadLine().Split(' ');
+				if (args[0].Trim() == "") continue;
+				if (args[0] == "[TI83]") continue;
+				if (args[0] == "[/TI83]") break;
+				if (args[0] == "Frame")
+					Frame = int.Parse(args[1]);
+				else if (args[0] == "[Z80]")
+					cpu.LoadStateText(reader);
+				else if (args[0] == "RAM")
+					ram.ReadFromHex(args[1]);
+				else if (args[0] == "romPageLow3Bits")
+					romPageLow3Bits = int.Parse(args[1]);
+				else if (args[0] == "romPageHighBit")
+					romPageHighBit = int.Parse(args[1]);
+				else if (args[0] == "disp_mode")
+					disp_mode = int.Parse(args[1]);
+				else if (args[0] == "disp_move")
+					disp_move = int.Parse(args[1]);
+				else if (args[0] == "disp_x")
+					disp_x = uint.Parse(args[1]);
+				else if (args[0] == "disp_y")
+					disp_y = uint.Parse(args[1]);
+				else if (args[0] == "m_CursorMoved")
+					m_CursorMoved = bool.Parse(args[1]);
+				else if (args[0] == "maskOn")
+					maskOn = bool.Parse(args[1]);
+				else if (args[0] == "onPressed")
+					onPressed = bool.Parse(args[1]);
+				else if (args[0] == "keyboardMask")
+					keyboardMask = int.Parse(args[1]);
+				else if (args[0] == "m_LinkOutput")
+					m_LinkOutput = int.Parse(args[1]);
+				else if (args[0] == "m_LinkState")
+					m_LinkState = int.Parse(args[1]);
+				else if (args[0] == "lag")
+					_lagcount = int.Parse(args[1]);
+				else
+					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+			}
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -556,24 +559,24 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			return new byte[0];
 		}
 
-        public string SystemId { get { return "TI83"; } }
+		public string SystemId { get { return "TI83"; } }
 
-        private IList<MemoryDomain> memoryDomains;
-        private const ushort RamSizeMask = 0x7FFF;
+		private IList<MemoryDomain> memoryDomains;
+		private const ushort RamSizeMask = 0x7FFF;
 
-        private void SetupMemoryDomains()
-        {
-            var domains = new List<MemoryDomain>();
-            var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little, 
-                addr => ram[addr & RamSizeMask],
-                (addr, value) => ram[addr & RamSizeMask] = value);
-            domains.Add(MainMemoryDomain);
-            memoryDomains = domains.AsReadOnly();
-        }
+		private void SetupMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>();
+			var MainMemoryDomain = new MemoryDomain("Main RAM", ram.Length, Endian.Little,
+				addr => ram[addr & RamSizeMask],
+				(addr, value) => ram[addr & RamSizeMask] = value);
+			domains.Add(MainMemoryDomain);
+			memoryDomains = domains.AsReadOnly();
+		}
 
-        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
-        public void Dispose() { }
-    }
+		public void Dispose() { }
+	}
 }
