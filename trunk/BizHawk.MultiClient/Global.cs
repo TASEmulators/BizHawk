@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 		public static IEmulator Emulator;
 		public static CoreInputComm CoreInputComm;
 		public static RomGame Game;
-		public static Controller ClientControls;
 		public static Controller SMSControls;
 		public static Controller PCEControls;
 		public static Controller GenControls;
@@ -29,7 +28,8 @@ namespace BizHawk.MultiClient
 
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 
-		//user -> ActiveController -> TurboAdapter(TBD) -> Lua(?) -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> MovieInputController -> ControllerOutput(1) -> Game
+		//user -> Input -> ActiveController -> TurboAdapter(TBD) -> Lua(?) -> ..
+		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> MovieInputController -> ControllerOutput(1) -> Game
 		//(1)->Input Display
 		
 		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
@@ -38,8 +38,14 @@ namespace BizHawk.MultiClient
 		//the "output" port for the controller chain. 
 		public static IController ControllerOutput;
 
-		public static Input.InputCoalescer InputCoalescer;
+		//input state which has been destined for game controller inputs are coalesced here
+		public static InputCoalescer ControllerInputCoalescer = new InputCoalescer();
+		//input state which has been destined for client hotkey consumption are colesced here
+		public static InputCoalescer HotkeyCoalescer = new InputCoalescer();
+
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+
+		public static Controller ClientControls;
 
 		public static string GetOutputControllersAsMnemonic()
 		{

@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
 		private List<string> removeFromForcePressedButtons = new List<string>();
 		private List<string> programmaticallyPressedButtons = new List<string>();
 
+		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
 			var ret = new List<string>();
