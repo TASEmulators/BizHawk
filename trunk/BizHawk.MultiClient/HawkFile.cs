@@ -77,7 +77,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// returns the extension of Name
 		/// </summary>
-		public string Extension { get { return Path.GetExtension(Name); } }
+		public string Extension { get { return Path.GetExtension(Name).ToUpper(); } }
 
 		/// <summary>
 		/// Indicates whether this file is an archive
