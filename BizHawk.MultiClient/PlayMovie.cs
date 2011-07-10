@@ -128,7 +128,6 @@ namespace BizHawk.MultiClient
 		{
 			Movie m = new Movie(path.CanonicalFullPath, MOVIEMODE.INACTIVE);
 			m.PreLoadText();
-			//m.LoadMovie();
 			if (path.Extension == ".FM2")
 				m.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			else if (path.Extension == ".MC2")
