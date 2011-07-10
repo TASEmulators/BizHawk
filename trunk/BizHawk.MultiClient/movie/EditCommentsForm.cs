@@ -28,7 +28,13 @@ namespace BizHawk.MultiClient
 			}
 
 			if (CommentGrid.Rows.Count > 8)
-				this.Height = Height + ((CommentGrid.Rows.Count - 8) * 21);
+			{
+				int x = Height + ((CommentGrid.Rows.Count - 8) * 21);
+				if (x < 600)
+					Height = x;
+				else
+					Height = 600;
+			}
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

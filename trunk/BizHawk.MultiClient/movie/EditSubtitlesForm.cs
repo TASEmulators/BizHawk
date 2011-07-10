@@ -33,7 +33,13 @@ namespace BizHawk.MultiClient
 			}
 
 			if (SubGrid.Rows.Count > 8)
-				this.Height = Height + ((SubGrid.Rows.Count-8) * 21);
+			{
+				int x = Height + ((SubGrid.Rows.Count - 8) * 21);
+				if (x < 600)
+					this.Height = x;
+				else
+					this.Height = 600;
+			}
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
