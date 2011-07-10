@@ -15,7 +15,7 @@
     <StartupObject>
     </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <ApplicationIcon>images\logo.ico</ApplicationIcon>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
