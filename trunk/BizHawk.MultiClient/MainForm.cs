@@ -936,6 +936,7 @@ namespace BizHawk.MultiClient
 			DumpStatus.ToolTipText = "";
 
 			if (Global.Emulator == null) return;
+            if (Global.Game == null) return;
 
 			var status = Global.Emulator.CoreOutputComm.RomStatus;
 			string annotation = "";
