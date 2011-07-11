@@ -258,7 +258,7 @@
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 40);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
@@ -805,9 +805,11 @@
 			this.aVIWAVToolStripMenuItem.Name = "aVIWAVToolStripMenuItem";
 			this.aVIWAVToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.aVIWAVToolStripMenuItem.Text = "AVI/WAV";
+			this.aVIWAVToolStripMenuItem.DropDownOpened += new System.EventHandler(this.aVIWAVToolStripMenuItem_DropDownOpened);
 			// 
 			// recordAVIToolStripMenuItem
 			// 
+			this.recordAVIToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
 			this.recordAVIToolStripMenuItem.Name = "recordAVIToolStripMenuItem";
 			this.recordAVIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.recordAVIToolStripMenuItem.Text = "Record AVI";
@@ -815,6 +817,7 @@
 			// 
 			// stopAVIToolStripMenuItem
 			// 
+			this.stopAVIToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
 			this.stopAVIToolStripMenuItem.Name = "stopAVIToolStripMenuItem";
 			this.stopAVIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.stopAVIToolStripMenuItem.Text = "Stop AVI";

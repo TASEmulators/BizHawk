@@ -10,39 +10,12 @@ namespace BizHawk.MultiClient
 	{
 		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var sfd = new SaveFileDialog();
-			//TODO adelikat (dunno how to do the paths correctly)
-			sfd.FileName = Path.Combine(Global.Config.AVIPath, "game.avi");
-			if (sfd.ShowDialog() == DialogResult.Cancel)
-				return;
-
-			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
-			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
-			AviWriter aw = new AviWriter();
-			try
-			{
-				aw.SetMovieParameters(fps, 0x01000000);
-				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
-				aw.SetAudioParameters(44100, 2, 16);
-				aw.OpenFile(sfd.FileName);
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
-				aw.SetVideoCodecToken(token);
-				aw.OpenStreams();
-			
-				//commit the avi writing last, in case there were any errors earlier
-				CurrAviWriter = aw;
-			}
-			catch
-			{
-				aw.Dispose();
-				throw;
-			}
+			RecordAVI();
 		}
 
 		private void stopAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrAviWriter.CloseFile();
-			CurrAviWriter = null;
+			StopAVI();
 		}
 
 		private void DumpStatus_Click(object sender, EventArgs e)
@@ -952,14 +925,38 @@ namespace BizHawk.MultiClient
 			StopUserMovie();
 		}
 
-        private void displayLogWindowToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.ShowLogWindow ^= true;
-            displayLogWindowToolStripMenuItem.Checked = Global.Config.ShowLogWindow;
-            if (Global.Config.ShowLogWindow)
-                LogConsole.ShowConsole();
-            else
-                LogConsole.HideConsole();
-        }
+		private void displayLogWindowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ShowLogWindow ^= true;
+			displayLogWindowToolStripMenuItem.Checked = Global.Config.ShowLogWindow;
+			if (Global.Config.ShowLogWindow)
+				LogConsole.ShowConsole();
+			else
+				LogConsole.HideConsole();
+		}
+
+		private void PauseStrip_Click(object sender, EventArgs e)
+		{
+			TogglePause();
+		}
+
+		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisplaySubtitles ^= true;
+		}
+
+		private void aVIWAVToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (CurrAviWriter == null)
+			{
+				recordAVIToolStripMenuItem.Enabled = true;
+				stopAVIToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				recordAVIToolStripMenuItem.Enabled = false;
+				stopAVIToolStripMenuItem.Enabled = true;
+			}
+		}
 	}
 }
