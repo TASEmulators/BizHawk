@@ -9,7 +9,7 @@ using BizHawk;
 
 namespace BizHawk.MultiClient
 {
-	unsafe class AviWriter
+	unsafe class AviWriter : IDisposable
 	{
 		static AviWriter()
 		{
@@ -18,6 +18,11 @@ namespace BizHawk.MultiClient
 
 		public AviWriter()
 		{
+		}
+
+		public void Dispose()
+		{
+			CloseFile();
 		}
 
 		CodecToken currVideoCodecToken = null;
@@ -119,7 +124,7 @@ namespace BizHawk.MultiClient
 				bmih.Init();
 				bmih.biPlanes = 1;
 				bmih.biBitCount = 24;
-				bmih.biHeight = -height;
+				bmih.biHeight = height;
 				bmih.biWidth = width;
 				bmih.biSizeImage = (uint)(3 * width * height);
 			}
@@ -366,6 +371,8 @@ namespace BizHawk.MultiClient
 				throw new InvalidOperationException("video buffer changed between start and now");
 
 			int todo = source.BufferHeight * source.BufferWidth;
+			int w = source.BufferWidth;
+			int h = source.BufferHeight;
 			
 			IntPtr buf = GetStaticGlobalBuf(todo * 3);
 
@@ -376,14 +383,18 @@ namespace BizHawk.MultiClient
 				{
 					byte* bp = bytes_ptr;
 
-					for (int i = 0; i < todo; i++)
+					for (int idx = w * h - w, y = 0; y < h; y++)
 					{
-						int r = (buffer[i ]>> 0) & 0xFF;
-						int g = (buffer[i] >> 8) & 0xFF;
-						int b = (buffer[i] >> 16) & 0xFF;
-						*bp++ = (byte)r;
-						*bp++ = (byte)g;
-						*bp++ = (byte)b;
+						for (int x = 0; x < w; x++, idx++)
+						{
+							int r = (buffer[idx] >> 0) & 0xFF;
+							int g = (buffer[idx] >> 8) & 0xFF;
+							int b = (buffer[idx] >> 16) & 0xFF;
+							*bp++ = (byte)r;
+							*bp++ = (byte)g;
+							*bp++ = (byte)b;
+						}
+						idx -= w * 2;
 					}
 
 					int bytes_written;

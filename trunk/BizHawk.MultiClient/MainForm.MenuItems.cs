@@ -19,16 +19,24 @@ namespace BizHawk.MultiClient
 			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
 			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
 			AviWriter aw = new AviWriter();
-			aw.SetMovieParameters(fps, 0x01000000);
-			aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
-			aw.SetAudioParameters(44100, 2, 16);
-			aw.OpenFile(sfd.FileName);
-			var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
-			aw.SetVideoCodecToken(token);
-			aw.OpenStreams();
-
-			//commit the avi writing last, in case there were any errors earlier
-			CurrAviWriter = aw;
+			try
+			{
+				aw.SetMovieParameters(fps, 0x01000000);
+				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+				aw.SetAudioParameters(44100, 2, 16);
+				aw.OpenFile(sfd.FileName);
+				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				aw.SetVideoCodecToken(token);
+				aw.OpenStreams();
+			
+				//commit the avi writing last, in case there were any errors earlier
+				CurrAviWriter = aw;
+			}
+			catch
+			{
+				aw.Dispose();
+				throw;
+			}
 		}
 
 		private void stopAVIToolStripMenuItem_Click(object sender, EventArgs e)
