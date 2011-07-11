@@ -14,6 +14,7 @@ using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
+
 	public partial class MainForm : Form
 	{
 		public const string EMUVERSION = "BizHawk v1.0.0";
@@ -30,6 +31,9 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 
 		public bool ReadOnly = true;    //Global Movie Read only setting
+
+		//avi/wav state
+		AviWriter CurrAviWriter = null;
 
 		//the currently selected savestate slot
 		private int SaveSlot = 0;
@@ -73,6 +77,7 @@ namespace BizHawk.MultiClient
 				LogConsole.ShowConsole();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
+
 
 		    UpdateStatusSlots();
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
@@ -329,6 +334,17 @@ namespace BizHawk.MultiClient
 				if (exit)
 					break;
 				Thread.Sleep(0);
+			}
+
+			Shutdown();
+		}
+
+		void Shutdown()
+		{
+			if (CurrAviWriter != null)
+			{
+				CurrAviWriter.CloseFile();
+				CurrAviWriter = null;
 			}
 		}
 
@@ -1422,6 +1438,18 @@ namespace BizHawk.MultiClient
 				//=======================================
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				//=======================================
+
+				if (CurrAviWriter != null)
+				{
+					//TODO - this will stray over time! have AviWriter keep an accumulation!
+					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
+					short[] temp = new short[samples*2];
+					Global.Emulator.SoundProvider.GetSamples(temp);
+					genSound = false;
+
+					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
+					CurrAviWriter.AddSamples(temp);
+				}
 
 				UpdateTools();
 
@@ -2531,6 +2559,8 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.DisplaySubtitles ^= true;
 		}
+
+
 
 
 

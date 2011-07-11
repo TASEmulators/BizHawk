@@ -1,0 +1,380 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Runtime.InteropServices;
+
+namespace BizHawk
+{
+	public static class Win32
+	{
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct RECT
+		{
+			private int _Left;
+			private int _Top;
+			private int _Right;
+			private int _Bottom;
+
+			public RECT(RECT Rectangle)
+				: this(Rectangle.Left, Rectangle.Top, Rectangle.Right, Rectangle.Bottom)
+			{
+			}
+			public RECT(int Left, int Top, int Right, int Bottom)
+			{
+				_Left = Left;
+				_Top = Top;
+				_Right = Right;
+				_Bottom = Bottom;
+			}
+
+			public int X
+			{
+				get { return _Left; }
+				set { _Left = value; }
+			}
+			public int Y
+			{
+				get { return _Top; }
+				set { _Top = value; }
+			}
+			public int Left
+			{
+				get { return _Left; }
+				set { _Left = value; }
+			}
+			public int Top
+			{
+				get { return _Top; }
+				set { _Top = value; }
+			}
+			public int Right
+			{
+				get { return _Right; }
+				set { _Right = value; }
+			}
+			public int Bottom
+			{
+				get { return _Bottom; }
+				set { _Bottom = value; }
+			}
+			public int Height
+			{
+				get { return _Bottom - _Top; }
+				set { _Bottom = value - _Top; }
+			}
+			public int Width
+			{
+				get { return _Right - _Left; }
+				set { _Right = value + _Left; }
+			}
+			public Point Location
+			{
+				get { return new Point(Left, Top); }
+				set
+				{
+					_Left = value.X;
+					_Top = value.Y;
+				}
+			}
+			public Size Size
+			{
+				get { return new Size(Width, Height); }
+				set
+				{
+					_Right = value.Width + _Left;
+					_Bottom = value.Height + _Top;
+				}
+			}
+
+			public static implicit operator Rectangle(RECT Rectangle)
+			{
+				return new Rectangle(Rectangle.Left, Rectangle.Top, Rectangle.Width, Rectangle.Height);
+			}
+			public static implicit operator RECT(Rectangle Rectangle)
+			{
+				return new RECT(Rectangle.Left, Rectangle.Top, Rectangle.Right, Rectangle.Bottom);
+			}
+			public static bool operator ==(RECT Rectangle1, RECT Rectangle2)
+			{
+				return Rectangle1.Equals(Rectangle2);
+			}
+			public static bool operator !=(RECT Rectangle1, RECT Rectangle2)
+			{
+				return !Rectangle1.Equals(Rectangle2);
+			}
+
+			public override string ToString()
+			{
+				return "{Left: " + _Left + "; " + "Top: " + _Top + "; Right: " + _Right + "; Bottom: " + _Bottom + "}";
+			}
+
+			public override int GetHashCode()
+			{
+				return ToString().GetHashCode();
+			}
+
+			public bool Equals(RECT Rectangle)
+			{
+				return Rectangle.Left == _Left && Rectangle.Top == _Top && Rectangle.Right == _Right && Rectangle.Bottom == _Bottom;
+			}
+
+			public override bool Equals(object Object)
+			{
+				if (Object is RECT)
+				{
+					return Equals((RECT)Object);
+				}
+				else if (Object is Rectangle)
+				{
+					return Equals(new RECT((Rectangle)Object));
+				}
+
+				return false;
+			}
+		}
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct AVISTREAMINFOW
+		{
+			public Int32 fccType;
+			public Int32 fccHandler;
+			public Int32 dwFlags;
+			public Int32 dwCaps;
+			public Int16 wPriority;
+			public Int16 wLanguage;
+			public Int32 dwScale;
+			public Int32 dwRate;
+			public Int32 dwStart;
+			public Int32 dwLength;
+			public Int32 dwInitialFrames;
+			public Int32 dwSuggestedBufferSize;
+			public Int32 dwQuality;
+			public Int32 dwSampleSize;
+			public RECT rcFrame;
+			public Int32 dwEditCount;
+			public Int32 dwFormatChangeCount;
+			[MarshalAs(UnmanagedType.LPWStr, SizeConst=64)]
+			public string szName;
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct BITMAPINFOHEADER
+		{
+			public uint biSize;
+			public int biWidth;
+			public int biHeight;
+			public ushort biPlanes;
+			public ushort biBitCount;
+			public uint biCompression;
+			public uint biSizeImage;
+			public int biXPelsPerMeter;
+			public int biYPelsPerMeter;
+			public uint biClrUsed;
+			public uint biClrImportant;
+
+			public void Init()
+			{
+				biSize = (uint)Marshal.SizeOf(this);
+			}
+		}
+
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct WAVEFORMATEX
+		{
+			public ushort wFormatTag;
+			public ushort nChannels;
+			public uint nSamplesPerSec;
+			public uint nAvgBytesPerSec;
+			public ushort nBlockAlign;
+			public ushort wBitsPerSample;
+			public ushort cbSize;
+
+			public void Init()
+			{
+				cbSize = (ushort)Marshal.SizeOf(this);
+			}
+		}
+
+		public const int WAVE_FORMAT_PCM = 1;
+		public const int AVIIF_KEYFRAME = 0x00000010;
+
+
+		[Flags]
+		public enum OpenFileStyle : uint
+		{
+			OF_CANCEL = 0x00000800,  // Ignored. For a dialog box with a Cancel button, use OF_PROMPT.
+			OF_CREATE = 0x00001000,  // Creates a new file. If file exists, it is truncated to zero (0) length.
+			OF_DELETE = 0x00000200,  // Deletes a file.
+			OF_EXIST = 0x00004000,  // Opens a file and then closes it. Used to test that a file exists
+			OF_PARSE = 0x00000100,  // Fills the OFSTRUCT structure, but does not do anything else.
+			OF_PROMPT = 0x00002000,  // Displays a dialog box if a requested file does not exist
+			OF_READ = 0x00000000,  // Opens a file for reading only.
+			OF_READWRITE = 0x00000002,  // Opens a file with read/write permissions.
+			OF_REOPEN = 0x00008000,  // Opens a file by using information in the reopen buffer.
+
+			// For MS-DOS–based file systems, opens a file with compatibility mode, allows any process on a
+			// specified computer to open the file any number of times.
+			// Other efforts to open a file with other sharing modes fail. This flag is mapped to the
+			// FILE_SHARE_READ|FILE_SHARE_WRITE flags of the CreateFile function.
+			OF_SHARE_COMPAT = 0x00000000,
+
+			// Opens a file without denying read or write access to other processes.
+			// On MS-DOS-based file systems, if the file has been opened in compatibility mode
+			// by any other process, the function fails.
+			// This flag is mapped to the FILE_SHARE_READ|FILE_SHARE_WRITE flags of the CreateFile function.
+			OF_SHARE_DENY_NONE = 0x00000040,
+
+			// Opens a file and denies read access to other processes.
+			// On MS-DOS-based file systems, if the file has been opened in compatibility mode,
+			// or for read access by any other process, the function fails.
+			// This flag is mapped to the FILE_SHARE_WRITE flag of the CreateFile function.
+			OF_SHARE_DENY_READ = 0x00000030,
+
+			// Opens a file and denies write access to other processes.
+			// On MS-DOS-based file systems, if a file has been opened in compatibility mode,
+			// or for write access by any other process, the function fails.
+			// This flag is mapped to the FILE_SHARE_READ flag of the CreateFile function.
+			OF_SHARE_DENY_WRITE = 0x00000020,
+
+			// Opens a file with exclusive mode, and denies both read/write access to other processes.
+			// If a file has been opened in any other mode for read/write access, even by the current process,
+			// the function fails.
+			OF_SHARE_EXCLUSIVE = 0x00000010,
+
+			// Verifies that the date and time of a file are the same as when it was opened previously.
+			// This is useful as an extra check for read-only files.
+			OF_VERIFY = 0x00000400,
+
+			// Opens a file for write access only.
+			OF_WRITE = 0x00000001
+		}
+
+		[DllImport("avifil32.dll", SetLastError = true)]
+		public static extern int AVIFileOpenW(ref IntPtr pAviFile, [MarshalAs(UnmanagedType.LPWStr)] string szFile, OpenFileStyle uMode, int lpHandler);
+
+		[DllImport("avifil32.dll", SetLastError = true)]
+		public static extern void AVIFileInit();
+
+		// Create a new stream in an existing file and creates an interface to the new stream
+		[DllImport("avifil32.dll")]
+		public static extern int AVIFileCreateStreamW(
+			IntPtr pfile,
+			out IntPtr ppavi,
+			ref AVISTREAMINFOW psi);
+
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		public struct AVICOMPRESSOPTIONS
+		{
+			public int fccType;
+			public int fccHandler;
+			public int dwKeyFrameEvery;
+			public int dwQuality;
+			public int dwBytesPerSecond;
+			public int dwFlags;
+			public int lpFormat;
+			public int cbFormat;
+			public int lpParms;
+			public int cbParms;
+			public int dwInterleaveEvery;
+		}
+
+		[DllImport("user32.dll", SetLastError = false)]
+		public static extern IntPtr GetDesktopWindow();
+
+		// Retrieve the save options for a file and returns them in a buffer 
+		[DllImport("avifil32.dll")]
+		public static extern int AVISaveOptions(
+			IntPtr hwnd,
+			int flags,
+			int streams,
+			[In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] ppavi,
+			[In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] plpOptions);
+
+		// Free the resources allocated by the AVISaveOptions function 
+		[DllImport("avifil32.dll")]
+		public static extern int AVISaveOptionsFree(
+			int streams,
+			[In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] plpOptions);
+
+		// Create a compressed stream from an uncompressed stream and a
+		// compression filter, and returns the address of a pointer to
+		// the compressed stream
+		[DllImport("avifil32.dll")]
+		public static extern int AVIMakeCompressedStream(
+			out IntPtr ppsCompressed,
+			IntPtr psSource,
+			ref AVICOMPRESSOPTIONS lpOptions,
+			IntPtr pclsidHandler);
+
+		// Set the format of a stream at the specified position
+		[DllImport("avifil32.dll")]
+		public static extern int AVIStreamSetFormat(
+			IntPtr pavi,
+			int lPos,
+			ref BITMAPINFOHEADER lpFormat,
+			int cbFormat);
+
+		// Set the format of a stream at the specified position
+		[DllImport("avifil32.dll")]
+		public static extern int AVIStreamSetFormat(
+			IntPtr pavi,
+			int lPos,
+			ref WAVEFORMATEX lpFormat,
+			int cbFormat);
+
+		// Write data to a stream
+		[DllImport("avifil32.dll")]
+		public static extern int AVIStreamWrite(
+			IntPtr pavi,
+			int lStart,
+			int lSamples,
+			IntPtr lpBuffer,
+			int cbBuffer,
+			int dwFlags,
+			IntPtr plSampWritten,
+			out int plBytesWritten);
+
+		// Release an open AVI stream
+		[DllImport("avifil32.dll")]
+		public static extern int AVIStreamRelease(
+			IntPtr pavi);
+
+		// Release an open AVI stream
+		[DllImport("avifil32.dll")]
+		public static extern int AVIFileRelease(
+			IntPtr pfile);
+
+
+		// Replacement of mmioFOURCC macros
+		public static int mmioFOURCC(string str)
+		{
+			return (
+				((int)(byte)(str[0])) |
+				((int)(byte)(str[1]) << 8) |
+				((int)(byte)(str[2]) << 16) |
+				((int)(byte)(str[3]) << 24));
+		}
+
+		public static bool FAILED(int hr) { return hr < 0; }
+
+
+
+		// Inverse of mmioFOURCC
+		public static string decode_mmioFOURCC(int code)
+		{
+			char[] chs = new char[4];
+
+			for (int i = 0; i < 4; i++)
+			{
+				chs[i] = (char)(byte)((code >> (i << 3)) & 0xFF);
+				if (!char.IsLetterOrDigit(chs[i]))
+					chs[i] = ' ';
+			}
+			return new string(chs);
+		}
+
+
+
+	}
+
+}

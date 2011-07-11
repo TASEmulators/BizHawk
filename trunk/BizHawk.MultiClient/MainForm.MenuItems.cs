@@ -8,6 +8,35 @@ namespace BizHawk.MultiClient
 {
 	partial class MainForm
 	{
+		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var sfd = new SaveFileDialog();
+			//TODO adelikat (dunno how to do the paths correctly)
+			sfd.FileName = Path.Combine(Global.Config.AVIPath, "game.avi");
+			if (sfd.ShowDialog() == DialogResult.Cancel)
+				return;
+
+			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
+			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
+			AviWriter aw = new AviWriter();
+			aw.SetMovieParameters(fps, 0x01000000);
+			aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+			aw.SetAudioParameters(44100, 2, 16);
+			aw.OpenFile(sfd.FileName);
+			var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+			aw.SetVideoCodecToken(token);
+			aw.OpenStreams();
+
+			//commit the avi writing last, in case there were any errors earlier
+			CurrAviWriter = aw;
+		}
+
+		private void stopAVIToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			CurrAviWriter.CloseFile();
+			CurrAviWriter = null;
+		}
+
 		private void DumpStatus_Click(object sender, EventArgs e)
 		{
 			string details = Global.Emulator.CoreOutputComm.RomStatusDetails;
