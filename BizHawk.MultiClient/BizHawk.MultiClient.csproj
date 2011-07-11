@@ -97,6 +97,7 @@
     <Compile Include="ArchiveChooser.Designer.cs">
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="AviWriter.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="ConfigService.cs" />
     <Compile Include="config\InputConfig.cs">

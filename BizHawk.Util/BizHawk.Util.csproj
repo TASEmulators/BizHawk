@@ -109,6 +109,7 @@
     <Compile Include="VirtualListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Win32.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7z\arch\Test.bzip2.7z" />
