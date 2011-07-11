@@ -1786,6 +1786,7 @@
 			// 
 			// loadLastROMToolStripMenuItem
 			// 
+			this.loadLastROMToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.loadLastROMToolStripMenuItem.Name = "loadLastROMToolStripMenuItem";
 			this.loadLastROMToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.loadLastROMToolStripMenuItem.Text = "Load Last ROM";
@@ -1798,6 +1799,7 @@
 			// 
 			// recordMovieToolStripMenuItem1
 			// 
+			this.recordMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
 			this.recordMovieToolStripMenuItem1.Name = "recordMovieToolStripMenuItem1";
 			this.recordMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.recordMovieToolStripMenuItem1.Text = "Record Movie";
@@ -1805,6 +1807,7 @@
 			// 
 			// playMovieToolStripMenuItem1
 			// 
+			this.playMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
 			this.playMovieToolStripMenuItem1.Name = "playMovieToolStripMenuItem1";
 			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.playMovieToolStripMenuItem1.Text = "Play Movie";
@@ -1820,6 +1823,7 @@
 			// 
 			// loadLastMovieToolStripMenuItem
 			// 
+			this.loadLastMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.loadLastMovieToolStripMenuItem.Name = "loadLastMovieToolStripMenuItem";
 			this.loadLastMovieToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.loadLastMovieToolStripMenuItem.Text = "Load Last Movie";
