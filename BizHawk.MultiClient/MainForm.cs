@@ -2550,19 +2550,57 @@ namespace BizHawk.MultiClient
 			c.ShowDialog();
 		}
 
-		private void PauseStrip_Click(object sender, EventArgs e)
+		public void RecordAVI()
 		{
-			TogglePause();
+			var sfd = new SaveFileDialog();
+			if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = Global.Game.FilesystemSafeName;
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
+			}
+			sfd.Filter = "AVI (*.avi)|*.avi|All Files|*.*";
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+
+			if (result == DialogResult.Cancel)
+				return;
+			
+			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
+			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
+			AviWriter aw = new AviWriter();
+			try
+			{
+				aw.SetMovieParameters(fps, 0x01000000);
+				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
+				aw.SetAudioParameters(44100, 2, 16);
+				aw.OpenFile(sfd.FileName);
+				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				aw.SetVideoCodecToken(token);
+				aw.OpenStreams();
+
+				//commit the avi writing last, in case there were any errors earlier
+				CurrAviWriter = aw;
+				Global.RenderPanel.AddMessage("AVI capture started");
+			}
+			catch
+			{
+				Global.RenderPanel.AddMessage("AVI capture failed!");
+				aw.Dispose();
+				throw;
+			}
 		}
 
-		private void displaySubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
+		public void StopAVI()
 		{
-			Global.Config.DisplaySubtitles ^= true;
+			CurrAviWriter.CloseFile();
+			CurrAviWriter = null;
+			Global.RenderPanel.AddMessage("AVI capture stopped");
 		}
-
-
-
-
-
 	}
 }
