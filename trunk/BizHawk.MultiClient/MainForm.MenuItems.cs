@@ -947,6 +947,9 @@ namespace BizHawk.MultiClient
 
 		private void aVIWAVToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			recordAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIRecordBinding;
+			stopAVIToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.AVIStopBinding;
+
 			if (CurrAviWriter == null)
 			{
 				recordAVIToolStripMenuItem.Enabled = true;
