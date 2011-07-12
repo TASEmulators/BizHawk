@@ -374,6 +374,8 @@
 		public string MTRecordNone = "";
 		public string MTIncrementPlayer = "";
 		public string MTDecrementPlayer = "";
+		public string AVIRecordBinding = "";
+		public string AVIStopBinding = "";
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;

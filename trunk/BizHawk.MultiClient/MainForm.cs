@@ -419,7 +419,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player"}
+				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI"}
 		};
 
 		private void InitControls()
@@ -495,6 +495,8 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Increment Player", Global.Config.MTIncrementPlayer);
 			controls.BindMulti("Decrement Player", Global.Config.MTDecrementPlayer);
 			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
+			controls.BindMulti("Record AVI", Global.Config.AVIRecordBinding);
+			controls.BindMulti("Stop AVI", Global.Config.AVIStopBinding);
 
 			Global.ClientControls = controls;
 
@@ -1110,7 +1112,12 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
-
+				case "Record AVI":
+					RecordAVI();
+					break;
+				case "Stop AVI":
+					StopAVI();
+					break;
 				case "ToolBox":
 					LoadToolBox();
 					break;
@@ -2552,6 +2559,7 @@ namespace BizHawk.MultiClient
 
 		public void RecordAVI()
 		{
+			if (CurrAviWriter != null) return;
 			var sfd = new SaveFileDialog();
 			if (!(Global.Emulator is NullEmulator))
 			{
@@ -2598,6 +2606,7 @@ namespace BizHawk.MultiClient
 
 		public void StopAVI()
 		{
+			if (CurrAviWriter == null) return;
 			CurrAviWriter.CloseFile();
 			CurrAviWriter = null;
 			Global.RenderPanel.AddMessage("AVI capture stopped");
