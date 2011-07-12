@@ -2595,6 +2595,8 @@ namespace BizHawk.MultiClient
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
 				Global.RenderPanel.AddMessage("AVI capture started");
+				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
+				AVIStatusLabel.ToolTipText = "AVI capture in progress";
 			}
 			catch
 			{
@@ -2610,6 +2612,8 @@ namespace BizHawk.MultiClient
 			CurrAviWriter.CloseFile();
 			CurrAviWriter = null;
 			Global.RenderPanel.AddMessage("AVI capture stopped");
+			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			AVIStatusLabel.ToolTipText = "";
 		}
 	}
 }
