@@ -31,6 +31,10 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
 			this.hotkeyTabs = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label73 = new System.Windows.Forms.Label();
+			this.label72 = new System.Windows.Forms.Label();
+			this.IDW_StopAVI = new BizHawk.MultiClient.InputWidget();
+			this.IDW_RecordAVI = new BizHawk.MultiClient.InputWidget();
 			this.label71 = new System.Windows.Forms.Label();
 			this.IDW_RESET = new BizHawk.MultiClient.InputWidget();
 			this.label70 = new System.Windows.Forms.Label();
@@ -203,6 +207,10 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label73);
+			this.tabPage1.Controls.Add(this.label72);
+			this.tabPage1.Controls.Add(this.IDW_StopAVI);
+			this.tabPage1.Controls.Add(this.IDW_RecordAVI);
 			this.tabPage1.Controls.Add(this.label71);
 			this.tabPage1.Controls.Add(this.IDW_RESET);
 			this.tabPage1.Controls.Add(this.label70);
@@ -249,10 +257,46 @@
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
+			// label73
+			// 
+			this.label73.AutoSize = true;
+			this.label73.Location = new System.Drawing.Point(408, 86);
+			this.label73.Name = "label73";
+			this.label73.Size = new System.Drawing.Size(49, 13);
+			this.label73.TabIndex = 97;
+			this.label73.Text = "Stop AVI";
+			// 
+			// label72
+			// 
+			this.label72.AutoSize = true;
+			this.label72.Location = new System.Drawing.Point(407, 62);
+			this.label72.Name = "label72";
+			this.label72.Size = new System.Drawing.Size(62, 13);
+			this.label72.TabIndex = 96;
+			this.label72.Text = "Record AVI";
+			// 
+			// IDW_StopAVI
+			// 
+			this.IDW_StopAVI.AcceptsTab = true;
+			this.IDW_StopAVI.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_StopAVI.Location = new System.Drawing.Point(494, 82);
+			this.IDW_StopAVI.Name = "IDW_StopAVI";
+			this.IDW_StopAVI.Size = new System.Drawing.Size(100, 20);
+			this.IDW_StopAVI.TabIndex = 95;
+			// 
+			// IDW_RecordAVI
+			// 
+			this.IDW_RecordAVI.AcceptsTab = true;
+			this.IDW_RecordAVI.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_RecordAVI.Location = new System.Drawing.Point(494, 58);
+			this.IDW_RecordAVI.Name = "IDW_RecordAVI";
+			this.IDW_RecordAVI.Size = new System.Drawing.Size(100, 20);
+			this.IDW_RecordAVI.TabIndex = 90;
+			// 
 			// label71
 			// 
 			this.label71.AutoSize = true;
-			this.label71.Location = new System.Drawing.Point(6, 133);
+			this.label71.Location = new System.Drawing.Point(6, 134);
 			this.label71.Name = "label71";
 			this.label71.Size = new System.Drawing.Size(57, 13);
 			this.label71.TabIndex = 61;
@@ -270,7 +314,7 @@
 			// label70
 			// 
 			this.label70.AutoSize = true;
-			this.label70.Location = new System.Drawing.Point(6, 108);
+			this.label70.Location = new System.Drawing.Point(6, 112);
 			this.label70.Name = "label70";
 			this.label70.Size = new System.Drawing.Size(35, 13);
 			this.label70.TabIndex = 59;
@@ -288,7 +332,7 @@
 			// label69
 			// 
 			this.label69.AutoSize = true;
-			this.label69.Location = new System.Drawing.Point(407, 36);
+			this.label69.Location = new System.Drawing.Point(407, 38);
 			this.label69.Name = "label69";
 			this.label69.Size = new System.Drawing.Size(73, 13);
 			this.label69.TabIndex = 28;
@@ -298,7 +342,7 @@
 			// 
 			this.IDW_VOLDOWN.AcceptsTab = true;
 			this.IDW_VOLDOWN.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_VOLDOWN.Location = new System.Drawing.Point(494, 33);
+			this.IDW_VOLDOWN.Location = new System.Drawing.Point(494, 34);
 			this.IDW_VOLDOWN.Name = "IDW_VOLDOWN";
 			this.IDW_VOLDOWN.Size = new System.Drawing.Size(100, 20);
 			this.IDW_VOLDOWN.TabIndex = 85;
@@ -306,7 +350,7 @@
 			// label68
 			// 
 			this.label68.AutoSize = true;
-			this.label68.Location = new System.Drawing.Point(408, 10);
+			this.label68.Location = new System.Drawing.Point(408, 14);
 			this.label68.Name = "label68";
 			this.label68.Size = new System.Drawing.Size(59, 13);
 			this.label68.TabIndex = 26;
@@ -316,7 +360,7 @@
 			// 
 			this.IDW_VOLUP.AcceptsTab = true;
 			this.IDW_VOLUP.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_VOLUP.Location = new System.Drawing.Point(494, 7);
+			this.IDW_VOLUP.Location = new System.Drawing.Point(494, 10);
 			this.IDW_VOLUP.Name = "IDW_VOLUP";
 			this.IDW_VOLUP.Size = new System.Drawing.Size(100, 20);
 			this.IDW_VOLUP.TabIndex = 80;
@@ -325,7 +369,7 @@
 			// 
 			this.IDW_InputDisplay.AcceptsTab = true;
 			this.IDW_InputDisplay.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_InputDisplay.Location = new System.Drawing.Point(293, 179);
+			this.IDW_InputDisplay.Location = new System.Drawing.Point(293, 178);
 			this.IDW_InputDisplay.Name = "IDW_InputDisplay";
 			this.IDW_InputDisplay.Size = new System.Drawing.Size(100, 20);
 			this.IDW_InputDisplay.TabIndex = 75;
@@ -351,7 +395,7 @@
 			// label61
 			// 
 			this.label61.AutoSize = true;
-			this.label61.Location = new System.Drawing.Point(207, 157);
+			this.label61.Location = new System.Drawing.Point(207, 158);
 			this.label61.Name = "label61";
 			this.label61.Size = new System.Drawing.Size(65, 13);
 			this.label61.TabIndex = 22;
@@ -369,7 +413,7 @@
 			// label60
 			// 
 			this.label60.AutoSize = true;
-			this.label60.Location = new System.Drawing.Point(207, 133);
+			this.label60.Location = new System.Drawing.Point(207, 134);
 			this.label60.Name = "label60";
 			this.label60.Size = new System.Drawing.Size(76, 13);
 			this.label60.TabIndex = 20;
@@ -379,7 +423,7 @@
 			// 
 			this.IDW_DisplayFPS.AcceptsTab = true;
 			this.IDW_DisplayFPS.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_DisplayFPS.Location = new System.Drawing.Point(292, 105);
+			this.IDW_DisplayFPS.Location = new System.Drawing.Point(292, 106);
 			this.IDW_DisplayFPS.Name = "IDW_DisplayFPS";
 			this.IDW_DisplayFPS.Size = new System.Drawing.Size(100, 20);
 			this.IDW_DisplayFPS.TabIndex = 60;
@@ -387,7 +431,7 @@
 			// label59
 			// 
 			this.label59.AutoSize = true;
-			this.label59.Location = new System.Drawing.Point(206, 108);
+			this.label59.Location = new System.Drawing.Point(206, 112);
 			this.label59.Name = "label59";
 			this.label59.Size = new System.Drawing.Size(64, 13);
 			this.label59.TabIndex = 18;
@@ -397,7 +441,7 @@
 			// 
 			this.IDW_CloseROM.AcceptsTab = true;
 			this.IDW_CloseROM.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_CloseROM.Location = new System.Drawing.Point(293, 81);
+			this.IDW_CloseROM.Location = new System.Drawing.Point(293, 82);
 			this.IDW_CloseROM.Name = "IDW_CloseROM";
 			this.IDW_CloseROM.Size = new System.Drawing.Size(100, 20);
 			this.IDW_CloseROM.TabIndex = 56;
@@ -405,7 +449,7 @@
 			// label58
 			// 
 			this.label58.AutoSize = true;
-			this.label58.Location = new System.Drawing.Point(207, 84);
+			this.label58.Location = new System.Drawing.Point(207, 86);
 			this.label58.Name = "label58";
 			this.label58.Size = new System.Drawing.Size(61, 13);
 			this.label58.TabIndex = 16;
@@ -415,7 +459,7 @@
 			// 
 			this.IDW_OpenROM.AcceptsTab = true;
 			this.IDW_OpenROM.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_OpenROM.Location = new System.Drawing.Point(293, 57);
+			this.IDW_OpenROM.Location = new System.Drawing.Point(293, 58);
 			this.IDW_OpenROM.Name = "IDW_OpenROM";
 			this.IDW_OpenROM.Size = new System.Drawing.Size(100, 20);
 			this.IDW_OpenROM.TabIndex = 55;
@@ -423,7 +467,7 @@
 			// label57
 			// 
 			this.label57.AutoSize = true;
-			this.label57.Location = new System.Drawing.Point(207, 60);
+			this.label57.Location = new System.Drawing.Point(207, 62);
 			this.label57.Name = "label57";
 			this.label57.Size = new System.Drawing.Size(61, 13);
 			this.label57.TabIndex = 14;
@@ -441,7 +485,7 @@
 			// label45
 			// 
 			this.label45.AutoSize = true;
-			this.label45.Location = new System.Drawing.Point(207, 36);
+			this.label45.Location = new System.Drawing.Point(207, 38);
 			this.label45.Name = "label45";
 			this.label45.Size = new System.Drawing.Size(60, 13);
 			this.label45.TabIndex = 13;
@@ -451,7 +495,7 @@
 			// 
 			this.IDW_FULLSCREEN.AcceptsTab = true;
 			this.IDW_FULLSCREEN.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 33);
+			this.IDW_FULLSCREEN.Location = new System.Drawing.Point(293, 34);
 			this.IDW_FULLSCREEN.Name = "IDW_FULLSCREEN";
 			this.IDW_FULLSCREEN.Size = new System.Drawing.Size(100, 20);
 			this.IDW_FULLSCREEN.TabIndex = 50;
@@ -460,7 +504,7 @@
 			// 
 			this.IDW_SCREENSHOT.AcceptsTab = true;
 			this.IDW_SCREENSHOT.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 9);
+			this.IDW_SCREENSHOT.Location = new System.Drawing.Point(293, 10);
 			this.IDW_SCREENSHOT.Name = "IDW_SCREENSHOT";
 			this.IDW_SCREENSHOT.Size = new System.Drawing.Size(100, 20);
 			this.IDW_SCREENSHOT.TabIndex = 45;
@@ -468,7 +512,7 @@
 			// label44
 			// 
 			this.label44.AutoSize = true;
-			this.label44.Location = new System.Drawing.Point(207, 12);
+			this.label44.Location = new System.Drawing.Point(207, 14);
 			this.label44.Name = "label44";
 			this.label44.Size = new System.Drawing.Size(61, 13);
 			this.label44.TabIndex = 12;
@@ -486,7 +530,7 @@
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(6, 36);
+			this.label37.Location = new System.Drawing.Point(6, 38);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(43, 13);
 			this.label37.TabIndex = 4;
@@ -504,7 +548,7 @@
 			// label36
 			// 
 			this.label36.AutoSize = true;
-			this.label36.Location = new System.Drawing.Point(6, 84);
+			this.label36.Location = new System.Drawing.Point(6, 86);
 			this.label36.Name = "label36";
 			this.label36.Size = new System.Drawing.Size(68, 13);
 			this.label36.TabIndex = 3;
@@ -522,7 +566,7 @@
 			// label35
 			// 
 			this.label35.AutoSize = true;
-			this.label35.Location = new System.Drawing.Point(6, 157);
+			this.label35.Location = new System.Drawing.Point(6, 158);
 			this.label35.Name = "label35";
 			this.label35.Size = new System.Drawing.Size(61, 13);
 			this.label35.TabIndex = 2;
@@ -540,7 +584,7 @@
 			// label34
 			// 
 			this.label34.AutoSize = true;
-			this.label34.Location = new System.Drawing.Point(6, 59);
+			this.label34.Location = new System.Drawing.Point(6, 62);
 			this.label34.Name = "label34";
 			this.label34.Size = new System.Drawing.Size(37, 13);
 			this.label34.TabIndex = 1;
@@ -549,7 +593,7 @@
 			// label33
 			// 
 			this.label33.AutoSize = true;
-			this.label33.Location = new System.Drawing.Point(6, 205);
+			this.label33.Location = new System.Drawing.Point(6, 206);
 			this.label33.Name = "label33";
 			this.label33.Size = new System.Drawing.Size(63, 13);
 			this.label33.TabIndex = 10;
@@ -558,7 +602,7 @@
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(6, 181);
+			this.label32.Location = new System.Drawing.Point(6, 182);
 			this.label32.Name = "label32";
 			this.label32.Size = new System.Drawing.Size(62, 13);
 			this.label32.TabIndex = 11;
@@ -576,7 +620,7 @@
 			// label31
 			// 
 			this.label31.AutoSize = true;
-			this.label31.Location = new System.Drawing.Point(6, 11);
+			this.label31.Location = new System.Drawing.Point(6, 14);
 			this.label31.Name = "label31";
 			this.label31.Size = new System.Drawing.Size(82, 13);
 			this.label31.TabIndex = 0;
@@ -1804,5 +1848,9 @@
 		private InputWidget IDW_RESET;
 		private System.Windows.Forms.Label label71;
 		private System.Windows.Forms.CheckBox AutoTabCheckBox;
+		private System.Windows.Forms.Label label73;
+		private System.Windows.Forms.Label label72;
+		private InputWidget IDW_StopAVI;
+		private InputWidget IDW_RecordAVI;
     }
 }
