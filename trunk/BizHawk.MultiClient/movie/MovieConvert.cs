@@ -8,123 +8,132 @@ namespace BizHawk.MultiClient
 {
 	public static class MovieConvert
 	{
-		public static Movie ConvertFCM(string path)
+		public static Movie ConvertFCM(string path, out string errorMsg)
 		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			errorMsg = "";
 
-			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-			BinaryReader r = new BinaryReader(fs);
-			//TODO: if fail to open...do some kind of error
-
-			byte[] signatureBytes = new byte[4];
-			for (int x = 0; x < 4; x++)
-				signatureBytes[x] = r.ReadByte();
-			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
-			if (signature.Substring(0, 3) != "FCM")
-				return null; //TODO: invalid movie type error
-
-
-			UInt32 version = r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
-
-			byte[] flags = new byte[4];
-			for (int x = 0; x < 4; x++)
-				flags[x] = r.ReadByte();
-
-			UInt32 frameCount = r.ReadUInt32();
-
-			m.rerecordCount = (int)r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
-
-			UInt32 movieDataSize = r.ReadUInt32();
-			UInt32 savestateOffset = r.ReadUInt32();
-			UInt32 firstFrameOffset = r.ReadUInt32();
-
-			byte[] romCheckSum = r.ReadBytes(16);
-			//TODO: ROM checksum movie header line (MD5)
-
-			UInt32 EmuVersion = r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
-
-			List<byte> romBytes = new List<byte>();
-			while (true)
+			try
 			{
-				if (r.PeekChar() == 0)
-					break;
+				Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+				FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+				BinaryReader r = new BinaryReader(fs);
+
+				byte[] signatureBytes = new byte[4];
+				for (int x = 0; x < 4; x++)
+					signatureBytes[x] = r.ReadByte();
+				string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+				if (signature.Substring(0, 3) != "FCM")
+				{
+					errorMsg = "This is not a valid FCM file!";
+					return null;
+				}
+
+
+				UInt32 version = r.ReadUInt32();
+				m.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
+
+				byte[] flags = new byte[4];
+				for (int x = 0; x < 4; x++)
+					flags[x] = r.ReadByte();
+
+				UInt32 frameCount = r.ReadUInt32();
+
+				m.rerecordCount = (int)r.ReadUInt32();
+				m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+
+				UInt32 movieDataSize = r.ReadUInt32();
+				UInt32 savestateOffset = r.ReadUInt32();
+				UInt32 firstFrameOffset = r.ReadUInt32();
+
+				byte[] romCheckSum = r.ReadBytes(16);
+				//TODO: ROM checksum movie header line (MD5)
+
+				UInt32 EmuVersion = r.ReadUInt32();
+				m.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
+
+				List<byte> romBytes = new List<byte>();
+				while (true)
+				{
+					if (r.PeekChar() == 0)
+						break;
+					else
+						romBytes.Add(r.ReadByte());
+				}
+				string rom = System.Text.Encoding.UTF8.GetString(romBytes.ToArray());
+				m.SetHeaderLine(MovieHeader.GAMENAME, rom);
+
+				r.ReadByte(); //Advance past null byte
+
+				List<byte> authorBytes = new List<byte>();
+				while (true)
+				{
+					if (r.PeekChar() == 0)
+						break;
+					else
+						authorBytes.Add(r.ReadByte());
+				}
+				string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
+				m.SetHeaderLine(MovieHeader.AUTHOR, author);
+
+				r.ReadByte(); //Advance past null byte
+
+				bool movieSyncHackOn = true;
+				if ((int)(flags[0] & 16) > 0)
+					movieSyncHackOn = false;
+
+				bool pal = false;
+				if ((int)(flags[0] & 4) > 0)
+					pal = true;
+
+				m.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
+				m.SetHeaderLine("PAL", pal.ToString());
+
+				//Power on vs reset
+				if ((int)(flags[0] & 8) > 0)
+				{ } //Power-on = default
+				else if ((int)(flags[0] & 2) > 0)
+				{ } //we don't support start from reset, do some kind of notification here
 				else
-					romBytes.Add(r.ReadByte());
+				{ } //this movie starts from savestate, freak out here
+
+				//Advance to first byte of input data
+				//byte[] throwaway = new byte[firstFrameOffset];
+				//r.Read(throwaway, 0, (int)firstFrameOffset);
+				r.BaseStream.Position = firstFrameOffset;
+				//moviedatasize stuff
+
+				//read frame data
+				//TODO: special commands like fds disk switch, etc, and power/reset
+
+				//TODO: use stringbuilder class for speed
+				//string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
+				string frame = "|0|"; //TODO: read reset command rather than hard code it off
+				for (int x = 0; x < frameCount; x++)
+				{
+					byte joy = r.ReadByte();
+
+					//Read each byte of controller one data
+
+					frame += "|";
+
+					r.ReadBytes(3); //Lose remaining controllers for now
+					m.AppendFrame(frame);
+				}
+
+				//set 4 score flag if necessary
+				r.Close();
+				return m;
 			}
-			string rom = System.Text.Encoding.UTF8.GetString(romBytes.ToArray());
-			m.SetHeaderLine(MovieHeader.GAMENAME, rom);
-
-			r.ReadByte(); //Advance past null byte
-
-			List<byte> authorBytes = new List<byte>();
-			while (true)
+			catch
 			{
-				if (r.PeekChar() == 0)
-					break;
-				else
-					authorBytes.Add(r.ReadByte());
+				errorMsg = "Error opening file.";
+				return null;
 			}
-			string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
-			m.SetHeaderLine(MovieHeader.AUTHOR, author);
-
-			r.ReadByte(); //Advance past null byte
-
-			bool movieSyncHackOn = true;
-			if ((int)(flags[0] & 16) > 0)
-				movieSyncHackOn = false;
-
-			bool pal = false;
-			if ((int)(flags[0] & 4) > 0)
-				pal = true;
-
-			m.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
-			m.SetHeaderLine("PAL", pal.ToString());
-
-			//Power on vs reset
-			if ((int)(flags[0] & 8) > 0)
-			{ } //Power-on = default
-			else if ((int)(flags[0] & 2) > 0)
-			{ } //we don't support start from reset, do some kind of notification here
-			else
-			{ } //this movie starts from savestate, freak out here
-
-			//Advance to first byte of input data
-			//byte[] throwaway = new byte[firstFrameOffset];
-			//r.Read(throwaway, 0, (int)firstFrameOffset);
-			r.BaseStream.Position = firstFrameOffset;
-			//moviedatasize stuff
-
-			//read frame data
-			//TODO: special commands like fds disk switch, etc, and power/reset
-
-			//TODO: use stringbuilder class for speed
-			//string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
-			string frame = "|0|"; //TODO: read reset command rather than hard code it off
-			for (int x = 0; x < frameCount; x++)
-			{
-				byte joy = r.ReadByte();
-
-
-				//Read each byte of controller one data
-
-
-				frame += "|";
-
-				r.ReadBytes(3); //Lose remaining controllers for now
-				m.AppendFrame(frame);
-			}
-
-
-			//set 4 score flag if necessary
-			r.Close();
-			return m;
 		}
 
-		public static Movie ConvertMMV(string path)
+		public static Movie ConvertMMV(string path, out string errorMsg)
 		{
+			errorMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -135,7 +144,10 @@ namespace BizHawk.MultiClient
 				signatureBytes[x] = r.ReadByte();
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature != "MMV\0")
-				return null; //TODO: invalid movie type error
+			{
+				errorMsg = "This is not a valid MMV file.";
+				return null;
+			}
 
 			UInt32 version = r.ReadUInt32();
 			m.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
@@ -147,7 +159,10 @@ namespace BizHawk.MultiClient
 
 			UInt32 IsFromReset = r.ReadUInt32();
 			if (IsFromReset == 0)
-				return null; //TODO: Movies from savestate not supported error
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				return null;
+			}
 
 			UInt32 stateOffset = r.ReadUInt32();
 			UInt32 inputDataOffset = r.ReadUInt32();
