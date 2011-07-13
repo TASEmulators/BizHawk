@@ -24,8 +24,8 @@ namespace BizHawk.MultiClient
 		SavestateManager StateSlots = new SavestateManager();
 
 		//Movie variables
-		public Movie InputLog = new Movie("", MOVIEMODE.INACTIVE);
-		public Movie UserMovie = new Movie("", MOVIEMODE.INACTIVE);
+		public Movie InputLog = new Movie();
+		public Movie UserMovie = new Movie();
 		
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
@@ -121,8 +121,8 @@ namespace BizHawk.MultiClient
 				if (Global.Sound != null) Global.Sound.StartSound();
 			};
 
-            Input.Initialize();
-            InitControls();
+			Input.Initialize();
+			InitControls();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
@@ -392,11 +392,9 @@ namespace BizHawk.MultiClient
 
 		private void LoadMoviesFromRecent(string movie)
 		{
-			Movie m = new Movie(movie, MOVIEMODE.PLAY);
-			ReadOnly = true;
-			StartNewMovie(m, false);
-			/*
-			bool r = true; // LoadRom(rom);
+			bool r;
+			Movie m = new Movie(movie, MOVIEMODE.PLAY, out r);
+
 			if (!r)
 			{
 				Global.Sound.StopSound();
@@ -405,8 +403,11 @@ namespace BizHawk.MultiClient
 					Global.Config.RecentMovies.Remove(movie);
 				Global.Sound.StartSound();
 			}
-			 */
-			//TODO: make StartNewMovie or Movie constructor 
+			else
+			{
+				ReadOnly = true;
+				StartNewMovie(m, false);
+			}
 		}
 
 		public static ControllerDefinition ClientControlsDef = new ControllerDefinition
