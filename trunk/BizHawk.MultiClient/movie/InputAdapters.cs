@@ -59,9 +59,10 @@ namespace BizHawk.MultiClient
 		}
 		string ControlType;
 
-		bool IsBasePressed(string name) { 
+		bool IsBasePressed(string name)
+		{
 			bool ret = Source.IsPressed(name);
-			if(ret)
+			if (ret)
 			{
 				//int zzz=9;
 			}
@@ -96,7 +97,7 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "PC Engine Controller")
 			{
-				input.Append("."); //TODO: reset goes here   - the turbografx DOES NOT HAVE A RESET BUTTON. but I assume this is for pcejin movie file compatibility, which is a fools errand anyway......... I'll leave it for now, but marked for deletion
+				input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
 				input.Append("|");
 				for (int player = 1; player < 6; player++)
 				{
@@ -125,9 +126,9 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Select") ? "s" : ".");
 				input.Append(IsBasePressed("B") ? "B" : ".");
 				input.Append(IsBasePressed("A") ? "A" : ".");
-                input.Append("|");
+				input.Append("|");
 
-                return input.ToString();
+				return input.ToString();
 			}
 
 			if (ControlType == "NES Controls")
@@ -216,17 +217,20 @@ namespace BizHawk.MultiClient
 		public IController Source;
 		NullController _null = new NullController();
 
-		IController Curr { get {
-			if(Source == null) return _null;
-			else return Source;
-		}
+		IController Curr
+		{
+			get
+			{
+				if (Source == null) return _null;
+				else return Source;
+			}
 		}
 
-        public ControllerDefinition Type { get { return Curr.Type; } }
-        public bool this[string button] { get { return Curr[button]; } }
-        public bool IsPressed(string button) { return Curr.IsPressed(button); }
-        public float GetFloat(string name) { return Curr.GetFloat(name); }
-        public void UpdateControls(int frame) { Curr.UpdateControls(frame); }
+		public ControllerDefinition Type { get { return Curr.Type; } }
+		public bool this[string button] { get { return Curr[button]; } }
+		public bool IsPressed(string button) { return Curr.IsPressed(button); }
+		public float GetFloat(string name) { return Curr.GetFloat(name); }
+		public void UpdateControls(int frame) { Curr.UpdateControls(frame); }
 	}
 
 	class ButtonNameParser
@@ -268,24 +272,24 @@ namespace BizHawk.MultiClient
 		public int PlayerSource = 1;
 		public int PlayerTargetMask = 0;
 
-        public ControllerDefinition Type { get { return Source.Type; } }
-        public bool this[string button] { get { return this.IsPressed(button); } }
-        public float GetFloat(string name) { return Source.GetFloat(name); }
-        public void UpdateControls(int frame) { Source.UpdateControls(frame); }
-        
+		public ControllerDefinition Type { get { return Source.Type; } }
+		public bool this[string button] { get { return this.IsPressed(button); } }
+		public float GetFloat(string name) { return Source.GetFloat(name); }
+		public void UpdateControls(int frame) { Source.UpdateControls(frame); }
+
 		public bool IsPressed(string button)
 		{
 			//do we even have a source?
-			if(PlayerSource == -1) return Source.IsPressed(button);
+			if (PlayerSource == -1) return Source.IsPressed(button);
 
 			//see if we're being asked for a button that we know how to rewire
 			ButtonNameParser bnp = ButtonNameParser.Parse(button);
-			if(bnp == null) return Source.IsPressed(button);
+			if (bnp == null) return Source.IsPressed(button);
 
 			//ok, this looks like a normal `P1 Button` type thing. we can handle it
 			//were we supposed to replace this one?
 			int foundPlayerMask = (1 << bnp.PlayerNum);
-			if((PlayerTargetMask & foundPlayerMask)==0) return Source.IsPressed(button);
+			if ((PlayerTargetMask & foundPlayerMask) == 0) return Source.IsPressed(button);
 			//ok, we were. swap out the source player and then grab his button
 			bnp.PlayerNum = PlayerSource;
 			return Source.IsPressed(bnp.ToString());
@@ -370,7 +374,7 @@ namespace BizHawk.MultiClient
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			
+
 			MyBoolButtons.Clear();
 
 			if (ControlType == "SMS Controller")
@@ -389,8 +393,8 @@ namespace BizHawk.MultiClient
 				Force("P2 B1", c[12]);
 				Force("P2 B2", c[13]);
 
-				Force("Pause",c[15]);
-				Force("Reset",c[16]);
+				Force("Pause", c[15]);
+				Force("Reset", c[16]);
 			}
 
 			if (ControlType == "PC Engine Controller")
@@ -399,14 +403,28 @@ namespace BizHawk.MultiClient
 				{
 					int playerNum = i;
 					int srcindex = (playerNum - 1) * 9;
-					Force("P" + i + " Up", c[srcindex + 3]);
-					Force("P" + i + " Down", c[srcindex + 4]);
-					Force("P" + i + " Left", c[srcindex + 5]);
-					Force("P" + i + " Right", c[srcindex + 6]);
-					Force("P" + i + " B1", c[srcindex + 7]);
-					Force("P" + i + " B2", c[srcindex + 8]);
-					Force("P" + i + " Run", c[srcindex + 9]);
-					Force("P" + i + " Select", c[srcindex + 10]);
+					if (mnemonic.Length <= srcindex + 9)
+					{
+						Force("P" + i + " Up", false);
+						Force("P" + i + " Down", false);
+						Force("P" + i + " Left", false);
+						Force("P" + i + " Right", false);
+						Force("P" + i + " B1", false);
+						Force("P" + i + " B2", false);
+						Force("P" + i + " Run", false);
+						Force("P" + i + " Select", false);
+					}
+					else
+					{
+						Force("P" + i + " Up", c[srcindex + 3]);
+						Force("P" + i + " Down", c[srcindex + 4]);
+						Force("P" + i + " Left", c[srcindex + 5]);
+						Force("P" + i + " Right", c[srcindex + 6]);
+						Force("P" + i + " B1", c[srcindex + 7]);
+						Force("P" + i + " B2", c[srcindex + 8]);
+						Force("P" + i + " Run", c[srcindex + 9]);
+						Force("P" + i + " Select", c[srcindex + 10]);
+					}
 				}
 			}
 
@@ -415,7 +433,7 @@ namespace BizHawk.MultiClient
 				if (mnemonic.Length < 10) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
 				int ctr = 3;
-				Force("P1 Right",c[ctr++]);
+				Force("P1 Right", c[ctr++]);
 				Force("P1 Left", c[ctr++]);
 				Force("P1 Down", c[ctr++]);
 				Force("P1 Up", c[ctr++]);
@@ -426,7 +444,7 @@ namespace BizHawk.MultiClient
 
 				if (mnemonic.Length < 20) return;
 				ctr = 12;
-				Force("P2 Right",c[ctr++]);
+				Force("P2 Right", c[ctr++]);
 				Force("P2 Left", c[ctr++]);
 				Force("P2 Down", c[ctr++]);
 				Force("P2 Up", c[ctr++]);
@@ -457,7 +475,7 @@ namespace BizHawk.MultiClient
 				if (mnemonic.Length < 50) return;
 				int ctr = 1;
 
-				Force("0",c[ctr++]);
+				Force("0", c[ctr++]);
 				Force("1", c[ctr++]);
 				Force("2", c[ctr++]);
 				Force("3", c[ctr++]);
