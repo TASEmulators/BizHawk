@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
 		public SubtitleList Subtitles = new SubtitleList();
 
 		private bool IsText = true;
-		private string Filename;
+		public string Filename;	//TODO: replace GetFilename() method
 		public bool MakeBackup = true; //Flag for making backup before altering movie
 
 		private MOVIEMODE MovieMode = new MOVIEMODE();
@@ -25,9 +25,32 @@ namespace BizHawk.MultiClient
 		public int lastLog;
 		public int rerecordCount;
 
+		/// <summary>
+		/// Allows checking if file exists
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <param name="m"></param>
+		/// <param name="exists"></param>
+		public Movie(string filename, MOVIEMODE m, out bool exists)
+		{
+			FileInfo f = new FileInfo(filename);
+			if (!f.Exists)
+			{
+				filename = "";
+				exists = false;
+			}
+			else
+			{
+				Filename = filename;
+				exists = true;
+			}
+			MovieMode = m;
+			lastLog = 0;
+			rerecordCount = 0;
+		}
+
 		public Movie(string filename, MOVIEMODE m)
 		{
-			Filename = filename;    //TODO: Validate that file is writable
 			MovieMode = m;
 			lastLog = 0;
 			rerecordCount = 0;
@@ -128,7 +151,7 @@ namespace BizHawk.MultiClient
 			//        Log.Truncate(Global.Emulator.Frame);
 			//    }
 
-			//TODO: truncation here instead of loadstate will make VBA stil loadstates
+			//Note: Truncation here instead of loadstate will make VBA style loadstates
 			//(Where an entire movie is loaded then truncated on the next frame
 			//this allows users to restore a movie with any savestate from that "timeline"
 
@@ -159,6 +182,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteMovie()
 		{
+			if (Filename == "") return;
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			if (IsText)
 				WriteText(Filename);
@@ -168,6 +192,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteBackup()
 		{
+			if (Filename == "") return;
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
@@ -181,7 +206,7 @@ namespace BizHawk.MultiClient
 
 		private void WriteText(string file)
 		{
-			if (file.Length == 0) return;   //Nothing to write
+			if (file.Length == 0) return;	//Nothing to write
 			int length = Log.GetMovieLength();
 
 			using (StreamWriter sw = new StreamWriter(file))
@@ -320,7 +345,7 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					//TODO: don't reiterate this entire if chain, make a function called by this and loadmovie
+					
 					else if (str.Contains(MovieHeader.EMULATIONVERSION))
 					{
 						str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
