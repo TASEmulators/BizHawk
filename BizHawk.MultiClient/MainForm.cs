@@ -534,7 +534,7 @@ namespace BizHawk.MultiClient
 			Global.PCEControls = pceControls;
 
 			var nesControls = new Controller(NES.NESController);
-			//nesControls.BindMulti("Reset", Global.Config.NESReset); //Let multiclient handle all resets the same
+
 			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
 				nesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESController[i].Up);
@@ -572,7 +572,7 @@ namespace BizHawk.MultiClient
 			Global.GenControls = genControls;
 
 			var TI83Controls = new Controller(TI83.TI83Controller);
-			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0); //TODO numpad 4,8,6,2 (up/down/left/right) dont work in slimdx!! wtf!!
+			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
 			TI83Controls.BindMulti("2", Global.Config.TI83Controller[0]._2);
 			TI83Controls.BindMulti("3", Global.Config.TI83Controller[0]._3);
@@ -668,9 +668,14 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".FCM")
 			{
-				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				StartNewMovie(MovieConvert.ConvertFCM(filePaths[0]), false);
+				string error = "";
+				Movie m = MovieConvert.ConvertFCM(filePaths[0], out error);
+				if (error.Length > 0)
+					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				else
+					StartNewMovie(m, false);
+
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".SMV")
 			{
@@ -681,9 +686,13 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
 			{
-				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				StartNewMovie(MovieConvert.ConvertMMV(filePaths[0]), false);
+				string error = "";
+				Movie m = MovieConvert.ConvertMMV(filePaths[0], out error);
+				if (error.Length > 0)
+					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				else
+					StartNewMovie(m, false);
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".VBM")
 			{
