@@ -74,14 +74,25 @@ namespace BizHawk.MultiClient
 		public void AddFrame(IVideoProvider source)
 		{
 			SetVideoParameters(source.BufferWidth, source.BufferHeight);
+			ConsiderLengthSegment();
 			if (currSegment == null) Segment();
 			currSegment.AddFrame(source);
 		}
 
 		public void AddSamples(short[] samples)
 		{
+			ConsiderLengthSegment();
 			if (currSegment == null) Segment();
 			currSegment.AddSamples(samples);
+		}
+
+		void ConsiderLengthSegment()
+		{
+			if(currSegment == null) return;
+			long len = currSegment.GetLengthApproximation();
+			const long segment_length_limit = 2 * 1000 * 1000 * 1000; //2GB
+			//const long segment_length_limit = 10 * 1000 * 1000; //for testing
+			if (len > segment_length_limit) Segment();
 		}
 
 		void StartRecording()
@@ -304,6 +315,7 @@ namespace BizHawk.MultiClient
 			{
 				public int video_frames;
 				public int video_bytes;
+				public int audio_bytes;
 				public int audio_samples;
 				public int audio_buffered_shorts;
 				public const int AUDIO_SEGMENT_SIZE = 44100 * 2;
@@ -311,6 +323,7 @@ namespace BizHawk.MultiClient
 			}
 			OutputStatus outStatus;
 
+			public long GetLengthApproximation() { return outStatus.video_bytes + outStatus.audio_bytes; }
 
 			static int AVISaveOptions(IntPtr stream, ref Win32.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
@@ -506,6 +519,7 @@ namespace BizHawk.MultiClient
 				int bytes_written;
 				Win32.AVIStreamWrite(pAviRawAudioStream, outStatus.audio_samples, todo_realsamples, buf, todo_realsamples * 4, 0, IntPtr.Zero, out bytes_written);
 				outStatus.audio_samples += todo_realsamples;
+				outStatus.audio_bytes += bytes_written;
 				outStatus.audio_buffered_shorts = 0;
 			}
 
