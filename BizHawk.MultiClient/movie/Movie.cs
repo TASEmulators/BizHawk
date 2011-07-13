@@ -54,6 +54,7 @@ namespace BizHawk.MultiClient
 			MovieMode = m;
 			lastLog = 0;
 			rerecordCount = 0;
+			this.Filename = filename;
 		}
 
 		public Movie()
