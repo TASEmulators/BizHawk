@@ -2597,10 +2597,9 @@ namespace BizHawk.MultiClient
 				aw.SetMovieParameters(fps, 0x01000000);
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
-				aw.OpenFile(sfd.FileName);
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+				var token = AviWriter.AcquireVideoCodecToken(Global.MainForm.Handle, null);
 				aw.SetVideoCodecToken(token);
-				aw.OpenStreams();
+				aw.OpenFile(sfd.FileName);
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
