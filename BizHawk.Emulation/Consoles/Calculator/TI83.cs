@@ -498,6 +498,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			writer.WriteLine("m_LinkOutput {0}", m_LinkOutput);
 			writer.WriteLine("m_LinkState {0}", m_LinkState);
 			writer.WriteLine("lag {0}", _lagcount);
+			writer.WriteLine("vram {0}", Util.BytesToHexString(vram));
 			writer.WriteLine("[/TI83]");
 		}
 
@@ -541,6 +542,8 @@ namespace BizHawk.Emulation.Consoles.Calculator
 					m_LinkState = int.Parse(args[1]);
 				else if (args[0] == "lag")
 					_lagcount = int.Parse(args[1]);
+				else if (args[0] == "vram")
+					vram = Util.HexStringToBytes(args[1]);
 				else
 					Console.WriteLine("Skipping unrecognized identifier " + args[0]);
 			}
