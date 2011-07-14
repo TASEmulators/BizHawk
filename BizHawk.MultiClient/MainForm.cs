@@ -681,7 +681,12 @@ namespace BizHawk.MultiClient
 			{
 				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				StartNewMovie(MovieConvert.ConvertSMV(filePaths[0]), false);
+				string error = "";
+				Movie m = MovieConvert.ConvertSMV(filePaths[0], out error);
+				if (error.Length > 0)
+					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				else
+					StartNewMovie(m, false);
 
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
@@ -696,9 +701,13 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".VBM")
 			{
-				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
-				StartNewMovie(MovieConvert.ConvertVBM(filePaths[0]), false);
+				string error = "";
+				Movie m = MovieConvert.ConvertVBM(filePaths[0], out error);
+				if (error.Length > 0)
+					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				else
+					StartNewMovie(m, false);
 			}
 			else
 				LoadRom(filePaths[0]);
