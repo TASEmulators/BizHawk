@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.IO;
 
+#pragma warning disable 219
+
 namespace BizHawk.MultiClient
 {
 	public static class MovieConvert
@@ -27,7 +29,7 @@ namespace BizHawk.MultiClient
 					errorMsg = "This is not a valid FCM file!";
 					return null;
 				}
-
+					
 
 				UInt32 version = r.ReadUInt32();
 				m.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
@@ -265,8 +267,9 @@ namespace BizHawk.MultiClient
 			return converted;
 		}
 
-		public static Movie ConvertSMV(string path)
+		public static Movie ConvertSMV(string path, out string errorMSG)
 		{
+			errorMSG = "";
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 
@@ -275,7 +278,10 @@ namespace BizHawk.MultiClient
 				signatureBytes[x] = r.ReadByte();
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature.Substring(0, 3) != "SMV")
-				return null; //TODO: invalid movie type error
+			{
+				errorMSG = "This is not a valid SMV file.";
+				return null;
+			}
 
 			UInt32 version = r.ReadUInt32();
 
@@ -288,7 +294,10 @@ namespace BizHawk.MultiClient
 				case 5:
 					return ConvertSMV152(r, path);
 				default:
-					return null; //TODO: version not recognized error
+				{
+					errorMSG = "SMV version not recognized, 143, 151, and 152 are currently supported";
+					return null; 
+				}
 			}
 		}
 
@@ -368,15 +377,17 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		public static Movie ConvertGMV(string path)
+		public static Movie ConvertGMV(string path, out string errorMsg)
 		{
+			errorMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			return m;
 		}
 
-		public static Movie ConvertVBM(string path)
+		public static Movie ConvertVBM(string path, out string errorMsg)
 		{
+			errorMsg = "";
 			//Converts vbm to native text based format.
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
@@ -386,10 +397,14 @@ namespace BizHawk.MultiClient
 			//0xoffset
 			//0x00
 			UInt32 signature = r.ReadUInt32();  //always 56 42 4D 1A  (VBM\x1A)
-			if (signature != 0x56424D1A) { }      //TODO Throw exception: file is not VBM
+			if (signature != 0x56424D1A)
+			{
+				errorMsg = "This is not a valid VBM file.";
+				return null;
+			}
 
 			UInt32 versionno = r.ReadUInt32();  //always 1
-			UInt32 uid = r.ReadUInt32();        //time of recording
+			UInt32 uid = r.ReadUInt32();		//time of recording
 			m.SetHeaderLine(MovieHeader.GUID, uid.ToString());
 			UInt32 framecount = r.ReadUInt32();
 			m.Frames = (int)framecount;
@@ -411,7 +426,8 @@ namespace BizHawk.MultiClient
 
 			if (startfromquicksave & startfromsram)
 			{
-				//TODO: Throw exception: movie file invalid
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				return null;
 			}
 
 			//0x15
@@ -439,7 +455,8 @@ namespace BizHawk.MultiClient
 
 			if (is_gb & is_gbc & is_gba & is_sgb)
 			{
-				//TODO: throw exception: movie file invalid
+				errorMsg = "Not a valid VBM platform type.";
+				return null;
 			}
 			//TODO: set platform in header
 
@@ -458,7 +475,11 @@ namespace BizHawk.MultiClient
 			if ((flags & 0x40) > 0) echoramfix = true;
 			if ((flags & 0x20) > 0) gbchdma5fix = true;
 			if ((flags & 0x10) > 0) lagreduction = true;
-			if ((flags & 0x08) > 0) { } //TODO: Throw exception: movie file invalid
+			if ((flags & 0x08) > 0) 
+			{
+				errorMsg = "Invalid VBM file";
+				return null;
+			}
 			if ((flags & 0x04) > 0) rtcenable = true;
 			if ((flags & 0x02) > 0) skipbiosfile = true;
 			if ((flags & 0x01) > 0) usebiosfile = true;
