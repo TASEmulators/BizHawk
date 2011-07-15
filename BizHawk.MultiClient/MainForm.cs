@@ -679,7 +679,6 @@ namespace BizHawk.MultiClient
 			}
 			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".SMV")
 			{
-				//TODO: error checking of some kind and don't play on error
 				LoadRom(CurrentlyOpenRom);
 				string error = "";
 				Movie m = MovieConvert.ConvertSMV(filePaths[0], out error);
@@ -755,7 +754,7 @@ namespace BizHawk.MultiClient
 					tI83ToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
-				case "GB": //TODO: SGB, etc?
+				case "GB":
 					NESToolStripMenuItem.Visible = false;
 					tI83ToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = true;
@@ -1433,6 +1432,7 @@ namespace BizHawk.MultiClient
 				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
 				{
 					UserMovie.LatchInputFromPlayer();
+					InputLog.CommitFrame();
 				}
 				
 				if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
