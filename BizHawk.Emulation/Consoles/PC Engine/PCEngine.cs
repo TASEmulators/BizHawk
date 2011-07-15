@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using BizHawk.Emulation.CPUs.H6280;
 using BizHawk.Emulation.Sound;
+using BizHawk.Disc;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
@@ -39,6 +40,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         // Memory system
         public byte[] Ram;
+
+        // Disc
+        //private Disc.Disc disc = Disc.Disc.FromCuePath("d:/lib/roms/Turbo CD/Cosmic Fantasy II/Cosmic Fantasy II [U][CD][WTG990301][Telenet Japan][1992][PCE][thx-1138-darkwater].cue");
 
         // PC Engine timings:
         // 21,477,270  Machine clocks / sec
@@ -109,6 +113,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 BRAM[4] = 0x00; BRAM[5] = 0x88; BRAM[6] = 0x10; BRAM[7] = 0x80;
             }
 
+            if (game.GetOptions().Contains("PopulousSRAM"))
+            {
+                PopulousRAM = new byte[0x8000];
+                Cpu.ReadMemory21 = ReadMemoryPopulous;
+                Cpu.WriteMemory21 = WriteMemoryPopulous;
+            }
+
             Cpu.ResetPC();
             SetupMemoryDomains();
         }
@@ -171,6 +182,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.WriteLine("[PCEngine]");
             writer.Write("RAM ");
             Ram.SaveAsHex(writer);
+            if (PopulousRAM != null)
+            {
+                writer.Write("PopulousRAM ");
+                PopulousRAM.SaveAsHex(writer);
+            }
             writer.WriteLine("Frame " + Frame);
             writer.WriteLine("Lag " + _lagcount);
             if (Cpu.ReadMemory21 == ReadMemorySF2)
@@ -215,6 +231,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     IOBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "RAM")
                     Ram.ReadFromHex(args[1]);
+                else if (args[0] == "PopulousRAM" && PopulousRAM != null)
+                    PopulousRAM.ReadFromHex(args[1]);
                 else if (args[0] == "[HuC6280]")
                     Cpu.LoadStateText(reader);
                 else if (args[0] == "[PSG]")
@@ -237,8 +255,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (SuperGrafx == false)
             {
                 writer.Write(Ram);
+                if (PopulousRAM != null)
+                    writer.Write(PopulousRAM);
                 writer.Write(Frame);
-//                writer.Write(_lagcount); //TODO: why does this fail?
+                writer.Write(_lagcount);
                 writer.Write(SF2MapperLatch);
                 writer.Write(IOBuffer);
                 Cpu.SaveStateBinary(writer);
@@ -248,7 +268,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             } else {
                 writer.Write(Ram);
                 writer.Write(Frame);
-//                writer.Write(_lagcount);
+                writer.Write(_lagcount);
                 writer.Write(IOBuffer);
                 Cpu.SaveStateBinary(writer);
                 VCE.SaveStateBinary(writer);
@@ -264,8 +284,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (SuperGrafx == false)
             {
                 Ram = reader.ReadBytes(0x2000);
+                if (PopulousRAM != null)
+                    PopulousRAM = reader.ReadBytes(0x8000);
                 Frame = reader.ReadInt32();
-//                _lagcount = reader.ReadInt32();
+                _lagcount = reader.ReadInt32();
                 SF2MapperLatch = reader.ReadByte();
                 IOBuffer = reader.ReadByte();
                 Cpu.LoadStateBinary(reader);
@@ -275,7 +297,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             } else {
                 Ram = reader.ReadBytes(0x8000);
                 Frame = reader.ReadInt32();
-//                _lagcount = reader.ReadInt32();
+                _lagcount = reader.ReadInt32();
                 IOBuffer = reader.ReadByte();
                 Cpu.LoadStateBinary(reader);
                 VCE.LoadStateBinary(reader);
@@ -288,8 +310,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveStateBinary()
         {
-            int buflen = SuperGrafx ? 166552 : 75854;
+            int buflen = SuperGrafx ? 166556 : 75858;
             if (BramEnabled) buflen += 2048;
+            if (PopulousRAM != null) buflen += 0x8000;
 
             var buf = new byte[buflen];
             var stream = new MemoryStream(buf);

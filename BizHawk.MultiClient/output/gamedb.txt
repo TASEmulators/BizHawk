@@ -2174,7 +2174,7 @@ BB4429B6		Paranoia	PCE
 E6458212		Parasol Stars	PCE
 647718F9		Parodius	PCE
 740491C2		PC Denjin - Punkic Cyborgs	PCE
-4938B8BB		Populous	PCE		BRAM
+4938B8BB		Populous	PCE		BRAM;PopulousSRAM
 25E0F6E9		Power Drift	PCE
 BE8B6E3B		Power Gate	PCE
 04A85769		Power League	PCE

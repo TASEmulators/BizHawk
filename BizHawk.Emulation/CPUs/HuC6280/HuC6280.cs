@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.CPUs.H6280
 
         public bool LagIFlag;
         public bool IRQ1Assert;
+        public bool IRQ2Assert;
         public bool TimerAssert;
         public byte IRQControlByte, IRQNextControlByte;
 
@@ -191,9 +192,6 @@ namespace BizHawk.Emulation.CPUs.H6280
         public void WriteIrqControl(byte value)
         {
             // There is a single-instruction delay before writes to the IRQ Control Byte take effect.
-            // After Burner requires this to function, as it ACKs the timer interrupt AFTER un-masking
-            // the interrupt.
-
             value &= 7;
             IRQNextControlByte = value;
         }
@@ -206,7 +204,7 @@ namespace BizHawk.Emulation.CPUs.H6280
         public byte ReadIrqStatus()
         {
             byte status = 0;
-            //if (IRQ2Assert) status |= 1;
+            if (IRQ2Assert) status |= 1;
             if (IRQ1Assert) status  |= 2;
             if (TimerAssert) status |= 4;
             return status;
@@ -232,6 +230,8 @@ namespace BizHawk.Emulation.CPUs.H6280
         {
             if (TimerTickCounter + 5 > 1024)
             {
+                // There exists a slight delay between when the timer counter is decremented and when 
+                // the interrupt fires; games can detect it, so we hack it this way.
                 return (byte) ((TimerValue - 1) & 0x7F);
             }
             return TimerValue;

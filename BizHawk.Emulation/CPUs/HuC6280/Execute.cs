@@ -44,14 +44,37 @@ namespace BizHawk.Emulation.CPUs.H6280
                     PendingCycles -= 8;
                 }
 
+                if (IRQ2Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ2Selector) == 0)
+                {
+                    Console.WriteLine("ENTERING IRQ2 INTERRUPT");
+                    WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
+                    WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
+                    WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
+                    FlagD = false;
+                    FlagI = true;
+                    PC = ReadWord(IRQ2Vector);
+                    PendingCycles -= 8;
+                }
+
                 IRQControlByte = IRQNextControlByte;
                 LagIFlag = FlagI;
 
+                //Console.WriteLine(State());
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
                     case 0x00: // BRK
-throw new Exception("break");
+                        Console.WriteLine("EXEC BRK"); // TODO CpuCoreGenerator needs updated, but I dont even know if this works yet
+                        PC++;
+                        WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
+                        WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
+                        WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
+                        FlagT = false;
+                        FlagB = true;
+                        FlagD = false;
+                        FlagI = true;
+                        PC = ReadWord(IRQ2Vector);
+                        PendingCycles -= 8;
                         break;
                     case 0x01: // ORA (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
