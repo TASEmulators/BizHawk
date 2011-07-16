@@ -117,6 +117,31 @@ namespace BizHawk.MultiClient
 			}
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
+
+			int SpriteNum, TileNum, Attr, MemAddr;
+			
+			//Sprite Viewer
+			for (int y = 0; y < 4; y++)
+			{
+				for (int x = 0; x < 16; x++)
+				{
+					SpriteNum = (y << 4) | x;
+					TileNum = 0; //TODO
+					Attr = 0; //TODO
+					if (((int)Nes.ppu.reg_2000.Value & (int)0x20) > 0) //TODO why is C# being retarded about using & with a byte?
+					{
+						MemAddr = ((TileNum & 0xFE) << 4) | ((TileNum & 0x01) << 12);
+						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16, MemAddr, 4 | (Attr & 3), D_SPR_W);
+						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16 + 8 * D_SPR_W, MemAddr + 16, 4 | (Attr & 3), D_SPR_W);
+						
+					}
+					else
+					{
+						MemAddr = (TileNum << 4) | ((Nes.ppu.reg_2000.Value & (byte)0x08) << 9);
+						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16, MemAddr, 4 | (Attr & 3), D_SPR_W);
+					}
+				}
+			}
 		}
 
 		public unsafe void UpdateValues()
