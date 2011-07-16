@@ -305,6 +305,20 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MoveLeft {
+            get {
+                object obj = ResourceManager.GetObject("MoveLeft", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MoveRight {
+            get {
+                object obj = ResourceManager.GetObject("MoveRight", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap MoveUp {
             get {
                 object obj = ResourceManager.GetObject("MoveUp", resourceCulture);
