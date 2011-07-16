@@ -8,36 +8,36 @@ using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
-    public class PatternViewer : Control
-    {
-        Size pSize;
-        public Bitmap pattern;
-        public int Pal0 = 0; //0-7 Palette choice
-        public int Pal1 = 0;
+	public class PatternViewer : Control
+	{
+		Size pSize;
+		public Bitmap pattern;
+		public int Pal0 = 0; //0-7 Palette choice
+		public int Pal1 = 0;
 
-        public PatternViewer()
-        {
-            pSize = new Size(256, 128);
-            pattern = new Bitmap(pSize.Width, pSize.Height);
-            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-            SetStyle(ControlStyles.UserPaint, true);
-            SetStyle(ControlStyles.DoubleBuffer, true);
-            this.Size = pSize;
-            this.BackColor = Color.White;
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
-        }
+		public PatternViewer()
+		{
+			pSize = new Size(256, 128);
+			pattern = new Bitmap(pSize.Width, pSize.Height);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			this.Size = pSize;
+			this.BackColor = Color.White;
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
+		}
 
-        private void Display(Graphics g)
-        {
-            unchecked
-            {
-                g.DrawImage(pattern, 1, 1);
-            }
-        }
+		private void Display(Graphics g)
+		{
+			unchecked
+			{
+				g.DrawImage(pattern, 1, 1);
+			}
+		}
 
-        private void PatternViewer_Paint(object sender, PaintEventArgs e)
-        {
-            Display(e.Graphics);
-        }
-    }
+		private void PatternViewer_Paint(object sender, PaintEventArgs e)
+		{
+			Display(e.Graphics);
+		}
+	}
 }
