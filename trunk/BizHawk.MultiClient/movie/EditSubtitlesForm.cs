@@ -15,8 +15,6 @@ namespace BizHawk.MultiClient
 		public bool ReadOnly;
 		private Movie selectedMovie = new Movie();
 
-		//TODO: Parse hex on color when saving
-		//TODO: color if color cell = value of color cell
 
 		public EditSubtitlesForm()
 		{
@@ -166,6 +164,7 @@ namespace BizHawk.MultiClient
 
 		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			if (ReadOnly) return;
 			DataGridViewSelectedRowCollection c = SubGrid.SelectedRows;
 			if (c.Count == 0) return;
 			SubtitleMaker s = new SubtitleMaker();
@@ -173,6 +172,8 @@ namespace BizHawk.MultiClient
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				ChangeRow(s.sub, SubGrid.SelectedRows[0].Index);
+				//if (SubGrid.Rows.Count == SubGrid.SelectedRows[0].Index + 1)
+				//	SubGrid.Rows.Add(); //Why does this case ChangeRow to edit the new changed row?
 			}
 		}
 	}
