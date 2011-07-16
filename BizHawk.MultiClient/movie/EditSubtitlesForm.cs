@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -77,7 +78,7 @@ namespace BizHawk.MultiClient
 					try { s.Duration = int.Parse(c.Value.ToString()); }
 					catch { ShowError(x, 3); return; }
 					c = SubGrid.Rows[x].Cells[4];
-					try { s.Color = uint.Parse(c.Value.ToString()); }
+					try { s.Color = uint.Parse(c.Value.ToString(), NumberStyles.HexNumber); }
 					catch { ShowError(x, 4); return; }
 					try { c = SubGrid.Rows[x].Cells[5]; }
 					catch { ShowError(x, 5); return; }
