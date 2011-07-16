@@ -854,6 +854,7 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[8].Visible = false;
 					contextMenuStrip1.Items[9].Visible = false;
 					contextMenuStrip1.Items[10].Visible = true;
+					contextMenuStrip1.Items[11].Visible = false;
 				}
 				else
 				{
