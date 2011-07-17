@@ -146,13 +146,13 @@ namespace BizHawk.MultiClient
 		public void StopUserMovie()
 		{
 			string message = "Movie ";
-			if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			if (UserMovie.Mode == MOVIEMODE.RECORD)
 				message += "recording ";
-			else if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY
-				|| UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+			else if (UserMovie.Mode == MOVIEMODE.PLAY
+				|| UserMovie.Mode == MOVIEMODE.FINISHED)
 				message += "playback ";
 			message += "stopped.";
-			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 			{
 				UserMovie.StopMovie();
 				Global.MovieMode = false;
@@ -163,7 +163,7 @@ namespace BizHawk.MultiClient
 
 		public void StopInputLog()
 		{
-			if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+			if (InputLog.Mode == MOVIEMODE.RECORD)
 				InputLog.StopMovie();
 		}
 
@@ -844,7 +844,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[1].Visible = false;
 				contextMenuStrip1.Items[2].Visible = false;
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
 					contextMenuStrip1.Items[3].Visible = true;
 					contextMenuStrip1.Items[4].Visible = true;

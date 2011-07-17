@@ -140,8 +140,8 @@ namespace BizHawk.MultiClient
 			get
 			{
 				string Bind = "";
-				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
-					Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.GetFilePath());
+				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
+					Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.Filename);
 				switch (System)
 				{
 					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), filesystemSafeName + Bind);
