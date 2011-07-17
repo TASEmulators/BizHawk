@@ -2271,7 +2271,7 @@ namespace BizHawk.MultiClient
 
 		private void NextSlot()
 		{
-			if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
+			if (SaveSlot >= 9) SaveSlot = 0;       //Wrap to beginning of slot list
 			else SaveSlot++;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
