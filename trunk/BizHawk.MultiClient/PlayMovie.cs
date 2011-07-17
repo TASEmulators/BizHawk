@@ -129,9 +129,9 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie(path.CanonicalFullPath, MOVIEMODE.INACTIVE);
 			m.PreLoadText();
 			if (path.Extension == ".FM2")
-				m.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			else if (path.Extension == ".MC2")
-				m.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
 			MovieList.Add(m);
 		}
 
@@ -247,7 +247,7 @@ namespace BizHawk.MultiClient
 			if (MovieView.SelectedIndices.Count < 1) return;
 
 			int x = MovieView.SelectedIndices[0];
-			Dictionary<string, string> h = MovieList[x].GetHeaderInfo();
+			Dictionary<string, string> h = MovieList[x].Header.HeaderParams;
 
 			foreach (var kvp in h)
 			{
@@ -255,7 +255,7 @@ namespace BizHawk.MultiClient
 				item.SubItems.Add(kvp.Value);
 				DetailsView.Items.Add(item);
 			}
-			if (MovieList[x].HasComments())
+			if (MovieList[x].Header.Comments.Count > 0)
 				button1.Enabled = true;
 			else
 				button1.Enabled = false;

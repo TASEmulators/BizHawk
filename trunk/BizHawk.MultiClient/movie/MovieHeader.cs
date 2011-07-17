@@ -6,14 +6,14 @@ using System.IO;
 
 namespace BizHawk.MultiClient
 {
-	class MovieHeader
+	public class MovieHeader
 	{
 		//Required Header Params
 		//Emulation - Core version, will be 1.0.0 until there is a versioning system
 		//Movie -     Versioning for the Movie code itself, or perhaps this could be changed client version?
 		//Platform -  Must know what platform we are making a movie on!
 		//GameName -  Which game
-		//TODO: GUID, checksum of game, other stuff
+		//TODO: checksum of game, other stuff
 
 		public Dictionary<string, string> HeaderParams = new Dictionary<string, string>(); //Platform specific options go here
 		public List<string> Comments = new List<string>();
@@ -107,5 +107,76 @@ namespace BizHawk.MultiClient
 				sw.WriteLine(Comments[x]);
 			}
 		}
+
+		private string ParseHeader(string line, string headerName)
+		{
+			string str;
+			int x = line.LastIndexOf(headerName) + headerName.Length;
+			str = line.Substring(x + 1, line.Length - x - 1);
+			return str;
+		}
+
+		//TODO: replace Movie Preload & Load functions with this
+		/// <summary>
+		/// Receives a line and attempts to add as a header, returns false if not a useable header line
+		/// </summary>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		public bool AddHeaderFromLine(string line)
+		{
+			if (line.Length == 0) return false;
+			else if (line.Contains(MovieHeader.EMULATIONVERSION))
+			{
+				line = ParseHeader(line, MovieHeader.EMULATIONVERSION);
+				AddHeaderLine(MovieHeader.EMULATIONVERSION, line);
+			}
+			else if (line.Contains(MovieHeader.MOVIEVERSION))
+			{
+				line = ParseHeader(line, MovieHeader.MOVIEVERSION);
+				AddHeaderLine(MovieHeader.MOVIEVERSION, line);
+			}
+			else if (line.Contains(MovieHeader.PLATFORM))
+			{
+				line = ParseHeader(line, MovieHeader.PLATFORM);
+				AddHeaderLine(MovieHeader.PLATFORM, line);
+			}
+			else if (line.Contains(MovieHeader.GAMENAME))
+			{
+				line = ParseHeader(line, MovieHeader.GAMENAME);
+				AddHeaderLine(MovieHeader.GAMENAME, line);
+			}
+			else if (line.Contains(MovieHeader.RERECORDS))
+			{
+				line = ParseHeader(line, MovieHeader.RERECORDS);
+				AddHeaderLine(MovieHeader.RERECORDS, line);
+			}
+			else if (line.Contains(MovieHeader.AUTHOR))
+			{
+				line = ParseHeader(line, MovieHeader.AUTHOR);
+				AddHeaderLine(MovieHeader.AUTHOR, line);
+			}
+			else if (line.ToUpper().Contains(MovieHeader.GUID))
+			{
+				line = ParseHeader(line, MovieHeader.GUID);
+				AddHeaderLine(MovieHeader.GUID, line);
+			}
+			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
+			{
+				return false;
+			}
+			else if (line.StartsWith("comment"))
+			{
+				Comments.Add(line.Substring(8, line.Length - 8));
+			}
+			else if (line[0] == '|')
+			{
+				return false;
+			}
+			else
+				Comments.Add(line);
+
+			return true;
+		}
+
 	}
 }

@@ -932,10 +932,10 @@ namespace BizHawk.MultiClient
 
 				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
-					InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
-					InputLog.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
-					InputLog.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-					InputLog.SetHeaderLine(MovieHeader.AUTHOR, Global.Config.DefaultAuthor);
+					InputLog.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+					InputLog.Header.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
+					InputLog.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
+					InputLog.Header.SetHeaderLine(MovieHeader.AUTHOR, Global.Config.DefaultAuthor);
 					CreateNewInputLog(true);
 				}
 
