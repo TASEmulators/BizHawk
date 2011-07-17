@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		{
 			text = "";
 			if (column == 0) //File
-				text = Path.GetFileName(MovieList[index].GetFilePath());
+				text = Path.GetFileName(MovieList[index].Filename);
 			if (column == 1) //System
 				text = MovieList[index].GetSysID();
 			if (column == 2) //Game
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 		private int IsDuplicate(string filename)
 		{
 			for (int x = 0; x < MovieList.Count; x++)
-				if (MovieList[x].GetFilePath() == filename)
+				if (MovieList[x].Filename == filename)
 					return x;
 			return 0;
 		}
@@ -172,7 +172,7 @@ namespace BizHawk.MultiClient
 			List<int> TAS = new List<int>();
 			for (int x = 0; x < Indexes.Count; x++)
 			{
-				if (Path.GetExtension(MovieList[Indexes[x]].GetFilePath()).ToUpper() == ".TAS")
+				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == ".TAS")
 					TAS.Add(x);
 			}
 			if (TAS.Count == 1)
@@ -185,12 +185,12 @@ namespace BizHawk.MultiClient
 
 			//Final tie breaker - Last used file
 			DateTime t = new DateTime();
-			FileInfo f = new FileInfo(MovieList[Indexes[0]].GetFilePath());
+			FileInfo f = new FileInfo(MovieList[Indexes[0]].Filename);
 			t = f.LastAccessTime;
 			int mostRecent = Indexes[0];
 			for (int x = 1; x < Indexes.Count; x++)
 			{
-				f = new FileInfo(MovieList[Indexes[0]].GetFilePath());
+				f = new FileInfo(MovieList[Indexes[0]].Filename);
 				if (f.LastAccessTime > t)
 				{
 					t = f.LastAccessTime;

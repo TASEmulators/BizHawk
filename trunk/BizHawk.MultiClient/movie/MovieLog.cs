@@ -31,11 +31,6 @@ namespace BizHawk.MultiClient
 			MovieRecords.Clear();
 		}
 
-		public int GetMovieLength()
-		{
-			return MovieRecords.Count;
-		}
-
 		public void AddFrame(string frame)
 		{
 			MovieRecords.Add(frame);
@@ -73,7 +68,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteText(StreamWriter sw)
 		{
-			int length = GetMovieLength();
+			int length = Length();
 			for (int x = 0; x < length; x++)
 			{
 				sw.WriteLine(GetFrame(x));

@@ -930,7 +930,7 @@ namespace BizHawk.MultiClient
 				if (File.Exists(game.SaveRamPath))
 					LoadSaveRam();
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
 					InputLog.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
 					InputLog.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
@@ -1411,12 +1411,12 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
-				if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 				{
 					UserMovie.LatchInputFromLog();
 				}
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+				if (UserMovie.Mode == MOVIEMODE.RECORD)
 				{
 					if (UserMovie.MultiTrack.IsActive)
 					{
@@ -1429,30 +1429,30 @@ namespace BizHawk.MultiClient
 					UserMovie.CommitFrame();
 				}
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
 					UserMovie.LatchInputFromPlayer();
 					InputLog.CommitFrame();
 				}
 				
-				if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+				if (UserMovie.Mode == MOVIEMODE.PLAY)
 				{
-					if (UserMovie.GetMovieLength() == Global.Emulator.Frame)
+					if (UserMovie.Length() == Global.Emulator.Frame)
 					{
 						UserMovie.SetMovieFinished();
 						Global.MovieMode = false;
 					}
 				}
 
-				if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+				if (UserMovie.Mode == MOVIEMODE.FINISHED)
 				{
-					if (UserMovie.GetMovieLength() > Global.Emulator.Frame)
+					if (UserMovie.Length() > Global.Emulator.Frame)
 					{
 						UserMovie.StartPlayback();
 						Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
 					}
 				}
-				if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD && UserMovie.MultiTrack.IsActive)
+				if (UserMovie.Mode == MOVIEMODE.RECORD && UserMovie.MultiTrack.IsActive)
 				{					
 					Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
 					Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
@@ -1537,11 +1537,11 @@ namespace BizHawk.MultiClient
 
 		private void HandleMovieSaveState(StreamWriter writer)
 		{
-			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 			{
 				UserMovie.DumpLogIntoSavestateText(writer);
 			}
-			else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
 				InputLog.DumpLogIntoSavestateText(writer);
 		}
 
@@ -1587,7 +1587,7 @@ namespace BizHawk.MultiClient
 		private void HandleMovieLoadState(StreamReader reader)
 		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
-			if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			if (UserMovie.Mode == MOVIEMODE.RECORD)
 			{
 				if (ReadOnly)
 				{
@@ -1608,7 +1608,7 @@ namespace BizHawk.MultiClient
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
 			}
-			else if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+			else if (UserMovie.Mode == MOVIEMODE.PLAY)
 			{
 				if (ReadOnly)
 				{
@@ -1624,12 +1624,12 @@ namespace BizHawk.MultiClient
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
 			}
-			else if (UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+			else if (UserMovie.Mode == MOVIEMODE.FINISHED)
 			{
 				//TODO: have the input log kick in upon movie finished mode and stop upon movie resume
 				if (ReadOnly)
 				{
-					if (Global.Emulator.Frame > UserMovie.GetMovieLength())
+					if (Global.Emulator.Frame > UserMovie.Length())
 					{
 						Global.MovieMode = false;
 						//Post movie savestate
@@ -1648,7 +1648,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (Global.Emulator.Frame > UserMovie.GetMovieLength())
+					if (Global.Emulator.Frame > UserMovie.Length())
 					{
 						Global.MovieMode = false;
 						//Post movie savestate
@@ -1666,7 +1666,7 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				if (InputLog.GetMovieMode() == MOVIEMODE.RECORD)
+				if (InputLog.Mode == MOVIEMODE.RECORD)
 					InputLog.LoadLogFromSavestateText(reader);
 			}
 		}
@@ -2299,7 +2299,7 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 			{
 				stopMovieToolStripMenuItem.Enabled = false;
 				playFromBeginningToolStripMenuItem.Enabled = false;
@@ -2347,15 +2347,15 @@ namespace BizHawk.MultiClient
 
 		public void SetMainformMovieInfo()
 		{
-			if (UserMovie.GetMovieMode() == MOVIEMODE.PLAY || UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+			if (UserMovie.Mode == MOVIEMODE.PLAY || UserMovie.Mode == MOVIEMODE.FINISHED)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.GetFilePath());
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
 				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
 			}
-			else if (UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			else if (UserMovie.Mode == MOVIEMODE.RECORD)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.GetFilePath());
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
 			}
@@ -2374,7 +2374,7 @@ namespace BizHawk.MultiClient
 			InputLog.StopMovie();
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
 			UserMovie.LoadMovie();
-			Global.Config.RecentMovies.Add(m.GetFilePath());
+			Global.Config.RecentMovies.Add(m.Filename);
 
 			if (record)
 			{
@@ -2390,9 +2390,9 @@ namespace BizHawk.MultiClient
 
 		public Movie GetActiveMovie()
 		{
-			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 				return UserMovie;
-			else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
 				return InputLog;
 			else
 				return null;
@@ -2400,9 +2400,9 @@ namespace BizHawk.MultiClient
 
 		public bool MovieActive()
 		{
-			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 				return true;
-			else if (InputLog.GetMovieMode() != MOVIEMODE.INACTIVE)
+			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
 				return true;
 			else
 				return false;
@@ -2422,7 +2422,7 @@ namespace BizHawk.MultiClient
 
 		public void PlayMovieFromBeginning()
 		{
-			if (UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 			{
 				LoadRom(CurrentlyOpenRom);
 				UserMovie.StartPlayback();
@@ -2496,7 +2496,7 @@ namespace BizHawk.MultiClient
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE) return;
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
 			
 			EditSubtitlesForm s = new EditSubtitlesForm();
 			s.ReadOnly = ReadOnly;
@@ -2570,7 +2570,7 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE) return;
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
 
 			EditCommentsForm c = new EditCommentsForm();
 			c.ReadOnly = ReadOnly;

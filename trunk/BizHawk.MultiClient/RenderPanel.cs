@@ -340,7 +340,7 @@ namespace BizHawk.MultiClient
 				Color c;
 				x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
 				y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
-				if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+				if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
 				}
@@ -399,15 +399,15 @@ namespace BizHawk.MultiClient
 			}
 
 			//TODO: clean this up or replace with simple draw symbols
-			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY
-				|| Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY
+				|| Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 			{
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 47,
 					 0 + 1, new Color4(Color.Black));
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
 					0, Color.FromArgb(Global.Config.MovieColor));
 			}
-			else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.RECORD)
 			{
 				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 65,
 						 0 + 1, new Color4(Color.Black));
@@ -428,15 +428,15 @@ namespace BizHawk.MultiClient
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.FINISHED)
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.FINISHED)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString() + " (Finished)";
+				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.Length().ToString() + " (Finished)";
 			}
-			else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.PLAY)
+			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.GetMovieLength().ToString();
+				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.Length().ToString();
 			}
-			else if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.RECORD)
+			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.RECORD)
 				return Global.Emulator.Frame.ToString();
 			else
 			{
@@ -492,7 +492,7 @@ namespace BizHawk.MultiClient
 		public string MakeRerecordCount()
 		{
 			string tmp = "";
-			if (Global.MainForm.UserMovie.GetMovieMode() != MOVIEMODE.INACTIVE)
+			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
 			{
 				tmp += "Rerecord Count: ";
 				tmp += Global.MainForm.GetActiveMovie().GetRerecordCount().ToString();

@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
-			if (Global.MainForm.UserMovie.GetMovieMode() == MOVIEMODE.INACTIVE)
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE)
 				TASView.ItemCount = 0;
 			else
 				DisplayList();
@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MainForm.UserMovie.GetMovieLength();
+			TASView.ItemCount = Global.MainForm.UserMovie.Length();
 			TASView.ensureVisible(Global.Emulator.Frame);
 		}
 

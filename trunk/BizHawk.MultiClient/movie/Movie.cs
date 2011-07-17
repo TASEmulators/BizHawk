@@ -13,14 +13,14 @@ namespace BizHawk.MultiClient
 		private MovieHeader Header = new MovieHeader();
 		private MovieLog Log = new MovieLog();
 		public SubtitleList Subtitles = new SubtitleList();
-
-		private bool IsText = true;
-		public string Filename;	//TODO: replace GetFilename() method
-		public bool MakeBackup = true; //Flag for making backup before altering movie
-
-		private MOVIEMODE MovieMode = new MOVIEMODE();
-
 		public MultitrackRecording MultiTrack = new MultitrackRecording();
+
+		public bool IsText { get; private set; }
+		public string Filename { get; private set; }
+		public MOVIEMODE Mode { get; private set; }
+
+		public bool MakeBackup = true; //Flag - make backup before altering movie
+				
 		public int Frames = 0;
 		public int lastLog;
 		public int rerecordCount;
@@ -44,28 +44,26 @@ namespace BizHawk.MultiClient
 				Filename = filename;
 				exists = true;
 			}
-			MovieMode = m;
+			Mode = m;
 			lastLog = 0;
 			rerecordCount = 0;
+			IsText = true;
 		}
 
 		public Movie(string filename, MOVIEMODE m)
 		{
-			MovieMode = m;
+			Mode = m;
 			lastLog = 0;
 			rerecordCount = 0;
 			this.Filename = filename;
+			IsText = true;
 		}
 
 		public Movie()
 		{
 			Filename = ""; //Note: note this must be populated before playing movie
-			MovieMode = MOVIEMODE.INACTIVE;
-		}
-
-		public string GetFilePath()
-		{
-			return Filename;
+			Mode = MOVIEMODE.INACTIVE;
+			IsText = true;
 		}
 
 		public string GetSysID()
@@ -77,21 +75,21 @@ namespace BizHawk.MultiClient
 		{
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
-		public int GetLength()
+		public int Length()
 		{
 			return Log.Length();
 		}
 
 		public void StopMovie()
 		{
-			if (MovieMode == MOVIEMODE.RECORD)
+			if (Mode == MOVIEMODE.RECORD)
 				WriteMovie();
-			MovieMode = MOVIEMODE.INACTIVE;
+			Mode = MOVIEMODE.INACTIVE;
 		}
 
 		public void StartNewRecording()
 		{
-			MovieMode = MOVIEMODE.RECORD;
+			Mode = MOVIEMODE.RECORD;
 			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
 			{
 				WriteBackup();
@@ -102,12 +100,7 @@ namespace BizHawk.MultiClient
 
 		public void StartPlayback()
 		{
-			MovieMode = MOVIEMODE.PLAY;
-		}
-
-		public MOVIEMODE GetMovieMode()
-		{
-			return MovieMode;
+			Mode = MOVIEMODE.PLAY;
 		}
 
 		public void LatchMultitrackPlayerInput()
@@ -164,13 +157,12 @@ namespace BizHawk.MultiClient
 		public string GetInputFrame(int frame)
 		{
 			lastLog = frame;
-			if (frame < Log.GetMovieLength())
+			if (frame < Log.Length())
 				return Log.GetFrame(frame);
 			else
 				return "";
 		}
 
-		//Movie editing tools may like to have something like this
 		public void AppendFrame(string record)
 		{
 			Log.AddFrame(record);
@@ -208,7 +200,7 @@ namespace BizHawk.MultiClient
 		private void WriteText(string file)
 		{
 			if (file.Length == 0) return;	//Nothing to write
-			int length = Log.GetMovieLength();
+			int length = Log.Length();
 
 			using (StreamWriter sw = new StreamWriter(file))
 			{
@@ -422,10 +414,6 @@ namespace BizHawk.MultiClient
 			return LoadText();
 		}
 
-		public int GetMovieLength()
-		{
-			return Log.GetMovieLength();
-		}
 
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
@@ -499,8 +487,8 @@ namespace BizHawk.MultiClient
 
 		public void SetMovieFinished()
 		{
-			if (MovieMode == MOVIEMODE.PLAY)
-				MovieMode = MOVIEMODE.FINISHED;
+			if (Mode == MOVIEMODE.PLAY)
+				Mode = MOVIEMODE.FINISHED;
 		}
 
 		public void SetHeaderLine(string key, string value)
@@ -691,7 +679,7 @@ namespace BizHawk.MultiClient
 
 		private int CompareFileName(Movie Other)
 		{
-			string otherName = Path.GetFileName(Other.GetFilePath());
+			string otherName = Path.GetFileName(Other.Filename);
 			string thisName = Path.GetFileName(this.Filename);
 
 			return thisName.CompareTo(otherName);
