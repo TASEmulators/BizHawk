@@ -53,15 +53,15 @@ namespace BizHawk.MultiClient
 				MovieToRecord = new Movie(path, MOVIEMODE.RECORD);
 
 				//Header
-				MovieToRecord.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
-				MovieToRecord.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
-				MovieToRecord.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
-				MovieToRecord.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-				MovieToRecord.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.AUTHOR, AuthorBox.Text);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
 				if (Global.Game != null)
-					MovieToRecord.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
 				else
-					MovieToRecord.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 
 				Global.MainForm.StartNewMovie(MovieToRecord, true);
 

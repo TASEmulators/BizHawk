@@ -10,21 +10,22 @@ namespace BizHawk.MultiClient
 	public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
 	public class Movie
 	{
-		private MovieHeader Header = new MovieHeader();
-		private MovieLog Log = new MovieLog();
+		//TODO: preloaded flag + use it to make checks before doing things that require the movie to be loaded
+
+		public MovieHeader Header = new MovieHeader();
 		public SubtitleList Subtitles = new SubtitleList();
 		public MultitrackRecording MultiTrack = new MultitrackRecording();
+		public bool MakeBackup = true; //make backup before altering movie
 
 		public bool IsText { get; private set; }
 		public string Filename { get; private set; }
 		public MOVIEMODE Mode { get; private set; }
+		public int Rerecords { get; private set; }
+		public int Frames { get; private set; } //Only used when a movie is preloaded
 
-		public bool MakeBackup = true; //Flag - make backup before altering movie
-				
-		public int Frames = 0;
-		public int lastLog;
-		public int rerecordCount;
-
+		private MovieLog Log = new MovieLog();
+		private int lastLog;
+		
 		/// <summary>
 		/// Allows checking if file exists
 		/// </summary>
@@ -46,17 +47,19 @@ namespace BizHawk.MultiClient
 			}
 			Mode = m;
 			lastLog = 0;
-			rerecordCount = 0;
+			Rerecords = 0;
 			IsText = true;
+			Frames = 0;
 		}
 
 		public Movie(string filename, MOVIEMODE m)
 		{
 			Mode = m;
 			lastLog = 0;
-			rerecordCount = 0;
+			Rerecords = 0;
 			this.Filename = filename;
 			IsText = true;
+			Frames = 0;
 		}
 
 		public Movie()
@@ -64,6 +67,7 @@ namespace BizHawk.MultiClient
 			Filename = ""; //Note: note this must be populated before playing movie
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
+			Frames = 0;
 		}
 
 		public string GetSysID()
@@ -215,14 +219,6 @@ namespace BizHawk.MultiClient
 
 		}
 
-		private string ParseHeader(string line, string headerName)
-		{
-			string str;
-			int x = line.LastIndexOf(headerName) + headerName.Length;
-			str = line.Substring(x + 1, line.Length - x - 1);
-			return str;
-		}
-
 		private bool LoadText()
 		{
 			var file = new FileInfo(Filename);
@@ -271,11 +267,11 @@ namespace BizHawk.MultiClient
 						Header.AddHeaderLine(MovieHeader.RERECORDS, str);
 						try
 						{
-							rerecordCount = int.Parse(str);
+							Rerecords = int.Parse(str);
 						}
 						catch
 						{
-							rerecordCount = 0;
+							Rerecords = 0;
 						}
 					}
 					else if (str.Contains(MovieHeader.AUTHOR))
@@ -338,7 +334,7 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					
+					else if (Header.AddHeaderFromLine(str)) continue;
 					else if (str.Contains(MovieHeader.EMULATIONVERSION))
 					{
 						str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
@@ -391,9 +387,7 @@ namespace BizHawk.MultiClient
 						break;
 					}
 					else
-					{
 						Header.Comments.Add(str);
-					}
 				}
 				sr.Close();
 			}
@@ -466,34 +460,25 @@ namespace BizHawk.MultiClient
 			{
 				Log.Truncate(Global.Emulator.Frame);
 			}
-			IncrementRerecordCount();
+			IncrementRerecords();
 		}
 
-		public void IncrementRerecordCount()
+		public void IncrementRerecords()
 		{
-			rerecordCount++;
-			Header.UpdateRerecordCount(rerecordCount);
+			Rerecords++;
+			Header.UpdateRerecordCount(Rerecords);
 		}
 
-		public int GetRerecordCount()
+		public void	SetRerecords(int value)
 		{
-			return rerecordCount;
-		}
-
-		public Dictionary<string, string> GetHeaderInfo()
-		{
-			return Header.HeaderParams;
+			Rerecords = value;
+			Header.SetHeaderLine(MovieHeader.RERECORDS, Rerecords.ToString());
 		}
 
 		public void SetMovieFinished()
 		{
 			if (Mode == MOVIEMODE.PLAY)
 				Mode = MOVIEMODE.FINISHED;
-		}
-
-		public void SetHeaderLine(string key, string value)
-		{
-			Header.SetHeaderLine(key, value);
 		}
 
 		public string GetTime(bool preLoad)
@@ -517,10 +502,7 @@ namespace BizHawk.MultiClient
 
 		private string MakeDigits(decimal num)
 		{
-			if (num < 10)
-				return "0" + num.ToString();
-			else
-				return num.ToString();
+			return MakeDigits((int)num);
 		}
 
 		private string MakeDigits(int num)
@@ -728,27 +710,16 @@ namespace BizHawk.MultiClient
 				return 0;
 		}
 
-		public List<string> GetComments()
-		{
-			return Header.Comments;
-		}
 
-		public bool HasComments()
-		{
-			if (Header.Comments.Count > 0)
-				return true;
-			else
-				return false;
-		}
 
-		public void AddComment(string comment)
-		{
-			Header.Comments.Add(comment);
-		}
 
-		public void ClearComments()
+
+		private string ParseHeader(string line, string headerName)
 		{
-			Header.Comments.Clear();
+			string str;
+			int x = line.LastIndexOf(headerName) + headerName.Length;
+			str = line.Substring(x + 1, line.Length - x - 1);
+			return str;
 		}
 	}
 }

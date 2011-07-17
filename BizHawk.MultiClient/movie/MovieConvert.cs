@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 					
 
 				UInt32 version = r.ReadUInt32();
-				m.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
+				m.Header.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
 
 				byte[] flags = new byte[4];
 				for (int x = 0; x < 4; x++)
@@ -40,8 +40,7 @@ namespace BizHawk.MultiClient
 
 				UInt32 frameCount = r.ReadUInt32();
 
-				m.rerecordCount = (int)r.ReadUInt32();
-				m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+				m.SetRerecords((int)r.ReadUInt32());
 
 				UInt32 movieDataSize = r.ReadUInt32();
 				UInt32 savestateOffset = r.ReadUInt32();
@@ -51,7 +50,7 @@ namespace BizHawk.MultiClient
 				//TODO: ROM checksum movie header line (MD5)
 
 				UInt32 EmuVersion = r.ReadUInt32();
-				m.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
+				m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
 
 				List<byte> romBytes = new List<byte>();
 				while (true)
@@ -62,7 +61,7 @@ namespace BizHawk.MultiClient
 						romBytes.Add(r.ReadByte());
 				}
 				string rom = System.Text.Encoding.UTF8.GetString(romBytes.ToArray());
-				m.SetHeaderLine(MovieHeader.GAMENAME, rom);
+				m.Header.SetHeaderLine(MovieHeader.GAMENAME, rom);
 
 				r.ReadByte(); //Advance past null byte
 
@@ -75,7 +74,7 @@ namespace BizHawk.MultiClient
 						authorBytes.Add(r.ReadByte());
 				}
 				string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
-				m.SetHeaderLine(MovieHeader.AUTHOR, author);
+				m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 
 				r.ReadByte(); //Advance past null byte
 
@@ -87,8 +86,8 @@ namespace BizHawk.MultiClient
 				if ((int)(flags[0] & 4) > 0)
 					pal = true;
 
-				m.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
-				m.SetHeaderLine("PAL", pal.ToString());
+				m.Header.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
+				m.Header.SetHeaderLine("PAL", pal.ToString());
 
 				//Power on vs reset
 				if ((int)(flags[0] & 8) > 0)
@@ -152,12 +151,11 @@ namespace BizHawk.MultiClient
 			}
 
 			UInt32 version = r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
+			m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
 
 			UInt32 framecount = r.ReadUInt32();
 
-			m.rerecordCount = (int)r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+			m.SetRerecords((int)r.ReadUInt32());
 
 			UInt32 IsFromReset = r.ReadUInt32();
 			if (IsFromReset == 0)
@@ -176,7 +174,7 @@ namespace BizHawk.MultiClient
 
 			string author = System.Text.Encoding.UTF8.GetString(authorBytes);
 			//TODO: remove null characters
-			m.SetHeaderLine(MovieHeader.AUTHOR, author);
+			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 
 			//4-byte little endian flags
 			byte flags = r.ReadByte();
@@ -186,25 +184,25 @@ namespace BizHawk.MultiClient
 				pal = true;
 			else
 				pal = false;
-			m.SetHeaderLine("PAL", pal.ToString());
+			m.Header.SetHeaderLine("PAL", pal.ToString());
 
 			bool japan;
 			if ((int)(flags & 4) > 0)
 				japan = true;
 			else
 				japan = false;
-			m.SetHeaderLine("Japan", japan.ToString());
+			m.Header.SetHeaderLine("Japan", japan.ToString());
 
 			bool gamegear;
 			if ((int)(flags & 8) > 0)
 			{
 				gamegear = true;
-				m.SetHeaderLine(MovieHeader.PLATFORM, "GG");
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "GG");
 			}
 			else
 			{
 				gamegear = false;
-				m.SetHeaderLine(MovieHeader.PLATFORM, "SMS");
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SMS");
 			}
 
 			r.ReadBytes(3); //Unused flags
@@ -214,14 +212,14 @@ namespace BizHawk.MultiClient
 				romnameBytes[x] = r.ReadByte();
 			string romname = System.Text.Encoding.UTF8.GetString(romnameBytes.ToArray());
 			//TODO: remove null characters
-			m.SetHeaderLine(MovieHeader.GAMENAME, romname);
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, romname);
 
 			byte[] MD5Bytes = new byte[16];
 			for (int x = 0; x < 16; x++)
 				MD5Bytes[x] = r.ReadByte();
 			string MD5 = System.Text.Encoding.UTF8.GetString(MD5Bytes.ToArray());
 			//TODO: format correctly
-			m.SetHeaderLine("MD5", MD5);
+			m.Header.SetHeaderLine("MD5", MD5);
 
 
 			for (int x = 0; x < (framecount); x++)
@@ -322,9 +320,8 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			UInt32 GUID = r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
-			m.rerecordCount = (int)r.ReadUInt32();
-			m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
+			m.SetRerecords((int)r.ReadUInt32());
 
 			UInt32 framecount = r.ReadUInt32();
 			byte ControllerFlags = r.ReadByte();
@@ -349,7 +346,7 @@ namespace BizHawk.MultiClient
 
 			if ((int)(MovieFlags & 2) > 0)
 			{
-				m.SetHeaderLine("PAL", "True");
+				m.Header.SetHeaderLine("PAL", "True");
 			}
 
 			byte SyncOptions = r.ReadByte();
@@ -405,15 +402,13 @@ namespace BizHawk.MultiClient
 
 			UInt32 versionno = r.ReadUInt32();  //always 1
 			UInt32 uid = r.ReadUInt32();		//time of recording
-			m.SetHeaderLine(MovieHeader.GUID, uid.ToString());
+			m.Header.SetHeaderLine(MovieHeader.GUID, uid.ToString());
 			UInt32 framecount = r.ReadUInt32();
-			m.Frames = (int)framecount;
-
 
 			//0x10
 			UInt32 rerecordcount = r.ReadUInt32();
-			m.rerecordCount = (int)rerecordcount;
-			m.SetHeaderLine(MovieHeader.RERECORDS, m.rerecordCount.ToString());
+			m.SetRerecords((int)rerecordcount);
+			m.Header.SetHeaderLine(MovieHeader.RERECORDS, m.Rerecords.ToString());
 			Byte moviestartflags = r.ReadByte();
 
 
@@ -493,20 +488,20 @@ namespace BizHawk.MultiClient
 
 			char[] internalgamename = r.ReadChars(0x0C);
 			string gamename = new String(internalgamename);
-			m.SetHeaderLine(MovieHeader.GAMENAME, gamename);
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gamename);
 
 			//0x30
 			Byte minorversion = r.ReadByte();
 			Byte internalcrc = r.ReadByte();
 			UInt16 internalchacksum = r.ReadUInt16();
 			UInt32 unitcode = r.ReadUInt32();
-			UInt32 saveoffset = r.ReadUInt32();         //set to 0 if unused
+			UInt32 saveoffset = r.ReadUInt32();		//set to 0 if unused
 			UInt32 controllerdataoffset = r.ReadUInt32();
 
 			//0x40  start info.
-			char[] authorsname = r.ReadChars(0x40);         //vbm specification states these strings 
-			string author = new String(authorsname);        //are locale dependant.
-			m.SetHeaderLine(MovieHeader.AUTHOR, author);
+			char[] authorsname = r.ReadChars(0x40);		//vbm specification states these strings 
+			string author = new String(authorsname);	//are locale dependant.
+			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 
 			//0x80
 			char[] moviedescription = r.ReadChars(0x80);
