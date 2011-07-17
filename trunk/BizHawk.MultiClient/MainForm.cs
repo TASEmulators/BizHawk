@@ -2266,6 +2266,7 @@ namespace BizHawk.MultiClient
 			else if (SaveSlot > 9) SaveSlot = 9;   //Meh, just in case
 			else SaveSlot--;
 			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
 		}
 
 		private void NextSlot()
@@ -2273,6 +2274,7 @@ namespace BizHawk.MultiClient
 			if (SaveSlot >= 9) SaveSlot = 1;       //Wrap to beginning of slot list
 			else SaveSlot++;
 			SaveSlotSelectedMessage();
+			UpdateStatusSlots();
 		}
 
 		private void ToggleFPS()
