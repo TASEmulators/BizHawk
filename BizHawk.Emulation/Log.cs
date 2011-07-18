@@ -54,6 +54,8 @@ namespace BizHawk
 
         // ============== Default Logger Action ==============
 
+		public static Stream HACK_LOG_STREAM;
+
         private static bool LogToConsole = false;
 		private static bool LogToFile = false;
 
