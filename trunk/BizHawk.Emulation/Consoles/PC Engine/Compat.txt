@@ -22,7 +22,6 @@ Lode Runner       - Freezes in new game
 Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
 MML Demo          - Echo channels are too loud (equal volume!)
 Outrun            - OK currently but timing sensitive game for future testing
-Paranoia          - Game hits BREAK on 3rd level. need to investigate
 Power Drift       - Timing glitch... starting new game runs slower than it should
 Power Tennis      - Elaborate intro screen doesnt display right
 Raiden            - Sprites and BG get out of sync with current timing
@@ -63,3 +62,6 @@ Stuff I Fixed That's Not In Other Docs:
   bit is disabled in the DCR.
 + This is in other docs, but Fighting Run requires full MWR register emulation including the various
   4 color modes. It appears to be the only game that requires this, and it's a shitty game. :(
++ The ROM of Paranoia (J) that is commonly labeled as the authoritative dump - I assume its a bad
+  dump, because it dies during the 3rd stage on ALL EMULATORS. Alternative versions of the rom 
+  work fine.  

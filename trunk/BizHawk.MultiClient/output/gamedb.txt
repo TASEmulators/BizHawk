@@ -2170,7 +2170,6 @@ B74EC562		Override	PCE
 7632DB90		P-47 - The Freedom Fighter	PCE
 D6E30CCD		Pac-Land	PCE
 4148FD7C		Pachiokun Juban Shobu	PCE
-BB4429B6		Paranoia	PCE
 E6458212		Parasol Stars	PCE
 647718F9		Parodius	PCE
 740491C2		PC Denjin - Punkic Cyborgs	PCE
@@ -2181,6 +2180,7 @@ BE8B6E3B		Power Gate	PCE
 29EEC024		Power Sports	PCE
 8DEF5AA1		Power Tennis	PCE
 03883EE8		Psycho Chaser	PCE
+6CC10824		Psychosis	PCE
 965C95B3		Puzznic	PCE
 F2E6856D		Quiz Toukou Shashin	PCE
 3E79734C		Racing Damashi	PCE
@@ -2259,6 +2259,7 @@ F9C3EFD4	V	Dungeon Explorer (bad dump)	PCE
 C4751503	V	Impossamole (bad dump)	PCE
 13B5407F	V	Military Madness (bad dump)	PCE
 2739B927	V	Pac-Land (bad dump)	PCE
+BB4429B6	V	Paranoia (bad dump - dies in level 3)	PCE
 85B85FF9	V	Rastan Saga II (bad dump)	PCE
 9E2CF932	V	R-Type (bad dump)	PCE
 4CAA6BE9	V	Silent Debuggers (bad dump)	PCE
