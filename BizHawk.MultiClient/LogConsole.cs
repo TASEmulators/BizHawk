@@ -10,13 +10,20 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.MultiClient
 {
-    static class LogConsole
-    {
-        public static bool ConsoleVisible 
-        { 
-            get; 
-            private set; 
-        }
+	static class LogConsole
+	{
+		[DllImport("kernel32.dll", SetLastError = true)]
+		static extern bool AllocConsole();
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		static extern bool FreeConsole();
+
+
+		public static bool ConsoleVisible
+		{
+			get;
+			private set;
+		}
 
 		static LogWindow window;
 		static LogStream logStream;
@@ -81,30 +88,51 @@ namespace BizHawk.MultiClient
 			public Action<string> Emit;
 		}
 
-        public static void ShowConsole()
-        {
-            if (ConsoleVisible) return;
+		const bool WIN32_CONSOLE = true;
+
+		public static void ShowConsole()
+		{
+			if (ConsoleVisible) return;
 			ConsoleVisible = true;
 
-			logStream = new LogStream();
-			var sout = new StreamWriter(logStream) { AutoFlush = true };
-			Console.SetOut(sout);
-			window = new LogWindow();
-			window.Show();
-			sbLog = new StringBuilder(); //not using this right now
-			logStream.Emit = (str) => { window.Append(str); };
-        }
+			if (WIN32_CONSOLE)
+			{
+				AllocConsole();
+				var sout = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
+				Console.SetOut(sout);
+				Console.Title = "BizHawk Message Log";
+			}
+			else
+			{
+				logStream = new LogStream();
+				Log.HACK_LOG_STREAM = logStream;
+				var sout = new StreamWriter(logStream) { AutoFlush = true };
+				sbLog = new StringBuilder(); //not using this right now
+				Console.SetOut(sout);
+				window = new LogWindow();
+				window.Show();
+				logStream.Emit = (str) => { window.Append(str); };
+			}
+		}
 
-        public static void HideConsole()
-        {
-            if (ConsoleVisible == false) return;
-			window.Dispose();
-			logStream.Dispose();
-			logStream = null;
-			window = null;
-			
+		public static void HideConsole()
+		{
+			if (ConsoleVisible == false) return;
 			Console.SetOut(TextWriter.Null);
 			ConsoleVisible = false;
-        }
-    }
+			if (WIN32_CONSOLE)
+			{
+				FreeConsole();
+			}
+			else
+			{
+				window.Dispose();
+				logStream.Dispose();
+				logStream = null;
+				Log.HACK_LOG_STREAM = null;
+				window = null;
+			}
+
+		}
+	}
 }
