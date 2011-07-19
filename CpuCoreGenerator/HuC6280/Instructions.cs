@@ -120,6 +120,21 @@ namespace HuC6280
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
         }
 
+        private void BRK(OpcodeInfo op, TextWriter w)
+        {
+            w.WriteLine(Spaces + "Console.WriteLine(\"EXEC BRK\");");
+            w.WriteLine(Spaces + "PC++;");
+            w.WriteLine(Spaces + "WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));");
+            w.WriteLine(Spaces + "WriteMemory((ushort)(S-- + 0x2100), (byte)PC);");
+            w.WriteLine(Spaces + "WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));");
+            w.WriteLine(Spaces + "FlagT = false;");
+            w.WriteLine(Spaces + "FlagB = true;");
+            w.WriteLine(Spaces + "FlagD = false;");
+            w.WriteLine(Spaces + "FlagI = true;");
+            w.WriteLine(Spaces + "PC = ReadWord(IRQ2Vector);");
+            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+        }
+
         private void BSR(OpcodeInfo op, TextWriter w)
         {
             GetAddress(op, w, "value16");
@@ -655,66 +670,136 @@ namespace HuC6280
 
         private void TAI(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "from = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "to   = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "len  = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "temp = (len * 6) + {0};", op.Cycles);
-            w.WriteLine(Spaces + "temp8 = 0;");
-            w.WriteLine(Spaces + "while (len-- != 0)");
+            w.WriteLine(Spaces + "if (InBlockTransfer == false)");
             w.WriteLine(Spaces + "{");
-            w.WriteLine(Spaces + "    WriteMemory(to++,ReadMemory((ushort)(from+temp8)));");
-            w.WriteLine(Spaces + "    temp8 ^= 1;");
+            w.WriteLine(Spaces + "    InBlockTransfer = true;");
+            w.WriteLine(Spaces + "    btFrom = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btTo = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btLen = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btAlternator = 0;");
+            w.WriteLine(Spaces + "    PendingCycles -= 14;");
+            w.WriteLine(Spaces + "    PC -= 7;");
+            w.WriteLine(Spaces + "    break;");
             w.WriteLine(Spaces + "}");
-            w.WriteLine(Spaces + "PendingCycles -= temp;");
+            w.WriteLine();
+            w.WriteLine(Spaces + "if (btLen-- != 0)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    WriteMemory(btTo++, ReadMemory((ushort)(btFrom + btAlternator)));");
+            w.WriteLine(Spaces + "    btAlternator ^= 1;");
+            w.WriteLine(Spaces + "    PendingCycles -= 6;");
+            w.WriteLine(Spaces + "    PC--;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "InBlockTransfer = false;");
+            w.WriteLine(Spaces + "PendingCycles -= 3;");
+            w.WriteLine(Spaces + "PC += 6;");
         }
 
         private void TIA(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "from = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "to   = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "len  = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "temp = (len * 6) + {0};", op.Cycles);
-            w.WriteLine(Spaces + "temp8 = 0;");
-            w.WriteLine(Spaces + "while (len-- != 0)");
+            w.WriteLine(Spaces + "if (InBlockTransfer == false)");
             w.WriteLine(Spaces + "{");
-            w.WriteLine(Spaces + "    WriteMemory((ushort)(to+temp8),ReadMemory(from++));");
-            w.WriteLine(Spaces + "    temp8 ^= 1;");
+            w.WriteLine(Spaces + "    InBlockTransfer = true;");
+            w.WriteLine(Spaces + "    btFrom = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btTo = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btLen = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btAlternator = 0;");
+            w.WriteLine(Spaces + "    PendingCycles -= 14;");
+            w.WriteLine(Spaces + "    PC -= 7;");
+            w.WriteLine(Spaces + "    break;");
             w.WriteLine(Spaces + "}");
-            w.WriteLine(Spaces + "PendingCycles -= temp;");
+            w.WriteLine();
+            w.WriteLine(Spaces + "if (btLen-- != 0)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    WriteMemory((ushort)(btTo+btAlternator), ReadMemory(btFrom++));");
+            w.WriteLine(Spaces + "    btAlternator ^= 1;");
+            w.WriteLine(Spaces + "    PendingCycles -= 6;");
+            w.WriteLine(Spaces + "    PC--;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "InBlockTransfer = false;");
+            w.WriteLine(Spaces + "PendingCycles -= 3;");
+            w.WriteLine(Spaces + "PC += 6;");
         }
 
         private void TII(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "from = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "to   = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "len  = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "temp = (len * 6) + {0};", op.Cycles);
-            w.WriteLine(Spaces + "while (len-- != 0)");
-            w.WriteLine(Spaces + "    WriteMemory(to++,ReadMemory(from++));");
-            w.WriteLine(Spaces + "PendingCycles -= temp;");
+            w.WriteLine(Spaces + "if (InBlockTransfer == false)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    InBlockTransfer = true;");
+            w.WriteLine(Spaces + "    btFrom = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btTo = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btLen = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    PendingCycles -= 14;");
+            w.WriteLine(Spaces + "    PC -= 7;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "if (btLen-- != 0)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    WriteMemory(btTo++, ReadMemory(btFrom++));");
+            w.WriteLine(Spaces + "    PendingCycles -= 6;");
+            w.WriteLine(Spaces + "    PC--;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "InBlockTransfer = false;");
+            w.WriteLine(Spaces + "PendingCycles -= 3;");
+            w.WriteLine(Spaces + "PC += 6;");
         }
 
         private void TIN(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "from = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "to   = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "len  = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "temp = (len * 6) + {0};", op.Cycles);
-            w.WriteLine(Spaces + "while (len-- != 0)");
-            w.WriteLine(Spaces + "    WriteMemory(to,ReadMemory(from++));");
-            w.WriteLine(Spaces + "PendingCycles -= temp;");
+            w.WriteLine(Spaces + "if (InBlockTransfer == false)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    InBlockTransfer = true;");
+            w.WriteLine(Spaces + "    btFrom = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btTo = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btLen = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    PendingCycles -= 14;");
+            w.WriteLine(Spaces + "    PC -= 7;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "if (btLen-- != 0)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    WriteMemory(btTo, ReadMemory(btFrom++));");
+            w.WriteLine(Spaces + "    PendingCycles -= 6;");
+            w.WriteLine(Spaces + "    PC--;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "InBlockTransfer = false;");
+            w.WriteLine(Spaces + "PendingCycles -= 3;");
+            w.WriteLine(Spaces + "PC += 6;");
         }
 
         private void TDD(OpcodeInfo op, TextWriter w)
         {
-            w.WriteLine(Spaces + "from = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "to   = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "len  = ReadWord(PC); PC += 2;");
-            w.WriteLine(Spaces + "temp = (len * 6) + {0};", op.Cycles);
-            w.WriteLine(Spaces + "while (len-- != 0)");
-            w.WriteLine(Spaces + "    WriteMemory(to--,ReadMemory(from--));");
-            w.WriteLine(Spaces + "PendingCycles -= temp;");
+            w.WriteLine(Spaces + "if (InBlockTransfer == false)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    InBlockTransfer = true;");
+            w.WriteLine(Spaces + "    btFrom = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btTo = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    btLen = ReadWord(PC); PC += 2;");
+            w.WriteLine(Spaces + "    PendingCycles -= 14;");
+            w.WriteLine(Spaces + "    PC -= 7;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "if (btLen-- != 0)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    WriteMemory(btTo--, ReadMemory(btFrom--));");
+            w.WriteLine(Spaces + "    PendingCycles -= 6;");
+            w.WriteLine(Spaces + "    PC--;");
+            w.WriteLine(Spaces + "    break;");
+            w.WriteLine(Spaces + "}");
+            w.WriteLine();
+            w.WriteLine(Spaces + "InBlockTransfer = false;");
+            w.WriteLine(Spaces + "PendingCycles -= 3;");
+            w.WriteLine(Spaces + "PC += 6;");
         }
-
     }
 }

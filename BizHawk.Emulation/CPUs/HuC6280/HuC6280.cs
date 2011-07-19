@@ -51,6 +51,12 @@ namespace BizHawk.Emulation.CPUs.H6280
         public int PendingCycles;
         public bool LowSpeed;
 
+        private bool InBlockTransfer = false;
+        private ushort btFrom;
+        private ushort btTo;
+        private ushort btLen;
+        private int btAlternator;
+
         // -- Timer Support --
 
         public int TimerTickCounter;
@@ -80,6 +86,11 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.WriteLine("TimerReloadValue {0}", TimerReloadValue);
             writer.WriteLine("TimerValue {0}", TimerValue);
             writer.WriteLine("TimerEnabled {0}", TimerEnabled);
+            writer.WriteLine("InBlockTransfer {0}", InBlockTransfer);
+            writer.WriteLine("BTFrom {0}", btFrom);
+            writer.WriteLine("BTTo {0}", btTo);
+            writer.WriteLine("BTLen {0}", btLen);
+            writer.WriteLine("BTAlternator {0}", btAlternator);
             writer.WriteLine("[/HuC6280]\n");
         }
 
@@ -126,6 +137,16 @@ namespace BizHawk.Emulation.CPUs.H6280
                     TimerValue = byte.Parse(args[1]);
                 else if (args[0] == "TimerEnabled")
                     TimerEnabled = bool.Parse(args[1]);
+                else if (args[0] == "InBlockTransfer")
+                    InBlockTransfer = bool.Parse(args[1]);
+                else if (args[0] == "BTFrom")
+                    btFrom = ushort.Parse(args[1]);
+                else if (args[0] == "BTTo")
+                    btTo = ushort.Parse(args[1]);
+                else if (args[0] == "BTLen")
+                    btLen = ushort.Parse(args[1]);
+                else if (args[0] == "BTAlternator")
+                    btAlternator = int.Parse(args[1]);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -152,6 +173,12 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.Write(TimerReloadValue);
             writer.Write(TimerValue);
             writer.Write(TimerEnabled);
+
+            writer.Write(InBlockTransfer);
+            writer.Write(btFrom);
+            writer.Write(btTo);
+            writer.Write(btLen);
+            writer.Write((byte)btAlternator);
         }
 
         public void LoadStateBinary(BinaryReader reader)
@@ -175,6 +202,12 @@ namespace BizHawk.Emulation.CPUs.H6280
             TimerReloadValue = reader.ReadByte();
             TimerValue = reader.ReadByte();
             TimerEnabled = reader.ReadBoolean();
+
+            InBlockTransfer = reader.ReadBoolean();
+            btFrom = reader.ReadUInt16();
+            btTo = reader.ReadUInt16();
+            btLen = reader.ReadUInt16();
+            btAlternator = reader.ReadByte();
         }
 
         // ==== Interrupts ====

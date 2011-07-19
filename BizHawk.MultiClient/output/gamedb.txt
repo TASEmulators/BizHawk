@@ -2045,7 +2045,7 @@ FF2A5EC3		CD-ROM System Card V2.00 (U)	PCE		BRAM
 C3212C24		Circus Lido	PCE
 1772B229		College Pro Baseball '90 (J)	PCE
 99F7A572		Columns	PCE
-B4D29E3B		Coryoon Child of Dragon	PCE
+B4D29E3B		Coryoon Child of Dragon	PCE		BRAM
 9033E83A		Cratermaze	PCE
 2DF97BD0		Cross Wiber - Cyber Combat Police	PCE
 A98D276A		Cyber Core	PCE

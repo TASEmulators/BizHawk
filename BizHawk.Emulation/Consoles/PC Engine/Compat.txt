@@ -9,22 +9,21 @@ General:
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
 
-Air Zonk          - Fully playable, doesn't freeze, but some gfx/timing issues
+Air Zonk          - Seems OK now - previous problem game
 Battle Ace        - Some gfx glitches
 Cadash            - Minor raster issue. Timing sensitive game.
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
-Coryoon           - Recent VDC updates broke scrolling. Generally timing sensitive game.
+Coryoon           - Seems OK now - previous problem game
 Cross Wiber       - Minor; Raster on wrong line
 Davis Cup Tennis  - Some timing issue, splash screen is too slow
-Dungeon Explorer  - Freeze in 'intro'
+Dungeon Explorer  - Seems OK now - previous problem game
 Legend of Hero Ton- Slight gfx- check top of screen
-Lode Runner       - Freezes in new game 
+Lode Runner       - Seems OK now - previous problem game
 Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
 MML Demo          - Echo channels are too loud (equal volume!)
-Outrun            - OK currently but timing sensitive game for future testing
+Outrun            - Seems OK now - previous problem game
 Power Drift       - Timing glitch... starting new game runs slower than it should
 Power Tennis      - Elaborate intro screen doesnt display right
-Raiden            - Sprites and BG get out of sync with current timing
 Sinistron         - Much less bad raster effect errors now
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
 

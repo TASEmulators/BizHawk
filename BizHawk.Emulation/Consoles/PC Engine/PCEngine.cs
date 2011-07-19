@@ -310,7 +310,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveStateBinary()
         {
-            int buflen = SuperGrafx ? 166556 : 75858;
+            int buflen = 75866;
+            if (SuperGrafx) buflen += 90698;
             if (BramEnabled) buflen += 2048;
             if (PopulousRAM != null) buflen += 0x8000;
 

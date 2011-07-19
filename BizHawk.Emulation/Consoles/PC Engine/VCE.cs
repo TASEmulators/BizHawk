@@ -10,20 +10,34 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public ushort VceAddress;
         public ushort[] VceData = new ushort[512];
         public int[] Palette = new int[512];
-        public byte DotClock;
+        public byte CR;
+
+        public int NumberOfScanlines { get { return ((CR & 4) != 0) ? 263 : 262; } }
+        public int DotClock 
+        {
+            get
+            {
+                int clock = CR & 3;
+                if (clock == 3) 
+                    clock = 2;
+                return clock;
+            }
+        }
+
+        // guess the dot clock affects wait states in combination with the dot with regs.
+        // We dont currently emulate wait states, probably will have to eventually...
 
         // Note: To keep the VCE class from needing a reference to the CPU, the 1-cycle access 
         // penalty for the VCE is handled by the memory mappers.
+        // One day I guess I could create an ICpu with a StealCycles method...
 
         public void WriteVCE(int port, byte value)
         {
             port &= 0x07;
             switch (port)
             {
-                case 0: // Control Port. Doesn't control anything we care about...
-                    DotClock = (byte) (value & 3);
-                    if (DotClock == 3) 
-                        DotClock = 2;
+                case 0: // Control Port
+                    CR = value;
                     break;
                 case 2: // Address LSB
                     VceAddress &= 0xFF00;
@@ -79,7 +93,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             writer.WriteLine("[VCE]");
             writer.WriteLine("VceAddress {0:X4}", VceAddress);
-            writer.WriteLine("DotClock {0}", DotClock);
+            writer.WriteLine("CR {0}", DotClock);
             writer.Write("VceData ");
             VceData.SaveAsHex(writer);
             writer.WriteLine("[/VCE]\n");
@@ -94,8 +108,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (args[0] == "[/VCE]") break;
                 if (args[0] == "VceAddress")
                     VceAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
-                else if (args[0] == "DotClock")
-                    DotClock = byte.Parse(args[1]);
+                else if (args[0] == "CR")
+                    CR = byte.Parse(args[1]);
                 else if (args[0] == "VceData")
                     VceData.ReadFromHex(args[1]);
                 else
@@ -109,7 +123,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void SaveStateBinary(BinaryWriter writer)
         {
             writer.Write(VceAddress);
-            writer.Write(DotClock);
+            writer.Write(CR);
             for (int i = 0; i < VceData.Length; i++)
                 writer.Write(VceData[i]);
         }
@@ -117,7 +131,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void LoadStateBinary(BinaryReader reader)
         {
             VceAddress = reader.ReadUInt16();
-            DotClock = reader.ReadByte();
+            CR = reader.ReadByte();
             for (int i = 0; i < VceData.Length; i++)
             {
                 VceData[i] = reader.ReadUInt16();
