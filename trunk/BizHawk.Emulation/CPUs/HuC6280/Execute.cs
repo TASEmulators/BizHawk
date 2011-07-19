@@ -12,7 +12,6 @@ namespace BizHawk.Emulation.CPUs.H6280
             sbyte rel8;
             byte value8, temp8, source8;
             ushort value16, temp16;
-            ushort from, to, len;
             int temp, lo, hi;
 
             PendingCycles += cycles;
@@ -20,9 +19,8 @@ namespace BizHawk.Emulation.CPUs.H6280
             {
                 int lastCycles = PendingCycles;
 
-                if (IRQ1Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ1Selector) == 0)
+                if (IRQ1Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ1Selector) == 0 && InBlockTransfer == false)
                 {
-                    //Log.Note("CPU", "ENTERING IRQ1 INTERRUPT");
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
@@ -32,9 +30,8 @@ namespace BizHawk.Emulation.CPUs.H6280
                     PendingCycles -= 8;
                 }
 
-                if (TimerAssert && FlagI == false && LagIFlag == false && (IRQControlByte & TimerSelector) == 0)
+                if (TimerAssert && FlagI == false && LagIFlag == false && (IRQControlByte & TimerSelector) == 0 && InBlockTransfer == false)
                 {
-                    //Log.Note("CPU", "ENTERING __TIMER__ INTERRUPT");
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
@@ -44,9 +41,8 @@ namespace BizHawk.Emulation.CPUs.H6280
                     PendingCycles -= 8;
                 }
 
-                if (IRQ2Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ2Selector) == 0)
+                if (IRQ2Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ2Selector) == 0 && InBlockTransfer == false)
                 {
-                    Console.WriteLine("ENTERING IRQ2 INTERRUPT");
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
@@ -59,12 +55,11 @@ namespace BizHawk.Emulation.CPUs.H6280
                 IRQControlByte = IRQNextControlByte;
                 LagIFlag = FlagI;
 
-                //Console.WriteLine(State());
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)
                 {
                     case 0x00: // BRK
-                        Console.WriteLine("EXEC BRK"); // TODO CpuCoreGenerator needs updated, but I dont even know if this works yet
+                        Console.WriteLine("EXEC BRK");
                         PC++;
                         WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                         WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
@@ -1091,13 +1086,28 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 7;
                         break;
                     case 0x73: // TII src, dest, len
-                        from = ReadWord(PC); PC += 2;
-                        to   = ReadWord(PC); PC += 2;
-                        len  = ReadWord(PC); PC += 2;
-                        temp = (len * 6) + 17;
-                        while (len-- != 0)
-                            WriteMemory(to++,ReadMemory(from++));
-                        PendingCycles -= temp;
+                        if (InBlockTransfer == false)
+                        {
+                            InBlockTransfer = true;
+                            btFrom = ReadWord(PC); PC += 2;
+                            btTo = ReadWord(PC); PC += 2;
+                            btLen = ReadWord(PC); PC += 2;
+                            PendingCycles -= 14;
+                            PC -= 7;
+                            break;
+                        }
+
+                        if (btLen-- != 0)
+                        {
+                            WriteMemory(btTo++, ReadMemory(btFrom++));
+                            PendingCycles -= 6;
+                            PC--;
+                            break;
+                        }
+
+                        InBlockTransfer = false;
+                        PendingCycles -= 3;
+                        PC += 6;
                         break;
                     case 0x74: // STZ zp,X
                         value16 = (ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000);
@@ -1618,13 +1628,28 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 2;
                         break;
                     case 0xC3: // TDD src, dest, len
-                        from = ReadWord(PC); PC += 2;
-                        to   = ReadWord(PC); PC += 2;
-                        len  = ReadWord(PC); PC += 2;
-                        temp = (len * 6) + 17;
-                        while (len-- != 0)
-                            WriteMemory(to--,ReadMemory(from--));
-                        PendingCycles -= temp;
+                        if (InBlockTransfer == false)
+                        {
+                            InBlockTransfer = true;
+                            btFrom = ReadWord(PC); PC += 2;
+                            btTo = ReadWord(PC); PC += 2;
+                            btLen = ReadWord(PC); PC += 2;
+                            PendingCycles -= 14;
+                            PC -= 7;
+                            break;
+                        }
+
+                        if (btLen-- != 0)
+                        {
+                            WriteMemory(btTo--, ReadMemory(btFrom--));
+                            PendingCycles -= 6;
+                            PC--;
+                            break;
+                        }
+
+                        InBlockTransfer = false;
+                        PendingCycles -= 3;
+                        PC += 6;
                         break;
                     case 0xC4: // CPY zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
@@ -1724,13 +1749,28 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 7;
                         break;
                     case 0xD3: // TIN src, dest, len
-                        from = ReadWord(PC); PC += 2;
-                        to   = ReadWord(PC); PC += 2;
-                        len  = ReadWord(PC); PC += 2;
-                        temp = (len * 6) + 17;
-                        while (len-- != 0)
-                            WriteMemory(to,ReadMemory(from++));
-                        PendingCycles -= temp;
+                        if (InBlockTransfer == false)
+                        {
+                            InBlockTransfer = true;
+                            btFrom = ReadWord(PC); PC += 2;
+                            btTo = ReadWord(PC); PC += 2;
+                            btLen = ReadWord(PC); PC += 2;
+                            PendingCycles -= 14;
+                            PC -= 7;
+                            break;
+                        }
+
+                        if (btLen-- != 0)
+                        {
+                            WriteMemory(btTo, ReadMemory(btFrom++));
+                            PendingCycles -= 6;
+                            PC--;
+                            break;
+                        }
+
+                        InBlockTransfer = false;
+                        PendingCycles -= 3;
+                        PC += 6;
                         break;
                     case 0xD4: // CSH
                         LowSpeed = false;
@@ -1827,17 +1867,30 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 7;
                         break;
                     case 0xE3: // TIA src, dest, len
-                        from = ReadWord(PC); PC += 2;
-                        to   = ReadWord(PC); PC += 2;
-                        len  = ReadWord(PC); PC += 2;
-                        temp = (len * 6) + 17;
-                        temp8 = 0;
-                        while (len-- != 0)
+                        if (InBlockTransfer == false)
                         {
-                            WriteMemory((ushort)(to+temp8),ReadMemory(from++));
-                            temp8 ^= 1;
+                            InBlockTransfer = true;
+                            btFrom = ReadWord(PC); PC += 2;
+                            btTo = ReadWord(PC); PC += 2;
+                            btLen = ReadWord(PC); PC += 2;
+                            btAlternator = 0;
+                            PendingCycles -= 14;
+                            PC -= 7;
+                            break;
                         }
-                        PendingCycles -= temp;
+
+                        if (btLen-- != 0)
+                        {
+                            WriteMemory((ushort)(btTo+btAlternator), ReadMemory(btFrom++));
+                            btAlternator ^= 1;
+                            PendingCycles -= 6;
+                            PC--;
+                            break;
+                        }
+
+                        InBlockTransfer = false;
+                        PendingCycles -= 3;
+                        PC += 6;
                         break;
                     case 0xE4: // CPX zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
@@ -2006,17 +2059,30 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 7;
                         break;
                     case 0xF3: // TAI src, dest, len
-                        from = ReadWord(PC); PC += 2;
-                        to   = ReadWord(PC); PC += 2;
-                        len  = ReadWord(PC); PC += 2;
-                        temp = (len * 6) + 17;
-                        temp8 = 0;
-                        while (len-- != 0)
+                        if (InBlockTransfer == false)
                         {
-                            WriteMemory(to++,ReadMemory((ushort)(from+temp8)));
-                            temp8 ^= 1;
+                            InBlockTransfer = true;
+                            btFrom = ReadWord(PC); PC += 2;
+                            btTo = ReadWord(PC); PC += 2;
+                            btLen = ReadWord(PC); PC += 2;
+                            btAlternator = 0;
+                            PendingCycles -= 14;
+                            PC -= 7;
+                            break;
                         }
-                        PendingCycles -= temp;
+
+                        if (btLen-- != 0)
+                        {
+                            WriteMemory(btTo++, ReadMemory((ushort)(btFrom + btAlternator)));
+                            btAlternator ^= 1;
+                            PendingCycles -= 6;
+                            PC--;
+                            break;
+                        }
+
+                        InBlockTransfer = false;
+                        PendingCycles -= 3;
+                        PC += 6;
                         break;
                     case 0xF4: // SET
                         int a; // TODO remove these extra checks

@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public byte StatusByte;
         internal bool DmaRequested;
         internal bool SatDmaRequested;
+        internal bool SatDmaPerformed;
 
         public ushort IncrementWidth
         {
@@ -176,7 +177,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 case 0: // return status byte;
                     retval = StatusByte;
-                    StatusByte = 0; // TODO maybe bit 6 should be preserved. but we dont currently emulate it.
+                    StatusByte = 0; // maybe bit 6 should be preserved. but we dont currently emulate it.
                     cpu.IRQ1Assert = false;
                     return retval;
                 case 1: // unused
@@ -197,24 +198,47 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         internal void RunDmaForScanline()
         {
-            DmaRequested = false;
+            // TODO: dont do this all in one scanline. I guess it can do about 227 words per scanline.
+            //Console.WriteLine("Doing some dma");
             int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
             int advanceDest   = (Registers[DCR] & 8) == 0 ? +1 : -1;
+            int wordsDone = 0;
 
-            for (;Registers[LENR]<0xFFFF;Registers[LENR]--)
+            for (;Registers[LENR]<0xFFFF;Registers[LENR]--,wordsDone++)
             {
                 VRAM[Registers[DESR] & 0x7FFF] = VRAM[Registers[SOUR] & 0x7FFF];
                 UpdatePatternData(Registers[DESR]);
                 UpdateSpriteData(Registers[DESR]);
                 Registers[DESR] = (ushort)(Registers[DESR] + advanceDest);
                 Registers[SOUR] = (ushort)(Registers[SOUR] + advanceSource);
+
+                /*if (wordsDone == 227) {
+                    Console.WriteLine("ended dma for this scanline");
+                    return;
+                }*/
             }
+
+            DmaRequested = false;
+            //Console.WriteLine("DMA finished");
 
             if ((Registers[DCR] & 2) > 0)
             {
-                Log.Note("Vdc","FIRE VRAM-VRAM DMA COMPLETE IRQ");
+                //Log.Note("Vdc","FIRE VRAM-VRAM DMA COMPLETE IRQ");
                 StatusByte |= StatusVramVramDmaComplete;
                 cpu.IRQ1Assert = true;
+            }
+        }
+
+        public void UpdateSpriteAttributeTable()
+        {
+            if ((SatDmaRequested || (Registers[DCR] & 0x10) != 0) && Registers[SATB] <= 0x7F00)
+            {
+                SatDmaRequested = false;
+                SatDmaPerformed = true;
+                for (int i = 0; i < 256; i++)
+                {
+                    SpriteAttributeTable[i] = VRAM[Registers[SATB] + i];
+                }
             }
         }
 
