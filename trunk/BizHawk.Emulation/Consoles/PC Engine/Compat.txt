@@ -9,44 +9,41 @@ General:
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
 
-Air Zonk          - Seems OK now - previous problem game
-Battle Ace        - Some gfx glitches
-Cadash            - Minor raster issue. Timing sensitive game.
+Air Zonk          - OK now - previous problem game
+Cadash            - Req HBlank hack to eliminate minor visual artifact
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
-Coryoon           - Seems OK now - previous problem game
+Coryoon           - OK now - previous problem game
 Cross Wiber       - Minor; Raster on wrong line
-Davis Cup Tennis  - Some timing issue, splash screen is too slow
-Dungeon Explorer  - Seems OK now - previous problem game
-Legend of Hero Ton- Slight gfx- check top of screen
-Lode Runner       - Seems OK now - previous problem game
-Madoo Granzort    - Graphics issues because SGX VPC renderer is not using new frame timing
+Dungeon Explorer  - OK now - previous problem game
+Lode Runner       - OK now - previous problem game
 MML Demo          - Echo channels are too loud (equal volume!)
-Outrun            - Seems OK now - previous problem game
-Power Drift       - Timing glitch... starting new game runs slower than it should
-Power Tennis      - Elaborate intro screen doesnt display right
-Sinistron         - Much less bad raster effect errors now
+Outrun            - Req HBlank hack to eliminate visual artifact
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
 
 ===================================
 Games that need TV Emulation (to varying degrees)
 ===================================
 
+Greater degrees:
+
 Final Blaster     - Intro does crazy shit with video modes; not sure what if anything to do about it
 Griffon           - Screen goes black because game changes video mode mid-frame
 
-===================================
-Games with 'Frame Too Tall' issues:
-===================================
+Lesser degrees:
 
 Aero Blaster      - Bottom of Screen extends too many lines - like 3 extra or so
 Alice             - Screen too tall; glitches when scrolling up, but in pcejin also,  
                     but not ootake; ergo probably a timing artifact
 Dead Moon         - Screen is too tall
 Jack Nicholas Golf- Some screens are too tall and reveal bad gfx below the intended visible screen
+Legend of Hero Ton- Slight gfx issue on top of screen
+Madoo Granzort    - Screen ~5 pixels too tall
 Metal Stoker      - Tearing when scrolling vertically at bottom of screen - screen too tall?
 Side Arms         - Screen is like 4 pixels too tall
 
+===================================
 Stuff I Fixed That's Not In Other Docs:
+===================================
 
 + Street Fighter II special mapper
 + Populous has special SaveRAM, 32k starting at page $40.
@@ -63,4 +60,4 @@ Stuff I Fixed That's Not In Other Docs:
   4 color modes. It appears to be the only game that requires this, and it's a shitty game. :(
 + The ROM of Paranoia (J) that is commonly labeled as the authoritative dump - I assume its a bad
   dump, because it dies during the 3rd stage on ALL EMULATORS. Alternative versions of the rom 
-  work fine.  
+  work fine.
