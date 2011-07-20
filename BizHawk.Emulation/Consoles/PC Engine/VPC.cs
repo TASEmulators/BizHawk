@@ -10,10 +10,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
     // Responsible for merging VDC1 and VDC2 data on the SuperGrafx.
     // Pretty much all documentation on the SuperGrafx courtesy of Charles MacDonald.
 
-    // VPC Frame timing has not been updated with new stuff. I expect Madoo Granzort to be fixed once the timing is updated.
-    // However, 1) The new frame timing is not working 100% yet, 2) I haven't decided if I want to continue having separate
-    // rendering in the VPC and the VDC.
-
     public sealed class VPC : IVideoProvider
     {
         public VDC VDC1;
@@ -87,6 +83,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void LoadStateBinary(BinaryReader reader)
         {
             Registers = reader.ReadBytes(7);
+            WriteVPC(0x0E, Registers[6]);
         }
 
         public void SaveStateText(TextWriter writer)
@@ -109,14 +106,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
+            WriteVPC(0x0E, Registers[6]);
         }
 
         // We use a single priority mode for the whole frame.
         // No commercial SGX games really use the 'window' features AFAIK.
         // And there are no homebrew SGX games I know of.
+        // Maybe we'll emulate it in the native-code version.
 
+        private const int RCR = 6; 
         private const int BXR = 7;
         private const int BYR = 8;
+        private const int VDW = 13;
+        private const int DCR = 15;
 
         private int EffectivePriorityMode = 0;
 
@@ -127,7 +129,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private byte[] PriorityBuffer = new byte[512];
         private byte[] InterSpritePriorityBuffer = new byte[512];
 
-        public void ExecFrame()
+        public void ExecFrame(bool render)
         {
             // Determine the effective priority mode.
             if (Window1Width < 0x40 && Window2Width < 0x40)
@@ -145,12 +147,33 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             FrameHeight = VDC1.BufferHeight;
             FrameBuffer = VDC1.GetVideoBuffer();
 
-            for (int ScanLine = 0; ScanLine < 262; ScanLine++)
+            int ScanLine = 0;
+            while (true)
             {
                 VDC1.ScanLine = ScanLine;
                 VDC2.ScanLine = ScanLine;
 
-                if ((ScanLine + 64) == (VDC1.Registers[6] & 0x3FF))
+                int ActiveDisplayStartLine = VDC1.DisplayStartLine;
+                int VBlankLine = ActiveDisplayStartLine + VDC1.Registers[VDW] + 1;
+                if (VBlankLine > 261)
+                    VBlankLine = 261;
+                VDC1.ActiveLine = ScanLine - ActiveDisplayStartLine;
+                VDC2.ActiveLine = VDC1.ActiveLine;
+                bool InActiveDisplay = (ScanLine >= ActiveDisplayStartLine) && (ScanLine < VBlankLine);
+
+                if (ScanLine == ActiveDisplayStartLine)
+                {
+                    VDC1.RCRCounter = 0x40;
+                    VDC2.RCRCounter = 0x40;
+                }
+
+                if (ScanLine == VBlankLine)
+                {
+                    VDC1.UpdateSpriteAttributeTable();
+                    VDC2.UpdateSpriteAttributeTable();
+                }
+
+                if (VDC1.RCRCounter == (VDC1.Registers[RCR] & 0x3FF))
                 {
                     if (VDC1.RasterCompareInterruptEnabled)
                     {
@@ -159,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     }
                 }
 
-                if ((ScanLine + 64) == (VDC2.Registers[6] & 0x3FF))
+                if (VDC2.RCRCounter == (VDC2.Registers[RCR] & 0x3FF))
                 {
                     if (VDC2.RasterCompareInterruptEnabled)
                     {
@@ -168,34 +191,76 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     }
                 }
 
-                if (ScanLine == 240 && VDC1.VBlankInterruptEnabled)
+                CPU.Execute(VDC1.HBlankCycles);
+
+                if (InActiveDisplay)
                 {
+                    if (ScanLine == ActiveDisplayStartLine)
+                    {
+                        VDC1.BackgroundY = VDC1.Registers[BYR];
+                        VDC2.BackgroundY = VDC2.Registers[BYR];
+                    }
+                    else
+                    {
+                        VDC1.BackgroundY++;
+                        VDC1.BackgroundY &= 0x01FF;
+                        VDC2.BackgroundY++;
+                        VDC2.BackgroundY &= 0x01FF;
+                    }
+                    if (render) RenderScanLine();
+                }
+
+                if (ScanLine == VBlankLine && VDC1.VBlankInterruptEnabled)
                     VDC1.StatusByte |= VDC.StatusVerticalBlanking;
-                    CPU.IRQ1Assert = true;
-                }
 
-                if (ScanLine == 240 && VDC2.VBlankInterruptEnabled)
-                {
+                if (ScanLine == VBlankLine && VDC2.VBlankInterruptEnabled)
                     VDC2.StatusByte |= VDC.StatusVerticalBlanking;
-                    CPU.IRQ1Assert = true;
+
+                if (ScanLine == VBlankLine + 4 && VDC1.SatDmaPerformed)
+                {
+                    VDC1.SatDmaPerformed = false;
+                    if ((VDC1.Registers[DCR] & 1) > 0)
+                        VDC1.StatusByte |= VDC.StatusVramSatDmaComplete;
                 }
 
-                CPU.Execute(455);
+                if (ScanLine == VBlankLine + 4 && VDC2.SatDmaPerformed)
+                {
+                    VDC2.SatDmaPerformed = false;
+                    if ((VDC2.Registers[DCR] & 1) > 0)
+                        VDC2.StatusByte |= VDC.StatusVramSatDmaComplete;
+                }
 
-                if (ScanLine < FrameHeight)
-                    RenderScanLine();
+                CPU.Execute(2);
+
+                if ((VDC1.StatusByte & (VDC.StatusVerticalBlanking | VDC.StatusVramSatDmaComplete)) != 0)
+                    CPU.IRQ1Assert = true;
+
+                if ((VDC2.StatusByte & (VDC.StatusVerticalBlanking | VDC.StatusVramSatDmaComplete)) != 0)
+                    CPU.IRQ1Assert = true;
+
+                CPU.Execute(455 - VDC1.HBlankCycles - 2);
+
+                if (InActiveDisplay == false && VDC1.DmaRequested)
+                    VDC1.RunDmaForScanline();
+
+                if (InActiveDisplay == false && VDC2.DmaRequested)
+                    VDC2.RunDmaForScanline();
+
+                VDC1.RCRCounter++;
+                VDC2.RCRCounter++;
+                ScanLine++;
+
+                if (ScanLine == VCE.NumberOfScanlines)
+                    break;
             }
         }
 
         private void RenderScanLine()
         {
-            if (VDC1.ScanLine == 0)
-            {
-                VDC1.BackgroundY = VDC1.Registers[BYR];
-                VDC2.BackgroundY = VDC2.Registers[BYR];
-            }
+            if (VDC1.ActiveLine >= FrameHeight)
+                return;
 
-            InitializeScanLine(VDC1.ScanLine);
+            InitializeScanLine(VDC1.ActiveLine);
 
             switch (EffectivePriorityMode)
             {
@@ -212,12 +277,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     RenderSpritesScanline(VDC2, 1, 13);
                     break;
             }
-
-            if (VDC1.ScanLine == FrameHeight - 1)
-            {
-                VDC1.UpdateSpriteAttributeTable();
-                VDC2.UpdateSpriteAttributeTable();
-            }
         }
 
         private void InitializeScanLine(int scanline)
@@ -233,18 +292,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private void RenderBackgroundScanline(VDC vdc, byte priority)
         {
             if (vdc.BackgroundEnabled == false)
-            {
-                vdc.BackgroundY++;
-                vdc.BackgroundY &= 0x01FF;
                 return;
-            }
 
             int vertLine = vdc.BackgroundY;
             vertLine %= vdc.BatHeight * 8;
             int yTile = (vertLine / 8);
             int yOfs = vertLine % 8;
-            vdc.BackgroundY++;
-            vdc.BackgroundY &= 0x01FF;
 
             int xScroll = vdc.Registers[BXR] & 0x3FF;
             for (int x = 0; x < FrameWidth; x++)
@@ -259,7 +312,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
                 if (c != 0)
                 {
-                    FrameBuffer[(vdc.ScanLine * FrameWidth) + x] = VCE.Palette[paletteBase + c];
+                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + x] = VCE.Palette[paletteBase + c];
                     PriorityBuffer[x] = priority;
                 }
             }
@@ -282,7 +335,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 ushort flags = vdc.SpriteAttributeTable[(i * 4) + 3];
                 int height = heightTable[(flags >> 12) & 3];
 
-                if (y + height <= vdc.ScanLine || y > vdc.ScanLine)
+                if (y + height <= vdc.ActiveLine || y > vdc.ActiveLine)
                     continue;
 
                 int patternNo = (((vdc.SpriteAttributeTable[(i * 4) + 2]) >> 1) & 0x1FF);
@@ -298,11 +351,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 int yofs;
                 if (vflip == false)
                 {
-                    yofs = (vdc.ScanLine - y) & 15;
+                    yofs = (vdc.ActiveLine - y) & 15;
                     if (height == 32)
                     {
                         patternNo &= 0x1FD;
-                        if (vdc.ScanLine - y >= 16)
+                        if (vdc.ActiveLine - y >= 16)
                         {
                             y += 16;
                             patternNo += 2;
@@ -311,17 +364,17 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     else if (height == 64)
                     {
                         patternNo &= 0x1F9;
-                        if (vdc.ScanLine - y >= 48)
+                        if (vdc.ActiveLine - y >= 48)
                         {
                             y += 48;
                             patternNo += 6;
                         }
-                        else if (vdc.ScanLine - y >= 32)
+                        else if (vdc.ActiveLine - y >= 32)
                         {
                             y += 32;
                             patternNo += 4;
                         }
-                        else if (vdc.ScanLine - y >= 16)
+                        else if (vdc.ActiveLine - y >= 16)
                         {
                             y += 16;
                             patternNo += 2;
@@ -330,11 +383,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
                 else // vflip == true
                 {
-                    yofs = 15 - ((vdc.ScanLine - y) & 15);
+                    yofs = 15 - ((vdc.ActiveLine - y) & 15);
                     if (height == 32)
                     {
                         patternNo &= 0x1FD;
-                        if (vdc.ScanLine - y < 16)
+                        if (vdc.ActiveLine - y < 16)
                         {
                             y += 16;
                             patternNo += 2;
@@ -343,17 +396,17 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     else if (height == 64)
                     {
                         patternNo &= 0x1F9;
-                        if (vdc.ScanLine - y < 16)
+                        if (vdc.ActiveLine - y < 16)
                         {
                             y += 48;
                             patternNo += 6;
                         }
-                        else if (vdc.ScanLine - y < 32)
+                        else if (vdc.ActiveLine - y < 32)
                         {
                             y += 32;
                             patternNo += 4;
                         }
-                        else if (vdc.ScanLine - y < 48)
+                        else if (vdc.ActiveLine - y < 48)
                         {
                             y += 16;
                             patternNo += 2;
@@ -373,7 +426,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ScanLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -392,7 +445,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ScanLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -414,7 +467,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ScanLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -432,7 +485,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                     byte myPriority = priority ? highPriority : lowPriority;
                                     if (PriorityBuffer[xs] < myPriority)
                                     {
-                                        FrameBuffer[(vdc.ScanLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                        FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                         PriorityBuffer[xs] = myPriority;
                                     }
                                 }

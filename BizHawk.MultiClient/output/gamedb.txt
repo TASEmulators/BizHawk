@@ -2031,7 +2031,7 @@ C9D7426A		Break In	PCE
 5C4D1991		Bullfight Ring no Haja	PCE
 D233C05A		Burning Angels	PCE
 47AFE6D7		Bloody Wolf	PCE
-BB0B3AEF		Cadash	PCE
+BB0B3AEF		Cadash	PCE		HBlankPeriod=83
 3F9F95A4		CD-ROM System Card V1.00 (J)	PCE		BRAM
 FF2A5EC3		CD-ROM System Card V2.00 (U)	PCE		BRAM
 283B74E0		CD-ROM System Card V2.10 (J)	PCE		BRAM
@@ -2104,7 +2104,7 @@ BF3E2CC7		Hani in the Sky	PCE
 9897FA86		Hani on the Road	PCE
 44E7DF53		Hatris	PCE
 EB923DE5		Heavy Unit	PCE
-1CAB1EE6		Hisou Kihei Serd	PCE
+1CAB1EE6		Hisou Kihei Serd	PCE		BRAM
 7ACB60C8		Hit the Ice	PCE
 B01EE703		Hono no Tataka Tamako Dodge Danpei	PCE
 9EC6FC6C		Idol Hanafuda Fan Club	PCE
@@ -2165,7 +2165,7 @@ C159761B		Night Creatures	PCE
 4D3B0BC9		Obocchama Kun	PCE
 8C565CB6		Ordyne	PCE
 5CDB3F5B		Outlive	PCE
-E203F223		Out Run	PCE
+E203F223		Out Run	PCE		HBlankPeriod=88
 B74EC562		Override	PCE
 7632DB90		P-47 - The Freedom Fighter	PCE
 D6E30CCD		Pac-Land	PCE
@@ -2227,7 +2227,7 @@ DDC3E809		Thunder Blade	PCE
 9107BCC8		Tiger Shark	PCE
 CFEC1D6A		Time Cruise 2	PCE
 53B7784B		Toilet Kids	PCE
-FE451C22		Tongueman's Logic	PCE
+FE451C22	D	Tongueman's Logic	PCE		BRAM
 72E00BC4		The Tower of Druaga	PCE
 EB045EDF		Turrican	PCE
 97FE5BCF		TV Sports Hockey	PCE

@@ -21,10 +21,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public int ScanLine;
         public int BackgroundY;
         public int RCRCounter;
-        private int ActiveLine;
+        public int ActiveLine;
 
         private byte[] PriorityBuffer = new byte[512];
         private byte[] InterSpritePriorityBuffer = new byte[512];
+        public int HBlankCycles = 79;
 
         public void ExecFrame(bool render)
         {
@@ -40,8 +41,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (ScanLine == ActiveDisplayStartLine)
                     RCRCounter = 0x40;
 
-                const int hblankCycles = 79;
-
                 if (ScanLine == VBlankLine)
                     UpdateSpriteAttributeTable();
 
@@ -54,7 +53,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     }
                 }
 
-                cpu.Execute(hblankCycles);
+                cpu.Execute(HBlankCycles);
 
                 if (InActiveDisplay)
                 {
@@ -83,7 +82,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if ((StatusByte & (StatusVerticalBlanking | StatusVramSatDmaComplete)) != 0)
                     cpu.IRQ1Assert = true;
 
-                cpu.Execute(455 - hblankCycles - 2);
+                cpu.Execute(455 - HBlankCycles - 2);
 
                 if (InActiveDisplay == false && DmaRequested)
                     RunDmaForScanline();

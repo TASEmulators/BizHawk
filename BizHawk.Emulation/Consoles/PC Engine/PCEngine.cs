@@ -120,6 +120,18 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemoryPopulous;
             }
 
+            // Ok, yes, HBlankPeriod's only purpose is game-specific hax.
+            // 1) At least they're not coded directly into the emulator, but instead data-driven.
+            // 2) The games (2) which have custom HBlankPeriods work without it, the override only
+            //    serves to clean up minor gfx anomalies.
+            // 3) There's no point in haxing the timing with incorrect values in an attempt to avoid this.
+            //    The proper fix is cycle-accurate/bus-accurate timing. That isn't coming to the C# 
+            //    version of this core. Lets just acknolwedge that the timing is imperfect and fix
+            //    it in the least intrusive and most honest way we can.
+
+            if (game.GetOptions().ContainsStartsWith("HBlankPeriod"))
+                VDC1.HBlankCycles = int.Parse(game.GetOptions().GetOptionValue("HBlankPeriod"));
+
             Cpu.ResetPC();
             SetupMemoryDomains();
         }
@@ -139,7 +151,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             PSG.BeginFrame(Cpu.TotalExecutedCycles);
 
             if (SuperGrafx)
-                VPC.ExecFrame(); // TODO supergrafx frameskipping (waiting on a larger update of VPC frame timing, once I get VDC timing correct)
+                VPC.ExecFrame(render);
             else
                 VDC1.ExecFrame(render);
 
