@@ -23,7 +23,9 @@ namespace BizHawk.MultiClient
 			string details = Global.Emulator.CoreOutputComm.RomStatusDetails;
 			if(string.IsNullOrEmpty(details)) return;
 			var lw = new LogWindow();
+			Global.Sound.StopSound();
 			lw.ShowReport("Dump Status Report",details);
+			Global.Sound.StartSound();
 		}
 
 		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
