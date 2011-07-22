@@ -55,15 +55,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-			/*TODO: remove this or make usermovie private*/
-		public Movie GetActiveMovie()
-		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-				return UserMovie;
-			else
-				return null;
-		}
-
 		public bool MovieActive()
 		{
 			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
@@ -90,6 +81,24 @@ namespace BizHawk.MultiClient
 			{
 				LoadRom(CurrentlyOpenRom);
 				UserMovie.StartPlayback();
+				SetMainformMovieInfo();
+			}
+		}
+
+		public void StopMovie()
+		{
+			string message = "Movie ";
+			if (UserMovie.Mode == MOVIEMODE.RECORD)
+				message += "recording ";
+			else if (UserMovie.Mode == MOVIEMODE.PLAY
+				|| UserMovie.Mode == MOVIEMODE.FINISHED)
+				message += "playback ";
+			message += "stopped.";
+			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+			{
+				UserMovie.StopMovie();
+				Global.MovieMode = false;
+				Global.RenderPanel.AddMessage(message);
 				SetMainformMovieInfo();
 			}
 		}

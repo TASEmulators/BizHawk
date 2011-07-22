@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
+using BizHawk.Emulation.Consoles.Gameboy;
 
 namespace BizHawk.MultiClient
 {
@@ -145,27 +146,9 @@ namespace BizHawk.MultiClient
 			PlayMovie();
 		}
 
-		public void StopUserMovie()
-		{
-			string message = "Movie ";
-			if (UserMovie.Mode == MOVIEMODE.RECORD)
-				message += "recording ";
-			else if (UserMovie.Mode == MOVIEMODE.PLAY
-				|| UserMovie.Mode == MOVIEMODE.FINISHED)
-				message += "playback ";
-			message += "stopped.";
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-			{
-				UserMovie.StopMovie();
-				Global.MovieMode = false;
-				Global.RenderPanel.AddMessage(message);
-				SetMainformMovieInfo();
-			}
-		}
-
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			StopUserMovie();
+			StopMovie();
 		}
 
 		private void playFromBeginningToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,8 +177,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.RecentRoms.Clear();
 		}
-
-
+		
 		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveSlot = 1;
@@ -919,7 +901,7 @@ namespace BizHawk.MultiClient
 
 		private void stopMovieToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			StopUserMovie();
+			StopMovie();
 		}
 
 		private void displayLogWindowToolStripMenuItem_Click(object sender, EventArgs e)
@@ -957,6 +939,353 @@ namespace BizHawk.MultiClient
 				recordAVIToolStripMenuItem.Enabled = false;
 				stopAVIToolStripMenuItem.Enabled = true;
 			}
+		}
+
+		private void StatusSlot1_Click(object sender, EventArgs e) { LoadState("QuickSave1"); }
+		private void StatusSlot2_Click(object sender, EventArgs e) { LoadState("QuickSave2"); }
+		private void StatusSlot3_Click(object sender, EventArgs e) { LoadState("QuickSave3"); }
+		private void StatusSlot4_Click(object sender, EventArgs e) { LoadState("QuickSave4"); }
+		private void StatusSlot5_Click(object sender, EventArgs e) { LoadState("QuickSave5"); }
+		private void StatusSlot6_Click(object sender, EventArgs e) { LoadState("QuickSave6"); }
+		private void StatusSlot7_Click(object sender, EventArgs e) { LoadState("QuickSave7"); }
+		private void StatusSlot8_Click(object sender, EventArgs e) { LoadState("QuickSave8"); }
+		private void StatusSlot9_Click(object sender, EventArgs e) { LoadState("QuickSave9"); }
+		private void StatusSlot10_Click(object sender, EventArgs e) { LoadState("QuickSave0"); }
+
+		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
+
+			EditCommentsForm c = new EditCommentsForm();
+			c.ReadOnly = ReadOnly;
+			c.GetMovie(UserMovie);
+			c.ShowDialog();
+		}
+
+		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
+
+			EditSubtitlesForm s = new EditSubtitlesForm();
+			s.ReadOnly = ReadOnly;
+			s.GetMovie(UserMovie);
+			s.ShowDialog();
+		}
+
+		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
+				gbDebugger.Show();
+			}
+		}
+
+		private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadTAStudio();
+		}
+
+		private void singleInstanceModeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SingleInstanceMode ^= true;
+		}
+
+		private void MainForm_Deactivate(object sender, EventArgs e)
+		{
+			if (!Global.Config.RunInBackground)
+				PauseEmulator();
+		}
+
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			if (!Global.Config.RunInBackground)
+				UnpauseEmulator();
+		}
+
+		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ToggleReadOnly();
+		}
+
+		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+			{
+				stopMovieToolStripMenuItem.Enabled = false;
+				playFromBeginningToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				stopMovieToolStripMenuItem.Enabled = true;
+				playFromBeginningToolStripMenuItem.Enabled = true;
+			}
+
+			readonlyToolStripMenuItem.Checked = ReadOnly;
+			bindSavestatesToMoviesToolStripMenuItem.Checked = Global.Config.BindSavestatesToMovies;
+			automaticallyBackupMoviesToolStripMenuItem.Checked = Global.Config.EnableBackupMovies;
+
+			readonlyToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ReadOnlyToggleBinding;
+			recordMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.RecordMovieBinding;
+			playMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayMovieBinding;
+			stopMovieToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.StopMovieBinding;
+			playFromBeginningToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.PlayBeginningBinding;
+		}
+
+		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveConfig();
+			Global.RenderPanel.AddMessage("Saved settings");
+		}
+
+		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+			Global.RenderPanel.AddMessage("Saved loaded");
+		}
+
+		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			miDisplayVsync.Checked = Global.Config.LimitFramerate;
+			miAutoMinimizeSkipping.Checked = Global.Config.AutoMinimizeSkipping;
+			miLimitFramerate.Checked = Global.Config.LimitFramerate;
+			miDisplayVsync.Checked = Global.Config.DisplayVSync;
+			miFrameskip0.Checked = Global.Config.FrameSkip == 0;
+			miFrameskip1.Checked = Global.Config.FrameSkip == 1;
+			miFrameskip2.Checked = Global.Config.FrameSkip == 2;
+			miFrameskip3.Checked = Global.Config.FrameSkip == 3;
+			miFrameskip4.Checked = Global.Config.FrameSkip == 4;
+			miFrameskip5.Checked = Global.Config.FrameSkip == 5;
+			miFrameskip6.Checked = Global.Config.FrameSkip == 6;
+			miFrameskip7.Checked = Global.Config.FrameSkip == 7;
+			miFrameskip8.Checked = Global.Config.FrameSkip == 8;
+			miFrameskip9.Checked = Global.Config.FrameSkip == 9;
+			miSpeed100.Checked = Global.Config.SpeedPercent == 100;
+			miSpeed100.Image = (Global.Config.SpeedPercentAlternate == 100) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed150.Checked = Global.Config.SpeedPercent == 150;
+			miSpeed150.Image = (Global.Config.SpeedPercentAlternate == 150) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed200.Checked = Global.Config.SpeedPercent == 200;
+			miSpeed200.Image = (Global.Config.SpeedPercentAlternate == 200) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed75.Checked = Global.Config.SpeedPercent == 75;
+			miSpeed75.Image = (Global.Config.SpeedPercentAlternate == 75) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miSpeed50.Checked = Global.Config.SpeedPercent == 50;
+			miSpeed50.Image = (Global.Config.SpeedPercentAlternate == 50) ? BizHawk.MultiClient.Properties.Resources.FastForward : null;
+			miAutoMinimizeSkipping.Enabled = !miFrameskip0.Checked;
+			if (!miAutoMinimizeSkipping.Enabled) miAutoMinimizeSkipping.Checked = true;
+		}
+
+		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
+			pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
+			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
+			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
+			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
+			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
+			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
+			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
+		}
+
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+			//Hide platform specific menus until an appropriate ROM is loaded
+			NESToolStripMenuItem.Visible = false;
+			tI83ToolStripMenuItem.Visible = false;
+		}
+
+		private void menuStrip1_MenuActivate(object sender, EventArgs e)
+		{
+			HandlePlatformMenus();
+			if (Global.Config.PauseWhenMenuActivated)
+			{
+				if (EmulatorPaused)
+					wasPaused = true;
+				else
+					wasPaused = false;
+				didMenuPause = true;
+				PauseEmulator();
+			}
+		}
+
+		private void menuStrip1_MenuDeactivate(object sender, EventArgs e)
+		{
+			if (!wasPaused)
+			{
+				UnpauseEmulator();
+			}
+		}
+
+		private void viewToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			displayFPSToolStripMenuItem.Checked = Global.Config.DisplayFPS;
+			displayFrameCounterToolStripMenuItem.Checked = Global.Config.DisplayFrameCounter;
+			displayLagCounterToolStripMenuItem.Checked = Global.Config.DisplayLagCounter;
+			displayInputToolStripMenuItem.Checked = Global.Config.DisplayInput;
+			displayRerecordCountToolStripMenuItem.Checked = Global.Config.DisplayRerecordCount;
+			displaySubtitlesToolStripMenuItem.Checked = Global.Config.DisplaySubtitles;
+
+			displayFPSToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FPSBinding;
+			displayFrameCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.FrameCounterBinding;
+			displayLagCounterToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LagCounterBinding;
+			displayInputToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.InputDisplayBinding;
+
+			x1MenuItem.Checked = false;
+			x2MenuItem.Checked = false;
+			x3MenuItem.Checked = false;
+			x4MenuItem.Checked = false;
+			x5MenuItem.Checked = false;
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1: x1MenuItem.Checked = true; break;
+				case 2: x2MenuItem.Checked = true; break;
+				case 3: x3MenuItem.Checked = true; break;
+				case 4: x4MenuItem.Checked = true; break;
+				case 5: x5MenuItem.Checked = true; break;
+				case 10: mzMenuItem.Checked = true; break;
+			}
+
+			switchToFullscreenToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ToggleFullscreenBinding;
+		}
+
+		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (IsNullEmulator())
+			{
+				closeROMToolStripMenuItem.Enabled = false;
+				screenshotF12ToolStripMenuItem.Enabled = false;
+				saveToCurrentSlotToolStripMenuItem.Enabled = false;
+				loadCurrentSlotToolStripMenuItem.Enabled = false;
+				loadNamedStateToolStripMenuItem.Enabled = false;
+				saveNamedStateToolStripMenuItem.Enabled = false;
+				savestate1toolStripMenuItem.Enabled = false;
+				savestate2toolStripMenuItem.Enabled = false;
+				savestate3toolStripMenuItem.Enabled = false;
+				savestate4toolStripMenuItem.Enabled = false;
+				savestate5toolStripMenuItem.Enabled = false;
+				savestate6toolStripMenuItem.Enabled = false;
+				savestate7toolStripMenuItem.Enabled = false;
+				savestate8toolStripMenuItem.Enabled = false;
+				savestate9toolStripMenuItem.Enabled = false;
+				savestate0toolStripMenuItem.Enabled = false;
+				loadstate1toolStripMenuItem.Enabled = false;
+				loadstate2toolStripMenuItem.Enabled = false;
+				loadstate3toolStripMenuItem.Enabled = false;
+				loadstate4toolStripMenuItem.Enabled = false;
+				loadstate5toolStripMenuItem.Enabled = false;
+				loadstate6toolStripMenuItem.Enabled = false;
+				loadstate7toolStripMenuItem.Enabled = false;
+				loadstate8toolStripMenuItem.Enabled = false;
+				loadstate9toolStripMenuItem.Enabled = false;
+				loadstate0toolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				closeROMToolStripMenuItem.Enabled = true;
+				screenshotF12ToolStripMenuItem.Enabled = true;
+				saveToCurrentSlotToolStripMenuItem.Enabled = true;
+				loadCurrentSlotToolStripMenuItem.Enabled = true;
+				loadNamedStateToolStripMenuItem.Enabled = true;
+				saveNamedStateToolStripMenuItem.Enabled = true;
+				savestate1toolStripMenuItem.Enabled = true;
+				savestate2toolStripMenuItem.Enabled = true;
+				savestate3toolStripMenuItem.Enabled = true;
+				savestate4toolStripMenuItem.Enabled = true;
+				savestate5toolStripMenuItem.Enabled = true;
+				savestate6toolStripMenuItem.Enabled = true;
+				savestate7toolStripMenuItem.Enabled = true;
+				savestate8toolStripMenuItem.Enabled = true;
+				savestate9toolStripMenuItem.Enabled = true;
+				savestate0toolStripMenuItem.Enabled = true;
+				loadstate1toolStripMenuItem.Enabled = true;
+				loadstate2toolStripMenuItem.Enabled = true;
+				loadstate3toolStripMenuItem.Enabled = true;
+				loadstate4toolStripMenuItem.Enabled = true;
+				loadstate5toolStripMenuItem.Enabled = true;
+				loadstate6toolStripMenuItem.Enabled = true;
+				loadstate7toolStripMenuItem.Enabled = true;
+				loadstate8toolStripMenuItem.Enabled = true;
+				loadstate9toolStripMenuItem.Enabled = true;
+				loadstate0toolStripMenuItem.Enabled = true;
+			}
+
+			selectSlot10ToolStripMenuItem.Checked = false;
+			selectSlot1ToolStripMenuItem.Checked = false;
+			selectSlot2ToolStripMenuItem.Checked = false;
+			selectSlot3ToolStripMenuItem.Checked = false;
+			selectSlot4ToolStripMenuItem.Checked = false;
+			selectSlot5ToolStripMenuItem.Checked = false;
+			selectSlot6ToolStripMenuItem.Checked = false;
+			selectSlot7ToolStripMenuItem.Checked = false;
+			selectSlot8ToolStripMenuItem.Checked = false;
+			selectSlot9ToolStripMenuItem.Checked = false;
+			selectSlot1ToolStripMenuItem.Checked = false;
+
+			switch (SaveSlot)
+			{
+				case 0:
+					selectSlot10ToolStripMenuItem.Checked = true;
+					break;
+				case 1:
+					selectSlot1ToolStripMenuItem.Checked = true;
+					break;
+				case 2:
+					selectSlot2ToolStripMenuItem.Checked = true;
+					break;
+				case 3:
+					selectSlot3ToolStripMenuItem.Checked = true;
+					break;
+				case 4:
+					selectSlot4ToolStripMenuItem.Checked = true;
+					break;
+				case 5:
+					selectSlot5ToolStripMenuItem.Checked = true;
+					break;
+				case 6:
+					selectSlot6ToolStripMenuItem.Checked = true;
+					break;
+				case 7:
+					selectSlot7ToolStripMenuItem.Checked = true;
+					break;
+				case 8:
+					selectSlot8ToolStripMenuItem.Checked = true;
+					break;
+				case 9:
+					selectSlot9ToolStripMenuItem.Checked = true;
+					break;
+				default:
+					break;
+			}
+
+			if (Global.Config.AutoLoadMostRecentRom == true)
+				autoloadMostRecentToolStripMenuItem.Checked = true;
+			else
+				autoloadMostRecentToolStripMenuItem.Checked = false;
+
+			screenshotF12ToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.ScreenshotBinding;
+			openROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.OpenROM;
+			closeROMToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.CloseROM;
+		}
+
+		private void emulationToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			powerToolStripMenuItem.Enabled = !IsNullEmulator();
+			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
+
+			enableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
+			overclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
+			forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
+			pauseToolStripMenuItem.Checked = EmulatorPaused;
+			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
+
+			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
+			powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			exit = true;
+			base.OnClosed(e);
 		}
 	}
 }
