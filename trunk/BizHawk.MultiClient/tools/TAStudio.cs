@@ -135,7 +135,7 @@ namespace BizHawk.MultiClient
 
 		private void StopButton_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.StopUserMovie();
+			Global.MainForm.StopMovie();
 		}
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
