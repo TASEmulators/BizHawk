@@ -495,7 +495,7 @@ namespace BizHawk.MultiClient
 			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
 			{
 				tmp += "Rerecord Count: ";
-				tmp += Global.MainForm.GetActiveMovie().Rerecords.ToString();
+				tmp += Global.MainForm.UserMovie.Rerecords.ToString();
 			}
 			return tmp;
 		}

@@ -22,14 +22,10 @@ namespace BizHawk.MultiClient
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
 		SavestateManager StateSlots = new SavestateManager();
-
-		//Movie variables
-		public Movie UserMovie = new Movie();
+				
 		
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
-
-		public bool ReadOnly = true;    //Global Movie Read only setting
 
 		//avi/wav state
 		AviWriter CurrAviWriter = null;
@@ -77,8 +73,7 @@ namespace BizHawk.MultiClient
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
 
-
-		    UpdateStatusSlots();
+			UpdateStatusSlots();
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
@@ -2307,87 +2302,6 @@ namespace BizHawk.MultiClient
 		private void readonlyToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ToggleReadOnly();
-		}
-
-		public void SetMainformMovieInfo()
-		{
-			if (UserMovie.Mode == MOVIEMODE.PLAY || UserMovie.Mode == MOVIEMODE.FINISHED)
-			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
-				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
-			}
-			else if (UserMovie.Mode == MOVIEMODE.RECORD)
-			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
-				PlayRecordStatus.ToolTipText = "Movie is in record mode";
-			}
-			else
-			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name;
-				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-				PlayRecordStatus.ToolTipText = "";
-			}
-		}
-
-		public void StartNewMovie(Movie m, bool record)
-		{
-
-			UserMovie = m;
-			LoadRom(Global.MainForm.CurrentlyOpenRom);
-			UserMovie.LoadMovie();
-			Global.Config.RecentMovies.Add(m.Filename);
-
-			if (record)
-			{
-				UserMovie.StartNewRecording();
-				ReadOnly = false;
-			}
-			else
-			{
-				UserMovie.StartPlayback();
-			}
-			SetMainformMovieInfo();
-		}
-
-		/*TODO: remove this or make usermovie private*/
-		public Movie GetActiveMovie()
-		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-				return UserMovie;
-			else
-				return null;
-		}
-
-		public bool MovieActive()
-		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-				return true;
-			else
-				return false;
-		}
-
-		private void PlayMovie()
-		{
-			PlayMovie p = new PlayMovie();
-			DialogResult d = p.ShowDialog();
-		}
-
-		private void RecordMovie()
-		{
-			RecordMovie r = new RecordMovie();
-			r.ShowDialog();
-		}
-
-		public void PlayMovieFromBeginning()
-		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-			{
-				LoadRom(CurrentlyOpenRom);
-				UserMovie.StartPlayback();
-				SetMainformMovieInfo();
-			}
 		}
 
 		public void LoadRamWatch()
