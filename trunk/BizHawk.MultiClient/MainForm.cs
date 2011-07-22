@@ -24,7 +24,6 @@ namespace BizHawk.MultiClient
 		SavestateManager StateSlots = new SavestateManager();
 
 		//Movie variables
-		public Movie InputLog = new Movie();
 		public Movie UserMovie = new Movie();
 		
 		public bool PressFrameAdvance = false;
@@ -105,7 +104,6 @@ namespace BizHawk.MultiClient
 			Closing += (o, e) =>
 			{
 				CloseGame();
-				InputLog.StopMovie();
 				UserMovie.StopMovie();
 				SaveConfig();
 			};
@@ -173,7 +171,6 @@ namespace BizHawk.MultiClient
 					Movie m = new Movie(cmdMovie, MOVIEMODE.PLAY);
 					ReadOnly = true;
 					StartNewMovie(m, false);
-					CreateNewInputLog(false);
 					Global.Config.RecentMovies.Add(cmdMovie);
 				}
 			}
@@ -186,12 +183,7 @@ namespace BizHawk.MultiClient
 					Movie m = new Movie(Global.Config.RecentMovies.GetRecentFileByPosition(0), MOVIEMODE.PLAY);
 					ReadOnly = true;
 					StartNewMovie(m, false);
-					CreateNewInputLog(false);
 				}
-			}
-			else
-			{
-				CreateNewInputLog(true);
 			}
 
 			if (cmdLoadState != null && Global.Game != null)
@@ -226,16 +218,6 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.StartPaused)
 				PauseEmulator();
-		}
-
-		void CreateNewInputLog(bool active)
-		{
-			MOVIEMODE m;
-			if (active)
-				m = MOVIEMODE.RECORD;
-			else
-				m = MOVIEMODE.INACTIVE;
-			InputLog = new Movie(PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + "\\log.tas", m);
 		}
 
 		void SyncCoreInputComm()
@@ -930,15 +912,6 @@ namespace BizHawk.MultiClient
 				if (File.Exists(game.SaveRamPath))
 					LoadSaveRam();
 
-				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
-				{
-					InputLog.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
-					InputLog.Header.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
-					InputLog.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-					InputLog.Header.SetHeaderLine(MovieHeader.AUTHOR, Global.Config.DefaultAuthor);
-					CreateNewInputLog(true);
-				}
-
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				{
@@ -1043,7 +1016,6 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			UserMovie.StopMovie();
-			InputLog.StopMovie();
 		}
 
 		void OnSelectSlot(int num)
@@ -1432,7 +1404,6 @@ namespace BizHawk.MultiClient
 				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
 					UserMovie.LatchInputFromPlayer();
-					InputLog.CommitFrame();
 				}
 				
 				if (UserMovie.Mode == MOVIEMODE.PLAY)
@@ -1541,8 +1512,6 @@ namespace BizHawk.MultiClient
 			{
 				UserMovie.DumpLogIntoSavestateText(writer);
 			}
-			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
-				InputLog.DumpLogIntoSavestateText(writer);
 		}
 
 		private void SaveState(string name)
@@ -1663,11 +1632,6 @@ namespace BizHawk.MultiClient
 						UserMovie.LoadLogFromSavestateText(reader);
 					}
 				}
-			}
-			else
-			{
-				if (InputLog.Mode == MOVIEMODE.RECORD)
-					InputLog.LoadLogFromSavestateText(reader);
 			}
 		}
 
@@ -2371,7 +2335,6 @@ namespace BizHawk.MultiClient
 		{
 
 			UserMovie = m;
-			InputLog.StopMovie();
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
 			UserMovie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.Filename);
@@ -2388,12 +2351,11 @@ namespace BizHawk.MultiClient
 			SetMainformMovieInfo();
 		}
 
+		/*TODO: remove this or make usermovie private*/
 		public Movie GetActiveMovie()
 		{
 			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 				return UserMovie;
-			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
-				return InputLog;
 			else
 				return null;
 		}
@@ -2401,8 +2363,6 @@ namespace BizHawk.MultiClient
 		public bool MovieActive()
 		{
 			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
-				return true;
-			else if (InputLog.Mode != MOVIEMODE.INACTIVE)
 				return true;
 			else
 				return false;

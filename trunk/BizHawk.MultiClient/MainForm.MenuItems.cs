@@ -163,12 +163,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void StopInputLog()
-		{
-			if (InputLog.Mode == MOVIEMODE.RECORD)
-				InputLog.StopMovie();
-		}
-
 		private void stopMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			StopUserMovie();
