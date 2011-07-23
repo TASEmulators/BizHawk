@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
+//thanks! - http://sharp-developer.net/ru/CodeBank/WinForms/GuiConsole.aspx
+
 //todo - quit using Console.WriteLine (well, we can leave it hooked up as a backstop)
 //use a different method instead, so we can collect unicode data
 //also, collect log data independently of whether the log window is open
@@ -12,13 +14,6 @@ namespace BizHawk.MultiClient
 {
 	static class LogConsole
 	{
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool AllocConsole();
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool FreeConsole();
-
-
 		public static bool ConsoleVisible
 		{
 			get;
@@ -88,6 +83,75 @@ namespace BizHawk.MultiClient
 			public Action<string> Emit;
 		}
 
+		static IntPtr oldOut, conOut;
+		static bool hasConsole;
+		static bool attachedConsole;
+		static bool shouldRedirectStdout;
+		public static void CreateConsole()
+		{
+			//(see desmume for the basis of some of this logic)
+
+			if (hasConsole)
+				return;
+
+			if (oldOut == IntPtr.Zero)
+				oldOut = Win32.GetStdHandle( -11 ); //STD_OUTPUT_HANDLE
+
+			Win32.FileType fileType = Win32.GetFileType(oldOut);
+
+			//stdout is already connected to something. keep using it and dont let the console interfere
+			shouldRedirectStdout = (fileType == Win32.FileType.FileTypeUnknown || fileType == Win32.FileType.FileTypePipe);
+
+			//attach to an existing console (if we can; this is circuitous because AttachConsole wasnt added until XP)
+			attachedConsole = false;
+
+			if (Win32.AttachConsole(-1))
+				attachedConsole = true;
+
+			if (!attachedConsole)
+				Win32.AllocConsole();
+
+			if (shouldRedirectStdout)
+			{
+				conOut = Win32.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
+
+				if (!Win32.SetStdHandle(-11, conOut))
+					throw new Exception("SetStdHandle() failed");
+			}
+
+			hasConsole = true;
+			DotNetRewireConout();
+
+			if (attachedConsole)
+			{
+				Console.WriteLine();
+				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", System.IO.Path.GetFileName(PathManager.GetBasePathAbsolute()));
+			}
+		}
+
+		static void DotNetRewireConout()
+		{
+			Stream cstm = Console.OpenStandardOutput();
+			var cstw = new StreamWriter(cstm) { AutoFlush = true };
+			Console.SetOut(cstw);
+			Console.SetError(cstw);
+			Console.Title = "BizHawk Console";
+		}
+
+		static void ReleaseConsole()
+		{
+			if (!hasConsole)
+				return;
+
+			if(shouldRedirectStdout) Win32.CloseHandle(conOut);
+			if(!attachedConsole) Win32.FreeConsole();
+			Win32.SetStdHandle(-11, oldOut);
+
+			conOut = IntPtr.Zero;
+			hasConsole = false;
+		} 
+
+
 		const bool WIN32_CONSOLE = true;
 
 		public static void ShowConsole()
@@ -97,10 +161,14 @@ namespace BizHawk.MultiClient
 
 			if (WIN32_CONSOLE)
 			{
-				AllocConsole();
-				var sout = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
-				Console.SetOut(sout);
-				Console.Title = "BizHawk Message Log";
+				CreateConsole();
+				//not sure whether we need to set a buffer size here
+				//var sout = new StreamWriter(Console.OpenStandardOutput(),Encoding.ASCII,1) { AutoFlush = true };
+				//var sout = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true };
+				//Console.SetOut(sout);
+				//Console.Title = "BizHawk Message Log";
+				//System.Runtime.InteropServices.SafeFi
+				//new Microsoft.Win32.SafeHandles.SafeFileHandle(
 			}
 			else
 			{
@@ -122,7 +190,7 @@ namespace BizHawk.MultiClient
 			ConsoleVisible = false;
 			if (WIN32_CONSOLE)
 			{
-				FreeConsole();
+				ReleaseConsole();
 			}
 			else
 			{
