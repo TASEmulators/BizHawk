@@ -32,11 +32,6 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
 			this.BrowseMovies = new System.Windows.Forms.Button();
-			this.MovieView = new BizHawk.VirtualListView();
-			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
 			this.DetailsView = new System.Windows.Forms.ListView();
 			this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
 			this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
@@ -46,6 +41,12 @@
 			this.MovieCount = new System.Windows.Forms.Label();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
+			this.MovieView = new BizHawk.VirtualListView();
+			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,7 +54,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(628, 352);
+			this.Cancel.Location = new System.Drawing.Point(678, 352);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 0;
@@ -64,7 +65,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(547, 352);
+			this.OK.Location = new System.Drawing.Point(597, 352);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -82,55 +83,6 @@
 			this.BrowseMovies.Text = "Browse...";
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
-			// 
-			// MovieView
-			// 
-			this.MovieView.AllowDrop = true;
-			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4});
-			this.MovieView.FullRowSelect = true;
-			this.MovieView.GridLines = true;
-			this.MovieView.HideSelection = false;
-			this.MovieView.ItemCount = 0;
-			this.MovieView.Location = new System.Drawing.Point(12, 28);
-			this.MovieView.MultiSelect = false;
-			this.MovieView.Name = "MovieView";
-			this.MovieView.selectedItem = -1;
-			this.MovieView.Size = new System.Drawing.Size(413, 303);
-			this.MovieView.TabIndex = 3;
-			this.MovieView.UseCompatibleStateImageBehavior = false;
-			this.MovieView.View = System.Windows.Forms.View.Details;
-			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
-			this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
-			this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
-			this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
-			this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
-			// 
-			// columnHeader1
-			// 
-			this.columnHeader1.Text = "File";
-			this.columnHeader1.Width = 120;
-			// 
-			// columnHeader2
-			// 
-			this.columnHeader2.Text = "SysID";
-			this.columnHeader2.Width = 42;
-			// 
-			// columnHeader3
-			// 
-			this.columnHeader3.Text = "Game";
-			this.columnHeader3.Width = 149;
-			// 
-			// columnHeader4
-			// 
-			this.columnHeader4.Text = "Length";
-			this.columnHeader4.Width = 97;
 			// 
 			// DetailsView
 			// 
@@ -166,7 +118,7 @@
 			this.groupBox1.Controls.Add(this.button2);
 			this.groupBox1.Controls.Add(this.button1);
 			this.groupBox1.Controls.Add(this.DetailsView);
-			this.groupBox1.Location = new System.Drawing.Point(444, 28);
+			this.groupBox1.Location = new System.Drawing.Point(494, 28);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(259, 303);
 			this.groupBox1.TabIndex = 6;
@@ -212,7 +164,7 @@
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.Checked = true;
 			this.ReadOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(444, 356);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(494, 356);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
 			this.ReadOnlyCheckBox.TabIndex = 8;
@@ -223,7 +175,7 @@
 			// 
 			this.IncludeSubDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.IncludeSubDirectories.AutoSize = true;
-			this.IncludeSubDirectories.Location = new System.Drawing.Point(107, 356);
+			this.IncludeSubDirectories.Location = new System.Drawing.Point(123, 337);
 			this.IncludeSubDirectories.Name = "IncludeSubDirectories";
 			this.IncludeSubDirectories.Size = new System.Drawing.Size(131, 17);
 			this.IncludeSubDirectories.TabIndex = 9;
@@ -231,13 +183,75 @@
 			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
 			// 
+			// MovieView
+			// 
+			this.MovieView.AllowDrop = true;
+			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+			this.MovieView.FullRowSelect = true;
+			this.MovieView.GridLines = true;
+			this.MovieView.HideSelection = false;
+			this.MovieView.ItemCount = 0;
+			this.MovieView.Location = new System.Drawing.Point(12, 28);
+			this.MovieView.MultiSelect = false;
+			this.MovieView.Name = "MovieView";
+			this.MovieView.selectedItem = -1;
+			this.MovieView.Size = new System.Drawing.Size(463, 303);
+			this.MovieView.TabIndex = 3;
+			this.MovieView.UseCompatibleStateImageBehavior = false;
+			this.MovieView.View = System.Windows.Forms.View.Details;
+			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
+			this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
+			this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
+			this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
+			this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "File";
+			this.columnHeader1.Width = 221;
+			// 
+			// columnHeader2
+			// 
+			this.columnHeader2.Text = "SysID";
+			this.columnHeader2.Width = 43;
+			// 
+			// columnHeader3
+			// 
+			this.columnHeader3.Text = "Game";
+			this.columnHeader3.Width = 129;
+			// 
+			// columnHeader4
+			// 
+			this.columnHeader4.Text = "Length";
+			this.columnHeader4.Width = 64;
+			// 
+			// ShowStateFiles
+			// 
+			this.ShowStateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ShowStateFiles.AutoSize = true;
+			this.ShowStateFiles.Location = new System.Drawing.Point(123, 358);
+			this.ShowStateFiles.Name = "ShowStateFiles";
+			this.ShowStateFiles.Size = new System.Drawing.Size(128, 17);
+			this.ShowStateFiles.TabIndex = 10;
+			this.ShowStateFiles.Text = "Show valid .state files";
+			this.ShowStateFiles.UseVisualStyleBackColor = true;
+			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
+			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(715, 387);
+			this.ClientSize = new System.Drawing.Size(765, 387);
+			this.Controls.Add(this.ShowStateFiles);
 			this.Controls.Add(this.IncludeSubDirectories);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.MovieCount);
@@ -277,5 +291,6 @@
         private System.Windows.Forms.Label MovieCount;
         private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.CheckBox IncludeSubDirectories;
+		private System.Windows.Forms.CheckBox ShowStateFiles;
     }
 }

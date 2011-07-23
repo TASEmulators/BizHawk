@@ -92,6 +92,32 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private int AddStateToList(string filename)
+		{
+			using (var file = new HawkFile(filename))
+			{
+				if (!file.Exists)
+					return 0;
+				else
+				{
+					int x = IsDuplicate(filename);
+					if (x == 0)
+					{
+						Movie m = new Movie(file.CanonicalFullPath, MOVIEMODE.INACTIVE);
+						m.LoadMovie(); //State files will have to load everything unfortunately
+						if (m.Length() > 0)
+						{
+							MovieList.Add(m);
+							sortReverse = false;
+							sortedCol = "";
+							x = MovieList.Count - 1;
+						}
+					}
+					return x;
+				}
+			}
+		}
+
 		private int AddMovieToList(string filename)
 		{
 			using (var file = new HawkFile(filename))
@@ -213,6 +239,7 @@ namespace BizHawk.MultiClient
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
+			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
@@ -223,6 +250,11 @@ namespace BizHawk.MultiClient
 				AddMovieToList(f);
 			foreach (string f in Directory.GetFiles(d, "*.mc2"))
 				AddMovieToList(f);
+			if (Global.Config.PlayMovie_ShowStateFiles)
+			{
+				foreach (string f in Directory.GetFiles(d, "*.state"))
+					AddStateToList(f);
+			}
 
 			if (Global.Config.PlayMovie_IncludeSubdir)
 			{
@@ -235,6 +267,11 @@ namespace BizHawk.MultiClient
 						AddMovieToList(f);
 					foreach (string f in Directory.GetFiles(dir, "*.mc2"))
 						AddMovieToList(f);
+					if (Global.Config.PlayMovie_ShowStateFiles)
+					{
+						foreach (string f in Directory.GetFiles(d, "*.state"))
+							AddStateToList(f);
+					}
 				}
 			}
 
@@ -327,6 +364,11 @@ namespace BizHawk.MultiClient
 		private void IncludeSubDirectories_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_IncludeSubdir = IncludeSubDirectories.Checked;
+		}
+
+		private void ShowStateFiles_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.PlayMovie_ShowStateFiles = ShowStateFiles.Checked;
 		}
 
 	}
