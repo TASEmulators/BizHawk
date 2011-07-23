@@ -160,6 +160,7 @@ namespace BizHawk.MultiClient
 					pos = 0;
 				else
 					pos++;
+				UpdateLabel();
 			}
 		}
 
