@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace BizHawk
 {
@@ -277,6 +278,57 @@ namespace BizHawk
 			public int cbParms;
 			public int dwInterleaveEvery;
 		}
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+		public static extern SafeFileHandle CreateFile(
+			  string lpFileName,
+			  uint dwDesiredAccess,
+			  uint dwShareMode,
+			  IntPtr SecurityAttributes,
+			  uint dwCreationDisposition,
+			  uint dwFlagsAndAttributes,
+			  IntPtr hTemplateFile
+			  );
+
+		[DllImport("kernel32.dll")]
+		public static extern FileType GetFileType(IntPtr hFile);
+
+		public enum FileType : uint
+		{
+			FileTypeChar = 0x0002,
+			FileTypeDisk = 0x0001,
+			FileTypePipe = 0x0003,
+			FileTypeRemote = 0x8000,
+			FileTypeUnknown = 0x0000,
+		}
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool AttachConsole(int dwProcessId);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool AllocConsole();
+
+		[DllImport("kernel32.dll", SetLastError = false)]
+		public static extern bool FreeConsole();
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern IntPtr GetStdHandle(int nStdHandle);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern bool SetStdHandle(int nStdHandle, IntPtr hConsoleOutput);
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr CreateFile(
+			string fileName,
+			int desiredAccess,
+			int shareMode,
+			IntPtr securityAttributes,
+			int creationDisposition,
+			int flagsAndAttributes,
+			IntPtr templateFile);
+
+		[DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+		public static extern bool CloseHandle(IntPtr handle); 
 
 		[DllImport("user32.dll", SetLastError = false)]
 		public static extern IntPtr GetDesktopWindow();
