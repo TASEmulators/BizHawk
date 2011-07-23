@@ -21,7 +21,6 @@ Outrun            - Req HBlank hack to eliminate visual artifact
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
 
 Bouken Danshaku Don - The Lost Sunheart (J)    - Uses LFO in intro sound strongly!
-City Hunter- uses SET on ORA instruction
 Eagan's Rendered Sprite Demo by Eagan Rackley (PD) - demonstrates sprites that shouldnt be displayed
 Games Express CD Card 1993 - dont forget to treat as a turbocd system card
 Puzzle Boy(J) - screen vert height is fucked up...needs to be masked or just clipped?

@@ -502,7 +502,8 @@ namespace HuC6280
             }
 
             w.WriteLine("                    default:");
-            w.WriteLine("                        throw new Exception(String.Format(\"Unhandled opcode: {0:X2}\", opcode));");
+            w.WriteLine("                        Console.WriteLine(\"Unhandled opcode: {0:X2}\", opcode);");
+            w.WriteLine("                        break;");
             w.WriteLine("                }");
             w.WriteLine();
             w.WriteLine("                P &= 0xDF; // Clear T flag");

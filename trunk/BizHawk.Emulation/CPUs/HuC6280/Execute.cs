@@ -73,9 +73,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                         break;
                     case 0x01: // ORA (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)((byte)(ReadMemory(PC++)+X)+0x2000)));
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x02: // SXY
                         temp8 = X;
@@ -99,9 +108,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                         break;
                     case 0x05: // ORA zp
                         value8 = ReadMemory((ushort)(ReadMemory(PC++)+0x2000));
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 4;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 4;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 7;
+                        }
                         break;
                     case 0x06: // ASL zp
                         value16 = (ushort)(ReadMemory(PC++)+0x2000);
@@ -125,9 +143,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                         break;
                     case 0x09: // ORA #nn
                         value8 = ReadMemory(PC++);
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 2;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 2;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 5;
+                        }
                         break;
                     case 0x0A: // ASL A
                         FlagC = (A & 0x80) != 0;
@@ -146,9 +173,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                         break;
                     case 0x0D: // ORA addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x0E: // ASL addr
                         value16 = ReadWord(PC); PC += 2;
@@ -180,15 +216,33 @@ namespace BizHawk.Emulation.CPUs.H6280
                     case 0x11: // ORA (addr),Y
                         temp16 = ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000));
                         value8 = ReadMemory((ushort)(temp16+Y));
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x12: // ORA (addr)
                         value8 = ReadMemory(ReadWordPageWrap((ushort)(ReadMemory(PC++)+0x2000)));
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 7;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 7;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 10;
+                        }
                         break;
                     case 0x13: // ST1 #nn
                         value8 = ReadMemory(PC++);
@@ -206,9 +260,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                         break;
                     case 0x15: // ORA zp,X
                         value8 = ReadMemory((ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000));
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 4;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 4;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 7;
+                        }
                         break;
                     case 0x16: // ASL zp,X
                         value16 = (ushort)(((ReadMemory(PC++)+X)&0xFF)+0x2000);
@@ -233,9 +296,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                     case 0x19: // ORA addr,Y
                         value8 = ReadMemory((ushort)(ReadWord(PC)+Y));
                         PC += 2;
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x1A: // INC A
                         P = (byte)((P & 0x7D) | TableNZ[++A]);
@@ -253,9 +325,18 @@ namespace BizHawk.Emulation.CPUs.H6280
                     case 0x1D: // ORA addr,X
                         value8 = ReadMemory((ushort)(ReadWord(PC)+X));
                         PC += 2;
-                        A |= value8;
-                        P = (byte)((P & 0x7D) | TableNZ[A]);
-                        PendingCycles -= 5;
+                        if (FlagT == false)
+                        {
+                            A |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[A]);
+                            PendingCycles -= 5;
+                        } else {
+                            source8 = ReadMemory((ushort)(0x2000 + X));
+                            source8 |= value8;
+                            P = (byte)((P & 0x7D) | TableNZ[source8]);
+                            WriteMemory((ushort)(0x2000 + X), source8);
+                            PendingCycles -= 8;
+                        }
                         break;
                     case 0x1E: // ASL addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
@@ -2087,7 +2168,7 @@ namespace BizHawk.Emulation.CPUs.H6280
                     case 0xF4: // SET
                         int a; // TODO remove these extra checks
                         string b = Disassemble(PC, out a);
-                        if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false && b.StartsWith("AND") == false)
+                        if (b.StartsWith("ADC") == false && b.StartsWith("EOR") == false && b.StartsWith("AND") == false && b.StartsWith("ORA") == false)
                             Console.WriteLine("SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}", b);
                         FlagT = true;
                         PendingCycles -= 2;
@@ -2198,7 +2279,8 @@ namespace BizHawk.Emulation.CPUs.H6280
                         PendingCycles -= 6;
                         break;
                     default:
-                        throw new Exception(String.Format("Unhandled opcode: {0:X2}", opcode));
+                        Console.WriteLine("Unhandled opcode: {0:X2}", opcode);
+                        break;
                 }
 
                 P &= 0xDF; // Clear T flag
