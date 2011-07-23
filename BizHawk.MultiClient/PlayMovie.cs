@@ -236,10 +236,17 @@ namespace BizHawk.MultiClient
 			MovieView.SelectItem(index, true);
 		}
 
-		private void PlayMovie_Load(object sender, EventArgs e)
+		private void ClearList()
 		{
-			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
-			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
+			MovieList.Clear();
+			MovieView.ItemCount = 0;
+			MovieView.Update();
+		}
+
+		private void ScanFiles()
+		{
+			ClearList();
+
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
@@ -274,7 +281,14 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+		}
 
+		private void PlayMovie_Load(object sender, EventArgs e)
+		{
+			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
+			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
+
+			ScanFiles();
 			PreHighlightMovie();
 		}
 
@@ -369,6 +383,12 @@ namespace BizHawk.MultiClient
 		private void ShowStateFiles_CheckedChanged(object sender, EventArgs e)
 		{
 			Global.Config.PlayMovie_ShowStateFiles = ShowStateFiles.Checked;
+		}
+
+		private void Scan_Click(object sender, EventArgs e)
+		{
+			ScanFiles();
+			PreHighlightMovie();
 		}
 
 	}
