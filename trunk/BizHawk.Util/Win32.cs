@@ -293,6 +293,9 @@ namespace BizHawk
 		[DllImport("kernel32.dll")]
 		public static extern FileType GetFileType(IntPtr hFile);
 
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+		public static extern System.IntPtr GetCommandLine();
+
 		public enum FileType : uint
 		{
 			FileTypeChar = 0x0002,

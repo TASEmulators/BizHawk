@@ -83,6 +83,43 @@ namespace BizHawk.MultiClient
 			public Action<string> Emit;
 		}
 
+
+		static string SkipEverythingButProgramInCommandLine(string cmdLine)
+		{
+			//skip past the program name. can anyone think of a better way to do this?
+			//we could use CommandLineToArgvW (commented out below) but then we would just have to re-assemble and potentially re-quote it
+			int childCmdLine = 0;
+			int lastSlash = 0;
+			int lastGood = 0;
+			bool quote = false;
+			for (; ; )
+			{
+				char cur = cmdLine[childCmdLine];
+				childCmdLine++;
+				if (childCmdLine == cmdLine.Length) break;
+				bool thisIsQuote = (cur == '\"');
+				if (cur == '\\' || cur == '/')
+					lastSlash = childCmdLine;
+				if (quote)
+				{
+					if (thisIsQuote)
+						quote = false;
+					else lastGood = childCmdLine;
+				}
+				else
+				{
+					if (cur == ' ' || cur == '\t')
+						break;
+					if (thisIsQuote)
+						quote = true;
+					lastGood = childCmdLine;
+				}
+			}
+			string remainder = cmdLine.Substring(childCmdLine);
+			string path = cmdLine.Substring(lastSlash, lastGood - lastSlash);
+			return path + " " + remainder;
+		}
+
 		static IntPtr oldOut, conOut;
 		static bool hasConsole;
 		static bool attachedConsole;
@@ -109,7 +146,15 @@ namespace BizHawk.MultiClient
 				attachedConsole = true;
 
 			if (!attachedConsole)
+			{
 				Win32.AllocConsole();
+			}
+
+			{
+				IntPtr ptr = Win32.GetCommandLine();
+				string commandLine = Marshal.PtrToStringAuto(ptr);
+				Console.Title = SkipEverythingButProgramInCommandLine(commandLine);
+			}
 
 			if (shouldRedirectStdout)
 			{
@@ -135,7 +180,6 @@ namespace BizHawk.MultiClient
 			var cstw = new StreamWriter(cstm) { AutoFlush = true };
 			Console.SetOut(cstw);
 			Console.SetError(cstw);
-			Console.Title = "BizHawk Console";
 		}
 
 		static void ReleaseConsole()
