@@ -120,6 +120,10 @@ namespace BizHawk
                         Game.Name = items[2];
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
+
+                        if (db.ContainsKey(Game.hash))
+                            Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on {1}",Game.hash, Game.Name);
+
                         db[Game.hash] = Game;
                     } catch
                     {
@@ -136,11 +140,11 @@ namespace BizHawk
 			if (db.TryGetValue(hash, out ret))
 				return ret;
 
-			hash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(RomData));
-			if (db.TryGetValue(hash, out ret))
-				return ret;
+            hash = Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData));
+            if (db.TryGetValue(hash, out ret))
+                return ret;
 
-			hash = Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData));
+			hash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(RomData));
 			if (db.TryGetValue(hash, out ret))
 				return ret;
 
@@ -149,7 +153,9 @@ namespace BizHawk
             Game.hash = hash;
             Game.MetaData = "NotInDatabase";
             Game.Status = RomStatus.NotInDatabase;
-            Console.WriteLine("Game was not in DB. CRC: {0:X8} ", CRC32.Calculate(RomData));
+            Console.WriteLine("Game was not in DB. CRC: {0:X8} MD5: {1}", 
+                CRC32.Calculate(RomData),
+                Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData)));
 
             string ext = Path.GetExtension(fileName).ToUpperInvariant();
 

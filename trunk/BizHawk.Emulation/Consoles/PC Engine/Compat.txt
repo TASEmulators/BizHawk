@@ -13,12 +13,22 @@ Air Zonk          - OK now - previous problem game
 Cadash            - Req HBlank hack to eliminate minor visual artifact
 Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
 Coryoon           - OK now - previous problem game
-Cross Wiber       - Minor; Raster on wrong line
+Cross Wiber       - Req HBlank hack to eliminate minor visual artifact
 Dungeon Explorer  - OK now - previous problem game
 Lode Runner       - OK now - previous problem game
 MML Demo          - Echo channels are too loud (equal volume!)
 Outrun            - Req HBlank hack to eliminate visual artifact
 Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
+
+Bouken Danshaku Don - The Lost Sunheart (J)    - Uses LFO in intro sound strongly!
+City Hunter- uses SET on ORA instruction
+Eagan's Rendered Sprite Demo by Eagan Rackley (PD) - demonstrates sprites that shouldnt be displayed
+Games Express CD Card 1993 - dont forget to treat as a turbocd system card
+Puzzle Boy(J) - screen vert height is fucked up...needs to be masked or just clipped?
+Yo, Bro - game screen black, can hear game playing though
+Youkai Douchuuki(J) - part of bg missing? wtf.
+
+Note, check overdump roms From A  - Final Lap Twin
 
 ===================================
 Games that need TV Emulation (to varying degrees)
