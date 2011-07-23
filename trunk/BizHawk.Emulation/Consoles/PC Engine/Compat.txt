@@ -23,11 +23,8 @@ Tiger Road        - On second level, sprites should be getting masked from the t
 Bouken Danshaku Don - The Lost Sunheart (J)    - Uses LFO in intro sound strongly!
 Eagan's Rendered Sprite Demo by Eagan Rackley (PD) - demonstrates sprites that shouldnt be displayed
 Games Express CD Card 1993 - dont forget to treat as a turbocd system card
-Puzzle Boy(J) - screen vert height is fucked up...needs to be masked or just clipped?
 Yo, Bro - game screen black, can hear game playing though
 Youkai Douchuuki(J) - part of bg missing? wtf.
-
-Note, check overdump roms From A  - Final Lap Twin
 
 ===================================
 Games that need TV Emulation (to varying degrees)
@@ -70,3 +67,4 @@ Stuff I Fixed That's Not In Other Docs:
 + The ROM of Paranoia (J) that is commonly labeled as the authoritative dump - I assume its a bad
   dump, because it dies during the 3rd stage on ALL EMULATORS. Alternative versions of the rom 
   work fine.
++ Puzzle Boy - requests frame height of 512... cap active display to 242 lines  

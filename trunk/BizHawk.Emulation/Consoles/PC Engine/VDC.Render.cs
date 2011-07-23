@@ -100,6 +100,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void RenderScanLine()
         {
+            if (ActiveLine >= FrameHeight)
+                return;
+
             RenderBackgroundScanline();
             RenderSpritesScanline();
         }

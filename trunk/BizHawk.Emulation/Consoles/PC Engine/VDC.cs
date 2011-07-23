@@ -147,16 +147,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case HDR: // Horizontal Display Register - update framebuffer size
                     FrameWidth = RequestedFrameWidth;
                     if (FrameBuffer.Length != FrameWidth * FrameHeight)
-                    {
                         FrameBuffer = new int[FrameWidth*FrameHeight];
-                    }
                     break;
                 case VDW: // Vertical Display Word? - update framebuffer size
                     FrameHeight = RequestedFrameHeight;
+                    if (FrameHeight > 242)
+                        FrameHeight = 242;
                     if (FrameBuffer.Length != FrameWidth * FrameHeight)
-                    {
                         FrameBuffer = new int[FrameWidth * FrameHeight];
-                    }
                     break;
                 case LENR: // Initiate DMA transfer
                     DmaRequested = true;
