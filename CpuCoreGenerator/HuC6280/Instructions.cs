@@ -342,9 +342,19 @@ namespace HuC6280
         private void ORA(OpcodeInfo op, TextWriter w)
         {
             GetValue8(op, w, "value8");
-            w.WriteLine(Spaces + "A |= value8;");
-            w.WriteLine(Spaces + SetNZ("A"));
-            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+
+            w.WriteLine(Spaces + "if (FlagT == false)");
+            w.WriteLine(Spaces + "{");
+            w.WriteLine(Spaces + "    A |= value8;");
+            w.WriteLine(Spaces + "    "+SetNZ("A"));
+            w.WriteLine(Spaces + "    PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "} else {");
+            w.WriteLine(Spaces + "    source8 = ReadMemory((ushort)(0x2000 + X));");
+            w.WriteLine(Spaces + "    source8 |= value8;");
+            w.WriteLine(Spaces + "    " + SetNZ("source8"));
+            w.WriteLine(Spaces + "    WriteMemory((ushort)(0x2000 + X), source8);");
+            w.WriteLine(Spaces + "    PendingCycles -= {0};", op.Cycles+3);
+            w.WriteLine(Spaces + "}");
         }
 
         private void PushReg(OpcodeInfo op, TextWriter w, string reg)
@@ -496,7 +506,7 @@ namespace HuC6280
         {
             w.WriteLine("                        int a; // TODO remove these extra checks"); // TODO remove these extra checks
             w.WriteLine("                        string b = Disassemble(PC, out a);");
-            w.WriteLine("                        if (b.StartsWith(\"ADC\") == false && b.StartsWith(\"EOR\") == false && b.StartsWith(\"AND\") == false)");
+            w.WriteLine("                        if (b.StartsWith(\"ADC\") == false && b.StartsWith(\"EOR\") == false && b.StartsWith(\"AND\") == false && b.StartsWith(\"ORA\") == false)");
             w.WriteLine("                            Console.WriteLine(\"SETTING T FLAG, NEXT INSTRUCTION IS UNHANDLED:  {0}\", b);");
             w.WriteLine(Spaces + "FlagT = true;");
             w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
