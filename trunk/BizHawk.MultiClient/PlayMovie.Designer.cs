@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlayMovie));
 			this.Cancel = new System.Windows.Forms.Button();
 			this.OK = new System.Windows.Forms.Button();
@@ -47,6 +48,8 @@
 			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
 			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
 			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
+			this.Scan = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -70,6 +73,7 @@
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
 			this.OK.Text = "&Ok";
+			this.toolTip1.SetToolTip(this.OK, "Load selected movie");
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
 			// 
@@ -81,6 +85,7 @@
 			this.BrowseMovies.Size = new System.Drawing.Size(75, 23);
 			this.BrowseMovies.TabIndex = 2;
 			this.BrowseMovies.Text = "Browse...";
+			this.toolTip1.SetToolTip(this.BrowseMovies, "Browse for additional movie files");
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
 			// 
@@ -244,6 +249,18 @@
 			this.ShowStateFiles.UseVisualStyleBackColor = true;
 			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
 			// 
+			// Scan
+			// 
+			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.Scan.Image = global::BizHawk.MultiClient.Properties.Resources.Scan;
+			this.Scan.Location = new System.Drawing.Point(448, 337);
+			this.Scan.Name = "Scan";
+			this.Scan.Size = new System.Drawing.Size(27, 23);
+			this.Scan.TabIndex = 11;
+			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
+			this.Scan.UseVisualStyleBackColor = true;
+			this.Scan.Click += new System.EventHandler(this.Scan_Click);
+			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -251,6 +268,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(765, 387);
+			this.Controls.Add(this.Scan);
 			this.Controls.Add(this.ShowStateFiles);
 			this.Controls.Add(this.IncludeSubDirectories);
 			this.Controls.Add(this.ReadOnlyCheckBox);
@@ -292,5 +310,7 @@
         private System.Windows.Forms.CheckBox ReadOnlyCheckBox;
 		private System.Windows.Forms.CheckBox IncludeSubDirectories;
 		private System.Windows.Forms.CheckBox ShowStateFiles;
+		private System.Windows.Forms.Button Scan;
+		private System.Windows.Forms.ToolTip toolTip1;
     }
 }
