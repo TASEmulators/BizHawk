@@ -69,7 +69,7 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-			ofd.Filter = "Movie files (*.tas)|*.TAS;*.ZIP;*.7z|FCEUX Movies|*.FM2|PCEjin Movies|*.MC2|Archive Files|*.zip;*.7z|All Files|*.*";
+			ofd.Filter = "Movie files (*.tas)|*.TAS;*.ZIP;*.7z|FCEUX Movies|*.FM2|PCEjin Movies|*.MC2|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
 
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
@@ -81,6 +81,17 @@ namespace BizHawk.MultiClient
 					return;
 				else
 				{
+					if (file.Extension.ToUpper() == "STATE")
+					{
+						Movie m = new Movie(file.FullName, MOVIEMODE.INACTIVE);
+						m.LoadMovie(); //State files will have to load everything unfortunately
+						if (m.Length() == 0)
+						{
+							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+							return;
+						}
+					}
+
 					int x = AddMovieToList(ofd.FileName);
 					if (x > 0)
 					{
@@ -295,7 +306,13 @@ namespace BizHawk.MultiClient
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			DetailsView.Items.Clear();
-			if (MovieView.SelectedIndices.Count < 1) return;
+			if (MovieView.SelectedIndices.Count < 1)
+			{
+				OK.Enabled = false;
+				return;
+			}
+			else
+				OK.Enabled = true;
 
 			int x = MovieView.SelectedIndices[0];
 			Dictionary<string, string> h = MovieList[x].Header.HeaderParams;

@@ -80,11 +80,11 @@
 			// BrowseMovies
 			// 
 			this.BrowseMovies.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BrowseMovies.Location = new System.Drawing.Point(12, 352);
+			this.BrowseMovies.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.BrowseMovies.Location = new System.Drawing.Point(12, 337);
 			this.BrowseMovies.Name = "BrowseMovies";
-			this.BrowseMovies.Size = new System.Drawing.Size(75, 23);
+			this.BrowseMovies.Size = new System.Drawing.Size(31, 23);
 			this.BrowseMovies.TabIndex = 2;
-			this.BrowseMovies.Text = "Browse...";
 			this.toolTip1.SetToolTip(this.BrowseMovies, "Browse for additional movie files");
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
@@ -253,7 +253,7 @@
 			// 
 			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Scan.Image = global::BizHawk.MultiClient.Properties.Resources.Scan;
-			this.Scan.Location = new System.Drawing.Point(448, 337);
+			this.Scan.Location = new System.Drawing.Point(49, 337);
 			this.Scan.Name = "Scan";
 			this.Scan.Size = new System.Drawing.Size(27, 23);
 			this.Scan.TabIndex = 11;
