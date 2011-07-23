@@ -1144,11 +1144,21 @@ namespace BizHawk.MultiClient
 				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
 				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
 				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0": OnSelectSlot(0); break;
-				case "SelectSlot1": OnSelectSlot(1); break;
-				case "SelectSlot2": OnSelectSlot(2); break;
-				case "SelectSlot3": OnSelectSlot(3); break;
-				case "SelectSlot4": OnSelectSlot(4); break;
+				case "SelectSlot0": 
+					OnSelectSlot(0); 
+					break;
+				case "SelectSlot1": 
+					OnSelectSlot(1); 
+					break;
+				case "SelectSlot2": 
+					OnSelectSlot(2); 
+					break;
+				case "SelectSlot3": 
+					OnSelectSlot(3); 
+					break;
+				case "SelectSlot4": 
+					OnSelectSlot(4); 
+					break;
 				case "SelectSlot5": OnSelectSlot(5); break;
 				case "SelectSlot6": OnSelectSlot(6); break;
 				case "SelectSlot7": OnSelectSlot(7); break;

@@ -294,6 +294,7 @@
 
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
+		public bool PlayMovie_ShowStateFiles = false;
 
 		//TI83
 		public bool TI83disableSaveSlotKeys = true;
@@ -314,16 +315,16 @@
 		public string ToggleFullscreenBinding = "Alt+Return";
 		public string QuickSave = "I";
 		public string QuickLoad = "P";
-		public string SelectSlot0 = "0";
-		public string SelectSlot1 = "1";
-		public string SelectSlot2 = "2";
-		public string SelectSlot3 = "3";
-		public string SelectSlot4 = "4";
-		public string SelectSlot5 = "5";
-		public string SelectSlot6 = "6";
-		public string SelectSlot7 = "7";
-		public string SelectSlot8 = "8";
-		public string SelectSlot9 = "9";
+		public string SelectSlot0 = "D0";
+		public string SelectSlot1 = "D1";
+		public string SelectSlot2 = "D2";
+		public string SelectSlot3 = "D3";
+		public string SelectSlot4 = "D4";
+		public string SelectSlot5 = "D5";
+		public string SelectSlot6 = "D6";
+		public string SelectSlot7 = "D7";
+		public string SelectSlot8 = "D8";
+		public string SelectSlot9 = "D9";
 		public string SaveSlot0 = "Shift+F10";
 		public string SaveSlot1 = "Shift+F1";
 		public string SaveSlot2 = "Shift+F2";
@@ -376,7 +377,7 @@
 		public string MTDecrementPlayer = "";
 		public string AVIRecordBinding = "";
 		public string AVIStopBinding = "";
-
+		
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
