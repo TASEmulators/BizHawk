@@ -26,6 +26,7 @@ namespace BizHawk.MultiClient
 		public CheckBox B6;
 		public CheckBox B7;
 		public CheckBox B8;
+		public string Controller;
 
 		public VirtualPad()
 		{
@@ -34,11 +35,30 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			this.BorderStyle = BorderStyle.Fixed3D;
 			this.Size = new Size(174, 74);
+			Controller = "P1";
 		}
 
 		public virtual string GetMnemonic()
 		{
 			return "......|";
 		}
+
+		public virtual void Clear()
+		{
+			PU.Checked = false;
+			PD.Checked = false;
+			PL.Checked = false;
+			PR.Checked = false;
+
+			B1.Checked = false;
+			B2.Checked = false;
+			B3.Checked = false;
+			B4.Checked = false;
+			B5.Checked = false;
+			B6.Checked = false;
+			B7.Checked = false;
+			B8.Checked = false;
+		}
+
 	}
 }

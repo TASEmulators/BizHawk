@@ -107,8 +107,10 @@ namespace BizHawk.MultiClient
 				case "NES":
 					VirtualPadNES nespad1 = new VirtualPadNES();
 					nespad1.Location = new Point(8, 19);
+					nespad1.Controller = "P1";
 					VirtualPadNES nespad2 = new VirtualPadNES();
 					nespad2.Location = new Point(188, 19);
+					nespad2.Controller = "P2";
 					Pads.Add(nespad1);
 					Pads.Add(nespad2);
 					ControllerBox.Controls.Add(Pads[0]);
@@ -142,6 +144,9 @@ namespace BizHawk.MultiClient
 			Global.Config.TASWndy = this.Location.Y;
 			Global.Config.TASWidth = this.Right - this.Left;
 			Global.Config.TASHeight = this.Bottom - this.Top;
+
+			for (int x = 0; x < Pads.Count; x++)
+				Pads[x].Clear();
 		}
 
 		public void Restart()
