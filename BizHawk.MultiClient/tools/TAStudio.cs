@@ -55,8 +55,12 @@ namespace BizHawk.MultiClient
 
 		public string GetMnemonic()
 		{
-			StringBuilder str = new StringBuilder("|0|"); //TODO: Control Command virtual pad
+			StringBuilder str = new StringBuilder("|"); //TODO: Control Command virtual pad
 			
+			//TODO: remove this hack with a nes controls pad 
+			if (Global.Emulator.SystemId == "NES")
+				str.Append("0|");
+
 			for (int x = 0; x < Pads.Count; x++)
 				str.Append(Pads[x].GetMnemonic());
 			return str.ToString();
@@ -101,12 +105,24 @@ namespace BizHawk.MultiClient
 				default:
 					break;
 				case "NES":
-					VirtualPadNES v1 = new VirtualPadNES();
-					v1.Location = new Point(8, 19);
-					VirtualPadNES v2 = new VirtualPadNES();
-					v2.Location = new Point(188, 19);
-					Pads.Add(v1);
-					Pads.Add(v2);
+					VirtualPadNES nespad1 = new VirtualPadNES();
+					nespad1.Location = new Point(8, 19);
+					VirtualPadNES nespad2 = new VirtualPadNES();
+					nespad2.Location = new Point(188, 19);
+					Pads.Add(nespad1);
+					Pads.Add(nespad2);
+					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(Pads[1]);
+					break;
+				case "SMS":
+				case "SG": //TODO: correct sys ID???
+				case "GG":
+					VirtualPadSMS smspad1 = new VirtualPadSMS();
+					smspad1.Location = new Point(8, 19);
+					VirtualPadSMS smspad2 = new VirtualPadSMS();
+					smspad2.Location = new Point(188, 19);
+					Pads.Add(smspad1);
+					Pads.Add(smspad2);
 					ControllerBox.Controls.Add(Pads[0]);
 					ControllerBox.Controls.Add(Pads[1]);
 					break;
