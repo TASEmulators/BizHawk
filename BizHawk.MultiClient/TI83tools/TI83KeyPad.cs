@@ -123,247 +123,247 @@ namespace BizHawk.MultiClient
 
         private void button42_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("ENTER");
+            Global.ClickyVirtualPadController.Click("ENTER");
         }
 
         private void button43_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("DASH");
+            Global.ClickyVirtualPadController.Click("DASH");
         }
 
         private void button39_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("2");
+            Global.ClickyVirtualPadController.Click("2");
         }
 
         private void ONE_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("1");
+            Global.ClickyVirtualPadController.Click("1");
         }
 
         private void THREE_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("3");
+            Global.ClickyVirtualPadController.Click("3");
         }
 
         private void FOUR_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("4");
+            Global.ClickyVirtualPadController.Click("4");
         }
 
         private void FIVE_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("5");
+            Global.ClickyVirtualPadController.Click("5");
         }
 
         private void SIX_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("6");
+            Global.ClickyVirtualPadController.Click("6");
         }
 
         private void SEVEN_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("7");
+            Global.ClickyVirtualPadController.Click("7");
         }
 
         private void EIGHT_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("8");
+            Global.ClickyVirtualPadController.Click("8");
         }
 
         private void NINE_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("9");
+            Global.ClickyVirtualPadController.Click("9");
         }
 
         private void ON_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("ON");
+            Global.ClickyVirtualPadController.Click("ON");
         }
 
         private void STO_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("STO");
+            Global.ClickyVirtualPadController.Click("STO");
         }
 
         private void PLUS_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("PLUS");
+            Global.ClickyVirtualPadController.Click("PLUS");
         }
 
         private void LN_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("LN");
+            Global.ClickyVirtualPadController.Click("LN");
         }
 
         private void MINUS_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("MINUS");
+            Global.ClickyVirtualPadController.Click("MINUS");
         }
 
         private void LOG_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("LOG");
+            Global.ClickyVirtualPadController.Click("LOG");
         }
 
         private void MULTIPLY_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("MULTIPLY");
+            Global.ClickyVirtualPadController.Click("MULTIPLY");
         }
 
         private void button26_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("SQUARED");
+            Global.ClickyVirtualPadController.Click("SQUARED");
         }
 
         private void button25_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("COMMA");
+            Global.ClickyVirtualPadController.Click("COMMA");
         }
 
         private void button24_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("PARAOPEN");
+            Global.ClickyVirtualPadController.Click("PARAOPEN");
         }
 
         private void button23_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("PARACLOSE");
+            Global.ClickyVirtualPadController.Click("PARACLOSE");
         }
 
         private void button22_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("DIVIDE");
+            Global.ClickyVirtualPadController.Click("DIVIDE");
         }
 
         private void button17_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("NEG1");
+            Global.ClickyVirtualPadController.Click("NEG1");
         }
 
         private void button18_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("SIN");
+            Global.ClickyVirtualPadController.Click("SIN");
         }
 
         private void button19_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("COS");
+            Global.ClickyVirtualPadController.Click("COS");
         }
 
         private void button20_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("TAN");
+            Global.ClickyVirtualPadController.Click("TAN");
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("EXP");
+            Global.ClickyVirtualPadController.Click("EXP");
         }
 
         private void button12_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("MATH");
+            Global.ClickyVirtualPadController.Click("MATH");
         }
 
         private void button13_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("MATRIX");
+            Global.ClickyVirtualPadController.Click("MATRIX");
         }
 
         private void button14_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("PRGM");
+            Global.ClickyVirtualPadController.Click("PRGM");
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("VARS");
+            Global.ClickyVirtualPadController.Click("VARS");
         }
 
         private void button16_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("CLEAR");
+            Global.ClickyVirtualPadController.Click("CLEAR");
         }
 
         private void button11_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("ALPHA");
+            Global.ClickyVirtualPadController.Click("ALPHA");
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("X");
+            Global.ClickyVirtualPadController.Click("X");
         }
 
         private void button10_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("STAT");
+            Global.ClickyVirtualPadController.Click("STAT");
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("2ND");
+            Global.ClickyVirtualPadController.Click("2ND");
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("MODE");
+            Global.ClickyVirtualPadController.Click("MODE");
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("DEL");
+            Global.ClickyVirtualPadController.Click("DEL");
         }
 
         private void button47_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("LEFT");
+            Global.ClickyVirtualPadController.Click("LEFT");
         }
 
         private void button49_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("DOWN");
+            Global.ClickyVirtualPadController.Click("DOWN");
         }
 
         private void button48_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("RIGHT");
+            Global.ClickyVirtualPadController.Click("RIGHT");
         }
 
         private void button50_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("UP");
+            Global.ClickyVirtualPadController.Click("UP");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("Y");
+            Global.ClickyVirtualPadController.Click("Y");
         }
 
         private void button6_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("WINDOW");
+            Global.ClickyVirtualPadController.Click("WINDOW");
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("ZOOM");
+            Global.ClickyVirtualPadController.Click("ZOOM");
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("TRACE");
+            Global.ClickyVirtualPadController.Click("TRACE");
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("GRAPH");
+            Global.ClickyVirtualPadController.Click("GRAPH");
         }
 
         private void PERIOD_Click(object sender, EventArgs e)
         {
-            Global.ActiveController.ForceButton("DOT");
+            Global.ClickyVirtualPadController.Click("DOT");
         }
 
         private void showHotkToolStripMenuItem_Click(object sender, EventArgs e)

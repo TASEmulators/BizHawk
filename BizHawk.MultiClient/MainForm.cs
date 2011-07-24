@@ -295,6 +295,8 @@ namespace BizHawk.MultiClient
 				ProcessInput();
 				Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+				Global.ClickyVirtualPadController.FrameTick();
 
 
 				StepRunLoop_Core();
