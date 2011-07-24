@@ -315,6 +315,7 @@ namespace BizHawk.MultiClient
 				OK.Enabled = true;
 
 			int x = MovieView.SelectedIndices[0];
+			MovieView.ensureVisible(x);
 			Dictionary<string, string> h = MovieList[x].Header.HeaderParams;
 
 			foreach (var kvp in h)

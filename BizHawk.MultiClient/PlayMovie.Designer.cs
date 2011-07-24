@@ -60,7 +60,7 @@
 			this.Cancel.Location = new System.Drawing.Point(678, 352);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 0;
+			this.Cancel.TabIndex = 55;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
@@ -71,7 +71,7 @@
 			this.OK.Location = new System.Drawing.Point(597, 352);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 1;
+			this.OK.TabIndex = 50;
 			this.OK.Text = "&Ok";
 			this.toolTip1.SetToolTip(this.OK, "Load selected movie");
 			this.OK.UseVisualStyleBackColor = true;
@@ -84,7 +84,7 @@
 			this.BrowseMovies.Location = new System.Drawing.Point(12, 337);
 			this.BrowseMovies.Name = "BrowseMovies";
 			this.BrowseMovies.Size = new System.Drawing.Size(31, 23);
-			this.BrowseMovies.TabIndex = 2;
+			this.BrowseMovies.TabIndex = 25;
 			this.toolTip1.SetToolTip(this.BrowseMovies, "Browse for additional movie files");
 			this.BrowseMovies.UseVisualStyleBackColor = true;
 			this.BrowseMovies.Click += new System.EventHandler(this.BrowseMovies_Click);
@@ -102,7 +102,7 @@
 			this.DetailsView.Location = new System.Drawing.Point(15, 19);
 			this.DetailsView.Name = "DetailsView";
 			this.DetailsView.Size = new System.Drawing.Size(228, 242);
-			this.DetailsView.TabIndex = 4;
+			this.DetailsView.TabIndex = 10;
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
 			this.DetailsView.View = System.Windows.Forms.View.Details;
 			// 
@@ -137,7 +137,7 @@
 			this.button2.Location = new System.Drawing.Point(125, 267);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 6;
+			this.button2.TabIndex = 20;
 			this.button2.Text = "Subtitles";
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
@@ -149,7 +149,7 @@
 			this.button1.Location = new System.Drawing.Point(15, 267);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 5;
+			this.button1.TabIndex = 15;
 			this.button1.Text = "Comments";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -172,7 +172,7 @@
 			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(494, 356);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
-			this.ReadOnlyCheckBox.TabIndex = 8;
+			this.ReadOnlyCheckBox.TabIndex = 45;
 			this.ReadOnlyCheckBox.Text = "Read only";
 			this.ReadOnlyCheckBox.UseVisualStyleBackColor = true;
 			// 
@@ -183,7 +183,7 @@
 			this.IncludeSubDirectories.Location = new System.Drawing.Point(123, 337);
 			this.IncludeSubDirectories.Name = "IncludeSubDirectories";
 			this.IncludeSubDirectories.Size = new System.Drawing.Size(131, 17);
-			this.IncludeSubDirectories.TabIndex = 9;
+			this.IncludeSubDirectories.TabIndex = 35;
 			this.IncludeSubDirectories.Text = "Include Subdirectories";
 			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
@@ -208,7 +208,7 @@
 			this.MovieView.Name = "MovieView";
 			this.MovieView.selectedItem = -1;
 			this.MovieView.Size = new System.Drawing.Size(463, 303);
-			this.MovieView.TabIndex = 3;
+			this.MovieView.TabIndex = 5;
 			this.MovieView.UseCompatibleStateImageBehavior = false;
 			this.MovieView.View = System.Windows.Forms.View.Details;
 			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
@@ -244,7 +244,7 @@
 			this.ShowStateFiles.Location = new System.Drawing.Point(123, 358);
 			this.ShowStateFiles.Name = "ShowStateFiles";
 			this.ShowStateFiles.Size = new System.Drawing.Size(128, 17);
-			this.ShowStateFiles.TabIndex = 10;
+			this.ShowStateFiles.TabIndex = 40;
 			this.ShowStateFiles.Text = "Show valid .state files";
 			this.ShowStateFiles.UseVisualStyleBackColor = true;
 			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
@@ -256,7 +256,7 @@
 			this.Scan.Location = new System.Drawing.Point(49, 337);
 			this.Scan.Name = "Scan";
 			this.Scan.Size = new System.Drawing.Size(27, 23);
-			this.Scan.TabIndex = 11;
+			this.Scan.TabIndex = 30;
 			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
 			this.Scan.UseVisualStyleBackColor = true;
 			this.Scan.Click += new System.EventHandler(this.Scan_Click);
