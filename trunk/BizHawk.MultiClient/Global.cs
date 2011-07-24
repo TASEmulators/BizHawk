@@ -51,6 +51,8 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
 
+		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
+
 		public static Controller ClientControls;
 
 		public static string GetOutputControllersAsMnemonic()

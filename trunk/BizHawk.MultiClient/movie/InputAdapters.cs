@@ -4,6 +4,41 @@ using System.Collections.Generic;
 
 namespace BizHawk.MultiClient
 {
+	/// <summary>
+	/// will hold buttons for 1 frame and then release them. (Calling Click() from your button click is what you want to do)
+	/// TODO - should the duration be controllable?
+	/// </summary>
+	public class ClickyVirtualPadController : IController
+	{
+		public ControllerDefinition Type { get; set; }
+
+		public bool this[string button] { get { return IsPressed(button); } }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+		public bool IsPressed(string button)
+		{
+			return Pressed.Contains(button);
+		}
+
+		/// <summary>
+		/// call this once per frame to do the timekeeping for the hold and release
+		/// </summary>
+		public void FrameTick()
+		{
+			Pressed.Clear();
+		}
+
+		/// <summary>
+		/// call this to hold the button down for one frame
+		/// </summary>
+		public void Click(string button)
+		{
+			Pressed.Add(button);
+		}
+
+		HashSet<string> Pressed = new HashSet<string>();
+	}
+
 	//filters input for things called Up and Down while considering the client's AllowUD_LR option.
 	//this is a bit gross but it is unclear how to do it more nicely
 	public class UD_LR_ControllerAdapter : IController

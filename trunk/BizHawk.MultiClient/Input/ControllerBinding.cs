@@ -29,7 +29,9 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
-		//uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding)
+		/// <summary>
+		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding)
+		/// </summary>
 		public void LatchFromPhysical(IController controller)
 		{
 			foreach (var kvp in bindings)
@@ -40,6 +42,19 @@ namespace BizHawk.MultiClient
 					if(controller[bound_button])
 						stickyButtons[kvp.Key] = true;
 				}
+			}
+		}
+
+
+		/// <summary>
+		/// merges pressed logical buttons from the supplied controller, effectively ORing it with the current state
+		/// </summary>
+		public void OR_FromLogical(IController controller)
+		{
+			foreach (string button in type.BoolButtons)
+			{
+				if (controller.IsPressed(button))
+					stickyButtons[button] = true;
 			}
 		}
 
