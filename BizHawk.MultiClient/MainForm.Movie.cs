@@ -15,8 +15,11 @@ namespace BizHawk.MultiClient
 
 		public void StartNewMovie(Movie m, bool record)
 		{
+			Global.MovieSession = new MovieSession();
+			Global.MovieSession.Movie = m;
+			UserMovie = m; //TODO - maybe get rid of UserMovie?
+			RewireInputChain();
 
-			UserMovie = m;
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
 			UserMovie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.Filename);

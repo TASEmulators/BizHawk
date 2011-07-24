@@ -384,25 +384,17 @@ namespace BizHawk.MultiClient
 			//OutputController = new ForceControllerAdapter();
 		}
 
-		IController Source;
-
-		public void SetSource(IController source)
-		{
-			//OutputController.Controller = source;
-			Source = source;
-		}
-
 		//IController implementation:
-		public ControllerDefinition Type { get { return Source.Type; } }
+		public ControllerDefinition Type { get; set; }
 		public bool this[string button] { get { return MyBoolButtons[button]; } }
 		public bool IsPressed(string button) { return MyBoolButtons[button]; }
-		public float GetFloat(string name) { return Source.GetFloat(name); }
-		public void UpdateControls(int frame) { Source.UpdateControls(frame); }
+		public float GetFloat(string name) { return 0; }
+		public void UpdateControls(int frame) {  }
 		//--------
 
-		Dictionary<string, bool> MyBoolButtons = new Dictionary<string, bool>();
+		WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 
-		void Force(string button, bool state)
+		void Force(string button, bool state)	
 		{
 			MyBoolButtons[button] = state;
 		}
@@ -426,28 +418,30 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// latches one player from the source
 		/// </summary>
-		public void LatchPlayerFromSource(int playerNum)
+		public void LatchPlayerFromSource(IController playerSource, int playerNum)
 		{
-			foreach (string button in Source.Type.BoolButtons)
+			foreach (string button in playerSource.Type.BoolButtons)
 			{
 				ButtonNameParser bnp = ButtonNameParser.Parse(button);
 				if (bnp == null) continue;
 				if (bnp.PlayerNum != playerNum) continue;
-				bool val = Source[button];
+				bool val = playerSource[button];
 				MyBoolButtons[button] = val;
 			}
 		}
 
+
 		/// <summary>
-		/// latches all buttons from the upstream source
+		/// latches all buttons from the provided source
 		/// </summary>
-		public void LatchFromSource()
+		public void LatchFromSource(IController source)
 		{
 			foreach (string button in Type.BoolButtons)
 			{
-				MyBoolButtons[button] = Source[button];
+				MyBoolButtons[button] = source[button];
 			}
 		}
+
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string

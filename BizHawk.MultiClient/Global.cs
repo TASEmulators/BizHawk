@@ -22,22 +22,29 @@ namespace BizHawk.MultiClient
 		public static Controller GBControls;
 		public static Controller NullControls;
 
-		//TODO should have one of these per movie!!!! should not be global.
-		public static MovieControllerAdapter MovieControllerAdapter = new MovieControllerAdapter();
+		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
+		public static CopyControllerAdapter MovieOutputAdapter = new CopyControllerAdapter();
 
+		/// <summary>
+		/// the global MovieSession can use this to deal with multitrack player remapping (should this be here? maybe it should be in MovieSession)
+		/// </summary>
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
+
+
+		public static MovieSession MovieSession = new MovieSession();
+
 
 		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
-		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> MovieInputController -> ControllerOutput(1) -> Game
+		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
 		//(1)->Input Display
 		
 		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public static Controller ActiveController;
 		
 		//the "output" port for the controller chain. 
-		public static IController ControllerOutput;
+		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
 		//input state which has been destined for game controller inputs are coalesced here
 		public static InputCoalescer ControllerInputCoalescer = new InputCoalescer();
@@ -56,6 +63,8 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
 
+		public static SimpleController MovieOutputController = new SimpleController();
+
 		public static Controller ClientControls;
 
 		public static string GetOutputControllersAsMnemonic()
@@ -67,6 +76,8 @@ namespace BizHawk.MultiClient
 
 		//TODO - wtf is this being used for
 		public static bool MovieMode;
+
+
 
 		public static CoreAccessor PsxCoreLibrary = new CoreAccessor(new Win32LibAccessor("PsxHawk.Core.dll"));
 

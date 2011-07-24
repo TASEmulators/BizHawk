@@ -791,9 +791,16 @@ namespace BizHawk.MultiClient
 
 			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
-			Global.MovieControllerAdapter.SetSource(Global.MovieInputSourceAdapter);
-			Global.ControllerOutput = Global.MovieControllerAdapter;
+			Global.ControllerOutput.Source = Global.MovieOutputAdapter;
 			Global.Emulator.Controller = Global.ControllerOutput;
+
+			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
+
+			//splice the movie session before MovieOutputAdapter if it is doing anything
+			if (Global.MovieSession.Movie != null)
+				Global.MovieOutputAdapter.Source = Global.MovieSession.MovieControllerAdapter;
+			else
+				Global.MovieOutputAdapter.Source = Global.MovieInputSourceAdapter;
 		}
 
 		public bool LoadRom(string path)
@@ -1039,6 +1046,27 @@ namespace BizHawk.MultiClient
 			UpdateStatusSlots(); 
 		}
 
+		/// <summary>
+		/// Controls whether the app generates input events. should be turned off for most modal dialogs
+		/// </summary>
+		public bool AllowInput
+		{
+			get
+			{
+				//the main form gets input
+				if (Form.ActiveForm == this) return true;
+				
+				//modals that need to capture input for binding purposes get input, of course
+				if (Form.ActiveForm is InputConfig) return true;
+				if (Form.ActiveForm is tools.HotkeyWindow) return true;
+				
+				//if no form is active on this process, then the background input setting applies
+				if (Form.ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
+
+				return false;
+			}
+		}
+
 		public void ProcessInput()
 		{
 			for(;;)
@@ -1093,6 +1121,7 @@ namespace BizHawk.MultiClient
 				bool handled = false;
 				if (ie.EventType == Input.InputEventType.Press)
 				{
+					Console.WriteLine(ie);
 					foreach (var trigger in triggers)
 					{
 						handled |= CheckHotkey(trigger);
@@ -1244,52 +1273,52 @@ namespace BizHawk.MultiClient
 
 				case "Toggle MultiTrack":
 					{
-						Global.MainForm.UserMovie.MultiTrack.IsActive = !Global.MainForm.UserMovie.MultiTrack.IsActive;
-						if (Global.MainForm.UserMovie.MultiTrack.IsActive)
+						Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+						if (Global.MovieSession.MultiTrack.IsActive)
 						{
 							Global.RenderPanel.AddMessage("MultiTrack Enabled");
 							Global.RenderPanel.MT = "Recording None";
 						}
 						else
 						Global.RenderPanel.AddMessage("MultiTrack Disabled");
-						Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-						Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
+						Global.MovieSession.MultiTrack.RecordAll = false;
+						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						break;
 					}
 				case "Increment Player":
 					{
-						Global.MainForm.UserMovie.MultiTrack.CurrentPlayer++;
-						Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-						if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
+						Global.MovieSession.MultiTrack.CurrentPlayer++;
+						Global.MovieSession.MultiTrack.RecordAll = false;
+						if (Global.MovieSession.MultiTrack.CurrentPlayer > 5) //TODO: Replace with console's maximum or current maximum players??!
 						{
-							Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 1;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();  
 						break;
 					}
 
 				case "Decrement Player":
 					{
-						Global.MainForm.UserMovie.MultiTrack.CurrentPlayer--;
-						Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
-						if (Global.MainForm.UserMovie.MultiTrack.CurrentPlayer < 1) 
+						Global.MovieSession.MultiTrack.CurrentPlayer--;
+						Global.MovieSession.MultiTrack.RecordAll = false;
+						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1) 
 						{
-							Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MainForm.UserMovie.MultiTrack.CurrentPlayer.ToString();  
+						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();  
 						break;
 					}
 				case "Record All":
 					{
-						Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-						Global.MainForm.UserMovie.MultiTrack.RecordAll = true;
+						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+						Global.MovieSession.MultiTrack.RecordAll = true;
 						Global.RenderPanel.MT = "Recording All";
 						break;
 					}
 				case "Record None":
 					{
-						Global.MainForm.UserMovie.MultiTrack.CurrentPlayer = 0;
-						Global.MainForm.UserMovie.MultiTrack.RecordAll = false;
+						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+						Global.MovieSession.MultiTrack.RecordAll = false;
 						Global.RenderPanel.MT = "Recording None"; 
 						break;
 					}
@@ -1312,6 +1341,7 @@ namespace BizHawk.MultiClient
 			throttle.Step(true, -1);
 		}
 
+	
 		void StepRunLoop_Core()
 		{
 			bool runFrame = false;
@@ -1407,27 +1437,35 @@ namespace BizHawk.MultiClient
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
 
+				MovieSession session = Global.MovieSession;
+
+				if (UserMovie.Mode == MOVIEMODE.FINISHED)
+				{
+					//todo - a better way of ending
+					StopMovie();
+				}
+
 				if (UserMovie.Mode != MOVIEMODE.INACTIVE)
 				{
-					UserMovie.LatchInputFromLog();
+					session.LatchInputFromLog();
 				}
 
 				if (UserMovie.Mode == MOVIEMODE.RECORD)
 				{
-					if (UserMovie.MultiTrack.IsActive)
+					if (session.MultiTrack.IsActive)
 					{
-						UserMovie.LatchMultitrackPlayerInput();
+						session.LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringControllerAdapter);
 					}
 					else
 					{
-						UserMovie.LatchInputFromPlayer();
+						session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
-					UserMovie.CommitFrame();
+					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieInputSourceAdapter);
 				}
 
 				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
 				{
-					UserMovie.LatchInputFromPlayer();
+					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 				
 				if (UserMovie.Mode == MOVIEMODE.PLAY)
@@ -1439,22 +1477,22 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-				if (UserMovie.Mode == MOVIEMODE.FINISHED)
-				{
-					if (UserMovie.Length() > Global.Emulator.Frame)
-					{
-						UserMovie.StartPlayback();
-						Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
-					}
-				}
-				if (UserMovie.Mode == MOVIEMODE.RECORD && UserMovie.MultiTrack.IsActive)
-				{					
-					Global.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
-					Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
-				}
 
-				//TODO multitrack
+				//TODO ZERO - I DONT LIKE THIS. INSPECT IT LATER.
 
+				//if (UserMovie.Mode == MOVIEMODE.FINISHED)
+				//{
+				//    if (UserMovie.Length() > Global.Emulator.Frame)
+				//    {
+				//        UserMovie.StartPlayback();
+				//        Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+				//    }
+				//}
+				//if (UserMovie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
+				//{					
+				//    Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
+				//    Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
+				//}
 
 				//=======================================
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
@@ -1611,7 +1649,8 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					UserMovie.StartNewRecording();
+					//QUESTIONABLE - control whether the movie gets truncated here?
+					UserMovie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
 					SetMainformMovieInfo();
 					Global.MovieMode = false;
 					UserMovie.LoadLogFromSavestateText(reader);

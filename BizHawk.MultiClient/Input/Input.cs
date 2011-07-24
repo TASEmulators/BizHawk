@@ -164,7 +164,14 @@ namespace BizHawk.MultiClient
 		ModifierKey _Modifiers;
 		List<InputEvent> _NewEvents = new List<InputEvent>();
 
-		//TODO - maybe need clearevents for various purposes. perhaps when returning from modal dialogs?
+		//do we need this?
+		public void ClearEvents()
+		{
+			lock (this)
+			{
+				InputEvents.Clear();
+			}
+		}
 
 		Queue<InputEvent> InputEvents = new Queue<InputEvent>();
 		public InputEvent DequeueEvent()
@@ -211,7 +218,7 @@ namespace BizHawk.MultiClient
 						HandleButton(jname + "B" + (b + 1), pad.Buttons[b]);
 				}
 
-				bool swallow = (Global.Config.AcceptBackgroundInput == false && Form.ActiveForm == null);
+				bool swallow = !Global.MainForm.AllowInput;
 
 				foreach (var ie in _NewEvents)
 				{

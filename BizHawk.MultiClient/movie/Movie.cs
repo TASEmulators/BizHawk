@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 
 		public MovieHeader Header = new MovieHeader();
 		public SubtitleList Subtitles = new SubtitleList();
-		public MultitrackRecording MultiTrack = new MultitrackRecording();
 		public bool MakeBackup = true; //make backup before altering movie
 
 		public bool IsText { get; private set; }
@@ -91,7 +90,8 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
-		public void StartNewRecording()
+		public void StartNewRecording() { StartNewRecording(true); }
+		public void StartNewRecording(bool truncate)
 		{
 			Mode = MOVIEMODE.RECORD;
 			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
@@ -99,7 +99,7 @@ namespace BizHawk.MultiClient
 				WriteBackup();
 				MakeBackup = false;
 			}
-			Log.Clear();
+			if(truncate) Log.Clear();
 		}
 
 		public void StartPlayback()
@@ -107,55 +107,21 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.PLAY;
 		}
 
-		public void LatchMultitrackPlayerInput()
+		public void CommitFrame(int frameNum, IController source)
 		{
-			if (MultiTrack.IsActive)
-			{
-				Global.MultitrackRewiringControllerAdapter.PlayerSource = 1;
-				Global.MultitrackRewiringControllerAdapter.PlayerTargetMask = 1 << (MultiTrack.CurrentPlayer);
-				if (MultiTrack.RecordAll) Global.MultitrackRewiringControllerAdapter.PlayerTargetMask = unchecked((int)0xFFFFFFFF);
-			}
-			else Global.MultitrackRewiringControllerAdapter.PlayerSource = -1;
-
-			if (MultiTrack.RecordAll)
-				Global.MovieControllerAdapter.LatchFromSource();
-			else
-				Global.MovieControllerAdapter.LatchPlayerFromSource(MultiTrack.CurrentPlayer);
-		}
-
-		public void LatchInputFromPlayer()
-		{
-			Global.MovieControllerAdapter.LatchFromSource();
-		}
-
-		/// <summary>
-		/// latch input from the log, if available
-		/// </summary>
-		public void LatchInputFromLog()
-		{
-			string loggedFrame = GetInputFrame(Global.Emulator.Frame);
-			if(loggedFrame != "")
-				Global.MovieControllerAdapter.SetControllersAsMnemonic(loggedFrame);
-		}
-
-		public void CommitFrame()
-		{
-			//if (MultiTrack.IsActive)
+			//if (Global.Emulator.Frame < Log.Length())
 			//{
+			//    Log.Truncate(Global.Emulator.Frame);
 			//}
-			//else
-			//    if (Global.Emulator.Frame < Log.Length())
-			//    {
-			//        Log.Truncate(Global.Emulator.Frame);
-			//    }
 
 			//Note: Truncation here instead of loadstate will make VBA style loadstates
 			//(Where an entire movie is loaded then truncated on the next frame
 			//this allows users to restore a movie with any savestate from that "timeline"
 
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			mg.SetSource(Global.MovieInputSourceAdapter);
-			Log.SetFrameAt(Global.Emulator.Frame, mg.GetControllersAsMnemonic());
+			
+			mg.SetSource(source);
+			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
 
 		public string GetInputFrame(int frame)
@@ -420,7 +386,7 @@ namespace BizHawk.MultiClient
 		public void LoadLogFromSavestateText(TextReader reader)
 		{
 			//We are in record mode so replace the movie log with the one from the savestate
-			if (!MultiTrack.IsActive)
+			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
 				{
