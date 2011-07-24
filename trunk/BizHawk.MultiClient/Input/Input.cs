@@ -98,6 +98,10 @@ namespace BizHawk.MultiClient
 				var other = (LogicalButton)obj;
 				return other == this;
 			}
+			public override int GetHashCode()
+			{
+				return Button.GetHashCode() ^ Modifiers.GetHashCode();
+			}
 			public static bool operator==(LogicalButton lhs, LogicalButton rhs)
 			{
 				return lhs.Button == rhs.Button && lhs.Modifiers == rhs.Modifiers;

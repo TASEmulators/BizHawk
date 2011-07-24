@@ -7,12 +7,19 @@ namespace BizHawk.MultiClient
 	public class Controller : IController
 	{
 		private ControllerDefinition type;
-		private Dictionary<string, List<string>> bindings = new Dictionary<string, List<string>>();
-		private WorkingDictionary<string, bool> stickyButtons = new WorkingDictionary<string, bool>();
-		private List<string> unpressedButtons = new List<string>();
-		private List<string> forcePressedButtons = new List<string>();
-		private List<string> removeFromForcePressedButtons = new List<string>();
-		private List<string> programmaticallyPressedButtons = new List<string>();
+		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
+		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
+
+		public Controller(ControllerDefinition definition)
+		{
+			type = definition;
+		}
+
+		public ControllerDefinition Type { get { return type; } }
+		public bool this[string button] { get { return IsPressed(button); } }
+		public bool IsPressed(string button) { return buttons[button]; }
+		public float GetFloat(string name) { throw new NotImplementedException(); }
+		public void UpdateControls(int frame) { }
 
 		//look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
@@ -36,11 +43,11 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var kvp in bindings)
 			{
-				stickyButtons[kvp.Key] = false;
+				buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
 					if(controller[bound_button])
-						stickyButtons[kvp.Key] = true;
+						buttons[kvp.Key] = true;
 				}
 			}
 		}
@@ -54,21 +61,8 @@ namespace BizHawk.MultiClient
 			foreach (string button in type.BoolButtons)
 			{
 				if (controller.IsPressed(button))
-					stickyButtons[button] = true;
+					buttons[button] = true;
 			}
-		}
-
-		public Controller(ControllerDefinition definition)
-		{
-			type = definition;
-
-			foreach (var b in type.BoolButtons)
-			{
-				bindings[b] = new List<string>();
-			}
-
-			foreach (var f in type.FloatControls)
-				bindings[f] = new List<string>();
 		}
 
 		public void BindButton(string button, string control)
@@ -85,50 +79,5 @@ namespace BizHawk.MultiClient
 				bindings[button].Add(control.Trim());
 		}
 
-		public ControllerDefinition Type
-		{
-			get { return type; }
-		}
-
-		public bool this[string button]
-		{
-			get { return IsPressed(button); }
-		}
-
-		public bool IsPressed(string button)
-		{
-			return stickyButtons[button];
-		}
-
-		public float GetFloat(string name)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void UnpressButton(string name)
-		{
-			unpressedButtons.Add(name);
-		}
-
-		public void UpdateControls(int frame)
-		{
-		}
-
-		public void SetSticky(string button, bool sticky)
-		{
-			stickyButtons[button] = sticky;
-		}
-
-		public bool IsSticky(string button)
-		{
-			return stickyButtons[button];
-		}
-
-		public void ForceButton(string button)
-		{
-			forcePressedButtons.Add(button);
-		}
-
-	
 	}
 }

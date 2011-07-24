@@ -219,7 +219,7 @@ namespace BizHawk.MultiClient
 			extractor.ExtractFile(archiveIndex, boundStream);
 			boundStream.Position = 0;
 			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
-			Console.WriteLine("bound " + CanonicalFullPath);
+			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
 
 			return this;
 		}
@@ -240,7 +240,7 @@ namespace BizHawk.MultiClient
 		void BindRoot()
 		{
 			boundStream = rootStream;
-			Console.WriteLine("bound " + CanonicalFullPath);
+			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
 		}
 
 		/// <summary>

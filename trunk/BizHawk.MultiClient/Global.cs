@@ -51,6 +51,9 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
 
+		/// <summary>
+		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
+		/// </summary>
 		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
 
 		public static Controller ClientControls;

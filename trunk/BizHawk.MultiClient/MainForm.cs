@@ -2121,8 +2121,9 @@ namespace BizHawk.MultiClient
 
 		private void SoftReset()
 		{
+			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
-				Global.ActiveController.ForceButton("Reset");
+				Global.ClickyVirtualPadController.Click("Reset");
 		}
 
 		public void UpdateStatusSlots()
