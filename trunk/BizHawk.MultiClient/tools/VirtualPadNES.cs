@@ -154,7 +154,7 @@ namespace BizHawk.MultiClient
 
 		public override string GetMnemonic()
 		{
-			StringBuilder input = new StringBuilder("|0|"); //TODO: Reset button
+			StringBuilder input = new StringBuilder("");
 			input.Append(PR.Checked ? "R" : ".");
 			input.Append(PL.Checked ? "L" : ".");
 			input.Append(PD.Checked ? "D" : ".");
