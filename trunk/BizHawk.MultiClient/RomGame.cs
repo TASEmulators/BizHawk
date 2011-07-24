@@ -17,6 +17,8 @@ namespace BizHawk.MultiClient
 		private List<string> options;
 		private const int BankSize = 4096;
 
+		public RomGame() { }
+
 		public RomGame(HawkFile file) : this(file, null) { }
 
 		public RomGame(HawkFile file, string patch)
