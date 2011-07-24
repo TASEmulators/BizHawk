@@ -981,8 +981,11 @@ namespace BizHawk.MultiClient
 
 		private void LoadSaveRam()
 		{
-			using (var reader = new BinaryReader(new FileStream(Global.Game.SaveRamPath, FileMode.Open, FileAccess.Read)))
-				reader.Read(Global.Emulator.SaveRam, 0, Global.Emulator.SaveRam.Length);
+            try
+            {
+                using (var reader = new BinaryReader(new FileStream(Global.Game.SaveRamPath, FileMode.Open, FileAccess.Read)))
+                    reader.Read(Global.Emulator.SaveRam, 0, Global.Emulator.SaveRam.Length);
+            } catch { }
 		}
 
 		private void CloseGame()

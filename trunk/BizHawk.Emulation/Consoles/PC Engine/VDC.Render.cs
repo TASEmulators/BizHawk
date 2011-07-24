@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private byte[] PriorityBuffer = new byte[512];
         private byte[] InterSpritePriorityBuffer = new byte[512];
         public int HBlankCycles = 79;
+        public bool PerformSpriteLimit;
 
         public void ExecFrame(bool render)
         {
@@ -158,20 +159,26 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
             Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
             bool Sprite4ColorMode = Sprite4ColorModeEnabled;
+            int activeSprites = 0;
 
             for (int i = 0; i < 64; i++)
             {
+                if (activeSprites >= 16 && PerformSpriteLimit)
+                    break;
+                
                 int y = (SpriteAttributeTable[(i * 4) + 0] & 1023) - 64;
                 int x = (SpriteAttributeTable[(i * 4) + 1] & 1023) - 32;
                 ushort flags = SpriteAttributeTable[(i * 4) + 3];
                 int height = heightTable[(flags >> 12) & 3];
+                int width = (flags & 0x100) == 0 ? 16 : 32;
 
                 if (y + height <= ActiveLine || y > ActiveLine)
                     continue;
 
+                activeSprites += width == 16 ? 1 : 2;
+                
                 int patternNo = (((SpriteAttributeTable[(i * 4) + 2]) >> 1) & 0x1FF);
                 int paletteBase = 256 + ((flags & 15) * 16);
-                int width = (flags & 0x100) == 0 ? 16 : 32;
                 bool priority = (flags & 0x80) != 0;
                 bool hflip = (flags & 0x0800) != 0;
                 bool vflip = (flags & 0x8000) != 0;

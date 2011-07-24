@@ -9,22 +9,13 @@ General:
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
 
-Air Zonk          - OK now - previous problem game
-Cadash            - Req HBlank hack to eliminate minor visual artifact
-Chase HQ          - Press start -"O" sprite gets left on screen. probably timing on SATB DMA
-Coryoon           - OK now - previous problem game
-Cross Wiber       - Req HBlank hack to eliminate minor visual artifact
-Dungeon Explorer  - OK now - previous problem game
-Lode Runner       - OK now - previous problem game
-MML Demo          - Echo channels are too loud (equal volume!)
-Outrun            - Req HBlank hack to eliminate visual artifact
-Tiger Road        - On second level, sprites should be getting masked from the top status area somehow
+MML Demo                     - Echo channels are too loud (equal volume!)
+The Lost Sunheart (J)        - Uses LFO in intro sound strongly!
+Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed
+Yo, Bro                      - game screen black, can hear game playing though
+Youkai Douchuuki(J)          - part of bg missing? wtf. Cpu BRK right at beginning...
 
-Bouken Danshaku Don - The Lost Sunheart (J)    - Uses LFO in intro sound strongly!
-Eagan's Rendered Sprite Demo by Eagan Rackley (PD) - demonstrates sprites that shouldnt be displayed
-Games Express CD Card 1993 - dont forget to treat as a turbocd system card
-Yo, Bro - game screen black, can hear game playing though
-Youkai Douchuuki(J) - part of bg missing? wtf.
+Games Express CD Card 1993   - dont forget to treat as a turbocd system card
 
 ===================================
 Games that need TV Emulation (to varying degrees)
