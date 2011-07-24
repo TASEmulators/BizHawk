@@ -239,7 +239,7 @@ namespace BizHawk.Emulation.Sound
                 else if (args[0] == "VoiceLatch")
                     VoiceLatch = byte.Parse(args[1]);
                 else if (args[0] == "WaveTableWriteOffset")
-                    WaveTableWriteOffset = byte.Parse(args[1]);
+                    WaveTableWriteOffset = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "[Channel1]")
                     LoadChannelStateText(reader, 0);
                 else if (args[0] == "[Channel2]")

@@ -88,6 +88,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private HuC6280 cpu;
         private VCE vce;
 
+        public int MultiResHack = 0;
+
         public VDC(HuC6280 cpu, VCE vce)
         {
             this.cpu = cpu;
@@ -112,6 +114,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 Registers[RegisterLatch] &= 0xFF00;
                 Registers[RegisterLatch] |= value;
+
+                if (RegisterLatch == BYR)
+                    BackgroundY = Registers[BYR] & 0x1FF;
             }
             else if (port == MSB)
             {
@@ -146,15 +151,20 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     break;
                 case HDR: // Horizontal Display Register - update framebuffer size
                     FrameWidth = RequestedFrameWidth;
-                    if (FrameBuffer.Length != FrameWidth * FrameHeight)
-                        FrameBuffer = new int[FrameWidth*FrameHeight];
+                    if (MultiResHack == 0)
+                        FramePitch = MultiResHack;
+                    if (FrameBuffer.Length != FramePitch * FrameHeight)
+                        FrameBuffer = new int[FramePitch * FrameHeight];
                     break;
                 case VDW: // Vertical Display Word? - update framebuffer size
                     FrameHeight = RequestedFrameHeight;
+                    FrameWidth = RequestedFrameWidth;
                     if (FrameHeight > 242)
                         FrameHeight = 242;
-                    if (FrameBuffer.Length != FrameWidth * FrameHeight)
-                        FrameBuffer = new int[FrameWidth * FrameHeight];
+                    if (MultiResHack != 0)
+                        FramePitch = MultiResHack;
+                    if (FrameBuffer.Length != FramePitch * FrameHeight)
+                        FrameBuffer = new int[FramePitch * FrameHeight];
                     break;
                 case LENR: // Initiate DMA transfer
                     DmaRequested = true;
