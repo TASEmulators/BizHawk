@@ -3,6 +3,8 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
+#pragma warning disable 162
+
 //thanks! - http://sharp-developer.net/ru/CodeBank/WinForms/GuiConsole.aspx
 
 //todo - quit using Console.WriteLine (well, we can leave it hooked up as a backstop)
