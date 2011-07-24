@@ -190,6 +190,9 @@
     <Compile Include="Disc\FFmpeg.cs" />
     <Compile Include="Disc\Subcode.cs" />
     <Compile Include="Disc\TOC_format.cs" />
+    <Compile Include="ExternalCores\EmuFile.cs" />
+    <Compile Include="ExternalCores\ExternalCore.cs" />
+    <Compile Include="ExternalCores\PsxCore.cs" />
     <Compile Include="Interfaces\Base Implementations\Game.cs" />
     <Compile Include="Interfaces\Base Implementations\IPS.cs" />
     <Compile Include="Interfaces\Base Implementations\Movies.cs" />
@@ -241,6 +244,7 @@
     <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
+    <Content Include="ExternalCores\Snippets.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

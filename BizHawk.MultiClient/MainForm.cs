@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -74,6 +75,7 @@ namespace BizHawk.MultiClient
 			}
 
 			UpdateStatusSlots();
+			
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
@@ -819,70 +821,83 @@ namespace BizHawk.MultiClient
 					else return false;
 				}
 
-				var game = new RomGame(file);
 				IEmulator nextEmulator = null;
+				RomGame game = null;
 
-				switch (game.System)
+				if (Path.GetExtension(path).ToLower() == ".iso")
 				{
-					case "SG":
-					case "SMS":
-						nextEmulator = new SMS();
-						if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
-						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-						if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
-						break;
-					case "GG":
-						nextEmulator = new SMS { IsGameGear = true };
-						if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-						break;
-					case "PCE":
-						nextEmulator = new PCEngine(NecSystemType.TurboGrafx);
-						break;
-					case "SGX":
-						nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
-						break;
-					case "GEN":
-						nextEmulator = new Genesis(true);//TODO
-						break;
-					case "TI83":
-						nextEmulator = new TI83();
-						if (Global.Config.TI83autoloadKeyPad)
-							LoadTI83KeyPad();
-						break;
-					case "NES":
-						{
-							NES nes = new NES();
-							nextEmulator = nes;
-							if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 && HawkFile.ExistsAt(Global.Config.NESPaletteFile))
+					if (Global.PsxCoreLibrary.IsOpen)
+					{
+						nextEmulator = new PsxCore(Global.PsxCoreLibrary);
+						game = new RomGame();
+					}
+				}
+				else
+				{
+					game = new RomGame(file);
+
+					switch (game.System)
+					{
+						case "SG":
+						case "SMS":
+							nextEmulator = new SMS();
+							if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
+							if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
+							if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
+							break;
+						case "GG":
+							nextEmulator = new SMS { IsGameGear = true };
+							if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
+							break;
+						case "PCE":
+							nextEmulator = new PCEngine(NecSystemType.TurboGrafx);
+							break;
+						case "SGX":
+							nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
+							break;
+						case "GEN":
+							nextEmulator = new Genesis(true);//TODO
+							break;
+						case "TI83":
+							nextEmulator = new TI83();
+							if (Global.Config.TI83autoloadKeyPad)
+								LoadTI83KeyPad();
+							break;
+						case "NES":
 							{
-								nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
+								NES nes = new NES();
+								nextEmulator = nes;
+								if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 && HawkFile.ExistsAt(Global.Config.NESPaletteFile))
+								{
+									nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
+								}
 							}
-						}
-						break;
-					case "GB":
-						nextEmulator = new Gameboy();
-						break;
+							break;
+						case "GB":
+							nextEmulator = new Gameboy();
+							break;
+					}
+
+					if (nextEmulator == null) throw new Exception();
+
+					try
+					{
+						nextEmulator.CoreInputComm = Global.CoreInputComm;
+
+						//this is a bit hacky, but many cores do not take responsibility for setting this, so we need to set it for them.
+						nextEmulator.CoreOutputComm.RomStatus = game.Status;
+
+						nextEmulator.LoadGame(game);
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+						return false;
+					}
 				}
 
-				if (nextEmulator == null)
-				{
-					throw new Exception();
-				}
+				if (nextEmulator == null) throw new Exception();
 
-				try
-				{
-					nextEmulator.CoreInputComm = Global.CoreInputComm;
-
-					//this is a bit hacky, but many cores do not take responsibility for setting this, so we need to set it for them.
-					nextEmulator.CoreOutputComm.RomStatus = game.Status;
-
-					nextEmulator.LoadGame(game);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
-					return false;
-				}
 
 				CloseGame();
 				Global.Emulator.Dispose();
@@ -1916,11 +1931,38 @@ namespace BizHawk.MultiClient
 			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, menuStrip1, new object[] { c });
 		}
 
+		string FormatFilter(params string[] args)
+		{
+			var sb = new StringBuilder();
+			if (args.Length % 2 != 0) throw new ArgumentException();
+			int num = args.Length / 2;
+			for (int i = 0; i < num; i++)
+			{
+				sb.AppendFormat("{0} ({1})|{1}", args[i * 2], args[i * 2 + 1]);
+				if (i != num - 1) sb.Append('|');
+			}
+			string str = sb.ToString().Replace("%ARCH%", "*.zip;*.rar;*.7z");
+			str = str.Replace(";", "; ");
+			return str;
+		}
+
 		private void OpenROM()
 		{
 			var ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-			ofd.Filter = "Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
+			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
+			ofd.Filter = FormatFilter(
+				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.smd;*.rom;*.iso;%ARCH%",
+				"Disc Images", "*.iso",
+				"NES", "*.nes;%ARCH%",
+				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
+				"PC Engine", "*.pce;*.sgx;%ARCH%",
+				"Gameboy", "*.gb;%ARCH%",
+				"TI-83", "*.rom;%ARCH%",
+				"Archive Files", "%ARCH%",
+				"Savestate", "*.state",
+				"All Files", "*.*");
+
 			ofd.RestoreDirectory = false;
 
 			Global.Sound.StopSound();
