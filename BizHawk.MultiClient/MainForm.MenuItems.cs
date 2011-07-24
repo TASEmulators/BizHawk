@@ -788,6 +788,12 @@ namespace BizHawk.MultiClient
 			CloseROM();
 		}
 
+
+		private void restartMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PlayMovieFromBeginning();
+		}
+
 		private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			if (EmulatorPaused)
@@ -815,6 +821,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Visible = false;
 				contextMenuStrip1.Items[14].Visible = false;
 				contextMenuStrip1.Items[15].Visible = false;
+				contextMenuStrip1.Items[16].Visible = false;
 			}
 			else
 			{
@@ -827,42 +834,44 @@ namespace BizHawk.MultiClient
 					contextMenuStrip1.Items[3].Visible = true;
 					contextMenuStrip1.Items[4].Visible = true;
 					contextMenuStrip1.Items[5].Visible = false;
-					contextMenuStrip1.Items[6].Visible = true;
-					contextMenuStrip1.Items[7].Visible = false;
+					contextMenuStrip1.Items[6].Visible = false;
+					contextMenuStrip1.Items[7].Visible = true;
 					contextMenuStrip1.Items[8].Visible = false;
 					contextMenuStrip1.Items[9].Visible = false;
-					contextMenuStrip1.Items[10].Visible = true;
-					contextMenuStrip1.Items[11].Visible = false;
+					contextMenuStrip1.Items[10].Visible = false;
+					contextMenuStrip1.Items[11].Visible = true;
+					contextMenuStrip1.Items[12].Visible = false;
 				}
 				else
 				{
 					contextMenuStrip1.Items[3].Visible = false;
 					contextMenuStrip1.Items[4].Visible = false;
 					contextMenuStrip1.Items[5].Visible = true;
-					contextMenuStrip1.Items[6].Visible = false;
-					contextMenuStrip1.Items[7].Visible = true;
+					contextMenuStrip1.Items[6].Visible = true;
+					contextMenuStrip1.Items[7].Visible = false;
 					contextMenuStrip1.Items[8].Visible = true;
 					contextMenuStrip1.Items[9].Visible = true;
 					contextMenuStrip1.Items[10].Visible = true;
+					contextMenuStrip1.Items[11].Visible = true;
 					if (ReadOnly == true)
 					{
-						contextMenuStrip1.Items[8].Text = "View Subtitles";
-						contextMenuStrip1.Items[9].Text = "View Comments";
-						contextMenuStrip1.Items[11].Visible = false;
+						contextMenuStrip1.Items[9].Text = "View Subtitles";
+						contextMenuStrip1.Items[10].Text = "View Comments";
+						contextMenuStrip1.Items[12].Visible = false;
 					}
 					else
 					{
-						contextMenuStrip1.Items[8].Text = "Edit Subtitles";
-						contextMenuStrip1.Items[9].Text = "Edit Comments";
-						contextMenuStrip1.Items[11].Visible = true;
+						contextMenuStrip1.Items[9].Text = "Edit Subtitles";
+						contextMenuStrip1.Items[10].Text = "Edit Comments";
+						contextMenuStrip1.Items[12].Visible = true;
 					}
 				}
 
-				contextMenuStrip1.Items[12].Visible = true;
-
 				contextMenuStrip1.Items[13].Visible = true;
+
 				contextMenuStrip1.Items[14].Visible = true;
 				contextMenuStrip1.Items[15].Visible = true;
+				contextMenuStrip1.Items[16].Visible = true;
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)
@@ -871,13 +880,13 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[1].Enabled = true;
 
 			if (Global.Config.RecentMovies.Length() == 0)
-				contextMenuStrip1.Items[6].Enabled = false;
+				contextMenuStrip1.Items[7].Enabled = false;
 			else
-				contextMenuStrip1.Items[6].Enabled = true;
+				contextMenuStrip1.Items[7].Enabled = true;
 
 
 			//TODO:
-			contextMenuStrip1.Items[12].Enabled = false;
+			contextMenuStrip1.Items[13].Enabled = false;
 		}
 
 

@@ -12,8 +12,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class PlayMovie : Form
 	{
-		// Option to include savestate files (that have an input log)
-		
 		List<Movie> MovieList = new List<Movie>();
 		bool sortReverse;
 		string sortedCol;
