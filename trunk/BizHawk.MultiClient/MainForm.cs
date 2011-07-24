@@ -1315,7 +1315,7 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-			if (Global.ClientControls["Frame Advance"])
+			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)
