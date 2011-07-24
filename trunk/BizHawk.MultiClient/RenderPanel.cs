@@ -351,7 +351,7 @@ namespace BizHawk.MultiClient
 				MessageFont.DrawString(null, input, x + 1, y + 1, Color.Black);
 				MessageFont.DrawString(null, input, x, y, c);
 			}
-			if (Global.MainForm.UserMovie.MultiTrack.IsActive)
+			if (Global.MovieSession.MultiTrack.IsActive)
 			{
 				MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
 				   Global.Config.DispFPSy + 1, new Color4(Color.Black));
