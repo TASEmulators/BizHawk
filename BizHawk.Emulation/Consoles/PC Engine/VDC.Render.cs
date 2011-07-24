@@ -30,6 +30,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void ExecFrame(bool render)
         {
+            if (MultiResHack > 0 && render)
+                Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
+            
             while (true)
             {
                 int ActiveDisplayStartLine = DisplayStartLine;
@@ -115,7 +118,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (BackgroundEnabled == false)
             {
                 for (int i = 0; i < FrameWidth; i++)
-                    FrameBuffer[(ActiveLine * FrameWidth) + i] = vce.Palette[0];
+                    FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[0];
                 return;
             }
 
@@ -141,10 +144,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
                 if (c == 0)
-                    FrameBuffer[(ActiveLine * FrameWidth) + x] = vce.Palette[0];
+                    FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[0];
                 else
                 {
-                    FrameBuffer[(ActiveLine * FrameWidth) + x] = vce.Palette[paletteBase + c];
+                    FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[paletteBase + c];
                     PriorityBuffer[x] = 1;
                 }
             }
@@ -273,7 +276,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
                                 if (priority || PriorityBuffer[xs] == 0)
-                                    FrameBuffer[(ActiveLine * FrameWidth) + xs] = vce.Palette[paletteBase + pixel];
+                                    FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
                         }
                     }
@@ -290,7 +293,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
                                 if (priority || PriorityBuffer[xs] == 0)
-                                    FrameBuffer[(ActiveLine * FrameWidth) + xs] = vce.Palette[paletteBase + pixel];
+                                    FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
 
                         }
@@ -311,7 +314,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
                                 if (priority || PriorityBuffer[xs] == 0)
-                                    FrameBuffer[(ActiveLine * FrameWidth) + xs] = vce.Palette[paletteBase + pixel];
+                                    FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
                         }
                         if (width == 32)
@@ -327,7 +330,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 {
                                     InterSpritePriorityBuffer[xs] = 1;
                                     if (priority || PriorityBuffer[xs] == 0)
-                                        FrameBuffer[(ActiveLine * FrameWidth) + xs] = vce.Palette[paletteBase + pixel];
+                                        FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                                 }
                             }
                         }
@@ -336,6 +339,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
+        private int FramePitch = 256;
         private int FrameWidth = 256;
         private int FrameHeight = 240;
         private int[] FrameBuffer = new int[256 * 240];
@@ -347,7 +351,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public int BufferWidth
         {
-            get { return FrameWidth; }
+            get { return FramePitch; }
         }
 
         public int BufferHeight

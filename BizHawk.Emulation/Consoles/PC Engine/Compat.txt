@@ -12,8 +12,7 @@ General:
 MML Demo                     - Echo channels are too loud (equal volume!)
 The Lost Sunheart (J)        - Uses LFO in intro sound strongly!
 Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed
-Yo, Bro                      - game screen black, can hear game playing though
-Youkai Douchuuki(J)          - part of bg missing? wtf. Cpu BRK right at beginning...
+
 
 Games Express CD Card 1993   - dont forget to treat as a turbocd system card
 
@@ -24,7 +23,8 @@ Games that need TV Emulation (to varying degrees)
 Greater degrees:
 
 Final Blaster     - Intro does crazy shit with video modes; not sure what if anything to do about it
-Griffon           - Screen goes black because game changes video mode mid-frame
+Griffon           - Mid-frame res changes (hax to make playable)
+Yo, Bro           - Mid-frame res changes (hax to make playable)
 
 Lesser degrees:
 
