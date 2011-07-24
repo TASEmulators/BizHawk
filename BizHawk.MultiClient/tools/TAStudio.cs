@@ -12,6 +12,7 @@ namespace BizHawk.MultiClient
 	public partial class TAStudio : Form
 	{
 		//TODO:
+		//If null emulator do a base virtualpad so getmnemonic doesn't fail
 		//Right-click - Go to current frame
 		//Clicking a frame should go there
 		//Multiple timeline system
@@ -27,6 +28,7 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		
 		public bool Engaged; //When engaged the Client will listen to TAStudio for input
+		List<VirtualPad> Pads = new List<VirtualPad>();
 
 		//Movie header object - to have the main project header data
 		//List<string> MacroFiles - list of .macro files (simply log files)
@@ -54,7 +56,9 @@ namespace BizHawk.MultiClient
 		public string GetMnemonic()
 		{
 			StringBuilder str = new StringBuilder("|0|"); //TODO: Control Command virtual pad
-			str.Append(Pad1.GetMnemonic());
+			
+			for (int x = 0; x < Pads.Count; x++)
+				str.Append(Pads[x].GetMnemonic());
 			return str.ToString();
 		}
 
@@ -85,11 +89,28 @@ namespace BizHawk.MultiClient
 			//
 			Engaged = true;
 			Global.RenderPanel.AddMessage("TAStudio engaged");
-			//
 
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
 			DisplayList();
+
+			//Add virtual pads
+			switch (Global.Emulator.SystemId)
+			{
+				case "NULL":
+				default:
+					break;
+				case "NES":
+					VirtualPadNES v1 = new VirtualPadNES();
+					v1.Location = new Point(8, 19);
+					VirtualPadNES v2 = new VirtualPadNES();
+					v2.Location = new Point(188, 19);
+					Pads.Add(v1);
+					Pads.Add(v2);
+					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(Pads[1]);
+					break;
+			}
 		}
 
 		private void LoadConfigSettings()

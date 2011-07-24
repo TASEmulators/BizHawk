@@ -64,15 +64,13 @@
 			this.insertFrameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.Pad1 = new BizHawk.MultiClient.VirtualPadNES();
+			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = new System.Windows.Forms.ColumnHeader();
 			this.Log = new System.Windows.Forms.ColumnHeader();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
-			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -143,18 +141,18 @@
 			// nToolStripMenuItem
 			// 
 			this.nToolStripMenuItem.Name = "nToolStripMenuItem";
-			this.nToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.nToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.nToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
@@ -358,23 +356,14 @@
 			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.selectAllToolStripMenuItem.Text = "Select All";
 			// 
-			// groupBox1
+			// ControllerBox
 			// 
-			this.groupBox1.Controls.Add(this.Pad1);
-			this.groupBox1.Location = new System.Drawing.Point(300, 55);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(367, 197);
-			this.groupBox1.TabIndex = 4;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Controllers";
-			// 
-			// Pad1
-			// 
-			this.Pad1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.Pad1.Location = new System.Drawing.Point(6, 19);
-			this.Pad1.Name = "Pad1";
-			this.Pad1.Size = new System.Drawing.Size(174, 74);
-			this.Pad1.TabIndex = 0;
+			this.ControllerBox.Location = new System.Drawing.Point(300, 55);
+			this.ControllerBox.Name = "ControllerBox";
+			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
+			this.ControllerBox.TabIndex = 4;
+			this.ControllerBox.TabStop = false;
+			this.ControllerBox.Text = "Controllers";
 			// 
 			// TASView
 			// 
@@ -411,7 +400,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.ReadOnlyCheckBox);
 			this.Controls.Add(this.TASView);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.ControllerBox);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "TAStudio";
@@ -422,7 +411,6 @@
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -465,8 +453,7 @@
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private VirtualPadNES Pad1;
+		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripButton StopButton;
     }
