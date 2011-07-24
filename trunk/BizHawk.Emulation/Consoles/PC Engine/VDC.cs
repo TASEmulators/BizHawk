@@ -151,8 +151,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     break;
                 case HDR: // Horizontal Display Register - update framebuffer size
                     FrameWidth = RequestedFrameWidth;
-                    if (MultiResHack == 0)
-                        FramePitch = MultiResHack;
+                    FramePitch = MultiResHack == 0 ? FrameWidth : MultiResHack;
                     if (FrameBuffer.Length != FramePitch * FrameHeight)
                         FrameBuffer = new int[FramePitch * FrameHeight];
                     break;
