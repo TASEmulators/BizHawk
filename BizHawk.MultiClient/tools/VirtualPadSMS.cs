@@ -148,17 +148,44 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SMS") return;
 			if (sender == PU)
-				Global.ActiveController.SetSticky("Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "Up", PU.Checked);
 			else if (sender == PD)
-				Global.ActiveController.SetSticky("Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "Down", PD.Checked);
 			else if (sender == PL)
-				Global.ActiveController.SetSticky("Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "Left", PL.Checked);
 			else if (sender == PR)
-				Global.ActiveController.SetSticky("Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "Right", PR.Checked);
 			else if (sender == B1)
-				Global.ActiveController.SetSticky("1", B3.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "B1", B3.Checked);
 			else if (sender == B2)
-				Global.ActiveController.SetSticky("2", B4.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + "B2", B4.Checked);
+		}
+
+		public override void Clear()
+		{
+			if (Global.Emulator.SystemId != "SMS") return; //TODO: GG & SG can share pad?
+			PU.Checked = false;
+			PD.Checked = false;
+			PL.Checked = false;
+			PR.Checked = false;
+
+			B1.Checked = false;
+			B2.Checked = false;
+			B3.Checked = false;
+			B4.Checked = false;
+			B5.Checked = false;
+			B6.Checked = false;
+			B7.Checked = false;
+			B8.Checked = false;
+
+			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " B1", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " B2", false);
 		}
 	}
 }

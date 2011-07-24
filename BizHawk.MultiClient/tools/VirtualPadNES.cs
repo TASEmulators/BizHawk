@@ -172,22 +172,48 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "NES") return;
 			if (sender == PU)
-				Global.ActiveController.SetSticky("Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
 			else if (sender == PD)
-				Global.ActiveController.SetSticky("Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
 			else if (sender == PL)
-				Global.ActiveController.SetSticky("Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
 			else if (sender == PR)
-				Global.ActiveController.SetSticky("Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
 			else if (sender == B1)
-				Global.ActiveController.SetSticky("Select", B1.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Select", B1.Checked);
 			else if (sender == B2)
-				Global.ActiveController.SetSticky("Start", B2.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Start", B2.Checked);
 			else if (sender == B3)
-				Global.ActiveController.SetSticky("B", B3.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " B", B3.Checked);
 			else if (sender == B4)
-				Global.ActiveController.SetSticky("A", B4.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " A", B4.Checked);
+		}
 
+		public override void Clear()
+		{
+			if (Global.Emulator.SystemId != "NES") return;
+			PU.Checked = false;
+			PD.Checked = false;
+			PL.Checked = false;
+			PR.Checked = false;
+
+			B1.Checked = false;
+			B2.Checked = false;
+			B3.Checked = false;
+			B4.Checked = false;
+			B5.Checked = false;
+			B6.Checked = false;
+			B7.Checked = false;
+			B8.Checked = false;
+
+			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Right", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Select", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " Start", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " B", false);
+			Global.StickyXORAdapter.SetSticky(Controller + " A", false);
 		}
 	}
 }
