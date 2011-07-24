@@ -43,10 +43,56 @@ namespace BizHawk.MultiClient
 		public ControllerDefinition Type { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
-		public bool this[string button] { get { return Buttons[button]; } set { Buttons[button] = value; } }
+		public virtual bool this[string button] { get { return Buttons[button]; } set { Buttons[button] = value; } }
+		public virtual bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		public virtual void LatchFrom(IController source)
+		{
+			foreach (string button in source.Type.BoolButtons)
+			{
+				Buttons[button] = source[button];
+			}
+		}
+	}
+
+	public class StickyXORAdapter : IController
+	{
+		private HashSet<string> stickySet = new HashSet<string>();
+		public IController Source;
+
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
 		public bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
+
+		public bool this[string button] { 
+			get 
+			{
+				bool source = Source[button];
+				if (source)
+				{
+				}
+				source ^= stickySet.Contains(button);
+				return source;
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+		
+		public void SetSticky(string button, bool isSticky)
+		{
+			if(isSticky)
+				stickySet.Add(button);
+			else stickySet.Remove(button);
+		}
+
+		public bool IsSticky(string button)
+		{
+			return stickySet.Contains(button);
+		}
 	}
 
 	public class MnemonicsGenerator

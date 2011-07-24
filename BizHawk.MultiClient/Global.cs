@@ -28,7 +28,8 @@ namespace BizHawk.MultiClient
 
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringControllerAdapter = new MultitrackRewiringControllerAdapter();
 
-		//user -> Input -> ActiveController -> TurboAdapter(TBD) -> Lua(?) -> ..
+		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
+		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
 		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> MovieInputController -> ControllerOutput(1) -> Game
 		//(1)->Input Display
 		
@@ -44,6 +45,11 @@ namespace BizHawk.MultiClient
 		public static InputCoalescer HotkeyCoalescer = new InputCoalescer();
 
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+
+		/// <summary>
+		/// provides an opportunity to mutate the player's input in an autohold style
+		/// </summary>
+		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
 
 		public static Controller ClientControls;
 

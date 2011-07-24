@@ -781,12 +781,13 @@ namespace BizHawk.MultiClient
 
 		void RewireInputChain()
 		{
-			//insert turbo and lua here?
 			Global.ControllerInputCoalescer = new InputCoalescer();
 			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 
 			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
-			Global.MultitrackRewiringControllerAdapter.Source = Global.UD_LR_ControllerAdapter;
+			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
+
+			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.MovieControllerAdapter.SetSource(Global.MovieInputSourceAdapter);
 			Global.ControllerOutput = Global.MovieControllerAdapter;
@@ -828,8 +829,12 @@ namespace BizHawk.MultiClient
 				{
 					if (Global.PsxCoreLibrary.IsOpen)
 					{
-						nextEmulator = new PsxCore(Global.PsxCoreLibrary);
+						PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
+						nextEmulator = psx;
 						game = new RomGame();
+
+						//set disc
+						//psx.
 					}
 				}
 				else
