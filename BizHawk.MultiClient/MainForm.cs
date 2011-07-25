@@ -1440,13 +1440,7 @@ namespace BizHawk.MultiClient
 
 				MovieSession session = Global.MovieSession;
 
-				if (UserMovie.Mode == MOVIEMODE.FINISHED)
-				{
-					//todo - a better way of ending
-					StopMovie();
-				}
-
-				if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode == MOVIEMODE.RECORD || UserMovie.Mode == MOVIEMODE.PLAY)
 				{
 					session.LatchInputFromLog();
 				}
@@ -1464,7 +1458,7 @@ namespace BizHawk.MultiClient
 					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieInputSourceAdapter);
 				}
 
-				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+				if (UserMovie.Mode == MOVIEMODE.INACTIVE || UserMovie.Mode == MOVIEMODE.FINISHED)
 				{
 					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
