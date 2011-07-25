@@ -93,7 +93,8 @@
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Name = "LogWindow";
-			this.Text = "LogWindow";
+			this.ShowIcon = false;
+			this.Text = "Log Window";
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();

@@ -86,6 +86,10 @@
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 
+
+		//BIOS Paths
+		public string PathPCEBios = ".\\PCECDBios.pce"; //TODO: better default filename
+
 		public string FFMpegPath = "ffmpeg.exe";
 
 		// General Client Settings
