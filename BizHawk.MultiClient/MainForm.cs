@@ -1393,7 +1393,8 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
 			{
-				rewindCredits += Global.Config.SpeedPercent;
+				//* 2 to account for the fact that we need to rewind twice as fast as we play in order to rewind at the target speed
+				rewindCredits += Global.Config.SpeedPercent * 2;
 				int rewindTodo = rewindCredits / 100;
 				if (rewindTodo >= 1)
 				{
