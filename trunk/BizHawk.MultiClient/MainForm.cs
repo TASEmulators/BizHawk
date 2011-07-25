@@ -1722,7 +1722,7 @@ namespace BizHawk.MultiClient
 		{
 			var ofd = new OpenFileDialog();
 			ofd.InitialDirectory = Global.Game.SaveStatePrefix;
-			ofd.Filter = "Save States (*.State)|*.State|All File|*.*";
+			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
 			Global.Sound.StopSound();

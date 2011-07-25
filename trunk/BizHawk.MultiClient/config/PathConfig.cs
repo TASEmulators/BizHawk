@@ -109,6 +109,8 @@ namespace BizHawk.MultiClient
 			LuaBox.Text = Global.Config.LuaPath;
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
+
+			PCEBiosBox.Text = Global.Config.PathPCEBios;
 		}
 
 		private void SaveSettings()
@@ -177,6 +179,8 @@ namespace BizHawk.MultiClient
 			Global.Config.LuaPath = LuaBox.Text;
 			Global.Config.WatchPath = WatchBox.Text;
 			Global.Config.AVIPath = AVIBox.Text;
+
+			Global.Config.PathPCEBios = PCEBiosBox.Text;
 
 			BasePathBox.Focus();
 		}
@@ -545,9 +549,21 @@ namespace BizHawk.MultiClient
 			BrowseFolder(NESPaletteBox, NESPaletteDescription.Text, "NES");
 		}
 
-		private void tabPage4_Click(object sender, EventArgs e)
+		private void PCEBrowseBios_Click(object sender, EventArgs e)
 		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.PathPCEBios);
+			ofd.Filter = "PCE CD BIOS (*.pce)|*.pce|All Files|*.*";
+			ofd.FileName = Path.GetFileName(Global.Config.PathPCEBios);
 
+			var result = ofd.ShowDialog();
+			if (result != DialogResult.OK)
+				return;
+
+			if (File.Exists(ofd.FileName) == false)
+				return;
+
+			PCEBiosBox.Text = ofd.FileName;
 		}
 	}
 }
