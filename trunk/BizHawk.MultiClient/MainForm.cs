@@ -1391,7 +1391,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
+			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"])// || PressRewind)
 			{
 				//* 2 to account for the fact that we need to rewind twice as fast as we play in order to rewind at the target speed
 				rewindCredits += Global.Config.SpeedPercent * 2;
@@ -1407,6 +1407,14 @@ namespace BizHawk.MultiClient
 					runFrame = false;
 
 				PressRewind = false;
+			}
+			else if (PressRewind) //External programs (TAStudio) can use this bool to just rewind 1 frame
+			{
+				PressRewind = false;
+				rewindCredits -= 100;
+				Rewind(1);
+				suppressCaptureRewind = true;
+				runFrame = true;
 			}
 			else rewindCredits = 0;
 
