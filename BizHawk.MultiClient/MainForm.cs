@@ -1471,22 +1471,22 @@ namespace BizHawk.MultiClient
 						Global.MovieMode = false;
 					}
 				}
-
-
-				//TODO ZERO - I DONT LIKE THIS. INSPECT IT LATER.
-
-				//if (UserMovie.Mode == MOVIEMODE.FINISHED)
-				//{
-				//    if (UserMovie.Length() > Global.Emulator.Frame)
-				//    {
-				//        UserMovie.StartPlayback();
-				//        Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
-				//    }
-				//}
+				if (UserMovie.Mode == MOVIEMODE.FINISHED)
+				{
+					if (UserMovie.Length() > Global.Emulator.Frame)
+					{
+						UserMovie.StartPlayback();
+						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+						//Global.MovieMode = true;
+						//adelikat: is Global.MovieMode doing anything anymore? if not we shoudl remove this variable
+						session.LatchInputFromLog();
+					}
+				}
+				
+				//TODO: adelikat: don't know what this should do so leaving it commented out
 				//if (UserMovie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
 				//{					
-				//    Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
-				//    Console.WriteLine("Out: " + UserMovie.GetInputFrame(Global.Emulator.Frame));
+				//	Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
 				//}
 
 				//=======================================
