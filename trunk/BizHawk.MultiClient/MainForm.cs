@@ -47,7 +47,6 @@ namespace BizHawk.MultiClient
 
 		Throttle throttle = new Throttle();
 		bool unthrottled = false;
-		int rewindCredits;
 
 		//For handling automatic pausing when entering the menu
 		private bool wasPaused = false;
@@ -841,6 +840,10 @@ namespace BizHawk.MultiClient
 						PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
 						nextEmulator = psx;
 						game = new RomGame();
+						var disc = Disc.Disc.FromIsoPath(path);
+						//Global.DiscHopper.Clear();
+						//Global.DiscHopper.Enqueue(disc);
+						//Global.DiscHopper.Insert();
 
 						//set disc
 						//psx.
@@ -1121,7 +1124,6 @@ namespace BizHawk.MultiClient
 				bool handled = false;
 				if (ie.EventType == Input.InputEventType.Press)
 				{
-					Console.WriteLine(ie);
 					foreach (var trigger in triggers)
 					{
 						handled |= CheckHotkey(trigger);
@@ -1391,32 +1393,13 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"])// || PressRewind)
+			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
 			{
-				//* 2 to account for the fact that we need to rewind twice as fast as we play in order to rewind at the target speed
-				rewindCredits += Global.Config.SpeedPercent * 2;
-				int rewindTodo = rewindCredits / 100;
-				if (rewindTodo >= 1)
-				{
-					rewindCredits -= 100 * rewindTodo;
-					Rewind(rewindTodo);
-					suppressCaptureRewind = true;
-					runFrame = true;
-				}
-				else
-					runFrame = false;
-
-				PressRewind = false;
-			}
-			else if (PressRewind) //External programs (TAStudio) can use this bool to just rewind 1 frame
-			{
-				PressRewind = false;
-				rewindCredits -= 100;
 				Rewind(1);
 				suppressCaptureRewind = true;
 				runFrame = true;
+				PressRewind = false;
 			}
-			else rewindCredits = 0;
 
 			bool genSound = false;
 			if (runFrame)
