@@ -171,13 +171,7 @@ namespace BizHawk.MultiClient
 
 			B1.Checked = false;
 			B2.Checked = false;
-			B3.Checked = false;
-			B4.Checked = false;
-			B5.Checked = false;
-			B6.Checked = false;
-			B7.Checked = false;
-			B8.Checked = false;
-
+			
 			Global.StickyXORAdapter.SetSticky(Controller + " Up", false);
 			Global.StickyXORAdapter.SetSticky(Controller + " Down", false);
 			Global.StickyXORAdapter.SetSticky(Controller + " Left", false);
