@@ -121,8 +121,10 @@ namespace BizHawk.MultiClient
 				case "GG":
 					VirtualPadSMS smspad1 = new VirtualPadSMS();
 					smspad1.Location = new Point(8, 19);
+					smspad1.Controller = "P1";
 					VirtualPadSMS smspad2 = new VirtualPadSMS();
 					smspad2.Location = new Point(188, 19);
+					smspad2.Controller = "P2";
 					Pads.Add(smspad1);
 					Pads.Add(smspad2);
 					ControllerBox.Controls.Add(Pads[0]);

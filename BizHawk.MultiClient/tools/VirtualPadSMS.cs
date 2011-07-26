@@ -148,17 +148,17 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SMS") return;
 			if (sender == PU)
-				Global.StickyXORAdapter.SetSticky(Controller + "Up", PU.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Up", PU.Checked);
 			else if (sender == PD)
-				Global.StickyXORAdapter.SetSticky(Controller + "Down", PD.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Down", PD.Checked);
 			else if (sender == PL)
-				Global.StickyXORAdapter.SetSticky(Controller + "Left", PL.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Left", PL.Checked);
 			else if (sender == PR)
-				Global.StickyXORAdapter.SetSticky(Controller + "Right", PR.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " Right", PR.Checked);
 			else if (sender == B1)
-				Global.StickyXORAdapter.SetSticky(Controller + "B1", B3.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " B1", B3.Checked);
 			else if (sender == B2)
-				Global.StickyXORAdapter.SetSticky(Controller + "B2", B4.Checked);
+				Global.StickyXORAdapter.SetSticky(Controller + " B2", B4.Checked);
 		}
 
 		public override void Clear()
