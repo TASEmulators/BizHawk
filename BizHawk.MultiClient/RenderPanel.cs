@@ -189,6 +189,11 @@ namespace BizHawk.MultiClient
 				MessageFont.Dispose();
 				MessageFont = null;
 			}
+            if (AlertFont != null)
+            {
+                AlertFont.Dispose();
+                AlertFont = null;
+            }
 			if (Device != null)
 			{
 				Device.Dispose();
@@ -217,6 +222,8 @@ namespace BizHawk.MultiClient
 			Texture = new ImageTexture(Device);
 			MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
 			AlertFont = new Font(Device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
+            // NOTE: if you add ANY objects, like new fonts, textures, etc, to this method
+            // ALSO add dispose code in DestroyDevice() or you will be responsible for VRAM memory leaks.
 		}
 
 		public void Render()
@@ -318,7 +325,6 @@ namespace BizHawk.MultiClient
 					return backingControl.Size.Height - Global.Emulator.VideoProvider.BufferHeight + y;
 			}
 		}
-
 
 		/// <summary>
 		/// Display all screen info objects like fps, frame counter, lag counter, and input display
