@@ -242,7 +242,7 @@
             this.StopButton});
 			this.toolStrip1.Location = new System.Drawing.Point(37, 27);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(154, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(185, 25);
 			this.toolStrip1.TabIndex = 0;
 			// 
 			// RewindToBeginning
@@ -292,6 +292,7 @@
 			// FastFowardToEnd
 			// 
 			this.FastFowardToEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FastFowardToEnd.Enabled = false;
 			this.FastFowardToEnd.Image = global::BizHawk.MultiClient.Properties.Resources.ForwardMore;
 			this.FastFowardToEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FastFowardToEnd.Name = "FastFowardToEnd";
