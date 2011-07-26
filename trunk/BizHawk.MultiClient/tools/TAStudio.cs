@@ -144,14 +144,20 @@ namespace BizHawk.MultiClient
 			Global.Config.TASWndy = this.Location.Y;
 			Global.Config.TASWidth = this.Right - this.Left;
 			Global.Config.TASHeight = this.Bottom - this.Top;
+			ClearPads();
+		}
 
+		public void ClearPads()
+		{
 			for (int x = 0; x < Pads.Count; x++)
 				Pads[x].Clear();
 		}
 
 		public void Restart()
 		{
-
+			TASView.Clear();
+			TASView.Update();
+			ClearPads();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -178,6 +184,7 @@ namespace BizHawk.MultiClient
 		private void StopButton_Click(object sender, EventArgs e)
 		{
 			Global.MainForm.StopMovie();
+			Restart();
 		}
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
