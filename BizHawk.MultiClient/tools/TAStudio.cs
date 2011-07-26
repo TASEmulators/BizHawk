@@ -158,6 +158,7 @@ namespace BizHawk.MultiClient
 			TASView.Clear();
 			TASView.Update();
 			ClearPads();
+			DisplayList();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
