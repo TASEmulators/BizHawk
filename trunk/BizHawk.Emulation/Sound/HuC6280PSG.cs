@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Sound
         private const int SampleRate = 44100;
         private const int PsgBase = 3580000;
         private static byte[] LogScale = { 0, 0, 10, 10, 13, 13, 16, 16, 20, 20, 26, 26, 32, 32, 40, 40, 51, 51, 64, 64, 81, 81, 102, 102, 128, 128, 161, 161, 203, 203, 255, 255 };
+        private static byte[] VolumeReductionTable = { 0x1F, 0x1D, 0x1B, 0x19, 0x17, 0x15, 0x13, 0x10, 0x0F, 0x0D, 0x0B, 0x09, 0x07, 0x05, 0x03, 0x00 };
 
         public byte MainVolumeLeft;
         public byte MainVolumeRight;
@@ -77,6 +78,7 @@ namespace BizHawk.Emulation.Sound
                 case 1: // Global Volume select;
                     MainVolumeLeft  = (byte) ((value >> 4) & 0x0F);
                     MainVolumeRight = (byte) (value & 0x0F);
+                    //Console.WriteLine("Global Volume {0:X} {1:X}",MainVolumeLeft, MainVolumeRight);
                     break;
                 case 2: // Frequency LSB
                     Channels[VoiceLatch].Frequency &= 0xFF00;
@@ -90,12 +92,15 @@ namespace BizHawk.Emulation.Sound
                 case 4: // Voice Volume
                     Channels[VoiceLatch].Volume = (byte) (value & 0x1F);
                     Channels[VoiceLatch].Enabled = (value & 0x80) != 0;
+                    if (Channels[VoiceLatch].Enabled) 
+                      //  Console.WriteLine("Volume[{0}]={1:X}",VoiceLatch, Channels[VoiceLatch].Volume);
                     Channels[VoiceLatch].DDA = (value & 0x40) != 0;
                     if (Channels[VoiceLatch].Enabled == false && Channels[VoiceLatch].DDA)
                         WaveTableWriteOffset = 0;
                     break;
                 case 5: // Panning
                     Channels[VoiceLatch].Panning = value;
+                    //Console.WriteLine("Panning[{0}]={1:X}", VoiceLatch, Channels[VoiceLatch].Panning);
                     break;
                 case 6: // Wave data
                     if (Channels[VoiceLatch].DDA == false)
@@ -118,9 +123,11 @@ namespace BizHawk.Emulation.Sound
                 case 9: // LFO Control
                     if ((value & 0x80) == 0 && (value & 3) != 0)
                     {
+                        Console.WriteLine("LFO ON");
                         Channels[1].Enabled = false;
                     } else
                     {
+                        Console.WriteLine("LFO OFF");
                         Channels[1].Enabled = true;
                     }
                     break;
@@ -168,12 +175,19 @@ namespace BizHawk.Emulation.Sound
                 freq = PsgBase / (32 * ((int)channel.Frequency));
             }
 
-            int leftVol = channel.Panning >> 4;
-            int rightVol = channel.Panning & 15;
-            leftVol *= MainVolumeLeft;
-            rightVol *= MainVolumeRight;
-            leftVol /= 16;
-            rightVol /= 16;
+            int globalPanFactorLeft = VolumeReductionTable[MainVolumeLeft];
+            int globalPanFactorRight = VolumeReductionTable[MainVolumeRight];          
+            int channelPanFactorLeft = VolumeReductionTable[channel.Panning >> 4];
+            int channelPanFactorRight = VolumeReductionTable[channel.Panning & 0xF];
+            int channelVolumeFactor = 0x1f - channel.Volume;
+
+            int volumeLeft = 0x1F - globalPanFactorLeft - channelPanFactorLeft - channelVolumeFactor;
+            if (volumeLeft < 0) 
+                volumeLeft = 0;
+
+            int volumeRight = 0x1F - globalPanFactorRight - channelPanFactorRight - channelVolumeFactor;
+            if (volumeRight < 0)
+                volumeRight = 0;
 
             float adjustedWaveLengthInSamples = SampleRate / (channel.NoiseChannel ? freq/(float)(channel.Wave.Length*128) : freq);
             float moveThroughWaveRate = wave.Length / adjustedWaveLengthInSamples;
@@ -184,8 +198,8 @@ namespace BizHawk.Emulation.Sound
                 channel.SampleOffset %= wave.Length;
                 short value = channel.DDA ? channel.DDAValue : wave[(int) channel.SampleOffset];
 
-                samples[i++] += (short)((value * LogScale[channel.Volume] / 255f / 6f) * (leftVol / 15f));
-                samples[i++] += (short)((value * LogScale[channel.Volume] / 255f / 6f) * (rightVol / 15f));
+                samples[i++] += (short)(value * LogScale[volumeLeft] / 255f / 6f);
+                samples[i++] += (short)(value * LogScale[volumeRight] / 255f / 6f);
 
                 channel.SampleOffset += moveThroughWaveRate;
                 channel.SampleOffset %= wave.Length;
