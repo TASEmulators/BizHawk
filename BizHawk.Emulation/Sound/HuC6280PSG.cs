@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Sound
                 case 1: // Global Volume select;
                     MainVolumeLeft  = (byte) ((value >> 4) & 0x0F);
                     MainVolumeRight = (byte) (value & 0x0F);
-                    //Console.WriteLine("Global Volume {0:X} {1:X}",MainVolumeLeft, MainVolumeRight);
                     break;
                 case 2: // Frequency LSB
                     Channels[VoiceLatch].Frequency &= 0xFF00;
@@ -92,15 +91,12 @@ namespace BizHawk.Emulation.Sound
                 case 4: // Voice Volume
                     Channels[VoiceLatch].Volume = (byte) (value & 0x1F);
                     Channels[VoiceLatch].Enabled = (value & 0x80) != 0;
-                    if (Channels[VoiceLatch].Enabled) 
-                      //  Console.WriteLine("Volume[{0}]={1:X}",VoiceLatch, Channels[VoiceLatch].Volume);
                     Channels[VoiceLatch].DDA = (value & 0x40) != 0;
                     if (Channels[VoiceLatch].Enabled == false && Channels[VoiceLatch].DDA)
                         WaveTableWriteOffset = 0;
                     break;
                 case 5: // Panning
                     Channels[VoiceLatch].Panning = value;
-                    //Console.WriteLine("Panning[{0}]={1:X}", VoiceLatch, Channels[VoiceLatch].Panning);
                     break;
                 case 6: // Wave data
                     if (Channels[VoiceLatch].DDA == false)
@@ -123,11 +119,10 @@ namespace BizHawk.Emulation.Sound
                 case 9: // LFO Control
                     if ((value & 0x80) == 0 && (value & 3) != 0)
                     {
-                        Console.WriteLine("LFO ON");
+                        Console.WriteLine("****************      LFO ON !!!!!!!!!!       *****************");
                         Channels[1].Enabled = false;
                     } else
                     {
-                        Console.WriteLine("LFO OFF");
                         Channels[1].Enabled = true;
                     }
                     break;
@@ -171,7 +166,7 @@ namespace BizHawk.Emulation.Sound
             } else if (channel.DDA) {
                 freq = 0;
             } else {
-                if (channel.Frequency == 0) return;
+                if (channel.Frequency <= 1) return;
                 freq = PsgBase / (32 * ((int)channel.Frequency));
             }
 

@@ -1,18 +1,13 @@
 ﻿======= TurboGrafx compatibility issues =======
 
 General: 
- + Don't have a complete list of instructions affected by T flag. Currently warns if SET precedes an unrecognized instruction.
- + Audio volumes are probably wrong.
  + LFO is not implemented, though I can't tell.
  + Screen resolution is an ongoing issue. Some games appear to show garbage beyond what it supposed to be visible.
    Most emulators simply crop the screen at a certain vertical range. For now, I have chosen not to do this.
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
 
-MML Demo                     - Echo channels are too loud (equal volume!)
-The Lost Sunheart (J)        - Uses LFO in intro sound strongly!
 Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed
-
 
 Games Express CD Card 1993   - dont forget to treat as a turbocd system card
 
