@@ -833,7 +833,8 @@ namespace BizHawk.MultiClient
 				IEmulator nextEmulator = null;
 				RomGame game = null;
 
-				if (Path.GetExtension(path).ToLower() == ".iso")
+
+				if (file.Extension.ToLower() == ".iso")
 				{
 					if (Global.PsxCoreLibrary.IsOpen)
 					{
