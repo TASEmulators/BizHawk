@@ -113,7 +113,7 @@
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
-		public int FrameSkip = 0;
+		public int FrameSkip = 4;
 		public int SpeedPercent = 100;
 		public int SpeedPercentAlternate = 400;
 		public bool LimitFramerate = true;
@@ -474,8 +474,8 @@
 				Down = "DownArrow, J1 Down";
 				Left = "LeftArrow, J1 Left";
 				Right = "RightArrow, J1 Right";
-				I = "X, J1 B1";
-				II = "Z, J1 B2";
+				I = "Z, J1 B2";
+				II = "X, J1 B1";
 				Run = "C, J1 B8";
 				Select = "V, J1 B7";
 			}
