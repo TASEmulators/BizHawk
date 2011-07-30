@@ -181,7 +181,6 @@ namespace BizHawk.MultiClient
 			if (buttons[6] == '.') B4.Checked = false; else B4.Checked = true;
 			if (buttons[7] == '.') B3.Checked = false; else B3.Checked = true;
 		}
-		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
