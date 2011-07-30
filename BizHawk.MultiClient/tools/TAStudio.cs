@@ -233,6 +233,7 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
 			TASView.Clear();
 			ControllerBox.Controls.Clear();
 			ClearPads();
