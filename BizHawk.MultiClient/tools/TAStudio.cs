@@ -130,6 +130,28 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[0]);
 					ControllerBox.Controls.Add(Pads[1]);
 					break;
+				case "PCE":
+					VirtualPadPCE pcepad1 = new VirtualPadPCE();
+					pcepad1.Location = new Point(8, 19);
+					pcepad1.Controller = "P1";
+					VirtualPadPCE pcepad2 = new VirtualPadPCE();
+					pcepad2.Location = new Point(188, 19);
+					pcepad2.Controller = "P2";
+					VirtualPadPCE pcepad3 = new VirtualPadPCE();
+					pcepad3.Location = new Point(8, 109);
+					pcepad3.Controller = "P3";
+					VirtualPadPCE pcepad4 = new VirtualPadPCE();
+					pcepad4.Location = new Point(188, 109);
+					pcepad4.Controller = "P4";
+					Pads.Add(pcepad1);
+					Pads.Add(pcepad2);
+					Pads.Add(pcepad3);
+					Pads.Add(pcepad4);
+					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(Pads[1]);
+					ControllerBox.Controls.Add(Pads[2]);
+					ControllerBox.Controls.Add(Pads[3]);
+					break;
 			}
 		}
 
