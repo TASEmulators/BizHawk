@@ -61,12 +61,14 @@ namespace BizHawk.MultiClient
 					case "NES":
 						Pads[0].SetButtons(str.Substring(3, 8));
 						Pads[1].SetButtons(str.Substring(12, 8));
+						Pads[2].SetButtons(str[1].ToString());
 						break;
 					case "SMS":
 					case "GG":
 					case "SG":
 						Pads[0].SetButtons(str.Substring(0, 6));
-						Pads[0].SetButtons(str.Substring(7, 6));
+						Pads[1].SetButtons(str.Substring(7, 6));
+						Pads[2].SetButtons(str.Substring(14, 2));
 						break;
 					case "PCE":
 					case "SGX":
@@ -145,6 +147,10 @@ namespace BizHawk.MultiClient
 					Pads.Add(nespad2);
 					ControllerBox.Controls.Add(Pads[0]);
 					ControllerBox.Controls.Add(Pads[1]);
+					VirtualPadNESControl controlpad1 = new VirtualPadNESControl();
+					controlpad1.Location = new Point(8, 109);
+					Pads.Add(controlpad1);
+					ControllerBox.Controls.Add(Pads[2]);
 					break;
 				case "SMS":
 				case "SG": //TODO: correct sys ID???
@@ -159,6 +165,10 @@ namespace BizHawk.MultiClient
 					Pads.Add(smspad2);
 					ControllerBox.Controls.Add(Pads[0]);
 					ControllerBox.Controls.Add(Pads[1]);
+					VirtualPadSMSControl controlpad2 = new VirtualPadSMSControl();
+					controlpad2.Location = new Point(8, 109);
+					Pads.Add(controlpad2);
+					ControllerBox.Controls.Add(Pads[2]);
 					break;
 				case "PCE":
 					VirtualPadPCE pcepad1 = new VirtualPadPCE();

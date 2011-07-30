@@ -391,10 +391,16 @@
     <Compile Include="tools\VirtualPadNES.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\VirtualPadNESControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPadPCE.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\VirtualPadSMS.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadSMSControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Watch.cs" />
