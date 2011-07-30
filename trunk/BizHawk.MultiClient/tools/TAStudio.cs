@@ -51,6 +51,36 @@ namespace BizHawk.MultiClient
 				TASView.ItemCount = 0;
 			else
 				DisplayList();
+
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+			{
+				string str = Global.MainForm.UserMovie.GetInputFrame(Global.Emulator.Frame);
+
+				switch (Global.Emulator.SystemId)
+				{
+					case "NES":
+						Pads[0].SetButtons(str.Substring(3, 8));
+						Pads[1].SetButtons(str.Substring(12, 8));
+						break;
+					case "SMS":
+					case "GG":
+					case "SG":
+						Pads[0].SetButtons(str.Substring(0, 6));
+						Pads[0].SetButtons(str.Substring(7, 6));
+						break;
+					case "PCE":
+					case "SGX":
+						Pads[0].SetButtons(str.Substring(3, 8));
+						Pads[1].SetButtons(str.Substring(12, 8));
+						Pads[2].SetButtons(str.Substring(21, 8));
+						Pads[3].SetButtons(str.Substring(30, 8));
+						break;
+					default:
+						break;
+				}
+				
+				
+			}
 		}
 
 		public string GetMnemonic()

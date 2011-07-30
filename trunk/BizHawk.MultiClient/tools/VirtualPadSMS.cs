@@ -144,6 +144,18 @@ namespace BizHawk.MultiClient
 			return input.ToString();
 		}
 
+		public override void SetButtons(string buttons)
+		{
+			if (buttons.Length < 8) return;
+			if (buttons[0] == '.') PU.Checked = false; else PU.Checked = true;
+			if (buttons[1] == '.') PD.Checked = false; else PD.Checked = true;
+			if (buttons[2] == '.') PL.Checked = false; else PL.Checked = true;
+			if (buttons[3] == '.') PR.Checked = false; else PR.Checked = true;
+
+			if (buttons[4] == '.') B1.Checked = false; else B1.Checked = true;
+			if (buttons[5] == '.') B2.Checked = false; else B2.Checked = true;
+		}
+
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
 			if (Global.Emulator.SystemId != "SMS") return;

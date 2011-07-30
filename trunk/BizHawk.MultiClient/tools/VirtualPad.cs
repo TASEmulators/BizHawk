@@ -60,5 +60,9 @@ namespace BizHawk.MultiClient
 			B8.Checked = false;
 		}
 
+		public virtual void SetButtons(string buttons)
+		{
+
+		}
 	}
 }
