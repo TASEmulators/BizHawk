@@ -48,8 +48,8 @@
 			this.insertFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
@@ -68,6 +68,8 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = new System.Windows.Forms.ColumnHeader();
 			this.Log = new System.Windows.Forms.ColumnHeader();
+			this.updatePadsOnMovePlaybackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -201,6 +203,8 @@
 			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveWindowPositionToolStripMenuItem,
             this.autoloadToolStripMenuItem,
+            this.updatePadsOnMovePlaybackToolStripMenuItem,
+            this.toolStripSeparator4,
             this.restoreWindowToolStripMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
@@ -210,23 +214,23 @@
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
-			// restoreWindowToolStripMenuItem
-			// 
-			this.restoreWindowToolStripMenuItem.Name = "restoreWindowToolStripMenuItem";
-			this.restoreWindowToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.restoreWindowToolStripMenuItem.Text = "Restore Default Settings";
-			this.restoreWindowToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowToolStripMenuItem_Click);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
 			this.autoloadToolStripMenuItem.Text = "Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			// 
+			// restoreWindowToolStripMenuItem
+			// 
+			this.restoreWindowToolStripMenuItem.Name = "restoreWindowToolStripMenuItem";
+			this.restoreWindowToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+			this.restoreWindowToolStripMenuItem.Text = "Restore Default Settings";
+			this.restoreWindowToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -395,6 +399,18 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
+			// updatePadsOnMovePlaybackToolStripMenuItem
+			// 
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Name = "updatePadsOnMovePlaybackToolStripMenuItem";
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Text = "Update Pads on Move playback";
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Click += new System.EventHandler(this.updatePadsOnMovePlaybackToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(232, 6);
+			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -460,5 +476,7 @@
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripButton StopButton;
+		private System.Windows.Forms.ToolStripMenuItem updatePadsOnMovePlaybackToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }

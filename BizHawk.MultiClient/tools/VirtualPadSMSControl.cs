@@ -104,9 +104,21 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Emulator.SystemId != "SMS") return;
 			else if (sender == B1)
+			{
 				Global.StickyXORAdapter.SetSticky("Pause", B1.Checked);
+				if (B1.Checked == true)
+					B1.BackColor = Color.Pink;
+				else
+					B1.BackColor = SystemColors.Control;
+			}
 			else if (sender == B2)
+			{
 				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				if (B2.Checked == true)
+					B2.BackColor = Color.Pink;
+				else
+					B2.BackColor = SystemColors.Control;
+			}
 		}
 
 		public override void Clear()
