@@ -23,7 +23,11 @@ namespace BizHawk.MultiClient
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
 			UserMovie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.Filename);
-
+			if (UserMovie.StartsFromSavestate)
+			{
+				LoadStateFile(m.Filename, Path.GetFileName(m.Filename));
+				Global.Emulator.ResetFrameCounter();
+			}
 			if (record)
 			{
 				UserMovie.StartNewRecording();

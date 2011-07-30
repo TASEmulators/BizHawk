@@ -24,7 +24,9 @@ namespace BizHawk.MultiClient
 
 		private MovieLog Log = new MovieLog();
 		private int lastLog;
-		
+
+		public bool StartsFromSavestate { get; private set; }
+
 		/// <summary>
 		/// Allows checking if file exists
 		/// </summary>
@@ -49,6 +51,7 @@ namespace BizHawk.MultiClient
 			Rerecords = 0;
 			IsText = true;
 			Frames = 0;
+			StartsFromSavestate = false;
 		}
 
 		public Movie(string filename, MOVIEMODE m)
@@ -59,6 +62,7 @@ namespace BizHawk.MultiClient
 			this.Filename = filename;
 			IsText = true;
 			Frames = 0;
+			StartsFromSavestate = false;
 		}
 
 		public Movie()
@@ -67,6 +71,7 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
 			Frames = 0;
+			StartsFromSavestate = false;
 		}
 
 		public string GetSysID()
@@ -250,6 +255,14 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, MovieHeader.GUID);
 						Header.AddHeaderLine(MovieHeader.GUID, str);
 					}
+					else if (str.Contains(MovieHeader.STARTSFROMSAVESTATE))
+					{
+						str = ParseHeader(str, MovieHeader.STARTSFROMSAVESTATE);
+						Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, str);
+						//NOTE: This can't get removed in favor of the MovieHeader function! Must refactor
+						if (str == "1")
+							StartsFromSavestate = true;
+					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
@@ -300,42 +313,8 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					else if (Header.AddHeaderFromLine(str)) continue;
-					else if (str.Contains(MovieHeader.EMULATIONVERSION))
-					{
-						str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
-						Header.AddHeaderLine(MovieHeader.EMULATIONVERSION, str);
-					}
-					else if (str.Contains(MovieHeader.MOVIEVERSION))
-					{
-						str = ParseHeader(str, MovieHeader.MOVIEVERSION);
-						Header.AddHeaderLine(MovieHeader.MOVIEVERSION, str);
-					}
-					else if (str.Contains(MovieHeader.PLATFORM))
-					{
-						str = ParseHeader(str, MovieHeader.PLATFORM);
-						Header.AddHeaderLine(MovieHeader.PLATFORM, str);
-					}
-					else if (str.Contains(MovieHeader.GAMENAME))
-					{
-						str = ParseHeader(str, MovieHeader.GAMENAME);
-						Header.AddHeaderLine(MovieHeader.GAMENAME, str);
-					}
-					else if (str.Contains(MovieHeader.RERECORDS))
-					{
-						str = ParseHeader(str, MovieHeader.RERECORDS);
-						Header.AddHeaderLine(MovieHeader.RERECORDS, str);
-					}
-					else if (str.Contains(MovieHeader.AUTHOR))
-					{
-						str = ParseHeader(str, MovieHeader.AUTHOR);
-						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
-					}
-					else if (str.ToUpper().Contains(MovieHeader.GUID))
-					{
-						str = ParseHeader(str, MovieHeader.GUID);
-						Header.AddHeaderLine(MovieHeader.GUID, str);
-					}
+					else if (Header.AddHeaderFromLine(str)) 
+						continue;
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
@@ -386,6 +365,7 @@ namespace BizHawk.MultiClient
 		public void LoadLogFromSavestateText(TextReader reader)
 		{
 			//We are in record mode so replace the movie log with the one from the savestate
+			Global.MovieSession.MultiTrack.IsActive = false; //adelikat: Hack because this is causing crashes by being true when it shouldn't!
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
@@ -417,7 +397,7 @@ namespace BizHawk.MultiClient
 					if (line == "[/Input]") break;
 					if (line[0] == '|')
 					{
-						Log.SetFrameAt(i,line);
+						Log.SetFrameAt(i, line);
 						i++;
 					}
 				}
@@ -538,6 +518,7 @@ namespace BizHawk.MultiClient
 
 		public int CheckTimeLines(StreamReader reader)
 		{
+			return -1; //Hack
 			//This function will compare the movie data to the savestate movie data to see if they match
 			//TODO: Will eventually check header data too such as GUI
 			MovieLog l = new MovieLog();

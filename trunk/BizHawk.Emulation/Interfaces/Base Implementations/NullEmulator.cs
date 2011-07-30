@@ -23,6 +23,11 @@ namespace BizHawk
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 		}
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+		}
+
 		public void LoadGame(IGame game) { }
 		public void FrameAdvance(bool render)
 		{

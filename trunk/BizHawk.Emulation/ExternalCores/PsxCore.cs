@@ -37,7 +37,10 @@ namespace BizHawk
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 
-
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+		}
 
 		public string SystemId { get { return "PSX"; } }
 		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };

@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		static readonly bool USE_DATABASE = true;
 
-        //Game issues:
+		//Game issues:
 		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
 		//Bigfoot (U) seems not to work
 		//Bill and ted's excellent video game adventure (U) doesnt work until more detailed emulation exists (check 001.txt)
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 		public void LogLine(string format, params object[] args)
 		{
-			if(ppu != null)
+			if (ppu != null)
 				Console.WriteLine("[{0:d5}:{1:d3}:{2:d3}] {3}", Frame, ppu.ppur.status.sl, ppu.ppur.status.cycle, string.Format(format, args));
 		}
 
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (domain == NESWatch.EDomain.Sysbus)
 			{
-				NESWatch ret = sysbus_watch[address] ?? new NESWatch(this,domain,address);
+				NESWatch ret = sysbus_watch[address] ?? new NESWatch(this, domain, address);
 				sysbus_watch[address] = ret;
 				return ret;
 			}
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ReadPrint = 2
 			}
 			EFlags flags;
-			
+
 			public void Sync()
 			{
 				if (flags == EFlags.None)
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			int gg_check, gg_replace;
 
-			
+
 			NESWatch[] watches;
 		}
 
@@ -145,14 +145,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
-				for (int i = 0; i < 256*240; i++)
+				for (int i = 0; i < 256 * 240; i++)
 				{
 					short pixel = emu.ppu.xbuf[i];
-					if((pixel&0x8000)!=0 && useBackdrop)
+					if ((pixel & 0x8000) != 0 && useBackdrop)
 					{
 						pixels[i] = backdrop;
 					}
-                    else pixels[i] = emu.palette_compiled[pixel&0x7FFF];
+					else pixels[i] = emu.palette_compiled[pixel & 0x7FFF];
 				}
 				return pixels;
 			}
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			public override byte Read()
 			{
-				int ret = value&1;
+				int ret = value & 1;
 				value >>= 1;
 				return (byte)ret;
 			}
@@ -247,13 +247,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 
 		int _frame;
-        int _lagcount;
-        bool lagged = true;
-        bool islag = false;
+		int _lagcount;
+		bool lagged = true;
+		bool islag = false;
 		public int Frame { get { return _frame; } set { _frame = value; } }
+
+		public void ResetFrameCounter()
+		{
+			_frame = 0;
+		}
+
 		public long Timestamp { get; private set; }
-        public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-        public bool IsLagFrame { get { return islag; } }
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public bool IsLagFrame { get { return islag; } }
 
 		public bool DeterministicEmulation { get { return true; } set { } }
 
@@ -261,7 +267,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			get
 			{
-				if(board==null) return null;
+				if (board == null) return null;
 				return board.SaveRam;
 			}
 		}
@@ -271,72 +277,72 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			set { }
 		}
 
-        private IList<MemoryDomain> memoryDomains;
+		private IList<MemoryDomain> memoryDomains;
 
-        private void SetupMemoryDomains()
-        {
-            var domains = new List<MemoryDomain>();
+		private void SetupMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>();
 			var RAM = new MemoryDomain("RAM", 0x800, Endian.Little,
-                addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
-            var SystemBus = new MemoryDomain("System Bus", 0x10000, Endian.Little,
-                addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
-            var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
-                addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
+				addr => ram[addr & 0x07FF], (addr, value) => ram[addr & 0x07FF] = value);
+			var SystemBus = new MemoryDomain("System Bus", 0x10000, Endian.Little,
+				addr => ReadMemory((ushort)addr), (addr, value) => WriteMemory((ushort)addr, value));
+			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, Endian.Little,
+				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
 			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
 
 			SystemBus.GetFreeze = addr => sysbus_freeze[addr];
 			SystemBus.SetFreeze = (addr, value) => sysbus_freeze[addr] = value;
 
-            RAM.GetFreeze = addr => sysbus_freeze[addr & 0x07FF];
-            RAM.SetFreeze = (addr, value) => sysbus_freeze[addr & 0x07FF] = value;
+			RAM.GetFreeze = addr => sysbus_freeze[addr & 0x07FF];
+			RAM.SetFreeze = (addr, value) => sysbus_freeze[addr & 0x07FF] = value;
 
-            PPUBus.GetFreeze = addr => ppu.ppubus_freeze[addr];
-            PPUBus.SetFreeze = (addr, value) => ppu.ppubus_freeze[addr] = value;
+			PPUBus.GetFreeze = addr => ppu.ppubus_freeze[addr];
+			PPUBus.SetFreeze = (addr, value) => ppu.ppubus_freeze[addr] = value;
 
 			//demo a game genie code
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).RemoveGameGenie();
 
-            domains.Add(RAM);
+			domains.Add(RAM);
 			domains.Add(SystemBus);
-            domains.Add(PPUBus);
+			domains.Add(PPUBus);
 			domains.Add(CIRAMdomain);
 
-            if (board.SaveRam != null)
-            {
-                var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
-                    addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
-                domains.Add(BatteryRam);
-            }
+			if (board.SaveRam != null)
+			{
+				var BatteryRam = new MemoryDomain("Battery RAM", board.SaveRam.Length, Endian.Little,
+					addr => board.SaveRam[addr], (addr, value) => board.SaveRam[addr] = value);
+				domains.Add(BatteryRam);
+			}
 
-            var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, Endian.Little,
-                addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
-            domains.Add(PRGROM);
+			var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, Endian.Little,
+				addr => board.ROM[addr], (addr, value) => board.ROM[addr] = value);
+			domains.Add(PRGROM);
 
 			if (board.VROM != null)
-            {
-                var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, Endian.Little,
+			{
+				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, Endian.Little,
 					addr => board.VROM[addr], (addr, value) => board.VROM[addr] = value);
-                domains.Add(CHRROM);
-            }
+				domains.Add(CHRROM);
+			}
 
-            if (board.VRAM != null)
-            {
+			if (board.VRAM != null)
+			{
 				var VRAM = new MemoryDomain("VRAM", board.VRAM.Length, Endian.Little,
-                    addr => board.VRAM[addr], (addr, value) => board.VRAM[addr] = value);
+					addr => board.VRAM[addr], (addr, value) => board.VRAM[addr] = value);
 				domains.Add(VRAM);
-            }
+			}
 
-            if (board.WRAM != null)
-            {
+			if (board.WRAM != null)
+			{
 				var WRAM = new MemoryDomain("WRAM", board.WRAM.Length, Endian.Little,
-                    addr => board.WRAM[addr], (addr, value) => board.WRAM[addr] = value);
+					addr => board.WRAM[addr], (addr, value) => board.WRAM[addr] = value);
 				domains.Add(WRAM);
-            }
+			}
 
-            memoryDomains = domains.AsReadOnly();
-        }
+			memoryDomains = domains.AsReadOnly();
+		}
 
 		public string SystemId { get { return "NES"; } }
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
@@ -355,7 +361,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			Console.WriteLine(format, arg);
 			LoadReport.WriteLine(format, arg);
 		}
-		void LoadWriteLine(object arg) { LoadWriteLine("{0}",arg); }
+		void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
 
 		public unsafe void LoadGame(IGame game)
 		{
@@ -397,7 +403,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				Type boardType = null;
 				CartInfo choice = null;
-				if(USE_DATABASE)
+				if (USE_DATABASE)
 					choice = IdentifyFromBootGodDB(hash_sha1);
 				if (choice == null)
 				{
@@ -464,8 +470,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (boardType == null)
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
-				if(choice.DB_GameInfo != null)
-					if(choice.DB_GameInfo.Status == RomStatus.BadDump)
+				if (choice.DB_GameInfo != null)
+					if (choice.DB_GameInfo.Status == RomStatus.BadDump)
 						choice.bad = true;
 
 				LoadWriteLine("Final game detection results:");
@@ -538,7 +544,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			ser.BeginSection("NES");
 			ser.Sync("Frame", ref _frame);
-            ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Lag", ref _lagcount);
 			cpu.SyncState(ser);
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("CIRAM", ref CIRAM, false);
@@ -546,8 +552,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("_irq_apu", ref _irq_apu);
 			ser.Sync("_irq_cart", ref _irq_cart);
 			sync_irq();
-            //string inp = GetControllersAsMnemonic();  TODO sorry bout that
-            //ser.SyncFixedString("input", ref inp, 32);
+			//string inp = GetControllersAsMnemonic();  TODO sorry bout that
+			//ser.SyncFixedString("input", ref inp, 32);
 			board.SyncState(ser);
 			ppu.SyncState(ser);
 			apu.SyncState(ser);
@@ -568,8 +574,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ms.ToArray();
 		}
 
-        public void Dispose() {}
-    }
+		public void Dispose() { }
+	}
 }
 
 //todo
