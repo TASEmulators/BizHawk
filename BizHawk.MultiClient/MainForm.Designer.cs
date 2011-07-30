@@ -198,7 +198,6 @@
 			this.keypadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
 			this.autoloadVirtualKeyboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.disableSaveslotKeysOnLoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -227,6 +226,7 @@
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.recordMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.playMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.restartMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.makeMovieBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -238,7 +238,6 @@
 			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.restartMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -1567,8 +1566,7 @@
 			this.tI83ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.keypadToolStripMenuItem,
             this.toolStripSeparator13,
-            this.autoloadVirtualKeyboardToolStripMenuItem,
-            this.disableSaveslotKeysOnLoToolStripMenuItem});
+            this.autoloadVirtualKeyboardToolStripMenuItem});
 			this.tI83ToolStripMenuItem.Name = "tI83ToolStripMenuItem";
 			this.tI83ToolStripMenuItem.Size = new System.Drawing.Size(41, 17);
 			this.tI83ToolStripMenuItem.Text = "TI83";
@@ -1578,32 +1576,23 @@
 			// 
 			this.keypadToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
 			this.keypadToolStripMenuItem.Name = "keypadToolStripMenuItem";
-			this.keypadToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.keypadToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.keypadToolStripMenuItem.Text = "Keypad";
 			this.keypadToolStripMenuItem.Click += new System.EventHandler(this.keypadToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(227, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(164, 6);
 			// 
 			// autoloadVirtualKeyboardToolStripMenuItem
 			// 
 			this.autoloadVirtualKeyboardToolStripMenuItem.Checked = true;
 			this.autoloadVirtualKeyboardToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.autoloadVirtualKeyboardToolStripMenuItem.Name = "autoloadVirtualKeyboardToolStripMenuItem";
-			this.autoloadVirtualKeyboardToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.autoloadVirtualKeyboardToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.autoloadVirtualKeyboardToolStripMenuItem.Text = "Autoload Keypad";
 			this.autoloadVirtualKeyboardToolStripMenuItem.Click += new System.EventHandler(this.autoloadVirtualKeyboardToolStripMenuItem_Click);
-			// 
-			// disableSaveslotKeysOnLoToolStripMenuItem
-			// 
-			this.disableSaveslotKeysOnLoToolStripMenuItem.Checked = true;
-			this.disableSaveslotKeysOnLoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.disableSaveslotKeysOnLoToolStripMenuItem.Name = "disableSaveslotKeysOnLoToolStripMenuItem";
-			this.disableSaveslotKeysOnLoToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.disableSaveslotKeysOnLoToolStripMenuItem.Text = "Disable Saveslot Keys on Load";
-			this.disableSaveslotKeysOnLoToolStripMenuItem.Click += new System.EventHandler(this.disableSaveslotKeysOnLoToolStripMenuItem_Click);
 			// 
 			// gBToolStripMenuItem
 			// 
@@ -1816,7 +1805,7 @@
             this.screenshotToolStripMenuItem1,
             this.closeROMToolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 352);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 330);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			// 
@@ -1856,6 +1845,14 @@
 			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.playMovieToolStripMenuItem1.Text = "Play Movie";
 			this.playMovieToolStripMenuItem1.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
+			// 
+			// restartMovieToolStripMenuItem
+			// 
+			this.restartMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.restartMovieToolStripMenuItem.Name = "restartMovieToolStripMenuItem";
+			this.restartMovieToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.restartMovieToolStripMenuItem.Text = "Restart Movie";
+			this.restartMovieToolStripMenuItem.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
 			// 
 			// stopMovieToolStripMenuItem1
 			// 
@@ -1934,14 +1931,6 @@
 			this.closeROMToolStripMenuItem1.Size = new System.Drawing.Size(178, 22);
 			this.closeROMToolStripMenuItem1.Text = "Close ROM";
 			this.closeROMToolStripMenuItem1.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
-			// 
-			// restartMovieToolStripMenuItem
-			// 
-			this.restartMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-			this.restartMovieToolStripMenuItem.Name = "restartMovieToolStripMenuItem";
-			this.restartMovieToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.restartMovieToolStripMenuItem.Text = "Restart Movie";
-			this.restartMovieToolStripMenuItem.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -2117,8 +2106,7 @@
         private System.Windows.Forms.ToolStripMenuItem tI83ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadVirtualKeyboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keypadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-        private System.Windows.Forms.ToolStripMenuItem disableSaveslotKeysOnLoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
         private System.Windows.Forms.ToolStripMenuItem pathsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
         private System.Windows.Forms.ToolStripMenuItem readonlyToolStripMenuItem;

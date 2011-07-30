@@ -302,7 +302,6 @@
 		public bool PlayMovie_ShowStateFiles = false;
 
 		//TI83
-		public bool TI83disableSaveSlotKeys = true;
 		public bool TI83autoloadKeyPad = true;
 		public bool TI83KeypadSaveWindowPosition = true;
 		public int TI83KeyPadWndx = -1;
