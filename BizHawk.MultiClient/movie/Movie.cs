@@ -10,8 +10,6 @@ namespace BizHawk.MultiClient
 	public enum MOVIEMODE { INACTIVE, PLAY, RECORD, FINISHED };
 	public class Movie
 	{
-		//TODO: preloaded flag + use it to make checks before doing things that require the movie to be loaded
-
 		public MovieHeader Header = new MovieHeader();
 		public SubtitleList Subtitles = new SubtitleList();
 		public bool MakeBackup = true; //make backup before altering movie
@@ -20,39 +18,13 @@ namespace BizHawk.MultiClient
 		public string Filename { get; private set; }
 		public MOVIEMODE Mode { get; private set; }
 		public int Rerecords { get; private set; }
-		public int Frames { get; private set; } //Only used when a movie is preloaded
+		private int Frames;
 
 		private MovieLog Log = new MovieLog();
 		private int lastLog;
 
 		public bool StartsFromSavestate { get; private set; }
-
-		/// <summary>
-		/// Allows checking if file exists
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <param name="m"></param>
-		/// <param name="exists"></param>
-		public Movie(string filename, MOVIEMODE m, out bool exists)
-		{
-			FileInfo f = new FileInfo(filename);
-			if (!f.Exists)
-			{
-				filename = "";
-				exists = false;
-			}
-			else
-			{
-				Filename = filename;
-				exists = true;
-			}
-			Mode = m;
-			lastLog = 0;
-			Rerecords = 0;
-			IsText = true;
-			Frames = 0;
-			StartsFromSavestate = false;
-		}
+		public bool Loaded { get; private set; }
 
 		public Movie(string filename, MOVIEMODE m)
 		{
@@ -63,15 +35,17 @@ namespace BizHawk.MultiClient
 			IsText = true;
 			Frames = 0;
 			StartsFromSavestate = false;
+			Loaded = false;
 		}
 
 		public Movie()
 		{
-			Filename = ""; //Note: note this must be populated before playing movie
+			Filename = "";
 			Mode = MOVIEMODE.INACTIVE;
 			IsText = true;
 			Frames = 0;
 			StartsFromSavestate = false;
+			Loaded = false;
 		}
 
 		public string GetSysID()
@@ -85,7 +59,10 @@ namespace BizHawk.MultiClient
 		}
 		public int Length()
 		{
-			return Log.Length();
+			if (Loaded)
+				return Log.Length();
+			else
+				return Frames;
 		}
 
 		public void StopMovie()
@@ -150,6 +127,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteMovie()
 		{
+			if (!Loaded) return;
 			if (Filename == "") return;
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			if (IsText)
@@ -160,6 +138,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteBackup()
 		{
+			if (!Loaded) return;
 			if (Filename == "") return;
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			string BackupName = Filename;
@@ -195,7 +174,10 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(Filename);
 
 			if (file.Exists == false)
+			{
+				Loaded = false;
 				return false;
+			}
 			else
 			{
 				Header.Clear();
@@ -212,30 +194,11 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					else if (str.Contains(MovieHeader.EMULATIONVERSION))
-					{
-						str = ParseHeader(str, MovieHeader.EMULATIONVERSION);
-						Header.AddHeaderLine(MovieHeader.EMULATIONVERSION, str);
-					}
-					else if (str.Contains(MovieHeader.MOVIEVERSION))
-					{
-						str = ParseHeader(str, MovieHeader.MOVIEVERSION);
-						Header.AddHeaderLine(MovieHeader.MOVIEVERSION, str);
-					}
-					else if (str.Contains(MovieHeader.PLATFORM))
-					{
-						str = ParseHeader(str, MovieHeader.PLATFORM);
-						Header.AddHeaderLine(MovieHeader.PLATFORM, str);
-					}
-					else if (str.Contains(MovieHeader.GAMENAME))
-					{
-						str = ParseHeader(str, MovieHeader.GAMENAME);
-						Header.AddHeaderLine(MovieHeader.GAMENAME, str);
-					}
-					else if (str.Contains(MovieHeader.RERECORDS))
+					
+					
+					if (str.Contains(MovieHeader.RERECORDS))
 					{
 						str = ParseHeader(str, MovieHeader.RERECORDS);
-						Header.AddHeaderLine(MovieHeader.RERECORDS, str);
 						try
 						{
 							Rerecords = int.Parse(str);
@@ -245,31 +208,19 @@ namespace BizHawk.MultiClient
 							Rerecords = 0;
 						}
 					}
-					else if (str.Contains(MovieHeader.AUTHOR))
-					{
-						str = ParseHeader(str, MovieHeader.AUTHOR);
-						Header.AddHeaderLine(MovieHeader.AUTHOR, str);
-					}
-					else if (str.ToUpper().Contains(MovieHeader.GUID))
-					{
-						str = ParseHeader(str, MovieHeader.GUID);
-						Header.AddHeaderLine(MovieHeader.GUID, str);
-					}
 					else if (str.Contains(MovieHeader.STARTSFROMSAVESTATE))
 					{
 						str = ParseHeader(str, MovieHeader.STARTSFROMSAVESTATE);
-						Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, str);
-						//NOTE: This can't get removed in favor of the MovieHeader function! Must refactor
 						if (str == "1")
 							StartsFromSavestate = true;
 					}
-					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+
+					if (Header.AddHeaderFromLine(str))
+						continue;
+
+					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
-					}
-					else if (str.StartsWith("comment"))
-					{
-						Header.Comments.Add(str);
 					}
 					else if (str[0] == '|')
 					{
@@ -281,7 +232,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-
+			Loaded = true;
 			return true;
 
 		}
@@ -292,6 +243,7 @@ namespace BizHawk.MultiClient
 		/// <returns></returns>
 		public bool PreLoadText()
 		{
+			Loaded = false;
 			var file = new FileInfo(Filename);
 
 			if (file.Exists == false)
@@ -315,13 +267,10 @@ namespace BizHawk.MultiClient
 					}
 					else if (Header.AddHeaderFromLine(str)) 
 						continue;
-					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					
+					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
-					}
-					else if (str.StartsWith("comment"))
-					{
-						Header.Comments.Add(str.Substring(8, str.Length - 8));
 					}
 					else if (str[0] == '|')
 					{
@@ -348,8 +297,12 @@ namespace BizHawk.MultiClient
 		public bool LoadMovie()
 		{
 			var file = new FileInfo(Filename);
-			if (file.Exists == false) return false; //TODO: methods like writemovie will fail, some internal flag needs to prevent this
-			//TODO: must determine if file is text or binary
+			if (file.Exists == false)
+			{
+				Loaded = false;
+				return false;
+			}
+
 			return LoadText();
 		}
 
@@ -521,6 +474,7 @@ namespace BizHawk.MultiClient
 			return -1; //Hack
 			//This function will compare the movie data to the savestate movie data to see if they match
 			//TODO: Will eventually check header data too such as GUI
+			/*
 			MovieLog l = new MovieLog();
 			string line;
 			while (true)
@@ -542,6 +496,7 @@ namespace BizHawk.MultiClient
 					return x;
 			}
 			return -1;
+			 */
 		}
 
 		public int CompareTo(Movie Other, string parameter)
@@ -656,10 +611,6 @@ namespace BizHawk.MultiClient
 			else
 				return 0;
 		}
-
-
-
-
 
 		private string ParseHeader(string line, string headerName)
 		{
