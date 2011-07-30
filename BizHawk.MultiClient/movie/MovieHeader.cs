@@ -25,6 +25,7 @@ namespace BizHawk.MultiClient
 		public const string AUTHOR = "Author";
 		public const string RERECORDS = "rerecordCount";
 		public const string GUID = "GUID";
+		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
 
 		public static string MovieVersion = "BizHawk v0.0.1";
 
@@ -159,6 +160,11 @@ namespace BizHawk.MultiClient
 			{
 				line = ParseHeader(line, MovieHeader.GUID);
 				AddHeaderLine(MovieHeader.GUID, line);
+			}
+			else if (line.Contains(MovieHeader.STARTSFROMSAVESTATE))
+			{
+				line = ParseHeader(line, MovieHeader.STARTSFROMSAVESTATE);
+				AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, line);
 			}
 			else if (line.StartsWith("subtitle") || line.StartsWith("sub"))
 			{

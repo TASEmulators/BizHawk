@@ -63,6 +63,32 @@ namespace BizHawk.MultiClient
 				else
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 
+				if (StartFromCombo.SelectedItem.ToString() == "Now")
+				{
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
+					var temppath = path + ".tmp";
+					var writer = new StreamWriter(temppath);
+					Global.Emulator.SaveStateText(writer);
+					writer.Close();
+
+					var file = new FileInfo(temppath);
+					using (StreamReader sr = file.OpenText())
+					{
+						string str = "";
+
+						while ((str = sr.ReadLine()) != null)
+						{
+							if (str == "")
+							{
+								continue;
+							}
+							else
+								MovieToRecord.Header.Comments.Add(str);
+						}
+					}
+					
+				}
+				
 				Global.MainForm.StartNewMovie(MovieToRecord, true);
 
 				Global.Config.UseDefaultAuthor = DefaultAuthorCheckBox.Checked;

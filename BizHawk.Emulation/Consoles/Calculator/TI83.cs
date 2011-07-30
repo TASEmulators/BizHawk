@@ -466,6 +466,12 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		private bool lagged = true;
 		private bool islag = false;
 		public int Frame { get; set; }
+
+		public void ResetFrameCounter()
+		{
+			Frame = 0;
+		}
+
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
 
