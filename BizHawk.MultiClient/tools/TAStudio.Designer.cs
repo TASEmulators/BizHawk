@@ -373,6 +373,7 @@
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
+			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TASView.FullRowSelect = true;
 			this.TASView.GridLines = true;
 			this.TASView.ItemCount = 0;
