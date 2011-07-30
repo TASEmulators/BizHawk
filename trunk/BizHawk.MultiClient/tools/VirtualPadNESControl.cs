@@ -96,14 +96,20 @@ namespace BizHawk.MultiClient
 		public override void SetButtons(string buttons)
 		{
 			if (buttons.Length < 1) return;
-			if (buttons[0] == '.') B2.Checked = false; else B2.Checked = true;
+			if (buttons[0] == '.' || buttons[0] == '0') B2.Checked = false; else B2.Checked = true;
 		}
 
 		private void Buttons_CheckedChanged(object sender, EventArgs e)
 		{
 			if (Global.Emulator.SystemId != "NES") return;
 			else if (sender == B2)
+			{
 				Global.StickyXORAdapter.SetSticky("Reset", B2.Checked);
+				if (B2.Checked == true)
+					B2.BackColor = Color.Pink;
+				else
+					B2.BackColor = SystemColors.Control;
+			}
 		}
 
 		public override void Clear()

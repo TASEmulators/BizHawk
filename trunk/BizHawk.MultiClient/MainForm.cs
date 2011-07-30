@@ -947,6 +947,7 @@ namespace BizHawk.MultiClient
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
 				TI83KeyPad1.Restart();
+				TAStudio1.Restart();
 				if (Global.Config.LoadCheatFileByGame)
 				{
 					if (Cheats1.AttemptLoadCheatFile())

@@ -281,6 +281,7 @@
 		public int TASWndy = -1;
 		public int TASWidth = -1;
 		public int TASHeight = -1;
+		public bool TASUpdatePads = true;
 
 		// NES Game Genie Encoder/Decoder
 		public bool NESGGAutoload = false;

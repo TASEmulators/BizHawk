@@ -55,33 +55,33 @@ namespace BizHawk.MultiClient
 			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 			{
 				string str = Global.MainForm.UserMovie.GetInputFrame(Global.Emulator.Frame);
-
-				switch (Global.Emulator.SystemId)
+				if (Global.Config.TASUpdatePads)
 				{
-					case "NES":
-						Pads[0].SetButtons(str.Substring(3, 8));
-						Pads[1].SetButtons(str.Substring(12, 8));
-						Pads[2].SetButtons(str[1].ToString());
-						break;
-					case "SMS":
-					case "GG":
-					case "SG":
-						Pads[0].SetButtons(str.Substring(0, 6));
-						Pads[1].SetButtons(str.Substring(7, 6));
-						Pads[2].SetButtons(str.Substring(14, 2));
-						break;
-					case "PCE":
-					case "SGX":
-						Pads[0].SetButtons(str.Substring(3, 8));
-						Pads[1].SetButtons(str.Substring(12, 8));
-						Pads[2].SetButtons(str.Substring(21, 8));
-						Pads[3].SetButtons(str.Substring(30, 8));
-						break;
-					default:
-						break;
+					switch (Global.Emulator.SystemId)
+					{
+						case "NES":
+							Pads[0].SetButtons(str.Substring(3, 8));
+							Pads[1].SetButtons(str.Substring(12, 8));
+							Pads[2].SetButtons(str[1].ToString());
+							break;
+						case "SMS":
+						case "GG":
+						case "SG":
+							Pads[0].SetButtons(str.Substring(0, 6));
+							Pads[1].SetButtons(str.Substring(7, 6));
+							Pads[2].SetButtons(str.Substring(14, 2));
+							break;
+						case "PCE":
+						case "SGX":
+							Pads[0].SetButtons(str.Substring(3, 8));
+							Pads[1].SetButtons(str.Substring(12, 8));
+							Pads[2].SetButtons(str.Substring(21, 8));
+							Pads[3].SetButtons(str.Substring(30, 8));
+							break;
+						default:
+							break;
+					}
 				}
-				
-				
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 			TASView.ensureVisible(Global.Emulator.Frame);
 		}
 
-		private void TAStudio_Load(object sender, EventArgs e)
+		public void LoadTAStudio()
 		{
 			//TODO: don't engage until new/open project
 			//
@@ -195,6 +195,11 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void TAStudio_Load(object sender, EventArgs e)
+		{
+			LoadTAStudio();
+		}
+
 		private void LoadConfigSettings()
 		{
 			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
@@ -229,9 +234,10 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			TASView.Clear();
-			TASView.Update();
+			ControllerBox.Controls.Clear();
 			ClearPads();
-			DisplayList();
+			Pads.Clear();
+			LoadTAStudio();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -243,6 +249,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.TAStudioSaveWindowPosition;
 			autoloadToolStripMenuItem.Checked = Global.Config.AutoloadTAStudio;
+			updatePadsOnMovePlaybackToolStripMenuItem.Checked = Global.Config.TASUpdatePads;
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -329,6 +336,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MainForm.ReadOnly)
 				return;
+		}
+
+		private void updatePadsOnMovePlaybackToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TASUpdatePads ^= true;
 		}
 	}
 }
