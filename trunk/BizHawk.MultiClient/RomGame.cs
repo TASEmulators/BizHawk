@@ -10,7 +10,7 @@ namespace BizHawk.MultiClient
 		public byte[] RomData;
 		public byte[] FileData;
 		public string System;
-        public RomStatus Status { get; private set; }
+		public RomStatus Status { get; private set; }
 
 		private string name;
 		private string filesystemSafeName;

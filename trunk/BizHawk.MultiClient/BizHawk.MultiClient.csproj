@@ -238,6 +238,7 @@
     <Compile Include="NEStools\SpriteViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NullGame.cs" />
     <Compile Include="PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
