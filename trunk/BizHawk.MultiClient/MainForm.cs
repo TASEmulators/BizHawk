@@ -367,10 +367,9 @@ namespace BizHawk.MultiClient
 
 		private void LoadMoviesFromRecent(string movie)
 		{
-			bool r;
-			Movie m = new Movie(movie, MOVIEMODE.PLAY, out r);
+			Movie m = new Movie(movie, MOVIEMODE.PLAY);
 
-			if (!r)
+			if (!m.Loaded)
 			{
 				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Could not open " + movie + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
