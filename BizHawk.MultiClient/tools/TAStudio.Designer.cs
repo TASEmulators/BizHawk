@@ -200,8 +200,8 @@
 			// 
 			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveWindowPositionToolStripMenuItem,
-            this.restoreWindowToolStripMenuItem,
-            this.autoloadToolStripMenuItem});
+            this.autoloadToolStripMenuItem,
+            this.restoreWindowToolStripMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
@@ -242,7 +242,7 @@
             this.StopButton});
 			this.toolStrip1.Location = new System.Drawing.Point(37, 27);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(185, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(154, 25);
 			this.toolStrip1.TabIndex = 0;
 			// 
 			// RewindToBeginning
@@ -368,6 +368,8 @@
 			// 
 			// TASView
 			// 
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});

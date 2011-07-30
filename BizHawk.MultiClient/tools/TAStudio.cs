@@ -159,6 +159,15 @@ namespace BizHawk.MultiClient
 		{
 			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
 			defaultHeight = Size.Height;
+
+			if (Global.Config.TAStudioSaveWindowPosition && Global.Config.TASWndx >= 0 && Global.Config.TASWndy >= 0)
+				this.Location = new Point(Global.Config.TASWndx, Global.Config.TASWndy);
+
+			if (Global.Config.TASWidth >= 0 && Global.Config.TASHeight >= 0)
+			{
+				this.Size = new System.Drawing.Size(Global.Config.TASWidth, Global.Config.TASHeight);
+			}
+
 		}
 
 		private void SaveConfigSettings()
