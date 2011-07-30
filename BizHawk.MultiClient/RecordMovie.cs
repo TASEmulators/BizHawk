@@ -86,7 +86,7 @@ namespace BizHawk.MultiClient
 								MovieToRecord.Header.Comments.Add(str);
 						}
 					}
-					
+					file.Delete();
 				}
 				
 				Global.MainForm.StartNewMovie(MovieToRecord, true);
@@ -112,7 +112,7 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = ".tas";
 			sfd.FileName = Global.Game.FilesystemSafeName;
-			sfd.Filter = "Movie files (*.tas)|*.TAS";
+			sfd.Filter = "Movie files (*.tas)|*.tas";
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();

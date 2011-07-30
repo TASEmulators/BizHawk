@@ -67,6 +67,7 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			InitializeComponent();
+			Global.Game = new NullGame();
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -804,6 +805,7 @@ namespace BizHawk.MultiClient
 
 		public bool LoadRom(string path)
 		{
+			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
 				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES", "ROM" };
@@ -2013,7 +2015,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
-			Global.Game = null;
+			Global.Game = new NullGame();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();
