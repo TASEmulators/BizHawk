@@ -1570,6 +1570,11 @@ namespace BizHawk.MultiClient
 				file.Directory.Create();
 
 			var writer = new StreamWriter(path);
+			SaveStateFile(writer, name);
+		}
+
+		private void SaveStateFile(StreamWriter writer, string name)
+		{
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
 			writer.Close();
@@ -1592,12 +1597,7 @@ namespace BizHawk.MultiClient
 				return;
 
 			var writer = new StreamWriter(sfd.FileName);
-
-			Global.Emulator.SaveStateText(writer);
-			HandleMovieSaveState(writer);
-			writer.Close();
-			Global.RenderPanel.AddMessage(sfd.FileName + " saved");
-			UpdateStatusSlots();
+			SaveStateFile(writer, sfd.FileName);
 		}
 
 		private void LoadStateFile(string path, string name)
