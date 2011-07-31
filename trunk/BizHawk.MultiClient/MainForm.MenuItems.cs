@@ -767,11 +767,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			//TODO
-		}
-
 		private void screenshotToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			TakeScreenshot();
@@ -878,9 +873,22 @@ namespace BizHawk.MultiClient
 			else
 				contextMenuStrip1.Items[7].Enabled = true;
 
+			string path = Global.Game.SaveStatePrefix + "." + "QuickSave" + SaveSlot.ToString() + ".State.bak";
+			var file = new FileInfo(path);
+			if (file.Exists == true)
+			{
+				contextMenuStrip1.Items[13].Enabled = true;
+				contextMenuStrip1.Items[13].Text = "Undo Save to slot " + SaveSlot.ToString();
+				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+			}
+			else
+			{
+				contextMenuStrip1.Items[13].Enabled = false;
+				contextMenuStrip1.Items[13].Text = "Undo Savestate";
+				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+			}
 
-			//TODO:
-			contextMenuStrip1.Items[13].Enabled = false;
+			//contextMenuStrip1.Items[13].Enabled = false;
 		}
 
 
@@ -1295,6 +1303,13 @@ namespace BizHawk.MultiClient
 		private void backupSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.BackupSavestates ^= true;
+		}
+
+		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string path = Global.Game.SaveStatePrefix + "." + "QuickSave" + SaveSlot.ToString() + ".State";
+			SwapBackupSavestate(path);
+			Global.RenderPanel.AddMessage("Save slot " + SaveSlot.ToString() + " restored.");
 		}
 	}
 }

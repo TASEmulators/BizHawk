@@ -2178,5 +2178,24 @@ namespace BizHawk.MultiClient
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 		}
+
+		private void SwapBackupSavestate(string path)
+		{
+			//Takes the .state and .bak files and swaps them
+			var state = new FileInfo(path);
+			var backup = new FileInfo(path + ".bak");
+			var temp = new FileInfo(path + ".bak.tmp");
+
+			if (state.Exists == false) return;
+			if (backup.Exists == false) return;
+			if (temp.Exists == true) temp.Delete();
+
+			backup.CopyTo(path + ".bak.tmp");
+			backup.Delete();
+			state.CopyTo(path + ".bak");
+			state.Delete();
+			temp.CopyTo(path);
+			temp.Delete();
+		}
 	}
 }
