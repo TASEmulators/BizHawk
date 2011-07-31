@@ -962,7 +962,7 @@ namespace BizHawk.MultiClient
 				Cheats1.Restart();
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
-				UpdateStatusSlots();
+				StateSlots.Clear();
 				UpdateDumpIcon();
 				return true;
 			}
@@ -1954,7 +1954,7 @@ namespace BizHawk.MultiClient
 			Cheats1.Restart();
 			Text = "BizHawk";
 			HandlePlatformMenus();
-			UpdateStatusSlots();
+			StateSlots.Clear();
 			UpdateDumpIcon();
 		}
 
@@ -2196,6 +2196,8 @@ namespace BizHawk.MultiClient
 			state.Delete();
 			temp.CopyTo(path);
 			temp.Delete();
+
+			StateSlots.ToggleRedo(SaveSlot);
 		}
 	}
 }

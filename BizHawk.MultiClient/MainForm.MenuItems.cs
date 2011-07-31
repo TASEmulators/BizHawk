@@ -877,9 +877,18 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(path);
 			if (file.Exists == true)
 			{
-				contextMenuStrip1.Items[13].Enabled = true;
-				contextMenuStrip1.Items[13].Text = "Undo Save to slot " + SaveSlot.ToString();
-				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+				if (StateSlots.IsRedo(SaveSlot))
+				{
+					contextMenuStrip1.Items[13].Enabled = true;
+					contextMenuStrip1.Items[13].Text = "Redo Save to slot " + SaveSlot.ToString();
+					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.redo;
+				}
+				else
+				{
+					contextMenuStrip1.Items[13].Enabled = true;
+					contextMenuStrip1.Items[13].Text = "Undo Save to slot " + SaveSlot.ToString();
+					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+				}
 			}
 			else
 			{
@@ -887,8 +896,6 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Text = "Undo Savestate";
 				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
 			}
-
-			//contextMenuStrip1.Items[13].Enabled = false;
 		}
 
 
