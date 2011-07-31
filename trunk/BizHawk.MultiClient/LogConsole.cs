@@ -141,17 +141,24 @@ namespace BizHawk.MultiClient
 			//stdout is already connected to something. keep using it and dont let the console interfere
 			shouldRedirectStdout = (fileType == Win32.FileType.FileTypeUnknown || fileType == Win32.FileType.FileTypePipe);
 
-			//attach to an existing console (if we can; this is circuitous because AttachConsole wasnt added until XP)
+			//attach to an existing console
 			attachedConsole = false;
 
 			if (Win32.AttachConsole(-1))
+			{
+				hasConsole = true;
 				attachedConsole = true;
+			}
 
 			if (!attachedConsole)
 			{
-				Win32.AllocConsole();
+				if (Win32.AllocConsole())
+					hasConsole = true;
+				else
+					System.Windows.Forms.MessageBox.Show("Couldn't allocate win32 console: {0}" + Marshal.GetLastWin32Error());
 			}
 
+			if(hasConsole)
 			{
 				IntPtr ptr = Win32.GetCommandLine();
 				string commandLine = Marshal.PtrToStringAuto(ptr);
@@ -166,7 +173,6 @@ namespace BizHawk.MultiClient
 					throw new Exception("SetStdHandle() failed");
 			}
 
-			hasConsole = true;
 			DotNetRewireConout();
 
 			if (attachedConsole)
