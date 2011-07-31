@@ -777,7 +777,6 @@ namespace BizHawk.MultiClient
 			}
 
 			RewireInputChain();
-			Global.MovieMode = false;
 		}
 
 		void RewireInputChain()
@@ -1462,7 +1461,6 @@ namespace BizHawk.MultiClient
 					if (UserMovie.Length() == Global.Emulator.Frame)
 					{
 						UserMovie.SetMovieFinished();
-						Global.MovieMode = false;
 					}
 				}
 				if (UserMovie.Mode == MOVIEMODE.FINISHED)
@@ -1599,11 +1597,14 @@ namespace BizHawk.MultiClient
 		private void LoadStateFile(string path, string name)
 		{
 			var reader = new StreamReader(path);
-			Global.Emulator.LoadStateText(reader);
-			HandleMovieLoadState(reader);
-			UpdateTools();
-			reader.Close();
-			Global.RenderPanel.AddMessage("Loaded state: " + name);
+			
+			if (HandleMovieLoadState(reader))
+			{
+				Global.Emulator.LoadStateText(reader);
+				UpdateTools();
+				reader.Close();
+				Global.RenderPanel.AddMessage("Loaded state: " + name);
+			}
 		}
 
 		private void LoadState(string name)

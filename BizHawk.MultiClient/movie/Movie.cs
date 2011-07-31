@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
@@ -477,34 +478,61 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int CheckTimeLines(StreamReader reader)
+		public bool CheckTimeLines(StreamReader reader)
 		{
-			return -1; //Hack
 			//This function will compare the movie data to the savestate movie data to see if they match
-			//TODO: Will eventually check header data too such as GUI
-			/*
+
 			MovieLog l = new MovieLog();
 			string line;
+			string GUID;
+
 			while (true)
 			{
 				line = reader.ReadLine();
 				if (line.Trim() == "") continue;
+				else if (line.Contains("GUID"))
+				{
+					GUID = ParseHeader(line, MovieHeader.GUID);
+					if (Header.GetHeaderLine(MovieHeader.GUID) != GUID)
+					{
+						//GUID Mismatch error
+						var result = MessageBox.Show(GUID + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" + 
+							"The savestate GUID does not match the current movie.  Proceed anyway?", "GUID Mismatch error",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (result == DialogResult.No)
+							return false;
+					}
+				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
 				else if (line[0] == '|')
 					l.AddFrame(line);
+				
 			}
 
+			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
+
+			if (Log.Length() < l.Length())
+			{
+				//Future event error
+					MessageBox.Show("The savestate is from frame " + l.Length().ToString() + " which is greater than the current movie length of " +
+					Log.Length().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+			}
 			for (int x = 0; x < Log.Length(); x++)
 			{
 				string xs = Log.GetFrame(x);
 				string ys = l.GetFrame(x);
-				//if (Log.GetFrame(x) != l.GetFrame(x))
-				if (xs != ys)
-					return x;
+				if (Log.GetFrame(x) != l.GetFrame(x))
+				{
+					//TimeLine Error
+					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
+						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
 			}
-			return -1;
-			 */
+			return true;
 		}
 
 		public int CompareTo(Movie Other, string parameter)
