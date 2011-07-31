@@ -158,6 +158,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap CorpHawkSmall {
+            get {
+                object obj = ResourceManager.GetObject("CorpHawkSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap CutHS {
             get {
                 object obj = ResourceManager.GetObject("CutHS", resourceCulture);
@@ -259,6 +266,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap Hack {
             get {
                 object obj = ResourceManager.GetObject("Hack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Help {
+            get {
+                object obj = ResourceManager.GetObject("Help", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
