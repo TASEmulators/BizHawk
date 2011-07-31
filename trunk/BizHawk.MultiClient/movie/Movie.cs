@@ -478,7 +478,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public bool CheckTimeLines(StreamReader reader)
+		public bool CheckTimeLines(StreamReader reader, bool OnlyGUID)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
 
@@ -503,6 +503,11 @@ namespace BizHawk.MultiClient
 						if (result == DialogResult.No)
 							return false;
 					}
+					else if (OnlyGUID)
+					{
+						reader.BaseStream.Position = 0;
+						return true;
+					}
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
@@ -512,6 +517,8 @@ namespace BizHawk.MultiClient
 			}
 
 			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
+
+			if (OnlyGUID) return true;
 
 			if (Log.Length() < l.Length())
 			{

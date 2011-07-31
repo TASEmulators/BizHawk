@@ -121,7 +121,7 @@ namespace BizHawk.MultiClient
 				if (ReadOnly)
 				{
 
-					if (!UserMovie.CheckTimeLines(reader))
+					if (!UserMovie.CheckTimeLines(reader, false))
 						return false;	//Timeline/GUID error
 					else
 					{
@@ -132,7 +132,8 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					//TODO: GUID check
+					if (!UserMovie.CheckTimeLines(reader, true))
+						return false;	//GUID Error
 					UserMovie.LoadLogFromSavestateText(reader);
 				}
 			}
@@ -140,14 +141,14 @@ namespace BizHawk.MultiClient
 			{
 				if (ReadOnly)
 				{
-					if (!UserMovie.CheckTimeLines(reader))
+					if (!UserMovie.CheckTimeLines(reader, false))
 						return false;	//Timeline/GUID error
 					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 				}
 				else
 				{
-					//TODO: GUID check
-					//QUESTIONABLE - control whether the movie gets truncated here?
+					if (!UserMovie.CheckTimeLines(reader, true))
+						return false;	//GUID Error
 					UserMovie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
 					SetMainformMovieInfo();
 					UserMovie.LoadLogFromSavestateText(reader);
@@ -165,7 +166,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						if (!UserMovie.CheckTimeLines(reader))
+						if (!UserMovie.CheckTimeLines(reader, false))
 							return false;	//Timeline/GUID error
 						UserMovie.StartPlayback();
 						SetMainformMovieInfo();
@@ -181,7 +182,8 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						//TODO: GUID check
+						if (!UserMovie.CheckTimeLines(reader, true))
+							return false;	//GUID Error
 						UserMovie.StartNewRecording();
 						SetMainformMovieInfo();
 						UserMovie.LoadLogFromSavestateText(reader);
