@@ -74,11 +74,6 @@ namespace BizHawk.MultiClient
 			return mg.GetControllersAsMnemonic();
 		}
 
-		//TODO - wtf is this being used for
-		public static bool MovieMode;
-
-
-
 		public static CoreAccessor PsxCoreLibrary = new CoreAccessor(new Win32LibAccessor("PsxHawk.Core.dll"));
 
 	}
