@@ -311,7 +311,8 @@ namespace BizHawk.MultiClient
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			new AboutBox().ShowDialog();
+			//new AboutBox().ShowDialog();
+			new BizBox().ShowDialog();
 		}
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
