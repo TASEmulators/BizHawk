@@ -152,6 +152,7 @@ namespace BizHawk.MultiClient
 
 			if (!attachedConsole)
 			{
+				Win32.FreeConsole();
 				if (Win32.AllocConsole())
 					hasConsole = true;
 				else
