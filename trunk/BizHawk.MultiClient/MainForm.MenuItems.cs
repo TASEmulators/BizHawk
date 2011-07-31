@@ -1088,6 +1088,7 @@ namespace BizHawk.MultiClient
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
+			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1289,6 +1290,11 @@ namespace BizHawk.MultiClient
 		{
 			exit = true;
 			base.OnClosed(e);
+		}
+
+		private void backupSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.BackupSavestates ^= true;
 		}
 	}
 }
