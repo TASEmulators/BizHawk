@@ -35,7 +35,8 @@ namespace BizHawk.MultiClient
 			IsText = true;
 			Frames = 0;
 			StartsFromSavestate = false;
-			Loaded = false;
+			if (filename.Length > 0)
+				Loaded = true;
 		}
 
 		public Movie()
@@ -48,9 +49,14 @@ namespace BizHawk.MultiClient
 			Loaded = false;
 		}
 
-		public string GetSysID()
+		public string SysID()
 		{
 			return Header.GetHeaderLine(MovieHeader.PLATFORM);
+		}
+
+		public string GUID()
+		{
+			return Header.GetHeaderLine(MovieHeader.GUID);
 		}
 
 		public string GetGameName()
@@ -310,6 +316,8 @@ namespace BizHawk.MultiClient
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
+			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
+			writer.WriteLine(s);
 			for (int x = 0; x < Log.Length(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
@@ -571,8 +579,8 @@ namespace BizHawk.MultiClient
 
 		private int CompareSysID(Movie Other)
 		{
-			string otherSysID = Other.GetSysID();
-			string thisSysID = this.GetSysID();
+			string otherSysID = Other.SysID();
+			string thisSysID = this.SysID();
 
 			if (thisSysID == null && otherSysID == null)
 				return 0;

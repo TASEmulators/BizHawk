@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 			if (column == 0) //File
 				text = Path.GetFileName(MovieList[index].Filename);
 			if (column == 1) //System
-				text = MovieList[index].GetSysID();
+				text = MovieList[index].SysID();
 			if (column == 2) //Game
 				text = MovieList[index].GetGameName();
 			if (column == 3) //Time
