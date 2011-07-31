@@ -1,0 +1,28 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Documents the rerecording implementation of Bizhawk
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+
+==Loadstate Errors==
+
+ * GUID Mismatch Error
+
+All movies have a unique GUID.  Savestates store this value.  In the event of a mismatch this error will occur.  It is a soft error in that it will ask the user if they wish to proceed.
+
+ * Timeline Error
+ 
+When loading a state in Read-only mode, a timeline check will occur.  Each frame of the savestate and the movie will be compared.  If the savestate deviates from the movie this error will occur.  It will also notify the frame at which the savestate branches from the current movie.
+
+ * Future Event Error
+
+When loading a state in Read-only mode, if the savestate from an event after the end of the movie, this error will be thrown.  You can not load an event that has not yet occurred in the movie!
