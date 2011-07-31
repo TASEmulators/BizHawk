@@ -184,5 +184,17 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
+		public void ReadHeader(StreamReader reader)
+		{
+			using (reader)
+			{
+				string str = "";
+				while ((str = reader.ReadLine()) != null)
+				{
+					AddHeaderFromLine(str);
+				}
+				reader.Close();
+			}
+		}
 	}
 }
