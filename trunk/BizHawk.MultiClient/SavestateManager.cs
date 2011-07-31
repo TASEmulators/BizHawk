@@ -9,6 +9,7 @@ namespace BizHawk.MultiClient
 	class SavestateManager
 	{
 		private bool[] slots = new bool[10];
+		private bool[] redo = new bool[10];
 
 		public SavestateManager()
 		{
@@ -50,6 +51,36 @@ namespace BizHawk.MultiClient
 
 			Update();
 			return slots[slot];
+		}
+
+		public void ClearRedoList()
+		{
+			for (int x = 0; x < 10; x++)
+			{
+				redo[x] = false;
+			}
+		}
+
+		public void ToggleRedo(int slot)
+		{
+			if (slot < 0 || slot > 9)
+				return;
+
+			redo[slot] ^= true;
+		}
+
+		public bool IsRedo(int slot)
+		{
+			if (slot < 0 || slot > 9)
+				return false;
+
+			return redo[slot];
+		}
+
+		public void Clear()
+		{
+			ClearRedoList();
+			Update();
 		}
 	}
 }
