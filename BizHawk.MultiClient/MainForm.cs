@@ -1569,6 +1569,16 @@ namespace BizHawk.MultiClient
 			if (file.Directory.Exists == false)
 				file.Directory.Create();
 
+			//Make backup first
+			if (Global.Config.BackupSavestates && file.Exists == true)
+			{
+				string backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists == true)
+					backupFile.Delete();
+				file.CopyTo(backup);
+			}
+
 			var writer = new StreamWriter(path);
 			SaveStateFile(writer, name);
 		}
