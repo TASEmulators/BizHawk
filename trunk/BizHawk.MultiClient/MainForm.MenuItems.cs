@@ -306,7 +306,7 @@ namespace BizHawk.MultiClient
 
 		private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-
+			System.Diagnostics.Process.Start("http://code.google.com/p/bizhawk/");
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
