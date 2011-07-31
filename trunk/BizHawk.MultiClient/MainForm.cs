@@ -87,6 +87,12 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm = new CoreInputComm();
 			SyncCoreInputComm();
 
+			Console.WriteLine("Scanning cores:");
+			foreach (var ci in Introspection.GetCoreInfo())
+			{
+				Console.WriteLine("{0} - {1} ({2})", ci.FriendlyName, ci.Version, ci.ClassName);
+			}
+
 			Database.LoadDatabase(PathManager.GetExeDirectoryAbsolute() + "\\gamedb.txt");
 
 			SyncPresentationMode();
