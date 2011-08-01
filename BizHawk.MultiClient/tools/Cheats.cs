@@ -166,6 +166,7 @@ namespace BizHawk.MultiClient
 
 		public void AddCheat(Cheat c)
 		{
+			Changes();
 			cheatList.Add(c);
 			DisplayCheatsList();
 			CheatListView.Refresh();
@@ -409,6 +410,8 @@ namespace BizHawk.MultiClient
 		private bool SaveCheatFile(string path)
 		{
 			var file = new FileInfo(path);
+			if (!file.Directory.Exists)
+				file.Directory.Create();
 
 			using (StreamWriter sw = new StreamWriter(path))
 			{
@@ -529,7 +532,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SFX":
 				case "PCE":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "GB");
+					path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "PCE");
 					break;
 				case "GB":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathGBCheats, "GB");
