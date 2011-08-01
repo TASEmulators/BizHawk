@@ -49,5 +49,12 @@ namespace BizHawk.Disc
 		{
 			return TOC;
 		}
+
+        public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
+        {
+            m = (byte) (lba / 75 / 60);
+            s = (byte) ((lba - (m * 75 * 60)) / 75);
+            f = (byte) (lba - (m * 75 * 60) - (s * 75));
+        }
 	}
 }

@@ -614,6 +614,16 @@ namespace BizHawk
 			return outStream.ToArray();
 		}
 
+        public static byte BinToBCD(this byte v)
+        {
+            return (byte) (((v/10)*16) | (v%10));
+        }
+
+        public static byte BCDtoBin(this byte v)
+        {
+            return (byte)(((v / 16) * 10) | (v % 16));
+        }
+
 		public static string FormatFileSize(long filesize)
 		{
 			Decimal size = (Decimal)filesize;
