@@ -616,10 +616,15 @@ namespace BizHawk.MultiClient
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Enabled
 					y = int.Parse(s[0].ToString());
-					if (y == 0)
-						c.Disable();
-					else
-						c.Enable();
+
+					try
+					{
+						if (y == 0)
+							c.Disable();
+						else
+							c.Enable();
+					}
+					catch { }
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Name
