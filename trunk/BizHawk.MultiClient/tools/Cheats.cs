@@ -161,7 +161,6 @@ namespace BizHawk.MultiClient
 				case "SG":
 				case "GG":
 				case "PCE":
-				case "TI83":
 					AddCheatGroup.Enabled = false;
 					CheatListView.Enabled = false;
 					MessageLabel.Text = Global.Emulator.SystemId + " not supported.";
@@ -645,7 +644,10 @@ namespace BizHawk.MultiClient
 						else
 							c.Enable();
 					}
-					catch { }
+					catch
+					{
+						NotSupportedError();
+					}
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y); //Name
@@ -666,6 +668,12 @@ namespace BizHawk.MultiClient
 					cheatList[x].Disable();
 			}
 			return true; //TODO
+		}
+
+		private void NotSupportedError()
+		{
+			MessageBox.Show("Unable to enable cheat for this platform, cheats are not supported for " + Global.Emulator.SystemId, "Cheat error",
+							MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		private void OpenCheatFile()
@@ -729,8 +737,12 @@ namespace BizHawk.MultiClient
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
 			c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 			c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-			try { c.Enable(); }
-			catch { }
+			try { 
+				c.Enable();
+			} 
+			catch {
+				NotSupportedError();
+			}
 			return c;
 		}
 
@@ -841,8 +853,14 @@ namespace BizHawk.MultiClient
 						cheatList[indexes[x]].Disable();
 					else
 					{
-						try { cheatList[indexes[x]].Enable(); }
-						catch { }
+						try
+						{
+							cheatList[indexes[x]].Enable();
+						}
+						catch
+						{
+							NotSupportedError();
+						}
 					}
 				}
 				CheatListView.Refresh();
