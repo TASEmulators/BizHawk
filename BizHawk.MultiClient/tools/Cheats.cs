@@ -187,6 +187,7 @@ namespace BizHawk.MultiClient
 		{
 			Changes();
 			cheatList.Add(c);
+			Global.RenderPanel.AddMessage("Cheat added.");
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
