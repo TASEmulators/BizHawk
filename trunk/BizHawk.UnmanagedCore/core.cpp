@@ -2,13 +2,7 @@
 #include "core.h"
 #include "emufile.h"
 #include "emufile_hawk.h"
-
-
-//TODO
-class DISC_INTERFACE
-{
-};
-
+#include "DiscInterface.h"
 
 //TODO - setup a null file to use as the default console, so we dont have to check whether its set to null everywhere
 class EMUFILE_HAWK;
@@ -84,7 +78,9 @@ extern "C" __declspec(dllexport) void* Core_signal(const char* type, void* obj, 
 	//force a reference to our core types. a bit annoying but if its this easy i guess i dont mind
 	if(!strcmp(type,"IMPOSSIBLE"))
 	{
-		return new EMUFILE_HAWK(0);
+		con->fprintf("%x\n",((DiscInterface*)NULL)->Construct(NULL));
+		con->fprintf("%x\n",((EMUFILE_HAWK*)NULL)->Construct(NULL));
+		return 0;
 	}
 
 	return 0;

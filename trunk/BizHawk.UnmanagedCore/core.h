@@ -23,6 +23,7 @@ extern EMUFILE_HAWK* con;
 //since we may need to change all these later to work un-generalized
 //but seriously. before doing that, i would rather return sizeof(functionpointer) bytes as a token to the managed code and pass that back in
 //(MP stands for MEMBER POINTER)
+//we could also try using the FastDelegate. really, we probably should.
 template<typename T> void* MP(const T& a)
 {
 	union U{
@@ -35,7 +36,7 @@ template<typename T> void* MP(const T& a)
 }
 
 //this is a function pointer which can be assigned without having to type the function protoype again to cast it.
-template<typename T> class FP
+template<typename T> class __FP
 {
 private:
 	template<typename T> T MPX(void* a)
@@ -48,12 +49,39 @@ private:
 		return u.t;
 		CTASSERT(sizeof(U)==4||(sizeof(U)==8&&sizeof(void*)==8));
 	}
+//protected:
 public:
 	T func;
 	void set(void* val) { func = MPX<T>(val); }
 };
 
-//nothing important
+//----------------
+//these templates help us call a function pointer directly with () instead of fp.func()
+
+template<typename R=void> struct FUNC0 : public __FP<R(*)()> { public:
+	R operator()() { return func(); }
+};
+template<typename A1, typename R=void> struct FUNC1 : public __FP<R(*)(A1)> { public:
+	R operator()(A1 a1) { return func(a1); }
+};
+template<typename A1, typename A2, typename R=void> struct FUNC2 : public __FP<R(*)(A1,A2)> { public:
+	R operator()(A1 a1, A2 a2) { return func(a1,a2); }
+};
+template<typename A1, typename A2, typename A3, typename R=void> struct FUNC3 : public __FP<R(*)(A1,A2,A3)> { public:
+	R operator()(A1 a1, A2 a2, A3 a3) { return func(a1,a2,a3); }
+};
+template<typename A1, typename A2, typename A3, typename A4, typename R=void> struct FUNC4 : public __FP<R(*)(A1,A2,A3,A4)> { public:
+	R operator()(A1 a1, A2 a2, A3 a3, A4 a4) { return func(a1,a2,a3,a4); }
+};
+
+template<typename Signature> class FUNC;
+template<typename R> class FUNC<R()> : public FUNC0<R> {};
+template<typename A1, typename R> class FUNC<R(A1)> : public FUNC1<A1,R> {};
+template<typename A1, typename A2, typename R> class FUNC<R(A1,A2)> : public FUNC2<A1,A2,R> {};
+template<typename A1, typename A2, typename A3, typename R> class FUNC<R(A1,A2,A3)> : public FUNC3<A1,A2,A3,R> {};
+template<typename A1, typename A2, typename A3, typename A4, typename R> class FUNC<R(A1,A2,A3,A4)> : public FUNC4<A1,A2,A3,A4,R> {};
+//----------------
+
 void _registerFunction(const char* _name, void* _funcptr);
 struct FunctionRecord
 {
@@ -64,7 +92,7 @@ struct FunctionRecord
 };
 
 //register a core object member function. put it in a global static array
-template<typename T> FunctionRecord FUNC(const char* name, const T& a)
+template<typename T> FunctionRecord REG(const char* name, const T& a)
 {
 	return FunctionRecord(name,MP(a));
 }

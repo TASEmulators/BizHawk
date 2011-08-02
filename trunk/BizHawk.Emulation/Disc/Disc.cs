@@ -288,9 +288,10 @@ namespace BizHawk.Disc
 			blob.PhysicalPath = fiIso.FullName;
 			Blobs.Add(blob);
 			int num_lba = (int)(fiIso.Length / 2048);
-			//index.length_lba = num_lba;
+			track.length_lba = num_lba;
 			if (fiIso.Length % 2048 != 0)
 				throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
+			//TODO - handle this with Final Fantasy 9 cd1.iso
 
 			var ecmCacheBlob = new ECMCacheBlob(blob);
 			for (int i = 0; i < num_lba; i++)

@@ -13,6 +13,7 @@ using System.Collections.Generic;
 
 namespace BizHawk
 {
+
 	
 	/// <summary>
 	/// universal interface to a shared library
@@ -62,14 +63,16 @@ namespace BizHawk
 
 			if (register)
 			{
+				mCoreRegistry[core.ManagedOpaque] = core;
 			}
 			else
 			{
-				//delete
+				mCoreRegistry.Remove(core.ManagedOpaque);
 			}
 		}
 
 		StaticCoreCommon scc;
+		Dictionary<IntPtr, ExternalCore> mCoreRegistry = new Dictionary<IntPtr, ExternalCore>();
 
 		public void Dispose()
 		{
@@ -95,7 +98,10 @@ namespace BizHawk
 			{
 				return scc.ClientSignal(type, obj, param, value);
 			}
-			else return IntPtr.Zero;
+			else
+			{
+				return mCoreRegistry[obj].ClientSignal(type, obj, param, value);
+			}
 		}
 
 		public IntPtr Signal(string type, IntPtr obj, string param, IntPtr value)
@@ -112,17 +118,18 @@ namespace BizHawk
 		public IntPtr ManagedOpaque;
 		public IntPtr UnmanagedOpaque;
 		static int _ManagedOpaque_Counter = 1;
+		private static object oLock = new object();
 
 		protected IExternalCoreAccessor mAccessor;
 		public ExternalCore(IExternalCoreAccessor accessor)
 		{
 			mAccessor = accessor;
-			mAccessor.RegisterCore(this,true);
-			lock (this)
+			lock (oLock)
 			{
 				ManagedOpaque = new IntPtr(_ManagedOpaque_Counter);
 				_ManagedOpaque_Counter++;
 			}
+			mAccessor.RegisterCore(this, true);
 		}
 
 		public virtual void Dispose()
@@ -136,8 +143,13 @@ namespace BizHawk
 		/// <summary>
 		/// cores call into the client from here. this system is not fully baked yet, though
 		/// </summary>
-		virtual public IntPtr ClientSignal(string type, IntPtr obj, string param, IntPtr value)
+		public virtual IntPtr ClientSignal(string type, IntPtr obj, string param, IntPtr value)
 		{
+			//if (type == "FACTORY")
+			//{
+			//    return new DiscInterface(mAccessor).UnmanagedOpaque;
+			//}
+			//else return IntPtr.Zero;
 			return IntPtr.Zero;
 		}
 
@@ -228,6 +240,11 @@ namespace BizHawk
 		public void RegisterClientSignal(CoreAccessor.SignalCallbackDelegate ClientSignal)
 		{
 			mAccessor.Signal("SET_CLIENT_SIGNAL", IntPtr.Zero, null, ExportDelegate(ClientSignal));
+		}
+
+		public override IntPtr ClientSignal(string type, IntPtr obj, string param, IntPtr value)
+		{
+			return IntPtr.Zero;
 		}
 
 	}

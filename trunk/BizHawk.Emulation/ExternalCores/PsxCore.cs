@@ -19,11 +19,28 @@ namespace BizHawk
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 
+			mDiscInterface = new DiscInterface(mAccessor);
+
 			UnmanagedOpaque = QueryCoreCall<Func<IntPtr,IntPtr>>("PsxCore.Construct")(ManagedOpaque);
 
 			QueryCoreCall(out cGetResolution, "PsxCore.GetResolution");
 			QueryCoreCall(out cUpdateVideoBuffer, "PsxCore.UpdateVideoBuffer");
 			QueryCoreCall(out cFrameAdvance, "PsxCore.FrameAdvance");
+		}
+
+		DiscInterface mDiscInterface;
+		public void SetDiscHopper(Disc.DiscHopper hopper)
+		{
+			mDiscInterface.DiscHopper = hopper;
+		}
+
+		public override IntPtr ClientSignal(string type, IntPtr obj, string param, IntPtr value)
+		{
+			if (param == "GetDiscInterface")
+			{
+				return mDiscInterface.UnmanagedOpaque;
+			}
+			return base.ClientSignal(type, obj, param, value);
 		}
 
 		Func<System.Drawing.Size> cGetResolution;

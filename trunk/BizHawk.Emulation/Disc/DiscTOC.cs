@@ -14,7 +14,7 @@ namespace BizHawk.Disc
 			public int num;
 			public List<Track> Tracks = new List<Track>();
 
-			//the length of the track (should be the sum of all track lengths)
+			//the length of the session (should be the sum of all track lengths)
 			public int length_lba;
 			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
