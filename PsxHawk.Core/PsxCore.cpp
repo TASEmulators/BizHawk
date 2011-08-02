@@ -3,15 +3,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include "emufile_hawk.h"
+#include "DiscInterface.h"
 
 
 static FunctionRecord records[] = {
-	FUNC("PsxCore.Construct", &PsxCore::Construct),
-	FUNC("PsxCore.GetResolution", &PsxCore::GetResolution),
-	FUNC("PsxCore.FrameAdvance", &PsxCore::FrameAdvance),
-	FUNC("PsxCore.UpdateVideoBuffer", &PsxCore::UpdateVideoBuffer)
+	REG("PsxCore.Construct", &PsxCore::Construct),
+	REG("PsxCore.GetResolution", &PsxCore::GetResolution),
+	REG("PsxCore.FrameAdvance", &PsxCore::FrameAdvance),
+	REG("PsxCore.UpdateVideoBuffer", &PsxCore::UpdateVideoBuffer)
 };
 
+PsxCore::PsxCore(void* _opaque)
+	: opaque(_opaque)
+{
+	discInterface = (DiscInterface*)ClientSignal(NULL,opaque,"GetDiscInterface",NULL);
+}
 
 PsxCore::Size PsxCore::GetResolution()
 {
@@ -28,6 +34,8 @@ void PsxCore::FrameAdvance()
 	{
 		videoBuffer[i] = rand() | (rand()<<15) | 0xFF000000;
 	}
+	DiscInterface::TrackInfo ti = discInterface->GetTrack(0,0);
+	con->fprintf("lba len: %d\n",ti.length_lba);
 }
 
 void PsxCore::UpdateVideoBuffer(void* target)

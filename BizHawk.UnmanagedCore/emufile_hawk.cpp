@@ -2,9 +2,9 @@
 #include "core.h"
 
 static FunctionRecord records[] = {
-	FUNC("EmuFile.Construct", &EMUFILE_HAWK::Construct),
-	FUNC("EmuFile.Set_fp", &EMUFILE_HAWK::Set_fp),
-	FUNC("EmuFile.Delete", &EMUFILE_HAWK::Delete),
+	REG("EmuFile.Construct", &EMUFILE_HAWK::Construct),
+	REG("EmuFile.Set_fp", &EMUFILE_HAWK::Set_fp),
+	REG("EmuFile.Delete", &EMUFILE_HAWK::Delete),
 };
 
 
@@ -23,7 +23,6 @@ int EMUFILE_HAWK::fprintf(const char *format, ...)
 	va_end(argptr);
 	return amt;
 }
-
 
 void* EMUFILE_HAWK::Construct(void* ManagedOpaque)
 {

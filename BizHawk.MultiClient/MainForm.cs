@@ -848,12 +848,10 @@ namespace BizHawk.MultiClient
 						nextEmulator = psx;
 						game = new RomGame();
 						var disc = Disc.Disc.FromIsoPath(path);
-						//Global.DiscHopper.Clear();
-						//Global.DiscHopper.Enqueue(disc);
-						//Global.DiscHopper.Insert();
-
-						//set disc
-						//psx.
+						Global.DiscHopper.Clear();
+						Global.DiscHopper.Enqueue(disc);
+						Global.DiscHopper.Insert();
+						psx.SetDiscHopper(Global.DiscHopper);
 					}
 				}
 				else

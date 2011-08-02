@@ -1,9 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
 
 //main apis for emulator core routine use
 
 namespace BizHawk.Disc
 {
+
+	public class DiscHopper
+	{
+		public Disc CurrentDisc;
+
+		public Queue<Disc> Queue = new Queue<Disc>();
+
+		public void Enqueue(Disc disc)
+		{
+			Queue.Enqueue(disc);
+		}
+
+		public void Next()
+		{
+			if (Queue.Count != 0) Queue.Dequeue();
+		}
+		public void Eject()
+		{
+			CurrentDisc = null;
+		}
+		public void Insert()
+		{
+			if (Queue.Count > 0)
+				CurrentDisc = Queue.Peek();
+		}
+
+		public void Clear()
+		{
+			CurrentDisc = null;
+			Queue.Clear();
+		}
+	}
 
 	public partial class Disc
 	{

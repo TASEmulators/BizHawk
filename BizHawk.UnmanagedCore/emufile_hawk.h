@@ -10,22 +10,23 @@ class EMUFILE_HAWK : public EMUFILE
 
 
 	struct {
-		FP<int(*)()> fgetc;
-		FP<size_t(*)(const void* ptr, size_t bytes)> fread;
-		FP<void(*)(const void* ptr, size_t bytes)> fwrite;
-		FP<int(*)(int offset, int origin)> fseek;
-		FP<int(*)()> ftell;
-		FP<int(*)()> size;
-		FP<void(*)()> dispose;
+		FUNC<int()> fgetc;
+		FUNC<int(const void* ptr, size_t bytes)> fread;
+		FUNC<void(const void* ptr, size_t bytes)> fwrite;
+		FUNC<int(int offset, int origin)> fseek;
+		FUNC<int()> ftell;
+		FUNC<int()> size;
+		FUNC<void()> dispose;
 	} _;
 
 public:
 	~EMUFILE_HAWK()
 	{
-		_.dispose.func();
+		_.dispose();
 	}
-		EMUFILE_HAWK(void* _ManagedOpaque)
-	: ManagedOpaque(_ManagedOpaque)
+
+	EMUFILE_HAWK(void* _ManagedOpaque)
+		: ManagedOpaque(_ManagedOpaque)
 	{
 	}
 
@@ -47,18 +48,15 @@ public:
 		if(!strcmp(param,"dispose")) _.dispose.set(value);
 	}
 
-	virtual int fgetc() { return _.fgetc.func(); }
+	virtual int fgetc() { return _.fgetc(); }
 	virtual FILE *get_fp() { return NULL; }
 	virtual int fputc(int c) { return -1; }
 	virtual int fprintf(const char *format, ...);
-	virtual size_t _fread(const void *ptr, size_t bytes) { return _.fread.func(ptr,bytes); }
-	virtual void fwrite(const void *ptr, size_t bytes) { return _.fwrite.func(ptr,bytes); }
-	virtual int fseek(int offset, int origin) { return _.fseek.func(offset,origin); }
-	virtual int ftell() { return _.ftell.func(); }
-	virtual int size() { return _.size.func(); }
-
-	
-	void* signal(const char* _param, void* value);
+	virtual size_t _fread(const void *ptr, size_t bytes) { return _.fread(ptr,bytes); }
+	virtual void fwrite(const void *ptr, size_t bytes) { return _.fwrite(ptr,bytes); }
+	virtual int fseek(int offset, int origin) { return _.fseek(offset,origin); }
+	virtual int ftell() { return _.ftell(); }
+	virtual int size() { return _.size(); }
 };
 
 

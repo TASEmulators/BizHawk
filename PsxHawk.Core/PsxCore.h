@@ -3,16 +3,16 @@
 
 #include <stdio.h>
 
+class DiscInterface;
+
 class PsxCore
 {
 public:
-	PsxCore(void* _opaque)
-		: opaque(_opaque)
-	{
-	}
+	PsxCore(void* _opaque);
 
 private:
 	void* opaque;
+	DiscInterface* discInterface;
 
 public:
 	void* Construct(void* ManagedOpaque)

@@ -74,6 +74,9 @@ namespace BizHawk.MultiClient
 			return mg.GetControllersAsMnemonic();
 		}
 
+		public static Disc.DiscHopper DiscHopper = new BizHawk.Disc.DiscHopper();
+
+
 		public static CoreAccessor PsxCoreLibrary = new CoreAccessor(new Win32LibAccessor("PsxHawk.Core.dll"));
 
 	}
