@@ -200,6 +200,7 @@ namespace BizHawk
 	}
 
 	internal enum WindowsMessage : uint {
+		WM_ERASEBKGND = 0x0014,
 		WM_LBUTTONDOWN = 0x0201,
 		WM_LBUTTONUP = 0x0202,
 		WM_LBUTTONDBLCLK = 0x0203,
@@ -389,6 +390,7 @@ namespace BizHawk
 
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 		}
 
 		~VirtualListView() {
@@ -546,6 +548,14 @@ namespace BizHawk
 				//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
 				//        messageProcessed = true;
 				//    break;
+				case (int)WindowsMessage.WM_ERASEBKGND:
+					if (BlazingFast)
+					{
+						messageProcessed = true;
+						m.Result = new IntPtr(1);
+					}
+					break;
+
 				default:
 					break;
 			}
@@ -557,6 +567,8 @@ namespace BizHawk
 				}
 			}
 		}
+
+		public bool BlazingFast = false;
 
 		protected ListViewItem GetItem(int idx) {
 			ListViewItem item = null;
