@@ -99,6 +99,7 @@
             this.columnHeader6});
 			this.DetailsView.FullRowSelect = true;
 			this.DetailsView.GridLines = true;
+			this.DetailsView.HideSelection = false;
 			this.DetailsView.Location = new System.Drawing.Point(15, 19);
 			this.DetailsView.Name = "DetailsView";
 			this.DetailsView.Size = new System.Drawing.Size(228, 242);

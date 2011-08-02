@@ -83,6 +83,7 @@
             this.PathName});
 			this.LuaListView.FullRowSelect = true;
 			this.LuaListView.GridLines = true;
+			this.LuaListView.HideSelection = false;
 			this.LuaListView.ItemCount = 0;
 			this.LuaListView.Location = new System.Drawing.Point(12, 51);
 			this.LuaListView.Name = "LuaListView";
@@ -187,18 +188,18 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
