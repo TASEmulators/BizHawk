@@ -148,6 +148,23 @@ namespace BizHawk.MultiClient
 			PopulateMemoryDomainComboBox();
 			AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
 			UpdateNumberOfCheats();
+
+			//Hacky Disabling if not a supported core
+			switch (Global.Emulator.SystemId)
+			{
+				default:
+					break;
+				case "GB":
+				case "SMS":
+				case "SG":
+				case "GG":
+				case "PCE":
+				case "TI83":
+					AddCheatGroup.Enabled = false;
+					CheatListView.Enabled = false;
+					MessageLabel.Text = Global.Emulator.SystemId + " not supported.";
+					break;
+			}
 		}
 
 		private void PopulateMemoryDomainComboBox()
@@ -708,7 +725,8 @@ namespace BizHawk.MultiClient
 			c.address = int.Parse(AddressBox.Text, NumberStyles.HexNumber); //TODO: validation
 			c.value = (byte)(int.Parse(ValueBox.Text, NumberStyles.HexNumber));
 			c.domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
-			c.Enable();
+			try { c.Enable(); }
+			catch { }
 			return c;
 		}
 
@@ -818,7 +836,10 @@ namespace BizHawk.MultiClient
 					if (cheatList[indexes[x]].IsEnabled())
 						cheatList[indexes[x]].Disable();
 					else
-						cheatList[indexes[x]].Enable();
+					{
+						try { cheatList[indexes[x]].Enable(); }
+						catch { }
+					}
 				}
 				CheatListView.Refresh();
 			}
