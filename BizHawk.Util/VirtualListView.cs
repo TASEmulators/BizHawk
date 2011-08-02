@@ -538,11 +538,14 @@ namespace BizHawk
 							break;
 					}
 					break;
+
 				//obscure message loop flakiness when exceptions are thrown from the message loop...
-				case (int)WindowsMessage.WM_SETFOCUS:
-					if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
-						messageProcessed = true;
-					break;
+				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
+				//next time we run into this, debug it better.
+				//case (int)WindowsMessage.WM_SETFOCUS:
+				//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
+				//        messageProcessed = true;
+				//    break;
 				default:
 					break;
 			}
