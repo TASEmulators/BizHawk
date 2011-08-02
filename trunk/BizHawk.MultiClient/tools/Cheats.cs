@@ -147,6 +147,8 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			PopulateMemoryDomainComboBox();
 			AddressBox.MaxLength = GetNumDigits(Global.Emulator.MainMemory.Size - 1);
+			DisplayCheatsList();
+			CheatListView.Refresh();
 			UpdateNumberOfCheats();
 
 			//Hacky Disabling if not a supported core
@@ -185,6 +187,7 @@ namespace BizHawk.MultiClient
 		{
 			Changes();
 			cheatList.Add(c);
+			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
 		}

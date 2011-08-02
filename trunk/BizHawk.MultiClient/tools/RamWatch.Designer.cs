@@ -197,24 +197,24 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(132, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// autoLoadToolStripMenuItem
 			// 
 			this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.autoLoadToolStripMenuItem.Text = "Auto-Load";
 			// 
 			// toolStripSeparator1
@@ -616,6 +616,7 @@
 			this.toolStrip1.Name = "toolStrip1";
 			this.toolStrip1.Size = new System.Drawing.Size(364, 25);
 			this.toolStrip1.TabIndex = 2;
+			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
 			// newToolStripButton
@@ -809,6 +810,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Ram Watch";
 			this.Load += new System.EventHandler(this.RamWatch_Load);
+			this.Enter += new System.EventHandler(this.RamWatch_Enter);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
