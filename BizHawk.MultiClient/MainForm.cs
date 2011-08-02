@@ -1775,7 +1775,6 @@ namespace BizHawk.MultiClient
 		{
 			if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
 			{
-				Cheats1 = new Cheats();
 				Cheats1.Show();
 			}
 			else

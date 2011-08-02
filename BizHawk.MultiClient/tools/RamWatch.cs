@@ -1411,5 +1411,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.RamWatchSaveWindowPosition ^= true;
 		}
+
+		private void RamWatch_Enter(object sender, EventArgs e)
+		{
+			WatchListView.Focus();
+		}
 	}
 }
