@@ -647,6 +647,7 @@
 			this.CheatListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.CheatListView.FullRowSelect = true;
 			this.CheatListView.GridLines = true;
+			this.CheatListView.HideSelection = false;
 			this.CheatListView.ItemCount = 0;
 			this.CheatListView.LabelEdit = true;
 			this.CheatListView.Location = new System.Drawing.Point(12, 72);

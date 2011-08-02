@@ -273,6 +273,7 @@
 			this.SearchListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.SearchListView.FullRowSelect = true;
 			this.SearchListView.GridLines = true;
+			this.SearchListView.HideSelection = false;
 			this.SearchListView.ItemCount = 0;
 			this.SearchListView.LabelEdit = true;
 			this.SearchListView.Location = new System.Drawing.Point(9, 58);
@@ -479,24 +480,24 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(132, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// autoLoadToolStripMenuItem
 			// 
 			this.autoLoadToolStripMenuItem.Name = "autoLoadToolStripMenuItem";
-			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.autoLoadToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
 			this.autoLoadToolStripMenuItem.Text = "Auto-Load";
 			// 
 			// toolStripSeparator4

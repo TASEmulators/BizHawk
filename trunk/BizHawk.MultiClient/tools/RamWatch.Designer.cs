@@ -429,6 +429,7 @@
 			this.WatchListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.WatchListView.FullRowSelect = true;
 			this.WatchListView.GridLines = true;
+			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
 			this.WatchListView.LabelEdit = true;
 			this.WatchListView.Location = new System.Drawing.Point(25, 76);
