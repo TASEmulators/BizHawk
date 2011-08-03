@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
 
 	public class DiscTOC

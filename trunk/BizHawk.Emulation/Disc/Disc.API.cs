@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 //main apis for emulator core routine use
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
-
 	public class DiscHopper
 	{
 		public Disc CurrentDisc;
@@ -83,11 +82,31 @@ namespace BizHawk.Disc
 			return TOC;
 		}
 
+        // converts LBA to minute:second:frame format.
         public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
         {
             m = (byte) (lba / 75 / 60);
             s = (byte) ((lba - (m * 75 * 60)) / 75);
             f = (byte) (lba - (m * 75 * 60) - (s * 75));
+        }
+
+        // gets an identifying hash. hashes the first 512 sectors of 
+        // the first data track on the disc.
+        public string GetHash()
+        {
+            byte[] buffer = new byte[512*2353];
+            foreach (var track in TOC.Sessions[0].Tracks)
+            {
+                if (track.TrackType == ETrackType.Audio)
+                    continue;
+
+                int lba_len = Math.Min(track.length_lba, 512);
+                for (int s=0; s<512 && s<track.length_lba; s++)
+                    ReadLBA_2352(track.Indexes[1].lba + s, buffer, s*2352);
+
+                return Util.Hash_MD5(buffer, 0, lba_len*2352);
+            }
+            return "no data track found";
         }
 	}
 }

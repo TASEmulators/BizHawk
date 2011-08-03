@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 //this rule is not supported correctly: `The first track number can be greater than one, but all track numbers after the first must be sequential.`
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
 	partial class Disc
 	{

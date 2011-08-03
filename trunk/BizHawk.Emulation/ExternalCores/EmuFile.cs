@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Reflection.Emit;
 using System.Threading;
+using BizHawk.DiscSystem;
 
 namespace BizHawk
 {
@@ -40,7 +41,7 @@ namespace BizHawk
 			base.Dispose();
 		}
 
-		public Disc.DiscHopper DiscHopper;
+		public DiscHopper DiscHopper;
 
 		void SetFp(string name, Delegate del)
 		{
@@ -49,7 +50,7 @@ namespace BizHawk
 
 		struct TrackInfo
 		{
-			public Disc.ETrackType TrackType;
+			public ETrackType TrackType;
 			public int length_lba;
 			public int start_lba;
 		}

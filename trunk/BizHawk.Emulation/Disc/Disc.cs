@@ -66,7 +66,7 @@ using System.Collections.Generic;
 //mode2_2352 is the only kind of mode2, by necessity
 //audio is a different mode, seems to be just 2352 bytes with no sync, header or error correction. i guess the CIRC error correction is still there
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
 	public partial class Disc
 	{

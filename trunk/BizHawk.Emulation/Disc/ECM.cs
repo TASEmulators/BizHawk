@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Disc
+﻿namespace BizHawk.DiscSystem
 {
 	static class ECM
 	{
