@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		int m_LinkOutput, m_LinkState;
 		bool m_CursorMoved;
 
-		MemoryDomain.FreezeData[] sysbus_freeze = new MemoryDomain.FreezeData[0x10000];
 		//-------
 
 		public byte ReadMemory(ushort addr)
@@ -39,9 +38,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			else if (addr < 0x8000)
 				ret = rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
 			else ret = ram[addr - 0x8000];
-
-			//apply freeze
-			if (sysbus_freeze[addr].IsFrozen) ret = sysbus_freeze[addr].value;
 
 			return ret;
 		}
@@ -589,9 +585,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 				(addr, value) => ram[addr & RamSizeMask] = value);
 			domains.Add(MainMemoryDomain);
 			memoryDomains = domains.AsReadOnly();
-
-			MainMemoryDomain.GetFreeze = addr => sysbus_freeze[addr];
-			MainMemoryDomain.SetFreeze = (addr, value) => sysbus_freeze[addr] = value;
 		}
 
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
