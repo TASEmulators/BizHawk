@@ -17,12 +17,37 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public PPU ppu;
 		public APU apu;
 		byte[] ram;
-		MemoryDomain.FreezeData[] sysbus_freeze = new MemoryDomain.FreezeData[65536];
 		NESWatch[] sysbus_watch = new NESWatch[65536];
 		public byte[] CIRAM; //AKA nametables
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
+
+		private struct FreezeRecord
+		{
+			public int Address;
+			public MemoryDomain.FreezeData Data;
+		}
+		List<FreezeRecord> sysbus_freeze_list = new List<FreezeRecord>();
+		List<FreezeRecord> ppubus_freeze_list = new List<FreezeRecord>();
+
+		MemoryDomain.FreezeData GetFreeze(List<FreezeRecord> list, int addr)
+		{
+			int index = list.FindIndex((fd) => fd.Address == addr);
+			if (index == -1) return MemoryDomain.FreezeData.Empty;
+			return list[index].Data;
+		}
+
+		void SetFreeze(List<FreezeRecord> list, int addr, MemoryDomain.FreezeData data)
+		{
+			int index = list.FindIndex((fd) => fd.Address == addr);
+			if (index != -1) list.RemoveAt(index);
+			if(!data.IsFrozen) return;
+			FreezeRecord fr = new FreezeRecord();
+			fr.Data = data;
+			fr.Address = addr;
+			list.Add(fr);
+		}
 
 		bool _irq_apu, _irq_cart;
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
@@ -239,9 +264,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else if (addr < 0x8000) ret = board.ReadWRAM(addr - 0x6000);
 			else ret = board.ReadPRG(addr - 0x8000);
 			
-			//apply freeze
-			if (sysbus_freeze[addr].IsFrozen) ret = sysbus_freeze[addr].value;
-
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
 			//but since freeze is a common case, it was implemented through its own mechanisms
