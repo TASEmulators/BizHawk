@@ -48,32 +48,9 @@ namespace BizHawk
 		public readonly int Size;
 		public readonly Endian Endian;
 
-		//perhaps inconveniently, this is a struct. 
-		//this is a premature optimization, since I anticipate having millions of these and i didnt want millions of objects
-		public struct FreezeData
-		{
-			public FreezeData(Flag flags, byte value)
-			{
-				this.flags = flags;
-				this.value = value;
-			}
-			public readonly byte value;
-			public readonly Flag flags;
-			public enum Flag : byte
-			{
-				None = 0,
-				Frozen = 1,
-			}
-
-			public bool IsFrozen { get { return (flags & Flag.Frozen) != 0; } }
-			public static FreezeData Empty { get { return new FreezeData(); } }
-		}
-
 		public readonly Func<int, byte> PeekByte;
 		public readonly Action<int, byte> PokeByte;
-		public Func<int, FreezeData> GetFreeze;
-		public Action<int, FreezeData> SetFreeze;
-
+	
 		public MemoryDomain(string name, int size, Endian endian, Func<int, byte> peekByte, Action<int, byte> pokeByte)
 		{
 			Name = name;

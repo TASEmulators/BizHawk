@@ -291,15 +291,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
 
-			SystemBus.GetFreeze = addr => GetFreeze(sysbus_freeze_list, addr);
-			SystemBus.SetFreeze = (addr, value) => SetFreeze(sysbus_freeze_list, addr, value);
-
-			RAM.GetFreeze = addr => GetFreeze(sysbus_freeze_list, addr);
-			RAM.SetFreeze = (addr, value) => SetFreeze(sysbus_freeze_list, addr & 0x07FF, value);
-
-			PPUBus.GetFreeze = addr => GetFreeze(ppubus_freeze_list, addr);
-			PPUBus.SetFreeze = (addr, value) => SetFreeze(ppubus_freeze_list, addr, value);
-
 			//demo a game genie code
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).RemoveGameGenie();

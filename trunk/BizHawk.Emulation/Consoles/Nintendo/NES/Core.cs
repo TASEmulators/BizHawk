@@ -23,32 +23,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
 
-		private struct FreezeRecord
-		{
-			public int Address;
-			public MemoryDomain.FreezeData Data;
-		}
-		List<FreezeRecord> sysbus_freeze_list = new List<FreezeRecord>();
-		List<FreezeRecord> ppubus_freeze_list = new List<FreezeRecord>();
-
-		MemoryDomain.FreezeData GetFreeze(List<FreezeRecord> list, int addr)
-		{
-			int index = list.FindIndex((fd) => fd.Address == addr);
-			if (index == -1) return MemoryDomain.FreezeData.Empty;
-			return list[index].Data;
-		}
-
-		void SetFreeze(List<FreezeRecord> list, int addr, MemoryDomain.FreezeData data)
-		{
-			int index = list.FindIndex((fd) => fd.Address == addr);
-			if (index != -1) list.RemoveAt(index);
-			if(!data.IsFrozen) return;
-			FreezeRecord fr = new FreezeRecord();
-			fr.Data = data;
-			fr.Address = addr;
-			list.Add(fr);
-		}
-
 		bool _irq_apu, _irq_cart;
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
 		public bool irq_cart { get { return _irq_cart; } set { _irq_cart = value; sync_irq(); } }

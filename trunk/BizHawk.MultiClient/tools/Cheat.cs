@@ -44,13 +44,13 @@ namespace BizHawk.MultiClient
 		public void Enable()
 		{
 			enabled = true;
-			domain.SetFreeze(address, new MemoryDomain.FreezeData(MemoryDomain.FreezeData.Flag.Frozen, value));
+			//domain.SetFreeze(address, new MemoryDomain.FreezeData(MemoryDomain.FreezeData.Flag.Frozen, value));
 		}
 
 		public void Disable()
 		{
 			enabled = false;
-			domain.SetFreeze(address, MemoryDomain.FreezeData.Empty);
+		    //domain.ClearFreeze(address);
 		}
 
 		public bool IsEnabled()
