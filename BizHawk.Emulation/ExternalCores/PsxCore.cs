@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
+using BizHawk.DiscSystem;
 
 namespace BizHawk
 {
@@ -29,7 +30,7 @@ namespace BizHawk
 		}
 
 		DiscInterface mDiscInterface;
-		public void SetDiscHopper(Disc.DiscHopper hopper)
+		public void SetDiscHopper(DiscHopper hopper)
 		{
 			mDiscInterface.DiscHopper = hopper;
 		}

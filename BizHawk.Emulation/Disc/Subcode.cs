@@ -7,7 +7,7 @@ using System.Collections.Generic;
 //a decent little subcode reference
 //http://www.jbum.com/cdg_revealed.html
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
 	public class SubcodeStream
 	{

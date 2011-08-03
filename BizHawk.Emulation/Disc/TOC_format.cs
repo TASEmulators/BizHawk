@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BizHawk.Disc
+namespace BizHawk.DiscSystem
 {
 	//TBD TOC format
 	public class TOCFormat
