@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -44,13 +41,13 @@ namespace BizHawk.MultiClient
 		public void Enable()
 		{
 			enabled = true;
-			//domain.SetFreeze(address, new MemoryDomain.FreezeData(MemoryDomain.FreezeData.Flag.Frozen, value));
+            MemoryPulse.Add(domain, address, value);
 		}
 
 		public void Disable()
 		{
 			enabled = false;
-		    //domain.ClearFreeze(address);
+		    MemoryPulse.Remove(domain, address);
 		}
 
 		public bool IsEnabled()

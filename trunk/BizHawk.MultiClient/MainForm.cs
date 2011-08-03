@@ -12,6 +12,7 @@ using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
@@ -1486,7 +1487,9 @@ namespace BizHawk.MultiClient
 				//}
 
 				//=======================================
+                MemoryPulse.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
+                MemoryPulse.Pulse();
 				//=======================================
 
 				if (CurrAviWriter != null)
@@ -1938,9 +1941,10 @@ namespace BizHawk.MultiClient
 
 		private void CloseROM()
 		{
-			CloseGame();
+            CloseGame();
 			Global.Emulator = new NullEmulator();
 			Global.Game = new NullGame();
+            MemoryPulse.Clear();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();

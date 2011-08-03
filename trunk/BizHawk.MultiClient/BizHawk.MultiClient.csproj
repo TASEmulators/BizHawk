@@ -319,6 +319,7 @@
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\MemoryPulse.cs" />
     <Compile Include="tools\VirtualPad.cs">
       <SubType>Component</SubType>
     </Compile>

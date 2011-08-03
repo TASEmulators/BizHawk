@@ -157,10 +157,6 @@ namespace BizHawk.MultiClient
 				default:
 					break;
 				case "GB":
-				case "SMS":
-				case "SG":
-				case "GG":
-				case "PCE":
 					AddCheatGroup.Enabled = false;
 					CheatListView.Enabled = false;
 					MessageLabel.Text = Global.Emulator.SystemId + " not supported.";
