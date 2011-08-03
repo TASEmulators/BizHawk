@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public DebugCallback NTViewCallback;
 			public DebugCallback PPUViewCallback;
 
-			public MemoryDomain.FreezeData[] ppubus_freeze = new MemoryDomain.FreezeData[16384];
 
 			//when the ppu issues a write it goes through here and into the game board
 			public void ppubus_write(int addr, byte value)
@@ -40,11 +39,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return 0xFF;
 
 				nes.board.AddressPPU(addr);
-				//apply freeze
-				if (ppubus_freeze[addr].IsFrozen)
-					return ppubus_freeze[addr].value;
-				else
-					return nes.board.ReadPPU(addr);
+				
+				return nes.board.ReadPPU(addr);
 			}
 
 			//debug tools peek into the ppu through this
