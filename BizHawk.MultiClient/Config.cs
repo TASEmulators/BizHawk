@@ -648,7 +648,7 @@
 				_9 = "NumberPad9";      //9
 				DOT = "NumberPadPeriod";//10
 				ON = "Space";           //11
-				ENTER = "Return", "NumberPadEnter";       //12
+				ENTER = "Return, NumberPadEnter";       //12
 				UP = "UpArrow";         //13
 				DOWN = "DownArrow";     //14
 				LEFT = "LeftArrow";     //15
