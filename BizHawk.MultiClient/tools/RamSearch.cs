@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			SearchListView.BlazingFast = true;
 			sortReverse = false;
 			sortedCol = "";
 			if (!this.IsHandleCreated || this.IsDisposed) return;
@@ -83,6 +84,7 @@ namespace BizHawk.MultiClient
 			else if (Global.Config.RamSearchPreviewMode)
 				DoPreview();
 			SearchListView.Refresh();
+			SearchListView.BlazingFast = false;
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)

@@ -46,6 +46,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			TASView.BlazingFast = true;
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE)
 				TASView.ItemCount = 0;
@@ -82,6 +83,7 @@ namespace BizHawk.MultiClient
 							break;
 					}
 				}
+				TASView.BlazingFast = false;
 			}
 		}
 

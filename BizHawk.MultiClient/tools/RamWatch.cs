@@ -60,6 +60,7 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
+			WatchListView.BlazingFast = true;
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			for (int x = 0; x < watchList.Count; x++)
 			{
@@ -69,6 +70,7 @@ namespace BizHawk.MultiClient
 					watchList[x].changecount++;
 			}
 			WatchListView.Refresh();
+			WatchListView.BlazingFast = false;
 		}
 
 		public void AddWatch(Watch w)
