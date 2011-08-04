@@ -1168,6 +1168,7 @@
 			// 
 			// OutputLabel
 			// 
+			this.OutputLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.OutputLabel.AutoSize = true;
 			this.OutputLabel.Location = new System.Drawing.Point(9, 436);
 			this.OutputLabel.Name = "OutputLabel";
