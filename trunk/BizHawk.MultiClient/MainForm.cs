@@ -841,11 +841,8 @@ namespace BizHawk.MultiClient
 				RomGame rom = null;
 			    GameInfo game = null;
 
-					
-
 				try
 				{
-
 			        if (file.Extension.ToLower() == ".iso")
 			        {
 				        if (Global.PsxCoreLibrary.IsOpen)
@@ -861,6 +858,35 @@ namespace BizHawk.MultiClient
                             //psx.SetDiscHopper(Global.DiscHopper);
 				        }
 			        }
+                    else if (file.Extension.ToLower() == ".cue")
+                    {
+                        Disc disc = Disc.FromCuePath(path);
+                        var hash = disc.GetHash();
+                        game = Database.CheckDatabase(hash);
+                        if (game == null)
+                        {
+                            // Game was not found in DB. For now we're going to send it to the PCE-CD core. 
+                            // In the future we need to do something smarter, possibly including simply asking the user
+                            // what system the game is for.
+
+                            game = new GameInfo();
+                            game.System = "PCE";
+                            game.Name = file.Name;
+                        }
+
+                        switch (game.System)
+                        {
+                            case "PCE":
+                                if (File.Exists(Global.Config.PathPCEBios) == false)
+                                {
+                                    MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths.");
+                                    return false;
+                                }
+                                rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
+                                nextEmulator = new PCEngine(game, disc, rom.RomData);
+                                break;
+                        }
+                    }
 			        else
 			        {
 			            rom = new RomGame(file);
