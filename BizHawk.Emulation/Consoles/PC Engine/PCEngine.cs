@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // ROM
         public byte[] RomData;
         public int RomLength;
+        private Disc disc;
 
         // Machine
         public NecSystemType Type;
@@ -41,19 +42,31 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // Memory system
         public byte[] Ram;
 
-        // Disc
-        //private Disc disc = Disc.FromCuePath("D:/lib/roms/Turbo CD/Terra Forming/Syd Mead's Terra Forming [U][CD.SCD][TGXCD1040][Syd Mead][1993][PCE][rigg].cue");
-
         // PC Engine timings:
         // 21,477,270  Machine clocks / sec
         //  7,159,090  Cpu cycles / sec
 
-        public PCEngine(NecSystemType type)
+        public PCEngine(GameInfo game, byte[] rom)
         {
-            //scsi.disc = disc;
-            //Console.WriteLine(disc.GetHash());
             CoreOutputComm = new CoreOutputComm();
-            Type = type;
+            switch (game.System)
+            {
+                case "PCE": Type = NecSystemType.TurboGrafx; break;
+                case "SGX": Type = NecSystemType.SuperGrafx; break;
+            }
+            Init(game, rom);
+        }
+
+        public PCEngine(GameInfo game, Disc disc, byte[] rom)
+        {
+            CoreOutputComm = new CoreOutputComm();
+            Type = NecSystemType.TurboCD;
+            this.disc = disc;
+            Init(game, rom);
+        }
+
+        private void Init(GameInfo game, byte[] rom)
+        {
             Controller = NullController.GetNullController();
             Cpu = new HuC6280();
             VCE = new VCE();
@@ -77,34 +90,31 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemorySGX;
                 Cpu.WriteVDC = VDC1.WriteVDC;
             }
-        }
 
-        public void LoadGame(IGame game)
-        {
-            if (game.GetRomData().Length == 0x60000)
+            if (rom.Length == 0x60000)
             {
                 // 384k roms require special loading code. Why ;_;
                 // In memory, 384k roms look like [1st 256k][Then full 384k]
                 RomData = new byte[0xA0000];
-                var origRom = game.GetRomData();
+                var origRom = rom;
                 for (int i=0; i<0x40000; i++)
                     RomData[i] = origRom[i];
                 for (int i = 0; i < 0x60000; i++)
                     RomData[i+0x40000] = origRom[i];
                 RomLength = RomData.Length;
-            } else if (game.GetRomData().Length > 1024 * 1024) {
+            } else if (rom.Length > 1024 * 1024) {
                 // If the rom is bigger than 1 megabyte, switch to Street Fighter 2 mapper
                 Cpu.ReadMemory21 = ReadMemorySF2;
                 Cpu.WriteMemory21 = WriteMemorySF2;
-                RomData = game.GetRomData();
+                RomData = rom;
                 RomLength = RomData.Length;
             } else {
                 // normal rom.
-                RomData = game.GetRomData();
+                RomData = rom;
                 RomLength = RomData.Length;
             }
 
-            if (game.GetOptions().Contains("BRAM"))
+            if (game["BRAM"])
             {
                 BramEnabled = true;
                 BRAM = new byte[2048]; 
@@ -115,14 +125,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 BRAM[4] = 0x00; BRAM[5] = 0x88; BRAM[6] = 0x10; BRAM[7] = 0x80;
             }
 
-            if (game.GetOptions().Contains("PopulousSRAM"))
+            if (game["PopulousSRAM"])
             {
                 PopulousRAM = new byte[0x8000];
                 Cpu.ReadMemory21 = ReadMemoryPopulous;
                 Cpu.WriteMemory21 = WriteMemoryPopulous;
             }
 
-            if (game.GetOptions().Contains("ForceSpriteLimit") || game.GetOptions().Contains("NotInDatabase"))
+            if (game["ForceSpriteLimit"] || game.NotInDatabase)
             {
                 VDC1.PerformSpriteLimit = true;
                 if (VDC2 != null)
@@ -138,14 +148,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             //    version of this core. Let's just acknolwedge that the timing is imperfect and fix
             //    it in the least intrusive and most honest way we can.
 
-            if (game.GetOptions().ContainsStartsWith("HBlankPeriod"))
-                VDC1.HBlankCycles = int.Parse(game.GetOptions().GetOptionValue("HBlankPeriod"));
+            if (game["HBlankPeriod"])
+                VDC1.HBlankCycles = int.Parse(game.OptionValue("HBlankPeriod"));
 
             // This is also a hack. Proper multi-res/TV emulation will be a native-code core feature.
             
-            if (game.GetOptions().ContainsStartsWith("MultiResHack"))
+            if (game["MultiResHack"])
             {
-                VDC1.MultiResHack = int.Parse(game.GetOptions().GetOptionValue("MultiResHack"));
+                VDC1.MultiResHack = int.Parse(game.OptionValue("MultiResHack"));
             }
 
             Cpu.ResetPC();

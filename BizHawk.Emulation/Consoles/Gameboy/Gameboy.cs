@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			CoreOutputComm = new CoreOutputComm();
 		}
-
+        /* TOO BAD gameboy is broken until someone cares about it 
 		public void LoadGame(IGame game)
 		{
 			Rom = game.GetRomData();
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			CartFlags.SGB = Rom[0x0146] == 0x03;
 
 			HardReset();
-		}
+		} */
 
 		public bool BootFromBios = true;
 

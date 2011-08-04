@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 		public static Config Config;
 		public static IEmulator Emulator;
 		public static CoreInputComm CoreInputComm;
-		public static RomGame Game;
+		public static GameInfo Game;
 		public static Controller SMSControls;
 		public static Controller PCEControls;
 		public static Controller GenControls;

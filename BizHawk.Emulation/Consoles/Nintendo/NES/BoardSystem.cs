@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// </summary>
 		public class CartInfo
 		{
-			public GameInfo game;
+			public NESGameInfo game;
 			public BizHawk.GameInfo DB_GameInfo;
 
 			public short chr_size;
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// Logical game information. May exist in form of several carts (different revisions)
 		/// </summary>
-		public class GameInfo
+		public class NESGameInfo
 		{
 			public string name;
 			public List<CartInfo> carts = new List<CartInfo>();
@@ -285,12 +285,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			var gi = Database.CheckDatabase(hash);
 			if (gi == null) return null;
 
-			GameInfo game = new GameInfo();
+			NESGameInfo game = new NESGameInfo();
 			CartInfo cart = new CartInfo();
 			game.carts.Add(cart);
 
 			//try generating a bootgod cart descriptor from the game database
-			var dict = gi.ParseOptionsDictionary();
+			var dict = gi.GetOptionsDict();
 			game.name = gi.Name;
 			cart.DB_GameInfo = gi;
 			cart.game = game;
@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//in anticipation of any slowness annoying people, and just for shits and giggles, i made a super fast parser
 				int state=0;
 				var xmlreader = XmlReader.Create(new MemoryStream(GetDatabaseBytes()));
-				GameInfo currGame = null;
+				NESGameInfo currGame = null;
 				CartInfo currCart = null;
 				while (xmlreader.Read())
 				{
@@ -353,7 +353,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 0:
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "game")
 							{
-								currGame = new GameInfo();
+								currGame = new NESGameInfo();
 								currGame.name = xmlreader.GetAttribute("name");
 								state = 1;
 							}
@@ -432,7 +432,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				} //end xmlreader loop
 
 				//analyze
-				foreach (GameInfo game in games)
+				foreach (NESGameInfo game in games)
 				{
 					foreach (CartInfo cart in game.carts)
 					{
@@ -442,7 +442,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 
-			List<GameInfo> games = new List<GameInfo>(); //maybe we dont need to track this
+			List<NESGameInfo> games = new List<NESGameInfo>(); //maybe we dont need to track this
 			Bag<string, CartInfo> sha1_table = new Bag<string, CartInfo>();
 
 			public List<CartInfo> Identify(string sha1)

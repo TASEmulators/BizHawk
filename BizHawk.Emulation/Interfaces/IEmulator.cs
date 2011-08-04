@@ -12,7 +12,6 @@ namespace BizHawk
 		ControllerDefinition ControllerDefinition { get; }
 		IController Controller { get; set; }
 
-		void LoadGame(IGame game);
 		void FrameAdvance(bool render);
 
 		int Frame { get; }
@@ -24,8 +23,6 @@ namespace BizHawk
 		byte[] SaveRam { get; }
 		bool SaveRamModified { get; set; }
 
-		// TODO: should IEmulator expose a way of enumerating the Options it understands?
-		// (the answer is yes)
 		void ResetFrameCounter();
 		void SaveStateText(TextWriter writer);
 		void LoadStateText(TextReader reader);
@@ -33,7 +30,7 @@ namespace BizHawk
 		void LoadStateBinary(BinaryReader reader);
 		byte[] SaveStateBinary();
 
-		//arbitrary extensible core comm mechanism
+		// Arbitrary extensible core comm mechanism
 		CoreInputComm CoreInputComm { get; set; }
 		CoreOutputComm CoreOutputComm { get; }
 

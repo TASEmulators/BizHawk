@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BizHawk
+﻿namespace BizHawk
 {
 	public class CoreInputComm
 	{
@@ -12,9 +10,7 @@ namespace BizHawk
 	public class CoreOutputComm
 	{
 		public double VsyncRate = 60;
-		public RomStatus RomStatus;
 		public string RomStatusAnnotation;
 		public string RomStatusDetails;
 	}
-
 }

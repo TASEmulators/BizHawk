@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 
 namespace BizHawk.MultiClient
 {
-	public class RomGame : IGame
+	public class RomGame
 	{
 		public byte[] RomData;
 		public byte[] FileData;
-		public string System;
-		public RomStatus Status { get; private set; }
+	    public GameInfo GameInfo;
 
-		private string name;
-		private string filesystemSafeName;
-		private List<string> options;
 		private const int BankSize = 4096;
 
 		public RomGame() { }
@@ -40,17 +34,9 @@ namespace BizHawk.MultiClient
 			if (file.Extension == ".SMD")
 				RomData = DeInterleaveSMD(RomData);
 
-			var info = Database.GetGameInfo(RomData, file.Name);
-			name = info.Name;
-			System = info.System;
-		    Status = info.Status;
-			options = new List<string>(info.GetOptions());
+			GameInfo = Database.GetGameInfo(RomData, file.Name);
+			
 			CheckForPatchOptions();
-
-			//build a safe filesystem name for use in auxilary files (savestates, saveram, etc)
-			filesystemSafeName = file.CanonicalName.Replace("|", "+");
-			filesystemSafeName = Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
-
 
 			if (patch != null)
 			{
@@ -63,12 +49,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void AddOptions(params string[] options)
-		{
-			this.options.AddRange(options);
-		}
-
-		private byte[] DeInterleaveSMD(byte[] source)
+		private static byte[] DeInterleaveSMD(byte[] source)
 		{
 			// SMD files are interleaved in pages of 16k, with the first 8k containing all 
 			// odd bytes and the second 8k containing all even bytes.
@@ -93,113 +74,19 @@ namespace BizHawk.MultiClient
 		{
 			try
 			{
-				foreach (var opt in options)
+				if (GameInfo["PatchBytes"])
 				{
-					if (opt.StartsWith("PatchBytes"))
+				    string args = GameInfo.OptionValue("PatchBytes");
+					foreach (var val in args.Split(','))
 					{
-						var split1 = opt.Split('=');
-						foreach (var val in split1[1].Split(','))
-						{
-							var split3 = val.Split(':');
-							int offset = int.Parse(split3[0], NumberStyles.HexNumber);
-							byte value = byte.Parse(split3[1], NumberStyles.HexNumber);
-							RomData[offset] = value;
-						}
+						var split = val.Split(':');
+						int offset = int.Parse(split[0], NumberStyles.HexNumber);
+						byte value = byte.Parse(split[1], NumberStyles.HexNumber);
+						RomData[offset] = value;
 					}
 				}
 			}
 			catch (Exception) { } // No need for errors in patching to propagate.
-		}
-
-		public byte[] GetRomData() { return RomData; }
-		public byte[] GetFileData() { return FileData; }
-		public IList<string> GetOptions() { return options; }
-		public string Name { get { return name; } set { name = value; } }
-		public string FilesystemSafeName { get { return filesystemSafeName; } }
-
-		public string SaveRamPath
-		{
-			get
-			{
-				switch (System)
-				{
-					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), filesystemSafeName + ".SaveRAM");
-					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), filesystemSafeName + ".SaveRAM");
-					case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), filesystemSafeName + ".SaveRAM");
-					case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), filesystemSafeName + ".SaveRAM");
-					case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), filesystemSafeName + ".SaveRAM");
-					case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), filesystemSafeName + ".SaveRAM");
-					case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), filesystemSafeName + ".SaveRAM");
-					case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), filesystemSafeName + ".SaveRAM");
-					case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), filesystemSafeName + ".SaveRAM");
-					default: return "";
-				}
-			}
-		}
-
-		public string SaveStatePrefix
-		{
-			get
-			{
-				string Bind = "";
-				if (Global.Config.BindSavestatesToMovies && Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
-					Bind += " - " + Path.GetFileNameWithoutExtension(Global.MainForm.UserMovie.Filename);
-				switch (System)
-				{
-					case "SMS": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), filesystemSafeName + Bind);
-					case "GG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), filesystemSafeName + Bind);
-					case "SG": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), filesystemSafeName + Bind);
-					case "PCE": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), filesystemSafeName + Bind);
-					case "SGX": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), filesystemSafeName + Bind);
-					case "GB": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGBSavestates, "GB"), filesystemSafeName + Bind);
-					case "GEN": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), filesystemSafeName + Bind);
-					case "NES": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), filesystemSafeName + Bind);
-					case "TI83": return Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), filesystemSafeName + Bind);
-					default: return "";
-				}
-
-			}
-		}
-
-		public string MoviePrefix
-		{
-			//Obsolete because there is one singular Movie path
-			get
-			{
-				switch (System)
-				{
-					case "SMS": return "SMS/Movie/" + filesystemSafeName;
-					case "GG": return "Game Gear/Movie/" + filesystemSafeName;
-					case "SG": return "SG-1000/Movie/" + filesystemSafeName;
-					case "PCE": return "TurboGrafx/Movie/" + filesystemSafeName;
-					case "SGX": return "TurboGrafx/Movie/" + filesystemSafeName;
-					case "GB": return "Gameboy/Movie/" + filesystemSafeName;
-					case "GEN": return "Genesis/Movie/" + filesystemSafeName;
-					case "NES": return "NES/Movie/" + filesystemSafeName;
-					case "TI83": return "TI83/Movie/" + filesystemSafeName;
-					default: return "";
-				}
-			}
-		}
-
-		public string ScreenshotPrefix
-		{
-			get
-			{
-				switch (System)
-				{
-					case "SMS": return PathManager.MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS") + "/" + filesystemSafeName;
-					case "GG": return PathManager.MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG") + "/" + filesystemSafeName;
-					case "SG": return PathManager.MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG") + "/" + filesystemSafeName;
-					case "PCE": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + filesystemSafeName;
-					case "SGX": return PathManager.MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE") + "/" + filesystemSafeName;
-					case "GB": return PathManager.MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB") + "/" + filesystemSafeName;
-					case "GEN": return PathManager.MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN") + "/" + filesystemSafeName;
-					case "NES": return PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES") + "/" + filesystemSafeName;
-					case "TI83": return PathManager.MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83") + "/" + filesystemSafeName;
-					default: return "";
-				}
-			}
 		}
 	}
 }

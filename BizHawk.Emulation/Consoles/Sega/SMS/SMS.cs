@@ -25,7 +25,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public byte[] RomData;
 		public byte RomBank0, RomBank1, RomBank2;
 		public byte RomBanks;
-		public IList<string> Options;
 
 		// SaveRAM
 		public byte[] SaveRAM = new byte[BankSize * 2];
@@ -64,76 +63,63 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get; set; }
 
-		public SMS()
+		public SMS(GameInfo game, byte[] rom)
 		{
+		    IsGameGear = game.System == "GG";
+		    RomData = rom;
 			CoreOutputComm = new CoreOutputComm();
-		}
 
-		public void Init()
-		{
-			if (Controller == null)
-				Controller = NullController.GetNullController();
+            if (RomData.Length % BankSize != 0)
+                Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
+            RomBanks = (byte)(RomData.Length / BankSize);
+            DisplayType = DisplayType.NTSC;
+            CoreOutputComm.VsyncRate = DisplayType == DisplayType.NTSC ? 60d : 50d;
+            if (game["PAL"]) DisplayType = DisplayType.PAL;
+            if (game["Japan"]) Region = "Japan";
+            if (game.NotInDatabase || game["FM"] && game["UseFM"])
+                HasYM2413 = true;
 
-			Cpu = new Z80A();
-			Cpu.RegisterSP = 0xDFF0;
-			Cpu.ReadHardware = ReadPort;
-			Cpu.WriteHardware = WritePort;
+            if (Controller == null)
+                Controller = NullController.GetNullController();
 
-			Vdp = new VDP(Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
-			PSG = new SN76489();
-			YM2413 = new YM2413();
-			SoundMixer = new SoundMixer(YM2413, PSG);
-			if (HasYM2413 && Options.Contains("WhenFMDisablePSG"))
-				SoundMixer.DisableSource(PSG);
-			ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
+            Cpu = new Z80A();
+            Cpu.RegisterSP = 0xDFF0;
+            Cpu.ReadHardware = ReadPort;
+            Cpu.WriteHardware = WritePort;
 
-			SystemRam = new byte[0x2000];
-			if (Options.Contains("CMMapper") == false)
-				InitSegaMapper();
-			else
-				InitCodeMastersMapper();
+            Vdp = new VDP(Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+            PSG = new SN76489();
+            YM2413 = new YM2413();
+            SoundMixer = new SoundMixer(YM2413, PSG);
+            if (HasYM2413 && game["WhenFMDisablePSG"])
+                SoundMixer.DisableSource(PSG);
+            ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
 
-			if (Options.Contains("ForceStereo"))
-			{
-				byte stereoByte = 0xAD;
-				if (Options.ContainsStartsWith("StereoByte"))
-				{
-					stereoByte = byte.Parse(Options.GetOptionValue("StereoByte"));
-				}
-				PSG.StereoPanning = stereoByte;
-			}
+            SystemRam = new byte[0x2000];
+            if (game["CMMapper"] == false)
+                InitSegaMapper();
+            else
+                InitCodeMastersMapper();
 
-			if (Options.Contains("AllowOverclock") && Options.Contains("OverclockSafe"))
-				Vdp.IPeriod = 512;
+            if (game["ForceStereo"])
+            {
+                byte stereoByte = 0xAD;
+                if (game["StereoByte"])
+                {
+                    stereoByte = byte.Parse(game.OptionValue("StereoByte"));
+                }
+                PSG.StereoPanning = stereoByte;
+            }
 
-			if (Options.Contains("BIOS"))
-			{
-				Port3E = 0xF7; // Disable cartridge, enable BIOS rom
-				InitBiosMapper();
-			}
-			SetupMemoryDomains();
-		}
+            if (game["AllowOverclock"] && game["OverclockSafe"])
+                Vdp.IPeriod = 512;
 
-		public void LoadGame(IGame game)
-		{
-			RomData = game.GetRomData();
-			if (RomData.Length % BankSize != 0)
-				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
-			RomBanks = (byte)(RomData.Length / BankSize);
-			Options = game.GetOptions();
-			DisplayType = DisplayType.NTSC;
-			CoreOutputComm.VsyncRate = DisplayType == DisplayType.NTSC ? 60d : 50d;
-			foreach (string option in Options)
-			{
-				var args = option.Split('=');
-				if (args[0] == "Japan") Region = "Japan";
-				else if (args[0] == "PAL") DisplayType = DisplayType.PAL;
-			}
-
-			if (Options.Contains("NotInDatabase") || (Options.Contains("FM") && Options.Contains("UseFM")))
-				HasYM2413 = true;
-
-			Init();
+            if (game["BIOS"])
+            {
+                Port3E = 0xF7; // Disable cartridge, enable BIOS rom
+                InitBiosMapper();
+            }
+            SetupMemoryDomains();
 		}
 
 		public byte ReadPort(ushort port)

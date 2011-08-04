@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
 		public MainForm(string[] args)
 		{
 			InitializeComponent();
-			Global.Game = new NullGame();
+			Global.Game = new GameInfo();
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -838,87 +838,88 @@ namespace BizHawk.MultiClient
 				}
 
 				IEmulator nextEmulator = null;
-				RomGame game = null;
+				RomGame rom = null;
+			    GameInfo game = null;
 
+					
 
-				if (file.Extension.ToLower() == ".iso")
+				try
 				{
-					if (Global.PsxCoreLibrary.IsOpen)
-					{
-						PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
-						nextEmulator = psx;
-						game = new RomGame();
-						var disc = Disc.FromIsoPath(path);
-						Global.DiscHopper.Clear();
-						Global.DiscHopper.Enqueue(disc);
-						Global.DiscHopper.Insert();
-						psx.SetDiscHopper(Global.DiscHopper);
-					}
+
+			        if (file.Extension.ToLower() == ".iso")
+			        {
+				        if (Global.PsxCoreLibrary.IsOpen)
+				        {
+                            // sorry zero ;'( I leave de-RomGameifying this to you
+                            //PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
+                            //nextEmulator = psx;
+                            //game = new RomGame();
+                            //var disc = Disc.FromIsoPath(path);
+                            //Global.DiscHopper.Clear();
+                            //Global.DiscHopper.Enqueue(disc);
+                            //Global.DiscHopper.Insert();
+                            //psx.SetDiscHopper(Global.DiscHopper);
+				        }
+			        }
+			        else
+			        {
+			            rom = new RomGame(file);
+			            game = rom.GameInfo;
+
+			            switch (game.System)
+			            {
+			                case "SMS":
+			                case "SG":
+			                    if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
+			                    if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
+			                    if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
+			                    nextEmulator = new SMS(game, rom.RomData);
+			                    break;
+			                case "GG":
+			                    if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
+			                    nextEmulator = new SMS(game, rom.RomData);
+			                    break;
+			                case "PCE":
+			                case "SGX":
+			                    nextEmulator = new PCEngine(game, rom.RomData);
+			                    break;
+			                case "GEN":
+			                    nextEmulator = new Genesis(true); //TODO
+			                    break;
+			                case "TI83":
+			                    nextEmulator = new TI83(game, rom.RomData);
+			                    if (Global.Config.TI83autoloadKeyPad)
+			                        LoadTI83KeyPad();
+			                    break;
+			                case "NES":
+			                    {
+			                        NES nes = new NES(game, rom.FileData);
+			                        Global.Game.Status = nes.RomStatus;
+			                        nextEmulator = nes;
+			                        if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
+			                            HawkFile.ExistsAt(Global.Config.NESPaletteFile))
+			                        {
+			                            nes.SetPalette(
+			                                NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
+			                        }
+			                    }
+			                    break;
+			                case "GB":
+			                    nextEmulator = new Gameboy();
+			                    break;
+			            }
+			        }
+
+				    if (nextEmulator == null) 
+                        throw new Exception();
+					nextEmulator.CoreInputComm = Global.CoreInputComm;
 				}
-				else
+				catch (Exception ex)
 				{
-					game = new RomGame(file);
-
-					switch (game.System)
-					{
-						case "SG":
-						case "SMS":
-							nextEmulator = new SMS();
-							if (Global.Config.SmsEnableFM) game.AddOptions("UseFM");
-							if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-							if (Global.Config.SmsForceStereoSeparation) game.AddOptions("ForceStereo");
-							break;
-						case "GG":
-							nextEmulator = new SMS { IsGameGear = true };
-							if (Global.Config.SmsAllowOverlock) game.AddOptions("AllowOverclock");
-							break;
-						case "PCE":
-							nextEmulator = new PCEngine(NecSystemType.TurboGrafx);
-							break;
-						case "SGX":
-							nextEmulator = new PCEngine(NecSystemType.SuperGrafx);
-							break;
-						case "GEN":
-							nextEmulator = new Genesis(true);//TODO
-							break;
-						case "TI83":
-							nextEmulator = new TI83();
-							if (Global.Config.TI83autoloadKeyPad)
-								LoadTI83KeyPad();
-							break;
-						case "NES":
-							{
-								NES nes = new NES();
-								nextEmulator = nes;
-								if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 && HawkFile.ExistsAt(Global.Config.NESPaletteFile))
-								{
-									nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
-								}
-							}
-							break;
-						case "GB":
-							nextEmulator = new Gameboy();
-							break;
-					}
-
-					if (nextEmulator == null) throw new Exception();
-
-					try
-					{
-						nextEmulator.CoreInputComm = Global.CoreInputComm;
-
-						//this is a bit hacky, but many cores do not take responsibility for setting this, so we need to set it for them.
-						nextEmulator.CoreOutputComm.RomStatus = game.Status;
-
-						nextEmulator.LoadGame(game);
-					}
-					catch (Exception ex)
-					{
-						MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
-						return false;
-					}
+					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+					return false;
 				}
-
+				
 				if (nextEmulator == null) throw new Exception();
 
 
@@ -936,7 +937,7 @@ namespace BizHawk.MultiClient
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
-				if (File.Exists(game.SaveRamPath))
+				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
 
 				//setup the throttle based on platform's specifications
@@ -975,7 +976,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator == null) return;
 			if (Global.Game == null) return;
 
-			var status = Global.Emulator.CoreOutputComm.RomStatus;
+			var status = Global.Game.Status;
 			string annotation = "";
 			if (status == RomStatus.BadDump)
 			{
@@ -1022,7 +1023,7 @@ namespace BizHawk.MultiClient
 		{
             try
             {
-                using (var reader = new BinaryReader(new FileStream(Global.Game.SaveRamPath, FileMode.Open, FileAccess.Read)))
+                using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
                     reader.Read(Global.Emulator.SaveRam, 0, Global.Emulator.SaveRam.Length);
             } catch { }
 		}
@@ -1030,24 +1031,26 @@ namespace BizHawk.MultiClient
 		private void CloseGame()
 		{
 			if (Global.Emulator.SaveRamModified)
-			{
-				string path = Global.Game.SaveRamPath;
-
-				var f = new FileInfo(path);
-				if (f.Directory.Exists == false)
-					f.Directory.Create();
-
-				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-				int len = Util.SaveRamBytesUsed(Global.Emulator.SaveRam);
-				//int len = Global.Emulator.SaveRam.Length;
-				writer.Write(Global.Emulator.SaveRam, 0, len);
-				writer.Close();
-			}
+			    SaveRam();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			UserMovie.StopMovie();
 		}
+
+        private static void SaveRam()
+        {
+            string path = PathManager.SaveRamPath(Global.Game);
+
+            var f = new FileInfo(path);
+            if (f.Directory.Exists == false)
+                f.Directory.Create();
+
+            var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+            int len = Util.SaveRamBytesUsed(Global.Emulator.SaveRam);
+            writer.Write(Global.Emulator.SaveRam, 0, len);
+            writer.Close();
+        }
 
 		void OnSelectSlot(int num)
 		{
@@ -1559,12 +1562,12 @@ namespace BizHawk.MultiClient
 
 		private void TakeScreenshot()
 		{
-			MakeScreenshot(String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
+			MakeScreenshot(String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
 		}
 
 		private void SaveState(string name)
 		{
-			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 
 			var file = new FileInfo(path);
 			if (file.Directory.Exists == false)
@@ -1596,7 +1599,7 @@ namespace BizHawk.MultiClient
 		private void SaveStateAs()
 		{
 			var sfd = new SaveFileDialog();
-			string path = Global.Game.SaveStatePrefix;
+			string path = PathManager.SaveStatePrefix(Global.Game);
 			sfd.InitialDirectory = path;
 			sfd.FileName = "QuickSave0.State";
 			var file = new FileInfo(path);
@@ -1629,7 +1632,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadState(string name)
 		{
-			string path = Global.Game.SaveStatePrefix + "." + name + ".State";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
 				return;
 
@@ -1639,7 +1642,7 @@ namespace BizHawk.MultiClient
 		private void LoadStateAs()
 		{
 			var ofd = new OpenFileDialog();
-			ofd.InitialDirectory = Global.Game.SaveStatePrefix;
+			ofd.InitialDirectory = PathManager.SaveStatePrefix(Global.Game);
 			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -1943,7 +1946,7 @@ namespace BizHawk.MultiClient
 		{
             CloseGame();
 			Global.Emulator = new NullEmulator();
-			Global.Game = new NullGame();
+			Global.Game = new GameInfo();
             MemoryPulse.Clear();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
@@ -2128,7 +2131,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog();
 			if (!(Global.Emulator is NullEmulator))
 			{
-				sfd.FileName = Global.Game.FilesystemSafeName;
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
 			}
 			else

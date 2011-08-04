@@ -59,7 +59,7 @@ namespace BizHawk.MultiClient
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
 				if (Global.Game != null)
-					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, Global.Game.FilesystemSafeName);
+					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
 				else
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, "NULL");
 
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = ".tas";
-			sfd.FileName = Global.Game.FilesystemSafeName;
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			sfd.Filter = "Movie files (*.tas)|*.tas";
 
 			Global.Sound.StopSound();

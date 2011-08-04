@@ -259,5 +259,65 @@ namespace BizHawk.MultiClient
 
 			return path;
 		}
+
+        public static string FilesystemSafeName(GameInfo game)
+        {
+            string filesystemSafeName = game.Name.Replace("|", "+");
+            return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
+        }
+
+        public static string SaveRamPath(GameInfo game)
+        {
+            string name = FilesystemSafeName(game);
+            switch (game.System)
+            {
+                case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
+                case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
+                case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), name + ".SaveRAM");
+                case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
+                case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
+                case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), name + ".SaveRAM");
+                case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
+                case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
+                case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
+            }
+            return "";
+        }
+
+        public static string SaveStatePrefix(GameInfo game)
+        {
+            string name = FilesystemSafeName(game);
+            switch (game.System)
+            {
+                case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
+                case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
+                case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), name);
+                case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
+                case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
+                case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSavestates, "GB"), name);
+                case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), name);
+                case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
+                case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83"), name);
+            }
+            return "";
+        }
+
+        public static string ScreenshotPrefix(GameInfo game)
+        {
+            string name = FilesystemSafeName(game);
+            switch (game.System)
+            {
+                case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
+                case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);
+                case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG"), name);
+                case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
+                case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
+                case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB"), name);
+                case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN"), name);
+                case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);
+                case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83Screenshots, "TI83"), name);
+            }
+            return "";
+        }
 	}
 }

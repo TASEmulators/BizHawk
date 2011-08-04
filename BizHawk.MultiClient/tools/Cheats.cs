@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
 
 		private string MakeDefaultFilename()
 		{
-			return Path.Combine(GetCheatsPath(), Global.Game.FilesystemSafeName + ".cht");
+			return Path.Combine(GetCheatsPath(), PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
 		private void ClearFields()
@@ -397,7 +397,7 @@ namespace BizHawk.MultiClient
 			if (currentCheatFile.Length > 0)
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
 			else if (!(Global.Emulator is NullEmulator))
-				sfd.FileName = Global.Game.FilesystemSafeName;
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			sfd.InitialDirectory = GetCheatsPath();
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;

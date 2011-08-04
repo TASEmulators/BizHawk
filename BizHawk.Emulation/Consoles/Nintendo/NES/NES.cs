@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public partial class NES : IEmulator
 	{
 		static readonly bool USE_DATABASE = true;
-
+        public RomStatus RomStatus;
 		//Game issues:
 		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
 		//Bigfoot (U) seems not to work
@@ -37,13 +37,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//AD&D Hillsfar (U).nes black screen
 		//Air Wolf - big graphical glitch. seems to be a real bug, but it should never have been released with this. need to verify for sure that it is a real bug?
 
-		public NES()
+		public NES(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
+		    Init(game, rom);
 		}
+
+        private NES()
+        {
+            BootGodDB.Initialize();
+        }
 
 		public void WriteLogTimestamp()
 		{
@@ -353,13 +359,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			LoadReport.WriteLine(format, arg);
 		}
 		void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
-
-		public unsafe void LoadGame(IGame game)
+        
+		public unsafe void Init(GameInfo gameInfo, byte[] rom)
 		{
 			LoadReport = new StringWriter();
 			LoadWriteLine("------");
 			LoadWriteLine("BEGIN NES rom analysis:");
-			byte[] file = game.GetFileData();
+			byte[] file = rom;
 			if (file.Length < 16) throw new Exception("Alleged NES rom too small to be anything useful");
 			if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("UNIF")))
 				throw new Exception("You've tried to open a UNIF rom. We don't have any UNIF roms to test with. Please consult the developers.");
@@ -437,7 +443,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						}
 
 						LoadWriteLine("Chose board from iNES heuristics: " + iNES_board);
-						choice.game.name = game.Name;
+						choice.game.name = gameInfo.Name;
 						origin = EDetectionOrigin.INES;
 					}
 					else
@@ -486,23 +492,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				if (origin == EDetectionOrigin.BootGodDB)
 				{
-					CoreOutputComm.RomStatus = RomStatus.GoodDump;
+					RomStatus = RomStatus.GoodDump;
 					CoreOutputComm.RomStatusAnnotation = "Identified from BootGod's database";
 				}
 				if (origin == EDetectionOrigin.INES)
 				{
-					CoreOutputComm.RomStatus = RomStatus.NotInDatabase;
+					RomStatus = RomStatus.NotInDatabase;
 					CoreOutputComm.RomStatusAnnotation = "Inferred from iNES header; potentially wrong";
 				}
 				if (origin == EDetectionOrigin.GameDB)
 				{
 					if (choice.bad)
 					{
-						CoreOutputComm.RomStatus = RomStatus.BadDump;
+						RomStatus = RomStatus.BadDump;
 					}
 					else
 					{
-						CoreOutputComm.RomStatus = choice.DB_GameInfo.Status;
+						RomStatus = choice.DB_GameInfo.Status;
 					}
 				}
 
@@ -525,10 +531,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (cart.vram_size != 0)
 					board.VRAM = new byte[cart.vram_size * 1024];
 
+
 				HardReset();
 				SetupMemoryDomains();
 			}
-
 		}
 
 		void SyncState(Serializer ser)

@@ -648,7 +648,7 @@ namespace BizHawk.MultiClient
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string path = String.Format(Global.Game.ScreenshotPrefix + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = Path.GetDirectoryName(path);
@@ -873,7 +873,7 @@ namespace BizHawk.MultiClient
 			else
 				contextMenuStrip1.Items[7].Enabled = true;
 
-			string path = Global.Game.SaveStatePrefix + "." + "QuickSave" + SaveSlot.ToString() + ".State.bak";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
 			if (file.Exists == true)
 			{
@@ -1314,7 +1314,7 @@ namespace BizHawk.MultiClient
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string path = Global.Game.SaveStatePrefix + "." + "QuickSave" + SaveSlot.ToString() + ".State";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + SaveSlot + ".State";
 			SwapBackupSavestate(path);
 			Global.RenderPanel.AddMessage("Save slot " + SaveSlot.ToString() + " restored.");
 		}

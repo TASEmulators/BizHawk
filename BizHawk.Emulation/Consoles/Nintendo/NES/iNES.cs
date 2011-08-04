@@ -152,7 +152,7 @@ static string ClassifyTable = @"
 			public CartInfo Analyze()
 			{
 				var ret = new CartInfo();
-				ret.game = new GameInfo();
+				ret.game = new NESGameInfo();
 				int mapper = (ROM_type >> 4);
 				mapper |= (ROM_type2 & 0xF0);
 				ret.mapper = (byte)mapper;

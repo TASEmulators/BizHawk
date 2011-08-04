@@ -27,7 +27,7 @@ namespace BizHawk.MultiClient
 			}
 			for (int x = 0; x < 10; x++)
 			{
-				path = Global.Game.SaveStatePrefix + "." + "QuickSave" + x + ".State";
+				path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + x + ".State";
 				var file = new FileInfo(path);
 				if (file.Directory.Exists == false)
 					file.Directory.Create();
