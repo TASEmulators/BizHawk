@@ -31,9 +31,12 @@ namespace BizHawk
 		    CompactGameInfo cgi;
 			hash = RemoveHashType(hash);
             db.TryGetValue(hash, out cgi);
-            if (cgi == null) 
+            if (cgi == null)
+            {
+                Console.WriteLine("Game with hash " + hash + " was not in game database.");
                 return null;
-			return new GameInfo(cgi);
+            }
+		    return new GameInfo(cgi);
 		}
 
 		static void LoadDatabase_Escape(string line)
