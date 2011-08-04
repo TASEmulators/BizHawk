@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			}
 		}
 
-		public TI83()
+		public TI83(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
 			cpu.ReadMemory = ReadMemory;
@@ -324,6 +324,18 @@ namespace BizHawk.Emulation.Consoles.Calculator
 			cpu.WriteHardware = WriteHardware;
 			cpu.IRQCallback = IRQCallback;
 			cpu.NMICallback = NMICallback;
+
+			this.rom = rom;
+
+			//different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
+			//if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
+			//else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
+
+            if (game["initPC"])
+                startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
+
+			HardReset();
+			SetupMemoryDomains();
 		}
 
 		void IRQCallback()
@@ -405,23 +417,6 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		}
 		//configuration
 		ushort startPC;
-
-		public void LoadGame(IGame game)
-		{
-			rom = game.GetRomData();
-			foreach (string opt in game.GetOptions())
-			{
-				//different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
-				//if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
-				//else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
-
-				if (opt.StartsWith("initPC"))
-					startPC = ushort.Parse(opt.Split('=')[1], NumberStyles.HexNumber);
-			}
-
-			HardReset();
-			SetupMemoryDomains();
-		}
 
 		public void FrameAdvance(bool render)
 		{

@@ -1,60 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 namespace BizHawk
 {
-    public enum RomStatus
-    {
-        GoodDump,
-        BadDump,
-        Homebrew,
-        TranslatedRom,
-        Hack,
-        BIOS,
-        Overdump,
-        NotInDatabase
-    }
-
-    public enum HashType
-    {
-        CRC32, MD5
-    }
-
-    public class GameInfo
+    internal class CompactGameInfo
     {
         public string Name;
         public string System;
         public string MetaData;
-        public string hash;
+        public string Hash;
         public RomStatus Status;
-
-        public string[] GetOptions()
-        {
-            if (string.IsNullOrEmpty(MetaData))
-                return new string[0];
-            return MetaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
-        }
-
-		public Dictionary<string, string> ParseOptionsDictionary()
-		{
-			var ret = new Dictionary<string, string>();
-			foreach (var opt in GetOptions())
-			{
-				var parts = opt.Split('=');
-				var key = parts[0];
-				var value = parts.Length > 1 ? parts[1] : "";
-				ret[key] = value;
-			}
-			return ret;
-		}
     }
 
     public static class Database
     {
-		private static Dictionary<string, GameInfo> db = new Dictionary<string, GameInfo>();
+        private static Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
 
 		static string RemoveHashType(string hash)
 		{
@@ -66,10 +28,12 @@ namespace BizHawk
 
 		public static GameInfo CheckDatabase(string hash)
 		{
-			GameInfo ret = null;
+		    CompactGameInfo cgi;
 			hash = RemoveHashType(hash);
-			db.TryGetValue(hash, out ret);
-			return ret;
+            db.TryGetValue(hash, out cgi);
+            if (cgi == null) 
+                return null;
+			return new GameInfo(cgi);
 		}
 
 		static void LoadDatabase_Escape(string line)
@@ -103,9 +67,9 @@ namespace BizHawk
                         if (line.Trim().Length == 0) continue;
                         string[] items = line.Split('\t');
 
-                        var Game = new GameInfo();
+                        var Game = new CompactGameInfo();
 						//remove a hash type identifier. well don't really need them for indexing (theyre just there for human purposes)
-						Game.hash = RemoveHashType(items[0].ToUpper());
+						Game.Hash = RemoveHashType(items[0].ToUpper());
                         switch (items[1].Trim())
                         {
                             case "B": Game.Status = RomStatus.BadDump; break;
@@ -121,10 +85,10 @@ namespace BizHawk
                         Game.System = items[3];
                         Game.MetaData = items.Length >= 6 ? items[5] : null;
 
-                        if (db.ContainsKey(Game.hash))
-                            Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on {1}",Game.hash, Game.Name);
+                        if (db.ContainsKey(Game.Hash))
+                            Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on {1}",Game.Hash, Game.Name);
 
-                        db[Game.hash] = Game;
+                        db[Game.Hash] = Game;
                     } catch
                     {
                         Console.WriteLine("Error parsing database entry: "+line);
@@ -135,24 +99,21 @@ namespace BizHawk
 
         public static GameInfo GetGameInfo(byte[] RomData, string fileName)
         {
-			GameInfo ret;
+			CompactGameInfo cgi;
 			string hash = string.Format("{0:X8}", CRC32.Calculate(RomData));
-			if (db.TryGetValue(hash, out ret))
-				return ret;
+            if (db.TryGetValue(hash, out cgi))
+                return new GameInfo(cgi);
 
             hash = Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData));
-            if (db.TryGetValue(hash, out ret))
-                return ret;
+            if (db.TryGetValue(hash, out cgi))
+                return new GameInfo(cgi);
 
 			hash = Util.BytesToHexString(System.Security.Cryptography.SHA1.Create().ComputeHash(RomData));
-			if (db.TryGetValue(hash, out ret))
-				return ret;
+            if (db.TryGetValue(hash, out cgi))
+                return new GameInfo(cgi);
 
             // rom is not in database. make some best-guesses
-            var Game = new GameInfo();
-            Game.hash = hash;
-            Game.MetaData = "NotInDatabase";
-            Game.Status = RomStatus.NotInDatabase;
+            var Game = new GameInfo { Hash = hash, Status = RomStatus.NotInDatabase };
             Console.WriteLine("Game was not in DB. CRC: {0:X8} MD5: {1}", 
                 CRC32.Calculate(RomData),
                 Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData)));

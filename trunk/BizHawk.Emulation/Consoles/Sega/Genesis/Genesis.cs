@@ -83,6 +83,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			Z80Reset = true;
 		}
 
+        /* TOO BAD genesis is broken until I finish turbocd 
 		public void LoadGame(IGame game)
 		{
 			RomData = new byte[0x400000];
@@ -92,7 +93,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			if (MainCPU != null) MainCPU.Reset();
 			_MainCPU.Reset();
-		}
+		}*/
 
 		public void StepMine()
 		{

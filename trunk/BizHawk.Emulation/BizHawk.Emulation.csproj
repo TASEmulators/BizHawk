@@ -181,6 +181,7 @@
     <Compile Include="Consoles\Gameboy\Mappers.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\GameInfo.cs" />
     <Compile Include="Disc\CCD_format.cs" />
     <Compile Include="Disc\CUE_format.cs" />
     <Compile Include="Disc\Disc.API.cs" />
@@ -205,7 +206,6 @@
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
-    <Compile Include="Interfaces\IGame.cs" />
     <Compile Include="Interfaces\ISoundProvider.cs" />
     <Compile Include="Interfaces\IVideoProvider.cs" />
     <Compile Include="Log.cs" />

@@ -68,7 +68,6 @@ namespace BizHawk
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
-		public void LoadGame(IGame game) { }
 		public unsafe void FrameAdvance(bool render)
 		{
 			//if (render == false) return;

@@ -193,7 +193,7 @@ namespace BizHawk.MultiClient
 			//Pull out matching names
 			for (int x = 0; x < MovieList.Count; x++)
 			{
-				if (Global.Game.FilesystemSafeName == MovieList[x].GetGameName())
+				if (PathManager.FilesystemSafeName(Global.Game) == MovieList[x].GetGameName())
 					Indexes.Add(x);
 			}
 			if (Indexes.Count == 0) return;

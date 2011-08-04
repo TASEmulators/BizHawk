@@ -28,7 +28,6 @@ namespace BizHawk
 			Frame = 0;
 		}
 
-		public void LoadGame(IGame game) { }
 		public void FrameAdvance(bool render)
 		{
 			if (render == false) return;
