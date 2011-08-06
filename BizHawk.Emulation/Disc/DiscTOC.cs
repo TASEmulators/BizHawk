@@ -70,7 +70,12 @@ namespace BizHawk.DiscSystem
 						//if (prefs.PreferPregapCommand && index.num == 0)
 						//    sb.AppendFormat("    PREGAP {0}\n", new Cue.CueTimestamp(index.length_lba).Value);
 
-						if (leadin)
+						if (index.num == 0 && index.lba == track.Indexes[1].lba)
+						{
+							//dont emit index 0 when it is the same as index 1. it confuses daemon tools.
+							//(make this an option?)
+						}
+						else if (leadin)
 						{
 							//don't generate the first index, it is illogical
 						}
