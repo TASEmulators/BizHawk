@@ -4,10 +4,6 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Generic;
 
-//TODO - reading big files across the network is slow due to the small sector read sizes. make some kind of read-ahead thing
-//TODO - add lead-in generation (so we can clarify the LBA addresses and have a place to put subcode perhaps)
-//the bin dumper will need to start at LBA 150
-
 //http://www.pctechguide.com/iso-9660-data-format-for-cds-cd-roms-cd-rs-and-cd-rws
 //http://linux.die.net/man/1/cue2toc
 
