@@ -312,6 +312,7 @@
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Cheat.cs" />
+    <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\Cheats.cs">
       <SubType>Form</SubType>
     </Compile>
