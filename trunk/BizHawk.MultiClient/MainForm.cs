@@ -24,8 +24,7 @@ namespace BizHawk.MultiClient
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
 		SavestateManager StateSlots = new SavestateManager();
-		public CheatList CheatList = new CheatList();
-		
+
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
 
@@ -75,6 +74,7 @@ namespace BizHawk.MultiClient
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
 
+			Global.CheatList = new CheatList();
 			UpdateStatusSlots();
 			
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand

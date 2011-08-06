@@ -25,23 +25,9 @@ namespace BizHawk.MultiClient
 		int defaultDomainWidth;
 		int defaultOnWidth;
 
-		List<Cheat> cheatList = new List<Cheat>();
-		string currentCheatFile = "";
-		bool changes = false;
-
-		//TODO: Delete me
-		public List<Cheat> GetCheatList()
-		{
-			List<Cheat> c = new List<Cheat>();
-			for (int x = 0; x < cheatList.Count; x++)
-				c.Add(new Cheat(cheatList[x]));
-
-			return c;
-		}
-
 		/// <summary>
 		/// Looks for a .cht file that matches the name of the ROM loaded
-		/// It is up to the client to determine which director it looks
+		/// It is up to the caller to determine which directory it looks
 		/// </summary>
 		public bool AttemptLoadCheatFile()
 		{
@@ -52,14 +38,14 @@ namespace BizHawk.MultiClient
 				return false;
 			else
 			{
-				Global.MainForm.CheatList.LoadCheatFile(CheatFile, false);
+				Global.CheatList.LoadCheatFile(CheatFile, false);
 				return true;
 			}
 		}
 
 		private string MakeDefaultFilename()
 		{
-			return Path.Combine(GetCheatsPath(), PathManager.FilesystemSafeName(Global.Game) + ".cht");
+			return Path.Combine(Global.CheatList.GetCheatsPath(), PathManager.FilesystemSafeName(Global.Game) + ".cht");
 		}
 
 		private void ClearFields()
@@ -99,37 +85,37 @@ namespace BizHawk.MultiClient
 
 		private void CheatListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (cheatList[index].address < 0)
+			if (Global.CheatList.cheatList[index].address < 0)
 				color = Color.DarkGray;
-			else if (!cheatList[index].IsEnabled())
+			else if (!Global.CheatList.cheatList[index].IsEnabled())
 				color = this.BackColor;
 		}
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (cheatList[index].address == -1)
+			if (Global.CheatList.cheatList[index].address == -1)
 				return;
 
 			if (column == 0) //Name
 			{
-				text = cheatList[index].name;
+				text = Global.CheatList.cheatList[index].name;
 			}
 			if (column == 1) //Address
 			{
-				text = FormatAddress(cheatList[index].address);
+				text = FormatAddress(Global.CheatList.cheatList[index].address);
 			}
 			if (column == 2) //Value
 			{
-				text = String.Format("{0:X2}", cheatList[index].value);
+				text = String.Format("{0:X2}", Global.CheatList.cheatList[index].value);
 			}
 			if (column == 3) //Domain
 			{
-				text = cheatList[index].domain.Name;
+				text = Global.CheatList.cheatList[index].domain.Name;
 			}
 			if (column == 4) //Enabled
 			{
-				if (cheatList[index].IsEnabled())
+				if (Global.CheatList.cheatList[index].IsEnabled())
 					text = "*";
 				else
 					text = "";
@@ -182,7 +168,7 @@ namespace BizHawk.MultiClient
 		public void AddCheat(Cheat c)
 		{
 			Changes();
-			cheatList.Add(c);
+			Global.CheatList.cheatList.Add(c);
 			Global.RenderPanel.AddMessage("Cheat added.");
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
@@ -193,7 +179,7 @@ namespace BizHawk.MultiClient
 		{
 			bool z = true;
 
-			if (changes) z = AskSave();
+			if (Global.CheatList.changes) z = AskSave();
 
 			if (z)
 			{
@@ -205,7 +191,7 @@ namespace BizHawk.MultiClient
 						Global.Config.RecentCheats.Remove(file);
 				}
 				DisplayCheatsList();
-				changes = false;
+				Global.CheatList.changes = false;
 			}
 		}
 
@@ -290,12 +276,12 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.CheatsAutoSaveOnClose)
 			{
-				if (changes)
+				if (Global.CheatList.changes)
 				{
-					if (currentCheatFile.Length == 0)
-						currentCheatFile = MakeDefaultFilename();
+					if (Global.CheatList.currentCheatFile.Length == 0)
+						Global.CheatList.currentCheatFile = MakeDefaultFilename();
 
-					SaveCheatFile(currentCheatFile);
+					SaveCheatFile(Global.CheatList.currentCheatFile);
 				}
 			}
 		}
@@ -303,7 +289,7 @@ namespace BizHawk.MultiClient
 		public void DisplayCheatsList()
 		{
 			UpdateNumberOfCheats();
-			CheatListView.ItemCount = cheatList.Count;
+			CheatListView.ItemCount = Global.CheatList.cheatList.Count;
 		}
 
 		private void MoveUp()
@@ -313,9 +299,9 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = cheatList[index];
-				cheatList.Remove(cheatList[index]);
-				cheatList.Insert(index - 1, temp);
+				temp = Global.CheatList.cheatList[index];
+				Global.CheatList.cheatList.Remove(Global.CheatList.cheatList[index]);
+				Global.CheatList.cheatList.Insert(index - 1, temp);
 
 				//Note: here it will get flagged many times redundantly potentially, 
 				//but this avoids it being flagged falsely when the user did not select an index
@@ -340,13 +326,13 @@ namespace BizHawk.MultiClient
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
-				temp = cheatList[index];
+				temp = Global.CheatList.cheatList[index];
 
-				if (index < cheatList.Count - 1)
+				if (index < Global.CheatList.cheatList.Count - 1)
 				{
 
-					cheatList.Remove(cheatList[index]);
-					cheatList.Insert(index + 1, temp);
+					Global.CheatList.cheatList.Remove(Global.CheatList.cheatList[index]);
+					Global.CheatList.cheatList.Insert(index + 1, temp);
 
 				}
 
@@ -388,18 +374,18 @@ namespace BizHawk.MultiClient
 
 		void Changes()
 		{
-			changes = true;
-			MessageLabel.Text = Path.GetFileName(currentCheatFile) + " *";
+			Global.CheatList.changes = true;
+			MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile) + " *";
 		}
 
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
-			if (currentCheatFile.Length > 0)
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
+			if (Global.CheatList.currentCheatFile.Length > 0)
+				sfd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.currentCheatFile);
 			else if (!(Global.Emulator is NullEmulator))
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			sfd.InitialDirectory = GetCheatsPath();
+			sfd.InitialDirectory = Global.CheatList.GetCheatsPath();
 			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
@@ -418,9 +404,9 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				SaveCheatFile(file.FullName);
-				currentCheatFile = file.FullName;
-				MessageLabel.Text = Path.GetFileName(currentCheatFile) + " saved.";
-				Global.Config.RecentCheats.Add(currentCheatFile);
+				Global.CheatList.currentCheatFile = file.FullName;
+				MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile) + " saved.";
+				Global.Config.RecentCheats.Add(Global.CheatList.currentCheatFile);
 			}
 		}
 
@@ -434,39 +420,39 @@ namespace BizHawk.MultiClient
 			{
 				string str = "";
 
-				for (int x = 0; x < cheatList.Count; x++)
+				for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
 				{
-					str += FormatAddress(cheatList[x].address) + "\t";
-					str += String.Format("{0:X2}", cheatList[x].value) + "\t";
-					str += cheatList[x].domain.Name + "\t";
-					if (cheatList[x].IsEnabled())
+					str += FormatAddress(Global.CheatList.cheatList[x].address) + "\t";
+					str += String.Format("{0:X2}", Global.CheatList.cheatList[x].value) + "\t";
+					str += Global.CheatList.cheatList[x].domain.Name + "\t";
+					if (Global.CheatList.cheatList[x].IsEnabled())
 						str += "1\t";
 					else
 						str += "0\t";
-					str += cheatList[x].name + "\n";
+					str += Global.CheatList.cheatList[x].name + "\n";
 				}
 
 				sw.WriteLine(str);
 			}
-			changes = false;
+			Global.CheatList.changes = false;
 			return true;
 		}
 
 		public bool AskSave()
 		{
-			if (changes)
+			if (Global.CheatList.changes)
 			{
 				DialogResult result = MessageBox.Show("Save Changes?", "Cheats", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 
 				if (result == DialogResult.Yes)
 				{
 					//TOOD: Do quicksave if filename, else save as
-					if (string.Compare(currentCheatFile, "") == 0)
+					if (string.Compare(Global.CheatList.currentCheatFile, "") == 0)
 					{
 						SaveAs();
 					}
 					else
-						SaveCheatFile(currentCheatFile);
+						SaveCheatFile(Global.CheatList.currentCheatFile);
 					return true;
 				}
 				else if (result == DialogResult.No)
@@ -480,14 +466,14 @@ namespace BizHawk.MultiClient
 		private void NewCheatList()
 		{
 			bool result = true;
-			if (changes) result = AskSave();
+			if (Global.CheatList.changes) result = AskSave();
 
 			if (result == true)
 			{
-				cheatList.Clear();
+				Global.CheatList.cheatList.Clear();
 				DisplayCheatsList();
-				currentCheatFile = "";
-				changes = false;
+				Global.CheatList.currentCheatFile = "";
+				Global.CheatList.changes = false;
 				MessageLabel.Text = "";
 			}
 		}
@@ -504,9 +490,9 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (changes)
+			if (Global.CheatList.changes)
 			{
-				SaveCheatFile(currentCheatFile);
+				SaveCheatFile(Global.CheatList.currentCheatFile);
 			}
 			else
 			{
@@ -516,10 +502,10 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentCheatFile, "") == 0) return;
+			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0) return;
 
-			if (changes)
-				SaveCheatFile(currentCheatFile);
+			if (Global.CheatList.changes)
+				SaveCheatFile(Global.CheatList.currentCheatFile);
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -527,52 +513,13 @@ namespace BizHawk.MultiClient
 			SaveAs();
 		}
 
-		public string GetCheatsPath()
-		{
-			string path;
-			switch (Global.Emulator.SystemId)
-			{
-				case "NES":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathNESCheats, "NES");
-					break;
-				case "SMS":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSMSCheats, "SMS");
-					break;
-				case "SG":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathSGCheats, "SG");
-					break;
-				case "GG":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGGCheats, "GG");
-					break;
-				case "GEN":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisCheats, "GEN");
-					break;
-				case "SFX":
-				case "PCE":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "PCE");
-					break;
-				case "GB":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathGBCheats, "GB");
-					break;
-				case "TI83":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathTI83Cheats, "TI83");
-					break;
-				default:
-					path = PathManager.GetBasePathAbsolute();
-					break;
-			}
-			var f = new FileInfo(path);
-			if (f.Directory.Exists == false)
-				f.Directory.Create();
-			return path;
-		}
 
 		private FileInfo GetFileFromUser()
 		{
 			var ofd = new OpenFileDialog();
-			if (currentCheatFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentCheatFile);
-			ofd.InitialDirectory = GetCheatsPath();
+			if (Global.CheatList.currentCheatFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.currentCheatFile);
+			ofd.InitialDirectory = Global.CheatList.GetCheatsPath();
 			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -590,9 +537,9 @@ namespace BizHawk.MultiClient
 
 		public bool LoadCheatFile(string path, bool append)
 		{
-			Global.MainForm.CheatList.LoadCheatFile(path, append);
+			Global.CheatList.LoadCheatFile(path, append);
 			UpdateNumberOfCheats();
-			MessageLabel.Text = Path.GetFileName(Global.MainForm.CheatList.currentCheatFile);
+			MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile);
 			DisplayCheatsList();
 			return true; //TODO
 		}
@@ -605,7 +552,7 @@ namespace BizHawk.MultiClient
 			if (file != null)
 			{
 				bool r = true;
-				if (changes) r = AskSave();
+				if (Global.CheatList.changes) r = AskSave();
 				if (r)
 				{
 					LoadCheatFile(file.FullName, false);
@@ -634,10 +581,10 @@ namespace BizHawk.MultiClient
 			{
 				x = indexes[0];
 				if (indexes[0] > 0)
-					cheatList.Insert(indexes[0], c);
+					Global.CheatList.cheatList.Insert(indexes[0], c);
 			}
 			else
-				cheatList.Add(c);
+				Global.CheatList.cheatList.Add(c);
 			DisplayCheatsList();
 			CheatListView.Refresh();
 		}
@@ -663,7 +610,7 @@ namespace BizHawk.MultiClient
 				c.Enable();
 			} 
 			catch {
-				Global.MainForm.CheatList.NotSupportedError();
+				Global.CheatList.NotSupportedError();
 			}
 			return c;
 		}
@@ -680,14 +627,14 @@ namespace BizHawk.MultiClient
 
 		private void RemoveCheat()
 		{
-			if (cheatList.Count == 0) return;
+			if (Global.CheatList.cheatList.Count == 0) return;
 			Changes();
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
 				foreach (int index in indexes)
 				{
-					cheatList.Remove(cheatList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+					Global.CheatList.cheatList.Remove(Global.CheatList.cheatList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
 				}
 				DisplayCheatsList();
 			}
@@ -707,13 +654,13 @@ namespace BizHawk.MultiClient
 		{
 			string message = "";
 			int active = 0;
-			for (int x = 0; x < cheatList.Count; x++)
+			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
 			{
-				if (cheatList[x].IsEnabled())
+				if (Global.CheatList.cheatList[x].IsEnabled())
 					active++;
 			}
 
-			int c = cheatList.Count;
+			int c = Global.CheatList.cheatList.Count;
 			if (c == 1)
 				message += c.ToString() + " cheat (" + active.ToString() + " active)";
 			else if (c == 0)
@@ -745,11 +692,11 @@ namespace BizHawk.MultiClient
 			{
 				Cheat c = new Cheat();
 				int x = indexes[0];
-				c.name = cheatList[x].name;
-				c.address = cheatList[x].address;
-				c.value = cheatList[x].value;
+				c.name = Global.CheatList.cheatList[x].name;
+				c.address = Global.CheatList.cheatList[x].address;
+				c.value = Global.CheatList.cheatList[x].value;
 				Changes();
-				cheatList.Add(c);
+				Global.CheatList.cheatList.Add(c);
 				DisplayCheatsList();
 			}
 		}
@@ -771,17 +718,17 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					if (cheatList[indexes[x]].IsEnabled())
-						cheatList[indexes[x]].Disable();
+					if (Global.CheatList.cheatList[indexes[x]].IsEnabled())
+						Global.CheatList.cheatList[indexes[x]].Disable();
 					else
 					{
 						try
 						{
-							cheatList[indexes[x]].Enable();
+							Global.CheatList.cheatList[indexes[x]].Enable();
 						}
 						catch
 						{
-							Global.MainForm.CheatList.NotSupportedError();
+							Global.CheatList.NotSupportedError();
 						}
 					}
 				}
@@ -800,9 +747,9 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
-				NameBox.Text = cheatList[indexes[0]].name;
-				AddressBox.Text = FormatAddress(cheatList[indexes[0]].address);
-				ValueBox.Text = String.Format("{0:X2}", cheatList[indexes[0]].value);
+				NameBox.Text = Global.CheatList.cheatList[indexes[0]].name;
+				AddressBox.Text = FormatAddress(Global.CheatList.cheatList[indexes[0]].address);
+				ValueBox.Text = String.Format("{0:X2}", Global.CheatList.cheatList[indexes[0]].value);
 				CheatListView.Refresh();
 			}
 		}
@@ -819,7 +766,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				if (AddressBox.Text.Length > 0 && ValueBox.Text.Length > 0)
-					cheatList[indexes[0]] = MakeCheat();
+					Global.CheatList.cheatList[indexes[0]] = MakeCheat();
 				CheatListView.Refresh();
 			}
 		}
@@ -876,7 +823,7 @@ namespace BizHawk.MultiClient
 				return;
 			string Str = e.Label;
 			int index = e.Item;
-			cheatList[e.Item].name = Str;
+			Global.CheatList.cheatList[e.Item].name = Str;
 		}
 
 		private void restoreWindowSizeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -913,7 +860,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (string.Compare(currentCheatFile, "") == 0 || !changes)
+			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0 || !Global.CheatList.changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}
@@ -930,8 +877,8 @@ namespace BizHawk.MultiClient
 
 		public void DisableAllCheats()
 		{
-			for (int x = 0; x < cheatList.Count; x++)
-				cheatList[x].Disable();
+			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+				Global.CheatList.cheatList[x].Disable();
 			CheatListView.Refresh();
 			UpdateNumberOfCheats();
 		}
