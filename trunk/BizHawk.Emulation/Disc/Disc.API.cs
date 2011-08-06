@@ -66,7 +66,7 @@ namespace BizHawk.DiscSystem
 		}
 
 		//main API to determine how many LBA sectors are available
-		public int LBACount { get { return Sectors.Count + 150; } }
+		public int LBACount { get { return Sectors.Count; } }
 
 		//main api for reading the TOC from a disc
 		public DiscTOC ReadTOC()
