@@ -40,8 +40,10 @@ namespace BizHawk.DiscSystem
 			//public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
 
-		public string GenerateCUE(CueBinPrefs prefs)
+		public string GenerateCUE_OneBin(CueBinPrefs prefs)
 		{
+			if (prefs.OneBinPerTrack) throw new InvalidOperationException("OneBinPerTrack passed to GenerateCUE_OneBin");
+
 			//this generates a single-file cue!!!!!!! dont expect it to generate bin-per-track!
 			StringBuilder sb = new StringBuilder();
 
@@ -58,7 +60,7 @@ namespace BizHawk.DiscSystem
 				foreach (var track in session.Tracks)
 				{
 					ETrackType trackType = track.TrackType;
-					//mutate track type according to our principle of reconstructing 
+					//mutate track type according to our principle of canonicalization 
 					if (trackType == ETrackType.Mode1_2048 && prefs.DumpECM)
 						trackType = ETrackType.Mode1_2352;
 
@@ -66,11 +68,7 @@ namespace BizHawk.DiscSystem
 					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(trackType));
 					foreach (var index in track.Indexes)
 					{
-						//we no longer want to generate pregaps here. bloated bin FTW! maybe this can be an optimization later so i'll leave it.
-						//if (prefs.PreferPregapCommand && index.num == 0)
-						//    sb.AppendFormat("    PREGAP {0}\n", new Cue.CueTimestamp(index.length_lba).Value);
-
-						if (index.num == 0 && index.lba == track.Indexes[1].lba)
+						if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
 						{
 							//dont emit index 0 when it is the same as index 1. it confuses daemon tools.
 							//(make this an option?)

@@ -319,7 +319,7 @@ namespace BizHawk.DiscSystem
 			if (!prefs.OneBinPerTrack)
 			{
 				//this is the preferred mode of dumping things. we will always write full sectors.
-				string cue = TOC.GenerateCUE(prefs);
+				string cue = TOC.GenerateCUE_OneBin(prefs);
 				var bfd = new CueBin.BinFileDescriptor();
 				bfd.name = baseName + ".bin";
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
@@ -334,6 +334,7 @@ namespace BizHawk.DiscSystem
 			}
 			else
 			{
+				//we build our own cue here (unlike above) because we need to build the cue and the output dat aat the same time
 				StringBuilder sbCue = new StringBuilder();
 				
 				for (int i = 0; i < TOC.Sessions[0].Tracks.Count; i++)
@@ -345,20 +346,35 @@ namespace BizHawk.DiscSystem
 					ret.bins.Add(bfd);
 					int lba=0;
 
+					//skip leadin
+					if (i == 0) lba = 150;
+
 					for (; lba < track.length_lba; lba++)
 					{
 						int thislba = track.Indexes[0].lba + lba;
-						bfd.lbas.Add(thislba + 150);
+						bfd.lbas.Add(thislba);
 						bfd.lba_zeros.Add(false);
 					}
 					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
 
-					//bool dropIndex0 = track.Indexes[0].num
 					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
 					foreach (var index in track.Indexes)
 					{
 						int x = index.lba - track.Indexes[0].lba;
-						sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(x).Value);
+						if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
+						{
+							//dont emit index 0 when it is the same as index 1, it confuses some cue parsers
+						}
+						else if (i==0 && index.num == 0)
+						{
+							//don't generate the first index, it is illogical
+						}
+						else
+						{
+							//track 1 included the lead-in at the beginning of it. sneak past that.
+							if (i == 0) x -= 150;
+							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(x).Value);
+						}
 					}
 				}
 
@@ -411,6 +427,11 @@ namespace BizHawk.DiscSystem
 		public bool OneBinPerTrack;
 
 		/// <summary>
+		/// NOT SUPPORTED YET (just here as a reminder) If choosing OneBinPerTrack, you may wish to write wave files for audio tracks.
+		/// </summary>
+		//public bool DumpWaveFiles;
+
+		/// <summary>
 		/// turn this on to dump bins instead of just cues
 		/// </summary>
 		public bool ReallyDumpBin;
@@ -421,16 +442,25 @@ namespace BizHawk.DiscSystem
 		public bool AnnotateCue;
 
 		/// <summary>
-		/// you may find that some cue parsers are upset by index 00
-		/// if thats the case, then we can emit pregaps instead.
-		/// you might also want to use this to save disk space (without pregap commands, the pregap must be stored as empty sectors)
+		/// EVIL: in theory this would attempt to generate pregap commands to save disc space, but I think this is a bad idea.
+		/// it would also be useful for OneBinPerTrack mode in making wave files.
+		/// HOWEVER - by the time we've loaded things up into our canonical format, we don't know which 'pregaps' are safe for turning back into pregaps
+		/// Because they might sometimes contain data (gapless audio discs). So we would have to inspect a series of sectors to look for silence.
+		/// And even still, the ECC information might be important. So, forget it.
+		/// NEVER USE OR IMPLEMENT THIS
 		/// </summary>
-		public bool PreferPregapCommand = false;
+		//public bool PreferPregapCommand = false;
 
 		/// <summary>
 		/// some cue parsers cant handle sessions. better not emit a session command then. multi-session discs will then be broken
 		/// </summary>
 		public bool SingleSession;
+
+		/// <summary>
+		/// some cue parsers can't handle redundant Index 0 (equal to Index 1). Such as daemon tools. So, hide those indices.
+		/// Our canonical format craves explicitness so this is defaulted off.
+		/// </summary>
+		public bool OmitRedundantIndex0 = false;
 
 		/// <summary>
 		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
