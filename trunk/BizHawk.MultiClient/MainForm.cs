@@ -107,6 +107,7 @@ namespace BizHawk.MultiClient
 
 			Closing += (o, e) =>
 			{
+				Global.CheatList.SaveSettings();
 				CloseGame();
 				UserMovie.StopMovie();
 				SaveConfig();
@@ -982,7 +983,7 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				if (Global.Config.LoadCheatFileByGame)
 				{
-					if (Cheats1.AttemptLoadCheatFile())
+					if (Global.CheatList.AttemptLoadCheatFile())
 						Global.RenderPanel.AddMessage("Cheats file loaded");
 				}
 				Cheats1.Restart();

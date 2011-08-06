@@ -72,8 +72,8 @@ namespace BizHawk.MultiClient
 
 				Global.Config.RecentCheats.Add(file.FullName);
 				changes = false;
-				
-				
+
+
 			}
 
 			if (Global.Config.DisableCheatsOnLoad)
@@ -151,6 +151,84 @@ namespace BizHawk.MultiClient
 			if (f.Directory.Exists == false)
 				f.Directory.Create();
 			return path;
+		}
+
+		public bool SaveCheatFile(string path)
+		{
+			var file = new FileInfo(path);
+			if (!file.Directory.Exists)
+				file.Directory.Create();
+
+			using (StreamWriter sw = new StreamWriter(path))
+			{
+				string str = "";
+
+				for (int x = 0; x < cheatList.Count; x++)
+				{
+					str += FormatAddress(cheatList[x].address) + "\t";
+					str += String.Format("{0:X2}", cheatList[x].value) + "\t";
+					str += cheatList[x].domain.Name + "\t";
+					if (cheatList[x].IsEnabled())
+						str += "1\t";
+					else
+						str += "0\t";
+					str += cheatList[x].name + "\n";
+				}
+
+				sw.WriteLine(str);
+			}
+			changes = false;
+			return true;
+		}
+
+		public string FormatAddress(int address)
+		{
+			return String.Format("{0:X" + GetNumDigits((Global.Emulator.MainMemory.Size - 1)).ToString() + "}", address);
+		}
+
+
+		public void SaveSettings()
+		{
+			if (Global.Config.CheatsAutoSaveOnClose)
+			{
+				if (changes && cheatList.Count > 0)
+				{
+					if (currentCheatFile.Length == 0)
+						currentCheatFile = MakeDefaultFilename();
+
+					SaveCheatFile(Global.CheatList.currentCheatFile);
+				}
+			}
+		}
+
+		public string MakeDefaultFilename()
+		{
+			return Path.Combine(Global.CheatList.GetCheatsPath(), PathManager.FilesystemSafeName(Global.Game) + ".cht");
+		}
+
+		private int GetNumDigits(Int32 i)
+		{
+			if (i < 0x10000) return 4;
+			if (i < 0x1000000) return 6;
+			else return 8;
+		}
+
+		/// <summary>
+		/// Looks for a .cht file that matches the name of the ROM loaded
+		/// It is up to the caller to determine which directory it looks
+		/// </summary>
+		public bool AttemptLoadCheatFile()
+		{
+			string CheatFile = MakeDefaultFilename();
+
+			var file = new FileInfo(CheatFile);
+			if (file.Exists == false)
+				return false;
+			else
+			{
+				LoadCheatFile(CheatFile, false);
+				return true;
+			}
 		}
 	}
 }
