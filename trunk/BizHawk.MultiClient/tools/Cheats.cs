@@ -428,22 +428,21 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (Global.CheatList.changes)
-			{
-				Global.CheatList.SaveCheatFile(Global.CheatList.currentCheatFile);
-			}
-			else
-			{
-				SaveAs();
-			}
+			Save();
+		}
+
+		private void Save()
+		{
+			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0)
+				Global.CheatList.currentCheatFile = Global.CheatList.MakeDefaultFilename();
+
+			Global.CheatList.SaveCheatFile(Global.CheatList.currentCheatFile);
+			MessageLabel.Text = Path.GetFileName(Global.CheatList.currentCheatFile) + " saved.";
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0) return;
-
-			if (Global.CheatList.changes)
-				Global.CheatList.SaveCheatFile(Global.CheatList.currentCheatFile);
+			Save();
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)

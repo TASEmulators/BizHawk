@@ -310,7 +310,7 @@
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
@@ -723,11 +723,11 @@
 			// FreezetoolStripButton2
 			// 
 			this.FreezetoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.FreezetoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.FreezetoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezetoolStripButton2.Name = "FreezetoolStripButton2";
 			this.FreezetoolStripButton2.Size = new System.Drawing.Size(23, 22);
-			this.FreezetoolStripButton2.Text = "Freeze";
+			this.FreezetoolStripButton2.Text = "Freeze Address";
 			this.FreezetoolStripButton2.Click += new System.EventHandler(this.FreezetoolStripButton2_Click);
 			// 
 			// toolStripButton1

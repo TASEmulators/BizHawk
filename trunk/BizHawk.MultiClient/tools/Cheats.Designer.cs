@@ -235,7 +235,7 @@
 			// 
 			// addCheatToolStripMenuItem
 			// 
-			this.addCheatToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.addCheatToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.addCheatToolStripMenuItem.Name = "addCheatToolStripMenuItem";
 			this.addCheatToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.addCheatToolStripMenuItem.Text = "&Add Cheat";
