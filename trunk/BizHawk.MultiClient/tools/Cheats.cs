@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 	public partial class Cheats : Form
 	{
 		//Implement Freeze functions in all memory domains
-		//Restore Window Size should restore column order as well
 		//context menu - enable/disable highlight dependent items
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
