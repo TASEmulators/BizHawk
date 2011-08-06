@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
 		SavestateManager StateSlots = new SavestateManager();
-				
+		public CheatList CheatList = new CheatList();
 		
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
@@ -1805,6 +1805,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
 			{
+				Cheats1 = new Cheats();
 				Cheats1.Show();
 			}
 			else

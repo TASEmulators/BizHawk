@@ -529,10 +529,10 @@ namespace BizHawk.MultiClient
 				if (!weededList.Contains(searchList[index]))
 				{
 					color = Color.Pink;
-					if (Global.MainForm.Cheats1.IsActiveCheat(Domain, searchList[index].address))
+					if (Global.MainForm.CheatList.IsActiveCheat(Domain, searchList[index].address))
 						color = Color.Purple;
 				}
-				else if (Global.MainForm.Cheats1.IsActiveCheat(Domain, searchList[index].address))
+				else if (Global.MainForm.CheatList.IsActiveCheat(Domain, searchList[index].address))
 					color = Color.LightCyan;
 				else
 					color = Color.White;
