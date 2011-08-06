@@ -42,7 +42,10 @@ namespace BizHawk.DiscSystem
 
 		public string GenerateCUE(CueBinPrefs prefs)
 		{
+			//this generates a single-file cue!!!!!!! dont expect it to generate bin-per-track!
 			StringBuilder sb = new StringBuilder();
+
+			bool leadin = true;
 			foreach (var session in Sessions)
 			{
 				if (!prefs.SingleSession)
@@ -51,6 +54,7 @@ namespace BizHawk.DiscSystem
 					if (prefs.AnnotateCue) sb.AppendFormat("SESSION {0:D2} (length={1})\n", session.num, session.length_lba);
 					else sb.AppendFormat("SESSION {0:D2}\n", session.num);
 				}
+
 				foreach (var track in session.Tracks)
 				{
 					ETrackType trackType = track.TrackType;
@@ -62,10 +66,22 @@ namespace BizHawk.DiscSystem
 					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(trackType));
 					foreach (var index in track.Indexes)
 					{
+						//we no longer want to generate pregaps here. bloated bin FTW! maybe this can be an optimization later so i'll leave it.
 						//if (prefs.PreferPregapCommand && index.num == 0)
 						//    sb.AppendFormat("    PREGAP {0}\n", new Cue.CueTimestamp(index.length_lba).Value);
-						//else 
-						sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(index.lba).Value);
+
+						if (leadin)
+						{
+							//don't generate the first index, it is illogical
+						}
+						else
+						{
+							//subtract leadin
+							int lba = index.lba - 150;
+							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(lba).Value);
+						}
+
+						leadin = false;
 					}
 				}
 			}

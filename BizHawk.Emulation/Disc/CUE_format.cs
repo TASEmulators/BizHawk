@@ -100,11 +100,13 @@ namespace BizHawk.DiscSystem
 				{
 					var cue_track = cue_file.Tracks[t];
 
-					//record the disc LBA that this sector started on
+					//record the disc LBA that this track started on
 					int track_disc_lba_start = Sectors.Count;
 
 					//record the pregap location. it will default to the start of the track unless we supplied a pregap command
 					int track_disc_pregap_lba = track_disc_lba_start;
+
+					int blob_track_start = blob_timestamp;
 
 					//enforce a rule of our own: every track within the file must have the same sector size
 					//we do know that files can change between track types within a file, but we're not sure what to do if the sector size changes
@@ -118,25 +120,30 @@ namespace BizHawk.DiscSystem
 					toc_track.TrackType = cue_track.TrackType;
 					session.Tracks.Add(toc_track);
 
-					//check whether a pregap is requested. 
-					//when this happens for the first track in a file, some empty sectors are generated
-					//when it happens for any other track, its just another way of specifying index 0 LBA
-					if (cue_track.PreGap.LBA > 0)
+					if (curr_track == 1)
 					{
-						if (t == 0)
-							for (int i = 0; i < cue_track.PreGap.LBA; i++)
-							{
-								Sectors.Add(new SectorEntry(pregap_sector));
-							}
-						else track_disc_pregap_lba -= cue_track.PreGap.LBA;
+						if (cue_track.PreGap.LBA != 0)
+							throw new InvalidOperationException("not supported: cue files with track 1 pregaps");
+						//but now we add one anyway
+						cue_track.PreGap = new Cue.CueTimestamp(150);
 					}
 
-					//look ahead to the next track's index 0 so we can see how long this track's last index is
+					//check whether a pregap is requested.
+					//this causes empty sectors to get generated without consuming data from the blob
+					if (cue_track.PreGap.LBA > 0)
+					{
+						for (int i = 0; i < cue_track.PreGap.LBA; i++)
+						{
+							Sectors.Add(new SectorEntry(pregap_sector));
+						}
+					}
+
+					//look ahead to the next track's index 1 so we can see how long this track's last index is
 					//or, for the last track, use the length of the file
 					int track_length_lba;
 					if (t == cue_file.Tracks.Count - 1)
 						track_length_lba = blob_length_lba - blob_timestamp;
-					else track_length_lba = cue_file.Tracks[t + 1].Indexes[0].Timestamp.LBA - blob_timestamp;
+					else track_length_lba = cue_file.Tracks[t + 1].Indexes[1].Timestamp.LBA - blob_timestamp;
 					//toc_track.length_lba = track_length_lba; //xxx
 
 					//find out how many indexes we have
@@ -156,13 +163,11 @@ namespace BizHawk.DiscSystem
 						if (index == 0) toc_index.lba = track_disc_pregap_lba;
 						else toc_index.lba = Sectors.Count; 
 
-						//toc_index.lba += 150; //TODO - consider whether to add 150 here
-						
 						//calculate length of the index
 						//if it is the last index then we use our calculation from before, otherwise we check the next index
 						int index_length_lba;
 						if (is_last_index)
-							index_length_lba = track_disc_lba_start + track_length_lba - blob_timestamp - blob_disc_lba_start;
+							index_length_lba = track_length_lba - (blob_timestamp - blob_track_start);
 						else index_length_lba = cue_track.Indexes[index + 1].Timestamp.LBA - blob_timestamp;
 
 						//emit sectors
@@ -232,7 +237,6 @@ namespace BizHawk.DiscSystem
 				} //track loop
 			} //file loop
 
-
 			//finally, analyze the length of the sessions and the entire disc by summing the lengths of the tracks
 			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
 			//but rather by the difference in lbas between start and end
@@ -240,6 +244,10 @@ namespace BizHawk.DiscSystem
 			foreach (var toc_session in TOC.Sessions)
 			{
 				var firstTrack = toc_session.Tracks[0];
+
+				//track 0, index 0 is actually -150. but cue sheets will never say that
+				//firstTrack.Indexes[0].lba -= 150;
+
 				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
 				session.length_lba = lastTrack.Indexes[0].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
 				TOC.length_lba += toc_session.length_lba;
