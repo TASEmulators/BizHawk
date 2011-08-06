@@ -152,7 +152,7 @@ namespace BizHawk.MultiClient
 		{
 			if (watchList[index].type == atype.SEPARATOR)
 				color = this.BackColor;
-			if (Global.MainForm.CheatList.IsActiveCheat(Domain, watchList[index].address))
+			if (Global.CheatList.IsActiveCheat(Domain, watchList[index].address))
 				color = Color.LightCyan;
 		}
 

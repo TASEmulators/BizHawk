@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
 		public static Controller NESControls;
 		public static Controller GBControls;
 		public static Controller NullControls;
+		public static CheatList CheatList;
 
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();

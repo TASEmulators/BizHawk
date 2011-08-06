@@ -112,5 +112,45 @@ namespace BizHawk.MultiClient
 			}
 			return false;
 		}
+
+		public string GetCheatsPath()
+		{
+			string path;
+			switch (Global.Emulator.SystemId)
+			{
+				case "NES":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathNESCheats, "NES");
+					break;
+				case "SMS":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathSMSCheats, "SMS");
+					break;
+				case "SG":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathSGCheats, "SG");
+					break;
+				case "GG":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathGGCheats, "GG");
+					break;
+				case "GEN":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathGenesisCheats, "GEN");
+					break;
+				case "SFX":
+				case "PCE":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathPCECheats, "PCE");
+					break;
+				case "GB":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathGBCheats, "GB");
+					break;
+				case "TI83":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathTI83Cheats, "TI83");
+					break;
+				default:
+					path = PathManager.GetBasePathAbsolute();
+					break;
+			}
+			var f = new FileInfo(path);
+			if (f.Directory.Exists == false)
+				f.Directory.Create();
+			return path;
+		}
 	}
 }
