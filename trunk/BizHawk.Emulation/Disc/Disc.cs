@@ -318,15 +318,17 @@ namespace BizHawk.DiscSystem
 
 			if (!prefs.OneBinPerTrack)
 			{
+				//this is the preferred mode of dumping things. we will always write full sectors.
 				string cue = TOC.GenerateCUE(prefs);
 				var bfd = new CueBin.BinFileDescriptor();
 				bfd.name = baseName + ".bin";
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
 				ret.bins.Add(bfd);
 				bfd.SectorSize = 2352;
-				for (int i = 0; i < TOC.length_lba; i++)
+				//skip the lead-in!
+				for (int i = 150; i < TOC.length_lba; i++)
 				{
-					bfd.lbas.Add(i+150);
+					bfd.lbas.Add(i);
 					bfd.lba_zeros.Add(false);
 				}
 			}
@@ -351,6 +353,7 @@ namespace BizHawk.DiscSystem
 					}
 					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
 
+					//bool dropIndex0 = track.Indexes[0].num
 					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
 					foreach (var index in track.Indexes)
 					{
