@@ -187,7 +187,7 @@
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
@@ -259,7 +259,7 @@
 			// 
 			// freezeToolStripMenuItem
 			// 
-			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
 			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.freezeToolStripMenuItem.Text = "&Freeze";

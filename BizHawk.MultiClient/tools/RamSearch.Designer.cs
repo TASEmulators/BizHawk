@@ -243,7 +243,7 @@
 			// FreezeAddressToolStrip
 			// 
 			this.FreezeAddressToolStrip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FreezeAddressToolStrip.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.FreezeAddressToolStrip.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.FreezeAddressToolStrip.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FreezeAddressToolStrip.Name = "FreezeAddressToolStrip";
 			this.FreezeAddressToolStrip.Size = new System.Drawing.Size(23, 22);
@@ -373,7 +373,7 @@
 			// 
 			// freezeAddressToolStripMenuItem1
 			// 
-			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
 			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
 			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";

@@ -648,6 +648,8 @@
     <None Include="images\corphawk.jpg" />
     <None Include="images\Help.png" />
     <None Include="images\CorpHawkSmall.png" />
+    <None Include="images\Freeze.png" />
+    <None Include="images\Unfreeze.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />

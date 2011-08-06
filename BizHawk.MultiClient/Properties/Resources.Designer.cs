@@ -228,6 +228,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Freeze {
+            get {
+                object obj = ResourceManager.GetObject("Freeze", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Fullscreen {
             get {
                 object obj = ResourceManager.GetObject("Fullscreen", resourceCulture);
@@ -587,6 +594,13 @@ namespace BizHawk.MultiClient.Properties {
         internal static System.Drawing.Bitmap undo {
             get {
                 object obj = ResourceManager.GetObject("undo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Unfreeze {
+            get {
+                object obj = ResourceManager.GetObject("Unfreeze", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
