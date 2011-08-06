@@ -27,6 +27,9 @@ namespace BizHawk.MultiClient
 			value = c.value;
 			enabled = c.enabled;
 			domain = c.domain;
+			if (enabled)
+				MemoryPulse.Add(domain, address, value);
+
 		}
 
 		public Cheat(string cname, int addr, byte val, bool e, MemoryDomain d)
@@ -36,18 +39,20 @@ namespace BizHawk.MultiClient
 			value = val;
 			enabled = e;
 			domain = d;
+			if (enabled)
+				MemoryPulse.Add(domain, address, value);
 		}
 
 		public void Enable()
 		{
 			enabled = true;
-            MemoryPulse.Add(domain, address, value);
+			MemoryPulse.Add(domain, address, value);
 		}
 
 		public void Disable()
 		{
 			enabled = false;
-		    MemoryPulse.Remove(domain, address);
+			MemoryPulse.Remove(domain, address);
 		}
 
 		public bool IsEnabled()
