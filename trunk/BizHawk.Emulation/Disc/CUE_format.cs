@@ -28,15 +28,40 @@ namespace BizHawk.DiscSystem
 				//structural validation
 				if (cue_file.Tracks.Count < 1) throw new Cue.CueBrokenException("`You must specify at least one track per file.`");
 
+				string blobPath = Path.Combine(cueDir, cue_file.Path);
+
 				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
+				int blob_length_lba, blob_leftover;
+				IBlob cue_blob = null;
 
-				//make a blob for the file
-				Blob_RawFile blob = new Blob_RawFile();
-				blob.PhysicalPath = Path.Combine(cueDir, cue_file.Path);
-				Blobs.Add(blob);
+				if (cue_file.FileType == Cue.CueFileType.Binary)
+				{
+					//make a blob for the file
+					Blob_RawFile blob = new Blob_RawFile();
+					blob.PhysicalPath = blobPath;
+					Blobs.Add(blob);
 
-				int blob_length_lba = (int)(blob.Length / blob_sectorsize);
-				int blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					blob_length_lba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					cue_blob = blob;
+				}
+				else if (cue_file.FileType == Cue.CueFileType.Wave)
+				{
+					Blob_WaveFile blob = new Blob_WaveFile();
+					try
+					{
+						blob.Load(blobPath);
+					}
+					catch (Exception ex)
+					{
+						throw new DiscReferenceException(blobPath, ex);
+					}
+
+					blob_length_lba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					cue_blob = blob;
+				}
+				else throw new DiscReferenceException(blobPath, new InvalidOperationException("unknown cue file type: " + cue_file.StrFileType));
 
 				//TODO - make CueTimestamp better, and also make it a struct, and also just make it DiscTimestamp
 				//TODO - wav handling
@@ -44,6 +69,9 @@ namespace BizHawk.DiscSystem
 
 				//start timekeeping for the blob. every time we hit an index, this will advance
 				int blob_timestamp = 0;
+
+				//the lba that this cue blob starts on
+				int blob_disc_lba_start = Sectors.Count;
 
 				//for each track within the file, create an index 0 if it is missing.
 				//also check to make sure there is an index 1
@@ -64,7 +92,7 @@ namespace BizHawk.DiscSystem
 				}
 
 				//validate that the first index in the file is 00:00:00
-				if (cue_file.Tracks[0].Indexes[0].Timestamp.LBA != 0) throw new Cue.CueBrokenException("`The first index of a file must start at 00:00:00.`");
+				if (cue_file.Tracks[0].Indexes[0].Timestamp.LBA != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
 
 
 				//for each track within the file:
@@ -80,7 +108,7 @@ namespace BizHawk.DiscSystem
 
 					//enforce a rule of our own: every track within the file must have the same sector size
 					//we do know that files can change between track types within a file, but we're not sure what to do if the sector size changes
-					if (Cue.BINSectorSizeForTrackType(cue_track.TrackType) != blob_sectorsize) throw new Cue.CueBrokenException("Found different sector sizes within a cue file. We don't know how to handle that.");
+					if (Cue.BINSectorSizeForTrackType(cue_track.TrackType) != blob_sectorsize) throw new Cue.CueBrokenException("Found different sector sizes within a cue blob. We don't know how to handle that.");
 
 					//check integrity of track sequence and setup data structures
 					//TODO - check for skipped tracks in cue parser instead
@@ -134,7 +162,7 @@ namespace BizHawk.DiscSystem
 						//if it is the last index then we use our calculation from before, otherwise we check the next index
 						int index_length_lba;
 						if (is_last_index)
-							index_length_lba = track_disc_lba_start + track_length_lba - blob_timestamp;
+							index_length_lba = track_disc_lba_start + track_length_lba - blob_timestamp - blob_disc_lba_start;
 						else index_length_lba = cue_track.Indexes[index + 1].Timestamp.LBA - blob_timestamp;
 
 						//emit sectors
@@ -153,7 +181,7 @@ namespace BizHawk.DiscSystem
 										//in all these cases, either no ECM is present or ECM is provided.
 										//so we just emit a Sector_Raw
 										Sector_RawBlob sector_rawblob = new Sector_RawBlob();
-										sector_rawblob.Blob = blob;
+										sector_rawblob.Blob = cue_blob;
 										sector_rawblob.Offset = (long)blob_timestamp * 2352;
 										Sector_Raw sector_raw = new Sector_Raw();
 										sector_raw.BaseSector = sector_rawblob;
@@ -175,9 +203,10 @@ namespace BizHawk.DiscSystem
 										//ECM needs to know the sector number so we have to record that here
 										int curr_disc_lba = Sectors.Count;
 										var sector_2048 = new Sector_Mode1_2048(curr_disc_lba + 150);
-										sector_2048.Blob = new ECMCacheBlob(blob);
+										sector_2048.Blob = new ECMCacheBlob(cue_blob);
 										sector_2048.Offset = (long)blob_timestamp * 2048;
 										if (blob_leftover > 0) throw new Cue.CueBrokenException("TODO - Incomplete 2048 byte/sector bin files (iso files) not yet supported.");
+										Sectors.Add(new SectorEntry(sector_2048));
 										break;
 									}
 							} //switch(TrackType)
@@ -212,7 +241,7 @@ namespace BizHawk.DiscSystem
 			{
 				var firstTrack = toc_session.Tracks[0];
 				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
-				session.length_lba = lastTrack.Indexes[1].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
+				session.length_lba = lastTrack.Indexes[0].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
 				TOC.length_lba += toc_session.length_lba;
 			}
 		}
@@ -228,7 +257,8 @@ namespace BizHawk.DiscSystem
 			foreach (CueFile cf in Files)
 			{
 				sb.AppendFormat("FILE \"{0}\"", cf.Path);
-				if (cf.Binary) sb.Append(" BINARY");
+				if (cf.FileType == CueFileType.Binary) sb.Append(" BINARY");
+				if (cf.FileType == CueFileType.Wave) sb.Append(" WAVE");
 				sb.AppendLine();
 				foreach (CueTrack ct in cf.Tracks)
 				{
@@ -243,11 +273,18 @@ namespace BizHawk.DiscSystem
 			return sb.ToString();
 		}
 
+		public enum CueFileType
+		{
+			Unspecified, Binary, Wave
+		}
+
 		public class CueFile
 		{
 			public string Path;
-			public bool Binary;
 			public List<CueTrack> Tracks = new List<CueTrack>();
+
+			public CueFileType FileType = CueFileType.Unspecified;
+			public string StrFileType;
 		}
 
 		public List<CueFile> Files = new List<CueFile>();
@@ -390,8 +427,16 @@ namespace BizHawk.DiscSystem
 							if (!clp.EOF)
 							{
 								string temp = clp.ReadToken().ToUpper();
-								if (temp == "BINARY")
-									currFile.Binary = true;
+								switch (temp)
+								{
+									case "BINARY":
+										currFile.FileType = CueFileType.Binary;
+										break;
+									case "WAVE":
+										currFile.FileType = CueFileType.Wave;
+										break;
+								}
+								currFile.StrFileType = temp;
 							}
 							break;
 						}

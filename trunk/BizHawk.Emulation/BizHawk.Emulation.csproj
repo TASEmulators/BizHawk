@@ -182,6 +182,8 @@
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />
+    <Compile Include="Disc\Blobs\Blob_WaveFile.cs" />
+    <Compile Include="Disc\Blobs\RiffMaster.cs" />
     <Compile Include="Disc\CCD_format.cs" />
     <Compile Include="Disc\CUE_format.cs" />
     <Compile Include="Disc\Disc.API.cs" />

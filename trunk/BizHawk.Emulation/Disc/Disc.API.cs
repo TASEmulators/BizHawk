@@ -5,6 +5,14 @@ using System.Collections.Generic;
 
 namespace BizHawk.DiscSystem
 {
+	public class DiscReferenceException : Exception
+	{
+		public DiscReferenceException(string fname, Exception inner)
+			: base(string.Format("A disc attempted to reference a file which could not be accessed or loaded: {0}", fname),inner)
+		{
+		}
+	}
+
 	public class DiscHopper
 	{
 		public Disc CurrentDisc;

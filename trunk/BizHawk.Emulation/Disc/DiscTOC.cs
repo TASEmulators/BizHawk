@@ -53,8 +53,13 @@ namespace BizHawk.DiscSystem
 				}
 				foreach (var track in session.Tracks)
 				{
-					if (prefs.AnnotateCue) sb.AppendFormat("  TRACK {0:D2} {1} (length={2})\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType), track.length_lba);
-					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
+					ETrackType trackType = track.TrackType;
+					//mutate track type according to our principle of reconstructing 
+					if (trackType == ETrackType.Mode1_2048 && prefs.DumpECM)
+						trackType = ETrackType.Mode1_2352;
+
+					if (prefs.AnnotateCue) sb.AppendFormat("  TRACK {0:D2} {1} (length={2})\n", track.num, Cue.TrackTypeStringForTrackType(trackType), track.length_lba);
+					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(trackType));
 					foreach (var index in track.Indexes)
 					{
 						//if (prefs.PreferPregapCommand && index.num == 0)

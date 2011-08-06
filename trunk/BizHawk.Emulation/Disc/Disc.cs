@@ -109,7 +109,8 @@ namespace BizHawk.DiscSystem
 			}
 			public int Read(long byte_pos, byte[] buffer, int offset, int count)
 			{
-				//use quite a large buffer, because normally we will be reading these sequentially
+				//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
+				//this enhances performance considerably
 				const int buffersize = 2352 * 75 * 2;
 				if (fs == null)
 					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
@@ -322,6 +323,7 @@ namespace BizHawk.DiscSystem
 				bfd.name = baseName + ".bin";
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
 				ret.bins.Add(bfd);
+				bfd.SectorSize = 2352;
 				for (int i = 0; i < TOC.length_lba; i++)
 				{
 					bfd.lbas.Add(i+150);
@@ -337,6 +339,7 @@ namespace BizHawk.DiscSystem
 					var track = TOC.Sessions[0].Tracks[i];
 					var bfd = new CueBin.BinFileDescriptor();
 					bfd.name = baseName + string.Format(" (Track {0:D2}).bin", track.num);
+					bfd.SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType);
 					ret.bins.Add(bfd);
 					int lba=0;
 
@@ -425,6 +428,11 @@ namespace BizHawk.DiscSystem
 		/// some cue parsers cant handle sessions. better not emit a session command then. multi-session discs will then be broken
 		/// </summary>
 		public bool SingleSession;
+
+		/// <summary>
+		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
+		/// </summary>
+		public bool DumpECM = true;
 	}
 
 	/// <summary>
@@ -443,6 +451,7 @@ namespace BizHawk.DiscSystem
 			public string name;
 			public List<int> lbas = new List<int>();
 			public List<bool> lba_zeros = new List<bool>();
+			public int SectorSize;
 		}
 
 		public List<BinFileDescriptor> bins = new List<BinFileDescriptor>();
@@ -490,6 +499,7 @@ namespace BizHawk.DiscSystem
 			if(prefs.ReallyDumpBin)
 				foreach (var bfd in bins)
 				{
+					int sectorSize = bfd.SectorSize;
 					byte[] temp = new byte[2352];
 					byte[] empty = new byte[2352];
 					string trackBinFile = bfd.name;
@@ -501,12 +511,15 @@ namespace BizHawk.DiscSystem
 							int lba = bfd.lbas[i];
 							if (bfd.lba_zeros[i])
 							{
-								fs.Write(empty, 0, 2352);
+								fs.Write(empty, 0, sectorSize);
 							}
 							else
 							{
-								disc.ReadLBA_2352(lba, temp, 0);
-								fs.Write(temp, 0, 2352);
+								if (sectorSize == 2352)
+									disc.ReadLBA_2352(lba, temp, 0);
+								else if (sectorSize == 2048) disc.ReadLBA_2048(lba, temp, 0);
+								else throw new InvalidOperationException();
+								fs.Write(temp, 0, sectorSize);
 							}
 						}
 					}
