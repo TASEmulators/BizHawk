@@ -105,6 +105,7 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
+			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -245,7 +246,8 @@
             this.clearChangeCountsToolStripMenuItem,
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
-            this.moveDownToolStripMenuItem});
+            this.moveDownToolStripMenuItem,
+            this.selectAllToolStripMenuItem});
 			this.watchesToolStripMenuItem.Name = "watchesToolStripMenuItem";
 			this.watchesToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.watchesToolStripMenuItem.Text = "&Watches";
@@ -267,7 +269,7 @@
 			// 
 			this.newWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.newWatchToolStripMenuItem.Name = "newWatchToolStripMenuItem";
-			this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.newWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.newWatchToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.newWatchToolStripMenuItem.Text = "&New Watch";
 			this.newWatchToolStripMenuItem.Click += new System.EventHandler(this.newWatchToolStripMenuItem_Click);
@@ -794,6 +796,14 @@
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
 			// 
+			// selectAllToolStripMenuItem
+			// 
+			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+			this.selectAllToolStripMenuItem.Text = "Select &All";
+			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AllowDrop = true;
@@ -902,5 +912,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.Label MemDomainLabel;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }

@@ -552,6 +552,7 @@
 			// 
 			this.undoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
 			this.undoToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click_1);

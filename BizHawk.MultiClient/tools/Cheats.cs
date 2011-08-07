@@ -973,5 +973,11 @@ namespace BizHawk.MultiClient
 				RemoveCheat();
 			}
 		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+				CheatListView.SelectItem(x, true);
+		}
 	}
 }

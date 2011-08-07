@@ -97,6 +97,7 @@
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.disableAllCheatsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CheatsMenu.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.AddCheatGroup.SuspendLayout();
@@ -226,6 +227,7 @@
             this.toolStripSeparator3,
             this.moveUpToolStripMenuItem,
             this.moveDownToolStripMenuItem,
+            this.selectAllToolStripMenuItem,
             this.toolStripSeparator6,
             this.disableAllCheatsToolStripMenuItem});
 			this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
@@ -722,6 +724,14 @@
 			this.disableAllCheatsToolStripMenuItem1.Text = "Disable All Cheats";
 			this.disableAllCheatsToolStripMenuItem1.Click += new System.EventHandler(this.disableAllCheatsToolStripMenuItem1_Click);
 			// 
+			// selectAllToolStripMenuItem
+			// 
+			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
+			this.selectAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.selectAllToolStripMenuItem.Text = "Select &All";
+			this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
+			// 
 			// Cheats
 			// 
 			this.AllowDrop = true;
@@ -822,5 +832,6 @@
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadDialogToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveCheatsOnCloseToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
     }
 }
