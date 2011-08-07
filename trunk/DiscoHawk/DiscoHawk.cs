@@ -17,6 +17,7 @@ namespace BizHawk
 {
 	class DiscoHawk
 	{
+		[STAThread]
 		static void Main(string[] args)
 		{
 			new DiscoHawk().Run(args);
@@ -24,6 +25,19 @@ namespace BizHawk
 
 		void Run(string[] args)
 		{
+			bool gui = false;
+			foreach (var arg in args)
+			{
+				if (arg.ToUpper() == "GUI") gui = true;
+			}
+
+			if (gui)
+			{
+				var dialog = new DiscoHawkDialog();
+				dialog.ShowDialog();
+			}
+
+			return;
 			//string exedir = BizHawk.MultiClient.PathManager.GetExeDirectoryAbsolute();
 			//ffMpeg.Converter._ffExe = Path.Combine(exedir, "ffmpeg.exe");
 
@@ -46,7 +60,6 @@ namespace BizHawk
 			//prefs.ReallyDumpBin = true;
 			//prefs.AnnotateCue = false;
 			//prefs.OneBinPerTrack = true;
-			//prefs.PreferPregapCommand = false;
 			//munged = disc.DumpCueBin("test", prefs);
 			//munged.Dump("d:\\test", prefs);
 			//File.WriteAllText("d:\\test\\redump.txt", munged.CreateRedumpReport());
@@ -55,7 +68,6 @@ namespace BizHawk
 			//disc = Disc.Disc.FromCuePath("d:\\test\\test.cue");
 			//prefs.ReallyDumpBin = false;
 			//prefs.OneBinPerTrack = false;
-			//prefs.PreferPregapCommand = true;
 			//munged = disc.DumpCueBin("one", prefs);
 			//munged.Dump("d:\\test", prefs);
 
@@ -82,6 +94,18 @@ namespace BizHawk
 			//    }
 			//}
 
+			//notes: daemon tools does not like INDEX 00 00:00:00 / INDEX 01 00:00:00 in track 1 (audio track)
+			//obviously, this is because the lead-in is supposed to be specified. we need to write that out
+			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath("D:\\discs\\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\\Bomberman '94 Taikenban (SCD)(JPN).cue");
+			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath("D:\\discs\\Syd Mead's Terra Forming [U][CD.SCD][TGXCD1040][Syd Mead][1993][PCE][rigg].cue");
+			//var prefs = new DiscSystem.CueBinPrefs();
+			//prefs.AnnotateCue = false;
+			//prefs.OneBlobPerTrack = true;
+			//prefs.ReallyDumpBin = true;
+			//prefs.OmitRedundantIndex0 = true;
+			//prefs.SingleSession = true;
+			//var cueBin = disc.DumpCueBin("testroundtrip", prefs);
+			//cueBin.Dump("d:\\", prefs);
 		}
 	}
 

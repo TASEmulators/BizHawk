@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -6,6 +7,8 @@ using System.Collections.Generic;
 
 //http://www.pctechguide.com/iso-9660-data-format-for-cds-cd-roms-cd-rs-and-cd-rws
 //http://linux.die.net/man/1/cue2toc
+
+//http://cdemu.sourceforge.net/project.php#sf
 
 //apparently cdrdao is the ultimate linux tool for doing this stuff but it doesnt support DAO96 (or other DAO modes) that would be necessary to extract P-Q subchannels
 //(cdrdao only supports R-W)
@@ -312,7 +315,7 @@ namespace BizHawk.DiscSystem
 			ret.baseName = baseName;
 			ret.disc = this;
 
-			if (!prefs.OneBinPerTrack)
+			if (!prefs.OneBlobPerTrack)
 			{
 				//this is the preferred mode of dumping things. we will always write full sectors.
 				string cue = TOC.GenerateCUE_OneBin(prefs);
@@ -418,9 +421,9 @@ namespace BizHawk.DiscSystem
 	public class CueBinPrefs
 	{
 		/// <summary>
-		/// Controls general operations: should the output be split into several bins, or just use one?
+		/// Controls general operations: should the output be split into several blobs, or just use one?
 		/// </summary>
-		public bool OneBinPerTrack;
+		public bool OneBlobPerTrack;
 
 		/// <summary>
 		/// NOT SUPPORTED YET (just here as a reminder) If choosing OneBinPerTrack, you may wish to write wave files for audio tracks.
@@ -523,8 +526,22 @@ namespace BizHawk.DiscSystem
 
 		public void Dump(string directory, CueBinPrefs prefs)
 		{
+			ProgressReport pr = new ProgressReport();
+			Dump(directory, prefs, pr);
+		}
+
+		public void Dump(string directory, CueBinPrefs prefs, ProgressReport progress)
+		{
+			progress.TaskCount = 2;
+
+			progress.Message = "Generating Cue";
 			string cuePath = Path.Combine(directory, baseName + ".cue");
 			File.WriteAllText(cuePath, cue);
+
+			progress.Message = "Writing bin(s)";
+			progress.TaskCurrent = 1;
+			progress.ProgressEstimate = bins.Sum((bfd) => bfd.lbas.Count);
+			progress.ProgressCurrent = 0;
 			if(prefs.ReallyDumpBin)
 				foreach (var bfd in bins)
 				{
@@ -537,6 +554,9 @@ namespace BizHawk.DiscSystem
 					{
 						for(int i=0;i<bfd.lbas.Count;i++)
 						{
+							if (progress.CancelSignal) return;
+
+							progress.ProgressCurrent++;
 							int lba = bfd.lbas[i];
 							if (bfd.lba_zeros[i])
 							{

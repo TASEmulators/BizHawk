@@ -42,7 +42,7 @@ namespace BizHawk.DiscSystem
 
 		public string GenerateCUE_OneBin(CueBinPrefs prefs)
 		{
-			if (prefs.OneBinPerTrack) throw new InvalidOperationException("OneBinPerTrack passed to GenerateCUE_OneBin");
+			if (prefs.OneBlobPerTrack) throw new InvalidOperationException("OneBinPerTrack passed to GenerateCUE_OneBin");
 
 			//this generates a single-file cue!!!!!!! dont expect it to generate bin-per-track!
 			StringBuilder sb = new StringBuilder();
@@ -94,6 +94,12 @@ namespace BizHawk.DiscSystem
 
 		public List<Session> Sessions = new List<Session>();
 		public int length_lba;
+		public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
+
+		public long BinarySize
+		{
+			get { return length_lba*2352; }
+		}
 
 		public void AnalyzeLengthsFromIndexLengths()
 		{
