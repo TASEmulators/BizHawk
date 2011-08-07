@@ -63,6 +63,7 @@
 			this.label11 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
+			this.lblMagicDragArea = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -416,11 +417,24 @@
 			this.label13.Text = "Wouldnt it be cool if you could edit the disc by deleting and moving and adding t" +
 				"racks and such .. yeahhhhhh";
 			// 
+			// lblMagicDragArea
+			// 
+			this.lblMagicDragArea.AllowDrop = true;
+			this.lblMagicDragArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.lblMagicDragArea.Location = new System.Drawing.Point(665, 384);
+			this.lblMagicDragArea.Name = "lblMagicDragArea";
+			this.lblMagicDragArea.Size = new System.Drawing.Size(147, 70);
+			this.lblMagicDragArea.TabIndex = 21;
+			this.lblMagicDragArea.Text = "Drag a cue into the DRAG HERE FOR MAGIC area for magic";
+			this.lblMagicDragArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.handleDragDrop);
+			this.lblMagicDragArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.handleDragEnter);
+			// 
 			// DiscoHawkDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1151, 645);
+			this.Controls.Add(this.lblMagicDragArea);
 			this.Controls.Add(this.label13);
 			this.Controls.Add(this.label12);
 			this.Controls.Add(this.label11);
@@ -490,5 +504,6 @@
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label lblMagicDragArea;
 	}
 }

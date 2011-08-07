@@ -114,7 +114,7 @@ namespace BizHawk
 		}
 		void PresetCanonical()
 		{
-			checkCueProp_Annotations.Checked = true;
+			checkCueProp_Annotations.Checked = false;
 			checkCueProp_OmitRedundantIndex0.Checked = false;
 			checkCueProp_OneBlobPerTrack.Checked = false;
 		}
@@ -134,22 +134,65 @@ namespace BizHawk
 			UpdateCue();
 		}
 
-		private void btnExportCue_Click(object sender, EventArgs e)
+		private void Form1_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
 		{
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.Filter = "CUE files (*.cue)|*.cue";
-			sfd.OverwritePrompt = true;
-			if (sfd.ShowDialog() != DialogResult.OK)
-				return;
-			string baseName = Path.GetFileNameWithoutExtension(sfd.FileName);
-			var prefs = GetCuePrefs();
-			prefs.ReallyDumpBin = true;
-			var cueBin = boundDisc.DumpCueBin(baseName, prefs);
+			e.Action = DragAction.Continue;
+		}
 
+		private void handleDragEnter(object sender, DragEventArgs e)
+		{
+			List<string> files = validateDrop(e.Data);
+			if (files.Count > 0)
+				e.Effect = DragDropEffects.Link;
+			else e.Effect = DragDropEffects.None;
+		}
+
+		private void handleDragDrop(object sender, DragEventArgs e)
+		{
+			List<string> files = validateDrop(e.Data);
+			if (files.Count == 0) return;
+			try
+			{
+				foreach (var file in files)
+				{
+					Disc disc = Disc.FromCuePath(file);
+					string baseName = Path.GetFileNameWithoutExtension(file);
+					baseName += "_hawked";
+					var prefs = GetCuePrefs();
+					prefs.ReallyDumpBin = true;
+					var cueBin = disc.DumpCueBin(baseName, GetCuePrefs());
+					Dump(cueBin, Path.GetDirectoryName(file), prefs);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString(), "oops! error");
+				throw;
+			}
+		}
+
+		List<string> validateDrop(IDataObject ido)
+		{
+			List<string> ret = new List<string>();
+			string[] files = (string[])ido.GetData(System.Windows.Forms.DataFormats.FileDrop);
+			if (files == null) return new List<string>();
+			foreach (string str in files)
+			{
+				if (Path.GetExtension(str).ToUpper() != ".CUE")
+				{
+					return new List<string>();
+				}
+				ret.Add(str);
+			}
+			return ret;
+		}
+
+		bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
+		{
 			ProgressReport pr = new ProgressReport();
 			Thread workThread = new Thread(() =>
 			{
-				cueBin.Dump(Path.GetDirectoryName(sfd.FileName), prefs, pr);
+				cueBin.Dump(directoryTo, prefs, pr);
 			});
 
 			ProgressDialog pd = new ProgressDialog(pr);
@@ -165,7 +208,23 @@ namespace BizHawk
 				pd.Update();
 			}
 			this.Enabled = true;
- 			pd.Dispose();
+			pd.Dispose();
+			return !pr.CancelSignal;
+		}
+
+		private void btnExportCue_Click(object sender, EventArgs e)
+		{
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.Filter = "CUE files (*.cue)|*.cue";
+			sfd.OverwritePrompt = true;
+			if (sfd.ShowDialog() != DialogResult.OK)
+				return;
+			string baseName = Path.GetFileNameWithoutExtension(sfd.FileName);
+			var prefs = GetCuePrefs();
+			prefs.ReallyDumpBin = true;
+			var cueBin = boundDisc.DumpCueBin(baseName, prefs);
+
+			Dump(cueBin, Path.GetDirectoryName(sfd.FileName), prefs);
 		}
 
 	}
