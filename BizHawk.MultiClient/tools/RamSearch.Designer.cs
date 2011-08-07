@@ -91,7 +91,6 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
 			this.toolStrip1 = new ToolStripEx();
 			this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -100,7 +99,6 @@
 			this.SetCurrToPrevtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip2 = new ToolStripEx();
 			this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
 			this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -136,11 +134,11 @@
 			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.OutputLabel = new System.Windows.Forms.Label();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
-			this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
-			this.toolStripContainer1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.toolStrip2.SuspendLayout();
 			this.CompareToBox.SuspendLayout();
@@ -159,12 +157,14 @@
             this.TruncateFromFiletoolStripButton2,
             this.ExcludeRamWatchtoolStripButton2,
             this.toolStripSeparator8,
+            this.WatchtoolStripButton1,
             this.PoketoolStripButton1,
             this.FreezeAddressToolStrip});
-			this.SearchtoolStrip1.Location = new System.Drawing.Point(3, 25);
+			this.SearchtoolStrip1.Location = new System.Drawing.Point(249, 58);
 			this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-			this.SearchtoolStrip1.Size = new System.Drawing.Size(183, 25);
-			this.SearchtoolStrip1.TabIndex = 0;
+			this.SearchtoolStrip1.Size = new System.Drawing.Size(206, 25);
+			this.SearchtoolStrip1.TabIndex = 7;
+			this.SearchtoolStrip1.TabStop = true;
 			this.SearchtoolStrip1.Text = "Search";
 			// 
 			// openToolStripButton
@@ -279,7 +279,7 @@
 			this.SearchListView.Location = new System.Drawing.Point(9, 58);
 			this.SearchListView.Name = "SearchListView";
 			this.SearchListView.selectedItem = -1;
-			this.SearchListView.Size = new System.Drawing.Size(223, 365);
+			this.SearchListView.Size = new System.Drawing.Size(221, 363);
 			this.SearchListView.TabIndex = 3;
 			this.SearchListView.UseCompatibleStateImageBehavior = false;
 			this.SearchListView.View = System.Windows.Forms.View.Details;
@@ -389,7 +389,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(472, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 24);
 			this.menuStrip1.TabIndex = 4;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -582,6 +582,7 @@
 			// 
 			// exludeRamWatchListToolStripMenuItem
 			// 
+			this.exludeRamWatchListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
 			this.exludeRamWatchListToolStripMenuItem.Name = "exludeRamWatchListToolStripMenuItem";
 			this.exludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.exludeRamWatchListToolStripMenuItem.Text = "Exlude Ram Watch List";
@@ -604,14 +605,16 @@
 			// 
 			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
+			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
 			this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
 			// 
 			// freezeAddressToolStripMenuItem
 			// 
-			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
+			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
 			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
@@ -689,43 +692,23 @@
 			this.alwaysExludeRamSearchListToolStripMenuItem.Text = "Always Exlude Ram Search List";
 			this.alwaysExludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExludeRamSearchListToolStripMenuItem_Click);
 			// 
-			// toolStripContainer1
-			// 
-			this.toolStripContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			// 
-			// toolStripContainer1.ContentPanel
-			// 
-			this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(211, 2);
-			this.toolStripContainer1.Location = new System.Drawing.Point(250, 33);
-			this.toolStripContainer1.Name = "toolStripContainer1";
-			this.toolStripContainer1.Size = new System.Drawing.Size(211, 77);
-			this.toolStripContainer1.TabIndex = 5;
-			this.toolStripContainer1.Text = "toolStripContainer1";
-			// 
-			// toolStripContainer1.TopToolStripPanel
-			// 
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip1);
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.SearchtoolStrip1);
-			this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.toolStrip2);
-			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NewSearchtoolStripButton,
-            this.toolStripSeparator6,
             this.toolStripButton1,
             this.toolStripSeparator7,
+            this.NewSearchtoolStripButton,
+            this.toolStripSeparator6,
             this.SetCurrToPrevtoolStripButton2,
             this.ClearChangeCountstoolStripButton,
-            this.UndotoolStripButton,
-            this.WatchtoolStripButton1});
-			this.toolStrip1.Location = new System.Drawing.Point(3, 0);
+            this.UndotoolStripButton});
+			this.toolStrip1.Location = new System.Drawing.Point(248, 33);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(160, 25);
-			this.toolStrip1.TabIndex = 1;
+			this.toolStrip1.Size = new System.Drawing.Size(174, 25);
+			this.toolStrip1.TabIndex = 5;
+			this.toolStrip1.TabStop = true;
 			// 
 			// NewSearchtoolStripButton
 			// 
@@ -744,11 +727,10 @@
 			// 
 			// toolStripButton1
 			// 
-			this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
 			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton1.Size = new System.Drawing.Size(60, 22);
 			this.toolStripButton1.Text = "Search";
 			this.toolStripButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolStripButton1_MouseDown);
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
@@ -761,7 +743,7 @@
 			// SetCurrToPrevtoolStripButton2
 			// 
 			this.SetCurrToPrevtoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.SetCurrToPrevtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh;
+			this.SetCurrToPrevtoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.SetCurrToPrevtoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SetCurrToPrevtoolStripButton2.Name = "SetCurrToPrevtoolStripButton2";
 			this.SetCurrToPrevtoolStripButton2.Size = new System.Drawing.Size(23, 22);
@@ -790,16 +772,6 @@
 			this.UndotoolStripButton.Text = "Undo Search";
 			this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click_1);
 			// 
-			// WatchtoolStripButton1
-			// 
-			this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
-			this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
-			this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.WatchtoolStripButton1.Text = "Watch";
-			this.WatchtoolStripButton1.Click += new System.EventHandler(this.WatchtoolStripButton1_Click);
-			// 
 			// toolStrip2
 			// 
 			this.toolStrip2.ClickThrough = true;
@@ -808,10 +780,11 @@
             this.DataSizetoolStripSplitButton1,
             this.DataTypetoolStripSplitButton1,
             this.EndiantoolSplitButton});
-			this.toolStrip2.Location = new System.Drawing.Point(3, 50);
+			this.toolStrip2.Location = new System.Drawing.Point(249, 83);
 			this.toolStrip2.Name = "toolStrip2";
 			this.toolStrip2.Size = new System.Drawing.Size(206, 25);
-			this.toolStrip2.TabIndex = 2;
+			this.toolStrip2.TabIndex = 10;
+			this.toolStrip2.TabStop = true;
 			// 
 			// DataSizetoolStripSplitButton1
 			// 
@@ -938,7 +911,7 @@
 			this.CompareToBox.Controls.Add(this.SpecificAddressRadio);
 			this.CompareToBox.Controls.Add(this.SpecificValueRadio);
 			this.CompareToBox.Controls.Add(this.PreviousValueRadio);
-			this.CompareToBox.Location = new System.Drawing.Point(250, 116);
+			this.CompareToBox.Location = new System.Drawing.Point(248, 114);
 			this.CompareToBox.Name = "CompareToBox";
 			this.CompareToBox.Size = new System.Drawing.Size(211, 111);
 			this.CompareToBox.TabIndex = 0;
@@ -961,7 +934,7 @@
 			this.NumberOfChangesBox.MaxLength = 8;
 			this.NumberOfChangesBox.Name = "NumberOfChangesBox";
 			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
-			this.NumberOfChangesBox.TabIndex = 6;
+			this.NumberOfChangesBox.TabIndex = 28;
 			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.NumberOfChangesBox_TextChanged);
 			this.NumberOfChangesBox.Leave += new System.EventHandler(this.NumberOfChangesBox_Leave);
 			this.NumberOfChangesBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberOfChangesBox_KeyPress);
@@ -974,7 +947,7 @@
 			this.SpecificAddressBox.MaxLength = 8;
 			this.SpecificAddressBox.Name = "SpecificAddressBox";
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificAddressBox.TabIndex = 5;
+			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.SpecificAddressBox_TextChanged);
 			this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
 			this.SpecificAddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificAddressBox_KeyPress);
@@ -986,7 +959,7 @@
 			this.SpecificValueBox.MaxLength = 9;
 			this.SpecificValueBox.Name = "SpecificValueBox";
 			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
-			this.SpecificValueBox.TabIndex = 4;
+			this.SpecificValueBox.TabIndex = 24;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.SpecificValueBox_TextChanged);
 			this.SpecificValueBox.Leave += new System.EventHandler(this.SpecificValueBox_Leave);
 			this.SpecificValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificValueBox_KeyPress);
@@ -1019,7 +992,7 @@
 			this.SpecificValueRadio.Location = new System.Drawing.Point(7, 41);
 			this.SpecificValueRadio.Name = "SpecificValueRadio";
 			this.SpecificValueRadio.Size = new System.Drawing.Size(96, 17);
-			this.SpecificValueRadio.TabIndex = 1;
+			this.SpecificValueRadio.TabIndex = 22;
 			this.SpecificValueRadio.Text = "Specific Value:";
 			this.SpecificValueRadio.UseVisualStyleBackColor = true;
 			this.SpecificValueRadio.CheckedChanged += new System.EventHandler(this.SpecificValueRadio_CheckedChanged);
@@ -1031,7 +1004,7 @@
 			this.PreviousValueRadio.Location = new System.Drawing.Point(7, 20);
 			this.PreviousValueRadio.Name = "PreviousValueRadio";
 			this.PreviousValueRadio.Size = new System.Drawing.Size(96, 17);
-			this.PreviousValueRadio.TabIndex = 0;
+			this.PreviousValueRadio.TabIndex = 20;
 			this.PreviousValueRadio.TabStop = true;
 			this.PreviousValueRadio.Text = "Previous Value";
 			this.PreviousValueRadio.UseVisualStyleBackColor = true;
@@ -1048,7 +1021,7 @@
 			this.ComparisonBox.Controls.Add(this.LessThanOrEqualToRadio);
 			this.ComparisonBox.Controls.Add(this.GreaterThanRadio);
 			this.ComparisonBox.Controls.Add(this.LessThanRadio);
-			this.ComparisonBox.Location = new System.Drawing.Point(250, 233);
+			this.ComparisonBox.Location = new System.Drawing.Point(248, 231);
 			this.ComparisonBox.Name = "ComparisonBox";
 			this.ComparisonBox.Size = new System.Drawing.Size(211, 159);
 			this.ComparisonBox.TabIndex = 6;
@@ -1062,7 +1035,7 @@
 			this.DifferentByBox.MaxLength = 9;
 			this.DifferentByBox.Name = "DifferentByBox";
 			this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
-			this.DifferentByBox.TabIndex = 9;
+			this.DifferentByBox.TabIndex = 34;
 			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
 			this.DifferentByBox.Leave += new System.EventHandler(this.DifferentByBox_Leave);
 			this.DifferentByBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DifferentByBox_KeyPress);
@@ -1096,7 +1069,7 @@
 			this.EqualToRadio.Location = new System.Drawing.Point(7, 15);
 			this.EqualToRadio.Name = "EqualToRadio";
 			this.EqualToRadio.Size = new System.Drawing.Size(68, 17);
-			this.EqualToRadio.TabIndex = 4;
+			this.EqualToRadio.TabIndex = 32;
 			this.EqualToRadio.TabStop = true;
 			this.EqualToRadio.Text = "Equal To";
 			this.EqualToRadio.UseVisualStyleBackColor = true;
@@ -1151,11 +1124,13 @@
 			this.AutoSearchCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoSearchCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
 			this.AutoSearchCheckBox.AutoSize = true;
-			this.AutoSearchCheckBox.Location = new System.Drawing.Point(250, 400);
+			this.AutoSearchCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.AutoSearch;
+			this.AutoSearchCheckBox.Location = new System.Drawing.Point(248, 399);
 			this.AutoSearchCheckBox.Name = "AutoSearchCheckBox";
-			this.AutoSearchCheckBox.Size = new System.Drawing.Size(76, 23);
-			this.AutoSearchCheckBox.TabIndex = 7;
-			this.AutoSearchCheckBox.Text = "Auto Search";
+			this.AutoSearchCheckBox.Size = new System.Drawing.Size(38, 22);
+			this.AutoSearchCheckBox.TabIndex = 36;
+			this.AutoSearchCheckBox.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.toolTip1.SetToolTip(this.AutoSearchCheckBox, "Automatically search each frame");
 			this.AutoSearchCheckBox.UseVisualStyleBackColor = true;
 			this.AutoSearchCheckBox.CheckedChanged += new System.EventHandler(this.AutoSearchCheckBox_CheckedChanged);
 			// 
@@ -1172,24 +1147,35 @@
 			// 
 			this.OutputLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.OutputLabel.AutoSize = true;
-			this.OutputLabel.Location = new System.Drawing.Point(9, 436);
+			this.OutputLabel.Location = new System.Drawing.Point(9, 434);
 			this.OutputLabel.Name = "OutputLabel";
 			this.OutputLabel.Size = new System.Drawing.Size(85, 13);
 			this.OutputLabel.TabIndex = 9;
 			this.OutputLabel.Text = "                          ";
+			// 
+			// WatchtoolStripButton1
+			// 
+			this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
+			this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
+			this.WatchtoolStripButton1.Text = "Watch";
 			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(472, 461);
+			this.ClientSize = new System.Drawing.Size(470, 459);
+			this.Controls.Add(this.toolStrip2);
+			this.Controls.Add(this.SearchtoolStrip1);
+			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.OutputLabel);
 			this.Controls.Add(this.MemDomainLabel);
-			this.Controls.Add(this.AutoSearchCheckBox);
 			this.Controls.Add(this.ComparisonBox);
+			this.Controls.Add(this.AutoSearchCheckBox);
 			this.Controls.Add(this.CompareToBox);
-			this.Controls.Add(this.toolStripContainer1);
 			this.Controls.Add(this.SearchListView);
 			this.Controls.Add(this.TotalSearchLabel);
 			this.Controls.Add(this.menuStrip1);
@@ -1205,10 +1191,6 @@
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.toolStripContainer1.TopToolStripPanel.ResumeLayout(false);
-			this.toolStripContainer1.TopToolStripPanel.PerformLayout();
-			this.toolStripContainer1.ResumeLayout(false);
-			this.toolStripContainer1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.toolStrip2.ResumeLayout(false);
@@ -1235,8 +1217,7 @@
         private System.Windows.Forms.ColumnHeader Value;
         private System.Windows.Forms.ColumnHeader Previous;
 		private System.Windows.Forms.ColumnHeader Changes;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton NewSearchtoolStripButton;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
         private System.Windows.Forms.ToolStripButton ClearChangeCountstoolStripButton;
@@ -1319,8 +1300,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem memoryDomainsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton FreezeAddressToolStrip;
-        private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
+		private System.Windows.Forms.ToolStripButton FreezeAddressToolStrip;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem removeSelectedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
@@ -1330,5 +1310,7 @@
 		private MenuStripEx menuStrip1;
 		private ToolStripEx toolStrip1;
 		private ToolStripEx toolStrip2;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
     }
 }
