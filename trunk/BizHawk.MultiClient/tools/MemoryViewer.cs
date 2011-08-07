@@ -32,6 +32,10 @@ namespace BizHawk.MultiClient
 		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
 		int maxRow = 0;
 
+		const int rowX = 8;
+		const int rowY = 16;
+		const int rowYoffset = 20;
+
 		public MemoryViewer()
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -145,22 +149,21 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		int row = 0;
+		int addr = 0;
+
 		private void Display(Graphics g)
 		{
 			unchecked
 			{
-				int row = 0;
-				int rowX = 8;
-				int rowY = 16;
-				int rowYoffset = 20;
+				Pen p = new Pen(regBrush);
+				row = 0;
+				addr = 0;
 
-
-				StringBuilder rowStr = new StringBuilder();
-				
-				int addr = 0;
+				string rowStr = "";
 				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
-				g.DrawLine(new Pen(regBrush), this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
-				g.DrawLine(new Pen(regBrush), this.Left, 34, this.Right - 16, 34);
+				g.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
+				g.DrawLine(p, this.Left, 34, this.Right - 16, 34);
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
@@ -174,7 +177,7 @@ namespace BizHawk.MultiClient
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
-					rowStr.Append(String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ");
+					rowStr = String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ";
 					switch (DataSize)
 					{
 						default:
@@ -184,7 +187,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X2}", Domain.PeekByte(addr)) + " ");
+									rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " ";
 							}
 							break;
 						case 2:
@@ -193,7 +196,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ");
+									rowStr += String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ";
 							}
 							break;
 						case 4:
@@ -202,7 +205,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ");
+									rowStr += String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ";
 							}
 							break;
 
@@ -210,7 +213,7 @@ namespace BizHawk.MultiClient
 					g.DrawString(Domain.Name, font, regBrush, new Point(1, 1));
 					g.DrawString(Header, font, regBrush, new Point(rowX + addrOffset, rowY));
 					if (row * 16 < Domain.Size)
-						g.DrawString(rowStr.ToString(), font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
+						g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
 				}
 			}
 		}
@@ -392,12 +395,15 @@ namespace BizHawk.MultiClient
 
 		public bool IsVisible(int addr)
 		{
-			int row = addr / 16;
+			unchecked
+			{
+				int row = addr >> 5;
 
-			if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
-				return true;
-			else
-				return false;
+				if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
+					return true;
+				else
+					return false;
+			}
 		}
 
 		public void PokeHighlighted(int value)
