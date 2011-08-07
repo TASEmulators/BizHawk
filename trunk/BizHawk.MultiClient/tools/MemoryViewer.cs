@@ -176,7 +176,6 @@ namespace BizHawk.MultiClient
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			return;
 			unchecked
 			{
 				Pen p = new Pen(Brushes.Black);
