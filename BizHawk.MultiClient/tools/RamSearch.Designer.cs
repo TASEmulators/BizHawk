@@ -291,6 +291,7 @@
 			this.SearchListView.QueryItemIndent += new BizHawk.QueryItemIndentHandler(this.SearchListView_QueryItemIndent);
 			this.SearchListView.QueryItemImage += new BizHawk.QueryItemImageHandler(this.SearchListView_QueryItemImage);
 			this.SearchListView.QueryItemText += new BizHawk.QueryItemTextHandler(this.SearchListView_QueryItemText);
+			this.SearchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchListView_KeyUp);
 			// 
 			// Address
 			// 
