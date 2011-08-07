@@ -233,6 +233,7 @@ namespace BizHawk.MultiClient
 			else
 			{
 				LoadCheatFile(CheatFile, false);
+				Global.MainForm.UpdateCheatStatus();
 				return true;
 			}
 		}
@@ -241,17 +242,20 @@ namespace BizHawk.MultiClient
 		{
 			cheatList.Clear();
 			MemoryPulse.Clear();
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void Remove(Cheat c)
 		{
 			MemoryPulse.Remove(c.domain, c.address);
 			cheatList.Remove(c);
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public void Add(Cheat c)
 		{
 			cheatList.Add(c);
+			Global.MainForm.UpdateCheatStatus();
 		}
 
 		public Cheat Cheat(int index)
@@ -262,6 +266,15 @@ namespace BizHawk.MultiClient
 		public void Insert(int index, Cheat item)
 		{
 			cheatList.Insert(index, item);
+			Global.MainForm.UpdateCheatStatus();
+		}
+
+		public bool HasActiveCheat()
+		{
+			for (int x = 0; x < cheatList.Count; x++)
+				if (cheatList[x].IsEnabled())
+					return true;
+			return false;
 		}
 	}
 }

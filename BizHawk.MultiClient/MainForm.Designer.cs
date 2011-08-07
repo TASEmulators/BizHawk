@@ -209,6 +209,7 @@
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatus = new System.Windows.Forms.ToolStripDropDownButton();
 			this.PauseStrip = new System.Windows.Forms.ToolStripDropDownButton();
+			this.FreezeStatus = new System.Windows.Forms.ToolStripMenuItem();
 			this.AVIStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -221,6 +222,7 @@
 			this.StatusSlot8 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot9 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusSlot10 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.CheatStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openRomToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadLastROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1447,20 +1449,20 @@
 			// 
 			this.toolBoxToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.ToolBox;
 			this.toolBoxToolStripMenuItem.Name = "toolBoxToolStripMenuItem";
-			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.toolBoxToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.toolBoxToolStripMenuItem.Text = "&Tool Box";
 			this.toolBoxToolStripMenuItem.Click += new System.EventHandler(this.toolBoxToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(140, 6);
 			// 
 			// rAMWatchToolStripMenuItem
 			// 
 			this.rAMWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.rAMWatchToolStripMenuItem.Name = "rAMWatchToolStripMenuItem";
-			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMWatchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMWatchToolStripMenuItem.Text = "RAM &Watch";
 			this.rAMWatchToolStripMenuItem.Click += new System.EventHandler(this.RAMWatchToolStripMenuItem_Click);
 			// 
@@ -1468,7 +1470,7 @@
 			// 
 			this.rAMSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.rAMSearchToolStripMenuItem.Name = "rAMSearchToolStripMenuItem";
-			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMSearchToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMSearchToolStripMenuItem.Text = "RAM &Search";
 			this.rAMSearchToolStripMenuItem.Click += new System.EventHandler(this.rAMSearchToolStripMenuItem_Click);
 			// 
@@ -1476,7 +1478,7 @@
 			// 
 			this.rAMPokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.rAMPokeToolStripMenuItem.Name = "rAMPokeToolStripMenuItem";
-			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.rAMPokeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.rAMPokeToolStripMenuItem.Text = "RAM &Poke";
 			this.rAMPokeToolStripMenuItem.Click += new System.EventHandler(this.RAMPokeToolStripMenuItem_Click);
 			// 
@@ -1484,7 +1486,7 @@
 			// 
 			this.hexEditorToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.hexEditorToolStripMenuItem.Name = "hexEditorToolStripMenuItem";
-			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.hexEditorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.hexEditorToolStripMenuItem.Text = "&Hex Editor";
 			this.hexEditorToolStripMenuItem.Click += new System.EventHandler(this.hexEditorToolStripMenuItem_Click);
 			// 
@@ -1492,20 +1494,20 @@
 			// 
 			this.tAStudioToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
 			this.tAStudioToolStripMenuItem.Name = "tAStudioToolStripMenuItem";
-			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.tAStudioToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.tAStudioToolStripMenuItem.Text = "&TAStudio";
 			this.tAStudioToolStripMenuItem.Click += new System.EventHandler(this.tAStudioToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(140, 6);
 			// 
 			// luaConsoleToolStripMenuItem
 			// 
 			this.luaConsoleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lua;
 			this.luaConsoleToolStripMenuItem.Name = "luaConsoleToolStripMenuItem";
-			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.luaConsoleToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.luaConsoleToolStripMenuItem.Text = "Lua Console";
 			this.luaConsoleToolStripMenuItem.Click += new System.EventHandler(this.luaConsoleToolStripMenuItem_Click);
 			// 
@@ -1513,7 +1515,7 @@
 			// 
 			this.cheatsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.cheatsToolStripMenuItem.Name = "cheatsToolStripMenuItem";
-			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.cheatsToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.cheatsToolStripMenuItem.Text = "Cheats";
 			this.cheatsToolStripMenuItem.Click += new System.EventHandler(this.cheatsToolStripMenuItem_Click);
 			// 
@@ -1650,6 +1652,7 @@
             this.EmuStatus,
             this.PlayRecordStatus,
             this.PauseStrip,
+            this.FreezeStatus,
             this.AVIStatusLabel,
             this.toolStripStatusLabel1,
             this.StatusSlot1,
@@ -1661,7 +1664,8 @@
             this.StatusSlot7,
             this.StatusSlot8,
             this.StatusSlot9,
-            this.StatusSlot10});
+            this.StatusSlot10,
+            this.CheatStatus});
 			this.StatusSlot0.Location = new System.Drawing.Point(0, 386);
 			this.StatusSlot0.Name = "StatusSlot0";
 			this.StatusSlot0.ShowItemToolTips = true;
@@ -1708,6 +1712,14 @@
 			this.PauseStrip.Text = "toolStripDropDownButton1";
 			this.PauseStrip.ToolTipText = "Emulator is paused";
 			this.PauseStrip.Click += new System.EventHandler(this.PauseStrip_Click);
+			// 
+			// FreezeStatus
+			// 
+			this.FreezeStatus.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FreezeStatus.Image = global::BizHawk.MultiClient.Properties.Resources.Blank;
+			this.FreezeStatus.Name = "FreezeStatus";
+			this.FreezeStatus.Size = new System.Drawing.Size(28, 22);
+			this.FreezeStatus.Click += new System.EventHandler(this.FreezeStatus_Click);
 			// 
 			// AVIStatusLabel
 			// 
@@ -1793,6 +1805,11 @@
 			this.StatusSlot10.Size = new System.Drawing.Size(13, 17);
 			this.StatusSlot10.Text = "0";
 			this.StatusSlot10.Click += new System.EventHandler(this.StatusSlot10_Click);
+			// 
+			// CheatStatus
+			// 
+			this.CheatStatus.Name = "CheatStatus";
+			this.CheatStatus.Size = new System.Drawing.Size(0, 17);
 			// 
 			// contextMenuStrip1
 			// 
@@ -2182,6 +2199,8 @@
 		private System.Windows.Forms.ToolStripStatusLabel AVIStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem restartMovieToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem backupSavestatesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel CheatStatus;
+		private System.Windows.Forms.ToolStripMenuItem FreezeStatus;
     }
 }
 

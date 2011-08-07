@@ -2233,5 +2233,24 @@ namespace BizHawk.MultiClient
 
 			StateSlots.ToggleRedo(SaveSlot);
 		}
+
+		private void FreezeStatus_Click(object sender, EventArgs e)
+		{
+			LoadCheatsWindow();
+		}
+
+		public void UpdateCheatStatus()
+		{
+			if (Global.CheatList.HasActiveCheat())
+			{
+				CheatStatus.ToolTipText = "Cheats are currently active";
+				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
+			}
+			else
+			{
+				CheatStatus.ToolTipText = "";
+				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			}
+		}
 	}
 }
