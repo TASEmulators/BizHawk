@@ -408,7 +408,7 @@ namespace BizHawk.MultiClient
 
 			if (result == true)
 			{
-				Global.CheatList.cheatList.Clear();
+				Global.CheatList.Clear();
 				DisplayCheatsList();
 				Global.CheatList.currentCheatFile = "";
 				Global.CheatList.changes = false;
@@ -810,6 +810,7 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
 				Global.CheatList.cheatList[x].Disable();
+			MemoryPulse.Clear();
 			CheatListView.Refresh();
 			UpdateNumberOfCheats();
 		}

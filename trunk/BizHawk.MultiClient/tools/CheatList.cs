@@ -28,7 +28,9 @@ namespace BizHawk.MultiClient
 				string temp = "";
 
 				if (append == false)
-					cheatList.Clear();  //Wipe existing list and read from file
+				{
+					Clear();	//Wipe existing list and read from file
+				}
 
 				while ((s = sr.ReadLine()) != null)
 				{
@@ -229,6 +231,12 @@ namespace BizHawk.MultiClient
 				LoadCheatFile(CheatFile, false);
 				return true;
 			}
+		}
+
+		public void Clear()
+		{
+			cheatList.Clear();
+			MemoryPulse.Clear();
 		}
 	}
 }
