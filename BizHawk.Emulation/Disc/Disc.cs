@@ -535,6 +535,9 @@ namespace BizHawk.DiscSystem
 			progress.TaskCount = 2;
 
 			progress.Message = "Generating Cue";
+			progress.ProgressEstimate = 1;
+			progress.ProgressCurrent = 0;
+			progress.InfoPresent = true;
 			string cuePath = Path.Combine(directory, baseName + ".cue");
 			File.WriteAllText(cuePath, cue);
 

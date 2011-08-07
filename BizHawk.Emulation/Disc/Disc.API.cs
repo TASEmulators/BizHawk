@@ -16,6 +16,7 @@ namespace BizHawk.DiscSystem
 	public class ProgressReport
 	{
 		public string Message;
+		public bool InfoPresent;
 		public double ProgressEstimate;
 		public double ProgressCurrent;
 		public int TaskCount;

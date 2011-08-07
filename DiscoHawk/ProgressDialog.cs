@@ -29,8 +29,14 @@ namespace BizHawk
 		{
 			double curr = pr.ProgressCurrent;
 			double max = pr.ProgressEstimate;
-			double value = curr / max * 100;
-			progressBar1.Value = (int)value;
+			if (pr.InfoPresent)
+			{
+				double value = curr/max*100;
+				int nValue = (int) value;
+				if (nValue < 0 || nValue > 100)
+					nValue = 0;
+				progressBar1.Value = nValue;
+			}
 			lblMessage.Text = pr.Message;
 		}
 	}
