@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using System.IO;
 
 namespace BizHawk.MultiClient
 {
@@ -361,7 +362,54 @@ namespace BizHawk.MultiClient
 
 		private void dumpToFileToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			SaveAs();
 		}
+
+		private void SaveAs()
+		{
+			var file = GetSaveFileFromUser();
+			if (file != null)
+			{
+				using (StreamWriter sw = new StreamWriter(file.FullName))
+				{
+					string str = "";
+
+					for (int x = 0; x < MemoryViewer.GetDomain().Size / 16; x++)
+					{
+						for (int y = 0; y < 16; y++)
+						{
+							str += String.Format("{0:X2} ", MemoryViewer.GetDomain().PeekByte((x * 16) + y));
+						}
+						str += "\r\n";
+					}
+
+					sw.WriteLine(str);
+				}
+			}
+		}
+
+		private FileInfo GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			
+			if (!(Global.Emulator is NullEmulator))
+				sfd.FileName = Global.Game.Name;
+			else
+				sfd.FileName = "MemoryDump";
+
+			
+				sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+			
+			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
+
 	}
 }

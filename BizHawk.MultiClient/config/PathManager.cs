@@ -87,6 +87,7 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseGenesis;
 				case "GB":
 					return Global.Config.BaseGameboy;
+				case "NULL":
 				default:
 					return "";
 			}
