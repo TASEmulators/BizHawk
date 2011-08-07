@@ -160,7 +160,10 @@ namespace BizHawk.DiscSystem
 						var toc_index = new DiscTOC.Index();
 						toc_index.num = index;
 						toc_track.Indexes.Add(toc_index);
-						if (index == 0) toc_index.lba = track_disc_pregap_lba;
+						if (index == 0)
+						{
+							toc_index.lba = track_disc_pregap_lba - (cue_track.Indexes[1].Timestamp.LBA - cue_track.Indexes[0].Timestamp.LBA);
+						}
 						else toc_index.lba = Sectors.Count; 
 
 						//calculate length of the index
@@ -231,7 +234,7 @@ namespace BizHawk.DiscSystem
 
 					//we're done with the track now.
 					//record its length:
-					toc_track.length_lba = Sectors.Count - track_disc_lba_start;
+					toc_track.length_lba = Sectors.Count - toc_track.Indexes[1].lba;
 					curr_track++;
 
 				} //track loop
@@ -249,7 +252,7 @@ namespace BizHawk.DiscSystem
 				//firstTrack.Indexes[0].lba -= 150;
 
 				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
-				session.length_lba = lastTrack.Indexes[0].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
+				session.length_lba = lastTrack.Indexes[1].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
 				TOC.length_lba += toc_session.length_lba;
 			}
 		}
@@ -506,6 +509,13 @@ namespace BizHawk.DiscSystem
 						if (track_has_pregap) throw new CueBrokenException("`Only one POSTGAP command is allowed per track.`");
 						track_has_postgap = true;
 						currTrack.PostGap = new CueTimestamp(clp.ReadToken());
+						break;
+					case "CATALOG":
+					case "PERFORMER":
+					case "SONGWRITER":
+					case "TITLE":
+					case "ISRC":
+						//TODO - keep these for later?
 						break;
 					default:
 						throw new CueBrokenException("unsupported cue command: " + key);
