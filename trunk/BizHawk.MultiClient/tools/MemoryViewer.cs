@@ -42,7 +42,6 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			this.BorderStyle = BorderStyle.Fixed3D;
-			this.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseMove);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseClick);
 			this.vScrollBar1 = new VScrollBar();
@@ -58,7 +57,7 @@ namespace BizHawk.MultiClient
 			this.vScrollBar1.TabIndex = 0;
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			this.Controls.Add(this.vScrollBar1);
-
+			
 			//Debugging control
 			this.info = new Label();
 			this.info.Text = "";
@@ -175,8 +174,9 @@ namespace BizHawk.MultiClient
 		int row = 0;
 		int addr = 0;
 
-		private void Display(Graphics g)
+		protected override void OnPaint(PaintEventArgs e)
 		{
+			return;
 			unchecked
 			{
 				Pen p = new Pen(Brushes.Black);
@@ -185,18 +185,17 @@ namespace BizHawk.MultiClient
 
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
-				g.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
-				g.DrawLine(p, this.Left, 34, this.Right - 16, 34);
+				e.Graphics.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
+				e.Graphics.DrawLine(p, this.Left, 34, this.Right - 16, 34);
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
 					int left = ((addressHighlighted % 16) * 20) + 52 + addrOffset - (addressHighlighted % 4);
 					int top = (((addressHighlighted / 16) - vScrollBar1.Value) * (font.Height - 1)) + 36;
 					Rectangle rect = new Rectangle(left, top, 16, 14);
-					g.DrawRectangle(new Pen(highlightBrush), rect);
-					g.FillRectangle(highlightBrush, rect);
+					e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
+					e.Graphics.FillRectangle(highlightBrush, rect);
 				}
-
 
 				switch (DataSize)
 				{
@@ -210,8 +209,8 @@ namespace BizHawk.MultiClient
 						Header = "             0        4        8        C";
 						break;
 				}
-				g.DrawString(Domain.Name, font, Brushes.Black, new Point(1, 1));
-				g.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
+				e.Graphics.DrawString(Domain.Name, font, Brushes.Black, new Point(1, 1));
+				e.Graphics.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
 
 				for (int i = 0; i < RowsVisible; i++)
 				{
@@ -267,7 +266,7 @@ namespace BizHawk.MultiClient
 					if (row * 16 >= Domain.Size)
 						break;
 				}
-				g.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY + rowYoffset));
+				e.Graphics.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY + rowYoffset));
 			}
 		}
 
@@ -362,11 +361,6 @@ namespace BizHawk.MultiClient
 		{
 			this.SetUpScrollBar();
 			this.Refresh();
-		}
-
-		private void MemoryViewer_Paint(object sender, PaintEventArgs e)
-		{
-			Display(e.Graphics);
 		}
 
 		public void SetDataSize(int size)
