@@ -1451,5 +1451,16 @@ namespace BizHawk.MultiClient
 				RemoveWatch();
 			}
 		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void SelectAll()
+		{
+			for (int x = 0; x < watchList.Count; x++)
+				WatchListView.SelectItem(x, true);
+		}
 	}
 }
