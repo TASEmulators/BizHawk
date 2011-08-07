@@ -1033,10 +1033,9 @@ namespace BizHawk.MultiClient
 
 				if (indexes.Count == 1)
 				{
-					/*
 					if (Global.CheatList.IsActiveCheat(Domain, watchList[indexes[0]].address))
 					{
-						contextMenuStrip1.Items[4].Text = "Unfreeze address";
+						contextMenuStrip1.Items[4].Text = "&Unfreeze address";
 						contextMenuStrip1.Items[4].Image =
 							BizHawk.MultiClient.Properties.Resources.Unfreeze;
 					}
@@ -1046,7 +1045,6 @@ namespace BizHawk.MultiClient
 						contextMenuStrip1.Items[4].Image =
 							BizHawk.MultiClient.Properties.Resources.Freeze;
 					}
-					*/ //TODO: When Unfreeze is implemented
 				}
 			}
 
@@ -1177,11 +1175,10 @@ namespace BizHawk.MultiClient
 
 		private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			/*
 			if (sender.ToString().Contains("Unfreeze"))
+				UnfreezeAddress();
+			else
 				FreezeAddress();
-			*/
-			FreezeAddress();
 		}
 
 		private int WORDGetLowerByte(int value)
@@ -1263,6 +1260,33 @@ namespace BizHawk.MultiClient
 									Global.MainForm.Cheats1.AddCheat(c4);
 								}
 							}
+							break;
+					}
+				}
+			}
+		}
+
+		private void UnfreezeAddress()
+		{
+			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				for (int i = 0; i < indexes.Count; i++)
+				{
+					switch (watchList[indexes[i]].type)
+					{
+						case atype.BYTE:
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
+							break;
+						case atype.WORD:
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 1);
+							break;
+						case atype.DWORD:
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address);
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 1);
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 2);
+							Global.CheatList.Remove(Domain, watchList[indexes[i]].address + 3);
 							break;
 					}
 				}

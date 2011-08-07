@@ -1821,6 +1821,33 @@ namespace BizHawk.MultiClient
 			FreezeAddress();
 		}
 
+		private void UnfreezeAddress()
+		{
+			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				for (int i = 0; i < indexes.Count; i++)
+				{
+					switch (searchList[indexes[i]].type)
+					{
+						case atype.BYTE:
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
+							break;
+						case atype.WORD:
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 1);
+							break;
+						case atype.DWORD:
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address);
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 1);
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 2);
+							Global.CheatList.Remove(Domain, searchList[indexes[i]].address + 3);
+							break;
+					}
+				}
+			}
+		}
+
 		private void FreezeAddress()
 		{
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
@@ -1915,6 +1942,22 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < contextMenuStrip1.Items.Count; x++)
 					contextMenuStrip1.Items[x].Visible = true;
+
+				if (indexes.Count == 1)
+				{
+					if (Global.CheatList.IsActiveCheat(Domain, searchList[indexes[0]].address))
+					{
+						contextMenuStrip1.Items[6].Text = "&Unfreeze address";
+						contextMenuStrip1.Items[6].Image =
+							BizHawk.MultiClient.Properties.Resources.Unfreeze;
+					}
+					else
+					{
+						contextMenuStrip1.Items[6].Text = "&Freeze address";
+						contextMenuStrip1.Items[6].Image =
+							BizHawk.MultiClient.Properties.Resources.Freeze;
+					}
+				}
 			}
 		}
 
@@ -1935,7 +1978,10 @@ namespace BizHawk.MultiClient
 
 		private void freezeAddressToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			FreezeAddress();
+			if (sender.ToString().Contains("Unfreeze"))
+				UnfreezeAddress();
+			else
+				FreezeAddress();
 		}
 
 		private void CheckDomainMenuItems()

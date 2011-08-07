@@ -252,6 +252,18 @@ namespace BizHawk.MultiClient
 			Global.MainForm.UpdateCheatStatus();
 		}
 
+		public void Remove(MemoryDomain domain, int address)
+		{
+			for (int x = 0; x < cheatList.Count; x++)
+			{
+				if (cheatList[x].domain == domain && cheatList[x].address == address)
+				{
+					MemoryPulse.Remove(domain, address);
+					cheatList.Remove(cheatList[x]);
+				}
+			}
+		}
+
 		public void Add(Cheat c)
 		{
 			cheatList.Add(c);
