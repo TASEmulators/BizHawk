@@ -2063,5 +2063,13 @@ namespace BizHawk.MultiClient
 		{
 			DoSearch();
 		}
+
+		private void SearchListView_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveAddresses();
+			}
+		}
 	}
 }

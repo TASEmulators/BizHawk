@@ -1443,5 +1443,13 @@ namespace BizHawk.MultiClient
 		{
 			WatchListView.Focus();
 		}
+
+		private void WatchListView_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveWatch();
+			}
+		}
 	}
 }

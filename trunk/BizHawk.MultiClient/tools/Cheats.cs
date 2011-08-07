@@ -965,5 +965,13 @@ namespace BizHawk.MultiClient
 				duplicateToolStripMenuItem.Enabled = true;
 			}
 		}
+
+		private void CheatListView_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveCheat();
+			}
+		}
 	}
 }

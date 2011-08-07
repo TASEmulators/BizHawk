@@ -443,6 +443,7 @@
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.ColumnReorder);
 			this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
+			this.WatchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyUp);
 			// 
 			// Address
 			// 
