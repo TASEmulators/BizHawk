@@ -13,6 +13,16 @@ namespace BizHawk.DiscSystem
 		}
 	}
 
+	public class ProgressReport
+	{
+		public string Message;
+		public double ProgressEstimate;
+		public double ProgressCurrent;
+		public int TaskCount;
+		public int TaskCurrent;
+		public bool CancelSignal;
+	}
+
 	public class DiscHopper
 	{
 		public Disc CurrentDisc;
