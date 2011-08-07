@@ -44,7 +44,7 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!(Global.Emulator is NES)) this.Close();
-            if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (!this.IsHandleCreated || this.IsDisposed) return;
 			Nes = Global.Emulator as NES;
 		}
 
@@ -117,9 +117,9 @@ namespace BizHawk.MultiClient
 			}
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
-
+			/*
 			int SpriteNum, TileNum, Attr, MemAddr;
-			
+
 			//Sprite Viewer
 			for (int y = 0; y < 4; y++)
 			{
@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 						MemAddr = ((TileNum & 0xFE) << 4) | ((TileNum & 0x01) << 12);
 						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16, MemAddr, 4 | (Attr & 3), D_SPR_W);
 						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16 + 8 * D_SPR_W, MemAddr + 16, 4 | (Attr & 3), D_SPR_W);
-						
+
 					}
 					else
 					{
@@ -142,6 +142,7 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
+			 * */
 		}
 
 		public unsafe void UpdateValues()
@@ -151,7 +152,7 @@ namespace BizHawk.MultiClient
 			ppu.PPUViewCallback = Callback;
 		}
 
-        private void NESPPU_Load(object sender, EventArgs e)
+		private void NESPPU_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
 			Nes = Global.Emulator as NES;
@@ -163,7 +164,7 @@ namespace BizHawk.MultiClient
 			SectionLabel.Text = "";
 			AddressLabel.Text = "";
 			ValueLabel.Text = "";
-            Value2Label.Text = "";
+			Value2Label.Text = "";
 		}
 
 		private void PaletteView_MouseLeave(object sender, EventArgs e)
@@ -191,10 +192,10 @@ namespace BizHawk.MultiClient
 				val = PaletteView.spritePalettes[column].GetValue();
 			ValueLabel.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
 
-            if (baseAddr == 0x3F00)
-                Value2Label.Text = "ID: BG" + (column / 4).ToString();
-            else
-                Value2Label.Text = "ID: SPR" + (column / 4).ToString();
+			if (baseAddr == 0x3F00)
+				Value2Label.Text = "ID: BG" + (column / 4).ToString();
+			else
+				Value2Label.Text = "ID: SPR" + (column / 4).ToString();
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -213,165 +214,165 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESPPUSaveWindowPosition;
 		}
 
-        private void PatternView_Click(object sender, MouseEventArgs e)
-        {
-            if (e.X < PatternView.Width / 2)
-            {
-                PatternView.Pal0++;
-                if (PatternView.Pal0 > 7) PatternView.Pal0 = 0;
-            }
-            else
-            {
-                PatternView.Pal1++;
-                if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
-            }
-            UpdateTableLabels();
-        }
+		private void PatternView_Click(object sender, MouseEventArgs e)
+		{
+			if (e.X < PatternView.Width / 2)
+			{
+				PatternView.Pal0++;
+				if (PatternView.Pal0 > 7) PatternView.Pal0 = 0;
+			}
+			else
+			{
+				PatternView.Pal1++;
+				if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
+			}
+			UpdateTableLabels();
+		}
 
-        private void UpdateTableLabels()
-        {
-            Table0PaletteLabel.Text = "Palette: " + PatternView.Pal0;
-            Table1PaletteLabel.Text = "Palette: " + PatternView.Pal1;
-            PatternView.Refresh();
-        }
+		private void UpdateTableLabels()
+		{
+			Table0PaletteLabel.Text = "Palette: " + PatternView.Pal0;
+			Table1PaletteLabel.Text = "Palette: " + PatternView.Pal1;
+			PatternView.Refresh();
+		}
 
-        private void PatternView_MouseEnter(object sender, EventArgs e)
-        {
-            SectionLabel.Text = "Section: Pattern";
-        }
+		private void PatternView_MouseEnter(object sender, EventArgs e)
+		{
+			SectionLabel.Text = "Section: Pattern";
+		}
 
-        private void PatternView_MouseLeave(object sender, EventArgs e)
-        {
-            ClearDetails();
-        }
+		private void PatternView_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
 
-        private void PatternView_MouseMove(object sender, MouseEventArgs e)
-        {
-            int table = 0;
-            int address = 0;
-            int tile = 0;
-            if (e.X > PatternView.Width / 2)
-                table = 1;
+		private void PatternView_MouseMove(object sender, MouseEventArgs e)
+		{
+			int table = 0;
+			int address = 0;
+			int tile = 0;
+			if (e.X > PatternView.Width / 2)
+				table = 1;
 
-            if (table == 0)
-            {
-                tile = address = (e.X - 1) / 8;
-                
-            }
-            else
-            {
-                address = 0x1000 + ((e.X - 128) / 8);
-                tile = (e.X - 128) / 8;
-            }
+			if (table == 0)
+			{
+				tile = address = (e.X - 1) / 8;
 
-            address += (e.Y / 8) * 256;
-            tile += (e.Y / 8) * 16;
+			}
+			else
+			{
+				address = 0x1000 + ((e.X - 128) / 8);
+				tile = (e.X - 128) / 8;
+			}
 
-            AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
-            ValueLabel.Text = "Table " + table.ToString();
-            Value2Label.Text = "Tile " + String.Format("{0:X2}", tile);
-        }
+			address += (e.Y / 8) * 256;
+			tile += (e.Y / 8) * 16;
 
-        private void toolStripDropDownButton2_DropDownOpened(object sender, EventArgs e)
-        {
-            Table0P0.Checked = false;
-            Table0P1.Checked = false;
-            Table0P2.Checked = false;
-            Table0P3.Checked = false;
-            Table0P4.Checked = false;
-            Table0P5.Checked = false;
-            Table0P6.Checked = false;
-            Table0P7.Checked = false;
-            Table1P0.Checked = false;
-            Table1P1.Checked = false;
-            Table1P2.Checked = false;
-            Table1P3.Checked = false;
-            Table1P4.Checked = false;
-            Table1P5.Checked = false;
-            Table1P6.Checked = false;
-            Table1P7.Checked = false;
+			AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
+			ValueLabel.Text = "Table " + table.ToString();
+			Value2Label.Text = "Tile " + String.Format("{0:X2}", tile);
+		}
 
-            Table0P0.Checked = false;
+		private void toolStripDropDownButton2_DropDownOpened(object sender, EventArgs e)
+		{
+			Table0P0.Checked = false;
+			Table0P1.Checked = false;
+			Table0P2.Checked = false;
+			Table0P3.Checked = false;
+			Table0P4.Checked = false;
+			Table0P5.Checked = false;
+			Table0P6.Checked = false;
+			Table0P7.Checked = false;
+			Table1P0.Checked = false;
+			Table1P1.Checked = false;
+			Table1P2.Checked = false;
+			Table1P3.Checked = false;
+			Table1P4.Checked = false;
+			Table1P5.Checked = false;
+			Table1P6.Checked = false;
+			Table1P7.Checked = false;
 
-            switch (PatternView.Pal0)
-            {
-                case 0:
-                    Table0P0.Checked = true;
-                    break;
-                case 1:
-                    Table0P1.Checked = true;
-                    break;
-                case 2:
-                    Table0P2.Checked = true;
-                    break;
-                case 3:
-                    Table0P3.Checked = true;
-                    break;
-                case 4:
-                    Table0P4.Checked = true;
-                    break;
-                case 5:
-                    Table0P5.Checked = true;
-                    break;
-                case 6:
-                    Table0P6.Checked = true;
-                    break;
-                case 7:
-                    Table0P7.Checked = true;
-                    break;
-            }
+			Table0P0.Checked = false;
 
-            switch (PatternView.Pal1)
-            {
-                case 0:
-                    Table1P0.Checked = true;
-                    break;
-                case 1:
-                    Table1P1.Checked = true;
-                    break;
-                case 2:
-                    Table1P2.Checked = true;
-                    break;
-                case 3:
-                    Table1P3.Checked = true;
-                    break;
-                case 4:
-                    Table1P4.Checked = true;
-                    break;
-                case 5:
-                    Table1P5.Checked = true;
-                    break;
-                case 6:
-                    Table1P6.Checked = true;
-                    break;
-                case 7:
-                    Table1P7.Checked = true;
-                    break;
-            }
-        }
+			switch (PatternView.Pal0)
+			{
+				case 0:
+					Table0P0.Checked = true;
+					break;
+				case 1:
+					Table0P1.Checked = true;
+					break;
+				case 2:
+					Table0P2.Checked = true;
+					break;
+				case 3:
+					Table0P3.Checked = true;
+					break;
+				case 4:
+					Table0P4.Checked = true;
+					break;
+				case 5:
+					Table0P5.Checked = true;
+					break;
+				case 6:
+					Table0P6.Checked = true;
+					break;
+				case 7:
+					Table0P7.Checked = true;
+					break;
+			}
 
-        private void Palette_Click(object sender, EventArgs e)
-        {
-            if (sender == Table0P0) PatternView.Pal0 = 0;
-            if (sender == Table0P1) PatternView.Pal0 = 1;
-            if (sender == Table0P2) PatternView.Pal0 = 2;
-            if (sender == Table0P3) PatternView.Pal0 = 3;
-            if (sender == Table0P4) PatternView.Pal0 = 4;
-            if (sender == Table0P5) PatternView.Pal0 = 5;
-            if (sender == Table0P6) PatternView.Pal0 = 6;
-            if (sender == Table0P7) PatternView.Pal0 = 7;
+			switch (PatternView.Pal1)
+			{
+				case 0:
+					Table1P0.Checked = true;
+					break;
+				case 1:
+					Table1P1.Checked = true;
+					break;
+				case 2:
+					Table1P2.Checked = true;
+					break;
+				case 3:
+					Table1P3.Checked = true;
+					break;
+				case 4:
+					Table1P4.Checked = true;
+					break;
+				case 5:
+					Table1P5.Checked = true;
+					break;
+				case 6:
+					Table1P6.Checked = true;
+					break;
+				case 7:
+					Table1P7.Checked = true;
+					break;
+			}
+		}
 
-            if (sender == Table1P0) PatternView.Pal1 = 0;
-            if (sender == Table1P1) PatternView.Pal1 = 1;
-            if (sender == Table1P2) PatternView.Pal1 = 2;
-            if (sender == Table1P3) PatternView.Pal1 = 3;
-            if (sender == Table1P4) PatternView.Pal1 = 4;
-            if (sender == Table1P5) PatternView.Pal1 = 5;
-            if (sender == Table1P6) PatternView.Pal1 = 6;
-            if (sender == Table1P7) PatternView.Pal1 = 7;
+		private void Palette_Click(object sender, EventArgs e)
+		{
+			if (sender == Table0P0) PatternView.Pal0 = 0;
+			if (sender == Table0P1) PatternView.Pal0 = 1;
+			if (sender == Table0P2) PatternView.Pal0 = 2;
+			if (sender == Table0P3) PatternView.Pal0 = 3;
+			if (sender == Table0P4) PatternView.Pal0 = 4;
+			if (sender == Table0P5) PatternView.Pal0 = 5;
+			if (sender == Table0P6) PatternView.Pal0 = 6;
+			if (sender == Table0P7) PatternView.Pal0 = 7;
 
-            UpdateTableLabels();
-        }
+			if (sender == Table1P0) PatternView.Pal1 = 0;
+			if (sender == Table1P1) PatternView.Pal1 = 1;
+			if (sender == Table1P2) PatternView.Pal1 = 2;
+			if (sender == Table1P3) PatternView.Pal1 = 3;
+			if (sender == Table1P4) PatternView.Pal1 = 4;
+			if (sender == Table1P5) PatternView.Pal1 = 5;
+			if (sender == Table1P6) PatternView.Pal1 = 6;
+			if (sender == Table1P7) PatternView.Pal1 = 7;
+
+			UpdateTableLabels();
+		}
 
 		private void txtScanline_TextChanged(object sender, EventArgs e)
 		{
