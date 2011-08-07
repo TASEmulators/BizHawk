@@ -1972,7 +1972,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
-			this.Text = "BizHawk";
+			this.Text = "0";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
