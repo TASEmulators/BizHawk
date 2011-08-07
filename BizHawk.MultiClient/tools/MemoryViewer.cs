@@ -14,13 +14,13 @@ namespace BizHawk.MultiClient
 		//2 & 4 byte typing in
 		//show nibbles on top of highlighted address
 		//Multi-highlight
+		//different back color for frozen addresses
 
 		public VScrollBar vScrollBar1;
 		public Label info;
 		MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 
 		Font font = new Font("Courier New", 8);
-		public Brush regBrush = Brushes.Black;
 		public Brush highlightBrush = Brushes.LightBlue;
 		int RowsVisible = 0;
 		int DataSize = 1;
@@ -66,8 +66,6 @@ namespace BizHawk.MultiClient
 			this.info.Location = new System.Drawing.Point(n.X / 2, 1);
 			this.info.Height = 11;
 			this.Controls.Add(this.info);
-
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MemoryViewer_KeyDown);
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -127,7 +125,7 @@ namespace BizHawk.MultiClient
 				nibbles[x] = 'G';
 		}
 
-		private void MemoryViewer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+		protected override void OnKeyUp(KeyEventArgs e)
 		{
 			if (!InputValidate.IsValidHexNumber(((char)e.KeyCode).ToString()))
 			{
@@ -151,6 +149,7 @@ namespace BizHawk.MultiClient
 				this.Refresh();
 			}
 
+			base.OnKeyUp(e);
 		}
 
 		public void SetHighlighted(int addr)
@@ -178,7 +177,7 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				Pen p = new Pen(regBrush);
+				Pen p = new Pen(Brushes.Black);
 				row = 0;
 				addr = 0;
 
