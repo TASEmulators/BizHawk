@@ -526,7 +526,7 @@
 			// 
 			// freezeToolStripMenuItem
 			// 
-			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.cheat;
+			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
 			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(227, 22);
 			this.freezeToolStripMenuItem.Text = "&Freeze";
