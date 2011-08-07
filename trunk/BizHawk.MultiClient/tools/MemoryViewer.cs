@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 		public Label info;
 		MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 
-		Font font = new Font("Courier New", 10);
+		Font font = new Font("Courier New", 8);
 		public Brush regBrush = Brushes.Black;
 		public Brush highlightBrush = Brushes.LightBlue;
 		int RowsVisible = 0;
@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
 		int maxRow = 0;
 
-		const int rowX = 8;
+		const int rowX = 12;
 		const int rowY = 16;
 		const int rowYoffset = 20;
 
@@ -167,54 +167,94 @@ namespace BizHawk.MultiClient
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
-					int left = ((addressHighlighted % 16) * 25) + 56 + addrOffset - (addressHighlighted % 4);
-					int top = (((addressHighlighted / 16) - vScrollBar1.Value) * 16) + 36;
-					Rectangle rect = new Rectangle(left, top, 25, 16);
+					int left = ((addressHighlighted % 16) * 20) + 52 + addrOffset - (addressHighlighted % 4);
+					int top = (((addressHighlighted / 16) - vScrollBar1.Value) * (font.Height - 1)) + 36;
+					Rectangle rect = new Rectangle(left, top, 16, 14);
 					g.DrawRectangle(new Pen(highlightBrush), rect);
 					g.FillRectangle(highlightBrush, rect);
 				}
 
+
+				switch (DataSize)
+				{
+					case 1:
+						Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+						break;
+					case 2:
+						Header = "         0    2    4    6    8    A    C    E";
+						break;
+					case 4:
+						Header = "             0        4        8        C";
+						break;
+				}
+				g.DrawString(Domain.Name, font, Brushes.Black, new Point(1, 1));
+				g.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
+
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
-					rowStr = new StringBuilder(String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ");
+					rowStr.AppendFormat("{0:X" + GetNumDigits(Domain.Size) + "}  ", row * 16);
 					switch (DataSize)
 					{
 						default:
 						case 1:
-							Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+							addr = (row * 16);
 							for (int j = 0; j < 16; j++)
 							{
-								addr = (row * 16) + j;
-								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X2}", Domain.PeekByte(addr)) + " ");
+								if (addr + j < Domain.Size)
+									rowStr.AppendFormat("{0:X2} ", Domain.PeekByte(addr + j));
 							}
+							rowStr.Append("  | ");
+							for (int k = 0; k < 16; k++)
+							{
+								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+							}
+							rowStr.AppendLine();
 							break;
 						case 2:
-							Header = "         0    2    4    6    8    A    C    E";
+							addr = (row * 16);
 							for (int j = 0; j < 16; j += 2)
 							{
-								addr = (row * 16) + j;
-								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ");
+								if (addr + j < Domain.Size)
+									rowStr.AppendFormat("{0:X4} ", MakeValue(addr + j, DataSize, BigEndian));
+							}
+							rowStr.AppendLine();
+							rowStr.Append("  | ");
+							for (int k = 0; k < 16; k++)
+							{
+								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
 							}
 							break;
 						case 4:
-							Header = "             0        4        8        C";
+							addr = (row * 16);
 							for (int j = 0; j < 16; j += 4)
 							{
-								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr.Append(String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ");
+									rowStr.AppendFormat("{0:X8} ", MakeValue(addr + j, DataSize, BigEndian));
+							}
+							rowStr.AppendLine();
+							rowStr.Append("  | ");
+							for (int k = 0; k < 16; k++)
+							{
+								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
 							}
 							break;
 
 					}
-					g.DrawString(Domain.Name, font, regBrush, new Point(1, 1));
-					g.DrawString(Header, font, regBrush, new Point(rowX + addrOffset, rowY));
-					if (row * 16 < Domain.Size)
-						g.DrawString(rowStr.ToString(), font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
+					if (row * 16 >= Domain.Size)
+						break;
 				}
+				g.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY + rowYoffset));
+			}
+		}
+
+		static char Remap(byte val)
+		{
+			unchecked
+			{
+				if (val < ' ') return '.';
+				else if (val >= 0x80) return '.';
+				else return (char)val;
 			}
 		}
 
@@ -265,9 +305,9 @@ namespace BizHawk.MultiClient
 
 		public void SetUpScrollBar()
 		{
-			RowsVisible = ((this.Height - 8) >> 4) - 2;
+			RowsVisible = ((this.Height - 8) / 13) - 2;
 			int totalRows = Domain.Size / 16;
-			int MaxRows = (totalRows - RowsVisible) + 17;
+			int MaxRows = (totalRows - RowsVisible) + 16;
 
 			if (MaxRows > 0)
 			{
@@ -329,20 +369,12 @@ namespace BizHawk.MultiClient
 
 		private void SetAddressOver(int x, int y)
 		{
-			//info.Text = e.X.ToString() + "," + e.Y.ToString(); //Debug
-
-			//Determine row - 32 pix header, 16 pix width
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
-			row += (y - 36) / 16;
-			//info.Text += " " + row.ToString(); //Debug
-
-			//Determine colums - 60 + addrOffset left padding
-			//25 pixel wide addresses (when 1 byte) (actually more like 24.75 ugh
-			int column = (x - (56 + addrOffset)) / 25;
-			//info.Text += " " + column.ToString(); //Debug
+			row += (y - 36) / (font.Height - 1);
+			int column = (x - (49 + addrOffset)) / 20;
+			
 			//TODO: 2 & 4 byte views
-
 
 			if (row >= 0 && row <= maxRow && column >= 0 && column < 16)
 			{
