@@ -25,10 +25,10 @@ namespace BizHawk
 
 		void Run(string[] args)
 		{
-			bool gui = false;
+			bool gui = true;
 			foreach (var arg in args)
 			{
-				if (arg.ToUpper() == "GUI") gui = true;
+				if (arg.ToUpper() == "COMMAND") gui = false;
 			}
 
 			if (gui)
