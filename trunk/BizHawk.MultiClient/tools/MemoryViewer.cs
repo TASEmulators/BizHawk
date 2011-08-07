@@ -168,6 +168,8 @@ namespace BizHawk.MultiClient
 			}
 			addressHighlighted = addr;
 			addressOver = addr;
+			info.Text = String.Format("{0:X4}", addressOver);
+			Refresh();
 		}
 
 		int row = 0;
@@ -499,6 +501,7 @@ namespace BizHawk.MultiClient
 				address = GetSize() - 1;
 			
 			SetHighlighted(address);
+			ClearNibbles();
 			Refresh();
 		}
 	}
