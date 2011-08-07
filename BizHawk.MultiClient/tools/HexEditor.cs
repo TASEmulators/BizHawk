@@ -170,14 +170,7 @@ namespace BizHawk.MultiClient
 				memoryDomainsToolStripMenuItem.Enabled = false;
 		}
 
-		public void GoToAddress(int address)
-		{
-			if (address < MemoryViewer.GetSize())
-			{
-				MemoryViewer.SetHighlighted(address);
-				MemoryViewer.Refresh();
-			}
-		}
+		
 
 		private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -195,6 +188,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void GoToAddress(int address)
+		{
+			MemoryViewer.GoToAddress(address);
+		}
 
 
 		private void HexEditor_Resize(object sender, EventArgs e)

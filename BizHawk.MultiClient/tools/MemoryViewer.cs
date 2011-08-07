@@ -74,32 +74,48 @@ namespace BizHawk.MultiClient
 		{
 			if (keyData == Keys.Up)
 			{
-				addressHighlighted -= 16;
-				this.Refresh();
+				GoToAddress(addressHighlighted - 16);
 			}
 
 			else if (keyData == Keys.Down)
 			{
-				addressHighlighted += 16;
-				this.Refresh();
+				GoToAddress(addressHighlighted + 16);
 			}
 
 			else if (keyData == Keys.Left)
 			{
-				addressHighlighted -= 1;
-				this.Refresh();
+				GoToAddress(addressHighlighted - 1);
 			}
 
 			else if (keyData == Keys.Right)
 			{
-				addressHighlighted += 1;
-				this.Refresh();
+				GoToAddress(addressHighlighted + 1);
 			}
 
 			else if (keyData == Keys.Tab)
 			{
 				addressHighlighted += 8;
 				this.Refresh();
+			}
+
+			else if (keyData == Keys.PageDown)
+			{
+				GoToAddress(addressHighlighted + (RowsVisible * 16));
+			}
+
+			else if (keyData == Keys.PageUp)
+			{
+				GoToAddress(addressHighlighted - (RowsVisible * 16));
+			}
+
+			else if (keyData == Keys.Home)
+			{
+				GoToAddress(0);
+			}
+
+			else if (keyData == Keys.End)
+			{
+				GoToAddress(GetSize() - 1);
 			}
 
 			return true;
@@ -139,14 +155,20 @@ namespace BizHawk.MultiClient
 
 		public void SetHighlighted(int addr)
 		{
-			if (addr < Domain.Size)
+			if (addr < 0)
+				addr = 0;
+			if (addr >= Domain.Size)
+				addr = Domain.Size - 1;
+			
+			if (!IsVisible(addr))
 			{
-				if (!IsVisible(addr))
-				{
-					vScrollBar1.Value = (addr >> 4) - RowsVisible + 1;
-				}
-				addressHighlighted = addr;
+				int v = (addr / 16) - RowsVisible + 1;
+				if (v < 0)
+					v = 0;
+				vScrollBar1.Value = v;
 			}
+			addressHighlighted = addr;
+			addressOver = addr;
 		}
 
 		int row = 0;
@@ -467,6 +489,18 @@ namespace BizHawk.MultiClient
 		public MemoryDomain GetDomain()
 		{
 			return Domain;
+		}
+
+		public void GoToAddress(int address)
+		{
+			if (address < 0)
+				address = 0;
+
+			if (address >= GetSize())
+				address = GetSize() - 1;
+			
+			SetHighlighted(address);
+			Refresh();
 		}
 	}
 }
