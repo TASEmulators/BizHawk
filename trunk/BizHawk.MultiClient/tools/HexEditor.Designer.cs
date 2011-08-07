@@ -51,7 +51,6 @@
 			this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AddressBox = new System.Windows.Forms.TextBox();
 			this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +68,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(651, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(565, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -231,15 +230,6 @@
 			this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
 			this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
 			// 
-			// AddressBox
-			// 
-			this.AddressBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddressBox.Location = new System.Drawing.Point(566, 37);
-			this.AddressBox.Name = "AddressBox";
-			this.AddressBox.ReadOnly = true;
-			this.AddressBox.Size = new System.Drawing.Size(57, 20);
-			this.AddressBox.TabIndex = 2;
-			// 
 			// ViewerContextMenuStrip
 			// 
 			this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -292,8 +282,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(651, 291);
-			this.Controls.Add(this.AddressBox);
+			this.ClientSize = new System.Drawing.Size(565, 291);
 			this.Controls.Add(this.MemoryViewer);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -328,8 +317,7 @@
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
-        private System.Windows.Forms.TextBox AddressBox;
+		private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip ViewerContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem pokeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
