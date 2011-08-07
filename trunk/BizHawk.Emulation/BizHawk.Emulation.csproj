@@ -182,17 +182,39 @@
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
     <Compile Include="Database\GameInfo.cs" />
-    <Compile Include="Disc\Blobs\Blob_WaveFile.cs" />
-    <Compile Include="Disc\Blobs\RiffMaster.cs" />
-    <Compile Include="Disc\CCD_format.cs" />
-    <Compile Include="Disc\CUE_format.cs" />
-    <Compile Include="Disc\Disc.API.cs" />
-    <Compile Include="Disc\Disc.cs" />
-    <Compile Include="Disc\DiscTOC.cs" />
-    <Compile Include="Disc\ECM.cs" />
-    <Compile Include="Disc\FFmpeg.cs" />
-    <Compile Include="Disc\Subcode.cs" />
-    <Compile Include="Disc\TOC_format.cs" />
+    <Compile Include="DiscSystem\Blobs\Blob_WaveFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Blobs\RiffMaster.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\CCD_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\CUE_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Disc.API.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Disc.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\DiscTOC.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\ECM.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\FFmpeg.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\Subcode.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DiscSystem\TOC_format.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ExternalCores\EmuFile.cs" />
     <Compile Include="ExternalCores\ExternalCore.cs" />
     <Compile Include="ExternalCores\PsxCore.cs" />
