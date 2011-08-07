@@ -12,7 +12,8 @@ namespace BizHawk.MultiClient
 	{
 		public List<Cheat> cheatList = new List<Cheat>();
 		public string currentCheatFile = "";
-		public bool changes = false;
+		public bool Changes = false;
+		public int Count { get { return cheatList.Count; } }
 
 		public bool LoadCheatFile(string path, bool append)
 		{
@@ -73,9 +74,7 @@ namespace BizHawk.MultiClient
 				}
 
 				Global.Config.RecentCheats.Add(file.FullName);
-				changes = false;
-
-
+				Changes = false;
 			}
 
 			if (Global.Config.DisableCheatsOnLoad)
@@ -179,7 +178,7 @@ namespace BizHawk.MultiClient
 
 				sw.WriteLine(str);
 			}
-			changes = false;
+			Changes = false;
 			return true;
 		}
 
@@ -193,12 +192,17 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.CheatsAutoSaveOnClose)
 			{
-				if (changes && cheatList.Count > 0)
+				if (Changes && cheatList.Count > 0)
 				{
 					if (currentCheatFile.Length == 0)
 						currentCheatFile = MakeDefaultFilename();
 
 					SaveCheatFile(Global.CheatList.currentCheatFile);
+				}
+				else if (cheatList.Count == 0 && currentCheatFile.Length > 0)
+				{
+					var file = new FileInfo(currentCheatFile);
+					file.Delete();
 				}
 			}
 		}
@@ -237,6 +241,27 @@ namespace BizHawk.MultiClient
 		{
 			cheatList.Clear();
 			MemoryPulse.Clear();
+		}
+
+		public void Remove(Cheat c)
+		{
+			MemoryPulse.Remove(c.domain, c.address);
+			cheatList.Remove(c);
+		}
+
+		public void Add(Cheat c)
+		{
+			cheatList.Add(c);
+		}
+
+		public Cheat Cheat(int index)
+		{
+			return cheatList[index];
+		}
+
+		public void Insert(int index, Cheat item)
+		{
+			cheatList.Insert(index, item);
 		}
 	}
 }
