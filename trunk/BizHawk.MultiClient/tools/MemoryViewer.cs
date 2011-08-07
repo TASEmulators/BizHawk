@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 			{
 				if (!IsVisible(addr))
 				{
-					vScrollBar1.Value = (addr / 16) - RowsVisible + 1;
+					vScrollBar1.Value = (addr >> 4) - RowsVisible + 1;
 				}
 				addressHighlighted = addr;
 			}
@@ -160,7 +160,7 @@ namespace BizHawk.MultiClient
 				row = 0;
 				addr = 0;
 
-				string rowStr = "";
+				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
 				g.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
 				g.DrawLine(p, this.Left, 34, this.Right - 16, 34);
@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
-					rowStr = String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ";
+					rowStr = new StringBuilder(String.Format("{0:X" + GetNumDigits(Domain.Size) + "}", row * 16) + "  ");
 					switch (DataSize)
 					{
 						default:
@@ -187,7 +187,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr += String.Format("{0:X2}", Domain.PeekByte(addr)) + " ";
+									rowStr.Append(String.Format("{0:X2}", Domain.PeekByte(addr)) + " ");
 							}
 							break;
 						case 2:
@@ -196,7 +196,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr += String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ";
+									rowStr.Append(String.Format("{0:X4}", MakeValue(addr, DataSize, BigEndian)) + " ");
 							}
 							break;
 						case 4:
@@ -205,7 +205,7 @@ namespace BizHawk.MultiClient
 							{
 								addr = (row * 16) + j;
 								if (addr < Domain.Size)
-									rowStr += String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ";
+									rowStr.Append(String.Format("{0:X8}", MakeValue(addr, DataSize, BigEndian)) + " ");
 							}
 							break;
 
@@ -213,41 +213,47 @@ namespace BizHawk.MultiClient
 					g.DrawString(Domain.Name, font, regBrush, new Point(1, 1));
 					g.DrawString(Header, font, regBrush, new Point(rowX + addrOffset, rowY));
 					if (row * 16 < Domain.Size)
-						g.DrawString(rowStr, font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
+						g.DrawString(rowStr.ToString(), font, regBrush, new Point(rowX, (rowY * (i + 1)) + rowYoffset));
 				}
 			}
 		}
 
 		private int MakeValue(int addr, int size, bool Bigendian)
 		{
-			int x = 0;
-			if (size == 1 || size == 2 || size == 4)
+			unchecked
 			{
-				switch (size)
+				int x = 0;
+				if (size == 1 || size == 2 || size == 4)
 				{
-					case 1:
-						x = Domain.PeekByte(addr);
-						break;
-					case 2:
-						x = MakeWord(addr, Bigendian);
-						break;
-					case 4:
-						x = (MakeWord(addr, Bigendian) * 65536) +
-							MakeWord(addr + 2, Bigendian);
-						break;
+					switch (size)
+					{
+						case 1:
+							x = Domain.PeekByte(addr);
+							break;
+						case 2:
+							x = MakeWord(addr, Bigendian);
+							break;
+						case 4:
+							x = (MakeWord(addr, Bigendian) * 65536) +
+								MakeWord(addr + 2, Bigendian);
+							break;
+					}
+					return x;
 				}
-				return x;
+				else
+					return 0; //fail
 			}
-			else
-				return 0; //fail
 		}
 
 		private int MakeWord(int addr, bool endian)
 		{
-			if (endian)
-				return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
-			else
-				return (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
+			unchecked
+			{
+				if (endian)
+					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
+				else
+					return (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
+			}
 		}
 
 		public void ResetScrollBar()
@@ -259,7 +265,7 @@ namespace BizHawk.MultiClient
 
 		public void SetUpScrollBar()
 		{
-			RowsVisible = ((this.Height - 8) / 16) - 2;
+			RowsVisible = ((this.Height - 8) >> 4) - 2;
 			int totalRows = Domain.Size / 16;
 			int MaxRows = (totalRows - RowsVisible) + 17;
 
@@ -313,9 +319,12 @@ namespace BizHawk.MultiClient
 
 		private int GetNumDigits(Int32 i)
 		{
-			if (i <= 0x10000) return 4;
-			if (i <= 0x1000000) return 6;
-			else return 8;
+			unchecked
+			{
+				if (i <= 0x10000) return 4;
+				if (i <= 0x1000000) return 6;
+				else return 8;
+			}
 		}
 
 		private void SetAddressOver(int x, int y)
@@ -397,7 +406,7 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				int row = addr >> 5;
+				int row = addr >> 4;
 
 				if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
 					return true;
