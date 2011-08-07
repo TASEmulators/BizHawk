@@ -981,12 +981,14 @@ namespace BizHawk.MultiClient
 				NESDebug1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
+
+				Cheats1.Restart();
 				if (Global.Config.LoadCheatFileByGame)
 				{
 					if (Global.CheatList.AttemptLoadCheatFile())
 						Global.RenderPanel.AddMessage("Cheats file loaded");
 				}
-				Cheats1.Restart();
+
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
 				StateSlots.Clear();

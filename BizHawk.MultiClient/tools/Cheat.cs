@@ -1,4 +1,4 @@
-﻿using BizHawk.MultiClient.tools;
+﻿using BizHawk.MultiClient;
 
 namespace BizHawk.MultiClient
 {
@@ -60,5 +60,9 @@ namespace BizHawk.MultiClient
 			return enabled;
 		}
 
+		~Cheat()
+		{
+			MemoryPulse.Remove(domain, address);
+		}
 	}
 }
