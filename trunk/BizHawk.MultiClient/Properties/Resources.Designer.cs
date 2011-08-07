@@ -67,6 +67,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap AutoSearch {
+            get {
+                object obj = ResourceManager.GetObject("AutoSearch", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap AVI {
             get {
                 object obj = ResourceManager.GetObject("AVI", resourceCulture);
