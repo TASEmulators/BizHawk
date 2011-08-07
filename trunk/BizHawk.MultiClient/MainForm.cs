@@ -794,12 +794,12 @@ namespace BizHawk.MultiClient
 
 			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
-
-			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
+			Global.AutoFireAdapter.Source = Global.StickyXORAdapter;
+			Global.MultitrackRewiringControllerAdapter.Source = Global.AutoFireAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputAdapter;
+			
 			Global.Emulator.Controller = Global.ControllerOutput;
-
 			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
 
 			//splice the movie session before MovieOutputAdapter if it is doing anything
@@ -1188,6 +1188,7 @@ namespace BizHawk.MultiClient
 					return false;
 				case "Record AVI":
 					RecordAVI();
+					//Global.AutoFireAdapter.SetAutoFire("P1 A", !Global.AutoFireAdapter.IsAutoFire("P1 A"));
 					break;
 				case "Stop AVI":
 					StopAVI();

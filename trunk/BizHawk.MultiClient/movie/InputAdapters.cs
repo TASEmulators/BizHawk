@@ -130,6 +130,53 @@ namespace BizHawk.MultiClient
 		}
 	}
 
+	public class AutoFireAdapter : IController
+	{
+		private HashSet<string> autoFireSet = new HashSet<string>();
+		public IController Source;
+
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button];
+				if (source)
+				{
+				}
+				
+				if (autoFireSet.Contains(button))
+				{
+					int a = Global.Emulator.Frame % 2;
+					if (a == 0)
+						return true;
+					else
+						return false;
+				}
+				return source;
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+
+		public void SetAutoFire(string button, bool isSticky)
+		{
+			if (isSticky)
+				autoFireSet.Add(button);
+			else autoFireSet.Remove(button);
+		}
+
+		public bool IsAutoFire(string button)
+		{
+			return autoFireSet.Contains(button);
+		}
+	}
+
 	public class MnemonicsGenerator
 	{
 		IController Source;
