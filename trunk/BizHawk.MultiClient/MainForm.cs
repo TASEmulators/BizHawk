@@ -73,6 +73,7 @@ namespace BizHawk.MultiClient
 				LogConsole.ShowConsole();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
+			DiscSystem.FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatList();
 			UpdateStatusSlots();

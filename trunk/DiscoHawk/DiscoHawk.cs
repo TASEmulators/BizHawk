@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,9 +14,20 @@ namespace BizHawk
 {
 	class DiscoHawk
 	{
+
+		public static string GetExeDirectoryAbsolute()
+		{
+			string p = Path.GetDirectoryName(Assembly.GetEntryAssembly().GetName().CodeBase);
+			if (p.Substring(0, 6) == "file:\\")
+				p = p.Remove(0, 6);
+			string z = p;
+			return p;
+		}
+
 		[STAThread]
 		static void Main(string[] args)
 		{
+			DiscSystem.FFMpeg.FFMpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
 			new DiscoHawk().Run(args);
 		}
 
@@ -91,7 +103,18 @@ namespace BizHawk
 			//}
 
 			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\Bomberman '94 Taikenban (SCD)(JPN)_hawked.cue");
-			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\Bomberman '94 Taikenban (SCD)(JPN).cue");
+			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\Bomberman '94 Taikenban (SCD)(JPN).cue");
+			//var prefs = new DiscSystem.CueBinPrefs();
+			//prefs.AnnotateCue = false;
+			//prefs.OneBlobPerTrack = false;
+			//prefs.ReallyDumpBin = true;
+			//prefs.OmitRedundantIndex0 = true;
+			//prefs.SingleSession = true;
+			////var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked_hawked", prefs);
+			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);
+			//cueBin.Dump(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd", prefs);
+
+			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Angels II - Holy Night (J)[Prototype]\Angels II - Holy Night (J)[Prototype].cue");
 			var prefs = new DiscSystem.CueBinPrefs();
 			prefs.AnnotateCue = false;
 			prefs.OneBlobPerTrack = false;
@@ -99,8 +122,8 @@ namespace BizHawk
 			prefs.OmitRedundantIndex0 = true;
 			prefs.SingleSession = true;
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked_hawked", prefs);
-			var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);
-			cueBin.Dump(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd", prefs);
+			var cueBin = disc.DumpCueBin("test", prefs);
+			cueBin.Dump(@"D:\discs\Angels II - Holy Night (J)[Prototype]", prefs);
 		}
 	}
 

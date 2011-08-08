@@ -23,13 +23,23 @@ namespace BizHawk.DiscSystem
 			{
 			}
 
+			public void Load(byte[] waveData)
+			{
+			}
+
 			public void Load(string wavePath)
+			{
+				var stream = new FileStream(wavePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+				Load(stream);
+			}
+
+			public void Load(Stream stream)
 			{
 				try
 				{
 					RiffSource = null;
 					var rm = new RiffMaster();
-					rm.LoadFile(wavePath);
+					rm.LoadStream(stream);
 					RiffSource = rm;
 
 					//analyze the file to make sure its an OK wave file
@@ -69,6 +79,7 @@ namespace BizHawk.DiscSystem
 				catch
 				{
 					Dispose();
+					throw;
 				}
 			}
 

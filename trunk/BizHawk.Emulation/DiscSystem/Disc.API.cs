@@ -76,16 +76,27 @@ namespace BizHawk.DiscSystem
 			Array.Copy(temp, 16, buffer, offset, 2048);
 		}
 
-		//main API to determine how many LBA sectors are available
+		/// <summary>
+		/// main API to determine how many LBA sectors are available
+		/// </summary>
 		public int LBACount { get { return Sectors.Count; } }
 
-		//main api for reading the TOC from a disc
+		/// <summary>
+		/// indicates whether this disc took significant work to load from the disc (i.e. decoding of ECM or audio data)
+		/// In this case, the user may appreciate a prompt to export the disc so that it won't take so long next time.
+		/// </summary>
+		public bool WasSlowLoad { get; private set; }
+
+		/// <summary>
+		/// main api for reading the TOC from a disc
+		/// </summary>
 		public DiscTOC ReadTOC()
 		{
 			return TOC;
 		}
 
         // converts LBA to minute:second:frame format.
+		//TODO - somewhat redundant with CueTimestamp, which is due for refactoring into something not cue-related
         public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
         {
             m = (byte) (lba / 75 / 60);

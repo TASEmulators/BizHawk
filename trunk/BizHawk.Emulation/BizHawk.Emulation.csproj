@@ -194,6 +194,7 @@
     <Compile Include="DiscSystem\CUE_format.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DiscSystem\Decoding.cs" />
     <Compile Include="DiscSystem\Disc.API.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -204,9 +205,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DiscSystem\ECM.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DiscSystem\FFmpeg.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DiscSystem\Subcode.cs">
