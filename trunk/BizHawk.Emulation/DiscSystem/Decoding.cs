@@ -128,7 +128,7 @@ namespace BizHawk.DiscSystem
 			//then look for any other type
 			foreach (var fi in fis)
 			{
-				if (Path.GetFileNameWithoutExtension(fi.FullName) == basePath)
+				if (Path.GetFileNameWithoutExtension(fi.FullName).ToUpper() == basePath.ToUpper())
 				{
 					if (CheckForAudio(fi.FullName))
 						return fi.FullName;
