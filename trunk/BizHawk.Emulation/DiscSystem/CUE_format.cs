@@ -461,6 +461,7 @@ namespace BizHawk.DiscSystem
 										currFile.FileType = CueFileType.Binary;
 										break;
 									case "WAVE":
+									case "MP3":
 										currFile.FileType = CueFileType.Wave;
 										break;
 								}
