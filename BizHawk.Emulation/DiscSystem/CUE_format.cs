@@ -55,6 +55,11 @@ namespace BizHawk.DiscSystem
 						if (!File.Exists(blobPath))
 						{
 							//if it doesn't exist, then it may be encoded.
+							FFMpeg ffmpeg = new FFMpeg();
+							if (!ffmpeg.QueryServiceAvailable())
+							{
+								throw new InvalidOperationException("No decoding service was available (make sure ffmpeg.exe is available)");
+							}
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(blobPath);
 							blob.Load(new MemoryStream(buf));

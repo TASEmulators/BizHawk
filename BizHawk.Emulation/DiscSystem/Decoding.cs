@@ -31,6 +31,22 @@ namespace BizHawk.DiscSystem
 			return ret;
 		}
 
+		/// <summary>
+		/// queries whether this service is available. if ffmpeg is broken or missing, then you can handle it gracefully
+		/// </summary>
+		public bool QueryServiceAvailable()
+		{
+			try
+			{
+				string stdout = Run("-version");
+				if (stdout.Contains("ffmpeg version")) return true;
+			}
+			catch
+			{
+			}
+			return false;
+		}
+
 		string Run(params string[] args)
 		{
 			args = Escape(args);
