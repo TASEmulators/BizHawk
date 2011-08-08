@@ -795,8 +795,8 @@ namespace BizHawk.MultiClient
 
 			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
-			Global.AutoFireAdapter.Source = Global.StickyXORAdapter;
-			Global.MultitrackRewiringControllerAdapter.Source = Global.AutoFireAdapter;
+
+			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputAdapter;
 			

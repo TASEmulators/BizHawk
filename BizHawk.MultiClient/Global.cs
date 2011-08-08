@@ -61,11 +61,6 @@ namespace BizHawk.MultiClient
 		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
 
 		/// <summary>
-		/// Auto-fire (Rapid fire) of controller buttons
-		/// </summary>
-		public static AutoFireAdapter AutoFireAdapter = new AutoFireAdapter();
-
-		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
 		/// </summary>
 		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();

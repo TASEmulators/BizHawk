@@ -2,25 +2,28 @@
 
 namespace BizHawk
 {
-    public class ControllerDefinition
-    {
-        public string Name;
-        public List<string> BoolButtons = new List<string>();
-        public List<string> FloatControls = new List<string>();
-    }
+	public class ControllerDefinition
+	{
+		public string Name;
+		public List<string> BoolButtons = new List<string>();
+		public List<string> FloatControls = new List<string>();
+	}
 
-    public interface IController
-    {
-        ControllerDefinition Type { get; }
+	public interface IController
+	{
+		ControllerDefinition Type { get; }
 
 		//TODO - it is obnoxious for this to be here. must be removed.
-        bool this[string button] { get; }
+		bool this[string button] { get; }
 		//TODO - this can stay but it needs to be changed to go through the float
-        bool IsPressed(string button);
+		bool IsPressed(string button);
 
-        float GetFloat(string name);
-		
+		float GetFloat(string name);
+
 		//TODO - why does this have a frame argument. must be removed.
-        void UpdateControls(int frame);
-    }
+		void UpdateControls(int frame);
+
+		//Flag for whether the controller will behave like a autofire (rapid fire) controller
+		bool Autofire { get; set; }
+	}
 }

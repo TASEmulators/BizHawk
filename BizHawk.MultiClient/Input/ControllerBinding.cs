@@ -10,6 +10,9 @@ namespace BizHawk.MultiClient
 		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
 
+		private bool autofire = false;
+		public bool Autofire { get { return false; } set { autofire = value; } }
+		
 		public Controller(ControllerDefinition definition)
 		{
 			type = definition;
@@ -17,7 +20,21 @@ namespace BizHawk.MultiClient
 
 		public ControllerDefinition Type { get { return type; } }
 		public bool this[string button] { get { return IsPressed(button); } }
-		public bool IsPressed(string button) { return buttons[button]; }
+		public bool IsPressed(string button)
+		{
+			if (autofire)
+			{
+				int a = Global.Emulator.Frame % 2;
+				if (a == 1)
+					return buttons[button];
+				else
+					return false;
+			}
+			else
+				return buttons[button];
+		}
+
+
 		public float GetFloat(string name) { throw new NotImplementedException(); }
 		public void UpdateControls(int frame) { }
 
