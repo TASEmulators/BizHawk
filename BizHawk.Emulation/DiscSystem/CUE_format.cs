@@ -51,23 +51,32 @@ namespace BizHawk.DiscSystem
 
 					try
 					{
-						//check for the specified file
-						if (!File.Exists(blobPath))
+						//check whether we can load the wav directly
+						bool loaded = false;
+						if (File.Exists(blobPath) && Path.GetExtension(blobPath).ToUpper() == ".WAV")
 						{
-							//if it doesn't exist, then it may be encoded.
+							try
+							{
+								blob.Load(blobPath);
+								loaded = true;
+							}
+							catch
+							{
+							}
+						}
+
+						//if that didnt work or wasnt possible, try loading it through ffmpeg
+						if (!loaded)
+						{
 							FFMpeg ffmpeg = new FFMpeg();
 							if (!ffmpeg.QueryServiceAvailable())
 							{
-								throw new InvalidOperationException("No decoding service was available (make sure ffmpeg.exe is available)");
+								throw new InvalidOperationException("No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files)");
 							}
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(blobPath);
 							blob.Load(new MemoryStream(buf));
 							WasSlowLoad = true;
-						}
-						else
-						{
-							blob.Load(blobPath);
 						}
 					}
 					catch (Exception ex)
