@@ -75,7 +75,7 @@ namespace BizHawk.DiscSystem
 			string tempfile = Path.GetTempFileName();
 			try
 			{
-				string runResults = Run("-i", path, "-f", "wav", "-y", tempfile);
+				string runResults = Run("-i", path, "-f", "wav", "-ar", "44100", "-ac", "2", "-acodec", "pcm_s16le", "-y", tempfile);
 				byte[] ret = File.ReadAllBytes(tempfile);
 				if (ret.Length == 0)
 					throw new InvalidOperationException("Failure running ffmpeg for audio decode. here was its output:\r\n" + runResults);
