@@ -18,12 +18,11 @@ class RiffMaster : IDisposable
 			WriteStream(fs);
 	}
 
-	public FileStream BaseStream;
+	public Stream BaseStream;
 	public void LoadFile(string fname)
 	{
-		Dispose();
-		BaseStream = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
-		LoadStream(BaseStream);
+		var fs = new FileStream(fname, FileMode.Open, FileAccess.Read, FileShare.Read);
+		LoadStream(fs);
 	}
 
 	public void Dispose()
@@ -330,8 +329,13 @@ class RiffMaster : IDisposable
 		riff.WriteStream(s);
 	}
 
+	/// <summary>
+	/// takes posession of the supplied stream
+	/// </summary>
 	public void LoadStream(Stream s)
 	{
+		Dispose();
+		BaseStream = s;
 		readCounter = 0;
 		BinaryReader br = new BinaryReader(s);
 		RiffChunk chunk = ReadChunk(br);

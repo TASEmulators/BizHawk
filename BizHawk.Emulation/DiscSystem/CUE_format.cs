@@ -48,23 +48,35 @@ namespace BizHawk.DiscSystem
 				else if (cue_file.FileType == Cue.CueFileType.Wave)
 				{
 					Blob_WaveFile blob = new Blob_WaveFile();
+
 					try
 					{
-						blob.Load(blobPath);
+						//check for the specified file
+						if (!File.Exists(blobPath))
+						{
+							//if it doesn't exist, then it may be encoded.
+							AudioDecoder dec = new AudioDecoder();
+							byte[] buf = dec.AcquireWaveData(blobPath);
+							blob.Load(new MemoryStream(buf));
+							WasSlowLoad = true;
+						}
+						else
+						{
+							blob.Load(blobPath);
+						}
 					}
 					catch (Exception ex)
 					{
 						throw new DiscReferenceException(blobPath, ex);
 					}
 
-					blob_length_lba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					blob_length_lba = (int) (blob.Length/blob_sectorsize);
+					blob_leftover = (int) (blob.Length - blob_length_lba*blob_sectorsize);
 					cue_blob = blob;
 				}
 				else throw new DiscReferenceException(blobPath, new InvalidOperationException("unknown cue file type: " + cue_file.StrFileType));
 
 				//TODO - make CueTimestamp better, and also make it a struct, and also just make it DiscTimestamp
-				//TODO - wav handling
 				//TODO - mp3 decode
 
 				//start timekeeping for the blob. every time we hit an index, this will advance

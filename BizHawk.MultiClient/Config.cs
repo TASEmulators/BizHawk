@@ -90,7 +90,7 @@
 		//BIOS Paths
 		public string PathPCEBios = ".\\PCECDBios.pce"; //TODO: better default filename
 
-		public string FFMpegPath = "ffmpeg.exe";
+		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
 		// General Client Settings
 		public int TargetZoomFactor = 2;
