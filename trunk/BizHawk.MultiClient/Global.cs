@@ -24,6 +24,8 @@ namespace BizHawk.MultiClient
 		public static Controller NullControls;
 		public static CheatList CheatList;
 
+		public static Controller autofireNESControls;
+
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputAdapter = new CopyControllerAdapter();
@@ -44,6 +46,9 @@ namespace BizHawk.MultiClient
 		
 		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public static Controller ActiveController;
+
+		//rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
+		public static Controller AutoFireController;
 		
 		//the "output" port for the controller chain. 
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
@@ -59,6 +64,11 @@ namespace BizHawk.MultiClient
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
 		public static StickyXORAdapter StickyXORAdapter = new StickyXORAdapter();
+
+		/// <summary>
+		/// will OR together two IControllers
+		/// </summary>
+		public static ORAdapter OrControllerAdapter = new ORAdapter();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
