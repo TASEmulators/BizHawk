@@ -26,6 +26,9 @@ namespace BizHawk.MultiClient
 
 		public static Controller AutofireNESControls;
 		public static Controller AutofireSMSControls;
+		public static Controller AutofirePCEControls;
+		public static Controller AutofireGBControls;
+		public static Controller AutofireGenControls;
 
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();

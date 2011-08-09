@@ -533,6 +533,22 @@ namespace BizHawk.MultiClient
 			}
 			Global.PCEControls = pceControls;
 
+			var apceControls = new Controller(PCEngine.PCEngineController);
+			apceControls.Autofire = true;
+			for (int i = 0; i < 5; i++)
+			{
+				apceControls.BindMulti("P" + (i + 1) + " Up", Global.Config.PCEAutoController[i].Up);
+				apceControls.BindMulti("P" + (i + 1) + " Down", Global.Config.PCEAutoController[i].Down);
+				apceControls.BindMulti("P" + (i + 1) + " Left", Global.Config.PCEAutoController[i].Left);
+				apceControls.BindMulti("P" + (i + 1) + " Right", Global.Config.PCEAutoController[i].Right);
+
+				apceControls.BindMulti("P" + (i + 1) + " B2", Global.Config.PCEAutoController[i].II);
+				apceControls.BindMulti("P" + (i + 1) + " B1", Global.Config.PCEAutoController[i].I);
+				apceControls.BindMulti("P" + (i + 1) + " Select", Global.Config.PCEAutoController[i].Select);
+				apceControls.BindMulti("P" + (i + 1) + " Run", Global.Config.PCEAutoController[i].Run);
+			}
+			Global.AutofirePCEControls = apceControls;
+
 			var nesControls = new Controller(NES.NESController);
 
 			for (int i = 0; i < 2 /*TODO*/; i++)
@@ -574,6 +590,18 @@ namespace BizHawk.MultiClient
 			gbControls.BindMulti("Select", Global.Config.GBController.Select);
 			gbControls.BindMulti("Start", Global.Config.GBController.Start);
 			Global.GBControls = gbControls;
+
+			var agbControls = new Controller(Gameboy.GbController);
+			agbControls.Autofire = true;
+			agbControls.BindMulti("Up", Global.Config.GBAutoController.Up);
+			agbControls.BindMulti("Down", Global.Config.GBAutoController.Down);
+			agbControls.BindMulti("Left", Global.Config.GBAutoController.Left);
+			agbControls.BindMulti("Right", Global.Config.GBAutoController.Right);
+			agbControls.BindMulti("A", Global.Config.GBAutoController.A);
+			agbControls.BindMulti("B", Global.Config.GBAutoController.B);
+			agbControls.BindMulti("Select", Global.Config.GBAutoController.Select);
+			agbControls.BindMulti("Start", Global.Config.GBAutoController.Start);
+			Global.AutofireGBControls = agbControls;
 
 
 			var genControls = new Controller(Genesis.GenesisController);
@@ -796,15 +824,19 @@ namespace BizHawk.MultiClient
 					break;
 				case "GG":
 					Global.ActiveController = Global.SMSControls;
+					Global.AutoFireController = Global.AutofireSMSControls;
 					break;
 				case "PCE":
 					Global.ActiveController = Global.PCEControls;
+					Global.AutoFireController = Global.AutofirePCEControls;
 					break;
 				case "SGX":
 					Global.ActiveController = Global.PCEControls;
+					Global.AutoFireController = Global.AutofirePCEControls;
 					break;
 				case "GEN":
 					Global.ActiveController = Global.GenControls;
+					Global.AutoFireController = Global.AutofireGenControls;
 					break;
 				case "TI83":
 					Global.ActiveController = Global.TI83Controls;
