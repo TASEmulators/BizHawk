@@ -17,6 +17,11 @@
 			NESController[3] = new NESControllerTemplate(false);
 			GameBoyController = new NESControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
+
+			NESAutoController[0] = new NESControllerTemplate(false);
+			NESAutoController[1] = new NESControllerTemplate(false);
+			NESAutoController[2] = new NESControllerTemplate(false);
+			NESAutoController[3] = new NESControllerTemplate(false);
 		}
 
 		// Directories
@@ -411,6 +416,7 @@
 		//NES settings
 		public string NESReset = "Backspace";
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
+		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
 
 		//TI 83 settings
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
