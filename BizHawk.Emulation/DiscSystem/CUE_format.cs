@@ -533,7 +533,7 @@ namespace BizHawk.DiscSystem
 						track_has_pregap = true;
 						break;
 					case "POSTGAP":
-						if (track_has_pregap) throw new CueBrokenException("`Only one POSTGAP command is allowed per track.`");
+						if (track_has_postgap) throw new CueBrokenException("`Only one POSTGAP command is allowed per track.`");
 						track_has_postgap = true;
 						currTrack.PostGap = new CueTimestamp(clp.ReadToken());
 						break;
