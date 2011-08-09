@@ -565,16 +565,34 @@ namespace BizHawk.MultiClient
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[NESControlList.Length];
-			ButtonMappings[0] = Global.Config.NESController[jpad].Up;
-			ButtonMappings[1] = Global.Config.NESController[jpad].Down;
-			ButtonMappings[2] = Global.Config.NESController[jpad].Left;
-			ButtonMappings[3] = Global.Config.NESController[jpad].Right;
-			ButtonMappings[4] = Global.Config.NESController[jpad].A;
-			ButtonMappings[5] = Global.Config.NESController[jpad].B;
-			ButtonMappings[6] = Global.Config.NESController[jpad].Select;
-			ButtonMappings[7] = Global.Config.NESController[jpad].Start;
 
-			IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
+			if (jpad < 4)
+			{
+				ButtonMappings[0] = Global.Config.NESController[jpad].Up;
+				ButtonMappings[1] = Global.Config.NESController[jpad].Down;
+				ButtonMappings[2] = Global.Config.NESController[jpad].Left;
+				ButtonMappings[3] = Global.Config.NESController[jpad].Right;
+				ButtonMappings[4] = Global.Config.NESController[jpad].A;
+				ButtonMappings[5] = Global.Config.NESController[jpad].B;
+				ButtonMappings[6] = Global.Config.NESController[jpad].Select;
+				ButtonMappings[7] = Global.Config.NESController[jpad].Start;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
+			}
+
+			else
+			{
+				ButtonMappings[0] = Global.Config.NESAutoController[jpad - 4].Up;
+				ButtonMappings[1] = Global.Config.NESAutoController[jpad - 4].Down;
+				ButtonMappings[2] = Global.Config.NESAutoController[jpad - 4].Left;
+				ButtonMappings[3] = Global.Config.NESAutoController[jpad - 4].Right;
+				ButtonMappings[4] = Global.Config.NESAutoController[jpad - 4].A;
+				ButtonMappings[5] = Global.Config.NESAutoController[jpad - 4].B;
+				ButtonMappings[6] = Global.Config.NESAutoController[jpad - 4].Select;
+				ButtonMappings[7] = Global.Config.NESAutoController[jpad - 4].Start;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad - 4].Enabled;
+			}
+			
+			
 			Changed = true;
 			Labels.Clear();
 			TextBoxes.Clear();
@@ -599,31 +617,63 @@ namespace BizHawk.MultiClient
 			InputWidget TempBox;
 			Label TempLabel;
 			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.NESController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.NESController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.NESController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.NESController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.NESController[prev].A = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].A);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.NESController[prev].B = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].B);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.NESController[prev].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Start);
-			TempBox.Dispose();
 
-			Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			if (prev < 4)
+			{
+				Global.Config.NESController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.NESController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.NESController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.NESController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.NESController[prev].A = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].A);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.NESController[prev].B = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].B);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.NESController[prev].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Start);
+				TempBox.Dispose();
+
+				Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			else
+			{
+				Global.Config.NESAutoController[prev - 4].Up = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].Down = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].Left = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].Right = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].A = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].A);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].B = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].B);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Select);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.NESAutoController[prev - 4].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Start);
+				TempBox.Dispose();
+
+				Global.Config.NESController[prev - 4].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
 
 			TempBox.Dispose();
 			for (int i = 0; i < NESControlList.Length; i++)
@@ -732,6 +782,10 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < joypads; i++)
 			{
 				ControllComboBox.Items.Add(string.Format("Joypad {0}", i + 1));
+			}
+			for (int i = 0; i < joypads; i++)
+			{
+				ControllComboBox.Items.Add(string.Format("Autofire Joypad {0}", i + 1));
 			}
 			ControllComboBox.SelectedIndex = 0;
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();

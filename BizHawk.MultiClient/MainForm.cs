@@ -536,16 +536,16 @@ namespace BizHawk.MultiClient
 			var anesControls = new Controller(NES.NESController);
 			anesControls.Autofire = true;
 
-			for (int i = 0; i < 1 /*TODO make 2*/; i++)
+			for (int i = 0; i < 2 /*TODO*/; i++)
 			{
-				anesControls.BindMulti("P" + (i + 1) + " Up", "");
-				anesControls.BindMulti("P" + (i + 1) + " Down", "");
-				anesControls.BindMulti("P" + (i + 1) + " Left", "");
-				anesControls.BindMulti("P" + (i + 1) + " Right", "");
-				anesControls.BindMulti("P" + (i + 1) + " A", "D");
-				anesControls.BindMulti("P" + (i + 1) + " B", "F");
-				anesControls.BindMulti("P" + (i + 1) + " Select", "");
-				anesControls.BindMulti("P" + (i + 1) + " Start", "");
+				anesControls.BindMulti("P" + (i + 1) + " Up", Global.Config.NESAutoController[i].Up);
+				anesControls.BindMulti("P" + (i + 1) + " Down", Global.Config.NESAutoController[i].Down);
+				anesControls.BindMulti("P" + (i + 1) + " Left", Global.Config.NESAutoController[i].Left);
+				anesControls.BindMulti("P" + (i + 1) + " Right", Global.Config.NESAutoController[i].Right);
+				anesControls.BindMulti("P" + (i + 1) + " A", Global.Config.NESAutoController[i].A);
+				anesControls.BindMulti("P" + (i + 1) + " B", Global.Config.NESAutoController[i].B);
+				anesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESAutoController[i].Select);
+				anesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESAutoController[i].Start);
 			}
 			Global.autofireNESControls = anesControls;
 
