@@ -312,6 +312,13 @@ namespace BizHawk.MultiClient.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Lightning {
+            get {
+                object obj = ResourceManager.GetObject("Lightning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap LoadConfig {
             get {
                 object obj = ResourceManager.GetObject("LoadConfig", resourceCulture);

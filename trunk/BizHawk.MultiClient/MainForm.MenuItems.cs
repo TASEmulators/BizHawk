@@ -1318,5 +1318,29 @@ namespace BizHawk.MultiClient
 			SwapBackupSavestate(path);
 			Global.RenderPanel.AddMessage("Save slot " + SaveSlot.ToString() + " restored.");
 		}
+
+		private void FreezeStatus_Click(object sender, EventArgs e)
+		{
+			LoadCheatsWindow();
+		}
+
+		public void UpdateCheatStatus()
+		{
+			if (Global.CheatList.HasActiveCheat())
+			{
+				CheatStatus.ToolTipText = "Cheats are currently active";
+				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Freeze;
+			}
+			else
+			{
+				CheatStatus.ToolTipText = "";
+				CheatStatus.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			}
+		}
+
+		private void autofireToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new AutofireConfig().ShowDialog();
+		}
 	}
 }
