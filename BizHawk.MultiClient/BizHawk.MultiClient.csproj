@@ -106,6 +106,12 @@
     </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="ConfigService.cs" />
+    <Compile Include="config\AutofireConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AutofireConfig.Designer.cs">
+      <DependentUpon>AutofireConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\InputConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -435,6 +441,9 @@
     <EmbeddedResource Include="BizBox.resx">
       <DependentUpon>BizBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\AutofireConfig.resx">
+      <DependentUpon>AutofireConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\InputConfig.resx">
       <DependentUpon>InputConfig.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -651,6 +660,7 @@
     <None Include="images\Freeze.png" />
     <None Include="images\Unfreeze.png" />
     <None Include="images\AutoSearch.png" />
+    <None Include="images\Lightning.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <None Include="images\Refresh.bmp" />
