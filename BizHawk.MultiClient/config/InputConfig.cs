@@ -72,15 +72,32 @@ namespace BizHawk.MultiClient
 
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[SMSControlList.Length];
-			ButtonMappings[0] = Global.Config.SMSController[jpad].Up;
-			ButtonMappings[1] = Global.Config.SMSController[jpad].Down;
-			ButtonMappings[2] = Global.Config.SMSController[jpad].Left;
-			ButtonMappings[3] = Global.Config.SMSController[jpad].Right;
-			ButtonMappings[4] = Global.Config.SMSController[jpad].B1;
-			ButtonMappings[5] = Global.Config.SMSController[jpad].B2;
-			ButtonMappings[6] = Global.Config.SmsPause;
-			ButtonMappings[7] = Global.Config.SmsReset;
-			IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad].Enabled;
+
+			if (jpad < 2)
+			{
+				ButtonMappings[0] = Global.Config.SMSController[jpad].Up;
+				ButtonMappings[1] = Global.Config.SMSController[jpad].Down;
+				ButtonMappings[2] = Global.Config.SMSController[jpad].Left;
+				ButtonMappings[3] = Global.Config.SMSController[jpad].Right;
+				ButtonMappings[4] = Global.Config.SMSController[jpad].B1;
+				ButtonMappings[5] = Global.Config.SMSController[jpad].B2;
+				ButtonMappings[6] = Global.Config.SmsPause;
+				ButtonMappings[7] = Global.Config.SmsReset;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad].Enabled;
+			}
+			else
+			{
+				ButtonMappings[0] = Global.Config.SMSAutoController[jpad - 2].Up;
+				ButtonMappings[1] = Global.Config.SMSAutoController[jpad - 2].Down;
+				ButtonMappings[2] = Global.Config.SMSAutoController[jpad - 2].Left;
+				ButtonMappings[3] = Global.Config.SMSAutoController[jpad - 2].Right;
+				ButtonMappings[4] = Global.Config.SMSAutoController[jpad - 2].B1;
+				ButtonMappings[5] = Global.Config.SMSAutoController[jpad - 2].B2;
+				ButtonMappings[6] = Global.Config.SmsPause;
+				ButtonMappings[7] = Global.Config.SmsReset;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad - 2].Enabled;
+			}
+			
 			Changed = true;
 			Labels.Clear();
 			TextBoxes.Clear();
@@ -104,30 +121,61 @@ namespace BizHawk.MultiClient
 			ButtonsGroupBox.Controls.Clear();
 			InputWidget TempBox;
 			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.SMSController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.SMSController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.SMSController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.SMSController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.SMSController[prev].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B1);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.SMSController[prev].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B2);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
-			Global.Config.SMSController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+
+			if (prev < 2)
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.SMSController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.SMSController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.SMSController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.SMSController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.SMSController[prev].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B1);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.SMSController[prev].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B2);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+				Global.Config.SMSController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			else
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].B1);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.SMSAutoController[prev - 2].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].B2);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+				Global.Config.SMSController[prev - 2].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
 			TempBox.Dispose();
 			for (int i = 0; i < SMSControlList.Length; i++)
 			{
@@ -785,7 +833,8 @@ namespace BizHawk.MultiClient
 			}
 			for (int i = 0; i < joypads; i++)
 			{
-				ControllComboBox.Items.Add(string.Format("Autofire Joypad {0}", i + 1));
+				if (this.SystemComboBox.SelectedItem.ToString() != "TI-83")
+					ControllComboBox.Items.Add(string.Format("Autofire Joypad {0}", i + 1));
 			}
 			ControllComboBox.SelectedIndex = 0;
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
