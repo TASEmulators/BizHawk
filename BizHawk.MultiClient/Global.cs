@@ -24,11 +24,12 @@ namespace BizHawk.MultiClient
 		public static Controller NullControls;
 		public static CheatList CheatList;
 
-		public static Controller AutofireNESControls;
-		public static Controller AutofireSMSControls;
-		public static Controller AutofirePCEControls;
-		public static Controller AutofireGBControls;
-		public static Controller AutofireGenControls;
+		public static AutofireController AutofireNullControls;
+		public static AutofireController AutofireNESControls;
+		public static AutofireController AutofireSMSControls;
+		public static AutofireController AutofirePCEControls;
+		public static AutofireController AutofireGBControls;
+		public static AutofireController AutofireGenControls;
 
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
@@ -52,7 +53,7 @@ namespace BizHawk.MultiClient
 		public static Controller ActiveController;
 
 		//rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
-		public static Controller AutoFireController;
+		public static AutofireController AutoFireController;
 		
 		//the "output" port for the controller chain. 
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
