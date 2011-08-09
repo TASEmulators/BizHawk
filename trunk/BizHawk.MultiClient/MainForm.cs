@@ -129,7 +129,7 @@ namespace BizHawk.MultiClient
 			InitControls();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
-			Global.AutoFireController = Global.NullControls;
+			Global.AutoFireController = Global.AutofireNullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
 			RewireInputChain();
@@ -503,7 +503,7 @@ namespace BizHawk.MultiClient
 			}
 			Global.SMSControls = smsControls;
 
-			var asmsControls = new Controller(SMS.SmsController);
+			var asmsControls = new AutofireController(SMS.SmsController);
 			asmsControls.Autofire = true;
 			asmsControls.BindMulti("Reset", Global.Config.SmsReset);
 			asmsControls.BindMulti("Pause", Global.Config.SmsPause);
@@ -533,7 +533,7 @@ namespace BizHawk.MultiClient
 			}
 			Global.PCEControls = pceControls;
 
-			var apceControls = new Controller(PCEngine.PCEngineController);
+			var apceControls = new AutofireController(PCEngine.PCEngineController);
 			apceControls.Autofire = true;
 			for (int i = 0; i < 5; i++)
 			{
@@ -564,7 +564,7 @@ namespace BizHawk.MultiClient
 			}
 			Global.NESControls = nesControls;
 
-			var anesControls = new Controller(NES.NESController);
+			var anesControls = new AutofireController(NES.NESController);
 			anesControls.Autofire = true;
 
 			for (int i = 0; i < 2 /*TODO*/; i++)
@@ -591,7 +591,7 @@ namespace BizHawk.MultiClient
 			gbControls.BindMulti("Start", Global.Config.GBController.Start);
 			Global.GBControls = gbControls;
 
-			var agbControls = new Controller(Gameboy.GbController);
+			var agbControls = new AutofireController(Gameboy.GbController);
 			agbControls.Autofire = true;
 			agbControls.BindMulti("Up", Global.Config.GBAutoController.Up);
 			agbControls.BindMulti("Down", Global.Config.GBAutoController.Down);
@@ -1137,7 +1137,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
-			Global.AutoFireController = Global.NESControls;
+			Global.AutoFireController = Global.AutofireNullControls;
 			UserMovie.StopMovie();
 		}
 
