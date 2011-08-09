@@ -63,8 +63,6 @@ namespace BizHawk
 			writer.Seek(frame * 2, SeekOrigin.Begin);
 			writer.Write((ushort)encodedValue);
 		}
-
-		public bool Autofire { get { return false; } set { } }
 	}
 
 	public class InputPlayback : IController
@@ -123,7 +121,5 @@ namespace BizHawk
 		public bool IsSticky(string button) { return false; }
 
 		public bool MovieEnded { get { return frame >= input.Length; } }
-
-		public bool Autofire { get { return false; } set { } }
 	}
 }

@@ -11,7 +11,6 @@ namespace BizHawk.MultiClient
 	public class ClickyVirtualPadController : IController
 	{
 		public ControllerDefinition Type { get; set; }
-		public bool Autofire { get { return false; } set { } } //TODO: do we want virtualpad autofire pads?
 		public bool this[string button] { get { return IsPressed(button); } }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
@@ -49,7 +48,7 @@ namespace BizHawk.MultiClient
 		public bool this[string button] { get { return IsPressed(button); } }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
-		public bool Autofire { get { return false; } set { } }
+
 		public bool IsPressed(string button)
 		{
 			if (Global.Config.AllowUD_LR == true)
@@ -83,7 +82,7 @@ namespace BizHawk.MultiClient
 		public virtual bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
-		public bool Autofire { get { return false; } set { } }
+
 		public virtual void LatchFrom(IController source)
 		{
 			foreach (string button in source.Type.BoolButtons)
@@ -98,7 +97,6 @@ namespace BizHawk.MultiClient
 		public bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
-		public bool Autofire { get { return false; } set { } } //TODO: sticky autofire buttons?
 
 		public IController Source;
 		public IController SourceOr;
@@ -126,7 +124,7 @@ namespace BizHawk.MultiClient
 		public bool IsPressed(string button) { return this[button]; }
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
-		public bool Autofire { get { return false; } set { } } //TODO: sticky autofire buttons?
+
 		public bool this[string button] { 
 			get 
 			{
@@ -330,7 +328,7 @@ namespace BizHawk.MultiClient
 				else return Source;
 			}
 		}
-		public bool Autofire { get { return false; } set { } }
+
 		public ControllerDefinition Type { get { return Curr.Type; } }
 		public bool this[string button] { get { return Curr[button]; } }
 		public bool IsPressed(string button) { return Curr.IsPressed(button); }
@@ -381,7 +379,7 @@ namespace BizHawk.MultiClient
 		public bool this[string button] { get { return this.IsPressed(button); } }
 		public float GetFloat(string name) { return Source.GetFloat(name); }
 		public void UpdateControls(int frame) { Source.UpdateControls(frame); }
-		public bool Autofire { get { return false; } set { } }
+
 		public bool IsPressed(string button)
 		{
 			//do we even have a source?
@@ -414,7 +412,6 @@ namespace BizHawk.MultiClient
 		public bool IsPressed(string button) { return MyBoolButtons[button]; }
 		public float GetFloat(string name) { return 0; }
 		public void UpdateControls(int frame) {  }
-		public bool Autofire { get { return false; } set { } }
 		//--------
 
 		WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();

@@ -22,8 +22,5 @@ namespace BizHawk
 
 		//TODO - why does this have a frame argument. must be removed.
 		void UpdateControls(int frame);
-
-		//Flag for whether the controller will behave like a autofire (rapid fire) controller
-		bool Autofire { get; set; }
 	}
 }
