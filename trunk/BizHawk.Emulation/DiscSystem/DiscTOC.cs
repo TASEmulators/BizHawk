@@ -25,7 +25,11 @@ namespace BizHawk.DiscSystem
 			public int num;
 			public List<Index> Indexes = new List<Index>();
 
-			//the length of the track (should be the sum of all index lengths)
+			/// <summary>
+			/// a track logically starts at index 1. 
+			/// so this is the length from this index 1 to the next index 1 (or the end of the disc)
+			/// the time before track 1 index 1 is the lead-in and isn't accounted for in any track...
+			/// </summary>
 			public int length_lba;
 			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
@@ -36,6 +40,8 @@ namespace BizHawk.DiscSystem
 			public int lba;
 
 			//the length of the section
+			//HEY! This is commented out because it is a bad idea.
+			//The length of a section is almost useless, and if you want it, you are probably making an error.
 			//public int length_lba;
 			//public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
 		}
@@ -79,7 +85,10 @@ namespace BizHawk.DiscSystem
 						}
 						else
 						{
-							//subtract leadin
+							//subtract leadin. CUE format seems to always imply this exact amount.
+							//however, physical discs could possibly have a slightly longer lead-in.
+							//this could be done with a pregap on track 1 perhaps.. 
+							//would we handle it here correctly? i think so
 							int lba = index.lba - 150;
 							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(lba).Value);
 						}
