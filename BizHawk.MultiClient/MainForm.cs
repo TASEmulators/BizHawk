@@ -77,7 +77,7 @@ namespace BizHawk.MultiClient
 
 			Global.CheatList = new CheatList();
 			UpdateStatusSlots();
-			
+
 			//in order to allow late construction of this database, we hook up a delegate here to dearchive the data and provide it on demand
 			//we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
@@ -129,6 +129,7 @@ namespace BizHawk.MultiClient
 			InitControls();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
+			Global.AutoFireController = Global.NullControls;
 			Global.Sound = new Sound(Handle, Global.DSound);
 			Global.Sound.StartSound();
 			RewireInputChain();
@@ -305,6 +306,7 @@ namespace BizHawk.MultiClient
 				Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
 
 
@@ -531,6 +533,22 @@ namespace BizHawk.MultiClient
 			}
 			Global.NESControls = nesControls;
 
+			var anesControls = new Controller(NES.NESController);
+			anesControls.Autofire = true;
+
+			for (int i = 0; i < 1 /*TODO make 2*/; i++)
+			{
+				anesControls.BindMulti("P" + (i + 1) + " Up", "");
+				anesControls.BindMulti("P" + (i + 1) + " Down", "");
+				anesControls.BindMulti("P" + (i + 1) + " Left", "");
+				anesControls.BindMulti("P" + (i + 1) + " Right", "");
+				anesControls.BindMulti("P" + (i + 1) + " A", "D");
+				anesControls.BindMulti("P" + (i + 1) + " B", "F");
+				anesControls.BindMulti("P" + (i + 1) + " Select", "");
+				anesControls.BindMulti("P" + (i + 1) + " Start", "");
+			}
+			Global.autofireNESControls = anesControls;
+
 			var gbControls = new Controller(Gameboy.GbController);
 			gbControls.BindMulti("Up", Global.Config.GBController.Up);
 			gbControls.BindMulti("Down", Global.Config.GBController.Down);
@@ -620,7 +638,7 @@ namespace BizHawk.MultiClient
 				case ".TAS":   //Bizhawk
 				case ".FM2":   //FCUEX
 				case ".MC2":   //PCEjin
-				    return true;
+					return true;
 				default:
 					return false;
 			}
@@ -777,6 +795,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					Global.ActiveController = Global.NESControls;
+					Global.AutoFireController = Global.autofireNESControls;
 					break;
 				case "GB":
 					break;
@@ -791,15 +810,19 @@ namespace BizHawk.MultiClient
 		void RewireInputChain()
 		{
 			Global.ControllerInputCoalescer = new InputCoalescer();
+			
 			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 
-			Global.UD_LR_ControllerAdapter.Source = Global.ActiveController;
-			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
+			Global.OrControllerAdapter.Source = Global.ActiveController;
+			Global.OrControllerAdapter.SourceOr = Global.AutoFireController;
+			Global.UD_LR_ControllerAdapter.Source = Global.OrControllerAdapter;
 
+			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
+			
 			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputAdapter;
-			
+
 			Global.Emulator.Controller = Global.ControllerOutput;
 			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
 
@@ -841,105 +864,105 @@ namespace BizHawk.MultiClient
 
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
-			    GameInfo game = null;
+				GameInfo game = null;
 
 				try
 				{
-			        if (file.Extension.ToLower() == ".iso")
-			        {
-				        if (Global.PsxCoreLibrary.IsOpen)
-				        {
-                            // sorry zero ;'( I leave de-RomGameifying this to you
-                            //PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
-                            //nextEmulator = psx;
-                            //game = new RomGame();
-                            //var disc = Disc.FromIsoPath(path);
-                            //Global.DiscHopper.Clear();
-                            //Global.DiscHopper.Enqueue(disc);
-                            //Global.DiscHopper.Insert();
-                            //psx.SetDiscHopper(Global.DiscHopper);
-				        }
-			        }
-                    else if (file.Extension.ToLower() == ".cue")
-                    {
-                        Disc disc = Disc.FromCuePath(path);
-                        var hash = disc.GetHash();
-                        game = Database.CheckDatabase(hash);
-                        if (game == null)
-                        {
-                            // Game was not found in DB. For now we're going to send it to the PCE-CD core. 
-                            // In the future we need to do something smarter, possibly including simply asking the user
-                            // what system the game is for.
+					if (file.Extension.ToLower() == ".iso")
+					{
+						if (Global.PsxCoreLibrary.IsOpen)
+						{
+							// sorry zero ;'( I leave de-RomGameifying this to you
+							//PsxCore psx = new PsxCore(Global.PsxCoreLibrary);
+							//nextEmulator = psx;
+							//game = new RomGame();
+							//var disc = Disc.FromIsoPath(path);
+							//Global.DiscHopper.Clear();
+							//Global.DiscHopper.Enqueue(disc);
+							//Global.DiscHopper.Insert();
+							//psx.SetDiscHopper(Global.DiscHopper);
+						}
+					}
+					else if (file.Extension.ToLower() == ".cue")
+					{
+						Disc disc = Disc.FromCuePath(path);
+						var hash = disc.GetHash();
+						game = Database.CheckDatabase(hash);
+						if (game == null)
+						{
+							// Game was not found in DB. For now we're going to send it to the PCE-CD core. 
+							// In the future we need to do something smarter, possibly including simply asking the user
+							// what system the game is for.
 
-                            game = new GameInfo();
-                            game.System = "PCE";
-                            game.Name = file.Name;
-                        }
+							game = new GameInfo();
+							game.System = "PCE";
+							game.Name = file.Name;
+						}
 
-                        switch (game.System)
-                        {
-                            case "PCE":
-                                if (File.Exists(Global.Config.PathPCEBios) == false)
-                                {
-                                    MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths.");
-                                    return false;
-                                }
-                                rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
-                                nextEmulator = new PCEngine(game, disc, rom.RomData);
-                                break;
-                        }
-                    }
-			        else
-			        {
-			            rom = new RomGame(file);
-			            game = rom.GameInfo;
+						switch (game.System)
+						{
+							case "PCE":
+								if (File.Exists(Global.Config.PathPCEBios) == false)
+								{
+									MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths.");
+									return false;
+								}
+								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
+								nextEmulator = new PCEngine(game, disc, rom.RomData);
+								break;
+						}
+					}
+					else
+					{
+						rom = new RomGame(file);
+						game = rom.GameInfo;
 
-			            switch (game.System)
-			            {
-			                case "SMS":
-			                case "SG":
-			                    if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
-			                    if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
-			                    if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
-			                    nextEmulator = new SMS(game, rom.RomData);
-			                    break;
-			                case "GG":
-			                    if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
-			                    nextEmulator = new SMS(game, rom.RomData);
-			                    break;
-			                case "PCE":
-			                case "SGX":
-			                    nextEmulator = new PCEngine(game, rom.RomData);
-			                    break;
-			                case "GEN":
-			                    nextEmulator = new Genesis(true); //TODO
-			                    break;
-			                case "TI83":
-			                    nextEmulator = new TI83(game, rom.RomData);
-			                    if (Global.Config.TI83autoloadKeyPad)
-			                        LoadTI83KeyPad();
-			                    break;
-			                case "NES":
-			                    {
-			                        NES nes = new NES(game, rom.FileData);
-			                        Global.Game.Status = nes.RomStatus;
-			                        nextEmulator = nes;
-			                        if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
-			                            HawkFile.ExistsAt(Global.Config.NESPaletteFile))
-			                        {
-			                            nes.SetPalette(
-			                                NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
-			                        }
-			                    }
-			                    break;
-			                case "GB":
-			                    nextEmulator = new Gameboy();
-			                    break;
-			            }
-			        }
+						switch (game.System)
+						{
+							case "SMS":
+							case "SG":
+								if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
+								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
+								if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
+								nextEmulator = new SMS(game, rom.RomData);
+								break;
+							case "GG":
+								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
+								nextEmulator = new SMS(game, rom.RomData);
+								break;
+							case "PCE":
+							case "SGX":
+								nextEmulator = new PCEngine(game, rom.RomData);
+								break;
+							case "GEN":
+								nextEmulator = new Genesis(true); //TODO
+								break;
+							case "TI83":
+								nextEmulator = new TI83(game, rom.RomData);
+								if (Global.Config.TI83autoloadKeyPad)
+									LoadTI83KeyPad();
+								break;
+							case "NES":
+								{
+									NES nes = new NES(game, rom.FileData);
+									Global.Game.Status = nes.RomStatus;
+									nextEmulator = nes;
+									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
+										HawkFile.ExistsAt(Global.Config.NESPaletteFile))
+									{
+										nes.SetPalette(
+											NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(Global.Config.NESPaletteFile)));
+									}
+								}
+								break;
+							case "GB":
+								nextEmulator = new Gameboy();
+								break;
+						}
+					}
 
-				    if (nextEmulator == null) 
-                        throw new Exception();
+					if (nextEmulator == null)
+						throw new Exception();
 					nextEmulator.CoreInputComm = Global.CoreInputComm;
 				}
 				catch (Exception ex)
@@ -947,7 +970,7 @@ namespace BizHawk.MultiClient
 					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
 					return false;
 				}
-				
+
 				if (nextEmulator == null) throw new Exception();
 
 
@@ -971,7 +994,7 @@ namespace BizHawk.MultiClient
 				//setup the throttle based on platform's specifications
 				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
 				{
-					throttle.SetCoreFps( Global.Emulator.CoreOutputComm.VsyncRate);
+					throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
 					SyncThrottle();
 				}
 				RamSearch1.Restart();
@@ -1051,42 +1074,44 @@ namespace BizHawk.MultiClient
 
 		private void LoadSaveRam()
 		{
-            try
-            {
-                using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
-                    reader.Read(Global.Emulator.SaveRam, 0, Global.Emulator.SaveRam.Length);
-            } catch { }
+			try
+			{
+				using (var reader = new BinaryReader(new FileStream(PathManager.SaveRamPath(Global.Game), FileMode.Open, FileAccess.Read)))
+					reader.Read(Global.Emulator.SaveRam, 0, Global.Emulator.SaveRam.Length);
+			}
+			catch { }
 		}
 
 		private void CloseGame()
 		{
 			if (Global.Emulator.SaveRamModified)
-			    SaveRam();
+				SaveRam();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
+			Global.AutoFireController = Global.NESControls;
 			UserMovie.StopMovie();
 		}
 
-        private static void SaveRam()
-        {
-            string path = PathManager.SaveRamPath(Global.Game);
+		private static void SaveRam()
+		{
+			string path = PathManager.SaveRamPath(Global.Game);
 
-            var f = new FileInfo(path);
-            if (f.Directory.Exists == false)
-                f.Directory.Create();
+			var f = new FileInfo(path);
+			if (f.Directory.Exists == false)
+				f.Directory.Create();
 
-            var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-            int len = Util.SaveRamBytesUsed(Global.Emulator.SaveRam);
-            writer.Write(Global.Emulator.SaveRam, 0, len);
-            writer.Close();
-        }
+			var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+			int len = Util.SaveRamBytesUsed(Global.Emulator.SaveRam);
+			writer.Write(Global.Emulator.SaveRam, 0, len);
+			writer.Close();
+		}
 
 		void OnSelectSlot(int num)
 		{
 			SaveSlot = num;
 			SaveSlotSelectedMessage();
-			UpdateStatusSlots(); 
+			UpdateStatusSlots();
 		}
 
 		/// <summary>
@@ -1098,11 +1123,11 @@ namespace BizHawk.MultiClient
 			{
 				//the main form gets input
 				if (Form.ActiveForm == this) return true;
-				
+
 				//modals that need to capture input for binding purposes get input, of course
 				if (Form.ActiveForm is InputConfig) return true;
 				if (Form.ActiveForm is tools.HotkeyWindow) return true;
-				
+
 				//if no form is active on this process, then the background input setting applies
 				if (Form.ActiveForm == null && Global.Config.AcceptBackgroundInput) return true;
 
@@ -1112,11 +1137,11 @@ namespace BizHawk.MultiClient
 
 		public void ProcessInput()
 		{
-			for(;;)
+			for (; ; )
 			{
 				//loop through all available events
 				var ie = Input.Instance.DequeueEvent();
-				if(ie == null) break;
+				if (ie == null) break;
 
 				//useful debugging:
 				//Console.WriteLine(ie);
@@ -1135,7 +1160,7 @@ namespace BizHawk.MultiClient
 						if (ie.LogicalButton.Alt && ie.LogicalButton.Button.Length == 1)
 						{
 							char c = ie.LogicalButton.Button.ToLower()[0];
-							if (c >= 'a' && c <= 'z' || c==' ')
+							if (c >= 'a' && c <= 'z' || c == ' ')
 							{
 								SendAltKeyChar(c);
 								sys_hotkey = true;
@@ -1148,7 +1173,7 @@ namespace BizHawk.MultiClient
 						}
 					}
 					//ordinarily, an alt release with nothing else would move focus to the menubar. but that is sort of useless, and hard to implement exactly right.
-	
+
 					//no hotkeys or system keys bound this, so mutate it to an unmodified key and assign it for use as a game controller input
 					//(we have a rule that says: modified events may be used for game controller inputs but not hotkeys)
 					if (!sys_hotkey)
@@ -1175,7 +1200,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.HotkeyCoalescer.Receive(ie);
 				}
-			
+
 			} //foreach event
 
 		}
@@ -1197,7 +1222,7 @@ namespace BizHawk.MultiClient
 				case "ToolBox":
 					LoadToolBox();
 					break;
-				
+
 				case "Quick Save State":
 					if (!IsNullEmulator())
 						SaveState("QuickSave" + SaveSlot.ToString());
@@ -1241,20 +1266,20 @@ namespace BizHawk.MultiClient
 				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
 				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
 				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0": 
-					OnSelectSlot(0); 
+				case "SelectSlot0":
+					OnSelectSlot(0);
 					break;
-				case "SelectSlot1": 
-					OnSelectSlot(1); 
+				case "SelectSlot1":
+					OnSelectSlot(1);
 					break;
-				case "SelectSlot2": 
-					OnSelectSlot(2); 
+				case "SelectSlot2":
+					OnSelectSlot(2);
 					break;
-				case "SelectSlot3": 
-					OnSelectSlot(3); 
+				case "SelectSlot3":
+					OnSelectSlot(3);
 					break;
-				case "SelectSlot4": 
-					OnSelectSlot(4); 
+				case "SelectSlot4":
+					OnSelectSlot(4);
 					break;
 				case "SelectSlot5": OnSelectSlot(5); break;
 				case "SelectSlot6": OnSelectSlot(6); break;
@@ -1290,14 +1315,14 @@ namespace BizHawk.MultiClient
 					}
 
 				case "Close ROM": CloseROM(); break;
-			
+
 				case "Display FPS": ToggleFPS(); break;
 
 				case "Display FrameCounter": ToggleFrameCounter(); break;
 				case "Display LagCounter": ToggleLagCounter(); break;
 				case "Display Input": ToggleInputDisplay(); break;
 				case "Toggle Read Only": ToggleReadOnly(); break;
-				case "Play Movie": 
+				case "Play Movie":
 					{
 						PlayMovie();
 						break;
@@ -1323,7 +1348,7 @@ namespace BizHawk.MultiClient
 							Global.RenderPanel.MT = "Recording None";
 						}
 						else
-						Global.RenderPanel.AddMessage("MultiTrack Disabled");
+							Global.RenderPanel.AddMessage("MultiTrack Disabled");
 						Global.MovieSession.MultiTrack.RecordAll = false;
 						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						break;
@@ -1336,7 +1361,7 @@ namespace BizHawk.MultiClient
 						{
 							Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();  
+						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 						break;
 					}
 
@@ -1344,11 +1369,11 @@ namespace BizHawk.MultiClient
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer--;
 						Global.MovieSession.MultiTrack.RecordAll = false;
-						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1) 
+						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
 						{
 							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();  
+						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 						break;
 					}
 				case "Record All":
@@ -1362,7 +1387,7 @@ namespace BizHawk.MultiClient
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						Global.MovieSession.MultiTrack.RecordAll = false;
-						Global.RenderPanel.MT = "Recording None"; 
+						Global.RenderPanel.MT = "Recording None";
 						break;
 					}
 				case "Emulator Pause":
@@ -1384,7 +1409,7 @@ namespace BizHawk.MultiClient
 			throttle.Step(true, -1);
 		}
 
-	
+
 		void StepRunLoop_Core()
 		{
 			bool runFrame = false;
@@ -1494,7 +1519,7 @@ namespace BizHawk.MultiClient
 				{
 					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
-				
+
 				if (UserMovie.Mode == MOVIEMODE.PLAY)
 				{
 					if (UserMovie.Length() == Global.Emulator.Frame)
@@ -1513,7 +1538,7 @@ namespace BizHawk.MultiClient
 						session.LatchInputFromLog();
 					}
 				}
-				
+
 				//TODO: adelikat: don't know what this should do so leaving it commented out
 				//if (UserMovie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
 				//{					
@@ -1521,16 +1546,16 @@ namespace BizHawk.MultiClient
 				//}
 
 				//=======================================
-                MemoryPulse.Pulse();
+				MemoryPulse.Pulse();
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
-                MemoryPulse.Pulse();
+				MemoryPulse.Pulse();
 				//=======================================
 
 				if (CurrAviWriter != null)
 				{
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
 					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
-					short[] temp = new short[samples*2];
+					short[] temp = new short[samples * 2];
 					Global.Emulator.SoundProvider.GetSamples(temp);
 					genSound = false;
 
@@ -1723,7 +1748,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-			public void LoadRamSearch()
+		public void LoadRamSearch()
 		{
 			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
 			{
@@ -1976,10 +2001,10 @@ namespace BizHawk.MultiClient
 
 		private void CloseROM()
 		{
-            CloseGame();
+			CloseGame();
 			Global.Emulator = new NullEmulator();
 			Global.Game = new GameInfo();
-            MemoryPulse.Clear();
+			MemoryPulse.Clear();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
 			HexEditor1.Restart();
@@ -2178,7 +2203,7 @@ namespace BizHawk.MultiClient
 
 			if (result == DialogResult.Cancel)
 				return;
-			
+
 			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
 			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
 			AviWriter aw = new AviWriter();

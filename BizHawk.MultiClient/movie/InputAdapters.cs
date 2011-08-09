@@ -93,6 +93,29 @@ namespace BizHawk.MultiClient
 		}
 	}
 
+	public class ORAdapter : IController
+	{
+		public bool IsPressed(string button) { return this[button]; }
+		public float GetFloat(string name) { return 0.0f; } //TODO
+		public void UpdateControls(int frame) { }
+		public bool Autofire { get { return false; } set { } } //TODO: sticky autofire buttons?
+
+		public IController Source;
+		public IController SourceOr;
+		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		
+		public bool this[string button]
+		{
+			get
+			{
+				bool source = Source[button] | SourceOr[button];
+				return source;
+			}
+			set { throw new InvalidOperationException(); }
+		}
+
+	}
+
 	public class StickyXORAdapter : IController
 	{
 		private HashSet<string> stickySet = new HashSet<string>();
