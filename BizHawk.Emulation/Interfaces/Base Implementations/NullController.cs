@@ -15,6 +15,5 @@
 
 		private static NullController nullController = new NullController();
 		public static NullController GetNullController() { return nullController; }
-		public bool Autofire { get { return false; } set { } }
 	}
 }
