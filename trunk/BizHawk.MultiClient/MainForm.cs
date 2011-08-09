@@ -503,6 +503,21 @@ namespace BizHawk.MultiClient
 			}
 			Global.SMSControls = smsControls;
 
+			var asmsControls = new Controller(SMS.SmsController);
+			asmsControls.Autofire = true;
+			asmsControls.BindMulti("Reset", Global.Config.SmsReset);
+			asmsControls.BindMulti("Pause", Global.Config.SmsPause);
+			for (int i = 0; i < 2; i++)
+			{
+				asmsControls.BindMulti(string.Format("P{0} Up", i + 1), Global.Config.SMSAutoController[i].Up);
+				asmsControls.BindMulti(string.Format("P{0} Left", i + 1), Global.Config.SMSAutoController[i].Left);
+				asmsControls.BindMulti(string.Format("P{0} Right", i + 1), Global.Config.SMSAutoController[i].Right);
+				asmsControls.BindMulti(string.Format("P{0} Down", i + 1), Global.Config.SMSAutoController[i].Down);
+				asmsControls.BindMulti(string.Format("P{0} B1", i + 1), Global.Config.SMSAutoController[i].B1);
+				asmsControls.BindMulti(string.Format("P{0} B2", i + 1), Global.Config.SMSAutoController[i].B2);
+			}
+			Global.AutofireSMSControls = asmsControls;
+
 			var pceControls = new Controller(PCEngine.PCEngineController);
 			for (int i = 0; i < 5; i++)
 			{
@@ -547,7 +562,7 @@ namespace BizHawk.MultiClient
 				anesControls.BindMulti("P" + (i + 1) + " Select", Global.Config.NESAutoController[i].Select);
 				anesControls.BindMulti("P" + (i + 1) + " Start", Global.Config.NESAutoController[i].Start);
 			}
-			Global.autofireNESControls = anesControls;
+			Global.AutofireNESControls = anesControls;
 
 			var gbControls = new Controller(Gameboy.GbController);
 			gbControls.BindMulti("Up", Global.Config.GBController.Up);
@@ -777,6 +792,7 @@ namespace BizHawk.MultiClient
 				case "SG":
 				case "SMS":
 					Global.ActiveController = Global.SMSControls;
+					Global.AutoFireController = Global.AutofireSMSControls;
 					break;
 				case "GG":
 					Global.ActiveController = Global.SMSControls;
@@ -795,7 +811,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					Global.ActiveController = Global.NESControls;
-					Global.AutoFireController = Global.autofireNESControls;
+					Global.AutoFireController = Global.AutofireNESControls;
 					break;
 				case "GB":
 					break;

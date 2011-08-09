@@ -22,6 +22,10 @@
 			NESAutoController[1] = new NESControllerTemplate(false);
 			NESAutoController[2] = new NESControllerTemplate(false);
 			NESAutoController[3] = new NESControllerTemplate(false);
+
+			SMSAutoController[0] = new SMSControllerTemplate(true);
+			SMSAutoController[1] = new SMSControllerTemplate(false);
+			
 		}
 
 		// Directories
@@ -396,7 +400,8 @@
 		public string SmsReset = "C";
 		public string SmsPause = "V, J1 B8";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
-
+		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
+				
 		// PCEngine Settings
 		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
 
