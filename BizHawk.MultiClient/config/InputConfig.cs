@@ -191,15 +191,32 @@ namespace BizHawk.MultiClient
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[PCEControlList.Length];
-			ButtonMappings[0] = Global.Config.PCEController[jpad].Up;
-			ButtonMappings[1] = Global.Config.PCEController[jpad].Down;
-			ButtonMappings[2] = Global.Config.PCEController[jpad].Left;
-			ButtonMappings[3] = Global.Config.PCEController[jpad].Right;
-			ButtonMappings[4] = Global.Config.PCEController[jpad].I;
-			ButtonMappings[5] = Global.Config.PCEController[jpad].II;
-			ButtonMappings[6] = Global.Config.PCEController[jpad].Run;
-			ButtonMappings[7] = Global.Config.PCEController[jpad].Select;
-			IDX_CONTROLLERENABLED.Checked = Global.Config.PCEController[jpad].Enabled;
+
+			if (jpad < 5)
+			{
+				ButtonMappings[0] = Global.Config.PCEController[jpad].Up;
+				ButtonMappings[1] = Global.Config.PCEController[jpad].Down;
+				ButtonMappings[2] = Global.Config.PCEController[jpad].Left;
+				ButtonMappings[3] = Global.Config.PCEController[jpad].Right;
+				ButtonMappings[4] = Global.Config.PCEController[jpad].I;
+				ButtonMappings[5] = Global.Config.PCEController[jpad].II;
+				ButtonMappings[6] = Global.Config.PCEController[jpad].Run;
+				ButtonMappings[7] = Global.Config.PCEController[jpad].Select;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.PCEController[jpad].Enabled;
+			}
+			else
+			{
+				ButtonMappings[0] = Global.Config.PCEAutoController[jpad - 5].Up;
+				ButtonMappings[1] = Global.Config.PCEAutoController[jpad - 5].Down;
+				ButtonMappings[2] = Global.Config.PCEAutoController[jpad - 5].Left;
+				ButtonMappings[3] = Global.Config.PCEAutoController[jpad - 5].Right;
+				ButtonMappings[4] = Global.Config.PCEAutoController[jpad - 5].I;
+				ButtonMappings[5] = Global.Config.PCEAutoController[jpad - 5].II;
+				ButtonMappings[6] = Global.Config.PCEAutoController[jpad - 5].Run;
+				ButtonMappings[7] = Global.Config.PCEAutoController[jpad - 5].Select;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.PCEAutoController[jpad - 5].Enabled;
+			}
+			
 			Labels.Clear();
 			TextBoxes.Clear();
 			for (int i = 0; i < PCEControlList.Length; i++)
@@ -222,31 +239,64 @@ namespace BizHawk.MultiClient
 			ButtonsGroupBox.Controls.Clear();
 			InputWidget TempBox;
 			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.PCEController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.PCEController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.PCEController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.PCEController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.PCEController[prev].I = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.PCEController[prev].II = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.PCEController[prev].Run = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.PCEController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
-			TempBox.Dispose();
-			Global.Config.PCEController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+
+			if (prev < 5)
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.PCEController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.PCEController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.PCEController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.PCEController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.PCEController[prev].I = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.PCEController[prev].II = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.PCEController[prev].Run = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.PCEController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
+				TempBox.Dispose();
+				Global.Config.PCEController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			else
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].I = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].I);
+				TempBox.Dispose();
+				TempBox = TextBoxes[5] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].II = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].II);
+				TempBox.Dispose();
+				TempBox = TextBoxes[6] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Run = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Run);
+				TempBox.Dispose();
+				TempBox = TextBoxes[7] as InputWidget;
+				Global.Config.PCEAutoController[prev - 5].Select = AppendButtonMapping(TempBox.Text, Global.Config.PCEAutoController[prev - 5].Select);
+				TempBox.Dispose();
+				Global.Config.PCEAutoController[prev - 5].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			
 			for (int i = 0; i < PCEControlList.Length; i++)
 			{
 				TempLabel = Labels[i] as Label;

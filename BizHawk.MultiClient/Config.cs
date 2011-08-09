@@ -23,9 +23,16 @@
 			NESAutoController[2] = new NESControllerTemplate(false);
 			NESAutoController[3] = new NESControllerTemplate(false);
 
-			SMSAutoController[0] = new SMSControllerTemplate(true);
+			SMSAutoController[0] = new SMSControllerTemplate(false);
 			SMSAutoController[1] = new SMSControllerTemplate(false);
-			
+
+			PCEAutoController[0] = new PCEControllerTemplate(false);
+			PCEAutoController[1] = new PCEControllerTemplate(false);
+			PCEAutoController[2] = new PCEControllerTemplate(false);
+			PCEAutoController[3] = new PCEControllerTemplate(false);
+			PCEAutoController[4] = new PCEControllerTemplate(false);
+
+			GameBoyAutoController = new NESControllerTemplate(true);
 		}
 
 		// Directories
@@ -404,6 +411,7 @@
 				
 		// PCEngine Settings
 		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
+		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
 		public string GenP1Up = "UpArrow, J1 Up";
@@ -417,6 +425,7 @@
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
+		public NESControllerTemplate GameBoyAutoController = new NESControllerTemplate();
 
 		//NES settings
 		public string NESReset = "Backspace";
@@ -428,6 +437,7 @@
 
 		//GB settings
 		public GBControllerTemplate GBController = new GBControllerTemplate();
+		public GBControllerTemplate GBAutoController = new GBControllerTemplate();
 	}
 
 	public class SMSControllerTemplate
