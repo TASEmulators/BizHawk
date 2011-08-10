@@ -72,9 +72,19 @@
             0,
             0,
             0});
+			this.OnNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			this.OnNumeric.Name = "OnNumeric";
 			this.OnNumeric.Size = new System.Drawing.Size(74, 20);
 			this.OnNumeric.TabIndex = 2;
+			this.OnNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// OffNumeric
 			// 
@@ -84,9 +94,19 @@
             0,
             0,
             0});
+			this.OffNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			this.OffNumeric.Name = "OffNumeric";
 			this.OffNumeric.Size = new System.Drawing.Size(74, 20);
 			this.OffNumeric.TabIndex = 3;
+			this.OffNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// label1
 			// 
@@ -145,10 +165,10 @@
 
 		private System.Windows.Forms.Button Ok;
 		private System.Windows.Forms.Button Cancel;
-		private System.Windows.Forms.NumericUpDown OnNumeric;
 		private System.Windows.Forms.NumericUpDown OffNumeric;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.GroupBox groupBox1;
+		public System.Windows.Forms.NumericUpDown OnNumeric;
 	}
 }
