@@ -101,14 +101,12 @@ namespace BizHawk.MultiClient
 		public bool Autofire { get { return false; } set { autofire = value; } }
 		public int On { get; set; }
 		public int Off { get; set; }
-		//public int StartFrame { get; set; }
 
 		public AutofireController(ControllerDefinition definition)
 		{
 			
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
-			//StartFrame = 0;
 			type = definition;
 		}
 
@@ -168,7 +166,6 @@ namespace BizHawk.MultiClient
 				buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-
 					if (controller[bound_button])
 					{
 						buttons[kvp.Key] = true;
