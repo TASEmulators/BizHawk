@@ -95,17 +95,20 @@ namespace BizHawk.MultiClient
 		private ControllerDefinition type;
 		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
+		private WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
 
 		private bool autofire = true;
 		public bool Autofire { get { return false; } set { autofire = value; } }
 		public int On { get; set; }
 		public int Off { get; set; }
+		//public int StartFrame { get; set; }
 
 		public AutofireController(ControllerDefinition definition)
 		{
 			
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			//StartFrame = 0;
 			type = definition;
 		}
 
@@ -115,7 +118,7 @@ namespace BizHawk.MultiClient
 		{
 			if (autofire)
 			{
-				int a = Global.Emulator.Frame % (On + Off);
+				int a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
 				if (a < On)
 					return buttons[button];
 				else
@@ -144,26 +147,32 @@ namespace BizHawk.MultiClient
 			return ret;
 		}
 
-		int frameStarted = 0;
-
 		/// <summary>
 		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
 		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
 		/// </summary>
 		public void LatchFromPhysical(IController controller)
 		{
+			foreach (var kvp in bindings)
+			{
+				foreach (var bound_button in kvp.Value)
+				{
+					if (buttons[kvp.Key] == false && controller[bound_button] == true)
+						buttonStarts[kvp.Key] = Global.Emulator.Frame;
+				}
+			}
+			
 			buttons.Clear();
 			foreach (var kvp in bindings)
 			{
 				buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-					if (buttons[kvp.Key] == false && controller[bound_button] == true)
-						frameStarted = Global.Emulator.Frame;
-					else
-						frameStarted = 0;
+
 					if (controller[bound_button])
+					{
 						buttons[kvp.Key] = true;
+					}
 				}
 			}
 		}
