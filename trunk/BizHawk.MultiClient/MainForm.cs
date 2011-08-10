@@ -1474,7 +1474,14 @@ namespace BizHawk.MultiClient
 				//handle the initial trigger of a frame advance
 				if (FrameAdvanceTimestamp == DateTime.MinValue)
 				{
-					if (!EmulatorPaused) PauseEmulator();
+					if (!EmulatorPaused && !Global.Emulator.IsLagFrame)
+					{
+						
+						PauseEmulator();
+
+					}
+					else if (Global.Emulator.IsLagFrame)
+						PressFrameAdvance = true;
 					runFrame = true;
 					runloop_frameadvance = true;
 					FrameAdvanceTimestamp = now;
@@ -1489,7 +1496,8 @@ namespace BizHawk.MultiClient
 						UnpauseEmulator();
 					}
 				}
-				PressFrameAdvance = false;
+				if (!Global.Emulator.IsLagFrame)
+					PressFrameAdvance = false;
 			}
 			else
 			{
