@@ -187,7 +187,7 @@ namespace BizHawk.MultiClient
 		{
 			Label TempLabel;
 			InputWidget TempTextBox;
-			this.Text = ControllerStr + "PCEjin / SGX";
+			this.Text = ControllerStr + "PCE Engine / SuperGrafx";
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[PCEControlList.Length];
