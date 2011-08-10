@@ -488,6 +488,7 @@ namespace BizHawk.MultiClient
 
 
 			Global.NullControls = new Controller(NullEmulator.NullController);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
 
 			var smsControls = new Controller(SMS.SmsController);
 			smsControls.BindMulti("Reset", Global.Config.SmsReset);
