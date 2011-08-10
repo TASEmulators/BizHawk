@@ -1299,6 +1299,7 @@ namespace BizHawk.MultiClient
 
 			pauseToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.EmulatorPauseBinding;
 			powerToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HardResetBinding;
+			resetToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.SoftResetBinding;
 		}
 
 		protected override void OnClosed(EventArgs e)

@@ -430,7 +430,7 @@
 		public NESControllerTemplate GameBoyAutoController = new NESControllerTemplate();
 
 		//NES settings
-		public string NESReset = "Backspace";
+		//public string NESReset = "Backspace";
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
 		public NESControllerTemplate[] NESAutoController = new NESControllerTemplate[4];
 
