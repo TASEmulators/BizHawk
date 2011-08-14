@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Sound
         private byte WaveTableWriteOffset;
 
         private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
-        private int frameStartTime, frameStopTime;
+        private long frameStartTime, frameStopTime;
 
         private const int SampleRate = 44100;
         private const int PsgBase = 3580000;
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Sound
                 Channels[i] = new PSGChannel();
         }
 
-        public void BeginFrame(int cycles)
+        public void BeginFrame(long cycles)
         {
             while (commands.Count > 0)
             {
@@ -57,12 +57,12 @@ namespace BizHawk.Emulation.Sound
             frameStartTime = cycles;
         }
 
-        public void EndFrame(int cycles)
+        public void EndFrame(long cycles)
         {
             frameStopTime = cycles;
         }
 
-        public void WritePSG(byte register, byte value, int cycles)
+        public void WritePSG(byte register, byte value, long cycles)
         {
             commands.Enqueue(new QueuedCommand { Register = register, Value = value, Time = cycles-frameStartTime });
         }
@@ -132,12 +132,12 @@ namespace BizHawk.Emulation.Sound
 		public void DiscardSamples() { /*TBD*/ }
         public void GetSamples(short[] samples)
         {
-            int elapsedCycles = frameStopTime - frameStartTime;
+            int elapsedCycles = (int) (frameStopTime - frameStartTime);
             int start = 0;
             while (commands.Count > 0)
             {
                 var cmd = commands.Dequeue();
-                int pos = ((cmd.Time * samples.Length) / elapsedCycles) & ~1;
+                int pos = (int) ((cmd.Time * samples.Length) / elapsedCycles) & ~1;
                 MixSamples(samples, start, pos - start);
                 start = pos;
                 WritePSGImmediate(cmd.Register, cmd.Value);
@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Sound
         {
             public byte Register;
             public byte Value;
-            public int Time;
+            public long Time;
         }
     }
 }

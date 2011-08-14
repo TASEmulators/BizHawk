@@ -29,11 +29,7 @@
             if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
             {
                 if (BramEnabled && BramLocked == false)
-                {
-                    System.Console.WriteLine("READ BRAM[{0}] ; ret {1:X2}", addr & 0x7FF, BRAM[addr & 0x7FF]);
                     return BRAM[addr & 0x7FF];
-                }
-                System.Console.WriteLine("attemped BRAM read while locked");
                 return 0xFF;
             }
 
@@ -44,11 +40,7 @@
         private void WriteMemory(int addr, byte value)
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
-            {
-                //if (Cpu.debug)
-                    //Log.Note("MEM", "*Mem* Changed {0:X4} from {1:X2} to {2:X2}", addr & 0x1FFF, Ram[addr & 0x1FFF], value);
                 Ram[addr & 0x1FFF] = value;
-            }
 
             else if (addr >= 0x1FE000) // hardware page.
             {
@@ -69,11 +61,9 @@
             {
                 if (BramEnabled && BramLocked == false)
                 {
-                    System.Console.WriteLine("WRITE BRAM[{0}] : {1:X2}", addr & 0x7FF, value);
                     BRAM[addr & 0x7FF] = value;
                     SaveRamModified = true;
                 }
-                else System.Console.WriteLine("attemped BRAM write while locked!");
             }
 
             else 

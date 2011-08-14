@@ -27,8 +27,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public HuC6280 Cpu;
         public VDC VDC1, VDC2;
         public VCE VCE;
-        public HuC6280PSG PSG;
         public VPC VPC;
+        public ScsiCDBus SCSI;
+        
+        public HuC6280PSG PSG;
+        public CDAudio CDAudio;
+        // TODO ADPCM
+        public SoundMixer SoundMixer;
+        public MetaspuSoundProvider SoundSynchronizer;
 
         private bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
         private bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
@@ -40,15 +46,18 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private byte[] BRAM;
 
         // Memory system
-        public byte[] Ram;
+        public byte[] Ram;       // PCE= 8K base ram, SGX= 64k base ram
+        public byte[] CDRam;     // TurboCD extra 64k of ram
+        public byte[] SuperRam;  // Super System Card 192K of additional RAM
+        public byte[] ArcadeRam; // Arcade Card 2048K of additional RAM
 
-        // PC Engine timings:
         // 21,477,270  Machine clocks / sec
         //  7,159,090  Cpu cycles / sec
 
         public PCEngine(GameInfo game, byte[] rom)
         {
             CoreOutputComm = new CoreOutputComm();
+
             switch (game.System)
             {
                 case "PCE": Type = NecSystemType.TurboGrafx; break;
@@ -72,16 +81,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             VCE = new VCE();
             VDC1 = new VDC(Cpu, VCE);
             PSG = new HuC6280PSG();
+            InitScsiBus();
 
-            if (TurboGrafx || TurboCD)
+            if (TurboGrafx)
             {
                 Ram = new byte[0x2000];
                 Cpu.ReadMemory21 = ReadMemory;
                 Cpu.WriteMemory21 = WriteMemory;
                 Cpu.WriteVDC = VDC1.WriteVDC;
+                soundProvider = PSG;
+                CDAudio = new CDAudio(null, 0);
             }
 
-            if (SuperGrafx)
+            else if (SuperGrafx)
             {
                 VDC2 = new VDC(Cpu, VCE);
                 VPC = new VPC(VDC1, VDC2, VCE, Cpu);
@@ -89,6 +101,23 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.ReadMemory21 = ReadMemorySGX;
                 Cpu.WriteMemory21 = WriteMemorySGX;
                 Cpu.WriteVDC = VDC1.WriteVDC;
+                soundProvider = PSG;
+                CDAudio = new CDAudio(null, 0);
+            }
+
+            else if (TurboCD)
+            {
+                Ram = new byte[0x2000];
+                CDRam = new byte[0x10000];
+                Cpu.ReadMemory21 = ReadMemoryCD;
+                Cpu.WriteMemory21 = WriteMemoryCD;
+                Cpu.WriteVDC = VDC1.WriteVDC;
+                CDAudio = new CDAudio(disc, short.MaxValue);
+                // TODO ADPCM
+                SoundMixer = new SoundMixer(PSG, CDAudio);
+                SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+                soundProvider = SoundSynchronizer;
+                VDC1.MidScanlineThink = () => SCSI.Think();
             }
 
             if (rom.Length == 0x60000)
@@ -114,7 +143,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 RomLength = RomData.Length;
             }
 
-            if (game["BRAM"])
+            if (game["BRAM"] || Type == NecSystemType.TurboCD)
             {
                 BramEnabled = true;
                 BRAM = new byte[2048]; 
@@ -124,6 +153,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 BRAM[0] = 0x48; BRAM[1] = 0x55; BRAM[2] = 0x42; BRAM[3] = 0x4D;
                 BRAM[4] = 0x00; BRAM[5] = 0x88; BRAM[6] = 0x10; BRAM[7] = 0x80;
             }
+
+            if (game["SuperSysCard"])
+                SuperRam = new byte[0x30000];
+
+            if (game["ArcadeCard"])
+                ArcadeRam = new byte[0x200000];
 
             if (game["PopulousSRAM"])
             {
@@ -188,6 +223,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VDC1.ExecFrame(render);
 
             PSG.EndFrame(Cpu.TotalExecutedCycles);
+            if (TurboCD)
+                SoundSynchronizer.PullSamples(SoundMixer);
+
             if (lagged)
             {
                 _lagcount++;
@@ -205,9 +243,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             get { return (IVideoProvider) VPC ?? VDC1; }
         }
 
+        private ISoundProvider soundProvider;
         public ISoundProvider SoundProvider
         {
-            get { return PSG; }
+            get { return soundProvider; }
         }
  
         public string SystemId { get { return "PCE"; } }
@@ -254,6 +293,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VDC1.SaveStateText(writer, 1);
                 PSG.SaveStateText(writer);
             }
+            if (TurboCD)
+            {
+                CDAudio.SaveStateText(writer);
+            }
             writer.WriteLine("[/PCEngine]");
         }
 
@@ -289,6 +332,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     VDC1.LoadStateText(reader, 1);
                 else if (args[0] == "[VDC2]")
                     VDC2.LoadStateText(reader, 2);
+                else if (args[0] == "[CDAudio]")
+                    CDAudio.LoadStateText(reader);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -299,8 +344,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (SuperGrafx == false)
             {
                 writer.Write(Ram);
+                if (BRAM != null)
+                    writer.Write(BRAM);
                 if (PopulousRAM != null)
                     writer.Write(PopulousRAM);
+                if (SuperRam != null)
+                    writer.Write(SuperRam);
                 writer.Write(Frame);
                 writer.Write(_lagcount);
                 writer.Write(SF2MapperLatch);
@@ -309,6 +358,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VCE.SaveStateBinary(writer);
                 VDC1.SaveStateBinary(writer);
                 PSG.SaveStateBinary(writer);
+                if (TurboCD)
+                {
+                    CDAudio.SaveStateBinary(writer);
+                }
             } else {
                 writer.Write(Ram);
                 writer.Write(Frame);
@@ -328,8 +381,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (SuperGrafx == false)
             {
                 Ram = reader.ReadBytes(0x2000);
+                if (BRAM != null)
+                    BRAM = reader.ReadBytes(0x800);
                 if (PopulousRAM != null)
                     PopulousRAM = reader.ReadBytes(0x8000);
+                if (SuperRam != null)
+                    SuperRam = reader.ReadBytes(0x30000);
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
                 SF2MapperLatch = reader.ReadByte();
@@ -338,6 +395,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VCE.LoadStateBinary(reader);
                 VDC1.LoadStateBinary(reader);
                 PSG.LoadStateBinary(reader);
+                if (TurboCD)
+                {
+                    CDAudio.LoadStateBinary(reader);
+                }
             } else {
                 Ram = reader.ReadBytes(0x8000);
                 Frame = reader.ReadInt32();
@@ -354,16 +415,19 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte[] SaveStateBinary()
         {
-            int buflen = 75866;
+            int buflen = 75870;
             if (SuperGrafx) buflen += 90698;
             if (BramEnabled) buflen += 2048;
             if (PopulousRAM != null) buflen += 0x8000;
+            if (SuperRam != null) buflen += 0x30000;
+            if (TurboCD) buflen += 26;
+            //Console.WriteLine("LENGTH1 " + buflen);
 
             var buf = new byte[buflen];
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);
-            //Console.WriteLine("LENGTH " + stream.Position);
+            //Console.WriteLine("LENGTH2 " + stream.Position);
             writer.Close();
             return buf;
         }

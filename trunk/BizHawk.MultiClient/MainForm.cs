@@ -945,7 +945,7 @@ namespace BizHawk.MultiClient
 
 							game = new GameInfo();
 							game.System = "PCE";
-							game.Name = file.Name;
+							game.Name = Path.GetFileNameWithoutExtension(file.Name);
 						}
 
 						switch (game.System)
@@ -953,10 +953,14 @@ namespace BizHawk.MultiClient
 							case "PCE":
 								if (File.Exists(Global.Config.PathPCEBios) == false)
 								{
-									MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths.");
+									MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
 									return false;
 								}
 								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
+                                if (rom.GameInfo["SuperSysCard"])
+                                    game.AddOption("SuperSysCard");
+                                if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
+                                    MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
 								nextEmulator = new PCEngine(game, disc, rom.RomData);
 								break;
 						}
@@ -2033,8 +2037,8 @@ namespace BizHawk.MultiClient
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 			ofd.Filter = FormatFilter(
-				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.smd;*.rom;*.iso;%ARCH%",
-				"Disc Images", "*.iso",
+				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.smd;*.rom;*.cue;%ARCH%",
+				"Disc Images", "*.cue",
 				"NES", "*.nes;%ARCH%",
 				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 				"PC Engine", "*.pce;*.sgx;%ARCH%",
