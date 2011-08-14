@@ -55,14 +55,14 @@
 		public string PathSMSScreenshots = ".\\Screenshots";
 		public string PathSMSCheats = ".\\Cheats";
 
-		public string BaseGG = ".\\GG";
+		public string BaseGG = ".\\Game Gear";
 		public string PathGGROMs = ".";
 		public string PathGGSavestates = ".\\State";
 		public string PathGGSaveRAM = ".\\SaveRAM";
 		public string PathGGScreenshots = ".\\Screenshots";
 		public string PathGGCheats = ".\\Cheats";
 
-		public string BaseSG = ".\\GG";
+		public string BaseSG = ".\\SG-1000";
 		public string PathSGROMs = ".";
 		public string PathSGSavestates = ".\\State";
 		public string PathSGSaveRAM = ".\\SaveRAM";
@@ -76,7 +76,7 @@
 		public string PathGenesisScreenshots = ".\\Screenshots";
 		public string PathGenesisCheats = ".\\Cheats";
 
-		public string BasePCE = ".\\PCE";
+		public string BasePCE = ".\\PC Engine";
 		public string PathPCEROMs = ".";
 		public string PathPCESavestates = ".\\State";
 		public string PathPCESaveRAM = ".\\SaveRAM";

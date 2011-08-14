@@ -84,9 +84,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public const byte StatusSprite0Collision    = 0x01;
 
         private const int VramSize = 0x8000;
-
+        
         private HuC6280 cpu;
         private VCE vce;
+        public Action MidScanlineThink = () => { };
 
         public int MultiResHack = 0;
 

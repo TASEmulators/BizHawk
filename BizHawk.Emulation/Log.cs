@@ -10,11 +10,12 @@ namespace BizHawk
         {
             // You can set current desired logging settings here.
             // Production builds should be done with all logging disabled.
-            //LogToConsole = true;
+            LogToConsole = true;
             //LogToFile = true;
             //LogFilename = "d:/bizhawk.log";
+            //EnableDomain("CD");
             //EnableDomain("CPU");
-            //EnableDomain("VDC");
+            //EnableDomain("VDC");  
             //EnableDomain("MEM");
         }
 

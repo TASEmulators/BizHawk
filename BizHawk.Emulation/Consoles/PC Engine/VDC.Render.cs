@@ -86,7 +86,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if ((StatusByte & (StatusVerticalBlanking | StatusVramSatDmaComplete)) != 0)
                     cpu.IRQ1Assert = true;
 
-                cpu.Execute(455 - HBlankCycles - 2);
+                cpu.Execute(50);
+                MidScanlineThink();
+
+                cpu.Execute(455 - HBlankCycles - 52);
 
                 if (InActiveDisplay == false && DmaRequested)
                     RunDmaForScanline();
@@ -130,9 +133,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             int yTile = (vertLine / 8);
             int yOfs = vertLine % 8;
 
-            // TODO: x-scrolling is done super quick and shitty here and slow.
-            // Ergo, make it better later.
-
+            // This is not optimized. But it seems likely to remain that way.
             int xScroll = Registers[BXR] & 0x3FF;
             for (int x = 0; x < FrameWidth; x++)
             {

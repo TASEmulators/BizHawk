@@ -53,7 +53,7 @@ namespace BizHawk
             buffer = new T[capacity];
         }
 
-        public int Count { get { return tail - head; } }
+        public int Count { get { return size; } }
 
         public void Enqueue(T item)
         {
@@ -81,6 +81,18 @@ namespace BizHawk
             head = 0;
             tail = 0;
             size = 0;
+        }
+
+        public T[] GetBuffer()
+        {
+            return buffer;
+        }
+
+        public void SignalBufferFilled(int count)
+        {
+            head = 0;
+            tail = count;
+            size = count;
         }
 
         // TODO serialization functions

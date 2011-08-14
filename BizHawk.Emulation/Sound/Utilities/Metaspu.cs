@@ -10,15 +10,24 @@ namespace BizHawk.Emulation.Sound
 		{
 			buffer = Metaspu.metaspu_construct(method);
 		}
-		public MetaspuSoundProvider()
-			: this(ESynchMethod.ESynchMethod_Z)
+
+		public MetaspuSoundProvider() : this(ESynchMethod.ESynchMethod_V)
 		{
 		}
+
+        private short[] pullBuffer = new short[1470];
+        public void PullSamples(ISoundProvider source)
+        {
+            Array.Clear(pullBuffer, 0, 1470);
+            source.GetSamples(pullBuffer);
+            buffer.enqueue_samples(pullBuffer, 735);
+        }
 
 		public void GetSamples(short[] samples)
 		{
 			buffer.output_samples(samples, samples.Length / 2);
 		}
+
 		public void DiscardSamples()
 		{
 			buffer.clear();
@@ -573,16 +582,13 @@ namespace BizHawk.Emulation.Sound
 
         public void enqueue_samples(short[] buf, int samples_provided)
         {
-            throw new Exception("bluh");
-            int samplesToEnqueue = samples_provided;
-            if (samples_provided + buffer.Count > MaxExcessSamples)
-                samplesToEnqueue = MaxExcessSamples - buffer.Count;
-
-            //for (int i = 0; i < samplesToEnqueue; i++)
-                //buffer.Enqueue(buf[i]);
-
-            Console.WriteLine("enqueue {0} samples, buffer at {1}/4096 max capacity, {2} excess samples",
-                samplesToEnqueue, buffer.Count, buffer.Count - SamplesInOneFrame);
+            int ctr = 0;
+            for (int i = 0; i < samples_provided; i++)
+            {
+                short left = buf[ctr++];
+                short right = buf[ctr++];
+                enqueue_sample(left, right);
+            }
         }
 
         public void enqueue_sample(short left, short right)
@@ -597,7 +603,6 @@ namespace BizHawk.Emulation.Sound
 
         public void clear()
         {
-            Console.WriteLine("clear requested... but why! it makes me sad :'(");
             buffer.Clear();
         }
 
@@ -611,11 +616,6 @@ namespace BizHawk.Emulation.Sound
                     // if we're within 75% of target, then I guess we suck it up and resample.
                     // we sample in a goofy way, we could probably do it a bit smarter, if we cared more.
 
-                    Console.WriteLine("REASONABLE UNDERFLOW, RESAMPLING.");
-
-                    if (samples_requested > 2730)
-                        throw new Exception("something rather bad has happened");
-
                     int samples_available = buffer.Count;
                     for (int i = 0; buffer.Count > 0; i++)
                         resampleBuffer[i] = buffer.Dequeue();
@@ -627,17 +627,15 @@ namespace BizHawk.Emulation.Sound
                         buf[index++] = sample.left;
                         buf[index++] = sample.right;
                     }
-
-                        
                 } else {
                     // we're outside of a "reasonable" underflow. Give up and output silence.
-                    Console.WriteLine("EXCESSIVE UNDERFLOW. GIVE UP AND MAKE A POP");
+                    // Do nothing. The whole frame will be excess buffer.
                 }
             } 
             else
             {
                 // normal operation
-                Console.WriteLine("samples in buffer {0}, requested {1}", buffer.Count, samples_requested);
+                //Console.WriteLine("samples in buffer {0}, requested {1}", buffer.Count, samples_requested);
                 int index = 0;
                 for (int i = 0; i < samples_requested && buffer.Count > 0; i++)
                 {

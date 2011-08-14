@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.CPUs.H6280
         public bool TimerAssert;
         public byte IRQControlByte, IRQNextControlByte;
 
-        public int TotalExecutedCycles;
+        public long TotalExecutedCycles;
         public int PendingCycles;
         public bool LowSpeed;
 
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.CPUs.H6280
                 else if (args[0] == "IRQNextControlByte")
                     IRQNextControlByte = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "ExecutedCycles")
-                    TotalExecutedCycles = int.Parse(args[1]);
+                    TotalExecutedCycles = long.Parse(args[1]);
                 else if (args[0] == "PendingCycles")
                     PendingCycles = int.Parse(args[1]);
                 else if (args[0] == "LowSpeed")
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             TimerAssert = reader.ReadBoolean();
             IRQControlByte = reader.ReadByte();
             IRQNextControlByte = reader.ReadByte();
-            TotalExecutedCycles = reader.ReadInt32();
+            TotalExecutedCycles = reader.ReadInt64();
             PendingCycles = reader.ReadInt32();
             LowSpeed = reader.ReadBoolean();
 
