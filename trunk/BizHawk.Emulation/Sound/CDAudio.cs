@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Sound
             if (track < 1 || track > Disc.TOC.Sessions[0].Tracks.Count)
                 return;
 
+			//note for vecna: you may find that the new "Point" and "SeekPoint" concept in the TOC is more useful than this kind of logic. just something to think about
             StartLBA = Disc.TOC.Sessions[0].Tracks[track - 1].Indexes[1].lba;
             EndLBA = StartLBA + Disc.TOC.Sessions[0].Tracks[track - 1].length_lba;
             PlayingTrack = track;
@@ -65,6 +66,7 @@ namespace BizHawk.Emulation.Sound
             var tracks = Disc.TOC.Sessions[0].Tracks;
             bool foundTrack = false;
 
+			//note for vecna: you may find that the new "Point" and "SeekPoint" concept in the TOC is more useful than this kind of logic. just something to think about
             for (track = 0; track < tracks.Count; track++)
             {
                 int trackStart = tracks[track].Indexes[0].lba;

@@ -9,6 +9,88 @@ namespace BizHawk.DiscSystem
 
 	public class DiscTOC
 	{
+		/// <summary>
+		/// Sessions contained in the disc. Right now support for anything other than 1 session is totally not working
+		/// </summary>
+		public List<Session> Sessions = new List<Session>();
+
+		/// <summary>
+		/// this is an unfinished concept of "TOC Points" which is sometimes more convenient way for organizing the disc contents
+		/// </summary>
+		public List<TOCPoint> Points = new List<TOCPoint>();
+
+		/// <summary>
+		/// Todo - comment about what this actually means
+		/// </summary>
+		public int length_lba;
+
+		/// <summary>
+		/// todo - comment about what this actually means
+		/// </summary>
+		public Timestamp FriendlyLength { get { return new Timestamp(length_lba); } }
+
+		/// <summary>
+		/// seeks the point immediately before (or equal to) this LBA
+		/// </summary>
+		public TOCPoint SeekPoint(int lba)
+		{
+			for(int i=0;i<Points.Count;i++)
+			{
+				TOCPoint tp = Points[i];
+				if (tp.LBA > lba)
+					return Points[i - 1];
+			}
+			return Points[Points.Count - 1];
+		}
+
+		public long BinarySize
+		{
+			get { return length_lba * 2352; }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public class TOCPoint
+		{
+			public int Num;
+			public int LBA, TrackNum, IndexNum;
+			public Track Track;
+		}
+
+
+		/// <summary>
+		/// Generates the Points list from the current TOC
+		/// </summary>
+		public void GeneratePoints()
+		{
+			int num = 0;
+			Points.Clear();
+			foreach (var ses in Sessions)
+			{
+				foreach (var track in ses.Tracks)
+					foreach (var index in track.Indexes)
+					{
+						var tp = new TOCPoint();
+						tp.Num = num++;
+						tp.LBA = index.lba;
+						tp.TrackNum = track.num;
+						tp.IndexNum = index.num;
+						tp.Track = track;
+						Points.Add(tp);
+					}
+
+				var tpLeadout = new TOCPoint();
+				var lastTrack = ses.Tracks[ses.Tracks.Count - 1];
+				tpLeadout.Num = num++;
+				tpLeadout.LBA = lastTrack.Indexes[1].lba + lastTrack.length_lba;
+				tpLeadout.IndexNum = 0;
+				tpLeadout.TrackNum = 100;
+				tpLeadout.Track = null; //no leadout track.. now... or ever?
+				Points.Add(tpLeadout);
+			}
+		}
+
 		public class Session
 		{
 			public int num;
@@ -16,7 +98,7 @@ namespace BizHawk.DiscSystem
 
 			//the length of the session (should be the sum of all track lengths)
 			public int length_lba;
-			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
+			public Timestamp FriendlyLength { get { return new Timestamp(length_lba); } }
 		}
 
 		public class Track
@@ -31,7 +113,7 @@ namespace BizHawk.DiscSystem
 			/// the time before track 1 index 1 is the lead-in and isn't accounted for in any track...
 			/// </summary>
 			public int length_lba;
-			public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
+			public Timestamp FriendlyLength { get { return new Timestamp(length_lba); } }
 		}
 
 		public class Index
@@ -43,7 +125,7 @@ namespace BizHawk.DiscSystem
 			//HEY! This is commented out because it is a bad idea.
 			//The length of a section is almost useless, and if you want it, you are probably making an error.
 			//public int length_lba;
-			//public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
+			//public Cue.Timestamp FriendlyLength { get { return new Cue.Timestamp(length_lba); } }
 		}
 
 		public string GenerateCUE_OneBin(CueBinPrefs prefs)
@@ -53,7 +135,6 @@ namespace BizHawk.DiscSystem
 			//this generates a single-file cue!!!!!!! dont expect it to generate bin-per-track!
 			StringBuilder sb = new StringBuilder();
 
-			bool leadin = true;
 			foreach (var session in Sessions)
 			{
 				if (!prefs.SingleSession)
@@ -66,6 +147,7 @@ namespace BizHawk.DiscSystem
 				foreach (var track in session.Tracks)
 				{
 					ETrackType trackType = track.TrackType;
+
 					//mutate track type according to our principle of canonicalization 
 					if (trackType == ETrackType.Mode1_2048 && prefs.DumpECM)
 						trackType = ETrackType.Mode1_2352;
@@ -74,26 +156,17 @@ namespace BizHawk.DiscSystem
 					else sb.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(trackType));
 					foreach (var index in track.Indexes)
 					{
-						if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
+						//cue+bin has an implicit 150 sector pregap which neither the cue nor the bin has any awareness of
+						//except for the baked-in sector addressing.
+						//but, if there is an extra-long pregap, we want to reflect it this way
+						int lba = index.lba - 150;
+						if (lba <= 0 && index.num == 0 && track.num == 1)
 						{
-							//dont emit index 0 when it is the same as index 1. it confuses daemon tools.
-							//(make this an option?)
-						}
-						else if (leadin)
-						{
-							//don't generate the first index, it is illogical
 						}
 						else
 						{
-							//subtract leadin. CUE format seems to always imply this exact amount.
-							//however, physical discs could possibly have a slightly longer lead-in.
-							//this could be done with a pregap on track 1 perhaps.. 
-							//would we handle it here correctly? i think so
-							int lba = index.lba - 150;
-							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(lba).Value);
+							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Timestamp(lba).Value);
 						}
-
-						leadin = false;
 					}
 				}
 			}
@@ -101,14 +174,6 @@ namespace BizHawk.DiscSystem
 			return sb.ToString();
 		}
 
-		public List<Session> Sessions = new List<Session>();
-		public int length_lba;
-		public Cue.CueTimestamp FriendlyLength { get { return new Cue.CueTimestamp(length_lba); } }
-
-		public long BinarySize
-		{
-			get { return length_lba*2352; }
-		}
 
 		public void AnalyzeLengthsFromIndexLengths()
 		{

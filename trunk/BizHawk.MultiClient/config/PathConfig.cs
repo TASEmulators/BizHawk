@@ -271,7 +271,7 @@ namespace BizHawk.MultiClient
 
 		private void BrowseFolder(TextBox box, string Name, string System)
 		{
-			FolderBrowserDialog f = new FolderBrowserDialog();
+			FolderBrowserEx f = new FolderBrowserEx();
 			f.Description = "Set the directory for " + Name;
 			f.SelectedPath = PathManager.MakeAbsolutePath(box.Text, System);
 			DialogResult result = f.ShowDialog();

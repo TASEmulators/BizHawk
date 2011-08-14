@@ -103,7 +103,7 @@ namespace BizHawk
 			prefs.AnnotateCue = checkCueProp_Annotations.Checked;
 			prefs.OneBlobPerTrack = checkCueProp_OneBlobPerTrack.Checked;
 			prefs.ReallyDumpBin = false;
-			prefs.OmitRedundantIndex0 = checkCueProp_OmitRedundantIndex0.Checked;
+			//prefs.OmitRedundantIndex0 = checkCueProp_OmitRedundantIndex0.Checked;
 			prefs.SingleSession = true;
 			return prefs;
 		}

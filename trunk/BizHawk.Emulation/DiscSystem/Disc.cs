@@ -262,6 +262,49 @@ namespace BizHawk.DiscSystem
 		{
 			public SectorEntry(ISector sec) { this.Sector = sec; }
 			public ISector Sector;
+
+			//todo - add some PARAMETER fields to this, so that the ISector can use them (so that each ISector doesnt have to be constructed also)
+			//also then, maybe this could be a struct
+
+			//q-subchannel stuff. can be returned directly, or built into the entire subcode sector if you want
+
+			/// <summary>
+			/// ADR and CONTROL
+			/// </summary>
+			public byte q_status;
+			
+			/// <summary>
+			/// BCD indications of the current track number and index
+			/// </summary>
+			public BCD2 q_tno, q_index;
+
+			/// <summary>
+			/// track-relative timestamp
+			/// </summary>
+			public BCD2 q_min, q_sec, q_frame;
+			/// <summary>
+			/// absolute timestamp
+			/// </summary>
+			public BCD2 q_amin, q_asec, q_aframe;
+
+			public void Read_SubchannelQ(byte[] buffer, int offset)
+			{
+				buffer[offset + 0] = q_status;
+				buffer[offset + 1] = q_tno.BCDValue;
+				buffer[offset + 2] = q_index.BCDValue;
+				buffer[offset + 3] = q_min.BCDValue;
+				buffer[offset + 4] = q_sec.BCDValue;
+				buffer[offset + 5] = q_frame.BCDValue;
+				buffer[offset + 6] = 0;
+				buffer[offset + 7] = q_amin.BCDValue;
+				buffer[offset + 8] = q_asec.BCDValue;
+				buffer[offset + 9] = q_aframe.BCDValue;
+
+				ushort crc16 = CRC16_CCITT.Calculate(buffer, 0, 10);
+				//CRC is stored inverted and big endian
+				buffer[offset + 10] = (byte)(~(crc16 >> 8));
+				buffer[offset + 11] = (byte)(~(crc16));
+			}
 		}
 
 		public List<IBlob> Blobs = new List<IBlob>();
@@ -324,7 +367,8 @@ namespace BizHawk.DiscSystem
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
 				ret.bins.Add(bfd);
 				bfd.SectorSize = 2352;
-				//skip the lead-in!
+
+				//skip the mandatory track 1 pregap! cue+bin files do not contain it
 				for (int i = 150; i < TOC.length_lba; i++)
 				{
 					bfd.lbas.Add(i);
@@ -345,7 +389,7 @@ namespace BizHawk.DiscSystem
 					ret.bins.Add(bfd);
 					int lba=0;
 
-					//skip leadin
+					//skip the mandatory track 1 pregap! cue+bin files do not contain it
 					if (i == 0) lba = 150;
 
 					for (; lba < track.length_lba; lba++)
@@ -360,19 +404,19 @@ namespace BizHawk.DiscSystem
 					foreach (var index in track.Indexes)
 					{
 						int x = index.lba - track.Indexes[0].lba;
-						if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
-						{
-							//dont emit index 0 when it is the same as index 1, it confuses some cue parsers
-						}
-						else if (i==0 && index.num == 0)
-						{
-							//don't generate the first index, it is illogical
-						}
-						else
+						//if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
+						//{
+						//    //dont emit index 0 when it is the same as index 1, it confuses some cue parsers
+						//}
+						//else if (i==0 && index.num == 0)
+						//{
+						//    //don't generate the first index, it is illogical
+						//}
+						//else
 						{
 							//track 1 included the lead-in at the beginning of it. sneak past that.
-							if (i == 0) x -= 150;
-							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Cue.CueTimestamp(x).Value);
+							//if (i == 0) x -= 150;
+							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Timestamp(x).Value);
 						}
 					}
 				}
@@ -398,6 +442,8 @@ namespace BizHawk.DiscSystem
 		{
 			var ret = new Disc();
 			ret.FromCuePathInternal(cuePath);
+			ret.TOC.GeneratePoints();
+			ret.PopulateQSubchannel();
 			return ret;
 		}
 
@@ -405,7 +451,154 @@ namespace BizHawk.DiscSystem
 		{
 			var ret = new Disc();
 			ret.FromIsoPathInternal(isoPath);
+			ret.TOC.GeneratePoints();
+			ret.PopulateQSubchannel();
 			return ret;
+		}
+
+		/// <summary>
+		/// creates subchannel Q data track for this disc
+		/// </summary>
+		void PopulateQSubchannel()
+		{
+			int lba = 0;
+			int dpIndex = 0;
+
+			while (lba < Sectors.Count)
+			{
+				if (dpIndex < TOC.Points.Count - 1)
+				{
+					if (lba >= TOC.Points[dpIndex + 1].LBA)
+					{
+						dpIndex++;
+					}
+				}
+				var dp = TOC.Points[dpIndex];
+
+				var se = Sectors[lba];
+
+				int control = 0;
+				//choose a control byte depending on whether this is an audio or data track
+				if(dp.Track.TrackType == ETrackType.Audio)
+					control = (int)Q_Control.StereoNoPreEmph;
+				else control = (int)Q_Control.DataUninterrupted;
+
+				//we always use ADR=1 (mode-1 q block)
+				//this could be more sophisticated but it is almost useless for emulation (only useful for catalog/ISRC numbers)
+				int adr = 1;
+				se.q_status = (byte)(adr | (control << 4));
+				se.q_tno = BCD2.FromDecimal(dp.TrackNum);
+				se.q_index = BCD2.FromDecimal(dp.IndexNum);
+
+				int track_relative_lba = lba - dp.Track.Indexes[1].lba;
+				track_relative_lba = Math.Abs(track_relative_lba);
+				Timestamp track_relative_timestamp = new Timestamp(track_relative_lba);
+				se.q_min = BCD2.FromDecimal(track_relative_timestamp.MIN);
+				se.q_sec = BCD2.FromDecimal(track_relative_timestamp.SEC);
+				se.q_frame = BCD2.FromDecimal(track_relative_timestamp.FRAC);
+				Timestamp absolute_timestamp = new Timestamp(lba);
+				se.q_amin = BCD2.FromDecimal(absolute_timestamp.MIN);
+				se.q_asec = BCD2.FromDecimal(absolute_timestamp.SEC);
+				se.q_aframe = BCD2.FromDecimal(absolute_timestamp.FRAC);
+
+				lba++;
+			}
+		}
+
+		static byte IntToBCD(int n)
+		{
+			int ones;
+			int tens = Math.DivRem(n,10,out ones);
+			return (byte)((tens<<4)|ones);
+		}
+
+		private enum Q_Control
+		{
+			StereoNoPreEmph = 0,
+			StereoPreEmph = 1,
+			MonoNoPreemph = 8,
+			MonoPreEmph = 9,
+			DataUninterrupted = 4,
+			DataIncremental = 5,
+			
+			CopyProhibitedMask = 0,
+			CopyPermittedMask = 2,
+		}
+	}
+
+	/// <summary>
+	/// encapsulates a 2 digit BCD number as used various places in the CD specs
+	/// </summary>
+	public struct BCD2
+	{
+		/// <summary>
+		/// The raw BCD value. you can't do math on this number! but you may be asked to supply it to a game program.
+		/// The largest number it can logically contain is 99
+		/// </summary>
+		public byte BCDValue;
+
+		/// <summary>
+		/// The derived decimal value. you can do math on this! the largest number it can logically contain is 99.
+		/// </summary>
+		public int DecimalValue
+		{
+			get { return (BCDValue & 0xF) + ((BCDValue >> 4) & 0xF) * 10; }
+			set { BCDValue = IntToBCD(value); }
+		}
+
+		/// <summary>
+		/// makes a BCD2 from a decimal number. don't supply a number > 99 or you might not like the results
+		/// </summary>
+		public static BCD2 FromDecimal(int d)
+		{
+			BCD2 ret = new BCD2();
+			ret.DecimalValue = d;
+			return ret;
+		}
+
+
+		static byte IntToBCD(int n)
+		{
+			int ones;
+			int tens = Math.DivRem(n, 10, out ones);
+			return (byte)((tens << 4) | ones);
+		}
+	}
+
+	public class Timestamp
+	{
+		/// <summary>
+		/// creates timestamp of 00:00:00
+		/// </summary>
+		public Timestamp()
+		{
+			Value = "00:00:00";
+		}
+
+		/// <summary>
+		/// creates a timestamp from a string in the form mm:ss:ff
+		/// </summary>
+		public Timestamp(string value)
+		{
+			this.Value = value;
+			MIN = int.Parse(value.Substring(0, 2));
+			SEC = int.Parse(value.Substring(3, 2));
+			FRAC = int.Parse(value.Substring(6, 2));
+			LBA = MIN * 60 * 75 + SEC * 75 + FRAC;
+		}
+		public readonly string Value;
+		public readonly int MIN, SEC, FRAC, LBA;
+
+		/// <summary>
+		/// creates timestamp from supplied LBA
+		/// </summary>
+		public Timestamp(int LBA)
+		{
+			this.LBA = LBA;
+			MIN = LBA / (60 * 75);
+			SEC = (LBA / 75) % 60;
+			FRAC = LBA % 75;
+			Value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
 		}
 	}
 
@@ -436,6 +629,11 @@ namespace BizHawk.DiscSystem
 		public bool ReallyDumpBin;
 
 		/// <summary>
+		/// dump a .sub.q along with bins. one day we'll want to dump the entire subcode but really Q is all thats important for debugging most things
+		/// </summary>
+		public bool DumpSubchannelQ;
+
+		/// <summary>
 		/// generate remarks and other annotations to help humans understand whats going on, but which will confuse many cue parsers
 		/// </summary>
 		public bool AnnotateCue;
@@ -455,11 +653,13 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		public bool SingleSession;
 
-		/// <summary>
-		/// some cue parsers can't handle redundant Index 0 (equal to Index 1). Such as daemon tools. So, hide those indices.
-		/// Our canonical format craves explicitness so this is defaulted off.
-		/// </summary>
-		public bool OmitRedundantIndex0 = false;
+		//THIS IS WRONG-HEADED. track 1 index 0 must never equal index 1! apparently.
+
+		///// <summary>
+		///// some cue parsers can't handle redundant Index 0 (equal to Index 1). Such as daemon tools. So, hide those indices.
+		///// Our canonical format craves explicitness so this is defaulted off.
+		///// </summary>
+		//public bool OmitRedundantIndex0 = false;
 
 		/// <summary>
 		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
@@ -482,6 +682,8 @@ namespace BizHawk.DiscSystem
 		{
 			public string name;
 			public List<int> lbas = new List<int>();
+
+			//todo - do we really need this? i dont think so...
 			public List<bool> lba_zeros = new List<bool>();
 			public int SectorSize;
 		}
@@ -507,8 +709,8 @@ namespace BizHawk.DiscSystem
 				string sha1 = Util.Hash_SHA1(dump, 0, dump.Length);
 
 				int pregap = track.Indexes[1].lba - track.Indexes[0].lba;
-				Cue.CueTimestamp pregap_ts = new Cue.CueTimestamp(pregap);
-				Cue.CueTimestamp len_ts = new Cue.CueTimestamp(track.length_lba);
+				Timestamp pregap_ts = new Timestamp(pregap);
+				Timestamp len_ts = new Timestamp(track.length_lba);
 				sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n", 
 					i, 
 					Cue.RedumpTypeStringForTrackType(track.TrackType),
@@ -532,6 +734,7 @@ namespace BizHawk.DiscSystem
 
 		public void Dump(string directory, CueBinPrefs prefs, ProgressReport progress)
 		{
+			byte[] subQ_temp = new byte[12];
 			progress.TaskCount = 2;
 
 			progress.Message = "Generating Cue";
@@ -545,37 +748,56 @@ namespace BizHawk.DiscSystem
 			progress.TaskCurrent = 1;
 			progress.ProgressEstimate = bins.Sum((bfd) => bfd.lbas.Count);
 			progress.ProgressCurrent = 0;
-			if(prefs.ReallyDumpBin)
-				foreach (var bfd in bins)
-				{
-					int sectorSize = bfd.SectorSize;
-					byte[] temp = new byte[2352];
-					byte[] empty = new byte[2352];
-					string trackBinFile = bfd.name;
-					string trackBinPath = Path.Combine(directory, trackBinFile);
-					using (FileStream fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None))
-					{
-						for(int i=0;i<bfd.lbas.Count;i++)
-						{
-							if (progress.CancelSignal) return;
+			if(!prefs.ReallyDumpBin) return;
 
-							progress.ProgressCurrent++;
-							int lba = bfd.lbas[i];
-							if (bfd.lba_zeros[i])
+			foreach (var bfd in bins)
+			{
+				int sectorSize = bfd.SectorSize;
+				byte[] temp = new byte[2352];
+				byte[] empty = new byte[2352];
+				string trackBinFile = bfd.name;
+				string trackBinPath = Path.Combine(directory, trackBinFile);
+				string subQPath = Path.ChangeExtension(trackBinPath, ".sub.q");
+				FileStream fsSubQ = null;
+				FileStream fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None);
+				try
+				{
+					if (prefs.DumpSubchannelQ)
+						fsSubQ = new FileStream(subQPath, FileMode.Create, FileAccess.Write, FileShare.None);
+
+					for (int i = 0; i < bfd.lbas.Count; i++)
+					{
+						if (progress.CancelSignal) return;
+
+						progress.ProgressCurrent++;
+						int lba = bfd.lbas[i];
+						if (bfd.lba_zeros[i])
+						{
+							fs.Write(empty, 0, sectorSize);
+						}
+						else
+						{
+							if (sectorSize == 2352)
+								disc.ReadLBA_2352(lba, temp, 0);
+							else if (sectorSize == 2048) disc.ReadLBA_2048(lba, temp, 0);
+							else throw new InvalidOperationException();
+							fs.Write(temp, 0, sectorSize);
+
+							//write subQ if necessary
+							if (fsSubQ != null)
 							{
-								fs.Write(empty, 0, sectorSize);
-							}
-							else
-							{
-								if (sectorSize == 2352)
-									disc.ReadLBA_2352(lba, temp, 0);
-								else if (sectorSize == 2048) disc.ReadLBA_2048(lba, temp, 0);
-								else throw new InvalidOperationException();
-								fs.Write(temp, 0, sectorSize);
+								disc.Sectors[lba].Read_SubchannelQ(subQ_temp, 0);
+								fsSubQ.Write(subQ_temp, 0, 12);
 							}
 						}
 					}
 				}
+				finally
+				{
+					fs.Dispose();
+					if (fsSubQ != null) fsSubQ.Dispose();
+				}
+			}
 		}
 	}
 }

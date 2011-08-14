@@ -244,11 +244,6 @@ namespace BizHawk
 		LVIS_STATEIMAGEMASK = 0xF000,
 	}
 
-	internal struct WindowsFunction {
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
-	}
-
 
 	#endregion
 
@@ -425,7 +420,7 @@ namespace BizHawk
 				Marshal.StructureToPtr(stateItem, ptrItem, true);
 
 				// Send the message to the control window.
-				int result = WindowsFunction.SendMessage(
+				int result = Win32.SendMessage(
 					this.Handle,
 					(int)ListViewMessages.LVM_SETITEMSTATE,
 					index,
@@ -444,7 +439,7 @@ namespace BizHawk
 
 		private void SetVirtualItemCount() {
 			int result;
-			result = WindowsFunction.SendMessage(
+			result = Win32.SendMessage(
 				this.Handle,
 				(int)ListViewMessages.LVM_SETITEMCOUNT,
 				itemCount,
@@ -612,13 +607,13 @@ namespace BizHawk
 			lvhti.pt.x = x;
 			lvhti.pt.y = y;
 			Marshal.StructureToPtr(lvhti, ptrlvhti, true);
-			int z = WindowsFunction.SendMessage(this.Handle, (int)ListViewMessages.LVM_HITTEST, 0, ptrlvhti.ToInt32());
+			int z = Win32.SendMessage(this.Handle, (int)ListViewMessages.LVM_HITTEST, 0, ptrlvhti.ToInt32());
 			Marshal.PtrToStructure(ptrlvhti, lvhti);
 			return z;
 		}
 
 		public void ensureVisible(int index) {
-			WindowsFunction.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
+			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
 		}
 
 		public void ensureVisible() {
