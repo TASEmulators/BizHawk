@@ -922,7 +922,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				last_hwsamp = this_samp;
 			}
 
-			MetaspuSoundProvider metaspu = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_Z);
+			MetaspuSoundProvider metaspu = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 
 			void ISoundProvider.GetSamples(short[] samples)
 			{

@@ -104,11 +104,17 @@ namespace BizHawk.DiscSystem
             f = (byte) (lba - (m * 75 * 60) - (s * 75));
         }
 
+        // converts MSF to LBA offset
+        public static int ConvertMSFtoLBA(byte m, byte s, byte f)
+        {
+            return f + (s*75) + (m*75*60);
+        }
+
         // gets an identifying hash. hashes the first 512 sectors of 
         // the first data track on the disc.
         public string GetHash()
         {
-            byte[] buffer = new byte[512*2353];
+            byte[] buffer = new byte[512*2352];
             foreach (var track in TOC.Sessions[0].Tracks)
             {
                 if (track.TrackType == ETrackType.Audio)

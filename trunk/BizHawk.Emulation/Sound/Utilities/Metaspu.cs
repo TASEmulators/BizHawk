@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Sound
 		ESynchMethod_N, //nitsuja's
 		ESynchMethod_Z, //zero's
 		//ESynchMethod_P, //PCSX2 spu2-x //ohno! not available yet in c#
+        ESynchMethod_V // vecna
 	};
 	
 	public static class Metaspu
@@ -52,6 +53,8 @@ namespace BizHawk.Emulation.Sound
 					return new ZeromusSynchronizer();
 				case ESynchMethod.ESynchMethod_N:
 					return new NitsujaSynchronizer();
+                case ESynchMethod.ESynchMethod_V:
+                    return new VecnaSynchronizer();
 				default:
 					return new NitsujaSynchronizer();
 			}
@@ -522,4 +525,128 @@ namespace BizHawk.Emulation.Sound
 
 }; //NitsujaSynchronizer
 
+    class VecnaSynchronizer : ISynchronizingAudioBuffer
+    {
+        // vecna's attempt at a fully synchronous sound provider.
+        // It's similar in philosophy to my "BufferedAsync" provider, but BufferedAsync is not
+        // fully synchronous.
+
+        // Like BufferedAsync, it tries to make most frames 100% correct and just suck it up
+        // periodically and have a big bad-sounding mistake frame if it has to.
+        
+        // It is significantly less ambitious and elaborate than the other methods. 
+        // We'll see if it works better or not!
+
+        // It has a min and maximum amount of excess buffer to deal with minor overflows.
+        // When fastforwarding, it will discard samples above the maximum excess buffer.
+        
+        // When underflowing, it will attempt to resample to a certain threshhold.
+        // If it underflows beyond that threshhold, it will give up and output silence.
+        // Since it has done this, it will go ahead and generate some excess silence in order
+        // to restock its excess buffer.
+
+        struct Sample
+        {
+            public short left, right;
+            public Sample(short l, short r)
+            {
+                left = l;
+                right = r;
+            }
+        }
+
+        private Queue<Sample> buffer;
+        private Sample[] resampleBuffer;
+
+        private const int SamplesInOneFrame = 735;
+        private const int MaxExcessSamples = 2048;
+
+        public VecnaSynchronizer()
+        {
+            buffer = new Queue<Sample>(2048);
+            resampleBuffer = new Sample[2730]; // 2048 * 1.25
+
+            // Give us a little buffer wiggle-room
+            for (int i=0; i<367; i++)
+                buffer.Enqueue(new Sample(0,0));
+        }
+
+        public void enqueue_samples(short[] buf, int samples_provided)
+        {
+            throw new Exception("bluh");
+            int samplesToEnqueue = samples_provided;
+            if (samples_provided + buffer.Count > MaxExcessSamples)
+                samplesToEnqueue = MaxExcessSamples - buffer.Count;
+
+            //for (int i = 0; i < samplesToEnqueue; i++)
+                //buffer.Enqueue(buf[i]);
+
+            Console.WriteLine("enqueue {0} samples, buffer at {1}/4096 max capacity, {2} excess samples",
+                samplesToEnqueue, buffer.Count, buffer.Count - SamplesInOneFrame);
+        }
+
+        public void enqueue_sample(short left, short right)
+        {
+            if (buffer.Count >= MaxExcessSamples - 1)
+            {
+                // if buffer is overfull, dequeue old samples to make room for new samples.
+                buffer.Dequeue();
+            }
+            buffer.Enqueue(new Sample(left, right));
+        }
+
+        public void clear()
+        {
+            Console.WriteLine("clear requested... but why! it makes me sad :'(");
+            buffer.Clear();
+        }
+
+        public int output_samples(short[] buf, int samples_requested)
+        {
+            if (samples_requested > buffer.Count)
+            {
+                // underflow!
+                if (buffer.Count > samples_requested * 3 / 4)
+                {
+                    // if we're within 75% of target, then I guess we suck it up and resample.
+                    // we sample in a goofy way, we could probably do it a bit smarter, if we cared more.
+
+                    Console.WriteLine("REASONABLE UNDERFLOW, RESAMPLING.");
+
+                    if (samples_requested > 2730)
+                        throw new Exception("something rather bad has happened");
+
+                    int samples_available = buffer.Count;
+                    for (int i = 0; buffer.Count > 0; i++)
+                        resampleBuffer[i] = buffer.Dequeue();
+
+                    int index = 0;
+                    for (int i = 0; i<samples_requested; i++)
+                    {
+                        Sample sample = resampleBuffer[i*samples_available/samples_requested];
+                        buf[index++] = sample.left;
+                        buf[index++] = sample.right;
+                    }
+
+                        
+                } else {
+                    // we're outside of a "reasonable" underflow. Give up and output silence.
+                    Console.WriteLine("EXCESSIVE UNDERFLOW. GIVE UP AND MAKE A POP");
+                }
+            } 
+            else
+            {
+                // normal operation
+                Console.WriteLine("samples in buffer {0}, requested {1}", buffer.Count, samples_requested);
+                int index = 0;
+                for (int i = 0; i < samples_requested && buffer.Count > 0; i++)
+                {
+                    Sample sample = buffer.Dequeue();
+                    buf[index++] = sample.left;
+                    buf[index++] = sample.right;
+                }
+            }
+            return samples_requested;
+        }
+    }
 }
