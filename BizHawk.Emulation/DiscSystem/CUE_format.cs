@@ -84,8 +84,8 @@ namespace BizHawk.DiscSystem
 						throw new DiscReferenceException(blobPath, ex);
 					}
 
-					blob_length_lba = (int) (blob.Length/blob_sectorsize);
-					blob_leftover = (int) (blob.Length - blob_length_lba*blob_sectorsize);
+					blob_length_lba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
 					cue_blob = blob;
 				}
 				else throw new DiscReferenceException(blobPath, new InvalidOperationException("unknown cue file type: " + cue_file.StrFileType));
@@ -149,9 +149,9 @@ namespace BizHawk.DiscSystem
 					if (curr_track == 1)
 					{
 						if (cue_track.PreGap.LBA != 0)
-							throw new InvalidOperationException("not supported: cue files with track 1 pregaps");
-						//but now we add one anyway
-						cue_track.PreGap = new Cue.CueTimestamp(150);
+							throw new InvalidOperationException("not supported (yet): cue files with track 1 pregaps");
+						//but now we add one anyway, because every existing cue+bin seems to implicitly specify this
+						cue_track.PreGap = new Timestamp(150);
 					}
 
 					//check whether a pregap is requested.
@@ -190,7 +190,7 @@ namespace BizHawk.DiscSystem
 						{
 							toc_index.lba = track_disc_pregap_lba - (cue_track.Indexes[1].Timestamp.LBA - cue_track.Indexes[0].Timestamp.LBA);
 						}
-						else toc_index.lba = Sectors.Count; 
+						else toc_index.lba = Sectors.Count;
 
 						//calculate length of the index
 						//if it is the last index then we use our calculation from before, otherwise we check the next index
@@ -202,7 +202,7 @@ namespace BizHawk.DiscSystem
 						//emit sectors
 						for (int lba = 0; lba < index_length_lba; lba++)
 						{
-							bool is_last_lba_in_index = (lba == index_length_lba-1);
+							bool is_last_lba_in_index = (lba == index_length_lba - 1);
 							bool is_last_lba_in_track = is_last_lba_in_index && is_last_index;
 
 							switch (cue_track.TrackType)
@@ -220,7 +220,7 @@ namespace BizHawk.DiscSystem
 										Sector_Raw sector_raw = new Sector_Raw();
 										sector_raw.BaseSector = sector_rawblob;
 										//take care to handle final sectors that are too short.
-										if (is_last_lba_in_track && blob_leftover>0)
+										if (is_last_lba_in_track && blob_leftover > 0)
 										{
 											Sector_ZeroPad sector_zeropad = new Sector_ZeroPad();
 											sector_zeropad.BaseSector = sector_rawblob;
@@ -328,7 +328,7 @@ namespace BizHawk.DiscSystem
 
 		public static int BINSectorSizeForTrackType(ETrackType type)
 		{
-			switch(type)
+			switch (type)
 			{
 				case ETrackType.Mode1_2352:
 				case ETrackType.Mode2_2352:
@@ -371,52 +371,16 @@ namespace BizHawk.DiscSystem
 		{
 			public ETrackType TrackType;
 			public int TrackNum;
-			public CueTimestamp PreGap = new CueTimestamp();
-			public CueTimestamp PostGap = new CueTimestamp();
+			public Timestamp PreGap = new Timestamp();
+			public Timestamp PostGap = new Timestamp();
 			public Dictionary<int, CueTrackIndex> Indexes = new Dictionary<int, CueTrackIndex>();
-		}
-
-		public class CueTimestamp
-		{
-			/// <summary>
-			/// creates timestamp of 00:00:00
-			/// </summary>
-			public CueTimestamp()
-			{
-				Value = "00:00:00";
-			}
-
-			/// <summary>
-			/// creates a timestamp from a string in the form mm:ss:ff
-			/// </summary>
-			public CueTimestamp(string value) { 
-				this.Value = value;
-				MIN = int.Parse(value.Substring(0, 2));
-				SEC = int.Parse(value.Substring(3, 2));
-				FRAC = int.Parse(value.Substring(6, 2));
-				LBA = MIN * 60 * 75 + SEC * 75 + FRAC;
-			}
-			public readonly string Value;
-			public readonly int MIN, SEC, FRAC, LBA;
-
-			/// <summary>
-			/// creates timestamp from supplied LBA
-			/// </summary>
-			public CueTimestamp(int LBA)
-			{
-				this.LBA = LBA;
-				MIN = LBA / (60*75);
-				SEC = (LBA / 75)%60;
-				FRAC = LBA % 75;
-				Value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
-			}
 		}
 
 		public class CueTrackIndex
 		{
 			public CueTrackIndex(int num) { IndexNum = num; }
 			public int IndexNum;
-			public CueTimestamp Timestamp;
+			public Timestamp Timestamp;
 			public int ZeroLBA;
 		}
 
@@ -517,11 +481,11 @@ namespace BizHawk.DiscSystem
 								throw new CueBrokenException("malformed index number");
 							if (clp.EOF) throw new CueBrokenException("invalid cue structure (missing index timestamp)");
 							string str_timestamp = clp.ReadToken();
-							if(indexnum <0 || indexnum>99) throw new CueBrokenException("`All index numbers must be between 0 and 99 inclusive.`");
+							if (indexnum < 0 || indexnum > 99) throw new CueBrokenException("`All index numbers must be between 0 and 99 inclusive.`");
 							if (indexnum != 1 && indexnum != last_index_num + 1) throw new CueBrokenException("`The first index must be 0 or 1 with all other indexes being sequential to the first one.`");
 							last_index_num = indexnum;
 							CueTrackIndex cti = new CueTrackIndex(indexnum);
-							cti.Timestamp = new CueTimestamp(str_timestamp);
+							cti.Timestamp = new Timestamp(str_timestamp);
 							cti.IndexNum = indexnum;
 							currTrack.Indexes[indexnum] = cti;
 							break;
@@ -529,13 +493,13 @@ namespace BizHawk.DiscSystem
 					case "PREGAP":
 						if (track_has_pregap) throw new CueBrokenException("`Only one PREGAP command is allowed per track.`");
 						if (currTrack.Indexes.Count > 0) throw new CueBrokenException("`The PREGAP command must appear after a TRACK command, but before any INDEX commands.`");
-						currTrack.PreGap = new CueTimestamp(clp.ReadToken());
+						currTrack.PreGap = new Timestamp(clp.ReadToken());
 						track_has_pregap = true;
 						break;
 					case "POSTGAP":
 						if (track_has_postgap) throw new CueBrokenException("`Only one POSTGAP command is allowed per track.`");
 						track_has_postgap = true;
-						currTrack.PostGap = new CueTimestamp(clp.ReadToken());
+						currTrack.PostGap = new Timestamp(clp.ReadToken());
 						break;
 					case "CATALOG":
 					case "PERFORMER":

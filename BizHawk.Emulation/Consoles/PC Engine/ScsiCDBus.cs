@@ -176,6 +176,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     // like this, they probably become available as the bits come off the disc.
                     // but lets get some basic functionality before we go crazy.
                     //  Idunno, maybe they do come in a sector at a time.
+
+					//note to vecna: maybe not at the sector level, but at a level > 1 sample and <= 1 sector, samples come out in blocks
+					//due to the way they are jumbled up (seriously, like put into a blender) for error correction purposes. 
+					//we may as well assume that the cd audio decoding magic works at the level of one sector, but it isnt one sample.
+
                     if (SectorsLeftToRead == 0)
                     {
                         DataReadInProgress = false;
@@ -491,6 +496,10 @@ throw new Exception("requesting 0 sectors read.............................");
 
         private void CommandReadSubcodeQ()
         {
+			//TODO VECNA - i changed this for you but maybe i did it wrong
+			var sectorEntry = disc.ReadSectorEntry(CurrentReadingSector);
+
+
             DataIn.Clear();
 
             switch (pce.CDAudio.Mode)
@@ -499,15 +508,19 @@ throw new Exception("requesting 0 sectors read.............................");
                 case CDAudio.CDAudioMode.Paused:  DataIn.Enqueue(2); break;
                 case CDAudio.CDAudioMode.Stopped: DataIn.Enqueue(3); break;
             }
-            DataIn.Enqueue(0); // unused?
-            DataIn.Enqueue((byte)pce.CDAudio.PlayingTrack); // track
-            DataIn.Enqueue(1); // index
-            DataIn.Enqueue(1); // M(rel)
-            DataIn.Enqueue(1); // S(rel)
-            DataIn.Enqueue(1); // F(rel)
-            DataIn.Enqueue(1); // M(abs)
-            DataIn.Enqueue(1); // S(abs)
-            DataIn.Enqueue(1); // F(abs)
+            
+			DataIn.Enqueue(sectorEntry.q_status); // unused?
+            
+			//DataIn.Enqueue((byte)pce.CDAudio.PlayingTrack); // track //vecna's
+			DataIn.Enqueue(sectorEntry.q_tno.BCDValue); // track //zero's
+
+			DataIn.Enqueue(sectorEntry.q_index.BCDValue); // index
+			DataIn.Enqueue(sectorEntry.q_min.BCDValue); // M(rel)
+			DataIn.Enqueue(sectorEntry.q_sec.BCDValue); // S(rel)
+			DataIn.Enqueue(sectorEntry.q_frame.BCDValue); // F(rel)
+            DataIn.Enqueue(sectorEntry.q_amin.BCDValue); // M(abs)
+			DataIn.Enqueue(sectorEntry.q_asec.BCDValue); // S(abs)
+            DataIn.Enqueue(sectorEntry.q_aframe.BCDValue); // F(abs)
             SetPhase(BusPhase.DataIn);
         }
 

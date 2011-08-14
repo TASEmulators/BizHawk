@@ -9,111 +9,66 @@ using System.Collections.Generic;
 
 namespace BizHawk.DiscSystem
 {
-	public class SubcodeStream
+	//this has been checked against mednafen's and seems to match
+	//there are a few dozen different ways to do CRC16-CCITT
+	//this table is backwards or something. at any rate its tailored to the needs of the Q subchannel
+	internal static class CRC16_CCITT
 	{
-		Stream source;
-		long offset;
-		public SubcodeStream(Stream source, long offset)
-		{
-			this.source = source;
-			this.offset = offset;
-			cached_decoder = new SubcodePacketDecoder(cached_buffer, 0);
-		}
-		int channel = 0;
-		public char Channel
-		{
-			get { return (char)((7 - channel) + 'p'); }
-			set { channel = SubcodePacketDecoder.NormalizeChannel(value); }
-		}
+		private static ushort[] table = new ushort[256];
 
-		long Position { get; set; }
-
-		int cached_addr = -1;
-		SubcodePacketDecoder cached_decoder = null;
-		byte[] cached_buffer = new byte[24];
-		public int ReadByte()
+		static CRC16_CCITT()
 		{
-			int subcode_addr = (int)Position;
-			int subcode_byte = subcode_addr & 1;
-			subcode_addr /= 2;
-			subcode_addr *= 24;
-			if (subcode_addr != cached_addr)
+			ushort value;
+			ushort temp;
+			for (ushort i = 0; i < 256; ++i)
 			{
-				cached_decoder.Reset();
-				source.Position = offset + subcode_addr;
-				if (source.Read(cached_buffer, 0, 24) != 24)
-					return -1;
-				cached_addr = subcode_addr;
+				value = 0;
+				temp = (ushort)(i << 8);
+				for (byte j = 0; j < 8; ++j)
+				{
+					if (((value ^ temp) & 0x8000) != 0)
+						value = (ushort)((value << 1) ^ 0x1021);
+					else
+						value <<= 1;
+					temp <<= 1;
+				}
+				table[i] = value;
 			}
-			Position = Position + 1;
-			ushort val = cached_decoder.ReadChannel(channel);
-			val >>= (8 * subcode_byte);
-			val &= 0xFF;
-			return (int)val;
+		}
+
+		public static ushort Calculate(byte[] data, int offset, int length)
+		{
+			ushort Result = 0;
+			for(int i=0;i<length;i++)
+			{
+				byte b = data[offset + i];
+				int index = (b ^ ((Result >> 8) & 0xFF));
+				Result = (ushort)((Result << 8) ^ table[index]);
+			}
+			return Result;
+		}
+
+	}
+
+
+	public class SubcodeDataDecoder
+	{
+		public static void Unpack_Q(byte[] output, int out_ofs, byte[] input, int in_ofs)
+		{
+			for (int i = 0; i < 12; i++)
+				output[out_ofs + i] = 0;
+			for (int i = 0; i < 96; i++)
+			{
+				int bytenum = i >> 3;
+				int bitnum = i & 7;
+				bitnum = 7 - bitnum;
+				int bitval = (byte)((input[in_ofs + i] >> 6) & 1);
+				bitval <<= bitnum;
+				output[out_ofs + bytenum] |= (byte)bitval;
+			}
 		}
 	}
 
-	class SubcodePacketDecoder
-	{
-		internal static int NormalizeChannel(char channel)
-		{
-			int channum;
-			if (channel >= 'P' && channel <= 'W') channum = channel - 'P';
-			else if (channel >= 'p' && channel <= 'w') channum = (channel - 'p');
-			else throw new InvalidOperationException("invalid channel specified");
-			channum = 7 - channum;
-			return channum;
-		}
 
-		public void Reset()
-		{
-			cached = false;
-		}
-		byte[] buffer;
-		int offset;
-		public SubcodePacketDecoder(byte[] buffer, int offset)
-		{
-			this.buffer = buffer;
-			this.offset = offset;
-		}
-		byte command { get { return buffer[offset + 0]; } set { buffer[offset + 0] = value; } }
-		byte instruction { get { return buffer[offset + 1]; } set { buffer[offset + 1] = value; } }
 
-		public int parityQ_offset { get { return offset + 2; } }
-		public int data_offset { get { return offset + 4; } }
-		public int parityP_offset { get { return offset + 20; } }
-
-		public byte ReadData(int index)
-		{
-			return buffer[data_offset + index];
-		}
-
-		public ushort ReadChannel(char channel)
-		{
-			return ReadChannel(NormalizeChannel(channel));
-		}
-
-		bool cached;
-		ushort[] decoded_channels = new ushort[8];
-		public ushort ReadChannel(int channum)
-		{
-			if (!cached)
-			{
-				decoded_channels = new ushort[8];
-				for (int i = 0; i < 8; i++)
-					decoded_channels[i] = DecodeChannel(i);
-			}
-			return decoded_channels[channum];
-		}
-
-		ushort DecodeChannel(int channum)
-		{
-			int ret = 0;
-			for (int i = 0; i < 16; i++)
-			{
-				ret |= ((ReadData(i) >> channum) & 1) << i;
-			}
-			return (ushort)ret;
-		}
-	}
 }

@@ -86,21 +86,31 @@ namespace BizHawk
 			//Console.WriteLine(disc.ReadTOC().DebugPrint());
 			//disc.DumpBin_2352("d:\\test.2352");
 
-			////test reading the subcode data. unfortunately we don't have lead-in subcode so we have no TOC
-			//using (FileStream fs = File.OpenRead("c:\\bof4.sub"))
+			//test reading the subcode data. unfortunately we don't have lead-in subcode so we have no TOC
+			//using (FileStream fs = File.OpenRead(@"D:\programs\cdrdao\awakening.bin"))
 			//{
-			//    Disc.SubcodeStream stream = new Disc.SubcodeStream(fs, 0);
-			//    stream.Channel = 'q';
-			//    using (FileStream fsOut = File.OpenWrite("c:\\bof4.sub.q"))
+			//    using (FileStream fsOut = File.OpenWrite(@"D:\programs\cdrdao\awakening.sub.q"))
+			//    //using (FileStream fsOut = File.OpenWrite(@"D:\programs\cdrdao\data.sub.q"))
 			//    {
-			//        for (; ; )
+			//        int numSectors = (int)fs.Length / (2352 + 96);
+			//        for (int i = 0; i < numSectors; i++)
 			//        {
-			//            int ret = stream.ReadByte();
-			//            if (ret == -1) break;
-			//            fsOut.WriteByte((byte)ret);
+			//            fs.Position = i * (2352 + 96) + 2352;
+			//            byte[] tempout = new byte[12];
+			//            byte[] tempin = new byte[96];
+			//            fs.Read(tempin, 0, 96);
+			//            DiscSystem.SubcodeDataDecoder.Unpack_Q(tempout, 0, tempin, 0);
+			//            fsOut.Write(tempout, 0, 12);
 			//        }
+
+			//        //for (; ; )
+			//        //{
+			//        //    int ret = stream.ReadByte();
+			//        //    if (ret == -1) break;
+			//        //    fsOut.WriteByte((byte)ret);
+			//        //}
 			//    }
-			//}
+			//} return;
 
 			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\Bomberman '94 Taikenban (SCD)(JPN)_hawked.cue");
 			//DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd\Bomberman '94 Taikenban (SCD)(JPN).cue");
@@ -114,16 +124,17 @@ namespace BizHawk
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);
 			//cueBin.Dump(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd", prefs);
 
-			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\Angels II - Holy Night (J)[Prototype]\Angels II - Holy Night (J)[Prototype].cue");
+			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\programs\cdrdao\eac-ripped\Awakening.cue");
 			var prefs = new DiscSystem.CueBinPrefs();
 			prefs.AnnotateCue = false;
 			prefs.OneBlobPerTrack = false;
 			prefs.ReallyDumpBin = true;
-			prefs.OmitRedundantIndex0 = true;
+			prefs.DumpSubchannelQ = true;
+			//prefs.OmitRedundantIndex0 = true;
 			prefs.SingleSession = true;
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked_hawked", prefs);
 			var cueBin = disc.DumpCueBin("test", prefs);
-			cueBin.Dump(@"D:\discs\Angels II - Holy Night (J)[Prototype]", prefs);
+			cueBin.Dump(@"D:\programs\cdrdao\eac-ripped", prefs);
 		}
 	}
 
