@@ -56,60 +56,66 @@ namespace BizHawk.DiscSystem
 		}
 	}
 
-	//TODO - rename these APIs to ReadSector
 	public partial class Disc
 	{
 		/// <summary>
 		/// Main API to read a 2352-byte sector from a disc.
-		/// This starts at the beginning of the "userdata" area of the disc (track 1, index 0)
-		/// However, located here is a mandatory pregap of 2 seconds (or more?).
-		/// so you may need to add 150 depending on how your system addresses things to get to the "start" of the first track. (track 1, index 1)
+		/// This starts after the mandatory pregap of 2 seconds (but what happens if there is more more?).
 		/// </summary>
 		public void ReadLBA_2352(int lba, byte[] buffer, int offset)
 		{
-			Sectors[lba].Sector.Read(buffer, offset);
+			ReadABA_2352(lba + 150, buffer, offset);
 		}
+
+		/// <summary>
+		/// Main API to read a 2048-byte sector from a disc.
+		/// This starts after the mandatory pregap of 2 seconds (but what happens if there is more more?).
+		/// </summary>
+		public void ReadLBA_2048(int lba, byte[] buffer, int offset)
+		{
+			ReadABA_2048(lba + 150, buffer, offset);
+		}
+
+		internal void ReadABA_2352(int aba, byte[] buffer, int offset)
+		{
+			Sectors[aba].Sector.Read(buffer, offset);
+		}
+
+		internal void ReadABA_2048(int aba, byte[] buffer, int offset)
+		{
+			byte[] temp = new byte[2352];
+			Sectors[aba].Sector.Read(temp, offset);
+			Array.Copy(temp, 16, buffer, offset, 2048);
+		}
+
 
 		/// <summary>
 		/// Returns a SectorEntry from which you can retrieve various interesting pieces of information about the sector.
 		/// The SectorEntry's interface is not likely to be stable, though, but it may be more convenient.
 		/// </summary>
-		public SectorEntry ReadSectorEntry(int lba)
+		public SectorEntry ReadLBA_SectorEntry(int lba)
 		{
-			return Sectors[lba];
+			return Sectors[lba + 150];
 		}
 
 		/// <summary>
-		/// Reads the specified sector's subcode (96 bytes) deinterleaved into the provided buffer.
+		/// Reads the specified LBA's subcode (96 bytes) deinterleaved into the provided buffer.
 		/// P is first 12 bytes, followed by 12 Q bytes, etc.
 		/// I'm not sure what format scsi commands generally return it in. 
 		/// It could be this, or RAW (interleaved) which I could also supply when we need it
 		/// </summary>
-		public void ReadSector_Subcode_Deinterleaved(int lba, byte[] buffer, int offset)
+		public void ReadLBA_Subcode_Deinterleaved(int lba, byte[] buffer, int offset)
 		{
 			Array.Clear(buffer, offset, 96);
-			Sectors[lba].Read_SubchannelQ(buffer, offset + 12);
+			Sectors[lba + 150].Read_SubchannelQ(buffer, offset + 12);
 		}
 
 		/// <summary>
-		/// Reads the specified sector's subchannel Q (12 bytes) into the provided buffer
+		/// Reads the specified LBA's subchannel Q (12 bytes) into the provided buffer
 		/// </summary>
-		public void ReadSector_Subchannel_Q(int lba, byte[] buffer, int offset)
+		public void ReadLBA_Subchannel_Q(int lba, byte[] buffer, int offset)
 		{
-			Sectors[lba].Read_SubchannelQ(buffer, offset);
-		}
-
-		/// <summary>
-		/// Main API to read a 2048-byte sector from a disc.
-		/// This starts at the beginning of the "userdata" area of the disc (track 1, index 0)
-		/// However, located here is a mandatory pregap of 2 seconds (or more?).
-		/// so you may need to add 150 depending on how your system addresses things to get to the "start" of the first track. (track 1, index 1)
-		/// </summary>
-		public void ReadLBA_2048(int lba, byte[] buffer, int offset)
-		{
-			byte[] temp = new byte[2352];
-			Sectors[lba].Sector.Read(temp, offset);
-			Array.Copy(temp, 16, buffer, offset, 2048);
+			Sectors[lba + 150].Read_SubchannelQ(buffer, offset);
 		}
 
 		/// <summary>
@@ -132,7 +138,7 @@ namespace BizHawk.DiscSystem
 			return TOC;
 		}
 
-        // converts LBA to minute:second:frame format.
+		// converts LBA to minute:second:frame format.
 		//TODO - somewhat redundant with Timestamp, which is due for refactoring into something not cue-related
         public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)
         {
@@ -157,9 +163,9 @@ namespace BizHawk.DiscSystem
                 if (track.TrackType == ETrackType.Audio)
                     continue;
 
-                int lba_len = Math.Min(track.length_lba, 512);
-                for (int s=0; s<512 && s<track.length_lba; s++)
-                    ReadLBA_2352(track.Indexes[1].lba + s, buffer, s*2352);
+                int lba_len = Math.Min(track.length_aba, 512);
+                for (int s=0; s<512 && s<track.length_aba; s++)
+                    ReadLBA_2352(track.Indexes[1].aba + s, buffer, s*2352);
 
                 return Util.Hash_MD5(buffer, 0, lba_len*2352);
             }
