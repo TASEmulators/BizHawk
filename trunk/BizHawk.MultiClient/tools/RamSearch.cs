@@ -13,6 +13,7 @@ namespace BizHawk.MultiClient
 {
 	//TODO:
 	//Sorting by Prev only does "Since prev frame", find a way to integrate the various prev options
+	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
 
 	/// <summary>
 	/// A winform designed to search through ram values
@@ -512,6 +513,7 @@ namespace BizHawk.MultiClient
 			{
 				OutputLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
 				searchList = new List<Watch>(undoList);
+				prevList = new List<Watch>(undoList);
 				undoList.Clear();
 				DisplaySearchList();
 			}
@@ -752,7 +754,14 @@ namespace BizHawk.MultiClient
 			if (Global.Config.RamSearchPreviousAs == 2) //If Previous frame
 				return searchList[pos].prev;
 			else
-				return prevList[pos].value;
+			{
+				if (pos < prevList.Count)
+					return prevList[pos].value;
+				else
+				{
+					return 0;
+				}
+			}
 		}
 
 		private bool DoPreviousValue()
