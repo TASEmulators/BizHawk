@@ -51,8 +51,6 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.checkCueProp_Annotations = new System.Windows.Forms.CheckBox();
 			this.panel3 = new System.Windows.Forms.Panel();
-			this.label8 = new System.Windows.Forms.Label();
-			this.checkCueProp_OmitRedundantIndex0 = new System.Windows.Forms.CheckBox();
 			this.btnPresetCanonical = new System.Windows.Forms.Button();
 			this.btnPresetDaemonTools = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -68,7 +66,6 @@
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.panel2.SuspendLayout();
-			this.panel3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -296,32 +293,10 @@
 			// 
 			this.panel3.AutoSize = true;
 			this.panel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.panel3.Controls.Add(this.label8);
-			this.panel3.Controls.Add(this.checkCueProp_OmitRedundantIndex0);
 			this.panel3.Location = new System.Drawing.Point(15, 94);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(203, 68);
+			this.panel3.Size = new System.Drawing.Size(0, 0);
 			this.panel3.TabIndex = 10;
-			// 
-			// label8
-			// 
-			this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label8.Location = new System.Drawing.Point(4, 26);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(196, 42);
-			this.label8.TabIndex = 6;
-			this.label8.Text = "Should the output be split into several blobs, or just use one?";
-			// 
-			// checkCueProp_OmitRedundantIndex0
-			// 
-			this.checkCueProp_OmitRedundantIndex0.AutoSize = true;
-			this.checkCueProp_OmitRedundantIndex0.Location = new System.Drawing.Point(7, 6);
-			this.checkCueProp_OmitRedundantIndex0.Name = "checkCueProp_OmitRedundantIndex0";
-			this.checkCueProp_OmitRedundantIndex0.Size = new System.Drawing.Size(132, 17);
-			this.checkCueProp_OmitRedundantIndex0.TabIndex = 5;
-			this.checkCueProp_OmitRedundantIndex0.Text = "OmitRedundantIndex0";
-			this.checkCueProp_OmitRedundantIndex0.UseVisualStyleBackColor = true;
-			this.checkCueProp_OmitRedundantIndex0.CheckedChanged += new System.EventHandler(this.checkCueProp_CheckedChanged);
 			// 
 			// btnPresetCanonical
 			// 
@@ -459,8 +434,6 @@
 			this.panel1.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
-			this.panel3.ResumeLayout(false);
-			this.panel3.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
@@ -492,8 +465,6 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.CheckBox checkCueProp_Annotations;
 		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.CheckBox checkCueProp_OmitRedundantIndex0;
 		private System.Windows.Forms.Button btnPresetCanonical;
 		private System.Windows.Forms.Button btnPresetDaemonTools;
 		private System.Windows.Forms.GroupBox groupBox2;

@@ -414,7 +414,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
                 case 0x80: // Set start offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
-                    audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].lba;
+                    audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].LBA;
                     Console.WriteLine("Set Start track: {0} lba={1}", trackNo, audioStartLBA);
                     break;
             }
@@ -454,7 +454,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
                 case 0x80: // Set end offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
-                    audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].lba;
+					audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].LBA;
                     Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
                     break;
             }
@@ -496,8 +496,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
         private void CommandReadSubcodeQ()
         {
-			//TODO VECNA - i changed this for you but maybe i did it wrong
-			var sectorEntry = disc.ReadSectorEntry(pce.CDAudio.CurrentSector);
+			var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
 
             DataIn.Clear();
 
@@ -561,7 +560,7 @@ throw new Exception("requesting 0 sectors read.............................");
                             throw new Exception("Request more tracks than exist.... need to do error handling");
                         // I error handled your mom last night
 
-                        int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].lba;
+						int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].LBA;
                         byte m, s, f;
                         Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
                         

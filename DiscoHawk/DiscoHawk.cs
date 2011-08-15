@@ -124,7 +124,7 @@ namespace BizHawk
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);
 			//cueBin.Dump(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd", prefs);
 
-			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\programs\cdrdao\eac-ripped\Awakening.cue");
+			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\R-Type Complete CD (J)");
 			var prefs = new DiscSystem.CueBinPrefs();
 			prefs.AnnotateCue = false;
 			prefs.OneBlobPerTrack = false;
@@ -133,7 +133,7 @@ namespace BizHawk
 			//prefs.OmitRedundantIndex0 = true;
 			prefs.SingleSession = true;
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked_hawked", prefs);
-			var cueBin = disc.DumpCueBin("test", prefs);
+			var cueBin = disc.DumpCueBin("entire", prefs);
 			cueBin.Dump(@"D:\programs\cdrdao\eac-ripped", prefs);
 		}
 	}

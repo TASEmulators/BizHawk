@@ -31,7 +31,7 @@ namespace BizHawk.DiscSystem
 				string blobPath = Path.Combine(cueDir, cue_file.Path);
 
 				int blob_sectorsize = Cue.BINSectorSizeForTrackType(cue_file.Tracks[0].TrackType);
-				int blob_length_lba, blob_leftover;
+				int blob_length_aba, blob_leftover;
 				IBlob cue_blob = null;
 
 				if (cue_file.FileType == Cue.CueFileType.Binary)
@@ -41,8 +41,8 @@ namespace BizHawk.DiscSystem
 					blob.PhysicalPath = blobPath;
 					Blobs.Add(blob);
 
-					blob_length_lba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					blob_length_aba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
 					cue_blob = blob;
 				}
 				else if (cue_file.FileType == Cue.CueFileType.Wave)
@@ -84,8 +84,8 @@ namespace BizHawk.DiscSystem
 						throw new DiscReferenceException(blobPath, ex);
 					}
 
-					blob_length_lba = (int)(blob.Length / blob_sectorsize);
-					blob_leftover = (int)(blob.Length - blob_length_lba * blob_sectorsize);
+					blob_length_aba = (int)(blob.Length / blob_sectorsize);
+					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
 					cue_blob = blob;
 				}
 				else throw new DiscReferenceException(blobPath, new InvalidOperationException("unknown cue file type: " + cue_file.StrFileType));
@@ -96,8 +96,8 @@ namespace BizHawk.DiscSystem
 				//start timekeeping for the blob. every time we hit an index, this will advance
 				int blob_timestamp = 0;
 
-				//the lba that this cue blob starts on
-				int blob_disc_lba_start = Sectors.Count;
+				//the aba that this cue blob starts on
+				int blob_disc_aba_start = Sectors.Count;
 
 				//for each track within the file, create an index 0 if it is missing.
 				//also check to make sure there is an index 1
@@ -118,7 +118,7 @@ namespace BizHawk.DiscSystem
 				}
 
 				//validate that the first index in the file is 00:00:00
-				if (cue_file.Tracks[0].Indexes[0].Timestamp.LBA != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
+				if (cue_file.Tracks[0].Indexes[0].Timestamp.ABA != 0) throw new Cue.CueBrokenException("`The first index of a blob must start at 00:00:00.`");
 
 
 				//for each track within the file:
@@ -126,11 +126,11 @@ namespace BizHawk.DiscSystem
 				{
 					var cue_track = cue_file.Tracks[t];
 
-					//record the disc LBA that this track started on
-					int track_disc_lba_start = Sectors.Count;
+					//record the disc ABA that this track started on
+					int track_disc_aba_start = Sectors.Count;
 
 					//record the pregap location. it will default to the start of the track unless we supplied a pregap command
-					int track_disc_pregap_lba = track_disc_lba_start;
+					int track_disc_pregap_aba = track_disc_aba_start;
 
 					int blob_track_start = blob_timestamp;
 
@@ -148,7 +148,7 @@ namespace BizHawk.DiscSystem
 
 					if (curr_track == 1)
 					{
-						if (cue_track.PreGap.LBA != 0)
+						if (cue_track.PreGap.ABA != 0)
 							throw new InvalidOperationException("not supported (yet): cue files with track 1 pregaps");
 						//but now we add one anyway, because every existing cue+bin seems to implicitly specify this
 						cue_track.PreGap = new Timestamp(150);
@@ -156,9 +156,9 @@ namespace BizHawk.DiscSystem
 
 					//check whether a pregap is requested.
 					//this causes empty sectors to get generated without consuming data from the blob
-					if (cue_track.PreGap.LBA > 0)
+					if (cue_track.PreGap.ABA > 0)
 					{
-						for (int i = 0; i < cue_track.PreGap.LBA; i++)
+						for (int i = 0; i < cue_track.PreGap.ABA; i++)
 						{
 							Sectors.Add(new SectorEntry(pregap_sector));
 						}
@@ -166,11 +166,11 @@ namespace BizHawk.DiscSystem
 
 					//look ahead to the next track's index 1 so we can see how long this track's last index is
 					//or, for the last track, use the length of the file
-					int track_length_lba;
+					int track_length_aba;
 					if (t == cue_file.Tracks.Count - 1)
-						track_length_lba = blob_length_lba - blob_timestamp;
-					else track_length_lba = cue_file.Tracks[t + 1].Indexes[1].Timestamp.LBA - blob_timestamp;
-					//toc_track.length_lba = track_length_lba; //xxx
+						track_length_aba = blob_length_aba - blob_timestamp;
+					else track_length_aba = cue_file.Tracks[t + 1].Indexes[1].Timestamp.ABA - blob_timestamp;
+					//toc_track.length_aba = track_length_aba; //xxx
 
 					//find out how many indexes we have
 					int num_indexes = 0;
@@ -188,22 +188,22 @@ namespace BizHawk.DiscSystem
 						toc_track.Indexes.Add(toc_index);
 						if (index == 0)
 						{
-							toc_index.lba = track_disc_pregap_lba - (cue_track.Indexes[1].Timestamp.LBA - cue_track.Indexes[0].Timestamp.LBA);
+							toc_index.aba = track_disc_pregap_aba - (cue_track.Indexes[1].Timestamp.ABA - cue_track.Indexes[0].Timestamp.ABA);
 						}
-						else toc_index.lba = Sectors.Count;
+						else toc_index.aba = Sectors.Count;
 
 						//calculate length of the index
 						//if it is the last index then we use our calculation from before, otherwise we check the next index
-						int index_length_lba;
+						int index_length_aba;
 						if (is_last_index)
-							index_length_lba = track_length_lba - (blob_timestamp - blob_track_start);
-						else index_length_lba = cue_track.Indexes[index + 1].Timestamp.LBA - blob_timestamp;
+							index_length_aba = track_length_aba - (blob_timestamp - blob_track_start);
+						else index_length_aba = cue_track.Indexes[index + 1].Timestamp.ABA - blob_timestamp;
 
 						//emit sectors
-						for (int lba = 0; lba < index_length_lba; lba++)
+						for (int aba = 0; aba < index_length_aba; aba++)
 						{
-							bool is_last_lba_in_index = (lba == index_length_lba - 1);
-							bool is_last_lba_in_track = is_last_lba_in_index && is_last_index;
+							bool is_last_aba_in_index = (aba == index_length_aba - 1);
+							bool is_last_aba_in_track = is_last_aba_in_index && is_last_index;
 
 							switch (cue_track.TrackType)
 							{
@@ -220,7 +220,7 @@ namespace BizHawk.DiscSystem
 										Sector_Raw sector_raw = new Sector_Raw();
 										sector_raw.BaseSector = sector_rawblob;
 										//take care to handle final sectors that are too short.
-										if (is_last_lba_in_track && blob_leftover > 0)
+										if (is_last_aba_in_track && blob_leftover > 0)
 										{
 											Sector_ZeroPad sector_zeropad = new Sector_ZeroPad();
 											sector_zeropad.BaseSector = sector_rawblob;
@@ -235,8 +235,8 @@ namespace BizHawk.DiscSystem
 									//2048 bytes are present. ECM needs to be generated to create a full sector
 									{
 										//ECM needs to know the sector number so we have to record that here
-										int curr_disc_lba = Sectors.Count;
-										var sector_2048 = new Sector_Mode1_2048(curr_disc_lba + 150);
+										int curr_disc_aba = Sectors.Count;
+										var sector_2048 = new Sector_Mode1_2048(curr_disc_aba + 150);
 										sector_2048.Blob = new ECMCacheBlob(cue_blob);
 										sector_2048.Offset = (long)blob_timestamp * 2048;
 										if (blob_leftover > 0) throw new Cue.CueBrokenException("TODO - Incomplete 2048 byte/sector bin files (iso files) not yet supported.");
@@ -245,22 +245,22 @@ namespace BizHawk.DiscSystem
 									}
 							} //switch(TrackType)
 
-							//we've emitted an LBA, so consume it from the blob
+							//we've emitted an ABA, so consume it from the blob
 							blob_timestamp++;
 
-						} //lba emit loop
+						} //aba emit loop
 
 					} //index loop
 
 					//check whether a postgap is requested. if it is, we need to generate silent sectors
-					for (int i = 0; i < cue_track.PostGap.LBA; i++)
+					for (int i = 0; i < cue_track.PostGap.ABA; i++)
 					{
 						Sectors.Add(new SectorEntry(pregap_sector));
 					}
 
 					//we're done with the track now.
 					//record its length:
-					toc_track.length_lba = Sectors.Count - toc_track.Indexes[1].lba;
+					toc_track.length_aba = Sectors.Count - toc_track.Indexes[1].aba;
 					curr_track++;
 
 				} //track loop
@@ -268,18 +268,18 @@ namespace BizHawk.DiscSystem
 
 			//finally, analyze the length of the sessions and the entire disc by summing the lengths of the tracks
 			//this is a little more complex than it looks, because the length of a thing is not determined by summing it
-			//but rather by the difference in lbas between start and end
-			TOC.length_lba = 0;
+			//but rather by the difference in abas between start and end
+			TOC.length_aba = 0;
 			foreach (var toc_session in TOC.Sessions)
 			{
 				var firstTrack = toc_session.Tracks[0];
 
 				//track 0, index 0 is actually -150. but cue sheets will never say that
-				//firstTrack.Indexes[0].lba -= 150;
+				//firstTrack.Indexes[0].aba -= 150;
 
 				var lastTrack = toc_session.Tracks[toc_session.Tracks.Count - 1];
-				session.length_lba = lastTrack.Indexes[1].lba + lastTrack.length_lba - firstTrack.Indexes[0].lba;
-				TOC.length_lba += toc_session.length_lba;
+				session.length_aba = lastTrack.Indexes[1].aba + lastTrack.length_aba - firstTrack.Indexes[0].aba;
+				TOC.length_aba += toc_session.length_aba;
 			}
 		}
 	}
@@ -381,7 +381,6 @@ namespace BizHawk.DiscSystem
 			public CueTrackIndex(int num) { IndexNum = num; }
 			public int IndexNum;
 			public Timestamp Timestamp;
-			public int ZeroLBA;
 		}
 
 		public class CueBrokenException : Exception

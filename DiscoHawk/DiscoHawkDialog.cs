@@ -79,7 +79,7 @@ namespace BizHawk
 			boundDisc = disc;
 			lblSessions.Text = toc.Sessions.Count.ToString();
 			lblTracks.Text = toc.Sessions.Sum((ses) => ses.Tracks.Count).ToString();
-			lblSectors.Text = string.Format("{0} ({1})", toc.length_lba, toc.FriendlyLength.Value);
+			lblSectors.Text = string.Format("{0} ({1})", toc.length_aba, toc.FriendlyLength.Value);
 			lblSize.Text = string.Format("{0:0.00} MB", toc.BinarySize / 1024.0 / 1024.0);
 			btnExportCue.Enabled = true;
 			UpdateCue();
@@ -115,7 +115,7 @@ namespace BizHawk
 		void PresetCanonical()
 		{
 			checkCueProp_Annotations.Checked = false;
-			checkCueProp_OmitRedundantIndex0.Checked = false;
+			//checkCueProp_OmitRedundantIndex0.Checked = false;
 			checkCueProp_OneBlobPerTrack.Checked = false;
 		}
 
@@ -126,7 +126,7 @@ namespace BizHawk
 		void PresetDaemonTools()
 		{
 			checkCueProp_Annotations.Checked = false;
-			checkCueProp_OmitRedundantIndex0.Checked = true;
+			//checkCueProp_OmitRedundantIndex0.Checked = true;
 		}
 
 		private void checkCueProp_CheckedChanged(object sender, EventArgs e)

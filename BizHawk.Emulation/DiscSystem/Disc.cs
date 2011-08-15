@@ -198,16 +198,16 @@ namespace BizHawk.DiscSystem
 
 		class Sector_Mode1_2048 : ISector
 		{
-			public Sector_Mode1_2048(int LBA)
+			public Sector_Mode1_2048(int ABA)
 			{
-				byte lba_min = (byte)(LBA / 60 / 75);
-				byte lba_sec = (byte)((LBA / 75) % 60);
-				byte lba_frac = (byte)(LBA % 75);
-				bcd_lba_min = BCD_Byte(lba_min);
-				bcd_lba_sec = BCD_Byte(lba_sec);
-				bcd_lba_frac = BCD_Byte(lba_frac);
+				byte aba_min = (byte)(ABA / 60 / 75);
+				byte aba_sec = (byte)((ABA / 75) % 60);
+				byte aba_frac = (byte)(ABA % 75);
+				bcd_aba_min = BCD_Byte(aba_min);
+				bcd_aba_sec = BCD_Byte(aba_sec);
+				bcd_aba_frac = BCD_Byte(aba_frac);
 			}
-			byte bcd_lba_min, bcd_lba_sec, bcd_lba_frac;
+			byte bcd_aba_min, bcd_aba_sec, bcd_aba_frac;
 
 			public ECMCacheBlob Blob;
 			public long Offset;
@@ -231,9 +231,9 @@ namespace BizHawk.DiscSystem
 				buffer[offset + 4] = 0xFF; buffer[offset + 5] = 0xFF; buffer[offset + 6] = 0xFF; buffer[offset + 7] = 0xFF;
 				buffer[offset + 8] = 0xFF; buffer[offset + 9] = 0xFF; buffer[offset + 10] = 0xFF; buffer[offset + 11] = 0x00;
 				//sector address
-				buffer[offset + 12] = bcd_lba_min;
-				buffer[offset + 13] = bcd_lba_sec;
-				buffer[offset + 14] = bcd_lba_frac;
+				buffer[offset + 12] = bcd_aba_min;
+				buffer[offset + 13] = bcd_aba_sec;
+				buffer[offset + 14] = bcd_aba_frac;
 				//mode 1
 				buffer[offset + 15] = 1;
 				//EDC
@@ -330,14 +330,14 @@ namespace BizHawk.DiscSystem
 			Blob_RawFile blob = new Blob_RawFile();
 			blob.PhysicalPath = fiIso.FullName;
 			Blobs.Add(blob);
-			int num_lba = (int)(fiIso.Length / 2048);
-			track.length_lba = num_lba;
+			int num_aba = (int)(fiIso.Length / 2048);
+			track.length_aba = num_aba;
 			if (fiIso.Length % 2048 != 0)
 				throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
 			//TODO - handle this with Final Fantasy 9 cd1.iso
 
 			var ecmCacheBlob = new ECMCacheBlob(blob);
-			for (int i = 0; i < num_lba; i++)
+			for (int i = 0; i < num_aba; i++)
 			{
 				Sector_Mode1_2048 sector = new Sector_Mode1_2048(i+150);
 				sector.Blob = ecmCacheBlob;
@@ -369,10 +369,10 @@ namespace BizHawk.DiscSystem
 				bfd.SectorSize = 2352;
 
 				//skip the mandatory track 1 pregap! cue+bin files do not contain it
-				for (int i = 150; i < TOC.length_lba; i++)
+				for (int i = 150; i < TOC.length_aba; i++)
 				{
-					bfd.lbas.Add(i);
-					bfd.lba_zeros.Add(false);
+					bfd.abas.Add(i);
+					bfd.aba_zeros.Add(false);
 				}
 			}
 			else
@@ -387,24 +387,24 @@ namespace BizHawk.DiscSystem
 					bfd.name = baseName + string.Format(" (Track {0:D2}).bin", track.num);
 					bfd.SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType);
 					ret.bins.Add(bfd);
-					int lba=0;
+					int aba = 0;
 
 					//skip the mandatory track 1 pregap! cue+bin files do not contain it
-					if (i == 0) lba = 150;
+					if (i == 0) aba = 150;
 
-					for (; lba < track.length_lba; lba++)
+					for (; aba < track.length_aba; aba++)
 					{
-						int thislba = track.Indexes[0].lba + lba;
-						bfd.lbas.Add(thislba);
-						bfd.lba_zeros.Add(false);
+						int thisaba = track.Indexes[0].aba + aba;
+						bfd.abas.Add(thisaba);
+						bfd.aba_zeros.Add(false);
 					}
 					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
 
 					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
 					foreach (var index in track.Indexes)
 					{
-						int x = index.lba - track.Indexes[0].lba;
-						//if (prefs.OmitRedundantIndex0 && index.num == 0 && index.lba == track.Indexes[1].lba)
+						int x = index.aba - track.Indexes[0].aba;
+						//if (prefs.OmitRedundantIndex0 && index.num == 0 && index.aba == track.Indexes[1].aba)
 						//{
 						//    //dont emit index 0 when it is the same as index 1, it confuses some cue parsers
 						//}
@@ -427,13 +427,19 @@ namespace BizHawk.DiscSystem
 			return ret;
 		}
 
-		public void DumpBin_2352(string binPath)
+		/// <summary>
+		/// NOT USED RIGHT NOW. AMBIGUOUS, ANYWAY.
+		/// "bin" is an ill-defined concept. 
+		/// </summary>
+		[Obsolete]
+		void DumpBin_2352(string binPath)
 		{
 			byte[] temp = new byte[2352];
-			using(FileStream fs = new FileStream(binPath,FileMode.Create,FileAccess.Write,FileShare.None))
-				for (int i = 0; i < Sectors.Count; i++)
+			//a cue's bin probably doesn't contain the first 150 sectors, so skip it
+			using (FileStream fs = new FileStream(binPath, FileMode.Create, FileAccess.Write, FileShare.None))
+				for (int i = 150; i < Sectors.Count; i++)
 				{
-					ReadLBA_2352(150+i, temp, 0);
+					ReadLBA_2352(i, temp, 0);
 					fs.Write(temp, 0, 2352);
 				}
 		}
@@ -461,21 +467,21 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		void PopulateQSubchannel()
 		{
-			int lba = 0;
+			int aba = 0;
 			int dpIndex = 0;
 
-			while (lba < Sectors.Count)
+			while (aba < Sectors.Count)
 			{
 				if (dpIndex < TOC.Points.Count - 1)
 				{
-					if (lba >= TOC.Points[dpIndex + 1].LBA)
+					if (aba >= TOC.Points[dpIndex + 1].ABA)
 					{
 						dpIndex++;
 					}
 				}
 				var dp = TOC.Points[dpIndex];
 
-				var se = Sectors[lba];
+				var se = Sectors[aba];
 
 				int control = 0;
 				//choose a control byte depending on whether this is an audio or data track
@@ -490,18 +496,18 @@ namespace BizHawk.DiscSystem
 				se.q_tno = BCD2.FromDecimal(dp.TrackNum);
 				se.q_index = BCD2.FromDecimal(dp.IndexNum);
 
-				int track_relative_lba = lba - dp.Track.Indexes[1].lba;
-				track_relative_lba = Math.Abs(track_relative_lba);
-				Timestamp track_relative_timestamp = new Timestamp(track_relative_lba);
+				int track_relative_aba = aba - dp.Track.Indexes[1].aba;
+				track_relative_aba = Math.Abs(track_relative_aba);
+				Timestamp track_relative_timestamp = new Timestamp(track_relative_aba);
 				se.q_min = BCD2.FromDecimal(track_relative_timestamp.MIN);
 				se.q_sec = BCD2.FromDecimal(track_relative_timestamp.SEC);
 				se.q_frame = BCD2.FromDecimal(track_relative_timestamp.FRAC);
-				Timestamp absolute_timestamp = new Timestamp(lba);
+				Timestamp absolute_timestamp = new Timestamp(aba);
 				se.q_amin = BCD2.FromDecimal(absolute_timestamp.MIN);
 				se.q_asec = BCD2.FromDecimal(absolute_timestamp.SEC);
 				se.q_aframe = BCD2.FromDecimal(absolute_timestamp.FRAC);
 
-				lba++;
+				aba++;
 			}
 		}
 
@@ -584,20 +590,20 @@ namespace BizHawk.DiscSystem
 			MIN = int.Parse(value.Substring(0, 2));
 			SEC = int.Parse(value.Substring(3, 2));
 			FRAC = int.Parse(value.Substring(6, 2));
-			LBA = MIN * 60 * 75 + SEC * 75 + FRAC;
+			ABA = MIN * 60 * 75 + SEC * 75 + FRAC;
 		}
 		public readonly string Value;
-		public readonly int MIN, SEC, FRAC, LBA;
+		public readonly int MIN, SEC, FRAC, ABA;
 
 		/// <summary>
-		/// creates timestamp from supplied LBA
+		/// creates timestamp from supplied ABA
 		/// </summary>
-		public Timestamp(int LBA)
+		public Timestamp(int ABA)
 		{
-			this.LBA = LBA;
-			MIN = LBA / (60 * 75);
-			SEC = (LBA / 75) % 60;
-			FRAC = LBA % 75;
+			this.ABA = ABA;
+			MIN = ABA / (60 * 75);
+			SEC = (ABA / 75) % 60;
+			FRAC = ABA % 75;
 			Value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
 		}
 	}
@@ -681,50 +687,52 @@ namespace BizHawk.DiscSystem
 		public class BinFileDescriptor
 		{
 			public string name;
-			public List<int> lbas = new List<int>();
+			public List<int> abas = new List<int>();
 
 			//todo - do we really need this? i dont think so...
-			public List<bool> lba_zeros = new List<bool>();
+			public List<bool> aba_zeros = new List<bool>();
 			public int SectorSize;
 		}
 
 		public List<BinFileDescriptor> bins = new List<BinFileDescriptor>();
 
-		public string CreateRedumpReport()
-		{
-			if (disc.TOC.Sessions[0].Tracks.Count != bins.Count)
-				throw new InvalidOperationException("Cannot generate redump report on CueBin lacking OneBinPerTrack property");
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < disc.TOC.Sessions[0].Tracks.Count; i++)
-			{
-				var track = disc.TOC.Sessions[0].Tracks[i];
-				var bfd = bins[i];
+		//NOT SUPPORTED RIGHT NOW
+		//public string CreateRedumpReport()
+		//{
+		//    if (disc.TOC.Sessions[0].Tracks.Count != bins.Count)
+		//        throw new InvalidOperationException("Cannot generate redump report on CueBin lacking OneBinPerTrack property");
+		//    StringBuilder sb = new StringBuilder();
+		//    for (int i = 0; i < disc.TOC.Sessions[0].Tracks.Count; i++)
+		//    {
+		//        var track = disc.TOC.Sessions[0].Tracks[i];
+		//        var bfd = bins[i];
 				
-				//dump the track
-				byte[] dump = new byte[track.length_lba * 2352];
-				for (int lba = 0; lba < track.length_lba; lba++)
-					disc.ReadLBA_2352(bfd.lbas[lba],dump,lba*2352);
-				string crc32 = string.Format("{0:X8}", CRC32.Calculate(dump));
-				string md5 = Util.Hash_MD5(dump, 0, dump.Length);
-				string sha1 = Util.Hash_SHA1(dump, 0, dump.Length);
+		//        //dump the track
+		//        byte[] dump = new byte[track.length_aba * 2352];
+		//        //TODO ????????? post-ABA unknown
+		//        //for (int aba = 0; aba < track.length_aba; aba++)
+		//        //    disc.ReadLBA_2352(bfd.lbas[lba],dump,lba*2352);
+		//        string crc32 = string.Format("{0:X8}", CRC32.Calculate(dump));
+		//        string md5 = Util.Hash_MD5(dump, 0, dump.Length);
+		//        string sha1 = Util.Hash_SHA1(dump, 0, dump.Length);
 
-				int pregap = track.Indexes[1].lba - track.Indexes[0].lba;
-				Timestamp pregap_ts = new Timestamp(pregap);
-				Timestamp len_ts = new Timestamp(track.length_lba);
-				sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n", 
-					i, 
-					Cue.RedumpTypeStringForTrackType(track.TrackType),
-					pregap_ts.Value,
-					len_ts.Value,
-					track.length_lba,
-					track.length_lba*Cue.BINSectorSizeForTrackType(track.TrackType),
-					crc32,
-					md5,
-					sha1
-					);
-			}
-			return sb.ToString();
-		}
+		//        int pregap = track.Indexes[1].lba - track.Indexes[0].lba;
+		//        Timestamp pregap_ts = new Timestamp(pregap);
+		//        Timestamp len_ts = new Timestamp(track.length_lba);
+		//        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n", 
+		//            i, 
+		//            Cue.RedumpTypeStringForTrackType(track.TrackType),
+		//            pregap_ts.Value,
+		//            len_ts.Value,
+		//            track.length_lba,
+		//            track.length_lba*Cue.BINSectorSizeForTrackType(track.TrackType),
+		//            crc32,
+		//            md5,
+		//            sha1
+		//            );
+		//    }
+		//    return sb.ToString();
+		//}
 
 		public void Dump(string directory, CueBinPrefs prefs)
 		{
@@ -746,7 +754,7 @@ namespace BizHawk.DiscSystem
 
 			progress.Message = "Writing bin(s)";
 			progress.TaskCurrent = 1;
-			progress.ProgressEstimate = bins.Sum((bfd) => bfd.lbas.Count);
+			progress.ProgressEstimate = bins.Sum((bfd) => bfd.abas.Count);
 			progress.ProgressCurrent = 0;
 			if(!prefs.ReallyDumpBin) return;
 
@@ -765,28 +773,28 @@ namespace BizHawk.DiscSystem
 					if (prefs.DumpSubchannelQ)
 						fsSubQ = new FileStream(subQPath, FileMode.Create, FileAccess.Write, FileShare.None);
 
-					for (int i = 0; i < bfd.lbas.Count; i++)
+					for (int i = 0; i < bfd.abas.Count; i++)
 					{
 						if (progress.CancelSignal) return;
 
 						progress.ProgressCurrent++;
-						int lba = bfd.lbas[i];
-						if (bfd.lba_zeros[i])
+						int aba = bfd.abas[i];
+						if (bfd.aba_zeros[i])
 						{
 							fs.Write(empty, 0, sectorSize);
 						}
 						else
 						{
 							if (sectorSize == 2352)
-								disc.ReadLBA_2352(lba, temp, 0);
-							else if (sectorSize == 2048) disc.ReadLBA_2048(lba, temp, 0);
+								disc.ReadABA_2352(aba, temp, 0);
+							else if (sectorSize == 2048) disc.ReadABA_2048(aba, temp, 0);
 							else throw new InvalidOperationException();
 							fs.Write(temp, 0, sectorSize);
 
 							//write subQ if necessary
 							if (fsSubQ != null)
 							{
-								disc.Sectors[lba].Read_SubchannelQ(subQ_temp, 0);
+								disc.Sectors[aba].Read_SubchannelQ(subQ_temp, 0);
 								fsSubQ.Write(subQ_temp, 0, 12);
 							}
 						}

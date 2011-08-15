@@ -70,7 +70,7 @@ namespace BizHawk
 			var ti = new TrackInfo();
 			var toc_track = DiscHopper.CurrentDisc.ReadTOC().Sessions[session].Tracks[track];
 			ti.TrackType = toc_track.TrackType;
-			ti.length_lba = toc_track.length_lba;
+			ti.length_lba = toc_track.length_aba;
 			return ti;
 		}
 
