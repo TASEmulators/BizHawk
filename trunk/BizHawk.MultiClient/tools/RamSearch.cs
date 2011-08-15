@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
 	//TODO:
 	//Sorting by Prev only does "Since prev frame", find a way to integrate the various prev options
 	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
+	//Redo button
 
 	/// <summary>
 	/// A winform designed to search through ram values
@@ -517,6 +518,11 @@ namespace BizHawk.MultiClient
 				undoList.Clear();
 				DisplaySearchList();
 			}
+		}
+
+		private void DoRedo()
+		{
+			//TODO
 		}
 
 		private void UndotoolStripButton_Click(object sender, EventArgs e)
@@ -2125,6 +2131,11 @@ namespace BizHawk.MultiClient
 			{
 				RemoveAddresses();
 			}
+		}
+
+		private void RedotoolStripButton2_Click(object sender, EventArgs e)
+		{
+			DoRedo();
 		}
 	}
 }
