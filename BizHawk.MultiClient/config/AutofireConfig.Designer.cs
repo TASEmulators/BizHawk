@@ -44,10 +44,10 @@
 			// Ok
 			// 
 			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Ok.Location = new System.Drawing.Point(45, 117);
+			this.Ok.Location = new System.Drawing.Point(42, 117);
 			this.Ok.Name = "Ok";
 			this.Ok.Size = new System.Drawing.Size(75, 23);
-			this.Ok.TabIndex = 0;
+			this.Ok.TabIndex = 5;
 			this.Ok.Text = "&Ok";
 			this.Ok.UseVisualStyleBackColor = true;
 			this.Ok.Click += new System.EventHandler(this.Ok_Click);
@@ -56,10 +56,10 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(126, 117);
+			this.Cancel.Location = new System.Drawing.Point(123, 117);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 1;
+			this.Cancel.TabIndex = 7;
 			this.Cancel.Text = "&Cancel";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
@@ -132,7 +132,7 @@
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.OnNumeric);
 			this.groupBox1.Controls.Add(this.OffNumeric);
-			this.groupBox1.Location = new System.Drawing.Point(12, 12);
+			this.groupBox1.Location = new System.Drawing.Point(13, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(184, 70);
 			this.groupBox1.TabIndex = 6;
@@ -145,11 +145,14 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(213, 152);
+			this.ClientSize = new System.Drawing.Size(210, 152);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.Ok);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(512, 512);
+			this.MinimumSize = new System.Drawing.Size(218, 179);
 			this.Name = "AutofireConfig";
 			this.Text = "Autofire Configuration";
 			this.Load += new System.EventHandler(this.AutofireConfig_Load);

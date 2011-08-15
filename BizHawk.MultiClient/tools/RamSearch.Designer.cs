@@ -38,6 +38,7 @@
 			this.TruncateFromFiletoolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.ExcludeRamWatchtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.PoketoolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.FreezeAddressToolStrip = new System.Windows.Forms.ToolStripButton();
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
@@ -92,13 +93,14 @@
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
-			this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.NewSearchtoolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.SetCurrToPrevtoolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.ClearChangeCountstoolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.UndotoolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.RedotoolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip2 = new ToolStripEx();
 			this.DataSizetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
 			this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,7 +137,7 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.WatchtoolStripButton1 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -230,6 +232,15 @@
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
 			// 
+			// WatchtoolStripButton1
+			// 
+			this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
+			this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
+			this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
+			this.WatchtoolStripButton1.Text = "Watch";
+			// 
 			// PoketoolStripButton1
 			// 
 			this.PoketoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -280,7 +291,7 @@
 			this.SearchListView.Name = "SearchListView";
 			this.SearchListView.selectedItem = -1;
 			this.SearchListView.Size = new System.Drawing.Size(221, 363);
-			this.SearchListView.TabIndex = 3;
+			this.SearchListView.TabIndex = 1;
 			this.SearchListView.UseCompatibleStateImageBehavior = false;
 			this.SearchListView.View = System.Windows.Forms.View.Details;
 			this.SearchListView.VirtualMode = true;
@@ -703,12 +714,29 @@
             this.toolStripSeparator6,
             this.SetCurrToPrevtoolStripButton2,
             this.ClearChangeCountstoolStripButton,
-            this.UndotoolStripButton});
+            this.toolStripSeparator10,
+            this.UndotoolStripButton,
+            this.RedotoolStripButton2});
 			this.toolStrip1.Location = new System.Drawing.Point(248, 33);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(174, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(237, 25);
 			this.toolStrip1.TabIndex = 5;
 			this.toolStrip1.TabStop = true;
+			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
+			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(63, 22);
+			this.toolStripButton1.Text = "Search ";
+			this.toolStripButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolStripButton1_MouseDown);
+			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
 			// 
 			// NewSearchtoolStripButton
 			// 
@@ -724,21 +752,6 @@
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
-			this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(60, 22);
-			this.toolStripButton1.Text = "Search";
-			this.toolStripButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolStripButton1_MouseDown);
-			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
-			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
 			// 
 			// SetCurrToPrevtoolStripButton2
 			// 
@@ -771,6 +784,17 @@
 			this.UndotoolStripButton.Size = new System.Drawing.Size(23, 22);
 			this.UndotoolStripButton.Text = "Undo Search";
 			this.UndotoolStripButton.Click += new System.EventHandler(this.UndotoolStripButton_Click_1);
+			// 
+			// RedotoolStripButton2
+			// 
+			this.RedotoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.RedotoolStripButton2.Enabled = false;
+			this.RedotoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
+			this.RedotoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.RedotoolStripButton2.Name = "RedotoolStripButton2";
+			this.RedotoolStripButton2.Size = new System.Drawing.Size(23, 22);
+			this.RedotoolStripButton2.Text = "Redo";
+			this.RedotoolStripButton2.Click += new System.EventHandler(this.RedotoolStripButton2_Click);
 			// 
 			// toolStrip2
 			// 
@@ -1153,14 +1177,10 @@
 			this.OutputLabel.TabIndex = 9;
 			this.OutputLabel.Text = "                          ";
 			// 
-			// WatchtoolStripButton1
+			// toolStripSeparator10
 			// 
-			this.WatchtoolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.WatchtoolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
-			this.WatchtoolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.WatchtoolStripButton1.Name = "WatchtoolStripButton1";
-			this.WatchtoolStripButton1.Size = new System.Drawing.Size(23, 22);
-			this.WatchtoolStripButton1.Text = "Watch";
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RamSearch
 			// 
@@ -1312,5 +1332,7 @@
 		private ToolStripEx toolStrip2;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
+		private System.Windows.Forms.ToolStripButton RedotoolStripButton2;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
     }
 }
