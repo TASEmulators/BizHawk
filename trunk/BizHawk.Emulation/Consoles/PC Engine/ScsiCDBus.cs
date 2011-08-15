@@ -497,8 +497,7 @@ throw new Exception("requesting 0 sectors read.............................");
         private void CommandReadSubcodeQ()
         {
 			//TODO VECNA - i changed this for you but maybe i did it wrong
-			var sectorEntry = disc.ReadSectorEntry(CurrentReadingSector);
-
+			var sectorEntry = disc.ReadSectorEntry(pce.CDAudio.CurrentSector);
 
             DataIn.Clear();
 
@@ -510,10 +509,7 @@ throw new Exception("requesting 0 sectors read.............................");
             }
             
 			DataIn.Enqueue(sectorEntry.q_status); // unused?
-            
-			//DataIn.Enqueue((byte)pce.CDAudio.PlayingTrack); // track //vecna's
-			DataIn.Enqueue(sectorEntry.q_tno.BCDValue); // track //zero's
-
+			DataIn.Enqueue(sectorEntry.q_tno.BCDValue); // track
 			DataIn.Enqueue(sectorEntry.q_index.BCDValue); // index
 			DataIn.Enqueue(sectorEntry.q_min.BCDValue); // M(rel)
 			DataIn.Enqueue(sectorEntry.q_sec.BCDValue); // S(rel)

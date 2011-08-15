@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Sound
         public int StartLBA, EndLBA;
         public int PlayingTrack;
 
-        private int CurrentSector, SectorOffset; // Offset is in SAMPLES, not bytes. Sector is 588 samples long.
+        public int CurrentSector, SectorOffset; // Offset is in SAMPLES, not bytes. Sector is 588 samples long.
         private int CachedSector;
         private byte[] SectorCache = new byte[2352];
 
@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Sound
                 if (lba >= trackStart && lba < trackEnd)
                 {
                     foundTrack = true;
-                    StartLBA = trackStart;
+                    StartLBA = lba;
                     EndLBA = trackEnd;
                     break;
                 }
