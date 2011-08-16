@@ -488,6 +488,7 @@ namespace BizHawk.MultiClient
 				{
 					searchList.Remove(searchList[indexes[x] - x]);
 				}
+				indexes.Clear();
 				DisplaySearchList();
 			}
 		}
