@@ -51,9 +51,8 @@ namespace BizHawk.Emulation.Sound
             if (track < 1 || track > Disc.TOC.Sessions[0].Tracks.Count)
                 return;
 
-			//note for vecna: you may find that the new "Point" and "SeekPoint" concept in the TOC is more useful than this kind of logic. just something to think about
-            StartLBA = Disc.TOC.Sessions[0].Tracks[track - 1].Indexes[1].LBA;
-			EndLBA = StartLBA + Disc.TOC.Sessions[0].Tracks[track - 1].length_aba;
+            StartLBA = Disc.TOC.Sessions[0].Tracks[track - 1].Indexes[1].aba - 150;
+            EndLBA = StartLBA + Disc.TOC.Sessions[0].Tracks[track - 1].length_aba;
             PlayingTrack = track;
             CurrentSector = StartLBA;
             SectorOffset = 0;
@@ -62,31 +61,11 @@ namespace BizHawk.Emulation.Sound
 
         public void PlayStartingAtLba(int lba)
         {
-            int track;
-            var tracks = Disc.TOC.Sessions[0].Tracks;
-            bool foundTrack = false;
+            var point = Disc.TOC.SeekPoint(lba);
+            PlayingTrack = point.TrackNum;
+            StartLBA = lba;
+            EndLBA = point.Track.Indexes[1].aba + point.Track.length_aba - 150;
 
-			//note for vecna: you may find that the new "Point" and "SeekPoint" concept in the TOC is more useful than this kind of logic. just something to think about
-            for (track = 0; track < tracks.Count; track++)
-            {
-				int trackStart = tracks[track].Indexes[0].LBA;
-                int trackEnd = trackStart + tracks[track].length_aba;
-                if (lba >= trackStart && lba < trackEnd)
-                {
-                    foundTrack = true;
-                    StartLBA = lba;
-                    EndLBA = trackEnd;
-                    break;
-                }
-            }
-
-            if (foundTrack == false)
-            {
-                Stop();
-                return;
-            }
-
-            PlayingTrack = track + 1;
             CurrentSector = StartLBA;
             SectorOffset = 0;
             Mode = CDAudioMode.Playing;

@@ -378,7 +378,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             int sector = (CommandBuffer[1] & 0x1f) << 16;
             sector |= CommandBuffer[2] << 8;
             sector |= CommandBuffer[3];
-            sector += 150; // BLEH
 
 if (CommandBuffer[4] == 0)
 throw new Exception("requesting 0 sectors read.............................");
@@ -414,7 +413,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
                 case 0x80: // Set start offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
-                    audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].LBA;
+                    audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
                     Console.WriteLine("Set Start track: {0} lba={1}", trackNo, audioStartLBA);
                     break;
             }
@@ -454,7 +453,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
                 case 0x80: // Set end offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
-					audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].LBA;
+                    audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
                     Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
                     break;
             }
@@ -496,7 +495,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
         private void CommandReadSubcodeQ()
         {
-			var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
+            var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
 
             DataIn.Clear();
 
@@ -560,7 +559,7 @@ throw new Exception("requesting 0 sectors read.............................");
                             throw new Exception("Request more tracks than exist.... need to do error handling");
                         // I error handled your mom last night
 
-						int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].LBA;
+                        int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].aba - 150;
                         byte m, s, f;
                         Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
                         
