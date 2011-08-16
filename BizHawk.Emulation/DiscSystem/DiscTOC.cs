@@ -62,6 +62,11 @@ namespace BizHawk.DiscSystem
 			public int Num;
 			public int ABA, TrackNum, IndexNum;
 			public Track Track;
+
+			public int LBA
+			{
+				get { return ABA - 150; }
+			}
 		}
 
 

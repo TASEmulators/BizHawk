@@ -119,10 +119,16 @@ namespace BizHawk.DiscSystem
 		}
 
 		/// <summary>
-		/// Main API to determine how many sectors are available on the disc.
-		/// This counts from absolute sector 0 to the final sector available.
+		/// Main API to determine how many LBAs are available on the disc.
+		/// This counts from LBA 0 to the final sector available.
 		/// </summary>
-		public int LBACount { get { return Sectors.Count; } }
+		public int LBACount { get { return ABACount - 150; } }
+
+		/// <summary>
+		/// Main API to determine how many ABAs (sectors) are available on the disc.
+		/// This counts from ABA 0 to the final sector available.
+		/// </summary>
+		public int ABACount { get { return Sectors.Count; } }
 
 		/// <summary>
 		/// indicates whether this disc took significant work to load from the hard drive (i.e. decoding of ECM or audio data)
