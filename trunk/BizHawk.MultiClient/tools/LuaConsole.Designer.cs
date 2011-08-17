@@ -227,12 +227,14 @@
 			// 
 			// editToolStripMenuItem
 			// 
+			this.editToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CutHS;
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.editToolStripMenuItem.Text = "Edit";
 			// 
 			// toggleToolStripMenuItem
 			// 
+			this.toggleToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Refresh1;
 			this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
 			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.toggleToolStripMenuItem.Text = "Toggle";

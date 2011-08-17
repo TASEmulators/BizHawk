@@ -572,6 +572,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.CheatList.Remove(Global.CheatList.Cheat(indexes[0])); //index[0] used since each iteration will make this the correct list index
 				}
+				indexes.Clear();
 				DisplayCheatsList();
 			}
 		}
