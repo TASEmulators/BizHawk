@@ -1394,16 +1394,23 @@ namespace BizHawk.MultiClient
 
 				case "Toggle MultiTrack":
 					{
-						Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
-						if (Global.MovieSession.MultiTrack.IsActive)
+						if (Global.MainForm.UserMovie.Mode > MOVIEMODE.INACTIVE)
 						{
-							Global.RenderPanel.AddMessage("MultiTrack Enabled");
-							Global.RenderPanel.MT = "Recording None";
+							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
+							if (Global.MovieSession.MultiTrack.IsActive)
+							{
+								Global.RenderPanel.AddMessage("MultiTrack Enabled");
+								Global.RenderPanel.MT = "Recording None";
+							}
+							else
+								Global.RenderPanel.AddMessage("MultiTrack Disabled");
+							Global.MovieSession.MultiTrack.RecordAll = false;
+							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						}
 						else
-							Global.RenderPanel.AddMessage("MultiTrack Disabled");
-						Global.MovieSession.MultiTrack.RecordAll = false;
-						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
+						{
+							Global.RenderPanel.AddMessage("MultiTrack cannot be enabled while not recording.");
+						}
 						break;
 					}
 				case "Increment Player":
@@ -2140,11 +2147,19 @@ namespace BizHawk.MultiClient
 
 		public void ToggleReadOnly()
 		{
-			ReadOnly ^= true;
-			if (ReadOnly)
-				Global.RenderPanel.AddMessage("Movie read-only mode");
+			if (Global.MainForm.UserMovie.Mode > MOVIEMODE.INACTIVE)
+			{
+				ReadOnly ^= true;
+				if (ReadOnly)
+					Global.RenderPanel.AddMessage("Movie read-only mode");
+				else
+					Global.RenderPanel.AddMessage("Movie read+write mode");
+			}
 			else
-				Global.RenderPanel.AddMessage("Movie read+write mode");
+			{
+				Global.RenderPanel.AddMessage("No movie active");
+			}
+
 		}
 
 		public void SetReadOnly(bool read_only)

@@ -326,8 +326,7 @@ namespace BizHawk.MultiClient
 
 		public void LoadLogFromSavestateText(TextReader reader)
 		{
-			//We are in record mode so replace the movie log with the one from the savestate
-			Global.MovieSession.MultiTrack.IsActive = false; //adelikat: Hack because this is causing crashes by being true when it shouldn't!
+			//We are in record mode so replace the movie log with the one from the savestate			
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
