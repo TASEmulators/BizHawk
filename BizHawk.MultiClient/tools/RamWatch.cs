@@ -501,6 +501,7 @@ namespace BizHawk.MultiClient
 				{
 					watchList.Remove(watchList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
 				}
+				indexes.Clear();
 				DisplayWatchList();
 			}
 		}
