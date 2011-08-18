@@ -15,6 +15,8 @@ namespace BizHawk.MultiClient
 	//Sorting by Prev only does "Since prev frame", find a way to integrate the various prev options
 	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
 	//Redo button
+	//Go To Address (Ctrl+G) feature
+	//Ctrl+A = highlight all visible addresses
 
 	/// <summary>
 	/// A winform designed to search through ram values
@@ -472,7 +474,9 @@ namespace BizHawk.MultiClient
 		private string MakeAddressString(int num)
 		{
 			if (num == 1)
-				return "1 address";
+				return " 1 address";
+			else if (num < 10)
+				return " " + num.ToString() + " addresses";
 			else
 				return num.ToString() + " addresses";
 		}
