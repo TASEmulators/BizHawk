@@ -216,7 +216,7 @@ namespace BizHawk.MultiClient
 		private void AddToRamWatch()
 		{
 			//Add to RAM Watch
-			int address = MemoryViewer.GetPointedAddress();
+			int address = MemoryViewer.GetHighlightedAddress();
 			if (address >= 0)
 			{
 				Watch w = new Watch();
@@ -299,7 +299,7 @@ namespace BizHawk.MultiClient
 
 		private void FreezeAddress()
 		{
-			int address = MemoryViewer.GetPointedAddress();
+			int address = MemoryViewer.GetHighlightedAddress();
 			if (address >= 0)
 			{
 				Cheat c = new Cheat();
