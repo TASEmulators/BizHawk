@@ -13,9 +13,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class Cheats : Form
 	{
-		//Implement Freeze functions in all memory domains
-		//context menu - enable/disable highlight dependent items
-
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		int defaultNameWidth;
