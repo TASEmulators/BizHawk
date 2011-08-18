@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 
+
 namespace BizHawk.MultiClient
 {
 	public class MemoryViewer : Panel
@@ -35,6 +36,8 @@ namespace BizHawk.MultiClient
 		const int rowX = 12;
 		const int rowY = 16;
 		const int rowYoffset = 20;
+
+		public bool BlazingFast = false;
 
 		public MemoryViewer()
 		{
@@ -517,5 +520,47 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		protected override void WndProc(ref System.Windows.Forms.Message m)
+		{
+			switch (m.Msg)
+			{
+				case 0x0201: //WM_LBUTTONDOWN
+					{
+						this.Focus();
+						return;
+					}
+				//case 0x0202://WM_LBUTTONUP
+				//{
+				//	return;
+				//}
+				case 0x0203://WM_LBUTTONDBLCLK
+					{
+						return;
+					}
+				case 0x0204://WM_RBUTTONDOWN
+					{
+						return;
+					}
+				case 0x0205://WM_RBUTTONUP
+					{
+						return;
+					}
+				case 0x0206://WM_RBUTTONDBLCLK
+					{
+						return;
+					}
+				case 0x0014: //WM_ERASEBKGND
+					if (BlazingFast)
+					{
+						m.Result = new IntPtr(1);
+					}
+					break;
+			}
+
+			base.WndProc(ref m);
+		}
+
+		
 	}
 }
