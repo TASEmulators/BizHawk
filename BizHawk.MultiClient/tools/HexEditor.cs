@@ -173,18 +173,7 @@ namespace BizHawk.MultiClient
 
 		private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			InputPrompt i = new InputPrompt();
-			i.Text = "Go to Address";
-			i.SetMessage("Enter a hexadecimal value");
-			i.ShowDialog();
-
-			if (i.UserOK)
-			{
-				if (InputValidate.IsValidHexNumber(i.UserText))
-				{
-					GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
-				}
-			}
+			MemoryViewer.GoToSpecifiedAddress();
 		}
 
 		public void GoToAddress(int address)

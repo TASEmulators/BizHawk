@@ -128,6 +128,8 @@ namespace BizHawk.MultiClient
 		{
 			if (!InputValidate.IsValidHexNumber(((char)e.KeyCode).ToString()))
 			{
+				if (e.Control && e.KeyCode == Keys.G)
+					GoToSpecifiedAddress();
 				e.Handled = true;
 				return;
 			}
@@ -496,6 +498,24 @@ namespace BizHawk.MultiClient
 			SetHighlighted(address);
 			ClearNibbles();
 			Refresh();
+		}
+
+		public void GoToSpecifiedAddress()
+		{
+			InputPrompt i = new InputPrompt();
+			i.Text = "Go to Address";
+			i.SetMessage("Enter a hexadecimal value");
+			Global.Sound.StopSound();
+			i.ShowDialog();
+			Global.Sound.StartSound();
+
+			if (i.UserOK)
+			{
+				if (InputValidate.IsValidHexNumber(i.UserText))
+				{
+					GoToAddress(int.Parse(i.UserText, NumberStyles.HexNumber));
+				}
+			}
 		}
 	}
 }
