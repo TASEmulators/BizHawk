@@ -71,7 +71,9 @@ namespace BizHawk.MultiClient
 		public void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			MemoryViewer.BlazingFast = true;
 			MemoryViewer.Refresh();
+			MemoryViewer.BlazingFast = false;
 		}
 
 		public void Restart()
