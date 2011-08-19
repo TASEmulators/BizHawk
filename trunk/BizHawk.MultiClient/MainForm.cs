@@ -2217,7 +2217,11 @@ namespace BizHawk.MultiClient
 		{
 			//is it enough to run this for one frame? maybe..
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+			{
 				Global.ClickyVirtualPadController.Click("Reset");
+				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+					Global.Emulator.ResetFrameCounter();
+			}
 		}
 
 		public void UpdateStatusSlots()
