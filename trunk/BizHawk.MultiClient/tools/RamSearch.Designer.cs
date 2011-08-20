@@ -297,6 +297,7 @@
 			this.SearchListView.UseCompatibleStateImageBehavior = false;
 			this.SearchListView.View = System.Windows.Forms.View.Details;
 			this.SearchListView.VirtualMode = true;
+			this.SearchListView.Enter += new System.EventHandler(this.SearchListView_Enter);
 			this.SearchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.SearchListView_ColumnClick);
 			this.SearchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SearchListView_MouseDoubleClick);
 			this.SearchListView.QueryItemBkColor += new BizHawk.QueryItemBkColorHandler(this.SearchListView_QueryItemBkColor);
@@ -720,9 +721,9 @@
             this.toolStripSeparator10,
             this.UndotoolStripButton,
             this.RedotoolStripButton2});
-			this.toolStrip1.Location = new System.Drawing.Point(221, 33);
+			this.toolStrip1.Location = new System.Drawing.Point(252, 33);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(237, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(206, 25);
 			this.toolStrip1.TabIndex = 5;
 			this.toolStrip1.TabStop = true;
 			// 
