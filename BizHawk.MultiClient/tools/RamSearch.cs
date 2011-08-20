@@ -2142,5 +2142,10 @@ namespace BizHawk.MultiClient
 		{
 			DoRedo();
 		}
+
+		private void WatchtoolStripButton1_Click_1(object sender, EventArgs e)
+		{
+			AddToRamWatch();
+		}
 	}
 }
