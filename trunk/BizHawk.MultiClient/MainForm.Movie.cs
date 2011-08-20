@@ -110,7 +110,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private bool HandleMovieLoadState(StreamReader reader)
+		private bool HandleMovieLoadState(string path)
 		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
 			if (UserMovie.Mode == MOVIEMODE.INACTIVE)
@@ -122,7 +122,7 @@ namespace BizHawk.MultiClient
 				if (ReadOnly)
 				{
 
-					if (!UserMovie.CheckTimeLines(reader, false))
+					if (!UserMovie.CheckTimeLines(path, false))
 						return false;	//Timeline/GUID error
 					else
 					{
@@ -133,26 +133,26 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (!UserMovie.CheckTimeLines(reader, true))
+					if (!UserMovie.CheckTimeLines(path, true))
 						return false;	//GUID Error
-					UserMovie.LoadLogFromSavestateText(reader);
+					UserMovie.LoadLogFromSavestateText(path);
 				}
 			}
 			else if (UserMovie.Mode == MOVIEMODE.PLAY)
 			{
 				if (ReadOnly)
 				{
-					if (!UserMovie.CheckTimeLines(reader, false))
+					if (!UserMovie.CheckTimeLines(path, false))
 						return false;	//Timeline/GUID error
 					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 				}
 				else
 				{
-					if (!UserMovie.CheckTimeLines(reader, true))
+					if (!UserMovie.CheckTimeLines(path, true))
 						return false;	//GUID Error
 					UserMovie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
 					SetMainformMovieInfo();
-					UserMovie.LoadLogFromSavestateText(reader);
+					UserMovie.LoadLogFromSavestateText(path);
 				}
 			}
 			else if (UserMovie.Mode == MOVIEMODE.FINISHED)
@@ -167,7 +167,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						if (!UserMovie.CheckTimeLines(reader, false))
+						if (!UserMovie.CheckTimeLines(path, false))
 							return false;	//Timeline/GUID error
 						UserMovie.StartPlayback();
 						SetMainformMovieInfo();
@@ -183,11 +183,11 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						if (!UserMovie.CheckTimeLines(reader, true))
+						if (!UserMovie.CheckTimeLines(path, true))
 							return false;	//GUID Error
 						UserMovie.StartNewRecording();
 						SetMainformMovieInfo();
-						UserMovie.LoadLogFromSavestateText(reader);
+						UserMovie.LoadLogFromSavestateText(path);
 					}
 				}
 			}
