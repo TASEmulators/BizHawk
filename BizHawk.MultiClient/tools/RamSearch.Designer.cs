@@ -163,9 +163,9 @@
             this.WatchtoolStripButton1,
             this.PoketoolStripButton1,
             this.FreezeAddressToolStrip});
-			this.SearchtoolStrip1.Location = new System.Drawing.Point(220, 58);
+			this.SearchtoolStrip1.Location = new System.Drawing.Point(251, 58);
 			this.SearchtoolStrip1.Name = "SearchtoolStrip1";
-			this.SearchtoolStrip1.Size = new System.Drawing.Size(237, 25);
+			this.SearchtoolStrip1.Size = new System.Drawing.Size(206, 25);
 			this.SearchtoolStrip1.TabIndex = 7;
 			this.SearchtoolStrip1.TabStop = true;
 			this.SearchtoolStrip1.Text = "Search";
@@ -720,9 +720,9 @@
             this.toolStripSeparator10,
             this.UndotoolStripButton,
             this.RedotoolStripButton2});
-			this.toolStrip1.Location = new System.Drawing.Point(252, 33);
+			this.toolStrip1.Location = new System.Drawing.Point(221, 33);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(206, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(237, 25);
 			this.toolStrip1.TabIndex = 5;
 			this.toolStrip1.TabStop = true;
 			// 
@@ -733,7 +733,6 @@
 			this.toolStripButton1.Name = "toolStripButton1";
 			this.toolStripButton1.Size = new System.Drawing.Size(63, 22);
 			this.toolStripButton1.Text = "Search ";
-			this.toolStripButton1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.toolStripButton1_MouseDown);
 			this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
 			// 
 			// toolStripSeparator7
