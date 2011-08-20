@@ -812,7 +812,7 @@
             this.DataSizetoolStripSplitButton1,
             this.DataTypetoolStripSplitButton1,
             this.EndiantoolSplitButton});
-			this.toolStrip2.Location = new System.Drawing.Point(260, 83);
+			this.toolStrip2.Location = new System.Drawing.Point(251, 83);
 			this.toolStrip2.Name = "toolStrip2";
 			this.toolStrip2.Size = new System.Drawing.Size(206, 25);
 			this.toolStrip2.TabIndex = 10;
