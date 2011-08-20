@@ -41,7 +41,10 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
-			//NewWatchList(true);
+			if (currentWatchFile.Length > 0)
+				LoadWatchFile(currentWatchFile, false);
+			else
+				NewWatchList(true);
 		}
 
 		public List<Watch> GetRamWatchList()
