@@ -70,10 +70,12 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			SearchListView.BlazingFast = true;
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			
+			if (searchList.Count > 8)
+				SearchListView.BlazingFast = true;
 			sortReverse = false;
 			sortedCol = "";
-			if (!this.IsHandleCreated || this.IsDisposed) return;
 			for (int x = 0; x < searchList.Count; x++)
 			{
 				searchList[x].prev = searchList[x].value;
@@ -2146,6 +2148,11 @@ namespace BizHawk.MultiClient
 		private void WatchtoolStripButton1_Click_1(object sender, EventArgs e)
 		{
 			AddToRamWatch();
+		}
+
+		private void SearchListView_Enter(object sender, EventArgs e)
+		{
+			SearchListView.Refresh();
 		}
 	}
 }
