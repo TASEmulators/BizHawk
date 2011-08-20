@@ -1731,11 +1731,9 @@ namespace BizHawk.MultiClient
 
 		private void LoadStateFile(string path, string name)
 		{
-			var reader = new StreamReader(path);
-
-			if (HandleMovieLoadState(reader))
+			if (HandleMovieLoadState(path))
 			{
-				reader.BaseStream.Position = 0; //Reset position after movie code has had its way with it
+				var reader = new StreamReader(path);
 				Global.Emulator.LoadStateText(reader);
 				UpdateTools();
 				reader.Close();

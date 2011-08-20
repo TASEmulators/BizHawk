@@ -324,8 +324,9 @@ namespace BizHawk.MultiClient
 			writer.WriteLine("[/Input]");
 		}
 
-		public void LoadLogFromSavestateText(TextReader reader)
+		public void LoadLogFromSavestateText(string path)
 		{
+			var reader = new StreamReader(path);
 			//We are in record mode so replace the movie log with the one from the savestate			
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
@@ -338,6 +339,10 @@ namespace BizHawk.MultiClient
 				while (true)
 				{
 					string line = reader.ReadLine();
+					if (line.Contains(".[NES"))
+					{
+						MessageBox.Show("OOPS!");
+					}
 					if (line == null) break;
 					if (line.Trim() == "") continue;
 					if (line == "[Input]") continue;
@@ -368,6 +373,7 @@ namespace BizHawk.MultiClient
 				Log.Truncate(Global.Emulator.Frame);
 			}
 			IncrementRerecords();
+			reader.Close();
 		}
 
 		public void IncrementRerecords()
@@ -477,10 +483,10 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public bool CheckTimeLines(StreamReader reader, bool OnlyGUID)
+		public bool CheckTimeLines(string path, bool OnlyGUID)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
-
+			var reader = new StreamReader(path);
 			MovieLog l = new MovieLog();
 			string line;
 			string GUID;
@@ -500,11 +506,14 @@ namespace BizHawk.MultiClient
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 						if (result == DialogResult.No)
+						{
+							reader.Close();
 							return false;
+						}
 					}
 					else if (OnlyGUID)
 					{
-						reader.BaseStream.Position = 0;
+						reader.Close();
 						return true;
 					}
 				}
@@ -512,18 +521,22 @@ namespace BizHawk.MultiClient
 				else if (line == "[/Input]") break;
 				else if (line[0] == '|')
 					l.AddFrame(line);
-				
 			}
 
 			reader.BaseStream.Position = 0; //Reset position because this stream may be read again by other code
 
-			if (OnlyGUID) return true;
+			if (OnlyGUID)
+			{
+				reader.Close();
+				return true;
+			}
 
 			if (Log.Length() < l.Length())
 			{
 				//Future event error
 					MessageBox.Show("The savestate is from frame " + l.Length().ToString() + " which is greater than the current movie length of " +
 					Log.Length().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					reader.Close();
 					return false;
 			}
 			for (int x = 0; x < Log.Length(); x++)
@@ -535,9 +548,11 @@ namespace BizHawk.MultiClient
 					//TimeLine Error
 					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",
 						"Timeline Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					reader.Close();
 					return false;
 				}
 			}
+			reader.Close();
 			return true;
 		}
 
