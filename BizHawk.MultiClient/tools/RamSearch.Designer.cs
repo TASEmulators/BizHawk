@@ -1208,6 +1208,7 @@
 			this.Name = "RamSearch";
 			this.Text = "Ram Search";
 			this.Load += new System.EventHandler(this.RamSearch_Load);
+			this.Activated += new System.EventHandler(this.RamSearch_Activated);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamSearch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamSearch_DragEnter);
 			this.SearchtoolStrip1.ResumeLayout(false);

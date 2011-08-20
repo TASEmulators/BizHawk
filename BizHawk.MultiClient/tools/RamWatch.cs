@@ -1487,5 +1487,10 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < watchList.Count; x++)
 				WatchListView.SelectItem(x, true);
 		}
+
+		private void RamWatch_Activated(object sender, EventArgs e)
+		{
+			WatchListView.Refresh();
+		}
 	}
 }

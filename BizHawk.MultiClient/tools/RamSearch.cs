@@ -2154,5 +2154,10 @@ namespace BizHawk.MultiClient
 		{
 			SearchListView.Refresh();
 		}
+
+		private void RamSearch_Activated(object sender, EventArgs e)
+		{
+			SearchListView.Refresh();
+		}
 	}
 }
