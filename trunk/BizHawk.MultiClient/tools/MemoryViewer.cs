@@ -18,7 +18,8 @@ namespace BizHawk.MultiClient
 		//different back color for frozen addresses
 
 		public VScrollBar vScrollBar1;
-		public Label info;
+		//public Label info;
+		string info = "";
 		MemoryDomain Domain = new MemoryDomain("NULL", 1024, Endian.Little, addr => { return 0; }, (a, v) => { v = 0; });
 
 		Font font = new Font("Courier New", 8);
@@ -62,16 +63,6 @@ namespace BizHawk.MultiClient
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			this.Controls.Add(this.vScrollBar1);
 			
-			
-
-			//Debugging control
-			this.info = new Label();
-			this.info.Text = "";
-			this.info.Font = new Font("Courier New", 8);
-			this.info.Location = new System.Drawing.Point(n.X / 2, 1);
-			this.info.Height = 11;
-			this.Controls.Add(this.info);
-
 			SetHeader();
 		}
 
@@ -146,7 +137,7 @@ namespace BizHawk.MultiClient
 			if (nibbles[0] == 'G')
 			{
 				nibbles[0] = (char)e.KeyCode;
-				info.Text = nibbles[0].ToString();
+				info = nibbles[0].ToString();
 			}
 			else
 			{
@@ -177,7 +168,7 @@ namespace BizHawk.MultiClient
 			}
 			addressHighlighted = addr;
 			addressOver = addr;
-			info.Text = String.Format("{0:X4}", addressOver);
+			info = String.Format("{0:X4}", addressOver);
 			Refresh();
 		}
 
@@ -203,7 +194,7 @@ namespace BizHawk.MultiClient
 					e.Graphics.FillRectangle(highlightBrush, rect);
 				}
 
-				rowStr.Append(Domain.Name + '\n');
+				rowStr.Append(Domain.Name + "    " + info + '\n');
 				rowStr.Append(Header + '\n');
 				
 				for (int i = 0; i < RowsVisible; i++)
@@ -410,12 +401,12 @@ namespace BizHawk.MultiClient
 			if (row >= 0 && row <= maxRow && column >= 0 && column < 16)
 			{
 				addressOver = row * 16 + column;
-				info.Text = String.Format("{0:X4}", addressOver);
+				info = String.Format("{0:X4}", addressOver);
 			}
 			else
 			{
 				addressOver = -1;
-				info.Text = "";
+				info = "";
 			}
 		}
 
