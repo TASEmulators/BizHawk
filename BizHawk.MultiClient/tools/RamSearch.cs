@@ -70,28 +70,31 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			
-			if (searchList.Count > 8)
-				SearchListView.BlazingFast = true;
-			sortReverse = false;
-			sortedCol = "";
-			for (int x = 0; x < searchList.Count; x++)
+			unchecked
 			{
-				searchList[x].prev = searchList[x].value;
-				searchList[x].PeekAddress(Domain);
+				if (!this.IsHandleCreated || this.IsDisposed) return;
 
-				if (searchList[x].prev != searchList[x].value)
-					searchList[x].changecount++;
+				if (searchList.Count > 8)
+					SearchListView.BlazingFast = true;
+				sortReverse = false;
+				sortedCol = "";
+				for (int x = 0; x < searchList.Count; x++)
+				{
+					searchList[x].prev = searchList[x].value;
+					searchList[x].PeekAddress(Domain);
 
+					if (searchList[x].prev != searchList[x].value)
+						searchList[x].changecount++;
+
+				}
+				if (AutoSearchCheckBox.Checked)
+					DoSearch();
+				else if (Global.Config.RamSearchPreviewMode)
+					DoPreview();
+
+				SearchListView.Refresh();
+				SearchListView.BlazingFast = false;
 			}
-			if (AutoSearchCheckBox.Checked)
-				DoSearch();
-			else if (Global.Config.RamSearchPreviewMode)
-				DoPreview();
-
-			SearchListView.Refresh();
-			SearchListView.BlazingFast = false;
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)

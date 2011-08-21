@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			this.BorderStyle = BorderStyle.Fixed3D;
 			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseMove);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseClick);

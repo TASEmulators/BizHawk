@@ -383,7 +383,7 @@ namespace BizHawk
 
 			ptrlvhti = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LVHITTESTINFO)));
 
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 		}
