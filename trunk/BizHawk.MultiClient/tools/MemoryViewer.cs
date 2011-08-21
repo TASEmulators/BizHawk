@@ -183,14 +183,14 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				Pen p = new Pen(Brushes.Black);
+				//Pen p = new Pen(Brushes.Black);
 				row = 0;
 				addr = 0;
 
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
-				e.Graphics.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
-				e.Graphics.DrawLine(p, this.Left, 34, this.Right - 16, 34);
+				//e.Graphics.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
+				//e.Graphics.DrawLine(p, this.Left, 34, this.Right - 16, 34);
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
