@@ -68,6 +68,8 @@ namespace BizHawk.MultiClient
 			this.info.Location = new System.Drawing.Point(n.X / 2, 1);
 			this.info.Height = 11;
 			this.Controls.Add(this.info);
+
+			SetHeader();
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -183,14 +185,11 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				//Pen p = new Pen(Brushes.Black);
 				row = 0;
 				addr = 0;
 
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
-				//e.Graphics.DrawLine(p, this.Left + 38 + addrOffset, this.Top, this.Left + 38 + addrOffset, this.Bottom - 40);
-				//e.Graphics.DrawLine(p, this.Left, 34, this.Right - 16, 34);
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
@@ -201,21 +200,10 @@ namespace BizHawk.MultiClient
 					e.Graphics.FillRectangle(highlightBrush, rect);
 				}
 
-				switch (DataSize)
-				{
-					case 1:
-						Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
-						break;
-					case 2:
-						Header = "         0    2    4    6    8    A    C    E";
-						break;
-					case 4:
-						Header = "             0        4        8        C";
-						break;
-				}
 				e.Graphics.DrawString(Domain.Name, font, Brushes.Black, new Point(1, 1));
-				e.Graphics.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
-
+				//e.Graphics.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
+				rowStr.Append(Header);
+				rowStr.Append("\n");
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
@@ -270,7 +258,7 @@ namespace BizHawk.MultiClient
 					if (row * 16 >= Domain.Size)
 						break;
 				}
-				e.Graphics.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY + rowYoffset));
+				e.Graphics.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY));
 			}
 		}
 
@@ -371,6 +359,24 @@ namespace BizHawk.MultiClient
 		{
 			if (size == 1 || size == 2 || size == 4)
 				DataSize = size;
+
+			SetHeader();
+		}
+
+		private void SetHeader()
+		{
+			switch (DataSize)
+			{
+				case 1:
+					Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+					break;
+				case 2:
+					Header = "         0    2    4    6    8    A    C    E";
+					break;
+				case 4:
+					Header = "             0        4        8        C";
+					break;
+			}
 		}
 
 		public int GetDataSize()
