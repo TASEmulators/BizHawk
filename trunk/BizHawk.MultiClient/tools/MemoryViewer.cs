@@ -209,6 +209,8 @@ namespace BizHawk.MultiClient
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
+					if (row * 16 >= Domain.Size)
+						break;
 					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
 					switch (DataSize)
 					{
@@ -257,8 +259,7 @@ namespace BizHawk.MultiClient
 							break;
 
 					}
-					if (row * 16 >= Domain.Size)
-						break;
+					
 				}
 				e.Graphics.DrawString(rowStr.ToString(), font, Brushes.Black, new Point(rowX, rowY));
 			}
