@@ -237,11 +237,10 @@ namespace BizHawk.MultiClient
 
 		void SyncPresentationMode()
 		{
-			bool gdi = Global.Config.ForceGDI;
-			if (Global.Direct3D == null)
-			{
-				gdi = Global.Config.ForceGDI = true;
-			}
+			bool gdi = Global.Config.DisplayGDI;
+
+			if(Global.Direct3D == null)
+				gdi = true;
 
 			if (renderTarget != null)
 			{
@@ -268,7 +267,19 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				Global.RenderPanel = new Direct3DRenderPanel(Global.Direct3D, renderTarget);
+				try
+				{
+					var d3dPanel = new Direct3DRenderPanel(Global.Direct3D, renderTarget);
+					d3dPanel.CreateDevice();
+					Global.RenderPanel = d3dPanel;
+				}
+				catch
+				{
+					Program.DisplayDirect3DError();
+					Global.Direct3D.Dispose();
+					Global.Direct3D = null;
+					SyncPresentationMode();
+				}
 			}
 		}
 
@@ -1547,6 +1558,7 @@ namespace BizHawk.MultiClient
 					string fps_string = runloop_last_fps + " fps";
 					if (ff) fps_string += " >>";
 					Global.RenderPanel.FPS = fps_string;
+					Console.WriteLine(fps_string);
 				}
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();

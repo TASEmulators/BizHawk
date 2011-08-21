@@ -169,7 +169,7 @@
 		public int DispMultix = 36;
 		public int DispMultiy = 0;
 		public int DispMultianchor = 0;
-		public bool ForceGDI = false;
+		public bool DisplayGDI = false;
 		public bool DisplayStatusBar = true;
 
 		// Sound options

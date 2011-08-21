@@ -428,7 +428,7 @@ namespace BizHawk.MultiClient
 
 		private void forceGDIPPresentationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.ForceGDI ^= true;
+			Global.Config.DisplayGDI ^= true;
 			SyncPresentationMode();
 		}
 
@@ -1099,7 +1099,7 @@ namespace BizHawk.MultiClient
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
 			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
-			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.ForceGDI;
+			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;

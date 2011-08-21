@@ -1215,7 +1215,7 @@
 			// 
 			this.forceGDIPPresentationToolStripMenuItem.Name = "forceGDIPPresentationToolStripMenuItem";
 			this.forceGDIPPresentationToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
-			this.forceGDIPPresentationToolStripMenuItem.Text = "Force GDI+ Presentation";
+			this.forceGDIPPresentationToolStripMenuItem.Text = "Use GDI+ Display Method";
 			this.forceGDIPPresentationToolStripMenuItem.Click += new System.EventHandler(this.forceGDIPPresentationToolStripMenuItem_Click);
 			// 
 			// runInBackgroundToolStripMenuItem
