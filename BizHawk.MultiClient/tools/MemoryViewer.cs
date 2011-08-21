@@ -27,14 +27,15 @@ namespace BizHawk.MultiClient
 		int DataSize = 1;
 		public bool BigEndian = false;
 		string Header = "";
+		int NumDigits = 4;
 		char[] nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		int addressOver = -1;
 		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
 		int maxRow = 0;
 
-		const int rowX = 12;
-		const int rowY = 16;
+		const int rowX = 1;
+		const int rowY = 4;
 		const int rowYoffset = 20;
 
 		public bool BlazingFast = false;
@@ -61,6 +62,8 @@ namespace BizHawk.MultiClient
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			this.Controls.Add(this.vScrollBar1);
 			
+			
+
 			//Debugging control
 			this.info = new Label();
 			this.info.Text = "";
@@ -189,7 +192,7 @@ namespace BizHawk.MultiClient
 				addr = 0;
 
 				StringBuilder rowStr = new StringBuilder("");
-				addrOffset = (GetNumDigits(Domain.Size) % 4) * 9;
+				addrOffset = (NumDigits % 4) * 9;
 
 				if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 				{
@@ -200,14 +203,13 @@ namespace BizHawk.MultiClient
 					e.Graphics.FillRectangle(highlightBrush, rect);
 				}
 
-				e.Graphics.DrawString(Domain.Name, font, Brushes.Black, new Point(1, 1));
-				//e.Graphics.DrawString(Header, font, Brushes.Black, new Point(rowX + addrOffset, rowY));
-				rowStr.Append(Header);
-				rowStr.Append("\n");
+				rowStr.Append(Domain.Name + '\n');
+				rowStr.Append(Header + '\n');
+				
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
-					rowStr.AppendFormat("{0:X" + GetNumDigits(Domain.Size) + "}  ", row * 16);
+					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
 					switch (DataSize)
 					{
 						default:
@@ -319,7 +321,7 @@ namespace BizHawk.MultiClient
 
 		public void SetUpScrollBar()
 		{
-			RowsVisible = ((this.Height - 8) / 13) - 2;
+			RowsVisible = ((this.Height - 8) / 13) - 1;
 			int totalRows = Domain.Size / 16;
 			int MaxRows = (totalRows - RowsVisible) + 16;
 
@@ -377,6 +379,7 @@ namespace BizHawk.MultiClient
 					Header = "             0        4        8        C";
 					break;
 			}
+			NumDigits = GetNumDigits(Domain.Size);
 		}
 
 		public int GetDataSize()
