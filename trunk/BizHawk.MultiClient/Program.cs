@@ -26,10 +26,9 @@ namespace BizHawk.MultiClient
 			try { Global.Direct3D = new Direct3D(); }
 			catch
 			{
-				//can fallback to GDI rendering
-				if (Global.Config.ForceGDI == true)
-					MessageBox.Show("Failure to initialize Directx, reverting to GDI rendering.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
-				Global.Config.ForceGDI = true;
+				//fallback to GDI rendering
+				if (!Global.Config.DisplayGDI)
+					DisplayDirect3DError();
 			}
 
 			try
@@ -86,6 +85,11 @@ namespace BizHawk.MultiClient
 				mf.Show();
 				mf.ProgramRunLoop();
 			}
+		}
+
+		public static void DisplayDirect3DError()
+		{
+			MessageBox.Show("Failure to initialize Direct3D, reverting to GDI+ display method. Change the option in Config > GUI or install DirectX web update.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 	}
 }
