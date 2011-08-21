@@ -89,6 +89,7 @@ namespace BizHawk.MultiClient
 				DoSearch();
 			else if (Global.Config.RamSearchPreviewMode)
 				DoPreview();
+
 			SearchListView.Refresh();
 			SearchListView.BlazingFast = false;
 		}
@@ -681,7 +682,6 @@ namespace BizHawk.MultiClient
 			{
 				if (GenerateWeedOutList())
 				{
-					DisplaySearchList();
 					OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
 				}
 			}
