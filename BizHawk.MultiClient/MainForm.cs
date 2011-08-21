@@ -881,16 +881,17 @@ namespace BizHawk.MultiClient
 			
 			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
-			Global.ControllerOutput.Source = Global.MovieOutputAdapter;
+			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
 			Global.Emulator.Controller = Global.ControllerOutput;
 			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
 
-			//splice the movie session before MovieOutputAdapter if it is doing anything
+			//connect the movie session before MovieOutputHardpoint if it is doing anything
+			//otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
 			if (Global.MovieSession.Movie != null)
-				Global.MovieOutputAdapter.Source = Global.MovieSession.MovieControllerAdapter;
+				Global.MovieOutputHardpoint.Source = Global.MovieSession.MovieControllerAdapter;
 			else
-				Global.MovieOutputAdapter.Source = Global.MovieInputSourceAdapter;
+				Global.MovieOutputHardpoint.Source = Global.MovieInputSourceAdapter;
 		}
 
 		public bool LoadRom(string path)
@@ -1558,7 +1559,6 @@ namespace BizHawk.MultiClient
 					string fps_string = runloop_last_fps + " fps";
 					if (ff) fps_string += " >>";
 					Global.RenderPanel.FPS = fps_string;
-					Console.WriteLine(fps_string);
 				}
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
@@ -1583,7 +1583,10 @@ namespace BizHawk.MultiClient
 					{
 						session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
-					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieInputSourceAdapter);
+
+					//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+					//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 				}
 
 				if (UserMovie.Mode == MOVIEMODE.INACTIVE || UserMovie.Mode == MOVIEMODE.FINISHED)

@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
-		public static CopyControllerAdapter MovieOutputAdapter = new CopyControllerAdapter();
+		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 
 		/// <summary>
 		/// the global MovieSession can use this to deal with multitrack player remapping (should this be here? maybe it should be in MovieSession)
