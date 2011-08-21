@@ -66,6 +66,7 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
+			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = new GameInfo();
 			if (Global.Config.ShowLogWindow)

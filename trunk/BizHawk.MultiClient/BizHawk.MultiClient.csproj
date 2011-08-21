@@ -658,6 +658,7 @@
     <None Include="images\Unfreeze.png" />
     <None Include="images\AutoSearch.png" />
     <None Include="images\Lightning.png" />
+    <Content Include="images\logo.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <Content Include="output\gamedb_pce_cd.txt" />
