@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 			try { Global.DSound = new DirectSound(); }
 			catch
 			{
-				MessageBox.Show("Couldn't initialize DirectSound!");
+				MessageBox.Show("Couldn't initialize DirectSound!", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -27,6 +27,8 @@ namespace BizHawk.MultiClient
 			catch
 			{
 				//can fallback to GDI rendering
+				if (Global.Config.ForceGDI == true)
+					MessageBox.Show("Failure to initialize Directx, reverting to GDI rendering.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error); 
 				Global.Config.ForceGDI = true;
 			}
 
