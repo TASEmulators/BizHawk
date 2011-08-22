@@ -52,6 +52,7 @@ namespace BizHawk.MultiClient
 		public HexEditor()
 		{
 			InitializeComponent();
+            AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
 			AddressesLabel.Font = font;
@@ -94,13 +95,10 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
-			GenerateMemoryViewString();
-			//MemoryViewer.BlazingFast = true;
-			//MemoryViewer.Refresh();
-			//MemoryViewer.BlazingFast = false;
+			AddressesLabel.Text = GenerateMemoryViewString();
 		}
 
-		private void GenerateMemoryViewString()
+		private string GenerateMemoryViewString()
 		{
 			unchecked
 			{
@@ -169,7 +167,7 @@ namespace BizHawk.MultiClient
 					}
 					
 				}
-				AddressesLabel.Text = rowStr.ToString();
+				return rowStr.ToString();
 			}
 		}
 
@@ -415,8 +413,8 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_Resize(object sender, EventArgs e)
 		{
-			//MemoryViewer.SetUpScrollBar();
-			//MemoryViewer.Refresh();
+			SetUpScrollBar();
+            UpdateValues();
 		}
 
 		private void SetHeader()
