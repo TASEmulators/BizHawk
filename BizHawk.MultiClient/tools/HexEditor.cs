@@ -98,7 +98,7 @@ namespace BizHawk.MultiClient
 			AddressesLabel.Text = GenerateMemoryViewString();
 		}
 
-		private string GenerateMemoryViewString()
+		public string GenerateMemoryViewString()
 		{
 			unchecked
 			{
@@ -107,9 +107,7 @@ namespace BizHawk.MultiClient
 
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (NumDigits % 4) * 9;
-
-				
-				rowStr.Append(Domain.Name + "    " + info + '\n');
+	
 				rowStr.Append(Header + '\n');
 				
 				for (int i = 0; i < RowsVisible; i++)
@@ -375,7 +373,7 @@ namespace BizHawk.MultiClient
 
 			SetHighlighted(address);
 			ClearNibbles();
-			//Refresh();
+			UpdateValues(); //TODO: Groupbox refresh
 		}
 
 		public void SetHighlighted(int addr)
@@ -390,7 +388,7 @@ namespace BizHawk.MultiClient
 				int v = (addr / 16) - RowsVisible + 1;
 				if (v < 0)
 					v = 0;
-				//vScrollBar1.Value = v;
+				vScrollBar1.Value = v;
 			}
 			addressHighlighted = addr;
 			addressOver = addr;
@@ -404,10 +402,10 @@ namespace BizHawk.MultiClient
 			{
 				int row = addr >> 4;
 
-				//if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
+				if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
 					return true;
-				//else
-				//	return false;
+				else
+					return false;
 			}
 		}
 
@@ -460,11 +458,6 @@ namespace BizHawk.MultiClient
 		private void enToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			BigEndian ^= true;
-		}
-
-		private void MemoryViewer_Paint(object sender, PaintEventArgs e)
-		{
-
 		}
 
 		private void AddToRamWatch()
@@ -608,7 +601,7 @@ namespace BizHawk.MultiClient
 						break;
 				}
 
-				//w.bigendian = MemoryViewer.BigEndian;
+				w.bigendian = BigEndian;
 
 				Global.MainForm.Cheats1.AddCheat(c);
 			}
