@@ -55,9 +55,12 @@
 			this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MemoryViewer = new BizHawk.MultiClient.MemoryViewer();
+			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
+			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
+			this.MemoryViewerBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -68,7 +71,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(547, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(584, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -263,27 +266,46 @@
 			this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
-			// MemoryViewer
+			// MemoryViewerBox
 			// 
-			this.MemoryViewer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
+			this.MemoryViewerBox.Controls.Add(this.vScrollBar1);
+			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
+			this.MemoryViewerBox.Location = new System.Drawing.Point(12, 27);
+			this.MemoryViewerBox.MaximumSize = new System.Drawing.Size(600, 1024);
+			this.MemoryViewerBox.Name = "MemoryViewerBox";
+			this.MemoryViewerBox.Size = new System.Drawing.Size(558, 277);
+			this.MemoryViewerBox.TabIndex = 2;
+			this.MemoryViewerBox.TabStop = false;
+			// 
+			// vScrollBar1
+			// 
+			this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.MemoryViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.MemoryViewer.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.MemoryViewer.Location = new System.Drawing.Point(12, 37);
-			this.MemoryViewer.Name = "MemoryViewer";
-			this.MemoryViewer.Size = new System.Drawing.Size(519, 230);
-			this.MemoryViewer.TabIndex = 0;
-			this.MemoryViewer.Text = "RAM";
-			this.MemoryViewer.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewer_Paint);
-			this.MemoryViewer.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MemoryViewer_MouseDoubleClick);
+			this.vScrollBar1.LargeChange = 16;
+			this.vScrollBar1.Location = new System.Drawing.Point(539, 8);
+			this.vScrollBar1.Name = "vScrollBar1";
+			this.vScrollBar1.Size = new System.Drawing.Size(16, 266);
+			this.vScrollBar1.TabIndex = 1;
+			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
+			// 
+			// AddressesLabel
+			// 
+			this.AddressesLabel.AutoSize = true;
+			this.AddressesLabel.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.AddressesLabel.Location = new System.Drawing.Point(6, 16);
+			this.AddressesLabel.Name = "AddressesLabel";
+			this.AddressesLabel.Size = new System.Drawing.Size(28, 14);
+			this.AddressesLabel.TabIndex = 0;
+			this.AddressesLabel.Text = "RAM";
 			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(547, 279);
-			this.Controls.Add(this.MemoryViewer);
+			this.ClientSize = new System.Drawing.Size(584, 316);
+			this.Controls.Add(this.MemoryViewerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
@@ -291,18 +313,20 @@
 			this.Text = "HexEditor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
+			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ViewerContextMenuStrip.ResumeLayout(false);
+			this.MemoryViewerBox.ResumeLayout(false);
+			this.MemoryViewerBox.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
         }
 
         #endregion
-        
-        private MemoryViewer MemoryViewer;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+
+		private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem dumpToFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -327,5 +351,8 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowsSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem freezeAddressToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.GroupBox MemoryViewerBox;
+		private System.Windows.Forms.Label AddressesLabel;
+		private System.Windows.Forms.VScrollBar vScrollBar1;
     }
 }
