@@ -49,6 +49,8 @@ namespace BizHawk.MultiClient
 		const int rowX = 1;
 		const int rowY = 4;
 		const int rowYoffset = 20;
+		const int fontHeight = 14;
+		const int fontWidth = 21; //Width of 2 digits
 		Font font = new Font("Courier New", 8);
 
 		public HexEditor()
@@ -687,8 +689,7 @@ namespace BizHawk.MultiClient
 
 		public void SetUpScrollBar()
 		{
-			int height = font.Height + 3;
-			RowsVisible = ((MemoryViewerBox.Height - height - 5) / height);
+			RowsVisible = ((MemoryViewerBox.Height - (fontHeight * 2) - (fontHeight / 2)) / fontHeight);
 			int totalRows = Domain.Size / 16;
 			int MaxRows = (totalRows - RowsVisible) + 16;
 
@@ -714,12 +715,9 @@ namespace BizHawk.MultiClient
 		{
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
-			int rowoffset = ((y - 16)/ 14);
+			int rowoffset = ((y - 16)/ fontHeight);
 			row += rowoffset;
-			int column = (x - 43) / 21;
-
-			//pointedRow = rowoffset;
-			//pointedColumn = column;
+			int column = (x - 43) / fontWidth;
 
 			//TODO: 2 & 4 byte views
 
@@ -739,7 +737,6 @@ namespace BizHawk.MultiClient
 		{
 			SetUpScrollBar();
 		}
-
 
 		private void AddressesLabel_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -763,8 +760,8 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
-			int x = ((address % 16) * 21) + 50 + addrOffset;
-			int y = (((address / 16) - vScrollBar1.Value) * 14) + 30;
+			int x = ((address % 16) * fontWidth) + 50 + addrOffset;
+			int y = (((address / 16) - vScrollBar1.Value) * fontHeight) + 30;
 			return new Point(x, y);
 		}
 
@@ -772,8 +769,7 @@ namespace BizHawk.MultiClient
 		{
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(16, 14));
-				//e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
+				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(16, fontHeight));
 				e.Graphics.FillRectangle(highlightBrush, rect);
 			}
 
