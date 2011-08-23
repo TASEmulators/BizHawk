@@ -43,6 +43,7 @@ namespace BizHawk.MultiClient
 		string info = "";
 		int row = 0;
 		int addr = 0;
+		public Brush highlightBrush = Brushes.LightBlue;
 
 		const int rowX = 1;
 		const int rowY = 4;
@@ -52,7 +53,7 @@ namespace BizHawk.MultiClient
 		public HexEditor()
 		{
 			InitializeComponent();
-            AddressesLabel.BackColor = Color.Transparent;
+			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
 			AddressesLabel.Font = font;
@@ -601,8 +602,6 @@ namespace BizHawk.MultiClient
 						break;
 				}
 
-				w.bigendian = BigEndian;
-
 				Global.MainForm.Cheats1.AddCheat(c);
 			}
 		}
@@ -711,23 +710,6 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 		}
 
-		private void MemoryViewer_MouseMove(object sender, MouseEventArgs e)
-		{
-			SetAddressOver(e.X, e.Y);
-		}
-
-		private void MemoryViewer_MouseClick(object sender, MouseEventArgs e)
-		{
-			SetAddressOver(e.X, e.Y);
-			if (addressOver == addressHighlighted && addressOver >= 0)
-			{
-				addressHighlighted = -1;
-				this.Refresh();
-			}
-			else
-				HighlightPointed();
-		}
-
 		private void SetAddressOver(int x, int y)
 		{
 			//Scroll value determines the first row
@@ -752,6 +734,50 @@ namespace BizHawk.MultiClient
 		private void HexEditor_ResizeEnd(object sender, EventArgs e)
 		{
 			SetUpScrollBar();
+		}
+
+		private int Pointedx = 0;
+		private int Pointedy = 0;
+
+		private void AddressesLabel_MouseMove(object sender, MouseEventArgs e)
+		{
+			SetAddressOver(e.X, e.Y);
+			Pointedx = e.X;
+			Pointedy = e.Y;
+			MemoryViewerBox.Refresh();
+		}
+
+		private void AddressesLabel_MouseClick(object sender, MouseEventArgs e)
+		{
+			SetAddressOver(e.X, e.Y);
+			if (addressOver == addressHighlighted && addressOver >= 0)
+			{
+				addressHighlighted = -1;
+				this.Refresh();
+			}
+			else
+				HighlightPointed();
+		}
+
+		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
+		{
+			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
+			{
+				int left = ((addressHighlighted % 16) * 20) + 52 + addrOffset - (addressHighlighted % 4);
+				int top = (((addressHighlighted / 16) - vScrollBar1.Value) * (font.Height - 1)) + 36;
+				Rectangle rect = new Rectangle(left, top, 16, 14);
+				e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
+				e.Graphics.FillRectangle(highlightBrush, rect);
+			}
+			if (Pointedx > 0 || Pointedy > 0)
+				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(Pointedx, Pointedy), new Size(14, 14)));
+		}
+
+		private void AddressesLabel_MouseLeave(object sender, EventArgs e)
+		{
+			Pointedx = 0;
+			Pointedy = 0;
+			MemoryViewerBox.Refresh();
 		}
 	}
 }
