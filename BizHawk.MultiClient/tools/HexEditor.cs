@@ -13,8 +13,6 @@ namespace BizHawk.MultiClient
 {
 	public partial class HexEditor : Form
 	{
-		//Refactoring still TODO: proper visiable row calculations in setupscrollbar
-
 		//TODO:
 		//Find text box - autohighlights matches, and shows total matches
 		//Users can customize background, & text colors
@@ -743,7 +741,6 @@ namespace BizHawk.MultiClient
 			SetAddressOver(e.X, e.Y);
 			Pointedx = e.X;
 			Pointedy = e.Y;
-			MemoryViewerBox.Refresh();
 		}
 
 		private void AddressesLabel_MouseClick(object sender, MouseEventArgs e)
