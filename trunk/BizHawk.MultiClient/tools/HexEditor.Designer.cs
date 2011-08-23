@@ -276,7 +276,7 @@
 			this.MemoryViewerBox.Location = new System.Drawing.Point(12, 27);
 			this.MemoryViewerBox.MaximumSize = new System.Drawing.Size(600, 1024);
 			this.MemoryViewerBox.Name = "MemoryViewerBox";
-			this.MemoryViewerBox.Size = new System.Drawing.Size(558, 277);
+			this.MemoryViewerBox.Size = new System.Drawing.Size(558, 262);
 			this.MemoryViewerBox.TabIndex = 2;
 			this.MemoryViewerBox.TabStop = false;
 			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
@@ -289,7 +289,7 @@
 			this.vScrollBar1.LargeChange = 16;
 			this.vScrollBar1.Location = new System.Drawing.Point(539, 8);
 			this.vScrollBar1.Name = "vScrollBar1";
-			this.vScrollBar1.Size = new System.Drawing.Size(16, 266);
+			this.vScrollBar1.Size = new System.Drawing.Size(16, 251);
 			this.vScrollBar1.TabIndex = 1;
 			this.vScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.vScrollBar1_Scroll);
 			// 
@@ -312,7 +312,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 316);
+			this.ClientSize = new System.Drawing.Size(584, 301);
 			this.Controls.Add(this.MemoryViewerBox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
