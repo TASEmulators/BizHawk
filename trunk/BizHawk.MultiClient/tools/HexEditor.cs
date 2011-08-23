@@ -285,15 +285,15 @@ namespace BizHawk.MultiClient
 			{
 				SetMemoryDomain(Global.Emulator.MemoryDomains[pos]);
 			}
-			UpdateDomainString();
+			UpdateGroupBoxTitle();
 			ResetScrollBar();
 		}
 
-		private void UpdateDomainString()
+		private void UpdateGroupBoxTitle()
 		{
 			string memoryDomain = Domain.ToString();
 			string systemID = Global.Emulator.SystemId;
-			MemoryViewerBox.Text = systemID + " " + memoryDomain;
+			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + (Domain.Size / DataSize).ToString() + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
@@ -439,6 +439,8 @@ namespace BizHawk.MultiClient
 				DataSize = size;
 
 			SetHeader();
+			UpdateGroupBoxTitle();
+			UpdateValues();
 		}
 
 		private void byteToolStripMenuItem_Click(object sender, EventArgs e)
