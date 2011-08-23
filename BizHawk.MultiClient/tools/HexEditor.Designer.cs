@@ -270,6 +270,7 @@
 			// 
 			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
 			this.MemoryViewerBox.Controls.Add(this.vScrollBar1);
 			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
 			this.MemoryViewerBox.Location = new System.Drawing.Point(12, 27);
@@ -279,6 +280,7 @@
 			this.MemoryViewerBox.TabIndex = 2;
 			this.MemoryViewerBox.TabStop = false;
 			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
+			this.MemoryViewerBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MemoryViewerBox_KeyUp);
 			// 
 			// vScrollBar1
 			// 
@@ -295,6 +297,7 @@
 			// 
 			this.AddressesLabel.AutoSize = true;
 			this.AddressesLabel.BackColor = System.Drawing.Color.White;
+			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
 			this.AddressesLabel.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.AddressesLabel.Location = new System.Drawing.Point(6, 16);
 			this.AddressesLabel.Name = "AddressesLabel";
@@ -318,6 +321,7 @@
 			this.Text = "HexEditor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

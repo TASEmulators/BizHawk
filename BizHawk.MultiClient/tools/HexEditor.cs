@@ -13,13 +13,12 @@ namespace BizHawk.MultiClient
 {
 	public partial class HexEditor : Form
 	{
-		//Refactoring still TODO: hook up mouse events, tweak addressover, proper visiable row calculations in setupscrollbar
+		//Refactoring still TODO: proper visiable row calculations in setupscrollbar
 
 		//TODO:
 		//Find text box - autohighlights matches, and shows total matches
 		//Users can customize background, & text colors
 		//Tool strip
-		//Text box showing currently highlighted address(es) & total
 		//Show num addresses in group box title (show "address" if 1 address)
 		//big font for currently mouse over'ed value?
 		//Unfreeze All items - this one is tricky though, the dialog should keep track of
@@ -44,6 +43,8 @@ namespace BizHawk.MultiClient
 		int row = 0;
 		int addr = 0;
 		public Brush highlightBrush = Brushes.LightBlue;
+		private int Pointedx = 0;
+		private int Pointedy = 0;
 
 		const int rowX = 1;
 		const int rowY = 4;
@@ -162,9 +163,7 @@ namespace BizHawk.MultiClient
 								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
 							}
 							break;
-
 					}
-					
 				}
 				return rowStr.ToString();
 			}
@@ -374,7 +373,8 @@ namespace BizHawk.MultiClient
 
 			SetHighlighted(address);
 			ClearNibbles();
-			UpdateValues(); //TODO: Groupbox refresh
+			UpdateValues();
+			MemoryViewerBox.Refresh();
 		}
 
 		public void SetHighlighted(int addr)
@@ -413,7 +413,7 @@ namespace BizHawk.MultiClient
 		private void HexEditor_Resize(object sender, EventArgs e)
 		{
 			SetUpScrollBar();
-            UpdateValues();
+			UpdateValues();
 		}
 
 		private void SetHeader()
@@ -714,8 +714,12 @@ namespace BizHawk.MultiClient
 		{
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
-			row += (y - 36) / (font.Height - 1);
-			int column = (x - (49 + addrOffset)) / 20;
+			int rowoffset = ((y - 16)/ 14);
+			row += rowoffset;
+			int column = (x - 43) / 21;
+
+			//pointedRow = rowoffset;
+			//pointedColumn = column;
 
 			//TODO: 2 & 4 byte views
 
@@ -736,8 +740,6 @@ namespace BizHawk.MultiClient
 			SetUpScrollBar();
 		}
 
-		private int Pointedx = 0;
-		private int Pointedy = 0;
 
 		private void AddressesLabel_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -759,18 +761,41 @@ namespace BizHawk.MultiClient
 				HighlightPointed();
 		}
 
+		private Point GetAddressCoordinates(int address)
+		{
+			int x = ((address % 16) * 21) + 50 + addrOffset;
+			int y = (((address / 16) - vScrollBar1.Value) * 14) + 30;
+			return new Point(x, y);
+		}
+
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				int left = ((addressHighlighted % 16) * 20) + 52 + addrOffset - (addressHighlighted % 4);
-				int top = (((addressHighlighted / 16) - vScrollBar1.Value) * (font.Height - 1)) + 36;
-				Rectangle rect = new Rectangle(left, top, 16, 14);
-				e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
+				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(16, 14));
+				//e.Graphics.DrawRectangle(new Pen(highlightBrush), rect);
 				e.Graphics.FillRectangle(highlightBrush, rect);
 			}
+
+			//Debug
+			//Shows x,y in regards to 2 byte view memory addresses
+			//Text height = 14
+			//Text width (2 digits) 21
+			//Offset for address drawing - 50, 30
+			/*
 			if (Pointedx > 0 || Pointedy > 0)
-				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(Pointedx, Pointedy), new Size(14, 14)));
+				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(Pointedx+7, Pointedy+15), new Size(14, 14)));
+			Pen p = new Pen(Brushes.Black);
+			for (int x = 0; x < 16; x++)
+			{
+				for (int y = 0; y < 16; y++)
+				{
+					e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point((x*21)+50, (y*14)+30), new Size(21, 14)));
+				}
+			}
+			e.Graphics.DrawString(Pointedx.ToString() + "," + Pointedy.ToString()
+				+ ":" + pointedRow.ToString() + "," + pointedColumn.ToString(), font, Brushes.Black, new Point(0, 8));
+			*/
 		}
 
 		private void AddressesLabel_MouseLeave(object sender, EventArgs e)
@@ -778,6 +803,55 @@ namespace BizHawk.MultiClient
 			Pointedx = 0;
 			Pointedy = 0;
 			MemoryViewerBox.Refresh();
+		}
+
+		private void MemoryViewerBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			Pointedx = 0;
+			
+			switch (e.KeyCode)
+			{
+				case Keys.Up:
+					GoToAddress(addressHighlighted - 16);
+					break;
+			}
+		}
+
+		private void HexEditor_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Up:
+					GoToAddress(addressHighlighted - 16);
+					break;
+				case Keys.Down:
+					GoToAddress(addressHighlighted + 16);
+					break;
+				case Keys.Left:
+					GoToAddress(addressHighlighted - 1);
+					break;
+				case Keys.Right:
+					GoToAddress(addressHighlighted + 1);
+					break;
+				case Keys.PageUp:
+					GoToAddress(addressHighlighted - (RowsVisible * 16));
+					break;
+				case Keys.PageDown:
+					GoToAddress(addressHighlighted + (RowsVisible * 16));
+					break;
+				case Keys.Tab:
+					if (e.Modifiers == Keys.Shift)
+						GoToAddress(addressHighlighted - 8);
+					else
+						GoToAddress(addressHighlighted + 8);
+					break;
+				case Keys.Home:
+					GoToAddress(0);
+					break;
+				case Keys.End:
+					GoToAddress(Domain.Size - 1);
+					break;
+			}
 		}
 	}
 }
