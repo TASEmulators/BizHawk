@@ -420,6 +420,7 @@ namespace BizHawk.MultiClient
 		private void enToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			BigEndian ^= true;
+            UpdateValues();
 		}
 
 		private void AddToRamWatch()
