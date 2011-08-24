@@ -280,7 +280,6 @@
 			this.MemoryViewerBox.TabIndex = 2;
 			this.MemoryViewerBox.TabStop = false;
 			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
-			this.MemoryViewerBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MemoryViewerBox_KeyUp);
 			// 
 			// vScrollBar1
 			// 
@@ -320,6 +319,7 @@
 			this.Name = "HexEditor";
 			this.Text = "HexEditor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
