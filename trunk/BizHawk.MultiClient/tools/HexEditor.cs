@@ -109,16 +109,16 @@ namespace BizHawk.MultiClient
 
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (NumDigits % 4) * 9;
-	
+
 				rowStr.Append(Header + '\n');
-				
+
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
 					if (row * 16 >= Domain.Size)
 						break;
 					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
-					
+
 					addr = (row * 16);
 					for (int j = 0; j < 16; j += DataSize)
 					{
@@ -131,7 +131,7 @@ namespace BizHawk.MultiClient
 						rowStr.Append(Remap(Domain.PeekByte(addr + k)));
 					}
 					rowStr.AppendLine();
-					
+
 				}
 				return rowStr.ToString();
 			}
@@ -281,7 +281,7 @@ namespace BizHawk.MultiClient
 				memoryDomainsToolStripMenuItem.Enabled = false;
 		}
 
-		
+
 
 		private void goToAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -619,15 +619,15 @@ namespace BizHawk.MultiClient
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
-			
+
 			if (!(Global.Emulator is NullEmulator))
 				sfd.FileName = Global.Game.Name;
 			else
 				sfd.FileName = "MemoryDump";
 
-			
-				sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
-			
+
+			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
@@ -674,7 +674,7 @@ namespace BizHawk.MultiClient
 		{
 			//Scroll value determines the first row
 			int row = vScrollBar1.Value;
-			int rowoffset = ((y - 16)/ fontHeight);
+			int rowoffset = ((y - 16) / fontHeight);
 			row += rowoffset;
 			int colWidth = 0;
 			switch (DataSize)
@@ -795,8 +795,6 @@ namespace BizHawk.MultiClient
 					GoToAddress(Domain.Size - (DataSize));
 					break;
 			}
-
-
 		}
 
 		private void HexEditor_KeyUp(object sender, KeyEventArgs e)
@@ -809,20 +807,73 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			//TODO: 2 byte & 4 byte
-			if (nibbles[0] == 'G')
+			//TODO: 4 byte
+			switch (DataSize)
 			{
-				nibbles[0] = (char)e.KeyCode;
-				info = nibbles[0].ToString();
+				default:
+				case 1:
+					if (nibbles[0] == 'G')
+					{
+						nibbles[0] = (char)e.KeyCode;
+						info = nibbles[0].ToString();
+					}
+					else
+					{
+						string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+						byte x = byte.Parse(temp, NumberStyles.HexNumber);
+						Domain.PokeByte(addressHighlighted, x);
+						ClearNibbles();
+						SetHighlighted(addressHighlighted + 1);
+						UpdateValues();
+					}
+					break;
+				case 2:
+					if (nibbles[0] == 'G')
+					{
+						nibbles[0] = (char)e.KeyCode;
+						info = nibbles[0].ToString();
+					}
+					else if (nibbles[1] == 'G')
+					{
+						nibbles[1] = (char)e.KeyCode;
+						info = nibbles[1].ToString();
+					}
+					else if (nibbles[2] == 'G')
+					{
+						nibbles[2] = (char)e.KeyCode;
+						info = nibbles[2].ToString();
+					}
+					else if (nibbles[3] == 'G')
+					{
+						string temp = nibbles[0].ToString() + nibbles[1].ToString();
+						byte x1 = byte.Parse(temp, NumberStyles.HexNumber);
+						
+						string temp2 = nibbles[2].ToString() + ((char)e.KeyCode).ToString();
+						byte x2 = byte.Parse(temp2, NumberStyles.HexNumber);
+						
+						PokeWord(addressHighlighted, x1, x2);
+						ClearNibbles();
+						SetHighlighted(addressHighlighted + 1);
+						UpdateValues();
+					}
+					break;
+				case 4:
+
+					break;
+			}
+		}
+
+		private void PokeWord(int addr, byte _1, byte _2)
+		{
+			if (BigEndian)
+			{
+				Domain.PokeByte(addr, _2);
+				Domain.PokeByte(addr + 1, _1);
 			}
 			else
 			{
-				string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
-				int x = int.Parse(temp, NumberStyles.HexNumber);
-				Domain.PokeByte(addressHighlighted, (byte)x);
-				ClearNibbles();
-				SetHighlighted(addressHighlighted + 1);
-				UpdateValues();
+				Domain.PokeByte(addr, _1);
+				Domain.PokeByte(addr + 1, _2);
 			}
 		}
 	}
