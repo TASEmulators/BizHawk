@@ -48,7 +48,7 @@ namespace BizHawk.MultiClient
 		const int rowY = 4;
 		const int rowYoffset = 20;
 		const int fontHeight = 14;
-		const int fontWidth = 21; //Width of 2 digits
+		const int fontWidth = 7; //Width of 1 digits
 		Font font = new Font("Courier New", 8);
 
 		public HexEditor()
@@ -118,52 +118,20 @@ namespace BizHawk.MultiClient
 					if (row * 16 >= Domain.Size)
 						break;
 					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
-					switch (DataSize)
+					
+					addr = (row * 16);
+					for (int j = 0; j < 16; j += DataSize)
 					{
-						default:
-						case 1:
-							addr = (row * 16);
-							for (int j = 0; j < 16; j++)
-							{
-								if (addr + j < Domain.Size)
-									rowStr.AppendFormat("{0:X2} ", Domain.PeekByte(addr + j));
-							}
-							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
-							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
-							}
-							rowStr.AppendLine();
-							break;
-						case 2:
-							addr = (row * 16);
-							for (int j = 0; j < 16; j += 2)
-							{
-								if (addr + j < Domain.Size)
-									rowStr.AppendFormat("{0:X4} ", MakeValue(addr + j, DataSize, BigEndian));
-							}
-							rowStr.AppendLine();
-							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
-							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
-							}
-							break;
-						case 4:
-							addr = (row * 16);
-							for (int j = 0; j < 16; j += 4)
-							{
-								if (addr < Domain.Size)
-									rowStr.AppendFormat("{0:X8} ", MakeValue(addr + j, DataSize, BigEndian));
-							}
-							rowStr.AppendLine();
-							rowStr.Append("  | ");
-							for (int k = 0; k < 16; k++)
-							{
-								rowStr.Append(Remap(Domain.PeekByte(addr + k)));
-							}
-							break;
+						if (addr + j < Domain.Size)
+							rowStr.AppendFormat("{0:X" + (DataSize * 2).ToString() + "} ", MakeValue(addr + j));
 					}
+					rowStr.Append("  | ");
+					for (int k = 0; k < 16; k++)
+					{
+						rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+					}
+					rowStr.AppendLine();
+					
 				}
 				return rowStr.ToString();
 			}
@@ -179,30 +147,21 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private int MakeValue(int addr, int size, bool Bigendian)
+		private int MakeValue(int addr)
 		{
 			unchecked
 			{
-				int x = 0;
-				if (size == 1 || size == 2 || size == 4)
+				switch (DataSize)
 				{
-					switch (size)
-					{
-						case 1:
-							x = Domain.PeekByte(addr);
-							break;
-						case 2:
-							x = MakeWord(addr, Bigendian);
-							break;
-						case 4:
-							x = (MakeWord(addr, Bigendian) * 65536) +
-								MakeWord(addr + 2, Bigendian);
-							break;
-					}
-					return x;
+					default:
+					case 1:
+						return Domain.PeekByte(addr);
+					case 2:
+						return MakeWord(addr, BigEndian);
+					case 4:
+						return (MakeWord(addr, BigEndian) * 65536) +
+							MakeWord(addr + 2, BigEndian);
 				}
-				else
-					return 0; //fail
 			}
 		}
 
@@ -717,14 +676,26 @@ namespace BizHawk.MultiClient
 			int row = vScrollBar1.Value;
 			int rowoffset = ((y - 16)/ fontHeight);
 			row += rowoffset;
-			int column = (x - 43) / fontWidth;
-
-			//TODO: 2 & 4 byte views
-
-			if (row >= 0 && row <= maxRow && column >= 0 && column < 16)
+			int colWidth = 0;
+			switch (DataSize)
 			{
-				addressOver = row * 16 + column;
-				info = String.Format("{0:X4}", addressOver);
+				default:
+				case 1:
+					colWidth = 3;
+					break;
+				case 2:
+					colWidth = 5;
+					break;
+				case 4:
+					colWidth = 9;
+					break;
+			}
+			int column = (x - 43) / (fontWidth * colWidth);
+
+			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
+			{
+				addressOver = row * 16 + (column * DataSize);
+				info = String.Format("{0:X" + GetNumDigits(Domain.Size).ToString() + "}", addressOver);
 			}
 			else
 			{
@@ -759,57 +730,34 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
-			int x = ((address % 16) * fontWidth) + 50 + addrOffset;
-			int y = (((address / 16) - vScrollBar1.Value) * fontHeight) + 30;
-			return new Point(x, y);
+			switch (DataSize)
+			{
+				default:
+				case 1:
+					return new Point(((address % 16) * (fontWidth * 3)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+				case 2:
+					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+				case 4:
+					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+			}
 		}
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(16, fontHeight));
+				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * DataSize, fontHeight));
+				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 				e.Graphics.FillRectangle(highlightBrush, rect);
 			}
-
-			//Debug
-			//Shows x,y in regards to 2 byte view memory addresses
-			//Text height = 14
-			//Text width (2 digits) 21
-			//Offset for address drawing - 50, 30
-			/*
-			if (Pointedx > 0 || Pointedy > 0)
-				e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point(Pointedx+7, Pointedy+15), new Size(14, 14)));
-			Pen p = new Pen(Brushes.Black);
-			for (int x = 0; x < 16; x++)
-			{
-				for (int y = 0; y < 16; y++)
-				{
-					e.Graphics.DrawRectangle(new Pen(Brushes.Black), new Rectangle(new Point((x*21)+50, (y*14)+30), new Size(21, 14)));
-				}
-			}
-			e.Graphics.DrawString(Pointedx.ToString() + "," + Pointedy.ToString()
-				+ ":" + pointedRow.ToString() + "," + pointedColumn.ToString(), font, Brushes.Black, new Point(0, 8));
-			*/
 		}
 
 		private void AddressesLabel_MouseLeave(object sender, EventArgs e)
 		{
 			Pointedx = 0;
 			Pointedy = 0;
+			addressOver = -1;
 			MemoryViewerBox.Refresh();
-		}
-
-		private void MemoryViewerBox_KeyUp(object sender, KeyEventArgs e)
-		{
-			Pointedx = 0;
-			
-			switch (e.KeyCode)
-			{
-				case Keys.Up:
-					GoToAddress(addressHighlighted - 16);
-					break;
-			}
 		}
 
 		private void HexEditor_KeyDown(object sender, KeyEventArgs e)
@@ -823,10 +771,10 @@ namespace BizHawk.MultiClient
 					GoToAddress(addressHighlighted + 16);
 					break;
 				case Keys.Left:
-					GoToAddress(addressHighlighted - 1);
+					GoToAddress(addressHighlighted - (1 * DataSize));
 					break;
 				case Keys.Right:
-					GoToAddress(addressHighlighted + 1);
+					GoToAddress(addressHighlighted + (1 * DataSize));
 					break;
 				case Keys.PageUp:
 					GoToAddress(addressHighlighted - (RowsVisible * 16));
@@ -844,8 +792,37 @@ namespace BizHawk.MultiClient
 					GoToAddress(0);
 					break;
 				case Keys.End:
-					GoToAddress(Domain.Size - 1);
+					GoToAddress(Domain.Size - (DataSize));
 					break;
+			}
+
+
+		}
+
+		private void HexEditor_KeyUp(object sender, KeyEventArgs e)
+		{
+			if (!InputValidate.IsValidHexNumber(((char)e.KeyCode).ToString()))
+			{
+				if (e.Control && e.KeyCode == Keys.G)
+					GoToSpecifiedAddress();
+				e.Handled = true;
+				return;
+			}
+
+			//TODO: 2 byte & 4 byte
+			if (nibbles[0] == 'G')
+			{
+				nibbles[0] = (char)e.KeyCode;
+				info = nibbles[0].ToString();
+			}
+			else
+			{
+				string temp = nibbles[0].ToString() + ((char)e.KeyCode).ToString();
+				int x = int.Parse(temp, NumberStyles.HexNumber);
+				Domain.PokeByte(addressHighlighted, (byte)x);
+				ClearNibbles();
+				SetHighlighted(addressHighlighted + 1);
+				UpdateValues();
 			}
 		}
 	}
