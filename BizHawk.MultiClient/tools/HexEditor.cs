@@ -22,7 +22,7 @@ namespace BizHawk.MultiClient
 		//Unfreeze All items - this one is tricky though, the dialog should keep track of
 		//  which addresses were frozen using this dialog (its own cheatList), and only 
 		//  remove those from the Cheats window cheat list
-
+		//4 byte hex editing
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -170,9 +170,9 @@ namespace BizHawk.MultiClient
 			unchecked
 			{
 				if (endian)
-					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 255);
+					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
 				else
-					return (Domain.PeekByte(addr) * 255) + Domain.PeekByte(addr + 1);
+					return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
 			}
 		}
 
@@ -461,7 +461,7 @@ namespace BizHawk.MultiClient
 
 		private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			int p = GetPointedAddress();
+			int p = GetHighlightedAddress();
 			if (p >= 0)
 			{
 				InputPrompt i = new InputPrompt();
@@ -474,8 +474,8 @@ namespace BizHawk.MultiClient
 					if (InputValidate.IsValidHexNumber(i.UserText))
 					{
 						int value = int.Parse(i.UserText, NumberStyles.HexNumber);
-						HighlightPointed();
 						PokeHighlighted(value);
+						UpdateValues();
 					}
 				}
 			}
@@ -504,9 +504,22 @@ namespace BizHawk.MultiClient
 
 		public void PokeHighlighted(int value)
 		{
-			//TODO: 2 byte & 4 byte
+			//TODO: 4 byte
 			if (addressHighlighted >= 0)
-				Domain.PokeByte(addressHighlighted, (byte)value);
+			{
+				switch (DataSize)
+				{
+					default:
+					case 1:
+						Domain.PokeByte(addressHighlighted, (byte)value);
+						break;
+					case 2:
+						PokeWord(addressHighlighted, (byte)(value % 256), (byte)value);
+						break;
+					case 4:
+						break;
+				}
+			}
 		}
 
 		private void addToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
