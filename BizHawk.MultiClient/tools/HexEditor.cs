@@ -27,8 +27,6 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		int RowsVisible = 0;
-		int DataSize = 1;
-		public bool BigEndian = false;
 		string Header = "";
 		int NumDigits = 4;
 		char[] nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
@@ -120,10 +118,10 @@ namespace BizHawk.MultiClient
 					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
 
 					addr = (row * 16);
-					for (int j = 0; j < 16; j += DataSize)
+					for (int j = 0; j < 16; j += Global.Config.HexEditorDataSize)
 					{
 						if (addr + j < Domain.Size)
-							rowStr.AppendFormat("{0:X" + (DataSize * 2).ToString() + "} ", MakeValue(addr + j));
+							rowStr.AppendFormat("{0:X" + (Global.Config.HexEditorDataSize * 2).ToString() + "} ", MakeValue(addr + j));
 					}
 					rowStr.Append("  | ");
 					for (int k = 0; k < 16; k++)
@@ -151,16 +149,16 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				switch (DataSize)
+				switch (Global.Config.HexEditorDataSize)
 				{
 					default:
 					case 1:
 						return Domain.PeekByte(addr);
 					case 2:
-						return MakeWord(addr, BigEndian);
+						return MakeWord(addr, Global.Config.HexEditorBigEndian);
 					case 4:
-						return (MakeWord(addr, BigEndian) * 65536) +
-							MakeWord(addr + 2, BigEndian);
+						return (MakeWord(addr, Global.Config.HexEditorBigEndian) * 65536) +
+							MakeWord(addr + 2, Global.Config.HexEditorBigEndian);
 				}
 			}
 		}
@@ -196,8 +194,8 @@ namespace BizHawk.MultiClient
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			enToolStripMenuItem.Checked = BigEndian;
-			switch (DataSize)
+			enToolStripMenuItem.Checked = Global.Config.HexEditorBigEndian;
+			switch (Global.Config.HexEditorDataSize)
 			{
 				default:
 				case 1:
@@ -252,7 +250,7 @@ namespace BizHawk.MultiClient
 		{
 			string memoryDomain = Domain.ToString();
 			string systemID = Global.Emulator.SystemId;
-			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + (Domain.Size / DataSize).ToString() + " addresses";
+			MemoryViewerBox.Text = systemID + " " + memoryDomain + "  -  " + (Domain.Size / Global.Config.HexEditorDataSize).ToString() + " addresses";
 		}
 
 		private void SetMemoryDomainMenu()
@@ -377,7 +375,7 @@ namespace BizHawk.MultiClient
 
 		private void SetHeader()
 		{
-			switch (DataSize)
+			switch (Global.Config.HexEditorDataSize)
 			{
 				case 1:
 					Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
@@ -395,7 +393,7 @@ namespace BizHawk.MultiClient
 		public void SetDataSize(int size)
 		{
 			if (size == 1 || size == 2 || size == 4)
-				DataSize = size;
+				Global.Config.HexEditorDataSize = size;
 
 			SetHeader();
 			UpdateGroupBoxTitle();
@@ -419,8 +417,8 @@ namespace BizHawk.MultiClient
 
 		private void enToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			BigEndian ^= true;
-            UpdateValues();
+			Global.Config.HexEditorBigEndian ^= true;
+			UpdateValues();
 		}
 
 		private void AddToRamWatch()
@@ -432,7 +430,7 @@ namespace BizHawk.MultiClient
 				Watch w = new Watch();
 				w.address = address;
 
-				switch (DataSize)
+				switch (Global.Config.HexEditorDataSize)
 				{
 					default:
 					case 1:
@@ -446,7 +444,7 @@ namespace BizHawk.MultiClient
 						break;
 				}
 
-				w.bigendian = BigEndian;
+				w.bigendian = Global.Config.HexEditorBigEndian;
 				w.signed = asigned.HEX;
 
 				Global.MainForm.LoadRamWatch();
@@ -507,7 +505,7 @@ namespace BizHawk.MultiClient
 			//TODO: 4 byte
 			if (addressHighlighted >= 0)
 			{
-				switch (DataSize)
+				switch (Global.Config.HexEditorDataSize)
 				{
 					default:
 					case 1:
@@ -566,7 +564,7 @@ namespace BizHawk.MultiClient
 				c.value = Domain.PeekByte(addressOver);
 				c.domain = Domain;
 				//TODO: multibyte
-				switch (DataSize)
+				switch (Global.Config.HexEditorDataSize)
 				{
 					default:
 					case 1:
@@ -691,7 +689,7 @@ namespace BizHawk.MultiClient
 			int rowoffset = ((y - 16) / fontHeight);
 			row += rowoffset;
 			int colWidth = 0;
-			switch (DataSize)
+			switch (Global.Config.HexEditorDataSize)
 			{
 				default:
 				case 1:
@@ -706,9 +704,9 @@ namespace BizHawk.MultiClient
 			}
 			int column = (x - 43) / (fontWidth * colWidth);
 
-			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / DataSize))
+			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / Global.Config.HexEditorDataSize))
 			{
-				addressOver = row * 16 + (column * DataSize);
+				addressOver = row * 16 + (column * Global.Config.HexEditorDataSize);
 				info = String.Format("{0:X" + GetNumDigits(Domain.Size).ToString() + "}", addressOver);
 			}
 			else
@@ -744,15 +742,15 @@ namespace BizHawk.MultiClient
 
 		private Point GetAddressCoordinates(int address)
 		{
-			switch (DataSize)
+			switch (Global.Config.HexEditorDataSize)
 			{
 				default:
 				case 1:
 					return new Point(((address % 16) * (fontWidth * 3)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 2:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 5)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / Global.Config.HexEditorDataSize) * (fontWidth * 5)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 				case 4:
-					return new Point((((address % 16) / DataSize) * (fontWidth * 9)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
+					return new Point((((address % 16) / Global.Config.HexEditorDataSize) * (fontWidth * 9)) + 50 + addrOffset, (((address / 16) - vScrollBar1.Value) * fontHeight) + 30);
 			}
 		}
 
@@ -760,7 +758,7 @@ namespace BizHawk.MultiClient
 		{
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
-				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * DataSize, fontHeight));
+				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * Global.Config.HexEditorDataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
 				e.Graphics.FillRectangle(highlightBrush, rect);
 			}
@@ -785,10 +783,10 @@ namespace BizHawk.MultiClient
 					GoToAddress(addressHighlighted + 16);
 					break;
 				case Keys.Left:
-					GoToAddress(addressHighlighted - (1 * DataSize));
+					GoToAddress(addressHighlighted - (1 * Global.Config.HexEditorDataSize));
 					break;
 				case Keys.Right:
-					GoToAddress(addressHighlighted + (1 * DataSize));
+					GoToAddress(addressHighlighted + (1 * Global.Config.HexEditorDataSize));
 					break;
 				case Keys.PageUp:
 					GoToAddress(addressHighlighted - (RowsVisible * 16));
@@ -806,7 +804,7 @@ namespace BizHawk.MultiClient
 					GoToAddress(0);
 					break;
 				case Keys.End:
-					GoToAddress(Domain.Size - (DataSize));
+					GoToAddress(Domain.Size - (Global.Config.HexEditorDataSize));
 					break;
 			}
 		}
@@ -822,7 +820,7 @@ namespace BizHawk.MultiClient
 			}
 
 			//TODO: 4 byte
-			switch (DataSize)
+			switch (Global.Config.HexEditorDataSize)
 			{
 				default:
 				case 1:
@@ -879,7 +877,7 @@ namespace BizHawk.MultiClient
 
 		private void PokeWord(int addr, byte _1, byte _2)
 		{
-			if (BigEndian)
+			if (Global.Config.HexEditorBigEndian)
 			{
 				Domain.PokeByte(addr, _2);
 				Domain.PokeByte(addr + 1, _1);

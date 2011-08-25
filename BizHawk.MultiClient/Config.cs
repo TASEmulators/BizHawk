@@ -236,6 +236,8 @@
 		public int HexEditorWndy = -1;
 		public int HexEditorWidth = -1;
 		public int HexEditorHeight = -1;
+		public bool HexEditorBigEndian = false;
+		public int HexEditorDataSize = 1;
 
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
