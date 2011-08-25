@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		int RowsVisible = 0;
 		string Header = "";
 		int NumDigits = 4;
+        string NumDigitsStr = "{0:X4}  ";
 		char[] nibbles = { 'G', 'G', 'G', 'G' , 'G', 'G', 'G', 'G'};    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		int addressOver = -1;
@@ -94,9 +95,6 @@ namespace BizHawk.MultiClient
 		{
 			unchecked
 			{
-				row = 0;
-				addr = 0;
-
 				StringBuilder rowStr = new StringBuilder("");
 				addrOffset = (NumDigits % 4) * 9;
 
@@ -105,11 +103,11 @@ namespace BizHawk.MultiClient
 				for (int i = 0; i < RowsVisible; i++)
 				{
 					row = i + vScrollBar1.Value;
-					if (row * 16 >= Domain.Size)
+                    addr = (row * 16);
+                    if (addr >= Domain.Size)
 						break;
-					rowStr.AppendFormat("{0:X" + NumDigits + "}  ", row * 16);
-
-					addr = (row * 16);
+					rowStr.AppendFormat(NumDigitsStr, addr);
+					
 					for (int j = 0; j < 16; j += Global.Config.HexEditorDataSize)
 					{
 						if (addr + j < Domain.Size)
@@ -380,6 +378,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
+            NumDigitsStr = "{0:X" + NumDigits.ToString() + "}  ";
 		}
 
 		public void SetDataSize(int size)
