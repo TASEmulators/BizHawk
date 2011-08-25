@@ -340,6 +340,7 @@ namespace BizHawk.MultiClient
 			}
 			addressHighlighted = addr;
 			addressOver = addr;
+			ClearNibbles();
 			info = String.Format(NumDigitsStr, addressOver);
 			UpdateFormText();
 			Refresh();
@@ -484,20 +485,6 @@ namespace BizHawk.MultiClient
 				return addressOver;
 			else
 				return -1;  //Negative = no address pointed
-		}
-
-		public void HighlightPointed()
-		{
-			if (addressOver >= 0)
-			{
-				addressHighlighted = addressOver;
-			}
-			else
-				addressHighlighted = -1;
-			ClearNibbles();
-			this.Focus();
-			UpdateFormText();
-			this.Refresh();
 		}
 
 		public void PokeHighlighted(int value)
@@ -758,11 +745,17 @@ namespace BizHawk.MultiClient
 			SetAddressOver(e.X, e.Y);
 			if (addressOver == addressHighlighted && addressOver >= 0)
 			{
-				addressHighlighted = -1;
-				this.Refresh();
+				ClearHighlighted();
 			}
-			else
-				HighlightPointed();
+			else if (addressOver >= 0)
+				SetHighlighted(addressOver);
+		}
+
+		private void ClearHighlighted()
+		{
+			addressHighlighted = -1;
+			UpdateFormText();
+			MemoryViewerBox.Refresh();
 		}
 
 		private Point GetAddressCoordinates(int address)
