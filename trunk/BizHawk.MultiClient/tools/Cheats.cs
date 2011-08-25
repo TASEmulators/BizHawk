@@ -815,6 +815,15 @@ namespace BizHawk.MultiClient
 			UpdateNumberOfCheats();
 		}
 
+		public void RemoveAllCheats()
+		{
+			Global.CheatList.Clear();
+			MemoryPulse.Clear();
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			CheatListView.Refresh();
+			UpdateNumberOfCheats();
+		}
+
 		private void disableAllCheatsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DisableAllCheats();
