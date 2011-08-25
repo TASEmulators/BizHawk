@@ -23,7 +23,7 @@ namespace BizHawk.MultiClient
 		int RowsVisible = 0;
 		string Header = "";
 		int NumDigits = 4;
-        string NumDigitsStr = "{0:X4}  ";
+		string NumDigitsStr = "{0:X4}  ";
 		char[] nibbles = { 'G', 'G', 'G', 'G' , 'G', 'G', 'G', 'G'};    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		int addressOver = -1;
@@ -340,8 +340,17 @@ namespace BizHawk.MultiClient
 			}
 			addressHighlighted = addr;
 			addressOver = addr;
-			info = String.Format("{0:X4}", addressOver);
+			info = String.Format(NumDigitsStr, addressOver);
+			UpdateFormText();
 			Refresh();
+		}
+
+		private void UpdateFormText()
+		{
+			if (addressHighlighted >= 0)
+				Text = "Hex Editor - Editing Address 0x" + String.Format(NumDigitsStr, addressHighlighted);
+			else
+				Text = "Hex Editor";
 		}
 
 		public bool IsVisible(int addr)
@@ -487,6 +496,7 @@ namespace BizHawk.MultiClient
 				addressHighlighted = -1;
 			ClearNibbles();
 			this.Focus();
+			UpdateFormText();
 			this.Refresh();
 		}
 
