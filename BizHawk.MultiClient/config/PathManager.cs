@@ -245,7 +245,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SFX":
 				case "PCE":
-					path = PathManager.MakeAbsolutePath(Global.Config.PathPCEROMs, "GB");
+					path = PathManager.MakeAbsolutePath(Global.Config.PathPCEROMs, "PCE");
 					break;
 				case "GB":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathGBROMs, "GB");
