@@ -17,19 +17,16 @@ namespace BizHawk.MultiClient
 		//Find text box - autohighlights matches, and shows total matches
 		//Users can customize background, & text colors
 		//Tool strip
-		//Show num addresses in group box title (show "address" if 1 address)
-		//big font for currently mouse over'ed value?
 		//Unfreeze All items - this one is tricky though, the dialog should keep track of
 		//  which addresses were frozen using this dialog (its own cheatList), and only 
 		//  remove those from the Cheats window cheat list
-		//4 byte hex editing
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		int RowsVisible = 0;
 		string Header = "";
 		int NumDigits = 4;
-		char[] nibbles = { 'G', 'G', 'G', 'G' };    //G = off 0-9 & A-F are acceptable values
+		char[] nibbles = { 'G', 'G', 'G', 'G' , 'G', 'G', 'G', 'G'};    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		int addressOver = -1;
 		int addrOffset = 0;     //If addresses are > 4 digits, this offset is how much the columns are moved to the right
@@ -316,7 +313,7 @@ namespace BizHawk.MultiClient
 
 		private void ClearNibbles()
 		{
-			for (int x = 0; x < 4; x++)
+			for (int x = 0; x < 8; x++)
 				nibbles[x] = 'G';
 		}
 
@@ -893,7 +890,61 @@ namespace BizHawk.MultiClient
 					}
 					break;
 				case 4:
+					if (nibbles[0] == 'G')
+					{
+						nibbles[0] = (char)e.KeyCode;
+						info = nibbles[0].ToString();
+					}
+					else if (nibbles[1] == 'G')
+					{
+						nibbles[1] = (char)e.KeyCode;
+						info = nibbles[1].ToString();
+					}
+					else if (nibbles[2] == 'G')
+					{
+						nibbles[2] = (char)e.KeyCode;
+						info = nibbles[2].ToString();
+					}
+					else if (nibbles[3] == 'G')
+					{
+						nibbles[3] = (char)e.KeyCode;
+						info = nibbles[3].ToString();
+					}
+					else if (nibbles[4] == 'G')
+					{
+						nibbles[4] = (char)e.KeyCode;
+						info = nibbles[4].ToString();
+					}
+					else if (nibbles[5] == 'G')
+					{
+						nibbles[5] = (char)e.KeyCode;
+						info = nibbles[5].ToString();
+					}
+					else if (nibbles[6] == 'G')
+					{
+						nibbles[6] = (char)e.KeyCode;
+						info = nibbles[6].ToString();
+					}
+					else if (nibbles[7] == 'G')
+					{
+						string temp = nibbles[0].ToString() + nibbles[1].ToString();
+						byte x1 = byte.Parse(temp, NumberStyles.HexNumber);
 
+						string temp2 = nibbles[2].ToString() + nibbles[3].ToString();
+						byte x2 = byte.Parse(temp2, NumberStyles.HexNumber);
+
+						string temp3 = nibbles[4].ToString() + nibbles[5].ToString();
+						byte x3 = byte.Parse(temp3, NumberStyles.HexNumber);
+
+						string temp4 = nibbles[6].ToString() + ((char)e.KeyCode).ToString();
+						byte x4 = byte.Parse(temp4, NumberStyles.HexNumber);
+
+						PokeWord(addressHighlighted, x1, x2);
+						PokeWord(addressHighlighted + 2, x3, x4);
+						ClearNibbles();
+						SetHighlighted(addressHighlighted + 4);
+						UpdateValues();
+					}
 					break;
 			}
 		}
@@ -910,6 +961,22 @@ namespace BizHawk.MultiClient
 				Domain.PokeByte(addr, _1);
 				Domain.PokeByte(addr + 1, _2);
 			}
+		}
+
+		private void RemoveAllCheats()
+		{
+			Global.MainForm.Cheats1.RemoveAllCheats();
+			MemoryViewerBox.Refresh();
+		}
+
+		private void unfreezeAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RemoveAllCheats();
+		}
+
+		private void unfreezeAllToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			RemoveAllCheats();
 		}
 	}
 }
