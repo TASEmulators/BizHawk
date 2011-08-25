@@ -34,7 +34,6 @@ namespace BizHawk.MultiClient
 		int addr = 0;
 		private int Pointedx = 0;
 		private int Pointedy = 0;
-
 		const int rowX = 1;
 		const int rowY = 4;
 		const int rowYoffset = 20;
@@ -47,7 +46,7 @@ namespace BizHawk.MultiClient
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
-			AddressesLabel.Font = new Font("Courier New", 8);
+			AddressesLabel.Font = new Font("Courier New", 8); ;
 		}
 
 		public void SaveConfigSettings()
@@ -76,6 +75,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			SetMemoryDomainMenu();
+			UpdateValues();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -790,6 +790,33 @@ namespace BizHawk.MultiClient
 				else
 					e.Graphics.FillRectangle(Brushes.Pink, rect);
 			}
+			if (HasNibbles())
+			{
+				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,8));
+			}
+		}
+
+		private bool HasNibbles()
+		{
+			for (int x = 0; x < (Global.Config.HexEditorDataSize * 2); x++)
+			{
+				if (nibbles[x] != 'G')
+					return true;
+			}
+			return false;
+		}
+
+		private string MakeNibbles()
+		{
+			string str = "";
+			for (int x = 0; x < (Global.Config.HexEditorDataSize * 2); x++)
+			{
+				if (nibbles[x] != 'G')
+					str += nibbles[x];
+				else
+					break;
+			}
+			return str;
 		}
 
 		private void AddressesLabel_MouseLeave(object sender, EventArgs e)
@@ -847,7 +874,6 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			//TODO: 4 byte
 			switch (Global.Config.HexEditorDataSize)
 			{
 				default:
@@ -893,7 +919,7 @@ namespace BizHawk.MultiClient
 						
 						PokeWord(addressHighlighted, x1, x2);
 						ClearNibbles();
-						SetHighlighted(addressHighlighted + 1);
+						SetHighlighted(addressHighlighted + 2);
 						UpdateValues();
 					}
 					break;
@@ -955,6 +981,7 @@ namespace BizHawk.MultiClient
 					}
 					break;
 			}
+			MemoryViewerBox.Refresh();
 		}
 
 		private void PokeWord(int addr, byte _1, byte _2)
