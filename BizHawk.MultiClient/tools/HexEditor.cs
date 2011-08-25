@@ -17,9 +17,6 @@ namespace BizHawk.MultiClient
 		//Find text box - autohighlights matches, and shows total matches
 		//Users can customize background, & text colors
 		//Tool strip
-		//Unfreeze All items - this one is tricky though, the dialog should keep track of
-		//  which addresses were frozen using this dialog (its own cheatList), and only 
-		//  remove those from the Cheats window cheat list
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -35,7 +32,6 @@ namespace BizHawk.MultiClient
 		string info = "";
 		int row = 0;
 		int addr = 0;
-		public Brush highlightBrush = Brushes.LightBlue;
 		private int Pointedx = 0;
 		private int Pointedy = 0;
 
@@ -44,7 +40,6 @@ namespace BizHawk.MultiClient
 		const int rowYoffset = 20;
 		const int fontHeight = 14;
 		const int fontWidth = 7; //Width of 1 digits
-		Font font = new Font("Courier New", 8);
 
 		public HexEditor()
 		{
@@ -52,7 +47,7 @@ namespace BizHawk.MultiClient
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
-			AddressesLabel.Font = font;
+			AddressesLabel.Font = new Font("Courier New", 8);
 		}
 
 		public void SaveConfigSettings()
@@ -597,6 +592,7 @@ namespace BizHawk.MultiClient
 						break;
 				}
 			}
+			MemoryViewerBox.Refresh();
 		}
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
@@ -776,11 +772,23 @@ namespace BizHawk.MultiClient
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
+			for (int x = 0; x < Global.CheatList.Count; x++)
+			{
+				if (IsVisible(Global.CheatList.cheatList[x].address))
+				{
+					Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList.cheatList[x].address), new Size(15 * Global.Config.HexEditorDataSize, fontHeight));
+					e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+					e.Graphics.FillRectangle(Brushes.LightBlue, rect);
+				}
+			}
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
 			{
 				Rectangle rect = new Rectangle(GetAddressCoordinates(addressHighlighted), new Size(15 * Global.Config.HexEditorDataSize, fontHeight));
 				e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
-				e.Graphics.FillRectangle(highlightBrush, rect);
+				if (Global.CheatList.IsActiveCheat(Domain, addressHighlighted))
+					e.Graphics.FillRectangle(Brushes.Violet, rect);
+				else
+					e.Graphics.FillRectangle(Brushes.Pink, rect);
 			}
 		}
 
