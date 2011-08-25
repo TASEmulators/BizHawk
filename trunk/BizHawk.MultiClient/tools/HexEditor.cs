@@ -168,9 +168,9 @@ namespace BizHawk.MultiClient
 			unchecked
 			{
 				if (endian)
-					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
-				else
 					return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
+				else
+					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
 			}
 		}
 
@@ -429,6 +429,8 @@ namespace BizHawk.MultiClient
 			{
 				Watch w = new Watch();
 				w.address = address;
+				w.bigendian = Global.Config.HexEditorBigEndian;
+				w.signed = asigned.HEX;
 
 				switch (Global.Config.HexEditorDataSize)
 				{
@@ -443,9 +445,6 @@ namespace BizHawk.MultiClient
 						w.type = atype.DWORD;
 						break;
 				}
-
-				w.bigendian = Global.Config.HexEditorBigEndian;
-				w.signed = asigned.HEX;
 
 				Global.MainForm.LoadRamWatch();
 				Global.MainForm.RamWatch1.AddWatch(w);
@@ -561,21 +560,45 @@ namespace BizHawk.MultiClient
 			{
 				Cheat c = new Cheat();
 				c.address = address;
-				c.value = Domain.PeekByte(addressOver);
+				c.value = Domain.PeekByte(address);
 				c.domain = Domain;
-				//TODO: multibyte
+				c.Enable();
+				Global.MainForm.Cheats1.AddCheat(c);
+
 				switch (Global.Config.HexEditorDataSize)
 				{
 					default:
 					case 1:
 						break;
 					case 2:
+						Cheat c2 = new Cheat();
+						c2.address = address + 1;
+						c2.domain = Domain;
+						c2.value = Domain.PeekByte(address + 1);
+						c2.Enable();
+						Global.MainForm.Cheats1.AddCheat(c2);
 						break;
 					case 4:
+						Cheat c42 = new Cheat();
+						c42.address = address + 1;
+						c42.domain = Domain;
+						c42.value = Domain.PeekByte(address + 1);
+						c42.Enable();
+						Global.MainForm.Cheats1.AddCheat(c42);
+						Cheat c43 = new Cheat();
+						c43.address = address + 2;
+						c43.domain = Domain;
+						c43.value = Domain.PeekByte(address + 2);
+						c43.Enable();
+						Global.MainForm.Cheats1.AddCheat(c43);
+						Cheat c44 = new Cheat();
+						c44.address = address + 3;
+						c44.domain = Domain;
+						c44.value = Domain.PeekByte(address + 3);
+						c44.Enable();
+						Global.MainForm.Cheats1.AddCheat(c44);
 						break;
 				}
-
-				Global.MainForm.Cheats1.AddCheat(c);
 			}
 		}
 
