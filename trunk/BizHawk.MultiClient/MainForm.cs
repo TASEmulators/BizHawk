@@ -970,10 +970,10 @@ namespace BizHawk.MultiClient
 									return false;
 								}
 								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
-                                if (rom.GameInfo["SuperSysCard"])
-                                    game.AddOption("SuperSysCard");
-                                if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
-                                    MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
+								if (rom.GameInfo["SuperSysCard"])
+									game.AddOption("SuperSysCard");
+								if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
+									MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
 								nextEmulator = new PCEngine(game, disc, rom.RomData);
 								break;
 						}
@@ -1082,6 +1082,7 @@ namespace BizHawk.MultiClient
 				CurrentlyOpenRom = file.CanonicalFullPath;
 				HandlePlatformMenus();
 				StateSlots.Clear();
+				UpdateStatusSlots();
 				UpdateDumpIcon();
 				return true;
 			}
