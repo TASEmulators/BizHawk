@@ -1015,5 +1015,28 @@ namespace BizHawk.MultiClient
 		{
 			RemoveAllCheats();
 		}
+
+		private void HexEditor_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if (e.Delta > 0)
+			{
+				if (vScrollBar1.Value > vScrollBar1.Minimum)
+				{
+					vScrollBar1.Value--;
+					MemoryViewerBox.Refresh();
+					UpdateValues();
+				}
+			}
+			else if (e.Delta < 0)
+			{
+				if (vScrollBar1.Value < vScrollBar1.Maximum)
+				{
+					vScrollBar1.Value++;
+					MemoryViewerBox.Refresh();
+					UpdateValues();
+				}
+			}
+			
+		}
 	}
 }

@@ -46,6 +46,7 @@
 			this.goToAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,11 +56,10 @@
 			this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.unfreezeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
-			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.unfreezeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -144,21 +144,21 @@
 			// byteToolStripMenuItem
 			// 
 			this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-			this.byteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.byteToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
 			this.byteToolStripMenuItem.Text = "1 Byte";
 			this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
 			// 
 			// byteToolStripMenuItem1
 			// 
 			this.byteToolStripMenuItem1.Name = "byteToolStripMenuItem1";
-			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
 			this.byteToolStripMenuItem1.Text = "2 Byte";
 			this.byteToolStripMenuItem1.Click += new System.EventHandler(this.byteToolStripMenuItem1_Click);
 			// 
 			// byteToolStripMenuItem2
 			// 
 			this.byteToolStripMenuItem2.Name = "byteToolStripMenuItem2";
-			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
 			this.byteToolStripMenuItem2.Text = "4 Byte";
 			this.byteToolStripMenuItem2.Click += new System.EventHandler(this.byteToolStripMenuItem2_Click);
 			// 
@@ -197,6 +197,14 @@
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
+			// 
+			// unfreezeAllToolStripMenuItem
+			// 
+			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
+			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
+			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
 			// 
 			// settingsToolStripMenuItem
 			// 
@@ -244,7 +252,7 @@
             this.addToRamWatchToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem1});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 114);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 92);
 			// 
 			// pokeToolStripMenuItem
 			// 
@@ -269,6 +277,14 @@
 			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
+			// 
+			// unfreezeAllToolStripMenuItem1
+			// 
+			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
+			this.unfreezeAllToolStripMenuItem1.Name = "unfreezeAllToolStripMenuItem1";
+			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
+			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
 			// 
 			// MemoryViewerBox
 			// 
@@ -313,22 +329,6 @@
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			// 
-			// unfreezeAllToolStripMenuItem
-			// 
-			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
-			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
-			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
-			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
-			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
-			// 
-			// unfreezeAllToolStripMenuItem1
-			// 
-			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
-			this.unfreezeAllToolStripMenuItem1.Name = "unfreezeAllToolStripMenuItem1";
-			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
-			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
-			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
-			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -342,6 +342,7 @@
 			this.Name = "HexEditor";
 			this.Text = "HexEditor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
+			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
 			this.Resize += new System.EventHandler(this.HexEditor_Resize);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
