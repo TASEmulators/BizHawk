@@ -63,8 +63,8 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			WatchListView.BlazingFast = true;
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			WatchListView.BlazingFast = true;
 			for (int x = 0; x < watchList.Count; x++)
 			{
 				watchList[x].prev = watchList[x].value;
