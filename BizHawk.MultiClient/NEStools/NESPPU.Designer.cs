@@ -62,16 +62,17 @@
 			this.Table1P6 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table1P7 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
+			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
-			this.label1 = new System.Windows.Forms.Label();
-			this.txtScanline = new System.Windows.Forms.TextBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.PatternGroup.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SpriteViewerBox.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PatternGroup
@@ -165,6 +166,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripDropDownButton1,
             this.toolStripDropDownButton2});
@@ -366,6 +368,15 @@
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
 			// 
+			// txtScanline
+			// 
+			this.txtScanline.Location = new System.Drawing.Point(7, 16);
+			this.txtScanline.Name = "txtScanline";
+			this.txtScanline.Size = new System.Drawing.Size(60, 20);
+			this.txtScanline.TabIndex = 6;
+			this.txtScanline.Text = "0";
+			this.txtScanline.TextChanged += new System.EventHandler(this.txtScanline_TextChanged);
+			// 
 			// SpriteView
 			// 
 			this.SpriteView.BackColor = System.Drawing.Color.White;
@@ -381,9 +392,9 @@
 			this.PaletteView.Name = "PaletteView";
 			this.PaletteView.Size = new System.Drawing.Size(257, 34);
 			this.PaletteView.TabIndex = 0;
+			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
 			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
 			this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
-			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
 			// 
 			// PatternView
 			// 
@@ -392,36 +403,27 @@
 			this.PatternView.Name = "PatternView";
 			this.PatternView.Size = new System.Drawing.Size(256, 128);
 			this.PatternView.TabIndex = 0;
-			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
-			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
 			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
+			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
+			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
-			// label1
+			// groupBox1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(502, 204);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(48, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Scanline";
-			// 
-			// txtScanline
-			// 
-			this.txtScanline.Location = new System.Drawing.Point(501, 223);
-			this.txtScanline.Name = "txtScanline";
-			this.txtScanline.Size = new System.Drawing.Size(60, 20);
-			this.txtScanline.TabIndex = 6;
-			this.txtScanline.Text = "0";
-			this.txtScanline.TextChanged += new System.EventHandler(this.txtScanline_TextChanged);
+			this.groupBox1.Controls.Add(this.txtScanline);
+			this.groupBox1.Location = new System.Drawing.Point(482, 200);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(75, 52);
+			this.groupBox1.TabIndex = 8;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Scanline";
 			// 
 			// NESPPU
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(587, 317);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.txtScanline);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SpriteViewerBox);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.DetailsBox);
@@ -430,8 +432,8 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "NESPPU";
 			this.Text = "NES PPU Viewer";
-			this.Load += new System.EventHandler(this.NESPPU_Load);
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESPPU_FormClosed);
+			this.Load += new System.EventHandler(this.NESPPU_Load);
 			this.PatternGroup.ResumeLayout(false);
 			this.PatternGroup.PerformLayout();
 			this.PalettesGroup.ResumeLayout(false);
@@ -440,6 +442,8 @@
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.SpriteViewerBox.ResumeLayout(false);
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -482,8 +486,8 @@
         private System.Windows.Forms.ToolStripMenuItem Table1P6;
         private System.Windows.Forms.ToolStripMenuItem Table1P7;
         private System.Windows.Forms.GroupBox SpriteViewerBox;
-        private SpriteViewer SpriteView;
-		private System.Windows.Forms.Label label1;
+		private SpriteViewer SpriteView;
 		private System.Windows.Forms.TextBox txtScanline;
+		private System.Windows.Forms.GroupBox groupBox1;
     }
 }

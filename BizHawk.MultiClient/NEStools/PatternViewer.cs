@@ -21,23 +21,15 @@ namespace BizHawk.MultiClient
 			pattern = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			this.Size = pSize;
 			this.BackColor = Color.White;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
 		}
 
-		private void Display(Graphics g)
-		{
-			unchecked
-			{
-				g.DrawImage(pattern, 1, 1);
-			}
-		}
-
 		private void PatternViewer_Paint(object sender, PaintEventArgs e)
 		{
-			Display(e.Graphics);
+			e.Graphics.DrawImage(pattern, 1, 1);
 		}
 	}
 }

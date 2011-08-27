@@ -169,5 +169,10 @@ namespace BizHawk.MultiClient
 			if (rbNametableSE.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_2C00;
 			if (rbNametableAll.Checked) NameTableView.Which = NameTableViewer.WhichNametable.NT_ALL;
 		}
+
+		private void NameTableView_MouseMove(object sender, MouseEventArgs e)
+		{
+
+		}
 	}
 }

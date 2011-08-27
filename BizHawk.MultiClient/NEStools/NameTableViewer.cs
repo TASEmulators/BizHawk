@@ -27,7 +27,7 @@ namespace BizHawk.MultiClient
 
 		public enum WhichNametable
 		{
-			NT_2000, NT_2400, NT_2800, NT_2C00, NT_ALL
+			NT_2000, NT_2400, NT_2800, NT_2C00, NT_ALL, TOPS, BOTTOMS
 		}
 
 		public WhichNametable Which = WhichNametable.NT_ALL;
@@ -52,6 +52,14 @@ namespace BizHawk.MultiClient
 					break;
 				case WhichNametable.NT_2C00:
 					g.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 256, 240, 256, 240, GraphicsUnit.Pixel);
+					break;
+
+				//adelikat: Meh, just in case we might want these, someone requested it but I can't remember the justification so I didn't do the UI part
+				case WhichNametable.TOPS:
+					g.DrawImage(nametables, new Rectangle(0, 0, 512, 240), 0, 0, 512, 240, GraphicsUnit.Pixel);
+					break;
+				case WhichNametable.BOTTOMS:
+					g.DrawImage(nametables, new Rectangle(0, 240, 512, 240), 0, 240, 512, 240, GraphicsUnit.Pixel);
 					break;
 			}
 		}
