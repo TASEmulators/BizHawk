@@ -195,18 +195,9 @@ namespace BizHawk.MultiClient
 			fSkipFrames *= 0.5f;
 		}
 
-		bool adelikat = false;
 		void AutoFrameSkip_BeforeThrottle()
 		{
 			preThrottleEndticks = GetCurTime();
-
-			if (adelikat)
-			{
-				ulong bleh;
-				QueryPerformanceFrequency(out bleh);
-				Console.WriteLine("QueryPerformanceFrequency: {0}", bleh);
-			}
-
 		}
 
 		void AutoFrameSkip_NextFrame()
