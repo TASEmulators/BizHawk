@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
 		string Header = "";
 		int NumDigits = 4;
 		string NumDigitsStr = "{0:X4}  ";
+		string DigitFormatString = "{0:X2} ";
 		char[] nibbles = { 'G', 'G', 'G', 'G' , 'G', 'G', 'G', 'G'};    //G = off 0-9 & A-F are acceptable values
 		int addressHighlighted = -1;
 		int addressOver = -1;
@@ -93,36 +94,33 @@ namespace BizHawk.MultiClient
 
 		public string GenerateMemoryViewString()
 		{
-			unchecked
+			StringBuilder rowStr = new StringBuilder("");
+			addrOffset = (NumDigits % 4) * 9;
+
+			rowStr.Append(Header + '\n');
+
+			for (int i = 0; i < RowsVisible; i++)
 			{
-				StringBuilder rowStr = new StringBuilder("");
-				addrOffset = (NumDigits % 4) * 9;
-
-				rowStr.Append(Header + '\n');
-
-				for (int i = 0; i < RowsVisible; i++)
-				{
-					row = i + vScrollBar1.Value;
-                    addr = (row * 16);
-                    if (addr >= Domain.Size)
-						break;
-					rowStr.AppendFormat(NumDigitsStr, addr);
+				row = i + vScrollBar1.Value;
+				addr = (row * 16);
+				if (addr >= Domain.Size)
+					break;
+				rowStr.AppendFormat(NumDigitsStr, addr);
 					
-					for (int j = 0; j < 16; j += Global.Config.HexEditorDataSize)
-					{
-						if (addr + j < Domain.Size)
-							rowStr.AppendFormat("{0:X" + (Global.Config.HexEditorDataSize * 2).ToString() + "} ", MakeValue(addr + j));
-					}
-					rowStr.Append("  | ");
-					for (int k = 0; k < 16; k++)
-					{
-						rowStr.Append(Remap(Domain.PeekByte(addr + k)));
-					}
-					rowStr.AppendLine();
-
+				for (int j = 0; j < 16; j += Global.Config.HexEditorDataSize)
+				{
+					if (addr + j < Domain.Size)
+						rowStr.AppendFormat(DigitFormatString, MakeValue(addr + j));
 				}
-				return rowStr.ToString();
+				rowStr.Append("  | ");
+				for (int k = 0; k < 16; k++)
+				{
+					rowStr.Append(Remap(Domain.PeekByte(addr + k)));
+				}
+				rowStr.AppendLine();
+
 			}
+			return rowStr.ToString();
 		}
 
 		static char Remap(byte val)
@@ -137,31 +135,34 @@ namespace BizHawk.MultiClient
 
 		private int MakeValue(int addr)
 		{
-			unchecked
+			
+			switch (Global.Config.HexEditorDataSize)
 			{
-				switch (Global.Config.HexEditorDataSize)
-				{
-					default:
-					case 1:
-						return Domain.PeekByte(addr);
-					case 2:
-						return MakeWord(addr, Global.Config.HexEditorBigEndian);
-					case 4:
-						return (MakeWord(addr, Global.Config.HexEditorBigEndian) * 65536) +
-							MakeWord(addr + 2, Global.Config.HexEditorBigEndian);
-				}
+				default:
+				case 1:
+					return Domain.PeekByte(addr);
+				case 2:
+					if (Global.Config.HexEditorBigEndian)
+						return MakeWordBig(addr);
+					else
+						return MakeWordLittle(addr);
+				case 4:
+					if (Global.Config.HexEditorBigEndian)
+						return (MakeWordBig(addr) * 65536) + MakeWordBig(addr + 2);
+					else
+						return (MakeWordLittle(addr) * 65536) + MakeWordLittle(addr);
 			}
 		}
 
-		private int MakeWord(int addr, bool endian)
+		private int MakeWordBig(int addr)
 		{
-			unchecked
-			{
-				if (endian)
-					return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
-				else
-					return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
-			}
+			System.Diagnostics.Debugger.Break();
+			return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
+		}
+
+		private int MakeWordLittle(int addr) 
+		{ 
+			return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
 		}
 
 		public void Restart()
@@ -395,7 +396,7 @@ namespace BizHawk.MultiClient
 		{
 			if (size == 1 || size == 2 || size == 4)
 				Global.Config.HexEditorDataSize = size;
-
+			DigitFormatString = "{0:X" + (Global.Config.HexEditorDataSize * 2).ToString() + "} ";
 			SetHeader();
 			UpdateGroupBoxTitle();
 			UpdateValues();
