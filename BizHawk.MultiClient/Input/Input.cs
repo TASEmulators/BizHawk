@@ -201,8 +201,23 @@ namespace BizHawk.MultiClient
 				_NewEvents.Clear();
 
 				//analyze keys
-				foreach (var key in KeyInput.State.PressedKeys) HandleButton(key.ToString(), true);
-				foreach (var key in KeyInput.State.ReleasedKeys) HandleButton(key.ToString(), false);
+				var bleh = new HashSet<string>();
+				foreach(var k in KeyInput.State.PressedKeys)
+					bleh.Add(k.ToString());
+				var unpress = new List<string>();
+				foreach (var kvp in LastState)
+				{
+					if (!kvp.Value) continue;
+					if (!bleh.Contains(kvp.Key))
+						unpress.Add(kvp.Key);
+				}
+
+				foreach(var k in unpress)
+					HandleButton(k, false);
+
+				foreach (var k in KeyInput.State.PressedKeys)
+					HandleButton(k.ToString(), true);
+					
 
 				//analyze joysticks
 				for (int i = 0; i < GamePad.Devices.Count; i++)
