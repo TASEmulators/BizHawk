@@ -1281,7 +1281,6 @@ namespace BizHawk.MultiClient
 					return false;
 				case "Record AVI":
 					RecordAVI();
-					//Global.AutoFireAdapter.SetAutoFire("P1 A", !Global.AutoFireAdapter.IsAutoFire("P1 A"));
 					break;
 				case "Stop AVI":
 					StopAVI();
