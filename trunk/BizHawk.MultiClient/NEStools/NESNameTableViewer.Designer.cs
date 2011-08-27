@@ -41,7 +41,6 @@
 			this.rbNametableSW = new System.Windows.Forms.RadioButton();
 			this.rbNametableSE = new System.Windows.Forms.RadioButton();
 			this.rbNametableAll = new System.Windows.Forms.RadioButton();
-			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -51,6 +50,7 @@
 			this.TileIDLabel = new System.Windows.Forms.Label();
 			this.XYLabel = new System.Windows.Forms.Label();
 			this.PPUAddressLabel = new System.Windows.Forms.Label();
+			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -73,7 +73,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(668, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(679, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -177,15 +177,6 @@
 			this.rbNametableAll.UseVisualStyleBackColor = true;
 			this.rbNametableAll.CheckedChanged += new System.EventHandler(this.rbNametable_CheckedChanged);
 			// 
-			// NameTableView
-			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Black;
-			this.NameTableView.Location = new System.Drawing.Point(17, 19);
-			this.NameTableView.Name = "NameTableView";
-			this.NameTableView.Size = new System.Drawing.Size(512, 480);
-			this.NameTableView.TabIndex = 0;
-			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
-			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.rbNametableNW);
@@ -220,7 +211,7 @@
 			this.groupBox4.Controls.Add(this.label1);
 			this.groupBox4.Location = new System.Drawing.Point(563, 179);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(99, 100);
+			this.groupBox4.Size = new System.Drawing.Size(108, 100);
 			this.groupBox4.TabIndex = 13;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Properties";
@@ -255,7 +246,7 @@
 			// TileIDLabel
 			// 
 			this.TileIDLabel.AutoSize = true;
-			this.TileIDLabel.Location = new System.Drawing.Point(66, 26);
+			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
 			this.TileIDLabel.Name = "TileIDLabel";
 			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
 			this.TileIDLabel.TabIndex = 3;
@@ -264,7 +255,7 @@
 			// XYLabel
 			// 
 			this.XYLabel.AutoSize = true;
-			this.XYLabel.Location = new System.Drawing.Point(66, 43);
+			this.XYLabel.Location = new System.Drawing.Point(64, 43);
 			this.XYLabel.Name = "XYLabel";
 			this.XYLabel.Size = new System.Drawing.Size(22, 13);
 			this.XYLabel.TabIndex = 4;
@@ -273,17 +264,27 @@
 			// PPUAddressLabel
 			// 
 			this.PPUAddressLabel.AutoSize = true;
-			this.PPUAddressLabel.Location = new System.Drawing.Point(66, 60);
+			this.PPUAddressLabel.Location = new System.Drawing.Point(64, 60);
 			this.PPUAddressLabel.Name = "PPUAddressLabel";
 			this.PPUAddressLabel.Size = new System.Drawing.Size(22, 13);
 			this.PPUAddressLabel.TabIndex = 5;
 			this.PPUAddressLabel.Text = "     ";
 			// 
+			// NameTableView
+			// 
+			this.NameTableView.BackColor = System.Drawing.Color.Black;
+			this.NameTableView.Location = new System.Drawing.Point(17, 19);
+			this.NameTableView.Name = "NameTableView";
+			this.NameTableView.Size = new System.Drawing.Size(512, 480);
+			this.NameTableView.TabIndex = 0;
+			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
+			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
+			// 
 			// NESNameTableViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(668, 561);
+			this.ClientSize = new System.Drawing.Size(679, 561);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
