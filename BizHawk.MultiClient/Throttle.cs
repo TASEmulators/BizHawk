@@ -123,12 +123,19 @@ namespace BizHawk.MultiClient
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool QueryPerformanceFrequency(out ulong frequency);
 
+		[DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+		static extern uint timeEndPeriod(uint uMilliseconds);
+
+		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+		static extern uint timeBeginPeriod(uint uMilliseconds);
+
 		static int tmethod;
 		static ulong afsfreq;
 		static ulong tfreq;
 
 		static Throttle()
 		{
+			timeBeginPeriod(1);
 			tmethod = 0;
 			if (QueryPerformanceFrequency(out afsfreq))
 				tmethod = 1;
