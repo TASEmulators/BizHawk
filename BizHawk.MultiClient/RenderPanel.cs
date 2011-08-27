@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
+using System.Text;
 using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
@@ -331,21 +332,20 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void DrawScreenInfo()
 		{
-			int x, y;
 			if (Global.Config.DisplayFrameCounter)
 			{
-				x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor);
-				y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor);
+				int x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor);
+				int y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor);
 				MessageFont.DrawString(null, MakeFrameCounter(), x + 1,
-					y + 1, new Color4(Color.Black));
+					y + 1, Color.Black);
 				MessageFont.DrawString(null, MakeFrameCounter(), x,
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 			if (Global.Config.DisplayInput)
 			{
 				Color c;
-				x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
-				y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
+				int x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
+				int y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
 				if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
@@ -360,35 +360,35 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.MultiTrack.IsActive)
 			{
 				MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
-				   Global.Config.DispFPSy + 1, new Color4(Color.Black));
+					Global.Config.DispFPSy + 1, Color.Black);
 				MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
 					Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
 			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
-				x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor);
-				y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor);
+				int x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor);
+				int y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor);
 				MessageFont.DrawString(null, FPS, x + 1,
-					y + 1, new Color4(Color.Black));
+					y + 1, Color.Black);
 				MessageFont.DrawString(null, FPS, x,
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
 			if (Global.Config.DisplayLagCounter)
 			{
-				x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor);
-				y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor);
+				int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor);
+				int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor);
 				if (Global.Emulator.IsLagFrame)
 				{
 					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
-						Global.Config.DispLagy + 1, new Color4(Color.Black));
+						Global.Config.DispLagy + 1, Color.Black);
 					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
 						Global.Config.DispLagy, Color.FromArgb(Global.Config.AlertMessageColor));
 				}
 				else
 				{
 					MessageFont.DrawString(null, MakeLagCounter(), x + 1,
-						y + 1, new Color4(Color.Black));
+						y + 1, Color.Black);
 					MessageFont.DrawString(null, MakeLagCounter(), x,
 						y, Color.FromArgb(Global.Config.MessagesColor));
 				}
@@ -396,35 +396,33 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.DisplayRerecordCount)
 			{
-				x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor);
-				y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor);
+				int x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor);
+				int y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor);
 				MessageFont.DrawString(null, MakeRerecordCount(), x + 1,
-					 y + 1, new Color4(Color.Black));
+					 y + 1, Color.Black);
 				MessageFont.DrawString(null, MakeRerecordCount(), x,
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
-			//TODO: clean this up or replace with simple draw symbols
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY
-				|| Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
 			{
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 47,
-					 0 + 1, new Color4(Color.Black));
+					 0 + 1, Color.Black);
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
 					0, Color.FromArgb(Global.Config.MovieColor));
 			}
 			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.RECORD)
 			{
 				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 65,
-						 0 + 1, new Color4(Color.Black));
+						 0 + 1, Color.Black);
 				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 64,
 					0, Color.FromArgb(Global.Config.MovieColor));
 			}
 
-			if (Global.Config.DisplaySubtitles)
+			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
 			{
 				//TODO: implement multiple subtitles at once feature
-				Subtitle s = new Subtitle(Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame));
+				Subtitle s = Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame);
 				MessageFont.DrawString(null, s.Message, s.X + 1,
 							s.Y + 1, new Color4(Color.Black));
 				MessageFont.DrawString(null, s.Message, s.X,
@@ -471,7 +469,7 @@ namespace BizHawk.MultiClient
 			{
 				int x = 3;
 				int y = backingControl.Size.Height - (line * 18);
-				MessageFont.DrawString(null, messages[i].Message, x + 2, y + 2, new Color4(Color.Black));
+				MessageFont.DrawString(null, messages[i].Message, x + 2, y + 2, Color.Black);
 				MessageFont.DrawString(null, messages[i].Message, x, y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 		}
@@ -489,21 +487,18 @@ namespace BizHawk.MultiClient
 
 		public string MakeInputDisplay()
 		{
-			string tmp = Global.GetOutputControllersAsMnemonic();
-			tmp = tmp.Replace(".", " ");
-			tmp = tmp.Replace("|", "");
-			return tmp;
+			StringBuilder s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			s.Replace(".", " ");
+			s.Replace("|", "");
+			return s.ToString();
 		}
 
 		public string MakeRerecordCount()
 		{
-			string tmp = "";
 			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
-			{
-				tmp += "Rerecord Count: ";
-				tmp += Global.MainForm.UserMovie.Rerecords.ToString();
-			}
-			return tmp;
+				return "Rerecord Count: " + Global.MainForm.UserMovie.Rerecords.ToString();
+			else
+				return "";
 		}
 	}
 
