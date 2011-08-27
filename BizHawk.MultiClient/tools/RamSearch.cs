@@ -44,7 +44,7 @@ namespace BizHawk.MultiClient
 		int defaultPrevWidth;
 		int defaultChangesWidth;
 		string currentSearchFile = "";
-
+		string addressFormatStr = "{0:X4}  ";
 		bool sortReverse;
 		string sortedCol;
 
@@ -184,6 +184,7 @@ namespace BizHawk.MultiClient
 			}
 			SetPlatformAndMemoryDomainLabel();
 			StartNewSearch();
+			addressFormatStr = "X" + GetNumDigits(Domain.Size - 1).ToString();
 		}
 
 		private void SetTotal()
@@ -563,7 +564,7 @@ namespace BizHawk.MultiClient
 			text = "";
 			if (column == 0)
 			{
-				text = searchList[index].address.ToString("X" + GetNumDigits(Domain.Size - 1).ToString());
+				text = searchList[index].address.ToString(addressFormatStr);
 			}
 			if (column == 1)
 			{
