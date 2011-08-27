@@ -1189,8 +1189,7 @@ namespace BizHawk.MultiClient
 			get
 			{
 				//the main form gets input
-				//if (Form.ActiveForm == this) return true;
-				return true;
+				if (Form.ActiveForm == this) return true;
 
 				//modals that need to capture input for binding purposes get input, of course
 				if (Form.ActiveForm is InputConfig) return true;
