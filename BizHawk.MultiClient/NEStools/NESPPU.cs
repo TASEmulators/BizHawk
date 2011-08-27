@@ -152,8 +152,8 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is NES)) return;
-			NES.PPU ppu = (Global.Emulator as NES).ppu;
-			ppu.PPUViewCallback = Callback;
+			//NES.PPU ppu = (Global.Emulator as NES).ppu;
+			Nes.ppu.PPUViewCallback = Callback;
 		}
 
 		private void NESPPU_Load(object sender, EventArgs e)

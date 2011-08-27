@@ -172,7 +172,48 @@ namespace BizHawk.MultiClient
 
 		private void NameTableView_MouseMove(object sender, MouseEventArgs e)
 		{
+			int TileX, TileY, NameTable;
+			if (NameTableView.Which == NameTableViewer.WhichNametable.NT_ALL)
+			{
+				TileX = e.X / 8;
+				TileY = e.Y / 8;
+				NameTable = (TileX / 32) + ((TileY / 30) * 2);
+			}
+			else
+			{
+				switch (NameTableView.Which)
+				{
+					default:
+					case NameTableViewer.WhichNametable.NT_2000:
+						NameTable = 0;
+						break;
+					case NameTableViewer.WhichNametable.NT_2400:
+						NameTable = 1;
+						break;
+					case NameTableViewer.WhichNametable.NT_2800:
+						NameTable = 2;
+						break;
+					case NameTableViewer.WhichNametable.NT_2C00:
+						NameTable = 3;
+						break;
+				}
 
+				TileX = e.X / 16;
+				TileY = e.Y / 16;
+			}
+
+			XYLabel.Text = TileX.ToString() + " : " + TileY.ToString();
+			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
+			PPUAddressLabel.Text = String.Format("{0:X4}", PPUAddress);
+			int TileID = 0; //TODO
+			TileIDLabel.Text = String.Format("{0:X2}", TileID);
+		}
+
+		private void NameTableView_MouseLeave(object sender, EventArgs e)
+		{
+			XYLabel.Text = "";
+			PPUAddressLabel.Text = "";
+			TileIDLabel.Text = "";
 		}
 	}
 }
