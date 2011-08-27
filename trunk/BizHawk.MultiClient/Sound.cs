@@ -3,6 +3,8 @@ using BizHawk.Emulation.Sound;
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
 
+using BizHawk.Emulation.Consoles.Nintendo;
+
 namespace BizHawk.MultiClient
 {
 	public class Sound : IDisposable
@@ -174,6 +176,15 @@ namespace BizHawk.MultiClient
 				DSoundBuffer.Volume = -5000;
 			else
 				DSoundBuffer.Volume = 0 - ((100 - Global.Config.SoundVolume) * 15);
+
+			if (Global.Emulator is NES)
+			{
+				NES n = Global.Emulator as NES;
+				if (Global.Config.SoundEnabled == false)
+					n.SoundOn = false;
+				else
+					n.SoundOn = true;
+			}
 		}
 	}
 }
