@@ -73,31 +73,28 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			unchecked
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+
+			if (searchList.Count > 8)
+				SearchListView.BlazingFast = true;
+			sortReverse = false;
+			sortedCol = "";
+			for (int x = 0; x < searchList.Count; x++)
 			{
-				if (!this.IsHandleCreated || this.IsDisposed) return;
+				searchList[x].prev = searchList[x].value;
+				searchList[x].PeekAddress(Domain);
 
-				if (searchList.Count > 8)
-					SearchListView.BlazingFast = true;
-				sortReverse = false;
-				sortedCol = "";
-				for (int x = 0; x < searchList.Count; x++)
-				{
-					searchList[x].prev = searchList[x].value;
-					searchList[x].PeekAddress(Domain);
+				if (searchList[x].prev != searchList[x].value)
+					searchList[x].changecount++;
 
-					if (searchList[x].prev != searchList[x].value)
-						searchList[x].changecount++;
-
-				}
-				if (AutoSearchCheckBox.Checked)
-					DoSearch();
-				else if (Global.Config.RamSearchPreviewMode)
-					DoPreview();
-
-				SearchListView.Refresh();
-				SearchListView.BlazingFast = false;
 			}
+			if (AutoSearchCheckBox.Checked)
+				DoSearch();
+			else if (Global.Config.RamSearchPreviewMode)
+				DoPreview();
+
+			SearchListView.Refresh();
+			SearchListView.BlazingFast = false;
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -547,20 +544,22 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (column == 0)
+			if (IsAWeededList && column == 0)
 			{
-				if (IsAWeededList)
+				if (!weededList.Contains(searchList[index]))
 				{
-					if (!weededList.Contains(searchList[index]))
-					{
-						color = Color.Pink;
-						if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
-							color = Color.Purple;
-					}
-					else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
-						color = Color.LightCyan;
+					if (color == Color.Pink) return;
+					if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+						color = Color.Purple;
 					else
-						color = Color.White;
+						color = Color.Pink;
+				}
+				else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+					color = Color.LightCyan;
+				else
+				{
+					if (color == Color.White) return;
+					color = Color.White;
 				}
 			}
 		}
@@ -648,16 +647,6 @@ namespace BizHawk.MultiClient
 			{
 				text = searchList[index].changecount.ToString();
 			}
-		}
-
-		private void SearchListView_QueryItemIndent(int index, out int itemIndent)
-		{
-			itemIndent = 0;
-		}
-
-		private void SearchListView_QueryItemImage(int index, int column, out int imageIndex)
-		{
-			imageIndex = -1;
 		}
 
 		private void ClearChangeCounts()

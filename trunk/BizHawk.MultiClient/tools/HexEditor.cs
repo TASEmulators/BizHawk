@@ -126,12 +126,9 @@ namespace BizHawk.MultiClient
 
 		static char Remap(byte val)
 		{
-			unchecked
-			{
-				if (val < ' ') return '.';
-				else if (val >= 0x80) return '.';
-				else return (char)val;
-			}
+			if (val < ' ') return '.';
+			else if (val >= 0x80) return '.';
+			else return (char)val;
 		}
 
 		private int MakeValue(int addr)
@@ -279,12 +276,9 @@ namespace BizHawk.MultiClient
 
 		private int GetNumDigits(Int32 i)
 		{
-			unchecked
-			{
-				if (i <= 0x10000) return 4;
-				if (i <= 0x1000000) return 6;
-				else return 8;
-			}
+			if (i <= 0x10000) return 4;
+			if (i <= 0x1000000) return 6;
+			else return 8;
 		}
 
 		public void GoToSpecifiedAddress()
@@ -357,15 +351,12 @@ namespace BizHawk.MultiClient
 
 		public bool IsVisible(int addr)
 		{
-			unchecked
-			{
-				int row = addr >> 4;
+			int row = addr >> 4;
 
-				if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
-					return true;
-				else
-					return false;
-			}
+			if (row >= vScrollBar1.Value && row < (RowsVisible + vScrollBar1.Value))
+				return true;
+			else
+				return false;
 		}
 
 		private void HexEditor_Resize(object sender, EventArgs e)
@@ -720,7 +711,7 @@ namespace BizHawk.MultiClient
 			if (row >= 0 && row <= maxRow && column >= 0 && column < (16 / Global.Config.HexEditorDataSize))
 			{
 				addressOver = row * 16 + (column * Global.Config.HexEditorDataSize);
-				info = String.Format("{0:X" + GetNumDigits(Domain.Size).ToString() + "}", addressOver);
+				info = String.Format(NumDigitsStr, addressOver);
 			}
 			else
 			{
