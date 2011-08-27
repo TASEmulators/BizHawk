@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		string game_name; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
-
+		public bool SoundOn = true;
 		bool _irq_apu, _irq_cart;
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
 		public bool irq_cart { get { return _irq_cart; } set { _irq_cart = value; sync_irq(); } }
@@ -113,7 +113,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cpu_cycles -= todo;
 				cpu_accumulate -= 48*todo;
 				cpu.Execute(todo);
-				apu.Run(todo);
+				if (SoundOn)
+					apu.Run(todo);
 				ppu.PostCpuInstruction(todo);
 			}
 		}
