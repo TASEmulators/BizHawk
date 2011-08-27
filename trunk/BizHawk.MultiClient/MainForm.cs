@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 		DateTime runloop_second;
 		bool runloop_last_ff;
 
-		Throttle throttle = new Throttle();
+		Throttle throttle;
 		bool unthrottled = false;
 
 		//For handling automatic pausing when entering the menu
@@ -74,6 +74,9 @@ namespace BizHawk.MultiClient
 				LogConsole.ShowConsole();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
+			
+			throttle = new Throttle();
+
 			DiscSystem.FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
 
 			Global.CheatList = new CheatList();

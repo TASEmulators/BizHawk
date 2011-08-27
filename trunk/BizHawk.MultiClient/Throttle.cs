@@ -144,6 +144,7 @@ namespace BizHawk.MultiClient
 				tmethod = 1;
 			else
 				afsfreq = 1000;
+			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
 			tfreq = afsfreq << 16;
 		}
 
