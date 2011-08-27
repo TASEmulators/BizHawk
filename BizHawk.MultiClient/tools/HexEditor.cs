@@ -77,6 +77,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			SetMemoryDomainMenu();
+			SetDataSize(Global.Config.HexEditorDataSize);
 			UpdateValues();
 		}
 
@@ -156,7 +157,6 @@ namespace BizHawk.MultiClient
 
 		private int MakeWordBig(int addr)
 		{
-			System.Diagnostics.Debugger.Break();
 			return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
 		}
 
