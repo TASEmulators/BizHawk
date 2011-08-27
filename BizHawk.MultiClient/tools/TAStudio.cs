@@ -46,8 +46,8 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			TASView.BlazingFast = true;
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			TASView.BlazingFast = true;
 			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE)
 				TASView.ItemCount = 0;
 			else
