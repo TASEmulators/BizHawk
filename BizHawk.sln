@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation", "BizHawk.Emulation\BizHawk.Emulation.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Util", "BizHawk.Util\BizHawk.Util.csproj", "{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}"
@@ -12,12 +12,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.MultiClient", "BizH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "DiscoHawk\DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PsxHawk.Core", "PsxHawk.Core\PsxHawk.Core.vcproj", "{7B67D95B-29E0-4F9D-9767-42C35CEC3F25}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1CE74E20-B345-4126-AACB-A21FA23149DE} = {1CE74E20-B345-4126-AACB-A21FA23149DE}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PsxHawk.Core", "PsxHawk.Core\PsxHawk.Core.vcxproj", "{7B67D95B-29E0-4F9D-9767-42C35CEC3F25}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BizHawk.UnmanagedCore", "BizHawk.UnmanagedCore\BizHawk.UnmanagedCore.vcproj", "{1CE74E20-B345-4126-AACB-A21FA23149DE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BizHawk.UnmanagedCore", "BizHawk.UnmanagedCore\BizHawk.UnmanagedCore.vcxproj", "{1CE74E20-B345-4126-AACB-A21FA23149DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
