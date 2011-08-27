@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			PatternView.pattern.UnlockBits(bmpdata);
-			//PatternView.Refresh();
+			PatternView.Refresh();
 			/*
 			int SpriteNum, TileNum, Attr, MemAddr;
 
