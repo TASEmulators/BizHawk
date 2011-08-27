@@ -262,7 +262,7 @@
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 40);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuActivate += new System.EventHandler(this.menuStrip1_MenuActivate);
@@ -1537,13 +1537,13 @@
             this.gameGenieCodesToolStripMenuItem,
             this.toolStripSeparator17,
             this.graphicsSettingsToolStripMenuItem});
-			this.NESToolStripMenuItem.Enabled = false;
 			this.NESToolStripMenuItem.Name = "NESToolStripMenuItem";
 			this.NESToolStripMenuItem.Size = new System.Drawing.Size(38, 17);
 			this.NESToolStripMenuItem.Text = "&NES";
 			// 
 			// debuggerToolStripMenuItem
 			// 
+			this.debuggerToolStripMenuItem.Enabled = false;
 			this.debuggerToolStripMenuItem.Name = "debuggerToolStripMenuItem";
 			this.debuggerToolStripMenuItem.Size = new System.Drawing.Size(228, 22);
 			this.debuggerToolStripMenuItem.Text = "&Debugger";
