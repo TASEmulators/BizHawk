@@ -129,6 +129,9 @@ namespace BizHawk.MultiClient
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		static extern uint timeBeginPeriod(uint uMilliseconds);
 
+		[DllImport("kernel32.dll")]
+		static extern bool SwitchToThread();
+
 		static int tmethod;
 		static ulong afsfreq;
 		static ulong tfreq;
@@ -319,9 +322,8 @@ namespace BizHawk.MultiClient
 				}
 				else if (sleepy > 0) // spin for <1 millisecond waits
 				{
-					Thread.Sleep(0);
+					SwitchToThread(); // limit to other threads on the same CPU core for other short waits
 				}
-				//SwitchToThread(); // limit to other threads on the same CPU core for other short waits
 				goto waiter;
 			}
 			if ((ttime - ltime) >= (tfreq * 4 / desiredfps))
