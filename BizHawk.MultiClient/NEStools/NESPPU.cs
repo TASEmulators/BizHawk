@@ -70,10 +70,13 @@ namespace BizHawk.MultiClient
 			//Pattern Viewer
 			for (int x = 0; x < 16; x++)
 			{
+				PaletteView.bgPalettesPrev[x] = new PaletteViewer.Palette(PaletteView.bgPalettes[x]);
+				PaletteView.spritePalettesPrev[x] = new PaletteViewer.Palette(PaletteView.spritePalettes[x]);
 				PaletteView.bgPalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
 				PaletteView.spritePalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]));
 			}
-			PaletteView.Refresh();
+			if (PaletteView.HasChanged())
+				PaletteView.Refresh();
 
 			//Pattern Viewer
 			int b0 = 0;
@@ -116,7 +119,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			PatternView.pattern.UnlockBits(bmpdata);
-			PatternView.Refresh();
+			//PatternView.Refresh();
 			/*
 			int SpriteNum, TileNum, Attr, MemAddr;
 
