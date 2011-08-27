@@ -43,10 +43,10 @@
 			this.FreezeAddressToolStrip = new System.Windows.Forms.ToolStripButton();
 			this.TotalSearchLabel = new System.Windows.Forms.Label();
 			this.SearchListView = new BizHawk.VirtualListView();
-			this.Address = new System.Windows.Forms.ColumnHeader();
-			this.Value = new System.Windows.Forms.ColumnHeader();
-			this.Previous = new System.Windows.Forms.ColumnHeader();
-			this.Changes = new System.Windows.Forms.ColumnHeader();
+			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Previous = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Changes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.startNewSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -297,20 +297,19 @@
 			this.SearchListView.UseCompatibleStateImageBehavior = false;
 			this.SearchListView.View = System.Windows.Forms.View.Details;
 			this.SearchListView.VirtualMode = true;
-			this.SearchListView.Enter += new System.EventHandler(this.SearchListView_Enter);
-			this.SearchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.SearchListView_ColumnClick);
-			this.SearchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SearchListView_MouseDoubleClick);
 			this.SearchListView.QueryItemBkColor += new BizHawk.QueryItemBkColorHandler(this.SearchListView_QueryItemBkColor);
-			this.SearchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.SearchListView_ColumnReordered);
-			this.SearchListView.QueryItemIndent += new BizHawk.QueryItemIndentHandler(this.SearchListView_QueryItemIndent);
-			this.SearchListView.QueryItemImage += new BizHawk.QueryItemImageHandler(this.SearchListView_QueryItemImage);
 			this.SearchListView.QueryItemText += new BizHawk.QueryItemTextHandler(this.SearchListView_QueryItemText);
+			
+			this.SearchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.SearchListView_ColumnClick);
+			this.SearchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.SearchListView_ColumnReordered);
+			this.SearchListView.Enter += new System.EventHandler(this.SearchListView_Enter);
 			this.SearchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchListView_KeyUp);
+			this.SearchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SearchListView_MouseDoubleClick);
 			// 
 			// Address
 			// 
 			this.Address.Text = "Address";
-			this.Address.Width = 66;
+			this.Address.Width = 65;
 			// 
 			// Value
 			// 
@@ -969,8 +968,8 @@
 			this.NumberOfChangesBox.Size = new System.Drawing.Size(65, 20);
 			this.NumberOfChangesBox.TabIndex = 28;
 			this.NumberOfChangesBox.TextChanged += new System.EventHandler(this.NumberOfChangesBox_TextChanged);
-			this.NumberOfChangesBox.Leave += new System.EventHandler(this.NumberOfChangesBox_Leave);
 			this.NumberOfChangesBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumberOfChangesBox_KeyPress);
+			this.NumberOfChangesBox.Leave += new System.EventHandler(this.NumberOfChangesBox_Leave);
 			// 
 			// SpecificAddressBox
 			// 
@@ -982,8 +981,8 @@
 			this.SpecificAddressBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificAddressBox.TabIndex = 26;
 			this.SpecificAddressBox.TextChanged += new System.EventHandler(this.SpecificAddressBox_TextChanged);
-			this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
 			this.SpecificAddressBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificAddressBox_KeyPress);
+			this.SpecificAddressBox.Leave += new System.EventHandler(this.SpecificAddressBox_Leave);
 			// 
 			// SpecificValueBox
 			// 
@@ -994,8 +993,8 @@
 			this.SpecificValueBox.Size = new System.Drawing.Size(65, 20);
 			this.SpecificValueBox.TabIndex = 24;
 			this.SpecificValueBox.TextChanged += new System.EventHandler(this.SpecificValueBox_TextChanged);
-			this.SpecificValueBox.Leave += new System.EventHandler(this.SpecificValueBox_Leave);
 			this.SpecificValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificValueBox_KeyPress);
+			this.SpecificValueBox.Leave += new System.EventHandler(this.SpecificValueBox_Leave);
 			// 
 			// NumberOfChangesRadio
 			// 
@@ -1070,8 +1069,8 @@
 			this.DifferentByBox.Size = new System.Drawing.Size(50, 20);
 			this.DifferentByBox.TabIndex = 34;
 			this.DifferentByBox.TextChanged += new System.EventHandler(this.DifferentByBox_TextChanged);
-			this.DifferentByBox.Leave += new System.EventHandler(this.DifferentByBox_Leave);
 			this.DifferentByBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DifferentByBox_KeyPress);
+			this.DifferentByBox.Leave += new System.EventHandler(this.DifferentByBox_Leave);
 			// 
 			// DifferentByRadio
 			// 
@@ -1207,8 +1206,8 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "RamSearch";
 			this.Text = "Ram Search";
-			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.Activated += new System.EventHandler(this.RamSearch_Activated);
+			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamSearch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamSearch_DragEnter);
 			this.SearchtoolStrip1.ResumeLayout(false);
