@@ -1,0 +1,18 @@
+#Having problems? Read this before asking.  Or expect to be pointed to this when you ask.
+
+= Introduction =
+
+Add your content here.
+
+
+* _Can not see Display information such as Display FPS / Frame Counter etc._
+
+This shows that you do not have directx installed on your computer and BizHawk is defaulting to GDI.  Not only do you not have these displays but Bizhawk's performance is suffering.  Run dwwebsetup.exe that came with your BizHawk download.
+
+* _I am getting this error: "To run this application, you first must install one of the following versions of the .NET framework: v4.0.30319"_
+
+You computer did not have .NET Framework 4 installed on it and BizHawk requires this framework.  You can get that [http://www.microsoft.com/download/en/details.aspx?id=17851 here]
+
+* _"Games are running way too fast even with Config -> Speed/Skip -> Limit Framerate On"_
+
+Your computer hardware may not be accurately reporting time.  See [http://support.microsoft.com/kb/895980 this article] to see if this is your issue.  Adding /usepmtimer to your boot.ini may fix this.  Refer [http://msdn.microsoft.com/en-us/library/ms940839%28v=winembedded.5%29.aspx this] on how to add multiple boot configs (do this temporarily in case this line causes a boot failure)
