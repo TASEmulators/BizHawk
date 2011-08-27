@@ -155,10 +155,13 @@ namespace BizHawk.MultiClient
 
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (watchList[index].type == atype.SEPARATOR)
-				color = this.BackColor;
-			if (Global.CheatList.IsActiveCheat(Domain, watchList[index].address))
-				color = Color.LightCyan;
+			if (column == 0)
+			{
+				if (watchList[index].type == atype.SEPARATOR)
+					color = this.BackColor;
+				if (Global.CheatList.IsActiveCheat(Domain, watchList[index].address))
+					color = Color.LightCyan;
+			}
 		}
 
 		void WatchListView_QueryItemText(int index, int column, out string text)

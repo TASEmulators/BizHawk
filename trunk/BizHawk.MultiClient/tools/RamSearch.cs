@@ -64,6 +64,9 @@ namespace BizHawk.MultiClient
 
 		public RamSearch()
 		{
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 		}
@@ -544,18 +547,21 @@ namespace BizHawk.MultiClient
 
 		private void SearchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (IsAWeededList)
+			if (column == 0)
 			{
-				if (!weededList.Contains(searchList[index]))
+				if (IsAWeededList)
 				{
-					color = Color.Pink;
-					if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
-						color = Color.Purple;
+					if (!weededList.Contains(searchList[index]))
+					{
+						color = Color.Pink;
+						if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+							color = Color.Purple;
+					}
+					else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
+						color = Color.LightCyan;
+					else
+						color = Color.White;
 				}
-				else if (Global.CheatList.IsActiveCheat(Domain, searchList[index].address))
-					color = Color.LightCyan;
-				else
-					color = Color.White;
 			}
 		}
 
@@ -686,7 +692,7 @@ namespace BizHawk.MultiClient
 			{
 				if (GenerateWeedOutList())
 				{
-					OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
+					//OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
 				}
 			}
 		}
