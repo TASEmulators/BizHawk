@@ -147,6 +147,7 @@ namespace BizHawk.MultiClient
 
 		public unsafe void UpdateValues()
 		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is NES)) return;
 			NES.PPU ppu = (Global.Emulator as NES).ppu;
 			ppu.PPUViewCallback = Callback;
