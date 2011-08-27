@@ -34,6 +34,7 @@ namespace BizHawk.MultiClient
 		string currentWatchFile = "";
 		bool changes = false;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
+		string addressFormatStr = "{0:X4}  ";
 
 		string sortedCol;
 		bool sortReverse;
@@ -168,7 +169,7 @@ namespace BizHawk.MultiClient
 				if (watchList[index].type == atype.SEPARATOR)
 					text = "";
 				else
-					text = String.Format("{0:X" + GetNumDigits((Domain.Size - 1)).ToString() + "}", watchList[index].address);
+					text = watchList[index].address.ToString(addressFormatStr);
 			}
 			if (column == 1) //Value
 			{
@@ -1321,6 +1322,7 @@ namespace BizHawk.MultiClient
 			{
 				Domain = Global.Emulator.MemoryDomains[pos];
 			}
+			addressFormatStr = "X" + GetNumDigits(Domain.Size - 1).ToString();
 			SetPlatformAndMemoryDomainLabel();
 			Update();
 		}
