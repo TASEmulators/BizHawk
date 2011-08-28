@@ -179,6 +179,11 @@ namespace BizHawk.DiscSystem
 						if (lba <= 0 && index.num == 0 && track.num == 1)
 						{
 						}
+						//dont emit index 0 when it is the same as index 1, it is illegal for some reason
+						else if (index.num == 0 && index.aba == track.Indexes[1].aba)
+						{
+							//dont emit index 0 when it is the same as index 1, it confuses some cue parsers
+						}
 						else
 						{
 							sb.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Timestamp(lba).Value);
