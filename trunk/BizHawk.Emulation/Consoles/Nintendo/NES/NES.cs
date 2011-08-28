@@ -296,6 +296,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				addr => ppu.ppubus_peek(addr), (addr, value) => ppu.ppubus_write(addr, value));
 			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, Endian.Little,
 				addr => CIRAM[addr & 0x07FF], (addr, value) => CIRAM[addr & 0x07FF] = value);
+			var OAMdoman = new MemoryDomain("OAM", 64 * 4, Endian.Unknown,
+				addr => ppu.OAM[addr & (64 * 4 - 1)], (addr, value) => ppu.OAM[addr & (64 * 4 - 1)] = value);
 
 			//demo a game genie code
 			GetWatch(NESWatch.EDomain.Sysbus, 0xB424).SetGameGenie(-1, 0x10);
@@ -305,6 +307,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			domains.Add(SystemBus);
 			domains.Add(PPUBus);
 			domains.Add(CIRAMdomain);
+			domains.Add(OAMdoman);
 
 			if (board.SaveRam != null)
 			{
