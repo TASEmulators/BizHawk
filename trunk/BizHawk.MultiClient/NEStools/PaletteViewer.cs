@@ -59,9 +59,10 @@ namespace BizHawk.MultiClient
 		{
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
-			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			this.Size = new Size(128, 32);
-			this.BackColor = Color.White;
+			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaletteViewer_Paint);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PaletteViewer_KeyDown);
 

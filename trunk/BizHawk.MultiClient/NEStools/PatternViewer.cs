@@ -22,8 +22,9 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			this.Size = pSize;
-			this.BackColor = Color.White;
+			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PatternViewer_Paint);
 		}
 

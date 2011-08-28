@@ -120,32 +120,43 @@ namespace BizHawk.MultiClient
 			}
 			PatternView.pattern.UnlockBits(bmpdata);
 			PatternView.Refresh();
-			/*
-			int SpriteNum, TileNum, Attr, MemAddr;
+
+
+			System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
+			int Addr, SpriteNum, TileNum, PatAddr, Attr;
 
 			//Sprite Viewer
-			for (int y = 0; y < 4; y++)
+			for (int n = 0; n < 4; n++)
 			{
-				for (int x = 0; x < 16; x++)
+				for (int r = 0; r < 16; r++)
 				{
-					SpriteNum = (y << 4) | x;
-					TileNum = 0; //TODO
+					Addr = 0x23C1 + (n * 0x400) + (r + 4); //TODO: NEEDZ ADDRESS!
+					SpriteNum = (n << 4) | r;
+					TileNum = Nes.ppu.ppubus_read(Addr, true);
+					PatAddr = (TileNum * 0x10) + (n > 1 ? 0x1000 : 0);
 					Attr = 0; //TODO
-					if (((int)Nes.ppu.reg_2000.Value & (int)0x20) > 0) //TODO why is C# being retarded about using & with a byte?
-					{
-						MemAddr = ((TileNum & 0xFE) << 4) | ((TileNum & 0x01) << 12);
-						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16, MemAddr, 4 | (Attr & 3), D_SPR_W);
-						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16 + 8 * D_SPR_W, MemAddr + 16, 4 | (Attr & 3), D_SPR_W);
 
-					}
-					else
+					//TODO: 8x16 viewing
+					for (int x = 0; x < 8; x++)
 					{
-						MemAddr = (TileNum << 4) | ((Nes.ppu.reg_2000.Value & (byte)0x08) << 9);
-						//DrawTile(SprArray + y * 24 * D_SPR_W + x * 16, MemAddr, 4 | (Attr & 3), D_SPR_W);
+						for (int y = 0; y < 8; y++)
+						{
+							b0 = GetBit(PatAddr + y + 0 * 8, x);
+							b1 = GetBit(PatAddr + y + 1 * 8, x);
+							value = (byte)(b0 + (b1 << 1));
+							cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
+							Color color = Color.FromArgb(cvalue);
+
+							int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+							framebuf2[adr] = color.ToArgb();
+						}
 					}
+
 				}
 			}
-			 * */
+			SpriteView.sprites.UnlockBits(bmpdata2);
+			SpriteView.Refresh();
 		}
 
 		public unsafe void UpdateValues()
@@ -392,6 +403,28 @@ namespace BizHawk.MultiClient
 			if (Nes == null) return;
 			if (Nes.ppu.PPUViewCallback == Callback)
 				Nes.ppu.PPUViewCallback = null;
+		}
+
+		private void SpriteView_MouseEnter(object sender, EventArgs e)
+		{
+
+		}
+
+		private void SpriteView_MouseLeave(object sender, EventArgs e)
+		{
+			ClearDetails();
+		}
+
+		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
+		{
+			int SpriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
+			int X = 0;
+			int Y = 0;
+
+			SectionLabel.Text = "Section Sprite";
+			AddressLabel.Text = "Number: " + String.Format("{0:X2}", SpriteNumber);
+			ValueLabel.Text = "X: " + String.Format("{0:X2}", X);
+			Value2Label.Text = "Y: " + String.Format("{0:X2}", Y);
 		}
 	}
 }

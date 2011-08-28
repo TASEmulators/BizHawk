@@ -15,13 +15,14 @@ namespace BizHawk.MultiClient
 
 		public SpriteViewer()
 		{
-			pSize = new Size(256, 128);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			pSize = new Size(256, 96);
 			sprites = new Bitmap(pSize.Width, pSize.Height);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
 			this.Size = pSize;
-			this.BackColor = Color.White;
+			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.SpriteViewer_Paint);
 		}
 
