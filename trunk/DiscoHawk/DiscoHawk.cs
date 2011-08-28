@@ -118,7 +118,6 @@ namespace BizHawk
 			//prefs.AnnotateCue = false;
 			//prefs.OneBlobPerTrack = false;
 			//prefs.ReallyDumpBin = true;
-			//prefs.OmitRedundantIndex0 = true;
 			//prefs.SingleSession = true;
 			////var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked_hawked", prefs);
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);

@@ -103,7 +103,6 @@ namespace BizHawk
 			prefs.AnnotateCue = checkCueProp_Annotations.Checked;
 			prefs.OneBlobPerTrack = checkCueProp_OneBlobPerTrack.Checked;
 			prefs.ReallyDumpBin = false;
-			//prefs.OmitRedundantIndex0 = checkCueProp_OmitRedundantIndex0.Checked;
 			prefs.SingleSession = true;
 			return prefs;
 		}
@@ -115,7 +114,6 @@ namespace BizHawk
 		void PresetCanonical()
 		{
 			checkCueProp_Annotations.Checked = false;
-			//checkCueProp_OmitRedundantIndex0.Checked = false;
 			checkCueProp_OneBlobPerTrack.Checked = false;
 		}
 
@@ -126,7 +124,6 @@ namespace BizHawk
 		void PresetDaemonTools()
 		{
 			checkCueProp_Annotations.Checked = false;
-			//checkCueProp_OmitRedundantIndex0.Checked = true;
 		}
 
 		private void checkCueProp_CheckedChanged(object sender, EventArgs e)

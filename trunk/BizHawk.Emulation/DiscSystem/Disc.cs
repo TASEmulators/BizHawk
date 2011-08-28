@@ -404,15 +404,15 @@ namespace BizHawk.DiscSystem
 					foreach (var index in track.Indexes)
 					{
 						int x = index.aba - track.Indexes[0].aba;
-						//if (prefs.OmitRedundantIndex0 && index.num == 0 && index.aba == track.Indexes[1].aba)
-						//{
-						//    //dont emit index 0 when it is the same as index 1, it confuses some cue parsers
-						//}
+						if (index.num == 0 && index.aba == track.Indexes[1].aba)
+						{
+						    //dont emit index 0 when it is the same as index 1, it is illegal for some reason
+						}
 						//else if (i==0 && index.num == 0)
 						//{
 						//    //don't generate the first index, it is illogical
 						//}
-						//else
+						else
 						{
 							//track 1 included the lead-in at the beginning of it. sneak past that.
 							//if (i == 0) x -= 150;
@@ -660,12 +660,6 @@ namespace BizHawk.DiscSystem
 		public bool SingleSession;
 
 		//THIS IS WRONG-HEADED. track 1 index 0 must never equal index 1! apparently.
-
-		///// <summary>
-		///// some cue parsers can't handle redundant Index 0 (equal to Index 1). Such as daemon tools. So, hide those indices.
-		///// Our canonical format craves explicitness so this is defaulted off.
-		///// </summary>
-		//public bool OmitRedundantIndex0 = false;
 
 		/// <summary>
 		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
