@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte PPUGenLatch;
 			bool vtoggle;
 			byte VRAMBuffer;
-			byte[] OAM;
+			public byte[] OAM;
 			public byte[] PALRAM;
 
 			public void SyncState(Serializer ser)
