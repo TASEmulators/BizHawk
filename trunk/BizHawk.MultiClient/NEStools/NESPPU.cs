@@ -40,6 +40,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.NESPPUWndx = this.Location.X;
 			Global.Config.NESPPUWndy = this.Location.Y;
+			Global.Config.NESPPURefreshRate = RefreshRate.Value;
 		}
 
 		public void Restart()
@@ -68,6 +69,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
+			
 			//Pattern Viewer
 			for (int x = 0; x < 16; x++)
 			{
@@ -79,85 +81,88 @@ namespace BizHawk.MultiClient
 			if (PaletteView.HasChanged())
 				PaletteView.Refresh();
 
-			//Pattern Viewer
-			int b0 = 0;
-			int b1 = 0;
-			byte value;
-			int cvalue;
-			int pal;
 
-			System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			int* framebuf = (int*)bmpdata.Scan0.ToPointer();
-			for (int z = 0; z < 2; z++)
+			if (Global.Emulator.Frame % RefreshRate.Value == 0)
 			{
-				if (z == 0)
-					pal = PatternView.Pal0;
-				else
-					pal = PatternView.Pal1;
+				//Pattern Viewer
+				int b0 = 0;
+				int b1 = 0;
+				byte value;
+				int cvalue;
+				int pal;
 
-				for (int i = 0; i < 16; i++)
+				System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				int* framebuf = (int*)bmpdata.Scan0.ToPointer();
+				for (int z = 0; z < 2; z++)
 				{
-					for (int j = 0; j < 16; j++)
+					if (z == 0)
+						pal = PatternView.Pal0;
+					else
+						pal = PatternView.Pal1;
+
+					for (int i = 0; i < 16; i++)
 					{
-						for (int x = 0; x < 8; x++)
+						for (int j = 0; j < 16; j++)
 						{
-							for (int y = 0; y < 8; y++)
+							for (int x = 0; x < 8; x++)
 							{
-								b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
-								b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+								for (int y = 0; y < 8; y++)
+								{
+									b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
+									b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
 
-								value = (byte)(b0 + (b1 << 1));
+									value = (byte)(b0 + (b1 << 1));
 
-								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
+									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
 
-								Color color = Color.FromArgb(cvalue);
+									Color color = Color.FromArgb(cvalue);
 
-								int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-								framebuf[adr + (z * 128)] = color.ToArgb();
+									int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
+									framebuf[adr + (z * 128)] = color.ToArgb();
+								}
 							}
 						}
 					}
 				}
-			}
-			PatternView.pattern.UnlockBits(bmpdata);
-			PatternView.Refresh();
+				PatternView.pattern.UnlockBits(bmpdata);
+				PatternView.Refresh();
 
+				System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
+				int Addr, SpriteNum, TileNum, PatAddr, Attr;
 
-			System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
-			int Addr, SpriteNum, TileNum, PatAddr, Attr;
-
-			//Sprite Viewer
-			for (int n = 0; n < 4; n++)
-			{
-				for (int r = 0; r < 16; r++)
+				//Sprite Viewer
+				for (int n = 0; n < 4; n++)
 				{
-					Addr = 0x23C1 + (n * 0x400) + (r + 4); //TODO: NEEDZ ADDRESS!
-					SpriteNum = (n << 4) | r;
-					TileNum = Nes.ppu.ppubus_read(Addr, true);
-					PatAddr = (TileNum * 0x10) + (n > 1 ? 0x1000 : 0);
-					Attr = 0; //TODO
-
-					//TODO: 8x16 viewing
-					for (int x = 0; x < 8; x++)
+					for (int r = 0; r < 16; r++)
 					{
-						for (int y = 0; y < 8; y++)
+						Addr = 0x23C1 + (n * 0x400) + (r + 4); //TODO: NEEDZ ADDRESS!
+						SpriteNum = (n << 4) | r;
+						TileNum = Nes.ppu.ppubus_read(Addr, true);
+						PatAddr = (TileNum * 0x10) + (n > 1 ? 0x1000 : 0);
+						Attr = 0; //TODO
+
+						//TODO: 8x16 viewing
+						for (int x = 0; x < 8; x++)
 						{
-							b0 = GetBit(PatAddr + y + 0 * 8, x);
-							b1 = GetBit(PatAddr + y + 1 * 8, x);
-							value = (byte)(b0 + (b1 << 1));
-							cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
-							Color color = Color.FromArgb(cvalue);
+							for (int y = 0; y < 8; y++)
+							{
+								b0 = GetBit(PatAddr + y + 0 * 8, x);
+								b1 = GetBit(PatAddr + y + 1 * 8, x);
+								value = (byte)(b0 + (b1 << 1));
+								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
+								Color color = Color.FromArgb(cvalue);
 
-							int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
-							framebuf2[adr] = color.ToArgb();
+								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+								framebuf2[adr] = color.ToArgb();
+							}
 						}
-					}
 
+					}
 				}
+				SpriteView.sprites.UnlockBits(bmpdata2);
+				SpriteView.Refresh();
 			}
-			SpriteView.sprites.UnlockBits(bmpdata2);
-			SpriteView.Refresh();
 		}
 
 		public unsafe void UpdateValues()
@@ -172,6 +177,7 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			Nes = Global.Emulator as NES;
 			ClearDetails();
+			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 		}
 
 		private void ClearDetails()
