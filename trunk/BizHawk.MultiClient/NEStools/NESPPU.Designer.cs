@@ -37,7 +37,6 @@
 			this.Value2Label = new System.Windows.Forms.Label();
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
-			this.SectionLabel = new System.Windows.Forms.Label();
 			this.toolStrip1 = new ToolStripEx();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,15 +63,18 @@
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.Value3Label = new System.Windows.Forms.Label();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
+			this.ZoomBox = new System.Windows.Forms.PictureBox();
 			this.PatternGroup.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SpriteViewerBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// PatternGroup
@@ -80,7 +82,7 @@
 			this.PatternGroup.Controls.Add(this.Table1PaletteLabel);
 			this.PatternGroup.Controls.Add(this.Table0PaletteLabel);
 			this.PatternGroup.Controls.Add(this.PatternView);
-			this.PatternGroup.Location = new System.Drawing.Point(12, 37);
+			this.PatternGroup.Location = new System.Drawing.Point(293, 37);
 			this.PatternGroup.Name = "PatternGroup";
 			this.PatternGroup.Size = new System.Drawing.Size(272, 169);
 			this.PatternGroup.TabIndex = 0;
@@ -108,7 +110,7 @@
 			// PalettesGroup
 			// 
 			this.PalettesGroup.Controls.Add(this.PaletteView);
-			this.PalettesGroup.Location = new System.Drawing.Point(12, 225);
+			this.PalettesGroup.Location = new System.Drawing.Point(12, 271);
 			this.PalettesGroup.Name = "PalettesGroup";
 			this.PalettesGroup.Size = new System.Drawing.Size(272, 65);
 			this.PalettesGroup.TabIndex = 1;
@@ -117,13 +119,14 @@
 			// 
 			// DetailsBox
 			// 
+			this.DetailsBox.Controls.Add(this.ZoomBox);
+			this.DetailsBox.Controls.Add(this.Value3Label);
 			this.DetailsBox.Controls.Add(this.Value2Label);
 			this.DetailsBox.Controls.Add(this.ValueLabel);
 			this.DetailsBox.Controls.Add(this.AddressLabel);
-			this.DetailsBox.Controls.Add(this.SectionLabel);
-			this.DetailsBox.Location = new System.Drawing.Point(299, 200);
+			this.DetailsBox.Location = new System.Drawing.Point(12, 95);
 			this.DetailsBox.Name = "DetailsBox";
-			this.DetailsBox.Size = new System.Drawing.Size(177, 90);
+			this.DetailsBox.Size = new System.Drawing.Size(272, 170);
 			this.DetailsBox.TabIndex = 2;
 			this.DetailsBox.TabStop = false;
 			this.DetailsBox.Text = "Details";
@@ -131,38 +134,29 @@
 			// Value2Label
 			// 
 			this.Value2Label.AutoSize = true;
-			this.Value2Label.Location = new System.Drawing.Point(6, 72);
+			this.Value2Label.Location = new System.Drawing.Point(8, 84);
 			this.Value2Label.Name = "Value2Label";
-			this.Value2Label.Size = new System.Drawing.Size(35, 13);
+			this.Value2Label.Size = new System.Drawing.Size(43, 13);
 			this.Value2Label.TabIndex = 3;
-			this.Value2Label.Text = "label1";
+			this.Value2Label.Text = "Value 2";
 			// 
 			// ValueLabel
 			// 
 			this.ValueLabel.AutoSize = true;
-			this.ValueLabel.Location = new System.Drawing.Point(6, 53);
+			this.ValueLabel.Location = new System.Drawing.Point(8, 56);
 			this.ValueLabel.Name = "ValueLabel";
-			this.ValueLabel.Size = new System.Drawing.Size(35, 13);
+			this.ValueLabel.Size = new System.Drawing.Size(43, 13);
 			this.ValueLabel.TabIndex = 2;
-			this.ValueLabel.Text = "label1";
+			this.ValueLabel.Text = "Value 1";
 			// 
 			// AddressLabel
 			// 
 			this.AddressLabel.AutoSize = true;
-			this.AddressLabel.Location = new System.Drawing.Point(6, 35);
+			this.AddressLabel.Location = new System.Drawing.Point(8, 28);
 			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Size = new System.Drawing.Size(35, 13);
+			this.AddressLabel.Size = new System.Drawing.Size(45, 13);
 			this.AddressLabel.TabIndex = 1;
-			this.AddressLabel.Text = "label1";
-			// 
-			// SectionLabel
-			// 
-			this.SectionLabel.AutoSize = true;
-			this.SectionLabel.Location = new System.Drawing.Point(6, 18);
-			this.SectionLabel.Name = "SectionLabel";
-			this.SectionLabel.Size = new System.Drawing.Size(35, 13);
-			this.SectionLabel.TabIndex = 0;
-			this.SectionLabel.Text = "label1";
+			this.AddressLabel.Text = "Address";
 			// 
 			// toolStrip1
 			// 
@@ -172,7 +166,7 @@
             this.toolStripDropDownButton2});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(587, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(574, 25);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -361,7 +355,7 @@
 			// SpriteViewerBox
 			// 
 			this.SpriteViewerBox.Controls.Add(this.SpriteView);
-			this.SpriteViewerBox.Location = new System.Drawing.Point(299, 37);
+			this.SpriteViewerBox.Location = new System.Drawing.Point(293, 212);
 			this.SpriteViewerBox.Name = "SpriteViewerBox";
 			this.SpriteViewerBox.Size = new System.Drawing.Size(272, 124);
 			this.SpriteViewerBox.TabIndex = 5;
@@ -380,12 +374,21 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.txtScanline);
-			this.groupBox1.Location = new System.Drawing.Point(482, 200);
+			this.groupBox1.Location = new System.Drawing.Point(12, 37);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(75, 52);
 			this.groupBox1.TabIndex = 8;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scanline";
+			// 
+			// Value3Label
+			// 
+			this.Value3Label.AutoSize = true;
+			this.Value3Label.Location = new System.Drawing.Point(8, 112);
+			this.Value3Label.Name = "Value3Label";
+			this.Value3Label.Size = new System.Drawing.Size(43, 13);
+			this.Value3Label.TabIndex = 5;
+			this.Value3Label.Text = "Value 3";
 			// 
 			// SpriteView
 			// 
@@ -421,11 +424,19 @@
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
 			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
+			// ZoomBox
+			// 
+			this.ZoomBox.Location = new System.Drawing.Point(196, 16);
+			this.ZoomBox.Name = "ZoomBox";
+			this.ZoomBox.Size = new System.Drawing.Size(64, 64);
+			this.ZoomBox.TabIndex = 6;
+			this.ZoomBox.TabStop = false;
+			// 
 			// NESPPU
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(587, 317);
+			this.ClientSize = new System.Drawing.Size(574, 348);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SpriteViewerBox);
 			this.Controls.Add(this.toolStrip1);
@@ -448,6 +459,7 @@
 			this.SpriteViewerBox.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -460,8 +472,7 @@
         private PaletteViewer PaletteView;
         private System.Windows.Forms.GroupBox DetailsBox;
         private System.Windows.Forms.Label ValueLabel;
-        private System.Windows.Forms.Label AddressLabel;
-        private System.Windows.Forms.Label SectionLabel;
+		private System.Windows.Forms.Label AddressLabel;
         private BizHawk.MultiClient.PatternViewer PatternView;
         private ToolStripEx toolStrip1;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
@@ -493,5 +504,7 @@
 		private SpriteViewer SpriteView;
 		private System.Windows.Forms.TextBox txtScanline;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label Value3Label;
+		private System.Windows.Forms.PictureBox ZoomBox;
     }
 }
