@@ -157,7 +157,7 @@
 			// Value5Label
 			// 
 			this.Value5Label.AutoSize = true;
-			this.Value5Label.Location = new System.Drawing.Point(176, 148);
+			this.Value5Label.Location = new System.Drawing.Point(144, 148);
 			this.Value5Label.Name = "Value5Label";
 			this.Value5Label.Size = new System.Drawing.Size(43, 13);
 			this.Value5Label.TabIndex = 9;
@@ -166,7 +166,7 @@
 			// Value4Label
 			// 
 			this.Value4Label.AutoSize = true;
-			this.Value4Label.Location = new System.Drawing.Point(176, 120);
+			this.Value4Label.Location = new System.Drawing.Point(144, 120);
 			this.Value4Label.Name = "Value4Label";
 			this.Value4Label.Size = new System.Drawing.Size(43, 13);
 			this.Value4Label.TabIndex = 8;
@@ -192,7 +192,7 @@
 			// Value3Label
 			// 
 			this.Value3Label.AutoSize = true;
-			this.Value3Label.Location = new System.Drawing.Point(176, 92);
+			this.Value3Label.Location = new System.Drawing.Point(144, 92);
 			this.Value3Label.Name = "Value3Label";
 			this.Value3Label.Size = new System.Drawing.Size(43, 13);
 			this.Value3Label.TabIndex = 5;

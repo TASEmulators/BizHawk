@@ -243,25 +243,27 @@ namespace BizHawk.MultiClient
 			int addr = column + baseAddr;
 			AddressLabel.Text = "Address: 0x" + String.Format("{0:X4}", addr, NumberStyles.HexNumber);
 			int val;
-			if (baseAddr == 0x3F00)
-				val = PaletteView.bgPalettes[column].GetValue();
-			else
-				val = PaletteView.spritePalettes[column].GetValue();
-			ValueLabel.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
-
-			if (baseAddr == 0x3F00)
-				Value2Label.Text = "ID: BG" + (column / 4).ToString();
-			else
-				Value2Label.Text = "ID: SPR" + (column / 4).ToString();
+			int offset = addr & 0x03;
 
 			Bitmap bmp = new Bitmap(64, 64);
 			Graphics g= Graphics.FromImage(bmp);
-			
+
 			if (baseAddr == 0x3F00)
+			{
+				val = Nes.ppu.PALRAM[PaletteView.bgPalettes[column].address];
+				ValueLabel.Text = "ID: BG" + (column / 4).ToString();
 				g.FillRectangle(new SolidBrush(PaletteView.bgPalettes[column].GetColor()), 0, 0, 64, 64);
+			}
 			else
+			{
+				val = Nes.ppu.PALRAM[PaletteView.spritePalettes[column].address];
+				ValueLabel.Text = "ID: SPR" + (column / 4).ToString();
 				g.FillRectangle(new SolidBrush(PaletteView.spritePalettes[column].GetColor()), 0, 0, 64, 64);
+			}
 			g.Dispose();
+
+			Value3Label.Text = "Color: 0x" + String.Format("{0:X2}", val, NumberStyles.HexNumber);
+			Value4Label.Text = "Offset: " + offset.ToString();
 			ZoomBox.Image = bmp;
 		}
 
@@ -337,10 +339,20 @@ namespace BizHawk.MultiClient
 
 			address += (e.Y / 8) * 256;
 			tile += (e.Y / 8) * 16;
+			string Usage = "Usage: ";
 
+			if ((Nes.ppu.reg_2000.Value & 0x10) << 4 == ((address >> 4) & 0x100))
+				Usage = "BG";
+			else if (((Nes.ppu.reg_2000.Value & 0x08) << 5) == ((address >> 4) & 0x100))
+				Usage = "SPR";
+
+			if ((Nes.ppu.reg_2000.Value & 0x20) > 0)
+				Usage += " (SPR16)";
+			
 			AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
 			ValueLabel.Text = "Table " + table.ToString();
-			Value2Label.Text = "Tile " + String.Format("{0:X2}", tile);
+			Value3Label.Text = "Tile " + String.Format("{0:X2}", tile);
+			Value4Label.Text = Usage;
 
 			ZoomBox.Image = Section(PatternView.pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
 		}
@@ -494,6 +506,8 @@ namespace BizHawk.MultiClient
 			int X = Nes.ppu.OAM[(SpriteNumber * 4) + 3];
 			int Y = Nes.ppu.OAM[SpriteNumber * 4];
 			int Color = Nes.ppu.OAM[(SpriteNumber * 4) + 2] & 0x03;
+			
+			
 			//String flags = ""; //TODO: BG
 
 			//TODO: 8/16 View
