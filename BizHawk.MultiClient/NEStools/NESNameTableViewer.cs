@@ -201,11 +201,11 @@ namespace BizHawk.MultiClient
 				TileX = e.X / 16;
 				TileY = e.Y / 16;
 			}
-
+			
 			XYLabel.Text = TileX.ToString() + " : " + TileY.ToString();
 			int PPUAddress = 0x2000 + (NameTable * 0x400) + ((TileY % 30) * 32) + (TileX % 32);
 			PPUAddressLabel.Text = String.Format("{0:X4}", PPUAddress);
-			int TileID = 0; //TODO
+			int TileID = Nes.ppu.ppubus_read(PPUAddress, true);
 			TileIDLabel.Text = String.Format("{0:X2}", TileID);
 		}
 
