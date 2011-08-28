@@ -131,7 +131,10 @@ namespace BizHawk.MultiClient
 
 				System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
-				int BaseAddr, TileNum, PatAddr, Attributes, Palette;
+				int BaseAddr, TileNum, Attributes, Palette;
+
+				int pt_add = Nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;
+				bool is8x16 = Nes.ppu.reg_2000.obj_size_16;
 
 				//Sprite Viewer
 				for (int n = 0; n < 4; n++)
@@ -140,7 +143,20 @@ namespace BizHawk.MultiClient
 					{
 						BaseAddr = (r << 2) +  (n << 6);
 						TileNum = Nes.ppu.OAM[BaseAddr + 1];
-						PatAddr = (TileNum * 0x10) + (n > 1 ? 0x1000 : 0);
+						int PatAddr = 0;
+
+						if (is8x16)
+						{
+							PatAddr = ((TileNum >> 1) * 0x20);
+							PatAddr += (0x1000 * (TileNum & 1));
+						}
+						else
+						{
+							PatAddr = TileNum * 0x10;
+							PatAddr += pt_add;
+						}
+
+
 						Attributes = Nes.ppu.OAM[BaseAddr + 2];
 						Palette = Attributes & 0x03;
 						//TODO: 8x16 viewing
@@ -151,11 +167,27 @@ namespace BizHawk.MultiClient
 								b0 = GetBit(PatAddr + y + 0 * 8, x);
 								b1 = GetBit(PatAddr + y + 1 * 8, x);
 								value = (byte)(b0 + (b1 << 1));
-								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (Palette << 2)]);
+								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
 								Color color = Color.FromArgb(cvalue);
 
 								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
 								framebuf2[adr] = color.ToArgb();
+							}
+							if (is8x16)
+							{
+								PatAddr += 0x10;
+								for (int y = 0; y < 8; y++)
+								{
+									b0 = GetBit(PatAddr + y + 0 * 8, x);
+									b1 = GetBit(PatAddr + y + 1 * 8, x);
+									value = (byte)(b0 + (b1 << 1));
+									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
+									Color color = Color.FromArgb(cvalue);
+
+									int adr = (x + (r * 8 * 2)) + ((y+8) + (n * 8 * 3)) * (bmpdata2.Stride / 4);
+									framebuf2[adr] = color.ToArgb();
+								}
+								PatAddr -= 0x10;
 							}
 						}
 					}
