@@ -63,10 +63,10 @@
 			this.Table1P7 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
 			this.txtScanline = new System.Windows.Forms.TextBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.PatternGroup.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
@@ -363,7 +363,7 @@
 			this.SpriteViewerBox.Controls.Add(this.SpriteView);
 			this.SpriteViewerBox.Location = new System.Drawing.Point(299, 37);
 			this.SpriteViewerBox.Name = "SpriteViewerBox";
-			this.SpriteViewerBox.Size = new System.Drawing.Size(272, 155);
+			this.SpriteViewerBox.Size = new System.Drawing.Size(272, 124);
 			this.SpriteViewerBox.TabIndex = 5;
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
@@ -377,17 +377,30 @@
 			this.txtScanline.Text = "0";
 			this.txtScanline.TextChanged += new System.EventHandler(this.txtScanline_TextChanged);
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.txtScanline);
+			this.groupBox1.Location = new System.Drawing.Point(482, 200);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(75, 52);
+			this.groupBox1.TabIndex = 8;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Scanline";
+			// 
 			// SpriteView
 			// 
-			this.SpriteView.BackColor = System.Drawing.Color.White;
+			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
 			this.SpriteView.Location = new System.Drawing.Point(6, 18);
 			this.SpriteView.Name = "SpriteView";
-			this.SpriteView.Size = new System.Drawing.Size(256, 128);
+			this.SpriteView.Size = new System.Drawing.Size(256, 96);
 			this.SpriteView.TabIndex = 0;
+			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
+			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
+			this.SpriteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseMove);
 			// 
 			// PaletteView
 			// 
-			this.PaletteView.BackColor = System.Drawing.Color.White;
+			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
 			this.PaletteView.Location = new System.Drawing.Point(6, 19);
 			this.PaletteView.Name = "PaletteView";
 			this.PaletteView.Size = new System.Drawing.Size(257, 34);
@@ -398,7 +411,7 @@
 			// 
 			// PatternView
 			// 
-			this.PatternView.BackColor = System.Drawing.Color.White;
+			this.PatternView.BackColor = System.Drawing.Color.Transparent;
 			this.PatternView.Location = new System.Drawing.Point(7, 20);
 			this.PatternView.Name = "PatternView";
 			this.PatternView.Size = new System.Drawing.Size(256, 128);
@@ -407,16 +420,6 @@
 			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
 			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.txtScanline);
-			this.groupBox1.Location = new System.Drawing.Point(482, 200);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(75, 52);
-			this.groupBox1.TabIndex = 8;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Scanline";
 			// 
 			// NESPPU
 			// 
@@ -430,6 +433,7 @@
 			this.Controls.Add(this.PalettesGroup);
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "NESPPU";
 			this.Text = "NES PPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESPPU_FormClosed);
