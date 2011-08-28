@@ -19,8 +19,10 @@ namespace BizHawk.MultiClient
 		//      Row interleaving
 		//      option for 2x view (and 4x?)
 		//      Mouse over - Usage (BG vs Sprite usage)
-		//Sprite viewer
-		//Nametable viewer
+
+		//Speedups
+		//Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
+		//Maybe 48 individual bitmaps for sprites is faster than the overhead of redrawing all that transparent space
 
 		Bitmap ZoomBoxDefaultImage = new Bitmap(64, 64);
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
@@ -129,19 +131,18 @@ namespace BizHawk.MultiClient
 
 				System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
-				int Addr, SpriteNum, TileNum, PatAddr, Attr;
+				int BaseAddr, TileNum, PatAddr, Attributes, Palette;
 
 				//Sprite Viewer
 				for (int n = 0; n < 4; n++)
 				{
 					for (int r = 0; r < 16; r++)
 					{
-						Addr = 0x23C1 + (n * 0x400) + (r + 4); //TODO: NEEDZ ADDRESS!
-						SpriteNum = (n << 4) | r;
-						TileNum = Nes.ppu.ppubus_read(Addr, true);
+						BaseAddr = (r << 2) +  (n << 6);
+						TileNum = Nes.ppu.OAM[BaseAddr + 1];
 						PatAddr = (TileNum * 0x10) + (n > 1 ? 0x1000 : 0);
-						Attr = 0; //TODO
-
+						Attributes = Nes.ppu.OAM[BaseAddr + 2];
+						Palette = Attributes & 0x03;
 						//TODO: 8x16 viewing
 						for (int x = 0; x < 8; x++)
 						{
@@ -150,14 +151,13 @@ namespace BizHawk.MultiClient
 								b0 = GetBit(PatAddr + y + 0 * 8, x);
 								b1 = GetBit(PatAddr + y + 1 * 8, x);
 								value = (byte)(b0 + (b1 << 1));
-								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (PatternView.Pal0 * 4)]);
+								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (Palette << 2)]);
 								Color color = Color.FromArgb(cvalue);
 
 								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
 								framebuf2[adr] = color.ToArgb();
 							}
 						}
-
 					}
 				}
 				SpriteView.sprites.UnlockBits(bmpdata2);
@@ -272,7 +272,6 @@ namespace BizHawk.MultiClient
 		{
 			Table0PaletteLabel.Text = "Palette: " + PatternView.Pal0;
 			Table1PaletteLabel.Text = "Palette: " + PatternView.Pal1;
-			PatternView.Refresh();
 		}
 
 		private void PatternView_MouseEnter(object sender, EventArgs e)
@@ -460,14 +459,19 @@ namespace BizHawk.MultiClient
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
 			int SpriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
-			int X = 0;
-			int Y = 0;
-			int Tile = 0;
+			int X = Nes.ppu.OAM[(SpriteNumber * 4) + 3];
+			int Y = Nes.ppu.OAM[SpriteNumber * 4];
+			int Color = Nes.ppu.OAM[(SpriteNumber * 4) + 2] & 0x03;
+			//String flags = ""; //TODO: BG
+
+			//TODO: 8/16 View
+			int Tile = Nes.ppu.OAM[SpriteNumber * 1]; ;
 
 			AddressLabel.Text = "Number: " + String.Format("{0:X2}", SpriteNumber);
 			ValueLabel.Text = "X: " + String.Format("{0:X2}", X);
 			Value2Label.Text = "Y: " + String.Format("{0:X2}", Y);
 			Value3Label.Text = "Tile: " + String.Format("{0:X2}", Tile);
+			Value4Label.Text = "Color: " + Color.ToString();
 
 			ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
 		}
