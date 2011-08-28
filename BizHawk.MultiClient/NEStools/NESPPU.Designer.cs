@@ -34,6 +34,12 @@
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.Value5Label = new System.Windows.Forms.Label();
+			this.Value4Label = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.ZoomBox = new System.Windows.Forms.PictureBox();
+			this.Value3Label = new System.Windows.Forms.Label();
 			this.Value2Label = new System.Windows.Forms.Label();
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
@@ -63,22 +69,22 @@
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.Value3Label = new System.Windows.Forms.Label();
-			this.ZoomBox = new System.Windows.Forms.PictureBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.RefreshRate = new System.Windows.Forms.TrackBar();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
-			this.label1 = new System.Windows.Forms.Label();
-			this.Value4Label = new System.Windows.Forms.Label();
-			this.Value5Label = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.PatternGroup.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).BeginInit();
 			this.toolStrip1.SuspendLayout();
 			this.SpriteViewerBox.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).BeginInit();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// PatternGroup
@@ -138,6 +144,59 @@
 			this.DetailsBox.TabIndex = 2;
 			this.DetailsBox.TabStop = false;
 			this.DetailsBox.Text = "Details";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 31);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(163, 13);
+			this.label2.TabIndex = 10;
+			this.label2.Text = "Right-click to remember selection";
+			// 
+			// Value5Label
+			// 
+			this.Value5Label.AutoSize = true;
+			this.Value5Label.Location = new System.Drawing.Point(176, 148);
+			this.Value5Label.Name = "Value5Label";
+			this.Value5Label.Size = new System.Drawing.Size(43, 13);
+			this.Value5Label.TabIndex = 9;
+			this.Value5Label.Text = "Value 5";
+			// 
+			// Value4Label
+			// 
+			this.Value4Label.AutoSize = true;
+			this.Value4Label.Location = new System.Drawing.Point(176, 120);
+			this.Value4Label.Name = "Value4Label";
+			this.Value4Label.Size = new System.Drawing.Size(43, 13);
+			this.Value4Label.TabIndex = 8;
+			this.Value4Label.Text = "Value 4";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 16);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(152, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Hover over item to view details";
+			// 
+			// ZoomBox
+			// 
+			this.ZoomBox.Location = new System.Drawing.Point(196, 16);
+			this.ZoomBox.Name = "ZoomBox";
+			this.ZoomBox.Size = new System.Drawing.Size(64, 64);
+			this.ZoomBox.TabIndex = 6;
+			this.ZoomBox.TabStop = false;
+			// 
+			// Value3Label
+			// 
+			this.Value3Label.AutoSize = true;
+			this.Value3Label.Location = new System.Drawing.Point(176, 92);
+			this.Value3Label.Name = "Value3Label";
+			this.Value3Label.Size = new System.Drawing.Size(43, 13);
+			this.Value3Label.TabIndex = 5;
+			this.Value3Label.Text = "Value 3";
 			// 
 			// Value2Label
 			// 
@@ -389,22 +448,48 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scanline";
 			// 
-			// Value3Label
+			// groupBox2
 			// 
-			this.Value3Label.AutoSize = true;
-			this.Value3Label.Location = new System.Drawing.Point(176, 92);
-			this.Value3Label.Name = "Value3Label";
-			this.Value3Label.Size = new System.Drawing.Size(43, 13);
-			this.Value3Label.TabIndex = 5;
-			this.Value3Label.Text = "Value 3";
+			this.groupBox2.Controls.Add(this.label4);
+			this.groupBox2.Controls.Add(this.label3);
+			this.groupBox2.Controls.Add(this.RefreshRate);
+			this.groupBox2.Location = new System.Drawing.Point(93, 37);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(191, 52);
+			this.groupBox2.TabIndex = 9;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Refresh";
 			// 
-			// ZoomBox
+			// RefreshRate
 			// 
-			this.ZoomBox.Location = new System.Drawing.Point(196, 16);
-			this.ZoomBox.Name = "ZoomBox";
-			this.ZoomBox.Size = new System.Drawing.Size(64, 64);
-			this.ZoomBox.TabIndex = 6;
-			this.ZoomBox.TabStop = false;
+			this.RefreshRate.AutoSize = false;
+			this.RefreshRate.LargeChange = 2;
+			this.RefreshRate.Location = new System.Drawing.Point(39, 15);
+			this.RefreshRate.Maximum = 8;
+			this.RefreshRate.Minimum = 1;
+			this.RefreshRate.Name = "RefreshRate";
+			this.RefreshRate.Size = new System.Drawing.Size(104, 31);
+			this.RefreshRate.TabIndex = 0;
+			this.RefreshRate.TickFrequency = 8;
+			this.RefreshRate.Value = 1;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 19);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(31, 13);
+			this.label3.TabIndex = 10;
+			this.label3.Text = "More";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(140, 20);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(29, 13);
+			this.label4.TabIndex = 11;
+			this.label4.Text = "Less";
 			// 
 			// SpriteView
 			// 
@@ -442,47 +527,12 @@
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
 			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 16);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(152, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Hover over item to view details";
-			// 
-			// Value4Label
-			// 
-			this.Value4Label.AutoSize = true;
-			this.Value4Label.Location = new System.Drawing.Point(176, 120);
-			this.Value4Label.Name = "Value4Label";
-			this.Value4Label.Size = new System.Drawing.Size(43, 13);
-			this.Value4Label.TabIndex = 8;
-			this.Value4Label.Text = "Value 4";
-			// 
-			// Value5Label
-			// 
-			this.Value5Label.AutoSize = true;
-			this.Value5Label.Location = new System.Drawing.Point(176, 148);
-			this.Value5Label.Name = "Value5Label";
-			this.Value5Label.Size = new System.Drawing.Size(43, 13);
-			this.Value5Label.TabIndex = 9;
-			this.Value5Label.Text = "Value 5";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(6, 31);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(163, 13);
-			this.label2.TabIndex = 10;
-			this.label2.Text = "Right-click to remember selection";
-			// 
 			// NESPPU
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(574, 348);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.SpriteViewerBox);
 			this.Controls.Add(this.toolStrip1);
@@ -501,12 +551,15 @@
 			this.PalettesGroup.ResumeLayout(false);
 			this.DetailsBox.ResumeLayout(false);
 			this.DetailsBox.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).EndInit();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.SpriteViewerBox.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).EndInit();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -557,5 +610,9 @@
 		private System.Windows.Forms.Label Value4Label;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.TrackBar RefreshRate;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
     }
 }

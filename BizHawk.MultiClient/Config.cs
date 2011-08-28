@@ -244,6 +244,7 @@
 		public bool NESPPUSaveWindowPosition = true;
 		public int NESPPUWndx = -1;
 		public int NESPPUWndy = -1;
+		public int NESPPURefreshRate = 4;
 
 		// NESDebuger Settings
 		public bool AutoLoadNESDebugger = false;
