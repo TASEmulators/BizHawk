@@ -176,10 +176,12 @@ namespace BizHawk.MultiClient
 
 		private void ClearDetails()
 		{
-			SectionLabel.Text = "";
+			DetailsBox.Text = "Details";
 			AddressLabel.Text = "";
 			ValueLabel.Text = "";
 			Value2Label.Text = "";
+			Value3Label.Text = "";
+			ZoomBox.Image = new Bitmap(64, 64);
 		}
 
 		private void PaletteView_MouseLeave(object sender, EventArgs e)
@@ -189,7 +191,7 @@ namespace BizHawk.MultiClient
 
 		private void PaletteView_MouseEnter(object sender, EventArgs e)
 		{
-			SectionLabel.Text = "Section: Palette";
+			DetailsBox.Text = "Details - Palettes";
 		}
 
 		private void PaletteView_MouseMove(object sender, MouseEventArgs e)
@@ -211,6 +213,16 @@ namespace BizHawk.MultiClient
 				Value2Label.Text = "ID: BG" + (column / 4).ToString();
 			else
 				Value2Label.Text = "ID: SPR" + (column / 4).ToString();
+
+			Bitmap bmp = new Bitmap(64, 64);
+			Graphics g= Graphics.FromImage(bmp);
+			
+			if (baseAddr == 0x3F00)
+				g.FillRectangle(new SolidBrush(PaletteView.bgPalettes[column].GetColor()), 0, 0, 64, 64);
+			else
+				g.FillRectangle(new SolidBrush(PaletteView.spritePalettes[column].GetColor()), 0, 0, 64, 64);
+			g.Dispose();
+			ZoomBox.Image = bmp;
 		}
 
 		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -253,7 +265,7 @@ namespace BizHawk.MultiClient
 
 		private void PatternView_MouseEnter(object sender, EventArgs e)
 		{
-			SectionLabel.Text = "Section: Pattern";
+			DetailsBox.Text = "Details - Patterns";
 		}
 
 		private void PatternView_MouseLeave(object sender, EventArgs e)
@@ -286,6 +298,24 @@ namespace BizHawk.MultiClient
 			AddressLabel.Text = "Address: " + String.Format("{0:X4}", address);
 			ValueLabel.Text = "Table " + table.ToString();
 			Value2Label.Text = "Tile " + String.Format("{0:X2}", tile);
+
+			ZoomBox.Image = Section(PatternView.pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
+		}
+
+		static public Bitmap Section(Bitmap srcBitmap, Rectangle section)
+		{
+			// Create the new bitmap and associated graphics object
+			Bitmap bmp = new Bitmap(64, 64);
+			Graphics g = Graphics.FromImage(bmp);
+
+			// Draw the specified section of the source bitmap to the new one
+			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+			g.DrawImage(srcBitmap, new Rectangle(0, 0, 64, 64), section, GraphicsUnit.Pixel);
+			g.Dispose();
+
+			// Return the bitmap
+			return bmp;
 		}
 
 		private void toolStripDropDownButton2_DropDownOpened(object sender, EventArgs e)
@@ -407,7 +437,7 @@ namespace BizHawk.MultiClient
 
 		private void SpriteView_MouseEnter(object sender, EventArgs e)
 		{
-
+			DetailsBox.Text = "Details - Sprites";
 		}
 
 		private void SpriteView_MouseLeave(object sender, EventArgs e)
@@ -420,11 +450,14 @@ namespace BizHawk.MultiClient
 			int SpriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
 			int X = 0;
 			int Y = 0;
+			int Tile = 0;
 
-			SectionLabel.Text = "Section Sprite";
 			AddressLabel.Text = "Number: " + String.Format("{0:X2}", SpriteNumber);
 			ValueLabel.Text = "X: " + String.Format("{0:X2}", X);
 			Value2Label.Text = "Y: " + String.Format("{0:X2}", Y);
+			Value3Label.Text = "Tile: " + String.Format("{0:X2}", Tile);
+
+			ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
 		}
 	}
 }
