@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
 		//Sprite viewer
 		//Nametable viewer
 
+		Bitmap ZoomBoxDefaultImage = new Bitmap(64, 64);
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		NES Nes;
@@ -163,7 +164,6 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is NES)) return;
-			//NES.PPU ppu = (Global.Emulator as NES).ppu;
 			Nes.ppu.PPUViewCallback = Callback;
 		}
 
@@ -181,7 +181,9 @@ namespace BizHawk.MultiClient
 			ValueLabel.Text = "";
 			Value2Label.Text = "";
 			Value3Label.Text = "";
-			ZoomBox.Image = new Bitmap(64, 64);
+			Value4Label.Text = "";
+			Value5Label.Text = "";
+			ZoomBox.Image = ZoomBoxDefaultImage;
 		}
 
 		private void PaletteView_MouseLeave(object sender, EventArgs e)
@@ -243,17 +245,21 @@ namespace BizHawk.MultiClient
 
 		private void PatternView_Click(object sender, MouseEventArgs e)
 		{
-			if (e.X < PatternView.Width / 2)
+			if (e.Button == MouseButtons.Left)
 			{
-				PatternView.Pal0++;
-				if (PatternView.Pal0 > 7) PatternView.Pal0 = 0;
+				if (e.X < PatternView.Width / 2)
+				{
+					PatternView.Pal0++;
+					if (PatternView.Pal0 > 7) PatternView.Pal0 = 0;
+				}
+				else
+				{
+					PatternView.Pal1++;
+					if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
+				}
+				UpdateTableLabels();
 			}
-			else
-			{
-				PatternView.Pal1++;
-				if (PatternView.Pal1 > 7) PatternView.Pal1 = 0;
-			}
-			UpdateTableLabels();
+			HandleDefaultImage(e);
 		}
 
 		private void UpdateTableLabels()
@@ -458,6 +464,29 @@ namespace BizHawk.MultiClient
 			Value3Label.Text = "Tile: " + String.Format("{0:X2}", Tile);
 
 			ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
+		}
+
+		private void PaletteView_MouseClick(object sender, MouseEventArgs e)
+		{
+			HandleDefaultImage(e);
+		}
+
+		private void SpriteView_MouseClick(object sender, MouseEventArgs e)
+		{
+			HandleDefaultImage(e);
+		}
+
+		private void HandleDefaultImage(MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Right)
+			{
+				ZoomBoxDefaultImage = ZoomBox.Image as Bitmap;
+			}
+		}
+
+		private void NESPPU_MouseClick(object sender, MouseEventArgs e)
+		{
+			ZoomBox.Image = new Bitmap(64, 64);
 		}
 	}
 }
