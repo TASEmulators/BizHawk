@@ -55,11 +55,17 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.PaletteLabel = new System.Windows.Forms.Label();
 			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.RefreshRate = new System.Windows.Forms.TrackBar();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.groupBox5.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -324,11 +330,55 @@
 			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
 			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
 			// 
+			// groupBox5
+			// 
+			this.groupBox5.Controls.Add(this.label7);
+			this.groupBox5.Controls.Add(this.label6);
+			this.groupBox5.Controls.Add(this.RefreshRate);
+			this.groupBox5.Location = new System.Drawing.Point(563, 313);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(108, 236);
+			this.groupBox5.TabIndex = 14;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = "Refresh";
+			// 
+			// RefreshRate
+			// 
+			this.RefreshRate.LargeChange = 2;
+			this.RefreshRate.Location = new System.Drawing.Point(9, 47);
+			this.RefreshRate.Maximum = 8;
+			this.RefreshRate.Minimum = 1;
+			this.RefreshRate.Name = "RefreshRate";
+			this.RefreshRate.Orientation = System.Windows.Forms.Orientation.Vertical;
+			this.RefreshRate.Size = new System.Drawing.Size(42, 136);
+			this.RefreshRate.TabIndex = 0;
+			this.RefreshRate.TickFrequency = 4;
+			this.RefreshRate.Value = 1;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(7, 32);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(29, 13);
+			this.label6.TabIndex = 1;
+			this.label6.Text = "Less";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(7, 186);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(31, 13);
+			this.label7.TabIndex = 2;
+			this.label7.Text = "More";
+			// 
 			// NESNameTableViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(679, 561);
+			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
@@ -349,6 +399,9 @@
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.groupBox5.ResumeLayout(false);
+			this.groupBox5.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -383,5 +436,9 @@
 		private System.Windows.Forms.Label TableLabel;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label PaletteLabel;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.TrackBar RefreshRate;
+		private System.Windows.Forms.Label label7;
 	}
 }
