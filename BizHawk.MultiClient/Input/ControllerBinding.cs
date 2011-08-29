@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BizHawk.MultiClient
 {
@@ -95,7 +96,7 @@ namespace BizHawk.MultiClient
 		private ControllerDefinition type;
 		private WorkingDictionary<string, List<string>> bindings = new WorkingDictionary<string, List<string>>();
 		private WorkingDictionary<string, bool> buttons = new WorkingDictionary<string, bool>();
-		private WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
+		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
 
 		private bool autofire = true;
 		public bool Autofire { get { return false; } set { autofire = value; } }
@@ -201,6 +202,11 @@ namespace BizHawk.MultiClient
 			string[] controlbindings = controlString.Split(',');
 			foreach (string control in controlbindings)
 				bindings[button].Add(control.Trim());
+		}
+
+		public void IncrementStarts()
+		{
+			foreach (var key in buttonStarts.Keys.ToArray()) buttonStarts[key]++;
 		}
 	}
 }
