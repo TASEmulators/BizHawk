@@ -1643,6 +1643,11 @@ namespace BizHawk.MultiClient
 
 				UpdateTools();
 
+				if (Global.Emulator.IsLagFrame)
+				{
+					Global.AutoFireController.IncrementStarts();
+				}
+
 			}
 
 			if (genSound)
