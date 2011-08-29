@@ -487,7 +487,11 @@ namespace BizHawk.MultiClient
 
 		public string MakeInputDisplay()
 		{
-			StringBuilder s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			StringBuilder s;
+			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE || Global.MainForm.UserMovie.Mode == MOVIEMODE.FINISHED)
+				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
+			else
+				s = new StringBuilder(Global.MainForm.UserMovie.GetInputFrame(Global.Emulator.Frame - 1));
 			s.Replace(".", " ");
 			s.Replace("|", "");
 			return s.ToString();
