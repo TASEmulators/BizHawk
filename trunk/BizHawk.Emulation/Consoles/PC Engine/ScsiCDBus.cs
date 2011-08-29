@@ -125,14 +125,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         private byte MessageValue;
 
         private QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
-        public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // proper size
+        public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // one data sector
 
         // ******** Data Transfer / READ command support ********
-        private long DataReadWaitTimer;
-        private bool DataReadInProgress;
-        private bool DataTransferWasDone;
-        private int CurrentReadingSector;
-        private int SectorsLeftToRead;
+        
+        public long DataReadWaitTimer;
+        public bool DataReadInProgress;
+        public bool DataTransferWasDone;
+        public bool DataTransferInProgress;
+        public int CurrentReadingSector;
+        public int SectorsLeftToRead;
 
         // ******** Resources ********
 
@@ -162,7 +164,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 if (DataIn.Count == 0)
                 {
-                    Console.WriteLine("Sector available to read!!!");
+                    //Console.WriteLine("Sector available to read!!!");
                     // read in a sector and shove it in the queue
                     disc.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
                     DataIn.SignalBufferFilled(2048);
@@ -275,6 +277,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     if (DataTransferWasDone)
                     {
                         Console.WriteLine("DATA TRANSFER FINISHED!");
+                        DataTransferInProgress = false;
                         DataTransferWasDone = false;
                         DataTransferComplete(true);
                     }
@@ -383,6 +386,7 @@ if (CommandBuffer[4] == 0)
 throw new Exception("requesting 0 sectors read.............................");
 
             DataReadInProgress = true;
+            DataTransferInProgress = true;
             CurrentReadingSector = sector;
             SectorsLeftToRead = CommandBuffer[4];
 
@@ -495,6 +499,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
         private void CommandReadSubcodeQ()
         {
+			Console.WriteLine("poll subcode");
             var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
 
             DataIn.Clear();
@@ -506,14 +511,14 @@ throw new Exception("requesting 0 sectors read.............................");
                 case CDAudio.CDAudioMode.Stopped: DataIn.Enqueue(3); break;
             }
             
-			DataIn.Enqueue(sectorEntry.q_status); // unused?
-			DataIn.Enqueue(sectorEntry.q_tno.BCDValue); // track
-			DataIn.Enqueue(sectorEntry.q_index.BCDValue); // index
-			DataIn.Enqueue(sectorEntry.q_min.BCDValue); // M(rel)
-			DataIn.Enqueue(sectorEntry.q_sec.BCDValue); // S(rel)
-			DataIn.Enqueue(sectorEntry.q_frame.BCDValue); // F(rel)
-            DataIn.Enqueue(sectorEntry.q_amin.BCDValue); // M(abs)
-			DataIn.Enqueue(sectorEntry.q_asec.BCDValue); // S(abs)
+			DataIn.Enqueue(sectorEntry.q_status);          // unused?
+			DataIn.Enqueue(sectorEntry.q_tno.BCDValue);    // track
+			DataIn.Enqueue(sectorEntry.q_index.BCDValue);  // index
+			DataIn.Enqueue(sectorEntry.q_min.BCDValue);    // M(rel)
+			DataIn.Enqueue(sectorEntry.q_sec.BCDValue);    // S(rel)
+			DataIn.Enqueue(sectorEntry.q_frame.BCDValue);  // F(rel)
+            DataIn.Enqueue(sectorEntry.q_amin.BCDValue);   // M(abs)
+			DataIn.Enqueue(sectorEntry.q_asec.BCDValue);   // S(abs)
             DataIn.Enqueue(sectorEntry.q_aframe.BCDValue); // F(abs)
             SetPhase(BusPhase.DataIn);
         }

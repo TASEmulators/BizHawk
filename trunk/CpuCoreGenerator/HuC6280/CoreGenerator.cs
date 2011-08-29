@@ -530,6 +530,7 @@ namespace HuC6280
             w.WriteLine("                        }");
             w.WriteLine("                    }");
             w.WriteLine("                }");
+            w.WriteLine("                ThinkAction();");
             w.WriteLine("            }");
             w.WriteLine("        }");
             w.WriteLine("    }");

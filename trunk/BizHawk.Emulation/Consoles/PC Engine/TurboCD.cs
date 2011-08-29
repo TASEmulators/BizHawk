@@ -1,5 +1,12 @@
 ﻿using System;
 
+// IRQ2 interrupts:
+// 0x04 - INTA    - ADPCM interrupt
+// 0x08 - INTSTOP - Fire when end of CD-Audio playback reached when in STOP MODE 2.
+// 0x10 - INTSUB  - no idea yet
+// 0x20 - INTM    - Fires when data transfer is complete
+// 0x40 - INTD    - Fires when data transfer is ready
+
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public partial class PCEngine
@@ -33,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         private void WriteCD(int addr, byte value)
         {
-            //Log.Note("CD","Write: {0:X4} {1:X2} (PC={2:X4})", addr & 0x1FFF, value, Cpu.PC);
+            //Log.Error("CD","Write: {0:X4} {1:X2} (PC={2:X4})", addr & 0x1FFF, value, Cpu.PC);
             switch (addr & 0x1FFF)
             {
                 case 0x1800: // SCSI Drive Control Line
@@ -60,12 +67,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CdIoPorts[2] = value;
                     SCSI.ACK = ((value & 0x80) != 0);
 
-                    if ((CdIoPorts[2] & 0x04) != 0) Log.Note("CD", "INTAEN enable");
-                    if ((CdIoPorts[2] & 0x08) != 0) Log.Note("CD", "INTSTOPEN enable");
-                    if ((CdIoPorts[2] & 0x10) != 0) Log.Note("CD", "INTSUBEN enable");
-                    if ((CdIoPorts[2] & 0x20) != 0) Log.Note("CD", "INTMEN enable");
-                    if ((CdIoPorts[2] & 0x40) != 0) Log.Note("CD", "INTDEN enable");
-                    if ((Cpu.IRQControlByte & 0x01) != 0) Log.Note("CD", "BTW, IRQ2 is not masked");
+                    if ((CdIoPorts[2] & 0x04) != 0) Log.Error("CD", "INTA enable");
+                    if ((CdIoPorts[2] & 0x08) != 0) Log.Error("CD", "INTSTOP enable");
+                    if ((CdIoPorts[2] & 0x10) != 0) Log.Error("CD", "INTSUB enable");
+                    if ((CdIoPorts[2] & 0x20) != 0) Log.Error("CD", "INTM enable");
+                    if ((CdIoPorts[2] & 0x40) != 0) Log.Error("CD", "INTD enable");
+                    if ((Cpu.IRQControlByte & 0x01) != 0) Log.Error("CD", "BTW, IRQ2 is not masked");
 
                     SCSI.Think();
                     RefreshIRQ2();
@@ -95,30 +102,46 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     }
                     break;
 
+                case 0x1808: // ADPCM address LSB
+                    adpcm_io_address &= 0xFF00;
+                    adpcm_io_address |= value;
+                    Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
+                    break;
+
+                case 0x1809: // ADPCM address MSB
+                    adpcm_io_address &= 0x00FF;
+                    adpcm_io_address |= (ushort)(value << 8);
+                    Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
+                    break;
+
+                case 0x180A: // ADPCM Memory Read/Write Port
+                    AdpcmDataWrite(value);
+                    break;
+
                 case 0x180B: // ADPCM DMA Control
                     CdIoPorts[0x0B] = value;
-                    Console.WriteLine("Write to ADPCM DMA Control [B]");
+                    Log.Error("CD", "Write to ADPCM DMA Control [B] {0:X2}", value);
                     // TODO... there is DMA to be done 
                     break;
 
                 case 0x180D: // ADPCM Address Control
+                    AdpcmControlWrite(value);
                     CdIoPorts[0x0D] = value;
-                    Console.WriteLine("Write to ADPCM Address Control [D]");
                     break;
 
                 case 0x180E: // ADPCM Playback Rate
                     CdIoPorts[0x0E] = value;
-                    Console.WriteLine("Write to ADPCM Address Control [E]");
+                    Log.Error("CD", "Write to ADPCM Address Control [E] {0:X2}", value);
                     break;
 
                 case 0x180F: // Audio Fade Timer
                     CdIoPorts[0x0F] = value;
-                    Console.WriteLine("Write to CD Audio fade timer [F]");
+                    Log.Error("CD", "Write to CD Audio fade timer [F] {0:X2}", value);
                     // TODO: hook this up to audio system. and to your mother
                     break;
 
                 default:
-                    Console.WriteLine("unknown write to {0:X4}:{1:X2}",addr, value);
+                    Log.Error("CD", "unknown write to {0:X4}:{1:X2} pc={2:X4}", addr, value, Cpu.PC);
                     break;
             }
         }
@@ -136,30 +159,28 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     if (SCSI.MSG) returnValue |= 0x20;
                     if (SCSI.REQ) returnValue |= 0x40;
                     if (SCSI.BSY) returnValue |= 0x80;
-                    //Log.Note("CD", "Read: 1800 {0:X2} (PC={1:X4})", returnValue, Cpu.PC);
+                    //Log.Error("CD", "Read: 1800 {0:X2} (PC={1:X4})", returnValue, Cpu.PC);
                     return returnValue;
 
                 case 0x1801: // Read data bus
-                    //Log.Note("CD", "Read: 1801 {0:X2} (PC={1:X4})", SCSI.DataBits, Cpu.PC);
+                    //Log.Error("CD", "Read: 1801 {0:X2} (PC={1:X4})", SCSI.DataBits, Cpu.PC);
                     return SCSI.DataBits;
 
                 case 0x1802: // ADPCM / CD Control
-                    //Log.Note("CD", "Read: 1802 {0:X2} (PC={1:X4})", CdIoPorts[2], Cpu.PC);
+                    //Log.Error("CD", "Read: 1802 {0:X2} (PC={1:X4})", CdIoPorts[2], Cpu.PC);
                     return CdIoPorts[2];
 
                 case 0x1803: // BRAM Lock
                     if (BramEnabled)
-                    {
-                        Log.Note("CD", "Read: 1803 {0:X2} (PC={1:X4})", CdIoPorts[3], Cpu.PC);
                         BramLocked = true;
                     
-                    }
+                    Log.Error("CD", "Read: 1803 {0:X2} (PC={1:X4})", CdIoPorts[3], Cpu.PC);
                     returnValue = CdIoPorts[3];
                     CdIoPorts[3] ^= 2;
                     return returnValue;
 
                 case 0x1804: // CD Reset
-                    //Log.Note("CD", "Read: 1804 {0:X2} (PC={1:X4})", CdIoPorts[4], Cpu.PC);
+                    //Log.Error("CD", "Read: 1804 {0:X2} (PC={1:X4})", CdIoPorts[4], Cpu.PC);
                     return CdIoPorts[4];
 
                 case 0x1805: // CD audio data Low
@@ -176,19 +197,45 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                         sample = CDAudio.VolumeRight;
                     return (byte) (sample >> 8);
 
-                case 0x1808: // "auto handshake data input"
-                    byte ret = SCSI.DataBits;
-                    //Console.WriteLine("read 1808 {0:X2} remain: {1}", ret, SCSI.DataIn.Count);
+                case 0x1808: // Auto Handshake Data Input
+                    returnValue = SCSI.DataBits;
                     if (SCSI.REQ && SCSI.IO && !SCSI.CD)
                     {
                         SCSI.ACK = false;
                         SCSI.REQ = false;
                         SCSI.Think();
                     }
-                    return ret;
+                    return returnValue;
+
+                case 0x180A: // ADPCM Memory Read/Write Port
+                    //Log.Error("CD", "Read ADPCM Data Transfer Control");
+                    return CdIoPorts[0x0B];
+
+                case 0x180B: // ADPCM Data Transfer Control
+                    //Log.Error("CD", "Read ADPCM Data Transfer Control");
+                    return CdIoPorts[0x0B];
+
+                case 0x180C: // ADPCM Status
+                    returnValue = 0;
+                    if (AdpcmIsPlaying)
+                        returnValue |= 0x08;
+                    else
+                        returnValue |= 0x01;
+                    if (AdpcmBusyWriting)
+                        returnValue |= 0x04;
+                    if (AdpcmBusyReading)
+                        returnValue |= 0x80;
+
+                    //Log.Error("CD", "Read ADPCM Status {0:X2}", returnValue);
+
+                    return returnValue;
+
+                case 0x180D: // ADPCM Play Control
+                    //Log.Error("CD", "Read ADPCM Play Control");
+                    return CdIoPorts[0x0D];
 
                 case 0x180F: // Audio Fade Timer
-                    Log.Note("CD", "Read: 180F {0:X2} (PC={1:X4})", CdIoPorts[0xF], Cpu.PC);
+                    Log.Error("CD", "Read: 180F {0:X2} (PC={1:X4})", CdIoPorts[0xF], Cpu.PC);
                     return CdIoPorts[0x0F];
 
                 // These are some retarded version check
@@ -200,7 +247,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 0x18C7: return 0x03;
 
                 default:
-                    Log.Note("CD", "unknown read to {0:X4}", addr);
+                    Log.Error("CD", "unknown read to {0:X4}", addr);
                     return 0xFF;
             }
         }
