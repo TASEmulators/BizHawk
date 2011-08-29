@@ -15,10 +15,7 @@ namespace BizHawk.MultiClient
 	public partial class NESPPU : Form
 	{
 		//TODO:
-		//Pattern viewer - 
-		//      Row interleaving
-		//      option for 2x view (and 4x?)
-		//      Mouse over - Usage (BG vs Sprite usage)
+		//If 8/16 sprite mode, mouse over should put 32x64 version of prite
 
 		//Speedups
 		//Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
@@ -328,13 +325,15 @@ namespace BizHawk.MultiClient
 
 			if (table == 0)
 			{
-				tile = address = (e.X - 1) / 8;
+				tile = (e.X - 1) / 8;
+				address = tile * 16;
 
 			}
 			else
 			{
-				address = 0x1000 + ((e.X - 128) / 8);
 				tile = (e.X - 128) / 8;
+				address = 0x1000 + (tile * 16);
+				
 			}
 
 			address += (e.Y / 8) * 256;
