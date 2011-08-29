@@ -505,11 +505,21 @@ namespace BizHawk.MultiClient
 			int X = Nes.ppu.OAM[(SpriteNumber * 4) + 3];
 			int Y = Nes.ppu.OAM[SpriteNumber * 4];
 			int Color = Nes.ppu.OAM[(SpriteNumber * 4) + 2] & 0x03;
-			
-			
-			//String flags = ""; //TODO: BG
+			int Attributes = Nes.ppu.OAM[(SpriteNumber * 4) + 2];
 
-			//TODO: 8/16 View
+			string flags = "Flags: ";
+			int h = GetBit(Attributes, 6);
+			int v = GetBit(Attributes, 7);
+			int priority = GetBit(Attributes, 5);
+			if (h > 0)
+				flags += "H ";
+			if (v > 0)
+				flags += "V ";
+			if (priority > 0)
+				flags += "Behind";
+			else
+				flags += "Front";
+
 			int Tile = Nes.ppu.OAM[SpriteNumber * 1]; ;
 
 			AddressLabel.Text = "Number: " + String.Format("{0:X2}", SpriteNumber);
@@ -517,6 +527,7 @@ namespace BizHawk.MultiClient
 			Value2Label.Text = "Y: " + String.Format("{0:X2}", Y);
 			Value3Label.Text = "Tile: " + String.Format("{0:X2}", Tile);
 			Value4Label.Text = "Color: " + Color.ToString();
+			Value5Label.Text = flags;
 
 			ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
 		}
