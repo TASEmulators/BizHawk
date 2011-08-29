@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(8);
 					break;
 				case "NES-TLROM": //mega man 3
+				case "KONAMI-TLROM": //Super C
 				case "HVC-TLROM": //8 eyes (J)
 					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
