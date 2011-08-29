@@ -13,6 +13,9 @@ namespace BizHawk.MultiClient
 {
 	public partial class NESNameTableViewer : Form
 	{
+		//TODO:
+		//Show Scroll Lines + UI Toggle
+
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		NES Nes;
@@ -31,6 +34,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.NESNameTableWndx = this.Location.X;
 			Global.Config.NESNameTableWndy = this.Location.Y;
+			Global.Config.NESNameTableRefreshRate = RefreshRate.Value;
 		}
 
 		unsafe void Generate()
@@ -38,13 +42,13 @@ namespace BizHawk.MultiClient
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (Nes == null) return;
 
-			NES.PPU ppu = Nes.ppu;
-			if (!this.IsHandleCreated || this.IsDisposed) return;
+			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
+			
 			BitmapData bmpdata = NameTableView.nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			int* dptr = (int*)bmpdata.Scan0.ToPointer();
 			int pitch = bmpdata.Stride / 4;
-			int pt_add = ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
+			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
 			//TODO - buffer all the data from the ppu, because it will be read multiple times and that is slow
 
@@ -66,9 +70,9 @@ namespace BizHawk.MultiClient
 					int ty = py >> 3;
 					int ntbyte_ptr = ntaddr + (ty * 32) + tx;
 					int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-					int nt = ppu.ppubus_peek(ntbyte_ptr + 0x2000);
+					int nt = Nes.ppu.ppubus_peek(ntbyte_ptr + 0x2000);
 
-					int at = ppu.ppubus_peek(atbyte_ptr + 0x2000);
+					int at = Nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
 					if ((ty & 2) != 0) at >>= 4;
 					if ((tx & 2) != 0) at >>= 2;
 					at &= 0x03;
@@ -77,8 +81,8 @@ namespace BizHawk.MultiClient
 					int bgpx = x & 7;
 					int bgpy = y & 7;
 					int pt_addr = (nt << 4) + bgpy + pt_add;
-					int pt_0 = ppu.ppubus_peek(pt_addr);
-					int pt_1 = ppu.ppubus_peek(pt_addr + 8);
+					int pt_0 = Nes.ppu.ppubus_peek(pt_addr);
+					int pt_1 = Nes.ppu.ppubus_peek(pt_addr + 8);
 					int pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
 
 					//if the pixel is transparent, draw the backdrop color
@@ -86,7 +90,7 @@ namespace BizHawk.MultiClient
 					if (pixel != 0)
 						pixel |= at;
 
-					pixel = ppu.PALRAM[pixel];
+					pixel = Nes.ppu.PALRAM[pixel];
 					int cvalue = Nes.LookupColor(pixel);
 					*dptr = cvalue;
 				}
@@ -121,6 +125,7 @@ namespace BizHawk.MultiClient
 				this.Location = new Point(Global.Config.NESNameTableWndx, Global.Config.NESNameTableWndy);
 
 			Nes = Global.Emulator as NES;
+			RefreshRate.Value = Global.Config.NESNameTableRefreshRate;
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)

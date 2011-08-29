@@ -259,6 +259,7 @@
 		public bool NESNameTableSaveWindowPosition = true;
 		public int NESNameTableWndx = -1;
 		public int NESNameTableWndy = -1;
+		public int NESNameTableRefreshRate = 4;
 
 		// NES Graphics settings
 		public bool NESAllowMoreThanEightSprites = false;
