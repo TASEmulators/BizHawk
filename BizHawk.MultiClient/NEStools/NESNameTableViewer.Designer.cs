@@ -44,12 +44,16 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.TileIDLabel = new System.Windows.Forms.Label();
-			this.XYLabel = new System.Windows.Forms.Label();
 			this.PPUAddressLabel = new System.Windows.Forms.Label();
+			this.XYLabel = new System.Windows.Forms.Label();
+			this.TileIDLabel = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
+			this.TableLabel = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.PaletteLabel = new System.Windows.Forms.Label();
 			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -203,6 +207,10 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.PaletteLabel);
+			this.groupBox4.Controls.Add(this.label5);
+			this.groupBox4.Controls.Add(this.TableLabel);
+			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.PPUAddressLabel);
 			this.groupBox4.Controls.Add(this.XYLabel);
 			this.groupBox4.Controls.Add(this.TileIDLabel);
@@ -211,55 +219,10 @@
 			this.groupBox4.Controls.Add(this.label1);
 			this.groupBox4.Location = new System.Drawing.Point(563, 179);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(108, 100);
+			this.groupBox4.Size = new System.Drawing.Size(108, 128);
 			this.groupBox4.TabIndex = 13;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Properties";
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 26);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(41, 13);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "Tile ID:";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(6, 43);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 1;
-			this.label2.Text = "X / Y:";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 60);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(57, 13);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "PPU Addr:";
-			// 
-			// TileIDLabel
-			// 
-			this.TileIDLabel.AutoSize = true;
-			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
-			this.TileIDLabel.Name = "TileIDLabel";
-			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
-			this.TileIDLabel.TabIndex = 3;
-			this.TileIDLabel.Text = "     ";
-			// 
-			// XYLabel
-			// 
-			this.XYLabel.AutoSize = true;
-			this.XYLabel.Location = new System.Drawing.Point(64, 43);
-			this.XYLabel.Name = "XYLabel";
-			this.XYLabel.Size = new System.Drawing.Size(22, 13);
-			this.XYLabel.TabIndex = 4;
-			this.XYLabel.Text = "     ";
 			// 
 			// PPUAddressLabel
 			// 
@@ -270,9 +233,90 @@
 			this.PPUAddressLabel.TabIndex = 5;
 			this.PPUAddressLabel.Text = "     ";
 			// 
+			// XYLabel
+			// 
+			this.XYLabel.AutoSize = true;
+			this.XYLabel.Location = new System.Drawing.Point(64, 43);
+			this.XYLabel.Name = "XYLabel";
+			this.XYLabel.Size = new System.Drawing.Size(22, 13);
+			this.XYLabel.TabIndex = 4;
+			this.XYLabel.Text = "     ";
+			// 
+			// TileIDLabel
+			// 
+			this.TileIDLabel.AutoSize = true;
+			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
+			this.TileIDLabel.Name = "TileIDLabel";
+			this.TileIDLabel.Size = new System.Drawing.Size(22, 13);
+			this.TileIDLabel.TabIndex = 3;
+			this.TileIDLabel.Text = "     ";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 60);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(57, 13);
+			this.label3.TabIndex = 2;
+			this.label3.Text = "PPU Addr:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 43);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(35, 13);
+			this.label2.TabIndex = 1;
+			this.label2.Text = "X / Y:";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(6, 26);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(41, 13);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "Tile ID:";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 78);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(37, 13);
+			this.label4.TabIndex = 6;
+			this.label4.Text = "Table:";
+			// 
+			// TableLabel
+			// 
+			this.TableLabel.AutoSize = true;
+			this.TableLabel.Location = new System.Drawing.Point(64, 78);
+			this.TableLabel.Name = "TableLabel";
+			this.TableLabel.Size = new System.Drawing.Size(22, 13);
+			this.TableLabel.TabIndex = 7;
+			this.TableLabel.Text = "     ";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 96);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(43, 13);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "Palette:";
+			// 
+			// PaletteLabel
+			// 
+			this.PaletteLabel.AutoSize = true;
+			this.PaletteLabel.Location = new System.Drawing.Point(64, 96);
+			this.PaletteLabel.Name = "PaletteLabel";
+			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
+			this.PaletteLabel.TabIndex = 9;
+			this.PaletteLabel.Text = "     ";
+			// 
 			// NameTableView
 			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Black;
+			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
 			this.NameTableView.Location = new System.Drawing.Point(17, 19);
 			this.NameTableView.Name = "NameTableView";
 			this.NameTableView.Size = new System.Drawing.Size(512, 480);
@@ -335,5 +379,9 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label TableLabel;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label PaletteLabel;
 	}
 }

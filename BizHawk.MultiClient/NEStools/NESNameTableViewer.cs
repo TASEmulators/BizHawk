@@ -207,6 +207,30 @@ namespace BizHawk.MultiClient
 			PPUAddressLabel.Text = String.Format("{0:X4}", PPUAddress);
 			int TileID = Nes.ppu.ppubus_read(PPUAddress, true);
 			TileIDLabel.Text = String.Format("{0:X2}", TileID);
+			TableLabel.Text = NameTable.ToString();
+
+			int ytable = 0, yline = 0;
+			if (e.Y >= 240)
+			{
+				ytable += 2;
+				yline = 240;
+			}
+			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
+			int table = (e.X >> 8) + ytable;
+			int ntaddr = (table << 10);
+			int px = e.X & 255;
+			int py = e.Y - yline;
+			int tx = px >> 3;
+			int ty = py >> 3;
+			int ntbyte_ptr = ntaddr + (ty * 32) + tx;
+			int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
+			int nt = Nes.ppu.ppubus_peek(ntbyte_ptr + 0x2000);
+
+			int at = Nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
+			if ((ty & 2) != 0) at >>= 4;
+			if ((tx & 2) != 0) at >>= 2;
+			at &= 0x03;
+			PaletteLabel.Text = at.ToString();
 		}
 
 		private void NameTableView_MouseLeave(object sender, EventArgs e)
@@ -214,6 +238,8 @@ namespace BizHawk.MultiClient
 			XYLabel.Text = "";
 			PPUAddressLabel.Text = "";
 			TileIDLabel.Text = "";
+			TableLabel.Text = "";
+			PaletteLabel.Text = "";
 		}
 	}
 }

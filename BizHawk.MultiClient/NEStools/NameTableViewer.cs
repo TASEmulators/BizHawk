@@ -20,8 +20,9 @@ namespace BizHawk.MultiClient
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			this.Size = new Size(256, 224);
-			this.BackColor = Color.White;
+			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.NameTableViewer_Paint);
 		}
 
@@ -66,7 +67,34 @@ namespace BizHawk.MultiClient
 
 		private void NameTableViewer_Paint(object sender, PaintEventArgs e)
 		{
-			Display(e.Graphics);
+			e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+			switch (Which)
+			{
+				case WhichNametable.NT_ALL:
+					e.Graphics.DrawImageUnscaled(nametables, 1, 1);
+					break;
+				case WhichNametable.NT_2000:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 0, 0, 256, 240, GraphicsUnit.Pixel);
+					break;
+				case WhichNametable.NT_2400:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 256, 0, 256, 240, GraphicsUnit.Pixel);
+					break;
+				case WhichNametable.NT_2800:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 0, 240, 256, 240, GraphicsUnit.Pixel);
+					break;
+				case WhichNametable.NT_2C00:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 256, 240, 256, 240, GraphicsUnit.Pixel);
+					break;
+
+				//adelikat: Meh, just in case we might want these, someone requested it but I can't remember the justification so I didn't do the UI part
+				case WhichNametable.TOPS:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 240), 0, 0, 512, 240, GraphicsUnit.Pixel);
+					break;
+				case WhichNametable.BOTTOMS:
+					e.Graphics.DrawImage(nametables, new Rectangle(0, 240, 512, 240), 0, 240, 512, 240, GraphicsUnit.Pixel);
+					break;
+			}
 		}
 	}
 }
