@@ -1643,7 +1643,7 @@ namespace BizHawk.MultiClient
 
 				UpdateTools();
 
-				if (Global.Emulator.IsLagFrame)
+				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
 				}

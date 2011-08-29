@@ -129,6 +129,7 @@
 		public bool BackupSavestates = true;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
+		public bool AutofireLagFrames = true;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
