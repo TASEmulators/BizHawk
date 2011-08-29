@@ -353,10 +353,10 @@ namespace BizHawk.MultiClient
 			Value3Label.Text = "Tile " + String.Format("{0:X2}", tile);
 			Value4Label.Text = Usage;
 
-			ZoomBox.Image = Section(PatternView.pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
+			ZoomBox.Image = Section(PatternView.pattern, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
 		}
 
-		static public Bitmap Section(Bitmap srcBitmap, Rectangle section)
+		static public Bitmap Section(Bitmap srcBitmap, Rectangle section, bool Is8x16)
 		{
 			// Create the new bitmap and associated graphics object
 			Bitmap bmp = new Bitmap(64, 64);
@@ -365,7 +365,12 @@ namespace BizHawk.MultiClient
 			// Draw the specified section of the source bitmap to the new one
 			g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 			g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-			g.DrawImage(srcBitmap, new Rectangle(0, 0, 64, 64), section, GraphicsUnit.Pixel);
+			Rectangle rect;
+			if (Is8x16)
+				rect = new Rectangle(0, 0, 32, 64);
+			else
+				rect = new Rectangle(0, 0, 64, 64);
+			g.DrawImage(srcBitmap, rect, section, GraphicsUnit.Pixel);
 			g.Dispose();
 
 			// Return the bitmap
@@ -501,6 +506,7 @@ namespace BizHawk.MultiClient
 
 		private void SpriteView_MouseMove(object sender, MouseEventArgs e)
 		{
+			bool is8x16 = Nes.ppu.reg_2000.obj_size_16;
 			int SpriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
 			int X = Nes.ppu.OAM[(SpriteNumber * 4) + 3];
 			int Y = Nes.ppu.OAM[SpriteNumber * 4];
@@ -529,7 +535,10 @@ namespace BizHawk.MultiClient
 			Value4Label.Text = "Color: " + Color.ToString();
 			Value5Label.Text = flags;
 
-			ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)));
+			if (is8x16)
+				ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 24) * 24), new Size(8, 16)), true);
+			else
+				ZoomBox.Image = Section(SpriteView.sprites, new Rectangle(new Point((e.X / 8) * 8, (e.Y / 8) * 8), new Size(8, 8)), false);
 		}
 
 		private void PaletteView_MouseClick(object sender, MouseEventArgs e)
