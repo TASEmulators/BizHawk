@@ -333,6 +333,7 @@ namespace BizHawk.Emulation.CPUs.H6280
         public Func<int, byte> ReadMemory21;
         public Action<int, byte> WriteMemory21;
         public Action<int, byte> WriteVDC;
+        public Action ThinkAction = delegate { };
 
         public byte ReadMemory(ushort address)
         {

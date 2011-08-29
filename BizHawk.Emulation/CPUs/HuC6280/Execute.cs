@@ -2307,6 +2307,7 @@ namespace BizHawk.Emulation.CPUs.H6280
                         }
                     }
                 }
+                ThinkAction();
             }
         }
     }

@@ -86,10 +86,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if ((StatusByte & (StatusVerticalBlanking | StatusVramSatDmaComplete)) != 0)
                     cpu.IRQ1Assert = true;
 
-                cpu.Execute(50);
-                MidScanlineThink();
-
-                cpu.Execute(455 - HBlankCycles - 52);
+                cpu.Execute(455 - HBlankCycles - 2);
 
                 if (InActiveDisplay == false && DmaRequested)
                     RunDmaForScanline();

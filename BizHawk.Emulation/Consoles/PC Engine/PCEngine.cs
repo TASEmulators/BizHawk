@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 Ram = new byte[0x2000];
                 CDRam = new byte[0x10000];
+                ADPCM_RAM = new byte[0x10000];
                 Cpu.ReadMemory21 = ReadMemoryCD;
                 Cpu.WriteMemory21 = WriteMemoryCD;
                 Cpu.WriteVDC = VDC1.WriteVDC;
@@ -117,7 +118,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 SoundMixer = new SoundMixer(PSG, CDAudio);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
                 soundProvider = SoundSynchronizer;
-                VDC1.MidScanlineThink = () => SCSI.Think();
+                Cpu.ThinkAction = () => { SCSI.Think(); AdpcmThink(); };
             }
 
             if (rom.Length == 0x60000)

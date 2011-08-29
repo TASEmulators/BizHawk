@@ -87,7 +87,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         
         private HuC6280 cpu;
         private VCE vce;
-        public Action MidScanlineThink = () => { };
 
         public int MultiResHack = 0;
 
