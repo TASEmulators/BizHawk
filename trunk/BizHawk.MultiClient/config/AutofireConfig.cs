@@ -31,12 +31,15 @@ namespace BizHawk.MultiClient
 				OffNumeric.Value = OffNumeric.Maximum;
 			else
 				OffNumeric.Value = Global.Config.AutofireOff;
+
+			 LagFrameCheck.Checked = Global.Config.AutofireLagFrames;
 		}
 
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			Global.AutoFireController.On = Global.Config.AutofireOn = (int)OnNumeric.Value;
 			Global.AutoFireController.Off = Global.Config.AutofireOff = (int)OffNumeric.Value;
+			Global.Config.AutofireLagFrames = LagFrameCheck.Checked;
 			this.Close();
 		}
 

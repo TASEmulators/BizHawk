@@ -36,6 +36,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.LagFrameCheck = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.OnNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.OffNumeric)).BeginInit();
 			this.groupBox1.SuspendLayout();
@@ -44,7 +45,7 @@
 			// Ok
 			// 
 			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Ok.Location = new System.Drawing.Point(42, 117);
+			this.Ok.Location = new System.Drawing.Point(120, 148);
 			this.Ok.Name = "Ok";
 			this.Ok.Size = new System.Drawing.Size(75, 23);
 			this.Ok.TabIndex = 5;
@@ -56,7 +57,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(123, 117);
+			this.Cancel.Location = new System.Drawing.Point(201, 148);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 7;
@@ -139,13 +140,24 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Autofire Pattern";
 			// 
+			// LagFrameCheck
+			// 
+			this.LagFrameCheck.AutoSize = true;
+			this.LagFrameCheck.Location = new System.Drawing.Point(13, 100);
+			this.LagFrameCheck.Name = "LagFrameCheck";
+			this.LagFrameCheck.Size = new System.Drawing.Size(164, 17);
+			this.LagFrameCheck.TabIndex = 8;
+			this.LagFrameCheck.Text = "Take lag frames into account";
+			this.LagFrameCheck.UseVisualStyleBackColor = true;
+			// 
 			// AutofireConfig
 			// 
 			this.AcceptButton = this.Ok;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(210, 152);
+			this.ClientSize = new System.Drawing.Size(288, 183);
+			this.Controls.Add(this.LagFrameCheck);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.Ok);
@@ -161,6 +173,7 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -173,5 +186,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.GroupBox groupBox1;
 		public System.Windows.Forms.NumericUpDown OnNumeric;
+		private System.Windows.Forms.CheckBox LagFrameCheck;
 	}
 }
