@@ -70,6 +70,7 @@
 			this.Controls.Add(this.progressBar1);
 			this.Name = "ProgressDialog";
 			this.Text = "Progress";
+			this.Load += new System.EventHandler(this.ProgressDialog_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

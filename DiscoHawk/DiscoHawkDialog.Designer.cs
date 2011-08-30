@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiscoHawkDialog));
 			this.btnAddDisc = new System.Windows.Forms.Button();
 			this.lvDiscs = new System.Windows.Forms.ListView();
-			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.lblSize = new System.Windows.Forms.Label();
@@ -401,6 +401,7 @@
 			this.lblMagicDragArea.Size = new System.Drawing.Size(147, 70);
 			this.lblMagicDragArea.TabIndex = 21;
 			this.lblMagicDragArea.Text = "Drag a cue into the DRAG HERE FOR MAGIC area for magic";
+			this.lblMagicDragArea.Click += new System.EventHandler(this.lblMagicDragArea_Click);
 			this.lblMagicDragArea.DragDrop += new System.Windows.Forms.DragEventHandler(this.handleDragDrop);
 			this.lblMagicDragArea.DragEnter += new System.Windows.Forms.DragEventHandler(this.handleDragEnter);
 			// 

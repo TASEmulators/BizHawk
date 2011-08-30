@@ -39,5 +39,10 @@ namespace BizHawk
 			}
 			lblMessage.Text = pr.Message;
 		}
+
+		private void ProgressDialog_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

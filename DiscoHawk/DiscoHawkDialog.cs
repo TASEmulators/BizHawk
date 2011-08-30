@@ -224,5 +224,10 @@ namespace BizHawk
 			Dump(cueBin, Path.GetDirectoryName(sfd.FileName), prefs);
 		}
 
+		private void lblMagicDragArea_Click(object sender, EventArgs e)
+		{
+
+		}
+
 	}
 }
