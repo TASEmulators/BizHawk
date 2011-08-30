@@ -477,7 +477,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     Console.WriteLine("STOP MODE 2 ENGAGED, BUT NOTE. IRQ WILL NOT FIRE YET.");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
-                    pce.CDAudio.PlayMode = CDAudio.PlaybackMode.IRQOnCompletion;
+                    pce.CDAudio.PlayMode = CDAudio.PlaybackMode.CallbackOnCompletion;
                     break;
                 case 3: // Play normal
                     Console.WriteLine("*** SET END POS, IN PLAY NORMAL MODE? STARTING AT _START_ POS. IS THAT RIGHT?");
