@@ -21,10 +21,12 @@ namespace BizHawk.Emulation.Sound
         public enum PlaybackMode
         {
             StopOnCompletion,
-            IRQOnCompletion,
-            LoopOnCompletion,
-            NextTrackOnCompletion
+            NextTrackOnCompletion,
+            LoopOnCompletion,            
+            CallbackOnCompletion
         }
+
+        public Action CallbackAction = delegate { };
 
         public Disc Disc;
         public CDAudioMode Mode = CDAudioMode.Stopped;
@@ -39,6 +41,9 @@ namespace BizHawk.Emulation.Sound
         public int CurrentSector, SectorOffset; // Offset is in SAMPLES, not bytes. Sector is 588 samples long.
         private int CachedSector;
         private byte[] SectorCache = new byte[2352];
+
+        public int FadeOutOverFrames = 0;
+        public int FadeOutFramesRemaining = 0;
 
         public CDAudio(Disc disc, int maxVolume)
         {
@@ -57,6 +62,9 @@ namespace BizHawk.Emulation.Sound
             CurrentSector = StartLBA;
             SectorOffset = 0;
             Mode = CDAudioMode.Playing;
+            FadeOutOverFrames = 0;
+            FadeOutFramesRemaining = 0;
+            LogicalVolume = 100;
         }
 
         public void PlayStartingAtLba(int lba)
@@ -69,11 +77,17 @@ namespace BizHawk.Emulation.Sound
             CurrentSector = StartLBA;
             SectorOffset = 0;
             Mode = CDAudioMode.Playing;
+            FadeOutOverFrames = 0;
+            FadeOutFramesRemaining = 0;
+            LogicalVolume = 100;
         }
 
         public void Stop()
         {
             Mode = CDAudioMode.Stopped;
+            FadeOutOverFrames = 0;
+            FadeOutFramesRemaining = 0;
+            LogicalVolume = 100;
         }
 
         public void Pause()
@@ -81,6 +95,9 @@ namespace BizHawk.Emulation.Sound
             if (Mode != CDAudioMode.Playing)
                 return;
             Mode = CDAudioMode.Paused;
+            FadeOutOverFrames = 0;
+            FadeOutFramesRemaining = 0;
+            LogicalVolume = 100;
         }
 
         public void Resume()
@@ -97,6 +114,12 @@ namespace BizHawk.Emulation.Sound
             else if (Mode == CDAudioMode.Stopped) return;
         }
 
+        public void FadeOut(int frames)
+        {
+            FadeOutOverFrames = frames;
+            FadeOutFramesRemaining = frames;
+        }
+
         private void EnsureSector()
         {
             if (CachedSector != CurrentSector)
@@ -111,6 +134,12 @@ namespace BizHawk.Emulation.Sound
             if (Mode != CDAudioMode.Playing)
                 return;
 
+            if (FadeOutFramesRemaining > 0)
+            {
+                FadeOutFramesRemaining--;
+                LogicalVolume = FadeOutFramesRemaining * 100 / FadeOutOverFrames;
+            }
+
             EnsureSector();
 
             int sampleLen = samples.Length / 2;
@@ -118,21 +147,45 @@ namespace BizHawk.Emulation.Sound
             for (int s = 0; s < sampleLen; s++)
             {
                 int sectorOffset = SectorOffset * 4;
-                samples[offset++] += (short)((SectorCache[sectorOffset + 1] << 8) | (SectorCache[sectorOffset + 0]));
-                samples[offset++] += (short)((SectorCache[sectorOffset + 3] << 8) | (SectorCache[sectorOffset + 2]));
+                short left = (short)((SectorCache[sectorOffset + 1] << 8) | (SectorCache[sectorOffset + 0]));
+                short right = (short)((SectorCache[sectorOffset + 3] << 8) | (SectorCache[sectorOffset + 2]));
+
+                // TODO absolute volume (for setting relative volumes between sound sources)
+
+                samples[offset++] += (short) (left * LogicalVolume / 100);
+                samples[offset++] += (short) (right * LogicalVolume / 100);
                 SectorOffset++;
-                // TODO, volume adjustments
 
                 if (SectorOffset == 588)
                 {
                     CurrentSector++;
                     SectorOffset = 0;
-                    EnsureSector();
-                }
 
-                if (CurrentSector == EndLBA)
-                {
-                    // TODO... end-playback-area logic
+                    if (CurrentSector == EndLBA)
+                    {
+                        switch (PlayMode)
+                        {
+                            case PlaybackMode.NextTrackOnCompletion:
+                                PlayTrack(PlayingTrack + 1);
+                                break;
+
+                            case PlaybackMode.StopOnCompletion:
+                                Stop();
+                                return;
+
+                            case PlaybackMode.LoopOnCompletion:
+                                CurrentSector = StartLBA;
+                                break;
+
+                            case PlaybackMode.CallbackOnCompletion:
+                                CallbackAction();
+                                if (Mode != CDAudioMode.Playing)
+                                    return;
+                                break;
+                        }
+                    }
+
+                    EnsureSector();
                 }
             }
         }
@@ -141,12 +194,12 @@ namespace BizHawk.Emulation.Sound
         {
             get
             {
-                // TODO apply the damn volume
                 if (Mode != CDAudioMode.Playing)
                     return 0;
 
                 int offset = SectorOffset * 4;
-                return (short)((SectorCache[offset + 1] << 8) | (SectorCache[offset + 0]));
+                short sample = (short)((SectorCache[offset + 1] << 8) | (SectorCache[offset + 0]));
+                return (short) (sample * LogicalVolume / 100);
             }
         }
 
@@ -159,7 +212,8 @@ namespace BizHawk.Emulation.Sound
                     return 0;
 
                 int offset = SectorOffset * 4;
-                return (short)((SectorCache[offset + 3] << 8) | (SectorCache[offset + 2]));
+                short sample = (short) ((SectorCache[offset + 3] << 8) | (SectorCache[offset + 2]));
+                return (short)(sample * LogicalVolume / 100);
             }
         }
 

@@ -116,7 +116,7 @@ namespace BizHawk
                 return new GameInfo(cgi);
 
             // rom is not in database. make some best-guesses
-            var Game = new GameInfo { Hash = hash, Status = RomStatus.NotInDatabase };
+            var Game = new GameInfo { Hash = hash, Status = RomStatus.NotInDatabase, NotInDatabase = true };
             Console.WriteLine("Game was not in DB. CRC: {0:X8} MD5: {1}", 
                 CRC32.Calculate(RomData),
                 Util.BytesToHexString(System.Security.Cryptography.MD5.Create().ComputeHash(RomData)));

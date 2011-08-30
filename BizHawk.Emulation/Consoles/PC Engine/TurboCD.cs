@@ -121,7 +121,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 0x180B: // ADPCM DMA Control
                     CdIoPorts[0x0B] = value;
                     Log.Error("CD", "Write to ADPCM DMA Control [B] {0:X2}", value);
-                    // TODO... there is DMA to be done 
+                    if (AdpcmCdDmaRequested)
+                        Console.WriteLine("          ADPCM DMA REQUESTED");
                     break;
 
                 case 0x180D: // ADPCM Address Control
@@ -131,13 +132,32 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x180E: // ADPCM Playback Rate
                     CdIoPorts[0x0E] = value;
-                    Log.Error("CD", "Write to ADPCM Address Control [E] {0:X2}", value);
+                    Log.Error("CD", "Write to ADPCM Sample Rate [E] {0:X2}", value);
                     break;
 
                 case 0x180F: // Audio Fade Timer
                     CdIoPorts[0x0F] = value;
                     Log.Error("CD", "Write to CD Audio fade timer [F] {0:X2}", value);
-                    // TODO: hook this up to audio system. and to your mother
+                    // TODO ADPCM fades/vol control also.
+
+                    switch (value)
+                    {
+                        case 0:
+                            CDAudio.LogicalVolume = 100;
+                            break;
+
+                        case 8:
+                        case 9:
+                            if (CDAudio.FadeOutFramesRemaining == 0)
+                                CDAudio.FadeOut(360); // 6 seconds
+                            break;
+
+                        case 12:
+                        case 13:
+                            if (CDAudio.FadeOutFramesRemaining == 0)
+                                CDAudio.FadeOut(120); // 2 seconds
+                            break;
+                    }
                     break;
 
                 default:
