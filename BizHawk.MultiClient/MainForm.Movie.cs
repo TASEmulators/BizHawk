@@ -38,6 +38,7 @@ namespace BizHawk.MultiClient
 				UserMovie.StartPlayback();
 			}
 			SetMainformMovieInfo();
+			TAStudio1.Restart();
 		}
 
 		public void SetMainformMovieInfo()

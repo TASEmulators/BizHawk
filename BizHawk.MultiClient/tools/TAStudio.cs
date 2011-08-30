@@ -121,6 +121,16 @@ namespace BizHawk.MultiClient
 			TASView.ensureVisible(Global.Emulator.Frame);
 		}
 
+		public void Restart()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			TASView.Items.Clear();
+			ControllerBox.Controls.Clear();
+			ClearPads();
+			Pads.Clear();
+			LoadTAStudio();
+		}
+
 		public void LoadTAStudio()
 		{
 			//TODO: don't engage until new/open project
@@ -231,16 +241,6 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < Pads.Count; x++)
 				Pads[x].Clear();
-		}
-
-		public void Restart()
-		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			TASView.Clear();
-			ControllerBox.Controls.Clear();
-			ClearPads();
-			Pads.Clear();
-			LoadTAStudio();
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
