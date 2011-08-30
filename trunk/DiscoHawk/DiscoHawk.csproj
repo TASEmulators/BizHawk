@@ -47,7 +47,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\BizHawk.MultiClient\output\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -66,20 +66,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
-      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
-      <Name>BizHawk.Emulation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.MultiClient\BizHawk.MultiClient.csproj">
-      <Project>{DD448B37-BA3F-4544-9754-5406E8094723}</Project>
-      <Name>BizHawk.MultiClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
-      <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
-      <Name>BizHawk.Util</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscoHawk.cs" />
     <Compile Include="DiscoHawkDialog.cs">
@@ -129,5 +115,19 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Emulation\BizHawk.Emulation.csproj">
+      <Project>{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}</Project>
+      <Name>BizHawk.Emulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.MultiClient\BizHawk.MultiClient.csproj">
+      <Project>{DD448B37-BA3F-4544-9754-5406E8094723}</Project>
+      <Name>BizHawk.MultiClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Util\BizHawk.Util.csproj">
+      <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
+      <Name>BizHawk.Util</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
