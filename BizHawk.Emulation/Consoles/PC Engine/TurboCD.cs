@@ -105,12 +105,22 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 0x1808: // ADPCM address LSB
                     adpcm_io_address &= 0xFF00;
                     adpcm_io_address |= value;
+                    if ((CdIoPorts[0x0D] & 0x10) != 0)
+                    {
+                        Console.WriteLine("doing silly thing");
+                        adpcm_length = adpcm_io_address;
+                    }
                     Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
                     break;
 
                 case 0x1809: // ADPCM address MSB
                     adpcm_io_address &= 0x00FF;
                     adpcm_io_address |= (ushort)(value << 8);
+                    if ((CdIoPorts[0x0D] & 0x10) != 0)
+                    {
+                        Console.WriteLine("doing silly thing");
+                        adpcm_length = adpcm_io_address;
+                    }
                     Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
                     break;
 
@@ -228,8 +238,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     return returnValue;
 
                 case 0x180A: // ADPCM Memory Read/Write Port
-                    //Log.Error("CD", "Read ADPCM Data Transfer Control");
-                    return CdIoPorts[0x0B];
+                    return AdpcmDataRead();
 
                 case 0x180B: // ADPCM Data Transfer Control
                     //Log.Error("CD", "Read ADPCM Data Transfer Control");
