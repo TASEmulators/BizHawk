@@ -11,9 +11,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public ushort adpcm_io_address;
         public ushort adpcm_read_address;
         public ushort adpcm_write_address;
+        public ushort adpcm_length;
+
+        public long adpcm_read_timer,   adpcm_write_timer;
+        public byte adpcm_read_buffer,  adpcm_write_buffer;
+        public bool adpcm_read_pending, adpcm_write_pending;
 
         public byte[] ADPCM_RAM; 
-        public byte adpcm_data_read_buffer;
 
         public void AdpcmControlWrite(byte value)
         {
@@ -23,55 +27,62 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Log.Note("CD", "Reset ADPCM!");
                 adpcm_read_address = 0;
                 adpcm_write_address = 0;
-                adpcm_io_address = 0; // ???? does this happen?
+                adpcm_io_address = 0;
             }
 
             else if ((value & 8) != 0)
             {
                 adpcm_read_address = adpcm_io_address;
-                if ((value & 4) != 0)
-                    throw new Exception("nibble offset set. BLUH");
+                if ((value & 4) == 0)
+                    adpcm_read_address--;
             }
 
-            else if ((CdIoPorts[0x0D] & 2) != 0 && (value & 2) != 0)
+            else if ((CdIoPorts[0x0D] & 2) == 0 && (value & 2) != 0)
             {
                 adpcm_write_address = adpcm_io_address;
-                if ((value & 1) != 0)
-                    throw new Exception("nibble offset set. we should probably do something about that.");
-
-                Log.Error("CD", "Set ADPCM WRITE ADDRESS = {0:X4}", adpcm_write_address);
+                if ((value & 1) == 0)
+                    adpcm_write_address--;
             }
         }
 
         public void AdpcmDataWrite(byte value)
         {
-            // TODO this should probably be buffered, but for now we do it instantly
-            //Console.WriteLine("ADPCM[{0:X4}] = {1:X2}", adpcm_write_address, value);
-            ADPCM_RAM[adpcm_write_address++] = value;
+            adpcm_write_buffer = value;
+            adpcm_write_timer = Cpu.TotalExecutedCycles + 24;
+            adpcm_write_pending = true;
         }
 
         public byte AdpcmDataRead()
         {
-            byte returnValue = adpcm_data_read_buffer;
-            adpcm_data_read_buffer = ADPCM_RAM[adpcm_read_address++];
-            return returnValue;
+            adpcm_read_pending = true;
+            adpcm_read_timer = Cpu.TotalExecutedCycles + 24;
+            return adpcm_read_buffer;
         }
 
-        public bool AdpcmIsPlaying { get { return false; } }
+        public bool AdpcmIsPlaying   { get { return false; } }
         public bool AdpcmBusyWriting { get { return AdpcmCdDmaRequested; } }
-        public bool AdpcmBusyReading { get { return false; } }
+        public bool AdpcmBusyReading { get { return adpcm_read_pending; } }
 
         public void AdpcmThink()
         {
+            if (adpcm_read_pending && Cpu.TotalExecutedCycles >= adpcm_read_timer)
+            {
+                adpcm_read_buffer = ADPCM_RAM[adpcm_read_address++];
+                adpcm_read_pending = false;
+            }
+
+            if (adpcm_write_pending && Cpu.TotalExecutedCycles >= adpcm_write_timer)
+            {
+                ADPCM_RAM[adpcm_write_address++] = adpcm_write_buffer;
+                adpcm_write_pending = false;
+            }
+
             if (AdpcmCdDmaRequested)
             {
                 //Console.WriteLine("CD->ADPCM dma...");
                 if (SCSI.REQ && SCSI.IO && !SCSI.CD && !SCSI.ACK)
                 {
                     byte dmaByte = SCSI.DataBits;
-                    if (adpcm_write_address == 0xFFF9)
-                        adpcm_write_address = 0xFFF9;
-                    //Console.WriteLine("ADPCM[{0:X4}] = {1:X2}", adpcm_write_address, dmaByte);
                     ADPCM_RAM[adpcm_write_address++] = dmaByte;
 
                     SCSI.ACK = false;
@@ -82,6 +93,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (SCSI.DataTransferInProgress == false)
                 {
                     CdIoPorts[0x0B] = 0;
+                    Console.WriteLine("          ADPCM DMA COMPLETED");
                 }
             }
         
