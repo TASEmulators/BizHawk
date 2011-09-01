@@ -230,6 +230,8 @@ namespace BizHawk.Emulation.Sound
             writer.WriteLine("PlayingTrack {0}", PlayingTrack);
             writer.WriteLine("CurrentSector {0}", CurrentSector);
             writer.WriteLine("SectorOffset {0}", SectorOffset);
+            writer.WriteLine("FadeOutOverFrames {0}", FadeOutOverFrames);
+            writer.WriteLine("FadeOutFramesRemaining {0}", FadeOutFramesRemaining);
             writer.WriteLine("[/CDAudio]");
             writer.WriteLine();
         }
@@ -274,6 +276,8 @@ namespace BizHawk.Emulation.Sound
             writer.Write(StartLBA);
             writer.Write(EndLBA);
             writer.Write(PlayingTrack);
+            writer.Write((short)FadeOutOverFrames);
+            writer.Write((short)FadeOutFramesRemaining);
         }
         
         public void LoadStateBinary(BinaryReader reader)
@@ -286,6 +290,8 @@ namespace BizHawk.Emulation.Sound
             StartLBA = reader.ReadInt32();
             EndLBA = reader.ReadInt32();
             PlayingTrack = reader.ReadInt32();
+            FadeOutOverFrames = reader.ReadInt16();
+            FadeOutFramesRemaining = reader.ReadInt16();
         }
     }
 }

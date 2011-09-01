@@ -297,6 +297,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (TurboCD)
             {
                 CDAudio.SaveStateText(writer);
+                writer.Write("CDRAM ");
+                CDRam.SaveAsHex(writer);
+                if (SuperRam != null)
+                {
+                    writer.Write("SuperRAM ");
+                    SuperRam.SaveAsHex(writer);
+                }
             }
             writer.WriteLine("[/PCEngine]");
         }
@@ -319,6 +326,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     IOBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "RAM")
                     Ram.ReadFromHex(args[1]);
+                else if (args[0] == "CDRAM")
+                    CDRam.ReadFromHex(args[1]);
+                else if (args[0] == "SuperRAM")
+                    SuperRam.ReadFromHex(args[1]);
                 else if (args[0] == "PopulousRAM" && PopulousRAM != null)
                     PopulousRAM.ReadFromHex(args[1]);
                 else if (args[0] == "[HuC6280]")
@@ -351,6 +362,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     writer.Write(PopulousRAM);
                 if (SuperRam != null)
                     writer.Write(SuperRam);
+                if (TurboCD)
+                {
+                    writer.Write(CDRam);
+                    writer.Write(ADPCM_RAM);
+                }
                 writer.Write(Frame);
                 writer.Write(_lagcount);
                 writer.Write(SF2MapperLatch);
@@ -388,6 +404,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     PopulousRAM = reader.ReadBytes(0x8000);
                 if (SuperRam != null)
                     SuperRam = reader.ReadBytes(0x30000);
+                if (TurboCD)
+                {
+                    CDRam = reader.ReadBytes(0x10000);
+                    ADPCM_RAM = reader.ReadBytes(0x10000);
+                }
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
                 SF2MapperLatch = reader.ReadByte();
@@ -421,7 +442,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (BramEnabled) buflen += 2048;
             if (PopulousRAM != null) buflen += 0x8000;
             if (SuperRam != null) buflen += 0x30000;
-            if (TurboCD) buflen += 26;
+            if (TurboCD) buflen += 0x20000 + 30;
             //Console.WriteLine("LENGTH1 " + buflen);
 
             var buf = new byte[buflen];
