@@ -1,4 +1,26 @@
-﻿======= TurboGrafx compatibility issues =======
+﻿******************************************************
+*                   Turbo CD Issues                  *
+******************************************************
+
+- Download 2, eventually has issues. Seems like waiting on ADPCM interrupts or flags.
+- Similar in Dragon Slayer
+- Dungeon Explorer II quite desperately need ADPCM audio
+  + and a gross corruption issue at teh end of the intro. and then it freezes. :(
+
+- Dynastic Hero... a CD-command related hard crash :(
+- Exile II .. seems to reset itself after playing the unskippable intro. :(
+- Macross 2036.. seems impossible to start/play the game. :(
+
+- Super Darius II : at 1st Boss, game freezes waiting for adpcm
+- Ys 1, start new game, death by adpcm probably
+
+
+
+
+
+
+
+======= TurboGrafx compatibility issues =======
 
 General: 
  + LFO is not implemented, though I can't tell.
