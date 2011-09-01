@@ -25,7 +25,7 @@ namespace BizHawk
 			pr.CancelSignal = true;
 		}
 
-		public void Update()
+		new public void Update()
 		{
 			double curr = pr.ProgressCurrent;
 			double max = pr.ProgressEstimate;
@@ -37,7 +37,7 @@ namespace BizHawk
 					nValue = 0;
 				progressBar1.Value = nValue;
 			}
-			lblMessage.Text = pr.Message;
+			lblMessage.Text = pr.Message + " - " + progressBar1.Value.ToString() + "%";
 		}
 
 		private void ProgressDialog_Load(object sender, EventArgs e)
