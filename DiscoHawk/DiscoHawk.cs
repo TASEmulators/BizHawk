@@ -41,7 +41,7 @@ namespace BizHawk
 
 			if (gui)
 			{
-				var dialog = new DiscoHawkDialog();
+				var dialog = new MainDiscoForm();
 				dialog.ShowDialog();
 				return;
 			}

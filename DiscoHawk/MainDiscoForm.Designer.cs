@@ -48,6 +48,8 @@
 			// 
 			// lblMagicDragArea
 			// 
+			this.lblMagicDragArea.AllowDrop = true;
+			this.lblMagicDragArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblMagicDragArea.Controls.Add(this.label1);
 			this.lblMagicDragArea.Location = new System.Drawing.Point(84, 12);
 			this.lblMagicDragArea.Name = "lblMagicDragArea";
