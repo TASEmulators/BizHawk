@@ -48,14 +48,14 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			TASView.BlazingFast = true;
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 				TASView.ItemCount = 0;
 			else
 				DisplayList();
 
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				string str = Global.MainForm.UserMovie.GetInputFrame(Global.Emulator.Frame);
+				string str = Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame);
 				if (Global.Config.TASUpdatePads)
 				{
 					switch (Global.Emulator.SystemId)
@@ -112,12 +112,12 @@ namespace BizHawk.MultiClient
 			if (column == 0)
 				text = String.Format("{0:#,##0}", index);
 			if (column == 1)
-				text = Global.MainForm.UserMovie.GetInputFrame(index);
+				text = Global.MovieSession.Movie.GetInputFrame(index);
 		}
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MainForm.UserMovie.Length();
+			TASView.ItemCount = Global.MovieSession.Movie.Length();
 			TASView.ensureVisible(Global.Emulator.Frame);
 		}
 

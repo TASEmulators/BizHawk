@@ -346,7 +346,7 @@ namespace BizHawk.MultiClient
 				Color c;
 				int x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
 				int y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
-				if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
 				}
@@ -404,14 +404,14 @@ namespace BizHawk.MultiClient
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 47,
 					 0 + 1, Color.Black);
 				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
 					0, Color.FromArgb(Global.Config.MovieColor));
 			}
-			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.RECORD)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
 				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 65,
 						 0 + 1, Color.Black);
@@ -419,10 +419,10 @@ namespace BizHawk.MultiClient
 					0, Color.FromArgb(Global.Config.MovieColor));
 			}
 
-			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
 			{
 				//TODO: implement multiple subtitles at once feature
-				Subtitle s = Global.MainForm.UserMovie.Subtitles.GetSubtitle(Global.Emulator.Frame);
+				Subtitle s = Global.MovieSession.Movie.Subtitles.GetSubtitle(Global.Emulator.Frame);
 				MessageFont.DrawString(null, s.Message, s.X + 1,
 							s.Y + 1, new Color4(Color.Black));
 				MessageFont.DrawString(null, s.Message, s.X,
@@ -432,15 +432,15 @@ namespace BizHawk.MultiClient
 
 		private string MakeFrameCounter()
 		{
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.FINISHED)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.Length().ToString() + " (Finished)";
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString() + " (Finished)";
 			}
-			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.PLAY)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MainForm.UserMovie.Length().ToString();
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString();
 			}
-			else if (Global.MainForm.UserMovie.Mode == MOVIEMODE.RECORD)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 				return Global.Emulator.Frame.ToString();
 			else
 			{
@@ -488,10 +488,10 @@ namespace BizHawk.MultiClient
 		public string MakeInputDisplay()
 		{
 			StringBuilder s;
-			if (Global.MainForm.UserMovie.Mode == MOVIEMODE.INACTIVE || Global.MainForm.UserMovie.Mode == MOVIEMODE.FINISHED)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			else
-				s = new StringBuilder(Global.MainForm.UserMovie.GetInputFrame(Global.Emulator.Frame - 1));
+				s = new StringBuilder(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame - 1));
 			s.Replace(".", " ");
 			s.Replace("|", "");
 			return s.ToString();
@@ -499,8 +499,8 @@ namespace BizHawk.MultiClient
 
 		public string MakeRerecordCount()
 		{
-			if (Global.MainForm.UserMovie.Mode != MOVIEMODE.INACTIVE)
-				return "Rerecord Count: " + Global.MainForm.UserMovie.Rerecords.ToString();
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
+				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
 			else
 				return "";
 		}

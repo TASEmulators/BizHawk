@@ -11,31 +11,29 @@ namespace BizHawk.MultiClient
 	partial class MainForm
 	{
 		public bool ReadOnly = true;	//Global Movie Read only setting
-		public Movie UserMovie = new Movie();
 
 		public void StartNewMovie(Movie m, bool record)
 		{
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = m;
-			UserMovie = m; //TODO - maybe get rid of UserMovie?
 			RewireInputChain();
 
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
-			UserMovie.LoadMovie();
+			Global.MovieSession.Movie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.Filename);
-			if (UserMovie.StartsFromSavestate)
+			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
 				LoadStateFile(m.Filename, Path.GetFileName(m.Filename));
 				Global.Emulator.ResetFrameCounter();
 			}
 			if (record)
 			{
-				UserMovie.StartNewRecording();
+				Global.MovieSession.Movie.StartNewRecording();
 				ReadOnly = false;
 			}
 			else
 			{
-				UserMovie.StartPlayback();
+				Global.MovieSession.Movie.StartPlayback();
 			}
 			SetMainformMovieInfo();
 			TAStudio1.Restart();
@@ -43,15 +41,15 @@ namespace BizHawk.MultiClient
 
 		public void SetMainformMovieInfo()
 		{
-			if (UserMovie.Mode == MOVIEMODE.PLAY || UserMovie.Mode == MOVIEMODE.FINISHED)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.Play;
 				PlayRecordStatus.ToolTipText = "Movie is in playback mode";
 			}
-			else if (UserMovie.Mode == MOVIEMODE.RECORD)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
-				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(UserMovie.Filename);
+				Text = DisplayNameForSystem(Global.Game.System) + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				PlayRecordStatus.Image = BizHawk.MultiClient.Properties.Resources.RecordHS;
 				PlayRecordStatus.ToolTipText = "Movie is in record mode";
 			}
@@ -65,7 +63,7 @@ namespace BizHawk.MultiClient
 
 		public bool MovieActive()
 		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 				return true;
 			else
 				return false;
@@ -85,10 +83,10 @@ namespace BizHawk.MultiClient
 
 		public void PlayMovieFromBeginning()
 		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 			{
 				LoadRom(CurrentlyOpenRom);
-				UserMovie.StartPlayback();
+				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
 			}
 		}
@@ -96,15 +94,15 @@ namespace BizHawk.MultiClient
 		public void StopMovie()
 		{
 			string message = "Movie ";
-			if (UserMovie.Mode == MOVIEMODE.RECORD)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 				message += "recording ";
-			else if (UserMovie.Mode == MOVIEMODE.PLAY
-				|| UserMovie.Mode == MOVIEMODE.FINISHED)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY
+				|| Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				message += "playback ";
 			message += "stopped.";
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 			{
-				UserMovie.StopMovie();
+				Global.MovieSession.Movie.StopMovie();
 				Global.RenderPanel.AddMessage(message);
 				SetMainformMovieInfo();
 				Global.MainForm.ReadOnly = true;
@@ -114,53 +112,53 @@ namespace BizHawk.MultiClient
 		private bool HandleMovieLoadState(string path)
 		{
 			//Note, some of the situations in these IF's may be identical and could be combined but I intentionally separated it out for clarity
-			if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 				return true;
 			
-			if (UserMovie.Mode == MOVIEMODE.RECORD)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
 				
 				if (ReadOnly)
 				{
 
-					if (!UserMovie.CheckTimeLines(path, false))
+					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
 						return false;	//Timeline/GUID error
 					else
 					{
-						UserMovie.WriteMovie();
-						UserMovie.StartPlayback();
+						Global.MovieSession.Movie.WriteMovie();
+						Global.MovieSession.Movie.StartPlayback();
 						SetMainformMovieInfo();
 					}
 				}
 				else
 				{
-					if (!UserMovie.CheckTimeLines(path, true))
+					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
 						return false;	//GUID Error
-					UserMovie.LoadLogFromSavestateText(path);
+					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 				}
 			}
-			else if (UserMovie.Mode == MOVIEMODE.PLAY)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
 				if (ReadOnly)
 				{
-					if (!UserMovie.CheckTimeLines(path, false))
+					if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
 						return false;	//Timeline/GUID error
 					//Frame loop automatically handles the rewinding effect based on Global.Emulator.Frame so nothing else is needed here
 				}
 				else
 				{
-					if (!UserMovie.CheckTimeLines(path, true))
+					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
 						return false;	//GUID Error
-					UserMovie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
+					Global.MovieSession.Movie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
 					SetMainformMovieInfo();
-					UserMovie.LoadLogFromSavestateText(path);
+					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 				}
 			}
-			else if (UserMovie.Mode == MOVIEMODE.FINISHED)
+			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 			{
 				if (ReadOnly)
 				{
-					if (Global.Emulator.Frame > UserMovie.Length())
+					if (Global.Emulator.Frame > Global.MovieSession.Movie.Length())
 					{
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
@@ -168,15 +166,15 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						if (!UserMovie.CheckTimeLines(path, false))
+						if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
 							return false;	//Timeline/GUID error
-						UserMovie.StartPlayback();
+						Global.MovieSession.Movie.StartPlayback();
 						SetMainformMovieInfo();
 					}
 				}
 				else
 				{
-					if (Global.Emulator.Frame > UserMovie.Length())
+					if (Global.Emulator.Frame > Global.MovieSession.Movie.Length())
 					{
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
@@ -184,11 +182,11 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						if (!UserMovie.CheckTimeLines(path, true))
+						if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
 							return false;	//GUID Error
-						UserMovie.StartNewRecording();
+						Global.MovieSession.Movie.StartNewRecording();
 						SetMainformMovieInfo();
-						UserMovie.LoadLogFromSavestateText(path);
+						Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 					}
 				}
 			}
@@ -197,9 +195,9 @@ namespace BizHawk.MultiClient
 
 		private void HandleMovieSaveState(StreamWriter writer)
 		{
-			if (UserMovie.Mode != MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 			{
-				UserMovie.DumpLogIntoSavestateText(writer);
+				Global.MovieSession.Movie.DumpLogIntoSavestateText(writer);
 			}
 		}
 	}
