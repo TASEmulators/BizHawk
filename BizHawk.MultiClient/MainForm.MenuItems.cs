@@ -743,9 +743,9 @@ namespace BizHawk.MultiClient
 			s.DisableFrame();
 			int index = -1;
 			Subtitle sub = new Subtitle();
-			for (int x = 0; x < UserMovie.Subtitles.Count(); x++)
+			for (int x = 0; x < Global.MovieSession.Movie.Subtitles.Count(); x++)
 			{
-				sub = UserMovie.Subtitles.GetSubtitleByIndex(x);
+				sub = Global.MovieSession.Movie.Subtitles.GetSubtitleByIndex(x);
 				if (Global.Emulator.Frame == sub.Frame)
 				{
 					index = x;
@@ -762,8 +762,8 @@ namespace BizHawk.MultiClient
 			if (s.ShowDialog() == DialogResult.OK)
 			{
 				if (index >= 0)
-					UserMovie.Subtitles.Remove(index);
-				UserMovie.Subtitles.AddSubtitle(s.sub);
+					Global.MovieSession.Movie.Subtitles.Remove(index);
+				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
 		}
 
@@ -818,7 +818,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[1].Visible = false;
 				contextMenuStrip1.Items[2].Visible = false;
 
-				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 				{
 					contextMenuStrip1.Items[3].Visible = true;
 					contextMenuStrip1.Items[4].Visible = true;
@@ -909,7 +909,7 @@ namespace BizHawk.MultiClient
 
 		private void makeMovieBackupToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			UserMovie.WriteBackup();
+			Global.MovieSession.Movie.WriteBackup();
 		}
 
 		private void automaticallyBackupMoviesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -972,21 +972,21 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
 
 			EditCommentsForm c = new EditCommentsForm();
 			c.ReadOnly = ReadOnly;
-			c.GetMovie(UserMovie);
+			c.GetMovie(Global.MovieSession.Movie);
 			c.ShowDialog();
 		}
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (UserMovie.Mode == MOVIEMODE.INACTIVE) return;
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
 
 			EditSubtitlesForm s = new EditSubtitlesForm();
 			s.ReadOnly = ReadOnly;
-			s.GetMovie(UserMovie);
+			s.GetMovie(Global.MovieSession.Movie);
 			s.ShowDialog();
 		}
 
@@ -1028,7 +1028,7 @@ namespace BizHawk.MultiClient
 
 		private void movieToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 			{
 				stopMovieToolStripMenuItem.Enabled = false;
 				playFromBeginningToolStripMenuItem.Enabled = false;

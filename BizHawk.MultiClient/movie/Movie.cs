@@ -539,11 +539,12 @@ namespace BizHawk.MultiClient
 					reader.Close();
 					return false;
 			}
-			for (int x = 0; x < Log.Length(); x++)
+			for (int x = 0; x < l.Length(); x++)
 			{
 				string xs = Log.GetFrame(x);
 				string ys = l.GetFrame(x);
-				if (Log.GetFrame(x) != l.GetFrame(x))
+				//if (Log.GetFrame(x) != l.GetFrame(x))
+				if (xs != ys)
 				{
 					//TimeLine Error
 					MessageBox.Show("The savestate input does not match the movie input at frame " + (x + 1).ToString() + ".",

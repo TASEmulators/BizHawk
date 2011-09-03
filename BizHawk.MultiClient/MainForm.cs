@@ -66,6 +66,8 @@ namespace BizHawk.MultiClient
 
 		public MainForm(string[] args)
 		{
+			Global.MovieSession = new MovieSession();
+			Global.MovieSession.Movie = new Movie();
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = new GameInfo();
@@ -114,7 +116,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.CheatList.SaveSettings();
 				CloseGame();
-				UserMovie.StopMovie();
+				Global.MovieSession.Movie.StopMovie();
 				SaveConfig();
 			};
 
@@ -1171,7 +1173,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
-			UserMovie.StopMovie();
+			Global.MovieSession.Movie.StopMovie();
 		}
 
 		private static void SaveRam()
@@ -1421,7 +1423,7 @@ namespace BizHawk.MultiClient
 
 				case "Toggle MultiTrack":
 					{
-						if (Global.MainForm.UserMovie.Mode > MOVIEMODE.INACTIVE)
+						if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)
 						{
 							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
 							if (Global.MovieSession.MultiTrack.IsActive)
@@ -1583,12 +1585,12 @@ namespace BizHawk.MultiClient
 
 				MovieSession session = Global.MovieSession;
 
-				if (UserMovie.Mode == MOVIEMODE.RECORD || UserMovie.Mode == MOVIEMODE.PLAY)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD || Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
 					session.LatchInputFromLog();
 				}
 
-				if (UserMovie.Mode == MOVIEMODE.RECORD)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 				{
 					if (session.MultiTrack.IsActive)
 					{
@@ -1604,24 +1606,24 @@ namespace BizHawk.MultiClient
 					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 				}
 
-				if (UserMovie.Mode == MOVIEMODE.INACTIVE || UserMovie.Mode == MOVIEMODE.FINISHED)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
 					session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 				}
 
-				if (UserMovie.Mode == MOVIEMODE.PLAY)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (UserMovie.Length() == Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame)
 					{
-						UserMovie.SetMovieFinished();
+						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
-				if (UserMovie.Mode == MOVIEMODE.FINISHED)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
-					if (UserMovie.Length() > Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.Length() > Global.Emulator.Frame)
 					{
-						UserMovie.StartPlayback();
-						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame));
+						Global.MovieSession.Movie.StartPlayback();
+						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
 						//Global.MovieMode = true;
 						//adelikat: is Global.MovieMode doing anything anymore? if not we shoudl remove this variable
 						session.LatchInputFromLog();
@@ -1629,9 +1631,9 @@ namespace BizHawk.MultiClient
 				}
 
 				//TODO: adelikat: don't know what this should do so leaving it commented out
-				//if (UserMovie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
+				//if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
 				//{					
-				//	Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(UserMovie.GetInputFrame(Global.Emulator.Frame-1));
+				//	Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame-1));
 				//}
 
 				//=======================================
@@ -2171,7 +2173,7 @@ namespace BizHawk.MultiClient
 
 		public void ToggleReadOnly()
 		{
-			if (Global.MainForm.UserMovie.Mode > MOVIEMODE.INACTIVE)
+			if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)
 			{
 				ReadOnly ^= true;
 				if (ReadOnly)
@@ -2243,7 +2245,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				Global.ClickyVirtualPadController.Click("Reset");
-				if (UserMovie.Mode == MOVIEMODE.INACTIVE)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 					Global.Emulator.ResetFrameCounter();
 			}
 		}
