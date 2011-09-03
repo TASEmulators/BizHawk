@@ -27,7 +27,9 @@ namespace BizHawk
 		[STAThread]
 		static void Main(string[] args)
 		{
-			DiscSystem.FFMpeg.FFMpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
+            var ffmpegPath = Path.Combine(GetExeDirectoryAbsolute(), "ffmpeg.exe");
+            DiscSystem.FFMpeg.FFMpegPath = ffmpegPath;
+            AudioExtractor.FFmpegPath = ffmpegPath;
 			new DiscoHawk().Run(args);
 		}
 

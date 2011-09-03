@@ -124,5 +124,18 @@ namespace BizHawk
 			}
 			return ret;
 		}
+
+        private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
+        {
+            var files = validateDrop(e.Data);
+			if (files.Count == 0) return;
+            foreach (var file in files)
+            {
+                var disc = Disc.FromCuePath(file);
+                var path = Path.GetDirectoryName(file);
+                var filename = Path.GetFileNameWithoutExtension(file);
+                AudioExtractor.Extract(disc, path, filename);
+            }
+        }
 	}
 }

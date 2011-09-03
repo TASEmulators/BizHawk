@@ -36,7 +36,7 @@ namespace BizHawk
 			if (ofd.ShowDialog() != DialogResult.OK)
 				return;
 
-			Disc disc = DiscSystem.Disc.FromCuePath(ofd.FileName);
+			Disc disc = Disc.FromCuePath(ofd.FileName);
 
 			string baseName = Path.GetFileName(ofd.FileName);
 			ListViewItem lvi = new ListViewItem(baseName);
@@ -99,7 +99,7 @@ namespace BizHawk
 
 		CueBinPrefs GetCuePrefs()
 		{
-			var prefs = new DiscSystem.CueBinPrefs();
+			var prefs = new CueBinPrefs();
 			prefs.AnnotateCue = checkCueProp_Annotations.Checked;
 			prefs.OneBlobPerTrack = checkCueProp_OneBlobPerTrack.Checked;
 			prefs.ReallyDumpBin = false;
