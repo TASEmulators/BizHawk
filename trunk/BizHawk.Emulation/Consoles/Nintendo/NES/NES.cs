@@ -13,29 +13,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public partial class NES : IEmulator
 	{
-		static readonly bool USE_DATABASE = true;
-        public RomStatus RomStatus;
-		//Game issues:
-		//Tecmo superbowl - wobbly "NFL" logo at the end of a game (even skipped game) [zeromus cant test this; how do you skip game?]
-		//Bigfoot (U) seems not to work
+		//Broken
 		//Bill and ted's excellent video game adventure (U) doesnt work until more detailed emulation exists (check 001.txt)
+		//AD&D Hillsfar (U).nes black screen
 
-		//---
-		//Game issues for tester to check off.
-		//we have three compatibility levels, so you may want to leave games off the 'broken' list even though theyre still broken (aka level 2 'as good as any other emu)
-		//1. broken
-		//2. as good as any other emu
-		//3. more fixed than other emus
-
-		//Indiana Jones Temple of Doom - Pause menu flickering (in FCEUX as well, haven't tested other emulators) [looks same in nintendulator, i think this is OK]
-		//3-D World Runner - UNROM - weird lines in gameplay (OK i think - should be similar to other emulators now)
-		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
+		//As good as other Emus
 		//Knight Rider - very glitchy and seems to be a good timing case! (seems to run same as nintendulator and fceux now.. which may not be entirely accurate)
+		//Indiana Jones and the Temple of Doom 
+		//Air Wolf - big graphical glitch. seems to be a real bug, but it should never have been released with this. need to verify for sure that it is a real bug?
+
+		//Needs Testing again
+		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
 
 		//------
-		//zeromus's new notes:
-		//AD&D Hillsfar (U).nes black screen
-		//Air Wolf - big graphical glitch. seems to be a real bug, but it should never have been released with this. need to verify for sure that it is a real bug?
+		static readonly bool USE_DATABASE = true;
+		public RomStatus RomStatus;
 
 		public NES(GameInfo game, byte[] rom)
 		{
