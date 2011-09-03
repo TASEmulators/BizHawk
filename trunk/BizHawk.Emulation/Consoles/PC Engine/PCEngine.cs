@@ -114,8 +114,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemoryCD;
                 Cpu.WriteVDC = VDC1.WriteVDC;
                 CDAudio = new CDAudio(disc, short.MaxValue);
-                // TODO ADPCM
-                SoundMixer = new SoundMixer(PSG, CDAudio);
+                ADPCM_Provider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+                SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM_Provider);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
                 soundProvider = SoundSynchronizer;
                 Cpu.ThinkAction = () => { SCSI.Think(); AdpcmThink(); };
@@ -456,15 +456,46 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         private void SetupMemoryDomains()
         {
-            var domains = new List<MemoryDomain>(1);
+            var domains = new List<MemoryDomain>(10);
             var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, Endian.Little,
-                addr => Ram[addr & 0x7FFF],
-                (addr, value) => Ram[addr & 0x7FFF] = value);
+                addr => Ram[addr & 0x1FFF],
+                (addr, value) => Ram[addr & 0x1FFF] = value);
+            domains.Add(MainMemoryDomain);
+
             var SystemBusDomain = new MemoryDomain("System Bus", 0x2F0000, Endian.Little,
                 addr => Cpu.ReadMemory21(addr),
                 (addr, value) => Cpu.WriteMemory21(addr, value));
-            domains.Add(MainMemoryDomain);
             domains.Add(SystemBusDomain);
+
+            if (BRAM != null)
+            {
+                var BRAMMemoryDomain = new MemoryDomain("Battery RAM", Ram.Length, Endian.Little,
+                    addr => BRAM[addr & 0x7FF],
+                    (addr, value) => BRAM[addr & 0x7FF] = value);
+                domains.Add(BRAMMemoryDomain);
+            }
+
+            if (TurboCD)
+            {
+                var CDRamMemoryDomain = new MemoryDomain("TurboCD RAM", CDRam.Length, Endian.Little,
+                    addr => CDRam[addr & 0xFFFF],
+                    (addr, value) => CDRam[addr & 0xFFFF] = value);
+                domains.Add(CDRamMemoryDomain);
+
+                var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM_RAM.Length, Endian.Little,
+                    addr => ADPCM_RAM[addr & 0xFFFF],
+                    (addr, value) => ADPCM_RAM[addr & 0xFFFF] = value);
+                domains.Add(AdpcmMemoryDomain);
+                
+                if (SuperRam != null)
+                {
+                    var SuperRamMemoryDomain = new MemoryDomain("Super System Card RAM", SuperRam.Length, Endian.Little,
+                        addr => SuperRam[addr & 0x3FFFF],
+                        (addr, value) => SuperRam[addr & 0x3FFFF] = value);
+                    domains.Add(SuperRamMemoryDomain);
+                }
+            }
+
             memoryDomains = domains.AsReadOnly();
         }
 

@@ -457,7 +457,10 @@ throw new Exception("requesting 0 sectors read.............................");
 
                 case 0x80: // Set end offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
-                    audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+                    if (trackNo - 1 >= disc.TOC.Sessions[0].Tracks.Count)
+                        audioEndLBA = disc.LBACount;
+                    else 
+                        audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
                     Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
                     break;
             }

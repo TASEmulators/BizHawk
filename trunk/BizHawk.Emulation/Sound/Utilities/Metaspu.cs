@@ -564,11 +564,11 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
-        private Queue<Sample> buffer;
-        private Sample[] resampleBuffer;
+        Queue<Sample> buffer;
+        Sample[] resampleBuffer;
 
-        private const int SamplesInOneFrame = 735;
-        private const int MaxExcessSamples = 2048;
+        const int SamplesInOneFrame = 735;
+        const int MaxExcessSamples = 2048;
 
         public VecnaSynchronizer()
         {
@@ -624,8 +624,8 @@ namespace BizHawk.Emulation.Sound
                     for (int i = 0; i<samples_requested; i++)
                     {
                         Sample sample = resampleBuffer[i*samples_available/samples_requested];
-                        buf[index++] = sample.left;
-                        buf[index++] = sample.right;
+                        buf[index++] += sample.left;
+                        buf[index++] += sample.right;
                     }
                 } else {
                     // we're outside of a "reasonable" underflow. Give up and output silence.
@@ -640,8 +640,8 @@ namespace BizHawk.Emulation.Sound
                 for (int i = 0; i < samples_requested && buffer.Count > 0; i++)
                 {
                     Sample sample = buffer.Dequeue();
-                    buf[index++] = sample.left;
-                    buf[index++] = sample.right;
+                    buf[index++] += sample.left;
+                    buf[index++] += sample.right;
                 }
             }
             return samples_requested;
