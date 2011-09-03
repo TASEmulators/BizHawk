@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public void clock_length_and_sweep()
 				{
 					//env_loopdoubles as "halt length counter"
-					if (len_cnt > 0)
+					if (len_cnt > 1)
 						len_cnt--;
 				}
 
@@ -494,10 +494,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//if (halt_flag == 1 && control_flag == 0)
 					//{
 					//    seq = 16;
-					//    Console.WriteLine("declicked triangle");
+					//   Console.WriteLine("declicked triangle");
 					//}
 
-					////declick on end of sound
+					//declick on end of sound
 					//bool en = len_cnt != 0 && linear_counter != 0;
 					//if (!en)
 					//    if (sample < 0) sample++; else if (sample > 0) sample--;
