@@ -51,9 +51,13 @@ namespace BizHawk.MultiClient
 			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
 			//buffer all the data from the ppu, because it will be read multiple times and that is slow
-			int[] p = new int[0x3000];
+			byte[] p = new byte[0x3000];
 			for (int x = 0; x < 0x3000; x++)
 				p[x] = Nes.ppu.ppubus_peek(x);
+
+			byte[] palram = new byte[0x20];
+			for (int x = 0; x < 0x20; x++)
+				palram[x] = Nes.ppu.PALRAM[x];
 
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
@@ -93,7 +97,7 @@ namespace BizHawk.MultiClient
 					if (pixel != 0)
 						pixel |= at;
 
-					pixel = Nes.ppu.PALRAM[pixel];
+					pixel = palram[pixel];
 					int cvalue = Nes.LookupColor(pixel);
 					*dptr = cvalue;
 				}
