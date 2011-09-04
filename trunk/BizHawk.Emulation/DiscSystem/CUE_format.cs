@@ -48,6 +48,7 @@ namespace BizHawk.DiscSystem
 				else if (cue_file.FileType == Cue.CueFileType.Wave)
 				{
 					Blob_WaveFile blob = new Blob_WaveFile();
+					Blobs.Add(blob);
 
 					try
 					{
