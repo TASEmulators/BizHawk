@@ -43,7 +43,7 @@ namespace BizHawk.MultiClient
 			if (Nes == null) return;
 
 			if (Global.Emulator.Frame % RefreshRate.Value != 0) return;
-			
+
 			BitmapData bmpdata = NameTableView.nametables.LockBits(new Rectangle(0, 0, 512, 480), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			int* dptr = (int*)bmpdata.Scan0.ToPointer();
@@ -51,7 +51,9 @@ namespace BizHawk.MultiClient
 			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
 			//TODO - buffer all the data from the ppu, because it will be read multiple times and that is slow
-
+			int[] p = new int[0x1000];
+			for (int x = 0; x < 0x1000; x++)
+				p[x] = Nes.ppu.ppubus_peek(0x2000 + x);
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
 			{
@@ -70,9 +72,9 @@ namespace BizHawk.MultiClient
 					int ty = py >> 3;
 					int ntbyte_ptr = ntaddr + (ty * 32) + tx;
 					int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-					int nt = Nes.ppu.ppubus_peek(ntbyte_ptr + 0x2000);
+					int nt = p[ntbyte_ptr];
 
-					int at = Nes.ppu.ppubus_peek(atbyte_ptr + 0x2000);
+					int at = p[atbyte_ptr];
 					if ((ty & 2) != 0) at >>= 4;
 					if ((tx & 2) != 0) at >>= 2;
 					at &= 0x03;
@@ -98,7 +100,6 @@ namespace BizHawk.MultiClient
 			}
 
 			NameTableView.nametables.UnlockBits(bmpdata);
-
 			NameTableView.Refresh();
 		}
 
