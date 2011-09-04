@@ -133,6 +133,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			public int top = 8;
 			public int bottom = 231;
+			public int left = 0;
+			public int right = 256;
 
 			NES emu;
 			public MyVideoProvider(NES emu)
@@ -145,30 +147,45 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
+				
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
-				for (int x = 0; x < 256; x++)
+				int width = right - left;
+				for (int x = left; x < right; x++)
 				{
 					for (int y = top; y < bottom; y++)
 					{
 						short pixel = emu.ppu.xbuf[(y*256) + x];
 						if ((pixel & 0x8000) != 0 && useBackdrop)
 						{
-							pixels[((y-top)*256) + x] = backdrop;
+							pixels[((y-top)*width) + (x - left)] = backdrop;
 						}
-						else pixels[((y-top)*256) + x] = emu.palette_compiled[pixel & 0x7FFF];
+						else pixels[((y-top)*width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
 					}
 				}
 				return pixels;
 			}
-			public int BufferWidth { get { return 256; } }
+			public int BufferWidth { get { return right - left; } }
 			public int BufferHeight { get { return bottom - top; } }
 			public int BackgroundColor { get { return 0; } }
-			public int Top { get { return top; } set { top = value; } }
-			public int Bottom { get { return bottom; } set { bottom = value; } }
 		}
 
 		public int FirstDrawLine { get { return videoProvider.top; } set { videoProvider.top = value; } }
 		public int LastDrawLine { get { return videoProvider.bottom; } set { videoProvider.bottom = value; } }
+
+		public void SetClipLeftAndRight(bool clip)
+		{
+			if (clip)
+			{
+				videoProvider.left = 8;
+				videoProvider.right = 248;
+			}
+			else
+			{
+				videoProvider.left = 0;
+				videoProvider.right = 256;
+			}
+		}
+	
 
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }

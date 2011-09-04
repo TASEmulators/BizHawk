@@ -1029,6 +1029,7 @@ namespace BizHawk.MultiClient
 									NES nes = new NES(game, rom.FileData);
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
+									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
 									Global.Game.Status = nes.RomStatus;
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&

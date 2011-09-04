@@ -220,7 +220,6 @@
 			// ClipLeftAndRightCheckBox
 			// 
 			this.ClipLeftAndRightCheckBox.AutoSize = true;
-			this.ClipLeftAndRightCheckBox.Enabled = false;
 			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(143, 47);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);

@@ -93,6 +93,7 @@ namespace BizHawk.MultiClient
 			nes.LastDrawLine = (int)LastLineNumeric.Value;
 			Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
 			Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
+			nes.SetClipLeftAndRight(ClipLeftAndRightCheckBox.Checked);
 			Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
 			Global.Config.NESDispSprites = DispSprites.Checked;
 			Global.Config.NESDispBackground = DispBackground.Checked;
