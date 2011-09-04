@@ -261,9 +261,21 @@ namespace BizHawk.MultiClient
 			return path;
 		}
 
+		public static string RemoveInvalidFileSystemChars(string name)
+		{
+			string newStr = name;
+			char[] chars = Path.GetInvalidFileNameChars();
+			foreach (char c in chars)
+			{
+				newStr = newStr.Replace(c.ToString(), "");
+			}
+			return newStr;
+		}
+
 		public static string FilesystemSafeName(GameInfo game)
 		{
 			string filesystemSafeName = game.Name.Replace("|", "+");
+			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
 			return Path.Combine(Path.GetDirectoryName(filesystemSafeName), Path.GetFileNameWithoutExtension(filesystemSafeName));
 		}
 
