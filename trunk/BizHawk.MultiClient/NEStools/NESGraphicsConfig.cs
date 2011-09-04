@@ -36,6 +36,8 @@ namespace BizHawk.MultiClient
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
 			nes = Global.Emulator as NES;
+			FirstLineNumeric.Value = Global.Config.NESTopLine;
+			LastLineNumeric.Value = Global.Config.NESBottomLine;
 			AllowMoreSprites.Checked = Global.Config.NESAllowMoreThanEightSprites;
 			ClipLeftAndRightCheckBox.Checked = Global.Config.NESClipLeftAndRight;
 			AutoLoadPalette.Checked = Global.Config.NESAutoLoadPalette;
@@ -85,6 +87,10 @@ namespace BizHawk.MultiClient
 				Global.RenderPanel.AddMessage("Standard Palette set");
 			}
 
+			Global.Config.NESTopLine = (int)FirstLineNumeric.Value;
+			Global.Config.NESBottomLine = (int)LastLineNumeric.Value;
+			nes.FirstDrawLine = (int)FirstLineNumeric.Value;
+			nes.LastDrawLine = (int)LastLineNumeric.Value;
 			Global.Config.NESAllowMoreThanEightSprites = AllowMoreSprites.Checked;
 			Global.Config.NESClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
 			Global.Config.NESAutoLoadPalette = AutoLoadPalette.Checked;
@@ -109,7 +115,5 @@ namespace BizHawk.MultiClient
 			if (BGColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
-
-
 	}
 }
