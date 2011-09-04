@@ -504,6 +504,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
-        public void Dispose() {}
+        public void Dispose() 
+        {
+            if (disc != null)
+                disc.Dispose();
+        }
     }
 }
