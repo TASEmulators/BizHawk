@@ -3,27 +3,31 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
-    public partial class PCEngine
+    public sealed class ADPCM
     {
-        // herein I begin to realize the downside of prodigous use of partial class.
-        // too much stuff in one namespace.
-        // partial class still rocks though. you rock, partial class.
-
         public ushort adpcm_io_address;
         public ushort adpcm_read_address;
         public ushort adpcm_write_address;
         public ushort adpcm_length;
 
-        public int adpcm_read_timer,   adpcm_write_timer;
+        public int  adpcm_read_timer,   adpcm_write_timer;
         public byte adpcm_read_buffer,  adpcm_write_buffer;
         public bool adpcm_read_pending, adpcm_write_pending;
 
+        public byte[] RAM = new byte[0x10000];
+        public MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+
         long LastThink;
         float adpcm_playback_timer;
+        
+        ScsiCDBus SCSI;
+        PCEngine pce;
 
-        public byte[] ADPCM_RAM;
-
-        public MetaspuSoundProvider ADPCM_Provider;
+        public ADPCM(PCEngine pcEngine, ScsiCDBus scsi)
+        {
+            pce = pcEngine;
+            SCSI = scsi;
+        }
 
         static readonly int[] StepSize = 
         {
@@ -47,7 +51,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public void AdpcmControlWrite(byte value)
         {
             Log.Error("CD","ADPCM CONTROL WRITE {0:X2}",value);
-            if ((CdIoPorts[0x0D] & 0x80) != 0 && (value & 0x80) == 0)
+            if ((Port180D & 0x80) != 0 && (value & 0x80) == 0)
             {
                 Log.Note("CD", "Reset ADPCM!");
                 adpcm_read_address = 0;
@@ -67,7 +71,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     adpcm_read_address--;
             }
 
-            if ((CdIoPorts[0x0D] & 2) == 0 && (value & 2) != 0)
+            if ((Port180D & 2) == 0 && (value & 2) != 0)
             {
                 adpcm_write_address = adpcm_io_address;
                 if ((value & 1) == 0)
@@ -92,22 +96,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 adpcm_playback_timer = 0;
                 magnitude = 0;
             }
-        }
 
-        public void AdpcmDataWrite(byte value)
-        {
-            adpcm_write_buffer = value;
-            adpcm_write_timer = 24;
-            adpcm_write_pending = true;
+            Port180D = value;
         }
-
-        public byte AdpcmDataRead()
-        {
-            adpcm_read_pending = true;
-            adpcm_read_timer = 24;
-            return adpcm_read_buffer;
-        }
-
 
         public bool AdpcmIsPlaying   { get; private set; }
         public bool AdpcmBusyWriting { get { return AdpcmCdDmaRequested; } }
@@ -127,10 +118,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             byte sample;
             if (nibble == false)
             {
-                sample = (byte) (ADPCM_RAM[adpcm_read_address] >> 4);
+                sample = (byte) (RAM[adpcm_read_address] >> 4);
                 nibble = true;
             } else {
-                sample = (byte)(ADPCM_RAM[adpcm_read_address] & 0xF);
+                sample = (byte)(RAM[adpcm_read_address] & 0xF);
                 nibble = false;
                 adpcm_length--;
                 adpcm_read_address++;
@@ -151,10 +142,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         void AdpcmEmitSample()
         {
             if (AdpcmIsPlaying == false)
-                ADPCM_Provider.buffer.enqueue_sample(0, 0);
+                SoundProvider.buffer.enqueue_sample(0, 0);
             else
             {
-                int rate = 16 - (CdIoPorts[0x0E] & 0x0F);
+                int rate = 16 - (Port180E & 0x0F);
                 float khz = 32 / rate;
 
                 if (nextSampleTimer == 0)
@@ -170,14 +161,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
 
                 short adjustedSample = (short)((playingSample - 2048) << 3);
-                ADPCM_Provider.buffer.enqueue_sample(adjustedSample, adjustedSample);
+                SoundProvider.buffer.enqueue_sample(adjustedSample, adjustedSample);
             }
         }
 
-        public void AdpcmThink()
+        public void Think()
         {
-            int cycles = (int) (Cpu.TotalExecutedCycles - LastThink);
-            LastThink = Cpu.TotalExecutedCycles;
+            int cycles = (int) (pce.Cpu.TotalExecutedCycles - LastThink);
+            LastThink = pce.Cpu.TotalExecutedCycles;
 
             adpcm_playback_timer -= cycles;
             if (adpcm_playback_timer < 0)
@@ -191,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
             if (adpcm_read_pending && adpcm_read_timer <= 0)
             {
-                adpcm_read_buffer = ADPCM_RAM[adpcm_read_address++];
+                adpcm_read_buffer = RAM[adpcm_read_address++];
                 adpcm_read_pending = false;
                 if (adpcm_length > ushort.MinValue)
                     adpcm_length--;
@@ -199,7 +190,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
             if (adpcm_write_pending && adpcm_write_timer <= 0)
             {
-                ADPCM_RAM[adpcm_write_address++] = adpcm_write_buffer;
+                RAM[adpcm_write_address++] = adpcm_write_buffer;
                 adpcm_write_pending = false;
                 if (adpcm_length < ushort.MaxValue) 
                     adpcm_length++;
@@ -210,7 +201,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (SCSI.REQ && SCSI.IO && !SCSI.CD && !SCSI.ACK)
                 {
                     byte dmaByte = SCSI.DataBits;
-                    ADPCM_RAM[adpcm_write_address++] = dmaByte;
+                    RAM[adpcm_write_address++] = dmaByte;
 
                     SCSI.ACK = false;
                     SCSI.REQ = false;
@@ -219,16 +210,37 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 if (SCSI.DataTransferInProgress == false)
                 {
-                    CdIoPorts[0x0B] = 0;
+                    Port180B = 0;
                     Console.WriteLine("          ADPCM DMA COMPLETED");
                 }
             }
 
-            CdIoPorts[0x03] &= 0xF3;
-            if (AdpcmIsPlaying == false) CdIoPorts[0x03] |= 0x08;
-            RefreshIRQ2();
+            pce.IRQ2Monitor &= 0xF3;
+            if (AdpcmIsPlaying == false) pce.IRQ2Monitor |= 0x08;
+            pce.RefreshIRQ2();
         }
 
-        bool AdpcmCdDmaRequested { get { return (CdIoPorts[0x0B] & 3) != 0; } }
+        public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
+
+        public byte Port180A
+        {
+            set
+            {
+                adpcm_write_buffer = value;
+                adpcm_write_timer = 24;
+                adpcm_write_pending = true;
+            }
+
+            get 
+            {
+                adpcm_read_pending = true;
+                adpcm_read_timer = 24;
+                return adpcm_read_buffer;
+            }
+        }
+
+        public byte Port180B;
+        public byte Port180D;
+        public byte Port180E;
     }
 }

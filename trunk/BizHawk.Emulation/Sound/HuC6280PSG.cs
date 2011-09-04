@@ -27,21 +27,23 @@ namespace BizHawk.Emulation.Sound
         public PSGChannel[] Channels = new PSGChannel[8];
         
         public byte VoiceLatch;
-        private byte WaveTableWriteOffset;
+        byte WaveTableWriteOffset;
 
-        private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
-        private long frameStartTime, frameStopTime;
+        Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+        long frameStartTime, frameStopTime;
 
-        private const int SampleRate = 44100;
-        private const int PsgBase = 3580000;
-        private static byte[] LogScale = { 0, 0, 10, 10, 13, 13, 16, 16, 20, 20, 26, 26, 32, 32, 40, 40, 51, 51, 64, 64, 81, 81, 102, 102, 128, 128, 161, 161, 203, 203, 255, 255 };
-        private static byte[] VolumeReductionTable = { 0x1F, 0x1D, 0x1B, 0x19, 0x17, 0x15, 0x13, 0x10, 0x0F, 0x0D, 0x0B, 0x09, 0x07, 0x05, 0x03, 0x00 };
+        const int SampleRate = 44100;
+        const int PsgBase = 3580000;
+        static byte[] LogScale = { 0, 0, 10, 10, 13, 13, 16, 16, 20, 20, 26, 26, 32, 32, 40, 40, 51, 51, 64, 64, 81, 81, 102, 102, 128, 128, 161, 161, 203, 203, 255, 255 };
+        static byte[] VolumeReductionTable = { 0x1F, 0x1D, 0x1B, 0x19, 0x17, 0x15, 0x13, 0x10, 0x0F, 0x0D, 0x0B, 0x09, 0x07, 0x05, 0x03, 0x00 };
 
         public byte MainVolumeLeft;
         public byte MainVolumeRight;
+        public int MaxVolume { get; set; }
 
         public HuC6280PSG()
         {
+            MaxVolume = short.MaxValue;
             Waves.InitWaves();
             for (int i=0; i<8; i++)
                 Channels[i] = new PSGChannel();
@@ -129,7 +131,7 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
-		public void DiscardSamples() { /*TBD*/ }
+		public void DiscardSamples() { }
         public void GetSamples(short[] samples)
         {
             int elapsedCycles = (int) (frameStopTime - frameStartTime);
@@ -193,8 +195,8 @@ namespace BizHawk.Emulation.Sound
                 channel.SampleOffset %= wave.Length;
                 short value = channel.DDA ? channel.DDAValue : wave[(int) channel.SampleOffset];
 
-                samples[i++] += (short)(value * LogScale[volumeLeft] / 255f / 6f);
-                samples[i++] += (short)(value * LogScale[volumeRight] / 255f / 6f);
+                samples[i++] += (short)(value * LogScale[volumeLeft] / 255f / 6f * MaxVolume / short.MaxValue);
+                samples[i++] += (short)(value * LogScale[volumeRight] / 255f / 6f * MaxVolume / short.MaxValue);
 
                 channel.SampleOffset += moveThroughWaveRate;
                 channel.SampleOffset %= wave.Length;

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Sound
         public CDAudioMode Mode = CDAudioMode.Stopped;
         public PlaybackMode PlayMode = PlaybackMode.LoopOnCompletion;
 
-        public int MaxVolume;
+        public int MaxVolume { get; set; }
         public int LogicalVolume = 100;
 
         public int StartLBA, EndLBA;
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Sound
         public int FadeOutOverFrames = 0;
         public int FadeOutFramesRemaining = 0;
 
-        public CDAudio(Disc disc, int maxVolume)
+        public CDAudio(Disc disc, int maxVolume = short.MaxValue)
         {
             Disc = disc;
             MaxVolume = maxVolume;
@@ -150,10 +150,8 @@ namespace BizHawk.Emulation.Sound
                 short left = (short)((SectorCache[sectorOffset + 1] << 8) | (SectorCache[sectorOffset + 0]));
                 short right = (short)((SectorCache[sectorOffset + 3] << 8) | (SectorCache[sectorOffset + 2]));
 
-                // TODO absolute volume (for setting relative volumes between sound sources)
-
-                samples[offset++] += (short) (left * LogicalVolume / 100);
-                samples[offset++] += (short) (right * LogicalVolume / 100);
+                samples[offset++] += (short) (left * LogicalVolume / 100 * MaxVolume / short.MaxValue);
+                samples[offset++] += (short) (right * LogicalVolume / 100 * MaxVolume / short.MaxValue);
                 SectorOffset++;
 
                 if (SectorOffset == 588)
@@ -207,7 +205,6 @@ namespace BizHawk.Emulation.Sound
         {
             get
             {
-                // TODO apply the damn volume
                 if (Mode != CDAudioMode.Playing)
                     return 0;
 

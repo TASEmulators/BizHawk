@@ -11,9 +11,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public partial class PCEngine
     {
-        private byte[] CdIoPorts = new byte[16];
+        byte[] CdIoPorts = new byte[16];
 
-        private void InitScsiBus()
+        public byte IRQ2Control { get { return CdIoPorts[2]; } set { CdIoPorts[2] = value; } }
+        public byte IRQ2Monitor { get { return CdIoPorts[3]; } set { CdIoPorts[3] = value; } }
+
+        void InitScsiBus()
         {
             SCSI = new ScsiCDBus(this, disc);
             // this is kind of stupid
@@ -38,7 +41,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 };
         }
 
-        private void WriteCD(int addr, byte value)
+        void WriteCD(int addr, byte value)
         {
             //Log.Error("CD","Write: {0:X4} {1:X2} (PC={2:X4})", addr & 0x1FFF, value, Cpu.PC);
             switch (addr & 0x1FFF)
@@ -103,45 +106,44 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     break;
 
                 case 0x1808: // ADPCM address LSB
-                    adpcm_io_address &= 0xFF00;
-                    adpcm_io_address |= value;
+                    ADPCM.adpcm_io_address &= 0xFF00;
+                    ADPCM.adpcm_io_address |= value;
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
                     {
                         Console.WriteLine("doing silly thing");
-                        adpcm_length = adpcm_io_address;
+                        ADPCM.adpcm_length = ADPCM.adpcm_io_address;
                     }
-                    Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
+                    Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
                     break;
 
                 case 0x1809: // ADPCM address MSB
-                    adpcm_io_address &= 0x00FF;
-                    adpcm_io_address |= (ushort)(value << 8);
+                    ADPCM.adpcm_io_address &= 0x00FF;
+                    ADPCM.adpcm_io_address |= (ushort)(value << 8);
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
                     {
                         Console.WriteLine("doing silly thing");
-                        adpcm_length = adpcm_io_address;
+                        ADPCM.adpcm_length = ADPCM.adpcm_io_address;
                     }
-                    Log.Error("CD", "adpcm address = {0:X4}", adpcm_io_address);
+                    Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
                     break;
 
                 case 0x180A: // ADPCM Memory Read/Write Port
-                    AdpcmDataWrite(value);
+                    ADPCM.Port180A = value;
                     break;
 
                 case 0x180B: // ADPCM DMA Control
-                    CdIoPorts[0x0B] = value;
+                    ADPCM.Port180B = value;
                     Log.Error("CD", "Write to ADPCM DMA Control [B] {0:X2}", value);
-                    if (AdpcmCdDmaRequested)
+                    if (ADPCM.AdpcmCdDmaRequested)
                         Console.WriteLine("          ADPCM DMA REQUESTED");
                     break;
 
                 case 0x180D: // ADPCM Address Control
-                    AdpcmControlWrite(value);
-                    CdIoPorts[0x0D] = value;
+                    ADPCM.AdpcmControlWrite(value);
                     break;
 
                 case 0x180E: // ADPCM Playback Rate
-                    CdIoPorts[0x0E] = value;
+                    ADPCM.Port180E = value;
                     Log.Error("CD", "Write to ADPCM Sample Rate [E] {0:X2}", value);
                     break;
 
@@ -238,21 +240,21 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     return returnValue;
 
                 case 0x180A: // ADPCM Memory Read/Write Port
-                    return AdpcmDataRead();
+                    return ADPCM.Port180A;
 
                 case 0x180B: // ADPCM Data Transfer Control
                     //Log.Error("CD", "Read ADPCM Data Transfer Control");
-                    return CdIoPorts[0x0B];
+                    return ADPCM.Port180B;
 
                 case 0x180C: // ADPCM Status
                     returnValue = 0;
-                    if (AdpcmIsPlaying)
+                    if (ADPCM.AdpcmIsPlaying)
                         returnValue |= 0x08;
                     else
                         returnValue |= 0x01;
-                    if (AdpcmBusyWriting)
+                    if (ADPCM.AdpcmBusyWriting)
                         returnValue |= 0x04;
-                    if (AdpcmBusyReading)
+                    if (ADPCM.AdpcmBusyReading)
                         returnValue |= 0x80;
 
                     //Log.Error("CD", "Read ADPCM Status {0:X2}", returnValue);
@@ -281,7 +283,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void RefreshIRQ2()
+        public void RefreshIRQ2()
         {
             int mask = CdIoPorts[2] & CdIoPorts[3] & 0x7C;
             Cpu.IRQ2Assert = (mask != 0);

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Sound
             private const int SampleRate = 44100;
             private static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
 
-            public void Mix(short[] samples, int start, int len)
+            public void Mix(short[] samples, int start, int len, int maxVolume)
             {
                 if (Volume == 0) return;
 
@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Sound
                 {
                     short value = Wave[(int)WaveOffset];
 
-                    samples[i++] += (short)(Left ? (value / 4 * LogScale[Volume] / 0x1FF) : 0);
-                    samples[i++] += (short)(Right ? (value / 4 * LogScale[Volume] / 0x1FF) : 0);
+                    samples[i++] += (short)(Left ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
+                    samples[i++] += (short)(Right ? (value / 4 * LogScale[Volume] / 0xFF * maxVolume / short.MaxValue) : 0);
                     WaveOffset += moveThroughWaveRate;
                     if (WaveOffset >= Wave.Length)
                         WaveOffset %= Wave.Length;
@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Sound
 
         public SN76489()
         {
+            MaxVolume = short.MaxValue * 2 / 3;
             Waves.InitWaves();
             for (int i=0; i<4; i++)
             {
@@ -416,7 +417,8 @@ namespace BizHawk.Emulation.Sound
 
         #endregion
 
-		public void DiscardSamples() { /* todo */ }
+        public int MaxVolume { get; set; }
+        public void DiscardSamples() { commands.Clear(); }
         public void GetSamples(short[] samples)
         {
             int elapsedCycles = frameStopTime - frameStartTime;
@@ -435,7 +437,7 @@ namespace BizHawk.Emulation.Sound
         public void GetSamplesImmediate(short[] samples, int start, int len)
         {
             for (int i = 0; i < 4; i++)
-                Channels[i].Mix(samples, start, len);
+                Channels[i].Mix(samples, start, len, MaxVolume);
         }
 
         class QueuedCommand

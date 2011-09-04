@@ -31,6 +31,9 @@ BizHawk.Emulation Project Notes
    Open the CpuCoreGenerator solution and make your changes there. Run the program to regenerate your cpus.
    CpuCoreGenerator is a separate solution and it may not be obvious that it is there.
 
+7) The new new plan is really for cores to be native. Which was actually the original plan.
+   Note that native doesn't _necessarily_ mean C++.
+
 ---------------
 Emulation Notes
 ---------------
@@ -43,8 +46,6 @@ Emulation Notes
    Feedback is appreciated.
    
    ISoundProvider:
-    * A means of controlling overall volume for the SoundProvider would be beneficial
-      when it comes to mixing multiple ISoundProviders.
     * Current implementations generate garbage on each frame, although the API does not _require_
       garbage to be created, it encourages it because you cannot provide a large buffer and specify 
       a smaller number of samples to fill. Also the BufferAsync generates garbage and probably the 
@@ -57,8 +58,6 @@ Emulation Notes
     * I suppose NTSC/PAL (ie: target fps) could be useful also.
    
    IEmulator:
-    * The LoadGame(IGame) is potentially problematic. Perhaps we simply remove this. Most likely
-      the constructor would then take an IGame as a requirement (or ICDImage or IRomSet or IFileSystem...)
     * IEmulator should provide metadata about what Options it recognizes.
     * Possibly, a lot of the metadata type functions should be removed from IEmulator and added to new
       interface (such as IConsole, IArcade, IComputer, whatever)

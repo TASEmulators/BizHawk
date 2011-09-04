@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Sound
 
         public YM2413()
         {
+            MaxVolume = short.MaxValue;
 			opll = OPLL_new(3579545, 44100);
 		}
 
@@ -39,11 +40,12 @@ namespace BizHawk.Emulation.Sound
 		}
 
 		public void DiscardSamples() { }
+        public int MaxVolume { get; set; }
         public void GetSamples(short[] samples)
         {
             for (int i=0; i<samples.Length;)
             {
-                short val = calc(opll);
+                short val = (short)(calc(opll) * MaxVolume / short.MaxValue);
                 samples[i++] = val;
                 samples[i++] = val;
             }

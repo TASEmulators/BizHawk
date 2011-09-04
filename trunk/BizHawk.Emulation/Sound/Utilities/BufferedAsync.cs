@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Sound
 				BaseSoundProvider.DiscardSamples();
 		}
 
+        public int MaxVolume { get; set; }
+
         public void GetSamples(short[] samples)
         {
             int samplesToGenerate = SamplesInOneFrame;
