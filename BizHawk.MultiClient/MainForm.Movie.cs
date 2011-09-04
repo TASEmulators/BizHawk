@@ -87,6 +87,11 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 			{
 				LoadRom(CurrentlyOpenRom);
+				if (Global.MovieSession.Movie.StartsFromSavestate)
+				{
+					LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
+					Global.Emulator.ResetFrameCounter();
+				}
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
 			}
