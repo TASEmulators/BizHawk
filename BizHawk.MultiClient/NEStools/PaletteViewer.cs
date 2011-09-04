@@ -21,12 +21,6 @@ namespace BizHawk.MultiClient
 				Address = address;
 				Value = -1;
 			}
-
-			public Palette(Palette p)
-			{
-				Address = p.Address;
-				Value = p.Value;
-			}
 		}
 
 		public Palette[] bgPalettes = new Palette[16];
@@ -44,7 +38,6 @@ namespace BizHawk.MultiClient
 			this.Size = new Size(128, 32);
 			this.BackColor = Color.Transparent;
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaletteViewer_Paint);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PaletteViewer_KeyDown);
 
 			for (int x = 0; x < 16; x++)
 			{
@@ -56,23 +49,12 @@ namespace BizHawk.MultiClient
 
 		}
 
-		private void PaletteViewer_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e) { }
-
 		private void PaletteViewer_Paint(object sender, PaintEventArgs e)
 		{
-			Rectangle rect;
 			for (int x = 0; x < 16; x++)
 			{
-				if (bgPalettes[x] != bgPalettesPrev[x])
-				{
-					rect = new Rectangle(new Point(x * 16, 1), new Size(16, 16));
-					e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), rect);
-				}
-				if (spritePalettes != spritePalettesPrev)
-				{
-					rect = new Rectangle(new Point(x * 16, 17), new Size(16, 16));
-					e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), rect);
-				}
+				e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), new Rectangle(x * 16, 1, 16, 16));
+				e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), new Rectangle(x * 16, 17, 16, 16));
 			}
 		}
 
@@ -80,9 +62,9 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < 16; x++)
 			{
-				if (bgPalettes[x] != bgPalettesPrev[x]) 
+				if (bgPalettes[x].Value != bgPalettesPrev[x].Value) 
 					return true;
-				if (spritePalettes[x] != spritePalettesPrev[x]) 
+				if (spritePalettes[x].Value != spritePalettesPrev[x].Value) 
 					return true;
 			}
 			return false;
