@@ -50,10 +50,11 @@ namespace BizHawk.MultiClient
 			int pitch = bmpdata.Stride / 4;
 			int pt_add = Nes.ppu.reg_2000.bg_pattern_hi ? 0x1000 : 0;
 
-			//TODO - buffer all the data from the ppu, because it will be read multiple times and that is slow
-			int[] p = new int[0x1000];
-			for (int x = 0; x < 0x1000; x++)
-				p[x] = Nes.ppu.ppubus_peek(0x2000 + x);
+			//buffer all the data from the ppu, because it will be read multiple times and that is slow
+			int[] p = new int[0x3000];
+			for (int x = 0; x < 0x3000; x++)
+				p[x] = Nes.ppu.ppubus_peek(x);
+
 			int ytable = 0, yline = 0;
 			for (int y = 0; y < 480; y++)
 			{
@@ -72,9 +73,9 @@ namespace BizHawk.MultiClient
 					int ty = py >> 3;
 					int ntbyte_ptr = ntaddr + (ty * 32) + tx;
 					int atbyte_ptr = ntaddr + 0x3C0 + ((ty >> 2) << 3) + (tx >> 2);
-					int nt = p[ntbyte_ptr];
+					int nt = p[ntbyte_ptr + 0x2000];
 
-					int at = p[atbyte_ptr];
+					int at = p[atbyte_ptr + 0x2000];
 					if ((ty & 2) != 0) at >>= 4;
 					if ((tx & 2) != 0) at >>= 2;
 					at &= 0x03;
@@ -83,8 +84,8 @@ namespace BizHawk.MultiClient
 					int bgpx = x & 7;
 					int bgpy = y & 7;
 					int pt_addr = (nt << 4) + bgpy + pt_add;
-					int pt_0 = Nes.ppu.ppubus_peek(pt_addr);
-					int pt_1 = Nes.ppu.ppubus_peek(pt_addr + 8);
+					int pt_0 = p[pt_addr];
+					int pt_1 = p[pt_addr + 8];
 					int pixel = ((pt_0 >> (7 - bgpx)) & 1) | (((pt_1 >> (7 - bgpx)) & 1) << 1);
 
 					//if the pixel is transparent, draw the backdrop color
