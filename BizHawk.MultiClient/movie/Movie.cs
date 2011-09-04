@@ -677,5 +677,11 @@ namespace BizHawk.MultiClient
 			str = line.Substring(x + 1, line.Length - x - 1);
 			return str;
 		}
+
+		public void SetStartsFromSavestate(bool savestate)
+		{
+			StartsFromSavestate = true;
+			Header.AddHeaderLine(MovieHeader.STARTSFROMSAVESTATE, "1");
+		}
 	}
 }

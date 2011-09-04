@@ -19,11 +19,12 @@ namespace BizHawk.MultiClient
 			RewireInputChain();
 
 			LoadRom(Global.MainForm.CurrentlyOpenRom);
-			Global.MovieSession.Movie.LoadMovie();
+			if (!record)
+				Global.MovieSession.Movie.LoadMovie();
 			Global.Config.RecentMovies.Add(m.Filename);
 			if (Global.MovieSession.Movie.StartsFromSavestate)
 			{
-				LoadStateFile(m.Filename, Path.GetFileName(m.Filename));
+				LoadStateFile(Global.MovieSession.Movie.Filename, Path.GetFileName(Global.MovieSession.Movie.Filename));
 				Global.Emulator.ResetFrameCounter();
 			}
 			if (record)
