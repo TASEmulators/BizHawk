@@ -923,6 +923,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			MetaspuSoundProvider metaspu = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+            public int MaxVolume { get; set; } // not supported
 
 			void ISoundProvider.GetSamples(short[] samples)
 			{

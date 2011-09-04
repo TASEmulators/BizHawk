@@ -17,10 +17,8 @@
         {
         }
 
-		public void DiscardSamples() { }
-        public void GetSamples(short[] samples)
-        {
-            // TODO
-        }
+		public void DiscardSamples() {}
+        public void GetSamples(short[] samples) {}
+        public int MaxVolume { get; set; }
     }
 }

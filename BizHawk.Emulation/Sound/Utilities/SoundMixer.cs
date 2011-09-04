@@ -3,7 +3,6 @@
 namespace BizHawk.Emulation.Sound
 {
     // This is a straightforward class to mix/chain multiple ISoundProvider sources.
-    // TODO: Fine-tuned volume control would be a good thing.
 
     public sealed class SoundMixer : ISoundProvider
     {
@@ -35,5 +34,16 @@ namespace BizHawk.Emulation.Sound
             foreach (var soundSource in SoundProviders)
                 soundSource.GetSamples(samples);
         }
+
+        // Splits the volume space equally between available sources.
+        public void EqualizeVolumes()
+        {
+            int eachVolume = short.MaxValue / SoundProviders.Count;
+            foreach (var source in SoundProviders)
+                source.MaxVolume = eachVolume;
+        }
+
+        // Not actually supported on mixer.
+        public int MaxVolume { get; set; }
     }
 }

@@ -8,12 +8,7 @@ using BizHawk.DiscSystem;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
-    public enum NecSystemType
-    {
-        TurboGrafx,
-        TurboCD,
-        SuperGrafx
-    }
+    public enum NecSystemType { TurboGrafx, TurboCD, SuperGrafx }
 
     public sealed partial class PCEngine : IEmulator
     {
@@ -29,10 +24,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public VCE VCE;
         public VPC VPC;
         public ScsiCDBus SCSI;
-        
+        public ADPCM ADPCM;
+
         public HuC6280PSG PSG;
         public CDAudio CDAudio;
-        // TODO ADPCM
         public SoundMixer SoundMixer;
         public MetaspuSoundProvider SoundSynchronizer;
 
@@ -109,16 +104,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 Ram = new byte[0x2000];
                 CDRam = new byte[0x10000];
-                ADPCM_RAM = new byte[0x10000];
+                ADPCM = new ADPCM(this, SCSI);
                 Cpu.ReadMemory21 = ReadMemoryCD;
                 Cpu.WriteMemory21 = WriteMemoryCD;
                 Cpu.WriteVDC = VDC1.WriteVDC;
-                CDAudio = new CDAudio(disc, short.MaxValue);
-                ADPCM_Provider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-                SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM_Provider);
+                CDAudio = new CDAudio(disc);
+                PSG.MaxVolume = short.MaxValue * 3 / 4;
+                SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM.SoundProvider);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
                 soundProvider = SoundSynchronizer;
-                Cpu.ThinkAction = () => { SCSI.Think(); AdpcmThink(); };
+                Cpu.ThinkAction = () => { SCSI.Think(); ADPCM.Think(); };
             }
 
             if (rom.Length == 0x60000)
@@ -174,6 +169,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (VDC2 != null)
                     VDC2.PerformSpriteLimit = true;
             }
+
+            if (game["CdVol"])
+                CDAudio.MaxVolume = int.Parse(game.OptionValue("CdVol"));
+            if (game["PsgVol"])
+                PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
+            // TODO ADPCM
 
             // Ok, yes, HBlankPeriod's only purpose is game-specific hax.
             // 1) At least they're not coded directly into the emulator, but instead data-driven.
@@ -365,7 +366,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (TurboCD)
                 {
                     writer.Write(CDRam);
-                    writer.Write(ADPCM_RAM);
+                    writer.Write(ADPCM.RAM);
                 }
                 writer.Write(Frame);
                 writer.Write(_lagcount);
@@ -407,7 +408,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 if (TurboCD)
                 {
                     CDRam = reader.ReadBytes(0x10000);
-                    ADPCM_RAM = reader.ReadBytes(0x10000);
+                    ADPCM.RAM = reader.ReadBytes(0x10000);
                 }
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
@@ -482,9 +483,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     (addr, value) => CDRam[addr & 0xFFFF] = value);
                 domains.Add(CDRamMemoryDomain);
 
-                var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM_RAM.Length, Endian.Little,
-                    addr => ADPCM_RAM[addr & 0xFFFF],
-                    (addr, value) => ADPCM_RAM[addr & 0xFFFF] = value);
+                var AdpcmMemoryDomain = new MemoryDomain("ADPCM RAM", ADPCM.RAM.Length, Endian.Little,
+                    addr => ADPCM.RAM[addr & 0xFFFF],
+                    (addr, value) => ADPCM.RAM[addr & 0xFFFF] = value);
                 domains.Add(AdpcmMemoryDomain);
                 
                 if (SuperRam != null)

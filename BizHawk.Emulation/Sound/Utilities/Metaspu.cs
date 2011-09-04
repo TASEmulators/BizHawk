@@ -32,7 +32,9 @@ namespace BizHawk.Emulation.Sound
 		{
 			buffer.clear();
 		}
-	}
+
+        public int MaxVolume { get; set; }
+    }
 
 	public interface ISynchronizingAudioBuffer
 	{
