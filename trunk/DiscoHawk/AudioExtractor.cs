@@ -30,24 +30,15 @@ namespace BizHawk
 				try
 				{
 					File.WriteAllBytes(tempfile, waveData);
-					Encode(tempfile, string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.num));
+					string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.num);
+					var ffmpeg = new FFMpeg();
+					ffmpeg.Run("-f", "s16le", "-ar", "44100", "-ac", "2", "-i", tempfile, "-f", "mp3", "-ab", "192k", mp3Path);
 				}
 				finally
 				{
 					File.Delete(tempfile);
 				}
             }
-        }
-
-        static void Encode(string wavePath, string mp3Path)
-        {
-			var ffmpeg = new FFMpeg();
-			ffmpeg.Run("-f", "s16le", "-ar", "44100", "-ac", "2", "-i", wavePath, "-f", "mp3", "-ab", "192k", mp3Path);
-        }
-
-        static string[] Escape(params string[] args)
-        {
-            return args.Select(s => s.Contains(" ") ? string.Format("\"{0}\"", s) : s).ToArray();
         }
     }
 }
