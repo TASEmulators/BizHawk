@@ -158,6 +158,8 @@ namespace BizHawk.MultiClient
 		private Sprite Sprite;
 		private Font MessageFont;
 		private Font AlertFont;
+		private bool Vsync;
+
 
 		public Direct3DRenderPanel(Direct3D direct3D, Control control)
 		{
@@ -202,15 +204,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private bool VsyncRequested
+		{
+			get
+			{
+				if (Global.ForceNoVsync) return false;
+				return Global.Config.DisplayVSync;
+			}
+		}
+
 		public void CreateDevice()
 		{
 			DestroyDevice();
+			Vsync = VsyncRequested;
 			var pp = new PresentParameters
 				{
 					BackBufferWidth = Math.Max(1, backingControl.ClientSize.Width),
 					BackBufferHeight = Math.Max(1, backingControl.ClientSize.Height),
 					DeviceWindowHandle = backingControl.Handle,
-					PresentationInterval = Global.Config.DisplayVSync ? PresentInterval.One : PresentInterval.Immediate
+					PresentationInterval = Vsync ? PresentInterval.One : PresentInterval.Immediate
 				};
 
 			var flags = CreateFlags.SoftwareVertexProcessing;
@@ -229,7 +241,7 @@ namespace BizHawk.MultiClient
 
 		public void Render()
 		{
-			if (Device == null || Resized)
+			if (Device == null || Resized || Vsync != VsyncRequested)
 				CreateDevice();
 
 			Resized = false;
@@ -268,7 +280,7 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
-			if (Device == null || Resized)
+			if (Device == null || Resized || Vsync != VsyncRequested)
 				CreateDevice();
 			Resized = false;
 

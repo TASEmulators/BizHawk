@@ -31,6 +31,11 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofireGBControls;
 		public static AutofireController AutofireGenControls;
 
+		/// <summary>
+		/// whether vsync is force-disabled by use of fast forward
+		/// </summary>
+		public static bool ForceNoVsync;
+
 		//the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();

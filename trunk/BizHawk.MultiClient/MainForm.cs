@@ -291,8 +291,11 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
+			bool fastforward = Global.ClientControls["Fast Forward"];
+			Global.ForceNoVsync = unthrottled || fastforward;
+
 			throttle.signal_unthrottle = unthrottled;
-			if (Global.ClientControls["Fast Forward"])
+			if (fastforward)
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
 			else
 				throttle.SetSpeedPercent(Global.Config.SpeedPercent);
