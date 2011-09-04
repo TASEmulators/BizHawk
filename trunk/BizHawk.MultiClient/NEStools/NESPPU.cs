@@ -62,8 +62,7 @@ namespace BizHawk.MultiClient
 
 		private byte GetBit(int address, int bit)
 		{
-			byte value = PPUBus[address];
-			return (byte)(((value >> (7 - bit)) & 1));
+			return (byte)(((PPUBus[address] >> (7 - bit)) & 1));
 		}
 
 		unsafe void Generate()
@@ -114,13 +113,9 @@ namespace BizHawk.MultiClient
 									b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
 
 									value = (byte)(b0 + (b1 << 1));
-
 									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
-
-									Color color = Color.FromArgb(cvalue);
-
 									int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-									framebuf[adr + (z * 128)] = color.ToArgb();
+									framebuf[adr + (z * 128)] = cvalue;
 								}
 							}
 						}
@@ -168,10 +163,9 @@ namespace BizHawk.MultiClient
 								b1 = GetBit(PatAddr + y + 1 * 8, x);
 								value = (byte)(b0 + (b1 << 1));
 								cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
-								Color color = Color.FromArgb(cvalue);
 
 								int adr = (x + (r * 8 * 2)) + (y + (n * 8 * 3)) * (bmpdata2.Stride / 4);
-								framebuf2[adr] = color.ToArgb();
+								framebuf2[adr] = cvalue;
 							}
 							if (is8x16)
 							{
@@ -182,10 +176,9 @@ namespace BizHawk.MultiClient
 									b1 = GetBit(PatAddr + y + 1 * 8, x);
 									value = (byte)(b0 + (b1 << 1));
 									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[16 + value + (Palette << 2)]);
-									Color color = Color.FromArgb(cvalue);
 
 									int adr = (x + (r * 8 * 2)) + ((y+8) + (n * 8 * 3)) * (bmpdata2.Stride / 4);
-									framebuf2[adr] = color.ToArgb();
+									framebuf2[adr] = cvalue;
 								}
 								PatAddr -= 0x10;
 							}
