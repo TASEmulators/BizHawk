@@ -694,7 +694,15 @@ namespace BizHawk
 			sections.Push(name);
 			if (IsText)
 				if (IsWriter) { tw.WriteLine("[{0}]", name); }
-				else { tr.ReadLine(); }
+				else 
+				{
+					string str;
+					while ((str = tr.ReadLine()) != null)
+					{
+						if (str.Contains('[' + name + ']'))
+							return;
+					}
+				}
 		}
 
 		public void EndSection()
