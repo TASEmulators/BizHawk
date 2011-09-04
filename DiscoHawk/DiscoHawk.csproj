@@ -94,10 +94,6 @@
     <Compile Include="ProgressDialog.Designer.cs">
       <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Wave\WavedataSubChunk.cs" />
-    <Compile Include="Wave\WaveFile.cs" />
-    <Compile Include="Wave\WavefmtSubChunk.cs" />
-    <Compile Include="Wave\WaveHeader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

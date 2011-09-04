@@ -47,7 +47,7 @@ namespace BizHawk.DiscSystem
 			return false;
 		}
 
-		string Run(params string[] args)
+		public string Run(params string[] args)
 		{
 			args = Escape(args);
 			StringBuilder sbCmdline = new StringBuilder();
