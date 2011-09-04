@@ -27,6 +27,9 @@ namespace BizHawk.MultiClient
 		NES Nes;
 
 		byte[] PPUBus = new byte[0x2000];
+		byte[] PPUBusprev = new byte[0x2000];
+		byte[] PALRAM = new byte[0x20];
+		byte[] PALRAMprev = new byte[0x20];
 
 		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
 
@@ -35,6 +38,17 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 			Closing += (o, e) => SaveConfigSettings();
 			Callback.Callback = () => Generate();
+			for (int x = 0; x < 0x2000; x++)
+			{
+				PPUBus[x] = 0;
+				PPUBusprev[x] = 0;
+			}
+
+			for (int x = 0; x < 0x20; x++)
+			{
+				PALRAM[x] = 0;
+				PALRAMprev[x] = 0;
+			}
 		}
 
 		private void SaveConfigSettings()
@@ -71,58 +85,76 @@ namespace BizHawk.MultiClient
 
 			if (Global.Emulator.Frame % RefreshRate.Value == 0)
 			{
+				bool Changed = false;
 				for (int x = 0; x < 0x2000; x++)
-					PPUBus[x] = Nes.ppu.ppubus_peek(x);
-				
-				//Palette Viewer
-				for (int x = 0; x < 16; x++)
 				{
-					PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
-					PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
-					PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
-					PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
+					PPUBusprev[x] = PPUBus[x];
+					PPUBus[x] = Nes.ppu.ppubus_peek(x);
+					if (PPUBus[x] != PPUBusprev[x])
+						Changed = true;
 				}
-				if (PaletteView.HasChanged())
-					PaletteView.Refresh();
 
-				//Pattern Viewer
+				for (int x = 0; x < 0x20; x++)
+				{
+					PALRAMprev[x] = PALRAM[x];
+					PALRAM[x] = Nes.ppu.PALRAM[x];
+					if (PALRAM[x] != PALRAMprev[x])
+						Changed = true;
+				}
+
 				int b0 = 0;
 				int b1 = 0;
 				byte value;
 				int cvalue;
-				int pal;
 
-				System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				int* framebuf = (int*)bmpdata.Scan0.ToPointer();
-				for (int z = 0; z < 2; z++)
+				if (Changed)
 				{
-					if (z == 0)
-						pal = PatternView.Pal0;
-					else
-						pal = PatternView.Pal1;
-
-					for (int i = 0; i < 16; i++)
+					//Pattern Viewer
+					int pal;
+					for (int x = 0; x < 16; x++)
 					{
-						for (int j = 0; j < 16; j++)
-						{
-							for (int x = 0; x < 8; x++)
-							{
-								for (int y = 0; y < 8; y++)
-								{
-									b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
-									b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+						PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
+						PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
+						PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
+						PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
+					}
+					if (PaletteView.HasChanged())
+						PaletteView.Refresh();
 
-									value = (byte)(b0 + (b1 << 1));
-									cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
-									int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
-									framebuf[adr + (z * 128)] = cvalue;
+					
+
+					System.Drawing.Imaging.BitmapData bmpdata = PatternView.pattern.LockBits(new Rectangle(new Point(0, 0), PatternView.pattern.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+					int* framebuf = (int*)bmpdata.Scan0.ToPointer();
+					for (int z = 0; z < 2; z++)
+					{
+						if (z == 0)
+							pal = PatternView.Pal0;
+						else
+							pal = PatternView.Pal1;
+
+						for (int i = 0; i < 16; i++)
+						{
+							for (int j = 0; j < 16; j++)
+							{
+								for (int x = 0; x < 8; x++)
+								{
+									for (int y = 0; y < 8; y++)
+									{
+										b0 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 0 * 8, x);
+										b1 = GetBit((z * 0x1000) + (i * 256) + (j * 16) + y + 1 * 8, x);
+
+										value = (byte)(b0 + (b1 << 1));
+										cvalue = Nes.LookupColor(Nes.ppu.PALRAM[value + (pal * 4)]);
+										int adr = (x + (j * 8)) + (y + (i * 8)) * (bmpdata.Stride / 4);
+										framebuf[adr + (z * 128)] = cvalue;
+									}
 								}
 							}
 						}
 					}
+					PatternView.pattern.UnlockBits(bmpdata);
+					PatternView.Refresh();
 				}
-				PatternView.pattern.UnlockBits(bmpdata);
-				PatternView.Refresh();
 
 				System.Drawing.Imaging.BitmapData bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				int* framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
@@ -130,6 +162,7 @@ namespace BizHawk.MultiClient
 
 				int pt_add = Nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;
 				bool is8x16 = Nes.ppu.reg_2000.obj_size_16;
+
 
 				//Sprite Viewer
 				for (int n = 0; n < 4; n++)
