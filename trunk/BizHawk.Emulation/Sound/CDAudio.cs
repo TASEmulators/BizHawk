@@ -124,7 +124,10 @@ namespace BizHawk.Emulation.Sound
         {
             if (CachedSector != CurrentSector)
             {
-                Disc.ReadLBA_2352(CurrentSector, SectorCache, 0);
+                if (CurrentSector >= Disc.LBACount)
+                    Array.Clear(SectorCache, 0, 2352); // request reading past end of available disc
+                else
+                    Disc.ReadLBA_2352(CurrentSector, SectorCache, 0);
                 CachedSector = CurrentSector;
             }
         }
