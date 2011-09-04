@@ -37,6 +37,10 @@
 			this.PalettePath = new System.Windows.Forms.TextBox();
 			this.BrowsePalette = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.LastLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.ClipLeftAndRightCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.checkUseBackdropColor = new System.Windows.Forms.CheckBox();
@@ -50,6 +54,8 @@
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.FirstLineNumeric)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
@@ -57,7 +63,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(213, 403);
+			this.OK.Location = new System.Drawing.Point(213, 372);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 40;
@@ -69,7 +75,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(294, 403);
+			this.Cancel.Location = new System.Drawing.Point(294, 372);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 45;
@@ -79,7 +85,7 @@
 			// AllowMoreSprites
 			// 
 			this.AllowMoreSprites.AutoSize = true;
-			this.AllowMoreSprites.Location = new System.Drawing.Point(9, 19);
+			this.AllowMoreSprites.Location = new System.Drawing.Point(143, 17);
 			this.AllowMoreSprites.Name = "AllowMoreSprites";
 			this.AllowMoreSprites.Size = new System.Drawing.Size(203, 17);
 			this.AllowMoreSprites.TabIndex = 15;
@@ -96,7 +102,7 @@
 			this.groupBox1.Controls.Add(this.BrowsePalette);
 			this.groupBox1.Location = new System.Drawing.Point(12, 24);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(352, 110);
+			this.groupBox1.Size = new System.Drawing.Size(352, 95);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Palette Config";
@@ -106,7 +112,7 @@
 			this.AutoLoadPalette.AutoSize = true;
 			this.AutoLoadPalette.Checked = true;
 			this.AutoLoadPalette.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.AutoLoadPalette.Location = new System.Drawing.Point(6, 73);
+			this.AutoLoadPalette.Location = new System.Drawing.Point(6, 66);
 			this.AutoLoadPalette.Name = "AutoLoadPalette";
 			this.AutoLoadPalette.Size = new System.Drawing.Size(135, 17);
 			this.AutoLoadPalette.TabIndex = 10;
@@ -116,7 +122,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(6, 31);
+			this.label1.Location = new System.Drawing.Point(6, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(100, 13);
 			this.label1.TabIndex = 2;
@@ -126,7 +132,7 @@
 			// 
 			this.PalettePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.PalettePath.Location = new System.Drawing.Point(6, 47);
+			this.PalettePath.Location = new System.Drawing.Point(6, 40);
 			this.PalettePath.Name = "PalettePath";
 			this.PalettePath.Size = new System.Drawing.Size(259, 20);
 			this.PalettePath.TabIndex = 1;
@@ -134,7 +140,7 @@
 			// BrowsePalette
 			// 
 			this.BrowsePalette.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowsePalette.Location = new System.Drawing.Point(271, 44);
+			this.BrowsePalette.Location = new System.Drawing.Point(271, 37);
 			this.BrowsePalette.Name = "BrowsePalette";
 			this.BrowsePalette.Size = new System.Drawing.Size(75, 23);
 			this.BrowsePalette.TabIndex = 5;
@@ -146,19 +152,76 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.label4);
+			this.groupBox2.Controls.Add(this.label3);
+			this.groupBox2.Controls.Add(this.LastLineNumeric);
+			this.groupBox2.Controls.Add(this.FirstLineNumeric);
 			this.groupBox2.Controls.Add(this.ClipLeftAndRightCheckBox);
 			this.groupBox2.Controls.Add(this.AllowMoreSprites);
-			this.groupBox2.Location = new System.Drawing.Point(12, 156);
+			this.groupBox2.Location = new System.Drawing.Point(12, 125);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(352, 81);
+			this.groupBox2.Size = new System.Drawing.Size(352, 88);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Drawing Area";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(4, 47);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(49, 13);
+			this.label4.TabIndex = 24;
+			this.label4.Text = "Last line:";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(5, 21);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(48, 13);
+			this.label3.TabIndex = 23;
+			this.label3.Text = "First line:";
+			// 
+			// LastLineNumeric
+			// 
+			this.LastLineNumeric.Location = new System.Drawing.Point(59, 45);
+			this.LastLineNumeric.Maximum = new decimal(new int[] {
+            240,
+            0,
+            0,
+            0});
+			this.LastLineNumeric.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			this.LastLineNumeric.Name = "LastLineNumeric";
+			this.LastLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.LastLineNumeric.TabIndex = 22;
+			this.LastLineNumeric.Value = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+			// 
+			// FirstLineNumeric
+			// 
+			this.FirstLineNumeric.Location = new System.Drawing.Point(59, 19);
+			this.FirstLineNumeric.Maximum = new decimal(new int[] {
+            127,
+            0,
+            0,
+            0});
+			this.FirstLineNumeric.Name = "FirstLineNumeric";
+			this.FirstLineNumeric.Size = new System.Drawing.Size(47, 20);
+			this.FirstLineNumeric.TabIndex = 21;
 			// 
 			// ClipLeftAndRightCheckBox
 			// 
 			this.ClipLeftAndRightCheckBox.AutoSize = true;
 			this.ClipLeftAndRightCheckBox.Enabled = false;
-			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(9, 42);
+			this.ClipLeftAndRightCheckBox.Location = new System.Drawing.Point(143, 47);
 			this.ClipLeftAndRightCheckBox.Name = "ClipLeftAndRightCheckBox";
 			this.ClipLeftAndRightCheckBox.Size = new System.Drawing.Size(186, 17);
 			this.ClipLeftAndRightCheckBox.TabIndex = 20;
@@ -167,7 +230,7 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox3.Controls.Add(this.checkUseBackdropColor);
 			this.groupBox3.Controls.Add(this.ChangeBGColor);
@@ -176,7 +239,7 @@
 			this.groupBox3.Controls.Add(this.groupBox4);
 			this.groupBox3.Controls.Add(this.DispBackground);
 			this.groupBox3.Controls.Add(this.DispSprites);
-			this.groupBox3.Location = new System.Drawing.Point(12, 254);
+			this.groupBox3.Location = new System.Drawing.Point(12, 223);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(352, 128);
 			this.groupBox3.TabIndex = 5;
@@ -269,7 +332,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(381, 438);
+			this.ClientSize = new System.Drawing.Size(381, 407);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -285,6 +348,8 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.FirstLineNumeric)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
@@ -314,5 +379,9 @@
 		private System.Windows.Forms.Button ChangeBGColor;
 		private System.Windows.Forms.ColorDialog BGColorDialog;
 		private System.Windows.Forms.CheckBox checkUseBackdropColor;
+		private System.Windows.Forms.NumericUpDown FirstLineNumeric;
+		private System.Windows.Forms.NumericUpDown LastLineNumeric;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label label3;
 	}
 }

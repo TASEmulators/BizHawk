@@ -976,15 +976,15 @@ namespace BizHawk.MultiClient
 								}
 								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
 
-                                if (rom.GameInfo.Status == RomStatus.BadDump)
-                                    MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"+
-                                        "It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+								if (rom.GameInfo.Status == RomStatus.BadDump)
+									MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"+
+										"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
 
-                                else if (rom.GameInfo.NotInDatabase)
-                                    MessageBox.Show("The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+								else if (rom.GameInfo.NotInDatabase)
+									MessageBox.Show("The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
 
-                                else if (rom.GameInfo["BIOS"] == false)
-                                    MessageBox.Show("The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+								else if (rom.GameInfo["BIOS"] == false)
+									MessageBox.Show("The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
 
 								if (rom.GameInfo["SuperSysCard"])
 									game.AddOption("SuperSysCard");
@@ -1027,6 +1027,8 @@ namespace BizHawk.MultiClient
 							case "NES":
 								{
 									NES nes = new NES(game, rom.FileData);
+									nes.FirstDrawLine = Global.Config.NESTopLine;
+									nes.LastDrawLine = Global.Config.NESBottomLine;
 									Global.Game.Status = nes.RomStatus;
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&

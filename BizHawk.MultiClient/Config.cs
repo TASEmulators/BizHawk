@@ -270,6 +270,8 @@
 		public bool NESDispSprites = true;
 		public int NESBackgroundColor = 0;
 		public string NESPaletteFile = "";
+		public int NESTopLine = 8;
+		public int NESBottomLine = 231;
 
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
