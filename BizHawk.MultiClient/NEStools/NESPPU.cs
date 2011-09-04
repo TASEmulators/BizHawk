@@ -72,10 +72,10 @@ namespace BizHawk.MultiClient
 			//Pattern Viewer
 			for (int x = 0; x < 16; x++)
 			{
-				PaletteView.bgPalettesPrev[x] = new PaletteViewer.Palette(PaletteView.bgPalettes[x]);
-				PaletteView.spritePalettesPrev[x] = new PaletteViewer.Palette(PaletteView.spritePalettes[x]);
-				PaletteView.bgPalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].address]));
-				PaletteView.spritePalettes[x].SetValue(Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].address]));
+				PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
+				PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
+				PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
+				PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
 			}
 			if (PaletteView.HasChanged())
 				PaletteView.Refresh();
@@ -247,15 +247,15 @@ namespace BizHawk.MultiClient
 
 			if (baseAddr == 0x3F00)
 			{
-				val = Nes.ppu.PALRAM[PaletteView.bgPalettes[column].address];
+				val = Nes.ppu.PALRAM[PaletteView.bgPalettes[column].Address];
 				ValueLabel.Text = "ID: BG" + (column / 4).ToString();
-				g.FillRectangle(new SolidBrush(PaletteView.bgPalettes[column].GetColor()), 0, 0, 64, 64);
+				g.FillRectangle(new SolidBrush(PaletteView.bgPalettes[column].Color), 0, 0, 64, 64);
 			}
 			else
 			{
-				val = Nes.ppu.PALRAM[PaletteView.spritePalettes[column].address];
+				val = Nes.ppu.PALRAM[PaletteView.spritePalettes[column].Address];
 				ValueLabel.Text = "ID: SPR" + (column / 4).ToString();
-				g.FillRectangle(new SolidBrush(PaletteView.spritePalettes[column].GetColor()), 0, 0, 64, 64);
+				g.FillRectangle(new SolidBrush(PaletteView.spritePalettes[column].Color), 0, 0, 64, 64);
 			}
 			g.Dispose();
 
