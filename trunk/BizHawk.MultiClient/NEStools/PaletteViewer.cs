@@ -12,40 +12,20 @@ namespace BizHawk.MultiClient
 	{
 		public class Palette
 		{
-			public int address { get; set; }
-			private int value { get; set; }
-			private Color color;
+			public int Address { get; private set; }
+			public int Value { get; set; }
+			public Color Color { get { return Color.FromArgb(Value); } private set { Value = value.ToArgb(); } }
 
-			public Palette(int Address)
+			public Palette(int address)
 			{
-				address = Address;
-				value = -1;
+				Address = address;
+				Value = -1;
 			}
 
 			public Palette(Palette p)
 			{
-				address = p.address;
-				value = p.value;
-				color = p.color;
-			}
-
-			public int GetValue()
-			{
-				return value;
-			}
-
-			public void SetValue(int val)
-			{
-				unchecked
-				{
-					value = val;
-				}
-				color = Color.FromArgb(value); //TODO: value should be unprocessed! then do all calculations on this line
-			}
-
-			public Color GetColor()
-			{
-				return color;
+				Address = p.Address;
+				Value = p.Value;
 			}
 		}
 
@@ -70,6 +50,8 @@ namespace BizHawk.MultiClient
 			{
 				bgPalettes[x] = new Palette(x);
 				spritePalettes[x] = new Palette(x + 16);
+				bgPalettesPrev[x] = new Palette(x);
+				spritePalettesPrev[x] = new Palette(x + 16);
 			}
 
 		}
@@ -78,21 +60,18 @@ namespace BizHawk.MultiClient
 
 		private void PaletteViewer_Paint(object sender, PaintEventArgs e)
 		{
-			unchecked
+			Rectangle rect;
+			for (int x = 0; x < 16; x++)
 			{
-				Rectangle rect;
-				for (int x = 0; x < 16; x++)
+				if (bgPalettes[x] != bgPalettesPrev[x])
 				{
-					if (bgPalettes[x] != bgPalettesPrev[x])
-					{
-						rect = new Rectangle(new Point(x * 16, 1), new Size(16, 16));
-						e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].GetColor()), rect);
-					}
-					if (spritePalettes != spritePalettesPrev)
-					{
-						rect = new Rectangle(new Point(x * 16, 17), new Size(16, 16));
-						e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].GetColor()), rect);
-					}
+					rect = new Rectangle(new Point(x * 16, 1), new Size(16, 16));
+					e.Graphics.FillRectangle(new SolidBrush(bgPalettes[x].Color), rect);
+				}
+				if (spritePalettes != spritePalettesPrev)
+				{
+					rect = new Rectangle(new Point(x * 16, 17), new Size(16, 16));
+					e.Graphics.FillRectangle(new SolidBrush(spritePalettes[x].Color), rect);
 				}
 			}
 		}
