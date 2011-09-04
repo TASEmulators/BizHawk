@@ -67,7 +67,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.DiscSystem
 {
-	public partial class Disc
+	public partial class Disc : IDisposable
 	{
 		//TODO - separate these into Read_2352 and Read_2048 (optimizations can be made by ISector implementors depending on what is requested)
 		//(for example, avoiding the 2048 byte sector creating the ECC data and then immediately discarding it)
@@ -76,7 +76,7 @@ namespace BizHawk.DiscSystem
 			int Read(byte[] buffer, int offset);
 		}
 
-		public interface IBlob
+		public interface IBlob : IDisposable
 		{
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
 			void Dispose();
@@ -311,6 +311,14 @@ namespace BizHawk.DiscSystem
 		public List<SectorEntry> Sectors = new List<SectorEntry>();
 		public DiscTOC TOC = new DiscTOC();
 
+		public void Dispose()
+		{
+			foreach (var blob in Blobs)
+			{
+				blob.Dispose();
+			}
+		}
+
 		void FromIsoPathInternal(string isoPath)
 		{
 			var session = new DiscTOC.Session();
@@ -453,6 +461,9 @@ namespace BizHawk.DiscSystem
 			return ret;
 		}
 
+		/// <summary>
+		/// THIS HASNT BEEN TESTED IN A LONG TIME. DOES IT WORK?
+		/// </summary>
 		public static Disc FromIsoPath(string isoPath)
 		{
 			var ret = new Disc();
