@@ -26,6 +26,8 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		NES Nes;
 
+		byte[] PPUBus = new byte[0x2000];
+
 		NES.PPU.DebugCallback Callback = new NES.PPU.DebugCallback();
 
 		public NESPPU()
@@ -60,7 +62,7 @@ namespace BizHawk.MultiClient
 
 		private byte GetBit(int address, int bit)
 		{
-			byte value = Nes.ppu.ppubus_peek(address);
+			byte value = PPUBus[address];
 			return (byte)(((value >> (7 - bit)) & 1));
 		}
 
@@ -68,21 +70,22 @@ namespace BizHawk.MultiClient
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 
-			
-			//Pattern Viewer
-			for (int x = 0; x < 16; x++)
-			{
-				PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
-				PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
-				PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
-				PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
-			}
-			if (PaletteView.HasChanged())
-				PaletteView.Refresh();
-
-
 			if (Global.Emulator.Frame % RefreshRate.Value == 0)
 			{
+				for (int x = 0; x < 0x2000; x++)
+					PPUBus[x] = Nes.ppu.ppubus_peek(x);
+				
+				//Palette Viewer
+				for (int x = 0; x < 16; x++)
+				{
+					PaletteView.bgPalettesPrev[x].Value = PaletteView.bgPalettes[x].Value;
+					PaletteView.spritePalettesPrev[x].Value = PaletteView.spritePalettes[x].Value;
+					PaletteView.bgPalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.bgPalettes[x].Address]);
+					PaletteView.spritePalettes[x].Value = Nes.LookupColor(Nes.ppu.PALRAM[PaletteView.spritePalettes[x].Address]);
+				}
+				if (PaletteView.HasChanged())
+					PaletteView.Refresh();
+
 				//Pattern Viewer
 				int b0 = 0;
 				int b1 = 0;
