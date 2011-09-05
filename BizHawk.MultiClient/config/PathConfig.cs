@@ -183,6 +183,7 @@ namespace BizHawk.MultiClient
 			Global.Config.PathPCEBios = PCEBiosBox.Text;
 
 			BasePathBox.Focus();
+			Global.MainForm.UpdateStatusSlots();
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
