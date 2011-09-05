@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemoryPopulous;
             }
 
-            if (game["ForceSpriteLimit"] || game.NotInDatabase)
+            if (game["ForceSpriteLimit"] || game.NotInDatabase || TurboCD)
             {
                 VDC1.PerformSpriteLimit = true;
                 if (VDC2 != null)

@@ -20,19 +20,24 @@ namespace BizHawk
 		public string Name;
 		public string System;
 		public string Hash;
-		public RomStatus Status;
+		public RomStatus Status = RomStatus.NotInDatabase;
 		public bool NotInDatabase = true;
 
-		private Dictionary<string, string> Options = new Dictionary<string, string>();
+		Dictionary<string, string> Options = new Dictionary<string, string>();
 
-		public GameInfo()
-		{
-			Name = "Null";
-			System = "NULL";
-			Hash = "";
-			Status = RomStatus.GoodDump;
-			NotInDatabase = false;
-		}
+        public GameInfo() { }
+
+        public static GameInfo GetNullGame()
+        {
+            return new GameInfo() 
+            {
+                Name = "Null",
+                System = "NULL",
+                Hash = "",
+                Status = RomStatus.GoodDump,
+                NotInDatabase = false
+            };
+        }
 
 		internal GameInfo(CompactGameInfo cgi)
 		{
@@ -86,7 +91,7 @@ namespace BizHawk
 			return new ReadOnlyDictionary<string, string>(Options);
 		}
 
-		private void ParseOptionsDictionary(string metaData)
+		void ParseOptionsDictionary(string metaData)
 		{
 			if (string.IsNullOrEmpty(metaData))
 				return;

@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie = new Movie();
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
-			Global.Game = new GameInfo();
+            Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -967,6 +967,7 @@ namespace BizHawk.MultiClient
 							game = new GameInfo();
 							game.System = "PCE";
 							game.Name = Path.GetFileNameWithoutExtension(file.Name);
+                            game.Hash = hash;
 						}
 
 						switch (game.System)
@@ -2103,7 +2104,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
-			Global.Game = new GameInfo();
+            Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
