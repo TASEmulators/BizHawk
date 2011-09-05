@@ -43,9 +43,9 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public bool IsGameGear = false;
 		public bool HasYM2413 = false;
 
-		private int _lagcount = 0;
-		private bool lagged = true;
-		private bool islag = false;
+		int _lagcount = 0;
+		bool lagged = true;
+		bool islag = false;
 		public int Frame { get; set; }
 		
 		public void ResetFrameCounter()
@@ -55,10 +55,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 		
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
 		public bool IsLagFrame { get { return islag; } }
-		private byte Port01 = 0xFF;
-		private byte Port02 = 0xFF;
-		private byte Port3E = 0xAF;
-		private byte Port3F = 0xFF;
+		byte Port01 = 0xFF;
+		byte Port02 = 0xFF;
+		byte Port3E = 0xAF;
+		byte Port3F = 0xFF;
 
 		public DisplayType DisplayType { get; set; }
 		public bool DeterministicEmulation { get; set; }
@@ -325,12 +325,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 
-		private ISoundProvider ActiveSoundProvider;
+		ISoundProvider ActiveSoundProvider;
 		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
 
 		public string SystemId { get { return "SMS"; } }
 
-		private string region = "Export";
+		string region = "Export";
 		public string Region
 		{
 			get { return region; }
@@ -342,11 +342,11 @@ namespace BizHawk.Emulation.Consoles.Sega
 			}
 		}
 
-		private readonly string[] validRegions = { "Export", "Japan" };
+		readonly string[] validRegions = { "Export", "Japan" };
 
-		private IList<MemoryDomain> memoryDomains;
+		IList<MemoryDomain> memoryDomains;
 
-		private void SetupMemoryDomains()
+		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
 			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, Endian.Little,

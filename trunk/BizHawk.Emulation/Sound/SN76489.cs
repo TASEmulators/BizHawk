@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Sound
             public bool Left = true;
             public bool Right = true;
 
-            private const int SampleRate = 44100;
-            private static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
+            const int SampleRate = 44100;
+            static byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
 
             public void Mix(short[] samples, int start, int len, int maxVolume)
             {
@@ -48,10 +48,10 @@ namespace BizHawk.Emulation.Sound
         public Channel[] Channels = new Channel[4];
         public byte PsgLatch;
 
-        private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
-        private int frameStartTime, frameStopTime;
+        Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
+        int frameStartTime, frameStopTime;
 
-        private const int PsgBase = 111861;
+        const int PsgBase = 111861;
 
         public SN76489()
         {
@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Sound
             commands.Enqueue(new QueuedCommand {Value = value, Time = cycles-frameStartTime});
         }
 
-        private void UpdateNoiseType(int value)
+        void UpdateNoiseType(int value)
         {
             Channels[3].NoiseType = (byte)(value & 0x07);
             switch (Channels[3].NoiseType & 3)
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
-        private void WritePsgDataImmediate(byte value)
+        void WritePsgDataImmediate(byte value)
         {
             switch (value & 0xF0)
             {
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Sound
         // Next step from A4 is A#4. A#4 = (440.00 * 1.05946...) = 466.163...
         // Note that because frequencies must be integers, SMS games will be slightly out of pitch to a normally tuned instrument, especially at the low end.
 
-        private static readonly int[] frequencies =
+        static readonly int[] frequencies =
             {
                 27,   // A0
                 29,   // A#0
@@ -402,7 +402,7 @@ namespace BizHawk.Emulation.Sound
                 4435  // C#8
             };
 
-        private static readonly string[] notes =
+        static readonly string[] notes =
             {
                                                                  "A0","A#0","B0",
                 "C1","C#1","D1","D#1","E1","F1","F#1","G1","G#1","A1","A#1","B1",

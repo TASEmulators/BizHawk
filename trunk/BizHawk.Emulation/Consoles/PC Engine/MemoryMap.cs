@@ -2,9 +2,9 @@
 {
     public partial class PCEngine
     {
-        private byte IOBuffer;
+        byte IOBuffer;
 
-        private byte ReadMemory(int addr)
+        byte ReadMemory(int addr)
         {
             if (addr < 0xFFFFF) // read ROM
                 return RomData[addr % RomLength];
@@ -37,7 +37,7 @@
             return 0xFF;
         }
 
-        private void WriteMemory(int addr, byte value)
+        void WriteMemory(int addr, byte value)
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
                 Ram[addr & 0x1FFF] = value;

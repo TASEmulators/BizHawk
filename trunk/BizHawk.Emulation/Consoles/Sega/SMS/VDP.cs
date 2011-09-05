@@ -18,24 +18,24 @@ namespace BizHawk.Emulation.Consoles.Sega
         public byte[] Registers = new byte[] { 0x06, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF0, 0x00, 0x00, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00 };
         public byte StatusByte;
 
-        private bool VdpWaitingForLatchByte = true;
-        private byte VdpLatch;
-        private byte VdpBuffer;
-        private ushort VdpAddress;
-        private VdpCommand vdpCommand;
-        private int TmsMode = 4;
+        bool VdpWaitingForLatchByte = true;
+        byte VdpLatch;
+        byte VdpBuffer;
+        ushort VdpAddress;
+        VdpCommand vdpCommand;
+        int TmsMode = 4;
 
-        private bool VIntPending;
-        private bool HIntPending;
+        bool VIntPending;
+        bool HIntPending;
 
-        private VdpMode mode;
-        public VdpMode VdpMode { get { return mode; } }
-        private DisplayType DisplayType = DisplayType.NTSC;
-        private Z80A Cpu;
+        VdpMode mode;
+        DisplayType DisplayType = DisplayType.NTSC;
+        Z80A Cpu;
         public int IPeriod = 228;
+        public VdpMode VdpMode { get { return mode; } }
 
+        int FrameHeight = 192;
         public int ScanLine;
-        private int FrameHeight = 192;
         public int[] FrameBuffer = new int[256*192];
         public int[] GameGearFrameBuffer = new int[160*144];
 
@@ -56,22 +56,22 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int SpriteTileBase           { get { return (Registers[6] & 4) > 0 ? 256: 0; } }
         public byte BackdropColor           { get { return (byte)(16 + (Registers[7] & 15)); } }
 
-        private int NameTableBase;
-        private int ColorTableBase;
-        private int PatternGeneratorBase;
-        private int SpritePatternGeneratorBase;
-        private int TmsPatternNameTableBase;
-        private int TmsSpriteAttributeBase;
+        int NameTableBase;
+        int ColorTableBase;
+        int PatternGeneratorBase;
+        int SpritePatternGeneratorBase;
+        int TmsPatternNameTableBase;
+        int TmsSpriteAttributeBase;
         
         // preprocessed state assist stuff.
         public int[] Palette = new int[32];
         public byte[] PatternBuffer = new byte[0x8000];
 
-        private byte[] ScanlinePriorityBuffer = new byte[256];
-        private byte[] SpriteCollisionBuffer = new byte[256];
+        byte[] ScanlinePriorityBuffer = new byte[256];
+        byte[] SpriteCollisionBuffer = new byte[256];
 
-        private static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
-        private static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
+        static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
+        static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
         public VDP(Z80A cpu, VdpMode mode, DisplayType displayType)
         {
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             return (1024 * (Registers[2] & 0x0C)) + 0x0700;
         }
 
-        private void CheckVideoMode()
+        void CheckVideoMode()
         {
             if (Mode4Bit == false) // check old TMS modes
             {
@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void WriteRegister(int reg, byte data)
+        void WriteRegister(int reg, byte data)
         {
             Registers[reg] = data;
             switch(reg)
@@ -292,9 +292,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private static readonly byte[] pow2 = {1, 2, 4, 8, 16, 32, 64, 128};
+        static readonly byte[] pow2 = {1, 2, 4, 8, 16, 32, 64, 128};
         
-        private void UpdatePatternBuffer(ushort address, byte value)
+        void UpdatePatternBuffer(ushort address, byte value)
         {
             // writing one byte affects 8 pixels due to stupid planar storage.
             for (int i=0; i<8; i++)
@@ -309,9 +309,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private int lineIntLinesRemaining;
+        int lineIntLinesRemaining;
 
-        private void ProcessFrameInterrupt()
+        void ProcessFrameInterrupt()
         {
             if (ScanLine == FrameHeight + 1)
             {
@@ -323,7 +323,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Cpu.Interrupt = true;
         }
 
-        private void ProcessLineInterrupt()
+        void ProcessLineInterrupt()
         {
             if (ScanLine <= FrameHeight)
             {

@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Sound
         public int PlayingTrack;
 
         public int CurrentSector, SectorOffset; // Offset is in SAMPLES, not bytes. Sector is 588 samples long.
-        private int CachedSector;
-        private byte[] SectorCache = new byte[2352];
+        int CachedSector;
+        byte[] SectorCache = new byte[2352];
 
         public int FadeOutOverFrames = 0;
         public int FadeOutFramesRemaining = 0;
@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.Sound
         public void PlayStartingAtLba(int lba)
         {
             var point = Disc.TOC.SeekPoint(lba);
+            if (point == null) return;
+
             PlayingTrack = point.TrackNum;
             StartLBA = lba;
             EndLBA = point.Track.Indexes[1].aba + point.Track.length_aba - 150;
@@ -120,7 +122,7 @@ namespace BizHawk.Emulation.Sound
             FadeOutFramesRemaining = frames;
         }
 
-        private void EnsureSector()
+        void EnsureSector()
         {
             if (CachedSector != CurrentSector)
             {

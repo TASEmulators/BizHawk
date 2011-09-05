@@ -5,9 +5,9 @@
         // The Populous HuCard is the only traditional HuCard to have battery-backed saveRAM
         // built into it. There is 32k of save-RAM mapped at pages $40 - $44.
         
-        private byte[] PopulousRAM;
+        byte[] PopulousRAM;
 
-        private byte ReadMemoryPopulous(int addr)
+        byte ReadMemoryPopulous(int addr)
         {
             if (addr >= 0x80000 && addr < 0x88000)
                 return PopulousRAM[addr & 0x7FFF];
@@ -35,7 +35,7 @@
             return 0xFF;
         }
 
-        private void WriteMemoryPopulous(int addr, byte value)
+        void WriteMemoryPopulous(int addr, byte value)
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
                 Ram[addr & 0x1FFF] = value;

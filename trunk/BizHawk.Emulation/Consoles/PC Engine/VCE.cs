@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private static readonly byte[] PalConvert = {0, 36, 72, 109, 145, 182, 218, 255};
+        static readonly byte[] PalConvert = {0, 36, 72, 109, 145, 182, 218, 255};
 
         public void PrecomputePalette(int slot)
         {

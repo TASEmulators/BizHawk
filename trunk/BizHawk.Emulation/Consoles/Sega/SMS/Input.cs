@@ -16,7 +16,7 @@
 		public ControllerDefinition ControllerDefinition { get { return SmsController; } }
 		public IController Controller { get; set; }
 
-		private byte ReadControls1()
+		byte ReadControls1()
 		{
 			lagged = false;
 			byte value = 0xFF;
@@ -34,7 +34,7 @@
 			return value;
 		}
 
-		private byte ReadControls2()
+		byte ReadControls2()
 		{
 			lagged = false;
 			byte value = 0xFF;
@@ -64,7 +64,7 @@
 			return value;
 		}
 
-		private byte ReadPort0()
+		byte ReadPort0()
 		{
 			if (IsGameGear == false)
 				return 0xFF;

@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public VDC VDC1;
         public VDC VDC2;
         public VCE VCE;
-        private HuC6280 CPU;
+        public HuC6280 CPU;
 
         public byte[] Registers = {0x11, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00};
 
@@ -114,20 +114,20 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // And there are no homebrew SGX games I know of.
         // Maybe we'll emulate it in the native-code version.
 
-        private const int RCR = 6; 
-        private const int BXR = 7;
-        private const int BYR = 8;
-        private const int VDW = 13;
-        private const int DCR = 15;
+        const int RCR = 6; 
+        const int BXR = 7;
+        const int BYR = 8;
+        const int VDW = 13;
+        const int DCR = 15;
 
-        private int EffectivePriorityMode = 0;
+        int EffectivePriorityMode = 0;
 
-        private int FrameHeight;
-        private int FrameWidth;
-        private int[] FrameBuffer;
+        int FrameHeight;
+        int FrameWidth;
+        int[] FrameBuffer;
 
-        private byte[] PriorityBuffer = new byte[512];
-        private byte[] InterSpritePriorityBuffer = new byte[512];
+        byte[] PriorityBuffer = new byte[512];
+        byte[] InterSpritePriorityBuffer = new byte[512];
 
         public void ExecFrame(bool render)
         {
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void RenderScanLine()
+        void RenderScanLine()
         {
             if (VDC1.ActiveLine >= FrameHeight)
                 return;
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void InitializeScanLine(int scanline)
+        void InitializeScanLine(int scanline)
         {
             // Clear priority buffer
             Array.Clear(PriorityBuffer, 0, FrameWidth);
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[0];
         }
 
-        private void RenderBackgroundScanline(VDC vdc, byte priority)
+        void RenderBackgroundScanline(VDC vdc, byte priority)
         {
             if (vdc.BackgroundEnabled == false)
                 return;
@@ -318,9 +318,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private static byte[] heightTable = { 16, 32, 64, 64 };
+        static byte[] heightTable = { 16, 32, 64, 64 };
 
-        private void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority)
+        void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority)
         {
             if (vdc.SpritesEnabled == false)
                 return;

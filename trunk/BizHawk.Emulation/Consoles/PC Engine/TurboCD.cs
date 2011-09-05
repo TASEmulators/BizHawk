@@ -3,7 +3,7 @@
 // IRQ2 interrupts:
 // 0x04 - INTA    - ADPCM interrupt
 // 0x08 - INTSTOP - Fire when end of CD-Audio playback reached when in STOP MODE 2.
-// 0x10 - INTSUB  - no idea yet
+// 0x10 - INTSUB  - something with subchannel
 // 0x20 - INTM    - Fires when data transfer is complete
 // 0x40 - INTD    - Fires when data transfer is ready
 
@@ -11,10 +11,21 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public partial class PCEngine
     {
-        byte[] CdIoPorts = new byte[16];
+        public static byte[] CdIoPorts = new byte[16];
 
         public byte IRQ2Control { get { return CdIoPorts[2]; } set { CdIoPorts[2] = value; } }
         public byte IRQ2Monitor { get { return CdIoPorts[3]; } set { CdIoPorts[3] = value; } }
+
+        public byte Port1803
+        {
+            get { return CdIoPorts[3]; }
+            set
+            {
+                if (value != CdIoPorts[3])
+                    Console.WriteLine("UPDATE 1803: From {0:X2} to {1:X2}", CdIoPorts[3], value);
+                CdIoPorts[3] = value;
+            }
+        }
 
         void InitScsiBus()
         {
@@ -24,18 +35,17 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                  {
                      // set or clear Ready Bit
                      if (yes)
-                         CdIoPorts[3] |= 0x40;
+                         Port1803 |= 0x40;
                      else
-                         CdIoPorts[3] &= 0xBF;
+                         Port1803 &= 0xBF;
                  };
             SCSI.DataTransferComplete = yes =>
                 {
                     if (yes)
-                        CdIoPorts[3] |= 0x20; // Set "Complete"
+                        Port1803 |= 0x20; // Set "Complete"
                     else
                     {
-                        CdIoPorts[3] &= 0xBF; // Clear "ready" 
-   
+                        Port1803 &= 0xBF; // Clear "ready" 
                     }
                     
                 };
@@ -75,7 +85,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     if ((CdIoPorts[2] & 0x10) != 0) Log.Error("CD", "INTSUB enable");
                     if ((CdIoPorts[2] & 0x20) != 0) Log.Error("CD", "INTM enable");
                     if ((CdIoPorts[2] & 0x40) != 0) Log.Error("CD", "INTD enable");
-                    if ((Cpu.IRQControlByte & 0x01) != 0) Log.Error("CD", "BTW, IRQ2 is not masked");
+                    if ((Cpu.IRQControlByte & 0x01) == 0 &&
+                        (CdIoPorts[2] & 0x7C) != 0) Log.Error("CD", "BTW, IRQ2 is not masked");
 
                     SCSI.Think();
                     RefreshIRQ2();
@@ -87,7 +98,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     SCSI.Think();
                     if (SCSI.RST)
                     {
-                        CdIoPorts[3] &= 0x8F; // Clear interrupt control bits
+                        Port1803 &= 0x8F; // Clear interrupt control bits
                         RefreshIRQ2();
                     }
                     break;
@@ -99,32 +110,29 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x1807: // BRAM Unlock
                     if (BramEnabled && (value & 0x80) != 0)
-                    {
-                        //Console.WriteLine("UNLOCK BRAM!");
                         BramLocked = false;
-                    }
                     break;
 
                 case 0x1808: // ADPCM address LSB
-                    ADPCM.adpcm_io_address &= 0xFF00;
-                    ADPCM.adpcm_io_address |= value;
+                    ADPCM.IOAddress &= 0xFF00;
+                    ADPCM.IOAddress |= value;
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
                     {
                         Console.WriteLine("doing silly thing");
-                        ADPCM.adpcm_length = ADPCM.adpcm_io_address;
+                        ADPCM.AdpcmLength = ADPCM.IOAddress;
                     }
-                    Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
+                    //Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
                     break;
 
                 case 0x1809: // ADPCM address MSB
-                    ADPCM.adpcm_io_address &= 0x00FF;
-                    ADPCM.adpcm_io_address |= (ushort)(value << 8);
+                    ADPCM.IOAddress &= 0x00FF;
+                    ADPCM.IOAddress |= (ushort)(value << 8);
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
                     {
                         Console.WriteLine("doing silly thing");
-                        ADPCM.adpcm_length = ADPCM.adpcm_io_address;
+                        ADPCM.AdpcmLength = ADPCM.IOAddress;
                     }
-                    Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
+                    //Log.Error("CD", "adpcm address = {0:X4}", ADPCM.adpcm_io_address);
                     break;
 
                 case 0x180A: // ADPCM Memory Read/Write Port
@@ -133,7 +141,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x180B: // ADPCM DMA Control
                     ADPCM.Port180B = value;
-                    Log.Error("CD", "Write to ADPCM DMA Control [B] {0:X2}", value);
+                    //Log.Error("CD", "Write to ADPCM DMA Control [B] {0:X2}", value);
                     if (ADPCM.AdpcmCdDmaRequested)
                         Console.WriteLine("          ADPCM DMA REQUESTED");
                     break;
@@ -144,12 +152,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x180E: // ADPCM Playback Rate
                     ADPCM.Port180E = value;
-                    Log.Error("CD", "Write to ADPCM Sample Rate [E] {0:X2}", value);
+                    //Log.Error("CD", "Write to ADPCM Sample Rate [E] {0:X2}", value);
                     break;
 
                 case 0x180F: // Audio Fade Timer
                     CdIoPorts[0x0F] = value;
-                    Log.Error("CD", "Write to CD Audio fade timer [F] {0:X2}", value);
+                    //Log.Error("CD", "Write to CD Audio fade timer [F] {0:X2}", value);
                     // TODO ADPCM fades/vol control also.
 
                     switch (value)
@@ -206,8 +214,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     if (BramEnabled)
                         BramLocked = true;
                     
-                    Log.Error("CD", "Read: 1803 {0:X2} (PC={1:X4})", CdIoPorts[3], Cpu.PC);
-                    returnValue = CdIoPorts[3];
+                    //Log.Error("CD", "Read: 1803 {0:X2} (PC={1:X4})", CdIoPorts[3], Cpu.PC);
+                    returnValue = Port1803;
                     CdIoPorts[3] ^= 2;
                     return returnValue;
 
@@ -216,18 +224,20 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     return CdIoPorts[4];
 
                 case 0x1805: // CD audio data Low
-                    if ((CdIoPorts[0x3] & 0x2) == 0)
+                    if ((Port1803 & 0x2) == 0)
                         sample = CDAudio.VolumeLeft;
                     else
                         sample = CDAudio.VolumeRight;
                     return (byte) sample;
 
                 case 0x1806: // CD audio data High
-                    if ((CdIoPorts[0x3] & 0x2) == 0)
+                    if ((Port1803 & 0x2) == 0)
                         sample = CDAudio.VolumeLeft;
                     else
                         sample = CDAudio.VolumeRight;
                     return (byte) (sample >> 8);
+
+                // wow, nothing ever reads 1807 yet
 
                 case 0x1808: // Auto Handshake Data Input
                     returnValue = SCSI.DataBits;
@@ -266,7 +276,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     return CdIoPorts[0x0D];
 
                 case 0x180F: // Audio Fade Timer
-                    Log.Error("CD", "Read: 180F {0:X2} (PC={1:X4})", CdIoPorts[0xF], Cpu.PC);
+                    //Log.Error("CD", "Read: 180F {0:X2} (PC={1:X4})", CdIoPorts[0xF], Cpu.PC);
                     return CdIoPorts[0x0F];
 
                 // These are some retarded version check
@@ -285,7 +295,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public void RefreshIRQ2()
         {
-            int mask = CdIoPorts[2] & CdIoPorts[3] & 0x7C;
+            int mask = CdIoPorts[2] & Port1803 & 0x7C;
             Cpu.IRQ2Assert = (mask != 0);
         }
     }

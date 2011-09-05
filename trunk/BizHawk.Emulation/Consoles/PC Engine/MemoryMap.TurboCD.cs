@@ -2,7 +2,7 @@
 {
     public partial class PCEngine
     {
-        private byte ReadMemoryCD(int addr)
+        byte ReadMemoryCD(int addr)
         {
             if (addr < 0xD0000) // read ROM
                 return RomData[addr % RomLength];
@@ -41,7 +41,7 @@
             return 0xFF;
         }
 
-        private void WriteMemoryCD(int addr, byte value)
+        void WriteMemoryCD(int addr, byte value)
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
                 Ram[addr & 0x1FFF] = value;

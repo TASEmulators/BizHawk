@@ -6,23 +6,23 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public sealed class ScsiCDBus
     {
-        private const int STATUS_GOOD               = 0;
-        private const int STATUS_CHECK_CONDITION    = 1;
-        private const int STATUS_CONDITION_MET      = 2;
-        private const int STATUS_BUSY               = 4;
-        private const int STATUS_INTERMEDIATE       = 8;
+        const int STATUS_GOOD               = 0;
+        const int STATUS_CHECK_CONDITION    = 1;
+        const int STATUS_CONDITION_MET      = 2;
+        const int STATUS_BUSY               = 4;
+        const int STATUS_INTERMEDIATE       = 8;
 
-        private const int SCSI_TEST_UNIT_READY      = 0x00;
-        private const int SCSI_REQUEST_SENSE        = 0x03;
-        private const int SCSI_READ                 = 0x08;
-        private const int SCSI_AUDIO_START_POS      = 0xD8;
-        private const int SCSI_AUDIO_END_POS        = 0xD9;
-        private const int SCSI_PAUSE                = 0xDA;
-        private const int SCSI_READ_SUBCODE_Q       = 0xDD;
-        private const int SCSI_READ_TOC             = 0xDE;
+        const int SCSI_TEST_UNIT_READY      = 0x00;
+        const int SCSI_REQUEST_SENSE        = 0x03;
+        const int SCSI_READ                 = 0x08;
+        const int SCSI_AUDIO_START_POS      = 0xD8;
+        const int SCSI_AUDIO_END_POS        = 0xD9;
+        const int SCSI_PAUSE                = 0xDA;
+        const int SCSI_READ_SUBCODE_Q       = 0xDD;
+        const int SCSI_READ_TOC             = 0xDE;
 
-        private bool bsy, sel, cd, io, msg, req, ack, atn, rst;
-        private bool signalsChanged;
+        bool bsy, sel, cd, io, msg, req, ack, atn, rst;
+        bool signalsChanged;
 
         public bool BSY 
         {
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         }
         public byte DataBits  { get; set; } // data bits
 
-        private enum BusPhase
+        enum BusPhase
         {
             BusFree,
             Command,
@@ -117,14 +117,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             Status
         }
 
-        private bool busPhaseChanged;
-        private BusPhase Phase = BusPhase.BusFree;
+        bool busPhaseChanged;
+        BusPhase Phase = BusPhase.BusFree;
 
-        private bool MessageCompleted;
-        private bool StatusCompleted;
-        private byte MessageValue;
+        bool MessageCompleted;
+        bool StatusCompleted;
+        byte MessageValue;
 
-        private QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
+        QuickList<byte> CommandBuffer = new QuickList<byte>(10); // 10 = biggest command
         public QuickQueue<byte> DataIn = new QuickQueue<byte>(2048); // one data sector
 
         // ******** Data Transfer / READ command support ********
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         // ******** Resources ********
 
-        private PCEngine pce;
+        PCEngine pce;
         public Disc disc;
 
         // ******** Events ********
@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             } while (signalsChanged || busPhaseChanged);
         }
 
-        private void ResetDevice()
+        void ResetDevice()
         {
             CD  = false;
             IO  = false;
@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             pce.CDAudio.Stop();
         }
 
-        private void ThinkCommandPhase()
+        void ThinkCommandPhase()
         {
             if (REQ && ACK)
             {
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void ThinkDataInPhase()
+        void ThinkDataInPhase()
         {
             if (REQ && ACK)
             {
@@ -286,13 +286,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void ThinkDataOutPhase()
+        void ThinkDataOutPhase()
         {
             Console.WriteLine("*********** DATA OUT PHASE, DOES THIS HAPPEN? ****************");
             SetPhase(BusPhase.BusFree);
         }
 
-        private void ThinkMessageInPhase()
+        void ThinkMessageInPhase()
         {
             if (REQ && ACK)
             {
@@ -307,13 +307,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void ThinkMessageOutPhase()
+        void ThinkMessageOutPhase()
         {
             Console.WriteLine("******* IN MESSAGE OUT PHASE. DOES THIS EVER HAPPEN? ********");
             SetPhase(BusPhase.BusFree);
         }
         
-        private void ThinkStatusPhase()
+        void ThinkStatusPhase()
         {
             if (REQ && ACK)
             {
@@ -329,13 +329,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         }
 
         // returns true if command completed, false if more data bytes needed
-        private bool CheckCommandBuffer()
+        bool CheckCommandBuffer()
         {
             switch (CommandBuffer[0])
             {
                 case SCSI_TEST_UNIT_READY:
                     if (CommandBuffer.Count < 6) return false;
-                    Log.Note("CD", "Execute TEST_UNIT_READY");
                     SetStatusMessage(STATUS_GOOD, 0);
                     return true;
 
@@ -371,12 +370,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 default:
                     Console.WriteLine("UNRECOGNIZED SCSI COMMAND! {0:X2}", CommandBuffer[0]);
+                    SetStatusMessage(STATUS_GOOD, 0);
                     break;
             }
             return false;
         }
 
-        private void CommandRead()
+        void CommandRead()
         {   
             int sector = (CommandBuffer[1] & 0x1f) << 16;
             sector |= CommandBuffer[2] << 8;
@@ -395,16 +395,16 @@ throw new Exception("requesting 0 sectors read.............................");
             pce.CDAudio.Stop();
         }
 
-        private int audioStartLBA;
-        private int audioEndLBA;
+        int audioStartLBA;
+        int audioEndLBA;
 
-        private void CommandAudioStartPos()
+        void CommandAudioStartPos()
         {
             switch (CommandBuffer[9] & 0xC0)
             {
                 case 0x00: // Set start offset in LBA units
                     audioStartLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
-                    Console.WriteLine("Set Start LBA: "+audioStartLBA);
+                    //Console.WriteLine("Set Start LBA: "+audioStartLBA);
                     break;
 
                 case 0x40: // Set start offset in MSF units
@@ -412,13 +412,13 @@ throw new Exception("requesting 0 sectors read.............................");
                     byte s = CommandBuffer[3].BCDtoBin();
                     byte f = CommandBuffer[4].BCDtoBin();
                     audioStartLBA = Disc.ConvertMSFtoLBA(m, s, f);
-                    Console.WriteLine("Set Start MSF: {0} {1} {2} lba={3}",m,s,f,audioStartLBA);
+                    //Console.WriteLine("Set Start MSF: {0} {1} {2} lba={3}",m,s,f,audioStartLBA);
                     break;
 
                 case 0x80: // Set start offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
                     audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
-                    Console.WriteLine("Set Start track: {0} lba={1}", trackNo, audioStartLBA);
+                    //Console.WriteLine("Set Start track: {0} lba={1}", trackNo, audioStartLBA);
                     break;
             }
 
@@ -438,13 +438,13 @@ throw new Exception("requesting 0 sectors read.............................");
             // irq callback?
         }
 
-        private void CommandAudioEndPos()
+        void CommandAudioEndPos()
         {
             switch (CommandBuffer[9] & 0xC0)
             {
                 case 0x00: // Set end offset in LBA units
                     audioEndLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
-                    Console.WriteLine("Set End LBA: " + audioEndLBA);
+                    //Console.WriteLine("Set End LBA: " + audioEndLBA);
                     break;
 
                 case 0x40: // Set end offset in MSF units
@@ -452,7 +452,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     byte s = CommandBuffer[3].BCDtoBin();
                     byte f = CommandBuffer[4].BCDtoBin();
                     audioEndLBA = Disc.ConvertMSFtoLBA(m, s, f);
-                    Console.WriteLine("Set End MSF: {0} {1} {2} lba={3}", m, s, f, audioEndLBA);
+                    //Console.WriteLine("Set End MSF: {0} {1} {2} lba={3}", m, s, f, audioEndLBA);
                     break;
 
                 case 0x80: // Set end offset in track units
@@ -461,7 +461,7 @@ throw new Exception("requesting 0 sectors read.............................");
                         audioEndLBA = disc.LBACount;
                     else 
                         audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
-                    Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
+                    //Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
                     break;
             }
 
@@ -471,7 +471,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     pce.CDAudio.Stop(); 
                     break;
                 case 1: // play in loop mode. I guess this constitues A-B looping
-                    Console.WriteLine("DOING A-B LOOP. NOT SURE IF RIGHT.");
+                    //Console.WriteLine("DOING A-B LOOP. NOT SURE IF RIGHT.");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.LoopOnCompletion;
@@ -483,7 +483,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.CallbackOnCompletion;
                     break;
                 case 3: // Play normal
-                    Console.WriteLine("*** SET END POS, IN PLAY NORMAL MODE? STARTING AT _START_ POS. IS THAT RIGHT?");
+                    //Console.WriteLine("*** SET END POS, IN PLAY NORMAL MODE? STARTING AT _START_ POS. IS THAT RIGHT?");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.StopOnCompletion;
@@ -492,7 +492,7 @@ throw new Exception("requesting 0 sectors read.............................");
             SetStatusMessage(STATUS_GOOD, 0);
         }
         
-        private void CommandPause()
+        void CommandPause()
         {
             // apparently pause means stop? I guess? Idunno.
             pce.CDAudio.Stop();
@@ -500,9 +500,12 @@ throw new Exception("requesting 0 sectors read.............................");
             // TODO send error if already stopped.. or paused... or something.
         }
 
-        private void CommandReadSubcodeQ()
+        void CommandReadSubcodeQ()
         {
 			Console.WriteLine("poll subcode");
+            // TODO we are lacking some various things here. But we know when it gets used and it doesnt
+            // seem to be used that often.
+            
             var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
 
             DataIn.Clear();
@@ -526,13 +529,13 @@ throw new Exception("requesting 0 sectors read.............................");
             SetPhase(BusPhase.DataIn);
         }
 
-        private void CommandReadTOC()
+        void CommandReadTOC()
         {
             switch (CommandBuffer[1])
             {
                 case 0: // return number of tracks
                     {
-                        Log.Error("CD","Execute READ_TOC : num of tracks");
+                        //Log.Error("CD","Execute READ_TOC : num of tracks");
                         DataIn.Clear();
                         DataIn.Enqueue(0x01);
                         DataIn.Enqueue(((byte) disc.TOC.Sessions[0].Tracks.Count).BinToBCD());
@@ -552,8 +555,8 @@ throw new Exception("requesting 0 sectors read.............................");
                         DataIn.Enqueue(f.BinToBCD());
                         SetPhase(BusPhase.DataIn);
 
-                        Log.Error("CD","EXECUTE READ_TOC : length of disc, LBA {0}, m:{1},s:{2},f:{3}",
-                                          totalLbaLength, m, s, f);
+                        //Log.Error("CD","EXECUTE READ_TOC : length of disc, LBA {0}, m:{1},s:{2},f:{3}",
+                                          //totalLbaLength, m, s, f);
                         break;
                     }
                 case 2: // Return starting position of specified track in MSF format
@@ -581,8 +584,8 @@ throw new Exception("requesting 0 sectors read.............................");
                             DataIn.Enqueue(4);
                         SetPhase(BusPhase.DataIn);
 
-                        Log.Error("CD", "EXECUTE READ_TOC : start pos of TRACK {4}, LBA {0}, m:{1},s:{2},f:{3}",
-                                          lbaPos, m, s, f, track);
+                        //Log.Error("CD", "EXECUTE READ_TOC : start pos of TRACK {4}, LBA {0}, m:{1},s:{2},f:{3}",
+                                          //lbaPos, m, s, f, track);
 
                         break;
                     }
@@ -592,7 +595,7 @@ throw new Exception("requesting 0 sectors read.............................");
             }
         }
 
-        private void SetStatusMessage(byte status, byte message)
+        void SetStatusMessage(byte status, byte message)
         {
             MessageValue = message;
             StatusCompleted = false;
@@ -601,7 +604,7 @@ throw new Exception("requesting 0 sectors read.............................");
             SetPhase(BusPhase.Status);
         }
 
-        private void SetPhase(BusPhase phase)
+        void SetPhase(BusPhase phase)
         {
             if (Phase == phase)
                 return;

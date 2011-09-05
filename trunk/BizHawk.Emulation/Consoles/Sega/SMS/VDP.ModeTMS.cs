@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public partial class VDP
     {
-        private int[] PaletteTMS9918 = new int[] 
+        int[] PaletteTMS9918 = new int[] 
         {
 			unchecked((int)0x00000000),
 			unchecked((int)0xFF000000),
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			unchecked((int)0xFFFFFFFF)
 		};
 
-        private void RenderBackgroundM0()
+        void RenderBackgroundM0()
         {
             if (DisplayOn == false)
             {
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void RenderBackgroundM2()
+        void RenderBackgroundM2()
         {
             if (DisplayOn == false)
             {
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void RenderTmsSprites()
+        void RenderTmsSprites()
         {
             if (DisplayOn == false) return;
 
