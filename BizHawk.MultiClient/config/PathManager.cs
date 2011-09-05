@@ -300,6 +300,8 @@ namespace BizHawk.MultiClient
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
+			if (Global.Config.BindSavestatesToMovies)
+				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			switch (game.System)
 			{
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
