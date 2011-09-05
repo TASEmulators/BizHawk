@@ -14,10 +14,10 @@
         // $FFFE - Mapper slot 1 control
         // $FFFF - Mapper slot 2 control
 
-        private const ushort BankSizeMask = 0x3FFF;
-        private const ushort RamSizeMask = 0x1FFF;
+        const ushort BankSizeMask = 0x3FFF;
+        const ushort RamSizeMask = 0x1FFF;
 
-        private byte ReadMemory(ushort address)
+        byte ReadMemory(ushort address)
         {
             if (address < 1024)
                 return RomData[address];
@@ -37,7 +37,7 @@
             return SystemRam[address & RamSizeMask];
         }
 
-        private void WriteMemory(ushort address, byte value)
+        void WriteMemory(ushort address, byte value)
         {
             if (address >= 0xC000)
                 SystemRam[address & RamSizeMask] = value;
@@ -68,7 +68,7 @@
             }
         }
 
-        private void InitSegaMapper()
+        void InitSegaMapper()
         {
             Cpu.ReadMemory = ReadMemory;
             Cpu.WriteMemory = WriteMemory;
@@ -80,9 +80,9 @@
 
         // Mapper when loading a BIOS as a ROM
 
-        private bool BiosMapped { get { return (Port3E & 0x08) == 0; } }
+        bool BiosMapped { get { return (Port3E & 0x08) == 0; } }
 
-        private byte ReadMemoryBIOS(ushort address)
+        byte ReadMemoryBIOS(ushort address)
         {
             if (BiosMapped == false && address < BankSize * 3) 
                 return 0x00;
@@ -99,7 +99,7 @@
             return SystemRam[address & RamSizeMask];
         }
 
-        private void WriteMemoryBIOS(ushort address, byte value)
+        void WriteMemoryBIOS(ushort address, byte value)
         {
             if (address >= 0xC000)
                 SystemRam[address & RamSizeMask] = value;
@@ -113,7 +113,7 @@
             }
         }
 
-        private void InitBiosMapper()
+        void InitBiosMapper()
         {
             Cpu.ReadMemory = ReadMemoryBIOS;
             Cpu.WriteMemory = WriteMemoryBIOS;

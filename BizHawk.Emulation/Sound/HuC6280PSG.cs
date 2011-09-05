@@ -147,13 +147,13 @@ namespace BizHawk.Emulation.Sound
             MixSamples(samples, start, samples.Length - start);
         }
 
-        private void MixSamples(short[] samples, int start, int len)
+        void MixSamples(short[] samples, int start, int len)
         {
             for (int i = 0; i < 6; i++)
                 MixChannel(samples, start, len, Channels[i]);
         }
 
-        private void MixChannel(short[] samples, int start, int len, PSGChannel channel)
+        void MixChannel(short[] samples, int start, int len, PSGChannel channel)
         {
             if (channel.Enabled == false) return;
             if (channel.DDA == false && channel.Volume == 0) return;
@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Sound
             }
         }
 
-        private void LoadChannelStateText(TextReader reader, int channel)
+        void LoadChannelStateText(TextReader reader, int channel)
         {
             while (true)
             {

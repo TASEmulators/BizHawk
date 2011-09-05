@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.CPUs.H6280
         public byte ReadIrqStatus()
         {
             byte status = 0;
-            if (IRQ2Assert) status |= 1;
+            if (IRQ2Assert) status  |= 1;
             if (IRQ1Assert) status  |= 2;
             if (TimerAssert) status |= 4;
             return status;
@@ -333,7 +333,7 @@ namespace BizHawk.Emulation.CPUs.H6280
         public Func<int, byte> ReadMemory21;
         public Action<int, byte> WriteMemory21;
         public Action<int, byte> WriteVDC;
-        public Action ThinkAction = delegate { };
+        public Action<int> ThinkAction = delegate { };
 
         public byte ReadMemory(ushort address)
         {

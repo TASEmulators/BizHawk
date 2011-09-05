@@ -52,29 +52,29 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public int DisplayStartLine { get { return (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F); } }
 
-        private const int MAWR = 0;  // Memory Address Write Register
-        private const int MARR = 1;  // Memory Address Read Register
-        private const int VRR  = 2;  // VRAM Read Register
-        private const int VWR  = 2;  // VRAM Write Register
-        private const int CR   = 5;  // Control Register
-        private const int RCR  = 6;  // Raster Compare Register
-        private const int BXR  = 7;  // Background X-scroll Register
-        private const int BYR  = 8;  // Background Y-scroll Register
-        private const int MWR  = 9;  // Memory-access Width Register
-        private const int HSR  = 10; // Horizontal Sync Register
-        private const int HDR  = 11; // Horizontal Display Register
-        private const int VPR  = 12; // Vertical synchronous register
-        private const int VDW  = 13; // Vertical display register
-        private const int VCR  = 14; // Vertical display END position register;
-        private const int DCR  = 15; // DMA Control Register
-        private const int SOUR = 16; // Source address for DMA
-        private const int DESR = 17; // Destination address for DMA
-        private const int LENR = 18; // Length of DMA transfer. Writing this will initiate DMA.
-        private const int SATB = 19; // Sprite Attribute Table base location in VRAM
+        const int MAWR = 0;  // Memory Address Write Register
+        const int MARR = 1;  // Memory Address Read Register
+        const int VRR  = 2;  // VRAM Read Register
+        const int VWR  = 2;  // VRAM Write Register
+        const int CR   = 5;  // Control Register
+        const int RCR  = 6;  // Raster Compare Register
+        const int BXR  = 7;  // Background X-scroll Register
+        const int BYR  = 8;  // Background Y-scroll Register
+        const int MWR  = 9;  // Memory-access Width Register
+        const int HSR  = 10; // Horizontal Sync Register
+        const int HDR  = 11; // Horizontal Display Register
+        const int VPR  = 12; // Vertical synchronous register
+        const int VDW  = 13; // Vertical display register
+        const int VCR  = 14; // Vertical display END position register;
+        const int DCR  = 15; // DMA Control Register
+        const int SOUR = 16; // Source address for DMA
+        const int DESR = 17; // Destination address for DMA
+        const int LENR = 18; // Length of DMA transfer. Writing this will initiate DMA.
+        const int SATB = 19; // Sprite Attribute Table base location in VRAM
 
-        private const int RegisterSelect = 0;
-        private const int LSB = 2;
-        private const int MSB = 3;
+        const int RegisterSelect = 0;
+        const int LSB = 2;
+        const int MSB = 3;
 
         public const byte StatusVerticalBlanking    = 0x20;
         public const byte StatusVramVramDmaComplete = 0x10;
@@ -83,10 +83,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public const byte StatusSpriteOverflow      = 0x02;
         public const byte StatusSprite0Collision    = 0x01;
 
-        private const int VramSize = 0x8000;
+        const int VramSize = 0x8000;
         
-        private HuC6280 cpu;
-        private VCE vce;
+        HuC6280 cpu;
+        VCE vce;
 
         public int MultiResHack = 0;
 
@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private void CompleteMSBWrite(int register)
+        void CompleteMSBWrite(int register)
         {
             switch (register)
             {
@@ -206,7 +206,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         internal void RunDmaForScanline()
         {
             // TODO: dont do this all in one scanline. I guess it can do about 227 words per scanline.
-            //Console.WriteLine("Doing some dma");
+            // TODO: to be honest, dont do it in a block per scanline. put it in the CPU think function.
+            Console.WriteLine("******************************* Doing some dma ******************************");
             int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
             int advanceDest   = (Registers[DCR] & 8) == 0 ? +1 : -1;
             int wordsDone = 0;

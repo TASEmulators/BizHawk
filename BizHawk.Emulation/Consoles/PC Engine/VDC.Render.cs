@@ -23,10 +23,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public int RCRCounter;
         public int ActiveLine;
 
-        private byte[] PriorityBuffer = new byte[512];
-        private byte[] InterSpritePriorityBuffer = new byte[512];
         public int HBlankCycles = 79;
         public bool PerformSpriteLimit;
+
+        byte[] PriorityBuffer = new byte[512];
+        byte[] InterSpritePriorityBuffer = new byte[512];
 
         public void ExecFrame(bool render)
         {
@@ -111,7 +112,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             RenderSpritesScanline();
         }
 
-        private void RenderBackgroundScanline()
+        void RenderBackgroundScanline()
         {
             Array.Clear(PriorityBuffer, 0, FrameWidth);
 
@@ -151,7 +152,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private byte[] heightTable = { 16, 32, 64, 64 };
+        byte[] heightTable = { 16, 32, 64, 64 };
 
         public void RenderSpritesScanline()
         {
@@ -337,10 +338,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        private int FramePitch = 256;
-        private int FrameWidth = 256;
-        private int FrameHeight = 240;
-        private int[] FrameBuffer = new int[256 * 240];
+        int FramePitch = 256;
+        int FrameWidth = 256;
+        int FrameHeight = 240;
+        int[] FrameBuffer = new int[256 * 240];
 
         public int[] GetVideoBuffer()
         {

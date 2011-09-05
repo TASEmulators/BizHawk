@@ -5,7 +5,7 @@
         // The SuperGrafx has 32K of RAM and a different port configuration to allow
         // I/O access to VDC1, VDC2, and the VPC.
 
-        private byte ReadMemorySGX(int addr)
+        byte ReadMemorySGX(int addr)
         {
             if (addr < 0xFFFFF) // read ROM
                 return RomData[addr % RomLength];
@@ -38,7 +38,7 @@
             return 0xFF;
         }
 
-        private void WriteMemorySGX(int addr, byte value)
+        void WriteMemorySGX(int addr, byte value)
         {
             if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
                 Ram[addr & 0x7FFF] = value;

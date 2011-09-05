@@ -11,13 +11,14 @@
 - Exile II .. seems to reset itself after playing the unskippable intro. :(
 - Macross 2036.. seems impossible to start/play the game. :(
 
+- Rayxanber 2 weird issues at the end of first level with cd audio player
 - rtype, end of level 4 dies with unrecognized scsi command ff
 - Startling Odyssey does the reset-at-new-game-screen thats rather odd :(
 - Super Darius II : at 1st Boss, game freezes waiting for adpcm
-- Ys 1, start new game, death by adpcm probably
+- Ys 1, start new game, death by adpcm probably  ** shit it works now.
 
 
-
+card angels does poll subcode...
 
 
 ======= TurboGrafx compatibility issues =======

@@ -5,9 +5,9 @@
         // Street Fighter 2 was a 20-megabit HuCard. The PCE has a maximum 8-megabit addressable ROM space.
         // Therefore SF2 had a special mapper to make this work.
         
-        private byte SF2MapperLatch;
+        byte SF2MapperLatch;
 
-        private byte ReadMemorySF2(int addr)
+        byte ReadMemorySF2(int addr)
         {
             if (addr < 0x7FFFF) // read ROM
                 return RomData[addr];
@@ -35,7 +35,7 @@
             return 0xFF;
         }
         
-        private void WriteMemorySF2(int addr, byte value)
+        void WriteMemorySF2(int addr, byte value)
         {
             if ((addr & 0x1FFC) == 0x1FF0)
             {

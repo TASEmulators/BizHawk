@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // ROM
         public byte[] RomData;
         public int RomLength;
-        private Disc disc;
+        Disc disc;
 
         // Machine
         public NecSystemType Type;
@@ -31,14 +31,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public SoundMixer SoundMixer;
         public MetaspuSoundProvider SoundSynchronizer;
 
-        private bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
-        private bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
-        private bool TurboCD    { get { return Type == NecSystemType.TurboCD; } }
+        bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
+        bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
+        bool TurboCD    { get { return Type == NecSystemType.TurboCD; } }
         
         // BRAM
-        private bool BramEnabled = false;
-        private bool BramLocked = true;
-        private byte[] BRAM;
+        bool BramEnabled = false;
+        bool BramLocked = true;
+        byte[] BRAM;
 
         // Memory system
         public byte[] Ram;       // PCE= 8K base ram, SGX= 64k base ram
@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             Init(game, rom);
         }
 
-        private void Init(GameInfo game, byte[] rom)
+        void Init(GameInfo game, byte[] rom)
         {
             Controller = NullController.GetNullController();
             Cpu = new HuC6280();
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM.SoundProvider);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
                 soundProvider = SoundSynchronizer;
-                Cpu.ThinkAction = () => { SCSI.Think(); ADPCM.Think(); };
+                Cpu.ThinkAction = (cycles) => { SCSI.Think(); ADPCM.Think(cycles); };
             }
 
             if (rom.Length == 0x60000)
@@ -143,9 +143,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 BramEnabled = true;
                 BRAM = new byte[2048]; 
-                Console.WriteLine("ENABLE BRAM!");
 
-                // pre-format BRAM
+                // pre-format BRAM. damn are we helpful.
                 BRAM[0] = 0x48; BRAM[1] = 0x55; BRAM[2] = 0x42; BRAM[3] = 0x4D;
                 BRAM[4] = 0x00; BRAM[5] = 0x88; BRAM[6] = 0x10; BRAM[7] = 0x80;
             }
@@ -199,9 +198,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             SetupMemoryDomains();
         }
 
-        private int _lagcount = 0;
-        private bool lagged = true;
-        private bool islag = false;
+        int _lagcount = 0;
+        bool lagged = true;
+        bool islag = false;
         public int Frame { get; set; }
         public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
         public bool IsLagFrame { get { return islag; } }
@@ -245,7 +244,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             get { return (IVideoProvider) VPC ?? VDC1; }
         }
 
-        private ISoundProvider soundProvider;
+        ISoundProvider soundProvider;
         public ISoundProvider SoundProvider
         {
             get { return soundProvider; }
@@ -305,6 +304,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     writer.Write("SuperRAM ");
                     SuperRam.SaveAsHex(writer);
                 }
+writer.Write("ADPCM_TEMP ");
+ADPCM.RAM.SaveAsHex(writer);
             }
             writer.WriteLine("[/PCEngine]");
         }
@@ -331,6 +332,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CDRam.ReadFromHex(args[1]);
                 else if (args[0] == "SuperRAM")
                     SuperRam.ReadFromHex(args[1]);
+else if (args[0] == "ADPCM_TEMP")
+ADPCM.RAM.ReadFromHex(args[1]);
                 else if (args[0] == "PopulousRAM" && PopulousRAM != null)
                     PopulousRAM.ReadFromHex(args[1]);
                 else if (args[0] == "[HuC6280]")
@@ -455,7 +458,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             return buf;
         }
 
-        private void SetupMemoryDomains()
+        void SetupMemoryDomains()
         {
             var domains = new List<MemoryDomain>(10);
             var MainMemoryDomain = new MemoryDomain("Main Memory", Ram.Length, Endian.Little,
@@ -500,7 +503,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             memoryDomains = domains.AsReadOnly();
         }
 
-        private IList<MemoryDomain> memoryDomains;
+        IList<MemoryDomain> memoryDomains;
         public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
         public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 

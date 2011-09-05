@@ -19,12 +19,13 @@
         public ControllerDefinition ControllerDefinition { get { return PCEngineController;  } }
         public IController Controller { get; set; }
 
-        private int SelectedController;
-        private byte InputByte;
+        int SelectedController;
+        byte InputByte;
+
         public bool SEL { get { return ((InputByte & 1) != 0) ;} }
         public bool CLR { get { return ((InputByte & 2) != 0); } }
         
-        private void WriteInput(byte value)
+        void WriteInput(byte value)
         {
             bool prevSEL = SEL;
             InputByte = value;
@@ -36,7 +37,7 @@
                 SelectedController = (SelectedController + 1);
         }
     
-        private byte ReadInput()
+        byte ReadInput()
         {
             byte value = 0x3F;
 			

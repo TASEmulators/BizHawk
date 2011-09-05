@@ -11,8 +11,8 @@ namespace BizHawk
 {
 	public struct Tuple<T1, T2> : IEquatable<Tuple<T1, T2>>
 	{
-		private readonly T1 first;
-		private readonly T2 second;
+		readonly T1 first;
+		readonly T2 second;
 		public T1 First { get { return first; } }
 		public T2 Second { get { return second; } }
 

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Sound
 
     public sealed class SoundMixer : ISoundProvider
     {
-        private List<ISoundProvider> SoundProviders;
+        List<ISoundProvider> SoundProviders;
 
         public SoundMixer(params ISoundProvider[] soundProviders) 
         {

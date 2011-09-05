@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.Sound
     {
         public ISoundProvider BaseSoundProvider;
 
-        private Queue<short> buffer = new Queue<short>(4096);
+        Queue<short> buffer = new Queue<short>(4096);
 
-        private const int SamplesInOneFrame = 1470;
-        private const int TargetExtraSamples = 882;
-        private const int MaxExcessSamples = 4096;
+        const int SamplesInOneFrame = 1470;
+        const int TargetExtraSamples = 882;
+        const int MaxExcessSamples = 4096;
 
 		public void DiscardSamples()
 		{

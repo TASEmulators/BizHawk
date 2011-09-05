@@ -9,7 +9,7 @@
         // Bank 2: Control Address $8000 - Maps $8000 - $BFFF
         // System RAM is at $C000+ as in the Sega mapper.
 
-        private byte ReadMemoryCM(ushort address)
+        byte ReadMemoryCM(ushort address)
         {
             if (address < BankSize * 1) return RomData[(RomBank0 * BankSize) + address];
             if (address < BankSize * 2) return RomData[(RomBank1 * BankSize) + (address & BankSizeMask)];
@@ -18,7 +18,7 @@
             return SystemRam[address & RamSizeMask];
         }
 
-        private void WriteMemoryCM(ushort address, byte value)
+        void WriteMemoryCM(ushort address, byte value)
         {
             if (address >= 0xC000)
                 SystemRam[address & RamSizeMask] = value;
@@ -28,7 +28,7 @@
             else if (address == 0x8000) RomBank2 = (byte)(value % RomBanks);
         }
 
-        private void InitCodeMastersMapper()
+        void InitCodeMastersMapper()
         {
             Cpu.ReadMemory = ReadMemoryCM;
             Cpu.WriteMemory = WriteMemoryCM;

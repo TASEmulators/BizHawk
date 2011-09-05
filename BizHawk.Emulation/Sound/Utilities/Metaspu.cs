@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Sound
 		{
 		}
 
-        private short[] pullBuffer = new short[1470];
+        short[] pullBuffer = new short[1470];
         public void PullSamples(ISoundProvider source)
         {
             Array.Clear(pullBuffer, 0, 1470);
