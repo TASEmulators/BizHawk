@@ -75,7 +75,6 @@ static string ClassifyTable = @"
 0	16	0	8	8	NROM-HOMEBREW; some of blargg's test (sprite tests)
 0	16	8	8	0	NES-NROM-128; balloon fight, but its broken right now
 0	32	8	8	0	NES-NROM-256; super mario bros
-1	32	128	8	0	SxROM-JUNK; 'goodnes' tetris dump
 1	32	32	8	0	NES-SEROM; lolo
 1	128	0	8	0	NES-SNROM; zelda
 1	128	128	8	0	NES-SKROM; zelda 2
