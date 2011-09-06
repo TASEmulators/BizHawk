@@ -308,6 +308,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-SNROM":
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
+				case "SxROM-JUNK":
+					break;
 				default:
 					return false;
 			}
