@@ -97,6 +97,11 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.PLAY;
 		}
 
+		public void ResumeRecording()
+		{
+			Mode = MOVIEMODE.RECORD;
+		}
+
 		public void CommitFrame(int frameNum, IController source)
 		{
 			//if (Global.Emulator.Frame < Log.Length())
@@ -323,12 +328,13 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Log.Length(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
-			//Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved"); //Debug
+			Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved"); //Debug
 		}
 
 		public void LoadLogFromSavestateText(string path)
 		{
 			var reader = new StreamReader(path);
+			int stateFrame = 0;
 			//We are in record mode so replace the movie log with the one from the savestate			
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
@@ -338,18 +344,37 @@ namespace BizHawk.MultiClient
 					MakeBackup = false;
 				}
 				Log.Clear();
+				int i = 0; //TODO: Debug remove me
 				while (true)
 				{
-					int i = 0; //TODO: Debug remove me
+					
 					string line = reader.ReadLine();
 					if (line.Contains(".[NES")) //TODO: Remove debug
 					{
 						MessageBox.Show("OOPS! Corrupted file stream");
 					}
 					if (line == null) break;
-					if (line.Trim() == "") continue;
-					if (line == "[Input]") continue;
-					if (line == "[/Input]") break;
+					else if (line.Trim() == "") continue;
+					else if (line == "[Input]") continue;
+					else if (line == "[/Input]") break;
+					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch { } //TODO: message?
+					}
+					else if (line.Contains("Frame "))
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch { } //TODO: message?
+					}
 					if (line[0] == '|')
 					{
 						Log.AddFrame(line);
@@ -365,9 +390,27 @@ namespace BizHawk.MultiClient
 				{
 					string line = reader.ReadLine();
 					if (line == null) break;
-					if (line.Trim() == "") continue;
-					if (line == "[Input]") continue;
-					if (line == "[/Input]") break;
+					else if (line.Trim() == "") continue;
+					else if (line == "[Input]") continue;
+					else if (line == "[/Input]") break;
+					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+						}
+						catch { } //TODO: message?
+					}
+					else if (line.Contains("Frame "))
+					{
+						string[] strs = line.Split(' ');
+						try
+						{
+							stateFrame = int.Parse(strs[1]);
+						}
+						catch { } //TODO: message?
+					}
 					if (line[0] == '|')
 					{
 						Log.SetFrameAt(i, line);
@@ -376,7 +419,7 @@ namespace BizHawk.MultiClient
 				}
 				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
-			if (Global.Emulator.Frame < Log.Length())
+			if (stateFrame > 0 && stateFrame < Log.Length())
 			{
 				Log.Truncate(Global.Emulator.Frame);
 			}
