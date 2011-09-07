@@ -157,7 +157,7 @@ namespace BizHawk.MultiClient
 				{
 					if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
 						return false;	//GUID Error
-					Global.MovieSession.Movie.StartNewRecording(!Global.MovieSession.MultiTrack.IsActive);
+					Global.MovieSession.Movie.ResumeRecording();
 					SetMainformMovieInfo();
 					Global.MovieSession.Movie.LoadLogFromSavestateText(path);
 				}
