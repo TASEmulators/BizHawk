@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteVDC = VDC1.WriteVDC;
                 CDAudio = new CDAudio(disc);
                 PSG.MaxVolume = short.MaxValue * 3 / 4;
-                SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM.SoundProvider);
+                SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
                 soundProvider = SoundSynchronizer;
                 Cpu.ThinkAction = (cycles) => { SCSI.Think(); ADPCM.Think(cycles); };
