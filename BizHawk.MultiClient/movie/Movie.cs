@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace BizHawk.MultiClient
 {
@@ -322,7 +323,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Log.Length(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
-			Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved");
+			//Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved"); //Debug
 		}
 
 		public void LoadLogFromSavestateText(string path)
@@ -339,18 +340,23 @@ namespace BizHawk.MultiClient
 				Log.Clear();
 				while (true)
 				{
+					int i = 0; //TODO: Debug remove me
 					string line = reader.ReadLine();
-					if (line.Contains(".[NES"))
+					if (line.Contains(".[NES")) //TODO: Remove debug
 					{
-						MessageBox.Show("OOPS!");
+						MessageBox.Show("OOPS! Corrupted file stream");
 					}
 					if (line == null) break;
 					if (line.Trim() == "") continue;
 					if (line == "[Input]") continue;
 					if (line == "[/Input]") break;
 					if (line[0] == '|')
+					{
 						Log.AddFrame(line);
+						i++;
+					}
 				}
+				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			else
 			{
@@ -368,6 +374,7 @@ namespace BizHawk.MultiClient
 						i++;
 					}
 				}
+				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			if (Global.Emulator.Frame < Log.Length())
 			{
@@ -491,7 +498,7 @@ namespace BizHawk.MultiClient
 			MovieLog l = new MovieLog();
 			string line;
 			string GUID;
-
+			int stateFrame = 0;
 			while (true)
 			{
 				line = reader.ReadLine();
@@ -518,6 +525,24 @@ namespace BizHawk.MultiClient
 						return true;
 					}
 				}
+				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
+				{
+					string[] strs = line.Split(' ');
+					try
+					{
+						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
+					}
+					catch { } //TODO: message?
+				}
+				else if (line.Contains("Frame "))
+				{
+					string[] strs = line.Split(' ');
+					try
+					{
+						stateFrame = int.Parse(strs[1]);
+					}
+					catch { } //TODO: message?
+				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
 				else if (line[0] == '|')
@@ -532,7 +557,9 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (Log.Length() < l.Length())
+			if (stateFrame == 0 || stateFrame > l.Length()) 
+				stateFrame = l.Length();  //In case the frame count failed to parse, revert to using the entire state input log
+			if (Log.Length() < stateFrame)
 			{
 				//Future event error
 					MessageBox.Show("The savestate is from frame " + l.Length().ToString() + " which is greater than the current movie length of " +
@@ -540,11 +567,10 @@ namespace BizHawk.MultiClient
 					reader.Close();
 					return false;
 			}
-			for (int x = 0; x < l.Length(); x++)
+			for (int x = 0; x < stateFrame; x++)
 			{
 				string xs = Log.GetFrame(x);
 				string ys = l.GetFrame(x);
-				//if (Log.GetFrame(x) != l.GetFrame(x))
 				if (xs != ys)
 				{
 					//TimeLine Error
