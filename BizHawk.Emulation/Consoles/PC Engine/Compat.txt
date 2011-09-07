@@ -2,8 +2,7 @@
 *                   Turbo CD Issues                  *
 ******************************************************
 
-- Baby Jo, a totally terrible game.
-- Download 2, eventually has issues. Seems like waiting on ADPCM interrupts or flags.
+- Download 2: 2nd level jacked up, like the level is garbage, and garbage is imba
 - Similar in Dragon Slayer
 - Dungeon Explorer II quite desperately need ADPCM audio
   + and a gross corruption issue at teh end of the intro. and then it freezes. :(
@@ -12,7 +11,8 @@
 - Macross 2036.. seems impossible to start/play the game. :(
 
 - Rayxanber 2 weird issues at the end of first level with cd audio player
-- rtype, end of level 4 dies with unrecognized scsi command ff
+- Rtype, end of level 4 dies with unrecognized scsi command ff, or maybe freezes before then
+- Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
 - Startling Odyssey does the reset-at-new-game-screen thats rather odd :(
 - Super Darius II : at 1st Boss, game freezes waiting for adpcm
 - Ys 1, start new game, death by adpcm probably  ** shit it works now.
@@ -30,7 +30,7 @@ General:
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
 
-Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed
+Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed (so does Turbo Engine!)
 
 ===================================
 Games that need TV Emulation (to varying degrees)
@@ -45,8 +45,8 @@ Yo, Bro           - Mid-frame res changes (hax to make playable) (IF YOU CAN CAL
 Lesser degrees:
 
 Aero Blaster      - Bottom of Screen extends too many lines - like 3 extra or so
-Alice             - Screen too tall; glitches when scrolling up, but in pcejin also,  
-                    but not ootake; ergo probably a timing artifact
+Alice             - Screen too tall; glitches when scrolling up, but in mednafen in turboengine also,  
+                    but not Ootake; could be a timing artifact, or Ootake is cutting off the top
 Dead Moon         - Screen is too tall
 Jack Nicholas Golf- Some screens are too tall and reveal bad gfx below the intended visible screen
 Legend of Hero Ton- Slight gfx issue on top of screen
@@ -67,9 +67,6 @@ Stuff I Fixed That's Not In Other Docs:
 + There is a one-instruction delay on changes to the I flag taking effect
   - Affects (Not a complete list): Blodia, Body Conquest 2, Champions Forever Boxing,
     Cross Wiber, Jackie Chan, Jigoku Meguri, New Adventure Island, World Beach volley
-  - Actually, I'm not at all convinced there's always a 1-instruction delay on the I-flag.
-    But this fixes several games; clearly there are delays in some scenarios. But it's not clear
-    to me that this delay is ALWAYS present.
 + Writing to the SATB location register of the VDC requests a VRAM->SAT DMA even if the SAT DMA
   bit is disabled in the DCR.
 + This is in other docs, but Fighting Run requires full MWR register emulation including the various
