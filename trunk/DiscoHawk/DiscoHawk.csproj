@@ -63,7 +63,7 @@
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>corphawk.ico</ApplicationIcon>
+    <ApplicationIcon>discohawk.ico</ApplicationIcon>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -76,9 +76,7 @@
   <ItemGroup>
     <Compile Include="AudioExtractor.cs" />
     <Compile Include="DiscoHawk.cs" />
-    <Compile Include="DiscoHawkDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="DiscoHawkDialog.cs" />
     <Compile Include="DiscoHawkDialog.Designer.cs">
       <DependentUpon>DiscoHawkDialog.cs</DependentUpon>
     </Compile>
@@ -140,6 +138,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="corphawk.ico" />
+    <Content Include="discohawk.ico" />
   </ItemGroup>
 </Project>
