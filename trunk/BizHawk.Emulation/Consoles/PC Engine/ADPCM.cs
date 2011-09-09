@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         // ***************************************************************************
         
         public bool AdpcmIsPlaying      { get; private set; }
+        public bool HalfReached         { get; private set; }
+        public bool EndReached          { get; private set; }
         public bool AdpcmBusyWriting    { get { return AdpcmCdDmaRequested; } }
         public bool AdpcmBusyReading    { get { return ReadPending; } }
         public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
@@ -66,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             pce = pcEngine;
             SCSI = scsi;
-            MaxVolume = 16384;
+            MaxVolume = 24576;
         }
 
         public void AdpcmControlWrite(byte value)
@@ -78,10 +80,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 WriteAddress = 0;
                 IOAddress = 0;
                 nibble = false;
+                AdpcmIsPlaying = false;
+                HalfReached = false;
+                EndReached = false;
                 playingSample = 0;
                 Playback44khzTimer = 0;
                 magnitude = 0;
-                AdpcmIsPlaying = false;
             }
 
             if ((value & 8) != 0)
@@ -101,6 +105,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if ((value & 0x10) != 0)
             {
                 AdpcmLength = IOAddress;
+                EndReached = false;
                 //Console.WriteLine("SET LENGTH={0:X4}", adpcm_length);
             }
 
@@ -140,6 +145,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 ReadPending = false;
                 if (AdpcmLength > ushort.MinValue)
                     AdpcmLength--;
+                else
+                {
+                    EndReached = true;
+                    HalfReached = false;
+                }
             }
 
             if (WritePending && WriteTimer <= 0)
@@ -148,6 +158,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 WritePending = false;
                 if (AdpcmLength < ushort.MaxValue) 
                     AdpcmLength++;
+                HalfReached = AdpcmLength < 0x8000;
             }
 
             if (AdpcmCdDmaRequested)
@@ -170,7 +181,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
 
             pce.IRQ2Monitor &= 0xF3;
-            if (AdpcmIsPlaying == false) pce.IRQ2Monitor |= 0x08;
+            if (HalfReached) pce.IRQ2Monitor |= 0x04;
+            if (EndReached) pce.IRQ2Monitor |= 0x08;
             pce.RefreshIRQ2();
         }
         
@@ -289,9 +301,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
                 nextSampleTimer--;
 
+                HalfReached = AdpcmLength < 0x8000;
+
                 if (AdpcmLength == 0)
                 {
                     AdpcmIsPlaying = false;
+                    EndReached = true;
+                    HalfReached = false;
                 }
 
                 short adjustedSample = (short)((playingSample - 2048) * MaxVolume / 2048);

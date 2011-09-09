@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemoryPopulous;
             }
 
-            if (game["ForceSpriteLimit"] || game.NotInDatabase || TurboCD)
+            if (game["ForceSpriteLimit"] || game.NotInDatabase)
             {
                 VDC1.PerformSpriteLimit = true;
                 if (VDC2 != null)
@@ -173,7 +173,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 CDAudio.MaxVolume = int.Parse(game.OptionValue("CdVol"));
             if (game["PsgVol"])
                 PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
-            // TODO ADPCM
+            if (game["AdpcmVol"])
+                ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
 
             // Ok, yes, HBlankPeriod's only purpose is game-specific hax.
             // 1) At least they're not coded directly into the emulator, but instead data-driven.

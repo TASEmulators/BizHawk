@@ -1,7 +1,7 @@
 ﻿using System;
 
 // IRQ2 interrupts:
-// 0x04 - INTA    - ADPCM interrupt
+// 0x04 - INTA    - ADPCM interrupt / Half Reached
 // 0x08 - INTSTOP - Fire when end of CD-Audio playback reached when in STOP MODE 2.
 // 0x10 - INTSUB  - something with subchannel
 // 0x20 - INTM    - Fires when data transfer is complete
@@ -258,10 +258,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x180C: // ADPCM Status
                     returnValue = 0;
+                    if (ADPCM.EndReached)
+                        returnValue |= 0x01;
                     if (ADPCM.AdpcmIsPlaying)
                         returnValue |= 0x08;
-                    else
-                        returnValue |= 0x01;
                     if (ADPCM.AdpcmBusyWriting)
                         returnValue |= 0x04;
                     if (ADPCM.AdpcmBusyReading)
