@@ -637,7 +637,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog();
 
 			if (!(Global.Emulator is NullEmulator))
-				sfd.FileName = Global.Game.Name;
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			else
 				sfd.FileName = "MemoryDump";
 
