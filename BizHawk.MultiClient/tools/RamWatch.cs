@@ -870,7 +870,7 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (changes)
+			if (changes && currentWatchFile.Length > 0)
 			{
 				SaveWatchFile(currentWatchFile);
 			}
