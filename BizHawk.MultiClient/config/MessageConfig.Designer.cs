@@ -518,12 +518,12 @@
 			this.PositionPanel.Name = "PositionPanel";
 			this.PositionPanel.Size = new System.Drawing.Size(264, 248);
 			this.PositionPanel.TabIndex = 0;
-			this.PositionPanel.MouseLeave += new System.EventHandler(this.PositionPanel_MouseLeave);
 			this.PositionPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.PositionPanel_Paint);
-			this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
 			this.PositionPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseDown);
-			this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
 			this.PositionPanel.MouseEnter += new System.EventHandler(this.PositionPanel_MouseEnter);
+			this.PositionPanel.MouseLeave += new System.EventHandler(this.PositionPanel_MouseLeave);
+			this.PositionPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseMove);
+			this.PositionPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PositionPanel_MouseUp);
 			// 
 			// XNumeric
 			// 
@@ -662,6 +662,7 @@
 			this.Controls.Add(this.MessageTypeBox);
 			this.Controls.Add(this.OK);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+			this.MinimumSize = new System.Drawing.Size(404, 375);
 			this.Name = "MessageConfig";
 			this.ShowIcon = false;
 			this.Text = "Configure On Screen Messages";

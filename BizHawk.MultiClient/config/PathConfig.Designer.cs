@@ -143,6 +143,9 @@
 			this.GenesisBrowseScreenshots = new System.Windows.Forms.Button();
 			this.GenesisROMsBox = new System.Windows.Forms.TextBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.PCEBiosDescription = new System.Windows.Forms.Label();
+			this.PCEBrowseBios = new System.Windows.Forms.Button();
+			this.PCEBiosBox = new System.Windows.Forms.TextBox();
 			this.PCECheatsDescription = new System.Windows.Forms.Label();
 			this.PCEBrowseCheats = new System.Windows.Forms.Button();
 			this.PCECheatsBox = new System.Windows.Forms.TextBox();
@@ -205,9 +208,6 @@
 			this.BaseDescription = new System.Windows.Forms.Label();
 			this.RecentForROMs = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
-			this.PCEBiosBox = new System.Windows.Forms.TextBox();
-			this.PCEBrowseBios = new System.Windows.Forms.Button();
-			this.PCEBiosDescription = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -1489,6 +1489,36 @@
 			this.tabPage4.Text = "PC Engine";
 			this.tabPage4.UseVisualStyleBackColor = true;
 			// 
+			// PCEBiosDescription
+			// 
+			this.PCEBiosDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.PCEBiosDescription.AutoSize = true;
+			this.PCEBiosDescription.Location = new System.Drawing.Point(360, 212);
+			this.PCEBiosDescription.Name = "PCEBiosDescription";
+			this.PCEBiosDescription.Size = new System.Drawing.Size(50, 13);
+			this.PCEBiosDescription.TabIndex = 91;
+			this.PCEBiosDescription.Text = "CD BIOS";
+			// 
+			// PCEBrowseBios
+			// 
+			this.PCEBrowseBios.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.PCEBrowseBios.Image = ((System.Drawing.Image)(resources.GetObject("PCEBrowseBios.Image")));
+			this.PCEBrowseBios.Location = new System.Drawing.Point(328, 209);
+			this.PCEBrowseBios.Name = "PCEBrowseBios";
+			this.PCEBrowseBios.Size = new System.Drawing.Size(26, 23);
+			this.PCEBrowseBios.TabIndex = 90;
+			this.PCEBrowseBios.UseVisualStyleBackColor = true;
+			this.PCEBrowseBios.Click += new System.EventHandler(this.PCEBrowseBios_Click);
+			// 
+			// PCEBiosBox
+			// 
+			this.PCEBiosBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.PCEBiosBox.Location = new System.Drawing.Point(13, 209);
+			this.PCEBiosBox.Name = "PCEBiosBox";
+			this.PCEBiosBox.Size = new System.Drawing.Size(307, 20);
+			this.PCEBiosBox.TabIndex = 89;
+			// 
 			// PCECheatsDescription
 			// 
 			this.PCECheatsDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -2152,6 +2182,7 @@
 			// 
 			// SaveButton
 			// 
+			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.SaveButton.Location = new System.Drawing.Point(12, 390);
 			this.SaveButton.Name = "SaveButton";
 			this.SaveButton.Size = new System.Drawing.Size(75, 23);
@@ -2159,36 +2190,6 @@
 			this.SaveButton.Text = "&Save";
 			this.SaveButton.UseVisualStyleBackColor = true;
 			this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
-			// 
-			// PCEBiosBox
-			// 
-			this.PCEBiosBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBiosBox.Location = new System.Drawing.Point(13, 209);
-			this.PCEBiosBox.Name = "PCEBiosBox";
-			this.PCEBiosBox.Size = new System.Drawing.Size(307, 20);
-			this.PCEBiosBox.TabIndex = 89;
-			// 
-			// PCEBrowseBios
-			// 
-			this.PCEBrowseBios.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBrowseBios.Image = ((System.Drawing.Image)(resources.GetObject("PCEBrowseBios.Image")));
-			this.PCEBrowseBios.Location = new System.Drawing.Point(328, 209);
-			this.PCEBrowseBios.Name = "PCEBrowseBios";
-			this.PCEBrowseBios.Size = new System.Drawing.Size(26, 23);
-			this.PCEBrowseBios.TabIndex = 90;
-			this.PCEBrowseBios.UseVisualStyleBackColor = true;
-			this.PCEBrowseBios.Click += new System.EventHandler(this.PCEBrowseBios_Click);
-			// 
-			// PCEBiosDescription
-			// 
-			this.PCEBiosDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.PCEBiosDescription.AutoSize = true;
-			this.PCEBiosDescription.Location = new System.Drawing.Point(360, 212);
-			this.PCEBiosDescription.Name = "PCEBiosDescription";
-			this.PCEBiosDescription.Size = new System.Drawing.Size(50, 13);
-			this.PCEBiosDescription.TabIndex = 91;
-			this.PCEBiosDescription.Text = "CD BIOS";
 			// 
 			// PathConfig
 			// 
@@ -2205,6 +2206,7 @@
 			this.Controls.Add(this.BaseDescription);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
+			this.MinimumSize = new System.Drawing.Size(263, 216);
 			this.Name = "PathConfig";
 			this.ShowIcon = false;
 			this.Text = "Path Configuration";

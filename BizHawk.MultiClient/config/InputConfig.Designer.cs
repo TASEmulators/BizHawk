@@ -195,6 +195,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(418, 202);
 			this.Name = "InputConfig";
 			this.Text = "Configure Controllers";
 			this.Load += new System.EventHandler(this.InputConfig_Load);
