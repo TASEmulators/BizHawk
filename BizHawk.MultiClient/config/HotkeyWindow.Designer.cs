@@ -1636,6 +1636,7 @@
 			// 
 			// IDB_CANCEL
 			// 
+			this.IDB_CANCEL.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.IDB_CANCEL.Location = new System.Drawing.Point(528, 9);
 			this.IDB_CANCEL.Name = "IDB_CANCEL";
 			this.IDB_CANCEL.Size = new System.Drawing.Size(80, 22);
@@ -1667,8 +1668,10 @@
 			// 
 			// HotkeyWindow
 			// 
+			this.AcceptButton = this.IDB_SAVE;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.IDB_CANCEL;
 			this.ClientSize = new System.Drawing.Size(637, 380);
 			this.Controls.Add(this.AutoTabCheckBox);
 			this.Controls.Add(this.label38);
