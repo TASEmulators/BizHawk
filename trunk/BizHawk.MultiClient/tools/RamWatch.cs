@@ -80,8 +80,8 @@ namespace BizHawk.MultiClient
 		public void AddWatch(Watch w)
 		{
 			watchList.Add(w);
-			DisplayWatchList();
 			UpdateValues();
+			DisplayWatchList();
 		}
 
 		private void LoadConfigSettings()
@@ -497,6 +497,7 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			if (indexes.Count > 0)
 				EditWatchObject(indexes[0]);
+			UpdateValues();
 		}
 
 		void RemoveWatch()
@@ -512,6 +513,7 @@ namespace BizHawk.MultiClient
 				indexes.Clear();
 				DisplayWatchList();
 			}
+			UpdateValues();
 		}
 
 		void DuplicateWatch()
@@ -532,6 +534,7 @@ namespace BizHawk.MultiClient
 					DisplayWatchList();
 				}
 			}
+			UpdateValues();
 		}
 
 		void MoveUp()
