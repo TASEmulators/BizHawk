@@ -359,12 +359,12 @@ namespace BizHawk.MultiClient
 					else if (line == "[/Input]") break;
 					else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
 					{
-						string[] strs = line.Split(' ');
+						string[] strs = line.Split('x');
 						try
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { } //TODO: message?
+						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -373,7 +373,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { } //TODO: message?
+						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
 					}
 					if (line[0] == '|')
 					{
@@ -570,12 +570,12 @@ namespace BizHawk.MultiClient
 				}
 				else if (line.Contains("Frame 0x")) //NES stores frame count in hex, yay
 				{
-					string[] strs = line.Split(' ');
+					string[] strs = line.Split('x');
 					try
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 					}
-					catch { } //TODO: message?
+					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line.Contains("Frame "))
 				{
@@ -584,7 +584,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1]);
 					}
-					catch { } //TODO: message?
+					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
@@ -600,8 +600,10 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (stateFrame == 0 || stateFrame > l.Length()) 
+			if (stateFrame == 0 || stateFrame > l.Length())
+			{
 				stateFrame = l.Length();  //In case the frame count failed to parse, revert to using the entire state input log
+			}
 			if (Log.Length() < stateFrame)
 			{
 				//Future event error
