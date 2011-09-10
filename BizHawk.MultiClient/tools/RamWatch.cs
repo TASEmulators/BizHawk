@@ -80,6 +80,7 @@ namespace BizHawk.MultiClient
 		public void AddWatch(Watch w)
 		{
 			watchList.Add(w);
+			Changes();
 			UpdateValues();
 			DisplayWatchList();
 		}
