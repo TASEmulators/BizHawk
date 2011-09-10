@@ -40,12 +40,13 @@
 			this.NESPPU = new System.Windows.Forms.ToolStripButton();
 			this.NESNameTable = new System.Windows.Forms.ToolStripButton();
 			this.NESGameGenie = new System.Windows.Forms.ToolStripButton();
-			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+			this.KeypadTool = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.BackColor = System.Drawing.SystemColors.Control;
 			this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButton1,
@@ -58,11 +59,11 @@
             this.NESPPU,
             this.NESNameTable,
             this.NESGameGenie,
-            this.toolStripButton6});
+            this.KeypadTool});
 			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
-			this.toolStrip1.Location = new System.Drawing.Point(9, 27);
+			this.toolStrip1.Location = new System.Drawing.Point(9, 11);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(86, 272);
+			this.toolStrip1.Size = new System.Drawing.Size(86, 253);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.TabStop = true;
 			// 
@@ -156,22 +157,23 @@
 			this.NESGameGenie.Text = "Game Genie";
 			this.NESGameGenie.Click += new System.EventHandler(this.NESGameGenie_Click);
 			// 
-			// toolStripButton6
+			// KeypadTool
 			// 
-			this.toolStripButton6.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
-			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripButton6.Name = "toolStripButton6";
-			this.toolStripButton6.Size = new System.Drawing.Size(63, 20);
-			this.toolStripButton6.Text = "Keypad";
-			this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
+			this.KeypadTool.Image = global::BizHawk.MultiClient.Properties.Resources.calculator;
+			this.KeypadTool.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.KeypadTool.Name = "KeypadTool";
+			this.KeypadTool.Size = new System.Drawing.Size(63, 20);
+			this.KeypadTool.Text = "Keypad";
+			this.KeypadTool.Click += new System.EventHandler(this.KeyPadTool_Click);
 			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(123, 297);
+			this.ClientSize = new System.Drawing.Size(122, 274);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(130, 64);
 			this.Name = "ToolBox";
 			this.Text = "Tool Box";
 			this.Load += new System.EventHandler(this.ToolBox_Load);
@@ -195,7 +197,7 @@
         private System.Windows.Forms.ToolStripButton NESDebugger;
         private System.Windows.Forms.ToolStripButton NESGameGenie;
         private System.Windows.Forms.ToolStripButton NESNameTable;
-        private System.Windows.Forms.ToolStripButton toolStripButton6;
+        private System.Windows.Forms.ToolStripButton KeypadTool;
 
     }
 }
