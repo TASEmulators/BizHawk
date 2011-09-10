@@ -1563,8 +1563,10 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSearchFile, "") == 0) SaveAs();
-			SaveSearchFile(currentSearchFile);
+			if (string.Compare(currentSearchFile, "") == 0) 
+				SaveAs();
+			else
+				SaveSearchFile(currentSearchFile);
 		}
 
 		private void addSelectedToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
