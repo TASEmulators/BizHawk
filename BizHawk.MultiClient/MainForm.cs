@@ -19,6 +19,7 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
+		public bool INTERIM = true;
 		public const string EMUVERSION = "BizHawk v1.0.0";
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
@@ -70,7 +71,7 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie = new Movie();
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
-            Global.Game = GameInfo.GetNullGame();
+			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
@@ -231,6 +232,12 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.StartPaused)
 				PauseEmulator();
+
+			if (!INTERIM)
+			{
+				debuggerToolStripMenuItem.Enabled = false;
+				luaConsoleToolStripMenuItem.Enabled = false;
+			}
 		}
 
 		void SyncCoreInputComm()
@@ -787,19 +794,21 @@ namespace BizHawk.MultiClient
 
 		private string DisplayNameForSystem(string system)
 		{
+			string str = "";
+			if (INTERIM) str += "(interim) ";
 			switch (system)
 			{
-				case "SG": return "SG-1000";
-				case "SMS": return "Sega Master System";
-				case "GG": return "Game Gear";
-				case "PCE": return "TurboGrafx-16";
-				case "SGX": return "SuperGrafx";
-				case "GEN": return "Genesis";
-				case "TI83": return "TI-83";
-				case "NES": return "NES";
-				case "GB": return "Game Boy";
+				case "SG": str += "SG-1000"; break;
+				case "SMS": str += "Sega Master System"; break;
+				case "GG": str += "Game Gear"; break;
+				case "PCE": str += "TurboGrafx-16"; break;
+				case "SGX": str += "SuperGrafx"; break;
+				case "GEN": str += "Genesis"; break;
+				case "TI83": str += "TI-83"; break;
+				case "NES": str += "NES"; break;
+				case "GB": str += "Game Boy"; break;
 			}
-			return "";
+			return str;
 		}
 
 		private void HandlePlatformMenus()
@@ -967,7 +976,7 @@ namespace BizHawk.MultiClient
 							game = new GameInfo();
 							game.System = "PCE";
 							game.Name = Path.GetFileNameWithoutExtension(file.Name);
-                            game.Hash = hash;
+							game.Hash = hash;
 						}
 
 						switch (game.System)
@@ -2114,7 +2123,7 @@ namespace BizHawk.MultiClient
 			NESDebug1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
-			Text = "BizHawk";
+			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 			HandlePlatformMenus();
 			StateSlots.Clear();
 			UpdateDumpIcon();

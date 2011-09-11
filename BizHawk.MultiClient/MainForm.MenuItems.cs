@@ -311,8 +311,10 @@ namespace BizHawk.MultiClient
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//new AboutBox().ShowDialog();
-			new BizBox().ShowDialog();
+			if (INTERIM)
+				new AboutBox().ShowDialog();
+			else
+				new BizBox().ShowDialog();
 		}
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1108,6 +1110,8 @@ namespace BizHawk.MultiClient
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
+			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+
 			//Hide platform specific menus until an appropriate ROM is loaded
 			NESToolStripMenuItem.Visible = false;
 			tI83ToolStripMenuItem.Visible = false;
