@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections;
@@ -387,17 +388,23 @@ namespace BizHawk
 			}
 		}
 
-		public static void ReadFromHex(this int[] buffer, BinaryWriter bw)
+		public static void ReadFromHex(this int[] buffer, string hex)
 		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
+			if (hex.Length % 8 != 0)
+				throw new Exception("Hex value string does not appear to be properly formatted.");
+			for (int i = 0; i < buffer.Length && i * 8 < hex.Length; i++)
+			{
+				//string inthex = "" + hex[i * 8] + hex[(i * 8) + 1] + hex[(i * 4) + 2] + hex[(i * 4) + 3] + hex[(i*4
+				string inthex = hex.Substring(i*8,8);
+				buffer[i] = int.Parse(inthex, NumberStyles.HexNumber);
+			}
 		}
 
-		public static void SaveAsHex(this uint[] buffer, BinaryWriter bw)
-		{
-			for (int i = 0; i < buffer.Length; i++)
-				bw.Write(buffer[i]);
-		}
+		//public static void SaveAsHex(this uint[] buffer, BinaryWriter bw)
+		//{
+		//    for (int i = 0; i < buffer.Length; i++)
+		//        bw.Write(buffer[i]);
+		//}
 
 		//these don't work??? they dont get chosen by compiler
 		public static void WriteBit(this BinaryWriter bw, Bit bit) { bw.Write((bool)bit); }
