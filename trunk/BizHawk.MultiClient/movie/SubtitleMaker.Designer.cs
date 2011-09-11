@@ -223,6 +223,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(272, 214);
 			this.Name = "SubtitleMaker";
 			this.Text = "Subtitle Maker";
 			this.Load += new System.EventHandler(this.SubtitleMaker_Load);

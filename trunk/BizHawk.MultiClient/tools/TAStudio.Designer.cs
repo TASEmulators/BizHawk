@@ -49,6 +49,8 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.updatePadsOnMovePlaybackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
@@ -66,10 +68,8 @@
 			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.TASView = new BizHawk.VirtualListView();
-			this.Frame = new System.Windows.Forms.ColumnHeader();
-			this.Log = new System.Windows.Forms.ColumnHeader();
-			this.updatePadsOnMovePlaybackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -83,7 +83,7 @@
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(815, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(686, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -225,6 +225,18 @@
 			this.autoloadToolStripMenuItem.Text = "Autoload";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
+			// updatePadsOnMovePlaybackToolStripMenuItem
+			// 
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Name = "updatePadsOnMovePlaybackToolStripMenuItem";
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Text = "Update Pads on Move playback";
+			this.updatePadsOnMovePlaybackToolStripMenuItem.Click += new System.EventHandler(this.updatePadsOnMovePlaybackToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(232, 6);
+			// 
 			// restoreWindowToolStripMenuItem
 			// 
 			this.restoreWindowToolStripMenuItem.Name = "restoreWindowToolStripMenuItem";
@@ -363,6 +375,7 @@
 			// 
 			// ControllerBox
 			// 
+			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerBox.Location = new System.Drawing.Point(300, 55);
 			this.ControllerBox.Name = "ControllerBox";
 			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
@@ -372,8 +385,9 @@
 			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
@@ -399,23 +413,11 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// updatePadsOnMovePlaybackToolStripMenuItem
-			// 
-			this.updatePadsOnMovePlaybackToolStripMenuItem.Name = "updatePadsOnMovePlaybackToolStripMenuItem";
-			this.updatePadsOnMovePlaybackToolStripMenuItem.Size = new System.Drawing.Size(235, 22);
-			this.updatePadsOnMovePlaybackToolStripMenuItem.Text = "Update Pads on Move playback";
-			this.updatePadsOnMovePlaybackToolStripMenuItem.Click += new System.EventHandler(this.updatePadsOnMovePlaybackToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(232, 6);
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(815, 519);
+			this.ClientSize = new System.Drawing.Size(686, 519);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.menuStrip1);
 			this.Controls.Add(this.ReadOnlyCheckBox);
@@ -423,6 +425,7 @@
 			this.Controls.Add(this.ControllerBox);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(437, 148);
 			this.Name = "TAStudio";
 			this.Text = "TAStudio";
 			this.Load += new System.EventHandler(this.TAStudio_Load);

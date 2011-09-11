@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,21 +45,20 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.PaletteLabel = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.TableLabel = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
 			this.PPUAddressLabel = new System.Windows.Forms.Label();
 			this.XYLabel = new System.Windows.Forms.Label();
 			this.TileIDLabel = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.TableLabel = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.PaletteLabel = new System.Windows.Forms.Label();
-			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -76,6 +76,16 @@
 			this.groupBox1.Size = new System.Drawing.Size(545, 513);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
+			// 
+			// NameTableView
+			// 
+			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
+			this.NameTableView.Location = new System.Drawing.Point(17, 19);
+			this.NameTableView.Name = "NameTableView";
+			this.NameTableView.Size = new System.Drawing.Size(512, 480);
+			this.NameTableView.TabIndex = 0;
+			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
+			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
 			// 
 			// menuStrip1
 			// 
@@ -230,6 +240,42 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Properties";
 			// 
+			// PaletteLabel
+			// 
+			this.PaletteLabel.AutoSize = true;
+			this.PaletteLabel.Location = new System.Drawing.Point(64, 96);
+			this.PaletteLabel.Name = "PaletteLabel";
+			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
+			this.PaletteLabel.TabIndex = 9;
+			this.PaletteLabel.Text = "     ";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 96);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(43, 13);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "Palette:";
+			// 
+			// TableLabel
+			// 
+			this.TableLabel.AutoSize = true;
+			this.TableLabel.Location = new System.Drawing.Point(64, 78);
+			this.TableLabel.Name = "TableLabel";
+			this.TableLabel.Size = new System.Drawing.Size(22, 13);
+			this.TableLabel.TabIndex = 7;
+			this.TableLabel.Text = "     ";
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 78);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(37, 13);
+			this.label4.TabIndex = 6;
+			this.label4.Text = "Table:";
+			// 
 			// PPUAddressLabel
 			// 
 			this.PPUAddressLabel.AutoSize = true;
@@ -284,52 +330,6 @@
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Tile ID:";
 			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 78);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(37, 13);
-			this.label4.TabIndex = 6;
-			this.label4.Text = "Table:";
-			// 
-			// TableLabel
-			// 
-			this.TableLabel.AutoSize = true;
-			this.TableLabel.Location = new System.Drawing.Point(64, 78);
-			this.TableLabel.Name = "TableLabel";
-			this.TableLabel.Size = new System.Drawing.Size(22, 13);
-			this.TableLabel.TabIndex = 7;
-			this.TableLabel.Text = "     ";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(6, 96);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(43, 13);
-			this.label5.TabIndex = 8;
-			this.label5.Text = "Palette:";
-			// 
-			// PaletteLabel
-			// 
-			this.PaletteLabel.AutoSize = true;
-			this.PaletteLabel.Location = new System.Drawing.Point(64, 96);
-			this.PaletteLabel.Name = "PaletteLabel";
-			this.PaletteLabel.Size = new System.Drawing.Size(22, 13);
-			this.PaletteLabel.TabIndex = 9;
-			this.PaletteLabel.Text = "     ";
-			// 
-			// NameTableView
-			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
-			this.NameTableView.Location = new System.Drawing.Point(17, 19);
-			this.NameTableView.Name = "NameTableView";
-			this.NameTableView.Size = new System.Drawing.Size(512, 480);
-			this.NameTableView.TabIndex = 0;
-			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
-			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
-			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.label7);
@@ -341,6 +341,24 @@
 			this.groupBox5.TabIndex = 14;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "Refresh";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(7, 186);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(31, 13);
+			this.label7.TabIndex = 2;
+			this.label7.Text = "More";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(7, 32);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(29, 13);
+			this.label6.TabIndex = 1;
+			this.label6.Text = "Less";
 			// 
 			// RefreshRate
 			// 
@@ -355,24 +373,6 @@
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 1;
 			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(7, 32);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(29, 13);
-			this.label6.TabIndex = 1;
-			this.label6.Text = "Less";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(7, 186);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(31, 13);
-			this.label7.TabIndex = 2;
-			this.label7.Text = "More";
-			// 
 			// NESNameTableViewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -385,6 +385,7 @@
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(687, 588);
 			this.Name = "NESNameTableViewer";
 			this.ShowIcon = false;
 			this.Text = "NES Nametable Viewer";

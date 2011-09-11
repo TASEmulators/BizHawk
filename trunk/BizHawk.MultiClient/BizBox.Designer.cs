@@ -125,9 +125,9 @@
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(267, 56);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(118, 13);
+			this.label6.Size = new System.Drawing.Size(151, 13);
 			this.label6.TabIndex = 8;
-			this.label6.Text = "Released July 28, 2011";
+			this.label6.Text = "Released September 30, 2011";
 			// 
 			// BizBox
 			// 
@@ -146,7 +146,7 @@
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximumSize = new System.Drawing.Size(900, 438);
-			this.MinimumSize = new System.Drawing.Size(485, 219);
+			this.MinimumSize = new System.Drawing.Size(405, 219);
 			this.Name = "BizBox";
 			this.Text = " BizHawk";
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

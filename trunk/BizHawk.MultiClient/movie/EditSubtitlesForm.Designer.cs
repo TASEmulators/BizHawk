@@ -144,6 +144,7 @@
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.Cancel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(188, 121);
 			this.Name = "EditSubtitlesForm";
 			this.Text = "Edit Subtitles";
 			this.Load += new System.EventHandler(this.EditSubtitlesForm_Load);

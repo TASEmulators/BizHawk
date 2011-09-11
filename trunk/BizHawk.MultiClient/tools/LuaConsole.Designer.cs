@@ -31,8 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
 			this.LuaListView = new BizHawk.VirtualListView();
-			this.Script = new System.Windows.Forms.ColumnHeader();
-			this.PathName = new System.Windows.Forms.ColumnHeader();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,6 +77,9 @@
 			// 
 			// LuaListView
 			// 
+			this.LuaListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.LuaListView.CheckBoxes = true;
 			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Script,
@@ -88,7 +91,7 @@
 			this.LuaListView.Location = new System.Drawing.Point(12, 51);
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.selectedItem = -1;
-			this.LuaListView.Size = new System.Drawing.Size(293, 278);
+			this.LuaListView.Size = new System.Drawing.Size(291, 278);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.UseCompatibleStateImageBehavior = false;
 			this.LuaListView.View = System.Windows.Forms.View.Details;
@@ -115,7 +118,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(598, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(584, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -352,8 +355,10 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.OutputBox);
-			this.groupBox1.Location = new System.Drawing.Point(311, 51);
+			this.groupBox1.Location = new System.Drawing.Point(312, 51);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(258, 278);
 			this.groupBox1.TabIndex = 3;
@@ -412,13 +417,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(598, 359);
+			this.ClientSize = new System.Drawing.Size(584, 342);
 			this.Controls.Add(this.NumberOfScripts);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.LuaListView);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(356, 115);
 			this.Name = "LuaConsole";
 			this.Text = "Lua Console";
 			this.Load += new System.EventHandler(this.LuaConsole_Load);
