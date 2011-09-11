@@ -137,28 +137,30 @@ namespace BizHawk.MultiClient
 			_NewEvents.Add(ie);
 			LastState[button] = newState;
 
-			////track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
-			////this is an interesting idea, which we may need later, but not yet.
-			////for example, you may see this series of events: press:ctrl+c, release:ctrl, release:c
-			////but you might would rather have press:ctr+c, release:ctrl+c
-			////this code relates the releases to the original presses.
-			//if (newState)
-			//{
-			//    ModifierState[button] = ie.LogicalButton;
-			//}
-			//else
-			//{
-			//    if (ModifierState[button] != null)
-			//    {
-			//        LogicalButton alreadyReleased = ie.LogicalButton;
-			//        ie = new InputEvent();
-			//        ie.LogicalButton = (LogicalButton)ModifierState[button];
-			//        ie.EventType = InputEventType.Release;
-			//        if(ie.LogicalButton != alreadyReleased)
-			//            _NewEvents.Add(ie);
-			//    }
-			//    ModifierState[button] = null;
-			//}
+			//track the pressed events with modifiers that we send so that we can send corresponding unpresses with modifiers
+			//this is an interesting idea, which we may need later, but not yet.
+			//for example, you may see this series of events: press:ctrl+c, release:ctrl, release:c
+			//but you might would rather have press:ctr+c, release:ctrl+c
+			//this code relates the releases to the original presses.
+			//UPDATE - this is necessary for the frame advance key, which has a special meaning when it gets stuck down
+			//so, i am adding it as of 11-sep-2011
+			if (newState)
+			{
+			    ModifierState[button] = ie.LogicalButton;
+			}
+			else
+			{
+			    if (ModifierState[button] != null)
+			    {
+			        LogicalButton alreadyReleased = ie.LogicalButton;
+			        ie = new InputEvent();
+			        ie.LogicalButton = (LogicalButton)ModifierState[button];
+			        ie.EventType = InputEventType.Release;
+			        if(ie.LogicalButton != alreadyReleased)
+			            _NewEvents.Add(ie);
+			    }
+			    ModifierState[button] = null;
+			}
 		}
 
 		ModifierKey _Modifiers;
