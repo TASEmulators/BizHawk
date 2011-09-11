@@ -1759,6 +1759,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
+			writer.WriteLine("[MULTICLIENT]");
+			writer.Write("FRAMEBUFFER "); Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+			writer.WriteLine("[/MULTICLIENT]");
+
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
 			UpdateStatusSlots();
@@ -1788,6 +1792,24 @@ namespace BizHawk.MultiClient
 			{
 				var reader = new StreamReader(path);
 				Global.Emulator.LoadStateText(reader);
+
+				reader = new StreamReader(path);
+				while (true)
+				{
+					string[] args = reader.ReadLine().Split(' ');
+					if (args[0].Trim() == "") continue;
+					if (args[0] != "[MULTICLIENT]") continue;
+					break;
+				}
+				while (true)
+				{
+					string[] args = reader.ReadLine().Split(' ');
+					if (args[0].Trim() == "") continue;
+					if (args[0] == "[/MULTICLIENT]") break;
+					if (args[0] == "FRAMEBUFFER")
+					    Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
+				}
+
 				UpdateTools();
 				reader.Close();
 				Global.RenderPanel.AddMessage("Loaded state: " + name);
