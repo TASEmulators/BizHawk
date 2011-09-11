@@ -305,8 +305,8 @@ namespace BizHawk.MultiClient
 
 		private void toolStripDropDownButton1_DropDownOpened(object sender, EventArgs e)
 		{
-			autoloadToolStripMenuItem.Checked = Global.Config.AutoLoadNESPPU;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.NESPPUSaveWindowPosition;
+			autoLoadToolStripMenuItem1.Checked = Global.Config.AutoLoadNESPPU;
+			saveWindowPositionToolStripMenuItem1.Checked = Global.Config.NESPPUSaveWindowPosition;
 		}
 
 		private void PatternView_Click(object sender, MouseEventArgs e)
