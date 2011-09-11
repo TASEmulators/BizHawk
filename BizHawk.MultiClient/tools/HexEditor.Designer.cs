@@ -325,9 +325,9 @@
 			this.AddressesLabel.Size = new System.Drawing.Size(28, 14);
 			this.AddressesLabel.TabIndex = 0;
 			this.AddressesLabel.Text = "RAM";
+			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
-			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			// 
 			// HexEditor
 			// 
@@ -342,11 +342,11 @@
 			this.Name = "HexEditor";
 			this.Text = "HexEditor";
 			this.Load += new System.EventHandler(this.HexEditor_Load);
-			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
-			this.Resize += new System.EventHandler(this.HexEditor_Resize);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyUp);
+			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
+			this.Resize += new System.EventHandler(this.HexEditor_Resize);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ViewerContextMenuStrip.ResumeLayout(false);
