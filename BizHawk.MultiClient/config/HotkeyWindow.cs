@@ -197,6 +197,24 @@ namespace BizHawk.MultiClient.tools
 		private void hotkeyTabs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			//hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Controls[0].Focus();
+			string name = hotkeyTabs.TabPages[hotkeyTabs.SelectedIndex].Text;
+			switch (name)
+			{
+				default:
+					break;
+				case "General":
+					IDW_FRAMEADVANCE.Focus();
+					break;
+				case "Save States":
+					IDW_SS1.Focus();
+					break;
+				case "Movie":
+					IDW_TOGGLEREADONLY.Focus();
+					break;
+				case "Tools":
+					IDW_RamWatch.Focus();
+					break;
+			}
 		}
 
 		private void HotkeyWindow_Load(object sender, EventArgs e)
