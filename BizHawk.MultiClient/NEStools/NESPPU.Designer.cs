@@ -32,7 +32,9 @@
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
+			this.PatternView = new BizHawk.MultiClient.PatternViewer();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
+			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.Value5Label = new System.Windows.Forms.Label();
@@ -67,15 +69,13 @@
 			this.Table1P6 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table1P7 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
+			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
-			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
-			this.PatternView = new BizHawk.MultiClient.PatternViewer();
+			this.label3 = new System.Windows.Forms.Label();
+			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.PatternGroup.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
@@ -117,6 +117,18 @@
 			this.Table0PaletteLabel.TabIndex = 1;
 			this.Table0PaletteLabel.Text = "Palette: 0";
 			// 
+			// PatternView
+			// 
+			this.PatternView.BackColor = System.Drawing.Color.Transparent;
+			this.PatternView.Location = new System.Drawing.Point(7, 20);
+			this.PatternView.Name = "PatternView";
+			this.PatternView.Size = new System.Drawing.Size(256, 128);
+			this.PatternView.TabIndex = 0;
+			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
+			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
+			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
+			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
+			// 
 			// PalettesGroup
 			// 
 			this.PalettesGroup.Controls.Add(this.PaletteView);
@@ -126,6 +138,18 @@
 			this.PalettesGroup.TabIndex = 1;
 			this.PalettesGroup.TabStop = false;
 			this.PalettesGroup.Text = "Palettes";
+			// 
+			// PaletteView
+			// 
+			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
+			this.PaletteView.Location = new System.Drawing.Point(6, 19);
+			this.PaletteView.Name = "PaletteView";
+			this.PaletteView.Size = new System.Drawing.Size(257, 34);
+			this.PaletteView.TabIndex = 0;
+			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
+			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
+			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
+			this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
 			// 
 			// DetailsBox
 			// 
@@ -429,6 +453,18 @@
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
 			// 
+			// SpriteView
+			// 
+			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
+			this.SpriteView.Location = new System.Drawing.Point(6, 18);
+			this.SpriteView.Name = "SpriteView";
+			this.SpriteView.Size = new System.Drawing.Size(256, 96);
+			this.SpriteView.TabIndex = 0;
+			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
+			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
+			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
+			this.SpriteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseMove);
+			// 
 			// txtScanline
 			// 
 			this.txtScanline.Location = new System.Drawing.Point(7, 16);
@@ -460,6 +496,24 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Refresh";
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(140, 20);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(29, 13);
+			this.label4.TabIndex = 11;
+			this.label4.Text = "Less";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 19);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(31, 13);
+			this.label3.TabIndex = 10;
+			this.label3.Text = "More";
+			// 
 			// RefreshRate
 			// 
 			this.RefreshRate.AutoSize = false;
@@ -472,60 +526,6 @@
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 8;
 			this.RefreshRate.Value = 1;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(6, 19);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(31, 13);
-			this.label3.TabIndex = 10;
-			this.label3.Text = "More";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(140, 20);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(29, 13);
-			this.label4.TabIndex = 11;
-			this.label4.Text = "Less";
-			// 
-			// SpriteView
-			// 
-			this.SpriteView.BackColor = System.Drawing.Color.Transparent;
-			this.SpriteView.Location = new System.Drawing.Point(6, 18);
-			this.SpriteView.Name = "SpriteView";
-			this.SpriteView.Size = new System.Drawing.Size(256, 96);
-			this.SpriteView.TabIndex = 0;
-			this.SpriteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseClick);
-			this.SpriteView.MouseEnter += new System.EventHandler(this.SpriteView_MouseEnter);
-			this.SpriteView.MouseLeave += new System.EventHandler(this.SpriteView_MouseLeave);
-			this.SpriteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SpriteView_MouseMove);
-			// 
-			// PaletteView
-			// 
-			this.PaletteView.BackColor = System.Drawing.Color.Transparent;
-			this.PaletteView.Location = new System.Drawing.Point(6, 19);
-			this.PaletteView.Name = "PaletteView";
-			this.PaletteView.Size = new System.Drawing.Size(257, 34);
-			this.PaletteView.TabIndex = 0;
-			this.PaletteView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseClick);
-			this.PaletteView.MouseEnter += new System.EventHandler(this.PaletteView_MouseEnter);
-			this.PaletteView.MouseLeave += new System.EventHandler(this.PaletteView_MouseLeave);
-			this.PaletteView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PaletteView_MouseMove);
-			// 
-			// PatternView
-			// 
-			this.PatternView.BackColor = System.Drawing.Color.Transparent;
-			this.PatternView.Location = new System.Drawing.Point(7, 20);
-			this.PatternView.Name = "PatternView";
-			this.PatternView.Size = new System.Drawing.Size(256, 128);
-			this.PatternView.TabIndex = 0;
-			this.PatternView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.PatternView_Click);
-			this.PatternView.MouseEnter += new System.EventHandler(this.PatternView_MouseEnter);
-			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
-			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
 			// NESPPU
 			// 
@@ -541,6 +541,7 @@
 			this.Controls.Add(this.PatternGroup);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MinimumSize = new System.Drawing.Size(580, 370);
 			this.Name = "NESPPU";
 			this.Text = "NES PPU Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESPPU_FormClosed);

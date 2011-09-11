@@ -34,8 +34,8 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.BrowseMovies = new System.Windows.Forms.Button();
 			this.DetailsView = new System.Windows.Forms.ListView();
-			this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.button2 = new System.Windows.Forms.Button();
 			this.button1 = new System.Windows.Forms.Button();
@@ -43,10 +43,10 @@
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
 			this.MovieView = new BizHawk.VirtualListView();
-			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-			this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -213,8 +213,8 @@
 			this.MovieView.UseCompatibleStateImageBehavior = false;
 			this.MovieView.View = System.Windows.Forms.View.Details;
 			this.MovieView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.MovieView_ColumnClick);
-			this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
 			this.MovieView.SelectedIndexChanged += new System.EventHandler(this.MovieView_SelectedIndexChanged);
+			this.MovieView.DragDrop += new System.Windows.Forms.DragEventHandler(this.MovieView_DragDrop);
 			this.MovieView.DragEnter += new System.Windows.Forms.DragEventHandler(this.MovieView_DragEnter);
 			this.MovieView.DoubleClick += new System.EventHandler(this.MovieView_DoubleClick);
 			// 
@@ -252,7 +252,7 @@
 			// 
 			// Scan
 			// 
-			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.Scan.Image = global::BizHawk.MultiClient.Properties.Resources.Scan;
 			this.Scan.Location = new System.Drawing.Point(49, 337);
 			this.Scan.Name = "Scan";
@@ -282,6 +282,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(531, 208);
 			this.Name = "PlayMovie";
 			this.Text = "Play Movie";
 			this.Load += new System.EventHandler(this.PlayMovie_Load);

@@ -35,11 +35,11 @@
 			this.RecordBox = new System.Windows.Forms.TextBox();
 			this.StartFromCombo = new System.Windows.Forms.ComboBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.DefaultAuthorCheckBox = new System.Windows.Forms.CheckBox();
 			this.AuthorBox = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
-			this.DefaultAuthorCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -120,6 +120,17 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			// 
+			// DefaultAuthorCheckBox
+			// 
+			this.DefaultAuthorCheckBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
+			this.DefaultAuthorCheckBox.AutoSize = true;
+			this.DefaultAuthorCheckBox.Location = new System.Drawing.Point(327, 64);
+			this.DefaultAuthorCheckBox.Name = "DefaultAuthorCheckBox";
+			this.DefaultAuthorCheckBox.Size = new System.Drawing.Size(121, 17);
+			this.DefaultAuthorCheckBox.TabIndex = 6;
+			this.DefaultAuthorCheckBox.Text = "Make default author";
+			this.DefaultAuthorCheckBox.UseVisualStyleBackColor = true;
+			// 
 			// AuthorBox
 			// 
 			this.AuthorBox.AllowDrop = true;
@@ -157,16 +168,6 @@
 			this.label1.TabIndex = 4;
 			this.label1.Text = "File:";
 			// 
-			// DefaultAuthorCheckBox
-			// 
-			this.DefaultAuthorCheckBox.AutoSize = true;
-			this.DefaultAuthorCheckBox.Location = new System.Drawing.Point(327, 64);
-			this.DefaultAuthorCheckBox.Name = "DefaultAuthorCheckBox";
-			this.DefaultAuthorCheckBox.Size = new System.Drawing.Size(121, 17);
-			this.DefaultAuthorCheckBox.TabIndex = 6;
-			this.DefaultAuthorCheckBox.Text = "Make default author";
-			this.DefaultAuthorCheckBox.UseVisualStyleBackColor = true;
-			// 
 			// RecordMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -179,6 +180,7 @@
 			this.Controls.Add(this.Cancel);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(1440, 201);
 			this.MinimizeBox = false;
 			this.Name = "RecordMovie";
 			this.Text = "Record Movie";

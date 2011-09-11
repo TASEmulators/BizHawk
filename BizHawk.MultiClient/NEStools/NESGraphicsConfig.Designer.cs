@@ -338,9 +338,12 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(389, 434);
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(389, 434);
 			this.Name = "NESGraphicsConfig";
 			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "NES Graphics Settings";
 			this.Load += new System.EventHandler(this.NESGraphicsConfig_Load);
 			this.groupBox1.ResumeLayout(false);

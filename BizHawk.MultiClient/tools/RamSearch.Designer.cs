@@ -299,7 +299,6 @@
 			this.SearchListView.VirtualMode = true;
 			this.SearchListView.QueryItemBkColor += new BizHawk.QueryItemBkColorHandler(this.SearchListView_QueryItemBkColor);
 			this.SearchListView.QueryItemText += new BizHawk.QueryItemTextHandler(this.SearchListView_QueryItemText);
-			
 			this.SearchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.SearchListView_ColumnClick);
 			this.SearchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.SearchListView_ColumnReordered);
 			this.SearchListView.Enter += new System.EventHandler(this.SearchListView_Enter);
@@ -1204,6 +1203,7 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(291, 463);
 			this.Name = "RamSearch";
 			this.Text = "Ram Search";
 			this.Activated += new System.EventHandler(this.RamSearch_Activated);

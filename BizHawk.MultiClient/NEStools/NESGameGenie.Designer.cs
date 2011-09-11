@@ -45,12 +45,12 @@
 			this.U = new System.Windows.Forms.Button();
 			this.X = new System.Windows.Forms.Button();
 			this.O = new System.Windows.Forms.Button();
-			this.E = new System.Windows.Forms.Button();
 			this.Y = new System.Windows.Forms.Button();
+			this.L = new System.Windows.Forms.Button();
+			this.E = new System.Windows.Forms.Button();
 			this.T = new System.Windows.Forms.Button();
 			this.I = new System.Windows.Forms.Button();
 			this.G = new System.Windows.Forms.Button();
-			this.L = new System.Windows.Forms.Button();
 			this.Z = new System.Windows.Forms.Button();
 			this.P = new System.Windows.Forms.Button();
 			this.A = new System.Windows.Forms.Button();
@@ -158,6 +158,7 @@
 			// 
 			// AddCheat
 			// 
+			this.AddCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AddCheat.Location = new System.Drawing.Point(202, 235);
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(69, 21);
@@ -260,16 +261,6 @@
 			this.O.UseVisualStyleBackColor = true;
 			this.O.Click += new System.EventHandler(this.Keypad_Click);
 			// 
-			// E
-			// 
-			this.E.Location = new System.Drawing.Point(34, 6);
-			this.E.Name = "E";
-			this.E.Size = new System.Drawing.Size(26, 23);
-			this.E.TabIndex = 2;
-			this.E.Text = "E";
-			this.E.UseVisualStyleBackColor = true;
-			this.E.Click += new System.EventHandler(this.Keypad_Click);
-			// 
 			// Y
 			// 
 			this.Y.Location = new System.Drawing.Point(178, 35);
@@ -279,6 +270,26 @@
 			this.Y.Text = "Y";
 			this.Y.UseVisualStyleBackColor = true;
 			this.Y.Click += new System.EventHandler(this.Keypad_Click);
+			// 
+			// L
+			// 
+			this.L.Location = new System.Drawing.Point(178, 5);
+			this.L.Name = "L";
+			this.L.Size = new System.Drawing.Size(26, 23);
+			this.L.TabIndex = 7;
+			this.L.Text = "L";
+			this.L.UseVisualStyleBackColor = true;
+			this.L.Click += new System.EventHandler(this.Keypad_Click);
+			// 
+			// E
+			// 
+			this.E.Location = new System.Drawing.Point(34, 6);
+			this.E.Name = "E";
+			this.E.Size = new System.Drawing.Size(26, 23);
+			this.E.TabIndex = 2;
+			this.E.Text = "E";
+			this.E.UseVisualStyleBackColor = true;
+			this.E.Click += new System.EventHandler(this.Keypad_Click);
 			// 
 			// T
 			// 
@@ -309,16 +320,6 @@
 			this.G.Text = "G";
 			this.G.UseVisualStyleBackColor = true;
 			this.G.Click += new System.EventHandler(this.Keypad_Click);
-			// 
-			// L
-			// 
-			this.L.Location = new System.Drawing.Point(178, 5);
-			this.L.Name = "L";
-			this.L.Size = new System.Drawing.Size(26, 23);
-			this.L.TabIndex = 7;
-			this.L.Text = "L";
-			this.L.UseVisualStyleBackColor = true;
-			this.L.Click += new System.EventHandler(this.Keypad_Click);
 			// 
 			// Z
 			// 
@@ -352,6 +353,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBox1.Controls.Add(this.label6);
 			this.groupBox1.Controls.Add(this.label5);
 			this.groupBox1.Controls.Add(this.label4);
@@ -396,6 +398,7 @@
 			// 
 			// Encoding
 			// 
+			this.Encoding.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.Encoding.Appearance = System.Windows.Forms.Appearance.Button;
 			this.Encoding.AutoSize = true;
 			this.Encoding.Location = new System.Drawing.Point(217, 119);
@@ -407,6 +410,7 @@
 			// 
 			// ClearButton
 			// 
+			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ClearButton.Location = new System.Drawing.Point(217, 148);
 			this.ClearButton.Name = "ClearButton";
 			this.ClearButton.Size = new System.Drawing.Size(54, 23);
@@ -479,6 +483,8 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
 			this.MainMenuStrip = this.menuStrip1;
 			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(312, 295);
+			this.MinimumSize = new System.Drawing.Size(312, 295);
 			this.Name = "NESGameGenie";
 			this.ShowIcon = false;
 			this.Text = "Game Genie Encoder / Decoder";

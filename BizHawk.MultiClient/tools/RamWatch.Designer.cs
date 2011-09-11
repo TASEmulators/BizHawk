@@ -67,11 +67,11 @@
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.VirtualListView();
-			this.Address = new System.Windows.Forms.ColumnHeader();
-			this.Value = new System.Windows.Forms.ColumnHeader();
-			this.Prev = new System.Windows.Forms.ColumnHeader();
-			this.ChangeCounts = new System.Windows.Forms.ColumnHeader();
-			this.Notes = new System.Windows.Forms.ColumnHeader();
+			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Prev = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ChangeCounts = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Notes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,7 +119,7 @@
             this.optionsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(364, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(338, 24);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -442,18 +442,18 @@
 			this.WatchListView.HideSelection = false;
 			this.WatchListView.ItemCount = 0;
 			this.WatchListView.LabelEdit = true;
-			this.WatchListView.Location = new System.Drawing.Point(25, 76);
+			this.WatchListView.Location = new System.Drawing.Point(16, 76);
 			this.WatchListView.Name = "WatchListView";
 			this.WatchListView.selectedItem = -1;
-			this.WatchListView.Size = new System.Drawing.Size(314, 309);
+			this.WatchListView.Size = new System.Drawing.Size(306, 281);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
-			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
-			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
-			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.ColumnReorder);
 			this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
+			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.ColumnReorder);
 			this.WatchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyUp);
+			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
 			// Address
 			// 
@@ -626,7 +626,7 @@
             this.MoveDownStripButton1});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(364, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(338, 25);
 			this.toolStrip1.TabIndex = 2;
 			this.toolStrip1.TabStop = true;
 			this.toolStrip1.Text = "toolStrip1";
@@ -780,7 +780,7 @@
 			// WatchCountLabel
 			// 
 			this.WatchCountLabel.AutoSize = true;
-			this.WatchCountLabel.Location = new System.Drawing.Point(22, 57);
+			this.WatchCountLabel.Location = new System.Drawing.Point(16, 57);
 			this.WatchCountLabel.Name = "WatchCountLabel";
 			this.WatchCountLabel.Size = new System.Drawing.Size(56, 13);
 			this.WatchCountLabel.TabIndex = 4;
@@ -790,7 +790,7 @@
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(28, 390);
+			this.MessageLabel.Location = new System.Drawing.Point(18, 362);
 			this.MessageLabel.Name = "MessageLabel";
 			this.MessageLabel.Size = new System.Drawing.Size(187, 13);
 			this.MessageLabel.TabIndex = 5;
@@ -809,7 +809,7 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(364, 406);
+			this.ClientSize = new System.Drawing.Size(338, 378);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
@@ -818,14 +818,15 @@
 			this.Controls.Add(this.WatchListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
+			this.MinimumSize = new System.Drawing.Size(133, 176);
 			this.Name = "RamWatch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Ram Watch";
-			this.Load += new System.EventHandler(this.RamWatch_Load);
 			this.Activated += new System.EventHandler(this.RamWatch_Activated);
-			this.Enter += new System.EventHandler(this.RamWatch_Enter);
+			this.Load += new System.EventHandler(this.RamWatch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RamWatch_DragEnter);
+			this.Enter += new System.EventHandler(this.RamWatch_Enter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
