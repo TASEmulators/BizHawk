@@ -300,7 +300,7 @@ namespace BizHawk.MultiClient
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
-			if (Global.Config.BindSavestatesToMovies)
+			if (Global.Config.BindSavestatesToMovies && Global.MainForm.MovieActive())
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			switch (game.System)
 			{
