@@ -116,6 +116,7 @@ namespace BizHawk.MultiClient
 			}
 			Changed = true;
 		}
+
 		private void UpdateSMS(int prev)
 		{
 			ButtonsGroupBox.Controls.Clear();
@@ -183,6 +184,7 @@ namespace BizHawk.MultiClient
 				TempLabel.Dispose();
 			}
 		}
+
 		private void DoPCE()
 		{
 			Label TempLabel;
@@ -234,6 +236,7 @@ namespace BizHawk.MultiClient
 			}
 			Changed = true;
 		}
+
 		private void UpdatePCE(int prev)
 		{
 			ButtonsGroupBox.Controls.Clear();
@@ -303,6 +306,7 @@ namespace BizHawk.MultiClient
 				TempLabel.Dispose();
 			}
 		}
+
 		private void DoGen()
 		{
 			this.Text = ControllerStr + "Sega Genesis";
@@ -581,7 +585,6 @@ namespace BizHawk.MultiClient
 				TempLabel.Dispose();
 			}
 			IDX_CONTROLLERENABLED.Enabled = true;
-
 		}
 
 		private void DoGameBoy()
@@ -618,6 +621,7 @@ namespace BizHawk.MultiClient
 			}
 			Changed = true;
 		}
+
 		private void UpdateGameBoy()
 		{
 			ButtonsGroupBox.Controls.Clear();
@@ -709,6 +713,7 @@ namespace BizHawk.MultiClient
 			}
 			Changed = true;
 		}
+
 		private void UpdateNES(int prev)
 		{
 			ButtonsGroupBox.Controls.Clear();
@@ -780,6 +785,7 @@ namespace BizHawk.MultiClient
 				TempLabel.Dispose();
 			}
 		}
+
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
@@ -789,6 +795,7 @@ namespace BizHawk.MultiClient
 			AllowLR.Checked = Global.Config.AllowUD_LR;
 
 			if (Global.Game != null)
+			{
 				switch (Global.Game.System)
 				{
 					case "SMS":
@@ -809,7 +816,6 @@ namespace BizHawk.MultiClient
 					case "TI83":
 						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("TI-83");
 						break;
-
 					case "NES":
 						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("NES");
 						break;
@@ -817,7 +823,9 @@ namespace BizHawk.MultiClient
 						this.SystemComboBox.SelectedIndex = 0;
 						break;
 				}
+			}
 		}
+
 		private void OK_Click(object sender, EventArgs e)
 		{
 			if (Changed)
@@ -889,6 +897,7 @@ namespace BizHawk.MultiClient
 			ControllComboBox.SelectedIndex = 0;
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
 			CurSelectController = 0;
+			SetFocus();
 		}
 		private void ControllComboBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -918,6 +927,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			CurSelectController = ControllComboBox.SelectedIndex;
+			SetFocus();
 		}
 		private void UpdateAll()
 		{
@@ -949,6 +959,18 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.HotkeyConfigAutoTab = AutoTab.Checked;
 			SetAutoTab();
+		}
+
+		private void SetFocus()
+		{
+			for (int x = 0; x < ButtonsGroupBox.Controls.Count; x++)
+			{
+				if (ButtonsGroupBox.Controls[x] is InputWidget)
+				{
+					ButtonsGroupBox.Controls[x].Focus();
+					return;
+				}
+			}
 		}
 
 		private void SetAutoTab()

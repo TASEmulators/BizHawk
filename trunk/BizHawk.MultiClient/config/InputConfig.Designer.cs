@@ -192,6 +192,7 @@
 			this.Controls.Add(this.ButtonsGroupBox);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
