@@ -247,11 +247,11 @@ namespace BizHawk.MultiClient
 		{
 			if (changes)
 			{
+				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
-
+				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					//TOOD: Do quicksave if filename, else save as
 					if (string.Compare(currentWatchFile, "") == 0)
 					{
 						SaveAs();
@@ -432,8 +432,10 @@ namespace BizHawk.MultiClient
 
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
-
+			Global.Sound.StopSound();
 			r.ShowDialog();
+			Global.Sound.StartSound();
+
 			if (r.userSelected == true)
 			{
 				watchList.Add(r.watch);
@@ -453,7 +455,9 @@ namespace BizHawk.MultiClient
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
 			r.SetToEditWatch(watchList[pos], "Edit Watch");
+			Global.Sound.StopSound();
 			r.ShowDialog();
+			Global.Sound.StartSound();
 
 			if (r.userSelected == true)
 			{
@@ -496,7 +500,10 @@ namespace BizHawk.MultiClient
 				r.location = GetPromptPoint();
 				int x = indexes[0];
 				r.SetToEditWatch(watchList[x], "Duplicate Watch");
+
+				Global.Sound.StopSound();
 				r.ShowDialog();
+				Global.Sound.StartSound();
 
 				if (r.userSelected == true)
 				{
@@ -920,8 +927,9 @@ namespace BizHawk.MultiClient
 		private void PokeAddress()
 		{
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			Global.Sound.StopSound();
 			RamPoke p = new RamPoke();
-
+			Global.Sound.StartSound();
 			if (indexes.Count > 0)
 				p.SetWatchObject(watchList[indexes[0]]);
 			p.location = GetPromptPoint();
