@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 				e.Cancel = true;
 			base.OnClosing(e);
 		}
-
+		
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			if (column == 0)
@@ -177,34 +177,7 @@ namespace BizHawk.MultiClient
 			}
 			if (column == 1) //Value
 			{
-				if (watchList[index].type == atype.SEPARATOR)
-					text = "";
-				else
-				{
-					switch (watchList[index].signed)
-					{
-						case asigned.HEX:
-							switch (watchList[index].type)
-							{
-								case atype.BYTE:
-									text = String.Format("{0:X2}", watchList[index].value);
-									break;
-								case atype.WORD:
-									text = String.Format("{0:X4}", watchList[index].value);
-									break;
-								case atype.DWORD:
-									text = String.Format("{0:X8}", watchList[index].value);
-									break;
-							}
-							break;
-						case asigned.SIGNED:
-							text = ((sbyte)watchList[index].value).ToString();
-							break;
-						case asigned.UNSIGNED:
-							text = watchList[index].value.ToString();
-							break;
-					}
-				}
+				text = watchList[index].ValueToString();
 			}
 			if (column == 2) //Prev
 			{
@@ -222,29 +195,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 					{
-						switch (watchList[index].signed)
-						{
-							case asigned.HEX:
-								switch (watchList[index].type)
-								{
-									case atype.BYTE:
-										text = String.Format("{0:X2}", watchList[index].prev);
-										break;
-									case atype.WORD:
-										text = String.Format("{0:X4}", watchList[index].prev);
-										break;
-									case atype.DWORD:
-										text = String.Format("{0:X8}", watchList[index].prev);
-										break;
-								}
-								break;
-							case asigned.SIGNED:
-								text = ((sbyte)watchList[index].prev).ToString();
-								break;
-							case asigned.UNSIGNED:
-								text = watchList[index].prev.ToString();
-								break;
-						}
+						text = watchList[index].PrevToString();
 					}
 				}
 			}
