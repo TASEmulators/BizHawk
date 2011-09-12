@@ -231,6 +231,73 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public override string ToString()
+		{
+			if (type == atype.SEPARATOR)
+				return "";
+
+			StringBuilder str = new StringBuilder(notes);
+			str.Append(": ");
+			str.Append(ValueToString());
+			return str.ToString();
+		}
+
+		public string ValueToString()
+		{
+			if (type == atype.SEPARATOR)
+				return "";
+			else
+			{
+				switch (signed)
+				{
+					case asigned.HEX:
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return String.Format("{0:X2}", value);
+							case atype.WORD:
+								return String.Format("{0:X4}", value);
+							case atype.DWORD:
+								return String.Format("{0:X8}", value);
+						}
+					case asigned.SIGNED:
+						return ((sbyte)value).ToString();
+					default:
+					case asigned.UNSIGNED:
+						return value.ToString();
+				}
+			}
+		}
+
+		public string PrevToString()
+		{
+			if (type == atype.SEPARATOR)
+				return "";
+			else
+			{
+				switch (signed)
+				{
+					case asigned.HEX:
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return String.Format("{0:X2}", prev);
+							case atype.WORD:
+								return String.Format("{0:X4}", prev);
+							case atype.DWORD:
+								return String.Format("{0:X8}", prev);
+						}
+					case asigned.SIGNED:
+						return ((sbyte)prev).ToString();
+					default:
+					case asigned.UNSIGNED:
+						return prev.ToString();
+				}
+			}
+		}
+
 		private int CompareAddress(Watch Other)
 		{
 			if (this.address < Other.address)
