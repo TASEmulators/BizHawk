@@ -451,10 +451,17 @@ namespace BizHawk.MultiClient
 
 		private void pokeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			PokeAddress();
+		}
+
+		private void PokeAddress()
+		{
 			int p = GetHighlightedAddress();
 			if (p >= 0)
 			{
+				Global.Sound.StopSound();
 				InputPrompt i = new InputPrompt();
+				Global.Sound.StartSound();
 				i.Text = "Poke " + String.Format("{0:X}", p);
 				i.SetMessage("Enter a hexadecimal value");
 				i.ShowDialog();
