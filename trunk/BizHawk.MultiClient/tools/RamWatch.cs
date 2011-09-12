@@ -19,6 +19,8 @@ namespace BizHawk.MultiClient
 		//TODO: 
 		//When receiving a watch from a different domain, should something be done?
 		//when sorting, "Prev as Change" option not taken into account
+		//A GUI interface for setting the x,y coordinates of the ram watch display
+		//Allow each watch to be on or off screen, and on its own x,y
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -64,8 +66,9 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed) return;
-			WatchListView.BlazingFast = true;
+
+			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch) return;
+
 			for (int x = 0; x < watchList.Count; x++)
 			{
 				watchList[x].prev = watchList[x].value;
@@ -73,8 +76,24 @@ namespace BizHawk.MultiClient
 				if (watchList[x].value != watchList[x].prev)
 					watchList[x].changecount++;
 			}
+
+			if (Global.Config.DisplayRamWatch)
+			{
+				Global.RenderPanel.ClearGUIText();
+				for (int x = 0; x < watchList.Count; x++)
+				{
+					Global.RenderPanel.AddGUIText(watchList[x].ToString(),
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)));
+				}
+			}
+
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+
+			WatchListView.BlazingFast = true;
 			WatchListView.Refresh();
 			WatchListView.BlazingFast = false;
+
+			
 		}
 
 		public void AddWatch(Watch w)
@@ -1112,6 +1131,7 @@ namespace BizHawk.MultiClient
 
 		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			displayWatchesOnScreenToolStripMenuItem.Checked = Global.Config.DisplayRamWatch;
 			prevValueShowsChangeAmountToolStripMenuItem.Checked = Global.Config.RamWatchShowChangeFromPrev;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamWatchSaveWindowPosition;
 		}
@@ -1455,6 +1475,16 @@ namespace BizHawk.MultiClient
 		private void RamWatch_Activated(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
+		}
+
+		private void displayWatchesOnScreenToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisplayRamWatch ^= true;
+
+			if (!Global.Config.DisplayRamWatch)
+				Global.RenderPanel.ClearGUIText();
+			else
+				UpdateValues();
 		}
 	}
 }
