@@ -106,6 +106,7 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
+			this.displayWatchesOnScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -373,6 +374,7 @@
             this.showChangeCountsToolStripMenuItem,
             this.showPreviousValueToolStripMenuItem,
             this.prevValueShowsChangeAmountToolStripMenuItem,
+            this.displayWatchesOnScreenToolStripMenuItem,
             this.toolStripSeparator7,
             this.saveWindowPositionToolStripMenuItem,
             this.restoreWindowSizeToolStripMenuItem});
@@ -386,40 +388,40 @@
 			this.showChangeCountsToolStripMenuItem.Checked = true;
 			this.showChangeCountsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.showChangeCountsToolStripMenuItem.Name = "showChangeCountsToolStripMenuItem";
-			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.showChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.showChangeCountsToolStripMenuItem.Text = "Change Counts";
 			this.showChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.showChangeCountsToolStripMenuItem_Click);
 			// 
 			// showPreviousValueToolStripMenuItem
 			// 
 			this.showPreviousValueToolStripMenuItem.Name = "showPreviousValueToolStripMenuItem";
-			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.showPreviousValueToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.showPreviousValueToolStripMenuItem.Text = "Previous Value";
 			this.showPreviousValueToolStripMenuItem.Click += new System.EventHandler(this.showPreviousValueToolStripMenuItem_Click);
 			// 
 			// prevValueShowsChangeAmountToolStripMenuItem
 			// 
 			this.prevValueShowsChangeAmountToolStripMenuItem.Name = "prevValueShowsChangeAmountToolStripMenuItem";
-			this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.prevValueShowsChangeAmountToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value  as change";
 			this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(214, 6);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
 			this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
-			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.restoreWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
 			this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
 			// 
@@ -804,6 +806,13 @@
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
 			// 
+			// displayWatchesOnScreenToolStripMenuItem
+			// 
+			this.displayWatchesOnScreenToolStripMenuItem.Name = "displayWatchesOnScreenToolStripMenuItem";
+			this.displayWatchesOnScreenToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.displayWatchesOnScreenToolStripMenuItem.Text = "Display Watches On Screen";
+			this.displayWatchesOnScreenToolStripMenuItem.Click += new System.EventHandler(this.displayWatchesOnScreenToolStripMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AllowDrop = true;
@@ -915,5 +924,6 @@
         private System.Windows.Forms.Label MemDomainLabel;
 		private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem displayWatchesOnScreenToolStripMenuItem;
     }
 }

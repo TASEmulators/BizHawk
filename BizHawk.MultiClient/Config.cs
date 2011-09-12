@@ -172,6 +172,9 @@
 		public int DispMultianchor = 0;
 		public bool DisplayGDI = false;
 		public bool DisplayStatusBar = true;
+		public int DispRamWatchx = 0;
+		public int DispRamWatchy = 60;
+		public bool DisplayRamWatch = false;
 
 		// Sound options
 		public bool SoundEnabled = true;
