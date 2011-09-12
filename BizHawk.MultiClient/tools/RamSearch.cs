@@ -81,12 +81,7 @@ namespace BizHawk.MultiClient
 			sortedCol = "";
 			for (int x = 0; x < searchList.Count; x++)
 			{
-				searchList[x].prev = searchList[x].value;
 				searchList[x].PeekAddress(Domain);
-
-				if (searchList[x].prev != searchList[x].value)
-					searchList[x].changecount++;
-
 			}
 			if (AutoSearchCheckBox.Checked)
 				DoSearch();

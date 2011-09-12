@@ -161,6 +161,8 @@ namespace BizHawk.MultiClient
 			if (type == atype.SEPARATOR)
 				return;
 
+			prev = value;
+			
 			switch (type)
 			{
 				case atype.BYTE:
@@ -173,6 +175,9 @@ namespace BizHawk.MultiClient
 					PeekDWord(domain);
 					break;
 			}
+
+			if (value != prev)
+				changecount++;
 		}
 
 		private void PokeByte(MemoryDomain domain)
