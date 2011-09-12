@@ -66,15 +66,11 @@ namespace BizHawk.MultiClient
 
 		public void UpdateValues()
 		{
-
 			if ((!this.IsHandleCreated || this.IsDisposed) && !Global.Config.DisplayRamWatch) return;
 
 			for (int x = 0; x < watchList.Count; x++)
 			{
-				watchList[x].prev = watchList[x].value;
 				watchList[x].PeekAddress(Domain);
-				if (watchList[x].value != watchList[x].prev)
-					watchList[x].changecount++;
 			}
 
 			if (Global.Config.DisplayRamWatch)
