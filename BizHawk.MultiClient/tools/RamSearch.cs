@@ -465,7 +465,9 @@ namespace BizHawk.MultiClient
 		private void PokeAddress()
 		{
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
+			Global.Sound.StopSound();
 			RamPoke p = new RamPoke();
+			Global.Sound.StartSound();
 
 			if (indexes.Count > 0)
 				p.SetWatchObject(searchList[indexes[0]]);
