@@ -209,6 +209,17 @@ namespace BizHawk.MultiClient
 
 		private void TAStudio_Load(object sender, EventArgs e)
 		{
+			if (!Global.MainForm.INTERIM)
+			{
+				newProjectToolStripMenuItem.Enabled = false;
+				openProjectToolStripMenuItem.Enabled = false;
+				saveProjectToolStripMenuItem.Enabled = false;
+				saveProjectAsToolStripMenuItem.Enabled = false;
+				recentToolStripMenuItem.Enabled = false;
+				importTASFileToolStripMenuItem.Enabled = false;
+				insertFrameToolStripMenuItem.Enabled = false;
+			}
+
 			LoadTAStudio();
 		}
 
@@ -344,6 +355,26 @@ namespace BizHawk.MultiClient
 		private void updatePadsOnMovePlaybackToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TASUpdatePads ^= true;
+		}
+
+		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
