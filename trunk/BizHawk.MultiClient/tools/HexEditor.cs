@@ -462,7 +462,7 @@ namespace BizHawk.MultiClient
 				Global.Sound.StopSound();
 				InputPrompt i = new InputPrompt();
 				Global.Sound.StartSound();
-				i.Text = "Poke " + String.Format("{0:X}", p);
+				i.Text = "Poke 0x" + String.Format(NumDigitsStr, p);
 				i.SetMessage("Enter a hexadecimal value");
 				i.ShowDialog();
 
@@ -871,6 +871,8 @@ namespace BizHawk.MultiClient
 			{
 				if (e.Control && e.KeyCode == Keys.G)
 					GoToSpecifiedAddress();
+				if (e.Control && e.KeyCode == Keys.P)
+					PokeAddress();
 				e.Handled = true;
 				return;
 			}
