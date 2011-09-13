@@ -109,6 +109,7 @@
 			this.newProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.newProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.newProjectToolStripMenuItem.Text = "New Project";
+			this.newProjectToolStripMenuItem.Click += new System.EventHandler(this.newProjectToolStripMenuItem_Click);
 			// 
 			// openProjectToolStripMenuItem
 			// 
@@ -116,18 +117,21 @@
 			this.openProjectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.openProjectToolStripMenuItem.Text = "&Open Project";
+			this.openProjectToolStripMenuItem.Click += new System.EventHandler(this.openProjectToolStripMenuItem_Click);
 			// 
 			// saveProjectToolStripMenuItem
 			// 
 			this.saveProjectToolStripMenuItem.Name = "saveProjectToolStripMenuItem";
 			this.saveProjectToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.saveProjectToolStripMenuItem.Text = "&Save Project";
+			this.saveProjectToolStripMenuItem.Click += new System.EventHandler(this.saveProjectToolStripMenuItem_Click);
 			// 
 			// saveProjectAsToolStripMenuItem
 			// 
 			this.saveProjectAsToolStripMenuItem.Name = "saveProjectAsToolStripMenuItem";
 			this.saveProjectAsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.saveProjectAsToolStripMenuItem.Text = "Save Project As";
+			this.saveProjectAsToolStripMenuItem.Click += new System.EventHandler(this.saveProjectAsToolStripMenuItem_Click);
 			// 
 			// recentToolStripMenuItem
 			// 
