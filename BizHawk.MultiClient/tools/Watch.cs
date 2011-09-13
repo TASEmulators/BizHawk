@@ -239,7 +239,7 @@ namespace BizHawk.MultiClient
 		public override string ToString()
 		{
 			if (type == atype.SEPARATOR)
-				return "";
+				return "----";
 
 			StringBuilder str = new StringBuilder(notes);
 			str.Append(": ");

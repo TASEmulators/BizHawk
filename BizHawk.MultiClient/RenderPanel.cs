@@ -504,6 +504,8 @@ namespace BizHawk.MultiClient
 				MessageFont.DrawString(null, GUITextList[x].Message,
 					GUITextList[x].X + 2, GUITextList[x].Y + 2, Color.Black);
 				MessageFont.DrawString(null, GUITextList[x].Message,
+					GUITextList[x].X + 1, GUITextList[x].Y + 1, Color.Gray);
+				MessageFont.DrawString(null, GUITextList[x].Message,
 					GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 		}
