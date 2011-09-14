@@ -76,7 +76,9 @@
   <ItemGroup>
     <Compile Include="AudioExtractor.cs" />
     <Compile Include="DiscoHawk.cs" />
-    <Compile Include="DiscoHawkDialog.cs" />
+    <Compile Include="DiscoHawkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DiscoHawkDialog.Designer.cs">
       <DependentUpon>DiscoHawkDialog.cs</DependentUpon>
     </Compile>
