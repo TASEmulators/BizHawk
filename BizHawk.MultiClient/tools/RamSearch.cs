@@ -28,6 +28,7 @@ namespace BizHawk.MultiClient
 		List<Watch> undoList = new List<Watch>();
 		List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 		List<Watch> prevList = new List<Watch>();
+		List<Watch> redoList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -94,6 +95,8 @@ namespace BizHawk.MultiClient
 
 		private void RamSearch_Load(object sender, EventArgs e)
 		{
+			ClearUndo();
+			ClearRedo();
 			LoadConfigSettings();
 			StartNewSearch();
 			SetMemoryDomainMenu();
@@ -360,10 +363,11 @@ namespace BizHawk.MultiClient
 
 		private void StartNewSearch()
 		{
+			ClearUndo();
+			ClearRedo();
 			weededList.Clear();
 			IsAWeededList = false;
 			searchList.Clear();
-			undoList.Clear();
 			SetPlatformAndMemoryDomainLabel();
 			int count = 0;
 			int divisor = 1;
@@ -515,6 +519,7 @@ namespace BizHawk.MultiClient
 			undoList.Clear();
 			for (int x = 0; x < searchList.Count; x++)
 				undoList.Add(new Watch(searchList[x]));
+			UndotoolStripButton.Enabled = true;
 		}
 
 		private void DoUndo()
@@ -522,16 +527,43 @@ namespace BizHawk.MultiClient
 			if (undoList.Count > 0)
 			{
 				OutputLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
+				redoList = new List<Watch>(searchList);
 				searchList = new List<Watch>(undoList);
 				prevList = new List<Watch>(undoList);
-				undoList.Clear();
+				ClearUndo();
+				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
+				//OutputLabel.Text = "Undo: s" + searchList.Count.ToString() + " u" +
+				//	undoList.Count.ToString() + " r" + redoList.Count.ToString();
 			}
+		}
+
+		private void ClearUndo()
+		{
+			undoList.Clear();
+			UndotoolStripButton.Enabled = false;
+		}
+
+		private void ClearRedo()
+		{
+			redoList.Clear();
+			RedotoolStripButton2.Enabled = false;
 		}
 
 		private void DoRedo()
 		{
-			//TODO
+			if (redoList.Count > 0)
+			{
+				OutputLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
+				undoList = new List<Watch>(searchList);
+				searchList = new List<Watch>(redoList);
+				prevList = new List<Watch>(redoList);
+				ClearRedo();
+				UndotoolStripButton.Enabled = true;
+				DisplaySearchList();
+				//OutputLabel.Text = "Redo: s" + searchList.Count.ToString() + " u" +
+				//	undoList.Count.ToString() + " r" + redoList.Count.ToString();
+			}
 		}
 
 		private void UndotoolStripButton_Click(object sender, EventArgs e)

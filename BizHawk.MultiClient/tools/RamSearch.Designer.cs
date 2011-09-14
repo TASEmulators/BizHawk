@@ -794,7 +794,6 @@
 			// RedotoolStripButton2
 			// 
 			this.RedotoolStripButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.RedotoolStripButton2.Enabled = false;
 			this.RedotoolStripButton2.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
 			this.RedotoolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RedotoolStripButton2.Name = "RedotoolStripButton2";
