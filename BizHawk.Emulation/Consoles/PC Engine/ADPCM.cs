@@ -180,9 +180,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
             }
 
-            pce.IRQ2Monitor &= 0xF3;
-            if (HalfReached) pce.IRQ2Monitor |= 0x04;
-            if (EndReached) pce.IRQ2Monitor |= 0x08;
+            pce.IntADPCM = HalfReached;
+            pce.IntStop = EndReached;
             pce.RefreshIRQ2();
         }
         

@@ -7,16 +7,10 @@
 - Dungeon Explorer II quite desperately need ADPCM audio
   + and a gross corruption issue at teh end of the intro. and then it freezes. :(
 
-- Exile II .. seems to reset itself after playing the unskippable intro. :(
-- Macross 2036.. seems impossible to start/play the game. :(
-
 - Rayxanber 2 weird issues at the end of first level with cd audio player
 - Rtype, end of level 4 dies with unrecognized scsi command ff, or maybe freezes before then
 - Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
 - Startling Odyssey does the reset-at-new-game-screen thats rather odd :(
-- Super Darius II : at 1st Boss, game freezes waiting for adpcm
-- Ys 1, start new game, death by adpcm probably  ** shit it works now.
-
 
 card angels does poll subcode...
 
