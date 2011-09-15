@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Globalization;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace BizHawk.MultiClient
 {
@@ -68,6 +70,41 @@ namespace BizHawk.MultiClient
 					return true;
 			}
 			return false;
+		}
+
+		public void Screenshot()
+		{
+			var sfd = new SaveFileDialog();
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes";
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
+			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return;
+
+			var file = new FileInfo(sfd.FileName);
+			Bitmap b = new Bitmap(Width, Height);
+			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+
+			ImageFormat i;
+			string extension = file.Extension.ToUpper();
+			switch (extension)
+			{
+				default:
+				case ".PNG":
+					i = ImageFormat.Png;
+					break;
+				case ".BMP":
+					i = ImageFormat.Bmp;
+					break;
+			}
+
+			b.Save(file.FullName, i);
 		}
 	}
 }

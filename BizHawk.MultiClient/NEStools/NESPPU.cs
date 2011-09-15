@@ -592,5 +592,45 @@ namespace BizHawk.MultiClient
 		{
 			ZoomBox.Image = new Bitmap(64, 64);
 		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private void savePaletteScreenshotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PaletteView.Screenshot();
+		}
+
+		private void saveImageToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PaletteView.Screenshot();
+		}
+
+		private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PaletteView.Refresh();
+		}
+
+		private void saveImageToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PatternView.Screenshot();
+		}
+
+		private void refreshToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PatternView.Refresh();
+		}
+
+		private void saveImageToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			SpriteView.Screenshot();
+		}
+
+		private void refreshToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			SpriteView.Refresh();
+		}
 	}
 }
