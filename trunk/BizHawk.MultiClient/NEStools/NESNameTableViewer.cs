@@ -256,47 +256,12 @@ namespace BizHawk.MultiClient
 
 		private void screenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ScreenshotAs();
-		}
-
-		private void ScreenshotAs()
-		{
-			var sfd = new SaveFileDialog();
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-nametable";
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
-			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
-
-			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return;
-
-			var file = new FileInfo(sfd.FileName);
-			Bitmap b = new Bitmap(NameTableView.Width, NameTableView.Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), NameTableView.Size);
-			NameTableView.DrawToBitmap(b, rect);
-
-			ImageFormat i;
-			string extension = file.Extension.ToUpper();
-			switch (extension)
-			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
-
-			b.Save(file.FullName, i);
+			NameTableView.Screenshot();
 		}
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ScreenshotAs();
+			NameTableView.Screenshot();
 		}
 
 		private void refreshImageToolStripMenuItem_Click(object sender, EventArgs e)
