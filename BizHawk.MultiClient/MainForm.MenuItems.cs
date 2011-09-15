@@ -1106,6 +1106,7 @@ namespace BizHawk.MultiClient
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
+            saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1316,6 +1317,11 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.BackupSavestates ^= true;
 		}
+
+        void screenshotWithSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.SaveScreenshotWithStates ^= true;
+        }
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
 		{

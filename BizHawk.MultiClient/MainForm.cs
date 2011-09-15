@@ -1758,9 +1758,11 @@ namespace BizHawk.MultiClient
 		{
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
-			writer.WriteLine("[MULTICLIENT]");
-			writer.Write("FRAMEBUFFER "); Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
-			writer.WriteLine("[/MULTICLIENT]");
+            if (Global.Config.SaveScreenshotWithStates)
+            {
+                writer.Write("Framebuffer "); 
+                Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+            }
 
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
@@ -1792,25 +1794,19 @@ namespace BizHawk.MultiClient
 				var reader = new StreamReader(path);
 				Global.Emulator.LoadStateText(reader);
 
-				reader = new StreamReader(path);
 				while (true)
 				{
-					string[] args = reader.ReadLine().Split(' ');
-					if (args[0].Trim() == "") continue;
-					if (args[0] != "[MULTICLIENT]") continue;
-					break;
-				}
-				while (true)
-				{
-					string[] args = reader.ReadLine().Split(' ');
-					if (args[0].Trim() == "") continue;
-					if (args[0] == "[/MULTICLIENT]") break;
-					if (args[0] == "FRAMEBUFFER")
+                    string str = reader.ReadLine();
+                    if (str == null) break;
+                    if (str.Trim() == "") continue;
+					
+                    string[] args = str.Split(' ');
+					if (args[0] == "Framebuffer")
 					    Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
 				}
 
-				UpdateTools();
-				reader.Close();
+                reader.Close();
+                UpdateTools();
 				Global.RenderPanel.AddMessage("Loaded state: " + name);
 			}
 			else
