@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +63,9 @@
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.refreshImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -69,6 +73,7 @@
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -391,12 +396,35 @@
 			// NameTableView
 			// 
 			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
+			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
 			this.NameTableView.Location = new System.Drawing.Point(17, 19);
 			this.NameTableView.Name = "NameTableView";
 			this.NameTableView.Size = new System.Drawing.Size(512, 480);
 			this.NameTableView.TabIndex = 0;
 			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
 			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.screenshotAsToolStripMenuItem,
+            this.refreshImageToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(167, 70);
+			// 
+			// screenshotAsToolStripMenuItem
+			// 
+			this.screenshotAsToolStripMenuItem.Name = "screenshotAsToolStripMenuItem";
+			this.screenshotAsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.screenshotAsToolStripMenuItem.Text = "Screenshot As...";
+			this.screenshotAsToolStripMenuItem.Click += new System.EventHandler(this.screenshotAsToolStripMenuItem_Click);
+			// 
+			// refreshImageToolStripMenuItem
+			// 
+			this.refreshImageToolStripMenuItem.Name = "refreshImageToolStripMenuItem";
+			this.refreshImageToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+			this.refreshImageToolStripMenuItem.Text = "Refresh Image";
+			this.refreshImageToolStripMenuItem.Click += new System.EventHandler(this.refreshImageToolStripMenuItem_Click);
 			// 
 			// NESNameTableViewer
 			// 
@@ -428,6 +456,7 @@
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -469,5 +498,8 @@
 		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem screenshotAsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem refreshImageToolStripMenuItem;
 	}
 }
