@@ -256,6 +256,11 @@ namespace BizHawk.MultiClient
 
 		private void screenshotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			ScreenshotAs();
+		}
+
+		private void ScreenshotAs()
+		{
 			var sfd = new SaveFileDialog();
 			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-nametable";
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
@@ -267,7 +272,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
-			
+
 			var file = new FileInfo(sfd.FileName);
 			Bitmap b = new Bitmap(NameTableView.Width, NameTableView.Height);
 			Rectangle rect = new Rectangle(new Point(0, 0), NameTableView.Size);
@@ -287,6 +292,17 @@ namespace BizHawk.MultiClient
 			}
 
 			b.Save(file.FullName, i);
+		}
+
+		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ScreenshotAs();
+		}
+
+		private void refreshImageToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			UpdateValues();
+			NameTableView.Refresh();
 		}
 	}
 }
