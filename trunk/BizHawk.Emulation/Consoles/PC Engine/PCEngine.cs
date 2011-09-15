@@ -72,11 +72,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         void Init(GameInfo game, byte[] rom)
         {
             Controller = NullController.GetNullController();
-            Cpu = new HuC6280();
-            VCE = new VCE();
+            Cpu  = new HuC6280();
+            VCE  = new VCE();
             VDC1 = new VDC(Cpu, VCE);
-            PSG = new HuC6280PSG();
-            InitScsiBus();
+            PSG  = new HuC6280PSG();
+            SCSI = new ScsiCDBus(this, disc);
 
             if (TurboGrafx)
             {
@@ -109,6 +109,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 Cpu.WriteMemory21 = WriteMemoryCD;
                 Cpu.WriteVDC = VDC1.WriteVDC;
                 CDAudio = new CDAudio(disc);
+                SetCDAudioCallback();
                 PSG.MaxVolume = short.MaxValue * 3 / 4;
                 SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM);
                 SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);

@@ -1,12 +1,5 @@
 ﻿using System;
 
-// IRQ2 interrupts:
-// 0x04 - INTA    - ADPCM interrupt / Half Reached
-// 0x08 - INTSTOP - Fire when end of CD-Audio playback reached when in STOP MODE 2.
-// 0x10 - INTSUB  - something with subchannel
-// 0x20 - INTM    - Fires when data transfer is complete
-// 0x40 - INTD    - Fires when data transfer is ready
-
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public partial class PCEngine
@@ -15,6 +8,32 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte IRQ2Control { get { return CdIoPorts[2]; } set { CdIoPorts[2] = value; } }
         public byte IRQ2Monitor { get { return CdIoPorts[3]; } set { CdIoPorts[3] = value; } }
+
+        public bool IntADPCM // INTA
+        {
+            get { return (CdIoPorts[3] & 0x04) != 0; }
+            set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x04) | (value ? 0x04 : 0x00)); }
+        }
+        public bool IntStop // INTSTOP
+        {
+            get { return (CdIoPorts[3] & 0x08) != 0; }
+            set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x08) | (value ? 0x8 : 0x00)); }
+        }
+        public bool IntSubchannel // INTSUB
+        {
+            get { return (CdIoPorts[3] & 0x10) != 0; }
+            set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x10) | (value ? 0x10 : 0x00)); }
+        }
+        public bool IntDataTransferComplete // INTM
+        {
+            get { return (CdIoPorts[3] & 0x20) != 0; }
+            set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x20) | (value ? 0x20 : 0x00)); }
+        }
+        public bool IntDataTransferReady // INTD
+        {
+            get { return (CdIoPorts[3] & 0x40) != 0; }
+            set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x40) | (value ? 0x40 : 0x00)); }
+        }
 
         public byte Port1803
         {
@@ -27,27 +46,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
         }
 
-        void InitScsiBus()
+        void SetCDAudioCallback()
         {
-            SCSI = new ScsiCDBus(this, disc);
-            // this is kind of stupid
-            SCSI.DataTransferReady = yes =>
-                 {
-                     // set or clear Ready Bit
-                     if (yes)
-                         Port1803 |= 0x40;
-                     else
-                         Port1803 &= 0xBF;
-                 };
-            SCSI.DataTransferComplete = yes =>
+            CDAudio.CallbackAction = () =>
                 {
-                    if (yes)
-                        Port1803 |= 0x20; // Set "Complete"
-                    else
-                    {
-                        Port1803 &= 0xBF; // Clear "ready" 
-                    }
-                    
+                    Console.WriteLine("FIRING CD-AUDIO STOP IRQ MAYBE!");
+                    IntDataTransferReady = false;
+                    IntDataTransferComplete = true;
                 };
         }
 

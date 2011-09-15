@@ -338,8 +338,7 @@ namespace BizHawk.MultiClient
 
 
 				StepRunLoop_Core();
-				if (!IsNullEmulator())
-					StepRunLoop_Throttle();
+				StepRunLoop_Throttle();
 
 				Render();
 

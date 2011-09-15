@@ -4,6 +4,10 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
+    // TODO we can adjust this to have Think take the number of cycles and not require
+    // a reference to Cpu.TotalExecutedCycles
+    // which incidentally would allow us to put it back to an int from a long if we wanted to
+
     public sealed class ScsiCDBus
     {
         const int STATUS_GOOD               = 0;
@@ -141,11 +145,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         PCEngine pce;
         public Disc disc;
 
-        // ******** Events ********
-
-        public Action<bool> DataTransferReady;
-        public Action<bool> DataTransferComplete;
-
         public ScsiCDBus(PCEngine pce, Disc disc)
         {
             this.pce = pce;
@@ -171,7 +170,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CurrentReadingSector++;
                     SectorsLeftToRead--;
 
-                    DataTransferReady(true);
+                    pce.IntDataTransferReady = true;
 
                     // If more sectors, should set the next think-clock to however long it takes to read 1 sector
                     // but I dont. I dont think transfers actually happen sector by sector
@@ -273,13 +272,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 } else { 
                     // data transfer is finished
                     
-                    DataTransferReady(false);
+                    pce.IntDataTransferReady = false;
                     if (DataTransferWasDone)
                     {
                         Console.WriteLine("DATA TRANSFER FINISHED!");
                         DataTransferInProgress = false;
                         DataTransferWasDone = false;
-                        DataTransferComplete(true);
+                        pce.IntDataTransferComplete = true;
                     }
                     SetStatusMessage(STATUS_GOOD, 0);
                 }
@@ -404,7 +403,6 @@ throw new Exception("requesting 0 sectors read.............................");
             {
                 case 0x00: // Set start offset in LBA units
                     audioStartLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
-                    //Console.WriteLine("Set Start LBA: "+audioStartLBA);
                     break;
 
                 case 0x40: // Set start offset in MSF units
@@ -412,30 +410,22 @@ throw new Exception("requesting 0 sectors read.............................");
                     byte s = CommandBuffer[3].BCDtoBin();
                     byte f = CommandBuffer[4].BCDtoBin();
                     audioStartLBA = Disc.ConvertMSFtoLBA(m, s, f);
-                    //Console.WriteLine("Set Start MSF: {0} {1} {2} lba={3}",m,s,f,audioStartLBA);
                     break;
 
                 case 0x80: // Set start offset in track units
                     byte trackNo = CommandBuffer[2].BCDtoBin();
                     audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
-                    //Console.WriteLine("Set Start track: {0} lba={1}", trackNo, audioStartLBA);
                     break;
             }
 
             if (CommandBuffer[1] == 0)
             {
                 pce.CDAudio.Pause();
-                // silent?
             } else {
                 pce.CDAudio.PlayStartingAtLba(audioStartLBA);
             }
-            
-            // TODO there are some flags in command[1]
-            // wat we do if audio is already playing
-            // wat we do if audio paused
 
             SetStatusMessage(STATUS_GOOD, 0);
-            // irq callback?
         }
 
         void CommandAudioEndPos()
@@ -444,7 +434,6 @@ throw new Exception("requesting 0 sectors read.............................");
             {
                 case 0x00: // Set end offset in LBA units
                     audioEndLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
-                    //Console.WriteLine("Set End LBA: " + audioEndLBA);
                     break;
 
                 case 0x40: // Set end offset in MSF units
@@ -452,7 +441,6 @@ throw new Exception("requesting 0 sectors read.............................");
                     byte s = CommandBuffer[3].BCDtoBin();
                     byte f = CommandBuffer[4].BCDtoBin();
                     audioEndLBA = Disc.ConvertMSFtoLBA(m, s, f);
-                    //Console.WriteLine("Set End MSF: {0} {1} {2} lba={3}", m, s, f, audioEndLBA);
                     break;
 
                 case 0x80: // Set end offset in track units
@@ -461,7 +449,6 @@ throw new Exception("requesting 0 sectors read.............................");
                         audioEndLBA = disc.LBACount;
                     else 
                         audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
-                    //Console.WriteLine("Set End track: {0} lba={1}", trackNo, audioEndLBA);
                     break;
             }
 
@@ -471,19 +458,17 @@ throw new Exception("requesting 0 sectors read.............................");
                     pce.CDAudio.Stop(); 
                     break;
                 case 1: // play in loop mode. I guess this constitues A-B looping
-                    //Console.WriteLine("DOING A-B LOOP. NOT SURE IF RIGHT.");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.LoopOnCompletion;
                     break;
                 case 2: // Play audio, fire IRQ2 when end position reached
-                    Console.WriteLine("STOP MODE 2 ENGAGED, BUT NOTE. IRQ WILL NOT FIRE YET.");
+                    Console.WriteLine("***********STOP MODE 2 ENGAGED. IT IS CONCEIVABLE THAT IRQ WILL FIRE.");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.CallbackOnCompletion;
                     break;
                 case 3: // Play normal
-                    //Console.WriteLine("*** SET END POS, IN PLAY NORMAL MODE? STARTING AT _START_ POS. IS THAT RIGHT?");
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.StopOnCompletion;
@@ -494,10 +479,8 @@ throw new Exception("requesting 0 sectors read.............................");
         
         void CommandPause()
         {
-            // apparently pause means stop? I guess? Idunno.
             pce.CDAudio.Stop();
             SetStatusMessage(STATUS_GOOD, 0);
-            // TODO send error if already stopped.. or paused... or something.
         }
 
         void CommandReadSubcodeQ()
@@ -535,7 +518,6 @@ throw new Exception("requesting 0 sectors read.............................");
             {
                 case 0: // return number of tracks
                     {
-                        //Log.Error("CD","Execute READ_TOC : num of tracks");
                         DataIn.Clear();
                         DataIn.Enqueue(0x01);
                         DataIn.Enqueue(((byte) disc.TOC.Sessions[0].Tracks.Count).BinToBCD());
@@ -554,9 +536,6 @@ throw new Exception("requesting 0 sectors read.............................");
                         DataIn.Enqueue(s.BinToBCD());
                         DataIn.Enqueue(f.BinToBCD());
                         SetPhase(BusPhase.DataIn);
-
-                        //Log.Error("CD","EXECUTE READ_TOC : length of disc, LBA {0}, m:{1},s:{2},f:{3}",
-                                          //totalLbaLength, m, s, f);
                         break;
                     }
                 case 2: // Return starting position of specified track in MSF format
@@ -583,10 +562,6 @@ throw new Exception("requesting 0 sectors read.............................");
                         else
                             DataIn.Enqueue(4);
                         SetPhase(BusPhase.DataIn);
-
-                        //Log.Error("CD", "EXECUTE READ_TOC : start pos of TRACK {4}, LBA {0}, m:{1},s:{2},f:{3}",
-                                          //lbaPos, m, s, f, track);
-
                         break;
                     }
                 default:
@@ -620,7 +595,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     CD  = false;
                     IO  = false;
                     REQ = false;
-                    DataTransferComplete(false);
+                    pce.IntDataTransferComplete = false;
                     break;
                 case BusPhase.Command:
                     BSY = true;
