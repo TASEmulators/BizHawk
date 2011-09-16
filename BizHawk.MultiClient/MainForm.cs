@@ -301,6 +301,8 @@ namespace BizHawk.MultiClient
 			bool fastforward = Global.ClientControls["Fast Forward"];
 			Global.ForceNoVsync = unthrottled || fastforward;
 
+			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
+
 			throttle.signal_unthrottle = unthrottled;
 			if (fastforward)
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
@@ -338,7 +340,8 @@ namespace BizHawk.MultiClient
 
 
 				StepRunLoop_Core();
-				StepRunLoop_Throttle();
+				//if(!IsNullEmulator())
+					StepRunLoop_Throttle();
 
 				Render();
 
@@ -1088,12 +1091,12 @@ namespace BizHawk.MultiClient
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
 
-				//setup the throttle based on platform's specifications
-				//(one day later for some systems we will need to modify it at runtime as the display mode changes)
-				{
-					throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
-					SyncThrottle();
-				}
+				////setup the throttle based on platform's specifications
+				////(one day later for some systems we will need to modify it at runtime as the display mode changes)
+				//{
+				//    throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
+				//    SyncThrottle();
+				//}
 				RamSearch1.Restart();
 				RamWatch1.Restart();
 				HexEditor1.Restart();
