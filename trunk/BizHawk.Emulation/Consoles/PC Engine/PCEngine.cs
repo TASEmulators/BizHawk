@@ -264,6 +264,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public bool SaveRamModified { get; set; }
 
+        // TODO: properly savestate SCSI
+
         public void SaveStateText(TextWriter writer)
         {
             writer.WriteLine("[PCEngine]");
@@ -274,8 +276,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 writer.Write("PopulousRAM ");
                 PopulousRAM.SaveAsHex(writer);
             }
-            writer.WriteLine("Frame " + Frame);
-            writer.WriteLine("Lag " + _lagcount);
+            writer.WriteLine("Frame {0}", Frame);
+            writer.WriteLine("Lag {0}", _lagcount);
             if (Cpu.ReadMemory21 == ReadMemorySF2)
                 writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
             writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
@@ -307,8 +309,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     writer.Write("SuperRAM ");
                     SuperRam.SaveAsHex(writer);
                 }
-writer.Write("ADPCM_TEMP ");
-ADPCM.RAM.SaveAsHex(writer);
+
+                writer.WriteLine();
+                ADPCM.SaveStateText(writer);
             }
             writer.WriteLine("[/PCEngine]");
         }
@@ -335,8 +338,6 @@ ADPCM.RAM.SaveAsHex(writer);
                     CDRam.ReadFromHex(args[1]);
                 else if (args[0] == "SuperRAM")
                     SuperRam.ReadFromHex(args[1]);
-else if (args[0] == "ADPCM_TEMP")
-ADPCM.RAM.ReadFromHex(args[1]);
                 else if (args[0] == "PopulousRAM" && PopulousRAM != null)
                     PopulousRAM.ReadFromHex(args[1]);
                 else if (args[0] == "[HuC6280]")
@@ -353,6 +354,8 @@ ADPCM.RAM.ReadFromHex(args[1]);
                     VDC2.LoadStateText(reader, 2);
                 else if (args[0] == "[CDAudio]")
                     CDAudio.LoadStateText(reader);
+                else if (args[0] == "[ADPCM]")
+                    ADPCM.LoadStateText(reader);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -363,6 +366,8 @@ ADPCM.RAM.ReadFromHex(args[1]);
             if (SuperGrafx == false)
             {
                 writer.Write(Ram);
+                writer.Write(CdIoPorts); 
+                RefreshIRQ2();
                 if (BRAM != null)
                     writer.Write(BRAM);
                 if (PopulousRAM != null)
@@ -372,7 +377,7 @@ ADPCM.RAM.ReadFromHex(args[1]);
                 if (TurboCD)
                 {
                     writer.Write(CDRam);
-                    writer.Write(ADPCM.RAM);
+                    ADPCM.SaveStateBinary(writer);
                 }
                 writer.Write(Frame);
                 writer.Write(_lagcount);
@@ -405,6 +410,7 @@ ADPCM.RAM.ReadFromHex(args[1]);
             if (SuperGrafx == false)
             {
                 Ram = reader.ReadBytes(0x2000);
+                CdIoPorts = reader.ReadBytes(16);
                 if (BRAM != null)
                     BRAM = reader.ReadBytes(0x800);
                 if (PopulousRAM != null)
@@ -414,7 +420,7 @@ ADPCM.RAM.ReadFromHex(args[1]);
                 if (TurboCD)
                 {
                     CDRam = reader.ReadBytes(0x10000);
-                    ADPCM.RAM = reader.ReadBytes(0x10000);
+                    ADPCM.LoadStateBinary(reader);
                 }
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
@@ -444,12 +450,12 @@ ADPCM.RAM.ReadFromHex(args[1]);
 
         public byte[] SaveStateBinary()
         {
-            int buflen = 75870;
+            int buflen = 75887;
             if (SuperGrafx) buflen += 90698;
             if (BramEnabled) buflen += 2048;
             if (PopulousRAM != null) buflen += 0x8000;
             if (SuperRam != null) buflen += 0x30000;
-            if (TurboCD) buflen += 0x20000 + 30;
+            if (TurboCD) buflen += 0x20000 + 62;
             //Console.WriteLine("LENGTH1 " + buflen);
 
             var buf = new byte[buflen];

@@ -1,10 +1,18 @@
 ﻿using System;
 using BizHawk.Emulation.Sound;
+using System.IO;
+using System.Globalization;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public sealed class ADPCM : ISoundProvider
     {
+        ScsiCDBus SCSI;
+        PCEngine pce;
+        MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+
+        // ***************************************************************************
+
         public ushort IOAddress;
         public ushort ReadAddress;
         public ushort WriteAddress;
@@ -15,11 +23,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public bool ReadPending, WritePending;
 
         public byte[] RAM = new byte[0x10000];
-
-        ScsiCDBus SCSI;
-        PCEngine pce;
-        MetaspuSoundProvider SoundProvider = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-                
+  
         // ***************************************************************************
         
         public bool AdpcmIsPlaying      { get; private set; }
@@ -29,21 +33,12 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public bool AdpcmBusyReading    { get { return ReadPending; } }
         public bool AdpcmCdDmaRequested { get { return (Port180B & 3) != 0; } }
 
+        // ***************************************************************************
+
         public byte Port180A
         {
-            set
-            {
-                WriteBuffer = value;
-                WriteTimer = 24;
-                WritePending = true;
-            }
-
-            get
-            {
-                ReadPending = true;
-                ReadTimer = 24;
-                return ReadBuffer;
-            }
+            set { WritePending = true; WriteTimer = 24; WriteBuffer = value; }
+            get { ReadPending  = true; ReadTimer  = 24; return ReadBuffer; }
         }
 
         public byte Port180B;
@@ -58,7 +53,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 port180E = value;
                 float khz = 32 / (16 - (Port180E & 0x0F));
                 destSamplesPerSourceSample = 44.1f / khz;
-
             }
         }
 
@@ -189,6 +183,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         //                              Playback Functions
         // ***************************************************************************
 
+        float Playback44khzTimer;
+        int playingSample;
+        float nextSampleTimer;
+        float destSamplesPerSourceSample;
+        bool nibble;
+        int magnitude;
+
         static readonly int[] StepSize = 
         {
             0x0002, 0x0006, 0x000A, 0x000E, 0x0012, 0x0016, 0x001A, 0x001E,
@@ -243,13 +244,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         };
 
         static readonly int[] StepFactor = { -1, -1, -1, -1, 2, 4, 6, 8 };
-
-        float Playback44khzTimer;
-        int playingSample;
-        float nextSampleTimer = 0;
-        float destSamplesPerSourceSample;
-        bool nibble;
-        int magnitude;
 
         int AddClamped(int num1, int num2, int min, int max)
         {
@@ -325,5 +319,165 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         }
 
         public int MaxVolume { get; set; }
+
+        // ***************************************************************************
+
+        public void SaveStateBinary(BinaryWriter writer)
+        {
+            writer.Write(RAM);
+            writer.Write(IOAddress);
+            writer.Write(AdpcmLength);
+            writer.Write(ReadAddress);
+            writer.Write((byte)ReadTimer);
+            writer.Write(ReadBuffer);
+            writer.Write(ReadPending);
+            writer.Write(WriteAddress);
+            writer.Write((byte)WriteTimer);
+            writer.Write(WriteBuffer);
+            writer.Write(WritePending);
+            
+            writer.Write(Port180B);
+            writer.Write(Port180D);
+            writer.Write(Port180E);
+            
+            writer.Write(AdpcmIsPlaying);
+            writer.Write(HalfReached);
+            writer.Write(EndReached);
+
+            writer.Write(Playback44khzTimer);
+            writer.Write((ushort)playingSample);
+            writer.Write(nextSampleTimer);
+            writer.Write(nibble);
+            writer.Write((byte)magnitude);
+        }
+
+        public void LoadStateBinary(BinaryReader reader)
+        {
+            RAM          = reader.ReadBytes(0x10000);
+            IOAddress    = reader.ReadUInt16();
+            AdpcmLength  = reader.ReadUInt16();
+            ReadAddress  = reader.ReadUInt16();
+            ReadTimer    = reader.ReadByte();
+            ReadBuffer   = reader.ReadByte();
+            ReadPending  = reader.ReadBoolean();
+            WriteAddress = reader.ReadUInt16();
+            WriteTimer   = reader.ReadByte();
+            WriteBuffer  = reader.ReadByte();
+            WritePending = reader.ReadBoolean();
+
+            Port180B     = reader.ReadByte();
+            Port180D     = reader.ReadByte();
+            Port180E     = reader.ReadByte();
+            
+            AdpcmIsPlaying = reader.ReadBoolean();
+            HalfReached    = reader.ReadBoolean();
+            EndReached     = reader.ReadBoolean();
+
+            Playback44khzTimer = reader.ReadSingle();
+            playingSample = reader.ReadUInt16();
+            nextSampleTimer = reader.ReadSingle();
+            nibble = reader.ReadBoolean();
+            magnitude = reader.ReadByte();
+
+            pce.IntADPCM = HalfReached;
+            pce.IntStop = EndReached;
+            pce.RefreshIRQ2();
+        }
+
+        public void SaveStateText(TextWriter writer)
+        {
+            writer.WriteLine("[ADPCM]");
+            writer.Write("RAM ");
+            RAM.SaveAsHex(writer);
+            writer.WriteLine("IOAddress {0:X4}", IOAddress);
+            writer.WriteLine("AdpcmLength {0:X4}", AdpcmLength);
+            writer.WriteLine("ReadAddress {0:X4}", ReadAddress);
+            writer.WriteLine("ReadTimer {0}", ReadTimer);
+            writer.WriteLine("ReadBuffer {0:X2}", ReadBuffer);
+            writer.WriteLine("ReadPending {0}", ReadPending);
+            writer.WriteLine("WriteAddress {0:X4}", WriteAddress);
+            writer.WriteLine("WriteTimer {0}", WriteTimer);
+            writer.WriteLine("WriteBuffer {0:X2}", WriteBuffer);
+            writer.WriteLine("WritePending {0}", WritePending);
+
+            writer.WriteLine("Port180B {0:X2}", Port180B);
+            writer.WriteLine("Port180D {0:X2}", Port180D);
+            writer.WriteLine("Port180E {0:X2}", Port180E);
+
+            writer.WriteLine("AdpcmIsPlaying {0}", AdpcmIsPlaying);
+            writer.WriteLine("HalfReached {0}", HalfReached);
+            writer.WriteLine("EndReached {0}", EndReached);
+
+            writer.WriteLine("Playback44khzTimer {0}", Playback44khzTimer);
+            writer.WriteLine("PlayingSample {0:X4}", playingSample);
+            writer.WriteLine("NextSampleTimer {0}", nextSampleTimer);
+            writer.WriteLine("FirstNibble {0}", nibble);
+            writer.WriteLine("Magnitude {0}", magnitude);
+            writer.WriteLine("[/ADPCM]\n");
+        }
+
+        public void LoadStateText(TextReader reader)
+        {
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[/ADPCM]") break;
+                if (args[0] == "RAM")
+                    RAM.ReadFromHex(args[1]);
+                else if (args[0] == "IOAddress")
+                    IOAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "AdpcmLength")
+                    AdpcmLength = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "ReadAddress")
+                    ReadAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "ReadTimer")
+                    ReadTimer = int.Parse(args[1]);
+                else if (args[0] == "ReadBuffer")
+                    ReadBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "ReadPending")
+                    ReadPending = bool.Parse(args[1]);
+                else if (args[0] == "WriteAddress")
+                    WriteAddress = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "WriteTimer")
+                    WriteTimer = int.Parse(args[1]);
+                else if (args[0] == "WriteBuffer")
+                    WriteBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "WritePending")
+                    WritePending = bool.Parse(args[1]);
+
+                else if (args[0] == "Port180B")
+                    Port180B = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "Port180D")
+                    Port180D = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "Port180E")
+                    Port180E = byte.Parse(args[1], NumberStyles.HexNumber);
+
+                else if (args[0] == "AdpcmIsPlaying")
+                    AdpcmIsPlaying = bool.Parse(args[1]);
+                else if (args[0] == "HalfReached")
+                    HalfReached = bool.Parse(args[1]);
+                else if (args[0] == "EndReached")
+                    EndReached = bool.Parse(args[1]);
+
+                else if (args[0] == "Playback44khzTimer")
+                    Playback44khzTimer = float.Parse(args[1]);
+                else if (args[0] == "PlayingSample")
+                    playingSample = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "NextSampleTimer")
+                    nextSampleTimer = float.Parse(args[1]);
+                else if (args[0] == "FirstNibble")
+                    nibble = bool.Parse(args[1]);
+                else if (args[0] == "Magnitude")
+                    magnitude = int.Parse(args[1]);
+
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+            }
+
+            pce.IntADPCM = HalfReached;
+            pce.IntStop = EndReached;
+            pce.RefreshIRQ2();
+        }
     }
 }
