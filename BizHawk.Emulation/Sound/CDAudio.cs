@@ -261,6 +261,10 @@ namespace BizHawk.Emulation.Sound
                     CurrentSector = int.Parse(args[1]);
                 else if (args[0] == "SectorOffset")
                     SectorOffset = int.Parse(args[1]);
+                else if (args[0] == "FadeOutOverFrames")
+                    FadeOutOverFrames = int.Parse(args[1]);
+                else if (args[0] == "FadeOutFramesRemaining")
+                    FadeOutFramesRemaining = int.Parse(args[1]);
 
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);

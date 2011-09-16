@@ -76,6 +76,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.Write("MPR ");
             MPR.SaveAsHex(writer);
             writer.WriteLine("IRQ1Assert {0}", IRQ1Assert);
+            writer.WriteLine("IRQ2Assert {0}", IRQ2Assert);
             writer.WriteLine("TimerAssert {0}", TimerAssert);
             writer.WriteLine("IRQControlByte {0:X2}", IRQControlByte);
             writer.WriteLine("IRQNextControlByte {0:X2}", IRQNextControlByte);
@@ -117,6 +118,8 @@ namespace BizHawk.Emulation.CPUs.H6280
                     MPR.ReadFromHex(args[1]);
                 else if (args[0] == "IRQ1Assert")
                     IRQ1Assert = bool.Parse(args[1]);
+                else if (args[0] == "IRQ2Assert")
+                    IRQ2Assert = bool.Parse(args[1]);
                 else if (args[0] == "TimerAssert")
                     TimerAssert = bool.Parse(args[1]);
                 else if (args[0] == "IRQControlByte")
@@ -162,6 +165,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             writer.Write(S);
             writer.Write(MPR);
             writer.Write(IRQ1Assert);
+            writer.Write(IRQ2Assert);
             writer.Write(TimerAssert);
             writer.Write(IRQControlByte);
             writer.Write(IRQNextControlByte);
@@ -191,6 +195,7 @@ namespace BizHawk.Emulation.CPUs.H6280
             S = reader.ReadByte();
             MPR = reader.ReadBytes(8);
             IRQ1Assert = reader.ReadBoolean();
+            IRQ2Assert = reader.ReadBoolean();
             TimerAssert = reader.ReadBoolean();
             IRQControlByte = reader.ReadByte();
             IRQNextControlByte = reader.ReadByte();
