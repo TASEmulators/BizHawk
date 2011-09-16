@@ -9,7 +9,7 @@ namespace BizHawk
     // There is less overhead by not being dynamically resizable and stuff.
     public sealed class QuickList<T> where T : struct
     {
-        T[] buffer;
+        public T[] buffer;
         public int Position;
 
         public QuickList(int capacity)
@@ -41,12 +41,12 @@ namespace BizHawk
 
     // and the point of this one is to be easier to serialize quickly. AND fast to clear.
     // only intended to be used with value types. If used on references you may get GC issues.
-    public class QuickQueue<T> where T : struct
+    public sealed class QuickQueue<T> where T : struct
     {
-        T[] buffer;
-        int head;
-        int tail;
-        int size;
+        public T[] buffer;
+        public int head;
+        public int tail;
+        public int size;
 
         public QuickQueue(int capacity)
         {
@@ -94,12 +94,10 @@ namespace BizHawk
             tail = count;
             size = count;
         }
-
-        // TODO serialization functions
     }
 
     // .net has no built-in read only dictionary
-    public class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey,TValue>
+    public sealed class ReadOnlyDictionary<TKey, TValue> : IDictionary<TKey,TValue>
     {
         IDictionary<TKey, TValue> dict;
 

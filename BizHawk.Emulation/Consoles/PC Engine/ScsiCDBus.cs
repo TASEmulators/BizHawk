@@ -1,6 +1,8 @@
 ﻿using System;
 using BizHawk.DiscSystem;
 using BizHawk.Emulation.Sound;
+using System.IO;
+using System.Globalization;
 
 namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
@@ -144,6 +146,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         PCEngine pce;
         public Disc disc;
+        int audioStartLBA;
+        int audioEndLBA;
 
         public ScsiCDBus(PCEngine pce, Disc disc)
         {
@@ -394,9 +398,6 @@ throw new Exception("requesting 0 sectors read.............................");
             pce.CDAudio.Stop();
         }
 
-        int audioStartLBA;
-        int audioEndLBA;
-
         void CommandAudioStartPos()
         {
             switch (CommandBuffer[9] & 0xC0)
@@ -500,7 +501,7 @@ throw new Exception("requesting 0 sectors read.............................");
                 case CDAudio.CDAudioMode.Stopped: DataIn.Enqueue(3); break;
             }
             
-			DataIn.Enqueue(sectorEntry.q_status);          // unused?
+			DataIn.Enqueue(sectorEntry.q_status);          // I do not know what status is
 			DataIn.Enqueue(sectorEntry.q_tno.BCDValue);    // track
 			DataIn.Enqueue(sectorEntry.q_index.BCDValue);  // index
 			DataIn.Enqueue(sectorEntry.q_min.BCDValue);    // M(rel)
@@ -547,7 +548,6 @@ throw new Exception("requesting 0 sectors read.............................");
                         track--;
                         if (track > disc.TOC.Sessions[0].Tracks.Count)
                             throw new Exception("Request more tracks than exist.... need to do error handling");
-                        // I error handled your mom last night
 
                         int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].aba - 150;
                         byte m, s, f;
@@ -641,5 +641,195 @@ throw new Exception("requesting 0 sectors read.............................");
                     break;
             }
         }
+        
+        // ***************************************************************************
+
+        public void SaveStateBinary(BinaryWriter writer)
+        {
+            writer.Write(BSY);
+            writer.Write(SEL);
+            writer.Write(CD);
+            writer.Write(IO);
+            writer.Write(MSG);
+            writer.Write(REQ);
+            writer.Write(ACK);
+            writer.Write(ATN);
+            writer.Write(RST);
+            writer.Write(DataBits);
+            writer.Write((byte)Phase);
+
+            writer.Write(MessageCompleted);
+            writer.Write(StatusCompleted);
+            writer.Write(MessageValue);
+
+            writer.Write(DataReadWaitTimer);
+            writer.Write(DataReadInProgress);
+            writer.Write(DataTransferWasDone);
+            writer.Write(DataTransferInProgress);
+            writer.Write(CurrentReadingSector);
+            writer.Write((byte)SectorsLeftToRead);
+
+            writer.Write(CommandBuffer.buffer);
+            writer.Write((byte)CommandBuffer.Position);
+
+            writer.Write(DataIn.buffer);
+            writer.Write((short)DataIn.head);
+            writer.Write((short)DataIn.tail);
+            writer.Write((short)DataIn.size);
+
+            writer.Write(audioStartLBA);
+            writer.Write(audioEndLBA);
+        }
+
+        public void LoadStateBinary(BinaryReader reader)
+        {
+            BSY = reader.ReadBoolean();
+            SEL = reader.ReadBoolean();
+            CD = reader.ReadBoolean();
+            IO = reader.ReadBoolean();
+            MSG = reader.ReadBoolean();
+            REQ = reader.ReadBoolean();
+            ACK = reader.ReadBoolean();
+            ATN = reader.ReadBoolean();
+            RST = reader.ReadBoolean();
+            DataBits = reader.ReadByte();
+            Phase = (BusPhase) Enum.ToObject(typeof(BusPhase), reader.ReadByte());
+
+            MessageCompleted = reader.ReadBoolean();
+            StatusCompleted = reader.ReadBoolean();
+            MessageValue = reader.ReadByte();
+            
+            DataReadWaitTimer = reader.ReadInt64();
+            DataReadInProgress = reader.ReadBoolean();
+            DataTransferWasDone = reader.ReadBoolean();
+            DataTransferInProgress = reader.ReadBoolean();
+            CurrentReadingSector = reader.ReadInt32();
+            SectorsLeftToRead = reader.ReadByte();
+
+            CommandBuffer.buffer = reader.ReadBytes(10);
+            CommandBuffer.Position = reader.ReadByte();
+
+            DataIn.buffer = reader.ReadBytes(2048);
+            DataIn.head = reader.ReadInt16();
+            DataIn.tail = reader.ReadInt16();
+            DataIn.size = reader.ReadInt16();
+
+            audioStartLBA = reader.ReadInt32();
+            audioEndLBA = reader.ReadInt32();
+        }
+
+        public void SaveStateText(TextWriter writer)
+        {
+            writer.WriteLine("[SCSI]");
+            writer.WriteLine("BSY {0}",BSY);
+            writer.WriteLine("SEL {0}", SEL);
+            writer.WriteLine("CD {0}", CD);
+            writer.WriteLine("IO {0}", IO);
+            writer.WriteLine("MSG {0}", MSG);
+            writer.WriteLine("REQ {0}", REQ);
+            writer.WriteLine("ACK {0}", ACK);
+            writer.WriteLine("ATN {0}", ATN);
+            writer.WriteLine("RST {0}", RST);
+            writer.WriteLine("DataBits {0:X2}", DataBits);
+            writer.WriteLine("BusPhase "+Enum.GetName(typeof(BusPhase), Phase));
+            writer.WriteLine();
+            writer.WriteLine("MessageCompleted {0}", MessageCompleted);
+            writer.WriteLine("StatusCompleted {0}", StatusCompleted);
+            writer.WriteLine("MessageValue {0}", MessageValue);
+            writer.WriteLine();
+            writer.WriteLine("DataReadWaitTimer {0}", DataReadWaitTimer);
+            writer.WriteLine("DataReadInProgress {0}", DataReadInProgress);
+            writer.WriteLine("DataTransferWasDone {0}", DataTransferWasDone);
+            writer.WriteLine("DataTransferInProgress {0}", DataTransferInProgress);
+            writer.WriteLine("CurrentReadingSector {0}", CurrentReadingSector);
+            writer.WriteLine("SectorsLeftToRead {0}", SectorsLeftToRead);
+            writer.WriteLine();
+            writer.WriteLine("AudioStartLBA {0}", audioStartLBA);
+            writer.WriteLine("AudioEndLBA {0}", audioEndLBA);
+            writer.WriteLine();
+            writer.Write("CommandBuffer "); CommandBuffer.buffer.SaveAsHex(writer);
+            writer.WriteLine("CommandBufferPosition {0}", CommandBuffer.Position);
+            writer.WriteLine();
+            writer.Write("DataInBuffer "); DataIn.buffer.SaveAsHex(writer);
+            writer.WriteLine("DataInHead {0}", DataIn.head);
+            writer.WriteLine("DataInTail {0}", DataIn.tail);
+            writer.WriteLine("DataInSize {0}", DataIn.size);
+            writer.WriteLine("[/SCSI]\n");
+        }
+
+        public void LoadStateText(TextReader reader)
+        {
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[/SCSI]") break;
+                if (args[0] == "BSY")
+                    BSY = bool.Parse(args[1]);
+                else if (args[0] == "SEL")
+                    SEL = bool.Parse(args[1]);
+                else if (args[0] == "CD")
+                    CD = bool.Parse(args[1]);
+                else if (args[0] == "IO")
+                    IO = bool.Parse(args[1]);
+                else if (args[0] == "MSG")
+                    MSG = bool.Parse(args[1]);
+                else if (args[0] == "REQ")
+                    REQ = bool.Parse(args[1]);
+                else if (args[0] == "ACK")
+                    ACK = bool.Parse(args[1]);
+                else if (args[0] == "ATN")
+                    ATN = bool.Parse(args[1]);
+                else if (args[0] == "RST")
+                    RST = bool.Parse(args[1]);
+                else if (args[0] == "DataBits")
+                    DataBits = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "BusPhase")
+                    Phase = (BusPhase)Enum.Parse(typeof(BusPhase), args[1]);
+
+                else if (args[0] == "MessageCompleted")
+                    MessageCompleted = bool.Parse(args[1]);
+                else if (args[0] == "StatusCompleted")
+                    StatusCompleted = bool.Parse(args[1]);
+                else if (args[0] == "MessageValue")
+                    MessageValue = byte.Parse(args[1]);
+
+                else if (args[0] == "DataReadWaitTimer")
+                    DataReadWaitTimer = long.Parse(args[1]);
+                else if (args[0] == "DataReadInProgress")
+                    DataReadInProgress = bool.Parse(args[1]);
+                else if (args[0] == "DataTransferWasDone")
+                    DataTransferWasDone = bool.Parse(args[1]);
+                else if (args[0] == "DataTransferInProgress")
+                    DataTransferInProgress = bool.Parse(args[1]);
+                else if (args[0] == "CurrentReadingSector")
+                    CurrentReadingSector = int.Parse(args[1]);
+                else if (args[0] == "SectorsLeftToRead")
+                    SectorsLeftToRead = int.Parse(args[1]);
+
+                else if (args[0] == "AudioStartLBA")
+                    audioStartLBA = int.Parse(args[1]);
+                else if (args[0] == "AudioEndLBA")
+                    audioEndLBA = int.Parse(args[1]);
+
+                else if (args[0] == "CommandBuffer")
+                    CommandBuffer.buffer.ReadFromHex(args[1]);
+                else if (args[0] == "CommandBufferPosition")
+                    CommandBuffer.Position = int.Parse(args[1]);
+
+                else if (args[0] == "DataInBuffer")
+                    DataIn.buffer.ReadFromHex(args[1]);
+                else if (args[0] == "DataInHead")
+                    DataIn.head = int.Parse(args[1]);
+                else if (args[0] == "DataInTail")
+                    DataIn.tail = int.Parse(args[1]);
+                else if (args[0] == "DataInSize")
+                    DataIn.size = int.Parse(args[1]);
+
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+            }
+        }
+
     }
 }
