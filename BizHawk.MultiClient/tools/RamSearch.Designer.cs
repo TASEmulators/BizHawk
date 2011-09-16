@@ -75,6 +75,7 @@
 			this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -532,6 +533,7 @@
             this.memoryDomainsToolStripMenuItem,
             this.searchToolStripMenuItem1,
             this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem,
             this.copyValueToPrevToolStripMenuItem,
             this.clearChangeCountsToolStripMenuItem,
             this.removeSelectedToolStripMenuItem,
@@ -548,7 +550,7 @@
 			// memoryDomainsToolStripMenuItem
 			// 
 			this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-			this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
 			this.memoryDomainsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.memoryDomainsToolStripMenuItem_DropDownOpened);
 			// 
@@ -556,7 +558,7 @@
 			// 
 			this.searchToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.searchToolStripMenuItem1.Name = "searchToolStripMenuItem1";
-			this.searchToolStripMenuItem1.Size = new System.Drawing.Size(218, 22);
+			this.searchToolStripMenuItem1.Size = new System.Drawing.Size(214, 22);
 			this.searchToolStripMenuItem1.Text = "&Search";
 			this.searchToolStripMenuItem1.Click += new System.EventHandler(this.searchToolStripMenuItem1_Click);
 			// 
@@ -565,22 +567,32 @@
 			this.undoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.undoToolStripMenuItem.Text = "&Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click_1);
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.redo;
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeyDisplayString = "";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.redoToolStripMenuItem.Text = "&Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
 			// 
 			// copyValueToPrevToolStripMenuItem
 			// 
 			this.copyValueToPrevToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Previous;
 			this.copyValueToPrevToolStripMenuItem.Name = "copyValueToPrevToolStripMenuItem";
-			this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.copyValueToPrevToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.copyValueToPrevToolStripMenuItem.Text = "Copy Value to Prev";
 			this.copyValueToPrevToolStripMenuItem.Click += new System.EventHandler(this.copyValueToPrevToolStripMenuItem_Click);
 			// 
 			// clearChangeCountsToolStripMenuItem
 			// 
 			this.clearChangeCountsToolStripMenuItem.Name = "clearChangeCountsToolStripMenuItem";
-			this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.clearChangeCountsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.clearChangeCountsToolStripMenuItem.Text = "&Clear Change Counts";
 			this.clearChangeCountsToolStripMenuItem.Click += new System.EventHandler(this.clearChangeCountsToolStripMenuItem_Click);
 			// 
@@ -588,7 +600,8 @@
 			// 
 			this.removeSelectedToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem.Name = "removeSelectedToolStripMenuItem";
-			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.removeSelectedToolStripMenuItem.ShortcutKeyDisplayString = "Delete";
+			this.removeSelectedToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.removeSelectedToolStripMenuItem.Text = "&Remove selected";
 			this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
 			// 
@@ -596,21 +609,22 @@
 			// 
 			this.exludeRamWatchListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
 			this.exludeRamWatchListToolStripMenuItem.Name = "exludeRamWatchListToolStripMenuItem";
-			this.exludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.exludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.exludeRamWatchListToolStripMenuItem.Text = "Exlude Ram Watch List";
 			this.exludeRamWatchListToolStripMenuItem.Click += new System.EventHandler(this.exludeRamWatchListToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(215, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(211, 6);
 			// 
 			// addSelectedToRamWatchToolStripMenuItem
 			// 
 			this.addSelectedToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addSelectedToRamWatchToolStripMenuItem.Name = "addSelectedToRamWatchToolStripMenuItem";
-			this.addSelectedToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-			this.addSelectedToRamWatchToolStripMenuItem.Text = "&Add selected to Ram Watch";
+			this.addSelectedToRamWatchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+			this.addSelectedToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.addSelectedToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
 			this.addSelectedToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addSelectedToRamWatchToolStripMenuItem_Click);
 			// 
 			// pokeAddressToolStripMenuItem
@@ -618,7 +632,7 @@
 			this.pokeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem.Name = "pokeAddressToolStripMenuItem";
 			this.pokeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.pokeAddressToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.pokeAddressToolStripMenuItem.Text = "&Poke Address";
 			this.pokeAddressToolStripMenuItem.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem_Click);
 			// 
@@ -627,7 +641,7 @@
 			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
 			this.freezeAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
 			this.freezeAddressToolStripMenuItem.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
 			// 
@@ -1337,5 +1351,6 @@
 		private System.Windows.Forms.ToolStripButton WatchtoolStripButton1;
 		private System.Windows.Forms.ToolStripButton RedotoolStripButton2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
     }
 }
