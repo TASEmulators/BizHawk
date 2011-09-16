@@ -90,7 +90,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				shift_count = 0;
 				shift_val = 0;
-				StandardReset();
+				prg_mode = 1;
+				prg_slot = 1;
 			}
 			else
 			{
