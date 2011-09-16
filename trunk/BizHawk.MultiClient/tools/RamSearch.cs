@@ -1578,6 +1578,11 @@ namespace BizHawk.MultiClient
 			else
 				undoToolStripMenuItem.Enabled = true;
 
+			if (redoList.Count == 0)
+				redoToolStripMenuItem.Enabled = false;
+			else
+				redoToolStripMenuItem.Enabled = true;
+
 			ListView.SelectedIndexCollection indexes = SearchListView.SelectedIndices;
 
 			if (indexes.Count == 0)
@@ -2153,6 +2158,11 @@ namespace BizHawk.MultiClient
 					SearchListView.SelectItem(x, true);
 				}
 			}
+		}
+
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DoRedo();
 		}
 	}
 }
