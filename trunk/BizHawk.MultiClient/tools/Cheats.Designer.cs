@@ -675,7 +675,7 @@
 			this.CheatListView.SelectedIndexChanged += new System.EventHandler(this.CheatListView_SelectedIndexChanged);
 			this.CheatListView.Click += new System.EventHandler(this.CheatListView_Click);
 			this.CheatListView.DoubleClick += new System.EventHandler(this.CheatListView_DoubleClick);
-			this.CheatListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.CheatListView_KeyUp);
+			this.CheatListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CheatListView_KeyDown);
 			// 
 			// CheatName
 			// 

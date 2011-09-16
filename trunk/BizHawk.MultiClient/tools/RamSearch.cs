@@ -2120,21 +2120,6 @@ namespace BizHawk.MultiClient
 			DoSearch();
 		}
 
-		private void SearchListView_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
-			{
-				RemoveAddresses();
-			}
-			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
-			{
-				for (int x = 0; x < searchList.Count; x++)
-				{
-					SearchListView.SelectItem(x, true);
-				}
-			}
-		}
-
 		private void RedotoolStripButton2_Click(object sender, EventArgs e)
 		{
 			DoRedo();
@@ -2153,6 +2138,21 @@ namespace BizHawk.MultiClient
 		private void RamSearch_Activated(object sender, EventArgs e)
 		{
 			SearchListView.Refresh();
+		}
+
+		private void SearchListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveAddresses();
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < searchList.Count; x++)
+				{
+					SearchListView.SelectItem(x, true);
+				}
+			}
 		}
 	}
 }
