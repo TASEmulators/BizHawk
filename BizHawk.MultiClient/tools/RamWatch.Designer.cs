@@ -63,6 +63,7 @@
 			this.showChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.showPreviousValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.prevValueShowsChangeAmountToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.displayWatchesOnScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,7 +107,6 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
-			this.displayWatchesOnScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -406,6 +406,13 @@
 			this.prevValueShowsChangeAmountToolStripMenuItem.Text = "Prev Value  as change";
 			this.prevValueShowsChangeAmountToolStripMenuItem.Click += new System.EventHandler(this.prevValueShowsChangeAmountToolStripMenuItem_Click);
 			// 
+			// displayWatchesOnScreenToolStripMenuItem
+			// 
+			this.displayWatchesOnScreenToolStripMenuItem.Name = "displayWatchesOnScreenToolStripMenuItem";
+			this.displayWatchesOnScreenToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
+			this.displayWatchesOnScreenToolStripMenuItem.Text = "Display Watches On Screen";
+			this.displayWatchesOnScreenToolStripMenuItem.Click += new System.EventHandler(this.displayWatchesOnScreenToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -454,7 +461,7 @@
 			this.WatchListView.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.WatchListView_AfterLabelEdit);
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.ColumnReorder);
-			this.WatchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyUp);
+			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
 			// Address
@@ -805,13 +812,6 @@
 			this.MemDomainLabel.Name = "MemDomainLabel";
 			this.MemDomainLabel.Size = new System.Drawing.Size(0, 13);
 			this.MemDomainLabel.TabIndex = 6;
-			// 
-			// displayWatchesOnScreenToolStripMenuItem
-			// 
-			this.displayWatchesOnScreenToolStripMenuItem.Name = "displayWatchesOnScreenToolStripMenuItem";
-			this.displayWatchesOnScreenToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.displayWatchesOnScreenToolStripMenuItem.Text = "Display Watches On Screen";
-			this.displayWatchesOnScreenToolStripMenuItem.Click += new System.EventHandler(this.displayWatchesOnScreenToolStripMenuItem_Click);
 			// 
 			// RamWatch
 			// 

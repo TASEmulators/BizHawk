@@ -976,18 +976,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void CheatListView_KeyUp(object sender, KeyEventArgs e)
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+				CheatListView.SelectItem(x, true);
+		}
+
+		private void CheatListView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
 			{
 				RemoveCheat();
 			}
-		}
-
-		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
-				CheatListView.SelectItem(x, true);
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
+				{
+					CheatListView.SelectItem(x, true);
+				}
+			}
 		}
 	}
 }

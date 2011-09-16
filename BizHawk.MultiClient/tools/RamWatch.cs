@@ -1457,14 +1457,6 @@ namespace BizHawk.MultiClient
 			WatchListView.Focus();
 		}
 
-		private void WatchListView_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
-			{
-				RemoveWatch();
-			}
-		}
-
 		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SelectAll();
@@ -1489,6 +1481,21 @@ namespace BizHawk.MultiClient
 				Global.RenderPanel.ClearGUIText();
 			else
 				UpdateValues();
+		}
+
+		private void WatchListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveWatch();
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < watchList.Count; x++)
+				{
+					WatchListView.SelectItem(x, true);
+				}
+			}
 		}
 	}
 }

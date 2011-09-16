@@ -302,7 +302,7 @@
 			this.SearchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.SearchListView_ColumnClick);
 			this.SearchListView.ColumnReordered += new System.Windows.Forms.ColumnReorderedEventHandler(this.SearchListView_ColumnReordered);
 			this.SearchListView.Enter += new System.EventHandler(this.SearchListView_Enter);
-			this.SearchListView.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchListView_KeyUp);
+			this.SearchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SearchListView_KeyDown);
 			this.SearchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.SearchListView_MouseDoubleClick);
 			// 
 			// Address
