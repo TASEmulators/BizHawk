@@ -264,8 +264,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public bool SaveRamModified { get; set; }
 
-        // TODO: properly savestate SCSI
-
         public void SaveStateText(TextWriter writer)
         {
             writer.WriteLine("[PCEngine]");
@@ -281,6 +279,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (Cpu.ReadMemory21 == ReadMemorySF2)
                 writer.WriteLine("SF2MapperLatch " + SF2MapperLatch);
             writer.WriteLine("IOBuffer {0:X2}", IOBuffer);
+            writer.Write("CdIoPorts "); CdIoPorts.SaveAsHex(writer);
             writer.WriteLine();
 
             if (SuperGrafx)
@@ -301,16 +300,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             }
             if (TurboCD)
             {
-                CDAudio.SaveStateText(writer);
-                writer.Write("CDRAM ");
-                CDRam.SaveAsHex(writer);
+                writer.Write("CDRAM "); CDRam.SaveAsHex(writer);
                 if (SuperRam != null)
-                {
-                    writer.Write("SuperRAM ");
-                    SuperRam.SaveAsHex(writer);
-                }
+                    { writer.Write("SuperRAM "); SuperRam.SaveAsHex(writer); }
 
                 writer.WriteLine();
+                SCSI.SaveStateText(writer);
+                CDAudio.SaveStateText(writer);
                 ADPCM.SaveStateText(writer);
             }
             writer.WriteLine("[/PCEngine]");
@@ -332,6 +328,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     SF2MapperLatch = byte.Parse(args[1]);
                 else if (args[0] == "IOBuffer")
                     IOBuffer = byte.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "CdIoPorts")
+                    CdIoPorts.ReadFromHex(args[1]);
                 else if (args[0] == "RAM")
                     Ram.ReadFromHex(args[1]);
                 else if (args[0] == "CDRAM")
@@ -352,6 +350,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     VDC1.LoadStateText(reader, 1);
                 else if (args[0] == "[VDC2]")
                     VDC2.LoadStateText(reader, 2);
+                else if (args[0] == "[SCSI]")
+                    SCSI.LoadStateText(reader);
                 else if (args[0] == "[CDAudio]")
                     CDAudio.LoadStateText(reader);
                 else if (args[0] == "[ADPCM]")
@@ -378,6 +378,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 {
                     writer.Write(CDRam);
                     ADPCM.SaveStateBinary(writer);
+                    CDAudio.SaveStateBinary(writer);
+                    SCSI.SaveStateBinary(writer);
                 }
                 writer.Write(Frame);
                 writer.Write(_lagcount);
@@ -387,10 +389,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VCE.SaveStateBinary(writer);
                 VDC1.SaveStateBinary(writer);
                 PSG.SaveStateBinary(writer);
-                if (TurboCD)
-                {
-                    CDAudio.SaveStateBinary(writer);
-                }
             } else {
                 writer.Write(Ram);
                 writer.Write(Frame);
@@ -421,6 +419,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 {
                     CDRam = reader.ReadBytes(0x10000);
                     ADPCM.LoadStateBinary(reader);
+                    CDAudio.LoadStateBinary(reader);
+                    SCSI.LoadStateBinary(reader);
                 }
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
@@ -430,10 +430,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 VCE.LoadStateBinary(reader);
                 VDC1.LoadStateBinary(reader);
                 PSG.LoadStateBinary(reader);
-                if (TurboCD)
-                {
-                    CDAudio.LoadStateBinary(reader);
-                }
             } else {
                 Ram = reader.ReadBytes(0x8000);
                 Frame = reader.ReadInt32();
@@ -455,10 +451,10 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (BramEnabled) buflen += 2048;
             if (PopulousRAM != null) buflen += 0x8000;
             if (SuperRam != null) buflen += 0x30000;
-            if (TurboCD) buflen += 0x20000 + 62;
+            if (TurboCD) buflen += 0x20000 + 2165;
             //Console.WriteLine("LENGTH1 " + buflen);
 
-            var buf = new byte[buflen];
+            var buf = new byte[buflen]; 
             var stream = new MemoryStream(buf);
             var writer = new BinaryWriter(stream);
             SaveStateBinary(writer);
