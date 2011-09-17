@@ -14,10 +14,9 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
 		//If signed/unsigned/hex radios selected, auto-change the value box, and auto limit box length
-		//Checked signed/u/h value on RamPoke_Load and set value appopriately
 		//Memory domain selection
-		//Output message, format number of digits appropriately
 		public Watch watch = new Watch();
+		public MemoryDomain domain = Global.Emulator.MainMemory;
 		public Point location = new Point();
 
 		public RamPoke()
@@ -25,9 +24,10 @@ namespace BizHawk.MultiClient
 			InitializeComponent();
 		}
 
-		public void SetWatchObject(Watch w)
+		public void SetWatchObject(Watch w, MemoryDomain d)
 		{
 			watch = w;
+			domain = d;
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
@@ -139,10 +139,18 @@ namespace BizHawk.MultiClient
 			else
 				watch.value = int.Parse(ValueBox.Text);
 
-			watch.PokeAddress(Global.Emulator.MainMemory);
+			watch.PokeAddress(domain);
 
-			//TODO: format value based on watch.type
-			OutputLabel.Text = watch.value.ToString() + " written to " + String.Format("{0:X}", watch.address);
+			string value;
+			if (HexRadio.Checked)
+				value = "0x" + String.Format("{0:X" + GetValueNumDigits() + "}", watch.value);
+			else
+				value = watch.value.ToString();
+			string address = String.Format("{0:X" + GetNumDigits(domain.Size).ToString()
+				+ "}", watch.address);
+
+
+			OutputLabel.Text = value + " written to " + address;
 		}
 
 		private void AddressBox_Leave(object sender, EventArgs e)
@@ -231,7 +239,7 @@ namespace BizHawk.MultiClient
 				case asigned.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(ValueBox.Text);
 					if (!i) return -99999999;
-					return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
+					return (int)Int64.Parse(ValueBox.Text); //Note: 64 to be safe
 				case asigned.SIGNED:
 					i = InputValidate.IsValidSignedNumber(ValueBox.Text);
 					if (!i) return -99999999;
@@ -257,6 +265,33 @@ namespace BizHawk.MultiClient
 		private void SignedRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "";
+		}
+
+		private int GetValueNumDigits()
+		{
+			switch (GetDataSize())
+			{
+				default:
+				case atype.BYTE:
+					return HexRadio.Checked ? 2 : 3;
+				case atype.WORD:
+					return HexRadio.Checked ? 4 : 5;
+				case atype.DWORD:
+					return HexRadio.Checked ? 8 : 10;
+			}
+		}
+
+		private int GetNumDigits(Int32 i)
+		{
+			//if (i == 0) return 0;
+			//if (i < 0x10) return 1;
+			//if (i < 0x100) return 2;
+			//if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
+			if (i < 0x10000) return 4;
+			if (i < 0x100000) return 5;
+			if (i < 0x1000000) return 6;
+			if (i < 0x10000000) return 7;
+			else return 8;
 		}
 	}
 }

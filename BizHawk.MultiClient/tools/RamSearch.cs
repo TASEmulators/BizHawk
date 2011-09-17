@@ -467,7 +467,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 
 			if (indexes.Count > 0)
-				p.SetWatchObject(searchList[indexes[0]]);
+				p.SetWatchObject(searchList[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 		}
