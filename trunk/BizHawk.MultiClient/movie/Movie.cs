@@ -80,9 +80,16 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
+		public void ClearSaveRAM()
+		{
+			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
+			if (file.Exists) file.Delete();
+		}
+
 		public void StartNewRecording() { StartNewRecording(true); }
 		public void StartNewRecording(bool truncate)
 		{
+			ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
 			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
 			{
@@ -94,6 +101,7 @@ namespace BizHawk.MultiClient
 
 		public void StartPlayback()
 		{
+			ClearSaveRAM();
 			Mode = MOVIEMODE.PLAY;
 		}
 
