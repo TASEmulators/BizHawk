@@ -7,23 +7,26 @@
    - Dracula X when you rescue Maria
    - Dragon Slayer
    - Dungeon Explorer II
+   - Magicoal
+   - Ys IV
 
 - Graphics corruption:
   - Buster Bros, check seagull during opening
+  - In part of Dungeon Explorer II intro
+  - Popful Mail... some corruption on Turbo Engine too.... and pcejin?
 
 Errors in CD-Audio / fade / looping/ something handling:
   - Develo Magazine demo game
   - Exile, starting new game
   - Flash Hiders, during fight no music
-
-- Similar in Dragon Slayer
-- Dungeon Explorer II quite desperately need ADPCM audio
-  + and a gross corruption issue at teh end of the intro. and then it freezes. :(
+  - Spriggan 2
+  - Sylphia - no cd audio a lot of the time!
 
 - Rayxanber 2 weird issues at the end of first level with cd audio player
+- Record of Lodoss War wont start game from title screen
 - Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
-- Startling Odyssey does the reset-at-new-game-screen thats rather odd :(
-
+- Valis: Screen is black during entire intro section
+- Valis III: Dies with 'request more tracks than exist'
 card angels does poll subcode...
 
 
