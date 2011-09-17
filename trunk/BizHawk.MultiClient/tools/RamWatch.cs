@@ -927,7 +927,7 @@ namespace BizHawk.MultiClient
 			RamPoke p = new RamPoke();
 			Global.Sound.StartSound();
 			if (indexes.Count > 0)
-				p.SetWatchObject(watchList[indexes[0]]);
+				p.SetWatchObject(watchList[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
 		}
