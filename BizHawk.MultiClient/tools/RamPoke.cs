@@ -43,15 +43,20 @@ namespace BizHawk.MultiClient
 				BigEndianRadio.Checked = true;
 			else
 				LittleEndianRadio.Checked = true;
-			AddressBox.Text = String.Format("{0:X}", watch.address);
+			AddressBox.Text = String.Format("{0:X" + 
+				GetNumDigits(watch.address) + "}", watch.address);
 
-
-			ValueBox.Text = watch.value.ToString();
+			if (HexRadio.Checked)
+				ValueBox.Text = String.Format("{0:X" +
+					GetValueNumDigits() + "}", watch.value);
+			else
+				ValueBox.Text = watch.value.ToString();
 
 
 			if (location.X > 0 && location.Y > 0)
 				this.Location = location;
 
+			Text = "Ram Poke - " + domain.ToString();
 		}
 
 		private void SetTypeRadio(atype a)
