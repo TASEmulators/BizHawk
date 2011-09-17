@@ -684,6 +684,7 @@ namespace BizHawk.MultiClient
 				NameBox.Text = Global.CheatList.Cheat(indexes[0]).name;
 				AddressBox.Text = Global.CheatList.FormatAddress(Global.CheatList.Cheat(indexes[0]).address);
 				ValueBox.Text = String.Format("{0:X2}", Global.CheatList.Cheat(indexes[0]).value);
+				SetDomainSelection(Global.CheatList.Cheat(indexes[0]).domain.ToString());
 				CheatListView.Refresh();
 			}
 		}
@@ -994,6 +995,22 @@ namespace BizHawk.MultiClient
 				{
 					CheatListView.SelectItem(x, true);
 				}
+			}
+		}
+
+		private void SetDomainSelection(string domainStr)
+		{
+			//Counts should always be the same, but just in case, let's check
+			int max;
+			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+				max = Global.Emulator.MemoryDomains.Count;
+			else
+				max = DomainComboBox.Items.Count;
+
+			for (int x = 0; x < max; x++)
+			{
+				if (domainStr == DomainComboBox.Items[x].ToString())
+					DomainComboBox.SelectedIndex = x;
 			}
 		}
 	}

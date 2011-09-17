@@ -48,6 +48,8 @@
 			this.ValeLabel = new System.Windows.Forms.Label();
 			this.ValueBox = new System.Windows.Forms.TextBox();
 			this.ValueHexLabel = new System.Windows.Forms.Label();
+			this.DomainComboBox = new System.Windows.Forms.ComboBox();
+			this.label6 = new System.Windows.Forms.Label();
 			this.DataTypeGroupBox.SuspendLayout();
 			this.DataSizeBox.SuspendLayout();
 			this.EndianBox.SuspendLayout();
@@ -200,22 +202,24 @@
 			// 
 			// OK
 			// 
-			this.OK.Location = new System.Drawing.Point(12, 253);
+			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.OK.Location = new System.Drawing.Point(12, 293);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 7;
+			this.OK.TabIndex = 8;
 			this.OK.Text = "&Poke";
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.OK_Click);
 			// 
 			// Cancel
 			// 
+			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(123, 253);
+			this.Cancel.Location = new System.Drawing.Point(123, 293);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 8;
-			this.Cancel.Text = "Close";
+			this.Cancel.TabIndex = 9;
+			this.Cancel.Text = "&Close";
 			this.Cancel.UseVisualStyleBackColor = true;
 			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
 			// 
@@ -257,13 +261,33 @@
 			this.ValueHexLabel.TabIndex = 11;
 			this.ValueHexLabel.Text = "0x";
 			// 
+			// DomainComboBox
+			// 
+			this.DomainComboBox.FormattingEnabled = true;
+			this.DomainComboBox.Location = new System.Drawing.Point(12, 261);
+			this.DomainComboBox.Name = "DomainComboBox";
+			this.DomainComboBox.Size = new System.Drawing.Size(141, 21);
+			this.DomainComboBox.TabIndex = 7;
+			this.DomainComboBox.SelectedIndexChanged += new System.EventHandler(this.DomainComboBox_SelectedIndexChanged);
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(11, 245);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(83, 13);
+			this.label6.TabIndex = 13;
+			this.label6.Text = "Memory Domain";
+			// 
 			// RamPoke
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(213, 292);
+			this.ClientSize = new System.Drawing.Size(213, 332);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.DomainComboBox);
 			this.Controls.Add(this.ValueHexLabel);
 			this.Controls.Add(this.ValueBox);
 			this.Controls.Add(this.ValeLabel);
@@ -314,5 +338,7 @@
         private System.Windows.Forms.Label ValeLabel;
         private System.Windows.Forms.TextBox ValueBox;
 		private System.Windows.Forms.Label ValueHexLabel;
+		private System.Windows.Forms.ComboBox DomainComboBox;
+		private System.Windows.Forms.Label label6;
     }
 }

@@ -232,6 +232,7 @@ namespace BizHawk.MultiClient
 			}
 			UpdateGroupBoxTitle();
 			ResetScrollBar();
+			MemoryViewerBox.Refresh();
 		}
 
 		private void UpdateGroupBoxTitle()
@@ -787,9 +788,12 @@ namespace BizHawk.MultiClient
 			{
 				if (IsVisible(Global.CheatList.cheatList[x].address))
 				{
-					Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList.cheatList[x].address), new Size(15 * Global.Config.HexEditorDataSize, fontHeight));
-					e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
-					e.Graphics.FillRectangle(Brushes.LightBlue, rect);
+					if (Domain.ToString() == Global.CheatList.cheatList[x].domain.ToString())
+					{
+						Rectangle rect = new Rectangle(GetAddressCoordinates(Global.CheatList.cheatList[x].address), new Size(15 * Global.Config.HexEditorDataSize, fontHeight));
+						e.Graphics.DrawRectangle(new Pen(Brushes.Black), rect);
+						e.Graphics.FillRectangle(Brushes.LightBlue, rect);
+					}
 				}
 			}
 			if (addressHighlighted >= 0 && IsVisible(addressHighlighted))
