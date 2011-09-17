@@ -132,6 +132,7 @@
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;
 		public int SaveSlot = 0; //currently selected savestate slot
+		public bool AutoLoadLastSaveSlot = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

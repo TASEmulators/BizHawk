@@ -467,6 +467,8 @@ namespace BizHawk.MultiClient
 			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
 			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
 			loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadNamedState;
+
+			autoLoadLastSlotToolStripMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
 		}
 
 		private void nametableViewerToolStripMenuItem_Click(object sender, EventArgs e)
