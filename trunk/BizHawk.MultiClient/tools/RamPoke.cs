@@ -13,7 +13,7 @@ namespace BizHawk.MultiClient
 	public partial class RamPoke : Form
 	{
 		//TODO:
-		//If signed/unsigned/hex radios selected, auto-change the value box, and auto limit box length
+		//If signed/unsigned/hex radios selected, auto-change the value box
 		//Memory domain selection
 		public Watch watch = new Watch();
 		public MemoryDomain domain = Global.Emulator.MainMemory;
@@ -52,6 +52,8 @@ namespace BizHawk.MultiClient
 			else
 				ValueBox.Text = watch.value.ToString();
 
+			AddressBox.MaxLength = GetNumDigits(domain.Size);
+			ValueBox.MaxLength = GetValueNumDigits();
 
 			if (location.X > 0 && location.Y > 0)
 				this.Location = location;
@@ -185,9 +187,9 @@ namespace BizHawk.MultiClient
 		private asigned GetDataType()
 		{
 			if (SignedRadio.Checked)
-				return asigned.UNSIGNED;
-			if (UnsignedRadio.Checked)
 				return asigned.SIGNED;
+			if (UnsignedRadio.Checked)
+				return asigned.UNSIGNED;
 			if (HexRadio.Checked)
 				return asigned.HEX;
 
@@ -260,16 +262,19 @@ namespace BizHawk.MultiClient
 		private void HexRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "0x";
+			ValueBox.MaxLength = GetValueNumDigits();
 		}
 
 		private void UnsignedRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "";
+			ValueBox.MaxLength = GetValueNumDigits();
 		}
 
 		private void SignedRadio_Click(object sender, EventArgs e)
 		{
 			ValueHexLabel.Text = "";
+			ValueBox.MaxLength = GetValueNumDigits();
 		}
 
 		private int GetValueNumDigits()
@@ -278,11 +283,17 @@ namespace BizHawk.MultiClient
 			{
 				default:
 				case atype.BYTE:
-					return HexRadio.Checked ? 2 : 3;
+					if (HexRadio.Checked) return 2;
+					else if (UnsignedRadio.Checked) return 3;
+					else return 4;
 				case atype.WORD:
-					return HexRadio.Checked ? 4 : 5;
+					if (HexRadio.Checked) return 4;
+					else if (UnsignedRadio.Checked) return 5;
+					else return 6;
 				case atype.DWORD:
-					return HexRadio.Checked ? 8 : 10;
+					if (HexRadio.Checked) return 8;
+					else if (UnsignedRadio.Checked) return 10;
+					else return 11;
 			}
 		}
 
