@@ -1,14 +1,26 @@
 ﻿******************************************************
 *                   Turbo CD Issues                  *
 ******************************************************
+- General, issues where ADPCM cuts out after a few seconds
+   - Bakuretsu Hunter
+   - Download II
+   - Dracula X when you rescue Maria
+   - Dragon Slayer
+   - Dungeon Explorer II
 
-- Download 2: 2nd level jacked up, like the level is garbage, and garbage is imba
+- Graphics corruption:
+  - Buster Bros, check seagull during opening
+
+Errors in CD-Audio / fade / looping/ something handling:
+  - Develo Magazine demo game
+  - Exile, starting new game
+  - Flash Hiders, during fight no music
+
 - Similar in Dragon Slayer
 - Dungeon Explorer II quite desperately need ADPCM audio
   + and a gross corruption issue at teh end of the intro. and then it freezes. :(
 
 - Rayxanber 2 weird issues at the end of first level with cd audio player
-- Rtype, end of level 4 dies with unrecognized scsi command ff, or maybe freezes before then
 - Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
 - Startling Odyssey does the reset-at-new-game-screen thats rather odd :(
 

@@ -177,6 +177,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
             if (game["AdpcmVol"])
                 ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
+            if (game["EqualizeVolumes"] || (game.NotInDatabase && TurboCD))
+                SoundMixer.EqualizeVolumes();
 
             // Ok, yes, HBlankPeriod's only purpose is game-specific hax.
             // 1) At least they're not coded directly into the emulator, but instead data-driven.

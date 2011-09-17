@@ -41,7 +41,9 @@ namespace BizHawk.MultiClient
 				else
 				{
 					var mf = new MainForm(args);
-					mf.Show();
+                    var title = mf.Text;
+                    mf.Show();
+                    mf.Text = title;
 					mf.ProgramRunLoop();
 				}
 			}
