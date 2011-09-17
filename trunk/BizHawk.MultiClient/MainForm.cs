@@ -199,6 +199,8 @@ namespace BizHawk.MultiClient
 
 			if (cmdLoadState != null && Global.Game != null)
 				LoadState("QuickSave" + cmdLoadState);
+			else if (Global.Config.AutoLoadLastSaveSlot && Global.Game != null)
+				LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 
 			if (Global.Config.AutoLoadRamWatch)
 				LoadRamWatch();
@@ -2403,6 +2405,11 @@ namespace BizHawk.MultiClient
 			temp.Delete();
 
 			StateSlots.ToggleRedo(Global.Config.SaveSlot);
+		}
+
+		private void autoLoadLastSlotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLastSaveSlot ^= true;
 		}
 	}
 }
