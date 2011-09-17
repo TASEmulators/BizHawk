@@ -459,22 +459,32 @@ namespace BizHawk.MultiClient
 			int p = GetHighlightedAddress();
 			if (p >= 0)
 			{
-				Global.Sound.StopSound();
-				InputPrompt i = new InputPrompt();
-				Global.Sound.StartSound();
-				i.Text = "Poke 0x" + String.Format(NumDigitsStr, p);
-				i.SetMessage("Enter a hexadecimal value");
-				i.ShowDialog();
+				Watch w = new Watch();
+				w.address = p;
+				w.value = MakeValue(p);
+				w.bigendian = Global.Config.HexEditorBigEndian;
+				w.signed = asigned.HEX;
 
-				if (i.UserOK)
+				switch (Global.Config.HexEditorDataSize)
 				{
-					if (InputValidate.IsValidHexNumber(i.UserText))
-					{
-						int value = int.Parse(i.UserText, NumberStyles.HexNumber);
-						PokeHighlighted(value);
-						UpdateValues();
-					}
+					default:
+					case 1:
+						w.type = atype.BYTE;
+						break;
+					case 2:
+						w.type = atype.WORD;
+						break;
+					case 4:
+						w.type = atype.DWORD;
+						break;
 				}
+				
+				RamPoke poke = new RamPoke();
+				poke.SetWatchObject(w, Domain);
+				poke.location = GetAddressCoordinates(p);
+				Global.Sound.StopSound();
+				poke.ShowDialog();
+				Global.Sound.StartSound();
 			}
 		}
 
