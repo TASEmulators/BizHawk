@@ -125,12 +125,13 @@
 		public bool EnableBackupMovies = true;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
-	    public bool ShowLogWindow = false;
+		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
-        public bool SaveScreenshotWithStates = true;
+		public bool SaveScreenshotWithStates = true;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;
+		public int SaveSlot = 0; //currently selected savestate slot
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

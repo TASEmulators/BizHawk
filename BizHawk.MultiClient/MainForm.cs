@@ -32,9 +32,6 @@ namespace BizHawk.MultiClient
 		//avi/wav state
 		AviWriter CurrAviWriter = null;
 
-		//the currently selected savestate slot
-		private int SaveSlot = 0;
-
 		//runloop control
 		bool exit;
 		bool runloop_frameProgress;
@@ -1210,7 +1207,7 @@ namespace BizHawk.MultiClient
 
 		void OnSelectSlot(int num)
 		{
-			SaveSlot = num;
+			Global.Config.SaveSlot = num;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}
@@ -1325,12 +1322,12 @@ namespace BizHawk.MultiClient
 
 				case "Quick Save State":
 					if (!IsNullEmulator())
-						SaveState("QuickSave" + SaveSlot.ToString());
+						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Quick Load State":
 					if (!IsNullEmulator())
-						LoadState("QuickSave" + SaveSlot.ToString());
+						LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Unthrottle":
@@ -1847,7 +1844,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveSlotSelectedMessage()
 		{
-			Global.RenderPanel.AddMessage("Slot " + SaveSlot + " selected.");
+			Global.RenderPanel.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
 		}
 
 		private void UpdateAutoLoadRecentRom()
@@ -2172,17 +2169,22 @@ namespace BizHawk.MultiClient
 
 		private void PreviousSlot()
 		{
-			if (SaveSlot == 0) SaveSlot = 9;		//Wrap to end of slot list
-			else if (SaveSlot > 9) SaveSlot = 9;	//Meh, just in case
-			else SaveSlot--;
+			if (Global.Config.SaveSlot == 0) 
+				Global.Config.SaveSlot = 9;		//Wrap to end of slot list
+			else if (Global.Config.SaveSlot > 9)
+				Global.Config.SaveSlot = 9;	//Meh, just in case
+			else Global.Config.SaveSlot--;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}
 
 		private void NextSlot()
 		{
-			if (SaveSlot >= 9) SaveSlot = 0;	//Wrap to beginning of slot list
-			else SaveSlot++;
+			if (Global.Config.SaveSlot >= 9)
+				Global.Config.SaveSlot = 0;	//Wrap to beginning of slot list
+			else if (Global.Config.SaveSlot < 0)
+				Global.Config.SaveSlot = 0;	//Meh, just in case
+			else Global.Config.SaveSlot++;
 			SaveSlotSelectedMessage();
 			UpdateStatusSlots();
 		}
@@ -2312,16 +2314,16 @@ namespace BizHawk.MultiClient
 			StatusSlot9.BackColor = SystemColors.Control;
 			StatusSlot10.BackColor = SystemColors.Control;
 
-			if (SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlLightLight;
-			if (SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 0) StatusSlot10.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 1) StatusSlot1.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 2) StatusSlot2.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 3) StatusSlot3.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 4) StatusSlot4.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 5) StatusSlot5.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 6) StatusSlot6.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 7) StatusSlot7.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 8) StatusSlot8.BackColor = SystemColors.ControlLightLight;
+			if (Global.Config.SaveSlot == 9) StatusSlot9.BackColor = SystemColors.ControlLightLight;
 		}
 
 		public void RecordAVI()
@@ -2400,7 +2402,7 @@ namespace BizHawk.MultiClient
 			temp.CopyTo(path);
 			temp.Delete();
 
-			StateSlots.ToggleRedo(SaveSlot);
+			StateSlots.ToggleRedo(Global.Config.SaveSlot);
 		}
 	}
 }

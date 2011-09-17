@@ -180,70 +180,70 @@ namespace BizHawk.MultiClient
 		
 		private void selectSlot1ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 1;
+			Global.Config.SaveSlot = 1;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot2ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 2;
+			Global.Config.SaveSlot = 2;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot3ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 3;
+			Global.Config.SaveSlot = 3;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot4ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 4;
+			Global.Config.SaveSlot = 4;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot5ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 5;
+			Global.Config.SaveSlot = 5;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot6ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 6;
+			Global.Config.SaveSlot = 6;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot7ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 7;
+			Global.Config.SaveSlot = 7;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot8ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 8;
+			Global.Config.SaveSlot = 8;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot9ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 9;
+			Global.Config.SaveSlot = 9;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
 
 		private void selectSlot10ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveSlot = 0;
+			Global.Config.SaveSlot = 0;
 			UpdateStatusSlots();
 			SaveSlotSelectedMessage();
 		}
@@ -260,12 +260,12 @@ namespace BizHawk.MultiClient
 
 		private void saveToCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveState("QuickSave" + SaveSlot.ToString());
+			SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 		}
 
 		private void loadCurrentSlotToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			LoadState("QuickSave" + SaveSlot.ToString());
+			LoadState("QuickSave" + Global.Config.SaveSlot.ToString());
 		}
 
 		private void closeROMToolStripMenuItem_Click(object sender, EventArgs e)
@@ -875,20 +875,20 @@ namespace BizHawk.MultiClient
 			else
 				contextMenuStrip1.Items[7].Enabled = true;
 
-			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + SaveSlot + ".State.bak";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
 			if (file.Exists == true)
 			{
-				if (StateSlots.IsRedo(SaveSlot))
+				if (StateSlots.IsRedo(Global.Config.SaveSlot))
 				{
 					contextMenuStrip1.Items[13].Enabled = true;
-					contextMenuStrip1.Items[13].Text = "Redo Save to slot " + SaveSlot.ToString();
+					contextMenuStrip1.Items[13].Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
 					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.redo;
 				}
 				else
 				{
 					contextMenuStrip1.Items[13].Enabled = true;
-					contextMenuStrip1.Items[13].Text = "Undo Save to slot " + SaveSlot.ToString();
+					contextMenuStrip1.Items[13].Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
 					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
 				}
 			}
@@ -1245,7 +1245,7 @@ namespace BizHawk.MultiClient
 			selectSlot9ToolStripMenuItem.Checked = false;
 			selectSlot1ToolStripMenuItem.Checked = false;
 
-			switch (SaveSlot)
+			switch (Global.Config.SaveSlot)
 			{
 				case 0:
 					selectSlot10ToolStripMenuItem.Checked = true;
@@ -1325,9 +1325,9 @@ namespace BizHawk.MultiClient
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + SaveSlot + ".State";
+			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State";
 			SwapBackupSavestate(path);
-			Global.RenderPanel.AddMessage("Save slot " + SaveSlot.ToString() + " restored.");
+			Global.RenderPanel.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
 		}
 
 		private void FreezeStatus_Click(object sender, EventArgs e)
