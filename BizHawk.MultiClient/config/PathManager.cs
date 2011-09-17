@@ -282,6 +282,9 @@ namespace BizHawk.MultiClient
 		public static string SaveRamPath(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
+			if (Global.MainForm.MovieActive())
+				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+
 			switch (game.System)
 			{
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
