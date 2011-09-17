@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 	{
 		//TODO:
 		//If signed/unsigned/hex radios selected, auto-change the value box
-		//Memory domain selection
 		public Watch watch = new Watch();
 		public MemoryDomain domain = Global.Emulator.MainMemory;
 		public Point location = new Point();
@@ -32,6 +31,7 @@ namespace BizHawk.MultiClient
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
+			PopulateMemoryDomainComboBox();
 			SetTypeRadio(watch.type);
 			SetSignedRadio(watch.signed);
 			if (watch.signed == asigned.HEX)
@@ -43,14 +43,9 @@ namespace BizHawk.MultiClient
 				BigEndianRadio.Checked = true;
 			else
 				LittleEndianRadio.Checked = true;
-			AddressBox.Text = String.Format("{0:X" + 
-				GetNumDigits(watch.address) + "}", watch.address);
 
-			if (HexRadio.Checked)
-				ValueBox.Text = String.Format("{0:X" +
-					GetValueNumDigits() + "}", watch.value);
-			else
-				ValueBox.Text = watch.value.ToString();
+			SetValueBox();
+			SetAddressBox();
 
 			AddressBox.MaxLength = GetNumDigits(domain.Size);
 			ValueBox.MaxLength = GetValueNumDigits();
@@ -58,6 +53,27 @@ namespace BizHawk.MultiClient
 			if (location.X > 0 && location.Y > 0)
 				this.Location = location;
 
+			UpdateTitleText();
+			SetDomainSelection();
+		}
+
+		private void SetValueBox()
+		{
+			if (HexRadio.Checked)
+				ValueBox.Text = String.Format("{0:X" +
+					GetValueNumDigits() + "}", watch.value);
+			else
+				ValueBox.Text = watch.value.ToString();
+		}
+
+		private void SetAddressBox()
+		{
+			AddressBox.Text = String.Format("{0:X" +
+				GetNumDigits(watch.address) + "}", watch.address);
+		}
+
+		private void UpdateTitleText()
+		{
 			Text = "Ram Poke - " + domain.ToString();
 		}
 
@@ -299,15 +315,53 @@ namespace BizHawk.MultiClient
 
 		private int GetNumDigits(Int32 i)
 		{
-			//if (i == 0) return 0;
-			//if (i < 0x10) return 1;
-			//if (i < 0x100) return 2;
-			//if (i < 0x1000) return 3; //adelikat: commenting these out because I decided that regardless of domain, 4 digits should be the minimum
 			if (i < 0x10000) return 4;
 			if (i < 0x100000) return 5;
 			if (i < 0x1000000) return 6;
 			if (i < 0x10000000) return 7;
 			else return 8;
+		}
+
+		private void PopulateMemoryDomainComboBox()
+		{
+			DomainComboBox.Items.Clear();
+			if (Global.Emulator.MemoryDomains.Count > 0)
+			{
+				for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+				{
+					string str = Global.Emulator.MemoryDomains[x].ToString();
+					DomainComboBox.Items.Add(str);
+				}
+			}
+			SetDomainSelection();
+		}
+
+		private void DomainComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			domain = Global.Emulator.MemoryDomains[DomainComboBox.SelectedIndex];
+			UpdateTitleText();
+			int x = GetNumDigits(domain.Size);
+			watch.address = 0;
+			watch.value = 0;
+			SetAddressBox();
+			SetValueBox();
+			AddressBox.MaxLength = GetNumDigits(domain.Size);
+		}
+
+		private void SetDomainSelection()
+		{
+			//Counts should always be the same, but just in case, let's check
+			int max;
+			if (Global.Emulator.MemoryDomains.Count < DomainComboBox.Items.Count)
+				max = Global.Emulator.MemoryDomains.Count;
+			else
+				max = DomainComboBox.Items.Count;
+
+			for (int x = 0; x < max; x++)
+			{
+				if (domain.ToString() == DomainComboBox.Items[x].ToString())
+					DomainComboBox.SelectedIndex = x;
+			}
 		}
 	}
 }
