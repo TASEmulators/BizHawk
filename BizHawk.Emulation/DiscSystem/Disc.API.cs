@@ -172,7 +172,7 @@ namespace BizHawk.DiscSystem
 
                 int lba_len = Math.Min(track.length_aba, 512);
                 for (int s=0; s<512 && s<track.length_aba; s++)
-                    ReadLBA_2352(track.Indexes[1].aba + s, buffer, s*2352);
+                    ReadABA_2352(track.Indexes[1].aba + s, buffer, s*2352);
 
                 return Util.Hash_MD5(buffer, 0, lba_len*2352);
             }
