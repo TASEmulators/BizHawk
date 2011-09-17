@@ -37,14 +37,19 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.HR = new BizHawk.Core.HorizontalLine();
 			this.label5 = new System.Windows.Forms.Label();
-			this.mom1 = new System.Windows.Forms.PictureBox();
 			this.mom2 = new System.Windows.Forms.PictureBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
-			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
+			this.mom1 = new System.Windows.Forms.PictureBox();
+			this.pictureBox4 = new System.Windows.Forms.PictureBox();
+			this.pictureBox3 = new System.Windows.Forms.PictureBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.pictureBox5 = new BizHawk.MultiClient.MyViewportPanel();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -112,16 +117,6 @@
 			this.label5.TabIndex = 8;
 			this.label5.Text = "--->";
 			// 
-			// mom1
-			// 
-			this.mom1.Image = ((System.Drawing.Image)(resources.GetObject("mom1.Image")));
-			this.mom1.Location = new System.Drawing.Point(372, 274);
-			this.mom1.Name = "mom1";
-			this.mom1.Size = new System.Drawing.Size(115, 150);
-			this.mom1.TabIndex = 7;
-			this.mom1.TabStop = false;
-			this.mom1.Visible = false;
-			// 
 			// mom2
 			// 
 			this.mom2.Image = ((System.Drawing.Image)(resources.GetObject("mom2.Image")));
@@ -130,16 +125,6 @@
 			this.mom2.Size = new System.Drawing.Size(115, 150);
 			this.mom2.TabIndex = 6;
 			this.mom2.TabStop = false;
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-			this.pictureBox1.Location = new System.Drawing.Point(155, 108);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(171, 216);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.pictureBox1.TabIndex = 0;
-			this.pictureBox1.TabStop = false;
 			// 
 			// pictureBox2
 			// 
@@ -151,11 +136,64 @@
 			this.pictureBox2.TabIndex = 9;
 			this.pictureBox2.TabStop = false;
 			// 
+			// mom1
+			// 
+			this.mom1.Image = ((System.Drawing.Image)(resources.GetObject("mom1.Image")));
+			this.mom1.Location = new System.Drawing.Point(372, 274);
+			this.mom1.Name = "mom1";
+			this.mom1.Size = new System.Drawing.Size(115, 150);
+			this.mom1.TabIndex = 7;
+			this.mom1.TabStop = false;
+			this.mom1.Visible = false;
+			// 
+			// pictureBox4
+			// 
+			this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
+			this.pictureBox4.Location = new System.Drawing.Point(21, 89);
+			this.pictureBox4.Name = "pictureBox4";
+			this.pictureBox4.Size = new System.Drawing.Size(128, 128);
+			this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pictureBox4.TabIndex = 16;
+			this.pictureBox4.TabStop = false;
+			// 
+			// pictureBox3
+			// 
+			this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+			this.pictureBox3.Location = new System.Drawing.Point(21, 89);
+			this.pictureBox3.Name = "pictureBox3";
+			this.pictureBox3.Size = new System.Drawing.Size(128, 128);
+			this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pictureBox3.TabIndex = 17;
+			this.pictureBox3.TabStop = false;
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+			this.pictureBox1.Location = new System.Drawing.Point(155, 108);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(171, 216);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.pictureBox1.TabIndex = 0;
+			this.pictureBox1.TabStop = false;
+			// 
+			// pictureBox5
+			// 
+			this.pictureBox5.Enabled = false;
+			this.pictureBox5.Location = new System.Drawing.Point(71, 223);
+			this.pictureBox5.Name = "pictureBox5";
+			this.pictureBox5.Size = new System.Drawing.Size(376, 48);
+			this.pictureBox5.TabIndex = 15;
+			this.pictureBox5.TabStop = false;
+			// 
 			// AboutBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(519, 497);
+			this.Controls.Add(this.pictureBox5);
+			this.Controls.Add(this.pictureBox1);
+			this.Controls.Add(this.pictureBox3);
+			this.Controls.Add(this.pictureBox4);
 			this.Controls.Add(this.pictureBox2);
 			this.Controls.Add(this.label5);
 			this.Controls.Add(this.mom1);
@@ -165,7 +203,6 @@
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
-			this.Controls.Add(this.pictureBox1);
 			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
@@ -175,10 +212,12 @@
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "BizHawk Interim Build";
 			this.Load += new System.EventHandler(this.AboutBox_Load);
-			((System.ComponentModel.ISupportInitialize)(this.mom1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.mom1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -186,7 +225,6 @@
 
 		#endregion
 
-		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Timer timer1;
@@ -194,8 +232,12 @@
 		private BizHawk.Core.HorizontalLine HR;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.PictureBox mom2;
-		private System.Windows.Forms.PictureBox mom1;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.PictureBox pictureBox2;
+		private System.Windows.Forms.PictureBox mom1;
+		private MyViewportPanel pictureBox5;
+		private System.Windows.Forms.PictureBox pictureBox4;
+		private System.Windows.Forms.PictureBox pictureBox3;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }

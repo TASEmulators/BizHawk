@@ -32,6 +32,16 @@ namespace BizHawk.MultiClient
 			catch
 			{
 			}
+
+			
+			//panel1.Size = new System.Drawing.Size(1000, 1000);
+			//pictureBox5.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.InvokeMethod).Invoke(pictureBox5, new object[] { ControlStyles.SupportsTransparentBackColor | ControlStyles.UserPaint, true });
+			pictureBox5.BackColor = Color.Transparent;
+			pictureBox5.SendToBack();
+			pictureBox3.BringToFront();
+			pictureBox2.BringToFront();
+			pictureBox1.BringToFront();
+			pictureBox5.Visible = false;
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -80,7 +90,82 @@ namespace BizHawk.MultiClient
 			}
 
 			pictureBox2.Location = new Point((int)(353 + 800 + -800* Math.Abs(Math.Sin(ctr / 18.0))), pictureBox2.Location.Y);
+
+			if ((ctr) % 40 == 0)
+			{
+				xbleh = -10;
+				bounceCounter = 0;
+				pictureBox5.Visible = true;
+				pictureBox3.Visible = false;
+			}
+			if (bounceCounter == 10)
+			{
+				bounceCounter++;
+				xbleh = 0;
+				pictureBox3.Visible = true;
+			}
+			else if (bounceCounter == 30)
+			{
+				bounceCounter = -1;
+				pictureBox5.Visible = false;
+			}
+			else if(bounceCounter != -1)
+			{
+				bounceCounter++;
+				if (xbleh == -10)
+					xbleh = 10;
+				else xbleh = -10;
+			}
+
+			pictureBox5.Invalidate();
+			pictureBox5.Update();
+			pictureBox4.Location = new Point(21 + xbleh, 89);
 		}
+
+		int xbleh = 0;
+		int bounceCounter = -1;
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+		}
+
+		public void PaintJunk(Graphics g)
+		{
+			g.FillRectangle(Brushes.Transparent, 0, 0, 1000, 1000);
+
+			using (Font font = new Font("Courier New", 20, FontStyle.Bold))
+			{
+				if (bounceCounter == -1) return;
+				string str = "INTERIM BUILD";
+				float x = 0;
+				int timefactor = bounceCounter;
+				for (int i = 0; i < str.Length; i++)
+				{
+					string slice = str.Substring(i, 1);
+					g.PageUnit = GraphicsUnit.Pixel;
+					x += g.MeasureString(slice, font).Width - 1;
+
+					int offset = -i * 3 + timefactor*3;
+					int yofs = 0;
+					if (offset < 0)
+					{ continue; }
+					else
+						if (offset < DigitTable.Length)
+							yofs = DigitTable[offset];
+					g.DrawString(slice, font, Brushes.Black, 5 + x, 15 - yofs);
+				}
+			}
+		}
+
+		int[] DigitTable ={
+			0,3,6,9,12,
+			14,15,15,16,16,16,15,15,14,12,
+			9,6,3,0,2,4,4,5,5,5,
+			4,4,2,1,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0,0,0,0,0,0,0,
+			0,0,0,0};
 
         private void AboutBox_Load(object sender, EventArgs e)
         {
@@ -88,5 +173,37 @@ namespace BizHawk.MultiClient
         }
 	}
 
+	class MyViewportPanel : Control
+	{
+		public MyViewportPanel()
+		{
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.DoubleBuffer, true);
+			SetStyle(ControlStyles.UserMouse, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+		}
+
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
+			AboutBox ab = this.FindForm() as AboutBox;
+			if (ab != null)
+				ab.PaintJunk(e.Graphics);
+		}
+
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				CreateParams cp;
+				cp = base.CreateParams;
+				cp.Style &= ~0x04000000; //WS_CLIPSIBLINGS
+				cp.Style &= ~0x02000000; //WS_CLIPCHILDREN
+				return cp;
+			}
+		}
+
+	}
 	
 }
