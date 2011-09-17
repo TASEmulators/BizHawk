@@ -47,6 +47,7 @@
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.ValeLabel = new System.Windows.Forms.Label();
 			this.ValueBox = new System.Windows.Forms.TextBox();
+			this.ValueHexLabel = new System.Windows.Forms.Label();
 			this.DataTypeGroupBox.SuspendLayout();
 			this.DataSizeBox.SuspendLayout();
 			this.EndianBox.SuspendLayout();
@@ -55,7 +56,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 33);
+			this.label1.Location = new System.Drawing.Point(11, 33);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(62, 13);
 			this.label1.TabIndex = 0;
@@ -64,7 +65,7 @@
 			// AddressBox
 			// 
 			this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AddressBox.Location = new System.Drawing.Point(68, 30);
+			this.AddressBox.Location = new System.Drawing.Point(73, 30);
 			this.AddressBox.MaxLength = 8;
 			this.AddressBox.Name = "AddressBox";
 			this.AddressBox.Size = new System.Drawing.Size(80, 20);
@@ -94,6 +95,7 @@
 			this.HexRadio.TabIndex = 2;
 			this.HexRadio.Text = "Hexadecimal";
 			this.HexRadio.UseVisualStyleBackColor = true;
+			this.HexRadio.Click += new System.EventHandler(this.HexRadio_Click);
 			// 
 			// UnsignedRadio
 			// 
@@ -106,6 +108,7 @@
 			this.UnsignedRadio.TabStop = true;
 			this.UnsignedRadio.Text = "Unsigned";
 			this.UnsignedRadio.UseVisualStyleBackColor = true;
+			this.UnsignedRadio.Click += new System.EventHandler(this.UnsignedRadio_Click);
 			// 
 			// SignedRadio
 			// 
@@ -116,6 +119,7 @@
 			this.SignedRadio.TabIndex = 0;
 			this.SignedRadio.Text = "Signed";
 			this.SignedRadio.UseVisualStyleBackColor = true;
+			this.SignedRadio.Click += new System.EventHandler(this.SignedRadio_Click);
 			// 
 			// DataSizeBox
 			// 
@@ -227,7 +231,7 @@
 			// ValeLabel
 			// 
 			this.ValeLabel.AutoSize = true;
-			this.ValeLabel.Location = new System.Drawing.Point(9, 60);
+			this.ValeLabel.Location = new System.Drawing.Point(11, 59);
 			this.ValeLabel.Name = "ValeLabel";
 			this.ValeLabel.Size = new System.Drawing.Size(37, 13);
 			this.ValeLabel.TabIndex = 10;
@@ -235,7 +239,7 @@
 			// 
 			// ValueBox
 			// 
-			this.ValueBox.Location = new System.Drawing.Point(68, 57);
+			this.ValueBox.Location = new System.Drawing.Point(73, 57);
 			this.ValueBox.MaxLength = 9;
 			this.ValueBox.Name = "ValueBox";
 			this.ValueBox.Size = new System.Drawing.Size(80, 20);
@@ -244,6 +248,15 @@
 			this.ValueBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ValueBox_KeyPress);
 			this.ValueBox.Leave += new System.EventHandler(this.ValueBox_Leave);
 			// 
+			// ValueHexLabel
+			// 
+			this.ValueHexLabel.AutoSize = true;
+			this.ValueHexLabel.Location = new System.Drawing.Point(55, 60);
+			this.ValueHexLabel.Name = "ValueHexLabel";
+			this.ValueHexLabel.Size = new System.Drawing.Size(18, 13);
+			this.ValueHexLabel.TabIndex = 11;
+			this.ValueHexLabel.Text = "0x";
+			// 
 			// RamPoke
 			// 
 			this.AcceptButton = this.OK;
@@ -251,6 +264,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(213, 292);
+			this.Controls.Add(this.ValueHexLabel);
 			this.Controls.Add(this.ValueBox);
 			this.Controls.Add(this.ValeLabel);
 			this.Controls.Add(this.OutputLabel);
@@ -299,5 +313,6 @@
         private System.Windows.Forms.Label OutputLabel;
         private System.Windows.Forms.Label ValeLabel;
         private System.Windows.Forms.TextBox ValueBox;
+		private System.Windows.Forms.Label ValueHexLabel;
     }
 }

@@ -34,6 +34,11 @@ namespace BizHawk.MultiClient
 		{
 			SetTypeRadio(watch.type);
 			SetSignedRadio(watch.signed);
+			if (watch.signed == asigned.HEX)
+				ValueHexLabel.Text = "0x";
+			else
+				ValueHexLabel.Text = "";
+
 			if (watch.bigendian == true)
 				BigEndianRadio.Checked = true;
 			else
@@ -237,6 +242,21 @@ namespace BizHawk.MultiClient
 					return (int)Int64.Parse(ValueBox.Text, NumberStyles.HexNumber);
 			}
 			return -99999999; //What are the odds someone wants to search for this value?
+		}
+
+		private void HexRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "0x";
+		}
+
+		private void UnsignedRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "";
+		}
+
+		private void SignedRadio_Click(object sender, EventArgs e)
+		{
+			ValueHexLabel.Text = "";
 		}
 	}
 }
