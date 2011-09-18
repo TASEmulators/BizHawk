@@ -82,6 +82,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\AxROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI-FCG-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CNROM.cs" />
