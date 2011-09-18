@@ -29,13 +29,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	class BANDAI_FCG_1 : NES.NESBoardBase 
 	{
 		//configuration
-		int prg, chr_bank_mask_1k, mirror;
+		int prg_bank_mask_8k, chr_bank_mask_1k;
+		
+		//state
+		byte prg_bank_8k, eprom;
+		ByteBuffer regs = new ByteBuffer(10);
+		ByteBuffer prg_banks_8k = new ByteBuffer(2);
 		bool irq_countdown, irq_enabled, irq_asserted;
 		ushort irq_counter;
 		int clock_counter;
 
-		int addr_reg;
-		ByteBuffer regs = new ByteBuffer(12);
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
+			ser.Sync("irq_counter", ref irq_counter);
+			ser.Sync("irq_countdown", ref irq_countdown);
+			ser.Sync("irq_enabled", ref irq_enabled);
+			ser.Sync("irq_asserted", ref irq_asserted);
+			ser.Sync("clock_counter", ref clock_counter);
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+			regs.Dispose();
+			prg_banks_8k.Dispose();
+		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -47,34 +67,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
+			BaseConfigure();
 			return true;
 		}
 
 		protected void BaseConfigure()
 		{
 			chr_bank_mask_1k = Cart.chr_size - 1;
+			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
+			prg_banks_8k[1] = 0xFF;
 			SetMirrorType(EMirrorType.Vertical);
 		}
 
-		public override byte ReadPRG(int addr)
+		void SyncPRG()
 		{
-			return ROM[addr + (prg * 0x8000)];
+			prg_banks_8k[0] = regs[8];
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
+			addr &= 0xC000;
 			switch (addr)
 			{
 				case 0: case 1: case 2: case 3:
 				case 4: case 5: case 6: case 7:
-					regs[addr_reg] = value;
+					regs[addr] = value;
 					break;
 				case 8:
-					prg = value;
+					regs[8] = value;
+					SyncPRG();
 					break;
 				case 9:
-					mirror = value & 0x03;
-					switch (mirror)
+					switch (value & 3)
 					{
 						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
 						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
@@ -84,6 +108,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0xA:
 					irq_enabled = value.Bit(0);
+					if (!irq_enabled) irq_asserted = false;
+					SyncIrq();
 					break;
 				case 0xB:
 					irq_counter &= 0xFF00;
@@ -94,35 +120,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					irq_counter |= (ushort)(value << 8);
 					break;
 				case 0xD:
+					eprom = value;
 					break;
 			}
-		}
-
-		public override byte ReadPPU(int addr)
-		{
-			//return VRAM[addr + chr];
-			return base.ReadPPU(addr);
-		}
-
-		public override void WritePPU(int addr, byte value)
-		{
-			//VRAM[addr + chr] = value;
-			base.WritePPU(addr, value);
 		}
 
 		void SyncIrq()
 		{
 			NES.irq_cart = irq_asserted;
-		}
-
-		public override void ClockPPU()
-		{
-			clock_counter++;
-			if (clock_counter == 3)
-			{
-				ClockCPU();
-				clock_counter = 0;
-			}
 		}
 
 		void ClockCPU()
@@ -136,17 +141,46 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override void SyncState(Serializer ser)
+		public override void ClockPPU()
 		{
-			base.SyncState(ser);
-			ser.Sync("prg", ref prg);
-			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
-			ser.Sync("mirror", ref mirror);
-			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_countdown", ref irq_countdown);
-			ser.Sync("irq_enabled", ref irq_enabled);
-			ser.Sync("irq_asserted", ref irq_asserted);
-			ser.Sync("clock_counter", ref clock_counter);
+			clock_counter++;
+			if (clock_counter == 3)
+			{
+				ClockCPU();
+				clock_counter = 0;
+			}
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			int bank_8k = addr >> 13;
+			int ofs = addr & ((1 << 13) - 1);
+			bank_8k = prg_banks_8k[bank_8k];
+			bank_8k &= prg_bank_mask_8k;
+			addr = (prg_bank_8k << 13) | ofs;
+			return ROM[addr];
+		}
+
+		int CalcPPUAddress(int addr)
+		{
+			int bank_1k = addr >> 10;
+			int ofs = addr & ((1 << 10) - 1);
+			bank_1k = regs[bank_1k];
+			bank_1k &= chr_bank_mask_1k;
+			return (bank_1k << 10) | ofs;
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+				return VROM[CalcPPUAddress(addr)];
+			else return base.ReadPPU(addr);
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000) { }
+			base.WritePPU(addr, value);
 		}
 	}
 }
