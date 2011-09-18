@@ -29,12 +29,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	class BANDAI_FCG_1 : NES.NESBoardBase 
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k;
+		int prg_bank_mask_16k, chr_bank_mask_1k;
 		
 		//state
-		byte prg_bank_8k, eprom;
-		ByteBuffer regs = new ByteBuffer(10);
-		ByteBuffer prg_banks_8k = new ByteBuffer(2);
+		byte prg_bank_16k, eprom;
+		ByteBuffer regs = new ByteBuffer(8);
+		ByteBuffer prg_banks_16k = new ByteBuffer(2);
 		bool irq_countdown, irq_enabled, irq_asserted;
 		ushort irq_counter;
 		int clock_counter;
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.Dispose();
 			regs.Dispose();
-			prg_banks_8k.Dispose();
+			prg_banks_16k.Dispose();
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -74,27 +74,34 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		protected void BaseConfigure()
 		{
 			chr_bank_mask_1k = Cart.chr_size - 1;
-			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
-			prg_banks_8k[1] = 0xFF;
+			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
 			SetMirrorType(EMirrorType.Vertical);
+			prg_banks_16k[0] = 0x00;
+			prg_banks_16k[1] = 0xFF;
 		}
 
 		void SyncPRG()
 		{
-			prg_banks_8k[0] = regs[8];
+			prg_banks_16k[0] = prg_bank_16k;
 		}
 
-		public override void WritePRG(int addr, byte value)
+		void WriteReg(int reg, byte value)
 		{
-			addr &= 0xC000;
-			switch (addr)
+			switch (reg)
 			{
-				case 0: case 1: case 2: case 3:
-				case 4: case 5: case 6: case 7:
-					regs[addr] = value;
+				case 0:
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+				case 5:
+				case 6:
+				case 7:
+					regs[reg] = value;
 					break;
 				case 8:
-					regs[8] = value;
+					NES.LogLine("mapping PRG {0}", value);
+					prg_bank_16k = value;
 					SyncPRG();
 					break;
 				case 9:
@@ -125,6 +132,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
+		public override void WriteWRAM(int addr, byte value)
+		{
+			NES.LogLine("writewram {0:X4} = {1:X2}", addr, value);
+			addr &= 0xF;
+			WriteReg(addr, value);
+		}
+		public override void WritePRG(int addr, byte value)
+		{
+			NES.LogLine("writeprg {0:X4} = {1:X2}", addr, value);
+			addr &= 0xF;
+			WriteReg(addr, value);
+		}
+
 		void SyncIrq()
 		{
 			NES.irq_cart = irq_asserted;
@@ -153,11 +173,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPRG(int addr)
 		{
-			int bank_8k = addr >> 13;
-			int ofs = addr & ((1 << 13) - 1);
-			bank_8k = prg_banks_8k[bank_8k];
-			bank_8k &= prg_bank_mask_8k;
-			addr = (prg_bank_8k << 13) | ofs;
+			int bank_16k = addr >> 14;
+			int ofs = addr & ((1 << 14) - 1);
+			bank_16k = prg_banks_16k[bank_16k];
+			bank_16k &= prg_bank_mask_16k;
+			addr = (bank_16k << 14) | ofs;
 			return ROM[addr];
 		}
 
