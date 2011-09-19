@@ -112,21 +112,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             // Clear the sprite collision buffer for this scanline
             Array.Clear(SpriteCollisionBuffer, 0, 256);
 
-            // 208 is a special terminator sprite (in 192-line mode). Lets find it...
-            int TerminalSprite = 64;
-            if (FrameHeight == 192)
-                for (int i = 0; i < 64; i++)
-                {
-                    if (VRAM[SpriteBase + i] == 208)
-                    {
-                        TerminalSprite = i;
-                        break;
-                    }
-                }
-
             // Loop through these sprites and render the current scanline
             int SpritesDrawnThisScanline = 0;
-            for (int i = TerminalSprite - 1; i >= 0; i--)
+            for (int i=0; i<64; i++)
             {
                 if (SpritesDrawnThisScanline >= 8)
                 {
@@ -139,6 +127,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     x -= 8;
 
                 int y = VRAM[SpriteBase + i] + 1;
+                if (y == 209 && FrameHeight == 192) break; // 208 is special terminator sprite (in 192-line mode)
                 if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
 
                 if (y + SpriteHeight <= ScanLine || y > ScanLine)
@@ -158,9 +147,11 @@ namespace BizHawk.Emulation.Consoles.Sega
                     {
                         if (SpriteCollisionBuffer[x + xs] != 0)
                             StatusByte |= 0x20; // Set Collision bit
-                        SpriteCollisionBuffer[x + xs] = 1;
-                        if (ScanlinePriorityBuffer[x + xs] == 0)
+                        else if (ScanlinePriorityBuffer[x + xs] == 0)
+                        {
                             FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
+                            SpriteCollisionBuffer[x + xs] = 1;
+                        }
                     }
                 }
                 SpritesDrawnThisScanline++;
@@ -176,21 +167,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             // Clear the sprite collision buffer for this scanline
             Array.Clear(SpriteCollisionBuffer, 0, 256); 
 
-            // 208 is a special terminator sprite (in 192-line mode). Lets find it...
-            int TerminalSprite = 64;
-            if (FrameHeight == 192)
-                for (int i = 0; i < 64; i++)
-                {
-                    if (VRAM[SpriteBase + i] == 208)
-                    {
-                        TerminalSprite = i;
-                        break;
-                    }
-                }
-
             // Loop through these sprites and render the current scanline
             int SpritesDrawnThisScanline = 0;
-            for (int i = TerminalSprite - 1; i >= 0; i--)
+            for (int i = 0; i <64; i++)
             {
                 if (SpritesDrawnThisScanline >= 8)
                 {
@@ -203,6 +182,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     x -= 8;
 
                 int y = VRAM[SpriteBase + i] + 1;
+                if (y == 209 && FrameHeight == 192) break; // terminator sprite
                 if (y >= (EnableLargeSprites ? 240 : 248)) y -= 256;
 
                 if (y + (SpriteHeight*2) <= ScanLine || y > ScanLine)
@@ -220,10 +200,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                     byte color = PatternBuffer[(tileNo * 64) + ((ys/2) * 8) + (xs/2)];
                     if (color != 0 && x + xs >= 0 && ScanlinePriorityBuffer[x + xs] == 0)
                     {
-                        FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
                         if (SpriteCollisionBuffer[x + xs] != 0)
                             StatusByte |= 0x20; // Set Collision bit
-                        SpriteCollisionBuffer[x + xs] = 1;
+                        else
+                        {
+                            FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
+                            SpriteCollisionBuffer[x + xs] = 1;
+                        }
                     }
                 }
                 SpritesDrawnThisScanline++;
@@ -289,10 +272,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        /// <summary>
-        /// Performs render buffer blanking. This includes the left-column blanking as well as Game Gear blanking if requested.
-        /// Should be called at the end of the frame.
-        /// </summary>
+        // Performs render buffer blanking. This includes the left-column blanking as well as Game Gear blanking if requested.
+        // Should be called at the end of the frame.
         internal void RenderBlankingRegions()
         {
             int blankingColor = Palette[BackdropColor];
