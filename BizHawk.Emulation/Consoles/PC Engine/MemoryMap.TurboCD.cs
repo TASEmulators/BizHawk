@@ -4,7 +4,7 @@
     {
         byte ReadMemoryCD(int addr)
         {
-            if (addr < 0xD0000) // read ROM
+            if (addr < 0x80000) // read ROM
                 return RomData[addr % RomLength];
 
             if (addr >= 0x1F0000 && addr < 0x1F8000) // read RAM
@@ -28,6 +28,14 @@
                 if (addr == 0x1FF402) { IOBuffer = (byte)(Cpu.IRQControlByte | (IOBuffer & 0xF8)); return IOBuffer; }
                 if (addr == 0x1FF403) { IOBuffer = (byte)(Cpu.ReadIrqStatus() | (IOBuffer & 0xF8)); return IOBuffer; }
                 if (addr >= 0x1FF800) return ReadCD(addr);
+            }
+
+            if (addr >= 0x80000 && addr < 0x88000 && ArcadeCard)
+            {
+                var page = ArcadePage[(addr >> 13) & 3];
+                byte value = ArcadeRam[page.EffectiveAddress];
+                page.Increment();
+                return value;
             }
 
             if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
@@ -55,16 +63,23 @@
             else if (addr >= 0x1FE000) // hardware page.
             {
                 if (addr < 0x1FE400) VDC1.WriteVDC(addr, value);
-                else if (addr <  0x1FE800) { Cpu.PendingCycles--; VCE.WriteVCE(addr, value); }
-                else if (addr <  0x1FEC00) { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
+                else if (addr < 0x1FE800) { Cpu.PendingCycles--; VCE.WriteVCE(addr, value); }
+                else if (addr < 0x1FEC00) { IOBuffer = value; PSG.WritePSG((byte)addr, value, Cpu.TotalExecutedCycles); }
                 else if (addr == 0x1FEC00) { IOBuffer = value; Cpu.WriteTimer(value); }
                 else if (addr == 0x1FEC01) { IOBuffer = value; Cpu.WriteTimerEnable(value); }
                 else if (addr >= 0x1FF000 &&
-                         addr <  0x1FF400) { IOBuffer = value; WriteInput(value); }
+                         addr < 0x1FF400) { IOBuffer = value; WriteInput(value); }
                 else if (addr == 0x1FF402) { IOBuffer = value; Cpu.WriteIrqControl(value); }
                 else if (addr == 0x1FF403) { IOBuffer = value; Cpu.WriteIrqStatus(); }
                 else if (addr >= 0x1FF800) { WriteCD(addr, value); }
                 else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
+            }
+
+            else if (addr >= 0x80000 && addr < 0x88000 && ArcadeCard) // Arcade Card
+            {
+                var page = ArcadePage[(addr >> 13) & 3];
+                ArcadeRam[page.EffectiveAddress] = value;
+                page.Increment();
             }
 
             else if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM

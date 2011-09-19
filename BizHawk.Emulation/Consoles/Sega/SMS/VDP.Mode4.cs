@@ -129,7 +129,10 @@ namespace BizHawk.Emulation.Consoles.Sega
             for (int i = TerminalSprite - 1; i >= 0; i--)
             {
                 if (SpritesDrawnThisScanline >= 8)
+                {
                     StatusByte |= 0x40; // Set Overflow bit
+                    if (SpriteLimit) break;
+                }
 
                 int x = VRAM[SpriteBase + 0x80 + (i * 2)];
                 if (ShiftSpritesLeft8Pixels)
@@ -190,7 +193,10 @@ namespace BizHawk.Emulation.Consoles.Sega
             for (int i = TerminalSprite - 1; i >= 0; i--)
             {
                 if (SpritesDrawnThisScanline >= 8)
+                {
                     StatusByte |= 0x40; // Set Overflow bit
+                    if (SpriteLimit) break;
+                }
 
                 int x = VRAM[SpriteBase + 0x80 + (i * 2)];
                 if (ShiftSpritesLeft8Pixels)

@@ -427,6 +427,7 @@ throw new Exception("requesting 0 sectors read.............................");
             }
 
             SetStatusMessage(STATUS_GOOD, 0);
+            pce.IntDataTransferComplete = true;
         }
 
         void CommandAudioEndPos()

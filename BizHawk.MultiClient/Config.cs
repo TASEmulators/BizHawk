@@ -305,7 +305,6 @@
 		public int CheatsDomainIndex = 3;
 		public int CheatsOnIndex = 4;
 
-
 		// TAStudio Dialog
 		public bool TAStudioSaveWindowPosition = true;
 		public bool AutoloadTAStudio = false;
@@ -418,6 +417,7 @@
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
 		public bool SmsForceStereoSeparation = false;
+        public bool SmsSpriteLimit = false;
 
 		public string SmsReset = "C";
 		public string SmsPause = "V, J1 B8";
@@ -425,6 +425,9 @@
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
 				
 		// PCEngine Settings
+        public bool PceSpriteLimit = false;
+        public bool PceEqualizeVolume = false;
+        public bool PceArcadeCardRewindHack = true;
 		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
 		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 

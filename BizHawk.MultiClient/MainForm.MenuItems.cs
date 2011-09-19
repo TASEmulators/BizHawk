@@ -136,7 +136,27 @@ namespace BizHawk.MultiClient
 			Global.Config.SmsForceStereoSeparation ^= true;
 		}
 
-		private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
+        private void smsSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.SmsSpriteLimit ^= true;
+        }
+
+        private void pceAlwaysPerformSpriteLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.PceSpriteLimit ^= true;
+        }
+
+        private void pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.PceEqualizeVolume ^= true;
+        }
+
+        private void pceArcadeCardRewindEnableHackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.PceArcadeCardRewindHack ^= true;
+        }
+
+        private void recordMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordMovie();
 		}
@@ -1301,6 +1321,10 @@ namespace BizHawk.MultiClient
 			enableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
 			overclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
 			forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
+            smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
+            pceAlwaysPerformSpriteLimitToolStripMenuItem.Checked = Global.Config.PceSpriteLimit;
+            pceAlwaysEqualizeVolumesToolStripMenuItem.Checked = Global.Config.PceEqualizeVolume;
+            pceArcadeCardRewindEnableHackToolStripMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
 

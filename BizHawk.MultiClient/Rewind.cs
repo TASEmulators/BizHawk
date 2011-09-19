@@ -4,30 +4,38 @@ namespace BizHawk.MultiClient
 {
 	public partial class MainForm
 	{
-		private MruStack<MemoryStream> RewindBuf = new MruStack<MemoryStream>(15000);
-		private byte[] LastState;
+		MruStack<MemoryStream> RewindBuf = new MruStack<MemoryStream>(15000);
+		byte[] LastState;
+        bool RewindImpossible = false;
 
-		private void CaptureRewindState()
+		void CaptureRewindState()
 		{
+            if (RewindImpossible)
+                return;
+
 			if (LastState == null)
 			{
 				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
 				LastState = Global.Emulator.SaveStateBinary();
-				//System.Console.WriteLine(LastState.Length);
+                if (LastState.Length > 0x100000)
+                {
+                    RewindImpossible = true;
+                    LastState = null;
+                    Global.RenderPanel.AddMessage("Rewind Disabled: State too large.");
+                    Global.RenderPanel.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
+                }
 				return;
 			}
 
 			// Otherwise, it's not the first frame, so build a delta.
-			if (LastState.Length <= 0x10000)
+            if (LastState.Length <= 0x10000)
 				CaptureRewindState64K();
 			else
 				CaptureRewindStateLarge();
 		}
 
-		/// <summary>
-		/// Builds a delta for states that are <= 64K in size.
-		/// </summary>
-		private void CaptureRewindState64K()
+		// Builds a delta for states that are <= 64K in size.
+		void CaptureRewindState64K()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
 			int beginChangeSequence = -1;
@@ -70,10 +78,8 @@ namespace BizHawk.MultiClient
 			RewindBuf.Push(ms);
 		}
 
-		/// <summary>
-		/// Builds a delta for states that are > 64K in size.
-		/// </summary>
-		private void CaptureRewindStateLarge()
+		// Builds a delta for states that are > 64K in size.
+		void CaptureRewindStateLarge()
 		{
 			byte[] CurrentState = Global.Emulator.SaveStateBinary();
 			int beginChangeSequence = -1;
@@ -116,7 +122,7 @@ namespace BizHawk.MultiClient
 			RewindBuf.Push(ms);
 		}
 
-		private void Rewind64K()
+		void Rewind64K()
 		{
 			var ms = RewindBuf.Pop();
 			var reader = new BinaryReader(ms);
@@ -134,7 +140,7 @@ namespace BizHawk.MultiClient
 			Global.Emulator.LoadStateBinary(new BinaryReader(output));
 		}
 
-		private void RewindLarge()
+		void RewindLarge()
 		{
 			var ms = RewindBuf.Pop();
 			var reader = new BinaryReader(ms);
@@ -168,6 +174,7 @@ namespace BizHawk.MultiClient
 		public void ResetRewindBuffer()
 		{
 			RewindBuf.Clear();
+            RewindImpossible = false;
 			LastState = null;
 		}
 	}

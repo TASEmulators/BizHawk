@@ -15,20 +15,24 @@
   - In part of Dungeon Explorer II intro
   - Popful Mail... some corruption on Turbo Engine too.... and pcejin?
 
-Errors in CD-Audio / fade / looping/ something handling:
+Still some lesser issues with cancelling a fadeout. Otherwise CDDA is working now...
   - Develo Magazine demo game
-  - Exile, starting new game
-  - Flash Hiders, during fight no music
-  - Spriggan 2
-  - Sylphia - no cd audio a lot of the time!
+
+Arcade Card games:
+- JANSHIN DENSETSU sets the T flag prior to an LDA instruction; MANY TIMES (ie it doesnt seem to be an accident).
+  Unclear if T flag actually affects LDA instruction.
+- Madou Monogatari - Dies requesting more tracks than exist
+- Ryuuko no Ken is all messed up, and I don't super care :|
+- Tengai Makyo eventually died requesting 0 sectors read
+
 
 - Rayxanber 2 weird issues at the end of first level with cd audio player
 - Record of Lodoss War wont start game from title screen
 - Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
 - Valis: Screen is black during entire intro section
 - Valis III: Dies with 'request more tracks than exist'
-card angels does poll subcode...
 
+card angels does poll subcode...
 
 ======= TurboGrafx compatibility issues =======
 
