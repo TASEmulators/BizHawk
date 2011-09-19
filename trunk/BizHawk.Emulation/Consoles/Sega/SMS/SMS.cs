@@ -115,6 +115,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (game["AllowOverclock"] && game["OverclockSafe"])
                 Vdp.IPeriod = 512;
 
+            if (game["SpriteLimit"])
+                Vdp.SpriteLimit = true;
+
             if (game["BIOS"])
             {
                 Port3E = 0xF7; // Disable cartridge, enable BIOS rom

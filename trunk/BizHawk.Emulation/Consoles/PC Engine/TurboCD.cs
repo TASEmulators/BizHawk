@@ -52,7 +52,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     SCSI.Think();
                     SCSI.SEL = false;
                     SCSI.Think();
-
                     break;
 
                 case 0x1801: // CDC Command
@@ -159,8 +158,43 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     }
                     break;
 
+                // Arcade Card ports
+                case 0x1AE0:
+                    ShiftRegister &= ~0xFF;
+                    ShiftRegister |= value;
+                    break;
+                case 0x1AE1:
+                    ShiftRegister &= ~0xFF00;
+                    ShiftRegister |= value << 8;
+                    break;
+                case 0x1AE2:
+                    ShiftRegister &= ~0xFF0000;
+                    ShiftRegister |= value << 16;
+                    break;
+                case 0x1AE3:
+                    ShiftRegister &= 0xFFFFFF;
+                    ShiftRegister |= value << 24;
+                    break;
+                case 0x1AE4:
+                    ShiftAmount = (byte) (value & 0x0F);
+                    if (ShiftAmount != 0)
+                    {
+                        if ((ShiftAmount & 8) != 0)
+                            ShiftRegister >>= 16 - ShiftAmount;
+                        else
+                            ShiftRegister <<= ShiftAmount;
+                    }
+                    break;
+                case 0x1AE5:
+                    RotateAmount = value;
+                    // rotate not implemented, as no test case exists
+                    break;
+
                 default:
-                    Log.Error("CD", "unknown write to {0:X4}:{1:X2} pc={2:X4}", addr, value, Cpu.PC);
+                    if (addr >= 0x1FFA00 && addr < 0x1FFA40)
+                        WriteArcadeCard(addr & 0x1FFF, value);
+                    else
+                        Log.Error("CD", "unknown write to {0:X4}:{1:X2} pc={2:X4}", addr, value, Cpu.PC);
                     break;
             }
         }
@@ -255,8 +289,22 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 case 0x18C6: return 0x55;
                 case 0x18C7: return 0x03;
 
+                // Arcade Card ports
+                case 0x1AE0: return ArcadeCard ? (byte) (ShiftRegister >> 0)  : (byte) 0xFF;
+                case 0x1AE1: return ArcadeCard ? (byte) (ShiftRegister >> 8)  : (byte) 0xFF;
+                case 0x1AE2: return ArcadeCard ? (byte) (ShiftRegister >> 16) : (byte) 0xFF;
+                case 0x1AE3: return ArcadeCard ? (byte) (ShiftRegister >> 24) : (byte) 0xFF;
+                case 0x1AE4: return ArcadeCard ? ShiftAmount : (byte) 0xFF;
+                case 0x1AE5: return ArcadeCard ? RotateAmount : (byte) 0xFF;
+
+                case 0x1AFE: return ArcadeCard ? (byte) 0x10 : (byte) 0xFF;
+                case 0x1AFF: return ArcadeCard ? (byte) 0x51 : (byte) 0xFF;
+
                 default:
-                    Log.Error("CD", "unknown read to {0:X4}", addr);
+                    if (addr >= 0x1FFA00 && addr < 0x1FFA40)
+                        return ReadArcadeCard(addr & 0x1FFF);
+                    else
+                        Log.Error("CD", "unknown read to {0:X4}", addr);
                     return 0xFF;
             }
         }

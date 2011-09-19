@@ -1004,6 +1004,11 @@ namespace BizHawk.MultiClient
 									game.AddOption("SuperSysCard");
 								if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
 									MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
+  
+                                if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
+                                if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
+                                if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
+
 								nextEmulator = new PCEngine(game, disc, rom.RomData);
 								break;
 						}
@@ -1020,14 +1025,17 @@ namespace BizHawk.MultiClient
 								if (Global.Config.SmsEnableFM) game.AddOption("UseFM");
 								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
 								if (Global.Config.SmsForceStereoSeparation) game.AddOption("ForceStereo");
+                                if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
 								nextEmulator = new SMS(game, rom.RomData);
 								break;
 							case "GG":
 								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
+                                if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
 								nextEmulator = new SMS(game, rom.RomData);
 								break;
 							case "PCE":
 							case "SGX":
+                                if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
 								nextEmulator = new PCEngine(game, rom.RomData);
 								break;
 							case "GEN":

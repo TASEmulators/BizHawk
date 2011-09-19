@@ -155,7 +155,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 SuperRam = new byte[0x30000];
 
             if (game["ArcadeCard"])
+            {
                 ArcadeRam = new byte[0x200000];
+                ArcadeCard = true;
+                ArcadeCardRewindHack = game["ArcadeRewindHack"];
+                for (int i=0; i<4; i++)
+                    ArcadePage[i] = new ArcadeCardPage();
+            }
 
             if (game["PopulousSRAM"])
             {
@@ -311,6 +317,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 CDAudio.SaveStateText(writer);
                 ADPCM.SaveStateText(writer);
             }
+            if (ArcadeCard)
+                SaveArcadeCardText(writer);
+
             writer.WriteLine("[/PCEngine]");
         }
 
@@ -358,6 +367,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CDAudio.LoadStateText(reader);
                 else if (args[0] == "[ADPCM]")
                     ADPCM.LoadStateText(reader);
+                else if (args[0] == "[ArcadeCard]")
+                    LoadArcadeCardText(reader);
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -383,6 +394,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CDAudio.SaveStateBinary(writer);
                     SCSI.SaveStateBinary(writer);
                 }
+                if (ArcadeCard)
+                    SaveArcadeCardBinary(writer);
                 writer.Write(Frame);
                 writer.Write(_lagcount);
                 writer.Write(SF2MapperLatch);
@@ -424,6 +437,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CDAudio.LoadStateBinary(reader);
                     SCSI.LoadStateBinary(reader);
                 }
+                if (ArcadeCard)
+                    LoadArcadeCardBinary(reader);
                 Frame = reader.ReadInt32();
                 _lagcount = reader.ReadInt32();
                 SF2MapperLatch = reader.ReadByte();
@@ -454,6 +469,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (PopulousRAM != null) buflen += 0x8000;
             if (SuperRam != null) buflen += 0x30000;
             if (TurboCD) buflen += 0x20000 + 2165;
+            if (ArcadeCard) buflen += 42;
+            if (ArcadeCard && !ArcadeCardRewindHack) buflen += 0x200000;
             //Console.WriteLine("LENGTH1 " + buflen);
 
             var buf = new byte[buflen]; 
@@ -505,6 +522,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                         (addr, value) => SuperRam[addr & 0x3FFFF] = value);
                     domains.Add(SuperRamMemoryDomain);
                 }
+            }
+
+            if (ArcadeCard)
+            {
+                var ArcadeRamMemoryDomain = new MemoryDomain("Aracde Card RAM", ArcadeRam.Length, Endian.Little,
+                        addr => ArcadeRam[addr & 0x1FFFFF],
+                        (addr, value) => ArcadeRam[addr & 0x1FFFFF] = value);
+                domains.Add(ArcadeRamMemoryDomain);
             }
 
             memoryDomains = domains.AsReadOnly();

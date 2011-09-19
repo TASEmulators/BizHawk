@@ -7,9 +7,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public enum VdpMode { SMS, GameGear }
 
-    /// <summary>
-    /// Emulates the Texas Instruments TMS9918 VDP.
-    /// </summary>
+    // Emulates the Texas Instruments TMS9918 VDP.
     public sealed partial class VDP : IVideoProvider
     {
         // VDP State
@@ -31,6 +29,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         VdpMode mode;
         DisplayType DisplayType = DisplayType.NTSC;
         Z80A Cpu;
+
+        public bool SpriteLimit;
         public int IPeriod = 228;
         public VdpMode VdpMode { get { return mode; } }
 
