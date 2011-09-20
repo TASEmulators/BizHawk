@@ -163,7 +163,7 @@
 			this.AddCheat.Name = "AddCheat";
 			this.AddCheat.Size = new System.Drawing.Size(69, 21);
 			this.AddCheat.TabIndex = 33;
-			this.AddCheat.Text = "Add Cheat";
+			this.AddCheat.Text = "&Add Cheat";
 			this.AddCheat.UseVisualStyleBackColor = true;
 			this.AddCheat.Click += new System.EventHandler(this.AddCheat_Click);
 			// 
