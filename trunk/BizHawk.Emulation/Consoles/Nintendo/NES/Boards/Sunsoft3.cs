@@ -7,7 +7,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	class Sunsoft3 : NES.NESBoardBase
 	{
 		int chr, prg;
-		
+		int prg_bank_mask_16k;
+		byte prg_bank_16k;
+		ByteBuffer prg_banks_16k = new ByteBuffer(2);
+		//TODO: savestate & dispose
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -19,6 +22,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return false;
 			}
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
 			return true;
 		}
 
@@ -29,8 +33,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("prg", ref prg);
 		}
 
+		void SyncPRG()
+		{
+			prg_banks_16k[0] = prg_bank_16k;
+		}
+
 		public override void WritePRG(int addr, byte value)
 		{
+			if (addr == 0x8000)
+			{
+				prg_bank_16k = value;
+				SyncPRG();
+			}
 			if (value.Bit(3))
 				SetMirrorType(EMirrorType.OneScreenA);
 			else
@@ -42,10 +56,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPRG(int addr)
 		{
-			if (addr < 0x4000)
-				return ROM[addr + (prg * 0x4000)];
-			else
-				return base.ReadPRG(addr);
+			int bank_16k = addr >> 14;
+			int ofs = addr & ((1 << 14) - 1);
+			bank_16k = prg_banks_16k[bank_16k];
+			bank_16k &= prg_bank_mask_16k;
+			addr = (bank_16k << 14) | ofs;
+			return ROM[addr];
 		}
 
 		public override byte ReadPPU(int addr)
