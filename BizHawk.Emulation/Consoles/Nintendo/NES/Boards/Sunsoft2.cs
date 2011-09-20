@@ -4,19 +4,18 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class Sunsoft3 : NES.NESBoardBase
+	class Sunsoft2 : NES.NESBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
 		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		//TODO: savestate & dispose
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
-				case "SUNSOFT-3":
+				case "SUNSOFT-2":
 					break;
 				default:
 					return false;
@@ -27,10 +26,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			prg_banks_16k.Dispose();
+			base.Dispose();
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
+			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
+			ser.Sync("prg_bank_16k", ref prg_bank_16k);
+			ser.Sync("prg_banks_16k", ref prg_banks_16k);
 		}
 
 		void SyncPRG()
