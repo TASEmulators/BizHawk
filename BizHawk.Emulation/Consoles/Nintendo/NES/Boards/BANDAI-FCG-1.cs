@@ -43,6 +43,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
+			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
+			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
+			ser.Sync("regs", ref regs);
+			ser.Sync("eprom", ref eprom);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_countdown", ref irq_countdown);
 			ser.Sync("irq_enabled", ref irq_enabled);
