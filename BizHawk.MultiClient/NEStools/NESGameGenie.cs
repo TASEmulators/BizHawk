@@ -58,7 +58,7 @@ namespace BizHawk.MultiClient
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
 			//Make uppercase
-			if (e.KeyChar > 97 && e.KeyChar < 123)
+			if (e.KeyChar >= 97 && e.KeyChar < 123)
 				e.KeyChar -= (char)32;
 
 			if (!(GameGenieTable.ContainsKey(e.KeyChar)))
@@ -203,22 +203,27 @@ namespace BizHawk.MultiClient
 		{
 			if (GameGenieCode.Text.Length < 8)
 			{
-				if (sender == A) GameGenieCode.Text += "A";
-				if (sender == P) GameGenieCode.Text += "P";
-				if (sender == Z) GameGenieCode.Text += "Z";
-				if (sender == L) GameGenieCode.Text += "L";
-				if (sender == G) GameGenieCode.Text += "G";
-				if (sender == I) GameGenieCode.Text += "I";
-				if (sender == T) GameGenieCode.Text += "T";
-				if (sender == Y) GameGenieCode.Text += "Y";
-				if (sender == E) GameGenieCode.Text += "E";
-				if (sender == O) GameGenieCode.Text += "O";
-				if (sender == X) GameGenieCode.Text += "X";
-				if (sender == U) GameGenieCode.Text += "U";
-				if (sender == K) GameGenieCode.Text += "K";
-				if (sender == S) GameGenieCode.Text += "S";
-				if (sender == V) GameGenieCode.Text += "V";
-				if (sender == N) GameGenieCode.Text += "N";
+				string code = "";
+				if (sender == A) code = "A";
+				if (sender == P) code += "P";
+				if (sender == Z) code += "Z";
+				if (sender == L) code += "L";
+				if (sender == G) code += "G";
+				if (sender == I) code += "I";
+				if (sender == T) code += "T";
+				if (sender == Y) code += "Y";
+				if (sender == E) code += "E";
+				if (sender == O) code += "O";
+				if (sender == X) code += "X";
+				if (sender == U) code += "U";
+				if (sender == K) code += "K";
+				if (sender == S) code += "S";
+				if (sender == V) code += "V";
+				if (sender == N) code += "N";
+
+				int x = GameGenieCode.SelectionStart;
+				GameGenieCode.Text = GameGenieCode.Text.Insert(x, code);
+				GameGenieCode.SelectionStart = x;
 				Encoding.Checked = false;
 			}
 		}
