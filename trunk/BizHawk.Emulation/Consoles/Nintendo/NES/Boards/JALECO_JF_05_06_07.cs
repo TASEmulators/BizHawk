@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	Example Games:
 	--------------------------
 	City Connection (J) - JF_05
-	Ninja Jajamaru Kun
+	Ninja Jajamaru Kun - JF_06
 	Argus (J) - JF_07
 	*/
 	class JALECO_JF_05 : NES.NESBoardBase
