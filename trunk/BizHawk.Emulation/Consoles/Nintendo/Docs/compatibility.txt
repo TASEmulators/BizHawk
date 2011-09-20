@@ -73,7 +73,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 086	Misc (J)	Nothing
 087	Misc (J)	Complete
 088	Misc (J)	Nothing
-089 Misc (J)	Nothing (easy)
+089 	Misc (J)	Complete
 090	Garbage		Junk (+209)
 091	Pirate		Junk
 092	Misc (J)	Nothing (similar to 072)
