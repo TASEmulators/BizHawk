@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	class Sunsoft3 : NES.NESBoardBase
 	{
-		int chr, prg;
+		int chr;
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
 		ByteBuffer prg_banks_16k = new ByteBuffer(2);
@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			prg_banks_16k[1] = 0xFF;
 			return true;
 		}
 
@@ -30,7 +31,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
-			ser.Sync("prg", ref prg);
 		}
 
 		void SyncPRG()
@@ -40,18 +40,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr == 0x8000)
-			{
-				prg_bank_16k = value;
+			prg_bank_16k = (byte)((value >> 4) & 7);
 				SyncPRG();
-			}
+			
 			if (value.Bit(3))
 				SetMirrorType(EMirrorType.OneScreenA);
 			else
 				SetMirrorType(EMirrorType.OneScreenB);
 
-			chr = ((value & 0x07) + (value >> 7 * 0x07));
-			prg = (value >> 4) & 7;
+			chr = ((value & 0x07) + ((value >> 7) * 0x08));
 		}
 
 		public override byte ReadPRG(int addr)
