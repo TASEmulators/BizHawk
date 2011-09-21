@@ -965,7 +965,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (file.Extension.ToLower() == ".cue")
 					{
-						Disc disc = Disc.FromCuePath(path);
+						Disc disc = Disc.FromCuePath(path, Progression.Progress.BeginTaskNull());
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)

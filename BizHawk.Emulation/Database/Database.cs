@@ -29,8 +29,8 @@ namespace BizHawk
 		public static GameInfo CheckDatabase(string hash)
 		{
 		    CompactGameInfo cgi;
-			hash = RemoveHashType(hash);
-            db.TryGetValue(hash, out cgi);
+			string hash_notype = RemoveHashType(hash);
+			db.TryGetValue(hash_notype, out cgi);
             if (cgi == null)
             {
                 Console.WriteLine("Game with hash " + hash + " was not in game database.");

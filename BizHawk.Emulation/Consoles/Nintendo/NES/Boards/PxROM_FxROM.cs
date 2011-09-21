@@ -4,13 +4,16 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//AKA MMC2 AKA Mike Tyson's Punch-Out!!
-	class PxROM : NES.NESBoardBase
+	//AKA MMC2 Mike Tyson's Punch-Out!!
+	//AKA MMC4 (similar enough to combine in one fle)
+	class PxROM_FxROM : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_4k;
+		bool mmc4;
 
 		//state
+		byte prg_reg;
 		IntBuffer prg_banks_8k = new IntBuffer(4);
 		IntBuffer chr_banks_4k = new IntBuffer(4);
 		IntBuffer chr_latches = new IntBuffer(2);
@@ -18,9 +21,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_banks_8k", ref prg_banks_8k);
+			ser.Sync("prg_reg", ref prg_reg);
 			ser.Sync("chr_banks_4k", ref chr_banks_4k);
 			ser.Sync("chr_latches", ref chr_latches);
+
+			if (ser.IsReader)
+				SyncPRG();
 		}
 
 		public override void Dispose()
@@ -39,29 +45,54 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-PEEOROM":
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
 					break;
+				
+				case "HVC-FKROM": //fire emblem
+					mmc4 = true;
+					AssertPrg(256); AssertChr(128); AssertWram(8); AssertVram(0);
+					break;
+				case "HVC-FJROM": //famicom wars
+					mmc4 = true;
+					AssertPrg(128); AssertChr(64); AssertWram(8); AssertVram(0);
+					break;
 
 				default:
 					return false;
 			}
 
+			
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_4k = Cart.chr_size / 4 - 1;
 
-			prg_banks_8k[0] = 0;
-			prg_banks_8k[1] = 0xFD & prg_bank_mask_8k;
-			prg_banks_8k[2] = 0xFE & prg_bank_mask_8k; ;
-			prg_banks_8k[3] = 0xFF & prg_bank_mask_8k; ;
+			SyncPRG();
 
 			return true;
 		}
 
+		void SyncPRG()
+		{
+			if (mmc4)
+			{
+				prg_banks_8k[0] = (prg_reg * 2) & prg_bank_mask_8k;
+				prg_banks_8k[1] = (prg_reg * 2 + 1) & prg_bank_mask_8k;
+				prg_banks_8k[2] = 0xFE & prg_bank_mask_8k;
+				prg_banks_8k[3] = 0xFF & prg_bank_mask_8k;
+			}
+			else
+			{
+				prg_banks_8k[0] = prg_reg & prg_bank_mask_8k;
+				prg_banks_8k[1] = 0xFD & prg_bank_mask_8k;
+				prg_banks_8k[2] = 0xFE & prg_bank_mask_8k;
+				prg_banks_8k[3] = 0xFF & prg_bank_mask_8k;
+			}
+		}
 
 		public override void WritePRG(int addr, byte value)
 		{
 			switch (addr & 0xF000)
 			{
 				case 0x2000: //$A000:      PRG Reg
-					prg_banks_8k[0] = value & prg_bank_mask_8k;
+					prg_reg = value;
+					SyncPRG();
 					break;
 				case 0x3000: //$B000:      CHR Reg 0A
 					chr_banks_4k[0] = value & chr_bank_mask_4k;
@@ -87,15 +118,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int tile = (addr>>4)&0xFF;
 			if (addr < 0x2000)
 			{
-				switch (tile)
-				{
-					case 0xFD: chr_latches[side] = 0; break;
-					case 0xFE: chr_latches[side] = 1; break;
-				}
 				int reg = side * 2 + chr_latches[side];
 				int ofs = addr & ((1 << 12) - 1);
 				int bank_4k = chr_banks_4k[reg];
 				addr = (bank_4k << 12) | ofs;
+
+				//if we're grabbing the second byte of the tile, then apply the tile switching logic
+				//(the next tile will be rendered with the fiddled register settings)
+				if ((addr & 0xF) >= 0x8)
+					switch (tile)
+					{
+						case 0xFD: chr_latches[side] = 0; break;
+						case 0xFE: chr_latches[side] = 1; break;
+					}
 				return VROM[addr];
 			}
 			else return base.ReadPPU(addr);
