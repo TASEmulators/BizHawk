@@ -32,9 +32,9 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 021	VRC4		Needed 
 022	VRC2		Nothing
 023	VRC*?		Nothing
-024	VRC6		Needed
+024	VRC6		Decent (no sound)
 025	VRC4?		Nothing
-026	VRC6?		Nothing
+026	VRC6(newer)	Decent (but no sound)
 032	Irem_G101	Complete
 033	Taito		Complete
 034	Misc		Complete
@@ -73,11 +73,11 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 086	Misc (J)	Nothing
 087	Misc (J)	Complete
 088	Misc (J)	Nothing
-089 	Misc (J)	Complete
+089	Sunsoft (J)	Complete
 090	Garbage		Junk (+209)
 091	Pirate		Junk
 092	Misc (J)	Nothing (similar to 072)
-093	Misc (J)	Nothing (easy)
+093	Misc (J)	Nothing (easy) (hard to test, since the only test rom has been hacked to UNROM everywhere)
 094 Misc (J)	Nothing (easy)
 095	MMC3Variant	Complete
 096	Misc (J)	Nothing
