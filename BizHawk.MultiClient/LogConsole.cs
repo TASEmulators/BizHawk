@@ -25,7 +25,7 @@ namespace BizHawk.MultiClient
 		static LogWindow window;
 		static LogStream logStream;
 		static StringBuilder sbLog;
-		bool NeedToRelease = false;
+		static bool NeedToRelease = false;
 
 		class LogStream : Stream
 		{
