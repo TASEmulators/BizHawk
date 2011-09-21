@@ -59,8 +59,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
 			cpu.P = 0x34;
 			cpu.S = 0xFD;
-
-			//cpu.debug = true;
 		}
 
 		bool resetSignal;
