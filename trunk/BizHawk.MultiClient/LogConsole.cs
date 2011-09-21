@@ -25,6 +25,7 @@ namespace BizHawk.MultiClient
 		static LogWindow window;
 		static LogStream logStream;
 		static StringBuilder sbLog;
+		bool NeedToRelease = false;
 
 		class LogStream : Stream
 		{
@@ -205,16 +206,14 @@ namespace BizHawk.MultiClient
 			hasConsole = false;
 		} 
 
-
-		const bool WIN32_CONSOLE = true;
-
 		public static void ShowConsole()
 		{
 			if (ConsoleVisible) return;
 			ConsoleVisible = true;
 
-			if (WIN32_CONSOLE)
+			if (Global.Config.WIN32_CONSOLE)
 			{
+				NeedToRelease = true;
 				CreateConsole();
 				//not sure whether we need to set a buffer size here
 				//var sout = new StreamWriter(Console.OpenStandardOutput(),Encoding.ASCII,1) { AutoFlush = true };
@@ -242,7 +241,7 @@ namespace BizHawk.MultiClient
 			if (ConsoleVisible == false) return;
 			Console.SetOut(TextWriter.Null);
 			ConsoleVisible = false;
-			if (WIN32_CONSOLE)
+			if (NeedToRelease)
 			{
 				ReleaseConsole();
 			}

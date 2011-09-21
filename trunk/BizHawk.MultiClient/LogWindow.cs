@@ -58,5 +58,10 @@ namespace BizHawk.MultiClient
 			Close();
 		}
 
+		private void LogWindow_Load(object sender, EventArgs e)
+		{
+
+		}
+
 	}
 }
