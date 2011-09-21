@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
-			prg_banks_16k[1] = 0xFF;
+			prg_banks_16k[0] = 0xFF;
 			return true;
 		}
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncPRG()
 		{
-			prg_banks_16k[0] = prg_bank_16k;
+			prg_banks_16k[1] = prg_bank_16k;
 		}
 
 		public override void WritePRG(int addr, byte value)
