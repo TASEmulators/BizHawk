@@ -51,7 +51,7 @@
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(75, 23);
 			this.btnClear.TabIndex = 1;
-			this.btnClear.Text = "Clear";
+			this.btnClear.Text = "&Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
 			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 
@@ -84,6 +84,7 @@
 			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.textBox1.Size = new System.Drawing.Size(531, 273);
 			this.textBox1.TabIndex = 6;
+			this.textBox1.TabStop = false;
 			// 
 			// LogWindow
 			// 

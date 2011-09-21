@@ -13,9 +13,13 @@ namespace BizHawk.MultiClient
 {
 	public partial class LogWindow : Form
 	{
+		int defaultWidth;
+		int defaultHeight;
+
 		public LogWindow()
 		{
 			InitializeComponent();
+			Closing += (o, e) => SaveConfigSettings();
 		}
 
 		public void ShowReport(string title, string report)
@@ -60,8 +64,30 @@ namespace BizHawk.MultiClient
 
 		private void LogWindow_Load(object sender, EventArgs e)
 		{
+			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = this.Size.Height;
 
+			if (Global.Config.LogWindowSaveWindowPosition)
+			{
+				if (Global.Config.LogWindowSaveWindowPosition && Global.Config.LogWindowWndx >= 0 && Global.Config.LogWindowWndy >= 0)
+					this.Location = new Point(Global.Config.LogWindowWndx, Global.Config.LogWindowWndy);
+
+				if (Global.Config.LogWindowWidth >= 0 && Global.Config.LogWindowHeight >= 0)
+				{
+					this.Size = new System.Drawing.Size(Global.Config.LogWindowWidth, Global.Config.LogWindowHeight);
+				}
+			}
 		}
 
+		public void SaveConfigSettings()
+		{
+			if (Global.Config.LogWindowSaveWindowPosition)
+			{
+				Global.Config.LogWindowWndx = this.Location.X;
+				Global.Config.LogWindowWndy = this.Location.Y;
+				Global.Config.LogWindowWidth = this.Right - this.Left;
+				Global.Config.LogWindowHeight = this.Bottom - this.Top;
+			}
+		}
 	}
 }
