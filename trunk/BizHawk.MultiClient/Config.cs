@@ -185,6 +185,13 @@
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; //Range 0-100
 
+		// Log Window
+		public bool LogWindowSaveWindowPosition = true;
+		public int LogWindowWndx = -1;
+		public int LogWindowWndy = -1;
+		public int LogWindowWidth = -1;
+		public int LogWindowHeight = -1;
+
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public bool AutoLoadLua = false;
