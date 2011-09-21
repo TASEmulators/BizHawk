@@ -96,6 +96,7 @@
 			this.Name = "LogWindow";
 			this.ShowIcon = false;
 			this.Text = "Log Window";
+			this.Load += new System.EventHandler(this.LogWindow_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();

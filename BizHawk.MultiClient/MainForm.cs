@@ -2419,5 +2419,10 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.AutoLoadLastSaveSlot ^= true;
 		}
+
+		private void logWindowAsConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.WIN32_CONSOLE ^= true;
+		}
 	}
 }
