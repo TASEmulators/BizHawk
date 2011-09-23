@@ -108,6 +108,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper240.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper095.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper206.cs" />
