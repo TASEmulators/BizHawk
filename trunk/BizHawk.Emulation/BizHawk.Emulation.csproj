@@ -93,6 +93,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\GxROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\HVC_UN1ROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs">
       <SubType>Code</SubType>
     </Compile>

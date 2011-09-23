@@ -78,16 +78,16 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 091	Pirate		Junk
 092	Misc (J)	Nothing (similar to 072)
 093	Misc (J)	Implemented but untested (easy) (hard to test, since the only test rom has been hacked to UNROM everywhere)
-094 Misc (J)	Nothing (easy)
+094 	Misc (J)	Complete
 095	MMC3Variant	Complete
 096	Misc (J)	Nothing
 097	Misc (J)	Complete
 105	NES-EVENT	~NEEDED~
 107	Unlicensed	Complete
-112 Misc (CN)	Nothing
+112 	Misc (CN)	Nothing
 113	=USELESS=	Junk
 115	MMC3Variant	Nothing
-118 TLSROM		Complete
+118 	TLSROM		Complete
 119	TQROM		Complete
 140	Misc (J)	Complete
 152	Misc (J)	Nothing
