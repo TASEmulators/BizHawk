@@ -65,7 +65,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 075	VRC1		Nothing
 076	Misc (J)	Nothing
 077	Misc (J)	Nothing
-078	Misc		Nothing
+078	Misc		Complete
 079	NINA-06		Complete
 080	Misc (J)	Nothing
 082	Misc (J)	Nothing
