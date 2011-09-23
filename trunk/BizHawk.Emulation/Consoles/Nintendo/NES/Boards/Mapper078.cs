@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
 			ser.Sync("prg_bank_16k", ref prg_bank_16k);
 			ser.Sync("prg_banks_16k", ref prg_banks_16k);
+			ser.Sync("holydiver", ref holydiver);
 		}
 
 		void SyncPRG()
