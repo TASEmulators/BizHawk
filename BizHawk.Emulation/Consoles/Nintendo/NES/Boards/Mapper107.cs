@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 		public override byte ReadPPU(int addr)
-        {
+		{
 			if (addr < 0x2000)
 			{
 				int ofs = addr & ((1 << 13) - 1);
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				return VROM[addr];
 			}
 			else return base.ReadPPU(addr);
-        }
+		}
 
 		public override byte ReadPRG(int addr)
 		{

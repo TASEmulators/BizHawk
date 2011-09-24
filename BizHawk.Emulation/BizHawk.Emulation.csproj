@@ -100,6 +100,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\IREM-74_161_161_21_138.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Irem_G101.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Irem_H3001.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\IREM_TAM_S1.cs" />
