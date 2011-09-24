@@ -166,13 +166,13 @@ namespace BizHawk.MultiClient
 			{
 				if (ReadOnly)
 				{
-					if (Global.Emulator.Frame > Global.MovieSession.Movie.Length())
-					{
+					//if (Global.Emulator.Frame > Global.MovieSession.Movie.Length())
+					//{
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
 						//So do nothing
-					}
-					else
+					//}
+					//else
 					{
 						if (!Global.MovieSession.Movie.CheckTimeLines(path, false))
 							return false;	//Timeline/GUID error
@@ -182,13 +182,13 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					if (Global.Emulator.Frame > Global.MovieSession.Movie.Length())
-					{
+					//if (Global.Emulator.Frame > Global.MovieSession.Movie.Length()) //TODO: we haven't changed the emulator frame so this doesn't make sense!
+					//{
 						//Post movie savestate
 						//There is no movie data to load, and the movie will stay in movie finished mode
 						//So do nothing
-					}
-					else
+					//}
+					//else
 					{
 						if (!Global.MovieSession.Movie.CheckTimeLines(path, true))
 							return false;	//GUID Error
