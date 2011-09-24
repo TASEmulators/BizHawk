@@ -90,7 +90,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 118 	TLSROM		Complete
 119	TQROM		Complete
 140	Misc (J)	Complete
-152	Misc (J)	Nothing
+152	Misc (J)	Complete
 154	Misc (J)	Nothing
 159	Bandai		{{See 016}}
 164	Pirate		Junk
