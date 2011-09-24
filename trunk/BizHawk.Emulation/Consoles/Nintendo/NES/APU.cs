@@ -460,7 +460,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//except when linear counter or
 					//length counter is 0
 
-					bool en = len_cnt != 0 && linear_counter != 0 || (seq != 16 && seq != 15);
+					//dont stop the triangle channel until its level is 0. makes it sound nicer.
+					bool need_declick = (seq != 16 && seq != 15);
+					bool en = len_cnt != 0 && linear_counter != 0 || need_declick;
 
 					//length counter and linear counter 
 					//is clocked in frame counter.
@@ -484,7 +486,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public void clock_length_and_sweep()
 				{
 					//env_loopdoubles as "halt length counter"
-					if (len_cnt > 1)
+					if (len_cnt > 0 && halt_flag == 0)
 						len_cnt--;
 				}
 
