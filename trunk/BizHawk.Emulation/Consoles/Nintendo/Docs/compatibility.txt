@@ -57,7 +57,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 067	Misc (J)	Nothing
 068	Sunsoft4	Complete
 069	FME7		Minimal
-070	Misc		Nothing
+070	Misc		Complete
 071	Camerica	Complete
 072	Misc (J)	Nothing
 073	VRC3		Nothing
