@@ -1787,7 +1787,7 @@ namespace BizHawk.MultiClient
 			var sfd = new SaveFileDialog();
 			string path = PathManager.SaveStatePrefix(Global.Game);
 			sfd.InitialDirectory = path;
-			sfd.FileName = "QuickSave0.State";
+			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
 			var file = new FileInfo(path);
 			if (file.Directory.Exists == false)
 				file.Directory.Create();
