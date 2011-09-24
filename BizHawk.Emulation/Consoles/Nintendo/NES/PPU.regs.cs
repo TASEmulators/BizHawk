@@ -191,7 +191,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						v++;
 						vt = 0;
-						ppu.nes.LogLine("rolling over vt");
 					}
 					fv &= 7;
 					v &= 1;
@@ -392,7 +391,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					ppur._ht= value >> 3;
 					ppur.fh = value & 7;
-					nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
+					//nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
 				}
 				else
 				{
@@ -402,7 +401,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						int zz = 9;
 					}
-					nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
+					//nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
 				}
 				vtoggle ^= true;
 			}
@@ -418,7 +417,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._h = (value >> 2) & 1;
 					ppur._v = (value >> 3) & 1;
 					ppur._fv = (value >> 4) & 3;
-					nes.LogLine("addr wrote fv = {0}", ppur._fv);
+					//nes.LogLine("addr wrote fv = {0}", ppur._fv);
 				}
 				else
 				{
@@ -426,7 +425,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._vt |= (value >> 5);
 					ppur._ht = value & 31;
 					ppur.install_latches();
-					nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 
 					nes.board.AddressPPU(ppur.get_2007access());
 				}
