@@ -208,6 +208,7 @@ namespace BizHawk.MultiClient
 			using (StreamReader sr = file.OpenText())
 			{
 				string str = "";
+				string rerecordStr = "";
 
 				while ((str = sr.ReadLine()) != null)
 				{
@@ -219,10 +220,10 @@ namespace BizHawk.MultiClient
 					
 					if (str.Contains(MovieHeader.RERECORDS))
 					{
-						str = ParseHeader(str, MovieHeader.RERECORDS);
+						rerecordStr = ParseHeader(str, MovieHeader.RERECORDS);
 						try
 						{
-							Rerecords = int.Parse(str);
+							Rerecords = int.Parse(rerecordStr);
 						}
 						catch
 						{
