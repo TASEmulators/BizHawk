@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			BootGodDB.Initialize();
 			SetPalette(Palettes.FCEUX_Standard);
 			videoProvider = new MyVideoProvider(this);
-		    Init(game, rom);
+			Init(game, rom);
 		}
 
-        private NES()
-        {
-            BootGodDB.Initialize();
-        }
+		private NES()
+		{
+			BootGodDB.Initialize();
+		}
 
 		public void WriteLogTimestamp()
 		{
@@ -147,19 +147,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				int backdrop = emu.CoreInputComm.NES_BackdropColor;
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
-				
+
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
 				int width = right - left;
 				for (int x = left; x < right; x++)
 				{
 					for (int y = top; y < bottom; y++)
 					{
-						short pixel = emu.ppu.xbuf[(y*256) + x];
+						short pixel = emu.ppu.xbuf[(y * 256) + x];
 						if ((pixel & 0x8000) != 0 && useBackdrop)
 						{
-							pixels[((y-top)*width) + (x - left)] = backdrop;
+							pixels[((y - top) * width) + (x - left)] = backdrop;
 						}
-						else pixels[((y-top)*width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
+						else pixels[((y - top) * width) + (x - left)] = emu.palette_compiled[pixel & 0x7FFF];
 					}
 				}
 				return pixels;
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				videoProvider.right = 256;
 			}
 		}
-	
+
 
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
@@ -382,7 +382,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			LoadReport.WriteLine(format, arg);
 		}
 		void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
-        
+
 		public unsafe void Init(GameInfo gameInfo, byte[] rom)
 		{
 			LoadReport = new StringWriter();
