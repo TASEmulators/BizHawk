@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	class HVC_UN1ROM : NES.NESBoardBase
 	{
-		int prg;
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
 		ByteBuffer prg_banks_16k = new ByteBuffer(2);

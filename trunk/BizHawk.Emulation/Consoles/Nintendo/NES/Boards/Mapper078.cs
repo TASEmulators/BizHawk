@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_bank_16k = (byte)(value & 7);
 			SyncPRG();
 
-			if (value.Bit(3))
+			if (value.Bit(3) == false)
 			{
 				if (holydiver)
 					SetMirrorType(EMirrorType.Horizontal);
