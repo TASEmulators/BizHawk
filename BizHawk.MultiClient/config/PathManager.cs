@@ -80,6 +80,7 @@ namespace BizHawk.MultiClient
 					return Global.Config.BaseSMS;
 				case "SGX":
 				case "PCE":
+				case "PCECD":
 					return Global.Config.BasePCE;
 				case "TI83":
 					return Global.Config.BaseTI83;
@@ -245,6 +246,7 @@ namespace BizHawk.MultiClient
 					break;
 				case "SFX":
 				case "PCE":
+				case "PCECD":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathPCEROMs, "PCE");
 					break;
 				case "GB":
@@ -292,6 +294,7 @@ namespace BizHawk.MultiClient
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), name + ".SaveRAM");
 				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
 				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
+				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESaveRAM, "PCE"), name + ".SaveRAM");
 				case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSaveRAM, "GB"), name + ".SaveRAM");
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
@@ -312,6 +315,7 @@ namespace BizHawk.MultiClient
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), name);
 				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
 				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
+				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE"), name);
 				case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBSavestates, "GB"), name);
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSavestates, "NES"), name);
@@ -330,6 +334,7 @@ namespace BizHawk.MultiClient
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG"), name);
 				case "SGX": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
 				case "PCE": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
+				case "PCECD": return Path.Combine(MakeAbsolutePath(Global.Config.PathPCEScreenshots, "PCE"), name);
 				case "GB": return Path.Combine(MakeAbsolutePath(Global.Config.PathGBScreenshots, "GB"), name);
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisScreenshots, "GEN"), name);
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES"), name);

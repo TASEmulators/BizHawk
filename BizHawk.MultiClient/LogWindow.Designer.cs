@@ -37,6 +37,7 @@
 			// 
 			// btnClose
 			// 
+			this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnClose.Location = new System.Drawing.Point(453, 3);
 			this.btnClose.Name = "btnClose";
 			this.btnClose.Size = new System.Drawing.Size(75, 23);
@@ -90,6 +91,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.btnClose;
 			this.ClientSize = new System.Drawing.Size(531, 302);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.tableLayoutPanel1);
