@@ -70,7 +70,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 080	Misc (J)	Nothing
 082	Misc (J)	Nothing
 085	VRC7		Needed (lagrange point)
-086	Misc (J)	Nothing
+086	Misc (J)	Started (One game I tried didn't work but also didn't match the sha1 (but worked in FCEUX)
 087	Misc (J)	Complete
 088	Misc (J)	Nothing
 089	Sunsoft (J)	Complete
