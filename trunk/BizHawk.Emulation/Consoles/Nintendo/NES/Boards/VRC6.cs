@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 			ser.Sync("prg_bank_16k", ref prg_bank_16k);
 			ser.Sync("prg_bank_8k", ref prg_bank_8k);
-			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
 			ser.Sync("irq_mode", ref irq_mode);
 			ser.Sync("irq_enabled", ref irq_enabled);
