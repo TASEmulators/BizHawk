@@ -184,11 +184,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				public void increment_vs()
 				{
 					fv++;
-					vt += (fv >> 3);
+					int fv_overflow = (fv >> 3);
+					vt += fv_overflow;
 					vt &= 31; //fixed tecmo super bowl
-					v += (vt == 30) ? 1 : 0;
+					if (vt == 30 && fv_overflow==1) //caution here (only do it at the exact instant of overflow) fixes p'radikus conflict
+					{
+						v++;
+						vt = 0;
+						ppu.nes.LogLine("rolling over vt");
+					}
 					fv &= 7;
-					if (vt == 30) vt = 0;
 					v &= 1;
 				}
 
@@ -387,13 +392,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					ppur._ht= value >> 3;
 					ppur.fh = value & 7;
-					//nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
+					nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
 				}
 				else
 				{
 					ppur._vt = value >> 3;
 					ppur._fv = value & 7;
-					//nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
+					if (ppur._vt == 30)
+					{
+						int zz = 9;
+					}
+					nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
 				}
 				vtoggle ^= true;
 			}
@@ -409,7 +418,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._h = (value >> 2) & 1;
 					ppur._v = (value >> 3) & 1;
 					ppur._fv = (value >> 4) & 3;
-					//nes.LogLine("scroll wrote fv = {0}", ppur._fv);
+					nes.LogLine("addr wrote fv = {0}", ppur._fv);
 				}
 				else
 				{
@@ -417,7 +426,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur._vt |= (value >> 5);
 					ppur._ht = value & 31;
 					ppur.install_latches();
-					//nes.LogLine("scroll wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+					nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 
 					nes.board.AddressPPU(ppur.get_2007access());
 				}
