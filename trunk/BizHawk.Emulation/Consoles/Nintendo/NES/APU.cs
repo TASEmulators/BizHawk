@@ -210,13 +210,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							else env_counter--;
 						}
 					}
-					if (env_constant == 1)
-						env_output = env_cnt_value;
-					else env_output = env_counter;
 				}
 
 				public void Run()
 				{
+					if (env_constant == 1)
+						env_output = env_cnt_value;
+					else env_output = env_counter;
+
 					if (timer_counter > 0) timer_counter--;
 					if (timer_counter == 0 && timer_raw_reload_value!=0)
 					{
@@ -321,8 +322,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (lenctr_en == 0) len_cnt = 0;
 				}
 
-				public void clock_env() {}
-				public void clock_length_and_sweep()
+				public void clock_env()
 				{
 					if (env_start_flag == 1)
 					{
@@ -345,17 +345,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							}
 							else env_counter--;
 						}
-						if (env_constant == 1)
-							env_output = env_cnt_value;
-						else env_output = env_counter;
 					}
 
+				}
+				public void clock_length_and_sweep()
+				{
+				
 					if (len_cnt > 0 && env_loop == 0)
 						len_cnt--;
 				}
 
 				public void Run()
 				{
+					if (env_constant == 1)
+						env_output = env_cnt_value;
+					else env_output = env_counter;
+
 					if (timer_counter > 0) timer_counter--;
 					if (timer_counter == 0 && period_cnt != 0)
 					{
@@ -374,6 +379,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (noise_bit || len_cnt==0) sample = 0;
 					else
 						sample = env_output;
+
+					if (sample != 0)
+					{
+						int zzz = 9;
+					}
 				}
 			}
 
@@ -710,8 +720,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void sequencer_reset()
 			{
 				sequencer_counter = 0;
-				sequencer_step = 1;
-				if(sequencer_mode == 1) sequencer_check();
+
+				if (sequencer_mode == 1)
+				{
+					sequencer_step = 5;
+					sequencer_check();
+				}
+				else
+					sequencer_step = 1;
 			}
 
 			//21477272 master clock
@@ -758,18 +774,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								sequencer_irq = true;
 								SyncIRQ();
 							}
-							sequencer_step = 0;
+							sequencer_step = 1;
 						}
 						break;
 					case 1: //5-step
-						if (sequencer_step != 5)
+						if (sequencer_step != 4)
 						{
 							pulse[0].clock_env();
 							pulse[1].clock_env();
 							triangle.clock_linear_counter();
-							//noise.clock_env();
+							noise.clock_env();
 						}
-						if (sequencer_step == 1 || sequencer_step == 3)
+						if (sequencer_step == 2 || sequencer_step == 5)
 						{
 							pulse[0].clock_length_and_sweep();
 							pulse[1].clock_length_and_sweep();
@@ -777,7 +793,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							noise.clock_length_and_sweep();
 						}
 						if (sequencer_step == 5)
-							sequencer_step = 0;
+							sequencer_step = 1;
 						break;
 				}
 			}
@@ -785,7 +801,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void WriteReg(int addr, byte val)
 			{
-				//Console.WriteLine("apu writereg {0:x4}", addr);
+				//Console.WriteLine("{0:X4} = {1:X2}", addr, val);
 				switch (addr)
 				{
 					case 0x4000: case 0x4001: case 0x4002: case 0x4003:
