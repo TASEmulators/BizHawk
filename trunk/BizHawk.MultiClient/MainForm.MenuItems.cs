@@ -1410,8 +1410,7 @@ namespace BizHawk.MultiClient
 
 		private void showMenuToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.ShowMenuInFullscreen ^= true;
-			MainMenuStrip.Visible ^= true;
+			ShowHideMenu();
 		}
 	}
 }
