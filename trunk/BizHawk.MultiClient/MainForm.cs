@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 				LogConsole.ShowConsole();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
-			
+
 			throttle = new Throttle();
 
 			DiscSystem.FFMpeg.FFMpegPath = PathManager.MakeProgramRelativePath(Global.Config.FFMpegPath);
@@ -251,7 +251,7 @@ namespace BizHawk.MultiClient
 		{
 			bool gdi = Global.Config.DisplayGDI;
 
-			if(Global.Direct3D == null)
+			if (Global.Direct3D == null)
 				gdi = true;
 
 			if (renderTarget != null)
@@ -340,7 +340,7 @@ namespace BizHawk.MultiClient
 
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
-					StepRunLoop_Throttle();
+				StepRunLoop_Throttle();
 
 				Render();
 
@@ -889,7 +889,7 @@ namespace BizHawk.MultiClient
 		void RewireInputChain()
 		{
 			Global.ControllerInputCoalescer = new InputCoalescer();
-			
+
 			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
 
 			Global.OrControllerAdapter.Source = Global.ActiveController;
@@ -897,7 +897,7 @@ namespace BizHawk.MultiClient
 			Global.UD_LR_ControllerAdapter.Source = Global.OrControllerAdapter;
 
 			Global.StickyXORAdapter.Source = Global.UD_LR_ControllerAdapter;
-			
+
 			Global.MultitrackRewiringControllerAdapter.Source = Global.StickyXORAdapter;
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringControllerAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
@@ -991,7 +991,7 @@ namespace BizHawk.MultiClient
 								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
 
 								if (rom.GameInfo.Status == RomStatus.BadDump)
-									MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n"+
+									MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n" +
 										"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
 
 								else if (rom.GameInfo.NotInDatabase)
@@ -1768,11 +1768,14 @@ namespace BizHawk.MultiClient
 		{
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
-            if (Global.Config.SaveScreenshotWithStates)
-            {
-                writer.Write("Framebuffer "); 
-                Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
-            }
+			if (Global.Config.SaveScreenshotWithStates)
+			{
+				if (!(Global.Emulator is NES)) //NES saves the video buffer on its own so it does not need to do this
+				{
+					writer.Write("Framebuffer ");
+					Global.Emulator.VideoProvider.GetVideoBuffer().SaveAsHex(writer);
+				}
+			}
 
 			writer.Close();
 			Global.RenderPanel.AddMessage("Saved state: " + name);
@@ -1806,17 +1809,17 @@ namespace BizHawk.MultiClient
 
 				while (true)
 				{
-                    string str = reader.ReadLine();
-                    if (str == null) break;
-                    if (str.Trim() == "") continue;
-					
-                    string[] args = str.Split(' ');
+					string str = reader.ReadLine();
+					if (str == null) break;
+					if (str.Trim() == "") continue;
+
+					string[] args = str.Split(' ');
 					if (args[0] == "Framebuffer")
-					    Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
+						Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
 				}
 
-                reader.Close();
-                UpdateTools();
+				reader.Close();
+				UpdateTools();
 				Global.RenderPanel.AddMessage("Loaded state: " + name);
 			}
 			else
@@ -2140,7 +2143,7 @@ namespace BizHawk.MultiClient
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
-            Global.Game = GameInfo.GetNullGame();
+			Global.Game = GameInfo.GetNullGame();
 			MemoryPulse.Clear();
 			RamSearch1.Restart();
 			RamWatch1.Restart();
@@ -2179,7 +2182,7 @@ namespace BizHawk.MultiClient
 
 		private void PreviousSlot()
 		{
-			if (Global.Config.SaveSlot == 0) 
+			if (Global.Config.SaveSlot == 0)
 				Global.Config.SaveSlot = 9;		//Wrap to end of slot list
 			else if (Global.Config.SaveSlot > 9)
 				Global.Config.SaveSlot = 9;	//Meh, just in case
