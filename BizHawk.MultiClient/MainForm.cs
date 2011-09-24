@@ -2425,5 +2425,10 @@ namespace BizHawk.MultiClient
 
 			StateSlots.ToggleRedo(Global.Config.SaveSlot);
 		}
+
+		private void ShowHideMenu()
+		{
+			MainMenuStrip.Visible ^= true;
+		}
 	}
 }
