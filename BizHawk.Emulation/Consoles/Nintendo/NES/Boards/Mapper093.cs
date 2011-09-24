@@ -5,7 +5,6 @@ using System.Diagnostics;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//AKA shanghai (although a lot of shanghais have been hacked to use a different mapper, so....
-	//TODO  - this hasnt been tested yet and isnt even close to right
 	class MAPPER93 : NES.NESBoardBase
 	{
 		int prg_bank_mask_16k;

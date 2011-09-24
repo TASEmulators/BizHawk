@@ -5,6 +5,10 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
+	//Mapper 152
+	//Arkanoid 2 (J)
+	//Gegege no Kitarou 2
+
 	class TAITO_74_161_161_32 : NES.NESBoardBase
 	{
 		int chr;
@@ -23,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
-			prg_banks_16k[0] = 0xFF;
+			prg_banks_16k[1] = 0xFF;
 			return true;
 		}
 
@@ -36,6 +40,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			ser.Sync("chr", ref chr);
 			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
 			ser.Sync("prg_bank_16k", ref prg_bank_16k);
 			ser.Sync("prg_banks_16k", ref prg_banks_16k);
@@ -43,7 +48,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void SyncPRG()
 		{
-			prg_banks_16k[1] = prg_bank_16k;
+			prg_banks_16k[0] = prg_bank_16k;
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -52,8 +57,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_bank_16k = (byte)((value >> 4) & 7);
 			SyncPRG();
 
-			int m = value >> 6;
-			if (value.Bit(7) == true)
+			if (value.Bit(7))
 				SetMirrorType(EMirrorType.OneScreenB);
 			else
 				SetMirrorType(EMirrorType.OneScreenA);
@@ -72,8 +76,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
-				return VROM[addr + (chr * 0x2000)];
-			return base.ReadPPU(addr);
+				return VROM[(addr & 0x1FFF) + (chr * 0x2000)];
+			else
+				return base.ReadPPU(addr);
 		}
 	}
 }
