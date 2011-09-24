@@ -920,6 +920,17 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Text = "Undo Savestate";
 				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
 			}
+
+			if (InFullscreen == true)
+			{
+				contextMenuStrip1.Items[17].Visible = true;
+				if (MainMenuStrip.Visible == true)
+					contextMenuStrip1.Items[17].Text = "Hide Menu";
+				else
+					contextMenuStrip1.Items[17].Text = "Show Menu";
+			}
+			else
+				contextMenuStrip1.Items[17].Visible = false;
 		}
 
 
@@ -1130,6 +1141,7 @@ namespace BizHawk.MultiClient
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
 			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
+			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 		}
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1345,10 +1357,10 @@ namespace BizHawk.MultiClient
 			Global.Config.BackupSavestates ^= true;
 		}
 
-        void screenshotWithSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.SaveScreenshotWithStates ^= true;
-        }
+		void screenshotWithSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SaveScreenshotWithStates ^= true;
+		}
 
 		private void undoSavestateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1379,6 +1391,27 @@ namespace BizHawk.MultiClient
 		private void autofireToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new AutofireConfig().ShowDialog();
+		}
+
+		private void autoLoadLastSlotToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLastSaveSlot ^= true;
+		}
+
+		private void logWindowAsConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.WIN32_CONSOLE ^= true;
+		}
+
+		private void showMenuInFullScreenToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ShowMenuInFullscreen ^= true;
+		}
+
+		private void showMenuToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ShowMenuInFullscreen ^= true;
+			MainMenuStrip.Visible ^= true;
 		}
 	}
 }

@@ -2045,7 +2045,10 @@ namespace BizHawk.MultiClient
 				WindowedLocation = Location;
 				FormBorderStyle = FormBorderStyle.None;
 				WindowState = FormWindowState.Maximized;
-				MainMenuStrip.Visible = false;
+				if (Global.Config.ShowMenuInFullscreen)
+					MainMenuStrip.Visible = true;
+				else
+					MainMenuStrip.Visible = false;
 				StatusSlot0.Visible = false;
 				PerformLayout();
 				Global.RenderPanel.Resized = true;
@@ -2421,16 +2424,6 @@ namespace BizHawk.MultiClient
 			temp.Delete();
 
 			StateSlots.ToggleRedo(Global.Config.SaveSlot);
-		}
-
-		private void autoLoadLastSlotToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadLastSaveSlot ^= true;
-		}
-
-		private void logWindowAsConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.WIN32_CONSOLE ^= true;
 		}
 	}
 }

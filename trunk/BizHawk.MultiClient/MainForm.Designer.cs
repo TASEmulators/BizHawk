@@ -151,16 +151,21 @@
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.gUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseWhenMenuActivatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startPausedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.enableRewindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
+			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forceGDIPPresentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showMenuInFullScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.runInBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.acceptBackgroundInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.singleInstanceModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
+			this.enableRewindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.enableContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.backupSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveScreenshotWithSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.logWindowAsConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.frameSkipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.miLimitFramerate = new System.Windows.Forms.ToolStripMenuItem();
 			this.miDisplayVsync = new System.Windows.Forms.ToolStripMenuItem();
@@ -249,10 +254,7 @@
 			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.logWindowAsConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
+			this.showMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -274,7 +276,7 @@
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(470, 40);
+			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuActivate += new System.EventHandler(this.menuStrip1_MenuActivate);
@@ -1238,6 +1240,7 @@
             this.toolStripSeparator22,
             this.saveWindowPositionToolStripMenuItem,
             this.forceGDIPPresentationToolStripMenuItem,
+            this.showMenuInFullScreenToolStripMenuItem,
             this.runInBackgroundToolStripMenuItem,
             this.acceptBackgroundInputToolStripMenuItem,
             this.singleInstanceModeToolStripMenuItem,
@@ -1260,13 +1263,6 @@
 			this.pauseWhenMenuActivatedToolStripMenuItem.Text = "Pause when menu activated";
 			this.pauseWhenMenuActivatedToolStripMenuItem.Click += new System.EventHandler(this.pauseWhenMenuActivatedToolStripMenuItem_Click);
 			// 
-			// saveWindowPositionToolStripMenuItem
-			// 
-			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
-			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
-			// 
 			// startPausedToolStripMenuItem
 			// 
 			this.startPausedToolStripMenuItem.Name = "startPausedToolStripMenuItem";
@@ -1274,12 +1270,17 @@
 			this.startPausedToolStripMenuItem.Text = "Start paused";
 			this.startPausedToolStripMenuItem.Click += new System.EventHandler(this.startPausedToolStripMenuItem_Click);
 			// 
-			// enableRewindToolStripMenuItem
+			// toolStripSeparator22
 			// 
-			this.enableRewindToolStripMenuItem.Name = "enableRewindToolStripMenuItem";
-			this.enableRewindToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.enableRewindToolStripMenuItem.Text = "&Enable Rewind";
-			this.enableRewindToolStripMenuItem.Click += new System.EventHandler(this.enableRewindToolStripMenuItem_Click);
+			this.toolStripSeparator22.Name = "toolStripSeparator22";
+			this.toolStripSeparator22.Size = new System.Drawing.Size(243, 6);
+			// 
+			// saveWindowPositionToolStripMenuItem
+			// 
+			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
+			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// forceGDIPPresentationToolStripMenuItem
 			// 
@@ -1287,6 +1288,13 @@
 			this.forceGDIPPresentationToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
 			this.forceGDIPPresentationToolStripMenuItem.Text = "Use GDI+ Display Method";
 			this.forceGDIPPresentationToolStripMenuItem.Click += new System.EventHandler(this.forceGDIPPresentationToolStripMenuItem_Click);
+			// 
+			// showMenuInFullScreenToolStripMenuItem
+			// 
+			this.showMenuInFullScreenToolStripMenuItem.Name = "showMenuInFullScreenToolStripMenuItem";
+			this.showMenuInFullScreenToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.showMenuInFullScreenToolStripMenuItem.Text = "Show Menu in Full Screen";
+			this.showMenuInFullScreenToolStripMenuItem.Click += new System.EventHandler(this.showMenuInFullScreenToolStripMenuItem_Click);
 			// 
 			// runInBackgroundToolStripMenuItem
 			// 
@@ -1309,6 +1317,18 @@
 			this.singleInstanceModeToolStripMenuItem.Text = "Single Instance Mode";
 			this.singleInstanceModeToolStripMenuItem.Click += new System.EventHandler(this.singleInstanceModeToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator24
+			// 
+			this.toolStripSeparator24.Name = "toolStripSeparator24";
+			this.toolStripSeparator24.Size = new System.Drawing.Size(243, 6);
+			// 
+			// enableRewindToolStripMenuItem
+			// 
+			this.enableRewindToolStripMenuItem.Name = "enableRewindToolStripMenuItem";
+			this.enableRewindToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.enableRewindToolStripMenuItem.Text = "&Enable Rewind";
+			this.enableRewindToolStripMenuItem.Click += new System.EventHandler(this.enableRewindToolStripMenuItem_Click);
+			// 
 			// enableContextMenuToolStripMenuItem
 			// 
 			this.enableContextMenuToolStripMenuItem.Name = "enableContextMenuToolStripMenuItem";
@@ -1329,6 +1349,18 @@
 			this.saveScreenshotWithSavestatesToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
 			this.saveScreenshotWithSavestatesToolStripMenuItem.Text = "Save Screenshot with Savestates";
 			this.saveScreenshotWithSavestatesToolStripMenuItem.Click += new System.EventHandler(this.screenshotWithSavestatesToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator23
+			// 
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(243, 6);
+			// 
+			// logWindowAsConsoleToolStripMenuItem
+			// 
+			this.logWindowAsConsoleToolStripMenuItem.Name = "logWindowAsConsoleToolStripMenuItem";
+			this.logWindowAsConsoleToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
+			this.logWindowAsConsoleToolStripMenuItem.Text = "Log Window as Console";
+			this.logWindowAsConsoleToolStripMenuItem.Click += new System.EventHandler(this.logWindowAsConsoleToolStripMenuItem_Click);
 			// 
 			// frameSkipToolStripMenuItem
 			// 
@@ -1917,9 +1949,10 @@
             this.undoSavestateToolStripMenuItem,
             this.toolStripSeparator20,
             this.screenshotToolStripMenuItem1,
-            this.closeROMToolStripMenuItem1});
+            this.closeROMToolStripMenuItem1,
+            this.showMenuToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 330);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(179, 374);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2046,27 +2079,12 @@
 			this.closeROMToolStripMenuItem1.Text = "Close ROM";
 			this.closeROMToolStripMenuItem1.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
 			// 
-			// logWindowAsConsoleToolStripMenuItem
+			// showMenuToolStripMenuItem
 			// 
-			this.logWindowAsConsoleToolStripMenuItem.Name = "logWindowAsConsoleToolStripMenuItem";
-			this.logWindowAsConsoleToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.logWindowAsConsoleToolStripMenuItem.Text = "Log Window as Console";
-			this.logWindowAsConsoleToolStripMenuItem.Click += new System.EventHandler(this.logWindowAsConsoleToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator22
-			// 
-			this.toolStripSeparator22.Name = "toolStripSeparator22";
-			this.toolStripSeparator22.Size = new System.Drawing.Size(243, 6);
-			// 
-			// toolStripSeparator23
-			// 
-			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(243, 6);
-			// 
-			// toolStripSeparator24
-			// 
-			this.toolStripSeparator24.Name = "toolStripSeparator24";
-			this.toolStripSeparator24.Size = new System.Drawing.Size(243, 6);
+			this.showMenuToolStripMenuItem.Name = "showMenuToolStripMenuItem";
+			this.showMenuToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.showMenuToolStripMenuItem.Text = "Show Menu";
+			this.showMenuToolStripMenuItem.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -2322,6 +2340,8 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem logWindowAsConsoleToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showMenuInFullScreenToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showMenuToolStripMenuItem;
     }
 }
 
