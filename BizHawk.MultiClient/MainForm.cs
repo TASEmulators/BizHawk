@@ -1056,7 +1056,6 @@ namespace BizHawk.MultiClient
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
 									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
-									Global.Game.Status = nes.RomStatus;
 									nextEmulator = nes;
 									if (Global.Config.NESAutoLoadPalette && Global.Config.NESPaletteFile.Length > 0 &&
 										HawkFile.ExistsAt(Global.Config.NESPaletteFile))
@@ -1093,7 +1092,9 @@ namespace BizHawk.MultiClient
 
 				if (game.System == "NES")
 				{
-					Global.Game.Name = (Global.Emulator as NES).GameName;
+					NES nes = Global.Emulator as NES;
+					Global.Game.Name = nes.GameName;
+					Global.Game.Status = nes.RomStatus;
 				}
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
