@@ -179,6 +179,7 @@
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 60;
 		public bool DisplayRamWatch = false;
+		public bool ShowMenuInFullscreen = false;
 
 		// Sound options
 		public bool SoundEnabled = true;
