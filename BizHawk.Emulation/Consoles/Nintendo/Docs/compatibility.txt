@@ -29,11 +29,11 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 016	Bandai		Started doesn't work(+159)
 018	Jaleco*		Nothing
 019	Namcot106	Needed (+210)
-021	VRC4		Needed 
-022	VRC2		Nothing
-023	VRC*?		Nothing
+021	VRC4		Decent 
+022	VRC2		Decent
+023	VRC2/4		Decent
 024	VRC6		Decent (no sound)
-025	VRC4?		Nothing
+025	VRC4?		Decent
 026	VRC6(newer)	Decent (but no sound)
 032	Irem_G101	Complete
 033	Taito		Complete
