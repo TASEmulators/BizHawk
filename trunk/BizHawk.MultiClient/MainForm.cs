@@ -796,12 +796,12 @@ namespace BizHawk.MultiClient
 		private string DisplayNameForSystem(string system)
 		{
 			string str = "";
-			if (INTERIM) str += "(interim) ";
 			switch (system)
 			{
 				case "SG": str += "SG-1000"; break;
 				case "SMS": str += "Sega Master System"; break;
 				case "GG": str += "Game Gear"; break;
+				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
 				case "PCE": str += "TurboGrafx-16"; break;
 				case "SGX": str += "SuperGrafx"; break;
 				case "GEN": str += "Genesis"; break;
@@ -809,6 +809,7 @@ namespace BizHawk.MultiClient
 				case "NES": str += "NES"; break;
 				case "GB": str += "Game Boy"; break;
 			}
+			if (INTERIM) str += " (interim)";
 			return str;
 		}
 
@@ -858,6 +859,7 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController = Global.AutofireSMSControls;
 					break;
 				case "PCE":
+				case "PCECD":
 					Global.ActiveController = Global.PCEControls;
 					Global.AutoFireController = Global.AutofirePCEControls;
 					break;
@@ -975,7 +977,7 @@ namespace BizHawk.MultiClient
 							// what system the game is for.
 
 							game = new GameInfo();
-							game.System = "PCE";
+							game.System = "PCECD";
 							game.Name = Path.GetFileNameWithoutExtension(file.Name);
 							game.Hash = hash;
 						}
@@ -983,6 +985,7 @@ namespace BizHawk.MultiClient
 						switch (game.System)
 						{
 							case "PCE":
+							case "PCECD":
 								if (File.Exists(Global.Config.PathPCEBios) == false)
 								{
 									MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
@@ -1034,6 +1037,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = new SMS(game, rom.RomData);
 								break;
 							case "PCE":
+							case "PCECD":
 							case "SGX":
 								if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
 								nextEmulator = new PCEngine(game, rom.RomData);

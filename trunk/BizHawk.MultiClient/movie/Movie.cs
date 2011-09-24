@@ -521,6 +521,7 @@ namespace BizHawk.MultiClient
 					else
 						return frames / NES_NTSC;
 				case "PCE":
+				case "PCECD":
 					return frames / PCE;
 
 				//One Day!
