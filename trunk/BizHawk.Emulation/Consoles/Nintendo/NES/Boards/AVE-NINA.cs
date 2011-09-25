@@ -142,9 +142,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case 0x0100: //$4100:  [.CPP PCCC]
 					chr_bank_8k = (value & 7) | ((value >> 3) & 0x8);
-					chr_bank_8k = ((value >> 3) & 7);
+					chr_bank_8k &= chr_bank_mask_8k;
+					prg_bank_32k = ((value >> 3) & 7);
 					prg_bank_32k &= prg_bank_mask_32k;
-					prg_bank_32k &= chr_bank_mask_8k;
 					//if (mirror_control_enabled) SetMirrorType(value.Bit(7) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 					//NES.LogLine("chr={0:X2}, prg={1:X2}, with val={2:X2}", chr_reg, prg_reg, value);
 					break;
