@@ -95,7 +95,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\GxROM.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Consoles\Nintendo\NES\Boards\HVC_UNROM_74HC08.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\IC_74x377.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -111,6 +110,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper089.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper093.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper180.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper240.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
@@ -261,6 +261,39 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
+    <Compile Include="Progression\Extras\ETACalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\Progress.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressCalculators\IProgressCalculator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressCalculators\ProgressCalcAmount.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressCalculators\ProgressCalcFixed.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressCalculators\ProgressCalcProportional.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressCalculators\ProgressCalcUnknown.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressChangedInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressDepth.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressExtensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Progression\ProgressTask.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
