@@ -62,7 +62,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 072	Misc (J)	Nothing
 073	VRC3		Good
 074	Pirate (CN)	Junk
-075	VRC1		Nothing
+075	VRC1		Complete	
 076	Misc (J)	Nothing
 077	Misc (J)	Complete
 078	Misc		Complete
