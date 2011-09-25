@@ -4,16 +4,15 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//mapper 24 + 26
-	//If you change any of the IRQ logic here, be sure to change it in VRC 2/4/7 as well.
-	public class VRC6 : NES.NESBoardBase
+	//mapper 85
+	//If you change any of the IRQ logic here, be sure to change it in VRC 2/4/6 as well.
+	public class VRC7 : NES.NESBoardBase
 	{
 		//configuration
 		int prg_bank_mask_8k, chr_bank_mask_1k;
-		bool newer_variant;
+		Func<int, int> remap;
 
 		//state
-		int prg_bank_16k, prg_bank_8k;
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
 		ByteBuffer chr_banks_1k = new ByteBuffer(8);
 		bool irq_mode;
@@ -32,8 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("prg_bank_16k", ref prg_bank_16k);
-			ser.Sync("prg_bank_8k", ref prg_bank_8k);
+			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
 			ser.Sync("irq_mode", ref irq_mode);
 			ser.Sync("irq_enabled", ref irq_enabled);
@@ -42,19 +40,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_prescaler", ref irq_prescaler);
-
-			if (ser.IsReader)
-			{
-				SyncPRG();
-			}
-		}
-
-		void SyncPRG()
-		{
-			prg_banks_8k[0] = (byte)(prg_bank_16k * 2);
-			prg_banks_8k[1] = (byte)(prg_bank_16k * 2 + 1);
-			prg_banks_8k[2] = (byte)(prg_bank_8k);
-			prg_banks_8k[3] = 0xFF;
 		}
 
 		void SyncIRQ()
@@ -66,26 +51,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
-				case "KONAMI-VRC-6":
-					AssertPrg(256); AssertChr(128,256); AssertVram(0); AssertWram(0,8);
+				case "KONAMI-VRC-7":
+					AssertPrg(128,512); AssertChr(0,128); AssertVram(0,8); AssertWram(0,8);
 					break;
 				default:
 					return false;
 			}
 
-			if (Cart.pcb == "351951")
-				newer_variant = false;
-			else if (Cart.pcb == "351949A")
-				newer_variant = true;
-			else throw new Exception("Unknown PCB type for VRC6");
+			if (Cart.pcb == "353429")
+				//tiny toons 2
+				remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
+			else if(Cart.pcb == "352402")
+				//lagrange point
+				remap = (addr) => ((addr & 0xF000) | ((addr & 0x10) >> 4));
+			else throw new Exception("Unknown PCB type for VRC7");
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
-			prg_bank_16k = 0;
-			prg_bank_8k = 0;
-			SyncPRG();
 			SetMirrorType(EMirrorType.Vertical);
+
+			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
 
 			return true;
 		}
@@ -94,61 +80,71 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int bank_8k = addr >> 13;
 			int ofs = addr & ((1 << 13) - 1);
 			bank_8k = prg_banks_8k[bank_8k];
-			bank_8k &= prg_bank_mask_8k;
 			addr = (bank_8k << 13) | ofs;
 			return ROM[addr];
+		}
+
+		int Map_PPU(int addr)
+		{
+			int bank_1k = addr >> 10;
+			int ofs = addr & ((1 << 10) - 1);
+			bank_1k = chr_banks_1k[bank_1k];
+			addr = (bank_1k << 10) | ofs;
+			return addr;
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				int bank_1k = addr >> 10;
-				int ofs = addr & ((1 << 10) - 1);
-				bank_1k = chr_banks_1k[bank_1k];
-				bank_1k &= chr_bank_mask_1k;
-				addr = (bank_1k << 10) | ofs;
-				return VROM[addr];
+				addr = Map_PPU(addr);
+				if (Cart.vram_size != 0)
+					return base.ReadPPU(addr);
+				else return VROM[addr];
 			}
 			else return base.ReadPPU(addr);
 		}
 
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				base.WritePPU(Map_PPU(addr),value);
+			}
+			else base.WritePPU(addr, value);
+		}
+
 		public override void WritePRG(int addr, byte value)
 		{
-			if (newer_variant)
-			{
-				addr = (addr & 0xFFFC) | ((addr >> 1) & 1) | ((addr << 1) & 2);
-			}
+			//Console.WriteLine("    mapping {0:X4} = {1:X2}", addr, value);
+			addr = remap(addr);
+			//Console.WriteLine("- remapping {0:X4} = {1:X2}", addr, value);
 			switch (addr)
 			{
-				case 0x0000: //$8000
-				case 0x0001:
-				case 0x0002:
-				case 0x0003:
-					prg_bank_16k = value;
-					SyncPRG();
+				case 0x0000: prg_banks_8k[0] = (byte)(value & prg_bank_mask_8k); break;
+				case 0x0001: prg_banks_8k[1] = (byte)(value & prg_bank_mask_8k); break;
+				case 0x1000: prg_banks_8k[2] = (byte)(value & prg_bank_mask_8k); break;
+
+				case 0x1001:
+					//sound address port
 					break;
-				
-				case 0x1000: //$9000
-				case 0x1001: //$9001
-				case 0x1002: //$9002
-					//TODO pulse 1
+				case 0x1003:
+					//sound data port
+					//TODO - remap will break this
 					break;
 
-				case 0x2000: //$A000
-				case 0x2001: //$A001
-				case 0x2002: //$A002
-					//TODO pulse 2
-					break;
+					//a bit creepy to mask this for lagrange point which has no VROM, but the mask will be 0xFFFFFFFF so its OK
+				case 0x2000: chr_banks_1k[0] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x2001: chr_banks_1k[1] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x3000: chr_banks_1k[2] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x3001: chr_banks_1k[3] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x4000: chr_banks_1k[4] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x4001: chr_banks_1k[5] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x5000: chr_banks_1k[6] = (byte)(value & chr_bank_mask_1k); break;
+				case 0x5001: chr_banks_1k[7] = (byte)(value & chr_bank_mask_1k); break;
 
-				case 0x3000: //$B000
-				case 0x3001: //$B001
-				case 0x3002: //$B002
-					//TODO sawtooth
-					break;
-				
-				case 0x3003: //$B003
-					switch ((value>>2) & 3)
+				case 0x6000:
+					switch (value & 3)
 					{
 						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
 						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;
@@ -157,32 +153,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					break;
 
-				case 0x4000: //$C000
-				case 0x4001:
-				case 0x4002:
-				case 0x4003:
-					prg_bank_8k = value;
-					SyncPRG();
-					break;
-
-				case 0x5000: //$D000
-				case 0x5001: //$D001
-				case 0x5002: //$D002
-				case 0x5003: //$D003
-					chr_banks_1k[addr - 0x5000] = value;
-					break;
-
-				case 0x6000: //$E000
-				case 0x6001: //$E001
-				case 0x6002: //$E002
-				case 0x6003: //$E003
-					chr_banks_1k[4+ addr - 0x6000] = value;
-					break;
-
-				case 0x7000: //$F000 (reload)
+				case 0x6001: //(reload)
 					irq_reload = value;
 					break;
-				case 0x7001: //$F001 (control)
+				case 0x7000: //(control)
 					irq_mode = value.Bit(2);
 					irq_autoen = value.Bit(0);
 
@@ -206,7 +180,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					break;
 				
-				case 0x7002: //$F002 (ack)
+				case 0x7001: //(ack)
 					irq_pending = false;
 					irq_enabled = irq_autoen;
 					SyncIRQ();

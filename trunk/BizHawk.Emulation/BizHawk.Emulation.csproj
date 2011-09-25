@@ -139,6 +139,7 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC2_4.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\Core.cs" />
     <Compile Include="Consoles\Nintendo\NES\iNES.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.cs" />
