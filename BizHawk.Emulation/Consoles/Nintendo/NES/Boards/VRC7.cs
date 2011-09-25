@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 85
-	//If you change any of the IRQ logic here, be sure to change it in VRC 2/4/6 as well.
+	//If you change any of the IRQ logic here, be sure to change it in VRC 2/3/4/6 as well.
 	public class VRC7 : NES.NESBoardBase
 	{
 		//configuration
