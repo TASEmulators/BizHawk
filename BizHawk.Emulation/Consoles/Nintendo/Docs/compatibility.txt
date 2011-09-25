@@ -28,7 +28,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 015	Multicart	Junk
 016	Bandai		Started doesn't work(+159)
 018	Jaleco*		Nothing
-019	Namcot106	Needed (+210)
+019	Namcot106	Decent (but no sound) (+210)
 021	VRC4		Decent 
 022	VRC2		Decent
 023	VRC2/4		Decent
@@ -111,7 +111,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 *206 Namcot109	Complete (missing from disch docs)
 207	Misc (J)	Nothing
 209	Garbage		{{See 090}}
-210	Namcot106	{{See 019}}
+210	Namcot		Decent {{See 019}}
 225	Multicart	Junk
 226	Multicart	Junk
 227	Multicart	Junk

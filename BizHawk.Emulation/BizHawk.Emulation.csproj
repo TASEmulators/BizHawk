@@ -123,6 +123,9 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -261,39 +264,6 @@
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
     <Compile Include="Interfaces\Base Implementations\NullEmulator.cs" />
     <Compile Include="Interfaces\CoreComms.cs" />
-    <Compile Include="Progression\Extras\ETACalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\Progress.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressCalculators\IProgressCalculator.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressCalculators\ProgressCalcAmount.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressCalculators\ProgressCalcFixed.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressCalculators\ProgressCalcProportional.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressCalculators\ProgressCalcUnknown.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressChangedInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressDepth.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressExtensions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Progression\ProgressTask.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
