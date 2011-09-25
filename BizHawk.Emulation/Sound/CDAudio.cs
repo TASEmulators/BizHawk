@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Sound
         public void PlayStartingAtLba(int lba)
         {
             var point = Disc.TOC.SeekPoint(lba);
-            if (point == null) return;
+            if (point == null || point.Track == null) return;
 
             PlayingTrack = point.TrackNum;
             StartLBA = lba;

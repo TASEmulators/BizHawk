@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         void WriteArcadeCard(int addr, byte value)
         {
+            if (ArcadeCard == false) return;
             var page = ArcadePage[(addr >> 4) & 3];
             switch (addr & 0x0F)
             {
@@ -110,6 +111,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         byte ReadArcadeCard(int addr)
         {
+            if (ArcadeCard == false) return 0xFF;
             var page = ArcadePage[(addr >> 4) & 3];
             switch (addr & 0x0F)
             {

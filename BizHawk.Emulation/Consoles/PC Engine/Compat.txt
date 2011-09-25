@@ -21,18 +21,11 @@ Still some lesser issues with cancelling a fadeout. Otherwise CDDA is working no
 Arcade Card games:
 - JANSHIN DENSETSU sets the T flag prior to an LDA instruction; MANY TIMES (ie it doesnt seem to be an accident).
   Unclear if T flag actually affects LDA instruction.
-- Madou Monogatari - Dies requesting more tracks than exist
 - Ryuuko no Ken is all messed up, and I don't super care :|
-- Tengai Makyo eventually died requesting 0 sectors read
 
-
-- Rayxanber 2 weird issues at the end of first level with cd audio player
 - Record of Lodoss War wont start game from title screen
-- Snatcher dies at startup while polling subcode, demonstrating the incorrectness of subcode polling code.. yeah that hangs together
 - Valis: Screen is black during entire intro section
-- Valis III: Dies with 'request more tracks than exist'
-
-card angels does poll subcode...
+- Valis III: playable,gfx issue on title screen... possible due to not updating VDC regs on LSB? really should just fix that once at for all...
 
 ======= TurboGrafx compatibility issues =======
 
@@ -42,6 +35,11 @@ General:
    Most emulators simply crop the screen at a certain vertical range. For now, I have chosen not to do this.
    Right now the emulator is simply displaying a framebuffer. Eventually, we will do an update that emulates NTSC.
    But for now we're letting this be. There's no intermediate step between emulating a framebuffer and emulating a TV.
++ Adding to this, there are only a handful of Hucards that do crazy thing with screen resolution, and our framebuffer
+  approach mostly seems reasonable. On TurboCD the situation changes somewhat, while the normal "gameplay" screens
+  are pretty standard, the various intro screens tend to do much more crazy stuff with the 'active display region' 
+  much more frequently than was done on Hucards, and our framebuffer/active display strategy starts to look more silly.
+  Oh well, though. Changing this is a Native Version Core feature, not a C# Core feature.
 
 Eagan's Rendered Sprite Demo - demonstrates sprites that shouldnt be displayed (so does Turbo Engine!)
 
