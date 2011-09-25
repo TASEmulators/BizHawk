@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	class HVC_UNROM_74HC08 : NES.NESBoardBase
+	class Mapper180 : NES.NESBoardBase
 	{
 		//Mapper 180
 		//Crazy Climber (J)

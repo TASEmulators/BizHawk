@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public byte mirror;
 		int a12_old;
 		byte irq_reload, irq_counter;
-		bool irq_pending, irq_enable;
+		protected bool irq_pending, irq_enable;
 		public bool wram_enable, wram_write_protect;
 		
 		//it really seems like these should be the same but i cant seem to unify them.
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("wram_write_protect", ref wram_write_protect);
 		}
 
-		void SyncIRQ()
+		protected virtual void SyncIRQ()
 		{
 			board.NES.irq_cart = irq_pending;
 		}
@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public void ClockPPU()
+		public virtual void ClockPPU()
 		{
 			if (separator_counter > 0)
 				separator_counter--;
@@ -241,7 +241,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 
-		public void AddressPPU(int addr)
+		public virtual void AddressPPU(int addr)
 		{
 			int a12 = (addr >> 12) & 1;
 			bool rising_edge = (a12 == 1 && a12_old == 0);
