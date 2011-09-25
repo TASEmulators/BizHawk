@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void Dispose()
 		{
 			base.Dispose();
+			prg_banks_8k.Dispose();
 			chr_banks_4k.Dispose();
 		}
 
