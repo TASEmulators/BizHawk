@@ -41,7 +41,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 044	Multicart	Junk
 045	Multicart	Junk
 046	Multicart	Junk
-047	MMC3Multi	Needed (1st party)
+047	MMC3Multi	Decent
 048	MMC3Variant	Needed (similar to mmc3, should inherit)
 049	Multicart	Junk
 050	Pirate		Junk
