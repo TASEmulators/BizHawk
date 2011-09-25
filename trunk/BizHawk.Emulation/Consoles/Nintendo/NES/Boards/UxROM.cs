@@ -19,12 +19,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		int prg_mask;
 		int vram_byte_mask;
+		Func<int, int> adjust_prg;
 
 		//state
 		int prg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
+			adjust_prg = (x) => x;
+
 			//configure
 			switch (Cart.board_type)
 			{
@@ -33,6 +36,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "KONAMI-UNROM":
 					AssertPrg(128); AssertChr(0); AssertVram(8);
 					//AssertWram(0); //JJ - Tobidase Daisakusen Part 2 (J) includes WRAM
+					break;
+	
+				case "HVC-UN1ROM":
+					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
+					adjust_prg = (x) => ((x >> 2) & 7);
 					break;
 
 				case "NES-UOROM": //paperboy 2
@@ -60,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 		public override void WritePRG(int addr, byte value)
 		{
-			prg = value & prg_mask;
+			prg = adjust_prg(value) & prg_mask;
 		}
 
 		public override byte ReadPPU(int addr)
