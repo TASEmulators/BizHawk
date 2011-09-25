@@ -120,6 +120,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int a12_old;
 		byte irq_reload, irq_counter;
 		bool irq_pending, irq_enable;
+		public bool wram_enable, wram_write_protect;
 		
 		//it really seems like these should be the same but i cant seem to unify them.
 		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
@@ -146,6 +147,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("separator_counter", ref separator_counter);
 			ser.Sync("irq_countdown", ref irq_countdown);
+			ser.Sync("wram_enable", ref wram_enable);
+			ser.Sync("wram_write_protect", ref wram_write_protect);
 		}
 
 		void SyncIRQ()
@@ -168,6 +171,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x2001: //$A001
 					//wram enable/protect
+					wram_write_protect = value.Bit(6);
+					wram_enable = value.Bit(7);
 					break;
 				case 0x4000: //$C000 - IRQ Reload value
 					irq_reload = value;
@@ -276,9 +281,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mapper.SyncState(ser);
 		}
 
+		protected virtual int Get_CHRBank_1K(int addr)
+		{
+			return mapper.Get_CHRBank_1K(addr);
+		}
+
 		int MapCHR(int addr)
 		{
-			int bank_1k = mapper.Get_CHRBank_1K(addr);
+			int bank_1k = Get_CHRBank_1K(addr);
 			bank_1k &= chr_mask;
 			addr = (bank_1k << 10) | (addr & 0x3FF);
 			return addr;
@@ -313,9 +323,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mapper.WritePRG(addr, value);
 		}
 
+		protected virtual int Get_PRGBank_8K(int addr)
+		{
+			return mapper.Get_PRGBank_8K(addr);
+		}
+
 		public override byte ReadPRG(int addr)
 		{
-			int bank_8k = mapper.Get_PRGBank_8K(addr);
+			int bank_8k = Get_PRGBank_8K(addr);
 			bank_8k &= prg_mask;
 			addr = (bank_8k << 13) | (addr & 0x1FFF);
 			return ROM[addr];
