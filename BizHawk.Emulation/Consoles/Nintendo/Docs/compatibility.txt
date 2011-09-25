@@ -93,7 +93,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 152	Misc (J)	Complete
 154	Misc (J)	Nothing
 159	Bandai		{{See 016}}
-164	Pirate		Junk
+164	Pirate		Started
 165	Pirate		Junk
 180	Misc (J)	Complete (but we don't implement the crazy climber controller) 
 182	MMC3Variant	Nothing
