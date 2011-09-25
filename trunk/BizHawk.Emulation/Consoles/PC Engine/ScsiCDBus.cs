@@ -385,13 +385,13 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             sector |= CommandBuffer[2] << 8;
             sector |= CommandBuffer[3];
 
-if (CommandBuffer[4] == 0)
-throw new Exception("requesting 0 sectors read.............................");
-
             DataReadInProgress = true;
             DataTransferInProgress = true;
             CurrentReadingSector = sector;
             SectorsLeftToRead = CommandBuffer[4];
+
+            if (CommandBuffer[4] == 0)
+                SectorsLeftToRead = 256;
 
             Console.WriteLine("STARTED READ: {0} SECTORS FROM {1}",SectorsLeftToRead, CurrentReadingSector);
             DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 5000; // figure out proper read delay later
@@ -421,6 +421,7 @@ throw new Exception("requesting 0 sectors read.............................");
 
             if (CommandBuffer[1] == 0)
             {
+                pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                 pce.CDAudio.Pause();
             } else {
                 pce.CDAudio.PlayStartingAtLba(audioStartLBA);
@@ -464,8 +465,7 @@ throw new Exception("requesting 0 sectors read.............................");
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.LoopOnCompletion;
                     break;
-                case 2: // Play audio, fire IRQ2 when end position reached
-                    Console.WriteLine("***********STOP MODE 2 ENGAGED. IT IS CONCEIVABLE THAT IRQ WILL FIRE.");
+                case 2: // Play audio, fire IRQ2 when end position reached, maybe
                     pce.CDAudio.PlayStartingAtLba(audioStartLBA);
                     pce.CDAudio.EndLBA = audioEndLBA;
                     pce.CDAudio.PlayMode = CDAudio.PlaybackMode.CallbackOnCompletion;
@@ -487,11 +487,8 @@ throw new Exception("requesting 0 sectors read.............................");
 
         void CommandReadSubcodeQ()
         {
-			Console.WriteLine("poll subcode");
-            // TODO we are lacking some various things here. But we know when it gets used and it doesnt
-            // seem to be used that often.
-            
-            var sectorEntry = disc.ReadLBA_SectorEntry(pce.CDAudio.CurrentSector);
+            bool playing = pce.CDAudio.Mode != CDAudio.CDAudioMode.Stopped;
+            var sectorEntry = disc.ReadLBA_SectorEntry(playing ? pce.CDAudio.CurrentSector : CurrentReadingSector);
 
             DataIn.Clear();
 
@@ -511,6 +508,7 @@ throw new Exception("requesting 0 sectors read.............................");
             DataIn.Enqueue(sectorEntry.q_amin.BCDValue);   // M(abs)
 			DataIn.Enqueue(sectorEntry.q_asec.BCDValue);   // S(abs)
             DataIn.Enqueue(sectorEntry.q_aframe.BCDValue); // F(abs)
+
             SetPhase(BusPhase.DataIn);
         }
 
@@ -543,14 +541,20 @@ throw new Exception("requesting 0 sectors read.............................");
                 case 2: // Return starting position of specified track in MSF format
                     {
                         int track = CommandBuffer[2].BCDtoBin();
+                        var tracks = disc.TOC.Sessions[0].Tracks;
                         if (CommandBuffer[2] > 0x99)
                             throw new Exception("invalid track number BCD request... is something I need to handle?");
                         if (track == 0) track = 1;
                         track--;
-                        if (track > disc.TOC.Sessions[0].Tracks.Count)
-                            throw new Exception("Request more tracks than exist.... need to do error handling");
 
-                        int lbaPos = disc.TOC.Sessions[0].Tracks[track].Indexes[1].aba - 150;
+                        
+                        int lbaPos;
+                        
+                        if (track > tracks.Count)
+                            lbaPos = disc.TOC.Sessions[0].length_aba - 150;
+                        else
+                            lbaPos = tracks[track].Indexes[1].aba - 150;
+                        
                         byte m, s, f;
                         Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
                         
@@ -558,7 +562,8 @@ throw new Exception("requesting 0 sectors read.............................");
                         DataIn.Enqueue(m.BinToBCD());
                         DataIn.Enqueue(s.BinToBCD());
                         DataIn.Enqueue(f.BinToBCD());
-                        if (disc.TOC.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
+
+                        if (track > tracks.Count || disc.TOC.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
                             DataIn.Enqueue(0);
                         else
                             DataIn.Enqueue(4);
@@ -831,6 +836,5 @@ throw new Exception("requesting 0 sectors read.............................");
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
         }
-
     }
 }
