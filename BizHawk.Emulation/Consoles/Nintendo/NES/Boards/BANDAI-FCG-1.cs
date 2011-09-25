@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;
-		
+		bool has_eprom = false;
 		//state
 		byte prg_bank_16k, eprom;
 		ByteBuffer regs = new ByteBuffer(8);
@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_enabled", ref irq_enabled);
 			ser.Sync("irq_asserted", ref irq_asserted);
 			ser.Sync("clock_counter", ref clock_counter);
+			ser.Sync("has_eprom", ref has_eprom);
 		}
 
 		public override void Dispose()
@@ -66,11 +67,22 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "BANDAI-FCG-1":
+					AssertPrg(128, 256, 512); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);
+					break;
+				case "BANDAI-FCG-2":
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);
+					break;
+				case "BANDAI-LZ93D50+24C01":
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
+					break;
+				case "BANDAI-LZ93D50+24C02":
+					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);
 					break;
 				default:
 					return false;
 			}
+			if (Cart.mapper == 159)
+				has_eprom = true;
 			BaseConfigure();
 			return true;
 		}
@@ -104,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					regs[reg] = value;
 					break;
 				case 8:
-					NES.LogLine("mapping PRG {0}", value);
+					//NES.LogLine("mapping PRG {0}", value);
 					prg_bank_16k = value;
 					SyncPRG();
 					break;
@@ -138,13 +150,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			NES.LogLine("writewram {0:X4} = {1:X2}", addr, value);
+			//NES.LogLine("writewram {0:X4} = {1:X2}", addr, value);
 			addr &= 0xF;
 			WriteReg(addr, value);
 		}
 		public override void WritePRG(int addr, byte value)
 		{
-			NES.LogLine("writeprg {0:X4} = {1:X2}", addr, value);
+			//NES.LogLine("writeprg {0:X4} = {1:X2}", addr, value);
 			addr &= 0xF;
 			WriteReg(addr, value);
 		}
