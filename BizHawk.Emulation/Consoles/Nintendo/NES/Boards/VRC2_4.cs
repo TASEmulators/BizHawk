@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
 	//mapper 21 + 22 + 23 + 25 (docs largely in 021.txt for VRC4 and 22.txt for VRC2)
-	//If you change any of the IRQ logic here, be sure to change it in VRC4 as well.
+	//If you change any of the IRQ logic here, be sure to change it in VRC 6/7 as well.
 	public class VRC2_4 : NES.NESBoardBase
 	{
 		//configuration
@@ -266,6 +266,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//disabled
 						irq_enabled = false;
 					}
+
+					//acknowledge
+					irq_pending = false;
+
 					SyncIRQ();
 
 					break;
@@ -299,6 +303,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			if (irq_mode)
 			{
+				throw new InvalidOperationException("needed a test case for this; you found one!");
 				ClockIRQ();
 			}
 			else
