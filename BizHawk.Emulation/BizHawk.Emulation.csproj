@@ -139,6 +139,7 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\TAITO_74_161_161_32.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_TC0190FMC.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
       <SubType>Code</SubType>
     </Compile>
