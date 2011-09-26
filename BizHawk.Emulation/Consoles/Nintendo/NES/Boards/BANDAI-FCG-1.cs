@@ -31,28 +31,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		int prg_bank_mask_16k, chr_bank_mask_1k;
 		bool has_eprom = false;
+
+		//regenerable state
+		IntBuffer prg_banks_16k = new IntBuffer(2);
+
 		//state
-		byte prg_bank_16k, eprom;
+		int prg_reg_16k, eprom;
 		ByteBuffer regs = new ByteBuffer(8);
-		ByteBuffer prg_banks_16k = new ByteBuffer(2);
-		bool irq_countdown, irq_enabled, irq_asserted;
+		bool irq_enabled, irq_asserted;
 		ushort irq_counter;
 		int clock_counter;
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
-			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
-			ser.Sync("prg_bank_mask_16k", ref prg_bank_mask_16k);
+			ser.Sync("prg_reg_16k", ref prg_reg_16k);
 			ser.Sync("regs", ref regs);
 			ser.Sync("eprom", ref eprom);
 			ser.Sync("irq_counter", ref irq_counter);
-			ser.Sync("irq_countdown", ref irq_countdown);
 			ser.Sync("irq_enabled", ref irq_enabled);
 			ser.Sync("irq_asserted", ref irq_asserted);
 			ser.Sync("clock_counter", ref clock_counter);
-			ser.Sync("has_eprom", ref has_eprom);
+
+			if (ser.IsReader)
+			{
+				SyncPRG();
+				SyncIrq();
+			}
 		}
 
 		public override void Dispose()
@@ -83,26 +88,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			if (Cart.mapper == 159)
 				has_eprom = true;
-			BaseConfigure();
-			return true;
-		}
 
-		protected void BaseConfigure()
-		{
-			chr_bank_mask_1k = Cart.chr_size - 1;
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+			chr_bank_mask_1k = Cart.chr_size - 1;
+			
 			SetMirrorType(EMirrorType.Vertical);
-			prg_banks_16k[0] = 0x00;
-			prg_banks_16k[1] = 0xFF;
+
+			prg_reg_16k = 0;
+			SyncPRG();
+
+			return true;
 		}
 
 		void SyncPRG()
 		{
-			prg_banks_16k[0] = prg_bank_16k;
+			prg_banks_16k[0] = prg_reg_16k & prg_bank_mask_16k;
+			prg_banks_16k[1] = 0xFF & prg_bank_mask_16k;
 		}
 
 		void WriteReg(int reg, byte value)
 		{
+			//Console.WriteLine("reg {0:X2} = {1:X2}", reg, value);
 			switch (reg)
 			{
 				case 0:
@@ -117,7 +123,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 8:
 					//NES.LogLine("mapping PRG {0}", value);
-					prg_bank_16k = value;
+					prg_reg_16k = value;
 					SyncPRG();
 					break;
 				case 9:
@@ -168,7 +174,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void ClockCPU()
 		{
-			if (!irq_countdown) return;
 			irq_counter--;
 			if (irq_counter == 0x0000)
 			{
@@ -192,7 +197,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			int bank_16k = addr >> 14;
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
-			bank_16k &= prg_bank_mask_16k;
 			addr = (bank_16k << 14) | ofs;
 			return ROM[addr];
 		}
