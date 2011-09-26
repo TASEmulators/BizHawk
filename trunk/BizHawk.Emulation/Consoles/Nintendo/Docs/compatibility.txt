@@ -51,7 +51,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 060	Multicart	Junk
 061	Multicart	Junk
 062	Multicart	Junk
-064	Tengen		Needed
+064	Tengen		Good
 065	Misc (J)	Nothing
 066	GxROM		Complete
 067	Misc (J)	Nothing
