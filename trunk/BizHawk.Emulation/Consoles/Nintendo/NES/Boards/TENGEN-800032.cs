@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.Dispose();
 			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
-			
+			regs.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)

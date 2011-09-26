@@ -14,10 +14,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	class JALECO_JF_13 : NES.NESBoardBase
 	{
+		//configuration
+		int prg_bank_mask_32k;
+		int chr_bank_mask_8k;
+
+		//state
 		int chr;
 		int prg;
-		int soundon;
-		int soundid;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -28,7 +31,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				default:
 					return false;
 			}
+
+			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
+			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
 			return true;
 		}
 
@@ -50,8 +58,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			prg = (value >> 4) & 3;
-			chr = (value & 3) + ((value >> 6) & 1);
+			switch (addr & 0x1000)
+			{
+				case 0x0000:
+					prg = (value >> 4) & 3;
+					prg &= prg_bank_mask_32k;
+					chr = (value & 3) + ((value >> 4) & 0x04);
+					chr &= chr_bank_mask_8k;
+					break;
+				case 0x1000:
+					//sound regs
+					break;
+			}
 		}
 
 		public override void SyncState(Serializer ser)
@@ -59,8 +77,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
 			ser.Sync("prg", ref prg);
-			ser.Sync("soundon", ref soundon);
-			ser.Sync("soundid", ref soundid);
 		}
 	}
 }
