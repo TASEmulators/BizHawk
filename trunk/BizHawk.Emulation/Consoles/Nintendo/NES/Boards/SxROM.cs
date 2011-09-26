@@ -27,9 +27,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public class MMC1
 	{
 		NES.NESBoardBase board;
+		MMC1_SerialController scnt = new MMC1_SerialController();
+
 		public MMC1(NES.NESBoardBase board)
 		{
 			this.board = board;
+			scnt.WriteRegister = SerialWriteRegister;
+			scnt.Reset = SerialReset;
 
 			//collect data about whether this is required here:
 			//kid icarus requires it
@@ -40,8 +44,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void SyncState(Serializer ser)
 		{
-			ser.Sync("shift_count", ref shift_count);
-			ser.Sync("shift_val", ref shift_val);
+			scnt.SyncState(ser);
 			ser.Sync("chr_mode", ref chr_mode);
 			ser.Sync("prg_mode", ref prg_mode);
 			ser.Sync("prg_slot", ref prg_slot);
@@ -57,8 +60,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			A, B1, B2, B3
 		}
 
-		//shift register
-		int shift_count, shift_val;
 
 		//register 0:
 		public int chr_mode;
@@ -74,6 +75,52 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int wram_disable;
 		int prg;
 
+		public class MMC1_SerialController
+		{
+			//state
+			int shift_count, shift_val;
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("shift_count", ref shift_count);
+				ser.Sync("shift_val", ref shift_val);
+			}
+
+			public Action Reset;
+			public Action<int, int> WriteRegister;
+
+			public void Write(int addr, byte value)
+			{
+				int data = value & 1;
+				int reset = (value >> 7) & 1;
+				if (reset == 1)
+				{
+					shift_count = 0;
+					shift_val = 0;
+					if (Reset != null)
+						Reset();
+				}
+				else
+				{
+					shift_val >>= 1;
+					shift_val |= (data << 4);
+					shift_count++;
+					if (shift_count == 5)
+					{
+						WriteRegister(addr >> 13, shift_val);
+						shift_count = 0;
+						shift_val = 0;
+					}
+				}
+			}
+		}
+
+		void SerialReset()
+		{
+			prg_mode = 1;
+			prg_slot = 1;
+		}
+
 		void StandardReset()
 		{
 			prg_mode = 1;
@@ -84,30 +131,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void Write(int addr, byte value)
 		{
-			int data = value & 1;
-			int reset = (value >> 7) & 1;
-			if (reset == 1)
-			{
-				shift_count = 0;
-				shift_val = 0;
-				prg_mode = 1;
-				prg_slot = 1;
-			}
-			else
-			{
-				shift_val >>= 1;
-				shift_val |= (data<<4);
-				shift_count++;
-				if (shift_count == 5)
-				{
-					WriteRegister(addr >> 13, shift_val);
-					shift_count = 0;
-					shift_val = 0;
-				}
-			}
+			scnt.Write(addr, value);
 		}
 
-		void WriteRegister(int addr, int value)
+		void SerialWriteRegister(int addr, int value)
 		{
 			switch (addr)
 			{
