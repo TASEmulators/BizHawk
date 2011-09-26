@@ -107,8 +107,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_13.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\JALECO_JF_17.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper089.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper093.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper180.cs" />
@@ -134,6 +132,9 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m89.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft2_m93.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sunsoft4.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SxROM.cs">
       <SubType>Code</SubType>

@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "SUNSOFT-4":
-					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(8); 
+					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
 					break;
 				default:
 					return false;

@@ -4,8 +4,10 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//AKA Tenka no Goikenban: Mito Koumon
-	class MAPPER89 : NES.NESBoardBase
+	//AKA Sunsoft-2 chip (SUNSOFT-3 pcb)
+	//game=Tenka no Goikenban: Mito Koumon ; chip=sunsoft-2 ; pcb = SUNSOFT-3
+	//this is confusing. see docs/sunsoft.txt
+	class Mapper89 : NES.NESBoardBase
 	{
 		int chr;
 		int prg_bank_mask_16k;
@@ -17,15 +19,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "SUNSOFT-2":
+					if (Cart.pcb != "SUNSOFT-3") return false;
 					break;
 				default:
 					return false;
 			}
-
-			//yes, the board type SUNSOFT-2 has a pcb type of SUNSOFT-3
-			//(the pcb SUNSOFT-3R has a different revision of SUNSOFT-2 chip which works differently)
-			//and all these are different than the SUNSOFT-3 chip
-			if (Cart.pcb != "SUNSOFT-3") return false;  
 
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
@@ -56,8 +54,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void WritePRG(int addr, byte value)
 		{
 			prg_bank_16k = (byte)((value >> 4) & 7);
-				SyncPRG();
-			
+			SyncPRG();
+
 			if (value.Bit(3) == false)
 				SetMirrorType(EMirrorType.OneScreenA);
 			else

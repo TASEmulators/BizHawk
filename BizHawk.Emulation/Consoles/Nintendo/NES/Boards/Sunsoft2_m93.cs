@@ -4,8 +4,10 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//AKA shanghai (although a lot of shanghais have been hacked to use a different mapper, so....
-	class MAPPER93 : NES.NESBoardBase
+	//game=shanghai ; chip=sunsoft-2 ; pcb=SUNSOFT-3R
+	//game=fantasy zone ; chip=sunsoft-1 ; pcb = SUNSOFT-4
+	//this is confusing. see docs/sunsoft.txt
+	class Sunsoft2_Mapper93 : NES.NESBoardBase
 	{
 		int prg_bank_mask_16k;
 		byte prg_bank_16k;
@@ -16,15 +18,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "SUNSOFT-2":
+					if (Cart.pcb != "SUNSOFT-3R") return false;
+					break;
+				case "SUNSOFT-1":
+					if (Cart.pcb != "SUNSOFT-4") return false;
 					break;
 				default:
 					return false;
 			}
-
-			//yes, the board type SUNSOFT-2 has a pcb type of SUNSOFT-3R
-			//(the pcb SUNSOFT-3 has a different revision of SUNSOFT-2 chip which works differently)
-			//and all these are different than the SUNSOFT-3 chip
-			if (Cart.pcb != "SUNSOFT-3R") return false;
 
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
@@ -72,4 +73,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return ROM[addr];
 		}
 	}
+
+
 }

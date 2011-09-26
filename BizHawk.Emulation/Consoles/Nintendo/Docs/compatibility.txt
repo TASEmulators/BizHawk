@@ -54,8 +54,8 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 064	Tengen		Good
 065	Misc (J)	Nothing
 066	GxROM		Complete
-067	Misc (J)	Nothing
-068	Sunsoft4	Complete
+067	Sunsoft-3	Nothing
+068	Sunsoft-4	Complete
 069	FME7		Minimal
 070	Misc		Complete
 071	Camerica	Complete
@@ -73,11 +73,11 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 086	Misc (J)	Decent (no sound)
 087	Misc (J)	Complete
 088	Misc (J)	Nothing
-089	Sunsoft (J)	Complete
+089	Sunsoft-2	Complete
 090	Garbage		Junk (+209)
 091	Pirate		Junk
 092	Misc (J)	Nothing (similar to 072)
-093	Misc (J)	Minimal (Implemented but untested (easy); hard to test, since the only test rom [shanghai] has been hacked to UNROM everywhere)
+093	Sunsoft-2	Good
 094	Misc (J)	Complete
 095	MMC3Variant	Complete
 096	Misc (J)	Nothing
