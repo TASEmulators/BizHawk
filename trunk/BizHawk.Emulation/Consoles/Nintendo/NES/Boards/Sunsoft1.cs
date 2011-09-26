@@ -4,24 +4,9 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	/*
-	 * Life Span: April 1986 - July 1986
-PCB Class: SUNSOFT-1
-iNES Mapper 184
-PRG-ROM: 32KB
-PRG-RAM: None
-CHR-ROM: 16KB
-CHR-RAM: None
-Battery is not available
-Uses vertical mirroring
-No CIC present
-Other chips used: Sunsoft-1
-	 * 
-	 * Games:
-	 * Atlantis no Nazo
-	 * The Wing of Madoola
-	 */
-
+	//AKA mapper 184
+	//Sunsoft-1 chips, EXCEPT for fantasy zone.
+	//this is confusing. see docs/sunsoft.txt
 	class Sunsoft1 : NES.NESBoardBase
 	{
 		int chr_mask;
@@ -34,6 +19,9 @@ Other chips used: Sunsoft-1
 			switch (Cart.board_type)
 			{
 				case "SUNSOFT-1":
+					//this will catch fantasy zone, which isn't emulated the same as the other SUNSOFT-1 boards
+					if (Cart.pcb == "SUNSOFT-4")
+						return false;
 					break;
 				default:
 					return false;
@@ -42,6 +30,8 @@ Other chips used: Sunsoft-1
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			return true;
 		}
+
+
 
 		public override byte ReadPPU(int addr)
 		{
