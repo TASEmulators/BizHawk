@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "TENGEN-800032":
 					AssertPrg(64,128); AssertChr(64,128); AssertVram(0); AssertWram(00);
 					break;
+				default:
+					return false;
 			}
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
