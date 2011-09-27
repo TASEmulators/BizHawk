@@ -1043,7 +1043,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = new PCEngine(game, rom.RomData);
 								break;
 							case "GEN":
-								nextEmulator = new Genesis(true); //TODO
+								nextEmulator = new Genesis(); //TODO
 								break;
 							case "TI83":
 								nextEmulator = new TI83(game, rom.RomData);
