@@ -11,7 +11,7 @@
    - Ys IV
 
 - Graphics corruption:
-  - Buster Bros, check seagull during opening
+  - Camp California, check seagull during opening
   - In part of Dungeon Explorer II intro
   - Popful Mail... some corruption on Turbo Engine too.... and pcejin?
 
@@ -25,7 +25,6 @@ Arcade Card games:
 
 - Record of Lodoss War wont start game from title screen
 - Valis: Screen is black during entire intro section
-- Valis III: playable,gfx issue on title screen... possible due to not updating VDC regs on LSB? really should just fix that once at for all...
 
 ======= TurboGrafx compatibility issues =======
 

@@ -4,18 +4,16 @@ using System.IO;
 using BizHawk.Emulation.CPUs.M68K;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
-using MC68000;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-	public sealed partial class Genesis : IEmulator, IMemoryController
+	public sealed partial class Genesis : IEmulator
 	{
 		// ROM
 		public byte[] RomData;
 
 		// Machine stuff
-		public MC68K MainCPU; // TODO un-static
-		public M68000 _MainCPU;
+		public M68000 MainCPU;
 		public Z80A SoundCPU;
 		public GenVDP VDP;
 		public SN76489 PSG;
@@ -55,12 +53,10 @@ namespace BizHawk.Emulation.Consoles.Sega
 		// 320 are active display, the remaining 160 are horizontal blanking.
 		// A total of 3420 mclks per line, but 2560 mclks are active display and 860 mclks are blanking.
 
-		public Genesis(bool sega360)
+		public Genesis()
 		{
 			CoreOutputComm = new CoreOutputComm();
-
-			if (sega360) MainCPU = new MC68K(this);
-			_MainCPU = new M68000();
+			MainCPU = new M68000();
 			SoundCPU = new Z80A();
 			YM2612 = new YM2612();
 			PSG = new SN76489();
@@ -68,12 +64,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 			VDP.DmaReadFrom68000 = ReadW;
 			SoundMixer = new SoundMixer(YM2612, PSG);
 
-			_MainCPU.ReadByte = ReadB;
-			_MainCPU.ReadWord = ReadW;
-			_MainCPU.ReadLong = ReadL;
-			_MainCPU.WriteByte = WriteB;
-			_MainCPU.WriteWord = WriteW;
-			_MainCPU.WriteLong = WriteL;
+			MainCPU.ReadByte = ReadB;
+			MainCPU.ReadWord = ReadW;
+			MainCPU.ReadLong = ReadL;
+			MainCPU.WriteByte = WriteB;
+			MainCPU.WriteWord = WriteW;
+			MainCPU.WriteLong = WriteL;
 
 			SoundCPU.ReadMemory = ReadMemoryZ80;
 			SoundCPU.WriteMemory = WriteMemoryZ80;
@@ -95,16 +91,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 			_MainCPU.Reset();
 		}*/
 
-		public void StepMine()
-		{
-			_MainCPU.Step();
-		}
-
-		public void StepHis()
-		{
-			MainCPU.Step();
-		}
-
 		public void FrameAdvance(bool render)
 		{
 			Frame++;
@@ -116,7 +102,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
 
-				_MainCPU.ExecuteCycles(488);
+				MainCPU.ExecuteCycles(488);
 				if (Z80Runnable)
 				{
 					//Console.WriteLine("running z80");
@@ -127,8 +113,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 				if (VDP.ScanLine == 224)
 				{
 					// End-frame stuff
-					if (VDP.VInterruptEnabled)
-						MainCPU.Interrupt(6);
+					/*if (VDP.VInterruptEnabled)
+						MainCPU.Interrupt(6);*/
 
 					if (Z80Runnable)
 						SoundCPU.Interrupt = true;
