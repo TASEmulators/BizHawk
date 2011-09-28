@@ -44,11 +44,6 @@ namespace BizHawk.Emulation.CPUs.H6280
 
                 if (IRQ2Assert && FlagI == false && LagIFlag == false && (IRQControlByte & IRQ2Selector) == 0 && InBlockTransfer == false)
                 {
-                    Console.WriteLine("============================================================");
-                    Console.WriteLine("                        ENTERING IRQ2");
-                    Console.WriteLine("               1802: {0:X2}, 1803: {1:X2}, && {2:X2}",PCEngine.CdIoPorts[2], PCEngine.CdIoPorts[3], PCEngine.CdIoPorts[2] & PCEngine.CdIoPorts[3]);
-                    Console.WriteLine("============================================================");
-
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(PC >> 8));
                     WriteMemory((ushort)(S-- + 0x2100), (byte)PC);
                     WriteMemory((ushort)(S-- + 0x2100), (byte)(P & (~0x10)));
