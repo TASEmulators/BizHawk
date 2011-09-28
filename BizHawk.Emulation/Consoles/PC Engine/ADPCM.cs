@@ -100,18 +100,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 AdpcmLength = IOAddress;
                 EndReached = false;
-                //Console.WriteLine("SET LENGTH={0:X4}", adpcm_length);
             }
 
             if (AdpcmIsPlaying && (value & 0x20) == 0)
-                AdpcmIsPlaying = false; // only plays as long as this bit is set
+                AdpcmIsPlaying = false; // clearing this bit stops playback
 
             if (AdpcmIsPlaying == false && (value & 0x20) != 0)
             {
                 if ((value & 0x40) == 0)
                     Console.WriteLine("a thing thats normally set is not set");
 
-                //Console.WriteLine("Start playing! READ {0:X4} LENGTH {1:X4}", ReadAddress, AdpcmLength);
                 AdpcmIsPlaying = true;
                 playingSample = 2048;
                 magnitude = 0;
@@ -143,6 +141,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 {
                     EndReached = true;
                     HalfReached = false;
+                    //Port180D &= 0x9F;
                 }
             }
 
@@ -161,6 +160,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 {
                     byte dmaByte = SCSI.DataBits;
                     RAM[WriteAddress++] = dmaByte;
+                    AdpcmLength++;
 
                     SCSI.ACK = false;
                     SCSI.REQ = false;
@@ -168,10 +168,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 }
 
                 if (SCSI.DataTransferInProgress == false)
-                {
                     Port180B = 0;
-                    //Console.WriteLine("          ADPCM DMA COMPLETED");
-                }
             }
 
             pce.IntADPCM = HalfReached;

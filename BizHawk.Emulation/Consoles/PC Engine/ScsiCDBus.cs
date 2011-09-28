@@ -167,7 +167,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             {
                 if (DataIn.Count == 0)
                 {
-                    //Console.WriteLine("Sector available to read!!!");
                     // read in a sector and shove it in the queue
                     disc.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
                     DataIn.SignalBufferFilled(2048);
@@ -279,7 +278,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     pce.IntDataTransferReady = false;
                     if (DataTransferWasDone)
                     {
-                        Console.WriteLine("DATA TRANSFER FINISHED!");
                         DataTransferInProgress = false;
                         DataTransferWasDone = false;
                         pce.IntDataTransferComplete = true;
@@ -393,7 +391,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (CommandBuffer[4] == 0)
                 SectorsLeftToRead = 256;
 
-            Console.WriteLine("STARTED READ: {0} SECTORS FROM {1}",SectorsLeftToRead, CurrentReadingSector);
             DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 5000; // figure out proper read delay later
             pce.CDAudio.Stop();
         }

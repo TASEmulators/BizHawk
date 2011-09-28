@@ -1,14 +1,6 @@
 ﻿******************************************************
 *                   Turbo CD Issues                  *
 ******************************************************
-- General, issues where ADPCM cuts out after a few seconds
-   - Bakuretsu Hunter
-   - Download II
-   - Dracula X when you rescue Maria
-   - Dragon Slayer
-   - Dungeon Explorer II
-   - Magicoal
-   - Ys IV
 
 - Graphics corruption:
   - Camp California, check seagull during opening
@@ -18,11 +10,9 @@
 Still some lesser issues with cancelling a fadeout. Otherwise CDDA is working now...
   - Develo Magazine demo game
 
-Arcade Card games:
 - JANSHIN DENSETSU sets the T flag prior to an LDA instruction; MANY TIMES (ie it doesnt seem to be an accident).
   Unclear if T flag actually affects LDA instruction.
 - Ryuuko no Ken is all messed up, and I don't super care :|
-
 - Record of Lodoss War wont start game from title screen
 - Valis: Screen is black during entire intro section
 

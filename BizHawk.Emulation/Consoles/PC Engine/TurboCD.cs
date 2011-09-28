@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 {
     public partial class PCEngine
     {
-        public static byte[] CdIoPorts = new byte[16];
+        public byte[] CdIoPorts = new byte[16];
 
         public bool IntADPCM // INTA
         {
@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             CDAudio.CallbackAction = () =>
                 {
-                    Console.WriteLine("FIRING CD-AUDIO STOP IRQ MAYBE!");
                     IntDataTransferReady = false;
                     IntDataTransferComplete = true;
                 };
@@ -64,14 +63,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     CdIoPorts[2] = value;
                     SCSI.ACK = ((value & 0x80) != 0);
 
-                    if ((CdIoPorts[2] & 0x04) != 0) Log.Error("CD", "INTA enable");
-                    if ((CdIoPorts[2] & 0x08) != 0) Log.Error("CD", "INTSTOP enable");
-                    if ((CdIoPorts[2] & 0x10) != 0) Log.Error("CD", "INTSUB enable");
-                    if ((CdIoPorts[2] & 0x20) != 0) Log.Error("CD", "INTM enable");
-                    if ((CdIoPorts[2] & 0x40) != 0) Log.Error("CD", "INTD enable");
-                    if ((Cpu.IRQControlByte & 0x01) == 0 &&
-                        (CdIoPorts[2] & 0x7C) != 0) Log.Error("CD", "BTW, IRQ2 is not masked");
-
                     SCSI.Think();
                     RefreshIRQ2();
                     break;
@@ -89,7 +80,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x1805:
                 case 0x1806:
-                    // Latch CDDA data... no action needed for us
+                    // Latch CDDA data... no action needed for us (because we cheat)
                     break;
 
                 case 0x1807: // BRAM Unlock
@@ -101,20 +92,14 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     ADPCM.IOAddress &= 0xFF00;
                     ADPCM.IOAddress |= value;
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
-                    {
                         Console.WriteLine("doing silly thing");
-                        ADPCM.AdpcmLength = ADPCM.IOAddress;
-                    }
                     break;
 
                 case 0x1809: // ADPCM address MSB
                     ADPCM.IOAddress &= 0x00FF;
                     ADPCM.IOAddress |= (ushort)(value << 8);
                     if ((CdIoPorts[0x0D] & 0x10) != 0)
-                    {
                         Console.WriteLine("doing silly thing");
-                        ADPCM.AdpcmLength = ADPCM.IOAddress;
-                    }
                     break;
 
                 case 0x180A: // ADPCM Memory Read/Write Port
@@ -123,8 +108,6 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
                 case 0x180B: // ADPCM DMA Control
                     ADPCM.Port180B = value;
-                    if (ADPCM.AdpcmCdDmaRequested)
-                        Console.WriteLine("          ADPCM DMA REQUESTED");
                     break;
 
                 case 0x180D: // ADPCM Address Control
