@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public void WriteVdpControl(ushort data)
         {
-            Console.WriteLine("[PC = {0:X6}] VDP: Control Write {1:X4}", /*Genesis._MainCPU.PC*/0, data);
+            //Console.WriteLine("[PC = {0:X6}] VDP: Control Write {1:X4}", /*Genesis._MainCPU.PC*/0, data);
 
             if (ControlWordPending == false)
             {
@@ -49,15 +49,15 @@ namespace BizHawk.Emulation.Consoles.Sega
                     int reg = (data >> 8) & 0x1F;
                     byte value = (byte) (data & 0xFF);
                     WriteVdpRegister(reg, value);
-                    VdpDataCode = 0; // should we just clone GenesisPlus behavior?
+                    VdpDataCode = 0;
                 } else {
                     ControlWordPending = true;
                     VdpDataAddr &= 0xC000;
                     VdpDataAddr |= (ushort) (data & 0x3FFF);
                     VdpDataCode &= 0x3C;
                     VdpDataCode |= (byte) (data >> 14);
-                    Console.WriteLine("Address = {0:X4}", VdpDataAddr);
-                    Console.WriteLine("Code = {0:X2}", VdpDataCode);
+                    //Console.WriteLine("Address = {0:X4}", VdpDataAddr);
+                    //Console.WriteLine("Code = {0:X2}", VdpDataCode);
                 }
             } else {
                 ControlWordPending = false;
@@ -65,14 +65,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 // Update data address and code
                 VdpDataAddr &= 0x3FFF;
                 VdpDataAddr |= (ushort) ((data & 0x03) << 14);
-                Console.WriteLine("Address = {0:X4}", VdpDataAddr);
+                //Console.WriteLine("Address = {0:X4}", VdpDataAddr);
                 VdpDataCode &= 0x03;
                 VdpDataCode |= (byte) ((data >> 2) & 0x3C);
-                Console.WriteLine("Code = {0:X2}", VdpDataCode);
+                //Console.WriteLine("Code = {0:X2}", VdpDataCode);
 
                 if ((VdpDataCode & 0x20) != 0 && DmaEnabled) // DMA triggered
                 {
-                    Console.WriteLine("DMA TIME!");
+                    //Console.WriteLine("DMA TIME!");
 
                     // what type of DMA?
                     switch (Registers[23] >> 6)
@@ -96,7 +96,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public ushort ReadVdpControl()
         {
-            Console.WriteLine("VDP: Control Read");
+            //Console.WriteLine("VDP: Control Read");
             ushort value = 0;
             value |= 0x8000; // Fifo empty
             return value;
@@ -122,18 +122,18 @@ namespace BizHawk.Emulation.Consoles.Sega
                     VRAM[(VdpDataAddr & 0xFFFE) + 1] = (byte) (data >> 8);
                     UpdatePatternBuffer(VdpDataAddr & 0xFFFE);
                     UpdatePatternBuffer((VdpDataAddr & 0xFFFE) + 1);
-                    Console.WriteLine("Wrote VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
+                    //Console.WriteLine("Wrote VRAM[{0:X4}] = {1:X4}", VdpDataAddr, data);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 case 3: // CRAM write
                     CRAM[(VdpDataAddr / 2) % 64] = data;
-                    Console.WriteLine("Wrote CRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 64, data);
+                    //Console.WriteLine("Wrote CRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 64, data);
                     ProcessPalette((VdpDataAddr/2)%64);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 case 5: // VSRAM write
                     VSRAM[(VdpDataAddr / 2) % 40] = data;
-                    Console.WriteLine("Wrote VSRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 40, data);
+                    //Console.WriteLine("Wrote VSRAM[{0:X2}] = {1:X4}", (VdpDataAddr / 2) % 40, data);
                     VdpDataAddr += Registers[0x0F];
                     break;
                 default: 
@@ -144,13 +144,13 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public ushort ReadVdpData()
         {
-            Console.WriteLine("VDP: Data Read");
+            //Console.WriteLine("VDP: Data Read");
             return 0;
         }
 
         public void WriteVdpRegister(int register, byte data)
         {
-            Console.WriteLine("Register {0}: {1:X2}", register, data);
+            //Console.WriteLine("Register {0}: {1:X2}", register, data);
             switch (register)
             {
                 case 0x00:

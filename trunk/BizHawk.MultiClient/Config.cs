@@ -442,14 +442,8 @@
 		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-		public string GenP1Up = "UpArrow, J1 Up";
-		public string GenP1Down = "DownArrow, J1 Down";
-		public string GenP1Left = "LeftArrow, J1 Left";
-		public string GenP1Right = "RightArrow, J1 Right";
-		public string GenP1A = "Z, J1 B1";
-		public string GenP1B = "X, J1 B3";
-		public string GenP1C = "C, J1 B4";
-		public string GenP1Start = "Return, J1 B8";
+        public GenControllerTemplate GenesisController = new GenControllerTemplate(true);
+        public GenControllerTemplate GenesisAutoController = new GenControllerTemplate();
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -625,6 +619,34 @@
 			}
 		}
 	}
+
+    public class GenControllerTemplate
+    {
+        public string Up = "";
+        public string Down = "";
+        public string Left = "";
+        public string Right = "";
+        public string A = "";
+        public string B = "";
+        public string C = "";
+        public string Start = "";
+
+        public GenControllerTemplate() { }
+        public GenControllerTemplate(bool defaults)
+        {
+            if (defaults)
+            {
+                Up = "UpArrow, J1 Up";
+                Down = "DownArrow, J1 Down";
+                Left = "LeftArrow, J1 Left";
+                Right = "RightArrow, J1 Right";
+                A = "Z, J1 B1";
+                B = "X, J1 B3";
+                C = "C, J1 B4";
+                Start = "Return, J1 B8";
+            }
+        }
+    }
 
 	public class TI83ControllerTemplate
 	{

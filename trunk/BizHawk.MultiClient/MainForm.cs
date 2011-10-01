@@ -633,18 +633,29 @@ namespace BizHawk.MultiClient
 			agbControls.BindMulti("Start", Global.Config.GBAutoController.Start);
 			Global.AutofireGBControls = agbControls;
 
-
 			var genControls = new Controller(Genesis.GenesisController);
-			genControls.BindMulti("P1 Up", Global.Config.GenP1Up);
-			genControls.BindMulti("P1 Left", Global.Config.GenP1Left);
-			genControls.BindMulti("P1 Right", Global.Config.GenP1Right);
-			genControls.BindMulti("P1 Down", Global.Config.GenP1Down);
-			genControls.BindMulti("P1 A", Global.Config.GenP1A);
-			genControls.BindMulti("P1 B", Global.Config.GenP1B);
-			genControls.BindMulti("P1 C", Global.Config.GenP1C);
-			genControls.BindMulti("P1 Start", Global.Config.GenP1Start);
+			genControls.BindMulti("P1 Up", Global.Config.GenesisController.Up);
+            genControls.BindMulti("P1 Left", Global.Config.GenesisController.Left);
+            genControls.BindMulti("P1 Right", Global.Config.GenesisController.Right);
+            genControls.BindMulti("P1 Down", Global.Config.GenesisController.Down);
+            genControls.BindMulti("P1 A", Global.Config.GenesisController.A);
+            genControls.BindMulti("P1 B", Global.Config.GenesisController.B);
+            genControls.BindMulti("P1 C", Global.Config.GenesisController.C);
+            genControls.BindMulti("P1 Start", Global.Config.GenesisController.Start);
 			Global.GenControls = genControls;
 
+            var agenControls = new AutofireController(Genesis.GenesisController);
+            agbControls.Autofire = true;
+            genControls.BindMulti("P1 Up", Global.Config.GenesisAutoController.Up);
+            genControls.BindMulti("P1 Left", Global.Config.GenesisAutoController.Left);
+            genControls.BindMulti("P1 Right", Global.Config.GenesisAutoController.Right);
+            genControls.BindMulti("P1 Down", Global.Config.GenesisAutoController.Down);
+            genControls.BindMulti("P1 A", Global.Config.GenesisAutoController.A);
+            genControls.BindMulti("P1 B", Global.Config.GenesisAutoController.B);
+            genControls.BindMulti("P1 C", Global.Config.GenesisAutoController.C);
+            genControls.BindMulti("P1 Start", Global.Config.GenesisAutoController.Start);
+            Global.AutofireGenControls = agenControls;
+            
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
@@ -1044,7 +1055,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = new PCEngine(game, rom.RomData);
 								break;
 							case "GEN":
-								nextEmulator = new Genesis(); //TODO
+								nextEmulator = new Genesis(game, rom.RomData);
 								break;
 							case "TI83":
 								nextEmulator = new TI83(game, rom.RomData);

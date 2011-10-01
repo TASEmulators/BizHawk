@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		// 320 are active display, the remaining 160 are horizontal blanking.
 		// A total of 3420 mclks per line, but 2560 mclks are active display and 860 mclks are blanking.
 
-		public Genesis()
+		public Genesis(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
 			MainCPU = new M68000();
@@ -77,19 +77,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 			SoundCPU.ReadHardware = x => 0xFF;
 			SoundCPU.IRQCallback = () => SoundCPU.Interrupt = false;
 			Z80Reset = true;
+            RomData = new byte[0x400000];
+            for (int i = 0; i < rom.Length; i++)
+                RomData[i] = rom[i];
+
+            MainCPU.Reset();
 		}
-
-        /* TOO BAD genesis is broken until I finish turbocd 
-		public void LoadGame(IGame game)
-		{
-			RomData = new byte[0x400000];
-			byte[] rom = game.GetRomData();
-			for (int i = 0; i < rom.Length; i++)
-				RomData[i] = rom[i];
-
-			if (MainCPU != null) MainCPU.Reset();
-			_MainCPU.Reset();
-		}*/
 
 		public void FrameAdvance(bool render)
 		{

@@ -22,9 +22,9 @@ namespace BizHawk.Emulation.Consoles.Sega
         }
 
 
-        private bool DmaFillModePending;
+        bool DmaFillModePending;
 
-        private void ExecuteDmaFill(ushort data)
+        void ExecuteDmaFill(ushort data)
         {
             Console.WriteLine("DMA FILL REQD, WRITE {0:X4}, {1:X4} times, at {2:X4}", data, DmaLength, VdpDataAddr);
 
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             DmaFillModePending = false;
         }
 
-        private void Execute68000VramCopy()
+        void Execute68000VramCopy()
         {
             Console.WriteLine("DMA 68000 -> VRAM COPY REQ'D. LENGTH {0:X4}, SOURCE {1:X4}", DmaLength, DmaSource);
             
