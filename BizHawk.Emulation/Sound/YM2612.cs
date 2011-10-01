@@ -10,7 +10,7 @@
 
         public void Write(int addr, byte value)
         {
-            
+            System.Console.WriteLine("YM2612: {0:X2} -> {1:X2}", addr, value);
         }
 
         public void Reset()

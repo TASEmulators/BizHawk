@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles += cycles;
             while (PendingCycles > 0)
             {
-                Console.WriteLine(Disassemble(PC));
+                //Console.WriteLine(Disassemble(PC));
                 op = (ushort)ReadWord(PC);
                 PC += 2;
                 Opcodes[op]();

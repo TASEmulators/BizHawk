@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address >= 0xE00000) // Work RAM
             {
-                Console.WriteLine("MEM[{0:X4}] change to {1:X4}", address & 0xFFFF, value);
+                //Console.WriteLine("MEM[{0:X4}] change to {1:X4}", address & 0xFFFF, value);
                 Ram[(address & 0xFFFF) + 0] = (byte)(value >> 8);
                 Ram[(address & 0xFFFF) + 1] = (byte)value;
                 return;
@@ -188,7 +188,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address >= 0xE00000) // Work RAM
             {
-                Console.WriteLine("MEM[{0:X4}] change to {1:X8}", address & 0xFFFF, value);
+                //Console.WriteLine("MEM[{0:X4}] change to {1:X8}", address & 0xFFFF, value);
                 Ram[(address & 0xFFFF) + 0] = (byte)(value >> 24);
                 Ram[(address & 0xFFFF) + 1] = (byte)(value >> 16);
                 Ram[(address & 0xFFFF) + 2] = (byte)(value >> 8);

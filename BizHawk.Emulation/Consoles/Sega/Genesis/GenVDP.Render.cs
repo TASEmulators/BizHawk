@@ -19,21 +19,21 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void RenderPalette()
+        void RenderPalette()
         {
             for (int p = 0; p < 4; p++)
                 for (int i = 0; i < 16; i++)
                     FrameBuffer[(p*FrameWidth) + i] = Palette[(p*16) + i];
         }
 
-        private void RenderPatterns()
+        void RenderPatterns()
         {
             for (int yi=0; yi<28; yi++)
                 for (int xi=0; xi<(Display40Mode?40:32); xi++)
                     RenderPattern(xi * 8, yi * 8, (yi * (Display40Mode ? 40 : 32)) + xi, 0);
         }
 
-        private void RenderPattern(int x, int y, int pattern, int palette)
+        void RenderPattern(int x, int y, int pattern, int palette)
         {
             for (int yi = 0; yi < 8; yi++)
             {
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void RenderScrollA()
+        void RenderScrollA()
         {
             for (int yc=0; yc<24; yc++)
             {
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        private void RenderScrollB()
+        void RenderScrollB()
         {
             for (int yc = 0; yc < 24; yc++)
             {
@@ -77,14 +77,14 @@ namespace BizHawk.Emulation.Consoles.Sega
         }
 
 
-        private void RenderSprites()
+        void RenderSprites()
         {
             Sprite sprite = FetchSprite(0);
             /*if (sprite.X > 0)
                 Console.WriteLine("doot");*/
         }
 
-        private Sprite FetchSprite(int spriteNo)
+        Sprite FetchSprite(int spriteNo)
         {
             int satbase = SpriteAttributeTableAddr + (spriteNo*8);
             Sprite sprite = new Sprite();
@@ -108,6 +108,4 @@ namespace BizHawk.Emulation.Consoles.Sega
             public int PatternIndex;
         }
     }
-
-    
 }
