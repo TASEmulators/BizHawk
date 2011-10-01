@@ -183,6 +183,8 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
+			this.IDW_ToggleMenu = new BizHawk.MultiClient.InputWidget();
+			this.label74 = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -207,6 +209,8 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label74);
+			this.tabPage1.Controls.Add(this.IDW_ToggleMenu);
 			this.tabPage1.Controls.Add(this.label73);
 			this.tabPage1.Controls.Add(this.label72);
 			this.tabPage1.Controls.Add(this.IDW_StopAVI);
@@ -1666,6 +1670,24 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
+			// IDW_ToggleMenu
+			// 
+			this.IDW_ToggleMenu.AcceptsTab = true;
+			this.IDW_ToggleMenu.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ToggleMenu.Location = new System.Drawing.Point(494, 106);
+			this.IDW_ToggleMenu.Name = "IDW_ToggleMenu";
+			this.IDW_ToggleMenu.Size = new System.Drawing.Size(100, 20);
+			this.IDW_ToggleMenu.TabIndex = 98;
+			// 
+			// label74
+			// 
+			this.label74.AutoSize = true;
+			this.label74.Location = new System.Drawing.Point(408, 112);
+			this.label74.Name = "label74";
+			this.label74.Size = new System.Drawing.Size(70, 13);
+			this.label74.TabIndex = 99;
+			this.label74.Text = "Toggle Menu";
+			// 
 			// HotkeyWindow
 			// 
 			this.AcceptButton = this.IDB_SAVE;
@@ -1855,5 +1877,7 @@
 		private System.Windows.Forms.Label label72;
 		private InputWidget IDW_StopAVI;
 		private InputWidget IDW_RecordAVI;
+		private System.Windows.Forms.Label label74;
+		private InputWidget IDW_ToggleMenu;
     }
 }

@@ -433,7 +433,7 @@ namespace BizHawk.MultiClient
 				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
-				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI"}
+				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu"}
 		};
 
 		private void InitControls()
@@ -511,6 +511,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Soft Reset", Global.Config.SoftResetBinding);
 			controls.BindMulti("Record AVI", Global.Config.AVIRecordBinding);
 			controls.BindMulti("Stop AVI", Global.Config.AVIStopBinding);
+			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
 
 			Global.ClientControls = controls;
 
@@ -1512,6 +1513,9 @@ namespace BizHawk.MultiClient
 				case "Emulator Pause":
 					//used to be here: (the pause hotkey is ignored when we are frame advancing)
 					TogglePause();
+					break;
+				case "Toggle Menu":
+					ShowHideMenu();
 					break;
 
 			} //switch(trigger)

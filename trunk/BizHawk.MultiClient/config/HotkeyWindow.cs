@@ -91,6 +91,7 @@ namespace BizHawk.MultiClient.tools
 			IDW_RESET.SetBindings(Global.Config.SoftResetBinding);
 			IDW_RecordAVI.SetBindings(Global.Config.AVIRecordBinding);
 			IDW_StopAVI.SetBindings(Global.Config.AVIStopBinding);
+			IDW_ToggleMenu.SetBindings(Global.Config.ToggleMenuBinding);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -189,6 +190,7 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.SoftResetBinding = IDW_RESET.Text;
 			Global.Config.AVIRecordBinding = IDW_RecordAVI.Text;
 			Global.Config.AVIStopBinding = IDW_StopAVI.Text;
+			Global.Config.ToggleMenuBinding = IDW_ToggleMenu.Text;
 
 			this.DialogResult = DialogResult.OK;
 			this.Close();
