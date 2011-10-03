@@ -635,6 +635,7 @@ F0898A69	D	Music Module [beta]	SMS
 EF3CC146	F	My Hero (8x overdump) (h) [B]	SMS	
 A06D065C	D	NanoWars 8k	SMS	Haroldo O. Pinheiro; v0.7
 02BD3A57	H	Natal do Mymo	SMS	Psycho Fox
+332A847D		NBA Jam [Proto]	SMS		PAL
 5B5F9106	 	Nekyuu Kousien (JP)	SMS		FM
 C660FF34	 	The New Zealand Story	SMS	
 FBC66CBF	B	The New Zealand Story (bad byte)	SMS	
