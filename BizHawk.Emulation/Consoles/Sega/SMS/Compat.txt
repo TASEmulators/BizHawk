@@ -1,4 +1,12 @@
-﻿======= Game Gear compatibility issues =======
+﻿======= SMS compatibility issues =======
+
+* NBA-Jam SMS Proto: works in PAL mode, which is how it's designed to run.
+  In NTSC mode, it is impossible to start a game, however, it is possible on
+  other emulators.
+  Need to give it a test on Everdrive, and eventually investigate its NTSC behavior,
+  but don't really consider it super-high priority since it works correctly in PAL mode.
+
+======= Game Gear compatibility issues =======
 
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to
   fix it, but so far, not without breaking other games.
