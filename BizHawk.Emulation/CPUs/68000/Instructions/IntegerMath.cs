@@ -16,39 +16,39 @@ namespace BizHawk.Emulation.CPUs.M68K
                 case 0: // byte
                 {
                     sbyte value = ReadValueB(mode, reg);
-                    int sResult = D[Dreg].s8 + value;
-                    int uResult = D[Dreg].u8 + (byte)value;
-                    X = C = (uResult & 0x100) != 0;
-                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
-                    N = (sResult & 0x80) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s8 = (sbyte) sResult;
+                    int result = D[Dreg].s8 + value;
+                    int uresult = D[Dreg].u8 + (byte)value;
+                    X = C = (uresult & 0x100) != 0;
+                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                    N = (result & 0x80) != 0;
+                    Z = result == 0;
+                    D[Dreg].s8 = (sbyte) result;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
                     short value = ReadValueW(mode, reg);
-                    int sResult = D[Dreg].s16 + value;
-                    int uResult = D[Dreg].u16 + (ushort)value;
-                    X = C = (uResult & 0x10000) != 0;
-                    V = sResult > short.MaxValue || sResult < short.MinValue;
-                    N = (sResult & 0x8000) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s16 = (short)sResult;
+                    int result = D[Dreg].s16 + value;
+                    int uresult = D[Dreg].u16 + (ushort)value;
+                    X = C = (uresult & 0x10000) != 0;
+                    V = result > short.MaxValue || result < short.MinValue;
+                    N = (result & 0x8000) != 0;
+                    Z = result == 0;
+                    D[Dreg].s16 = (short)result;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
                     int value = ReadValueL(mode, reg);
-                    long sResult = D[Dreg].s32 + value;
-                    long uResult = D[Dreg].u32 + (uint)value;
-                    X = C = (uResult & 0x100000000) != 0;
-                    V = sResult > int.MaxValue || sResult < int.MinValue;
-                    N = (sResult & 0x80000000) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s32 = (int)sResult;
+                    long result = D[Dreg].s32 + value;
+                    long uresult = D[Dreg].u32 + (uint)value;
+                    X = C = (uresult & 0x100000000) != 0;
+                    V = result > int.MaxValue || result < int.MinValue;
+                    N = (result & 0x80000000) != 0;
+                    Z = result == 0;
+                    D[Dreg].s32 = (int)result;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
@@ -67,40 +67,39 @@ namespace BizHawk.Emulation.CPUs.M68K
                 case 0: // byte
                 {
                     sbyte value = PeekValueB(mode, reg);
-                    int sResult = value + D[Dreg].s8;
-                    int uResult = (byte)value + D[Dreg].u8;
-                    X = C = (uResult & 0x100) != 0;
-                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
-                    N = (sResult & 0x80) != 0;
-                    Z = sResult == 0;
-                    WriteValueB(mode, reg, (sbyte)sResult);
+                    int result = value + D[Dreg].s8;
+                    int uresult = (byte)value + D[Dreg].u8;
+                    X = C = (uresult & 0x100) != 0;
+                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                    N = (result & 0x80) != 0;
+                    Z = result == 0;
+                    WriteValueB(mode, reg, (sbyte)result);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
                     short value = PeekValueW(mode, reg);
-                    int sResult = value + D[Dreg].s16;
-                    int uResult = (ushort)value + D[Dreg].u16;
-                    Log.Note("CPU", "ADD1.W. value={0}, reg={1}, signed result = {2}, unsigned result = {3}", value, D[Dreg].s16, sResult, uResult);
-                    X = C = (uResult & 0x10000) != 0;
-                    V = sResult > short.MaxValue || sResult < short.MinValue;
-                    N = (sResult & 0x8000) != 0;
-                    Z = sResult == 0;
-                    WriteValueW(mode, reg, (short)sResult);
+                    int result = value + D[Dreg].s16;
+                    int uresult = (ushort)value + D[Dreg].u16;
+                    X = C = (uresult & 0x10000) != 0;
+                    V = result > short.MaxValue || result < short.MinValue;
+                    N = (result & 0x8000) != 0;
+                    Z = result == 0;
+                    WriteValueW(mode, reg, (short)result);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
                     int value = PeekValueL(mode, reg);
-                    long sResult = value + D[Dreg].s32;
-                    long uResult = (uint)value + D[Dreg].u32;
-                    X = C = (uResult & 0x100000000) != 0;
-                    V = sResult > int.MaxValue || sResult < int.MinValue;
-                    N = (sResult & 0x80000000) != 0;
-                    Z = sResult == 0;
-                    WriteValueL(mode, reg, (int)sResult);
+                    long result = value + D[Dreg].s32;
+                    long uresult = (uint)value + D[Dreg].u32;
+                    X = C = (uresult & 0x100000000) != 0;
+                    V = result > int.MaxValue || result < int.MinValue;
+                    N = (result & 0x80000000) != 0;
+                    Z = result == 0;
+                    WriteValueL(mode, reg, (int)result);
                     PendingCycles -= 12 + EACyclesL[mode, reg];
                     return;
                 }
@@ -135,16 +134,18 @@ namespace BizHawk.Emulation.CPUs.M68K
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-    Log.Error("CPU", "ADDI: note, flags probably calculated wrong. I suck.");
+
             switch (size)
             {
                 case 0: // byte
                 {
                     int immed = (sbyte) ReadWord(PC); PC += 2;
-                    int result = PeekValueB(mode, reg) + immed;
-                    X = C = (result & 0x100) != 0;
+                    sbyte value = PeekValueB(mode, reg);
+                    int result = value + immed;
+                    int uresult = (byte)value + (byte)immed;
+                    X = C = (uresult & 0x100) != 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     WriteValueB(mode, reg, (sbyte)result);
                     if (mode == 0) PendingCycles -= 8;
@@ -154,10 +155,12 @@ namespace BizHawk.Emulation.CPUs.M68K
                 case 1: // word
                 {
                     int immed = ReadWord(PC); PC += 2;
-                    int result = PeekValueW(mode, reg) + immed;
-                    X = C = (result & 0x10000) != 0;
+                    short value = PeekValueW(mode, reg);
+                    int result = value + immed;
+                    int uresult = (ushort)value + (ushort)immed;
+                    X = C = (uresult & 0x10000) != 0;
                     V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
+                    N = (result & 0x8000) != 0;
                     Z = result == 0;
                     WriteValueW(mode, reg, (short)result);
                     if (mode == 0) PendingCycles -= 8;
@@ -167,10 +170,12 @@ namespace BizHawk.Emulation.CPUs.M68K
                 case 2: // long
                 {
                     int immed = ReadLong(PC); PC += 2;
-                    long result = PeekValueL(mode, reg) + immed;
-                    X = C = (result & 0x100000000) != 0;
+                    int value = PeekValueL(mode, reg);
+                    long result = value + immed;
+                    long uresult = (uint)value + (uint)immed;
+                    X = C = (uresult & 0x100000000) != 0;
                     V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
+                    N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     WriteValueL(mode, reg, (int)result);
                     if (mode == 0) PendingCycles -= 16;
@@ -212,7 +217,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
+            
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
             switch (size)
@@ -220,11 +225,13 @@ Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
                 case 0: // byte
                 {
                     if (mode == 1) throw new Exception("ADDQ.B on address reg is invalid");
-                    int result = PeekValueB(mode, reg) + data;
-                    N = result < 0;
+                    sbyte value = PeekValueB(mode, reg);
+                    int result = value + data;
+                    int uresult = (byte)value + data;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    C = X = (result & 0x100) != 0;
+                    C = X = (uresult & 0x100) != 0;
                     WriteValueB(mode, reg, (sbyte) result);
                     if (mode == 0) PendingCycles -= 4;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
@@ -232,32 +239,32 @@ Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
                 }
                 case 1: // word
                 {
-                    int result;
-                    if (mode == 1)
+                    short value = PeekValueW(mode, reg);
+                    int result = value + data;
+                    int uresult = (ushort)value + data;
+                    if (mode != 1)
                     {
-                        result = PeekValueL(mode, reg) + data;
-                        WriteValueL(mode, reg, (short) result);
-                    } else {
-                        result = PeekValueW(mode, reg) + data;
                         N = result < 0;
-                        Z = result == 0;
+                        N = (result & 0x8000) != 0;
                         V = result > short.MaxValue || result < short.MinValue;
-                        C = X = (result & 0x10000) != 0;
-                        WriteValueW(mode, reg, (short)result);
+                        C = X = (uresult & 0x10000) != 0;
                     }
+                    WriteValueW(mode, reg, (short)result);
                     if (mode <= 1) PendingCycles -= 4;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 default: // long
                 {
-                    long result = PeekValueL(mode, reg) + data;
+                    int value = PeekValueL(mode, reg);
+                    long result = value + data;
+                    long uresult = (uint)value + data;
                     if (mode != 1)
                     {
-                        N = result < 0;
+                        N = (result & 0x80000000) != 0;
                         Z = result == 0;
                         V = result > int.MaxValue || result < int.MinValue;
-                        C = X = (result & 0x100000000) != 0;
+                        C = X = (uresult & 0x100000000) != 0;
                     }
                     WriteValueL(mode, reg, (int)result);
                     if (mode <= 1) PendingCycles -= 8;
@@ -332,39 +339,39 @@ Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
                 case 0: // byte
                 {
                     sbyte value = ReadValueB(mode, reg);
-                    int sResult = D[Dreg].s8 - value;
-                    int uResult = D[Dreg].u8 - (byte)value;
-                    X = C = (uResult & 0x100) != 0;
-                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
-                    N = (sResult & 0x80) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s8 = (sbyte) sResult;
+                    int result = D[Dreg].s8 - value;
+                    int uresult = D[Dreg].u8 - (byte)value;
+                    X = C = (uresult & 0x100) != 0;
+                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                    N = (result & 0x80) != 0;
+                    Z = result == 0;
+                    D[Dreg].s8 = (sbyte) result;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
                     short value = ReadValueW(mode, reg);
-                    int sResult = D[Dreg].s16 - value;
-                    int uResult = D[Dreg].u16 - (ushort)value;
-                    X = C = (uResult & 0x10000) != 0;
-                    V = sResult > short.MaxValue || sResult < short.MinValue;
-                    N = (sResult & 0x8000) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s16 = (short) sResult;
+                    int result = D[Dreg].s16 - value;
+                    int uresult = D[Dreg].u16 - (ushort)value;
+                    X = C = (uresult & 0x10000) != 0;
+                    V = result > short.MaxValue || result < short.MinValue;
+                    N = (result & 0x8000) != 0;
+                    Z = result == 0;
+                    D[Dreg].s16 = (short) result;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
                     int value = ReadValueL(mode, reg);
-                    long sResult = D[Dreg].s32 - value;
-                    long uResult = D[Dreg].u32 - (uint)value;
-                    X = C = (uResult & 0x100000000) != 0;
-                    V = sResult > int.MaxValue || sResult < int.MinValue;
-                    N = (sResult & 0x80000000) != 0;
-                    Z = sResult == 0;
-                    D[Dreg].s32 = (int)sResult;
+                    long result = D[Dreg].s32 - value;
+                    long uresult = D[Dreg].u32 - (uint)value;
+                    X = C = (uresult & 0x100000000) != 0;
+                    V = result > int.MaxValue || result < int.MinValue;
+                    N = (result & 0x80000000) != 0;
+                    Z = result == 0;
+                    D[Dreg].s32 = (int)result;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
@@ -383,39 +390,39 @@ Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
                 case 0: // byte
                 {
                     sbyte value = PeekValueB(mode, reg);
-                    int sResult = value - D[Dreg].s8;
-                    int uResult = (byte)value - D[Dreg].u8;
-                    X = C = (uResult & 0x100) != 0;
-                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
-                    N = (sResult & 0x80) != 0;
-                    Z = sResult == 0;
-                    WriteValueB(mode, reg, (sbyte) sResult);
+                    int result = value - D[Dreg].s8;
+                    int uresult = (byte)value - D[Dreg].u8;
+                    X = C = (uresult & 0x100) != 0;
+                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                    N = (result & 0x80) != 0;
+                    Z = result == 0;
+                    WriteValueB(mode, reg, (sbyte) result);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
                     short value = PeekValueW(mode, reg);
-                    int sResult = value - D[Dreg].s16;
-                    int uResult = (ushort)value - D[Dreg].u16;
-                    X = C = (uResult & 0x10000) != 0;
-                    V = sResult > short.MaxValue || sResult < short.MinValue;
-                    N = (sResult & 0x8000) != 0;
-                    Z = sResult == 0;
-                    WriteValueW(mode, reg, (short) sResult);
+                    int result = value - D[Dreg].s16;
+                    int uresult = (ushort)value - D[Dreg].u16;
+                    X = C = (uresult & 0x10000) != 0;
+                    V = result > short.MaxValue || result < short.MinValue;
+                    N = (result & 0x8000) != 0;
+                    Z = result == 0;
+                    WriteValueW(mode, reg, (short) result);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
                     int value = PeekValueL(mode, reg);
-                    long sResult = value - D[Dreg].s32;
-                    long uResult = (uint)value - D[Dreg].u32;
-                    X = C = (uResult & 0x100000000) != 0;
-                    V = sResult > int.MaxValue || sResult < int.MinValue;
-                    N = (sResult & 0x80000000) != 0;
-                    Z = sResult == 0;
-                    WriteValueL(mode, reg, (int) sResult);
+                    long result = value - D[Dreg].s32;
+                    long uresult = (uint)value - D[Dreg].u32;
+                    X = C = (uresult & 0x100000000) != 0;
+                    V = result > int.MaxValue || result < int.MinValue;
+                    N = (result & 0x80000000) != 0;
+                    Z = result == 0;
+                    WriteValueL(mode, reg, (int) result);
                     PendingCycles -= 12 + EACyclesL[mode, reg];
                     return;
                 }
@@ -527,7 +534,7 @@ Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
-Log.Error("CPU", "SUBQ, bad flag calculations, I = lame");
+
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
             switch (size)
@@ -535,11 +542,13 @@ Log.Error("CPU", "SUBQ, bad flag calculations, I = lame");
                 case 0: // byte
                 {
                     if (mode == 1) throw new Exception("SUBQ.B on address reg is invalid");
-                    int result = PeekValueB(mode, reg) - data;
-                    N = result < 0;
+                    sbyte value = PeekValueB(mode, reg);
+                    int result = value - data;
+                    int uresult = (byte)value - data;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    C = X = (result & 0x100) != 0;
+                    C = X = (uresult & 0x100) != 0;
                     WriteValueB(mode, reg, (sbyte) result);
                     if (mode == 0) PendingCycles -= 4;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
@@ -547,13 +556,15 @@ Log.Error("CPU", "SUBQ, bad flag calculations, I = lame");
                 }
                 case 1: // word
                 {
-                    int result = PeekValueW(mode, reg) - data;
+                    short value = PeekValueW(mode, reg);
+                    int result = value - data;
+                    int uresult = (ushort)value - data;
                     if (mode != 1)
                     {
-                        N = result < 0;
+                        N = (result & 0x8000) != 0;
                         Z = result == 0;
                         V = result > short.MaxValue || result < short.MinValue;
-                        C = X = (result & 0x10000) != 0;
+                        C = X = (uresult & 0x10000) != 0;
                     }
                     WriteValueW(mode, reg, (short)result);
                     if (mode <= 1) PendingCycles -= 4;
@@ -562,13 +573,15 @@ Log.Error("CPU", "SUBQ, bad flag calculations, I = lame");
                 }
                 default: // long
                 {
-                    long result = PeekValueL(mode, reg) - data;
+                    int value = PeekValueL(mode, reg);
+                    long result = value - data;
+                    long uresult = (uint)value - data;
                     if (mode != 1)
                     {
-                        N = result < 0;
+                        N = (result & 0x80000000) != 0;
                         Z = result == 0;
                         V = result > int.MaxValue || result < int.MinValue;
-                        C = X = (result & 0x100000000) != 0;
+                        C = X = (uresult & 0x100000000) != 0;
                     }
                     WriteValueL(mode, reg, (int)result);
                     if (mode <= 1) PendingCycles -= 8;
