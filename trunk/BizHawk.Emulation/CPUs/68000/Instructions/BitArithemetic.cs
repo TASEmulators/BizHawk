@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private void ANDI() // AND immediate
+        void ANDI() // AND immediate
         {
             int size    = ((op >> 6) & 0x03);
             int dstMode = ((op >> 3) & 0x07);
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ANDI_Disasm(DisassemblyInfo info)
+        void ANDI_Disasm(DisassemblyInfo info)
         {
             int size = ((op >> 6) & 0x03);
             int dstMode = ((op >> 3) & 0x07);
@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ORI()
+        void ORI()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
@@ -127,13 +127,13 @@ namespace BizHawk.Emulation.CPUs.M68K
                     WriteValueL(mode, reg, value);
                     N = value < 0;
                     Z = value == 0;
-                    PendingCycles -= mode == 0 ? 17 : 20 + EACyclesL[mode, reg];
+                    PendingCycles -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
                     return;
                 }
             }
         }
 
-        private void ORI_Disasm(DisassemblyInfo info)
+        void ORI_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int size = (op >> 6) & 3;
@@ -168,7 +168,89 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void LSLd()
+        void OR()
+        {
+            throw new Exception();
+            /*int size = (op >> 6) & 3;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            V = C = false;
+
+            switch (size)
+            {
+                case 0: // byte
+                    {
+                        sbyte immed = (sbyte)ReadWord(PC); PC += 2;
+                        sbyte value = (sbyte)(PeekValueB(mode, reg) | immed);
+                        WriteValueB(mode, reg, value);
+                        N = value < 0;
+                        Z = value == 0;
+                        PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        return;
+                    }
+                case 1: // word
+                    {
+                        short immed = ReadWord(PC); PC += 2;
+                        short value = (short)(PeekValueW(mode, reg) | immed);
+                        WriteValueW(mode, reg, value);
+                        N = value < 0;
+                        Z = value == 0;
+                        PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                        return;
+                    }
+                case 2: // long
+                    {
+                        int immed = ReadLong(PC); PC += 4;
+                        int value = PeekValueL(mode, reg) | immed;
+                        WriteValueL(mode, reg, value);
+                        N = value < 0;
+                        Z = value == 0;
+                        PendingCycles -= mode == 0 ? 17 : 20 + EACyclesL[mode, reg];
+                        return;
+                    }
+            }*/
+        }
+
+        void OR_Disasm(DisassemblyInfo info)
+        {
+            int pc = info.PC + 2;
+            int dReg = (op >> 9) & 3;
+            int d = (op >> 8) & 1;
+            int size = (op >> 6) & 3;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            switch (size)
+            {
+                case 0: // byte
+                    {
+                        info.Mnemonic = "ori.b";
+                        sbyte immed = (sbyte)ReadWord(pc); pc += 2;
+                        info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+                        break;
+                    }
+                case 1: // word
+                    {
+                        info.Mnemonic = "ori.w";
+                        short immed = ReadWord(pc); pc += 2;
+                        info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+                        break;
+                    }
+                case 2: // long
+                    {
+                        info.Mnemonic = "ori.l";
+                        int immed = ReadLong(pc); pc += 4;
+                        info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+                        break;
+                    }
+            }
+
+            info.Length = pc - info.PC;
+        }
+
+
+        void LSLd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -216,7 +298,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void LSLd_Disasm(DisassemblyInfo info)
+        void LSLd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -238,7 +320,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void LSRd()
+        void LSRd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -286,7 +368,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void LSRd_Disasm(DisassemblyInfo info)
+        void LSRd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -308,7 +390,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ASLd()
+        void ASLd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -356,7 +438,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ASLd_Disasm(DisassemblyInfo info)
+        void ASLd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -378,7 +460,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ASRd()
+        void ASRd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -426,7 +508,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ASRd_Disasm(DisassemblyInfo info)
+        void ASRd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -448,7 +530,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ROLd()
+        void ROLd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -496,7 +578,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ROLd_Disasm(DisassemblyInfo info)
+        void ROLd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -518,7 +600,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void RORd()
+        void RORd()
         {
             int rot = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -566,7 +648,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void RORd_Disasm(DisassemblyInfo info)
+        void RORd_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int rot = (op >> 9) & 7;
@@ -588,7 +670,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void SWAP()
+        void SWAP()
         {
             int reg = op & 7;
             D[reg].u32 = (D[reg].u32 << 16) | (D[reg].u32 >> 16);
@@ -598,7 +680,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 4;
         }
 
-        private void SWAP_Disasm(DisassemblyInfo info)
+        void SWAP_Disasm(DisassemblyInfo info)
         {
             int reg = op & 7;
             info.Mnemonic = "swap";

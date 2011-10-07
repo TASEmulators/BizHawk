@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private void ADD0()
+        void ADD0()
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -15,41 +15,47 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 case 0: // byte
                 {
-                    int result = D[Dreg].s8 + ReadValueB(mode, reg);
-                    X = C = (result & 0x100) != 0;
-                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s8 = (sbyte)result;
+                    sbyte value = ReadValueB(mode, reg);
+                    int sResult = D[Dreg].s8 + value;
+                    int uResult = D[Dreg].u8 + (byte)value;
+                    X = C = (uResult & 0x100) != 0;
+                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
+                    N = (sResult & 0x80) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s8 = (sbyte) sResult;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
-                    int result = D[Dreg].s16 + ReadValueW(mode, reg);
-                    X = C = (result & 0x10000) != 0;
-                    V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s16 = (short)result;
+                    short value = ReadValueW(mode, reg);
+                    int sResult = D[Dreg].s16 + value;
+                    int uResult = D[Dreg].u16 + (ushort)value;
+                    X = C = (uResult & 0x10000) != 0;
+                    V = sResult > short.MaxValue || sResult < short.MinValue;
+                    N = (sResult & 0x8000) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s16 = (short)sResult;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
-                    long result = D[Dreg].s32 + ReadValueL(mode, reg);
-                    X = C = (result & 0x100000000) != 0;
-                    V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s32 = (int)result;
+                    int value = ReadValueL(mode, reg);
+                    long sResult = D[Dreg].s32 + value;
+                    long uResult = D[Dreg].u32 + (uint)value;
+                    X = C = (uResult & 0x100000000) != 0;
+                    V = sResult > int.MaxValue || sResult < int.MinValue;
+                    N = (sResult & 0x80000000) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s32 = (int)sResult;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
             }
         }
 
-        private void ADD1()
+        void ADD1()
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -60,41 +66,48 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 case 0: // byte
                 {
-                    int result = PeekValueB(mode, reg) + D[Dreg].s8;
-                    X = C = (result & 0x100) != 0;
-                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueB(mode, reg, (sbyte)result);
+                    sbyte value = PeekValueB(mode, reg);
+                    int sResult = value + D[Dreg].s8;
+                    int uResult = (byte)value + D[Dreg].u8;
+                    X = C = (uResult & 0x100) != 0;
+                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
+                    N = (sResult & 0x80) != 0;
+                    Z = sResult == 0;
+                    WriteValueB(mode, reg, (sbyte)sResult);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
-                    int result = PeekValueW(mode, reg) + D[Dreg].s16;
-                    X = C = (result & 0x10000) != 0;
-                    V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueW(mode, reg, (short)result);
+                    short value = PeekValueW(mode, reg);
+                    int sResult = value + D[Dreg].s16;
+                    int uResult = (ushort)value + D[Dreg].u16;
+                    Log.Note("CPU", "ADD1.W. value={0}, reg={1}, signed result = {2}, unsigned result = {3}", value, D[Dreg].s16, sResult, uResult);
+                    X = C = (uResult & 0x10000) != 0;
+                    V = sResult > short.MaxValue || sResult < short.MinValue;
+                    N = (sResult & 0x8000) != 0;
+                    Z = sResult == 0;
+                    WriteValueW(mode, reg, (short)sResult);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
-                    long result = PeekValueL(mode, reg) + D[Dreg].s32;
-                    X = C = (result & 0x100000000) != 0;
-                    V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueL(mode, reg, (int)result);
+                    int value = PeekValueL(mode, reg);
+                    long sResult = value + D[Dreg].s32;
+                    long uResult = (uint)value + D[Dreg].u32;
+                    X = C = (uResult & 0x100000000) != 0;
+                    V = sResult > int.MaxValue || sResult < int.MinValue;
+                    N = (sResult & 0x80000000) != 0;
+                    Z = sResult == 0;
+                    WriteValueL(mode, reg, (int)sResult);
                     PendingCycles -= 12 + EACyclesL[mode, reg];
                     return;
                 }
             }
         }
 
-        private void ADD_Disasm(DisassemblyInfo info)
+        void ADD_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -117,12 +130,12 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
         
-        private void ADDI()
+        void ADDI()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-
+    Log.Error("CPU", "ADDI: note, flags probably calculated wrong. I suck.");
             switch (size)
             {
                 case 0: // byte
@@ -167,7 +180,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ADDI_Disasm(DisassemblyInfo info)
+        void ADDI_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -193,13 +206,13 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ADDQ()
+        void ADDQ()
         {
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-
+Log.Error("CPU", "ADDQ: note, flags probably calculated wrong. I suck.");
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
             switch (size)
@@ -254,7 +267,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ADDQ_Disasm(DisassemblyInfo info)
+        void ADDQ_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int data = (op >> 9) & 7;
@@ -273,7 +286,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ADDA()
+        void ADDA()
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
@@ -292,7 +305,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void ADDA_Disasm(DisassemblyInfo info)
+        void ADDA_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -307,7 +320,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void SUB0()
+        void SUB0()
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -318,41 +331,47 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 case 0: // byte
                 {
-                    int result = D[Dreg].s8 - ReadValueB(mode, reg);
-                    X = C = (result & 0x100) != 0;
-                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s8 = (sbyte) result;
+                    sbyte value = ReadValueB(mode, reg);
+                    int sResult = D[Dreg].s8 - value;
+                    int uResult = D[Dreg].u8 - (byte)value;
+                    X = C = (uResult & 0x100) != 0;
+                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
+                    N = (sResult & 0x80) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s8 = (sbyte) sResult;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
-                    int result = D[Dreg].s16 - ReadValueW(mode, reg);
-                    X = C = (result & 0x10000) != 0;
-                    V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s16 = (short) result;
+                    short value = ReadValueW(mode, reg);
+                    int sResult = D[Dreg].s16 - value;
+                    int uResult = D[Dreg].u16 - (ushort)value;
+                    X = C = (uResult & 0x10000) != 0;
+                    V = sResult > short.MaxValue || sResult < short.MinValue;
+                    N = (sResult & 0x8000) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s16 = (short) sResult;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
-                    long result = D[Dreg].s32 - ReadValueL(mode, reg);
-                    X = C = (result & 0x100000000) != 0;
-                    V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    D[Dreg].s32 = (int)result;
+                    int value = ReadValueL(mode, reg);
+                    long sResult = D[Dreg].s32 - value;
+                    long uResult = D[Dreg].u32 - (uint)value;
+                    X = C = (uResult & 0x100000000) != 0;
+                    V = sResult > int.MaxValue || sResult < int.MinValue;
+                    N = (sResult & 0x80000000) != 0;
+                    Z = sResult == 0;
+                    D[Dreg].s32 = (int)sResult;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
             }
         }
 
-        private void SUB1()
+        void SUB1()
         {
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
@@ -363,41 +382,47 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 case 0: // byte
                 {
-                    int result = PeekValueB(mode, reg) - D[Dreg].s8;
-                    X = C = (result & 0x100) != 0;
-                    V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueB(mode, reg, (sbyte) result);
+                    sbyte value = PeekValueB(mode, reg);
+                    int sResult = value - D[Dreg].s8;
+                    int uResult = (byte)value - D[Dreg].u8;
+                    X = C = (uResult & 0x100) != 0;
+                    V = sResult > sbyte.MaxValue || sResult < sbyte.MinValue;
+                    N = (sResult & 0x80) != 0;
+                    Z = sResult == 0;
+                    WriteValueB(mode, reg, (sbyte) sResult);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
-                    int result = PeekValueW(mode, reg) - D[Dreg].s16;
-                    X = C = (result & 0x10000) != 0;
-                    V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueW(mode, reg, (short) result);
+                    short value = PeekValueW(mode, reg);
+                    int sResult = value - D[Dreg].s16;
+                    int uResult = (ushort)value - D[Dreg].u16;
+                    X = C = (uResult & 0x10000) != 0;
+                    V = sResult > short.MaxValue || sResult < short.MinValue;
+                    N = (sResult & 0x8000) != 0;
+                    Z = sResult == 0;
+                    WriteValueW(mode, reg, (short) sResult);
                     PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
-                    long result = PeekValueL(mode, reg) - D[Dreg].s32;
-                    X = C = (result & 0x100000000) != 0;
-                    V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
-                    Z = result == 0;
-                    WriteValueL(mode, reg, (int) result);
+                    int value = PeekValueL(mode, reg);
+                    long sResult = value - D[Dreg].s32;
+                    long uResult = (uint)value - D[Dreg].u32;
+                    X = C = (uResult & 0x100000000) != 0;
+                    V = sResult > int.MaxValue || sResult < int.MinValue;
+                    N = (sResult & 0x80000000) != 0;
+                    Z = sResult == 0;
+                    WriteValueL(mode, reg, (int) sResult);
                     PendingCycles -= 12 + EACyclesL[mode, reg];
                     return;
                 }
             }
         }
 
-        private void SUB_Disasm(DisassemblyInfo info)
+        void SUB_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -420,12 +445,12 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void SUBI()
+        void SUBI()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-
+Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
             switch (size)
             {
                 case 0: // byte
@@ -470,7 +495,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void SUBI_Disasm(DisassemblyInfo info)
+        void SUBI_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -496,13 +521,13 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void SUBQ()
+        void SUBQ()
         {
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
-
+Log.Error("CPU", "SUBQ, bad flag calculations, I = lame");
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
             switch (size)
@@ -553,7 +578,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void SUBQ_Disasm(DisassemblyInfo info)
+        void SUBQ_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int data = (op >> 9) & 7;
@@ -572,7 +597,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;   
         }
 
-        private void SUBA()
+        void SUBA()
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
@@ -591,7 +616,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void SUBA_Disasm(DisassemblyInfo info)
+        void SUBA_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -606,13 +631,13 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void CMP()
+        void CMP()
         {
             int dReg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-
+Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
             switch (size)
             {
                 case 0: // byte
@@ -650,7 +675,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void CMP_Disasm(DisassemblyInfo info)
+        void CMP_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -677,7 +702,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void CMPA()
+        void CMPA()
         {
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
@@ -709,7 +734,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void CMPA_Disasm(DisassemblyInfo info)
+        void CMPA_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -733,7 +758,7 @@ namespace BizHawk.Emulation.CPUs.M68K
         }
 
 
-        private void CMPI()
+        void CMPI()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
@@ -780,7 +805,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void CMPI_Disasm(DisassemblyInfo info)
+        void CMPI_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int size = (op >> 6) & 3;

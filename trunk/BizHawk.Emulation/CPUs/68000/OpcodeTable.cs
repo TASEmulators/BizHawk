@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private void BuildOpcodeTable()
+        void BuildOpcodeTable()
         {
             // NOTE: Do not change the order of these assigns without testing. There is
             // some overwriting of less-specific opcodes with more-specific opcodes.
@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             Assign("lea",   LEA,   "0100", "Xn", "111", "AmXn");
             Assign("clr",   CLR,   "01000010", "Size2_1", "AmXn");
             Assign("ext",   EXT,   "010010001", "Size1", "000", "Xn");
+            Assign("pea",   PEA,   "0100100001", "AmXn");
 
             Assign("andi",  ANDI,  "00000010", "Size2_1", "AmXn");
             Assign("ori",   ORI,   "00000000", "Size2_1", "AmXn");
@@ -32,13 +33,14 @@ namespace BizHawk.Emulation.CPUs.M68K
             Assign("rol",   ROLd,  "1110", "Data3", "1", "Size2_1", "Data1", "11", "Xn");
             Assign("ror",   RORd,  "1110", "Data3", "0", "Size2_1", "Data1", "11", "Xn");
             Assign("swap",  SWAP,  "0100100001000","Xn");
+            //Assign("or",    OR,    "1000", "Xn", "Data1","Size2_1", "AmXn");
 
             Assign("jmp",   JMP,   "0100111011", "AmXn");
             Assign("jsr",   JSR,   "0100111010", "AmXn");
             Assign("bcc",   Bcc,   "0110", "CondMain", "Data8");
             Assign("bra",   BRA,   "01100000", "Data8");
             Assign("bsr",   BSR,   "01100001", "Data8");
-            // NOTE: Scc must be assigned before DBcc
+            Assign("scc",   Scc,   "0101", "CondAll", "11","AmXn");
             Assign("dbcc",  DBcc,  "0101", "CondAll", "11001", "Xn");
             Assign("rts",   RTS,   "0100111001110101");
             Assign("tst",   TST,   "01001010", "Size2_1", "AmXn");
@@ -67,7 +69,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             Assign("ori2sr",  ORI_SR,  "0000000001111100");
         }
 
-        private void Assign(string instr, Action exec, string root, params string[] bitfield)
+        void Assign(string instr, Action exec, string root, params string[] bitfield)
         {
             List<string> opList = new List<string>();
             opList.Add(root);
@@ -91,19 +93,19 @@ namespace BizHawk.Emulation.CPUs.M68K
             foreach (var opcode in opList)
             {
                 int opc = Convert.ToInt32(opcode, 2);
-                if (Opcodes[opc] != null && instr.NotIn("movea","ori2sr","ext"))
+                if (Opcodes[opc] != null && instr.NotIn("movea","ori2sr","ext","dbcc","swap"))
                     Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
                 Opcodes[opc] = exec;
             }
         }
 
-        private void AppendConstant(List<string> ops, string constant)
+        void AppendConstant(List<string> ops, string constant)
         {
             for (int i=0; i<ops.Count; i++)
                 ops[i] = ops[i] + constant;
         }
 
-        private List<string> AppendPermutations(List<string> ops, string[] permutations)
+        List<string> AppendPermutations(List<string> ops, string[] permutations)
         {
             List<string> output = new List<string>();
 
@@ -114,7 +116,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             return output;
         }
 
-        private List<string> AppendData(List<string> ops, int bits)
+        List<string> AppendData(List<string> ops, int bits)
         {
             List<string> output = new List<string>();
             
@@ -125,7 +127,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             return output;
         }
 
-        private int BinaryExp(int bits)
+        int BinaryExp(int bits)
         {
             int res = 1;
             for (int i = 0; i < bits; i++)
@@ -135,12 +137,12 @@ namespace BizHawk.Emulation.CPUs.M68K
 
         #region Tables
 
-        private static readonly string[] Size2_0 = {"01", "11", "10"};
-        private static readonly string[] Size2_1 = {"00", "01", "10"};
-        private static readonly string[] Size1   = {"0", "1" };
-        private static readonly string[] Xn3     = {"000","001","010","011","100","101","110","111"};
+        static readonly string[] Size2_0 = {"01", "11", "10"};
+        static readonly string[] Size2_1 = {"00", "01", "10"};
+        static readonly string[] Size1   = {"0", "1" };
+        static readonly string[] Xn3     = {"000","001","010","011","100","101","110","111"};
 
-        private static readonly string[] Xn3Am3 = {
+        static readonly string[] Xn3Am3 = {
             "000000", // Dn   Data register
             "001000",
             "010000",
@@ -211,7 +213,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             "100111", // #imm          Immediate            
         };        
 
-        private static readonly string[] Am3Xn3 = {
+        static readonly string[] Am3Xn3 = {
             "000000", // Dn   Data register
             "000001",
             "000010",
@@ -282,7 +284,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             "111100", // #imm          Immediate            
         };
 
-        private static readonly string[] ConditionMain = {
+        static readonly string[] ConditionMain = {
             "0010", // HI  Higher (unsigned)
             "0011", // LS  Lower or Same (unsigned)
             "0100", // CC  Carry Clear (aka Higher or Same, unsigned)
@@ -299,7 +301,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             "1111"  // LE  Less or Equal (signed)
         };
 
-        private static readonly string[] ConditionAll = {
+        static readonly string[] ConditionAll = {
             "0000", // T   True 
             "0001", // F   False            
             "0010", // HI  Higher (unsigned)

@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private sbyte ReadValueB(int mode, int reg)
+        sbyte ReadValueB(int mode, int reg)
         {
             sbyte value;
             switch (mode)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private short ReadValueW(int mode, int reg)
+        short ReadValueW(int mode, int reg)
         {
             short value;
             switch (mode)
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private int ReadValueL(int mode, int reg)
+        int ReadValueL(int mode, int reg)
         {
             int value;
             switch (mode)
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private sbyte PeekValueB(int mode, int reg)
+        sbyte PeekValueB(int mode, int reg)
         {
             sbyte value;
             switch (mode)
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private short PeekValueW(int mode, int reg)
+        short PeekValueW(int mode, int reg)
         {
             short value;
             switch (mode)
@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private int PeekValueL(int mode, int reg)
+        int PeekValueL(int mode, int reg)
         {
             int value;
             switch (mode)
@@ -292,7 +292,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private int ReadAddress(int mode, int reg)
+        int ReadAddress(int mode, int reg)
         {
             int addr;
             switch (mode)
@@ -321,7 +321,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private string DisassembleValue(int mode, int reg, int size, ref int pc)
+        string DisassembleValue(int mode, int reg, int size, ref int pc)
         {
             string value;
             switch (mode)
@@ -372,7 +372,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private string DisassembleImmediate(int size, ref int pc)
+        string DisassembleImmediate(int size, ref int pc)
         {
             int immed;
             switch (size)
@@ -390,7 +390,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new ArgumentException("Invalid size");
         }
 
-        private string DisassembleAddress(int mode, int reg, ref int pc)
+        string DisassembleAddress(int mode, int reg, ref int pc)
         {
             int addr;
             switch (mode)
@@ -419,7 +419,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             throw new Exception("Invalid addressing mode!");
         }
 
-        private void WriteValueB(int mode, int reg, sbyte value)
+        void WriteValueB(int mode, int reg, sbyte value)
         {
             switch (mode)
             {
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void WriteValueW(int mode, int reg, short value)
+        void WriteValueW(int mode, int reg, short value)
         {
             switch (mode)
             {
@@ -517,7 +517,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void WriteValueL(int mode, int reg, int value)
+        void WriteValueL(int mode, int reg, int value)
         {
             switch (mode)
             {
@@ -566,7 +566,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private int GetIndex()
+        int GetIndex()
         {
             Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
             // TODO kid chameleon triggers this in startup sequence
@@ -595,7 +595,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             return displacement + indexReg;
         }
 
-        private int PeekIndex()
+        int PeekIndex()
         {
             Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
 

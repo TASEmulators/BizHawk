@@ -3,9 +3,9 @@ using System;
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private bool TestCondition(int condition)
+        bool TestCondition(int condition)
         {
             switch (condition)
             {
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private string DisassembleCondition(int condition)
+        string DisassembleCondition(int condition)
         {
             switch (condition)
             {
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void Bcc() // Branch on condition
+        void Bcc() // Branch on condition
         {
             sbyte displacement8 = (sbyte) op;
             int cond = (op >> 8) & 0x0F;
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void Bcc_Disasm(DisassemblyInfo info)
+        void Bcc_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             sbyte displacement8 = (sbyte)op;
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void BRA()
+        void BRA()
         {
             sbyte displacement8 = (sbyte)op;
 
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 10;
         }
 
-        private void BRA_Disasm(DisassemblyInfo info)
+        void BRA_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             info.Mnemonic = "bra";
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void BSR()
+        void BSR()
         {
             sbyte displacement8 = (sbyte)op;
 
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 18;
         }
 
-        private void BSR_Disasm(DisassemblyInfo info)
+        void BSR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             info.Mnemonic = "bsr";
@@ -158,12 +158,11 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void DBcc()
+        void DBcc()
         {
             if (TestCondition((op >> 8) & 0x0F) == true)
             {
-                // break out of loop
-                PC += 2;
+                PC += 2; // condition met, break out of loop
                 PendingCycles -= 12;
             } else {
                 int reg = op & 7;
@@ -171,16 +170,16 @@ namespace BizHawk.Emulation.CPUs.M68K
 
                 if (D[reg].u16 == 0xFFFF)
                 {
-                    PC += 2;
+                    PC += 2; // counter underflowed, break out of loop
                     PendingCycles -= 14;
                 } else {
-                    PC += ReadWord(PC);
-                    TotalExecutedCycles -= 10;
+                    PC += ReadWord(PC); // condition false and counter not exhausted, so branch.
+                    PendingCycles -= 10;
                 }
             }
         }
 
-        private void DBcc_Disasm(DisassemblyInfo info)
+        void DBcc_Disasm(DisassemblyInfo info)
         {
             int cond = (op >> 8) & 0x0F;
             if (cond == 1)
@@ -193,20 +192,20 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = 4;
         }
 
-        private void RTS()
+        void RTS()
         {
             PC = ReadLong(A[7].s32);
             A[7].s32 += 4;
             PendingCycles -= 16;
         }
 
-        private void RTS_Disasm(DisassemblyInfo info)
+        void RTS_Disasm(DisassemblyInfo info)
         {
             info.Mnemonic = "rts";
             info.Args = "";
         }
 
-        private void TST()
+        void TST()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
@@ -225,7 +224,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             Z = (value == 0);
         }
 
-        private void TST_Disasm(DisassemblyInfo info)
+        void TST_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int size = (op >> 6) & 3;
@@ -241,7 +240,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void BTSTi()
+        void BTSTi()
         {
             int bit = ReadWord(PC);
             PC += 2;
@@ -262,7 +261,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void BTSTi_Disasm(DisassemblyInfo info)
+        void BTSTi_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int bit = ReadWord(pc); pc += 2;
@@ -271,21 +270,45 @@ namespace BizHawk.Emulation.CPUs.M68K
 
             info.Mnemonic = "btst";
             info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
-
             info.Length = pc - info.PC;
         }
 
-        private void BTSTr()
+        void BTSTr()
         {
-            throw new NotImplementedException();
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg = op & 7;
+            int bit = D[dReg].s32;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                PendingCycles -= 6;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                Z = (ReadValueB(mode, reg) & mask) == 0;
+                PendingCycles -= 4 + EACyclesBW[mode, reg];
+            }
         }
 
-        private void BTSTr_Disasm(DisassemblyInfo info)
+        void BTSTr_Disasm(DisassemblyInfo info)
         {
-            throw new NotImplementedException();
+            int pc = info.PC + 2;
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg = op & 7;
+
+            info.Mnemonic = "btst";
+            info.Args = String.Format("D{0}, {1}", dReg, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
         }
 
-        private void JMP()
+        void JMP()
         {
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
@@ -308,7 +331,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void JMP_Disasm(DisassemblyInfo info)
+        void JMP_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int mode = (op >> 3) & 7;
@@ -318,7 +341,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void JSR()
+        void JSR()
         {
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
@@ -345,7 +368,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void JSR_Disasm(DisassemblyInfo info)
+        void JSR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int mode = (op >> 3) & 7;
@@ -355,7 +378,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void LINK()
+        void LINK()
         {
             int reg = op & 7;
             A[7].s32 -= 4;
@@ -365,7 +388,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 16;
         }
 
-        private void LINK_Disasm(DisassemblyInfo info)
+        void LINK_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int reg = op & 7;
@@ -374,14 +397,44 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void NOP()
+        void NOP()
         {
             PendingCycles -= 4;
         }
 
-        private void NOP_Disasm(DisassemblyInfo info)
+        void NOP_Disasm(DisassemblyInfo info)
         {
             info.Mnemonic = "nop";
+        }
+        
+        void Scc() // Set on condition
+        {
+            int cond = (op >> 8) & 0x0F;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            if (TestCondition(cond) == true)
+            {
+                WriteValueB(mode, reg, -1);
+                if (mode == 0) PendingCycles -= 6;
+                else PendingCycles -= 8 + EACyclesBW[mode, reg];
+            } else {
+                WriteValueB(mode, reg, 0);
+                if (mode == 0) PendingCycles -= 4;
+                else PendingCycles -= 8 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void Scc_Disasm(DisassemblyInfo info)
+        {
+            int pc = info.PC + 2;
+            int cond = (op >> 8) & 0x0F;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            info.Mnemonic = "s" + DisassembleCondition(cond);
+            info.Args = DisassembleValue(mode, reg, 1, ref pc);
+            info.Length = pc - info.PC;
         }
     }
 }

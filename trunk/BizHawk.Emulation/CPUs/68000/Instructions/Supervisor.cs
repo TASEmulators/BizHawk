@@ -2,9 +2,9 @@
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private void MOVEtSR()
+        void MOVEtSR()
         {
             if (S == false)
                 throw new Exception("Write to SR when not in supervisor mode. supposed to trap or something...");
@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= (mode == 0) ? 12 : 12 + EACyclesBW[mode, reg];
         }
 
-        private void MOVEtSR_Disasm(DisassemblyInfo info)
+        void MOVEtSR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int mode = (op >> 3) & 7;
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void MOVEfSR()
+        void MOVEfSR()
         {
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= (mode == 0) ? 6 : 8 + EACyclesBW[mode, reg];
         }
 
-        private void MOVEfSR_Disasm(DisassemblyInfo info)
+        void MOVEfSR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int mode = (op >> 3) & 7;
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void MOVEUSP()
+        void MOVEUSP()
         {
             if (S == false)
                 throw new Exception("MOVE to USP when not supervisor. needs to trap");
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 4;
         }
 
-        private void MOVEUSP_Disasm(DisassemblyInfo info)
+        void MOVEUSP_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int dir = (op >> 3) & 1;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void ORI_SR()
+        void ORI_SR()
         {
             if (S == false)
                 throw new Exception("trap!");
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 20;
         }
 
-        private void ORI_SR_Disasm(DisassemblyInfo info)
+        void ORI_SR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             info.Mnemonic = "ori";
