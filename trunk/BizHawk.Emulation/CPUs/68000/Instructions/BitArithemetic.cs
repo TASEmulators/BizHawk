@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         sbyte result = (sbyte) (imm & arg);
                         WriteValueB(dstMode, dstReg, result);
                         PendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesBW[dstMode, dstReg];
-                        N = (result < 0);
+                        N = (result & 0x80) != 0;
                         Z = (result == 0);
                         return;
                     }
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         short result = (short) (imm & arg);
                         WriteValueW(dstMode, dstReg, result);
                         PendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesBW[dstMode, dstReg];
-                        N = (result < 0);
+                        N = (result & 0x8000) != 0;
                         Z = (result == 0);
                         return;
                     }
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         int result = imm & arg;
                         WriteValueL(dstMode, dstReg, result);
                         PendingCycles -= (dstMode == 0) ? 8 : 12 + EACyclesL[dstMode, dstReg];
-                        N = (result < 0);
+                        N = (result & 0x80000000) != 0;
                         Z = (result == 0);
                         return;
                     }
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                     sbyte immed = (sbyte) ReadWord(PC); PC += 2;
                     sbyte value = (sbyte) (PeekValueB(mode, reg) | immed);
                     WriteValueB(mode, reg, value);
-                    N = value < 0;
+                    N = (value & 0x80) != 0;
                     Z = value == 0;
                     PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
                     return;
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                     short immed = ReadWord(PC); PC += 2;
                     short value = (short)(PeekValueW(mode, reg) | immed);
                     WriteValueW(mode, reg, value);
-                    N = value < 0;
+                    N = (value & 0x8000) != 0;
                     Z = value == 0;
                     PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
                     return;
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                     int immed = ReadLong(PC); PC += 4;
                     int value = PeekValueL(mode, reg) | immed;
                     WriteValueL(mode, reg, value);
-                    N = value < 0;
+                    N = (value & 0x80000000) != 0;
                     Z = value == 0;
                     PendingCycles -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
                     return;
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         sbyte immed = (sbyte)ReadWord(PC); PC += 2;
                         sbyte value = (sbyte)(PeekValueB(mode, reg) | immed);
                         WriteValueB(mode, reg, value);
-                        N = value < 0;
+                        N = (value & 0x80) != 0;
                         Z = value == 0;
                         PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
                         return;
@@ -194,7 +194,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         short immed = ReadWord(PC); PC += 2;
                         short value = (short)(PeekValueW(mode, reg) | immed);
                         WriteValueW(mode, reg, value);
-                        N = value < 0;
+                        N = (value & 0x8000) != 0;
                         Z = value == 0;
                         PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
                         return;
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         int immed = ReadLong(PC); PC += 4;
                         int value = PeekValueL(mode, reg) | immed;
                         WriteValueL(mode, reg, value);
-                        N = value < 0;
+                        N = (value & 0x80000000) != 0;
                         Z = value == 0;
                         PendingCycles -= mode == 0 ? 17 : 20 + EACyclesL[mode, reg];
                         return;
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u8 & 0x80) != 0;
                         D[reg].u8 <<= 1;
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u16 & 0x8000) != 0;
                         D[reg].u16 <<= 1;
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u32 & 0x80000000) != 0;
                         D[reg].u32 <<= 1;
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -341,7 +341,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u8 & 1) != 0;
                         D[reg].u8 >>= 1;
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -351,7 +351,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u16 & 1) != 0;
                         D[reg].u16 >>= 1;
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u32 & 1) != 0;
                         D[reg].u32 >>= 1;
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -411,7 +411,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u8 & 0x80) != 0;
                         D[reg].s8 <<= 1;
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -421,7 +421,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u16 & 0x8000) != 0;
                         D[reg].s16 <<= 1;
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -431,7 +431,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u32 & 0x80000000) != 0;
                         D[reg].s32 <<= 1;
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -481,7 +481,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u8 & 1) != 0;
                         D[reg].s8 >>= 1;
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u16 & 1) != 0;
                         D[reg].s16 >>= 1;
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -501,7 +501,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = X = (D[reg].u32 & 1) != 0;
                         D[reg].s32 >>= 1;
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -551,7 +551,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u8 & 0x80) != 0;
                         D[reg].u8 = (byte) ((D[reg].u8 << 1) | (D[reg].u8 >> 7));
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u16 & 0x8000) != 0;
                         D[reg].u16 = (ushort) ((D[reg].u16 << 1) | (D[reg].u16 >> 15));
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -571,7 +571,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u32 & 0x80000000) != 0;
                         D[reg].u32 = ((D[reg].u32 << 1) | (D[reg].u32 >> 31));
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -621,7 +621,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u8 & 1) != 0;
                         D[reg].u8 = (byte)((D[reg].u8 >> 1) | (D[reg].u8 << 7));
                     }
-                    N = D[reg].s8 < 0;
+                    N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -631,7 +631,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u16 & 1) != 0;
                         D[reg].u16 = (ushort)((D[reg].u16 >> 1) | (D[reg].u16 << 15));
                     }
-                    N = D[reg].s16 < 0;
+                    N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
                     PendingCycles -= 6 + (rot * 2);
                     return;
@@ -641,7 +641,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                         C = (D[reg].u32 & 1) != 0;
                         D[reg].u32 = ((D[reg].u32 >> 1) | (D[reg].u32 << 31));
                     }
-                    N = D[reg].s32 < 0;
+                    N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
                     PendingCycles -= 8 + (rot * 2);
                     return;
@@ -676,7 +676,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             D[reg].u32 = (D[reg].u32 << 16) | (D[reg].u32 >> 16);
             V = C = false;
             Z = D[reg].u32 == 0;
-            N = D[reg].s32 < 0;
+            N = (D[reg].s32 & 0x80000000) != 0;
             PendingCycles -= 4;
         }
 

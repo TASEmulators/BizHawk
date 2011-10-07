@@ -244,8 +244,8 @@ namespace BizHawk.Emulation.CPUs.M68K
                     int uresult = (ushort)value + data;
                     if (mode != 1)
                     {
-                        N = result < 0;
                         N = (result & 0x8000) != 0;
+                        Z = result == 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         C = X = (uresult & 0x10000) != 0;
                     }
@@ -457,16 +457,18 @@ namespace BizHawk.Emulation.CPUs.M68K
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
+
             switch (size)
             {
                 case 0: // byte
                 {
                     int immed = (sbyte) ReadWord(PC); PC += 2;
-                    int result = PeekValueB(mode, reg) - immed;
-                    X = C = (result & 0x100) != 0;
+                    sbyte value = PeekValueB(mode, reg);
+                    int result = value - immed;
+                    int uresult = (byte)value - (byte)immed;
+                    X = C = (uresult & 0x100) != 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    N = result < 0;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     WriteValueB(mode, reg, (sbyte)result);
                     if (mode == 0) PendingCycles -= 8;
@@ -476,10 +478,12 @@ Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
                 case 1: // word
                 {
                     int immed = ReadWord(PC); PC += 2;
-                    int result = PeekValueW(mode, reg) - immed;
-                    X = C = (result & 0x10000) != 0;
+                    short value = PeekValueW(mode, reg);
+                    int result = value - immed;
+                    int uresult = (ushort)value - (ushort)immed;
+                    X = C = (uresult & 0x10000) != 0;
                     V = result > short.MaxValue || result < short.MinValue;
-                    N = result < 0;
+                    N = (result & 0x8000) != 0;
                     Z = result == 0;
                     WriteValueW(mode, reg, (short)result);
                     if (mode == 0) PendingCycles -= 8;
@@ -489,10 +493,12 @@ Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
                 case 2: // long
                 {
                     int immed = ReadLong(PC); PC += 2;
-                    long result = PeekValueL(mode, reg) - immed;
-                    X = C = (result & 0x100000000) != 0;
+                    int value = PeekValueL(mode, reg);
+                    long result = value - immed;
+                    long uresult = (uint)value - (uint)immed;
+                    X = C = (uresult & 0x100000000) != 0;
                     V = result > int.MaxValue || result < int.MinValue;
-                    N = result < 0;
+                    N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     WriteValueL(mode, reg, (int)result);
                     if (mode == 0) PendingCycles -= 16;
@@ -650,38 +656,44 @@ Log.Error("CPU", "SUBI, bad flag calculations, I = lame");
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
+
             switch (size)
             {
                 case 0: // byte
                 {
-                    int result = ReadValueB(mode, reg) - D[dReg].s8;
-                    N = result < 0;
+                    sbyte value = ReadValueB(mode, reg);
+                    int result = value - D[dReg].s8;
+                    int uresult = (byte)value - D[dReg].u8;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    C = (result & 0x100) != 0;
+                    C = (uresult & 0x100) != 0;
                     if (mode == 0) PendingCycles -= 8;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // word
                 {
-                    int result = ReadValueW(mode, reg) - D[dReg].s16;
-                    N = result < 0;
+                    short value = ReadValueW(mode, reg);
+                    int result = value - D[dReg].s16;
+                    int uresult = (ushort)value - D[dReg].u16;
+                    N = (result & 0x8000) != 0;
                     Z = result == 0;
                     V = result > short.MaxValue || result < short.MinValue;
-                    C = (result & 0x10000) != 0;
+                    C = (uresult & 0x10000) != 0;
                     if (mode == 0) PendingCycles -= 8;
                     PendingCycles -= 4 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 2: // long
                 {
-                    long result = ReadValueL(mode, reg) - D[dReg].s32;
-                    N = result < 0;
+                    int value = ReadValueL(mode, reg);
+                    long result = value - D[dReg].s32;
+                    long uresult = (uint)value - D[dReg].u32;
+                    N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     V = result > int.MaxValue || result < int.MinValue;
-                    C = (result & 0x100000000) != 0;
+                    C = (uresult & 0x100000000) != 0;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
@@ -726,21 +738,25 @@ Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
             {
                 case 0: // word
                 {
-                    long result = A[aReg].s32 - ReadValueW(mode, reg);
-                    N = result < 0;
+                    short value = ReadValueW(mode, reg);
+                    int result = A[aReg].s16 - value;
+                    int uresult = A[aReg].u16 - (ushort)value;
+                    N = (result & 0x8000) != 0;
                     Z = result == 0;
-                    V = result > int.MaxValue || result < int.MinValue;
-                    C = (result & 0x100000000) != 0;
+                    V = result > short.MaxValue || result < short.MinValue;
+                    C = (uresult & 0x10000) != 0;
                     PendingCycles -= 6 + EACyclesBW[mode, reg];
                     return;
                 }
                 case 1: // long
                 {
-                    long result = A[aReg].s32 - ReadValueL(mode, reg);
-                    N = result < 0;
+                    int value = ReadValueL(mode, reg);
+                    long result = A[aReg].s32 - value;
+                    long uresult = A[aReg].u32 - (uint)value;
+                    N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     V = result > int.MaxValue || result < int.MinValue;
-                    C = (result & 0x100000000) != 0;
+                    C = (uresult & 0x100000000) != 0;
                     PendingCycles -= 6 + EACyclesL[mode, reg];
                     return;
                 }
@@ -782,11 +798,13 @@ Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
                 case 0: // byte
                 {
                     int immed = (sbyte) ReadWord(PC); PC += 2;
-                    int result = ReadValueB(mode, reg) - immed;
-                    N = result < 0;
+                    sbyte value = ReadValueB(mode, reg);
+                    int result = value - immed;
+                    int uresult = (byte)value - (byte)immed;
+                    N = (result & 0x80) != 0;
                     Z = result == 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
-                    C = (result & 0x100) != 0;
+                    C = (uresult & 0x100) != 0;
                     if (mode == 0) PendingCycles -= 8;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
@@ -794,11 +812,13 @@ Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
                 case 1: // word
                 {
                     int immed = ReadWord(PC); PC += 2;
-                    int result = ReadValueW(mode, reg) - immed;
-                    N = result < 0;
+                    short value = ReadValueW(mode, reg);
+                    int result = value - immed;
+                    int uresult = (ushort)value - (ushort)immed;
+                    N = (result & 0x8000) != 0;
                     Z = result == 0;
                     V = result > short.MaxValue || result < short.MinValue;
-                    C = (result & 0x10000) != 0;
+                    C = (uresult & 0x10000) != 0;
                     if (mode == 0) PendingCycles -= 8;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
@@ -806,11 +826,13 @@ Log.Error("CPU", "CMP, very possibly bad flag calculations, I = lame");
                 case 2: // long
                 {
                     int immed = ReadLong(PC); PC += 4;
-                    long result = ReadValueL(mode, reg) - immed;
-                    N = result < 0;
+                    int value = ReadValueL(mode, reg);
+                    long result = value - immed;
+                    long uresult = (uint)value - (uint)immed;
+                    N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     V = result > int.MaxValue || result < int.MinValue;
-                    C = (result & 0x100000000) != 0;
+                    C = (uresult & 0x100000000) != 0;
                     if (mode == 0) PendingCycles -= 14;
                     else PendingCycles -= 12 + EACyclesL[mode, reg];
                     return;
