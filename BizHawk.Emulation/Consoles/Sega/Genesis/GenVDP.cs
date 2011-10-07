@@ -97,8 +97,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         public ushort ReadVdpControl()
         {
             //Console.WriteLine("VDP: Control Read");
-            ushort value = 0;
-            value |= 0x8000; // Fifo empty
+            ushort value = 0x3400; // fixed bits per genvdp.txt TODO test on everdrive, I guess.
+            value |= 0x0200; // Fifo empty
             return value;
         }
 

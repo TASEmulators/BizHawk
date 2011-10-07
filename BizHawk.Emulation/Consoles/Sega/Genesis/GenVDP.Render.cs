@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Sega
     {
         public void RenderLine()
         {
-            if (ScanLine == 223)
+            if (ScanLine == 0)
             {
                 for (int i = 0; i < FrameBuffer.Length; i++)
                     FrameBuffer[i] = 0;

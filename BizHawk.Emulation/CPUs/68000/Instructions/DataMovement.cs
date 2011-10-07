@@ -3,9 +3,9 @@ using System.Text;
 
 namespace BizHawk.Emulation.CPUs.M68K
 {
-    public partial class M68000
+    partial class MC68000
     {
-        private void MOVE()
+        void MOVE()
         {
             int size    = ((op >> 12) & 0x03);
             int dstMode = ((op >> 6) & 0x07);
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             Z = (value == 0);
         }
 
-        private void MOVE_Disasm(DisassemblyInfo info)
+        void MOVE_Disasm(DisassemblyInfo info)
         {
             int size = ((op >> 12) & 0x03);
             int dstMode = ((op >> 6) & 0x07);
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void MOVEA()
+        void MOVEA()
         {
             int size = ((op >> 12) & 0x03);
             int dstReg = ((op >> 9) & 0x07);
@@ -83,14 +83,48 @@ namespace BizHawk.Emulation.CPUs.M68K
             if (size == 3) // Word
             {
                 A[dstReg].s32 = ReadValueW(srcMode, srcReg);
-                PendingCycles -= EACyclesBW[srcMode, srcReg]; // TODO this is wrong, check pg 957
+                switch (srcMode)
+                {
+                    case 0: PendingCycles -= 4; break;
+                    case 1: PendingCycles -= 4; break;
+                    case 2: PendingCycles -= 8; break;
+                    case 3: PendingCycles -= 8; break;
+                    case 4: PendingCycles -= 10; break;
+                    case 7:
+                        switch (srcReg)
+                        {
+                            case 0: PendingCycles -= 12; break;
+                            case 1: PendingCycles -= 16; break;
+                            case 4: PendingCycles -= 8; break;
+                            default: throw new NotImplementedException();
+                        } 
+                        break;
+                    default: throw new NotImplementedException();
+                }
             } else { // Long
                 A[dstReg].s32 = ReadValueL(srcMode, srcReg);
-                PendingCycles -= EACyclesL[srcMode, srcReg]; // TODO this is wrong, check pg 957
+                switch (srcMode)
+                {
+                    case 0: PendingCycles -= 4; break;
+                    case 1: PendingCycles -= 4; break;
+                    case 2: PendingCycles -= 12; break;
+                    case 3: PendingCycles -= 12; break;
+                    case 4: PendingCycles -= 14; break;
+                    case 7:
+                        switch (srcReg)
+                        {
+                            case 0: PendingCycles -= 16; break;
+                            case 1: PendingCycles -= 20; break;
+                            case 4: PendingCycles -= 12; break;
+                            default: throw new NotImplementedException();
+                        }
+                        break;
+                    default: throw new NotImplementedException();
+                }
             }
         }
 
-        private void MOVEA_Disasm(DisassemblyInfo info)
+        void MOVEA_Disasm(DisassemblyInfo info)
         {
             int size = ((op >> 12) & 0x03);
             int dstReg = ((op >> 9) & 0x07);
@@ -109,7 +143,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void MOVEQ()
+        void MOVEQ()
         {
             int value = (sbyte) op; // 8-bit data payload is sign-extended to 32-bits.
             N = (value < 0);
@@ -120,13 +154,13 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 4;
         }
 
-        private void MOVEQ_Disasm(DisassemblyInfo info)
+        void MOVEQ_Disasm(DisassemblyInfo info)
         {
             info.Mnemonic = "moveq";
             info.Args = String.Format("{0}, D{1}", (sbyte) op, (op >> 9) & 7);
         }
 
-        private void MOVEM0()
+        void MOVEM0()
         {
             // Move register to memory
             int size    = (op >> 6) & 1;
@@ -241,6 +275,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             switch (dstMode)
             {
                 case 2: PendingCycles -= 8; break;
+                case 3: PendingCycles -= 8; break;
                 case 4: PendingCycles -= 8; break;
                 case 5: PendingCycles -= 12; break;
                 case 6: PendingCycles -= 14; break;
@@ -254,7 +289,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void MOVEM1()
+        void MOVEM1()
         {
             // Move memory to register
             int size = (op >> 6) & 1;
@@ -321,6 +356,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             switch (srcMode)
             {
                 case 2: PendingCycles -= 12; break;
+                case 3: PendingCycles -= 12; break;
                 case 4: PendingCycles -= 12; break;
                 case 5: PendingCycles -= 16; break;
                 case 6: PendingCycles -= 18; break;
@@ -336,7 +372,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private static string DisassembleRegisterList0(ushort registers)
+        static string DisassembleRegisterList0(ushort registers)
         {
             var str = new StringBuilder();
             int count = 0;
@@ -354,7 +390,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 if ((registers & 0x8000) != 0)
                 {
-                    if (count > 0) str.Append("/");
+                    if (count > 0) str.Append(",");
                     str.Append("A"+i);
                     count++;
                 }
@@ -363,7 +399,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             return str.ToString();
         }
 
-        private static string DisassembleRegisterList1(ushort registers)
+        static string DisassembleRegisterList1(ushort registers)
         {
             var str = new StringBuilder();
             int count = 0;
@@ -381,7 +417,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             {
                 if ((registers & 1) != 0)
                 {
-                    if (count > 0) str.Append("/");
+                    if (count > 0) str.Append(",");
                     str.Append("A" + i);
                     count++;
                 }
@@ -390,7 +426,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             return str.ToString();
         }
 
-        private void MOVEM0_Disasm(DisassemblyInfo info)
+        void MOVEM0_Disasm(DisassemblyInfo info)
         {
             int size = (op >> 6) & 1;
             int mode = (op >> 3) & 7;
@@ -405,7 +441,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void MOVEM1_Disasm(DisassemblyInfo info)
+        void MOVEM1_Disasm(DisassemblyInfo info)
         {
             int size = (op >> 6) & 1;
             int mode = (op >> 3) & 7;
@@ -420,7 +456,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void LEA()
+        void LEA()
         {
             int mode = (op >> 3) & 7;
             int sReg = (op >> 0) & 7;
@@ -444,7 +480,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             }
         }
 
-        private void LEA_Disasm(DisassemblyInfo info)
+        void LEA_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
 
@@ -459,7 +495,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void CLR()
+        void CLR()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
@@ -476,7 +512,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             Z = true;
         }
 
-        private void CLR_Disasm(DisassemblyInfo info)
+        void CLR_Disasm(DisassemblyInfo info)
         {
             int pc = info.PC + 2;
             int size = (op >> 6) & 3;
@@ -492,7 +528,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             info.Length = pc - info.PC;
         }
 
-        private void EXT()
+        void EXT()
         {
             int size = (op >> 6) & 1;
             int reg = op & 7;
@@ -504,8 +540,9 @@ namespace BizHawk.Emulation.CPUs.M68K
             PendingCycles -= 4;
         }
 
-        private void EXT_Disasm(DisassemblyInfo info)
+        void EXT_Disasm(DisassemblyInfo info)
         {
+            int pc = info.PC;
             int size = (op >> 6) & 1;
             int reg = op & 7;
             switch (size)
@@ -513,6 +550,43 @@ namespace BizHawk.Emulation.CPUs.M68K
                 case 0: info.Mnemonic = "ext.w"; info.Args = "D" + reg; break;
                 case 1: info.Mnemonic = "ext.l"; info.Args = "D" + reg; break;
             }
+
+        }
+
+        void PEA()
+        {
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+            int ea = ReadAddress(mode, reg);
+            A[7].s32 -= 4;
+            WriteLong(A[7].s32, ea);
+
+            switch (mode)
+            {
+                case 2: PendingCycles -= 12; break;
+                case 5: PendingCycles -= 16; break;
+                case 6: PendingCycles -= 20; break;
+                case 7:
+                    switch (reg)
+                    {
+                        case 0: PendingCycles -= 16; break;
+                        case 1: PendingCycles -= 20; break;
+                        case 2: PendingCycles -= 16; break;
+                        case 3: PendingCycles -= 20; break;
+                    }
+                    break;
+            }
+        }
+
+        void PEA_Disasm(DisassemblyInfo info)
+        {
+            int pc = info.PC + 2;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            info.Mnemonic = "pea";
+            info.Args = DisassembleAddress(mode, reg, ref pc);
+            info.Length = pc - info.PC;
         }
     }
 }

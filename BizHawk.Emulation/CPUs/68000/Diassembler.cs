@@ -12,11 +12,11 @@ namespace BizHawk.Emulation.CPUs.M68K
 
         public override string ToString()
         {
-            return string.Format("{0:X6}  {3,-20}  {1,-8} {2}", PC, Mnemonic, Args, RawBytes);
+            return string.Format("{0:X6}: {3,-20}  {1,-8} {2}", PC, Mnemonic, Args, RawBytes);
         }
     }
 
-    public partial class M68000
+    partial class MC68000
     {
         public DisassemblyInfo Disassemble(int pc)
         {
@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             else if (Opcodes[op] == LEA)    LEA_Disasm(info);
             else if (Opcodes[op] == CLR)    CLR_Disasm(info);
             else if (Opcodes[op] == EXT)    EXT_Disasm(info);
+            else if (Opcodes[op] == PEA)    PEA_Disasm(info);
 
             else if (Opcodes[op] == ANDI)   ANDI_Disasm(info);
             else if (Opcodes[op] == ORI)    ORI_Disasm(info);
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.CPUs.M68K
             else if (Opcodes[op] == BRA)    BRA_Disasm(info);
             else if (Opcodes[op] == BSR)    BSR_Disasm(info);
             else if (Opcodes[op] == DBcc)   DBcc_Disasm(info);
+            else if (Opcodes[op] == Scc)    Scc_Disasm(info);
             else if (Opcodes[op] == RTS)    RTS_Disasm(info);
             else if (Opcodes[op] == TST)    TST_Disasm(info);
             else if (Opcodes[op] == BTSTi)  BTSTi_Disasm(info);

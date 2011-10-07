@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public byte[] RomData;
 
 		// Machine stuff
-		public M68000 MainCPU;
+		public MC68000 MainCPU;
 		public Z80A SoundCPU;
 		public GenVDP VDP;
 		public SN76489 PSG;
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 		public Genesis(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
-			MainCPU = new M68000();
+			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
 			YM2612 = new YM2612();
 			PSG = new SN76489();
@@ -90,12 +90,12 @@ namespace BizHawk.Emulation.Consoles.Sega
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
-				Console.WriteLine("Frame {0} ScanLine {1}", Frame, VDP.ScanLine);
+				Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
 
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
 
-				MainCPU.ExecuteCycles(488);
+				MainCPU.ExecuteCycles(487); // 488??
 				if (Z80Runnable)
 				{
 					//Console.WriteLine("running z80");
@@ -105,6 +105,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 				if (VDP.ScanLine == 224)
 				{
+                    MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
 					// End-frame stuff
 					/*if (VDP.VInterruptEnabled)
 						MainCPU.Interrupt(6);*/
