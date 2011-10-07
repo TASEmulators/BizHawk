@@ -214,13 +214,12 @@ namespace BizHawk.Emulation.CPUs.M68K
             int value;
             switch (size)
             {
-                case 0:  value = ReadValueB(mode, reg); PendingCycles -= 4 + EACyclesBW[mode, reg]; break;
-                case 1:  value = ReadValueW(mode, reg); PendingCycles -= 4 + EACyclesBW[mode, reg]; break;
-                default: value = ReadValueL(mode, reg); PendingCycles -= 4 + EACyclesL[mode, reg];  break;
+                case 0:  value = ReadValueB(mode, reg); PendingCycles -= 4 + EACyclesBW[mode, reg]; N = (value & 0x80)       !=0; break;
+                case 1:  value = ReadValueW(mode, reg); PendingCycles -= 4 + EACyclesBW[mode, reg]; N = (value & 0x8000)     !=0; break;
+                default: value = ReadValueL(mode, reg); PendingCycles -= 4 + EACyclesL[mode, reg];  N = (value & 0x80000000) !=0; break;
             }
             V = false;
-            C = false;
-            N = (value < 0);
+            C = false;            
             Z = (value == 0);
         }
 

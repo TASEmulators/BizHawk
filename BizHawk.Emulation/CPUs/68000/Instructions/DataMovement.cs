@@ -14,25 +14,25 @@ namespace BizHawk.Emulation.CPUs.M68K
             int srcReg  = (op & 0x07);
 
             int value = 0;
-            switch(size)
+            switch (size)
             {
                 case 1: // Byte
                     value = ReadValueB(srcMode, srcReg);
                     WriteValueB(dstMode, dstReg, (sbyte) value);
                     PendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value < 0);
+                    N = (value & 0x80) != 0;
                     break;
                 case 3: // Word
                     value = ReadValueW(srcMode, srcReg);
                     WriteValueW(dstMode, dstReg, (short)value);
                     PendingCycles -= MoveCyclesBW[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value < 0);
+                    N = (value & 0x8000) != 0;
                     break;
                 case 2: // Long
                     value = ReadValueL(srcMode, srcReg);
                     WriteValueL(dstMode, dstReg, value);
                     PendingCycles -= MoveCyclesL[srcMode + (srcMode == 7 ? srcReg : 0), dstMode + (dstMode == 7 ? dstReg : 0)];
-                    N = (value < 0);
+                    N = (value & 0x80000000) != 0;
                     break;
             }
 
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.CPUs.M68K
         void MOVEQ()
         {
             int value = (sbyte) op; // 8-bit data payload is sign-extended to 32-bits.
-            N = (value < 0);
+            N = (value & 0x80) != 0;
             Z = (value == 0);
             V = false;
             C = false;
