@@ -107,8 +107,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 				{
                     MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
 					// End-frame stuff
-					/*if (VDP.VInterruptEnabled)
-						MainCPU.Interrupt(6);*/
+					if (VDP.VInterruptEnabled)
+						MainCPU.Interrupt = 6;
 
 					if (Z80Runnable)
 						SoundCPU.Interrupt = true;
