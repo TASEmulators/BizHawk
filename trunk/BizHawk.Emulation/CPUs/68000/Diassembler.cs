@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == EOR)    EOR_Disasm(info);
             else if (Opcodes[op] == OR0)    OR0_Disasm(info);
             else if (Opcodes[op] == OR1)    OR1_Disasm(info);
+            else if (Opcodes[op] == NOT)    NOT_Disasm(info);
 
             else if (Opcodes[op] == JMP)    JMP_Disasm(info);
             else if (Opcodes[op] == JSR)    JSR_Disasm(info);
@@ -59,6 +60,12 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == TST)    TST_Disasm(info);
             else if (Opcodes[op] == BTSTi)  BTSTi_Disasm(info);
             else if (Opcodes[op] == BTSTr)  BTSTr_Disasm(info);
+            else if (Opcodes[op] == BCHGi)  BCHGi_Disasm(info);
+            else if (Opcodes[op] == BCHGr)  BCHGr_Disasm(info);
+            else if (Opcodes[op] == BCLRi)  BCLRi_Disasm(info);
+            else if (Opcodes[op] == BCLRr)  BCLRr_Disasm(info);
+            else if (Opcodes[op] == BSETi)  BSETi_Disasm(info);
+            else if (Opcodes[op] == BSETr)  BSETr_Disasm(info);
             else if (Opcodes[op] == LINK)   LINK_Disasm(info);
             else if (Opcodes[op] == NOP)    NOP_Disasm(info);
 

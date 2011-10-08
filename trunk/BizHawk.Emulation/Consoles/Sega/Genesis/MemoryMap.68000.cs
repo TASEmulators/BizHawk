@@ -64,6 +64,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0xC00004 && address < 0xC00008)
                 return (short) VDP.ReadVdpControl();
 
+            if (address == 0xA1000C) return 0; // FIXME HACK for tg-sync.
+
             Console.WriteLine("UNHANDLED READW {0:X6}", address);
             return 0x7DCD;
         }
@@ -75,12 +77,15 @@ namespace BizHawk.Emulation.Consoles.Sega
             int maskedAddr;
             if (address < 0x400000) // Cartridge ROM
                 return (RomData[address] << 24) | (RomData[address + 1] << 16) | (RomData[address + 2] << 8) | RomData[address + 3];
-
+            
             if (address >= 0xE00000) // Work RAM
             {
                 maskedAddr = address & 0xFFFF;
                 return (Ram[maskedAddr] << 24) | (Ram[maskedAddr + 1] << 16) | (Ram[maskedAddr + 2] << 8) | Ram[maskedAddr + 3];
             }
+
+            if (address == 0xA10008) return 0; // FIXME HACK for tg-sync.
+
             Console.WriteLine("UNHANDLED READL {0:X6}", address);
             return 0x7DCDCDCD;
         }

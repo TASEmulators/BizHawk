@@ -512,6 +512,77 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Length = pc - info.PC;
         }
 
+        void NOT()
+        {
+            int size = (op >> 6) & 0x03;
+            int mode = (op >> 3) & 0x07;
+            int reg  = op & 0x07;
+
+            V = false;
+            C = false;
+            
+            switch (size)
+            {
+                case 0: // Byte
+                    {
+                        sbyte value = PeekValueB(mode, reg);
+                        value = (sbyte) ~value;
+                        WriteValueB(mode, reg, value);
+                        PendingCycles -= (mode == 0) ? 4 : 8 + EACyclesBW[mode, reg];
+                        N = (value & 0x80) != 0;
+                        Z = (value == 0);
+                        return;
+                    }
+                case 1: // Word
+                    {
+                        short value = PeekValueW(mode, reg);
+                        value = (short) ~value;
+                        WriteValueW(mode, reg, value);
+                        PendingCycles -= (mode == 0) ? 4 : 8 + EACyclesBW[mode, reg];
+                        N = (value & 0x8000) != 0;
+                        Z = (value == 0);
+                        return;
+                    }
+                case 2: // Long
+                    {
+                        int value = PeekValueL(mode, reg);
+                        value = ~value;
+                        WriteValueL(mode, reg, value);
+                        PendingCycles -= (mode == 0) ? 8 : 12 + EACyclesL[mode, reg];
+                        N = (value & 0x80000000) != 0;
+                        Z = (value == 0);
+                        return;
+                    }
+            }
+        }
+
+        void NOT_Disasm(DisassemblyInfo info)
+        {
+            int size = (op >> 6) & 0x03;
+            int mode = (op >> 3) & 0x07;
+            int reg  = op & 0x07;
+
+            int pc = info.PC + 2;
+
+            switch (size)
+            {
+                case 0: // Byte
+                    info.Mnemonic = "not.b";
+                    info.Args = DisassembleValue(mode, reg, 1, ref pc);
+                    break;
+                case 1: // Word
+                    info.Mnemonic = "not.w";
+                    info.Args = DisassembleValue(mode, reg, 2, ref pc);
+                    break;
+                case 2: // Long
+                    info.Mnemonic = "not.l";
+                    info.Args = DisassembleValue(mode, reg, 4, ref pc);
+                    break;
+            }
+
+            info.Length = pc - info.PC;
+        }
+
         void LSLd()
         {
             int rot  = (op >> 9) & 7;

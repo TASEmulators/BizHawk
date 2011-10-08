@@ -9,10 +9,6 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             // NOTE: Do not change the order of these assigns without testing. There is
             // some overwriting of less-specific opcodes with more-specific opcodes.
-            //  * MOVEA overwrites MOVE.
-            //  * EXT overwrites MOVEM0
-            //  * DBcc overwrites Scc
-            //  * ORI to SR overwrites ORI
 
             Assign("move",  MOVE,  "00", "Size2_0", "XnAm", "AmXn");
             Assign("movea", MOVEA, "00", "Size2_0", "Xn", "001", "AmXn");
@@ -38,6 +34,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("eor",   EOR,   "1011", "Xn", "1", "Size2_1", "AmXn");
             Assign("or",    OR0,   "1000", "Xn", "0", "Size2_1", "AmXn");
             Assign("or",    OR1,   "1000", "Xn", "1", "Size2_1", "AmXn");
+            Assign("not",   NOT,   "01000110", "Size2_1", "AmXn");
 
             Assign("jmp",   JMP,   "0100111011", "AmXn");
             Assign("jsr",   JSR,   "0100111010", "AmXn");
@@ -50,6 +47,12 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("tst",   TST,   "01001010", "Size2_1", "AmXn");
             Assign("btst",  BTSTi, "0000100000", "AmXn");
             Assign("btst",  BTSTr, "0000", "Xn", "100", "AmXn");
+            Assign("bchg",  BCHGi, "0000100001", "AmXn");
+            Assign("bchg",  BCHGr, "0000", "Xn", "101", "AmXn");
+            Assign("bclr",  BCLRi, "0000100010", "AmXn");
+            Assign("bclr",  BCLRr, "0000", "Xn", "110", "AmXn");
+            Assign("bset",  BSETi, "0000100011", "AmXn");
+            Assign("bset",  BSETr, "0000", "Xn", "111", "AmXn");
             Assign("link",  LINK,  "0100111001010", "Xn");
             Assign("nop",   NOP,   "0100111001110001");
 

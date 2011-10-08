@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BizHawk.Emulation.CPUs.M68K;
+using BizHawk.Emulation.CPUs.M68000;
 using BizHawk.Emulation.CPUs.Z80;
 using BizHawk.Emulation.Sound;
 
