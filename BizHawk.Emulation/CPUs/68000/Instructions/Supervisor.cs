@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BizHawk.Emulation.CPUs.M68K
+namespace BizHawk.Emulation.CPUs.M68000
 {
     partial class MC68000
     {

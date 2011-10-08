@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BizHawk.Emulation.CPUs.M68K
+namespace BizHawk.Emulation.CPUs.M68000
 {
     partial class MC68000
     {
@@ -33,7 +33,11 @@ namespace BizHawk.Emulation.CPUs.M68K
             Assign("rol",   ROLd,  "1110", "Data3", "1", "Size2_1", "Data1", "11", "Xn");
             Assign("ror",   RORd,  "1110", "Data3", "0", "Size2_1", "Data1", "11", "Xn");
             Assign("swap",  SWAP,  "0100100001000","Xn");
-            //Assign("or",    OR,    "1000", "Xn", "Data1","Size2_1", "AmXn");
+            Assign("and",   AND0,  "1100", "Xn", "0", "Size2_1", "AmXn");
+            Assign("and",   AND1,  "1100", "Xn", "1", "Size2_1", "AmXn");
+            Assign("eor",   EOR,   "1011", "Xn", "1", "Size2_1", "AmXn");
+            Assign("or",    OR0,   "1000", "Xn", "0", "Size2_1", "AmXn");
+            Assign("or",    OR1,   "1000", "Xn", "1", "Size2_1", "AmXn");
 
             Assign("jmp",   JMP,   "0100111011", "AmXn");
             Assign("jsr",   JSR,   "0100111010", "AmXn");
