@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace BizHawk.Emulation.CPUs.M68000
 {
@@ -241,10 +240,9 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void BTSTi()
         {
-            int bit = ReadWord(PC);
-            PC += 2;
+            int bit  = ReadWord(PC); PC += 2;
             int mode = (op >> 3) & 7;
-            int reg = op & 7;
+            int reg  = op & 7;
 
             if (mode == 0)
             {
@@ -262,10 +260,10 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void BTSTi_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-            int bit = ReadWord(pc); pc += 2;
+            int pc   = info.PC + 2;
+            int bit  = ReadWord(pc); pc += 2;
             int mode = (op >> 3) & 7;
-            int reg = op & 7;
+            int reg  = op & 7;
 
             info.Mnemonic = "btst";
             info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
@@ -276,8 +274,8 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
-            int reg = op & 7;
-            int bit = D[dReg].s32;
+            int reg  = op & 7;
+            int bit  = D[dReg].s32;
 
             if (mode == 0)
             {
@@ -297,12 +295,243 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void BTSTr_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int dReg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
-            int reg = op & 7;
+            int reg  = op & 7;
 
             info.Mnemonic = "btst";
+            info.Args = String.Format("D{0}, {1}", dReg, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BCHGi()
+        {
+            int bit  = ReadWord(PC); PC += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 ^= mask;
+                PendingCycles -= 10;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value ^= (sbyte) mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 8 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BCHGi_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int bit  = ReadWord(pc); pc += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bchg";
+            info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BCHGr()
+        {
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+            int bit  = D[dReg].s32;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 ^= mask;
+                PendingCycles -= 6;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value ^= (sbyte) mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 4 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BCHGr_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bchg";
+            info.Args = String.Format("D{0}, {1}", dReg, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BCLRi()
+        {
+            int bit  = ReadWord(PC); PC += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 &= ~mask;
+                PendingCycles -= 10;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value &= (sbyte) ~mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 8 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BCLRi_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int bit  = ReadWord(pc); pc += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bclr";
+            info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BCLRr()
+        {
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+            int bit  = D[dReg].s32;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 &= ~mask;
+                PendingCycles -= 6;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value &= (sbyte) ~mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 4 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BCLRr_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bclr";
+            info.Args = String.Format("D{0}, {1}", dReg, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BSETi()
+        {
+            int bit  = ReadWord(PC); PC += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 |= mask;
+                PendingCycles -= 10;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value |= (sbyte) mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 8 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BSETi_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int bit  = ReadWord(pc); pc += 2;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bset";
+            info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+            info.Length = pc - info.PC;
+        }
+
+        void BSETr()
+        {
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+            int bit  = D[dReg].s32;
+
+            if (mode == 0)
+            {
+                bit &= 31;
+                int mask = 1 << bit;
+                Z = (D[reg].s32 & mask) == 0;
+                D[reg].s32 |= mask;
+                PendingCycles -= 6;
+            }
+            else
+            {
+                bit &= 7;
+                int mask = 1 << bit;
+                sbyte value = PeekValueB(mode, reg);
+                Z = (value & mask) == 0;
+                value |= (sbyte) mask;
+                WriteValueB(mode, reg, value);
+                PendingCycles -= 4 + EACyclesBW[mode, reg];
+            }
+        }
+
+        void BSETr_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int dReg = (op >> 9) & 7;
+            int mode = (op >> 3) & 7;
+            int reg  = op & 7;
+
+            info.Mnemonic = "bset";
             info.Args = String.Format("D{0}, {1}", dReg, DisassembleValue(mode, reg, 1, ref pc));
             info.Length = pc - info.PC;
         }
@@ -332,7 +561,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void JMP_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
             info.Mnemonic = "jmp";
@@ -369,7 +598,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void JSR_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
             info.Mnemonic = "jsr";
@@ -389,7 +618,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void LINK_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc  = info.PC + 2;
             int reg = op & 7;
             info.Mnemonic = "link";
             info.Args = "A"+reg+", "+DisassembleImmediate(2, ref pc); // TODO need a DisassembleSigned or something
@@ -410,7 +639,7 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             int cond = (op >> 8) & 0x0F;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             if (TestCondition(cond) == true)
             {
@@ -426,10 +655,10 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void Scc_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int cond = (op >> 8) & 0x0F;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             info.Mnemonic = "s" + DisassembleCondition(cond);
             info.Args = DisassembleValue(mode, reg, 1, ref pc);
