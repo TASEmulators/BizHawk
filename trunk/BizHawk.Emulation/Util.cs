@@ -1094,4 +1094,8 @@ namespace BizHawk
 			}
 		}
 	}
+
+    public class NotTestedException : Exception
+    {
+    }
 }

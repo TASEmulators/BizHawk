@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.CPUs.M68K
+namespace BizHawk.Emulation.CPUs.M68000
 {
     public sealed partial class MC68000
     {
@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                     Console.WriteLine("&^&^&^&^& LEAVE SUPERVISOR MODE");
                     ssp = A[7].s32;
                     A[7].s32 = usp;
+                    s = false;
                 }
             }
         }
@@ -135,6 +136,7 @@ namespace BizHawk.Emulation.CPUs.M68K
                     A[7].s32 -= 2;                          // Push SR on stack
                     WriteLong(A[7].s32, sr);
                     PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
+                    InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
                     Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
                 }
 

@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace BizHawk.Emulation.CPUs.M68K
+namespace BizHawk.Emulation.CPUs.M68000
 {
     public class DisassemblyInfo
     {
@@ -42,6 +42,11 @@ namespace BizHawk.Emulation.CPUs.M68K
             else if (Opcodes[op] == ROLd)   ROLd_Disasm(info);
             else if (Opcodes[op] == RORd)   RORd_Disasm(info);
             else if (Opcodes[op] == SWAP)   SWAP_Disasm(info);
+            else if (Opcodes[op] == AND0)   AND0_Disasm(info);
+            else if (Opcodes[op] == AND1)   AND1_Disasm(info);
+            else if (Opcodes[op] == EOR)    EOR_Disasm(info);
+            else if (Opcodes[op] == OR0)    OR0_Disasm(info);
+            else if (Opcodes[op] == OR1)    OR1_Disasm(info);
 
             else if (Opcodes[op] == JMP)    JMP_Disasm(info);
             else if (Opcodes[op] == JSR)    JSR_Disasm(info);
