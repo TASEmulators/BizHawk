@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                     }
                 case 2: // Long
                     {
-                        int imm = ReadLong(PC); PC += 2;
+                        int imm = ReadLong(PC); PC += 4;
                         int arg = PeekValueL(dstMode, dstReg);
                         int result = imm & arg;
                         WriteValueL(dstMode, dstReg, result);

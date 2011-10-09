@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("or",    OR0,   "1000", "Xn", "0", "Size2_1", "AmXn");
             Assign("or",    OR1,   "1000", "Xn", "1", "Size2_1", "AmXn");
             Assign("not",   NOT,   "01000110", "Size2_1", "AmXn");
+            Assign("neg",   NEG,   "01000100", "Size2_1", "AmXn");
 
             Assign("jmp",   JMP,   "0100111011", "AmXn");
             Assign("jsr",   JSR,   "0100111010", "AmXn");

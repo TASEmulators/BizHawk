@@ -650,6 +650,89 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Length = pc - info.PC;
         }
 
+        void NEG()
+        {
+            int size = (op >> 6) & 0x03;
+            int mode = (op >> 3) & 0x07;
+            int reg = op & 0x07;
+
+            if (mode == 1) throw new Exception("NEG on address reg is invalid");
+
+            switch (size)
+            {
+                case 0: // Byte
+                    {
+                        sbyte value = PeekValueB(mode, reg);
+                        int result = 0 - value;
+                        int uresult = 0 - (byte)value;
+                        N = (result & 0x80) != 0;
+                        Z = result == 0;
+                        V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                        C = X = (uresult & 0x100) != 0;
+                        WriteValueB(mode, reg, (sbyte)result);
+                        if (mode == 0) PendingCycles -= 4;
+                        else PendingCycles -= 8 + EACyclesBW[mode, reg];
+                        return;
+                    }
+                case 1: // Word
+                    {
+                        short value = PeekValueW(mode, reg);
+                        int result = 0 - value;
+                        int uresult = 0 - (ushort)value;
+                        N = (result & 0x8000) != 0;
+                        Z = result == 0;
+                        V = result > short.MaxValue || result < short.MinValue;
+                        C = X = (uresult & 0x10000) != 0;
+                        WriteValueW(mode, reg, (short)result);
+                        if (mode == 0) PendingCycles -= 4;
+                        else PendingCycles -= 8 + EACyclesBW[mode, reg];
+                        return;
+                    }
+                case 2: // Long
+                    {
+                        int value = PeekValueL(mode, reg);
+                        long result = 0 - value;
+                        long uresult = 0 - (uint)value;
+                        N = (result & 0x80000000) != 0;
+                        Z = result == 0;
+                        V = result > int.MaxValue || result < int.MinValue;
+                        C = X = (uresult & 0x100000000) != 0;
+                        WriteValueL(mode, reg, (int)result);
+                        if (mode == 0) PendingCycles -= 8;
+                        else PendingCycles -= 12 + EACyclesL[mode, reg];
+                        return;
+                    }
+            }
+        }
+
+        void NEG_Disasm(DisassemblyInfo info)
+        {
+            int size = (op >> 6) & 0x03;
+            int mode = (op >> 3) & 0x07;
+            int reg = op & 0x07;
+
+            int pc = info.PC + 2;
+
+            switch (size)
+            {
+                case 0: // Byte
+                    info.Mnemonic = "neg.b";
+                    info.Args = DisassembleValue(mode, reg, 1, ref pc);
+                    break;
+                case 1: // Word
+                    info.Mnemonic = "neg.w";
+                    info.Args = DisassembleValue(mode, reg, 2, ref pc);
+                    break;
+                case 2: // Long
+                    info.Mnemonic = "neg.l";
+                    info.Args = DisassembleValue(mode, reg, 4, ref pc);
+                    break;
+            }
+
+            info.Length = pc - info.PC;
+        }
+
+
         void CMP()
         {
             int dReg = (op >> 9) & 7;
