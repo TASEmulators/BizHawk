@@ -302,10 +302,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: return A[reg].s32; // (An)
                 case 3: return A[reg].s32; // (An)+
                 case 4: return A[reg].s32; // -(An)
-                case 5: // (d16,An)
-                    addr = A[reg].s32 + ReadWord(PC);
-                    PC += 2;
-                    return addr;
+                case 5: addr = A[reg].s32 + ReadWord(PC); PC += 2; return addr; // (d16,An)
                 case 6: return A[reg].s32 + GetIndex(); // (d8,An,Xn)
                 case 7:
                     switch (reg)
@@ -324,6 +321,7 @@ namespace BizHawk.Emulation.CPUs.M68000
         string DisassembleValue(int mode, int reg, int size, ref int pc)
         {
             string value;
+            int addr;
             switch (mode)
             {
                 case 0: return "D"+reg;       // Dn
@@ -331,33 +329,15 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: return "(A"+reg+")";  // (An)
                 case 3: return "(A"+reg+")+"; // (An)+
                 case 4: return "-(A"+reg+")"; // -(An)
-                case 5: // (d16,An)
-                    // TODO need to figure out how to print signed-hex
-                    value = string.Format("(${0:X},A{1})", ReadWord(pc), reg);
-                    pc += 2;
-                    return value;
-                case 6: return "NOT IMPLEMENTED"; // (d8,An,Xn)
-                    //return ReadByte(A[reg].Long + GetIndex());
+                case 5: value = string.Format("(${0:X},A{1})", ReadWord(pc), reg); pc += 2; return value; // (d16,An)
+                case 6: addr = ReadWord(pc); pc += 2; return DisassembleIndex("A" + reg, (short) addr); // (d8,An,Xn)
                 case 7:
                     switch (reg)
                     {
-                        case 0: // (imm).W
-                            value = String.Format("(${0:X})", ReadWord(pc));
-                            pc += 2;
-                            return value;
-                        case 1: // (imm).L
-                            value = String.Format("(${0:X})", ReadLong(pc));
-                            pc += 4;
-                            return value;
-                        case 2: // (d16,PC)
-                            value = String.Format("(${0:X})", pc + ReadWord(pc));
-                            pc += 2;
-                            return value;
-                        case 3: // (d8,PC,Xn)
-                            return "NOT IMPLEMENTED";
-                          /*  uint _pc = PC;
-                            value = ReadByte((_pc + GetIndex()));
-                            return value;*/
+                        case 0: value = String.Format("(${0:X})", ReadWord(pc)); pc += 2; return value; // (imm).W
+                        case 1: value = String.Format("(${0:X})", ReadLong(pc)); pc += 4; return value; // (imm).L
+                        case 2: value = String.Format("(${0:X})", pc + ReadWord(pc)); pc += 2; return value; // (d16,PC)
+                        case 3: addr = ReadWord(pc); pc += 2; return DisassembleIndex("PC", (short)addr); // (d8,PC,Xn)
                         case 4:
                             switch (size)
                             {
@@ -400,18 +380,15 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: return "(A"+reg+")"; // (An)
                 case 3: return "(A"+reg+")+"; // (An)+
                 case 4: return "-(A"+reg+")"; // -(An)
-                case 5: // (d16,An)
-                    addr = ReadWord(pc);
-                    pc += 2;
-                    return String.Format("({0},A{1})", addr, reg);
-                case 6: return "NOT IMPLEMENTED"; // (d8,An,Xn)
+                case 5: addr = ReadWord(pc); pc += 2; return String.Format("({0},A{1})", addr, reg); // (d16,An)
+                case 6: addr = ReadWord(pc); pc += 2; return DisassembleIndex("A" + reg, (short)addr); // (d8,An,Xn)
                 case 7:
                     switch (reg)
                     {
                         case 0: addr = ReadWord(pc); pc += 2; return String.Format("${0:X}.w",addr); // (imm).w
                         case 1: addr = ReadLong(pc); pc += 4; return String.Format("${0:X}.l",addr); // (imm).l
                         case 2: addr = ReadWord(pc); pc += 2; return String.Format("(${0:X},PC)",addr); // (d16,PC)
-                        case 3: return "NOT IMPLEMENTED"; // (d8,PC,Xn)
+                        case 3: addr = ReadWord(pc); pc += 2; return DisassembleIndex("PC", (short)addr); // (d8,PC,Xn)
                         case 4: return "INVALID"; // immediate
                     }
                     break;
@@ -573,9 +550,9 @@ namespace BizHawk.Emulation.CPUs.M68000
 
             short extension = ReadWord(PC); PC += 2;
 
-            int da   = (extension >> 15) & 0x1;
-            int reg  = (extension >> 12) & 0x7;
-            int size = (extension >> 11) & 0x1;
+            int da    = (extension >> 15) & 0x1;
+            int reg   = (extension >> 12) & 0x7;
+            int size  = (extension >> 11) & 0x1;
             int scale = (extension >> 9) & 0x3;
             sbyte displacement = (sbyte)extension;
 
@@ -621,6 +598,29 @@ namespace BizHawk.Emulation.CPUs.M68000
                 indexReg *= size == 0 ? A[reg].s16 : A[reg].s32;
 
             return displacement + indexReg;
+        }
+
+        string DisassembleIndex(string baseRegister, short extension)
+        {
+            int d_a   = (extension >> 15) & 0x1;
+            int reg   = (extension >> 12) & 0x7;
+            int size  = (extension >> 11) & 0x1;
+            int scale = (extension >> 9) & 0x3;
+            sbyte displacement = (sbyte)extension;
+
+            string scaleFactor;
+            switch (scale)
+            {
+                case 0:  scaleFactor = ""; break;
+                case 1:  scaleFactor = "2"; break;
+                case 2:  scaleFactor = "4"; break;
+                default: scaleFactor = "8"; break;
+            }
+
+            string offsetRegister = (d_a == 0) ? "D" : "A";
+            string sizeStr = size == 0 ? ".w" : ".l";
+            string displacementStr = displacement == 0 ? "" : ("," + displacement);
+            return string.Format("({0},{1}{2}{3}{4}{5})", baseRegister, scaleFactor, offsetRegister, reg, sizeStr, displacementStr);
         }
     }
 }
