@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == OR0)    OR0_Disasm(info);
             else if (Opcodes[op] == OR1)    OR1_Disasm(info);
             else if (Opcodes[op] == NOT)    NOT_Disasm(info);
+            else if (Opcodes[op] == NEG)    NEG_Disasm(info);
 
             else if (Opcodes[op] == JMP)    JMP_Disasm(info);
             else if (Opcodes[op] == JSR)    JSR_Disasm(info);
