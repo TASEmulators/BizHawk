@@ -55,11 +55,11 @@ namespace BizHawk.Emulation.CPUs.M68000
         public bool C;
 
         /// <summary>Status Register</summary>
-        public int SR
+        public short SR
         {
             get
             {
-                int value = 0;
+                short value = 0;
                 if (C) value |= 0x0001;
                 if (V) value |= 0x0002;
                 if (Z) value |= 0x0004;
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 if (X) value |= 0x0010;
                 if (M) value |= 0x1000;
                 if (S) value |= 0x2000;
-                value |= (InterruptMaskLevel & 7) << 8;
+                value |= (short) ((InterruptMaskLevel & 7) << 8);
                 return value;
             }
             set
@@ -128,13 +128,14 @@ namespace BizHawk.Emulation.CPUs.M68000
             {
                 if (Interrupt > 0 && (Interrupt > InterruptMaskLevel || Interrupt > 7))
                 {
+                    // TODO: Entering interrupt is not free. how many cycles does it take?
                     Log.Error("CPU","****** ENTER INTERRUPT {0} *******", Interrupt);
-                    int sr = SR;                            // capture current SR.
+                    short sr = (short) SR;                  // capture current SR.
                     S = true;                               // switch to supervisor mode, if not already in it.
                     A[7].s32 -= 4;                          // Push PC on stack
                     WriteLong(A[7].s32, PC);
                     A[7].s32 -= 2;                          // Push SR on stack
-                    WriteLong(A[7].s32, sr);
+                    WriteWord(A[7].s32, sr);
                     PC = ReadLong((24 + Interrupt) * 4);    // Jump to interrupt vector
                     InterruptMaskLevel = Interrupt;         // Set interrupt mask to level currently being entered
                     Interrupt = 0;                          // "ack" interrupt. Note: this is wrong.
