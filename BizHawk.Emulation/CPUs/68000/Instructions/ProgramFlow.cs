@@ -204,6 +204,22 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Args = "";
         }
 
+        void RTE()
+        {
+            short newSR = ReadWord(A[7].s32);
+            A[7].s32 += 2;
+            PC = ReadLong(A[7].s32);
+            A[7].s32 += 4;
+            SR = newSR;
+            PendingCycles -= 20;
+        }
+
+        void RTE_Disasm(DisassemblyInfo info)
+        {
+            info.Mnemonic = "rte";
+            info.Args = "";
+        }
+
         void TST()
         {
             int size = (op >> 6) & 3;
@@ -623,6 +639,23 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Mnemonic = "link";
             info.Args = "A"+reg+", "+DisassembleImmediate(2, ref pc); // TODO need a DisassembleSigned or something
             info.Length = pc - info.PC;
+        }
+
+        void UNLK()
+        {
+            int reg = op & 7;
+            A[7].s32 = A[reg].s32;
+            A[reg].s32 = ReadLong(A[7].s32);
+            A[7].s32 += 4;
+            PendingCycles -= 12;
+        }
+
+        void UNLK_Disasm(DisassemblyInfo info)
+        {
+            int reg = op & 7;
+            info.Mnemonic = "unlk";
+            info.Args = "A" + reg;
+            info.Length = 2;
         }
 
         void NOP()

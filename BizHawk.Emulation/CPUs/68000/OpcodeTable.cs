@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("bsr",   BSR,   "01100001", "Data8");
             Assign("scc",   Scc,   "0101", "CondAll", "11","AmXn");
             Assign("dbcc",  DBcc,  "0101", "CondAll", "11001", "Xn");
+            Assign("rte",   RTE,   "0100111001110011");
             Assign("rts",   RTS,   "0100111001110101");
             Assign("tst",   TST,   "01001010", "Size2_1", "AmXn");
             Assign("btst",  BTSTi, "0000100000", "AmXn");
@@ -54,6 +55,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("bset",  BSETi, "0000100011", "AmXn");
             Assign("bset",  BSETr, "0000", "Xn", "111", "AmXn");
             Assign("link",  LINK,  "0100111001010", "Xn");
+            Assign("unlk",  UNLK,  "0100111001011", "Xn");
             Assign("nop",   NOP,   "0100111001110001");
 
             Assign("add",   ADD0,  "1101", "Xn", "0", "Size2_1", "AmXn");
@@ -73,7 +75,10 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("move2sr", MOVEtSR, "0100011011", "AmXn");
             Assign("movefsr", MOVEfSR, "0100000011", "AmXn");
             Assign("moveusp", MOVEUSP, "010011100110", "Data1", "Xn");
+            Assign("andi2sr", ANDI_SR, "0000001001111100");
+            Assign("eori2sr", EORI_SR, "0000101001111100");
             Assign("ori2sr",  ORI_SR,  "0000000001111100");
+            Assign("trap",    TRAP,    "010011100100", "Data4");
         }
 
         void Assign(string instr, Action exec, string root, params string[] bitfield)
@@ -93,6 +98,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 else if (component == "CondMain") opList = AppendPermutations(opList, ConditionMain);
                 else if (component == "CondAll")  opList = AppendPermutations(opList, ConditionAll);
                 else if (component == "Data1")    opList = AppendData(opList, 1);
+                else if (component == "Data4")    opList = AppendData(opList, 4);
                 else if (component == "Data3")    opList = AppendData(opList, 3);
                 else if (component == "Data8")    opList = AppendData(opList, 8);
             }
@@ -100,7 +106,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             foreach (var opcode in opList)
             {
                 int opc = Convert.ToInt32(opcode, 2);
-                if (Opcodes[opc] != null && instr.NotIn("movea","ori2sr","ext","dbcc","swap"))
+                if (Opcodes[opc] != null && instr.NotIn("movea","andi2sr","ori2sr","ext","dbcc","swap"))
                     Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
                 Opcodes[opc] = exec;
             }

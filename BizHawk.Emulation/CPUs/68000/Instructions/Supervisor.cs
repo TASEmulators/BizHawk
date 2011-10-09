@@ -67,6 +67,38 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Length = pc - info.PC;
         }
 
+        void ANDI_SR()
+        {
+            if (S == false)
+                throw new Exception("trap!");
+            SR &= ReadWord(PC); PC += 2;
+            PendingCycles -= 20;
+        }
+
+        void ANDI_SR_Disasm(DisassemblyInfo info)
+        {
+            int pc = info.PC + 2;
+            info.Mnemonic = "andi";
+            info.Args = DisassembleImmediate(2, ref pc) + ", SR";
+            info.Length = pc - info.PC;
+        }
+
+        void EORI_SR()
+        {
+            if (S == false)
+                throw new Exception("trap!");
+            SR ^= ReadWord(PC); PC += 2;
+            PendingCycles -= 20;
+        }
+
+        void EORI_SR_Disasm(DisassemblyInfo info)
+        {
+            int pc = info.PC + 2;
+            info.Mnemonic = "eori";
+            info.Args = DisassembleImmediate(2, ref pc) + ", SR";
+            info.Length = pc - info.PC;
+        }
+
         void ORI_SR()
         {
             if (S == false)
@@ -81,6 +113,30 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Mnemonic = "ori";
             info.Args = DisassembleImmediate(2, ref pc) + ", SR";
             info.Length = pc - info.PC;
+        }
+
+        void TRAP()
+        {
+            int vector = 32 + (op & 0x0F);
+            TrapVector(vector);
+            PendingCycles -= 26;
+        }
+
+        void TRAP_Disasm(DisassemblyInfo info)
+        {
+            info.Mnemonic = "trap";
+            info.Args = string.Format("${0:X}", op & 0xF);
+        }
+
+        void TrapVector(int vector)
+        {
+            short sr = (short)SR;        // capture current SR.
+            S = true;                    // switch to supervisor mode, if not already in it.
+            A[7].s32 -= 4;               // Push PC on stack
+            WriteLong(A[7].s32, PC);
+            A[7].s32 -= 2;               // Push SR on stack
+            WriteWord(A[7].s32, sr);
+            PC = ReadLong(vector * 4);   // Jump to vector
         }
     }
 }

@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == BSR)    BSR_Disasm(info);
             else if (Opcodes[op] == DBcc)   DBcc_Disasm(info);
             else if (Opcodes[op] == Scc)    Scc_Disasm(info);
+            else if (Opcodes[op] == RTE)    RTE_Disasm(info);
             else if (Opcodes[op] == RTS)    RTS_Disasm(info);
             else if (Opcodes[op] == TST)    TST_Disasm(info);
             else if (Opcodes[op] == BTSTi)  BTSTi_Disasm(info);
@@ -67,6 +68,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == BSETi)  BSETi_Disasm(info);
             else if (Opcodes[op] == BSETr)  BSETr_Disasm(info);
             else if (Opcodes[op] == LINK)   LINK_Disasm(info);
+            else if (Opcodes[op] == UNLK)   UNLK_Disasm(info);
             else if (Opcodes[op] == NOP)    NOP_Disasm(info);
 
             else if (Opcodes[op] == ADD0)   ADD_Disasm(info);
@@ -86,7 +88,10 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == MOVEtSR) MOVEtSR_Disasm(info);
             else if (Opcodes[op] == MOVEfSR) MOVEfSR_Disasm(info);
             else if (Opcodes[op] == MOVEUSP) MOVEUSP_Disasm(info);
+            else if (Opcodes[op] == ANDI_SR) ANDI_SR_Disasm(info);
+            else if (Opcodes[op] == EORI_SR) EORI_SR_Disasm(info);
             else if (Opcodes[op] == ORI_SR)  ORI_SR_Disasm(info);
+            else if (Opcodes[op] == TRAP)    TRAP_Disasm(info);
 
             var sb = new StringBuilder();
             for (int p = info.PC; p < info.PC + info.Length; p++)
