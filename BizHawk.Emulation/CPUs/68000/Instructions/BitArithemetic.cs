@@ -74,9 +74,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
             V = false;
             C = false;
-
-            throw new NotTestedException();
-
+            
             switch (size)
             {
                 case 0: // Byte
@@ -294,6 +292,85 @@ namespace BizHawk.Emulation.CPUs.M68000
                     info.Mnemonic = "eor.l";
                     info.Args = string.Format("D{0}, {1}", srcReg, DisassembleValue(dstMode, dstReg, 4, ref pc));
                     break;
+            }
+
+            info.Length = pc - info.PC;
+        }
+
+        void EORI()
+        {
+            int size = (op >> 6) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            V = false;
+            C = false;
+
+            switch (size)
+            {
+                case 0: // byte
+                {
+                    sbyte immed = (sbyte) ReadWord(PC); PC += 2;
+                    sbyte value = (sbyte) (PeekValueB(mode, reg) ^ immed);
+                    WriteValueB(mode, reg, value);
+                    N = (value & 0x80) != 0;
+                    Z = value == 0;
+                    PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                    return;
+                }
+                case 1: // word
+                {
+                    short immed = ReadWord(PC); PC += 2;
+                    short value = (short)(PeekValueW(mode, reg) ^ immed);
+                    WriteValueW(mode, reg, value);
+                    N = (value & 0x8000) != 0;
+                    Z = value == 0;
+                    PendingCycles -= mode == 0 ? 8 : 12 + EACyclesBW[mode, reg];
+                    return;
+                }
+                case 2: // long
+                {
+                    int immed = ReadLong(PC); PC += 4;
+                    int value = PeekValueL(mode, reg) ^ immed;
+                    WriteValueL(mode, reg, value);
+                    N = (value & 0x80000000) != 0;
+                    Z = value == 0;
+                    PendingCycles -= mode == 0 ? 16 : 20 + EACyclesL[mode, reg];
+                    return;
+                }
+            }
+        }
+
+        void EORI_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int size = (op >> 6) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            switch (size)
+            {
+                case 0: // byte
+                {
+                    info.Mnemonic = "eori.b";
+                    sbyte immed = (sbyte) ReadWord(pc); pc += 2;
+                    info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+                    break;
+                }
+                case 1: // word
+                {
+                    info.Mnemonic = "eori.w";
+                    short immed = ReadWord(pc); pc += 2;
+                    info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+                    break;
+                }
+                case 2: // long
+                {
+                    info.Mnemonic = "eori.l";
+                    int immed = ReadLong(pc); pc += 4;
+                    info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+                    break;
+                }
             }
 
             info.Length = pc - info.PC;
@@ -996,6 +1073,152 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 0: info.Mnemonic = "ror.b"; break;
                 case 1: info.Mnemonic = "ror.w"; break;
                 case 2: info.Mnemonic = "ror.l"; break;
+            }
+            if (m == 0) info.Args = rot + ", D" + reg;
+            else info.Args = "D" + rot + ", D" + reg;
+
+            info.Length = pc - info.PC;
+        }
+
+        void ROXLd()
+        {
+            int rot  = (op >> 9) & 7;
+            int size = (op >> 6) & 3;
+            int m    = (op >> 5) & 1;
+            int reg  = op & 7;
+
+            if (m == 0 && rot == 0) rot = 8;
+            else if (m == 1) rot = D[rot].s32 & 63;
+
+            C = X;
+            V = false;
+
+            switch (size)
+            {
+                case 0: // byte
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].u8 & 0x80) != 0;
+                        D[reg].u8 = (byte)((D[reg].u8 << 1) | (X ? 1 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s8 & 0x80) != 0;
+                    Z = D[reg].s8 == 0;
+                    PendingCycles -= 6 + (rot * 2);
+                    return;
+                case 1: // word
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].u16 & 0x8000) != 0;
+                        D[reg].u16 = (ushort)((D[reg].u16 << 1) | (X ? 1 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s16 & 0x8000) != 0;
+                    Z = D[reg].s16 == 0;
+                    PendingCycles -= 6 + (rot * 2);
+                    return;
+                case 2: // long
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].s32 & 0x80000000) != 0;
+                        D[reg].s32 = ((D[reg].s32 << 1) | (X ? 1 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s32 & 0x80000000) != 0;
+                    Z = D[reg].s32 == 0;
+                    PendingCycles -= 8 + (rot * 2);
+                    return;
+            }
+        }
+
+        void ROXLd_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int rot  = (op >> 9) & 7;
+            int size = (op >> 6) & 3;
+            int m    = (op >> 5) & 1;
+            int reg  = op & 7;
+
+            if (m == 0 && rot == 0) rot = 8;
+
+            switch (size)
+            {
+                case 0: info.Mnemonic = "roxl.b"; break;
+                case 1: info.Mnemonic = "roxl.w"; break;
+                case 2: info.Mnemonic = "roxl.l"; break;
+            }
+            if (m == 0) info.Args = rot + ", D" + reg;
+            else info.Args = "D" + rot + ", D" + reg;
+
+            info.Length = pc - info.PC;
+        }
+
+        void ROXRd()
+        {
+            int rot  = (op >> 9) & 7;
+            int size = (op >> 6) & 3;
+            int m    = (op >> 5) & 1;
+            int reg  = op & 7;
+
+            if (m == 0 && rot == 0) rot = 8;
+            else if (m == 1) rot = D[rot].s32 & 63;
+
+            C = X;
+            V = false;
+
+            switch (size)
+            {
+                case 0: // byte
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].u8 & 1) != 0;
+                        D[reg].u8 = (byte)((D[reg].u8 >> 1) | (X ? 0x80 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s8 & 0x80) != 0;
+                    Z = D[reg].s8 == 0;
+                    PendingCycles -= 6 + (rot * 2);
+                    return;
+                case 1: // word
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].u16 & 1) != 0;
+                        D[reg].u16 = (ushort)((D[reg].u16 >> 1) | (X ? 0x8000 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s16 & 0x8000) != 0;
+                    Z = D[reg].s16 == 0;
+                    PendingCycles -= 6 + (rot * 2);
+                    return;
+                case 2: // long
+                    for (int i = 0; i < rot; i++)
+                    {
+                        C = (D[reg].s32 & 1) != 0;
+                        D[reg].u32 = ((D[reg].u32 >> 1) | (X ? 0x80000000 : 0));
+                        X = C;
+                    }
+                    N = (D[reg].s32 & 0x80000000) != 0;
+                    Z = D[reg].s32 == 0;
+                    PendingCycles -= 8 + (rot * 2);
+                    return;
+            }
+        }
+
+        void ROXRd_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int rot  = (op >> 9) & 7;
+            int size = (op >> 6) & 3;
+            int m    = (op >> 5) & 1;
+            int reg  = op & 7;
+
+            if (m == 0 && rot == 0) rot = 8;
+
+            switch (size)
+            {
+                case 0: info.Mnemonic = "roxr.b"; break;
+                case 1: info.Mnemonic = "roxr.w"; break;
+                case 2: info.Mnemonic = "roxr.l"; break;
             }
             if (m == 0) info.Args = rot + ", D" + reg;
             else info.Args = "D" + rot + ", D" + reg;

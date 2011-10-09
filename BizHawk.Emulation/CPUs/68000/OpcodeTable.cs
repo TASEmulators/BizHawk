@@ -21,11 +21,14 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("pea",   PEA,   "0100100001", "AmXn");
 
             Assign("andi",  ANDI,  "00000010", "Size2_1", "AmXn");
+            Assign("eori",  EORI,  "00001010", "Size2_1", "AmXn");
             Assign("ori",   ORI,   "00000000", "Size2_1", "AmXn");
-            Assign("lsl",   LSLd,  "1110", "Data3", "1", "Size2_1", "Data1", "01", "Xn");
-            Assign("lsr",   LSRd,  "1110", "Data3", "0", "Size2_1", "Data1", "01", "Xn");
             Assign("asl",   ASLd,  "1110", "Data3", "1", "Size2_1", "Data1", "00", "Xn");
             Assign("asr",   ASRd,  "1110", "Data3", "0", "Size2_1", "Data1", "00", "Xn");
+            Assign("lsl",   LSLd,  "1110", "Data3", "1", "Size2_1", "Data1", "01", "Xn");
+            Assign("lsr",   LSRd,  "1110", "Data3", "0", "Size2_1", "Data1", "01", "Xn");
+            Assign("roxl",  ROXLd, "1110", "Data3", "1", "Size2_1", "Data1", "10", "Xn");
+            Assign("roxr",  ROXRd, "1110", "Data3", "0", "Size2_1", "Data1", "10", "Xn");
             Assign("rol",   ROLd,  "1110", "Data3", "1", "Size2_1", "Data1", "11", "Xn");
             Assign("ror",   RORd,  "1110", "Data3", "0", "Size2_1", "Data1", "11", "Xn");
             Assign("swap",  SWAP,  "0100100001000","Xn");
@@ -107,7 +110,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             foreach (var opcode in opList)
             {
                 int opc = Convert.ToInt32(opcode, 2);
-                if (Opcodes[opc] != null && instr.NotIn("movea","andi2sr","ori2sr","ext","dbcc","swap"))
+                if (Opcodes[opc] != null && instr.NotIn("movea","andi2sr","eori2sr","ori2sr","ext","dbcc","swap"))
                     Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
                 Opcodes[opc] = exec;
             }

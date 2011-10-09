@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 }
                 case 2: // long
                 {
-                    int immed = ReadLong(PC); PC += 2;
+                    int immed = ReadLong(PC); PC += 4;
                     int value = PeekValueL(mode, reg);
                     long result = value + immed;
                     long uresult = (uint)value + (uint)immed;
@@ -492,7 +492,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 }
                 case 2: // long
                 {
-                    int immed = ReadLong(PC); PC += 2;
+                    int immed = ReadLong(PC); PC += 4;
                     int value = PeekValueL(mode, reg);
                     long result = value - immed;
                     long uresult = (uint)value - (uint)immed;

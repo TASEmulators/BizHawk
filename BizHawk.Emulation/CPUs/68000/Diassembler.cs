@@ -34,11 +34,14 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == PEA)    PEA_Disasm(info);
 
             else if (Opcodes[op] == ANDI)   ANDI_Disasm(info);
+            else if (Opcodes[op] == EORI)   EORI_Disasm(info);
             else if (Opcodes[op] == ORI)    ORI_Disasm(info);
-            else if (Opcodes[op] == LSLd)   LSLd_Disasm(info);
-            else if (Opcodes[op] == LSRd)   LSRd_Disasm(info);
             else if (Opcodes[op] == ASLd)   ASLd_Disasm(info);
             else if (Opcodes[op] == ASRd)   ASRd_Disasm(info);
+            else if (Opcodes[op] == LSLd)   LSLd_Disasm(info);
+            else if (Opcodes[op] == LSRd)   LSRd_Disasm(info);
+            else if (Opcodes[op] == ROXLd)  ROXLd_Disasm(info);
+            else if (Opcodes[op] == ROXRd)  ROXRd_Disasm(info);            
             else if (Opcodes[op] == ROLd)   ROLd_Disasm(info);
             else if (Opcodes[op] == RORd)   RORd_Disasm(info);
             else if (Opcodes[op] == SWAP)   SWAP_Disasm(info);

@@ -90,16 +90,19 @@ namespace BizHawk.Emulation.CPUs.M68000
                     case 2: PendingCycles -= 8; break;
                     case 3: PendingCycles -= 8; break;
                     case 4: PendingCycles -= 10; break;
+                    case 5: PendingCycles -= 12; break;
+                    case 6: PendingCycles -= 14; break;
                     case 7:
                         switch (srcReg)
                         {
                             case 0: PendingCycles -= 12; break;
                             case 1: PendingCycles -= 16; break;
+                            case 2: PendingCycles -= 12; break;
+                            case 3: PendingCycles -= 14; break;
                             case 4: PendingCycles -= 8; break;
-                            default: throw new NotImplementedException();
+                            default: throw new InvalidOperationException();
                         } 
                         break;
-                    default: throw new NotImplementedException();
                 }
             } else { // Long
                 A[dstReg].s32 = ReadValueL(srcMode, srcReg);
@@ -110,16 +113,19 @@ namespace BizHawk.Emulation.CPUs.M68000
                     case 2: PendingCycles -= 12; break;
                     case 3: PendingCycles -= 12; break;
                     case 4: PendingCycles -= 14; break;
+                    case 5: PendingCycles -= 16; break;
+                    case 6: PendingCycles -= 18; break;
                     case 7:
                         switch (srcReg)
                         {
                             case 0: PendingCycles -= 16; break;
                             case 1: PendingCycles -= 20; break;
+                            case 2: PendingCycles -= 16; break;
+                            case 3: PendingCycles -= 18; break;
                             case 4: PendingCycles -= 12; break;
-                            default: throw new NotImplementedException();
+                            default: throw new InvalidOperationException();
                         }
                         break;
-                    default: throw new NotImplementedException();
                 }
             }
         }
