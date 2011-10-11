@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Consoles.Sega
 {
-    public partial class Genesis
+    partial class Genesis
     {
         public static readonly ControllerDefinition GenesisController = new ControllerDefinition
         {

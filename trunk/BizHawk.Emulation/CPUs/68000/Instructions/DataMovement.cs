@@ -439,8 +439,8 @@ namespace BizHawk.Emulation.CPUs.M68000
             int reg  = (op >> 0) & 7;
             int pc = info.PC + 2;
 
+            ushort registers = (ushort)ReadWord(pc); pc += 2;
             string address = DisassembleAddress(mode, reg, ref pc);
-            ushort registers = (ushort) ReadWord(pc); pc += 2;
 
             info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
             info.Args = DisassembleRegisterList0(registers) + ", " + address;
@@ -454,9 +454,9 @@ namespace BizHawk.Emulation.CPUs.M68000
             int reg = (op >> 0) & 7;
             int pc = info.PC + 2;
 
-            string address = DisassembleAddress(mode, reg, ref pc);
             ushort registers = (ushort)ReadWord(pc); pc += 2;
-
+            string address = DisassembleAddress(mode, reg, ref pc);
+            
             info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
             info.Args = address + ", " + DisassembleRegisterList1(registers);
             info.Length = pc - info.PC;

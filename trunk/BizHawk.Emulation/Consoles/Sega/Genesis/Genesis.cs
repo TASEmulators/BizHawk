@@ -7,7 +7,8 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-	public sealed partial class Genesis : IEmulator
+    [CoreVersion("0.0.0.1", FriendlyName = "MegaHawk")]
+    public sealed partial class Genesis : IEmulator
 	{
 		// ROM
 		public byte[] RomData;
@@ -61,15 +62,15 @@ namespace BizHawk.Emulation.Consoles.Sega
 			YM2612 = new YM2612();
 			PSG = new SN76489();
 			VDP = new GenVDP();
-			VDP.DmaReadFrom68000 = ReadW;
+			VDP.DmaReadFrom68000 = ReadWord;
 			SoundMixer = new SoundMixer(YM2612, PSG);
 
-			MainCPU.ReadByte = ReadB;
-			MainCPU.ReadWord = ReadW;
-			MainCPU.ReadLong = ReadL;
-			MainCPU.WriteByte = WriteB;
-			MainCPU.WriteWord = WriteW;
-			MainCPU.WriteLong = WriteL;
+			MainCPU.ReadByte = ReadByte;
+			MainCPU.ReadWord = ReadWord;
+			MainCPU.ReadLong = ReadLong;
+			MainCPU.WriteByte = WriteByte;
+			MainCPU.WriteWord = WriteWord;
+			MainCPU.WriteLong = WriteLong;
 
 			SoundCPU.ReadMemory = ReadMemoryZ80;
 			SoundCPU.WriteMemory = WriteMemoryZ80;
@@ -94,7 +95,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
-
+                
 				MainCPU.ExecuteCycles(487); // 488??
 				if (Z80Runnable)
 				{

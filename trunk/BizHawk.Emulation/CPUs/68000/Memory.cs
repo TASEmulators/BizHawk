@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                     value = ReadByte((A[reg].s32 + ReadWord(PC)));
                     return value;
                 case 6: // (d8,An,Xn)
-                    return ReadByte(A[reg].s32 + GetIndex());
+                    return ReadByte(A[reg].s32 + PeekIndex());
                 case 7:
                     switch (reg)
                     {
@@ -545,7 +545,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         int GetIndex()
         {
-            Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
+            //Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
             // TODO kid chameleon triggers this in startup sequence
 
             short extension = ReadWord(PC); PC += 2;
@@ -574,7 +574,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         int PeekIndex()
         {
-            Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
+           //Console.WriteLine("IN INDEX PORTION - NOT VERIFIED!!!");
 
             short extension = ReadWord(PC);
 

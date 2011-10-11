@@ -628,7 +628,8 @@ namespace BizHawk.Emulation.CPUs.M68000
             A[7].s32 -= 4;
             short offset = ReadWord(PC); PC += 2;
             WriteLong(A[7].s32, A[reg].s32);
-            A[reg].s32 = A[7].s32 + offset;
+            A[reg].s32 = A[7].s32;
+            A[7].s32 += offset;
             PendingCycles -= 16;
         }
 

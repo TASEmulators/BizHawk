@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.CPUs.M68000
 {
-    public class DisassemblyInfo
+    public sealed class DisassemblyInfo
     {
         public int PC;
         public string Mnemonic;
@@ -88,6 +88,10 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == CMP)    CMP_Disasm(info);
             else if (Opcodes[op] == CMPA)   CMPA_Disasm(info);
             else if (Opcodes[op] == CMPI)   CMPI_Disasm(info);
+            else if (Opcodes[op] == MULU)   MULU_Disasm(info);
+            else if (Opcodes[op] == MULS)   MULS_Disasm(info);
+            else if (Opcodes[op] == DIVU)   DIVU_Disasm(info);
+            else if (Opcodes[op] == DIVS)   DIVS_Disasm(info);
 
             else if (Opcodes[op] == MOVEtSR) MOVEtSR_Disasm(info);
             else if (Opcodes[op] == MOVEfSR) MOVEfSR_Disasm(info);
@@ -95,6 +99,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == ANDI_SR) ANDI_SR_Disasm(info);
             else if (Opcodes[op] == EORI_SR) EORI_SR_Disasm(info);
             else if (Opcodes[op] == ORI_SR)  ORI_SR_Disasm(info);
+            else if (Opcodes[op] == MOVECCR) MOVECCR_Disasm(info);
             else if (Opcodes[op] == TRAP)    TRAP_Disasm(info);
 
             var sb = new StringBuilder();

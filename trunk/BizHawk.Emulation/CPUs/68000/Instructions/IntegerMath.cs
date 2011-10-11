@@ -307,8 +307,11 @@ namespace BizHawk.Emulation.CPUs.M68000
                 PendingCycles -= 8 + EACyclesBW[mode, reg];
             } else { // long
                 int value = ReadValueL(mode, reg);
-                A[aReg].s32 -= value;
-                PendingCycles += 6 + EACyclesL[mode, reg];
+                A[aReg].s32 += value;
+                if (mode == 0 || mode == 1 || (mode == 7 && reg == 4))
+                    PendingCycles -= 8 + EACyclesL[mode, reg];
+                else
+                    PendingCycles -= 6 + EACyclesL[mode, reg];
             }
         }
 
@@ -631,7 +634,10 @@ namespace BizHawk.Emulation.CPUs.M68000
             } else { // long
                 int value = ReadValueL(mode, reg);
                 A[aReg].s32 -= value;
-                PendingCycles -= 6 + EACyclesL[mode, reg];
+                if (mode == 0 || mode == 1 || (mode == 7 && reg == 4))
+                    PendingCycles -= 8 + EACyclesL[mode, reg];
+                else 
+                    PendingCycles -= 6 + EACyclesL[mode, reg];
             }
         }
 
@@ -949,6 +955,136 @@ namespace BizHawk.Emulation.CPUs.M68000
                     info.Args = String.Format("${0:X}, {1}", immediate, DisassembleValue(mode, reg, 4, ref pc));
                     break;
             }
+            info.Length = pc - info.PC;
+        }
+
+        void MULU()
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg = (op >> 0) & 7;
+
+            uint result = (uint) (D[dreg].u16 * (ushort)ReadValueW(mode, reg));
+            D[dreg].u32 = result;
+            
+            V = false;
+            C = false;
+            N = (result & 0x80000000) != 0;
+            Z = result == 0;
+
+            PendingCycles -= 70 + EACyclesBW[mode, reg];
+        }
+
+        void MULU_Disasm(DisassemblyInfo info)
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int pc = info.PC;
+            info.Mnemonic = "mulu";
+            info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+            info.Length = pc - info.PC;
+        }
+
+        void MULS()
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int result = D[dreg].s16 * ReadValueW(mode, reg);
+            D[dreg].s32 = result;
+
+            V = false;
+            C = false;
+            N = (result & 0x80000000) != 0;
+            Z = result == 0;
+
+            PendingCycles -= 70 + EACyclesBW[mode, reg];
+        }
+
+        void MULS_Disasm(DisassemblyInfo info)
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int pc = info.PC;
+            info.Mnemonic = "muls";
+            info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+            info.Length = pc - info.PC;
+        }
+
+        void DIVU()
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            uint source = (ushort) ReadValueW(mode, reg);
+            uint dest = D[dreg].u32;
+
+            if (source == 0) 
+                throw new Exception("divide by zero");
+
+            uint quotient = dest / source;
+            uint remainder = dest % source;
+
+            V = ((int) quotient < short.MinValue || (int) quotient > short.MaxValue);
+            N = (quotient & 0x8000) != 0;
+            Z = quotient == 0;
+            C = false;
+
+            D[dreg].u32 = (quotient & 0xFFFF) | (remainder << 16);
+            PendingCycles -= 140 + EACyclesBW[mode, reg]; // this is basically a rough approximation at best.
+        }
+
+        void DIVU_Disasm(DisassemblyInfo info)
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int pc = info.PC;
+            info.Mnemonic = "divu";
+            info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
+            info.Length = pc - info.PC;
+        }
+
+        void DIVS()
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int source = ReadValueW(mode, reg);
+            int dest = D[dreg].s32;
+
+            if (source == 0)
+                throw new Exception("divide by zero");
+
+            int quotient = dest / source;
+            int remainder = dest % source;
+
+            V = ((int)quotient < short.MinValue || (int)quotient > short.MaxValue);
+            N = (quotient & 0x8000) != 0;
+            Z = quotient == 0;
+            C = false;
+
+            D[dreg].s32 = (quotient & 0xFFFF) | (remainder << 16);
+            PendingCycles -= 140 + EACyclesBW[mode, reg];
+        }
+
+        void DIVS_Disasm(DisassemblyInfo info)
+        {
+            int dreg = (op >> 9) & 3;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            int pc = info.PC;
+            info.Mnemonic = "divs";
+            info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
             info.Length = pc - info.PC;
         }
     }
