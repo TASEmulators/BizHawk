@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 }
 
                 int prevCycles = PendingCycles;
-                Log.Note("CPU", State());
+                //Log.Note("CPU", State());
                 op = (ushort)ReadWord(PC);
                 if (Opcodes[op] == null) throw new Exception(string.Format("unhandled opcode at pc={0:X6}",PC));
                 PC += 2;
