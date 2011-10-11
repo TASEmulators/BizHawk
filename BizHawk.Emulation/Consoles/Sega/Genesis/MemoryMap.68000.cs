@@ -2,17 +2,9 @@
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    public partial class Genesis
+    partial class Genesis
     {
-        private byte   ReadByte(uint address) { return (byte)   ReadB((int)address); }
-        private ushort ReadWord(uint address) { return (ushort) ReadW((int)address); }
-        private uint   ReadLong(uint address) { return (uint)   ReadL((int)address); }
-
-        private void WriteByte(uint address, byte   value) { WriteB((int)address, (sbyte)value); }
-        private void WriteWord(uint address, ushort value) { WriteW((int)address, (short)value); }
-        private void WriteLong(uint address, uint   value) { WriteL((int)address, (int)  value); }
-
-        public sbyte ReadB(int address)
+        public sbyte ReadByte(int address)
         {
             address &= 0x00FFFFFF;
 
@@ -47,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             return 0x7D;
         }
  
-        public short ReadW(int address)
+        public short ReadWord(int address)
         {
             address &= 0x00FFFFFF;
 
@@ -70,7 +62,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             return 0x7DCD;
         }
 
-        public int ReadL(int address)
+        public int ReadLong(int address)
         {
             address &= 0x00FFFFFF;
 
@@ -90,13 +82,13 @@ namespace BizHawk.Emulation.Consoles.Sega
             return 0x7DCDCDCD;
         }
 
-        public void WriteB(int address, sbyte value)
+        public void WriteByte(int address, sbyte value)
         {
             address &= 0x00FFFFFF;
 
             if (address >= 0xE00000) // Work RAM
             {
-                Console.WriteLine("MEM[{0:X4}] change from {1:X2} to {2:X2}", address & 0xFFFF, Ram[address & 0xFFFF], value);
+                //Console.WriteLine("MEM[{0:X4}] change from {1:X2} to {2:X2}", address & 0xFFFF, Ram[address & 0xFFFF], value);
                 Ram[address & 0xFFFF] = (byte)value;
                 return;
             }
@@ -145,7 +137,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Console.WriteLine("UNHANDLED WRITEB {0:X6}:{1:X2}", address, value);
         }
 
-        public void WriteW(int address, short value)
+        public void WriteWord(int address, short value)
         {
             address &= 0x00FFFFFF;
 
@@ -187,7 +179,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Console.WriteLine("UNHANDLED WRITEW {0:X6}:{1:X4}", address, value);
         }
 
-        public void WriteL(int address, int value)
+        public void WriteLong(int address, int value)
         {
             address &= 0x00FFFFFF;
 
@@ -202,8 +194,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
             if (address >= 0xC00000)
             {
-                WriteW(address, (short)(value >> 16));
-                WriteW(address, (short)value);
+                WriteWord(address, (short)(value >> 16));
+                WriteWord(address, (short)value);
                 return;
             }
 

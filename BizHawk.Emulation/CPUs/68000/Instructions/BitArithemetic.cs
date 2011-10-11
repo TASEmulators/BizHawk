@@ -4,6 +4,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 {
     partial class MC68000
     {
+        // TODO, the timing on AND variants is wrong. IE, and.w w/ immediate should be 8 cycles, but I cant figure out how that should work.
         void AND0() // AND <ea>, Dn
         {
             int dstReg  = (op >> 9) & 0x07;

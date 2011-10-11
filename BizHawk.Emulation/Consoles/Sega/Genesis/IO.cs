@@ -1,17 +1,17 @@
 ﻿namespace BizHawk.Emulation.Consoles.Sega
 {
-    public partial class Genesis
+    partial class Genesis
     {
-        // todo ???????
         public bool SegaCD = false;
 
-        public int ReadIO(int offset)
+        public byte ReadIO(int offset)
         {
-            int value;
+            offset &= 3;
+            byte value;
             switch (offset)
             {
                 case 0: // version
-                    value = SegaCD ? 0x00 : 0x20;
+                    value = (byte) (SegaCD ? 0x00 : 0x20);
                     switch((char)RomData[0x01F0])
                     {
                         case 'J': value |= 0x00; break;
@@ -21,7 +21,7 @@
                         case '4': value |= 0x80; break;
                         default:  value |= 0x80; break;
                     }
-                    value |= 1; // US
+                    //value |= 1; // US
                     return value;
             }
             return 0xFF;

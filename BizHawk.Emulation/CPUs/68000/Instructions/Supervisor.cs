@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
             SR = ReadValueW(mode, reg);
-            PendingCycles -= (mode == 0) ? 12 : 12 + EACyclesBW[mode, reg];
+            PendingCycles -= 12 + EACyclesBW[mode, reg];
         }
 
         void MOVEtSR_Disasm(DisassemblyInfo info)
@@ -112,6 +112,27 @@ namespace BizHawk.Emulation.CPUs.M68000
             int pc = info.PC + 2;
             info.Mnemonic = "ori";
             info.Args = DisassembleImmediate(2, ref pc) + ", SR";
+            info.Length = pc - info.PC;
+        }
+
+        void MOVECCR()
+        {
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+
+            ushort sr = (ushort) (SR & 0xFF00);
+            sr |= (byte)ReadValueB(mode, reg);
+            SR = (short)sr;
+            PendingCycles -= 12 + EACyclesBW[mode, reg];
+        }
+
+        void MOVECCR_Disasm(DisassemblyInfo info)
+        {
+            int pc   = info.PC + 2;
+            int mode = (op >> 3) & 7;
+            int reg  = (op >> 0) & 7;
+            info.Mnemonic = "move";
+            info.Args = DisassembleValue(mode, reg, 2, ref pc) + ", CCR";
             info.Length = pc - info.PC;
         }
 

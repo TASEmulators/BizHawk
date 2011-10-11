@@ -1,0 +1,8 @@
+﻿68000:
+
+Timings:
+
+ - MULU/MULS/DIVU/DIVS have funky timings.
+ - How many cycles does TRAP take to execute?
+ - How many cycles does it take to accept an interrupt?
+ - AND has some funky timings when it comes to immediates?

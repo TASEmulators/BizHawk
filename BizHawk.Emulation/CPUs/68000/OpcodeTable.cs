@@ -75,6 +75,10 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("cmp",   CMP,   "1011", "Xn", "0", "Size2_1", "AmXn");
             Assign("cmpa",  CMPA,  "1011", "Xn", "Size1", "11", "AmXn");
             Assign("cmpi",  CMPI,  "00001100", "Size2_1", "AmXn");
+            Assign("mulu",  MULU,  "1100", "Xn", "011", "AmXn");  // TODO accurate timing
+            Assign("muls",  MULS,  "1100", "Xn", "111", "AmXn");  // TODO accurate timing
+            Assign("divu",  DIVU,  "1000", "Xn", "011", "AmXn");  // TODO accurate timing
+            Assign("divs",  DIVS,  "1000", "Xn", "111", "AmXn");  // TODO accurate timing
 
             Assign("move2sr", MOVEtSR, "0100011011", "AmXn");
             Assign("movefsr", MOVEfSR, "0100000011", "AmXn");
@@ -82,6 +86,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("andi2sr", ANDI_SR, "0000001001111100");
             Assign("eori2sr", EORI_SR, "0000101001111100");
             Assign("ori2sr",  ORI_SR,  "0000000001111100");
+            Assign("moveccr", MOVECCR, "0100010011", "AmXn");
             Assign("trap",    TRAP,    "010011100100", "Data4");
         }
 

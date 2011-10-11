@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    public partial class Genesis
+    partial class Genesis
     {
         private int BankRegion;
 
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0x8000)
             {
                 // 68000 Bank region
-                return (byte) ReadB(BankRegion | (address & 0x7FFF));
+                return (byte) ReadByte(BankRegion | (address & 0x7FFF));
             }
             Console.WriteLine("UNHANDLED Z80 READ {0:X4}",address);
             return 0xCD;
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
             if (address >= 0x8000)
             {
-                WriteB(BankRegion | (address & 0x7FFF), (sbyte) value);
+                WriteByte(BankRegion | (address & 0x7FFF), (sbyte) value);
                 return;
             }
             Console.WriteLine("UNHANDLED Z80 WRITE {0:X4}:{1:X2}", address, value);
