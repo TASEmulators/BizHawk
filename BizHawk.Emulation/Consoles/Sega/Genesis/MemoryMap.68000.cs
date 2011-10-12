@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address < 0x400000)
                 return (sbyte) RomData[address];
-            if (address >= 0xA10000 && address < 0xA1001F)
-                return (sbyte) ReadIO((address >> 1) & 0x0F);
 
             if (address >= 0xE00000)
                 return (sbyte) Ram[address & 0xFFFF];
@@ -22,10 +20,11 @@ namespace BizHawk.Emulation.Consoles.Sega
                 return (sbyte) (M68000HasZ80Bus && Z80Reset == false ? 0 : 1);
             }
 
+            if (address >= 0xA10000 && address <= 0xA1001F)
+                return (sbyte)ReadIO(address);
+
             if ((address & 0xFF0000) == 0xA00000)
-            {
                 return (sbyte) ReadMemoryZ80((ushort) (address & 0x7FFF));
-            }
 
             if (address >= 0xC00004 && address < 0xC00008)
             {
@@ -56,7 +55,8 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0xC00004 && address < 0xC00008)
                 return (short) VDP.ReadVdpControl();
 
-            if (address == 0xA1000C) return 0; // FIXME HACK for tg-sync.
+            if (address >= 0xA10000 && address <= 0xA1001F)
+                return (sbyte)ReadIO(address);
 
             Console.WriteLine("UNHANDLED READW {0:X6}", address);
             return 0x7DCD;
@@ -95,6 +95,11 @@ namespace BizHawk.Emulation.Consoles.Sega
             if ((address & 0xFF0000) == 0xA00000)
             {
                 WriteMemoryZ80((ushort)(address & 0x7FFF), (byte)value);
+                return;
+            }
+            if (address >= 0xA10000 && address <= 0xA1001F)
+            {
+                WriteIO(address, value); 
                 return;
             }
             if (address == 0xA11100)
