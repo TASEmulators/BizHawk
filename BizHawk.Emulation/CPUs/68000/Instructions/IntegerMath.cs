@@ -239,17 +239,22 @@ namespace BizHawk.Emulation.CPUs.M68000
                 }
                 case 1: // word
                 {
-                    short value = PeekValueW(mode, reg);
-                    int result = value + data;
-                    int uresult = (ushort)value + data;
-                    if (mode != 1)
+                    if (mode == 1)
                     {
+                        int value = PeekValueL(mode, reg);
+                        WriteValueL(mode, reg, value+data);
+                    }
+                    else
+                    {
+                        short value = PeekValueW(mode, reg);
+                        int result = value + data;
+                        int uresult = (ushort)value + data;
                         N = (result & 0x8000) != 0;
                         Z = result == 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         C = X = (uresult & 0x10000) != 0;
+                        WriteValueW(mode, reg, (short)result);
                     }
-                    WriteValueW(mode, reg, (short)result);
                     if (mode <= 1) PendingCycles -= 4;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
@@ -565,17 +570,22 @@ namespace BizHawk.Emulation.CPUs.M68000
                 }
                 case 1: // word
                 {
-                    short value = PeekValueW(mode, reg);
-                    int result = value - data;
-                    int uresult = (ushort)value - data;
-                    if (mode != 1)
+                    if (mode == 1)
                     {
+                        int value = PeekValueL(mode, reg);
+                        WriteValueL(mode, reg, value - data);
+                    }
+                    else
+                    {
+                        short value = PeekValueW(mode, reg);
+                        int result = value - data;
+                        int uresult = (ushort)value - data;
                         N = (result & 0x8000) != 0;
                         Z = result == 0;
                         V = result > short.MaxValue || result < short.MinValue;
                         C = X = (uresult & 0x10000) != 0;
+                        WriteValueW(mode, reg, (short)result);
                     }
-                    WriteValueW(mode, reg, (short)result);
                     if (mode <= 1) PendingCycles -= 4;
                     else PendingCycles -= 8 + EACyclesBW[mode, reg];
                     return;
