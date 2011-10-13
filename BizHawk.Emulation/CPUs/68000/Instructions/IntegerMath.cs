@@ -748,7 +748,6 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Length = pc - info.PC;
         }
 
-
         void CMP()
         {
             int dReg = (op >> 9) & 7;
@@ -761,8 +760,8 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 0: // byte
                 {
                     sbyte value = ReadValueB(mode, reg);
-                    int result = value - D[dReg].s8;
-                    int uresult = (byte)value - D[dReg].u8;
+                    int result = D[dReg].s8 - value;
+                    int uresult = D[dReg].u8 - (byte)value;
                     N = (result & 0x80) != 0;
                     Z = result == 0;
                     V = result > sbyte.MaxValue || result < sbyte.MinValue;
@@ -774,8 +773,8 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 1: // word
                 {
                     short value = ReadValueW(mode, reg);
-                    int result = value - D[dReg].s16;
-                    int uresult = (ushort)value - D[dReg].u16;
+                    int result = D[dReg].s16 - value;
+                    int uresult = D[dReg].u16 - (ushort)value;
                     N = (result & 0x8000) != 0;
                     Z = result == 0;
                     V = result > short.MaxValue || result < short.MinValue;
@@ -787,8 +786,8 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: // long
                 {
                     int value = ReadValueL(mode, reg);
-                    long result = value - D[dReg].s32;
-                    long uresult = (uint)value - D[dReg].u32;
+                    long result = D[dReg].s32 - value;
+                    long uresult = D[dReg].u32 - (uint)value;
                     N = (result & 0x80000000) != 0;
                     Z = result == 0;
                     V = result > int.MaxValue || result < int.MinValue;
