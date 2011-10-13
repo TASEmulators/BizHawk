@@ -27,7 +27,8 @@
         {
             offset >>= 1;
             offset &= 0x0F;
-
+            if (offset >1 )
+                Log.Note("CPU", "^^^ IO Read {0}: 00", offset);
             switch (offset)
             {
                 case 0: // version
@@ -53,7 +54,7 @@
 
                 case 0x04: return IOPorts[0].Control;
                 case 0x05: return IOPorts[1].Control;
-                case 0x06: return IOPorts[2].Control;
+                case 0x06: return 0xFF;// IOPorts[2].Control;   TODO hack? returning FF fixes revenge of shinobi and strider. investigate later.
 
                 case 0x07: return IOPorts[0].TxData;
                 case 0x08: return IOPorts[0].RxData;
@@ -80,31 +81,30 @@
             {
                 case 0x00: break;
 
-                case 0x01: IOPorts[0].Data = (byte) value; break;
-                case 0x02: IOPorts[1].Data = (byte) value; break;
-                case 0x03: IOPorts[2].Data = (byte) value; break;
+                case 0x01: IOPorts[0].Data    = (byte) value; break;
+                case 0x02: IOPorts[1].Data    = (byte) value; break;
+                case 0x03: IOPorts[2].Data    = (byte) value; break;
 
                 case 0x04: IOPorts[0].Control = (byte) value; break;
                 case 0x05: IOPorts[1].Control = (byte) value; break;
                 case 0x06: IOPorts[2].Control = (byte) value; break;
 
-                case 0x07: IOPorts[0].TxData = (byte) value; break;
-                case 0x08: IOPorts[0].RxData = (byte) value; break;
-                case 0x09: IOPorts[0].SCtrl  = (byte) value; break;
+                case 0x07: IOPorts[0].TxData  = (byte) value; break;
+                case 0x08: IOPorts[0].RxData  = (byte) value; break;
+                case 0x09: IOPorts[0].SCtrl   = (byte) value; break;
 
-                case 0x0A: IOPorts[1].TxData = (byte) value; break;
-                case 0x0B: IOPorts[1].RxData = (byte) value; break;
-                case 0x0C: IOPorts[1].SCtrl  = (byte) value; break;
+                case 0x0A: IOPorts[1].TxData  = (byte) value; break;
+                case 0x0B: IOPorts[1].RxData  = (byte) value; break;
+                case 0x0C: IOPorts[1].SCtrl   = (byte) value; break;
 
-                case 0x0D: IOPorts[2].TxData = (byte) value; break;
-                case 0x0E: IOPorts[2].RxData = (byte) value; break;
-                case 0x0F: IOPorts[2].SCtrl  = (byte) value; break;
+                case 0x0D: IOPorts[2].TxData  = (byte) value; break;
+                case 0x0E: IOPorts[2].RxData  = (byte) value; break;
+                case 0x0F: IOPorts[2].SCtrl   = (byte) value; break;
             }
         }
 
         void ReadController(ref byte data)
         {
-            System.Console.WriteLine("START => " + Controller["P1 Start"]);
             data &= 0xC0;
             if ((data & 0x40) != 0) // TH high
             {
@@ -114,13 +114,11 @@
                 if (Controller["P1 Right"] == false) data |= 0x08;
                 if (Controller["P1 B"]     == false) data |= 0x10;
                 if (Controller["P1 C"]     == false) data |= 0x20;
-                System.Console.WriteLine("TH HIGH: {0:X}",data);
             } else { // TH low
-                if (Controller["P1 Up"] == false) data |= 0x01;
-                if (Controller["P1 Down"] == false) data |= 0x02;
-                if (Controller["P1 A"] == false) data |= 0x10;
+                if (Controller["P1 Up"]    == false) data |= 0x01;
+                if (Controller["P1 Down"]  == false) data |= 0x02;
+                if (Controller["P1 A"]     == false) data |= 0x10;
                 if (Controller["P1 Start"] == false) data |= 0x20;
-                System.Console.WriteLine("TH LOW: {0:X}", data);
             }
             
         }
