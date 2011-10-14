@@ -932,7 +932,7 @@ namespace BizHawk.MultiClient
 			if (path == null) return false;
 			using (var file = new HawkFile())
 			{
-				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "SMD", "GB", "NES", "ROM" };
+				string[] romExtensions = new string[] { "SMS", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "SMD", "GB", "NES", "ROM" };
 
 				//lets not use this unless we need to
 				//file.NonArchiveExtensions = romExtensions;
@@ -2139,11 +2139,12 @@ namespace BizHawk.MultiClient
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 			ofd.Filter = FormatFilter(
-				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.smd;*.rom;*.cue;%ARCH%",
+				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.gen;*.smd;*.rom;*.cue;%ARCH%",
 				"Disc Images", "*.cue",
 				"NES", "*.nes;%ARCH%",
 				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-				"PC Engine", "*.pce;*.sgx;%ARCH%",
+                "Genesis", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
+				"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 				"Gameboy", "*.gb;%ARCH%",
 				"TI-83", "*.rom;%ARCH%",
 				"Archive Files", "%ARCH%",
