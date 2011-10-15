@@ -166,7 +166,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-			public virtual byte[] SaveRam { get { return null; } }
+			public virtual byte[] SaveRam
+			{
+				get
+				{
+					if (!Cart.wram_battery) return null;
+					return WRAM;
+				}
+			}
+
 			public byte[] WRAM { get { return wram; } set { wram = value; } }
 			public byte[] VRAM { get { return vram; } set { vram = value; } }
 			public byte[] ROM { get; set; }
@@ -191,6 +199,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Assert(false, "unhandled {0} size of {1}", name,value);
 			}
 			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
+
 		}
 
 		//this will be used to track classes that implement boards

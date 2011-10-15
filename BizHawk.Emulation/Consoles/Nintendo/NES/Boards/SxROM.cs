@@ -257,15 +257,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WRAM[addr & wram_mask] = value;
 		}
 
-		public override byte[] SaveRam
-		{
-			get
-			{
-				if (!Cart.wram_battery) return null;
-				return WRAM;
-			}
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
