@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						wram_h_enabled = value.Bit(7);
 						wram_l_enabled = value.Bit(5);
 						wram_h_enabled_write = value.Bit(6);
-						wram_l_enabled_write = value.Bit(6);
+						wram_l_enabled_write = value.Bit(4);
 					}
 					break;
 			}
@@ -77,12 +77,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x1000)
 				return;
 
+			//probably wrong:
+			//if (!wram_enabled) return;
+
 			addr &= (1 << 10) - 1;
 			int block = addr >> 9;
 			bool block_enabled = (block == 1) ? wram_h_enabled : wram_l_enabled;
 			bool write_enabled = (block == 1) ? wram_h_enabled_write : wram_l_enabled_write;
 
-			if (write_enabled)
+			if (write_enabled && block_enabled)
 				base.WriteWRAM(addr, value);
 		}
 
@@ -92,12 +95,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (addr < 0x1000)
 				return open_bus;
 
+			//probably wrong:
+			//if (!wram_enabled) return open_bus;
+
 			addr &= (1 << 10) - 1;
 			int block = addr >> 9;
 			bool block_enabled = (block == 1) ? wram_h_enabled : wram_l_enabled;
-			bool write_enabled = (block == 1) ? wram_h_enabled_write : wram_l_enabled_write;
 
-			if (!wram_h_enabled && wram_l_enabled)
+			if (!wram_h_enabled && !wram_l_enabled)
 				return open_bus;
 
 			if (block_enabled)
