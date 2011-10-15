@@ -1114,6 +1114,8 @@ namespace BizHawk.MultiClient
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
+                if (Global.Config.AutoSavestates)
+                    LoadState("Auto");
 
 				////setup the throttle based on platform's specifications
 				////(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -1209,7 +1211,9 @@ namespace BizHawk.MultiClient
 
 		private void CloseGame()
 		{
-			if (Global.Emulator.SaveRamModified)
+            if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
+                SaveState("Auto");
+            if (Global.Emulator.SaveRamModified)
 				SaveRam();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
@@ -1362,9 +1366,14 @@ namespace BizHawk.MultiClient
 					Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
 					break;
 
-				case "Hard Reset":
-					LoadRom(CurrentlyOpenRom);
-					break;
+                case "Hard Reset":
+                    {
+                        bool autoSaveState = Global.Config.AutoSavestates;
+                        Global.Config.AutoSavestates = false;
+                        LoadRom(CurrentlyOpenRom);
+                        Global.Config.AutoSavestates = autoSaveState;
+                        break;
+                    }
 
 				case "Screenshot":
 					TakeScreenshot();
@@ -2320,7 +2329,7 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				Global.ClickyVirtualPadController.Click("Reset");
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE && Global.Emulator is NES)
 					Global.Emulator.ResetFrameCounter();
 			}
 		}
