@@ -54,7 +54,7 @@
 
                 case 0x04: return IOPorts[0].Control;
                 case 0x05: return IOPorts[1].Control;
-                case 0x06: return 0xFF;// IOPorts[2].Control;   TODO hack? returning FF fixes revenge of shinobi and strider. investigate later.
+                case 0x06: return 0xFF;// return IOPorts[2].Control;   //TODO hack? returning FF fixes revenge of shinobi and strider. investigate later.
 
                 case 0x07: return IOPorts[0].TxData;
                 case 0x08: return IOPorts[0].RxData;

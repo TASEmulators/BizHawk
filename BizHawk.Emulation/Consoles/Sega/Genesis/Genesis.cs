@@ -82,6 +82,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             for (int i = 0; i < rom.Length; i++)
                 RomData[i] = rom[i];
 
+            SetupMemoryDomains();
             MainCPU.Reset();
 		}
 
@@ -91,7 +92,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
-				Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
+				//Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
 
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
@@ -179,8 +180,30 @@ namespace BizHawk.Emulation.Consoles.Sega
 			return new byte[0];
 		}
 
-		public IList<MemoryDomain> MemoryDomains { get { throw new NotImplementedException(); } }
-		public MemoryDomain MainMemory { get { throw new NotImplementedException(); } }
+        IList<MemoryDomain> memoryDomains;
+
+        void SetupMemoryDomains()
+        {
+            var domains = new List<MemoryDomain>(3);
+            var MainMemoryDomain = new MemoryDomain("68000 RAM", Ram.Length, Endian.Big,
+                addr => Ram[addr & 0xFFFF],
+                (addr, value) => Ram[addr & 0xFFFF] = value);
+            var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, Endian.Little,
+                addr => Z80Ram[addr & 0x1FFF],
+                (addr, value) => { Z80Ram[addr & 0x1FFF] = value; });
+
+            var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Big,
+                addr => VDP.VRAM[addr & 0xFFFF],
+                (addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
+
+            domains.Add(MainMemoryDomain);
+            domains.Add(Z80Domain);
+            domains.Add(VRamDomain);
+            memoryDomains = domains.AsReadOnly();
+        }
+
+        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 		public void Dispose() { }
 	}

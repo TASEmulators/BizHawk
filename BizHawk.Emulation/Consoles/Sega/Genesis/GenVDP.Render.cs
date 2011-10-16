@@ -8,15 +8,14 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             if (ScanLine == 0)
             {
-                for (int i = 0; i < FrameBuffer.Length; i++)
-                    FrameBuffer[i] = 0;
+                Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
 
                 //RenderPatterns();
                 RenderPalette();
                 RenderScrollA();
                 RenderScrollB();
-                RenderSprites();
             }
+            RenderSprites();
         }
 
         void RenderPalette()
@@ -76,33 +75,68 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
+        static readonly int[] SpriteSizeTable = { 8, 16, 24, 32 };
+        Sprite sprite;
 
         void RenderSprites()
         {
-            Sprite sprite = FetchSprite(0);
-            /*if (sprite.X > 0)
-                Console.WriteLine("doot");*/
+            int scanLineBase = ScanLine * FrameWidth;
+            int processedSprites = 0;
+
+            FetchSprite(0);
+            while (true)
+            {
+                if (sprite.Y > ScanLine || sprite.Y+sprite.HeightPixels <= ScanLine)
+                    goto nextSprite;
+                if (sprite.X + sprite.WidthPixels <= 0) 
+                    goto nextSprite;
+
+                if (sprite.HeightCells == 2)
+                    sprite.HeightCells = 2;
+
+                int yline = ScanLine - sprite.Y;
+                int paletteBase = sprite.Palette * 16;
+                int pattern = sprite.PatternIndex + ((yline / 8));
+                int x = sprite.X;
+
+                for (int xi = 0; xi < sprite.WidthPixels; xi++)
+                {
+                    if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
+                        continue;
+
+                    int pixel = PatternBuffer[((pattern+((xi/8)*sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (xi & 7)];
+                    if (pixel != 0)
+                        FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                }
+
+            nextSprite:
+                if (sprite.Link == 0)
+                    break;
+                if (++processedSprites > 80)
+                    break;
+                FetchSprite(sprite.Link);
+            }
         }
 
-        Sprite FetchSprite(int spriteNo)
+        void FetchSprite(int spriteNo)
         {
             int satbase = SpriteAttributeTableAddr + (spriteNo*8);
-            Sprite sprite = new Sprite();
-            sprite.Y = (VRAM[satbase + 1] | (VRAM[satbase + 0] << 8) & 0x3FF) - 128;
-            sprite.X = (VRAM[satbase + 7] | (VRAM[satbase + 6] << 8) & 0x3FF) - 128;
-            sprite.Width = ((VRAM[satbase + 2] >> 2) & 3) + 1;
-            sprite.Height = (VRAM[satbase + 2] & 3) + 1;
-            sprite.Link = VRAM[satbase + 3] & 0x7F;
-            sprite.PatternIndex = VRAM[satbase + 5] | (VRAM[satbase + 6] << 8) & 0x7FF;
+            sprite.Y = (VRAM[satbase + 0] | (VRAM[satbase + 1] << 8) & 0x3FF) - 128;
+            sprite.X = (VRAM[satbase + 6] | (VRAM[satbase + 7] << 8) & 0x3FF) - 128;
+            sprite.WidthPixels = SpriteSizeTable[(VRAM[satbase + 3] >> 2) & 3];
+            sprite.HeightPixels = SpriteSizeTable[VRAM[satbase + 3] & 3];
+            sprite.WidthCells = ((VRAM[satbase + 3] >> 2) & 3) + 1;
+            sprite.HeightCells = (VRAM[satbase + 3] & 3) + 1;
+            sprite.Link = VRAM[satbase + 2] & 0x7F;
+            sprite.PatternIndex = (VRAM[satbase + 4] | (VRAM[satbase + 5] << 8)) & 0x7FF;
             sprite.Palette = (VRAM[satbase + 5] >> 5) & 3;
-            return sprite;
         }
 
-     
         struct Sprite
         {
             public int X, Y;
-            public int Width, Height;
+            public int WidthPixels, HeightPixels;
+            public int WidthCells, HeightCells;
             public int Link;
             public int Palette;
             public int PatternIndex;

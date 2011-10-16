@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
             if (address == 0xA11100) // Z80 BUS status
             {
-                Console.WriteLine("QUERY z80 bus status. 68000 can access? " + (M68000HasZ80Bus && Z80Reset == false));
+                //Console.WriteLine("QUERY z80 bus status. 68000 can access? " + (M68000HasZ80Bus && Z80Reset == false));
                 return (sbyte) (M68000HasZ80Bus && Z80Reset == false ? 0 : 1);
             }
 
@@ -69,13 +69,17 @@ namespace BizHawk.Emulation.Consoles.Sega
             int maskedAddr;
             if (address < 0x400000) // Cartridge ROM
                 return (RomData[address] << 24) | (RomData[address + 1] << 16) | (RomData[address + 2] << 8) | RomData[address + 3];
-            
+
             if (address >= 0xE00000) // Work RAM
             {
                 maskedAddr = address & 0xFFFF;
                 return (Ram[maskedAddr] << 24) | (Ram[maskedAddr + 1] << 16) | (Ram[maskedAddr + 2] << 8) | Ram[maskedAddr + 3];
             }
 
+            // try to handle certain things separate if they need to be separate? otherwise handle as 2x readwords?
+            {
+                return ((ushort)ReadWord(address) | (ushort)(ReadWord(address + 2) << 16));
+            }
             if (address == 0xA10008) return 0; // FIXME HACK for tg-sync.
 
             Console.WriteLine("UNHANDLED READL {0:X6}", address);
@@ -105,7 +109,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address == 0xA11100)
             {
                 M68000HasZ80Bus = (value & 1) != 0;
-                Console.WriteLine("68000 has the z80 bus: " + M68000HasZ80Bus);
+                //Console.WriteLine("68000 has the z80 bus: " + M68000HasZ80Bus);
                 return;
             }
             if (address == 0xA11200) // Z80 RESET
@@ -113,7 +117,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Z80Reset = (value & 1) == 0;
                 if (Z80Reset)
                     SoundCPU.Reset();
-                Console.WriteLine("z80 reset: " + Z80Reset);
+                //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
             if (address >= 0xC00000)
@@ -170,7 +174,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address == 0xA11100) // Z80 BUSREQ
             {
                 M68000HasZ80Bus = (value & 0x100) != 0;
-                Console.WriteLine("68000 has the z80 bus: " + M68000HasZ80Bus);
+                //Console.WriteLine("68000 has the z80 bus: " + M68000HasZ80Bus);
                 return;
             }
             if (address == 0xA11200) // Z80 RESET
@@ -178,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                 Z80Reset = (value & 0x100) == 0;
                 if (Z80Reset)
                     SoundCPU.Reset();
-                Console.WriteLine("z80 reset: " + Z80Reset);
+                //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
             Console.WriteLine("UNHANDLED WRITEW {0:X6}:{1:X4}", address, value);

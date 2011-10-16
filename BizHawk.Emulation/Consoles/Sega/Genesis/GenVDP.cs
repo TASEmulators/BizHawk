@@ -24,23 +24,23 @@ namespace BizHawk.Emulation.Consoles.Sega
         public bool CellBasedVertScroll  { get { return (Registers[11] & 0x08) != 0; } }
         public bool Display40Mode        { get { return (Registers[12] & 0x81) != 0; } }
 
-        private ushort NameTableAddrA;
-        private ushort NameTableAddrB;
-        private ushort NameTableAddrWindow;
-        private ushort SpriteAttributeTableAddr;
-        private ushort HScrollTableAddr;
-        private byte NameTableWidth;
-        private byte NameTableHeight;
+        ushort NameTableAddrA;
+        ushort NameTableAddrB;
+        ushort NameTableAddrWindow;
+        ushort SpriteAttributeTableAddr;
+        ushort HScrollTableAddr;
+        byte NameTableWidth;
+        byte NameTableHeight;
 
-        private bool ControlWordPending;
-        private ushort VdpDataAddr;
-        private byte VdpDataCode;
+        bool ControlWordPending;
+        ushort VdpDataAddr;
+        byte VdpDataCode;
 
-        private static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
+        static readonly byte[] PalXlatTable = { 0, 0, 36, 36, 73, 73, 109, 109, 145, 145, 182, 182, 219, 219, 255, 255 };
 
         public void WriteVdpControl(ushort data)
         {
-            //Console.WriteLine("[PC = {0:X6}] VDP: Control Write {1:X4}", /*Genesis._MainCPU.PC*/0, data);
+            Log.Note("VDP", "VDP: Control Write {0:X4}", data);
 
             if (ControlWordPending == false)
             {
@@ -77,28 +77,28 @@ namespace BizHawk.Emulation.Consoles.Sega
                     // what type of DMA?
                     switch (Registers[23] >> 6)
                     {
-                        case 2: 
-                            Console.WriteLine("VRAM FILL");
+                        case 2:
+                            Log.Note("VDP", "VRAM FILL");
                             DmaFillModePending = true;
                             break;
-                        case 3: 
-                            Console.WriteLine("VRAM COPY    **** UNIMPLEMENTED ***"); 
+                        case 3:
+                            Log.Note("VDP", "VRAM COPY    **** UNIMPLEMENTED ***"); 
                             break;
                         default:
-                            Console.WriteLine("68k->VRAM COPY    **** UNIMPLEMENTED ***");
+                            Log.Note("VDP", "68k->VRAM COPY");
                             Execute68000VramCopy();
                             break;
                     }
-                    Console.WriteLine("DMA LEN = "+DmaLength);
+                    Log.Note("VDP", "DMA LEN = " + DmaLength);
                 }
             }
         }
 
         public ushort ReadVdpControl()
         {
-            //Console.WriteLine("VDP: Control Read");
             ushort value = 0x3400; // fixed bits per genvdp.txt TODO test on everdrive, I guess.
             value |= 0x0200; // Fifo empty
+            Log.Note("VDP", "VDP: Control Read {0:X4}", value);
             return value;
         }
 
@@ -144,40 +144,67 @@ namespace BizHawk.Emulation.Consoles.Sega
 
         public ushort ReadVdpData()
         {
-            //Console.WriteLine("VDP: Data Read");
+            Console.WriteLine("VDP: Data Read");
             return 0;
         }
 
         public void WriteVdpRegister(int register, byte data)
         {
-            //Console.WriteLine("Register {0}: {1:X2}", register, data);
+            Log.Note("VDP", "Register {0}: {1:X2}", register, data);
             switch (register)
             {
-                case 0x00:
+                case 0x00: // Mode Set Register 1
                     Registers[register] = data;
-                    Console.WriteLine("HINT enabled: "+ HInterruptsEnabled);
+                    //Log.Note("VDP", "HINT enabled: " + HInterruptsEnabled);
                     break;
-                case 0x01:
+
+                case 0x01: // Mode Set Register 2
                     Registers[register] = data;
-                    Console.WriteLine("DmaEnabled: "+DmaEnabled);
-                    Console.WriteLine("VINT enabled: " + VInterruptEnabled);
+                    //Log.Note("VDP", "DisplayEnabled: " + DisplayEnabled);
+                    //Log.Note("VDP", "DmaEnabled: " + DmaEnabled);
+                    //Log.Note("VDP", "VINT enabled: " + VInterruptEnabled);
                     break;
+
                 case 0x02: // Name Table Address for Layer A
                     NameTableAddrA = (ushort) ((data & 0x38) << 10);
-                    Console.WriteLine("SET NTa A = {0:X4}",NameTableAddrA);
+                    //Log.Note("VDP", "SET NTa A = {0:X4}", NameTableAddrA);
                     break;
+
                 case 0x03: // Name Table Address for Window
                     NameTableAddrWindow = (ushort) ((data & 0x3E) << 10);
-                    Console.WriteLine("SET NTa W = {0:X4}", NameTableAddrWindow);
+                    //Log.Note("VDP", "SET NTa W = {0:X4}", NameTableAddrWindow);
                     break;
+
                 case 0x04: // Name Table Address for Layer B
                     NameTableAddrB = (ushort) (data << 13);
-                    Console.WriteLine("SET NTa B = {0:X4}", NameTableAddrB);
+                    //Log.Note("VDP", "SET NTa B = {0:X4}", NameTableAddrB);
                     break;
+
                 case 0x05: // Sprite Attribute Table Address
                     SpriteAttributeTableAddr = (ushort) (data << 9);
-                    Console.WriteLine("SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
+                    //Log.Note("VDP", "SET SAT attr = {0:X4}", SpriteAttributeTableAddr);
                     break;
+
+                case 0x0A: // H Interrupt Register
+                    //Log.Note("VDP", "HInt occurs every {0} lines.", data);
+                    break;
+
+                case 0x0B: // VScroll/HScroll modes
+                    /*if ((data & 4) != 0)
+                        Log.Note("VDP", "VSCroll Every 2 Cells Enabled");
+                    else
+                        Log.Note("VDP", "Full Screen VScroll");*/
+
+                    int hscrollmode = data & 3;
+                    switch (hscrollmode)
+                    {
+                        //case 0: Log.Note("VDP", "Full Screen HScroll"); break;
+                        //case 1: Log.Note("VDP", "Prohibited HSCROLL mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); break;
+                        //case 2: Log.Note("VDP", "HScroll every 1 cell"); break;
+                        //case 3: Log.Note("VDP", "HScroll every 2 cell"); break;
+                    }
+                    break;
+
                 case 0x0C: // Mode Set #4
                     // TODO interlaced modes
                     if ((data & 0x81) == 0)
@@ -187,7 +214,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                         {
                             FrameBuffer = new int[256*224];
                             FrameWidth = 256;
-                            Console.WriteLine("SWITCH TO 32 CELL WIDE MODE");
+                            //Log.Note("VDP", "SWITCH TO 32 CELL WIDE MODE");
                         }
                     } else {
                         // Display is 40 cells wide
@@ -195,18 +222,21 @@ namespace BizHawk.Emulation.Consoles.Sega
                         {
                             FrameBuffer = new int[320*224];
                             FrameWidth = 320;
-                            Console.WriteLine("SWITCH TO 40 CELL WIDE MODE");
+                            //Log.Note("VDP", "SWITCH TO 40 CELL WIDE MODE");
                         }
                     }
                     break;
+
                 case 0x0D: // H Scroll Table Address
                     HScrollTableAddr = (ushort) (data << 10);
-                    Console.WriteLine("SET HScrollTab attr = {0:X4}", HScrollTableAddr);
+                    //Log.Note("VDP", "SET HScrollTab attr = {0:X4}", HScrollTableAddr);
                     break;
-                case 0x0F:
-                    Console.WriteLine("Set Data Increment to "+data);
+
+                case 0x0F: // Auto Address Register Increment
+                    //Log.Note("VDP", "Set Data Increment to " + data);
                     break;
-                case 0x10:
+
+                case 0x10: // Nametable Dimensions
                     switch (data & 0x03)
                     {
                         case 0: NameTableWidth = 32; break;
@@ -221,13 +251,49 @@ namespace BizHawk.Emulation.Consoles.Sega
                         case 2: NameTableHeight = 32; break; // invalid setting
                         case 3: NameTableHeight = 128; break;
                     }
-                    Console.WriteLine("Name Table Dimensions set to {0}x{1}", NameTableWidth, NameTableHeight);
+                    //Log.Note("VDP", "Name Table Dimensions set to {0}x{1}", NameTableWidth, NameTableHeight);
                     break;
+
+                case 0x11: // Window H Position
+                    int whp = data & 31;
+                    bool fromright = (data & 0x80) != 0;
+                    //Log.Note("VDP", "Window H is {0} units from {1}", whp, fromright ? "right" : "left");
+                    break;
+
+                case 0x12: // Window V
+                    whp = data & 31;
+                    fromright = (data & 0x80) != 0;
+                    //Log.Note("VDP", "Window V is {0} units from {1}", whp, fromright ? "lower" : "upper");
+                    break;
+
+                case 0x13: // DMA Length Low
+                    Registers[register] = data;
+                    //Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
+                    break;
+
+                case 0x14: // DMA Length High
+                    Registers[register] = data;
+                    //Log.Note("VDP", "DMA Length = {0:X4}", DmaLength);
+                    break;
+
+                case 0x15: // DMA Source Low
+                    Registers[register] = data;
+                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    break;
+                case 0x16: // DMA Source Mid
+                    Registers[register] = data;
+                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    break;
+                case 0x17: // DMA Source High
+                    Registers[register] = data;
+                    //Log.Note("VDP", "DMA Source = {0:X6}", DmaSource);
+                    break;
+
             }
             Registers[register] = data;
         }
 
-        private void ProcessPalette(int slot)
+        void ProcessPalette(int slot)
         {
             byte r = PalXlatTable[(CRAM[slot] & 0x000F) >> 0];
             byte g = PalXlatTable[(CRAM[slot] & 0x00F0) >> 4];
@@ -235,7 +301,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Palette[slot] = Colors.ARGB(r, g, b);
         }
 
-        private void UpdatePatternBuffer(int addr)
+        void UpdatePatternBuffer(int addr)
         {
             PatternBuffer[(addr*2) + 1] = (byte) (VRAM[addr^1] & 0x0F);
             PatternBuffer[(addr*2) + 0] = (byte) (VRAM[addr^1] >> 4);
