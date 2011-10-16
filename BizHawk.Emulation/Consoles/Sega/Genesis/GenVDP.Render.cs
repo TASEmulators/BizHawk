@@ -82,6 +82,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         {
             int scanLineBase = ScanLine * FrameWidth;
             int processedSprites = 0;
+            // This is incredibly unoptimized. TODO...
 
             FetchSprite(0);
             while (true)
@@ -95,18 +96,34 @@ namespace BizHawk.Emulation.Consoles.Sega
                     sprite.HeightCells = 2;
 
                 int yline = ScanLine - sprite.Y;
+                if (sprite.VFlip)
+                    yline = sprite.HeightPixels - 1 - yline;
                 int paletteBase = sprite.Palette * 16;
-                int pattern = sprite.PatternIndex + ((yline / 8));
-                int x = sprite.X;
-
-                for (int xi = 0; xi < sprite.WidthPixels; xi++)
+                if (sprite.HFlip == false)
                 {
-                    if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
-                        continue;
+                    int pattern = sprite.PatternIndex + ((yline / 8));
 
-                    int pixel = PatternBuffer[((pattern+((xi/8)*sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (xi & 7)];
-                    if (pixel != 0)
-                        FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                    for (int xi = 0; xi < sprite.WidthPixels; xi++)
+                    {
+                        if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
+                            continue;
+
+                        int pixel = PatternBuffer[((pattern + ((xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (xi & 7)];
+                        if (pixel != 0)
+                            FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                    }
+                } else { // HFlip
+                    int pattern = sprite.PatternIndex + ((yline / 8)) + (sprite.HeightCells * (sprite.WidthCells - 1));
+
+                    for (int xi = 0; xi < sprite.WidthPixels; xi++)
+                    {
+                        if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
+                            continue;
+
+                        int pixel = PatternBuffer[((pattern + ((-xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (7 - (xi & 7))];
+                        if (pixel != 0)
+                            FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                    }
                 }
 
             nextSprite:
@@ -129,7 +146,10 @@ namespace BizHawk.Emulation.Consoles.Sega
             sprite.HeightCells = (VRAM[satbase + 3] & 3) + 1;
             sprite.Link = VRAM[satbase + 2] & 0x7F;
             sprite.PatternIndex = (VRAM[satbase + 4] | (VRAM[satbase + 5] << 8)) & 0x7FF;
+            sprite.HFlip = ((VRAM[satbase + 5] >> 3) & 1) != 0;
+            sprite.VFlip = ((VRAM[satbase + 5] >> 4) & 1) != 0;
             sprite.Palette = (VRAM[satbase + 5] >> 5) & 3;
+            sprite.Priority = ((VRAM[satbase + 5] >> 7) & 1) != 0;
         }
 
         struct Sprite
@@ -140,6 +160,9 @@ namespace BizHawk.Emulation.Consoles.Sega
             public int Link;
             public int Palette;
             public int PatternIndex;
+            public bool Priority;
+            public bool HFlip;
+            public bool VFlip;
         }
     }
 }
