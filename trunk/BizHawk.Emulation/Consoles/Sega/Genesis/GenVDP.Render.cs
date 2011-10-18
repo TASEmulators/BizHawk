@@ -4,18 +4,25 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public partial class GenVDP
     {
+        byte[] PriorityBuffer = new byte[320];
+
+        // TODO, should provide startup register values.
         public void RenderLine()
         {
-            if (ScanLine == 0)
-            {
-                Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
+            Array.Clear(PriorityBuffer, 0, 320);
+            int bgcolor = BackgroundColor;
+            for (int ofs = ScanLine * FrameWidth, i = 0; i < FrameWidth; i++, ofs++)
+                FrameBuffer[ofs] = bgcolor;
 
-                //RenderPatterns();
-                RenderPalette();
+            if (DisplayEnabled)
+            {
                 RenderScrollA();
                 RenderScrollB();
+                RenderSpritesScanline();
             }
-            RenderSprites();
+
+            if (ScanLine == 223) // shrug
+                RenderPalette();
         }
 
         void RenderPalette()
@@ -25,60 +32,64 @@ namespace BizHawk.Emulation.Consoles.Sega
                     FrameBuffer[(p*FrameWidth) + i] = Palette[(p*16) + i];
         }
 
-        void RenderPatterns()
+        void RenderBackgroundScanline(int xScroll, int yScroll, int nameTableBase, int lowPriority, int highPriority)
         {
-            for (int yi=0; yi<28; yi++)
-                for (int xi=0; xi<(Display40Mode?40:32); xi++)
-                    RenderPattern(xi * 8, yi * 8, (yi * (Display40Mode ? 40 : 32)) + xi, 0);
-        }
+            int yTile = ((ScanLine + yScroll) / 8) % NameTableHeight;
+            int yOfs = (ScanLine + yScroll) % 8;
 
-        void RenderPattern(int x, int y, int pattern, int palette)
-        {
-            for (int yi = 0; yi < 8; yi++)
+            // this is hellllla slow. but not optimizing until we implement & understand
+            // all scrolling modes, shadow & hilight, etc.
+            // in thinking about this, you could convince me to optimize the PCE background renderer now.
+            // Its way simple in comparison. But the PCE sprite renderer is way worse than gen.
+            for (int x = 0; x < FrameWidth; x++)
             {
-                for (int xi = 0; xi < 8; xi++)
-                {
-                    byte c = PatternBuffer[(pattern*64) + (yi*8) + xi];
-                    if (c != 0)
-                        FrameBuffer[((y + yi)*FrameWidth) + xi + x] = Palette[(palette*16) + c];
-                }
+                int xTile = Math.Abs(((x - xScroll) / 8) % NameTableWidth);
+                int xOfs = Math.Abs(x - xScroll) & 7;
+                int cellOfs = nameTableBase + (yTile * NameTableWidth * 2) + (xTile * 2);
+                int nameTableEntry = VRAM[cellOfs] | (VRAM[cellOfs+1] << 8);
+                int patternNo = nameTableEntry & 0x7FF;
+                bool hFlip = ((nameTableEntry >> 11) & 1) != 0;
+                bool vFlip = ((nameTableEntry >> 12) & 1) != 0;
+                bool priority = ((nameTableEntry >> 15) & 1) != 0;
+                int palette = (nameTableEntry >> 13) & 3;
+
+                if (priority && PriorityBuffer[x] >= highPriority) continue;
+                if (PriorityBuffer[x] >= lowPriority) continue;
+
+                if (vFlip) yOfs = 7 - yOfs;
+                if (hFlip) xOfs = 7 - xOfs;
+                
+                int texel = PatternBuffer[(patternNo * 64) + (yOfs * 8) + (xOfs)];
+                if (texel == 0) continue;
+                int pixel = Palette[(palette * 16) + texel];
+                FrameBuffer[(ScanLine * FrameWidth) + x] = pixel;
+                PriorityBuffer[x] = (byte) (priority ? highPriority : lowPriority);
             }
         }
 
         void RenderScrollA()
         {
-            for (int yc=0; yc<24; yc++)
-            {
-                for (int xc=0; xc<32; xc++)
-                {
-                    int cellOfs = NameTableAddrA + (yc*NameTableWidth*2) + (xc*2);
-                    int info = (VRAM[cellOfs+1] << 8) | VRAM[cellOfs];
-                    int pattern = info & 0x7FF;
-                    int palette = (info >> 13) & 3;
-                    RenderPattern(xc*8, yc*8, pattern,palette);
-                }
-            }
+            // todo scroll values
+            int hscroll = VRAM[HScrollTableAddr + 0] | (VRAM[HScrollTableAddr + 1] << 8);
+            hscroll &= 0x3FFF;
+            //hscroll = 24;
+            int vscroll = VSRAM[0] & 0x3FFF;
+            RenderBackgroundScanline(hscroll, vscroll, NameTableAddrA, 2, 5);
         }
 
         void RenderScrollB()
         {
-            for (int yc = 0; yc < 24; yc++)
-            {
-                for (int xc = 0; xc < 40; xc++)
-                {
-                    int cellOfs = NameTableAddrB + (yc * NameTableWidth * 2) + (xc * 2);
-                    int info = (VRAM[cellOfs+1] << 8) | VRAM[cellOfs];
-                    int pattern = info & 0x7FF;
-                    int palette = (info >> 13) & 3;
-                    RenderPattern(xc * 8, yc * 8, pattern, palette);
-                }
-            }
+            int hscroll = VRAM[HScrollTableAddr + 2] | (VRAM[HScrollTableAddr + 3] << 8);
+            hscroll &= 0x3FFF;
+            //hscroll = 24;
+            int vscroll = VSRAM[1] & 0x3FFF;
+            RenderBackgroundScanline(hscroll, vscroll, NameTableAddrB, 1, 4);
         }
 
         static readonly int[] SpriteSizeTable = { 8, 16, 24, 32 };
         Sprite sprite;
 
-        void RenderSprites()
+        void RenderSpritesScanline()
         {
             int scanLineBase = ScanLine * FrameWidth;
             int processedSprites = 0;
@@ -105,24 +116,36 @@ namespace BizHawk.Emulation.Consoles.Sega
 
                     for (int xi = 0; xi < sprite.WidthPixels; xi++)
                     {
-                        if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
+                        if (sprite.X + xi < 0 || sprite.X + xi >= FrameWidth)
                             continue;
+
+                        if (sprite.Priority && PriorityBuffer[sprite.X + xi] >= 6) continue;
+                        if (PriorityBuffer[sprite.X + xi] >= 3) continue;
 
                         int pixel = PatternBuffer[((pattern + ((xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (xi & 7)];
                         if (pixel != 0)
+                        {
                             FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                            PriorityBuffer[sprite.X + xi] = sprite.Priority ? (byte) 6 : (byte) 3;
+                        }
                     }
                 } else { // HFlip
                     int pattern = sprite.PatternIndex + ((yline / 8)) + (sprite.HeightCells * (sprite.WidthCells - 1));
 
                     for (int xi = 0; xi < sprite.WidthPixels; xi++)
                     {
-                        if (sprite.X + xi < 0 || sprite.X + xi > FrameWidth)
+                        if (sprite.X + xi < 0 || sprite.X + xi >= FrameWidth)
                             continue;
+
+                        if (sprite.Priority && PriorityBuffer[sprite.X + xi] >= 6) continue;
+                        if (PriorityBuffer[sprite.X + xi] >= 3) continue;
 
                         int pixel = PatternBuffer[((pattern + ((-xi / 8) * sprite.HeightCells)) * 64) + ((yline & 7) * 8) + (7 - (xi & 7))];
                         if (pixel != 0)
+                        {
                             FrameBuffer[scanLineBase + sprite.X + xi] = Palette[paletteBase + pixel];
+                            PriorityBuffer[sprite.X + xi] = sprite.Priority ? (byte) 6 : (byte) 3;
+                        }
                     }
                 }
 

@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("dbcc",  DBcc,  "0101", "CondAll", "11001", "Xn");
             Assign("rte",   RTE,   "0100111001110011");
             Assign("rts",   RTS,   "0100111001110101");
+            Assign("rtr",   RTR,   "0100111001110111");
             Assign("tst",   TST,   "01001010", "Size2_1", "AmXn");
             Assign("btst",  BTSTi, "0000100000", "AmXn");
             Assign("btst",  BTSTr, "0000", "Xn", "100", "AmXn");

@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == Scc)    Scc_Disasm(info);
             else if (Opcodes[op] == RTE)    RTE_Disasm(info);
             else if (Opcodes[op] == RTS)    RTS_Disasm(info);
+            else if (Opcodes[op] == RTR)    RTR_Disasm(info);
             else if (Opcodes[op] == TST)    TST_Disasm(info);
             else if (Opcodes[op] == BTSTi)  BTSTi_Disasm(info);
             else if (Opcodes[op] == BTSTr)  BTSTr_Disasm(info);

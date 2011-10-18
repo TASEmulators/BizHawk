@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Consoles.Sega
         ushort NameTableAddrWindow;
         ushort SpriteAttributeTableAddr;
         ushort HScrollTableAddr;
-        byte NameTableWidth;
-        byte NameTableHeight;
+        int NameTableWidth = 32;
+        int NameTableHeight = 32;
 
         bool ControlWordPending;
         ushort VdpDataAddr;
