@@ -204,6 +204,27 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Args = "";
         }
 
+        void RTR()
+        {
+            ushort sr = (ushort)ReadWord(A[7].s32);
+            A[7].s32 += 2;
+            C = (sr & 0x0001) != 0;
+            V = (sr & 0x0002) != 0;
+            Z = (sr & 0x0004) != 0;
+            N = (sr & 0x0008) != 0;
+            X = (sr & 0x0010) != 0;
+                        
+            PC = ReadLong(A[7].s32);
+            A[7].s32 += 4;
+            PendingCycles -= 20;
+        }
+
+        void RTR_Disasm(DisassemblyInfo info)
+        {
+            info.Mnemonic = "rtr";
+            info.Args = "";
+        }
+
         void RTE()
         {
             short newSR = ReadWord(A[7].s32);
