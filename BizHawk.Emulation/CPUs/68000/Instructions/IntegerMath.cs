@@ -969,7 +969,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MULU()
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg = (op >> 0) & 7;
 
@@ -986,11 +986,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MULU_Disasm(DisassemblyInfo info)
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
-            int pc = info.PC;
+            int pc = info.PC + 2;
             info.Mnemonic = "mulu";
             info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
             info.Length = pc - info.PC;
@@ -998,7 +998,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MULS()
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
@@ -1015,11 +1015,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MULS_Disasm(DisassemblyInfo info)
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
-            int pc = info.PC;
+            int pc = info.PC + 2;
             info.Mnemonic = "muls";
             info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
             info.Length = pc - info.PC;
@@ -1027,7 +1027,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void DIVU()
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
@@ -1051,11 +1051,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void DIVU_Disasm(DisassemblyInfo info)
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
-            int pc = info.PC;
+            int pc = info.PC + 2;
             info.Mnemonic = "divu";
             info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
             info.Length = pc - info.PC;
@@ -1063,7 +1063,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void DIVS()
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
@@ -1087,11 +1087,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void DIVS_Disasm(DisassemblyInfo info)
         {
-            int dreg = (op >> 9) & 3;
+            int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
 
-            int pc = info.PC;
+            int pc = info.PC + 2;
             info.Mnemonic = "divs";
             info.Args = String.Format("{0}, D{1}", DisassembleValue(mode, reg, 2, ref pc), dreg);
             info.Length = pc - info.PC;
