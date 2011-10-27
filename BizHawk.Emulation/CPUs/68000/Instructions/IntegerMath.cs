@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             switch (size)
             {
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             switch (size)
             {
@@ -108,13 +108,12 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void ADD_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int Dreg = (op >> 9) & 7;
-            int dir = (op >> 8) & 1;
+            int dir  = (op >> 8) & 1;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             string op1 = "D" + Dreg;
             string op2;
@@ -187,8 +186,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void ADDI_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 3;
@@ -281,7 +279,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void ADDQ_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
@@ -322,8 +320,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void ADDA_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int aReg = (op >> 9) & 7;
             int size = (op >> 8) & 1;
             int mode = (op >> 3) & 7;
@@ -340,7 +337,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             switch (size)
             {
@@ -391,7 +388,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int Dreg = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             switch (size)
             {
@@ -439,8 +436,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void SUB_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int Dreg = (op >> 9) & 7;
             int dir  = (op >> 8) & 1;
             int size = (op >> 6) & 3;
@@ -518,8 +514,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void SUBI_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 3;
@@ -547,7 +542,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
@@ -612,11 +607,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void SUBQ_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int data = (op >> 9) & 7;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             data = data == 0 ? 8 : data; // range is 1-8; 0 represents 8
 
@@ -670,7 +665,7 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             int size = (op >> 6) & 0x03;
             int mode = (op >> 3) & 0x07;
-            int reg = op & 0x07;
+            int reg  = op & 0x07;
 
             if (mode == 1) throw new Exception("NEG on address reg is invalid");
 
@@ -725,7 +720,7 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             int size = (op >> 6) & 0x03;
             int mode = (op >> 3) & 0x07;
-            int reg = op & 0x07;
+            int reg  = op & 0x07;
 
             int pc = info.PC + 2;
 
@@ -884,12 +879,78 @@ namespace BizHawk.Emulation.CPUs.M68000
             info.Length = pc - info.PC;
         }
 
+        void CMPM()
+        {
+            int axReg = (op >> 9) & 7; //dst
+            int size  = (op >> 6) & 3;
+            int ayReg = (op >> 0) & 7; //src
+
+            switch (size)
+            {
+                case 0: // byte
+                    {
+                        sbyte src = ReadByte(A[ayReg].s32);   A[ayReg].s32 += 1;   if (axReg == 7) A[axReg].s32++; // A7 must stay word aligned
+                        sbyte dst = ReadByte(A[axReg].s32);   A[axReg].s32 += 1;   if (ayReg == 7) A[ayReg].s32++;
+                        int result = dst - src;
+                        int uresult = (byte) dst - (byte) src;
+                        N = (result & 0x80) != 0;
+                        Z = result == 0;
+                        V = result > sbyte.MaxValue || result < sbyte.MinValue;
+                        C = (uresult & 0x100) != 0;
+                        PendingCycles -= 12;
+                        return;
+                    }
+                case 1: // word
+                    {
+                        short src = ReadWord(A[ayReg].s32); A[ayReg].s32 += 2;
+                        short dst = ReadWord(A[axReg].s32); A[axReg].s32 += 2;
+                        int result = dst - src;
+                        int uresult = (ushort) dst - (ushort) src;
+                        N = (result & 0x8000) != 0;
+                        Z = result == 0;
+                        V = result > short.MaxValue || result < short.MinValue;
+                        C = (uresult & 0x10000) != 0;
+                        PendingCycles -= 12;
+                        return;
+                    }
+                case 2: // long
+                    {
+                        int src = ReadLong(A[ayReg].s32); A[ayReg].s32 += 4;
+                        int dst = ReadLong(A[axReg].s32); A[axReg].s32 += 4;
+                        long result = dst - src;
+                        long uresult = (uint) dst - (uint) src;
+                        N = (result & 0x80000000) != 0;
+                        Z = result == 0;
+                        V = result > int.MaxValue || result < int.MinValue;
+                        C = (uresult & 0x100000000) != 0;
+                        PendingCycles -= 20;
+                        return;
+                    }
+            }
+        }
+
+        void CMPM_Disasm(DisassemblyInfo info)
+        {
+            int pc    = info.PC + 2;
+            int axReg = (op >> 9) & 7;
+            int size  = (op >> 6) & 3;
+            int ayReg = (op >> 0) & 7;
+
+            switch (size)
+            {
+                case 0: info.Mnemonic = "cmpm.b"; break;
+                case 1: info.Mnemonic = "cmpm.w"; break;
+                case 2: info.Mnemonic = "cmpm.l"; break;
+            }
+            info.Args = string.Format("(A{0})+, (A{1})+", ayReg, axReg);
+            info.Length = pc - info.PC;
+        }
 
         void CMPI()
         {
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             switch (size)
             {
@@ -940,10 +1001,10 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void CMPI_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
             int immediate;
 
             switch (size)
@@ -971,7 +1032,7 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             int dreg = (op >> 9) & 7;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             uint result = (uint) (D[dreg].u16 * (ushort)ReadValueW(mode, reg));
             D[dreg].u32 = result;
