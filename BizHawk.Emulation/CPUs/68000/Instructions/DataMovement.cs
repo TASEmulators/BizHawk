@@ -43,13 +43,12 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MOVE_Disasm(DisassemblyInfo info)
         {
-            int size = ((op >> 12) & 0x03);
+            int pc      = info.PC + 2;
+            int size    = ((op >> 12) & 0x03);
             int dstMode = ((op >> 6) & 0x07);
-            int dstReg = ((op >> 9) & 0x07);
+            int dstReg  = ((op >> 9) & 0x07);
             int srcMode = ((op >> 3) & 0x07);
-            int srcReg = (op & 0x07);
-
-            int pc = info.PC + 2;
+            int srcReg  = (op & 0x07);
 
             switch (size)
             {
@@ -75,10 +74,10 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MOVEA()
         {
-            int size = ((op >> 12) & 0x03);
-            int dstReg = ((op >> 9) & 0x07);
+            int size    = ((op >> 12) & 0x03);
+            int dstReg  = ((op >> 9) & 0x07);
             int srcMode = ((op >> 3) & 0x07);
-            int srcReg = (op & 0x07);
+            int srcReg  = (op & 0x07);
 
             if (size == 3) // Word
             {
@@ -132,11 +131,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MOVEA_Disasm(DisassemblyInfo info)
         {
-            int size = ((op >> 12) & 0x03);
-            int dstReg = ((op >> 9) & 0x07);
+            int pc      = info.PC + 2;
+            int size    = ((op >> 12) & 0x03);
+            int dstReg  = ((op >> 9) & 0x07);
             int srcMode = ((op >> 3) & 0x07);
-            int srcReg = (op & 0x07);
-            int pc = info.PC + 2;
+            int srcReg  = (op & 0x07);
 
             if (size == 3)
             {
@@ -298,9 +297,9 @@ namespace BizHawk.Emulation.CPUs.M68000
         void MOVEM1()
         {
             // Move memory to register
-            int size = (op >> 6) & 1;
+            int size    = (op >> 6) & 1;
             int srcMode = (op >> 3) & 7;
-            int srcReg = (op >> 0) & 7;
+            int srcReg  = (op >> 0) & 7;
 
             ushort registers = (ushort)ReadWord(PC); PC += 2;
             int address = ReadAddress(srcMode, srcReg);
@@ -434,11 +433,11 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MOVEM0_Disasm(DisassemblyInfo info)
         {
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 1;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
-            int pc = info.PC + 2;
-
+            
             ushort registers = (ushort)ReadWord(pc); pc += 2;
             string address = DisassembleAddress(mode, reg, ref pc);
 
@@ -449,10 +448,10 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void MOVEM1_Disasm(DisassemblyInfo info)
         {
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 1;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
-            int pc = info.PC + 2;
+            int reg  = (op >> 0) & 7;
 
             ushort registers = (ushort)ReadWord(pc); pc += 2;
             string address = DisassembleAddress(mode, reg, ref pc);
@@ -488,8 +487,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void LEA_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
-
+            int pc   = info.PC + 2;
             int mode = (op >> 3) & 7;
             int sReg = (op >> 0) & 7;
             int dReg = (op >> 9) & 7;
@@ -520,7 +518,7 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void CLR_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int size = (op >> 6) & 3;
             int mode = (op >> 3) & 7;
             int reg  = (op >> 0) & 7;
@@ -537,33 +535,45 @@ namespace BizHawk.Emulation.CPUs.M68000
         void EXT()
         {
             int size = (op >> 6) & 1;
-            int reg = op & 7;
+            int reg  = op & 7;
+
             switch (size)
             {
-                case 0: D[reg].s16 = D[reg].s8; break;
-                case 1: D[reg].s32 = D[reg].s16; break;
+                case 0: // ext.w
+                    D[reg].s16 = D[reg].s8;
+                    N = (D[reg].s16 & 0x8000) != 0;
+                    Z = (D[reg].s16 == 0);
+                    break;
+                case 1: // ext.l
+                    D[reg].s32 = D[reg].s16;
+                    N = (D[reg].s32 & 0x80000000) != 0;
+                    Z = (D[reg].s32 == 0);
+                    break;
             }
+
+            V = false;
+            C = false;
             PendingCycles -= 4;
         }
 
         void EXT_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC;
             int size = (op >> 6) & 1;
-            int reg = op & 7;
+            int reg  = op & 7;
+
             switch (size)
             {
                 case 0: info.Mnemonic = "ext.w"; info.Args = "D" + reg; break;
                 case 1: info.Mnemonic = "ext.l"; info.Args = "D" + reg; break;
             }
-
         }
 
         void PEA()
         {
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
-            int ea = ReadAddress(mode, reg);
+            int reg  = (op >> 0) & 7;
+            int ea   = ReadAddress(mode, reg);
+
             A[7].s32 -= 4;
             WriteLong(A[7].s32, ea);
 
@@ -586,9 +596,9 @@ namespace BizHawk.Emulation.CPUs.M68000
 
         void PEA_Disasm(DisassemblyInfo info)
         {
-            int pc = info.PC + 2;
+            int pc   = info.PC + 2;
             int mode = (op >> 3) & 7;
-            int reg = (op >> 0) & 7;
+            int reg  = (op >> 0) & 7;
 
             info.Mnemonic = "pea";
             info.Args = DisassembleAddress(mode, reg, ref pc);
