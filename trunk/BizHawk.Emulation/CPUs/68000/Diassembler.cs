@@ -87,7 +87,9 @@ namespace BizHawk.Emulation.CPUs.M68000
             else if (Opcodes[op] == SUBI)   SUBI_Disasm(info);
             else if (Opcodes[op] == SUBQ)   SUBQ_Disasm(info);
             else if (Opcodes[op] == CMP)    CMP_Disasm(info);
+            else if (Opcodes[op] == CMPM)   CMPM_Disasm(info);
             else if (Opcodes[op] == CMPA)   CMPA_Disasm(info);
+
             else if (Opcodes[op] == CMPI)   CMPI_Disasm(info);
             else if (Opcodes[op] == MULU)   MULU_Disasm(info);
             else if (Opcodes[op] == MULS)   MULS_Disasm(info);

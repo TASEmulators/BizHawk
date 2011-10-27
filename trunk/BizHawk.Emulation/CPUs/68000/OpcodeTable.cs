@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.CPUs.M68000
         {
             // NOTE: Do not change the order of these assigns without testing. There is
             // some overwriting of less-specific opcodes with more-specific opcodes.
+            // TODO: should really come up with means of only assigning to applicable addressing modes,
+            // instead of this lame overwriting business.
 
             Assign("move",  MOVE,  "00", "Size2_0", "XnAm", "AmXn");
             Assign("movea", MOVEA, "00", "Size2_0", "Xn", "001", "AmXn");
@@ -74,6 +76,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             Assign("subi",  SUBI,  "00000100", "Size2_1", "AmXn");
             Assign("subq",  SUBQ,  "0101", "Data3", "1", "Size2_1", "AmXn");
             Assign("cmp",   CMP,   "1011", "Xn", "0", "Size2_1", "AmXn");
+            Assign("cmpm",  CMPM,  "1011", "Xn", "1", "Size2_1", "001", "Xn");
             Assign("cmpa",  CMPA,  "1011", "Xn", "Size1", "11", "AmXn");
             Assign("cmpi",  CMPI,  "00001100", "Size2_1", "AmXn");
             Assign("mulu",  MULU,  "1100", "Xn", "011", "AmXn");  // TODO accurate timing
@@ -116,7 +119,7 @@ namespace BizHawk.Emulation.CPUs.M68000
             foreach (var opcode in opList)
             {
                 int opc = Convert.ToInt32(opcode, 2);
-                if (Opcodes[opc] != null && instr.NotIn("movea","andi2sr","eori2sr","ori2sr","ext","dbcc","swap"))
+                if (Opcodes[opc] != null && instr.NotIn("movea","andi2sr","eori2sr","ori2sr","ext","dbcc","swap","cmpm"))
                     Console.WriteLine("Setting opcode for {0}, a handler is already set. overwriting. {1:X4}", instr, opc);
                 Opcodes[opc] = exec;
             }
