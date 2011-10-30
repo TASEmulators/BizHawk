@@ -819,8 +819,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s8 < 0;
                         C = X = (D[reg].u8 & 0x80) != 0;
                         D[reg].s8 <<= 1;
+                        V |= (D[reg].s8 < 0) != msb;
                     }
                     N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
@@ -829,8 +831,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s16 < 0;
                         C = X = (D[reg].u16 & 0x8000) != 0;
                         D[reg].s16 <<= 1;
+                        V |= (D[reg].s16 < 0) != msb;
                     }
                     N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
@@ -839,8 +843,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s32 < 0;
                         C = X = (D[reg].u32 & 0x80000000) != 0;
                         D[reg].s32 <<= 1;
+                        V |= (D[reg].s32 < 0) != msb;
                     }
                     N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
@@ -889,8 +895,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 0: // byte
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s8 < 0;
                         C = X = (D[reg].u8 & 1) != 0;
                         D[reg].s8 >>= 1;
+                        V |= (D[reg].s8 < 0) != msb;
                     }
                     N = (D[reg].s8 & 0x80) != 0;
                     Z = D[reg].u8 == 0;
@@ -899,8 +907,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 1: // word
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s16 < 0;
                         C = X = (D[reg].u16 & 1) != 0;
                         D[reg].s16 >>= 1;
+                        V |= (D[reg].s16 < 0) != msb;
                     }
                     N = (D[reg].s16 & 0x8000) != 0;
                     Z = D[reg].u16 == 0;
@@ -909,8 +919,10 @@ namespace BizHawk.Emulation.CPUs.M68000
                 case 2: // long
                     for (int i = 0; i < rot; i++)
                     {
+                        bool msb = D[reg].s32 < 0;
                         C = X = (D[reg].u32 & 1) != 0;
                         D[reg].s32 >>= 1;
+                        V |= (D[reg].s32 < 0) != msb;
                     }
                     N = (D[reg].s32 & 0x80000000) != 0;
                     Z = D[reg].u32 == 0;
