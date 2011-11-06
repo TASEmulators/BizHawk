@@ -16,3 +16,5 @@ You computer did not have .NET Framework 4 installed on it and BizHawk requires 
 * _"Games are running way too fast even with Config -> Speed/Skip -> Limit Framerate On"_
 
 Your computer hardware may not be accurately reporting time.  See [http://support.microsoft.com/kb/895980 this article] to see if this is your issue.  Adding /usepmtimer to your boot.ini may fix this.  Refer [http://msdn.microsoft.com/en-us/library/ms940839%28v=winembedded.5%29.aspx this] on how to add multiple boot configs (do this temporarily in case this line causes a boot failure)
+
+[nes/nes test]
