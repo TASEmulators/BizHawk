@@ -1,5 +1,0 @@
-{{{
-This is testing
-[nes/Mappers Mappers link under nes]
-[Mappers Mappers link not under nes]
-}}}
