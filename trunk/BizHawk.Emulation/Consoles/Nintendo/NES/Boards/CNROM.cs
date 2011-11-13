@@ -32,6 +32,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-CNROM":
 					AssertPrg(16, 32); AssertChr(8,16,32);
 					break;
+				case "KONAMI-CNROM": //gradius (J)
+					AssertPrg(32); AssertChr(32);
+					break;
 
 				default:
 					return false;
