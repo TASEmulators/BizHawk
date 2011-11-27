@@ -1,28 +1,29 @@
-#summary One-sentence summary of this page.
+#summary Documentation of the rerecording implementation in BizHawk.
 
 = Introduction =
 
-Documents the rerecording implementation of Bizhawk
+This page documents features and implementation of the rerecording implementation of Bizhawk.  BizHawk strives to be fully compliant with the [http://tasvideos.org/LawsOfTAS.html Laws of TAS]
 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+BizHawk has all the major features in a typical rerecording emulator
 
 
 ==Loadstate Errors==
 
+Errors that appear when rerecording
+
  * GUID Mismatch Error
 
-All movies have a unique GUID.  Savestates store this value.  In the event of a mismatch this error will occur.  It is a soft error in that it will ask the user if they wish to proceed.
+All movies have a unique GUID.  Savestates store this value.  This error occurs when the user attempts to load a .state file created from another movie.  It is a soft error, the user will be asked if they wish to proceed.
 
  * Timeline Error
  
-When loading a state in Read-only mode, a timeline check will occur.  Each frame of the savestate and the movie will be compared.  If the savestate deviates from the movie this error will occur.  It will also notify the frame at which the savestate branches from the current movie.
+When loading a state in Read-only mode, a timeline check will occur.  Each frame of the savestate and the movie will be compared.  It will compare all the frames of a savestate or the movie, whichever is shorter.  If the savestate deviates from the movie this error will occur.  It will also notify the frame at which the savestate branches from the current movie.
+
+Note: BizHawk savestates save the entire movie into the savestate even if the savestate is made before the end of the movie.  It also stores the frame count at which the state is saved.  The length of a savestate is defined as the frames until this value.  When doing a timeline check, frames beyond this point are not compared.
 
  * Future Event Error
 
-When loading a state in Read-only mode, if the savestate from an event after the end of the movie, this error will be thrown.  You can not load an event that has not yet occurred in the movie!
+When loading a state in Read-only mode, if the savestate is from an event after the end of the movie, this error will be thrown.  You can not load an event that has not yet occurred in the movie!
