@@ -176,6 +176,20 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder input = new StringBuilder("|");
 
+			if (ControlType == "Genesis 3-Button Controller")
+			{
+				input.Append(IsBasePressed("Up") ? "U" : ".");
+				input.Append(IsBasePressed("Down") ? "D" : ".");
+				input.Append(IsBasePressed("Left") ? "L" : ".");
+				input.Append(IsBasePressed("Right") ? "R" : ".");
+				input.Append(IsBasePressed("A") ? "A" : ".");
+				input.Append(IsBasePressed("B") ? "B" : ".");
+				input.Append(IsBasePressed("C") ? "C" : ".");
+				input.Append(IsBasePressed("Start") ? "T" : ".");
+				input.Append("|");
+				return input.ToString();
+			}
+
 			if (ControlType == "SMS Controller")
 			{
 				input.Append(IsBasePressed("P1 Up") ? "U" : ".");
@@ -473,6 +487,18 @@ namespace BizHawk.MultiClient
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
+
+			if (ControlType == "Genesis 3-Button Controller")
+			{
+				Force("Up", c[1]);
+				Force("Down", c[2]);
+				Force("Left", c[3]);
+				Force("Right", c[4]);
+				Force("A", c[5]);
+				Force("B", c[6]);
+				Force("C", c[7]);
+				Force("Start", c[8]);
+			}
 
 			if (ControlType == "SMS Controller")
 			{
