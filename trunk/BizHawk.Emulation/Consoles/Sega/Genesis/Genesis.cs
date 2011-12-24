@@ -7,9 +7,13 @@ using BizHawk.Emulation.Sound;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
-    [CoreVersion("0.0.0.1", FriendlyName = "MegaHawk")]
-    public sealed partial class Genesis : IEmulator
+	[CoreVersion("0.0.0.1", FriendlyName = "MegaHawk")]
+	public sealed partial class Genesis : IEmulator
 	{
+		private int _lagcount = 0;
+		private bool lagged = true;
+		private bool islag = false;
+
 		// ROM
 		public byte[] RomData;
 
@@ -78,16 +82,18 @@ namespace BizHawk.Emulation.Consoles.Sega
 			SoundCPU.ReadHardware = x => 0xFF;
 			SoundCPU.IRQCallback = () => SoundCPU.Interrupt = false;
 			Z80Reset = true;
-            RomData = new byte[0x400000];
-            for (int i = 0; i < rom.Length; i++)
-                RomData[i] = rom[i];
+			RomData = new byte[0x400000];
+			for (int i = 0; i < rom.Length; i++)
+				RomData[i] = rom[i];
 
-            SetupMemoryDomains();
-            MainCPU.Reset();
+			SetupMemoryDomains();
+			MainCPU.Reset();
 		}
 
 		public void FrameAdvance(bool render)
 		{
+			lagged = true;
+
 			Frame++;
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
@@ -96,7 +102,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 				if (VDP.ScanLine < 224)
 					VDP.RenderLine();
-                
+
 				MainCPU.ExecuteCycles(487); // 488??
 				if (Z80Runnable)
 				{
@@ -107,7 +113,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 				if (VDP.ScanLine == 224)
 				{
-                    MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
+					MainCPU.ExecuteCycles(16);// stupid crap to sync with genesis plus for log testing
 					// End-frame stuff
 					if (VDP.VInterruptEnabled)
 						MainCPU.Interrupt = 6;
@@ -117,6 +123,15 @@ namespace BizHawk.Emulation.Consoles.Sega
 				}
 			}
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
+
+			Controller.UpdateControls(Frame++);
+			if (lagged)
+			{
+				_lagcount++;
+				islag = true;
+			}
+			else
+				islag = false;
 		}
 
 		public CoreInputComm CoreInputComm { get; set; }
@@ -133,8 +148,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 		}
 
 		public int Frame { get; set; }
-		public int LagCount { get { return -1; } set { return; } } //TODO: Implement
-		public bool IsLagFrame { get { return false; } }
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public bool IsLagFrame { get { return islag; } }
 		public bool DeterministicEmulation { get; set; }
 		public string SystemId { get { return "GEN"; } }
 
@@ -180,30 +195,30 @@ namespace BizHawk.Emulation.Consoles.Sega
 			return new byte[0];
 		}
 
-        IList<MemoryDomain> memoryDomains;
+		IList<MemoryDomain> memoryDomains;
 
-        void SetupMemoryDomains()
-        {
-            var domains = new List<MemoryDomain>(3);
-            var MainMemoryDomain = new MemoryDomain("68000 RAM", Ram.Length, Endian.Big,
-                addr => Ram[addr & 0xFFFF],
-                (addr, value) => Ram[addr & 0xFFFF] = value);
-            var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, Endian.Little,
-                addr => Z80Ram[addr & 0x1FFF],
-                (addr, value) => { Z80Ram[addr & 0x1FFF] = value; });
+		void SetupMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>(3);
+			var MainMemoryDomain = new MemoryDomain("68000 RAM", Ram.Length, Endian.Big,
+				addr => Ram[addr & 0xFFFF],
+				(addr, value) => Ram[addr & 0xFFFF] = value);
+			var Z80Domain = new MemoryDomain("Z80 RAM", Z80Ram.Length, Endian.Little,
+				addr => Z80Ram[addr & 0x1FFF],
+				(addr, value) => { Z80Ram[addr & 0x1FFF] = value; });
 
-            var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Big,
-                addr => VDP.VRAM[addr & 0xFFFF],
-                (addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
+			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, Endian.Big,
+				addr => VDP.VRAM[addr & 0xFFFF],
+				(addr, value) => VDP.VRAM[addr & 0xFFFF] = value);
 
-            domains.Add(MainMemoryDomain);
-            domains.Add(Z80Domain);
-            domains.Add(VRamDomain);
-            memoryDomains = domains.AsReadOnly();
-        }
+			domains.Add(MainMemoryDomain);
+			domains.Add(Z80Domain);
+			domains.Add(VRamDomain);
+			memoryDomains = domains.AsReadOnly();
+		}
 
-        public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
-        public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
+		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
+		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
 
 		public void Dispose() { }
 	}
