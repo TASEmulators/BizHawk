@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 		const string ControllerStr = "Configure Controllers - ";
 		public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
 		public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
-		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", "X,T,0", "Y=", "Z" };
+		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", };
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
 		public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON", 
 			"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS", 
@@ -309,8 +309,80 @@ namespace BizHawk.MultiClient
 
 		private void DoGen()
 		{
+			Label TempLabel;
+			InputWidget TempTextBox;
 			this.Text = ControllerStr + "Sega Genesis";
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
+			int jpad = this.ControllComboBox.SelectedIndex;
+			string[] ButtonMappings = new string[GenesisControlList.Length];
+			ButtonMappings[0] = Global.Config.GenesisController[0].Up;
+			ButtonMappings[1] = Global.Config.GenesisController[0].Down;
+			ButtonMappings[2] = Global.Config.GenesisController[0].Left;
+			ButtonMappings[3] = Global.Config.GenesisController[0].Right;
+			ButtonMappings[4] = Global.Config.GenesisController[0].A;
+			ButtonMappings[5] = Global.Config.GenesisController[0].B;
+			ButtonMappings[6] = Global.Config.GenesisController[0].C;
+			ButtonMappings[7] = Global.Config.GenesisController[0].Start;
+
+			IDX_CONTROLLERENABLED.Checked = Global.Config.GenesisController[0].Enabled;
+			Changed = true;
+			Labels.Clear();
+			TextBoxes.Clear();
+
+			for (int i = 0; i < GenesisControlList.Length; i++)
+			{
+				TempLabel = new Label();
+				TempLabel.Text = GenesisControlList[i];
+				TempLabel.Location = new Point(8, 20 + (i * 24));
+				Labels.Add(TempLabel);
+				TempTextBox = new InputWidget();
+				TempTextBox.Location = new Point(48, 20 + (i * 24));
+				TextBoxes.Add(TempTextBox);
+				TempTextBox.SetBindings(ButtonMappings[i]);
+				ButtonsGroupBox.Controls.Add(TempTextBox);
+				ButtonsGroupBox.Controls.Add(TempLabel);
+			}
+			Changed = true;
+			
+		}
+
+		private void UpdateGen(int prev)
+		{
+			ButtonsGroupBox.Controls.Clear();
+			InputWidget TempBox;
+			Label TempLabel;
+
+			TempBox = TextBoxes[0] as InputWidget;
+			Global.Config.GenesisController[0].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
+			TempBox.Dispose();
+			TempBox = TextBoxes[1] as InputWidget;
+			Global.Config.GenesisController[0].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
+			TempBox.Dispose();
+			TempBox = TextBoxes[2] as InputWidget;
+			Global.Config.GenesisController[0].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
+			TempBox.Dispose();
+			TempBox = TextBoxes[3] as InputWidget;
+			Global.Config.GenesisController[0].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
+			TempBox.Dispose();
+			TempBox = TextBoxes[4] as InputWidget;
+			Global.Config.GenesisController[0].A = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
+			TempBox.Dispose();
+			TempBox = TextBoxes[5] as InputWidget;
+			Global.Config.GenesisController[0].B = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
+			TempBox.Dispose();
+			TempBox = TextBoxes[6] as InputWidget;
+			Global.Config.GenesisController[0].C = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
+			TempBox.Dispose();
+			TempBox = TextBoxes[7] as InputWidget;
+			Global.Config.GenesisController[0].Start = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
+			TempBox.Dispose();
+			Global.Config.GenesisController[0].Enabled = IDX_CONTROLLERENABLED.Checked;
+
+			for (int i = 0; i < GenesisControlList.Length; i++)
+			{
+				TempLabel = Labels[i] as Label;
+				TempLabel.Dispose();
+			}
 		}
 
 		private void DoTI83()

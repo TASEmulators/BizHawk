@@ -17,6 +17,9 @@
 			NESController[3] = new NESControllerTemplate(false);
 			GameBoyController = new NESControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
+			
+			GenesisController[0] = new GenControllerTemplate(true);
+			GenesisAutoController[0] = new GenControllerTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -443,8 +446,8 @@
 		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-        public GenControllerTemplate GenesisController = new GenControllerTemplate(true);
-        public GenControllerTemplate GenesisAutoController = new GenControllerTemplate();
+        public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
+        public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -621,33 +624,35 @@
 		}
 	}
 
-    public class GenControllerTemplate
-    {
-        public string Up = "";
-        public string Down = "";
-        public string Left = "";
-        public string Right = "";
-        public string A = "";
-        public string B = "";
-        public string C = "";
-        public string Start = "";
+	public class GenControllerTemplate
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string A = "";
+		public string B = "";
+		public string C = "";
+		public string Start = "";
+		public bool Enabled;
 
-        public GenControllerTemplate() { }
-        public GenControllerTemplate(bool defaults)
-        {
-            if (defaults)
-            {
-                Up = "UpArrow, J1 Up";
-                Down = "DownArrow, J1 Down";
-                Left = "LeftArrow, J1 Left";
-                Right = "RightArrow, J1 Right";
-                A = "Z, J1 B1";
-                B = "X, J1 B3";
-                C = "C, J1 B4";
-                Start = "Return, J1 B8";
-            }
-        }
-    }
+		public GenControllerTemplate() { }
+		public GenControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				A = "Z, J1 B1";
+				B = "X, J1 B3";
+				C = "C, J1 B4";
+				Start = "Return, J1 B8";
+			}
+		}
+	}
 
 	public class TI83ControllerTemplate
 	{
