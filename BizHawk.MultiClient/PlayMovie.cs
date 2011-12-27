@@ -167,7 +167,10 @@ namespace BizHawk.MultiClient
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			else if (path.Extension == ".MC2")
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
-			MovieList.Add(m);
+
+			if (m.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
+				Global.Config.PlayMovie_MatchGameName == false)
+				MovieList.Add(m);
 		}
 
 		private void UpdateList()
@@ -296,7 +299,7 @@ namespace BizHawk.MultiClient
 		{
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
 			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
-
+			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
 			ScanFiles();
 			PreHighlightMovie();
 		}
@@ -405,6 +408,11 @@ namespace BizHawk.MultiClient
 		{
 			ScanFiles();
 			PreHighlightMovie();
+		}
+
+		private void MatchGameNameCheckBox_CheckedChanged(object sender, EventArgs e)
+		{
+			Global.Config.PlayMovie_MatchGameName = MatchGameNameCheckBox.Checked;
 		}
 
 	}
