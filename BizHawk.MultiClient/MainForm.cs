@@ -1078,7 +1078,8 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								nextEmulator = new Gameboy();
+								Gameboy gb = new Gameboy(game, rom.FileData);
+								nextEmulator = gb;
 								break;
 						}
 					}
