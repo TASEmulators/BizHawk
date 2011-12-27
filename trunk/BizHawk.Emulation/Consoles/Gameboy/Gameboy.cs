@@ -338,28 +338,32 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
 			
 			var WRAM0Domain = new MemoryDomain("WRAM Bank 0", 0x2000, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0xC000)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0xC000), value));
+				addr => WRam[addr & 0x1FFF],
+				(addr, value) => WRam[addr & 0x1FFF] = value);
 
 			var WRAM1Domain = new MemoryDomain("WRAM Bank 1", 0x2000, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0xD000)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0xD000), value));
+				addr => WRam[(addr & 0x1FFF) + 0x2000],
+				(addr, value) => WRam[addr & 0x1FFF] = value);
 
-			var WRAMADomain = new MemoryDomain("WRAM (All)", 0x4000, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x3FFF) + 0xC000)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x3FFF) + 0xC000), value));
+			var WRAMADomain = new MemoryDomain("WRAM Bank (All)", 0x8000, Endian.Little,
+				addr => WRam[addr & 0x7FFF],
+				(addr, value) => WRam[addr & 0x7FFF] = value); //adelikat: Do we want to check for GBC vs GB and limit this domain accordingly?
+
+			var OAMDomain = new MemoryDomain("SRAM", 0x00A0, Endian.Little,
+				addr => OAM[addr & 0x9F],
+				(addr, value) => OAM[addr & 0x9F] = value);
 
 			var OAMDomain = new MemoryDomain("OAM", 0x00A0, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x009F) + 0xFE00)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x009F) + 0xFE00), value));
+				addr => OAM[addr & 0x9F],
+				(addr, value) => OAM[addr & 0x9F] = value);
 
-			var HRAMDomain = new MemoryDomain("HRAM", 0x007F, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x007E) + 0xFF80)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x007E) + 0xFF80), value));
+			var HRAMDomain = new MemoryDomain("HRAM", 0x0080, Endian.Little,
+				addr => HRam[addr & 0x007F],
+				(addr, value) => HRam[addr & 0x0080] = value);
 
 			var VRAMDomain = new MemoryDomain("VRAM", 0x2000, Endian.Little,
-				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0x8000)),
-				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0x8000), value));
+				addr => VRam[addr & 0x1FFF],
+				(addr, value) => VRam[addr & 0x1FFF] = value);
 
 			domains.Add(WRAM0Domain);
 			domains.Add(WRAM1Domain);
@@ -700,7 +704,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			lagged = true;
 			Controller.UpdateControls(Frame++);
-			//Cpu.ExecuteCycles(4096);
+			Cpu.ExecuteCycles(4096);
 
 			if (lagged)
 			{
