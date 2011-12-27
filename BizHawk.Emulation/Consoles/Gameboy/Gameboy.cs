@@ -349,9 +349,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				addr => WRam[addr & 0x7FFF],
 				(addr, value) => WRam[addr & 0x7FFF] = value); //adelikat: Do we want to check for GBC vs GB and limit this domain accordingly?
 
-			var OAMDomain = new MemoryDomain("SRAM", 0x00A0, Endian.Little,
-				addr => OAM[addr & 0x9F],
-				(addr, value) => OAM[addr & 0x9F] = value);
+			var SRAMDomain = new MemoryDomain("SRAM", 0x2000, Endian.Little,
+				addr => SRam[addr & 0x1FFF],
+				(addr, value) => OAM[addr & 0x1FFF] = value);
 
 			var OAMDomain = new MemoryDomain("OAM", 0x00A0, Endian.Little,
 				addr => OAM[addr & 0x9F],
@@ -368,6 +368,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			domains.Add(WRAM0Domain);
 			domains.Add(WRAM1Domain);
 			domains.Add(WRAMADomain);
+			domains.Add(SRAMDomain);
 			domains.Add(VRAMDomain);
 			domains.Add(OAMDomain);
 			domains.Add(HRAMDomain);
