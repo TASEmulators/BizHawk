@@ -50,6 +50,7 @@
 			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
 			this.Scan = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.MatchGameNameCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -262,6 +263,17 @@
 			this.Scan.UseVisualStyleBackColor = true;
 			this.Scan.Click += new System.EventHandler(this.Scan_Click);
 			// 
+			// MatchGameNameCheckBox
+			// 
+			this.MatchGameNameCheckBox.AutoSize = true;
+			this.MatchGameNameCheckBox.Location = new System.Drawing.Point(260, 337);
+			this.MatchGameNameCheckBox.Name = "MatchGameNameCheckBox";
+			this.MatchGameNameCheckBox.Size = new System.Drawing.Size(150, 17);
+			this.MatchGameNameCheckBox.TabIndex = 56;
+			this.MatchGameNameCheckBox.Text = "Match current game name";
+			this.MatchGameNameCheckBox.UseVisualStyleBackColor = true;
+			this.MatchGameNameCheckBox.CheckedChanged += new System.EventHandler(this.MatchGameNameCheckBox_CheckedChanged);
+			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -269,6 +281,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(765, 387);
+			this.Controls.Add(this.MatchGameNameCheckBox);
 			this.Controls.Add(this.Scan);
 			this.Controls.Add(this.ShowStateFiles);
 			this.Controls.Add(this.IncludeSubDirectories);
@@ -314,5 +327,6 @@
 		private System.Windows.Forms.CheckBox ShowStateFiles;
 		private System.Windows.Forms.Button Scan;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.CheckBox MatchGameNameCheckBox;
     }
 }

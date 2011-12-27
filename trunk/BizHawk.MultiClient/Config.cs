@@ -344,6 +344,7 @@
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
 		public bool PlayMovie_ShowStateFiles = false;
+		public bool PlayMovie_MatchGameName = true;
 
 		//TI83
 		public bool TI83autoloadKeyPad = true;
