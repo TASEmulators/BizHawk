@@ -265,23 +265,16 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		public Z80 Cpu;
 		public MemoryMapper Mapper;
 
-		public Gameboy()
+		public Gameboy(GameInfo game, byte[] rom)
 		{
 			CoreOutputComm = new CoreOutputComm();
-		}
-        /* TOO BAD gameboy is broken until someone cares about it 
-		public void LoadGame(IGame game)
-		{
-			Rom = game.GetRomData();
-
-			//inspect mapper and GBC flags
-			CartType = (ECartType)Rom[0x0147];
+			CartType = (ECartType)rom[0x0147];
 			Mapper = new MemoryMapper(this);
+			Rom = rom;
 			CartFlags.GBC = Rom[0x0143] == 0x80;
 			CartFlags.SGB = Rom[0x0146] == 0x03;
-
 			HardReset();
-		} */
+		}
 
 		public bool BootFromBios = true;
 
@@ -338,15 +331,44 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		private void SetupMemoryDomains()
 		{
-			//TODO: WRAM (0 & 1? or both?)
-			//TODO: VRAM
-			//TODO: OAM
-			//TODO: HRAM
 			var domains = new List<MemoryDomain>(1);
+			
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
 				addr => Cpu.ReadMemory((ushort)addr),
 				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
+			
+			var WRAM0Domain = new MemoryDomain("WRAM Bank 0", 0x2000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0xC000)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0xC000), value));
+
+			var WRAM1Domain = new MemoryDomain("WRAM Bank 1", 0x2000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0xD000)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0xD000), value));
+
+			var WRAMADomain = new MemoryDomain("WRAM (All)", 0x4000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x3FFF) + 0xC000)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x3FFF) + 0xC000), value));
+
+			var OAMDomain = new MemoryDomain("OAM", 0x00A0, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x009F) + 0xFE00)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x009F) + 0xFE00), value));
+
+			var HRAMDomain = new MemoryDomain("HRAM", 0x007F, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x007E) + 0xFF80)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x007E) + 0xFF80), value));
+
+			var VRAMDomain = new MemoryDomain("VRAM", 0x2000, Endian.Little,
+				addr => Cpu.ReadMemory((ushort)((addr & 0x1FFF) + 0x8000)),
+				(addr, value) => Cpu.WriteMemory((ushort)((addr & 0x1FFF) + 0x8000), value));
+
+			domains.Add(WRAM0Domain);
+			domains.Add(WRAM1Domain);
+			domains.Add(WRAMADomain);
+			domains.Add(VRAMDomain);
+			domains.Add(OAMDomain);
+			domains.Add(HRAMDomain);
 			domains.Add(SystemBusDomain);
+			
 			memoryDomains = domains.AsReadOnly();
 		}
 
@@ -678,7 +700,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			lagged = true;
 			Controller.UpdateControls(Frame++);
-			Cpu.ExecuteCycles(4096);
+			//Cpu.ExecuteCycles(4096);
 
 			if (lagged)
 			{
