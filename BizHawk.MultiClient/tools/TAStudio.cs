@@ -104,6 +104,8 @@ namespace BizHawk.MultiClient
 		{
 			if (index == Global.Emulator.Frame)
 				color = Color.LightGreen;
+			else if (Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
+				color = Color.Pink;
 		}
 
 		private void TASView_QueryItemText(int index, int column, out string text)
