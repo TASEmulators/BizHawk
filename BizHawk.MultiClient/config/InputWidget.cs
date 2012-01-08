@@ -145,6 +145,7 @@ namespace BizHawk.MultiClient
 			if (e.KeyCode == Keys.F4 && e.Modifiers == Keys.Alt)
 			{
 				base.OnKeyDown(e);
+				return;
 			}
 			e.Handled = true;
 		}
@@ -285,7 +286,10 @@ namespace BizHawk.MultiClient
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
-			return true;
+			if (keyData.ToString() == "F4" || keyData.ToString().Contains("Alt"))
+				return false;
+			else
+				return true;
 		}
 	}
 }
