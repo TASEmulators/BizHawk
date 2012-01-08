@@ -250,7 +250,8 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "NES Controls")
 			{
-				input.Append(IsBasePressed("Reset") ? "r" : ".");
+				input.Append(IsBasePressed("Reset") ? "r" : 
+					Global.Emulator.IsLagFrame ? "L" : ".");
 				input.Append("|");
 				for (int player = 1; player <= 2; player++)
 				{
@@ -554,7 +555,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "NES Controls")
 			{
 				if (mnemonic.Length < 10) return;
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
+				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'L');
 				int ctr = 3;
 				Force("P1 Right", c[ctr++]);
 				Force("P1 Left", c[ctr++]);
