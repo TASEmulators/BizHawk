@@ -2463,5 +2463,14 @@ namespace BizHawk.MultiClient
 			LuaConsole l = new LuaConsole();
 			l.Show();
 		}
+
+		public void OpenGameboyDebugger()
+		{
+			if (Global.Emulator is Gameboy)
+			{
+				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
+				gbDebugger.Show();
+			}
+		}
 	}
 }

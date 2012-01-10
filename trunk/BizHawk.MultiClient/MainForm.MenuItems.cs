@@ -1024,11 +1024,7 @@ namespace BizHawk.MultiClient
 
 		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is Gameboy)
-			{
-				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
-				gbDebugger.Show();
-			}
+			Global.MainForm.OpenGameboyDebugger();
 		}
 
 		private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
