@@ -14,11 +14,11 @@ namespace BizHawk.MultiClient
 	public partial class LuaConsole : Form
 	{
 		//TODO: remember column widths
-		//TODO: recent menu
+		//TODO: load from recent menu
 		//TODO: drag & drop for .lua files
 
 
-		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 
 		List<LuaFiles> luaList = new List<LuaFiles>();
@@ -151,7 +151,7 @@ namespace BizHawk.MultiClient
 			luaList.Add(l);
 			LuaListView.ItemCount = luaList.Count;
 			LuaListView.Refresh();
-
+			Global.Config.RecentLua.Add(path);
 			LuaImp.DoLuaFile(path);
 		}
 
@@ -194,13 +194,10 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					if (luaList[indexes[x]].Enabled)
-						luaList[indexes[x]].Enabled = false;
-					else
-						luaList[indexes[x]].Enabled = true;
+					luaList[indexes[x]].Toggle();
 				}
-				LuaListView.Refresh();
 			}
+			LuaListView.Refresh();
 			UpdateNumberOfScripts();
 		}
 
@@ -388,6 +385,80 @@ namespace BizHawk.MultiClient
 			//CheatListView.SelectItem(i[z], true); //TODO
 
 			DisplayLuaList();
+		}
+
+		private void toggleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			//Clear out recent Cheats list
+			//repopulate it with an up to date list
+			recentToolStripMenuItem.DropDownItems.Clear();
+
+			if (Global.Config.RecentLua.IsEmpty())
+			{
+				var none = new ToolStripMenuItem();
+				none.Enabled = false;
+				none.Text = "None";
+				recentToolStripMenuItem.DropDownItems.Add(none);
+			}
+			else
+			{
+				for (int x = 0; x < Global.Config.RecentLua.Length(); x++)
+				{
+					string path = Global.Config.RecentLua.GetRecentFileByPosition(x);
+					var item = new ToolStripMenuItem();
+					item.Text = path;
+					item.Click += (o, ev) => LoadLuaFromRecent(path);
+					recentToolStripMenuItem.DropDownItems.Add(item);
+				}
+			}
+
+			recentToolStripMenuItem.DropDownItems.Add("-");
+
+			var clearitem = new ToolStripMenuItem();
+			clearitem.Text = "&Clear";
+			clearitem.Click += (o, ev) => Global.Config.RecentLua.Clear();
+			recentToolStripMenuItem.DropDownItems.Add(clearitem);
+		}
+
+		private void LoadLuaFromRecent(string path)
+		{
+
+		}
+
+		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
+		{
+			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			if (Path.GetExtension(filePaths[0]) == (".lua"))
+			{
+				LoadLuaFile(filePaths[0]);
+				DisplayLuaList();
+				UpdateNumberOfScripts();
+			}
+		}
+
+		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None; string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+		}
+
+		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && !e.Control && !e.Alt && !e.Shift)
+			{
+				RemoveScript();
+			}
+			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
+			{
+				for (int x = 0; x < luaList.Count; x++)
+				{
+					LuaListView.SelectItem(x, true);
+				}
+			}
 		}
 	}
 }

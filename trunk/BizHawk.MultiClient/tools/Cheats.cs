@@ -171,7 +171,7 @@ namespace BizHawk.MultiClient
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			//Clear out recent Roms list
+			//Clear out recent Cheats list
 			//repopulate it with an up to date list
 			recentToolStripMenuItem.DropDownItems.Clear();
 
