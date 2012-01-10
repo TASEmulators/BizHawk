@@ -24,7 +24,16 @@ namespace BizHawk.MultiClient
 			int x = Global.MainForm.Location.X + Global.MainForm.Size.Width;
 			int y = Global.MainForm.Location.Y;
 			Location = new Point(x, y);
+			HideShowIcons();
+		}
 
+		public void Restart()
+		{
+			HideShowIcons();
+		}
+
+		private void HideShowIcons()
+		{
 			if (Global.Emulator is NES)
 			{
 				NESPPU.Visible = true;
@@ -39,7 +48,7 @@ namespace BizHawk.MultiClient
 				NESGameGenie.Visible = false;
 				NESNameTable.Visible = false;
 			}
-			
+
 			if (Global.Emulator is TI83)
 			{
 				KeypadTool.Visible = true;

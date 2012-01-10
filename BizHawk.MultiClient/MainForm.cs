@@ -1117,8 +1117,8 @@ namespace BizHawk.MultiClient
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
-                if (Global.Config.AutoSavestates)
-                    LoadState("Auto");
+				if (Global.Config.AutoSavestates)
+					LoadState("Auto");
 
 				////setup the throttle based on platform's specifications
 				////(one day later for some systems we will need to modify it at runtime as the display mode changes)
@@ -1134,8 +1134,9 @@ namespace BizHawk.MultiClient
 				NESDebug1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
-
 				Cheats1.Restart();
+				ToolBox1.Restart();
+
 				if (Global.Config.LoadCheatFileByGame)
 				{
 					if (Global.CheatList.AttemptLoadCheatFile())
@@ -2188,6 +2189,7 @@ namespace BizHawk.MultiClient
 			NESDebug1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
+			ToolBox1.Restart();
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 			HandlePlatformMenus();
 			StateSlots.Clear();
