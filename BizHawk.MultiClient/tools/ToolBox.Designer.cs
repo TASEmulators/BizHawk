@@ -36,12 +36,13 @@
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
 			this.HexEditor = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
+			this.TAStudioButton = new System.Windows.Forms.ToolStripButton();
 			this.NESDebugger = new System.Windows.Forms.ToolStripButton();
 			this.NESPPU = new System.Windows.Forms.ToolStripButton();
 			this.NESNameTable = new System.Windows.Forms.ToolStripButton();
 			this.NESGameGenie = new System.Windows.Forms.ToolStripButton();
 			this.KeypadTool = new System.Windows.Forms.ToolStripButton();
-			this.TAStudioButton = new System.Windows.Forms.ToolStripButton();
+			this.GameboyDebuggerTool = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -61,11 +62,12 @@
             this.NESPPU,
             this.NESNameTable,
             this.NESGameGenie,
-            this.KeypadTool});
+            this.KeypadTool,
+            this.GameboyDebuggerTool});
 			this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
 			this.toolStrip1.Location = new System.Drawing.Point(9, 11);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(86, 295);
+			this.toolStrip1.Size = new System.Drawing.Size(91, 318);
 			this.toolStrip1.TabIndex = 0;
 			this.toolStrip1.TabStop = true;
 			// 
@@ -123,6 +125,15 @@
 			this.toolStripButton5.Text = "Lua Console";
 			this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
 			// 
+			// TAStudioButton
+			// 
+			this.TAStudioButton.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.TAStudioButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.TAStudioButton.Name = "TAStudioButton";
+			this.TAStudioButton.Size = new System.Drawing.Size(70, 20);
+			this.TAStudioButton.Text = "TAStudio";
+			this.TAStudioButton.Click += new System.EventHandler(this.TAStudioButton_Click);
+			// 
 			// NESDebugger
 			// 
 			this.NESDebugger.Image = global::BizHawk.MultiClient.Properties.Resources.NESControllerIcon;
@@ -168,20 +179,20 @@
 			this.KeypadTool.Text = "Keypad";
 			this.KeypadTool.Click += new System.EventHandler(this.KeyPadTool_Click);
 			// 
-			// TAStudioButton
+			// GameboyDebuggerTool
 			// 
-			this.TAStudioButton.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
-			this.TAStudioButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.TAStudioButton.Name = "TAStudioButton";
-			this.TAStudioButton.Size = new System.Drawing.Size(70, 20);
-			this.TAStudioButton.Text = "TAStudio";
-			this.TAStudioButton.Click += new System.EventHandler(this.TAStudioButton_Click);
+			this.GameboyDebuggerTool.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
+			this.GameboyDebuggerTool.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.GameboyDebuggerTool.Name = "GameboyDebuggerTool";
+			this.GameboyDebuggerTool.Size = new System.Drawing.Size(90, 20);
+			this.GameboyDebuggerTool.Text = "GB Debugger";
+			this.GameboyDebuggerTool.Click += new System.EventHandler(this.toolStripButton6_Click);
 			// 
 			// ToolBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(122, 311);
+			this.ClientSize = new System.Drawing.Size(122, 334);
 			this.Controls.Add(this.toolStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MinimumSize = new System.Drawing.Size(130, 64);
@@ -210,6 +221,7 @@
         private System.Windows.Forms.ToolStripButton NESNameTable;
         private System.Windows.Forms.ToolStripButton KeypadTool;
 		private System.Windows.Forms.ToolStripButton TAStudioButton;
+		private System.Windows.Forms.ToolStripButton GameboyDebuggerTool;
 
     }
 }
