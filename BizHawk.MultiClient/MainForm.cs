@@ -220,6 +220,8 @@ namespace BizHawk.MultiClient
 				LoadGameGenieEC();
 			if (Global.Config.AutoloadTAStudio)
 				LoadTAStudio();
+			if (Global.Config.AutoLoadLuaConsole)
+				OpenLuaConsole();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
@@ -1437,8 +1439,7 @@ namespace BizHawk.MultiClient
 				case "Hex Editor": LoadHexEditor(); break;
 				case "Lua Console":
 					{
-						var window = new BizHawk.MultiClient.tools.LuaWindow();
-						window.Show();
+						OpenLuaConsole();
 						break;
 					}
 				case "Cheats": LoadCheatsWindow(); break;
@@ -2455,6 +2456,12 @@ namespace BizHawk.MultiClient
 		private void ShowHideMenu()
 		{
 			MainMenuStrip.Visible ^= true;
+		}
+
+		public void OpenLuaConsole()
+		{
+			LuaConsole l = new LuaConsole();
+			l.Show();
 		}
 	}
 }
