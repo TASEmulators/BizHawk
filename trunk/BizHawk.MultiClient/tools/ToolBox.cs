@@ -75,8 +75,7 @@ namespace BizHawk.MultiClient
 
 		private void toolStripButton5_Click(object sender, EventArgs e)
 		{
-			var window = new BizHawk.MultiClient.tools.LuaWindow();
-			window.Show();
+			Global.MainForm.OpenLuaConsole();
 		}
 
 		private void NESPPU_Click(object sender, EventArgs e)
@@ -104,6 +103,11 @@ namespace BizHawk.MultiClient
 			if (!(Global.Emulator is TI83))
 				return;
 			Global.MainForm.LoadTI83KeyPad();
+		}
+
+		private void TAStudioButton_Click(object sender, EventArgs e)
+		{
+			Global.MainForm.LoadTAStudio();
 		}
 	}
 }
