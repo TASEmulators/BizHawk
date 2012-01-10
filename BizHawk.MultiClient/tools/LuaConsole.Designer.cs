@@ -34,7 +34,6 @@
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,6 +83,7 @@
 			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Script,
             this.PathName});
+			this.LuaListView.ContextMenuStrip = this.contextMenuStrip1;
 			this.LuaListView.FullRowSelect = true;
 			this.LuaListView.GridLines = true;
 			this.LuaListView.HideSelection = false;
@@ -97,6 +97,7 @@
 			this.LuaListView.View = System.Windows.Forms.View.Details;
 			this.LuaListView.SelectedIndexChanged += new System.EventHandler(this.LuaListView_SelectedIndexChanged);
 			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
+			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
 			// 
 			// Script
 			// 
@@ -111,7 +112,6 @@
 			// menuStrip1
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
             this.fileToolStripMenuItem,
             this.scriptToolStripMenuItem,
             this.viewToolStripMenuItem,
@@ -121,11 +121,6 @@
 			this.menuStrip1.Size = new System.Drawing.Size(584, 24);
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// toolStripMenuItem1
-			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(12, 20);
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -187,22 +182,23 @@
 			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
 			this.recentToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.recentToolStripMenuItem.Text = "Recent";
+			this.recentToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentToolStripMenuItem_DropDownOpened);
 			// 
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
@@ -213,6 +209,7 @@
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
@@ -241,6 +238,7 @@
 			this.toggleToolStripMenuItem.Name = "toggleToolStripMenuItem";
 			this.toggleToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.toggleToolStripMenuItem.Text = "Toggle";
+			this.toggleToolStripMenuItem.Click += new System.EventHandler(this.toggleToolStripMenuItem_Click);
 			// 
 			// insertSeparatorToolStripMenuItem
 			// 
@@ -415,6 +413,7 @@
 			// 
 			// LuaConsole
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(584, 342);
@@ -424,10 +423,12 @@
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(356, 115);
+			this.MinimumSize = new System.Drawing.Size(356, 132);
 			this.Name = "LuaConsole";
 			this.Text = "Lua Console";
 			this.Load += new System.EventHandler(this.LuaConsole_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
@@ -441,8 +442,7 @@
 
         private VirtualListView LuaListView;
         private System.Windows.Forms.ColumnHeader PathName;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
