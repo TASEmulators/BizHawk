@@ -473,7 +473,7 @@
 			this.toolStripButtonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonMoveUp.Name = "toolStripButtonMoveUp";
 			this.toolStripButtonMoveUp.Size = new System.Drawing.Size(23, 22);
-			this.toolStripButtonMoveUp.Text = "toolStripButton1";
+			this.toolStripButtonMoveUp.Text = "Move Up";
 			this.toolStripButtonMoveUp.Click += new System.EventHandler(this.toolStripButtonMoveUp_Click);
 			// 
 			// toolStripButtonMoveDown

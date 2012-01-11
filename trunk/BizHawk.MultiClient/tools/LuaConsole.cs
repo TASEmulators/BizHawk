@@ -14,8 +14,11 @@ namespace BizHawk.MultiClient
 	public partial class LuaConsole : Form
 	{
 		//TODO: remember column widths
+		//TODO: restore column width on restore default settings
 		//TODO: load from recent menu
-		//TODO: drag & drop for .lua files
+		//TODO: editScript()
+		//TODO: run lua script!
+		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
 
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
@@ -56,12 +59,15 @@ namespace BizHawk.MultiClient
 
 		private void LuaListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (luaList[index].IsSeparator)
-				color = Color.DarkGray;
-			else if (luaList[index].Enabled)
-				color = Color.Cyan;
-			else 
-				color = this.BackColor;
+			if (column == 0)
+			{
+				if (luaList[index].IsSeparator)
+					color = this.BackColor;
+				else if (luaList[index].Enabled)
+					color = Color.LightCyan;
+				else
+					color = this.BackColor;
+			}
 		}
 
 		private void LuaListView_QueryItemText(int index, int column, out string text)
@@ -454,11 +460,79 @@ namespace BizHawk.MultiClient
 			}
 			else if (e.KeyCode == Keys.A && e.Control && !e.Alt && !e.Shift) //Select All
 			{
-				for (int x = 0; x < luaList.Count; x++)
-				{
-					LuaListView.SelectItem(x, true);
-				}
+				SelectAll();
 			}
+		}
+
+		private void editScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditScript();
+		}
+
+		private void editToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			EditScript();
+		}
+
+		private void EditScript()
+		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes.Count == 0) 
+				return;
+			System.Diagnostics.Process.Start(luaList[indexes[0]].Path);
+		}
+
+		private void toggleScriptToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void selectAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void SelectAll()
+		{
+			for (int x = 0; x < luaList.Count; x++)
+			{
+				LuaListView.SelectItem(x, true);
+			}
+		}
+
+		private void toolStripButtonMoveDown_Click(object sender, EventArgs e)
+		{
+			MoveDown();
+		}
+
+		private void toolStripButtonMoveUp_Click(object sender, EventArgs e)
+		{
+			MoveUp();
+		}
+
+		private void toolStripButtonSeparator_Click(object sender, EventArgs e)
+		{
+			InsertSeparator();
+		}
+
+		private void copyToolStripButton_Click(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void EditToolstripButton_Click(object sender, EventArgs e)
+		{
+			EditScript();
+		}
+
+		private void cutToolStripButton_Click(object sender, EventArgs e)
+		{
+			RemoveScript();
+		}
+
+		private void openToolStripButton_Click(object sender, EventArgs e)
+		{
+			OpenLuaFile();
 		}
 	}
 }
