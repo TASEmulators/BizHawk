@@ -13,11 +13,17 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
 	{
+		//session file saving
+		//session file loading
+		//new session
+		//open session
+		//recent session
+		//save/save as session
+		//options - autoload session
+		//options - disable scripts on load
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
-		//TODO: load from recent menu
-		//TODO: editScript()
-		//TODO: run lua script!
+		//TODO: load scripts from recent scripts menu
 		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
 
 
@@ -65,8 +71,6 @@ namespace BizHawk.MultiClient
 					color = this.BackColor;
 				else if (luaList[index].Enabled)
 					color = Color.LightCyan;
-				else
-					color = this.BackColor;
 			}
 		}
 
@@ -542,15 +546,15 @@ namespace BizHawk.MultiClient
 			RemoveScript();
 		}
 
-		private void openToolStripButton_Click(object sender, EventArgs e)
-		{
-			OpenLuaFile();
-		}
-
 		public void WriteToOutputWindow(string message)
 		{
 			OutputBox.Text += message;
 			OutputBox.Refresh();
+		}
+
+		private void openToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			OpenLuaFile();
 		}
 	}
 }
