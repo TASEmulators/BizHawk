@@ -61,6 +61,7 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public LuaConsole LuaConsole1 = new LuaConsole();
 
 		public MainForm(string[] args)
 		{
@@ -1136,6 +1137,7 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
+				LuaConsole1.Restart();
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -2155,7 +2157,7 @@ namespace BizHawk.MultiClient
 				"Disc Images", "*.cue",
 				"NES", "*.nes;%ARCH%",
 				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-                "Genesis", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
+				"Genesis", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 				"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 				"Gameboy", "*.gb;%ARCH%",
 				"TI-83", "*.rom;%ARCH%",
@@ -2190,6 +2192,7 @@ namespace BizHawk.MultiClient
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
 			ToolBox1.Restart();
+			LuaConsole1.Restart();
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 			HandlePlatformMenus();
 			StateSlots.Clear();
@@ -2462,8 +2465,13 @@ namespace BizHawk.MultiClient
 
 		public void OpenLuaConsole()
 		{
-			LuaConsole l = new LuaConsole();
-			l.Show();
+			if (!LuaConsole1.IsHandleCreated || LuaConsole1.IsDisposed)
+			{
+				LuaConsole1 = new LuaConsole();
+				LuaConsole1.Show();
+			}
+			else
+				LuaConsole1.Focus();
 		}
 
 		public void OpenGameboyDebugger()
