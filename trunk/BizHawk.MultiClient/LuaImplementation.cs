@@ -40,7 +40,7 @@ namespace BizHawk.MultiClient
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
-				lua.RegisterFunction("statestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				//lua.RegisterFunction("statestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
 			}
 
 			lua.NewTable("movie");
@@ -56,6 +56,16 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void DoLuaFile(string File)
+		{
+			lua.DoFile(File);
+		}
+
+		public void print(string s)
+		{
+			Caller.AddText(string.Format(s));
+		}
+
 		/****************************************************/
 		/*************library definitions********************/
 		/****************************************************/
@@ -64,16 +74,17 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] EmuFunctions = new string[] {
-			"frameadvance",
+			//"frameadvance",
 			"pause",
 			"unpause",
-			"speedmode",
-			"framecount",
-			"lagcount",
-			"islagged",
-			"registerbefore",
-			"registerafter",
-			"register"
+			"togglepause",
+			//"speedmode",
+			//"framecount",
+			//"lagcount",
+			//"islagged",
+			//"registerbefore",
+			//"registerafter",
+			//"register"
 		};
 		public static string[] MemoryFunctions = new string[] {
 			"readbyte",
@@ -90,10 +101,10 @@ namespace BizHawk.MultiClient
 			//"registerread",
 			};
 		public static string[] SaveStateFunctions = new string[] {
-			"create",
+			//"create",
 			"save",
-			"load",
-			"write"
+			//"load",
+			//"write"
 		};
 		public static string[] MovieFunctions = new string[] {
 			"mode",
@@ -109,14 +120,38 @@ namespace BizHawk.MultiClient
 		/*************function definitions********************/
 		/****************************************************/
 
-		public void DoLuaFile(string File)
+		//----------------------------------------------------
+		//Console library
+		//----------------------------------------------------
+
+		public void console_output(object lua_input)
 		{
-			lua.DoFile(File);
+			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 		}
-		public void print(string s)
+
+		//----------------------------------------------------
+		//Emu library
+		//----------------------------------------------------
+
+		public void emu_pause()
 		{
-			Caller.AddText(string.Format(s));
+			Global.MainForm.PauseEmulator();
 		}
+
+		public void emu_unpause()
+		{
+			Global.MainForm.UnpauseEmulator();
+		}
+
+		public void emu_togglepause()
+		{
+			Global.MainForm.TogglePause();
+		}
+
+		//----------------------------------------------------
+		//Memory library
+		//----------------------------------------------------
+		
 		public string memory_readbyte(object lua_input)
 		{
 
@@ -134,19 +169,24 @@ namespace BizHawk.MultiClient
 			}
 
 		}
+
 		public void memory_writebyte(object lua_input)
 		{
 			Global.Emulator.MainMemory.PokeByte((int)lua_input, (byte)lua_input);
 		}
-		public void joypad_get(object lua_input)
+
+		//----------------------------------------------------
+		//Savestate library
+		//----------------------------------------------------
+
+		public void savestate_save(object lua_input)
 		{
-
-		}
-		public void joypad_set(object lua_input)
-		{
-
+			//
 		}
 
+		//----------------------------------------------------
+		//Movie library
+		//----------------------------------------------------
 		public string movie_mode()
 		{
 			return Global.MovieSession.Movie.Mode.ToString();
@@ -161,9 +201,18 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie.StopMovie();
 		}
 
-		public void console_output(object lua_input)
+		//----------------------------------------------------
+		//Joypad library
+		//----------------------------------------------------
+
+		public void joypad_get(object lua_input)
 		{
-			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
+
+		}
+		
+		public void joypad_set(object lua_input)
+		{
+
 		}
 	}
 }
