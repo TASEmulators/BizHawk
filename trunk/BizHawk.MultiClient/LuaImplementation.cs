@@ -12,6 +12,57 @@ namespace BizHawk.MultiClient
 	{
 		Lua lua = new Lua();
 		LuaConsole Caller;
+
+		public LuaImplementation(LuaConsole passed)
+		{
+			Caller = passed.get();
+			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
+
+			//Register libraries
+			lua.NewTable("console");
+			for (int i = 0; i < ConsoleFunctions.Length; i++)
+			{
+				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+			}
+
+			lua.NewTable("emu");
+			for (int i = 0; i < EmuFunctions.Length; i++)
+			{
+				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
+			}
+
+			lua.NewTable("memory");
+			for (int i = 0; i < MemoryFunctions.Length; i++)
+			{
+				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
+			}
+
+			lua.NewTable("savestate");
+			for (int i = 0; i < SaveStateFunctions.Length; i++)
+			{
+				lua.RegisterFunction("statestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+			}
+
+			lua.NewTable("movie");
+			for (int i = 0; i < MovieFunctions.Length; i++)
+			{
+				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
+			}
+
+			lua.NewTable("joypad");
+			for (int i = 0; i < JoypadFunctions.Length; i++)
+			{
+				lua.RegisterFunction("joypad." + MemoryFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
+			}
+		}
+
+		/****************************************************/
+		/*************library definitions********************/
+		/****************************************************/
+		public static string[] ConsoleFunctions = new string[] {
+			"output"
+		};
+
 		public static string[] EmuFunctions = new string[] {
 			"frameadvance",
 			"pause",
@@ -53,25 +104,14 @@ namespace BizHawk.MultiClient
 			"set",
 			//"get",
 		};
-		public LuaImplementation(LuaConsole passed)
-		{
-			Caller = passed.get();
-			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
-			lua.NewTable("memory");
-			for (int i = 0; i < MemoryFunctions.Length; i++)
-			{
-				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
-			}
-			lua.NewTable("joypad");
-			for (int i = 0; i < JoypadFunctions.Length; i++)
-			{
-				lua.RegisterFunction("joypad." + MemoryFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
-			}
-		}
+
+		/****************************************************/
+		/*************function definitions********************/
+		/****************************************************/
 
 		public void DoLuaFile(string File)
 		{
-
+			lua.DoFile(File);
 		}
 		public void print(string s)
 		{
@@ -106,12 +146,24 @@ namespace BizHawk.MultiClient
 		{
 
 		}
+
+		public string movie_mode()
+		{
+			return Global.MovieSession.Movie.Mode.ToString();
+		}
+
 		public string movie_rerecordcount()
 		{
-			return "No";
+			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
 		public void movie_stop()
 		{
+			Global.MovieSession.Movie.StopMovie();
+		}
+
+		public void console_output(object lua_input)
+		{
+			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 		}
 	}
 }

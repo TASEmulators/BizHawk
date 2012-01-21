@@ -205,6 +205,18 @@ namespace BizHawk.MultiClient
 			}
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
+			RunLuaScript();
+		}
+
+		private void RunLuaScript()
+		{
+			for (int x = 0; x < luaList.Count; x++)
+			{
+				if (luaList[x].Enabled)
+				{
+					LuaImp.DoLuaFile(luaList[x].Name);
+				}
+			}
 		}
 
 		private void UpdateNumberOfScripts()
@@ -533,6 +545,12 @@ namespace BizHawk.MultiClient
 		private void openToolStripButton_Click(object sender, EventArgs e)
 		{
 			OpenLuaFile();
+		}
+
+		public void WriteToOutputWindow(string message)
+		{
+			OutputBox.Text += message;
+			OutputBox.Refresh();
 		}
 	}
 }
