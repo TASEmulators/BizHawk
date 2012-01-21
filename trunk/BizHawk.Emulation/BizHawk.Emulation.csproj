@@ -180,16 +180,6 @@
     <Compile Include="CPUs\68000\Memory.cs" />
     <Compile Include="CPUs\68000\OpcodeTable.cs" />
     <Compile Include="CPUs\68000\Tables.cs" />
-    <Compile Include="CPUs\ARM\ARM.CP.cs" />
-    <Compile Include="CPUs\ARM\ARM.cs" />
-    <Compile Include="CPUs\ARM\ARM.Disassembly.cs" />
-    <Compile Include="CPUs\ARM\ARM.Execute.cs" />
-    <Compile Include="CPUs\ARM\ARM.ExecuteArm.cs" />
-    <Compile Include="CPUs\ARM\ARM.ExecuteArm.Unconditional.cs" />
-    <Compile Include="CPUs\ARM\ARM.ExecuteCore.cs" />
-    <Compile Include="CPUs\ARM\ARM.ExecuteThumb.cs" />
-    <Compile Include="CPUs\ARM\ARM.Pseudocode.cs" />
-    <Compile Include="CPUs\ARM\_.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />
     <Compile Include="CPUs\HuC6280\Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280.cs" />

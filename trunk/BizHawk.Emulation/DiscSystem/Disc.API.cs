@@ -11,6 +11,10 @@ namespace BizHawk.DiscSystem
 			: base(string.Format("A disc attempted to reference a file which could not be accessed or loaded: {0}", fname),inner)
 		{
 		}
+		public DiscReferenceException(string fname, string extrainfo)
+			: base(string.Format("A disc attempted to reference a file which could not be accessed or loaded:\n\n{0}\n\n{1}", fname, extrainfo))
+		{
+		}
 	}
 
 	public class ProgressReport
