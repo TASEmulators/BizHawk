@@ -372,13 +372,13 @@ namespace BizHawk.MultiClient
 				ScreenSaver.ResetTimerPeriodically();
 		}
 
-		private void PauseEmulator()
+		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
 			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
 		}
 
-		private void UnpauseEmulator()
+		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
 			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
