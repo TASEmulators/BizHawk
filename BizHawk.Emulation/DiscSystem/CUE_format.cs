@@ -10,7 +10,28 @@ namespace BizHawk.DiscSystem
 {
 	partial class Disc
 	{
-		void FromCuePathInternal(string cuePath)
+		/// <summary>
+		/// finds a file in the same directory with an extension alternate to the supplied one.
+		/// If two are found, an exception is thrown (later, we may have heuristics to try to acquire the desired content)
+		/// </summary>
+		string FindAlternateExtensionFile(string path, bool caseSensitive)
+		{
+			string targetFragment = Path.GetFileNameWithoutExtension(path);
+			var di = new FileInfo(path).Directory;
+			var results = new List<FileInfo>();
+			foreach (var fi in di.GetFiles())
+			{
+				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
+				int cmp = string.Compare(fragment, targetFragment, !caseSensitive);
+				if (cmp == 0)
+					results.Add(fi);
+			}
+			if(results.Count == 0) throw new DiscReferenceException(path, "Cannot find the specified file");
+			if (results.Count > 1) throw new DiscReferenceException(path, "Cannot choose between multiple options");
+			return results[0].FullName;
+		}
+
+		void FromCuePathInternal(string cuePath, CueBinPrefs prefs)
 		{
 			string cueDir = Path.GetDirectoryName(cuePath);
 			var cue = new Cue();
@@ -34,7 +55,23 @@ namespace BizHawk.DiscSystem
 				int blob_length_aba, blob_leftover;
 				IBlob cue_blob = null;
 
-				if (cue_file.FileType == Cue.CueFileType.Binary)
+				//try any way we can to acquire a file
+				if (!File.Exists(blobPath) && prefs.ExtensionAware)
+				{
+					blobPath = FindAlternateExtensionFile(blobPath, prefs.CaseSensitive);
+				}
+
+				if (!File.Exists(blobPath))
+					throw new DiscReferenceException(blobPath,"");
+
+				//some simple rules to mutate the file type if we received something fishy
+				string blobPathExt = Path.GetExtension(blobPath).ToLower();
+				if (blobPathExt == ".ape") cue_file.FileType = Cue.CueFileType.Wave;
+				if (blobPathExt == ".mp3") cue_file.FileType = Cue.CueFileType.Wave;
+				if (blobPathExt == ".mpc") cue_file.FileType = Cue.CueFileType.Wave;
+				if (blobPathExt == ".flac") cue_file.FileType = Cue.CueFileType.Wave;
+
+				if (cue_file.FileType == Cue.CueFileType.Binary || cue_file.FileType == Cue.CueFileType.Unspecified)
 				{
 					//make a blob for the file
 					Blob_RawFile blob = new Blob_RawFile();
@@ -89,10 +126,9 @@ namespace BizHawk.DiscSystem
 					blob_leftover = (int)(blob.Length - blob_length_aba * blob_sectorsize);
 					cue_blob = blob;
 				}
-				else throw new DiscReferenceException(blobPath, new InvalidOperationException("unknown cue file type: " + cue_file.StrFileType));
+				else throw new Exception("Internal error - Unhandled cue blob type");
 
 				//TODO - make CueTimestamp better, and also make it a struct, and also just make it DiscTimestamp
-				//TODO - mp3 decode
 
 				//start timekeeping for the blob. every time we hit an index, this will advance
 				int blob_timestamp = 0;

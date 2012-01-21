@@ -452,10 +452,10 @@ namespace BizHawk.DiscSystem
 				}
 		}
 
-		public static Disc FromCuePath(string cuePath)
+		public static Disc FromCuePath(string cuePath, CueBinPrefs prefs)
 		{
 			var ret = new Disc();
-			ret.FromCuePathInternal(cuePath);
+			ret.FromCuePathInternal(cuePath, prefs);
 			ret.TOC.GeneratePoints();
 			ret.PopulateQSubchannel();
 			return ret;
@@ -670,7 +670,17 @@ namespace BizHawk.DiscSystem
 		/// </summary>
 		public bool SingleSession;
 
-		//THIS IS WRONG-HEADED. track 1 index 0 must never equal index 1! apparently.
+		/// <summary>
+		/// enables various extension-aware behaviours.
+		/// enables auto-search for files with the same name but differing extension.
+		/// enables auto-detection of situations where cue blobfiles are indicating the wrong type in the cuefile
+		/// </summary>
+		public bool ExtensionAware = false;
+
+		/// <summary>
+		/// whenever we have a choice, use case sensitivity in searching for files
+		/// </summary>
+		public bool CaseSensitive = false;
 
 		/// <summary>
 		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
