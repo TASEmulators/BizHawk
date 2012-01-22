@@ -450,7 +450,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadLuaFromRecent(string path)
 		{
-
+			LoadLuaFile(path);
 		}
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
@@ -569,6 +569,27 @@ namespace BizHawk.MultiClient
 			MessageBox.Show(LuaImp.LuaLibraryList);
 		}
 
+		private bool LoadLuaSession(string path)
+		{
+			var file = new FileInfo(path);
+			if (file.Exists == false) return false;
+			using (StreamReader sr = file.OpenText())
+			{
+				int count = 0;
+				string s = "";
+				string temp = "";
+
+				while ((s = sr.ReadLine()) != null)
+				{
+					//.luases 
+					if (s.Length < 1) continue;
+
+					temp = s.Substring(0, 1) //Get enabled flag
+				}
+			}
+
+			return true;
+		}
 
 	}
 }

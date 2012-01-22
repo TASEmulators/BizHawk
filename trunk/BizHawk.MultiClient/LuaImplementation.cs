@@ -243,7 +243,7 @@ namespace BizHawk.MultiClient
 
 		public void memory_writebyte(object lua_input)
 		{
-			Global.Emulator.MainMemory.PokeByte((int)lua_input, (byte)lua_input);
+			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte((int)lua_input, (byte)lua_input);
 		}
 
 		//----------------------------------------------------
