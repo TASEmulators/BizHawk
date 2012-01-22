@@ -37,6 +37,7 @@ namespace BizHawk.MultiClient
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused;
+        public EventWaitHandle MainWait;
 		int runloop_fps;
 		int runloop_last_fps;
 		bool runloop_frameadvance;
@@ -67,6 +68,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = new Movie();
+            MainWait = new AutoResetEvent(false)
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = GameInfo.GetNullGame();
@@ -331,6 +333,8 @@ namespace BizHawk.MultiClient
 			for (; ; )
 			{
 				//client input-related duties
+           
+
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
@@ -339,14 +343,19 @@ namespace BizHawk.MultiClient
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
-
-
+                if (LuaConsole1.LuaImp.isRunning)
+                {
+                    LuaConsole1.LuaImp.LuaWait.WaitOne();
+                }
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
 
 				Render();
-
+                if (LuaConsole1.LuaImp.isRunning)
+                {
+                    MainForm.MainWait.Set();
+                }
 				CheckMessages();
 				if (exit)
 					break;
