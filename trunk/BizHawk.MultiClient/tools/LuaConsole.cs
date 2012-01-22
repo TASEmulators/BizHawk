@@ -162,7 +162,7 @@ namespace BizHawk.MultiClient
 			luaList.Add(l);
 			LuaListView.ItemCount = luaList.Count;
 			LuaListView.Refresh();
-			Global.Config.RecentLua.Add(path);
+			Global.Config.RecentLua.Add(path);            
 			LuaImp.DoLuaFile(path);
 		}
 

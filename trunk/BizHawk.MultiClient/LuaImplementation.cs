@@ -6,6 +6,8 @@ using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
 using BizHawk.MultiClient.tools;
+using System.Threading;
+
 
 namespace BizHawk.MultiClient
 {
@@ -14,10 +16,14 @@ namespace BizHawk.MultiClient
 		Lua lua = new Lua();
 		LuaConsole Caller;
 		public String LuaLibraryList = "";
+        public EventWaitHandle LuaWait;
+        public bool isRunning;
+        private Thread LuaThread; 
 		private int CurrentMemoryDomain = 0; //Main memory by default
 
 		public LuaImplementation(LuaConsole passed)
 		{
+           EventWaitHandle LuaWait = new AutoResetEvent(false);
 			LuaLibraryList = "";
 			Caller = passed.get();
 			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
@@ -72,12 +78,22 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
+        private void LuaThreadFunction(object File)
+        {
+            string F = File.ToString();
+            isRunning = true;
+            lua.DoFile(F);
+            isRunning = false;
+            LuaWait.Set();
+        }
 
 		public void DoLuaFile(string File)
 		{
-			lua.DoFile(File);
+		   LuaThread = new Thread(new ParameterizedThreadStart(LuaThreadFunction));
+           LuaThread.Start(File);
 		}
 
+       
 		public void print(string s)
 		{
 			Caller.AddText(string.Format(s));
@@ -180,8 +196,8 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void emu_frameadvance()
 		{
-			//Global.MainForm.PressFrameAdvance = true;
-			//Global.Emulator.FrameAdvance(true);
+            LuaWait.Set();
+            Global.MainForm.MainWait.WaitOne();
 		}
 
 		public void emu_pause()
