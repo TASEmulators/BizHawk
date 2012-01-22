@@ -36,7 +36,7 @@ namespace BizHawk
 			if (ofd.ShowDialog() != DialogResult.OK)
 				return;
 
-			Disc disc = Disc.FromCuePath(ofd.FileName);
+			Disc disc = Disc.FromCuePath(ofd.FileName, new CueBinPrefs());
 
 			string baseName = Path.GetFileName(ofd.FileName);
 			ListViewItem lvi = new ListViewItem(baseName);
@@ -152,7 +152,7 @@ namespace BizHawk
 			{
 				foreach (var file in files)
 				{
-					Disc disc = Disc.FromCuePath(file);
+					Disc disc = Disc.FromCuePath(file, new CueBinPrefs());
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
 					var prefs = GetCuePrefs();
