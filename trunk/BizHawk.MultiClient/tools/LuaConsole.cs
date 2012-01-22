@@ -14,7 +14,7 @@ namespace BizHawk.MultiClient
 	public partial class LuaConsole : Form
 	{
 		//session file saving
-		//session file loading
+		//track changes
 		//new session
 		//open session
 		//recent session
@@ -134,13 +134,13 @@ namespace BizHawk.MultiClient
 			this.Size = new System.Drawing.Size(defaultWidth, defaultHeight);
 		}
 
-		private FileInfo GetFileFromUser()
+		private FileInfo GetFileFromUser(string filter)
 		{
 			var ofd = new OpenFileDialog();
 			if (lastLuaFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(lastLuaFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
-			ofd.Filter = "Lua Scripts (*.lua)|*.lua|All Files|*.*";
+			ofd.Filter = filter;
 			ofd.RestoreDirectory = true;
 			
 			
@@ -168,7 +168,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenLuaFile()
 		{
-			var file = GetFileFromUser();
+			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|All Files|*.*");
 			if (file != null)
 			{
 				LoadLuaFile(file.FullName);
@@ -210,10 +210,10 @@ namespace BizHawk.MultiClient
 			}
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
-			RunLuaScript();
+			RunLuaScripts();
 		}
 
-		private void RunLuaScript()
+		private void RunLuaScripts()
 		{
 			for (int x = 0; x < luaList.Count; x++)
 			{
@@ -277,6 +277,16 @@ namespace BizHawk.MultiClient
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			NewLuaSession(false);
+		}
+
+		private void NewLuaSession(bool suppressAsk)
+		{
+			//TODO: ask save
+			StopAllScripts();
+			luaList.Clear();
+			DisplayLuaList();
+			UpdateNumberOfScripts();
 
 		}
 
@@ -573,22 +583,60 @@ namespace BizHawk.MultiClient
 		{
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
+
+			StopAllScripts();
+			luaList = new List<LuaFiles>();
+
 			using (StreamReader sr = file.OpenText())
 			{
-				int count = 0;
+				bool enabled = false;
 				string s = "";
 				string temp = "";
 
 				while ((s = sr.ReadLine()) != null)
 				{
 					//.luases 
-					if (s.Length < 1) continue;
+					if (s.Length < 3) continue;
 
 					temp = s.Substring(0, 1); //Get enabled flag
+
+					try
+					{
+						if (int.Parse(temp) == 0)
+							enabled = false;
+						else
+							enabled = true;
+					}
+					catch
+					{
+						return false; //TODO: report an error?
+					}
+
+					s = s.Substring(2, s.Length - 2); //Get path
+
+					LuaFiles l = new LuaFiles(s);
+					l.Enabled = enabled;
+					luaList.Add(l);
 				}
 			}
-
 			return true;
+		}
+
+		private void OpenLuaSession()
+		{
+			var file = GetFileFromUser("Lua Session Files (*.luases)|*.luases|All Files|*.*");
+			if (file != null)
+			{
+				LoadLuaSession(file.FullName);
+				RunLuaScripts();
+				DisplayLuaList();
+				UpdateNumberOfScripts();
+			}
+		}
+
+		private void openSessionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenLuaSession();
 		}
 
 	}

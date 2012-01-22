@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = new Movie();
-            MainWait = new AutoResetEvent(false)
+			MainWait = new AutoResetEvent(false);
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = GameInfo.GetNullGame();
@@ -991,7 +991,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (file.Extension.ToLower() == ".cue")
 					{
-						Disc disc = Disc.FromCuePath(path);
+						Disc disc = Disc.FromCuePath(path, new CueBinPrefs());
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)

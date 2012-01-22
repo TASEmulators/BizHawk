@@ -229,6 +229,7 @@
             | System.Windows.Forms.Keys.O)));
 			this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.openSessionToolStripMenuItem.Text = "&Open Session...";
+			this.openSessionToolStripMenuItem.Click += new System.EventHandler(this.openSessionToolStripMenuItem_Click);
 			// 
 			// saveToolStripMenuItem
 			// 

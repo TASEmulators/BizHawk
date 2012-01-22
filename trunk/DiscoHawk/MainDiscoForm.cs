@@ -60,7 +60,7 @@ namespace BizHawk
 			{
 				foreach (var file in files)
 				{
-					Disc disc = Disc.FromCuePath(file);
+					Disc disc = Disc.FromCuePath(file, new CueBinPrefs());
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
 					var prefs = GetCuePrefs();
@@ -131,7 +131,7 @@ namespace BizHawk
 			if (files.Count == 0) return;
             foreach (var file in files)
             {
-				using (var disc = Disc.FromCuePath(file))
+				using (var disc = Disc.FromCuePath(file, new CueBinPrefs()))
 				{
 					var path = Path.GetDirectoryName(file);
 					var filename = Path.GetFileNameWithoutExtension(file);

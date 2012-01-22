@@ -125,7 +125,7 @@ namespace BizHawk
 			//var cueBin = disc.DumpCueBin("Bomberman '94 Taikenban (SCD)(JPN)_hawked", prefs);
 			//cueBin.Dump(@"D:\discs\Bomberman_'94_Taikenban_(SCD)(JPN)_-_wav'd", prefs);
 
-			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\R-Type Complete CD (J)");
+			DiscSystem.Disc disc = DiscSystem.Disc.FromCuePath(@"D:\discs\R-Type Complete CD (J)", new DiscSystem.CueBinPrefs());
 			var prefs = new DiscSystem.CueBinPrefs();
 			prefs.AnnotateCue = false;
 			prefs.OneBlobPerTrack = false;
