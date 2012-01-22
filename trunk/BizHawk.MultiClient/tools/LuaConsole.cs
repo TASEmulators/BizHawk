@@ -25,7 +25,8 @@ namespace BizHawk.MultiClient
 		//TODO: restore column width on restore default settings
 		//TODO: load scripts from recent scripts menu
 		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
-
+		//Free lua object when toggling a lua script off?
+		//Fix up lua functions list display
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -552,9 +553,20 @@ namespace BizHawk.MultiClient
 			OutputBox.Refresh();
 		}
 
+		public void ClearOutputWindow()
+		{
+			OutputBox.Text = "";
+			OutputBox.Refresh();
+		}
+
 		private void openToolStripMenuItem_Click_1(object sender, EventArgs e)
 		{
 			OpenLuaFile();
+		}
+
+		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show(LuaImp.LuaLibraryList);
 		}
 	}
 }

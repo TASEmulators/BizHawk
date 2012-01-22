@@ -12,47 +12,55 @@ namespace BizHawk.MultiClient
 	{
 		Lua lua = new Lua();
 		LuaConsole Caller;
+		public String LuaLibraryList = "";
 
 		public LuaImplementation(LuaConsole passed)
 		{
+			LuaLibraryList = "";
 			Caller = passed.get();
 			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
-
+			
 			//Register libraries
 			lua.NewTable("console");
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
 				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
+				LuaLibraryList += "console." + ConsoleFunctions[i] + "\n";
 			}
 
 			lua.NewTable("emu");
 			for (int i = 0; i < EmuFunctions.Length; i++)
 			{
 				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
+				LuaLibraryList += "emu." + EmuFunctions[i] + "\n";
 			}
 
 			lua.NewTable("memory");
 			for (int i = 0; i < MemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
+				LuaLibraryList += "memory." + MemoryFunctions[i] + "\n";
 			}
 
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
 				//lua.RegisterFunction("statestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				//LuaLibraryList += "savestate." + SaveStateFunctions[i] + "\n";
 			}
 
 			lua.NewTable("movie");
 			for (int i = 0; i < MovieFunctions.Length; i++)
 			{
 				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
+				LuaLibraryList += "movie." + MovieFunctions[i] + "\n";
 			}
 
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
-				lua.RegisterFunction("joypad." + MemoryFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
+				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
+				LuaLibraryList += "joypad." + JoypadFunctions[i] + "\n";
 			}
 		}
 
@@ -70,18 +78,21 @@ namespace BizHawk.MultiClient
 		/*************library definitions********************/
 		/****************************************************/
 		public static string[] ConsoleFunctions = new string[] {
-			"output"
+			"output",
+			"clear",
+			"getluafunctionslist"
 		};
 
 		public static string[] EmuFunctions = new string[] {
-			//"frameadvance",
+			"frameadvance",
 			"pause",
 			"unpause",
 			"togglepause",
 			//"speedmode",
-			//"framecount",
-			//"lagcount",
-			//"islagged",
+			"framecount",
+			"lagcount",
+			"islagged",
+			"getsystemid"
 			//"registerbefore",
 			//"registerafter",
 			//"register"
@@ -129,9 +140,25 @@ namespace BizHawk.MultiClient
 			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 		}
 
+		public void console_clear(object lua_input)
+		{
+			Global.MainForm.LuaConsole1.ClearOutputWindow();
+		}
+
+		public string console_getluafunctionslist()
+		{
+			return LuaLibraryList;
+		}
+
+
 		//----------------------------------------------------
 		//Emu library
 		//----------------------------------------------------
+		public void emu_frameadvance()
+		{
+			//Global.MainForm.PressFrameAdvance = true;
+			//Global.Emulator.FrameAdvance(true);
+		}
 
 		public void emu_pause()
 		{
@@ -146,6 +173,26 @@ namespace BizHawk.MultiClient
 		public void emu_togglepause()
 		{
 			Global.MainForm.TogglePause();
+		}
+
+		public int emu_framecount()
+		{
+			return Global.Emulator.Frame;
+		}
+
+		public int emu_lagcount()
+		{
+			return Global.Emulator.LagCount;
+		}
+
+		public bool emu_islagged()
+		{
+			return Global.Emulator.IsLagFrame;
+		}
+
+		public string emu_getsystemid()
+		{
+			return Global.Emulator.SystemId;
 		}
 
 		//----------------------------------------------------
