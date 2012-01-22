@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
 using BizHawk.MultiClient.tools;
 
 namespace BizHawk.MultiClient
 {
-	class LuaImplementation
+	public class LuaImplementation
 	{
 		Lua lua = new Lua();
 		LuaConsole Caller;
@@ -62,6 +63,13 @@ namespace BizHawk.MultiClient
 				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
 				LuaLibraryList += "joypad." + JoypadFunctions[i] + "\n";
 			}
+
+			lua.NewTable("client");
+			for (int i = 0; i < MultiClientFunctions.Length; i++)
+			{
+				lua.RegisterFunction("client." + MultiClientFunctions[i], this, this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
+				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
+			}
 		}
 
 		public void DoLuaFile(string File)
@@ -98,6 +106,9 @@ namespace BizHawk.MultiClient
 			//"register"
 		};
 		public static string[] MemoryFunctions = new string[] {
+			//"usememorydomain",
+			//"getmemorydomainlist",
+			//"getcurrentmemorydomain",
 			"readbyte",
 			//"readbytesigned",
 			//"readword",
@@ -114,7 +125,7 @@ namespace BizHawk.MultiClient
 		public static string[] SaveStateFunctions = new string[] {
 			//"create",
 			"save",
-			//"load",
+			"load"
 			//"write"
 		};
 		public static string[] MovieFunctions = new string[] {
@@ -125,6 +136,10 @@ namespace BizHawk.MultiClient
 		public static string[] JoypadFunctions = new string[] {
 			"set",
 			//"get",
+		};
+
+		public static string[] MultiClientFunctions = new string[] {
+			"openramwatch"
 		};
 
 		/****************************************************/
@@ -228,7 +243,18 @@ namespace BizHawk.MultiClient
 
 		public void savestate_save(object lua_input)
 		{
-			//
+			if (lua_input.GetType() == typeof(string))
+			{
+				//
+			}
+		}
+
+		public void savestate_load(object lua_input)
+		{
+			if (lua_input.GetType() == typeof(string))
+			{
+				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()));
+			}
 		}
 
 		//----------------------------------------------------
@@ -260,6 +286,15 @@ namespace BizHawk.MultiClient
 		public void joypad_set(object lua_input)
 		{
 
+		}
+
+		//----------------------------------------------------
+		//Client library
+		//----------------------------------------------------
+
+		public void client_openramwatch()
+		{
+			Global.MainForm.LoadRamWatch();
 		}
 	}
 }

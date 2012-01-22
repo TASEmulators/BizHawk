@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 
 		List<LuaFiles> luaList = new List<LuaFiles>();
-		LuaImplementation LuaImp;
+		public LuaImplementation LuaImp;
 		string lastLuaFile = "";
 
 		private List<LuaFiles> GetLuaFileList()
