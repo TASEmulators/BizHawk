@@ -31,8 +31,7 @@ namespace BizHawk.MultiClient
 
 		private void RAMPokeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			RamPoke r = new RamPoke();
-			r.Show();
+			LoadRamPoke();
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)

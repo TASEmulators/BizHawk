@@ -74,6 +74,8 @@
 			this.autoloadConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.luaFunctionsListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OutputBox = new System.Windows.Forms.RichTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
@@ -86,8 +88,6 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.luaFunctionsListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -225,9 +225,10 @@
 			// 
 			this.openSessionToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
-			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
 			this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-			this.openSessionToolStripMenuItem.Text = "&Open Session";
+			this.openSessionToolStripMenuItem.Text = "&Open Session...";
 			// 
 			// saveToolStripMenuItem
 			// 
@@ -343,8 +344,9 @@
 			// 
 			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.openToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-			this.openToolStripMenuItem.Text = "&Open Script";
+			this.openToolStripMenuItem.Text = "&Open Script...";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click_1);
 			// 
 			// toggleToolStripMenuItem
@@ -463,6 +465,21 @@
 			this.restoreWindowSizeToolStripMenuItem.Text = "Restore Default Settings";
 			this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
 			// 
+			// helpToolStripMenuItem
+			// 
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.luaFunctionsListToolStripMenuItem});
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+			this.helpToolStripMenuItem.Text = "&Help";
+			// 
+			// luaFunctionsListToolStripMenuItem
+			// 
+			this.luaFunctionsListToolStripMenuItem.Name = "luaFunctionsListToolStripMenuItem";
+			this.luaFunctionsListToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.luaFunctionsListToolStripMenuItem.Text = "&Lua Functions List";
+			this.luaFunctionsListToolStripMenuItem.Click += new System.EventHandler(this.luaFunctionsListToolStripMenuItem_Click);
+			// 
 			// OutputBox
 			// 
 			this.OutputBox.Location = new System.Drawing.Point(6, 17);
@@ -517,7 +534,7 @@
 			this.openToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.openToolStripButton.Name = "openToolStripButton";
 			this.openToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.openToolStripButton.Text = "&Open Script";
+			this.openToolStripButton.Text = "Open Script";
 			// 
 			// copyToolStripButton
 			// 
@@ -583,21 +600,6 @@
 			this.toolStripButtonMoveDown.Size = new System.Drawing.Size(23, 22);
 			this.toolStripButtonMoveDown.Text = "Move Down";
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
-			// 
-			// helpToolStripMenuItem
-			// 
-			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.luaFunctionsListToolStripMenuItem});
-			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-			this.helpToolStripMenuItem.Text = "&Help";
-			// 
-			// luaFunctionsListToolStripMenuItem
-			// 
-			this.luaFunctionsListToolStripMenuItem.Name = "luaFunctionsListToolStripMenuItem";
-			this.luaFunctionsListToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-			this.luaFunctionsListToolStripMenuItem.Text = "&Lua Functions List";
-			this.luaFunctionsListToolStripMenuItem.Click += new System.EventHandler(this.luaFunctionsListToolStripMenuItem_Click);
 			// 
 			// LuaConsole
 			// 

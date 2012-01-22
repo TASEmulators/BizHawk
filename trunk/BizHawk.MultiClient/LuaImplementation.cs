@@ -14,6 +14,7 @@ namespace BizHawk.MultiClient
 		Lua lua = new Lua();
 		LuaConsole Caller;
 		public String LuaLibraryList = "";
+		private int CurrentMemoryDomain = 0; //Main memory by default
 
 		public LuaImplementation(LuaConsole passed)
 		{
@@ -139,7 +140,15 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
-			"openramwatch"
+			"openrom",
+			"closerom",
+			"opentoolbox",
+			"openramwatch",
+			"openramsearch",
+			"openrampoke",
+			"openhexeditor",
+			"opentasstudio",
+			"opencheats"
 		};
 
 		/****************************************************/
@@ -220,13 +229,13 @@ namespace BizHawk.MultiClient
 			byte x;
 			if (lua_input.GetType() == typeof(string))
 			{
-				x = Global.Emulator.MainMemory.PeekByte(int.Parse((string)lua_input));
+				x = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(int.Parse((string)lua_input));
 				return x.ToString();
 			}
 			else
 			{
 				double y = (double)lua_input;
-				x = Global.Emulator.MainMemory.PeekByte(Convert.ToInt32(y));
+				x = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(Convert.ToInt32(y));
 				return x.ToString();
 			}
 
@@ -278,9 +287,10 @@ namespace BizHawk.MultiClient
 		//Joypad library
 		//----------------------------------------------------
 
-		public void joypad_get(object lua_input)
+		//Currently sends all controllers, needs to control which ones it sends
+		public string joypad_get(object lua_input)
 		{
-
+			return Global.GetOutputControllersAsMnemonic();
 		}
 		
 		public void joypad_set(object lua_input)
@@ -291,10 +301,49 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Client library
 		//----------------------------------------------------
+		public void client_openrom(object lua_input)
+		{
+			Global.MainForm.LoadRom(lua_input.ToString());
+		}
+
+		public void client_closerom()
+		{
+			Global.MainForm.CloseROM();
+		}
+
+		public void client_opentoolbox()
+		{
+			Global.MainForm.LoadToolBox();
+		}
 
 		public void client_openramwatch()
 		{
 			Global.MainForm.LoadRamWatch();
+		}
+
+		public void client_openramsearch()
+		{
+			Global.MainForm.LoadRamSearch();
+		}
+
+		public void client_openrampoke()
+		{
+			Global.MainForm.LoadRamPoke();
+		}
+
+		public void client_openhexeditor()
+		{
+			Global.MainForm.LoadHexEditor();
+		}
+
+		public void client_opentasstudio()
+		{
+			Global.MainForm.LoadTAStudio();
+		}
+
+		public void client_opencheats()
+		{
+			Global.MainForm.LoadCheatsWindow();
 		}
 	}
 }
