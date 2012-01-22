@@ -1834,7 +1834,7 @@ namespace BizHawk.MultiClient
 			SaveStateFile(writer, sfd.FileName);
 		}
 
-		private void LoadStateFile(string path, string name)
+		public void LoadStateFile(string path, string name)
 		{
 			if (HandleMovieLoadState(path))
 			{
