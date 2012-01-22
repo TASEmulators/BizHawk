@@ -584,7 +584,7 @@ namespace BizHawk.MultiClient
 					//.luases 
 					if (s.Length < 1) continue;
 
-					temp = s.Substring(0, 1) //Get enabled flag
+					temp = s.Substring(0, 1); //Get enabled flag
 				}
 			}
 
