@@ -43,8 +43,14 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.recentSessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.noneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -52,6 +58,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.scriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toggleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeScriptToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,13 +86,8 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.recentSessionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.noneToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			this.openSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.luaFunctionsListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -186,7 +188,8 @@
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.scriptToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.helpToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(584, 24);
@@ -218,6 +221,14 @@
 			this.newToolStripMenuItem.Text = "&New Session";
 			this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
 			// 
+			// openSessionToolStripMenuItem
+			// 
+			this.openSessionToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
+			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.openSessionToolStripMenuItem.Text = "&Open Session";
+			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
@@ -236,6 +247,38 @@
 			this.saveAsToolStripMenuItem.Text = "Save Session &As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator9
+			// 
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(240, 6);
+			// 
+			// recentSessionsToolStripMenuItem
+			// 
+			this.recentSessionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.noneToolStripMenuItem1,
+            this.toolStripSeparator8,
+            this.clearToolStripMenuItem1});
+			this.recentSessionsToolStripMenuItem.Name = "recentSessionsToolStripMenuItem";
+			this.recentSessionsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.recentSessionsToolStripMenuItem.Text = "Recent Sessions";
+			// 
+			// noneToolStripMenuItem1
+			// 
+			this.noneToolStripMenuItem1.Name = "noneToolStripMenuItem1";
+			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+			this.noneToolStripMenuItem1.Text = "None";
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(107, 6);
+			// 
+			// clearToolStripMenuItem1
+			// 
+			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
+			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+			this.clearToolStripMenuItem1.Text = "Clear";
+			// 
 			// recentToolStripMenuItem
 			// 
 			this.recentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -251,18 +294,18 @@
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(107, 6);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			// 
 			// toolStripSeparator1
@@ -295,6 +338,14 @@
 			this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
 			this.scriptToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.scriptToolStripMenuItem.Text = "&Script";
+			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.openToolStripMenuItem.Text = "&Open Script";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click_1);
 			// 
 			// toggleToolStripMenuItem
 			// 
@@ -533,53 +584,20 @@
 			this.toolStripButtonMoveDown.Text = "Move Down";
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
 			// 
-			// openToolStripMenuItem
+			// helpToolStripMenuItem
 			// 
-			this.openToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
-			this.openToolStripMenuItem.Text = "&Open Script";
-			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click_1);
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.luaFunctionsListToolStripMenuItem});
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+			this.helpToolStripMenuItem.Text = "&Help";
 			// 
-			// recentSessionsToolStripMenuItem
+			// luaFunctionsListToolStripMenuItem
 			// 
-			this.recentSessionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.noneToolStripMenuItem1,
-            this.toolStripSeparator8,
-            this.clearToolStripMenuItem1});
-			this.recentSessionsToolStripMenuItem.Name = "recentSessionsToolStripMenuItem";
-			this.recentSessionsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-			this.recentSessionsToolStripMenuItem.Text = "Recent Sessions";
-			// 
-			// noneToolStripMenuItem1
-			// 
-			this.noneToolStripMenuItem1.Name = "noneToolStripMenuItem1";
-			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-			this.noneToolStripMenuItem1.Text = "None";
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
-			// 
-			// clearToolStripMenuItem1
-			// 
-			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-			this.clearToolStripMenuItem1.Text = "Clear";
-			// 
-			// toolStripSeparator9
-			// 
-			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(240, 6);
-			// 
-			// openSessionToolStripMenuItem
-			// 
-			this.openSessionToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
-			this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
-			this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-			this.openSessionToolStripMenuItem.Text = "&Open Session";
+			this.luaFunctionsListToolStripMenuItem.Name = "luaFunctionsListToolStripMenuItem";
+			this.luaFunctionsListToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.luaFunctionsListToolStripMenuItem.Text = "&Lua Functions List";
+			this.luaFunctionsListToolStripMenuItem.Click += new System.EventHandler(this.luaFunctionsListToolStripMenuItem_Click);
 			// 
 			// LuaConsole
 			// 
@@ -669,5 +687,7 @@
 		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem luaFunctionsListToolStripMenuItem;
     }
 }
