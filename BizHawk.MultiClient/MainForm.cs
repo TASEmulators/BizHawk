@@ -2177,7 +2177,7 @@ namespace BizHawk.MultiClient
 			LoadRom(file.FullName);
 		}
 
-		private void CloseROM()
+		public void CloseROM()
 		{
 			CloseGame();
 			Global.Emulator = new NullEmulator();
@@ -2481,6 +2481,12 @@ namespace BizHawk.MultiClient
 				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
 				gbDebugger.Show();
 			}
+		}
+
+		public void LoadRamPoke()
+		{
+			RamPoke r = new RamPoke();
+			r.Show();
 		}
 	}
 }

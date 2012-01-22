@@ -99,6 +99,7 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			StopAllScripts();
+			LuaImp = new LuaImplementation(this);
 		}
 
 		private void SaveConfigSettings()
@@ -111,7 +112,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadConfigSettings()
 		{
-			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultWidth = Size.Width;		//Save these first so that the user can restore to its original size
 			defaultHeight = Size.Height;
 
 			if (Global.Config.LuaConsoleSaveWindowPosition && Global.Config.LuaConsoleWndx >= 0 && Global.Config.LuaConsoleWndy >= 0)
@@ -121,7 +122,6 @@ namespace BizHawk.MultiClient
 			{
 				Size = new System.Drawing.Size(Global.Config.LuaConsoleWidth, Global.Config.LuaConsoleHeight);
 			}
-
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -568,5 +568,7 @@ namespace BizHawk.MultiClient
 		{
 			MessageBox.Show(LuaImp.LuaLibraryList);
 		}
+
+
 	}
 }
