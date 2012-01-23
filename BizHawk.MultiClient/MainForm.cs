@@ -333,7 +333,10 @@ namespace BizHawk.MultiClient
 			for (; ; )
 			{
 				//client input-related duties
-           
+                if (LuaConsole1.LuaImp.isRunning)
+                {
+                    LuaConsole1.LuaImp.LuaWait.WaitOne();
+                }
 
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
@@ -343,10 +346,7 @@ namespace BizHawk.MultiClient
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
-                if (LuaConsole1.LuaImp.isRunning)
-                {
-                    LuaConsole1.LuaImp.LuaWait.WaitOne();
-                }
+               
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
@@ -354,7 +354,7 @@ namespace BizHawk.MultiClient
 				Render();
                 if (LuaConsole1.LuaImp.isRunning)
                 {
-                    MainForm.MainWait.Set();
+                    Global.MainForm.MainWait.Set();
                 }
 				CheckMessages();
 				if (exit)
