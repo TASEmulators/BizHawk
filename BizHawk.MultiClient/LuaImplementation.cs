@@ -13,7 +13,7 @@ namespace BizHawk.MultiClient
 {
 	public class LuaImplementation
 	{
-		Lua lua = new Lua();
+        Lua lua = new Lua();
 		LuaConsole Caller;
 		public String LuaLibraryList = "";
         public EventWaitHandle LuaWait;
@@ -23,9 +23,13 @@ namespace BizHawk.MultiClient
 
 		public LuaImplementation(LuaConsole passed)
 		{
-           EventWaitHandle LuaWait = new AutoResetEvent(false);
+            LuaWait = new AutoResetEvent(false);
 			LuaLibraryList = "";
 			Caller = passed.get();
+            LuaRegister(lua);
+        }
+        public  void LuaRegister(Lua lua)
+        {
 			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
 			
 			//Register libraries
@@ -82,7 +86,14 @@ namespace BizHawk.MultiClient
         {
             string F = File.ToString();
             isRunning = true;
-            lua.DoFile(F);
+            try
+            {
+                lua.DoFile(F);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Exception caught. " + e.ToString());
+            }
             isRunning = false;
             LuaWait.Set();
         }
