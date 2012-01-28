@@ -152,9 +152,9 @@ namespace BizHawk.MultiClient
 		
 		public static string[] MemoryFunctions = new string[]
 		{
-			//"usememorydomain",
-			//"getmemorydomainlist",
-			//"getcurrentmemorydomain",
+			"usememorydomain",
+			"getmemorydomainlist",
+			"getcurrentmemorydomain",
 			"readbyte"
 			//"readbytesigned",
 			//"readword",
@@ -236,7 +236,6 @@ namespace BizHawk.MultiClient
 			return LuaLibraryList;
 		}
 
-
 		//----------------------------------------------------
 		//Emu library
 		//----------------------------------------------------
@@ -284,6 +283,38 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Memory library
 		//----------------------------------------------------
+
+		public bool memory_usememorydomain(object lua_input)
+		{
+			if (lua_input.GetType() != typeof(string))
+				return false;
+
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			{
+				if (Global.Emulator.MemoryDomains[x].Name == lua_input.ToString())
+				{
+					CurrentMemoryDomain = x;
+					return true;
+				}
+			}
+
+			return false;
+		}
+		
+		public string memory_getmemorydomainlist()
+		{
+			string list = "";
+			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
+			{
+				list += Global.Emulator.MemoryDomains[x].Name + '\n';
+			}
+			return list;
+		}
+
+		public string memory_getcurrentmemorydomain()
+		{
+			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
+		}
 
 		public string memory_readbyte(object lua_input)
 		{

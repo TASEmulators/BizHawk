@@ -94,6 +94,8 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < luaList.Count; x++)
 				luaList[x].Enabled = false;
+			LuaImp.Close();
+			LuaImp = new LuaImplementation(this);
 		}
 
 		public void Restart()
