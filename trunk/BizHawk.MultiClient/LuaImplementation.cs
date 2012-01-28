@@ -47,6 +47,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "console." + ConsoleFunctions[i] + "\n";
 			}
 
+			lua.NewTable("gui");
+			for (int i = 0; i < GuiFunctions.Length; i++)
+			{
+				lua.RegisterFunction("gui." + GuiFunctions[i], this, this.GetType().GetMethod("gui_" + GuiFunctions[i]));
+				LuaLibraryList += "gui." + GuiFunctions[i] + "\n";
+			}
+
 			lua.NewTable("emu");
 			for (int i = 0; i < EmuFunctions.Length; i++)
 			{
@@ -132,6 +139,11 @@ namespace BizHawk.MultiClient
 			"output",
 			"clear",
 			"getluafunctionslist"
+		};
+
+		public static string[] GuiFunctions = new string[]
+		{
+			"text"
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -234,6 +246,30 @@ namespace BizHawk.MultiClient
 		public string console_getluafunctionslist()
 		{
 			return LuaLibraryList;
+		}
+
+		//----------------------------------------------------
+		//Gui library
+		//----------------------------------------------------
+		public void gui_text(object luaX, object luaY, object lua_input)
+		{
+			int x = 0;
+			int y = 0;
+
+			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
+			{
+				x = int.Parse(luaX.ToString());
+				y = int.Parse(luaY.ToString());
+			}
+			catch
+			{
+				return;
+			}
+
+			if (y.GetType() != typeof(int))
+				return;
+
+			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 		}
 
 		//----------------------------------------------------
