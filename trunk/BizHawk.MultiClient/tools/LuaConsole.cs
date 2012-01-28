@@ -104,6 +104,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveConfigSettings()
 		{
+			LuaImp.Close();
 			Global.Config.LuaConsoleWndx = this.Location.X;
 			Global.Config.LuaConsoleWndy = this.Location.Y;
 			Global.Config.LuaConsoleWidth = this.Right - this.Left;
@@ -559,12 +560,18 @@ namespace BizHawk.MultiClient
 
 		public void WriteToOutputWindow(string message)
 		{
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+				return;
+
 			OutputBox.Text += message;
 			OutputBox.Refresh();
 		}
 
 		public void ClearOutputWindow()
 		{
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+				return;
+			
 			OutputBox.Text = "";
 			OutputBox.Refresh();
 		}

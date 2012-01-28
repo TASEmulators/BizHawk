@@ -28,6 +28,12 @@ namespace BizHawk.MultiClient
 			Caller = passed.get();
 			LuaRegister(lua);
 		}
+
+		public void Close()
+		{
+			lua.Close();
+		}
+
 		public void LuaRegister(Lua lua)
 		{
 			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
