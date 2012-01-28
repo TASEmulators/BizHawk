@@ -61,6 +61,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "memory." + MemoryFunctions[i] + "\n";
 			}
 
+			lua.NewTable("mainmemory");
+			for (int i = 0; i < MainMemoryFunctions.Length; i++)
+			{
+				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this, this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
+				LuaLibraryList += "mainmemory." + MainMemoryFunctions[i] + "\n";
+			}
+
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
@@ -120,13 +127,15 @@ namespace BizHawk.MultiClient
 		/****************************************************/
 		/*************library definitions********************/
 		/****************************************************/
-		public static string[] ConsoleFunctions = new string[] {
+		public static string[] ConsoleFunctions = new string[]
+		{
 			"output",
 			"clear",
 			"getluafunctionslist"
 		};
 
-		public static string[] EmuFunctions = new string[] {
+		public static string[] EmuFunctions = new string[]
+		{
 			"frameadvance",
 			"pause",
 			"unpause",
@@ -140,11 +149,13 @@ namespace BizHawk.MultiClient
 			//"registerafter",
 			//"register"
 		};
-		public static string[] MemoryFunctions = new string[] {
+		
+		public static string[] MemoryFunctions = new string[]
+		{
 			//"usememorydomain",
 			//"getmemorydomainlist",
 			//"getcurrentmemorydomain",
-			"readbyte",
+			"readbyte"
 			//"readbytesigned",
 			//"readword",
 			//"readwordsigned",
@@ -156,7 +167,24 @@ namespace BizHawk.MultiClient
 			//"writedword",
 			//"registerwrite",
 			//"registerread",
-			};
+		};
+
+		public static string[] MainMemoryFunctions = new string[]
+		{
+			"readbyte"
+			//"readbytesigned",
+			//"readword",
+			//"readwordsigned",
+			//"readdword",
+			//"readdwordsigned",
+			//"readbyterange",
+			//"writebyte",
+			//"writeword",
+			//"writedword",
+			//"registerwrite",
+			//"registerread",
+		};
+
 		public static string[] SaveStateFunctions = new string[] {
 			//"create",
 			"save",
@@ -278,6 +306,33 @@ namespace BizHawk.MultiClient
 		public void memory_writebyte(object lua_input)
 		{
 			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte((int)lua_input, (byte)lua_input);
+		}
+
+		//----------------------------------------------------
+		//Main Memory library
+		//----------------------------------------------------
+
+		public string mainmemory_readbyte(object lua_input)
+		{
+
+			byte x;
+			if (lua_input.GetType() == typeof(string))
+			{
+				x = Global.Emulator.MainMemory.PeekByte(int.Parse((string)lua_input));
+				return x.ToString();
+			}
+			else
+			{
+				double y = (double)lua_input;
+				x = Global.Emulator.MainMemory.PeekByte(Convert.ToInt32(y));
+				return x.ToString();
+			}
+
+		}
+
+		public void mainmemory_writebyte(object lua_input)
+		{
+			Global.Emulator.MainMemory.PokeByte((int)lua_input, (byte)lua_input);
 		}
 
 		//----------------------------------------------------
