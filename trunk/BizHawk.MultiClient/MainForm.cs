@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused;
-        public EventWaitHandle MainWait;
+		public EventWaitHandle MainWait;
 		int runloop_fps;
 		int runloop_last_fps;
 		bool runloop_frameadvance;
@@ -68,7 +68,7 @@ namespace BizHawk.MultiClient
 		{
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = new Movie();
-            MainWait = new AutoResetEvent(false);
+			MainWait = new AutoResetEvent(false);
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = GameInfo.GetNullGame();
@@ -332,11 +332,7 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-				//client input-related duties
-                if (LuaConsole1.LuaImp.isRunning)
-                {
-                    LuaConsole1.LuaImp.LuaWait.WaitOne();
-                }
+
 
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
@@ -346,16 +342,13 @@ namespace BizHawk.MultiClient
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
-               
+
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
 
 				Render();
-                if (LuaConsole1.LuaImp.isRunning)
-                {
-                    Global.MainForm.MainWait.Set();
-                }
+
 				CheckMessages();
 				if (exit)
 					break;
@@ -656,8 +649,8 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
 			Global.GenControls = genControls;
 
-            var agenControls = new AutofireController(Genesis.GenesisController);
-            agbControls.Autofire = true;
+			var agenControls = new AutofireController(Genesis.GenesisController);
+			agbControls.Autofire = true;
 			genControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
 			genControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
 			genControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
@@ -666,8 +659,8 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
 			genControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
 			genControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
-            Global.AutofireGenControls = agenControls;
-            
+			Global.AutofireGenControls = agenControls;
+
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
@@ -1226,9 +1219,9 @@ namespace BizHawk.MultiClient
 
 		private void CloseGame()
 		{
-            if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
-                SaveState("Auto");
-            if (Global.Emulator.SaveRamModified)
+			if (Global.Config.AutoSavestates && Global.Emulator is NullEmulator == false)
+				SaveState("Auto");
+			if (Global.Emulator.SaveRamModified)
 				SaveRam();
 			Global.Emulator.Dispose();
 			Global.Emulator = new NullEmulator();
@@ -1381,14 +1374,14 @@ namespace BizHawk.MultiClient
 					Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
 					break;
 
-                case "Hard Reset":
-                    {
-                        bool autoSaveState = Global.Config.AutoSavestates;
-                        Global.Config.AutoSavestates = false;
-                        LoadRom(CurrentlyOpenRom);
-                        Global.Config.AutoSavestates = autoSaveState;
-                        break;
-                    }
+				case "Hard Reset":
+					{
+						bool autoSaveState = Global.Config.AutoSavestates;
+						Global.Config.AutoSavestates = false;
+						LoadRom(CurrentlyOpenRom);
+						Global.Config.AutoSavestates = autoSaveState;
+						break;
+					}
 
 				case "Screenshot":
 					TakeScreenshot();
@@ -1626,6 +1619,17 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
+				//client input-related duties
+				if (LuaConsole1.LuaImp.isRunning)
+				{
+					LuaConsole1.LuaImp.LuaWait.WaitOne();
+				}
+
+				if (LuaConsole1.LuaImp.isRunning)
+				{
+					Global.MainForm.MainWait.Set();
+				}
+
 				runloop_fps++;
 				bool ff = Global.ClientControls["Fast Forward"];
 				bool updateFpsString = (runloop_last_ff != ff);
