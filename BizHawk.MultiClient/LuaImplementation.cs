@@ -13,25 +13,25 @@ namespace BizHawk.MultiClient
 {
 	public class LuaImplementation
 	{
-        Lua lua = new Lua();
+		Lua lua = new Lua();
 		LuaConsole Caller;
 		public String LuaLibraryList = "";
-        public EventWaitHandle LuaWait;
-        public bool isRunning;
-        private Thread LuaThread; 
+		public EventWaitHandle LuaWait;
+		public bool isRunning;
+		private Thread LuaThread;
 		private int CurrentMemoryDomain = 0; //Main memory by default
 
 		public LuaImplementation(LuaConsole passed)
 		{
-            LuaWait = new AutoResetEvent(false);
+			LuaWait = new AutoResetEvent(false);
 			LuaLibraryList = "";
 			Caller = passed.get();
-            LuaRegister(lua);
-        }
-        public  void LuaRegister(Lua lua)
-        {
+			LuaRegister(lua);
+		}
+		public void LuaRegister(Lua lua)
+		{
 			lua.RegisterFunction("print", this, this.GetType().GetMethod("print"));
-			
+
 			//Register libraries
 			lua.NewTable("console");
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
@@ -82,29 +82,29 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
-        private void LuaThreadFunction(object File)
-        {
-            string F = File.ToString();
-            isRunning = true;
-            try
-            {
-                lua.DoFile(F);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Exception caught. " + e.ToString());
-            }
-            isRunning = false;
-            LuaWait.Set();
-        }
+		private void LuaThreadFunction(object File)
+		{
+			string F = File.ToString();
+			isRunning = true;
+			try
+			{
+				lua.DoFile(F);
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show("Exception caught. " + e.ToString());
+			}
+			isRunning = false;
+			LuaWait.Set();
+		}
 
 		public void DoLuaFile(string File)
 		{
-		   LuaThread = new Thread(new ParameterizedThreadStart(LuaThreadFunction));
-           LuaThread.Start(File);
+			LuaThread = new Thread(new ParameterizedThreadStart(LuaThreadFunction));
+			LuaThread.Start(File);
 		}
 
-       
+
 		public void print(string s)
 		{
 			Caller.AddText(string.Format(s));
@@ -207,8 +207,8 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void emu_frameadvance()
 		{
-            LuaWait.Set();
-            Global.MainForm.MainWait.WaitOne();
+			LuaWait.Set();
+			Global.MainForm.MainWait.WaitOne();
 		}
 
 		public void emu_pause()
@@ -249,7 +249,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Memory library
 		//----------------------------------------------------
-		
+
 		public string memory_readbyte(object lua_input)
 		{
 
@@ -319,7 +319,7 @@ namespace BizHawk.MultiClient
 		{
 			return Global.GetOutputControllersAsMnemonic();
 		}
-		
+
 		public void joypad_set(object lua_input)
 		{
 
