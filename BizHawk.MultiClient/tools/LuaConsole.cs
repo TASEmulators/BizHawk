@@ -646,5 +646,27 @@ namespace BizHawk.MultiClient
 			OpenLuaSession();
 		}
 
+		public bool IsRunning()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed)
+			{
+				return false;
+			}
+			else
+			{
+				if (LuaImp.isRunning)
+					return true;
+				else
+					return false;
+			}
+		}
+
+		public void WaitOne()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed)
+				return;
+
+			this.LuaImp.LuaWait.WaitOne();
+		}
 	}
 }
