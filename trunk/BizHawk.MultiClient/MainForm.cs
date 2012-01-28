@@ -1620,12 +1620,12 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				//client input-related duties
-				if (LuaConsole1.LuaImp.isRunning)
+				if (LuaConsole1.IsRunning())
 				{
-					LuaConsole1.LuaImp.LuaWait.WaitOne();
+					LuaConsole1.WaitOne();
 				}
 
-				if (LuaConsole1.LuaImp.isRunning)
+				if (LuaConsole1.IsRunning())
 				{
 					Global.MainForm.MainWait.Set();
 				}

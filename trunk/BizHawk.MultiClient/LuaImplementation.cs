@@ -32,6 +32,7 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua.Close();
+			LuaWait.Dispose();
 		}
 
 		public void LuaRegister(Lua lua)
