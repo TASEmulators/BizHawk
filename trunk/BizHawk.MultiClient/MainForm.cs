@@ -1619,6 +1619,7 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
+				Global.RenderPanel.ClearGUIText();
 				//client input-related duties
 				if (LuaConsole1.IsRunning())
 				{
