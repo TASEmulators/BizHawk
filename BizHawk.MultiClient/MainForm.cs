@@ -119,6 +119,7 @@ namespace BizHawk.MultiClient
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
 				SaveConfig();
+                LuaConsole1.LuaImp.StopScripts();
 			};
 
 			ResizeBegin += (o, e) =>
@@ -364,7 +365,7 @@ namespace BizHawk.MultiClient
 			{
 				CurrAviWriter.CloseFile();
 				CurrAviWriter = null;
-			}
+			}            
 		}
 
 		void CheckMessages()
