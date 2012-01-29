@@ -118,8 +118,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.SaveSettings();
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
-				SaveConfig();
-                LuaConsole1.LuaImp.StopScripts();
+				SaveConfig();                
 			};
 
 			ResizeBegin += (o, e) =>
