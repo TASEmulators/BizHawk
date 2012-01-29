@@ -31,6 +31,7 @@ namespace BizHawk.MultiClient
 
 		public void Close()
 		{
+            LuaKillThread();
 			lua.Close();
 			LuaWait.Dispose();
 		}
@@ -118,6 +119,11 @@ namespace BizHawk.MultiClient
 			isRunning = false;
 			LuaWait.Set();
 		}
+        public void LuaKillThread()
+        {
+            if (LuaThread != null)
+                LuaThread.Abort();
+        }
 
 		public void DoLuaFile(string File)
 		{
