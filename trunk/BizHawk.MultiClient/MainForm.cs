@@ -118,7 +118,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.SaveSettings();
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
-				SaveConfig();                
+				SaveConfig();
 			};
 
 			ResizeBegin += (o, e) =>
@@ -1790,7 +1790,7 @@ namespace BizHawk.MultiClient
 			MakeScreenshot(String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
 		}
 
-		private void SaveState(string name)
+		public void SaveState(string name)
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 
@@ -1874,7 +1874,7 @@ namespace BizHawk.MultiClient
 				Global.RenderPanel.AddMessage("Loadstate error!");
 		}
 
-		private void LoadState(string name)
+		public void LoadState(string name)
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + name + ".State";
 			if (File.Exists(path) == false)
