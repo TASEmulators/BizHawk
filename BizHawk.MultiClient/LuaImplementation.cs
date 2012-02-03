@@ -31,8 +31,8 @@ namespace BizHawk.MultiClient
 
 		public void Close()
 		{
-            LuaKillThread();
 			lua.Close();
+			LuaKillThread();
 			LuaWait.Dispose();
 		}
 
@@ -79,8 +79,8 @@ namespace BizHawk.MultiClient
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
-				//lua.RegisterFunction("statestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
-				//LuaLibraryList += "savestate." + SaveStateFunctions[i] + "\n";
+				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
+				LuaLibraryList += "savestate." + SaveStateFunctions[i] + "\n";
 			}
 
 			lua.NewTable("movie");
@@ -110,7 +110,8 @@ namespace BizHawk.MultiClient
 			isRunning = true;
 			try
 			{
-				lua.DoFile(F);
+				if (LuaThread != null)
+					lua.DoFile(F);
 			}
 			catch (Exception e)
 			{
@@ -119,11 +120,12 @@ namespace BizHawk.MultiClient
 			isRunning = false;
 			LuaWait.Set();
 		}
-        public void LuaKillThread()
-        {
-            if (LuaThread != null)
-                LuaThread.Abort();
-        }
+
+		public void LuaKillThread()
+		{
+			if (LuaThread != null)
+				LuaThread.Abort();
+		}
 
 		public void DoLuaFile(string File)
 		{
@@ -204,19 +206,21 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] SaveStateFunctions = new string[] {
-			//"create",
+			"saveslot",
+			"loadslot",
 			"save",
 			"load"
-			//"write"
 		};
+
 		public static string[] MovieFunctions = new string[] {
 			"mode",
 			"rerecordcount",
 			"stop"
 		};
+
 		public static string[] JoypadFunctions = new string[] {
-			"set",
-			//"get",
+			"set"
+			//"get"
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
@@ -271,9 +275,6 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-
-			if (y.GetType() != typeof(int))
-				return;
 
 			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 			Global.RenderPanel.AddGUIText(lua_input.ToString(), x, y);
@@ -412,6 +413,43 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Savestate library
 		//----------------------------------------------------
+		public void savestate_saveslot(object lua_input)
+		{
+			int x = 0;
+
+			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
+			{
+				x = int.Parse(lua_input.ToString());
+			}
+			catch
+			{
+				return;
+			}
+
+			if (x < 0 || x > 9)
+				return;
+
+			Global.MainForm.SaveState("QuickSave" + x.ToString()); 
+		}
+
+		public void savestate_loadslot(object lua_input)
+		{
+			int x = 0;
+
+			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
+			{
+				x = int.Parse(lua_input.ToString());
+			}
+			catch
+			{
+				return;
+			}
+
+			if (x < 0 || x > 9)
+				return;
+
+			Global.MainForm.LoadState("QuickLoad" + x.ToString());
+		}
 
 		public void savestate_save(object lua_input)
 		{

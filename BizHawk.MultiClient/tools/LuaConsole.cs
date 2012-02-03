@@ -93,7 +93,7 @@ namespace BizHawk.MultiClient
 		private void StopAllScripts()
 		{
 			for (int x = 0; x < luaList.Count; x++)
-				luaList[x].Enabled = false;            
+				luaList[x].Enabled = false;
 			LuaImp.Close();
 			LuaImp = new LuaImplementation(this);
 		}
