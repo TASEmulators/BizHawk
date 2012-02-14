@@ -216,7 +216,7 @@ namespace BizHawk.MultiClient
 			{
 				input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
 				input.Append("|");
-				for (int player = 1; player < 6; player++)
+				for (int player = 1; player <= 5; player++)
 				{
 					input.Append(IsBasePressed("P" + player.ToString() + " Up") ? "U" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
@@ -253,14 +253,14 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Reset") ? "r" : 
 					Global.Emulator.IsLagFrame ? "L" : ".");
 				input.Append("|");
-				for (int player = 1; player <= 2; player++)
+				for (int player = 1; player <= 4; player++)
 				{
-					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Up") ? "U" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Start") ? "S" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Select") ? "s" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Start") ? "S" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " B") ? "B" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " A") ? "A" : ".");
 					input.Append("|");
@@ -523,10 +523,9 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "PC Engine Controller")
 			{
-				for (int i = 1; i < 6; i++)
+				for (int i = 1; i <= 5; i++)
 				{
-					int playerNum = i;
-					int srcindex = (playerNum - 1) * 9;
+					int srcindex = (i - 1) * 9;
 					if (mnemonic.Length <= srcindex + 9)
 					{
 						Force("P" + i + " Up", false);
@@ -554,28 +553,34 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "NES Controls")
 			{
-				if (mnemonic.Length < 10) return;
+				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'L');
-				int ctr = 3;
-				Force("P1 Right", c[ctr++]);
-				Force("P1 Left", c[ctr++]);
-				Force("P1 Down", c[ctr++]);
-				Force("P1 Up", c[ctr++]);
-				Force("P1 Start", c[ctr++]);
-				Force("P1 Select", c[ctr++]);
-				Force("P1 B", c[ctr++]);
-				Force("P1 A", c[ctr++]);
-
-				if (mnemonic.Length < 20) return;
-				ctr = 12;
-				Force("P2 Right", c[ctr++]);
-				Force("P2 Left", c[ctr++]);
-				Force("P2 Down", c[ctr++]);
-				Force("P2 Up", c[ctr++]);
-				Force("P2 Start", c[ctr++]);
-				Force("P2 Select", c[ctr++]);
-				Force("P2 B", c[ctr++]);
-				Force("P2 A", c[ctr++]);
+				for (int i = 1; i <= 4; i++)
+				{
+					int srcindex = (i - 1) * 9;
+					if (mnemonic.Length <= srcindex + 9)
+					{
+						Force("P" + i + " Up", false);
+						Force("P" + i + " Down", false);
+						Force("P" + i + " Left", false);
+						Force("P" + i + " Right", false);
+						Force("P" + i + " Select", false);
+						Force("P" + i + " Start", false);
+						Force("P" + i + " B", false);
+						Force("P" + i + " A", false);
+					}
+					else
+					{
+						Force("P" + i + " Up", c[srcindex + 3]);
+						Force("P" + i + " Down", c[srcindex + 4]);
+						Force("P" + i + " Left", c[srcindex + 5]);
+						Force("P" + i + " Right", c[srcindex + 6]);
+						Force("P" + i + " Select", c[srcindex + 7]);
+						Force("P" + i + " Start", c[srcindex + 8]);
+						Force("P" + i + " B", c[srcindex + 9]);
+						Force("P" + i + " A", c[srcindex + 10]);
+					}
+				}
 			}
 
 
