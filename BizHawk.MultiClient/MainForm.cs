@@ -725,7 +725,6 @@ namespace BizHawk.MultiClient
 			switch (ext.ToUpper())
 			{
 				case ".TAS":   //Bizhawk
-				case ".FM2":   //FCUEX
 				case ".MC2":   //PCEjin
 					return true;
 				default:
