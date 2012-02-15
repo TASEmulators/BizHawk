@@ -8,9 +8,24 @@ using System.IO;
 
 namespace BizHawk.MultiClient
 {
-	public static class MovieConvert
+	public static class MovieImport
 	{
-		public static Movie ConvertFCM(string path, out string errorMsg)
+		public static Movie ImportFile(string path, out string errorMsg)
+		{
+			//TODO: This function will receive a file, parse the file extension,
+			//then decide which import function to call, call it, and return a movie object
+			//the multiclient should only call this and not the import members (make them private)
+			errorMsg = "";
+			return new Movie();
+		}
+
+		public static bool IsValidMovieExtension(string extension)
+		{
+			//TODO: This function will receive, parse the extension and decide if it is a movie type that it can parse
+			return true;
+		}
+		
+		private static Movie ImportFCM(string path, out string errorMsg)
 		{
 			errorMsg = "";
 
@@ -132,7 +147,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public static Movie ConvertMMV(string path, out string errorMsg)
+		private static Movie ImportMMV(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
@@ -258,14 +273,14 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		public static string ConvertMCM(string path)
+		private static string ImportMCM(string path)
 		{
 			string converted = Path.ChangeExtension(path, ".tas");
 
 			return converted;
 		}
 
-		public static Movie ConvertSMV(string path, out string errorMSG)
+		private static Movie ImportSMV(string path, out string errorMSG)
 		{
 			errorMSG = "";
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -286,11 +301,11 @@ namespace BizHawk.MultiClient
 			switch (version)
 			{
 				case 1:
-					return ConvertSMV143(r, path);
+					return ImportSMV143(r, path);
 				case 4:
-					return ConvertSMV151(r, path);
+					return ImportSMV151(r, path);
 				case 5:
-					return ConvertSMV152(r, path);
+					return ImportSMV152(r, path);
 				default:
 				{
 					errorMSG = "SMV version not recognized, 143, 151, and 152 are currently supported";
@@ -299,7 +314,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private static Movie ConvertSMV152(BinaryReader r, string path)
+		private static Movie ImportSMV152(BinaryReader r, string path)
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
@@ -308,14 +323,14 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		private static Movie ConvertSMV151(BinaryReader r, string path)
+		private static Movie ImportSMV151(BinaryReader r, string path)
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			return m;
 		}
 
-		private static Movie ConvertSMV143(BinaryReader r, string path)
+		private static Movie ImportSMV143(BinaryReader r, string path)
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
@@ -374,7 +389,7 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		public static Movie ConvertGMV(string path, out string errorMsg)
+		private static Movie ImportGMV(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
@@ -382,7 +397,7 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		public static Movie ConvertVBM(string path, out string errorMsg)
+		private static Movie ImportVBM(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			//Converts vbm to native text based format.
