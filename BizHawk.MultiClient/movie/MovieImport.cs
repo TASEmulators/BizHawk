@@ -87,7 +87,7 @@ namespace BizHawk.MultiClient
 			// The frame and message are separated by a space.
 			string frame = sub.Substring(0, x);
 			string message = sub.Substring(x + 1, sub.Length - x - 1);
-			m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 16777215 " + message);
+			m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
 			return true;
 		}
 

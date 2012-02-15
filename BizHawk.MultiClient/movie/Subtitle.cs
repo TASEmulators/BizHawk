@@ -12,7 +12,7 @@ namespace BizHawk.MultiClient
 		public int X;
 		public int Y;
 		public int Duration;
-		public UInt32 Color;
+		public uint Color;
 
 		public Subtitle()
 		{
