@@ -755,48 +755,18 @@ namespace BizHawk.MultiClient
 				RamWatch1.LoadWatchFile(filePaths[0], false);
 				RamWatch1.DisplayWatchList();
 			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".FCM")
-			{
-				LoadRom(CurrentlyOpenRom);
-				string error = "";
-				Movie m = MovieConvert.ConvertFCM(filePaths[0], out error);
-				if (error.Length > 0)
-					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				else
-					StartNewMovie(m, false);
 
-			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".SMV")
+			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				LoadRom(CurrentlyOpenRom);
 				string error = "";
-				Movie m = MovieConvert.ConvertSMV(filePaths[0], out error);
+				Movie m = MovieImport.ImportFile(filePaths[0], out error);
 				if (error.Length > 0)
 					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				else
 					StartNewMovie(m, false);
+			}
 
-			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".MMV")
-			{
-				LoadRom(CurrentlyOpenRom);
-				string error = "";
-				Movie m = MovieConvert.ConvertMMV(filePaths[0], out error);
-				if (error.Length > 0)
-					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				else
-					StartNewMovie(m, false);
-			}
-			else if (Path.GetExtension(filePaths[0]).ToUpper() == ".VBM")
-			{
-				LoadRom(CurrentlyOpenRom);
-				string error = "";
-				Movie m = MovieConvert.ConvertVBM(filePaths[0], out error);
-				if (error.Length > 0)
-					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				else
-					StartNewMovie(m, false);
-			}
 			else
 				LoadRom(filePaths[0]);
 		}
