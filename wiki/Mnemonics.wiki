@@ -2,7 +2,7 @@
 TODO: clean up this page
 
 ==NES==
-|reset|RLDUTSBA|
+|reset|UDLRSTBA|
 
 
 ==PCE==
