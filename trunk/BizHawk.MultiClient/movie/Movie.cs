@@ -65,6 +65,7 @@ namespace BizHawk.MultiClient
 		{
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
+
 		public int Length()
 		{
 			if (Loaded)
@@ -328,6 +329,15 @@ namespace BizHawk.MultiClient
 			return LoadText();
 		}
 
+		public void FixMnemonic()
+		{
+			int frame = 0;
+			while (frame < Log.Length())
+			{
+				// TODO: Correct mnemonics, using Log.GetFrame(frame))?
+			}
+			lastLog = frame;
+		}
 
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
@@ -764,7 +774,7 @@ namespace BizHawk.MultiClient
 				return 0;
 		}
 
-		private string ParseHeader(string line, string headerName)
+		private static string ParseHeader(string line, string headerName)
 		{
 			string str;
 			int x = line.LastIndexOf(headerName) + headerName.Length;
