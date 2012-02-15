@@ -47,7 +47,7 @@ namespace BizHawk.MultiClient
 			sb.Append(" ");
 			sb.Append(subs[index].Duration.ToString());
 			sb.Append(" ");
-			sb.Append(subs[index].Color.ToString());
+			sb.Append(string.Format("{0:X8}", subs[index].Color));
 			sb.Append(" ");
 			sb.Append(subs[index].Message);
 			return sb.ToString();
@@ -172,7 +172,7 @@ namespace BizHawk.MultiClient
 			str = str.Substring(x + 1, str.Length - x - 1);
 			try
 			{
-				s.Color = uint.Parse(Color);
+				s.Color = uint.Parse(Color, System.Globalization.NumberStyles.HexNumber);
 			}
 			catch
 			{
