@@ -722,14 +722,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsValidMovieExtension(string ext)
 		{
-			switch (ext.ToUpper())
-			{
-				case ".TAS":   //Bizhawk
-				case ".MC2":   //PCEjin
-					return true;
-				default:
-					return false;
-			}
+			return (ext.ToUpper() == ".TAS");
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)

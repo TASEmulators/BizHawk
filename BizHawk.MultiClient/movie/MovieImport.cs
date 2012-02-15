@@ -12,30 +12,139 @@ namespace BizHawk.MultiClient
 	{
 		public static Movie ImportFile(string path, out string errorMsg)
 		{
-			//TODO: This function will receive a file, parse the file extension,
-			//then decide which import function to call, call it, and return a movie object
-			//the multiclient should only call this and not the import members (make them private)
+			Movie mov;
 			errorMsg = "";
-			return new Movie();
+			switch (Path.GetExtension(path).ToUpper())
+			{
+				case ".FCM":
+					mov = ImportFCM(path, out errorMsg);
+					break;
+				case ".FM2":
+					mov = ImportFM2(path, out errorMsg);
+					break;
+				case ".GMV":
+					mov = ImportGMV(path, out errorMsg);
+					break;
+				case ".MCM":
+					mov = ImportMCM(path, out errorMsg);
+					break;
+				case ".MC2":
+					mov = ImportMC2(path, out errorMsg);
+					break;
+				case ".MMV":
+					mov = ImportMMV(path, out errorMsg);
+					break;
+				case ".SMV":
+					// TODO: Decide which SMV parser to use. Perhaps have one parent function that decides.
+					mov = new Movie();
+					break;
+				case ".VBM":
+					mov = ImportVBM(path, out errorMsg);
+					break;
+				default:
+					mov = new Movie();
+					break;
+			}
+			mov.FixMnemonic();
+			mov.WriteMovie();
+			return mov;
 		}
 
 		public static bool IsValidMovieExtension(string extension)
 		{
-			switch (extension.ToUpper())
+			string[] extensions = {"FCM", "FM2", "GMV", "MC2", "MMV", "TAS", "VBM"};
+			foreach (string ext in extensions)
 			{
-				case "TAS":
-				case "FM2":
-				case "FCM":
-				case "MMV":
-				case "GMV":
-				case "MC2":
-				case "VBM":
+				if (extension.ToUpper() == "." + ext)
+				{
 					return true;
-				default:
-					return false;
+				}
 			}
+			return false;
 		}
-		
+
+		private static string ParseHeader(string line, string headerName)
+		{
+			string str;
+			int x = line.LastIndexOf(headerName) + headerName.Length;
+			str = line.Substring(x + 1, line.Length - x - 1);
+			return str;
+		}
+
+
+		private static Movie ImportText(string path, out string errorMsg, string emulator)
+		{
+			errorMsg = "";
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			var file = new FileInfo(path);
+			using (StreamReader sr = file.OpenText())
+			{
+				string str = "";
+				string rerecordStr = "";
+				while ((str = sr.ReadLine()) != null)
+				{
+					if (str == "")
+					{
+						continue;
+					}
+					if (str.Contains("rerecordCount"))
+					{
+						rerecordStr = ParseHeader(str, "rerecordCount");
+						try
+						{
+							m.SetRerecords(int.Parse(rerecordStr));
+						}
+						catch
+						{
+							m.SetRerecords(0);
+						}
+					}
+					else if (str.Contains("StartsFromSavestate"))
+					{
+						str = ParseHeader(str, "StartsFromSavestate");
+						if (str == "1")
+						{
+							errorMsg = "Movies that begin with a savestate are not supported.";
+							return null;
+						}
+					}
+					if (str.StartsWith("emuVersion"))
+					{
+						m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, emulator + " version " + ParseHeader(str, "emuVersion"));
+					}
+					else if (str.StartsWith("version"))
+					{
+						m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, ParseHeader(str, "version"));
+					}
+					else if (str.StartsWith("romFilename"))
+					{
+						m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(str, "romFilename"));
+					}
+					else if (str.StartsWith("comment author"))
+					{
+						m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(str, "comment author"));
+					}
+					else if (str.StartsWith("guid"))
+					{
+						m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(str, "GUID"));
+					}
+					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					{
+						m.Subtitles.AddSubtitle(str);
+					}
+					else if (str[0] == '|')
+					{
+						m.AppendFrame(str);
+					}
+					else
+					{
+						m.Header.Comments.Add(str);
+					}
+				}
+			}
+			return m;
+		}
+
 		private static Movie ImportFCM(string path, out string errorMsg)
 		{
 			errorMsg = "";
@@ -156,6 +265,41 @@ namespace BizHawk.MultiClient
 				errorMsg = "Error opening file.";
 				return null;
 			}
+		}
+
+		private static Movie ImportFM2(string path, out string errorMsg)
+		{
+			errorMsg = "";
+			Movie m = ImportText(path, out errorMsg, "FCEUX");
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+			// TODO: Mnemonic switches.
+			// FM2 file format: http://www.fceux.com/web/FM2.html
+			return m;
+		}
+
+		private static Movie ImportGMV(string path, out string errorMsg)
+		{
+			errorMsg = "";
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+
+			return m;
+		}
+
+		private static Movie ImportMCM(string path, out string errorMsg)
+		{
+			errorMsg = "";
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			return m;
+		}
+
+		private static Movie ImportMC2(string path, out string errorMsg)
+		{
+			errorMsg = "";
+			Movie m = ImportText(path, out errorMsg, "Mednafen/PCEjin");
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "MC2");
+			// TODO: PCECD equivalent.
+			// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
+			return m;
 		}
 
 		private static Movie ImportMMV(string path, out string errorMsg)
@@ -284,13 +428,6 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		private static string ImportMCM(string path)
-		{
-			string converted = Path.ChangeExtension(path, ".tas");
-
-			return converted;
-		}
-
 		private static Movie ImportSMV(string path, out string errorMSG)
 		{
 			errorMSG = "";
@@ -396,14 +533,6 @@ namespace BizHawk.MultiClient
 
 
 			}
-
-			return m;
-		}
-
-		private static Movie ImportGMV(string path, out string errorMsg)
-		{
-			errorMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			return m;
 		}
