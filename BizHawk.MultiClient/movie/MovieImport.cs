@@ -71,6 +71,25 @@ namespace BizHawk.MultiClient
 			return str;
 		}
 
+		private static bool AddSubtitle(ref Movie m, string subtitleStr)
+		{
+			if (subtitleStr.Length == 0)
+				return false;
+			Subtitle s = new Subtitle();
+			int x = subtitleStr.IndexOf(' ');
+			if (x <= 0)
+				return false;
+			// Remove the "subtitle" header from the string.
+			string sub = subtitleStr.Substring(x + 1, subtitleStr.Length - x - 1);
+			x = sub.IndexOf(' ');
+			if (x <= 0)
+				return false;
+			// The frame and message are separated by a space.
+			string frame = sub.Substring(0, x);
+			string message = sub.Substring(x + 1, sub.Length - x - 1);
+			m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 16777215 " + message);
+			return true;
+		}
 
 		private static Movie ImportText(string path, out string errorMsg, string emulator)
 		{
@@ -130,7 +149,7 @@ namespace BizHawk.MultiClient
 					}
 					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
-						m.Subtitles.AddSubtitle(str);
+						AddSubtitle(ref m, str);
 					}
 					else if (str[0] == '|')
 					{

@@ -136,9 +136,7 @@ namespace BizHawk.MultiClient
 			}
 			catch
 			{
-				s.Message = str; //Assume it is a FCEUX subtitle
-				subs.Add(s);
-				return true;
+				return false;
 			}
 
 			x = str.IndexOf(' ');
