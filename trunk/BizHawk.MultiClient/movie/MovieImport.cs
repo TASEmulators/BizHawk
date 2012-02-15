@@ -21,8 +21,19 @@ namespace BizHawk.MultiClient
 
 		public static bool IsValidMovieExtension(string extension)
 		{
-			//TODO: This function will receive, parse the extension and decide if it is a movie type that it can parse
-			return true;
+			switch (extension.ToUpper())
+			{
+				case "TAS":
+				case "FM2":
+				case "FCM":
+				case "MMV":
+				case "GMV":
+				case "MC2":
+				case "VBM":
+					return true;
+				default:
+					return false;
+			}
 		}
 		
 		private static Movie ImportFCM(string path, out string errorMsg)
