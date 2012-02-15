@@ -335,6 +335,7 @@ namespace BizHawk.MultiClient
 			while (frame < Log.Length())
 			{
 				// TODO: Correct mnemonics, using Log.GetFrame(frame))?
+				break;
 			}
 			lastLog = frame;
 		}
