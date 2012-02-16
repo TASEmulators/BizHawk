@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -58,7 +59,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		/// <param name="frame"></param>
 		/// <returns></returns>
-		public string GetSubtitleMessage(int frame) 
+		public string GetSubtitleMessage(int frame)
 		{
 			if (subs.Count == 0) return "";
 
@@ -110,13 +111,13 @@ namespace BizHawk.MultiClient
 
 			//remove "subtitle"
 			string str = subtitleStr.Substring(x + 1, subtitleStr.Length - x - 1);
-			
+
 			x = str.IndexOf(' ');
 			if (x <= 0) return false;
-			
+
 			string frame = str.Substring(0, x);
 			str = str.Substring(x + 1, str.Length - x - 1);
-			
+
 			try
 			{
 				s.Frame = int.Parse(frame);
@@ -165,20 +166,19 @@ namespace BizHawk.MultiClient
 				return false;
 			}
 
-			//TODO: parse hex!
 			x = str.IndexOf(' ');
 			if (x <= 0) return false;
 			string Color = str.Substring(0, x);
 			str = str.Substring(x + 1, str.Length - x - 1);
 			try
 			{
-				s.Color = uint.Parse(Color, System.Globalization.NumberStyles.HexNumber);
+				s.Color = uint.Parse(Color, NumberStyles.HexNumber);
 			}
 			catch
 			{
 				return false;
 			}
-			
+
 			s.Message = str;
 			subs.Add(s);
 
