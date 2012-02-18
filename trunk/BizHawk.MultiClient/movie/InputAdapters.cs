@@ -164,15 +164,13 @@ namespace BizHawk.MultiClient
 		bool IsBasePressed(string name)
 		{
 			bool ret = Source.IsPressed(name);
-			if (ret)
-			{
-				//int zzz=9;
-			}
 			return ret;
 		}
 
 		public string GetControllersAsMnemonic()
 		{
+			bool hasGlobalEmulator = Global.Emulator != null;
+
 			StringBuilder input = new StringBuilder("|");
 
 			if (ControlType == "Genesis 3-Button Controller")
@@ -249,8 +247,8 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "NES Controls")
 			{
-				input.Append(IsBasePressed("Reset") ? "r" : 
-					Global.Emulator.IsLagFrame ? "L" : ".");
+				input.Append(IsBasePressed("Reset") ? "r" :
+					(hasGlobalEmulator && Global.Emulator.IsLagFrame) ? "L" : ".");
 				input.Append("|");
 				for (int player = 1; player <= 4; player++)
 				{
