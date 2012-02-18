@@ -101,7 +101,7 @@ namespace BizHawk.MultiClient
 		public IController Source;
 		public IController SourceOr;
 		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
-		
+
 		public bool this[string button]
 		{
 			get
@@ -138,7 +138,6 @@ namespace BizHawk.MultiClient
 			set { throw new InvalidOperationException(); }
 		}
 
-		
 		public void SetSticky(string button, bool isSticky)
 		{
 			if(isSticky)
@@ -222,10 +221,10 @@ namespace BizHawk.MultiClient
 					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " B1") ? "1" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " B2") ? "2" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Run") ? "R" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Select") ? "S" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Run") ? "R" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " B2") ? "2" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " B1") ? "1" : ".");
 					input.Append("|");
 
 				}
@@ -431,7 +430,7 @@ namespace BizHawk.MultiClient
 
 		WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 
-		void Force(string button, bool state)	
+		void Force(string button, bool state)
 		{
 			MyBoolButtons[button] = state;
 		}
@@ -451,7 +450,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-
 		/// <summary>
 		/// latches one player from the source
 		/// </summary>
@@ -467,7 +465,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-
 		/// <summary>
 		/// latches all buttons from the provided source
 		/// </summary>
@@ -478,7 +475,6 @@ namespace BizHawk.MultiClient
 				MyBoolButtons[button] = source[button];
 			}
 		}
-
 
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
@@ -543,10 +539,10 @@ namespace BizHawk.MultiClient
 						Force("P" + i + " Down", c[srcindex + 4]);
 						Force("P" + i + " Left", c[srcindex + 5]);
 						Force("P" + i + " Right", c[srcindex + 6]);
-						Force("P" + i + " B1", c[srcindex + 7]);
-						Force("P" + i + " B2", c[srcindex + 8]);
-						Force("P" + i + " Run", c[srcindex + 9]);
-						Force("P" + i + " Select", c[srcindex + 10]);
+						Force("P" + i + " Select", c[srcindex + 7]);
+						Force("P" + i + " Run", c[srcindex + 8]);
+						Force("P" + i + " 2", c[srcindex + 9]);
+						Force("P" + i + " 1", c[srcindex + 10]);
 					}
 				}
 			}
@@ -582,7 +578,6 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-
 
 			if (ControlType == "Gameboy Controller")
 			{
@@ -673,7 +668,6 @@ namespace BizHawk.MultiClient
 	//    {
 	//        Forces.Clear();
 	//    }
-
 
 	//    public ControllerDefinition Type { get { return Controller.Type; } }
 
