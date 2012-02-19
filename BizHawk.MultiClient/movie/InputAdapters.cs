@@ -164,13 +164,15 @@ namespace BizHawk.MultiClient
 		bool IsBasePressed(string name)
 		{
 			bool ret = Source.IsPressed(name);
+			if (ret)
+			{
+				//int zzz=9;
+			}
 			return ret;
 		}
 
 		public string GetControllersAsMnemonic()
 		{
-			bool hasGlobalEmulator = Global.Emulator != null;
-
 			StringBuilder input = new StringBuilder("|");
 
 			if (ControlType == "Genesis 3-Button Controller")
@@ -220,11 +222,10 @@ namespace BizHawk.MultiClient
 					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " Select") ? "S" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Run") ? "R" : ".");
+					input.Append(IsBasePressed("P" + player.ToString() + " Run") ? "r" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " B2") ? "2" : ".");
 					input.Append(IsBasePressed("P" + player.ToString() + " B1") ? "1" : ".");
 					input.Append("|");
-
 				}
 				return input.ToString();
 			}
@@ -245,10 +246,10 @@ namespace BizHawk.MultiClient
 				return input.ToString();
 			}
 
-			if (ControlType == "NES Controls")
+			if (ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("Reset") ? "r" :
-					(hasGlobalEmulator && Global.Emulator.IsLagFrame) ? "L" : ".");
+				input.Append(IsBasePressed("Reset") ? "r" : 
+					Global.Emulator.IsLagFrame ? "L" : ".");
 				input.Append("|");
 				for (int player = 1; player <= 4; player++)
 				{
@@ -545,7 +546,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 
-			if (ControlType == "NES Controls")
+			if (ControlType == "NES Controller")
 			{
 				if (mnemonic.Length < 2) return;
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'L');
