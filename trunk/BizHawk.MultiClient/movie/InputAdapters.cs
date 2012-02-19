@@ -18,7 +18,11 @@ namespace BizHawk.MultiClient
 		{
 			return Pressed.Contains(button);
 		}
-
+		public Dictionary<string, string[]> MNEMONICS = new Dictionary<string, string[]>()
+		{
+			{"NES", new string[8] {"Up", "Down", "Left", "Right", "Select", "Start", "B", "A"}},
+			{"PC Engine", new string[8] {"Up", "Down", "Left", "Right", "Select", "Start", "2", "1"}}
+		};
 		/// <summary>
 		/// call this once per frame to do the timekeeping for the hold and release
 		/// </summary>
@@ -248,8 +252,8 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("Reset") ? "r" : 
-					Global.Emulator.IsLagFrame ? "L" : ".");
+				input.Append(IsBasePressed("Reset") ? "r" :
+					Global.Emulator.IsLagFrame ? "l" : ".");
 				input.Append("|");
 				for (int player = 1; player <= 4; player++)
 				{
@@ -527,10 +531,10 @@ namespace BizHawk.MultiClient
 						Force("P" + i + " Down", false);
 						Force("P" + i + " Left", false);
 						Force("P" + i + " Right", false);
-						Force("P" + i + " B1", false);
-						Force("P" + i + " B2", false);
-						Force("P" + i + " Run", false);
 						Force("P" + i + " Select", false);
+						Force("P" + i + " Run", false);
+						Force("P" + i + " B2", false);
+						Force("P" + i + " B1", false);
 					}
 					else
 					{
@@ -540,8 +544,8 @@ namespace BizHawk.MultiClient
 						Force("P" + i + " Right", c[srcindex + 6]);
 						Force("P" + i + " Select", c[srcindex + 7]);
 						Force("P" + i + " Run", c[srcindex + 8]);
-						Force("P" + i + " 2", c[srcindex + 9]);
-						Force("P" + i + " 1", c[srcindex + 10]);
+						Force("P" + i + " B2", c[srcindex + 9]);
+						Force("P" + i + " B1", c[srcindex + 10]);
 					}
 				}
 			}
@@ -549,7 +553,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "NES Controller")
 			{
 				if (mnemonic.Length < 2) return;
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'L');
+				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 				for (int i = 1; i <= 4; i++)
 				{
 					int srcindex = (i - 1) * 9;
