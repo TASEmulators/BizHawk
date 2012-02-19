@@ -98,10 +98,13 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(path);
 			using (StreamReader sr = file.OpenText())
 			{
+				int line = 0;
 				string str = "";
 				string rerecordStr = "";
+				string warning = "";
 				while ((str = sr.ReadLine()) != null)
 				{
+					line++;
 					if (str == "")
 					{
 						continue;
@@ -172,6 +175,36 @@ namespace BizHawk.MultiClient
 						SimpleController controllers = new SimpleController();
 						controllers.Type = new ControllerDefinition();
 						controllers.Type.Name = console + " Controller";
+						if (warning == "" && sections[1].Length != 0 && emulator == "FCEUX")
+						{
+							switch (sections[1][0])
+							{
+								case '0':
+									break;
+								case '1':
+									controllers["Reset"] = true;
+									break;
+								case '2':
+									if (m.Length() != 0)
+									{
+										warning = "hard reset";
+									}
+									break;
+								case '4':
+									warning = "FDS Insert";
+									break;
+								case '8':
+									warning = "FDS Select";
+									break;
+								default:
+									warning = "unknown";
+									break;
+							}
+							if (warning != "")
+							{
+								warning = "Unable to import " + warning + " command on line " + line;
+							}
+						}
 						for (int player = 2; player < sections.Length; player++)
 						{
 							if (sections[player].Length == buttons.Length)
@@ -192,6 +225,10 @@ namespace BizHawk.MultiClient
 					{
 						m.Header.Comments.Add(str);
 					}
+				}
+				if (warning != "")
+				{
+					Global.RenderPanel.AddMessage(warning);
 				}
 			}
 			return m;
