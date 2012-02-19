@@ -122,7 +122,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			int gg_check, gg_replace;
 
-
 			NESWatch[] watches;
 		}
 
@@ -186,7 +185,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-
 		MyVideoProvider videoProvider;
 		public IVideoProvider VideoProvider { get { return videoProvider; } }
 		public ISoundProvider SoundProvider { get { return apu; } }
@@ -194,9 +192,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public static readonly ControllerDefinition NESController =
 			new ControllerDefinition
 			{
-				Name = "NES Controls",
-				BoolButtons = { "P1 A","P1 B","P1 Select","P1 Start","P1 Left","P1 Up","P1 Down","P1 Right", "Reset", 
-				"P2 A", "P2 B", "P2 Select", "P2 Start", "P2 Up", "P2 Down", "P2 Left", "P2 Right"}
+				Name = "NES Controller",
+				BoolButtons = {
+					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 B", "P1 A", "Reset",
+					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 B", "P2 A"
+				}
 			};
 
 		public ControllerDefinition ControllerDefinition { get { return NESController; } }
@@ -207,7 +207,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			get { return controller; }
 			set { controller = value; }
 		}
-
 
 		interface IPortDevice
 		{
@@ -230,9 +229,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			void Strobe()
 			{
 				value = 0;
-				foreach (string str in new string[] { "P" + (player + 1).ToString() + " Right", "P" + (player + 1).ToString() + " Left", 
-					"P" + (player + 1).ToString() +  " Down", "P" + (player + 1).ToString() +  " Up", "P" + (player + 1).ToString() +  " Start", 
-					"P" + (player + 1).ToString() +  " Select", "P" + (player + 1).ToString() +  " B", "P" + (player + 1).ToString() +  " A" })
+				foreach (
+					string str in new string[] {
+						"P" + (player + 1).ToString() + " Right", "P" + (player + 1).ToString() + " Left",
+						"P" + (player + 1).ToString() +  " Down", "P" + (player + 1).ToString() +  " Up",
+						"P" + (player + 1).ToString() +  " Start", "P" + (player + 1).ToString() +  " Select",
+						"P" + (player + 1).ToString() +  " B", "P" + (player + 1).ToString() +  " A"
+					}
+				)
 				{
 					value <<= 1;
 					value |= nes.Controller.IsPressed(str) ? 1 : 0;
@@ -270,7 +274,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 			}
 		}
-
 
 		int _frame;
 		int _lagcount;
@@ -538,7 +541,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				LoadReport.Flush();
 				CoreOutputComm.RomStatusDetails = LoadReport.ToString();
 
-
 				//create the board's rom and vrom
 				board.ROM = new byte[choice.prg_size * 1024];
 				Array.Copy(file, 16, board.ROM, 0, board.ROM.Length);
@@ -553,7 +555,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					board.WRAM = new byte[cart.wram_size * 1024];
 				if (cart.vram_size != 0)
 					board.VRAM = new byte[cart.vram_size * 1024];
-
 
 				HardReset();
 				SetupMemoryDomains();

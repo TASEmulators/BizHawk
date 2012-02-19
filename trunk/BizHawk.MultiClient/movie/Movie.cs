@@ -123,7 +123,7 @@ namespace BizHawk.MultiClient
 			//this allows users to restore a movie with any savestate from that "timeline"
 
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			
+
 			mg.SetSource(source);
 			Log.SetFrameAt(frameNum, mg.GetControllersAsMnemonic());
 		}
@@ -217,8 +217,7 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					
-					
+
 					if (str.Contains(MovieHeader.RERECORDS))
 					{
 						rerecordStr = ParseHeader(str, MovieHeader.RERECORDS);
@@ -288,9 +287,9 @@ namespace BizHawk.MultiClient
 					{
 						continue;
 					}
-					else if (Header.AddHeaderFromLine(str)) 
+					else if (Header.AddHeaderFromLine(str))
 						continue;
-					
+
 					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
 					{
 						Subtitles.AddSubtitle(str);
@@ -329,17 +328,6 @@ namespace BizHawk.MultiClient
 			return LoadText();
 		}
 
-		public void FixMnemonic()
-		{
-			int frame = 0;
-			while (frame < Log.Length())
-			{
-				// TODO: Correct mnemonics, using Log.GetFrame(frame))?
-				break;
-			}
-			lastLog = frame;
-		}
-
 		public void DumpLogIntoSavestateText(TextWriter writer)
 		{
 			writer.WriteLine("[Input]");
@@ -355,7 +343,7 @@ namespace BizHawk.MultiClient
 		{
 			var reader = new StreamReader(path);
 			int stateFrame = 0;
-			//We are in record mode so replace the movie log with the one from the savestate			
+			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
 				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
@@ -367,7 +355,6 @@ namespace BizHawk.MultiClient
 				int i = 0; //TODO: Debug remove me
 				while (true)
 				{
-					
 					string line = reader.ReadLine();
 					if (line.Contains(".[NES")) //TODO: Remove debug
 					{
@@ -573,7 +560,7 @@ namespace BizHawk.MultiClient
 					if (Header.GetHeaderLine(MovieHeader.GUID) != GUID)
 					{
 						//GUID Mismatch error
-						var result = MessageBox.Show(GUID + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" + 
+						var result = MessageBox.Show(GUID + " : " + Header.GetHeaderLine(MovieHeader.GUID) + "\n" +
 							"The savestate GUID does not match the current movie.  Proceed anyway?", "GUID Mismatch error",
 							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -631,7 +618,6 @@ namespace BizHawk.MultiClient
 				else
 					return false; //For now throw an error if recording, ideally what should happen is that the state gets loaded, and the movie set to movie finished, the movie at its current state is preserved and the state is loaded just fine.  This should probably also only happen if checktimelines passes
 			}
-
 
 			if (stateFrame == 0)
 			{
