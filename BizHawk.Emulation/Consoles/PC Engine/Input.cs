@@ -8,11 +8,11 @@
 				Name = "PC Engine Controller",
 				BoolButtons =
                     {
-                        "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B2", "P1 B1", "P1 Select", "P1 Run",
-                        "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B2", "P2 B1", "P2 Select", "P2 Run",
-                        "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 B2", "P3 B1", "P3 Select", "P3 Run",
-                        "P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 B2", "P4 B1", "P4 Select", "P4 Run",
-                        "P5 Up", "P5 Down", "P5 Left", "P5 Right", "P5 B2", "P5 B1", "P5 Select", "P5 Run"
+                        "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Run", "P1 B2", "P1 B1",
+                        "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Run", "P2 B2", "P2 B1",
+                        "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Select", "P3 Run", "P3 B2", "P3 B1",
+                        "P4 Up", "P4 Down", "P4 Left", "P4 Right", "P4 Select", "P4 Run", "P4 B2", "P4 B1",
+                        "P5 Up", "P5 Down", "P5 Left", "P5 Right", "P5 Select", "P5 Run", "P5 B2", "P5 B1"
                     }
 			};
 

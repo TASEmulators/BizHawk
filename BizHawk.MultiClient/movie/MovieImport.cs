@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +46,6 @@ namespace BizHawk.MultiClient
 					mov = new Movie();
 					break;
 			}
-			mov.FixMnemonic();
 			mov.WriteMovie();
 			return mov;
 		}
@@ -153,7 +153,40 @@ namespace BizHawk.MultiClient
 					}
 					else if (str[0] == '|')
 					{
-						m.AppendFrame(str);
+						ArrayList frame = new ArrayList();
+						// Split up the sections of the frame.
+						string[] sections = str.Split('|');
+						string[] buttons = {};
+						string console = "";
+						switch (emulator)
+						{
+							case "FCEUX":
+								buttons = new string[8] {"Right", "Left", "Down", "Up", "Start", "Select", "B", "A"};
+								console = "NES";
+								break;
+							case "Mednafen/PCEjin":
+								buttons = new string[8] {"Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select"};
+								console = "PC Engine";
+								break;
+						}
+						SimpleController controllers = new SimpleController();
+						controllers.Type = new ControllerDefinition();
+						controllers.Type.Name = console + " Controller";
+						for (int player = 2; player < sections.Length; player++)
+						{
+							if (sections[player].Length == buttons.Length)
+							{
+								for (int button = 0; button < buttons.Length; button++)
+								{
+									controllers["P" + (player - 1).ToString() + " " + buttons[button]] = (
+										sections[player][button] != '.'
+									);
+								}
+							}
+						}
+						MnemonicsGenerator mg = new MnemonicsGenerator();
+						mg.SetSource(controllers);
+						m.AppendFrame(mg.GetControllersAsMnemonic());
 					}
 					else
 					{
@@ -183,7 +216,6 @@ namespace BizHawk.MultiClient
 					errorMsg = "This is not a valid FCM file!";
 					return null;
 				}
-					
 
 				UInt32 version = r.ReadUInt32();
 				m.Header.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
@@ -410,40 +442,30 @@ namespace BizHawk.MultiClient
 			//TODO: format correctly
 			m.Header.SetHeaderLine("MD5", MD5);
 
-
 			for (int x = 0; x < (framecount); x++)
 			{
-				//TODO: use StringBuilder
-
-				string frame = "|";
-				char start;
 				byte tmp;
-
-				tmp = r.ReadByte();
-				if ((int)(tmp & 1) > 0) frame += "U"; else frame += ".";
-				if ((int)(tmp & 2) > 0) frame += "D"; else frame += ".";
-				if ((int)(tmp & 4) > 0) frame += "L"; else frame += ".";
-				if ((int)(tmp & 8) > 0) frame += "R"; else frame += ".";
-				if ((int)(tmp & 16) > 0) frame += "1"; else frame += ".";
-				if ((int)(tmp & 32) > 0) frame += "2|"; else frame += ".|";
-
-				if ((int)(tmp & 64) > 0 && (!gamegear)) start = 'P'; else start = '.';
-				if ((int)(tmp & 128) > 0 && gamegear) start = 'P'; else start = '.';
-
-				//Controller 2
-				tmp = r.ReadByte();
-				if ((int)(tmp & 1) > 0) frame += "U"; else frame += ".";
-				if ((int)(tmp & 2) > 0) frame += "D"; else frame += ".";
-				if ((int)(tmp & 4) > 0) frame += "L"; else frame += ".";
-				if ((int)(tmp & 8) > 0) frame += "R"; else frame += ".";
-				if ((int)(tmp & 16) > 0) frame += "1"; else frame += ".";
-				if ((int)(tmp & 32) > 0) frame += "2|"; else frame += ".|";
-
-				frame += start;
-				frame += ".|";
-				m.AppendFrame(frame);
+				SimpleController controllers = new SimpleController();
+				controllers.Type = new ControllerDefinition();
+				controllers.Type.Name = "SMS Controller";
+				for (int player = 1; player <= 2; player++)
+				{
+					tmp = r.ReadByte();
+					controllers["P" + player + " Up"] = ((int)(tmp & 1) > 0);
+					controllers["P" + player + " Down"] = ((int)(tmp & 2) > 0);
+					controllers["P" + player + " Left"] = ((int)(tmp & 4) > 0);
+					controllers["P" + player + " Right"] = ((int)(tmp & 8) > 0);
+					controllers["P" + player + " B1"] = ((int)(tmp & 16) > 0);
+					controllers["P" + player + " B2"] = ((int)(tmp & 32) > 0);
+					if (player == 1)
+					{
+						controllers["Pause"] = (((int)(tmp & 64) > 0 && (!gamegear)) || ((int)(tmp & 128) > 0 && gamegear));
+					}
+				}
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
-			m.WriteMovie();
 			return m;
 		}
 
@@ -520,7 +542,6 @@ namespace BizHawk.MultiClient
 			else
 				numControllers = 1;
 
-
 			byte MovieFlags = r.ReadByte();
 
 			if ((int)(MovieFlags & 1) == 0)
@@ -549,8 +570,6 @@ namespace BizHawk.MultiClient
 				{
 					UInt16 fd = r.ReadUInt16();
 				}
-
-
 			}
 
 			return m;
@@ -584,8 +603,6 @@ namespace BizHawk.MultiClient
 			m.SetRerecords((int)rerecordcount);
 			m.Header.SetHeaderLine(MovieHeader.RERECORDS, m.Rerecords.ToString());
 			Byte moviestartflags = r.ReadByte();
-
-
 
 			bool startfromquicksave = false;
 			bool startfromsram = false;
@@ -709,9 +726,7 @@ namespace BizHawk.MultiClient
 				if ((controllerstate & 0x0001) > 0) frame += "A"; else frame += ".";
 				frame += "|";
 
-
 				m.AppendFrame(frame);
-
 			}
 
 			m.WriteMovie();
