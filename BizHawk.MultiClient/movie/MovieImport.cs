@@ -160,21 +160,19 @@ namespace BizHawk.MultiClient
 						// Split up the sections of the frame.
 						string[] sections = str.Split('|');
 						string[] buttons = {};
-						string console = "";
+						SimpleController controllers = new SimpleController();
+						controllers.Type = new ControllerDefinition();
 						switch (emulator)
 						{
 							case "FCEUX":
 								buttons = new string[8] {"Right", "Left", "Down", "Up", "Start", "Select", "B", "A"};
-								console = "NES";
+								controllers.Type.Name = "NES Controller";
 								break;
 							case "Mednafen/PCEjin":
 								buttons = new string[8] {"Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select"};
-								console = "PC Engine";
+								controllers.Type.Name = "PC Engine Controller";
 								break;
 						}
-						SimpleController controllers = new SimpleController();
-						controllers.Type = new ControllerDefinition();
-						controllers.Type.Name = console + " Controller";
 						if (warning == "" && sections[1].Length != 0 && emulator == "FCEUX")
 						{
 							switch (sections[1][0])
@@ -205,14 +203,18 @@ namespace BizHawk.MultiClient
 								warning = "Unable to import " + warning + " command on line " + line;
 							}
 						}
-						for (int player = 2; player < sections.Length; player++)
+						for (int section = 2; section < sections.Length - 1; section++)
 						{
-							if (sections[player].Length == buttons.Length)
+							int player = section - 1;
+							if (
+								sections[section].Length == buttons.Length &&
+								player <= Global.PLAYERS[controllers.Type.Name]
+							)
 							{
 								for (int button = 0; button < buttons.Length; button++)
 								{
-									controllers["P" + (player - 1).ToString() + " " + buttons[button]] = (
-										sections[player][button] != '.'
+									controllers["P" + (player).ToString() + " " + buttons[button]] = (
+										sections[section][button] != '.'
 									);
 								}
 							}

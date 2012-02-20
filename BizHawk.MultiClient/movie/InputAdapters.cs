@@ -18,65 +18,6 @@ namespace BizHawk.MultiClient
 		{
 			return Pressed.Contains(button);
 		}
-		public Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
-		{
-			{
-				"Gameboy", new Dictionary<string, string>()
-				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
-					{"A", "A"}
-				}
-			},
-			{
-				"Genesis 3-Button", new Dictionary<string, string>()
-				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Start", "S"}, {"A", "A"}, {"B", "B"},
-					{"C", "C"}
-				}
-			},
-			{
-				"NES", new Dictionary<string, string>()
-				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
-					{"A", "A"}
-				}
-			},
-			{
-				"PC Engine", new Dictionary<string, string>()
-				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Run", "r"}, {"B2", "2"},
-					{"B1", "1"}
-				}
-			},
-			{
-				"SMS", new Dictionary<string, string>()
-				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"B1", "1"}, {"B2", "2"}
-				}
-			},
-			{
-				"TI83", new Dictionary<string, string>()
-				{
-					{"0", "0"}, {"1", "1"}, {"2", "2"}, {"3", "3"}, {"4", "4"}, {"5", "5"}, {"6", "6"}, {"7", "7"},
-					{"8", "8"}, {"9", "9"}, {"DOT", "`"}, {"ON", "O"}, {"ENTER", "="}, {"UP", "U"}, {"DOWN", "D"},
-					{"LEFT", "L"}, {"RIGHT", "R"}, {"PLUS", "+"}, {"MINUS", "_"}, {"MULTIPLY", "*"}, {"DIVIDE", "/"},
- 					{"CLEAR", "c"}, {"EXP", "^"}, {"DASH", "-"}, {"PARAOPEN", "("}, {"PARACLOSE", ")"}, {"TAN", "T"},
-					{"VARS", "V"}, {"COS", "C"}, {"PRGM", "P"}, {"STAT", "s"}, {"MATRIX", "m"}, {"X", "X"}, {"STO", ">"},
-					{"LN", "n"}, {"LOG", "L"}, {"SQUARED", "2"}, {"NEG1", "1"}, {"MATH", "H"}, {"ALPHA", "A"},
-					{"GRAPH", "G"}, {"TRACE", "t"}, {"ZOOM", "Z"}, {"WINDOW", "W"}, {"Y", "Y"}, {"2ND", "&"}, {"MODE", "O"},
-					{"DEL", "D"}, {"COMMA", ","}, {"SIN", "S"}
-				}
-			}
-		};
-		public Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
-		{
-			{"Gameboy", new Dictionary<string, string>() {}},
-			{"Genesis 3-Button", new Dictionary<string, string>() {}},
-			{"NES", new Dictionary<string, string>() {{"Reset", "r"}}},
-			{"PC Engine", new Dictionary<string, string>() {}},
-			{"SMS", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},
-			{"TI83", new Dictionary<string, string>() {}}
-		};
 		/// <summary>
 		/// call this once per frame to do the timekeeping for the hold and release
 		/// </summary>
@@ -233,92 +174,41 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder input = new StringBuilder("|");
 
-			if (ControlType == "Genesis 3-Button Controller")
+			if (ControlType == "Genesis 3-Button Controller" || ControlType == "SMS Controller" || ControlType == "Gameboy Controller" || ControlType == "PC Engine Controller" || ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("Up") ? "U" : ".");
-				input.Append(IsBasePressed("Down") ? "D" : ".");
-				input.Append(IsBasePressed("Left") ? "L" : ".");
-				input.Append(IsBasePressed("Right") ? "R" : ".");
-				input.Append(IsBasePressed("Start") ? "S" : ".");
-				input.Append(IsBasePressed("A") ? "A" : ".");
-				input.Append(IsBasePressed("B") ? "B" : ".");
-				input.Append(IsBasePressed("C") ? "C" : ".");
-				input.Append("|");
-				return input.ToString();
-			}
-
-			if (ControlType == "SMS Controller")
-			{
-				input.Append(IsBasePressed("P1 Up") ? "U" : ".");
-				input.Append(IsBasePressed("P1 Down") ? "D" : ".");
-				input.Append(IsBasePressed("P1 Left") ? "L" : ".");
-				input.Append(IsBasePressed("P1 Right") ? "R" : ".");
-				input.Append(IsBasePressed("P1 B1") ? "1" : ".");
-				input.Append(IsBasePressed("P1 B2") ? "2" : ".");
-				input.Append("|");
-				input.Append(IsBasePressed("P2 Up") ? "U" : ".");
-				input.Append(IsBasePressed("P2 Down") ? "D" : ".");
-				input.Append(IsBasePressed("P2 Left") ? "L" : ".");
-				input.Append(IsBasePressed("P2 Right") ? "R" : ".");
-				input.Append(IsBasePressed("P2 B1") ? "1" : ".");
-				input.Append(IsBasePressed("P2 B2") ? "2" : ".");
-				input.Append("|");
-				input.Append(IsBasePressed("Pause") ? "p" : ".");
-				input.Append(IsBasePressed("Reset") ? "r" : ".");
-				input.Append("|");
-				return input.ToString();
-			}
-
-			if (ControlType == "PC Engine Controller")
-			{
-				input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
-				input.Append("|");
-				for (int player = 1; player <= 5; player++)
+				if (ControlType == "Gameboy Controller")
 				{
-					input.Append(IsBasePressed("P" + player.ToString() + " Up") ? "U" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Select") ? "S" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Run") ? "r" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " B2") ? "2" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " B1") ? "1" : ".");
+					input.Append(".|"); //TODO: reset goes here
+				}
+				if (ControlType == "NES Controller")
+				{
+					input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
+						Global.Emulator.IsLagFrame ? "l" : ".");
+				}
+				if (ControlType == "PC Engine Controller")
+				{
+					input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
+				}
+				if (ControlType != "SMS Controller")
+				{
 					input.Append("|");
 				}
-				return input.ToString();
-			}
-
-			if (ControlType == "Gameboy Controller")
-			{
-				input.Append(".|"); //TODO: reset goes here
-				input.Append(IsBasePressed("Up") ? "U" : ".");
-				input.Append(IsBasePressed("Down") ? "D" : ".");
-				input.Append(IsBasePressed("Left") ? "L" : ".");
-				input.Append(IsBasePressed("Right") ? "R" : ".");
-				input.Append(IsBasePressed("Select") ? "s" : ".");
-				input.Append(IsBasePressed("Start") ? "S" : ".");
-				input.Append(IsBasePressed("B") ? "B" : ".");
-				input.Append(IsBasePressed("A") ? "A" : ".");
-				input.Append("|");
-
-				return input.ToString();
-			}
-
-			if (ControlType == "NES Controller")
-			{
-				input.Append(IsBasePressed("Reset") ? "r" :
-					Global.Emulator.IsLagFrame ? "l" : ".");
-				input.Append("|");
-				for (int player = 1; player <= 4; player++)
+				for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 				{
-					input.Append(IsBasePressed("P" + player.ToString() + " Up") ? "U" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Down") ? "D" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Left") ? "L" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Right") ? "R" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Select") ? "s" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " Start") ? "S" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " B") ? "B" : ".");
-					input.Append(IsBasePressed("P" + player.ToString() + " A") ? "A" : ".");
+					foreach (string button in Global.BUTTONS[ControlType].Keys)
+					{
+						input.Append(
+							IsBasePressed("P" + player.ToString() + " " + button
+						) ? Global.BUTTONS[ControlType][button] : ".");
+					}
+					input.Append("|");
+				}
+				if (ControlType == "SMS Controller")
+				{
+					foreach (string command in Global.COMMANDS[ControlType].Keys)
+					{
+						input.Append(IsBasePressed(command) ? Global.COMMANDS[ControlType][command] : ".");
+					}
 					input.Append("|");
 				}
 				return input.ToString();
@@ -542,113 +432,40 @@ namespace BizHawk.MultiClient
 
 			MyBoolButtons.Clear();
 
-			if (ControlType == "Genesis 3-Button Controller")
+			if (ControlType == "SMS Controller" || ControlType == "Gameboy Controller" || ControlType == "PC Engine Controller" || ControlType == "NES Controller")
 			{
-				Force("Up", c[1]);
-				Force("Down", c[2]);
-				Force("Left", c[3]);
-				Force("Right", c[4]);
-				Force("Start", c[5]);
-				Force("A", c[6]);
-				Force("B", c[7]);
-				Force("C", c[8]);
-			}
-
-			if (ControlType == "SMS Controller")
-			{
-				Force("P1 Up", c[1]);
-				Force("P1 Down", c[2]);
-				Force("P1 Left", c[3]);
-				Force("P1 Right", c[4]);
-				Force("P1 B1", c[5]);
-				Force("P1 B2", c[6]);
-
-				Force("P2 Up", c[8]);
-				Force("P2 Down", c[9]);
-				Force("P2 Left", c[10]);
-				Force("P2 Right", c[11]);
-				Force("P2 B1", c[12]);
-				Force("P2 B2", c[13]);
-
-				Force("Pause", c[15]);
-				Force("Reset", c[16]);
-			}
-
-			if (ControlType == "PC Engine Controller")
-			{
-				for (int i = 1; i <= 5; i++)
+				int start = 3;
+				if (ControlType == "NES Controller")
 				{
-					int srcindex = (i - 1) * 9;
-					if (mnemonic.Length <= srcindex + 9)
+					if (mnemonic.Length < 2) return;
+					Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+				}
+				if (ControlType == "SMS Controller")
+				{
+					start = 1;
+				}
+				for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+				{
+					int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+					int ctr = start;
+					if (mnemonic.Length < srcindex + ctr + Global.BUTTONS[ControlType].Count - 1)
 					{
-						Force("P" + i + " Up", false);
-						Force("P" + i + " Down", false);
-						Force("P" + i + " Left", false);
-						Force("P" + i + " Right", false);
-						Force("P" + i + " Select", false);
-						Force("P" + i + " Run", false);
-						Force("P" + i + " B2", false);
-						Force("P" + i + " B1", false);
+						return;
 					}
-					else
+					foreach (string button in Global.BUTTONS[ControlType].Keys)
 					{
-						Force("P" + i + " Up", c[srcindex + 3]);
-						Force("P" + i + " Down", c[srcindex + 4]);
-						Force("P" + i + " Left", c[srcindex + 5]);
-						Force("P" + i + " Right", c[srcindex + 6]);
-						Force("P" + i + " Select", c[srcindex + 7]);
-						Force("P" + i + " Run", c[srcindex + 8]);
-						Force("P" + i + " B2", c[srcindex + 9]);
-						Force("P" + i + " B1", c[srcindex + 10]);
+						Force("P" + player + " " + button, c[srcindex + ctr++]);
 					}
 				}
-			}
-
-			if (ControlType == "NES Controller")
-			{
-				if (mnemonic.Length < 2) return;
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
-				for (int i = 1; i <= 4; i++)
+				if (ControlType == "SMS Controller")
 				{
-					int srcindex = (i - 1) * 9;
-					if (mnemonic.Length <= srcindex + 9)
+					int srcindex = Global.PLAYERS[ControlType] * (Global.BUTTONS[ControlType].Count + 1);
+					int ctr = start;
+					foreach (string command in Global.COMMANDS[ControlType].Keys)
 					{
-						Force("P" + i + " Up", false);
-						Force("P" + i + " Down", false);
-						Force("P" + i + " Left", false);
-						Force("P" + i + " Right", false);
-						Force("P" + i + " Select", false);
-						Force("P" + i + " Start", false);
-						Force("P" + i + " B", false);
-						Force("P" + i + " A", false);
-					}
-					else
-					{
-						Force("P" + i + " Up", c[srcindex + 3]);
-						Force("P" + i + " Down", c[srcindex + 4]);
-						Force("P" + i + " Left", c[srcindex + 5]);
-						Force("P" + i + " Right", c[srcindex + 6]);
-						Force("P" + i + " Select", c[srcindex + 7]);
-						Force("P" + i + " Start", c[srcindex + 8]);
-						Force("P" + i + " B", c[srcindex + 9]);
-						Force("P" + i + " A", c[srcindex + 10]);
+						Force(command, c[srcindex + ctr++]);
 					}
 				}
-			}
-
-			if (ControlType == "Gameboy Controller")
-			{
-				if (mnemonic.Length < 10) return;
-				//if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
-				int ctr = 3;
-				Force("P1 Up", c[ctr++]);
-				Force("P1 Down", c[ctr++]);
-				Force("P1 Left", c[ctr++]);
-				Force("P1 Right", c[ctr++]);
-				Force("P1 Select", c[ctr++]);
-				Force("P1 Start", c[ctr++]);
-				Force("P1 B", c[ctr++]);
-				Force("P1 A", c[ctr++]);
 			}
 
 			if (ControlType == "TI83 Controls")
