@@ -18,10 +18,64 @@ namespace BizHawk.MultiClient
 		{
 			return Pressed.Contains(button);
 		}
-		public Dictionary<string, string[]> MNEMONICS = new Dictionary<string, string[]>()
+		public Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
-			{"NES", new string[8] {"Up", "Down", "Left", "Right", "Select", "Start", "B", "A"}},
-			{"PC Engine", new string[8] {"Up", "Down", "Left", "Right", "Select", "Start", "2", "1"}}
+			{
+				"Gameboy", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
+					{"A", "A"}
+				}
+			},
+			{
+				"Genesis 3-Button", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Start", "S"}, {"A", "A"}, {"B", "B"},
+					{"C", "C"}
+				}
+			},
+			{
+				"NES", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"},
+					{"A", "A"}
+				}
+			},
+			{
+				"PC Engine", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Run", "r"}, {"B2", "2"},
+					{"B1", "1"}
+				}
+			},
+			{
+				"SMS", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"B1", "1"}, {"B2", "2"}
+				}
+			},
+			{
+				"TI83", new Dictionary<string, string>()
+				{
+					{"0", "0"}, {"1", "1"}, {"2", "2"}, {"3", "3"}, {"4", "4"}, {"5", "5"}, {"6", "6"}, {"7", "7"},
+					{"8", "8"}, {"9", "9"}, {"DOT", "`"}, {"ON", "O"}, {"ENTER", "="}, {"UP", "U"}, {"DOWN", "D"},
+					{"LEFT", "L"}, {"RIGHT", "R"}, {"PLUS", "+"}, {"MINUS", "_"}, {"MULTIPLY", "*"}, {"DIVIDE", "/"},
+ 					{"CLEAR", "c"}, {"EXP", "^"}, {"DASH", "-"}, {"PARAOPEN", "("}, {"PARACLOSE", ")"}, {"TAN", "T"},
+					{"VARS", "V"}, {"COS", "C"}, {"PRGM", "P"}, {"STAT", "s"}, {"MATRIX", "m"}, {"X", "X"}, {"STO", ">"},
+					{"LN", "n"}, {"LOG", "L"}, {"SQUARED", "2"}, {"NEG1", "1"}, {"MATH", "H"}, {"ALPHA", "A"},
+					{"GRAPH", "G"}, {"TRACE", "t"}, {"ZOOM", "Z"}, {"WINDOW", "W"}, {"Y", "Y"}, {"2ND", "&"}, {"MODE", "O"},
+					{"DEL", "D"}, {"COMMA", ","}, {"SIN", "S"}
+				}
+			}
+		};
+		public Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
+		{
+			{"Gameboy", new Dictionary<string, string>() {}},
+			{"Genesis 3-Button", new Dictionary<string, string>() {}},
+			{"NES", new Dictionary<string, string>() {{"Reset", "r"}}},
+			{"PC Engine", new Dictionary<string, string>() {}},
+			{"SMS", new Dictionary<string, string>() {{"Pause", "p"}, {"Reset", "r"}}},
+			{"TI83", new Dictionary<string, string>() {}}
 		};
 		/// <summary>
 		/// call this once per frame to do the timekeeping for the hold and release
@@ -185,10 +239,10 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("Down") ? "D" : ".");
 				input.Append(IsBasePressed("Left") ? "L" : ".");
 				input.Append(IsBasePressed("Right") ? "R" : ".");
+				input.Append(IsBasePressed("Start") ? "S" : ".");
 				input.Append(IsBasePressed("A") ? "A" : ".");
 				input.Append(IsBasePressed("B") ? "B" : ".");
 				input.Append(IsBasePressed("C") ? "C" : ".");
-				input.Append(IsBasePressed("Start") ? "T" : ".");
 				input.Append("|");
 				return input.ToString();
 			}
@@ -209,8 +263,8 @@ namespace BizHawk.MultiClient
 				input.Append(IsBasePressed("P2 B1") ? "1" : ".");
 				input.Append(IsBasePressed("P2 B2") ? "2" : ".");
 				input.Append("|");
-				input.Append(IsBasePressed("Pause") ? "P" : ".");
-				input.Append(IsBasePressed("Reset") ? "R" : ".");
+				input.Append(IsBasePressed("Pause") ? "p" : ".");
+				input.Append(IsBasePressed("Reset") ? "r" : ".");
 				input.Append("|");
 				return input.ToString();
 			}
@@ -237,12 +291,12 @@ namespace BizHawk.MultiClient
 			if (ControlType == "Gameboy Controller")
 			{
 				input.Append(".|"); //TODO: reset goes here
-				input.Append(IsBasePressed("Right") ? "R" : ".");
-				input.Append(IsBasePressed("Left") ? "L" : ".");
-				input.Append(IsBasePressed("Down") ? "D" : ".");
 				input.Append(IsBasePressed("Up") ? "U" : ".");
-				input.Append(IsBasePressed("Start") ? "S" : ".");
+				input.Append(IsBasePressed("Down") ? "D" : ".");
+				input.Append(IsBasePressed("Left") ? "L" : ".");
+				input.Append(IsBasePressed("Right") ? "R" : ".");
 				input.Append(IsBasePressed("Select") ? "s" : ".");
+				input.Append(IsBasePressed("Start") ? "S" : ".");
 				input.Append(IsBasePressed("B") ? "B" : ".");
 				input.Append(IsBasePressed("A") ? "A" : ".");
 				input.Append("|");
@@ -494,10 +548,10 @@ namespace BizHawk.MultiClient
 				Force("Down", c[2]);
 				Force("Left", c[3]);
 				Force("Right", c[4]);
-				Force("A", c[5]);
-				Force("B", c[6]);
-				Force("C", c[7]);
-				Force("Start", c[8]);
+				Force("Start", c[5]);
+				Force("A", c[6]);
+				Force("B", c[7]);
+				Force("C", c[8]);
 			}
 
 			if (ControlType == "SMS Controller")
@@ -587,12 +641,12 @@ namespace BizHawk.MultiClient
 				if (mnemonic.Length < 10) return;
 				//if (mnemonic[1] != '.' && mnemonic[1] != '0') programmaticallyPressedButtons.Add("Reset");
 				int ctr = 3;
-				Force("P1 Right", c[ctr++]);
-				Force("P1 Left", c[ctr++]);
-				Force("P1 Down", c[ctr++]);
 				Force("P1 Up", c[ctr++]);
-				Force("P1 Start", c[ctr++]);
+				Force("P1 Down", c[ctr++]);
+				Force("P1 Left", c[ctr++]);
+				Force("P1 Right", c[ctr++]);
 				Force("P1 Select", c[ctr++]);
+				Force("P1 Start", c[ctr++]);
 				Force("P1 B", c[ctr++]);
 				Force("P1 A", c[ctr++]);
 			}
