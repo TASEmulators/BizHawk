@@ -396,7 +396,7 @@ namespace BizHawk.Emulation.Consoles.Calculator
 		public static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition
 			{
-				Name = "TI83 Controls",
+				Name = "TI83 Controller",
 				BoolButtons = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
 					"ON","ENTER",
 					"DOWN","LEFT","UP","RIGHT",
