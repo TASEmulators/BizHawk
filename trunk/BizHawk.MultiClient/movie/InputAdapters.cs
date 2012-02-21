@@ -174,105 +174,51 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder input = new StringBuilder("|");
 
-			if (ControlType == "Genesis 3-Button Controller" || ControlType == "SMS Controller" || ControlType == "Gameboy Controller" || ControlType == "PC Engine Controller" || ControlType == "NES Controller")
+			if (ControlType == "Gameboy Controller")
 			{
-				if (ControlType == "Gameboy Controller")
-				{
-					input.Append(".|"); //TODO: reset goes here
-				}
-				if (ControlType == "NES Controller")
-				{
-					input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
-						Global.Emulator.IsLagFrame ? "l" : ".");
-				}
-				if (ControlType == "PC Engine Controller")
-				{
-					input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
-				}
-				if (ControlType != "SMS Controller")
-				{
-					input.Append("|");
-				}
-				for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
-				{
-					foreach (string button in Global.BUTTONS[ControlType].Keys)
-					{
-						input.Append(
-							IsBasePressed("P" + player.ToString() + " " + button
-						) ? Global.BUTTONS[ControlType][button] : ".");
-					}
-					input.Append("|");
-				}
-				if (ControlType == "SMS Controller")
-				{
-					foreach (string command in Global.COMMANDS[ControlType].Keys)
-					{
-						input.Append(IsBasePressed(command) ? Global.COMMANDS[ControlType][command] : ".");
-					}
-					input.Append("|");
-				}
-				return input.ToString();
+				input.Append(".|"); //TODO: reset goes here
 			}
-
-			if (ControlType == "TI83 Controls")
+			if (ControlType == "NES Controller")
 			{
-				input.Append(IsBasePressed("0") ? "0" : ".");
-				input.Append(IsBasePressed("1") ? "1" : ".");
-				input.Append(IsBasePressed("2") ? "2" : ".");
-				input.Append(IsBasePressed("3") ? "3" : ".");
-				input.Append(IsBasePressed("4") ? "4" : ".");
-				input.Append(IsBasePressed("5") ? "5" : ".");
-				input.Append(IsBasePressed("6") ? "6" : ".");
-				input.Append(IsBasePressed("7") ? "7" : ".");
-				input.Append(IsBasePressed("8") ? "8" : ".");
-				input.Append(IsBasePressed("9") ? "9" : ".");
-				input.Append(IsBasePressed("DOT") ? "`" : ".");
-				input.Append(IsBasePressed("ON") ? "O" : ".");
-				input.Append(IsBasePressed("ENTER") ? "=" : ".");
-				input.Append(IsBasePressed("UP") ? "U" : ".");
-				input.Append(IsBasePressed("DOWN") ? "D" : ".");
-				input.Append(IsBasePressed("LEFT") ? "L" : ".");
-				input.Append(IsBasePressed("RIGHT") ? "R" : ".");
-				input.Append(IsBasePressed("PLUS") ? "+" : ".");
-				input.Append(IsBasePressed("MINUS") ? "_" : ".");
-				input.Append(IsBasePressed("MULTIPLY") ? "*" : ".");
-				input.Append(IsBasePressed("DIVIDE") ? "/" : ".");
-				input.Append(IsBasePressed("CLEAR") ? "c" : ".");
-				input.Append(IsBasePressed("EXP") ? "^" : ".");
-				input.Append(IsBasePressed("DASH") ? "-" : ".");
-				input.Append(IsBasePressed("PARAOPEN") ? "(" : ".");
-				input.Append(IsBasePressed("PARACLOSE") ? ")" : ".");
-				input.Append(IsBasePressed("TAN") ? "T" : ".");
-				input.Append(IsBasePressed("VARS") ? "V" : ".");
-				input.Append(IsBasePressed("COS") ? "C" : ".");
-				input.Append(IsBasePressed("PRGM") ? "P" : ".");
-				input.Append(IsBasePressed("STAT") ? "s" : ".");
-				input.Append(IsBasePressed("MATRIX") ? "m" : ".");
-				input.Append(IsBasePressed("X") ? "X" : ".");
-				input.Append(IsBasePressed("STO") ? ">" : ".");
-				input.Append(IsBasePressed("LN") ? "n" : ".");
-				input.Append(IsBasePressed("LOG") ? "L" : ".");
-				input.Append(IsBasePressed("SQUARED") ? "2" : ".");
-				input.Append(IsBasePressed("NEG1") ? "1" : ".");
-				input.Append(IsBasePressed("MATH") ? "H" : ".");
-				input.Append(IsBasePressed("ALPHA") ? "A" : ".");
-				input.Append(IsBasePressed("GRAPH") ? "G" : ".");
-				input.Append(IsBasePressed("TRACE") ? "t" : ".");
-				input.Append(IsBasePressed("ZOOM") ? "Z" : ".");
-				input.Append(IsBasePressed("WINDOW") ? "W" : ".");
-				input.Append(IsBasePressed("Y") ? "Y" : ".");
-				input.Append(IsBasePressed("2ND") ? "&" : ".");
-				input.Append(IsBasePressed("MODE") ? "O" : ".");
-				input.Append(IsBasePressed("DEL") ? "D" : ".");
-				input.Append(IsBasePressed("COMMA") ? "," : ".");
-				input.Append(IsBasePressed("SIN") ? "S" : ".");
-				input.Append("|.|"); //TODO: perhaps ON should go here?
-				return input.ToString();
+				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
+					Global.Emulator.IsLagFrame ? "l" : ".");
 			}
-			return "?";
+			if (ControlType == "PC Engine Controller")
+			{
+				input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
+			}
+			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
+			{
+				input.Append("|");
+			}
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				string prefix = "";
+				if (ControlType != "TI83 Controller")
+				{
+					prefix = "P" + player.ToString() + " ";
+				}
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed(prefix + button) ? Global.BUTTONS[ControlType][button] : ".");
+				}
+				input.Append("|");
+			}
+			if (ControlType == "SMS Controller")
+			{
+				foreach (string command in Global.COMMANDS[ControlType].Keys)
+				{
+					input.Append(IsBasePressed(command) ? Global.COMMANDS[ControlType][command] : ".");
+				}
+				input.Append("|");
+			}
+			if (ControlType == "TI83 Controller")
+			{
+				input.Append(".|"); //TODO: perhaps ON should go here?
+			}
+			return input.ToString();
 		}
 	}
-
 	/// <summary>
 	/// just copies source to sink, or returns whatever a NullController would if it is disconnected. useful for immovable hardpoints.
 	/// </summary>
@@ -432,97 +378,42 @@ namespace BizHawk.MultiClient
 
 			MyBoolButtons.Clear();
 
-			if (ControlType == "SMS Controller" || ControlType == "Gameboy Controller" || ControlType == "PC Engine Controller" || ControlType == "NES Controller")
+			int start = 3;
+			if (ControlType == "NES Controller")
 			{
-				int start = 3;
-				if (ControlType == "NES Controller")
+				if (mnemonic.Length < 2) return;
+				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+			}
+			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
+			{
+				start = 1;
+			}
+			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+			{
+				int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
+				int ctr = start;
+				if (mnemonic.Length < srcindex + ctr + Global.BUTTONS[ControlType].Count - 1)
 				{
-					if (mnemonic.Length < 2) return;
-					Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
+					return;
 				}
-				if (ControlType == "SMS Controller")
+				string prefix = "";
+				if (ControlType != "TI83 Controller")
 				{
-					start = 1;
+					prefix = "P" + player + " ";
 				}
-				for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
+				foreach (string button in Global.BUTTONS[ControlType].Keys)
 				{
-					int srcindex = (player - 1) * (Global.BUTTONS[ControlType].Count + 1);
-					int ctr = start;
-					if (mnemonic.Length < srcindex + ctr + Global.BUTTONS[ControlType].Count - 1)
-					{
-						return;
-					}
-					foreach (string button in Global.BUTTONS[ControlType].Keys)
-					{
-						Force("P" + player + " " + button, c[srcindex + ctr++]);
-					}
-				}
-				if (ControlType == "SMS Controller")
-				{
-					int srcindex = Global.PLAYERS[ControlType] * (Global.BUTTONS[ControlType].Count + 1);
-					int ctr = start;
-					foreach (string command in Global.COMMANDS[ControlType].Keys)
-					{
-						Force(command, c[srcindex + ctr++]);
-					}
+					Force(prefix + button, c[srcindex + ctr++]);
 				}
 			}
-
-			if (ControlType == "TI83 Controls")
+			if (ControlType == "SMS Controller")
 			{
-				if (mnemonic.Length < 50) return;
-				int ctr = 1;
-
-				Force("0", c[ctr++]);
-				Force("1", c[ctr++]);
-				Force("2", c[ctr++]);
-				Force("3", c[ctr++]);
-				Force("4", c[ctr++]);
-				Force("5", c[ctr++]);
-				Force("6", c[ctr++]);
-				Force("7", c[ctr++]);
-				Force("8", c[ctr++]);
-				Force("9", c[ctr++]);
-				Force("DOT", c[ctr++]);
-				Force("ON", c[ctr++]);
-				Force("ENTER", c[ctr++]);
-				Force("UP", c[ctr++]);
-				Force("DOWN", c[ctr++]);
-				Force("LEFT", c[ctr++]);
-				Force("RIGHT", c[ctr++]);
-				Force("PLUS", c[ctr++]);
-				Force("MINUS", c[ctr++]);
-				Force("MULTIPLY", c[ctr++]);
-				Force("DIVIDE", c[ctr++]);
-				Force("CLEAR", c[ctr++]);
-				Force("EXP", c[ctr++]);
-				Force("DASH", c[ctr++]);
-				Force("PARAOPEN", c[ctr++]);
-				Force("PARACLOSE", c[ctr++]);
-				Force("TAN", c[ctr++]);
-				Force("VARS", c[ctr++]);
-				Force("COS", c[ctr++]);
-				Force("PGRM", c[ctr++]);
-				Force("STAT", c[ctr++]);
-				Force("MATRIX", c[ctr++]);
-				Force("X", c[ctr++]);
-				Force("STO", c[ctr++]);
-				Force("LN", c[ctr++]);
-				Force("LOG", c[ctr++]);
-				Force("SQUARED", c[ctr++]);
-				Force("NEG", c[ctr++]);
-				Force("MATH", c[ctr++]);
-				Force("ALPHA", c[ctr++]);
-				Force("GRAPH", c[ctr++]);
-				Force("TRACE", c[ctr++]);
-				Force("ZOOM", c[ctr++]);
-				Force("WINDOW", c[ctr++]);
-				Force("Y", c[ctr++]);
-				Force("2ND", c[ctr++]);
-				Force("MODE", c[ctr++]);
-				Force("DEL", c[ctr++]);
-				Force("COMMA", c[ctr++]);
-				Force("SIN", c[ctr++]);
+				int srcindex = Global.PLAYERS[ControlType] * (Global.BUTTONS[ControlType].Count + 1);
+				int ctr = start;
+				foreach (string command in Global.COMMANDS[ControlType].Keys)
+				{
+					Force(command, c[srcindex + ctr++]);
+				}
 			}
 		}
 	}
