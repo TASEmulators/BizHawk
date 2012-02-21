@@ -1639,6 +1639,7 @@
 			this.ZERO.TabIndex = 114;
 			this.ZERO.Text = "0";
 			this.ZERO.UseVisualStyleBackColor = false;
+			this.ZERO.Click += new System.EventHandler(this.ZERO_Click);
 			// 
 			// ON
 			// 
@@ -1778,7 +1779,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-			this.ClientSize = new System.Drawing.Size(363, 554);
+			this.ClientSize = new System.Drawing.Size(363, 547);
 			this.Controls.Add(this.label81);
 			this.Controls.Add(this.label80);
 			this.Controls.Add(this.label79);
