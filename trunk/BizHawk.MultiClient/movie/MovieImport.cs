@@ -46,13 +46,14 @@ namespace BizHawk.MultiClient
 					mov = new Movie();
 					break;
 			}
+			Global.RenderPanel.AddMessage(errorMsg);
 			mov.WriteMovie();
 			return mov;
 		}
 
 		public static bool IsValidMovieExtension(string extension)
 		{
-			string[] extensions = {"FCM", "FM2", "GMV", "MC2", "MMV", "TAS", "VBM"};
+			string[] extensions = new string[7] { "FCM", "FM2", "GMV", "MC2", "MMV", "TAS", "VBM" };
 			foreach (string ext in extensions)
 			{
 				if (extension.ToUpper() == "." + ext)
@@ -101,7 +102,6 @@ namespace BizHawk.MultiClient
 				int line = 0;
 				string str = "";
 				string rerecordStr = "";
-				string warning = "";
 				while ((str = sr.ReadLine()) != null)
 				{
 					line++;
@@ -159,49 +159,49 @@ namespace BizHawk.MultiClient
 						ArrayList frame = new ArrayList();
 						// Split up the sections of the frame.
 						string[] sections = str.Split('|');
-						string[] buttons = {};
+						string[] buttons = new string[] {};
 						SimpleController controllers = new SimpleController();
 						controllers.Type = new ControllerDefinition();
 						switch (emulator)
 						{
 							case "FCEUX":
-								buttons = new string[8] {"Right", "Left", "Down", "Up", "Start", "Select", "B", "A"};
+								buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 								controllers.Type.Name = "NES Controller";
+								if (errorMsg == "" && sections[1].Length != 0)
+								{
+									switch (sections[1][0])
+									{
+										case '0':
+											break;
+										case '1':
+											controllers["Reset"] = true;
+											break;
+										case '2':
+											if (m.Length() != 0)
+											{
+												errorMsg = "hard reset";
+											}
+											break;
+										case '4':
+											errorMsg = "FDS Insert";
+											break;
+										case '8':
+											errorMsg = "FDS Select";
+											break;
+										default:
+											errorMsg = "unknown";
+											break;
+									}
+									if (errorMsg != "")
+									{
+										errorMsg = "Unable to import " + errorMsg + " command on line " + line;
+									}
+								}
 								break;
 							case "Mednafen/PCEjin":
-								buttons = new string[8] {"Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select"};
+								buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
 								controllers.Type.Name = "PC Engine Controller";
 								break;
-						}
-						if (warning == "" && sections[1].Length != 0 && emulator == "FCEUX")
-						{
-							switch (sections[1][0])
-							{
-								case '0':
-									break;
-								case '1':
-									controllers["Reset"] = true;
-									break;
-								case '2':
-									if (m.Length() != 0)
-									{
-										warning = "hard reset";
-									}
-									break;
-								case '4':
-									warning = "FDS Insert";
-									break;
-								case '8':
-									warning = "FDS Select";
-									break;
-								default:
-									warning = "unknown";
-									break;
-							}
-							if (warning != "")
-							{
-								warning = "Unable to import " + warning + " command on line " + line;
-							}
 						}
 						for (int section = 2; section < sections.Length - 1; section++)
 						{
@@ -228,10 +228,6 @@ namespace BizHawk.MultiClient
 						m.Header.Comments.Add(str);
 					}
 				}
-				if (warning != "")
-				{
-					Global.RenderPanel.AddMessage(warning);
-				}
 			}
 			return m;
 		}
@@ -239,131 +235,121 @@ namespace BizHawk.MultiClient
 		private static Movie ImportFCM(string path, out string errorMsg)
 		{
 			errorMsg = "";
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+			BinaryReader r = new BinaryReader(fs);
 
-			try
+			byte[] signatureBytes = new byte[4];
+			for (int x = 0; x < 4; x++)
+				signatureBytes[x] = r.ReadByte();
+			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+			if (signature.Substring(0, 3) != "FCM")
 			{
-				Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-				FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-				BinaryReader r = new BinaryReader(fs);
-
-				byte[] signatureBytes = new byte[4];
-				for (int x = 0; x < 4; x++)
-					signatureBytes[x] = r.ReadByte();
-				string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
-				if (signature.Substring(0, 3) != "FCM")
-				{
-					errorMsg = "This is not a valid FCM file!";
-					return null;
-				}
-
-				UInt32 version = r.ReadUInt32();
-				m.Header.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
-
-				byte[] flags = new byte[4];
-				for (int x = 0; x < 4; x++)
-					flags[x] = r.ReadByte();
-
-				UInt32 frameCount = r.ReadUInt32();
-
-				m.SetRerecords((int)r.ReadUInt32());
-
-				UInt32 movieDataSize = r.ReadUInt32();
-				UInt32 savestateOffset = r.ReadUInt32();
-				UInt32 firstFrameOffset = r.ReadUInt32();
-
-				byte[] romCheckSum = r.ReadBytes(16);
-				//TODO: ROM checksum movie header line (MD5)
-
-				UInt32 EmuVersion = r.ReadUInt32();
-				m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
-
-				List<byte> romBytes = new List<byte>();
-				while (true)
-				{
-					if (r.PeekChar() == 0)
-						break;
-					else
-						romBytes.Add(r.ReadByte());
-				}
-				string rom = System.Text.Encoding.UTF8.GetString(romBytes.ToArray());
-				m.Header.SetHeaderLine(MovieHeader.GAMENAME, rom);
-
-				r.ReadByte(); //Advance past null byte
-
-				List<byte> authorBytes = new List<byte>();
-				while (true)
-				{
-					if (r.PeekChar() == 0)
-						break;
-					else
-						authorBytes.Add(r.ReadByte());
-				}
-				string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
-				m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
-
-				r.ReadByte(); //Advance past null byte
-
-				bool movieSyncHackOn = true;
-				if ((int)(flags[0] & 16) > 0)
-					movieSyncHackOn = false;
-
-				bool pal = false;
-				if ((int)(flags[0] & 4) > 0)
-					pal = true;
-
-				m.Header.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
-				m.Header.SetHeaderLine("PAL", pal.ToString());
-
-				//Power on vs reset
-				if ((int)(flags[0] & 8) > 0)
-				{ } //Power-on = default
-				else if ((int)(flags[0] & 2) > 0)
-				{ } //we don't support start from reset, do some kind of notification here
-				else
-				{ } //this movie starts from savestate, freak out here
-
-				//Advance to first byte of input data
-				//byte[] throwaway = new byte[firstFrameOffset];
-				//r.Read(throwaway, 0, (int)firstFrameOffset);
-				r.BaseStream.Position = firstFrameOffset;
-				//moviedatasize stuff
-
-				//read frame data
-				//TODO: special commands like fds disk switch, etc, and power/reset
-
-				//TODO: use stringbuilder class for speed
-				//string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
-				string frame = "|0|"; //TODO: read reset command rather than hard code it off
-				for (int x = 0; x < frameCount; x++)
-				{
-					byte joy = r.ReadByte();
-
-					//Read each byte of controller one data
-
-					frame += "|";
-
-					r.ReadBytes(3); //Lose remaining controllers for now
-					m.AppendFrame(frame);
-				}
-
-				//set 4 score flag if necessary
-				r.Close();
-				return m;
-			}
-			catch
-			{
-				errorMsg = "Error opening file.";
+				errorMsg = "This is not a valid FCM file!";
 				return null;
 			}
+
+			UInt32 version = r.ReadUInt32();
+			m.Header.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
+
+			byte[] flags = new byte[4];
+			for (int x = 0; x < 4; x++)
+				flags[x] = r.ReadByte();
+
+			UInt32 frameCount = r.ReadUInt32();
+
+			m.SetRerecords((int)r.ReadUInt32());
+
+			UInt32 movieDataSize = r.ReadUInt32();
+			UInt32 savestateOffset = r.ReadUInt32();
+			UInt32 firstFrameOffset = r.ReadUInt32();
+
+			byte[] romCheckSum = r.ReadBytes(16);
+			//TODO: ROM checksum movie header line (MD5)
+
+			UInt32 EmuVersion = r.ReadUInt32();
+			m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
+
+			List<byte> romBytes = new List<byte>();
+			while (true)
+			{
+				if (r.PeekChar() == 0)
+					break;
+				else
+					romBytes.Add(r.ReadByte());
+			}
+			string rom = System.Text.Encoding.UTF8.GetString(romBytes.ToArray());
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, rom);
+
+			r.ReadByte(); //Advance past null byte
+
+			List<byte> authorBytes = new List<byte>();
+			while (true)
+			{
+				if (r.PeekChar() == 0)
+					break;
+				else
+					authorBytes.Add(r.ReadByte());
+			}
+			string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
+			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
+
+			r.ReadByte(); //Advance past null byte
+
+			bool movieSyncHackOn = true;
+			if ((int)(flags[0] & 16) > 0)
+				movieSyncHackOn = false;
+
+			bool pal = false;
+			if ((int)(flags[0] & 4) > 0)
+				pal = true;
+
+			m.Header.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
+			m.Header.SetHeaderLine("PAL", pal.ToString());
+
+			//Power on vs reset
+			if ((int)(flags[0] & 8) > 0)
+			{ } //Power-on = default
+			else if ((int)(flags[0] & 2) > 0)
+			{ } //we don't support start from reset, do some kind of notification here
+			else
+			{ } //this movie starts from savestate, freak out here
+
+			//Advance to first byte of input data
+			//byte[] throwaway = new byte[firstFrameOffset];
+			//r.Read(throwaway, 0, (int)firstFrameOffset);
+			r.BaseStream.Position = firstFrameOffset;
+			//moviedatasize stuff
+
+			//read frame data
+			//TODO: special commands like fds disk switch, etc, and power/reset
+
+			//TODO: use stringbuilder class for speed
+			//string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
+			string frame = "|0|"; //TODO: read reset command rather than hard code it off
+			for (int x = 0; x < frameCount; x++)
+			{
+				byte joy = r.ReadByte();
+
+				//Read each byte of controller one data
+
+				frame += "|";
+
+				r.ReadBytes(3); //Lose remaining controllers for now
+				m.AppendFrame(frame);
+			}
+
+			//set 4 score flag if necessary
+			r.Close();
+			return m;
 		}
 
+		// FM2 file format: http://www.fceux.com/web/FM2.html
 		private static Movie ImportFM2(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			Movie m = ImportText(path, out errorMsg, "FCEUX");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
-			// TODO: Mnemonic switches.
-			// FM2 file format: http://www.fceux.com/web/FM2.html
 			return m;
 		}
 
@@ -382,13 +368,13 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
 		private static Movie ImportMC2(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			Movie m = ImportText(path, out errorMsg, "Mednafen/PCEjin");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "MC2");
 			// TODO: PCECD equivalent.
-			// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
 			return m;
 		}
 
@@ -483,22 +469,26 @@ namespace BizHawk.MultiClient
 
 			for (int x = 0; x < (framecount); x++)
 			{
-				byte tmp;
+				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "SMS Controller";
+				string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
 				for (int player = 1; player <= 2; player++)
 				{
-					tmp = r.ReadByte();
-					controllers["P" + player + " Up"] = ((int)(tmp & 1) > 0);
-					controllers["P" + player + " Down"] = ((int)(tmp & 2) > 0);
-					controllers["P" + player + " Left"] = ((int)(tmp & 4) > 0);
-					controllers["P" + player + " Right"] = ((int)(tmp & 8) > 0);
-					controllers["P" + player + " B1"] = ((int)(tmp & 16) > 0);
-					controllers["P" + player + " B2"] = ((int)(tmp & 32) > 0);
+					controllerstate = r.ReadByte();
+					byte and = 0x1;
+					for (int button = 0; button < buttons.Length; button++)
+					{
+						controllers["P" + player + " " + buttons[button]] = ((int)(controllerstate & and) > 0);
+						and <<= 1;
+					}
 					if (player == 1)
 					{
-						controllers["Pause"] = (((int)(tmp & 64) > 0 && (!gamegear)) || ((int)(tmp & 128) > 0 && gamegear));
+						controllers["Pause"] = (
+							((int)(controllerstate & 0x40) > 0 && (!gamegear)) ||
+							((int)(controllerstate & 0x80) > 0 && gamegear)
+						);
 					}
 				}
 				MnemonicsGenerator mg = new MnemonicsGenerator();
@@ -614,6 +604,7 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		//VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 		private static Movie ImportVBM(string path, out string errorMsg)
 		{
 			errorMsg = "";
@@ -751,30 +742,25 @@ namespace BizHawk.MultiClient
 
 			int currentoffset = (int)controllerdataoffset;
 
-			for (int i = 1; i <= framecount; i++)
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "Gameboy Controller";
+			string[] buttons = new string[8] {"A", "B", "Select", "Start", "Right", "Left", "Up", "Down"};
+
+			for (int frame = 1; frame <= framecount; frame++)
 			{
 				UInt16 controllerstate = r.ReadUInt16();
-				string frame = "|.|"; //TODO: reset goes here
-				if ((controllerstate & 0x0010) > 0) frame += "R"; else frame += ".";
-				if ((controllerstate & 0x0020) > 0) frame += "L"; else frame += ".";
-				if ((controllerstate & 0x0080) > 0) frame += "D"; else frame += ".";
-				if ((controllerstate & 0x0040) > 0) frame += "U"; else frame += ".";
-				if ((controllerstate & 0x0008) > 0) frame += "S"; else frame += ".";
-				if ((controllerstate & 0x0004) > 0) frame += "s"; else frame += ".";
-				if ((controllerstate & 0x0002) > 0) frame += "B"; else frame += ".";
-				if ((controllerstate & 0x0001) > 0) frame += "A"; else frame += ".";
-				frame += "|";
-
-				m.AppendFrame(frame);
+				// TODO: reset, GBA buttons go here
+				byte and = 0x1;
+				for (int button = 0; button < buttons.Length; button++)
+				{
+					controllers["P1 " + buttons[button]] = ((int)(controllerstate & and) > 0);
+					and <<= 1;
+				}
 			}
-
-			m.WriteMovie();
-
-			//format: |.|RLDUSsBA| according to "GetControllersAsMnemonic()"
-			//note: this is GBC or less ONLY, not GBA (no L or R button)
-			//we need to change this when we add reset or whatever.
-			//VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
-
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			mg.SetSource(controllers);
+			m.AppendFrame(mg.GetControllersAsMnemonic());
 			return m;
 		}
 	}
