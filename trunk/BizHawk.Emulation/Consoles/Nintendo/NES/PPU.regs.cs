@@ -397,10 +397,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					ppur._vt = value >> 3;
 					ppur._fv = value & 7;
-					if (ppur._vt == 30)
-					{
-						int zz = 9;
-					}
 					//nes.LogLine("scroll wrote vt = {0} and fv = {1}", ppur._vt, ppur._fv);
 				}
 				vtoggle ^= true;

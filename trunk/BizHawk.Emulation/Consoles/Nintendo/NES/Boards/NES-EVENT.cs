@@ -124,11 +124,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void WritePPU(int addr, byte value)
 		{
-			if (addr < 0x2000)
-			{
-				int zzz = 9;
-				//Console.WriteLine("{0:X4} = {1:X2}", addr, value);
-			}
 			base.WritePPU(addr, value);
 		}
 

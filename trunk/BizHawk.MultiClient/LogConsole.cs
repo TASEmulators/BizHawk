@@ -145,17 +145,26 @@ namespace BizHawk.MultiClient
 			//attach to an existing console
 			attachedConsole = false;
 
-			if (Win32.AttachConsole(-1))
+			//ever since a recent KB, XP-based systems glitch out when attachconsole is called and theres no console to attach to.
+			if (System.Environment.OSVersion.Version.Major != 5)
 			{
-				hasConsole = true;
-				attachedConsole = true;
+				if (Win32.AttachConsole(-1))
+				{
+				  hasConsole = true;
+				  attachedConsole = true;
+				}
 			}
 
 			if (!attachedConsole)
 			{
 				Win32.FreeConsole();
 				if (Win32.AllocConsole())
+				{
+					//set icons for the console so we can tell them apart from the main window
+					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 0/*ICON_SMALL*/, global::BizHawk.MultiClient.Properties.Resources.console16x16.GetHicon().ToInt32());
+					Win32.SendMessage(Win32.GetConsoleWindow(), 0x0080/*WM_SETICON*/, 1/*ICON_LARGE*/, global::BizHawk.MultiClient.Properties.Resources.console32x32.GetHicon().ToInt32());
 					hasConsole = true;
+				}
 				else
 					System.Windows.Forms.MessageBox.Show(string.Format("Couldn't allocate win32 console: {0}", Marshal.GetLastWin32Error()));
 			}
@@ -172,10 +181,10 @@ namespace BizHawk.MultiClient
 				conOut = Win32.CreateFile("CONOUT$", 0x40000000, 2, IntPtr.Zero, 3, 0, IntPtr.Zero);
 
 				if (!Win32.SetStdHandle(-11, conOut))
-					throw new Exception("SetStdHandle() failed");
+				  throw new Exception("SetStdHandle() failed");
 			}
 
-			DotNetRewireConout();
+			//DotNetRewireConout();
 			hasConsole = true;
 
 			if (attachedConsole)
@@ -184,6 +193,8 @@ namespace BizHawk.MultiClient
 				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", System.IO.Path.GetFileName(PathManager.GetBasePathAbsolute()));
 			}
 		}
+
+
 
 		static void DotNetRewireConout()
 		{
@@ -204,7 +215,23 @@ namespace BizHawk.MultiClient
 
 			conOut = IntPtr.Zero;
 			hasConsole = false;
-		} 
+		}
+
+		/// <summary>
+		/// pops the console in front of the main window (where it should probably go after booting up the game).
+		/// maybe this should be optional, or maybe we can somehow position the console sensibly.
+		/// sometimes it annoys me, but i really need it on top while debugging or else i will be annoyed.
+		/// best of all would be to position it beneath the bizhawk main window somehow.
+		/// </summary>
+		public static void PositionConsole()
+		{
+			if (ConsoleVisible == false) return;
+			if (Global.Config.WIN32_CONSOLE)
+			{
+				IntPtr x = Win32.GetConsoleWindow();
+				Win32.SetForegroundWindow(x);
+			}
+		}
 
 		public static void ShowConsole()
 		{

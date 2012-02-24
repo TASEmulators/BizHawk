@@ -196,13 +196,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                         Log.Note("VDP", "Full Screen VScroll");*/
 
                     int hscrollmode = data & 3;
-                    switch (hscrollmode)
-                    {
-                        //case 0: Log.Note("VDP", "Full Screen HScroll"); break;
-                        //case 1: Log.Note("VDP", "Prohibited HSCROLL mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); break;
-                        //case 2: Log.Note("VDP", "HScroll every 1 cell"); break;
-                        //case 3: Log.Note("VDP", "HScroll every 2 cell"); break;
-                    }
+										//switch (hscrollmode)
+										//{
+										//    case 0: Log.Note("VDP", "Full Screen HScroll"); break;
+										//    case 1: Log.Note("VDP", "Prohibited HSCROLL mode!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); break;
+										//    case 2: Log.Note("VDP", "HScroll every 1 cell"); break;
+										//    case 3: Log.Note("VDP", "HScroll every 2 cell"); break;
+										//}
                     break;
 
                 case 0x0C: // Mode Set #4

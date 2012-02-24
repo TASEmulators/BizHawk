@@ -80,10 +80,10 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 return ((ushort)ReadWord(address) | (ushort)(ReadWord(address + 2) << 16));
             }
-            if (address == 0xA10008) return 0; // FIXME HACK for tg-sync.
+            //if (address == 0xA10008) return 0; // FIXME HACK for tg-sync.
 
-            Console.WriteLine("UNHANDLED READL {0:X6}", address);
-            return 0x7DCDCDCD;
+            //Console.WriteLine("UNHANDLED READL {0:X6}", address);
+            //return 0x7DCDCDCD;
         }
 
         public void WriteByte(int address, sbyte value)
@@ -127,11 +127,13 @@ namespace BizHawk.Emulation.Consoles.Sega
                 {
                     case 0x00:
                     case 0x02:
-                        VDP.WriteVdpData((ushort) (value | (value << 8)));
+                        //zero 15-feb-2012 -  added latter two ushort casts to kill a warning
+                        VDP.WriteVdpData((ushort) ((ushort)value | ((ushort)value << 8)));
                         return;
                     case 0x04:
                     case 0x06:
-                        VDP.WriteVdpControl((ushort) (value | (value << 8)));
+                        //zero 15-feb-2012 -  added latter two ushort casts to kill a warning
+                        VDP.WriteVdpControl((ushort) ((ushort)value | ((ushort)value << 8)));
                         return;
                     case 0x11:
                     case 0x13:

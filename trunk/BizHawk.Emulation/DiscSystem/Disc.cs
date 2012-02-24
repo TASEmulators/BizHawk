@@ -79,7 +79,6 @@ namespace BizHawk.DiscSystem
 		public interface IBlob : IDisposable
 		{
 			int Read(long byte_pos, byte[] buffer, int offset, int count);
-			void Dispose();
 		}
 
 		class Blob_RawFile : IBlob
