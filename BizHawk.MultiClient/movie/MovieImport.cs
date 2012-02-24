@@ -11,46 +11,53 @@ namespace BizHawk.MultiClient
 {
 	public static class MovieImport
 	{
-		public static Movie ImportFile(string path, out string errorMsg)
+		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
-			Movie mov;
+			Movie m = new Movie(); ;
 			errorMsg = "";
-			switch (Path.GetExtension(path).ToUpper())
+			warningMsg = "";
+			try
 			{
-				case ".FCM":
-					mov = ImportFCM(path, out errorMsg);
-					break;
-				case ".FM2":
-					mov = ImportFM2(path, out errorMsg);
-					break;
-				case ".FMV":
-					mov = ImportFMV(path, out errorMsg);
-					break;
-				case ".GMV":
-					mov = ImportGMV(path, out errorMsg);
-					break;
-				case ".MCM":
-					mov = ImportMCM(path, out errorMsg);
-					break;
-				case ".MC2":
-					mov = ImportMC2(path, out errorMsg);
-					break;
-				case ".MMV":
-					mov = ImportMMV(path, out errorMsg);
-					break;
-				case ".SMV":
-					mov = ImportSMV(path, out errorMsg);
-					break;
-				case ".VBM":
-					mov = ImportVBM(path, out errorMsg);
-					break;
-				default:
-					mov = new Movie();
-					break;
+				switch (Path.GetExtension(path).ToUpper())
+				{
+					case ".FCM":
+						m = ImportFCM(path, out errorMsg, out warningMsg);
+						break;
+					case ".FM2":
+						m = ImportFM2(path, out errorMsg, out warningMsg);
+						break;
+					case ".FMV":
+						m = ImportFMV(path, out errorMsg, out warningMsg);
+						break;
+					case ".GMV":
+						m = ImportGMV(path, out errorMsg, out warningMsg);
+						break;
+					case ".MCM":
+						m = ImportMCM(path, out errorMsg, out warningMsg);
+						break;
+					case ".MC2":
+						m = ImportMC2(path, out errorMsg, out warningMsg);
+						break;
+					case ".MMV":
+						m = ImportMMV(path, out errorMsg, out warningMsg);
+						break;
+					case ".SMV":
+						m = ImportSMV(path, out errorMsg, out warningMsg);
+						break;
+					case ".VBM":
+						m = ImportVBM(path, out errorMsg, out warningMsg);
+						break;
+				}
+				if (errorMsg == "")
+				{
+					m.WriteMovie();
+				}
 			}
-			Global.RenderPanel.AddMessage(errorMsg);
-			mov.WriteMovie();
-			return mov;
+			catch (Exception except)
+			{
+				errorMsg = except.ToString();
+			}
+			return m;
 		}
 
 		public static bool IsValidMovieExtension(string extension)
@@ -94,9 +101,10 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private static Movie ImportText(string path, out string errorMsg, string emulator)
+		private static Movie ImportText(string path, out string errorMsg, out string warningMsg, string emulator)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			var file = new FileInfo(path);
 			using (StreamReader sr = file.OpenText())
@@ -128,7 +136,7 @@ namespace BizHawk.MultiClient
 						str = ParseHeader(str, "StartsFromSavestate");
 						if (str == "1")
 						{
-							errorMsg = "Movies that begin with a savestate are not supported.";
+							warningMsg = "Movies that begin with a savestate are not supported.";
 							return null;
 						}
 					}
@@ -169,7 +177,7 @@ namespace BizHawk.MultiClient
 							case "FCEUX":
 								buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
 								controllers.Type.Name = "NES Controller";
-								if (errorMsg == "" && sections[1].Length != 0)
+								if (warningMsg == "" && sections[1].Length != 0)
 								{
 									switch (sections[1][0])
 									{
@@ -181,22 +189,22 @@ namespace BizHawk.MultiClient
 										case '2':
 											if (m.Length() != 0)
 											{
-												errorMsg = "hard reset";
+												warningMsg = "hard reset";
 											}
 											break;
 										case '4':
-											errorMsg = "FDS Insert";
+											warningMsg = "FDS Insert";
 											break;
 										case '8':
-											errorMsg = "FDS Select";
+											warningMsg = "FDS Select";
 											break;
 										default:
-											errorMsg = "unknown";
+											warningMsg = "unknown";
 											break;
 									}
-									if (errorMsg != "")
+									if (warningMsg != "")
 									{
-										errorMsg = "Unable to import " + errorMsg + " command on line " + line;
+										warningMsg = "Unable to import " + warningMsg + " command on line " + line;
 									}
 								}
 								break;
@@ -235,9 +243,10 @@ namespace BizHawk.MultiClient
 		}
 
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
-		private static Movie ImportFCM(string path, out string errorMsg)
+		private static Movie ImportFCM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -348,52 +357,58 @@ namespace BizHawk.MultiClient
 		}
 
 		// FM2 file format: http://www.fceux.com/web/FM2.html
-		private static Movie ImportFM2(string path, out string errorMsg)
+		private static Movie ImportFM2(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
-			Movie m = ImportText(path, out errorMsg, "FCEUX");
+			warningMsg = "";
+			Movie m = ImportText(path, out errorMsg, out warningMsg, "FCEUX");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			return m;
 		}
 
 		// FMV file format: http://tasvideos.org/FMV.html
-		private static Movie ImportFMV(string path, out string errorMsg)
+		private static Movie ImportFMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			return m;
 		}
 
 		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
-		private static Movie ImportGMV(string path, out string errorMsg)
+		private static Movie ImportGMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			return m;
 		}
 
 		// MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
-		private static Movie ImportMCM(string path, out string errorMsg)
+		private static Movie ImportMCM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			return m;
 		}
 
 		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
-		private static Movie ImportMC2(string path, out string errorMsg)
+		private static Movie ImportMC2(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
-			Movie m = ImportText(path, out errorMsg, "Mednafen/PCEjin");
+			warningMsg = "";
+			Movie m = ImportText(path, out errorMsg, out warningMsg, "Mednafen/PCEjin");
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "MC2");
 			// TODO: PCECD equivalent.
 			return m;
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
-		private static Movie ImportMMV(string path, out string errorMsg)
+		private static Movie ImportMMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -511,9 +526,10 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		private static Movie ImportSMV(string path, out string errorMsg)
+		private static Movie ImportSMV(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 
@@ -616,9 +632,10 @@ namespace BizHawk.MultiClient
 		}
 
 		//VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
-		private static Movie ImportVBM(string path, out string errorMsg)
+		private static Movie ImportVBM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
+			warningMsg = "";
 			//Converts vbm to native text based format.
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
