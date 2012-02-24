@@ -181,7 +181,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "NES Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
-					Global.Emulator.IsLagFrame ? "l" : ".");
+					Global.Emulator.IsLagFrame ? Global.COMMANDS[ControlType]["Lag"] : ".");
 			}
 			if (ControlType == "PC Engine Controller")
 			{
@@ -194,7 +194,7 @@ namespace BizHawk.MultiClient
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
 				string prefix = "";
-				if (ControlType != "TI83 Controller")
+				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
 					prefix = "P" + player.ToString() + " ";
 				}
@@ -397,7 +397,7 @@ namespace BizHawk.MultiClient
 					return;
 				}
 				string prefix = "";
-				if (ControlType != "TI83 Controller")
+				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
 				}

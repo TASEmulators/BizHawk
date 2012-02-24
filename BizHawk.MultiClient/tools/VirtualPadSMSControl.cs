@@ -16,7 +16,6 @@ namespace BizHawk.MultiClient
 			ButtonPoints[0] = new Point(2, 2);
 			ButtonPoints[1] = new Point(56, 2);
 
-
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.DoubleBuffer, true);
@@ -25,7 +24,6 @@ namespace BizHawk.MultiClient
 			this.Size = new Size(108, 34);
 
 			Point n = new Point(this.Size);
-
 
 			this.B1 = new CheckBox();
 			this.B1.Appearance = System.Windows.Forms.Appearance.Button;
@@ -87,8 +85,8 @@ namespace BizHawk.MultiClient
 		public override string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("");
-			input.Append(B1.Checked ? "P" : ".");
-			input.Append(B2.Checked ? "R" : ".");
+			input.Append(B1.Checked ? "p" : ".");
+			input.Append(B2.Checked ? "r" : ".");
 			input.Append("|");
 			return input.ToString();
 		}
