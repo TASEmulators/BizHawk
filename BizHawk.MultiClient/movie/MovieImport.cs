@@ -23,6 +23,9 @@ namespace BizHawk.MultiClient
 				case ".FM2":
 					mov = ImportFM2(path, out errorMsg);
 					break;
+				case ".FMV":
+					mov = ImportFMV(path, out errorMsg);
+					break;
 				case ".GMV":
 					mov = ImportGMV(path, out errorMsg);
 					break;
@@ -36,8 +39,7 @@ namespace BizHawk.MultiClient
 					mov = ImportMMV(path, out errorMsg);
 					break;
 				case ".SMV":
-					// TODO: Decide which SMV parser to use. Perhaps have one parent function that decides.
-					mov = new Movie();
+					mov = ImportSMV(path, out errorMsg);
 					break;
 				case ".VBM":
 					mov = ImportVBM(path, out errorMsg);
@@ -53,7 +55,7 @@ namespace BizHawk.MultiClient
 
 		public static bool IsValidMovieExtension(string extension)
 		{
-			string[] extensions = new string[7] { "FCM", "FM2", "GMV", "MC2", "MMV", "TAS", "VBM" };
+			string[] extensions = new string[9] { "FCM", "FM2", "FMV", "GMV", "MC2", "MMV", "SMV", "TAS", "VBM" };
 			foreach (string ext in extensions)
 			{
 				if (extension.ToUpper() == "." + ext)
@@ -232,6 +234,7 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
 		private static Movie ImportFCM(string path, out string errorMsg)
 		{
 			errorMsg = "";
@@ -353,14 +356,23 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// FMV file format: http://tasvideos.org/FMV.html
+		private static Movie ImportFMV(string path, out string errorMsg)
+		{
+			errorMsg = "";
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			return m;
+		}
+
+		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
 		private static Movie ImportGMV(string path, out string errorMsg)
 		{
 			errorMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
 			return m;
 		}
 
+		// MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
 		private static Movie ImportMCM(string path, out string errorMsg)
 		{
 			errorMsg = "";
@@ -378,6 +390,7 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// MMV file format: http://tasvideos.org/MMV.html
 		private static Movie ImportMMV(string path, out string errorMsg)
 		{
 			errorMsg = "";
@@ -498,9 +511,9 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		private static Movie ImportSMV(string path, out string errorMSG)
+		private static Movie ImportSMV(string path, out string errorMsg)
 		{
-			errorMSG = "";
+			errorMsg = "";
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 
@@ -510,7 +523,7 @@ namespace BizHawk.MultiClient
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature.Substring(0, 3) != "SMV")
 			{
-				errorMSG = "This is not a valid SMV file.";
+				errorMsg = "This is not a valid SMV file.";
 				return null;
 			}
 
@@ -526,28 +539,13 @@ namespace BizHawk.MultiClient
 					return ImportSMV152(r, path);
 				default:
 				{
-					errorMSG = "SMV version not recognized, 143, 151, and 152 are currently supported";
-					return null; 
+					errorMsg = "SMV version not recognized, 143, 151, and 152 are currently supported";
+					return null;
 				}
 			}
 		}
 
-		private static Movie ImportSMV152(BinaryReader r, string path)
-		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
-			UInt32 GUID = r.ReadUInt32();
-
-			return m;
-		}
-
-		private static Movie ImportSMV151(BinaryReader r, string path)
-		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
-			return m;
-		}
-
+		// SMV 1.43 file format: http://code.google.com/p/snes9x-rr/wiki/SMV143
 		private static Movie ImportSMV143(BinaryReader r, string path)
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
@@ -600,7 +598,20 @@ namespace BizHawk.MultiClient
 					UInt16 fd = r.ReadUInt16();
 				}
 			}
+			return m;
+		}
 
+		// SMV 1.51 file format: http://code.google.com/p/snes9x-rr/wiki/SMV151
+		private static Movie ImportSMV151(BinaryReader r, string path)
+		{
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			return m;
+		}
+
+		private static Movie ImportSMV152(BinaryReader r, string path)
+		{
+			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			UInt32 GUID = r.ReadUInt32();
 			return m;
 		}
 
@@ -691,7 +702,7 @@ namespace BizHawk.MultiClient
 			if ((flags & 0x40) > 0) echoramfix = true;
 			if ((flags & 0x20) > 0) gbchdma5fix = true;
 			if ((flags & 0x10) > 0) lagreduction = true;
-			if ((flags & 0x08) > 0) 
+			if ((flags & 0x08) > 0)
 			{
 				errorMsg = "Invalid VBM file";
 				return null;
@@ -720,7 +731,7 @@ namespace BizHawk.MultiClient
 			UInt32 controllerdataoffset = r.ReadUInt32();
 
 			//0x40  start info.
-			char[] authorsname = r.ReadChars(0x40);		//vbm specification states these strings 
+			char[] authorsname = r.ReadChars(0x40);		//vbm specification states these strings
 			string author = new String(authorsname);	//are locale dependant.
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 
