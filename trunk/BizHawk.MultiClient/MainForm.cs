@@ -332,8 +332,6 @@ namespace BizHawk.MultiClient
 		{
 			for (; ; )
 			{
-
-
 				Input.Instance.Update();
 				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
@@ -364,7 +362,7 @@ namespace BizHawk.MultiClient
 			{
 				CurrAviWriter.CloseFile();
 				CurrAviWriter = null;
-			}            
+			}
 		}
 
 		void CheckMessages()
@@ -431,11 +429,11 @@ namespace BizHawk.MultiClient
 		public static ControllerDefinition ClientControlsDef = new ControllerDefinition
 		{
 			Name = "Emulator Frontend Controls",
-			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State", 
+			BoolButtons = { "Fast Forward", "Rewind", "Hard Reset", "Mode Flip", "Quick Save State", "Quick Load State", "Save Named State", "Load Named State",
 				"Emulator Pause", "Frame Advance", "Unthrottle", "Screenshot", "Toggle Fullscreen", "SelectSlot0", "SelectSlot1", "SelectSlot2", "SelectSlot3", "SelectSlot4",
 				"SelectSlot5", "SelectSlot6", "SelectSlot7", "SelectSlot8", "SelectSlot9", "SaveSlot0", "SaveSlot1", "SaveSlot2", "SaveSlot3", "SaveSlot4",
 				"SaveSlot5","SaveSlot6","SaveSlot7","SaveSlot8","SaveSlot9","LoadSlot0","LoadSlot1","LoadSlot2","LoadSlot3","LoadSlot4","LoadSlot5","LoadSlot6",
-				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor", 
+				"LoadSlot7","LoadSlot8","LoadSlot9", "ToolBox", "Previous Slot", "Next Slot", "Ram Watch", "Ram Search", "Ram Poke", "Hex Editor",
 				"Lua Console", "Cheats", "Open ROM", "Close ROM", "Display FPS", "Display FrameCounter", "Display LagCounter", "Display Input", "Toggle Read Only",
 				"Play Movie", "Record Movie", "Stop Movie", "Play Beginning", "Volume Up", "Volume Down", "Toggle MultiTrack", "Record All", "Record None", "Increment Player",
 				"Soft Reset", "Decrement Player", "Record AVI", "Stop AVI", "Toggle Menu"}
@@ -519,7 +517,6 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Toggle Menu", Global.Config.ToggleMenuBinding);
 
 			Global.ClientControls = controls;
-
 
 			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
@@ -752,15 +749,15 @@ namespace BizHawk.MultiClient
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				LoadRom(CurrentlyOpenRom);
-				string error = "";
-				Movie m = MovieImport.ImportFile(filePaths[0], out error);
-				if (error.Length > 0)
-					MessageBox.Show(error, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				string errorMsg = "";
+				string warningMsg = "";
+				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
+				if (errorMsg.Length > 0)
+					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				else
 					StartNewMovie(m, false);
-			}
-
-			else
+				Global.RenderPanel.AddMessage(warningMsg);
+			} else
 				LoadRom(filePaths[0]);
 		}
 
@@ -951,7 +948,7 @@ namespace BizHawk.MultiClient
 						game = Database.CheckDatabase(hash);
 						if (game == null)
 						{
-							// Game was not found in DB. For now we're going to send it to the PCE-CD core. 
+							// Game was not found in DB. For now we're going to send it to the PCE-CD core.
 							// In the future we need to do something smarter, possibly including simply asking the user
 							// what system the game is for.
 
@@ -1062,7 +1059,6 @@ namespace BizHawk.MultiClient
 				}
 
 				if (nextEmulator == null) throw new Exception();
-
 
 				CloseGame();
 				Global.Emulator.Dispose();
@@ -1480,7 +1476,7 @@ namespace BizHawk.MultiClient
 						Global.MovieSession.MultiTrack.RecordAll = false;
 						if (Global.MovieSession.MultiTrack.CurrentPlayer < 1)
 						{
-							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??! 
+							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
 						}
 						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 						break;
@@ -1520,7 +1516,6 @@ namespace BizHawk.MultiClient
 
 			throttle.Step(true, -1);
 		}
-
 
 		void StepRunLoop_Core()
 		{
@@ -1563,7 +1558,6 @@ namespace BizHawk.MultiClient
 				}
 				FrameAdvanceTimestamp = DateTime.MinValue;
 			}
-
 
 			if (!EmulatorPaused)
 			{
@@ -1667,7 +1661,7 @@ namespace BizHawk.MultiClient
 
 				//TODO: adelikat: don't know what this should do so leaving it commented out
 				//if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD && Global.MovieSession.MultiTrack.IsActive)
-				//{					
+				//{
 				//	Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame-1));
 				//}
 
@@ -2330,7 +2324,6 @@ namespace BizHawk.MultiClient
 			StatusSlot8.Enabled = StateSlots.HasSlot(8);
 			StatusSlot9.Enabled = StateSlots.HasSlot(9);
 			StatusSlot10.Enabled = StateSlots.HasSlot(0);
-
 
 			StatusSlot1.BackColor = SystemColors.Control;
 			StatusSlot2.BackColor = SystemColors.Control;
