@@ -438,10 +438,6 @@
       <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
       <Name>BizHawk.Util</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PsxHawk.API\PsxHawk.API.vcxproj">
-      <Project>{E160DA07-E926-4C7B-8A38-D45F4FE16725}</Project>
-      <Name>PsxHawk.API</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutBox.resx">

@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 			if (Global.Config.ShowLogWindow)
 			{
 				LogConsole.ShowConsole();
-				PsxApi.StdioFixes();
+				//PsxApi.StdioFixes();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
 
@@ -930,17 +930,18 @@ namespace BizHawk.MultiClient
 
 				try
 				{
-					if (file.Extension.ToLower() == ".exe")
-					{
-						PSX psx = new PSX();
-						nextEmulator = psx;
-						psx.LoadFile(file.CanonicalFullPath);
-						game = new GameInfo();
-						game.System = "PSX";
-						game.Name = "xx";
-						game.Hash = "xx";
-					}
-					else if (file.Extension.ToLower() == ".iso")
+					//if (file.Extension.ToLower() == ".exe")
+					//{
+					//  PSX psx = new PSX();
+					//  nextEmulator = psx;
+					//  psx.LoadFile(file.CanonicalFullPath);
+					//  game = new GameInfo();
+					//  game.System = "PSX";
+					//  game.Name = "xx";
+					//  game.Hash = "xx";
+					//}
+					//else 
+					if (file.Extension.ToLower() == ".iso")
 					{
 						//if (Global.PsxCoreLibrary.IsOpen)
 						//{
@@ -2138,7 +2139,7 @@ namespace BizHawk.MultiClient
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 			ofd.Filter = FormatFilter(
 				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.gen;*.smd;*.rom;*.cue;*.exe;%ARCH%",
-				"PSX Executables", "*.exe",
+				//"PSX Executables", "*.exe",
 				"Disc Images", "*.cue",
 				"NES", "*.nes;%ARCH%",
 				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
