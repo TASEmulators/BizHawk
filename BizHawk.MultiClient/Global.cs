@@ -162,7 +162,5 @@ namespace BizHawk.MultiClient
 		}
 
 		public static DiscHopper DiscHopper = new DiscHopper();
-
-		public static CoreAccessor PsxCoreLibrary = new CoreAccessor(new Win32LibAccessor("PsxHawk.Core.dll"));
 	}
 }

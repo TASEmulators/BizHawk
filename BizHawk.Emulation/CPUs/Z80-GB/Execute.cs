@@ -108,7 +108,6 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 				case 0x10: // STOP
 					Console.WriteLine("STOP!!!!!!!!!!!!!!!!!!!!!!"); // TODO this instruction is actually STOP. not DJNZ d.
 					throw new Exception("CPU stopped. What now?");
-					break;
 				case 0x11: // LD DE, nn
 					RegDE.Word = (ushort)(ReadMemory(RegPC.Word++) + ReadMemory(RegPC.Word++) * 256);
 					break;

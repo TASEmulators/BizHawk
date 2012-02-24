@@ -12,7 +12,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			//TBD
 			return false;
-			return true;
 		}
 	}
 }

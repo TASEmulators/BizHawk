@@ -41,7 +41,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>output\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -53,7 +53,8 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>output\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -150,7 +151,6 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExternalCoreSupport.cs" />
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -438,6 +438,10 @@
       <Project>{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}</Project>
       <Name>BizHawk.Util</Name>
     </ProjectReference>
+    <ProjectReference Include="..\PsxHawk.API\PsxHawk.API.vcxproj">
+      <Project>{E160DA07-E926-4C7B-8A38-D45F4FE16725}</Project>
+      <Name>PsxHawk.API</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AboutBox.resx">
@@ -669,6 +673,8 @@
     <None Include="images\AutoSearch.png" />
     <None Include="images\Lightning.png" />
     <None Include="images\Bug.png" />
+    <None Include="images\console32x32.png" />
+    <None Include="images\console16x16.png" />
     <Content Include="images\logo.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />

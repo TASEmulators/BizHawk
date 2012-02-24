@@ -379,11 +379,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					if (noise_bit || len_cnt==0) sample = 0;
 					else
 						sample = env_output;
-
-					if (sample != 0)
-					{
-						int zzz = 9;
-					}
 				}
 			}
 

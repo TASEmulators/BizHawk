@@ -306,6 +306,15 @@ namespace BizHawk
 		}
 
 		[DllImport("kernel32.dll", SetLastError = true)]
+		public static extern IntPtr GetConsoleWindow();
+
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern bool AttachConsole(int dwProcessId);
 
 		[DllImport("kernel32.dll", SetLastError = true)]

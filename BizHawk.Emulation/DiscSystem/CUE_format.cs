@@ -440,7 +440,6 @@ namespace BizHawk.DiscSystem
 			int last_index_num = -1;
 			CueFile currFile = null;
 			CueTrack currTrack = null;
-			int state = 0;
 			for (; ; )
 			{
 				string line = tr.ReadLine();

@@ -232,8 +232,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			if (irq_mode)
 			{
-				throw new InvalidOperationException("needed a test case for this; you found one!");
 				ClockIRQ();
+				throw new InvalidOperationException("needed a test case for this; you found one!");
 			}
 			else
 			{

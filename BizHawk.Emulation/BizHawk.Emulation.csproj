@@ -164,6 +164,7 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\PC Engine\TurboCD.cs" />
+    <Compile Include="Consoles\PSX\PSX.cs" />
     <Compile Include="Consoles\Sega\Genesis\Input.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.CodeMasters.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Sega.cs" />
@@ -240,9 +241,6 @@
     <Compile Include="DiscSystem\TOC_format.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExternalCores\EmuFile.cs" />
-    <Compile Include="ExternalCores\ExternalCore.cs" />
-    <Compile Include="ExternalCores\PsxCore.cs" />
     <Compile Include="Interfaces\Base Implementations\IPS.cs" />
     <Compile Include="Interfaces\Base Implementations\Movies.cs" />
     <Compile Include="Interfaces\Base Implementations\NullController.cs" />
@@ -293,7 +291,6 @@
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
-    <Content Include="ExternalCores\Snippets.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -313,7 +310,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\PsxHawk.API\PsxHawk.API.vcxproj">
+      <Project>{E160DA07-E926-4C7B-8A38-D45F4FE16725}</Project>
+      <Name>PsxHawk.API</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

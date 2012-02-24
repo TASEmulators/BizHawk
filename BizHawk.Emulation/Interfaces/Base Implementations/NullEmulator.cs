@@ -55,7 +55,7 @@ namespace BizHawk
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
-        public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; }
 		private IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }
@@ -68,6 +68,6 @@ namespace BizHawk
 
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
-        public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; }
 	}
 }

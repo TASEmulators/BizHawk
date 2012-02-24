@@ -7,7 +7,7 @@ namespace BizHawk.MultiClient
 	{
 		public byte[] RomData;
 		public byte[] FileData;
-	    public GameInfo GameInfo;
+		public GameInfo GameInfo;
 
 		private const int BankSize = 4096;
 
