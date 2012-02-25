@@ -13,7 +13,7 @@ namespace BizHawk.MultiClient
 	{
 		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
-			Movie m = new Movie(); ;
+			Movie m = new Movie();
 			errorMsg = "";
 			warningMsg = "";
 			try
@@ -48,6 +48,7 @@ namespace BizHawk.MultiClient
 						m = ImportVBM(path, out errorMsg, out warningMsg);
 						break;
 				}
+				m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				if (errorMsg == "")
 				{
 					m.WriteMovie();
@@ -101,12 +102,33 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private static Movie ImportText(string path, out string errorMsg, out string warningMsg, string emulator)
+		// Import a text-based movie format. This works for .FM2 and .MC2.
+		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			var file = new FileInfo(path);
+			string[] buttons = new string[] { };
+			string controller = "";
+			string emulator = "";
+			string platform = "";
+			switch (Path.GetExtension(path).ToUpper())
+			{
+				case ".FM2":
+					buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
+					controller = "NES Controller";
+					emulator = "FCEUX";
+					platform = "NES";
+					break;
+				case ".MC2":
+					buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
+					controller = "PC Engine Controller";
+					emulator = "Mednafen/PCEjin";
+					platform = "PCE";
+					break;
+			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			using (StreamReader sr = file.OpenText())
 			{
 				int line = 0;
@@ -122,6 +144,7 @@ namespace BizHawk.MultiClient
 					if (str.Contains("rerecordCount"))
 					{
 						rerecordStr = ParseHeader(str, "rerecordCount");
+						// Try to parse the Re-record count as an integer, defaulting to 0 if it fails.
 						try
 						{
 							m.SetRerecords(int.Parse(rerecordStr));
@@ -134,6 +157,7 @@ namespace BizHawk.MultiClient
 					else if (str.Contains("StartsFromSavestate"))
 					{
 						str = ParseHeader(str, "StartsFromSavestate");
+						// If this movie starts from a savestate, we can't support it.
 						if (str == "1")
 						{
 							warningMsg = "Movies that begin with a savestate are not supported.";
@@ -142,11 +166,13 @@ namespace BizHawk.MultiClient
 					}
 					if (str.StartsWith("emuVersion"))
 					{
-						m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, emulator + " version " + ParseHeader(str, "emuVersion"));
+						m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(str, "emuVersion"));
 					}
 					else if (str.StartsWith("version"))
 					{
-						m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, ParseHeader(str, "version"));
+						m.Header.Comments.Add(
+							"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(str, "version")
+						);
 					}
 					else if (str.StartsWith("romFilename"))
 					{
@@ -166,56 +192,54 @@ namespace BizHawk.MultiClient
 					}
 					else if (str[0] == '|')
 					{
+						// Handle a frame of input.
 						ArrayList frame = new ArrayList();
 						// Split up the sections of the frame.
 						string[] sections = str.Split('|');
-						string[] buttons = new string[] {};
+						// Start building the data for the controllers.
 						SimpleController controllers = new SimpleController();
 						controllers.Type = new ControllerDefinition();
-						switch (emulator)
+						controllers.Type.Name = controller;
+						// Get the first invalid command warning message that arises.
+						if (Path.GetExtension(path).ToUpper() == ".FM2" && warningMsg == "" && sections[1].Length != 0)
 						{
-							case "FCEUX":
-								buttons = new string[8] { "Right", "Left", "Down", "Up", "Start", "Select", "B", "A" };
-								controllers.Type.Name = "NES Controller";
-								if (warningMsg == "" && sections[1].Length != 0)
-								{
-									switch (sections[1][0])
+							switch (sections[1][0])
+							{
+								case '0':
+									break;
+								case '1':
+									controllers["Reset"] = true;
+									break;
+								case '2':
+									if (m.Length() != 0)
 									{
-										case '0':
-											break;
-										case '1':
-											controllers["Reset"] = true;
-											break;
-										case '2':
-											if (m.Length() != 0)
-											{
-												warningMsg = "hard reset";
-											}
-											break;
-										case '4':
-											warningMsg = "FDS Insert";
-											break;
-										case '8':
-											warningMsg = "FDS Select";
-											break;
-										default:
-											warningMsg = "unknown";
-											break;
+										warningMsg = "hard reset";
 									}
-									if (warningMsg != "")
-									{
-										warningMsg = "Unable to import " + warningMsg + " command on line " + line;
-									}
-								}
-								break;
-							case "Mednafen/PCEjin":
-								buttons = new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Run", "Select" };
-								controllers.Type.Name = "PC Engine Controller";
-								break;
+									break;
+								case '4':
+									warningMsg = "FDS Insert";
+									break;
+								case '8':
+									warningMsg = "FDS Select";
+									break;
+								default:
+									warningMsg = "unknown";
+									break;
+							}
+							if (warningMsg != "")
+							{
+								warningMsg = "Unable to import " + warningMsg + " command on line " + line;
+							}
 						}
+						/*
+						Skip the first two sections of the split, which consist of everything before the starting | and the
+						command. Do not use the section after the last |. In other words, get the sections for the players.
+						*/
 						for (int section = 2; section < sections.Length - 1; section++)
 						{
+							// The player number is one less than the section number for the reasons explained above.
 							int player = section - 1;
+							// Only count lines with that have the right number of buttons and are for valid players.
 							if (
 								sections[section].Length == buttons.Length &&
 								player <= Global.PLAYERS[controllers.Type.Name]
@@ -223,18 +247,21 @@ namespace BizHawk.MultiClient
 							{
 								for (int button = 0; button < buttons.Length; button++)
 								{
+									// Consider the button pressed so long as its spot is not occupied by a ".".
 									controllers["P" + (player).ToString() + " " + buttons[button]] = (
 										sections[section][button] != '.'
 									);
 								}
 							}
 						}
+						// Convert the data for the controllers to a mnemonic and add it as a frame.
 						MnemonicsGenerator mg = new MnemonicsGenerator();
 						mg.SetSource(controllers);
 						m.AppendFrame(mg.GetControllersAsMnemonic());
 					}
 					else
 					{
+						// Everything not explicitly defined is treated as a comment.
 						m.Header.Comments.Add(str);
 					}
 				}
@@ -280,7 +307,7 @@ namespace BizHawk.MultiClient
 			//TODO: ROM checksum movie header line (MD5)
 
 			UInt32 EmuVersion = r.ReadUInt32();
-			m.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, "FCEU " + EmuVersion.ToString());
+			m.Header.Comments.Add("emuOrigin FCEU " + EmuVersion.ToString());
 
 			List<byte> romBytes = new List<byte>();
 			while (true)
@@ -361,8 +388,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = ImportText(path, out errorMsg, out warningMsg, "FCEUX");
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+			Movie m = ImportText(path, out errorMsg, out warningMsg);
 			return m;
 		}
 
@@ -398,8 +424,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = ImportText(path, out errorMsg, out warningMsg, "Mednafen/PCEjin");
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, "MC2");
+			Movie m = ImportText(path, out errorMsg, out warningMsg);
 			// TODO: PCECD equivalent.
 			return m;
 		}
@@ -425,8 +450,7 @@ namespace BizHawk.MultiClient
 			}
 
 			UInt32 version = r.ReadUInt32();
-			m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, "Dega version " + version.ToString());
-
+			m.Header.Comments.Add("MovieOrigin .mmv version " + version.ToString());
 			UInt32 framecount = r.ReadUInt32();
 
 			m.SetRerecords((int)r.ReadUInt32());
