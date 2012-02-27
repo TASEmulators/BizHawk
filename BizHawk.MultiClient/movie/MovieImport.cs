@@ -11,6 +11,7 @@ namespace BizHawk.MultiClient
 {
 	public static class MovieImport
 	{
+		// Attempt to import another type of movie file into a movie object.
 		public static Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
 			Movie m = new Movie();
@@ -50,9 +51,7 @@ namespace BizHawk.MultiClient
 				}
 				m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				if (errorMsg == "")
-				{
 					m.WriteMovie();
-				}
 			}
 			catch (Exception except)
 			{
@@ -61,45 +60,23 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// Return whether or not the type of file provided can currently be imported.
 		public static bool IsValidMovieExtension(string extension)
 		{
 			string[] extensions = new string[9] { "FCM", "FM2", "FMV", "GMV", "MC2", "MMV", "SMV", "TAS", "VBM" };
 			foreach (string ext in extensions)
-			{
 				if (extension.ToUpper() == "." + ext)
-				{
 					return true;
-				}
-			}
 			return false;
 		}
 
+		// Get the content for a particular header.
 		private static string ParseHeader(string line, string headerName)
 		{
 			string str;
 			int x = line.LastIndexOf(headerName) + headerName.Length;
 			str = line.Substring(x + 1, line.Length - x - 1);
 			return str;
-		}
-
-		private static bool AddSubtitle(ref Movie m, string subtitleStr)
-		{
-			if (subtitleStr.Length == 0)
-				return false;
-			Subtitle s = new Subtitle();
-			int x = subtitleStr.IndexOf(' ');
-			if (x <= 0)
-				return false;
-			// Remove the "subtitle" header from the string.
-			string sub = subtitleStr.Substring(x + 1, subtitleStr.Length - x - 1);
-			x = sub.IndexOf(' ');
-			if (x <= 0)
-				return false;
-			// The frame and message are separated by a space.
-			string frame = sub.Substring(0, x);
-			string message = sub.Substring(x + 1, sub.Length - x - 1);
-			m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
-			return true;
 		}
 
 		// Import a text-based movie format. This works for .FM2 and .MC2.
@@ -138,9 +115,7 @@ namespace BizHawk.MultiClient
 				{
 					line++;
 					if (str == "")
-					{
 						continue;
-					}
 					if (str.Contains("rerecordCount"))
 					{
 						rerecordStr = ParseHeader(str, "rerecordCount");
@@ -165,30 +140,30 @@ namespace BizHawk.MultiClient
 						}
 					}
 					if (str.StartsWith("emuVersion"))
-					{
 						m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(str, "emuVersion"));
-					}
 					else if (str.StartsWith("version"))
-					{
 						m.Header.Comments.Add(
 							"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(str, "version")
 						);
-					}
 					else if (str.StartsWith("romFilename"))
-					{
 						m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(str, "romFilename"));
-					}
 					else if (str.StartsWith("comment author"))
-					{
 						m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(str, "comment author"));
-					}
 					else if (str.StartsWith("guid"))
-					{
 						m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(str, "GUID"));
-					}
-					else if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+					else if (str.StartsWith("sub"))
 					{
-						AddSubtitle(ref m, str);
+						Subtitle s = new Subtitle();
+						// The header name, frame, and message are separated by a space.
+						int first = str.IndexOf(' ');
+						int second = str.IndexOf(' ', first + 1);
+						if (first != -1 && second != -1)
+						{
+							// Concatenate the frame and message with default values for the additional fields.
+							string frame = str.Substring(first + 1, second - first - 1);
+							string message = str.Substring(second + 1, str.Length - second - 1);
+							m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
+						}
 					}
 					else if (str[0] == '|')
 					{
@@ -227,9 +202,7 @@ namespace BizHawk.MultiClient
 									break;
 							}
 							if (warningMsg != "")
-							{
 								warningMsg = "Unable to import " + warningMsg + " command on line " + line;
-							}
 						}
 						/*
 						Skip the first two sections of the split, which consist of everything before the starting | and the
@@ -244,15 +217,11 @@ namespace BizHawk.MultiClient
 								sections[section].Length == buttons.Length &&
 								player <= Global.PLAYERS[controllers.Type.Name]
 							)
-							{
 								for (int button = 0; button < buttons.Length; button++)
-								{
 									// Consider the button pressed so long as its spot is not occupied by a ".".
 									controllers["P" + (player).ToString() + " " + buttons[button]] = (
 										sections[section][button] != '.'
 									);
-								}
-							}
 						}
 						// Convert the data for the controllers to a mnemonic and add it as a frame.
 						MnemonicsGenerator mg = new MnemonicsGenerator();
@@ -260,10 +229,8 @@ namespace BizHawk.MultiClient
 						m.AppendFrame(mg.GetControllersAsMnemonic());
 					}
 					else
-					{
 						// Everything not explicitly defined is treated as a comment.
 						m.Header.Comments.Add(str);
-					}
 				}
 			}
 			return m;
@@ -435,10 +402,8 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
-
 			byte[] signatureBytes = new byte[4];
 			for (int x = 0; x < 4; x++)
 				signatureBytes[x] = r.ReadByte();
