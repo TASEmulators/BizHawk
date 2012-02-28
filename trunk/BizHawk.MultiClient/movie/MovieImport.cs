@@ -49,9 +49,11 @@ namespace BizHawk.MultiClient
 						m = ImportVBM(path, out errorMsg, out warningMsg);
 						break;
 				}
-				m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				if (errorMsg == "")
+				{
+					m.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 					m.WriteMovie();
+				}
 			}
 			catch (Exception except)
 			{
@@ -68,6 +70,20 @@ namespace BizHawk.MultiClient
 				if (extension.ToUpper() == "." + ext)
 					return true;
 			return false;
+		}
+
+		/*
+		Read bytes from a BinaryReader and translate them into a string for either the hexidecimal representation of the
+		binary numbers or the UTF-8 string they represent.
+		*/
+		private static string BytesToString(BinaryReader r, int size, bool hexadecimal = false)
+		{
+			byte[] bytes = new byte[size];
+			for (int b = 0; b < size; b++)
+				bytes[b] = r.ReadByte();
+			if (hexadecimal)
+				return string.Concat(bytes.Select(b => string.Format("{0:x2}", b)));
+			return System.Text.Encoding.UTF8.GetString(bytes);
 		}
 
 		// Import a text-based movie format. This works for .FM2 and .MC2.
@@ -99,69 +115,69 @@ namespace BizHawk.MultiClient
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
 			using (StreamReader sr = file.OpenText())
 			{
-				int line = 0;
-				string str = "";
-				string rerecordStr = "";
-				while ((str = sr.ReadLine()) != null)
+				int lineNum = 0;
+				string line = "";
+				string rerecordCount = "";
+				while ((line = sr.ReadLine()) != null)
 				{
-					line++;
-					if (str == "")
+					lineNum++;
+					if (line == "")
 						continue;
-					if (str.Contains("rerecordCount"))
+					if (line.Contains("rerecordCount"))
 					{
-						rerecordStr = ParseHeader(str, "rerecordCount");
+						rerecordCount = ParseHeader(line, "rerecordCount");
 						// Try to parse the Re-record count as an integer, defaulting to 0 if it fails.
 						try
 						{
-							m.SetRerecords(int.Parse(rerecordStr));
+							m.SetRerecords(int.Parse(rerecordCount));
 						}
 						catch
 						{
 							m.SetRerecords(0);
 						}
 					}
-					else if (str.Contains("StartsFromSavestate"))
+					else if (line.Contains("StartsFromSavestate"))
 					{
-						str = ParseHeader(str, "StartsFromSavestate");
+						line = ParseHeader(line, "StartsFromSavestate");
 						// If this movie starts from a savestate, we can't support it.
-						if (str == "1")
+						if (line == "1")
 						{
-							warningMsg = "Movies that begin with a savestate are not supported.";
+							errorMsg = "Movies that begin with a savestate are not supported.";
 							return null;
 						}
 					}
-					if (str.StartsWith("emuVersion"))
-						m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(str, "emuVersion"));
-					else if (str.StartsWith("version"))
+					if (line.StartsWith("emuVersion"))
+						m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(line, "emuVersion"));
+					else if (line.StartsWith("version"))
 						m.Header.Comments.Add(
-							"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(str, "version")
+							"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
 						);
-					else if (str.StartsWith("romFilename"))
-						m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(str, "romFilename"));
-					else if (str.StartsWith("comment author"))
-						m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(str, "comment author"));
-					else if (str.StartsWith("guid"))
-						m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(str, "GUID"));
-					else if (str.StartsWith("sub"))
+					else if (line.StartsWith("romFilename"))
+						m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
+					else if (line.StartsWith("comment author"))
+						m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
+					else if (line.StartsWith("guid"))
+						m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "GUID"));
+					else if (line.StartsWith("sub"))
 					{
 						Subtitle s = new Subtitle();
 						// The header name, frame, and message are separated by a space.
-						int first = str.IndexOf(' ');
-						int second = str.IndexOf(' ', first + 1);
+						int first = line.IndexOf(' ');
+						int second = line.IndexOf(' ', first + 1);
 						if (first != -1 && second != -1)
 						{
 							// Concatenate the frame and message with default values for the additional fields.
-							string frame = str.Substring(first + 1, second - first - 1);
-							string message = str.Substring(second + 1, str.Length - second - 1);
+							string frame = line.Substring(first + 1, second - first - 1);
+							string message = line.Substring(second + 1, line.Length - second - 1);
 							m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
 						}
 					}
-					else if (str[0] == '|')
+					else if (line[0] == '|')
 					{
 						// Handle a frame of input.
 						ArrayList frame = new ArrayList();
 						// Split up the sections of the frame.
-						string[] sections = str.Split('|');
+						string[] sections = line.Split('|');
 						// Start building the data for the controllers.
 						SimpleController controllers = new SimpleController();
 						controllers.Type = new ControllerDefinition();
@@ -193,7 +209,7 @@ namespace BizHawk.MultiClient
 									break;
 							}
 							if (warningMsg != "")
-								warningMsg = "Unable to import " + warningMsg + " command on line " + line;
+								warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
 						}
 						/*
 						Skip the first two sections of the split, which consist of everything before the starting | and the
@@ -221,7 +237,7 @@ namespace BizHawk.MultiClient
 					}
 					else
 						// Everything not explicitly defined is treated as a comment.
-						m.Header.Comments.Add(str);
+						m.Header.Comments.Add(line);
 				}
 			}
 			return m;
@@ -236,6 +252,7 @@ namespace BizHawk.MultiClient
 			return str;
 		}
 
+		// Remove the NULL characters from a string.
 		private static string RemoveNull(string original)
 		{
 			string translated = "";
@@ -260,7 +277,7 @@ namespace BizHawk.MultiClient
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature.Substring(0, 3) != "FCM")
 			{
-				errorMsg = "This is not a valid FCM file!";
+				errorMsg = "This is not a valid .FCM file.";
 				return null;
 			}
 
@@ -282,8 +299,8 @@ namespace BizHawk.MultiClient
 			byte[] romCheckSum = r.ReadBytes(16);
 			//TODO: ROM checksum movie header line (MD5)
 
-			uint EmuVersion = r.ReadUInt32();
-			m.Header.Comments.Add("emuOrigin FCEU " + EmuVersion.ToString());
+			uint emuVersion = r.ReadUInt32();
+			m.Header.Comments.Add("emuOrigin FCEU " + emuVersion.ToString());
 
 			List<byte> romBytes = new List<byte>();
 			while (true)
@@ -374,6 +391,73 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+			BinaryReader r = new BinaryReader(fs);
+			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
+			string signature = BytesToString(r, 4);
+			if (signature != "FMV\x1A")
+			{
+				errorMsg = "This is not a valid .FMV file.";
+				return null;
+			}
+			// 004 1-byte flags:
+			byte flags = r.ReadByte();
+			/*
+			 * bit 7: 0=reset-based, 1=savestate-based
+			 * other bits: unknown, set to 0
+			*/
+			if ((int)(flags & 0x80) != 0)
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				return null;
+			}
+			// 005 1-byte flags:
+			flags = r.ReadByte();
+			/*
+			 * bit 5: is a FDS recording
+			 * bit 6: uses controller 2
+			 * bit 7: uses controller 1
+			 * other bits: unknown, set to 0
+			*/
+			bool FDS;
+			if ((int)(flags & 0x20) != 0)
+			{
+				FDS = true;
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "FDS");
+			}
+			else
+			{
+				FDS = false;
+				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
+			}
+			bool controller2 = false;
+			if ((int)(flags & 0x40) != 0)
+			{
+				controller2 = true;
+			}
+			bool controller1 = false;
+			if ((int)(flags & 0x80) != 0)
+			{
+				controller1 = true;
+			}
+			// 006 4-byte little-endian unsigned int: unknown, set to 00000000
+			r.ReadInt32();
+			// 00A 4-byte little-endian unsigned int: rerecord count minus 1
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords(((int)rerecordCount) - 1);
+			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
+			r.ReadInt16();
+			// 010 64-byte zero-terminated emulator identifier string
+			string emuVersion = RemoveNull(BytesToString(r, 64));
+			m.Header.Comments.Add("emuOrigin Famtasia version " + emuVersion);
+			// 050 64-byte zero-terminated movie title string
+			string gameName = RemoveNull(BytesToString(r, 64));
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
+			// 090 frame data begins here
+			if (controller1 || controller2 || FDS)
+			{
+				// TODO: Frame data handling.
+			}
 			return m;
 		}
 
@@ -414,24 +498,23 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
-			byte[] signatureBytes = new byte[4];
-			for (int character = 0; character < 4; character++)
-				signatureBytes[character] = r.ReadByte();
-			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
+			string signature = BytesToString(r, 4);
 			if (signature != "MMV\0")
 			{
-				errorMsg = "This is not a valid MMV file.";
+				errorMsg = "This is not a valid .MMV file.";
 				return null;
 			}
 			// 0004: 4-byte little endian unsigned int: dega version
-			uint version = r.ReadUInt32();
-			m.Header.Comments.Add("emuOrigin Dega version " + version.ToString());
+			uint emuVersion = r.ReadUInt32();
+			m.Header.Comments.Add("emuOrigin Dega version " + emuVersion.ToString());
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint framecount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
-			m.SetRerecords((int)r.ReadUInt32());
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords((int)rerecordCount);
 			// 0010: 4-byte little endian flag: begin from reset?
-			if (r.ReadUInt32() == 0)
+			uint reset = r.ReadUInt32();
+			if (reset == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				return null;
@@ -443,11 +526,7 @@ namespace BizHawk.MultiClient
 			// 001c: 4-byte little endian unsigned int: size of input packet
 			r.ReadUInt32();
 			// 0020-005f: string: author info (UTF-8)
-			byte[] authorBytes = new byte[64];
-			for (int character = 0; character < 64; character++)
-				authorBytes[character] = r.ReadByte();
-			string author = System.Text.Encoding.UTF8.GetString(authorBytes);
-			author = RemoveNull(author);
+			string author = RemoveNull(BytesToString(r, 64));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
@@ -479,17 +558,10 @@ namespace BizHawk.MultiClient
 			// bits 4-31: unused
 			r.ReadBytes(3);
 			// 0064-00e3: string: rom name (ASCII)
-			byte[] romnameBytes = new byte[128];
-			for (int character = 0; character < 128; character++)
-				romnameBytes[character] = r.ReadByte();
-			string romname = System.Text.Encoding.UTF8.GetString(romnameBytes);
-			romname = RemoveNull(romname);
-			m.Header.SetHeaderLine(MovieHeader.GAMENAME, romname);
+			string gameName = RemoveNull(BytesToString(r, 128));
+			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
-			byte[] MD5Bytes = new byte[16];
-			for (int item = 0; item < 16; item++)
-				MD5Bytes[item] = r.ReadByte();
-			string MD5 = string.Concat(MD5Bytes.Select(b => string.Format("{0:x2}", b)));
+			string MD5 = BytesToString(r, 16, true);
 			m.Header.SetHeaderLine("MD5", MD5);
 			/*
 			 * 76543210
@@ -502,7 +574,7 @@ namespace BizHawk.MultiClient
 			 * bit 6 (0x40): start (Master System)
 			 * bit 7 (0x80): start (Game Gear)
 			*/
-			for (int x = 0; x < (framecount); x++)
+			for (int frame = 0; frame < framecount; frame++)
 			{
 				byte controllerstate;
 				SimpleController controllers = new SimpleController();
@@ -544,7 +616,7 @@ namespace BizHawk.MultiClient
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature.Substring(0, 3) != "SMV")
 			{
-				errorMsg = "This is not a valid SMV file.";
+				errorMsg = "This is not a valid .SMV file.";
 				return null;
 			}
 
@@ -560,7 +632,7 @@ namespace BizHawk.MultiClient
 					return ImportSMV152(r, path);
 				default:
 				{
-					errorMsg = "SMV version not recognized, 143, 151, and 152 are currently supported";
+					errorMsg = "SMV version not recognized, 143, 151, and 152 are currently supported.";
 					return null;
 				}
 			}
@@ -652,7 +724,7 @@ namespace BizHawk.MultiClient
 			uint signature = r.ReadUInt32();  //always 56 42 4D 1A  (VBM\x1A)
 			if (signature != 0x56424D1A)
 			{
-				errorMsg = "This is not a valid VBM file.";
+				errorMsg = "This is not a valid .VBM file.";
 				return null;
 			}
 
@@ -662,8 +734,8 @@ namespace BizHawk.MultiClient
 			uint framecount = r.ReadUInt32();
 
 			//0x10
-			uint rerecordcount = r.ReadUInt32();
-			m.SetRerecords((int)rerecordcount);
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords((int)rerecordCount);
 			m.Header.SetHeaderLine(MovieHeader.RERECORDS, m.Rerecords.ToString());
 			Byte moviestartflags = r.ReadByte();
 
@@ -704,7 +776,7 @@ namespace BizHawk.MultiClient
 
 			if (is_gb & is_gbc & is_gba & is_sgb)
 			{
-				errorMsg = "Not a valid VBM platform type.";
+				errorMsg = "Not a valid .VBM platform type.";
 				return null;
 			}
 			//TODO: set platform in header
@@ -726,7 +798,7 @@ namespace BizHawk.MultiClient
 			if ((flags & 0x10) > 0) lagreduction = true;
 			if ((flags & 0x08) > 0)
 			{
-				errorMsg = "Invalid VBM file";
+				errorMsg = "Invalid .VBM file.";
 				return null;
 			}
 			if ((flags & 0x04) > 0) rtcenable = true;
