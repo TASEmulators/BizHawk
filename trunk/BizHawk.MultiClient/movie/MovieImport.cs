@@ -70,15 +70,6 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
-		// Get the content for a particular header.
-		private static string ParseHeader(string line, string headerName)
-		{
-			string str;
-			int x = line.LastIndexOf(headerName) + headerName.Length;
-			str = line.Substring(x + 1, line.Length - x - 1);
-			return str;
-		}
-
 		// Import a text-based movie format. This works for .FM2 and .MC2.
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
@@ -236,6 +227,24 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
+		// Get the content for a particular header.
+		private static string ParseHeader(string line, string headerName)
+		{
+			string str;
+			int x = line.LastIndexOf(headerName) + headerName.Length;
+			str = line.Substring(x + 1, line.Length - x - 1);
+			return str;
+		}
+
+		private static string RemoveNull(string original)
+		{
+			string translated = "";
+			for (int character = 0; character < original.Length; character++)
+				if (original[character] != '\0')
+					translated += original[character];
+			return translated;
+		}
+
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
 		private static Movie ImportFCM(string path, out string errorMsg, out string warningMsg)
 		{
@@ -255,25 +264,25 @@ namespace BizHawk.MultiClient
 				return null;
 			}
 
-			UInt32 version = r.ReadUInt32();
+			uint version = r.ReadUInt32();
 			m.Header.SetHeaderLine(MovieHeader.MovieVersion, "FCEU movie version " + version.ToString() + " (.fcm)");
 
 			byte[] flags = new byte[4];
 			for (int x = 0; x < 4; x++)
 				flags[x] = r.ReadByte();
 
-			UInt32 frameCount = r.ReadUInt32();
+			uint frameCount = r.ReadUInt32();
 
 			m.SetRerecords((int)r.ReadUInt32());
 
-			UInt32 movieDataSize = r.ReadUInt32();
-			UInt32 savestateOffset = r.ReadUInt32();
-			UInt32 firstFrameOffset = r.ReadUInt32();
+			uint movieDataSize = r.ReadUInt32();
+			uint savestateOffset = r.ReadUInt32();
+			uint firstFrameOffset = r.ReadUInt32();
 
 			byte[] romCheckSum = r.ReadBytes(16);
 			//TODO: ROM checksum movie header line (MD5)
 
-			UInt32 EmuVersion = r.ReadUInt32();
+			uint EmuVersion = r.ReadUInt32();
 			m.Header.Comments.Add("emuOrigin FCEU " + EmuVersion.ToString());
 
 			List<byte> romBytes = new List<byte>();
@@ -404,58 +413,58 @@ namespace BizHawk.MultiClient
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
+			// 0000: 4-byte signature: "MMV\0"
 			byte[] signatureBytes = new byte[4];
-			for (int x = 0; x < 4; x++)
-				signatureBytes[x] = r.ReadByte();
+			for (int character = 0; character < 4; character++)
+				signatureBytes[character] = r.ReadByte();
 			string signature = System.Text.Encoding.UTF8.GetString(signatureBytes);
 			if (signature != "MMV\0")
 			{
 				errorMsg = "This is not a valid MMV file.";
 				return null;
 			}
-
-			UInt32 version = r.ReadUInt32();
-			m.Header.Comments.Add("MovieOrigin .mmv version " + version.ToString());
-			UInt32 framecount = r.ReadUInt32();
-
+			// 0004: 4-byte little endian unsigned int: dega version
+			uint version = r.ReadUInt32();
+			m.Header.Comments.Add("emuOrigin Dega version " + version.ToString());
+			// 0008: 4-byte little endian unsigned int: frame count
+			uint framecount = r.ReadUInt32();
+			// 000c: 4-byte little endian unsigned int: rerecord count
 			m.SetRerecords((int)r.ReadUInt32());
-
-			UInt32 IsFromReset = r.ReadUInt32();
-			if (IsFromReset == 0)
+			// 0010: 4-byte little endian flag: begin from reset?
+			if (r.ReadUInt32() == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
 				return null;
 			}
-
-			UInt32 stateOffset = r.ReadUInt32();
-			UInt32 inputDataOffset = r.ReadUInt32();
-			UInt32 inputPacketSize = r.ReadUInt32();
-
+			// 0014: 4-byte little endian unsigned int: offset of state information
+			r.ReadUInt32();
+			// 0018: 4-byte little endian unsigned int: offset of input data
+			r.ReadUInt32();
+			// 001c: 4-byte little endian unsigned int: size of input packet
+			r.ReadUInt32();
+			// 0020-005f: string: author info (UTF-8)
 			byte[] authorBytes = new byte[64];
-			for (int x = 0; x < 64; x++)
-				authorBytes[x] = r.ReadByte();
-
+			for (int character = 0; character < 64; character++)
+				authorBytes[character] = r.ReadByte();
 			string author = System.Text.Encoding.UTF8.GetString(authorBytes);
-			//TODO: remove null characters
+			author = RemoveNull(author);
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
-
-			//4-byte little endian flags
+			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
-
-			bool pal;
+			/*
+			 * bit 0: unused
+			 * bit 1: PAL
+			 * bit 2: Japan
+			 * bit 3: Game Gear (version 1.16+)
+			*/
+			bool pal = false;
 			if ((int)(flags & 2) > 0)
 				pal = true;
-			else
-				pal = false;
 			m.Header.SetHeaderLine("PAL", pal.ToString());
-
-			bool japan;
+			bool japan = false;
 			if ((int)(flags & 4) > 0)
 				japan = true;
-			else
-				japan = false;
 			m.Header.SetHeaderLine("Japan", japan.ToString());
-
 			bool gamegear;
 			if ((int)(flags & 8) > 0)
 			{
@@ -467,23 +476,32 @@ namespace BizHawk.MultiClient
 				gamegear = false;
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "SMS");
 			}
-
-			r.ReadBytes(3); //Unused flags
-
+			// bits 4-31: unused
+			r.ReadBytes(3);
+			// 0064-00e3: string: rom name (ASCII)
 			byte[] romnameBytes = new byte[128];
-			for (int x = 0; x < 128; x++)
-				romnameBytes[x] = r.ReadByte();
-			string romname = System.Text.Encoding.UTF8.GetString(romnameBytes.ToArray());
-			//TODO: remove null characters
+			for (int character = 0; character < 128; character++)
+				romnameBytes[character] = r.ReadByte();
+			string romname = System.Text.Encoding.UTF8.GetString(romnameBytes);
+			romname = RemoveNull(romname);
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, romname);
-
+			// 00e4-00f3: binary: rom MD5 digest
 			byte[] MD5Bytes = new byte[16];
-			for (int x = 0; x < 16; x++)
-				MD5Bytes[x] = r.ReadByte();
-			string MD5 = System.Text.Encoding.UTF8.GetString(MD5Bytes.ToArray());
-			//TODO: format correctly
+			for (int item = 0; item < 16; item++)
+				MD5Bytes[item] = r.ReadByte();
+			string MD5 = string.Concat(MD5Bytes.Select(b => string.Format("{0:x2}", b)));
 			m.Header.SetHeaderLine("MD5", MD5);
-
+			/*
+			 * 76543210
+			 * bit 0 (0x01): up
+			 * bit 1 (0x02): down
+			 * bit 2 (0x04): left
+			 * bit 3 (0x08): right
+			 * bit 4 (0x10): 1
+			 * bit 5 (0x20): 2
+			 * bit 6 (0x40): start (Master System)
+			 * bit 7 (0x80): start (Game Gear)
+			*/
 			for (int x = 0; x < (framecount); x++)
 			{
 				byte controllerstate;
@@ -501,12 +519,10 @@ namespace BizHawk.MultiClient
 						and <<= 1;
 					}
 					if (player == 1)
-					{
 						controllers["Pause"] = (
 							((int)(controllerstate & 0x40) > 0 && (!gamegear)) ||
 							((int)(controllerstate & 0x80) > 0 && gamegear)
 						);
-					}
 				}
 				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
@@ -532,7 +548,7 @@ namespace BizHawk.MultiClient
 				return null;
 			}
 
-			UInt32 version = r.ReadUInt32();
+			uint version = r.ReadUInt32();
 
 			switch (version)
 			{
@@ -555,11 +571,11 @@ namespace BizHawk.MultiClient
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
-			UInt32 GUID = r.ReadUInt32();
+			uint GUID = r.ReadUInt32();
 			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
 			m.SetRerecords((int)r.ReadUInt32());
 
-			UInt32 framecount = r.ReadUInt32();
+			uint framecount = r.ReadUInt32();
 			byte ControllerFlags = r.ReadByte();
 
 			int numControllers;
@@ -588,8 +604,8 @@ namespace BizHawk.MultiClient
 			byte SyncOptions2 = r.ReadByte();
 			//TODO: these
 
-			UInt32 SavestateOffset = r.ReadUInt32();
-			UInt32 FrameDataOffset = r.ReadUInt32();
+			uint SavestateOffset = r.ReadUInt32();
+			uint FrameDataOffset = r.ReadUInt32();
 
 			//TODO: get extra rom info
 
@@ -600,7 +616,7 @@ namespace BizHawk.MultiClient
 				//string frame = "|0|";
 				for (int y = 0; y < numControllers; y++)
 				{
-					UInt16 fd = r.ReadUInt16();
+					ushort fd = r.ReadUInt16();
 				}
 			}
 			return m;
@@ -616,7 +632,7 @@ namespace BizHawk.MultiClient
 		private static Movie ImportSMV152(BinaryReader r, string path)
 		{
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-			UInt32 GUID = r.ReadUInt32();
+			uint GUID = r.ReadUInt32();
 			return m;
 		}
 
@@ -633,20 +649,20 @@ namespace BizHawk.MultiClient
 
 			//0xoffset
 			//0x00
-			UInt32 signature = r.ReadUInt32();  //always 56 42 4D 1A  (VBM\x1A)
+			uint signature = r.ReadUInt32();  //always 56 42 4D 1A  (VBM\x1A)
 			if (signature != 0x56424D1A)
 			{
 				errorMsg = "This is not a valid VBM file.";
 				return null;
 			}
 
-			UInt32 versionno = r.ReadUInt32();  //always 1
-			UInt32 uid = r.ReadUInt32();		//time of recording
+			uint versionno = r.ReadUInt32();  //always 1
+			uint uid = r.ReadUInt32();		//time of recording
 			m.Header.SetHeaderLine(MovieHeader.GUID, uid.ToString());
-			UInt32 framecount = r.ReadUInt32();
+			uint framecount = r.ReadUInt32();
 
 			//0x10
-			UInt32 rerecordcount = r.ReadUInt32();
+			uint rerecordcount = r.ReadUInt32();
 			m.SetRerecords((int)rerecordcount);
 			m.Header.SetHeaderLine(MovieHeader.RERECORDS, m.Rerecords.ToString());
 			Byte moviestartflags = r.ReadByte();
@@ -718,11 +734,11 @@ namespace BizHawk.MultiClient
 			if ((flags & 0x01) > 0) usebiosfile = true;
 
 			//0x18
-			UInt32 winsavetype = r.ReadUInt32();
-			UInt32 winflashsize = r.ReadUInt32();
+			uint winsavetype = r.ReadUInt32();
+			uint winflashsize = r.ReadUInt32();
 
 			//0x20
-			UInt32 gbemulatortype = r.ReadUInt32();
+			uint gbemulatortype = r.ReadUInt32();
 
 			char[] internalgamename = r.ReadChars(0x0C);
 			string gamename = new String(internalgamename);
@@ -731,10 +747,10 @@ namespace BizHawk.MultiClient
 			//0x30
 			Byte minorversion = r.ReadByte();
 			Byte internalcrc = r.ReadByte();
-			UInt16 internalchacksum = r.ReadUInt16();
-			UInt32 unitcode = r.ReadUInt32();
-			UInt32 saveoffset = r.ReadUInt32();		//set to 0 if unused
-			UInt32 controllerdataoffset = r.ReadUInt32();
+			ushort internalchacksum = r.ReadUInt16();
+			uint unitcode = r.ReadUInt32();
+			uint saveoffset = r.ReadUInt32();		//set to 0 if unused
+			uint controllerdataoffset = r.ReadUInt32();
 
 			//0x40  start info.
 			char[] authorsname = r.ReadChars(0x40);		//vbm specification states these strings
@@ -753,7 +769,7 @@ namespace BizHawk.MultiClient
 			//TODO: implement start data. There are no specifics on the googlecode page as to how long
 			//the SRAM or savestate should be.
 
-			UInt32 framesleft = framecount;
+			uint framesleft = framecount;
 
 			r.BaseStream.Position = controllerdataoffset;    //advances to controller data.
 
@@ -766,7 +782,7 @@ namespace BizHawk.MultiClient
 
 			for (int frame = 1; frame <= framecount; frame++)
 			{
-				UInt16 controllerstate = r.ReadUInt16();
+				ushort controllerstate = r.ReadUInt16();
 				// TODO: reset, GBA buttons go here
 				byte and = 0x1;
 				for (int button = 0; button < buttons.Length; button++)
