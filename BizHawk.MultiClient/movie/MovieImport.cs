@@ -444,7 +444,11 @@ namespace BizHawk.MultiClient
 			r.ReadInt32();
 			// 00A 4-byte little-endian unsigned int: rerecord count minus 1
 			uint rerecordCount = r.ReadUInt32();
-			m.SetRerecords(((int)rerecordCount) - 1);
+			/*
+			The rerecord count stored in the file is the number of times a savestate was loaded. If a savestate was never loaded,
+			the number is 0. Famtasia however displays "1" in such case. It always adds 1 to the number found in the file.
+			*/
+			m.SetRerecords(((int)rerecordCount) + 1);
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
@@ -453,10 +457,77 @@ namespace BizHawk.MultiClient
 			// 050 64-byte zero-terminated movie title string
 			string gameName = RemoveNull(BytesToString(r, 64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
-			// 090 frame data begins here
-			if (controller1 || controller2 || FDS)
+			if (!controller1 && !controller2 && !FDS)
 			{
-				// TODO: Frame data handling.
+				warningMsg = "No input recorded.";
+				return m;
+			}
+			/*
+			The file format has no means of identifying NTSC/PAL. It is always assumed that the game is NTSC - that is, 60
+			fps.
+			*/
+			m.Header.SetHeaderLine("NTSC", "True");
+			/*
+			090 frame data begins here
+			The file has no terminator byte or frame count. The number of frames is the <filesize minus 144> divided by
+			<number of bytes per frame>.
+			*/
+			int bytesPerFrame = 0;
+			if (controller1)
+				bytesPerFrame++;
+			if (controller2)
+				bytesPerFrame++;
+			if (FDS)
+				bytesPerFrame++;
+			long frames = (fs.Length - 144) / bytesPerFrame;
+			for (long frame = 0; frame < frames; frame++)
+			{
+				byte controllerstate;
+				SimpleController controllers = new SimpleController();
+				controllers.Type = new ControllerDefinition();
+				controllers.Type.Name = "NES Controller";
+				/*
+				 * 01 Right
+				 * 02 Left
+				 * 04 Up
+				 * 08 Down
+				 * 10 B
+				 * 20 A
+				 * 40 Select
+				 * 80 Start
+				*/
+				string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
+				/*
+				Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, and the FDS
+				data takes 1 byte. If all three exist, the frame is 3 bytes. For example, if the movie is a regular NES game
+				with only controller 1 data, a frame is 1 byte.
+				*/
+				int player = 1;
+				while (player <= 3)
+				{
+					if (player == 1 && !controller1)
+						player++;
+					if (player == 2 && !controller2)
+						player++;
+					if (player != 3)
+					{
+						controllerstate = r.ReadByte();
+						byte and = 0x1;
+						for (int button = 0; button < buttons.Length; button++)
+						{
+							controllers["P" + player + " " + buttons[button]] = ((int)(controllerstate & and) > 0);
+							and <<= 1;
+						}
+					}
+					else if (!FDS)
+					{
+						// TODO: FDS data handling here.
+					}
+					player++;
+				}
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 			return m;
 		}
@@ -563,24 +634,29 @@ namespace BizHawk.MultiClient
 			// 00e4-00f3: binary: rom MD5 digest
 			string MD5 = BytesToString(r, 16, true);
 			m.Header.SetHeaderLine("MD5", MD5);
-			/*
-			 * 76543210
-			 * bit 0 (0x01): up
-			 * bit 1 (0x02): down
-			 * bit 2 (0x04): left
-			 * bit 3 (0x08): right
-			 * bit 4 (0x10): 1
-			 * bit 5 (0x20): 2
-			 * bit 6 (0x40): start (Master System)
-			 * bit 7 (0x80): start (Game Gear)
-			*/
 			for (int frame = 0; frame < framecount; frame++)
 			{
 				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "SMS Controller";
+				/*
+				 * 76543210
+				 * bit 0 (0x01): up
+				 * bit 1 (0x02): down
+				 * bit 2 (0x04): left
+				 * bit 3 (0x08): right
+				 * bit 4 (0x10): 1
+				 * bit 5 (0x20): 2
+				 * bit 6 (0x40): start (Master System)
+				 * bit 7 (0x80): start (Game Gear)
+				*/
 				string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
+				/*
+				Controller data is made up of one input packet per frame. Each packet currently consists of 2 bytes. The
+				first byte is for controller 1 and the second controller 2. The Game Gear only uses the controller 1 input
+				however both bytes are still present.
+				*/
 				for (int player = 1; player <= 2; player++)
 				{
 					controllerstate = r.ReadByte();
