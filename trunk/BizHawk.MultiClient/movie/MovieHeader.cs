@@ -26,6 +26,7 @@ namespace BizHawk.MultiClient
 		public const string RERECORDS = "rerecordCount";
 		public const string GUID = "GUID";
 		public const string STARTSFROMSAVESTATE = "StartsFromSavestate";
+		public const string FOURSCORE = "FourScore";
 
 		public static string MovieVersion = "BizHawk v0.0.1";
 
