@@ -100,7 +100,8 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-			var file = new FileInfo(path);
+			FileInfo file = new FileInfo(path);
+			StreamReader sr = file.OpenText();
 			string[] buttons = new string[] { };
 			string controller = "";
 			string emulator = "";
@@ -121,146 +122,152 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
-			using (StreamReader sr = file.OpenText())
+			int lineNum = 0;
+			string line = "";
+			while ((line = sr.ReadLine()) != null)
 			{
-				int lineNum = 0;
-				string line = "";
-				while ((line = sr.ReadLine()) != null)
+				lineNum++;
+				if (line == "")
+					continue;
+				if (line.StartsWith("emuVersion"))
+					m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(line, "emuVersion"));
+				else if (line.StartsWith("version"))
+					m.Header.Comments.Add(
+						"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
+					);
+				else if (line.StartsWith("romFilename"))
+					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
+				else if (line.StartsWith("comment author"))
+					m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
+				else if (line.StartsWith("rerecordCount"))
 				{
-					lineNum++;
-					if (line == "")
-						continue;
-					if (line.StartsWith("emuVersion"))
-						m.Header.Comments.Add("emuOrigin " + emulator + " version " + ParseHeader(line, "emuVersion"));
-					else if (line.StartsWith("version"))
-						m.Header.Comments.Add(
-							"MovieOrigin " + Path.GetExtension(path) + " version " + ParseHeader(line, "version")
-						);
-					else if (line.StartsWith("romFilename"))
-						m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
-					else if (line.StartsWith("comment author"))
-						m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
-					else if (line.StartsWith("rerecordCount"))
+					int rerecordCount;
+					// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
+					try
 					{
-						int rerecordCount;
-						// Try to parse the re-record count as an integer, defaulting to 0 if it fails.
-						try
-						{
-							rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
-						}
-						catch
-						{
-							rerecordCount = 0;
-						}
-						m.SetRerecords(rerecordCount);
+						rerecordCount = int.Parse(ParseHeader(line, "rerecordCount"));
 					}
-					else if (line.StartsWith("guid"))
-						m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "GUID"));
-					else if (line.StartsWith("StartsFromSavestate"))
+					catch
 					{
-						// If this movie starts from a savestate, we can't support it.
-						if (ParseHeader(line, "StartsFromSavestate") == "1")
-						{
-							errorMsg = "Movies that begin with a savestate are not supported.";
-							return null;
-						}
+						rerecordCount = 0;
 					}
-					else if (line.StartsWith("palFlag"))
-					{
-						bool pal;
-						// Try to parse the PAL setting as a bool, defaulting to false if it fails.
-						try
-						{
-							pal = Convert.ToBoolean(int.Parse(ParseHeader(line, "palFlag")));
-						}
-						catch
-						{
-							pal = false;
-						}
-						m.Header.SetHeaderLine("PAL", pal.ToString());
-					}
-					else if (line.StartsWith("sub"))
-					{
-						Subtitle s = new Subtitle();
-						// The header name, frame, and message are separated by a space.
-						int first = line.IndexOf(' ');
-						int second = line.IndexOf(' ', first + 1);
-						if (first != -1 && second != -1)
-						{
-							// Concatenate the frame and message with default values for the additional fields.
-							string frame = line.Substring(first + 1, second - first - 1);
-							string message = line.Substring(second + 1, line.Length - second - 1);
-							m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
-						}
-					}
-					else if (line[0] == '|')
-					{
-						// Handle a frame of input.
-						ArrayList frame = new ArrayList();
-						// Split up the sections of the frame.
-						string[] sections = line.Split('|');
-						// Start building the data for the controllers.
-						SimpleController controllers = new SimpleController();
-						controllers.Type = new ControllerDefinition();
-						controllers.Type.Name = controller;
-						// Get the first invalid command warning message that arises.
-						if (Path.GetExtension(path).ToUpper() == ".FM2" && warningMsg == "" && sections[1].Length != 0)
-						{
-							switch (sections[1][0])
-							{
-								case '0':
-									break;
-								case '1':
-									controllers["Reset"] = true;
-									break;
-								case '2':
-									if (m.Length() != 0)
-									{
-										warningMsg = "hard reset";
-									}
-									break;
-								case '4':
-									warningMsg = "FDS Insert";
-									break;
-								case '8':
-									warningMsg = "FDS Select";
-									break;
-								default:
-									warningMsg = "unknown";
-									break;
-							}
-							if (warningMsg != "")
-								warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
-						}
-						/*
-						Skip the first two sections of the split, which consist of everything before the starting | and the
-						command. Do not use the section after the last |. In other words, get the sections for the players.
-						*/
-						for (int section = 2; section < sections.Length - 1; section++)
-						{
-							// The player number is one less than the section number for the reasons explained above.
-							int player = section - 1;
-							// Only count lines with that have the right number of buttons and are for valid players.
-							if (
-								sections[section].Length == buttons.Length &&
-								player <= Global.PLAYERS[controllers.Type.Name]
-							)
-								for (int button = 0; button < buttons.Length; button++)
-									// Consider the button pressed so long as its spot is not occupied by a ".".
-									controllers["P" + (player).ToString() + " " + buttons[button]] = (
-										sections[section][button] != '.'
-									);
-						}
-						// Convert the data for the controllers to a mnemonic and add it as a frame.
-						MnemonicsGenerator mg = new MnemonicsGenerator();
-						mg.SetSource(controllers);
-						m.AppendFrame(mg.GetControllersAsMnemonic());
-					}
-					else
-						// Everything not explicitly defined is treated as a comment.
-						m.Header.Comments.Add(line);
+					m.SetRerecords(rerecordCount);
 				}
+				else if (line.StartsWith("guid"))
+					m.Header.SetHeaderLine(MovieHeader.GUID, ParseHeader(line, "GUID"));
+				else if (line.StartsWith("StartsFromSavestate"))
+				{
+					// If this movie starts from a savestate, we can't support it.
+					if (ParseHeader(line, "StartsFromSavestate") == "1")
+					{
+						errorMsg = "Movies that begin with a savestate are not supported.";
+						sr.Close();
+						return null;
+					}
+				}
+				else if (line.StartsWith("palFlag"))
+				{
+					bool pal;
+					// Try to parse the PAL setting as a bool, defaulting to false if it fails.
+					try
+					{
+						pal = Convert.ToBoolean(int.Parse(ParseHeader(line, "palFlag")));
+					}
+					catch
+					{
+						pal = false;
+					}
+					m.Header.SetHeaderLine("PAL", pal.ToString());
+				}
+				else if (line.StartsWith("fourscore"))
+					m.Header.SetHeaderLine(
+						MovieHeader.FOURSCORE,
+						Convert.ToBoolean(
+							int.Parse(ParseHeader(line, "fourscore"))
+						).ToString()
+					);
+				else if (line.StartsWith("sub"))
+				{
+					Subtitle s = new Subtitle();
+					// The header name, frame, and message are separated by a space.
+					int first = line.IndexOf(' ');
+					int second = line.IndexOf(' ', first + 1);
+					if (first != -1 && second != -1)
+					{
+						// Concatenate the frame and message with default values for the additional fields.
+						string frame = line.Substring(first + 1, second - first - 1);
+						string message = line.Substring(second + 1, line.Length - second - 1);
+						m.Subtitles.AddSubtitle("subtitle " + frame + " 0 0 200 FFFFFFFF " + message);
+					}
+				}
+				else if (line[0] == '|')
+				{
+					// Handle a frame of input.
+					ArrayList frame = new ArrayList();
+					// Split up the sections of the frame.
+					string[] sections = line.Split('|');
+					// Start building the data for the controllers.
+					SimpleController controllers = new SimpleController();
+					controllers.Type = new ControllerDefinition();
+					controllers.Type.Name = controller;
+					// Get the first invalid command warning message that arises.
+					if (Path.GetExtension(path).ToUpper() == ".FM2" && warningMsg == "" && sections[1].Length != 0)
+					{
+						switch (sections[1][0])
+						{
+							case '0':
+								break;
+							case '1':
+								controllers["Reset"] = true;
+								break;
+							case '2':
+								if (m.Length() != 0)
+								{
+									warningMsg = "hard reset";
+								}
+								break;
+							case '4':
+								warningMsg = "FDS Insert";
+								break;
+							case '8':
+								warningMsg = "FDS Select Side";
+								break;
+							default:
+								warningMsg = "unknown";
+								break;
+						}
+						if (warningMsg != "")
+							warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
+					}
+					/*
+					Skip the first two sections of the split, which consist of everything before the starting | and the
+					command. Do not use the section after the last |. In other words, get the sections for the players.
+					*/
+					for (int section = 2; section < sections.Length - 1; section++)
+					{
+						// The player number is one less than the section number for the reasons explained above.
+						int player = section - 1;
+						// Only count lines with that have the right number of buttons and are for valid players.
+						if (
+							sections[section].Length == buttons.Length &&
+							player <= Global.PLAYERS[controllers.Type.Name]
+						)
+							for (int button = 0; button < buttons.Length; button++)
+								// Consider the button pressed so long as its spot is not occupied by a ".".
+								controllers["P" + (player).ToString() + " " + buttons[button]] = (
+									sections[section][button] != '.'
+								);
+					}
+					// Convert the data for the controllers to a mnemonic and add it as a frame.
+					MnemonicsGenerator mg = new MnemonicsGenerator();
+					mg.SetSource(controllers);
+					m.AppendFrame(mg.GetControllersAsMnemonic());
+				}
+				else
+					// Everything not explicitly defined is treated as a comment.
+					m.Header.Comments.Add(line);
 			}
+			sr.Close();
 			return m;
 		}
 
@@ -296,6 +303,8 @@ namespace BizHawk.MultiClient
 			if (signature != "FCM\x1A")
 			{
 				errorMsg = "This is not a valid .FCM file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			// 004 4-byte little-endian unsigned int: version number, must be 2
@@ -317,6 +326,8 @@ namespace BizHawk.MultiClient
 			if ((int)(flags & 2) == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			bool pal = false;
@@ -340,8 +351,13 @@ namespace BizHawk.MultiClient
 			m.SetRerecords((int)rerecordCount);
 			// 014 4-byte little-endian unsigned int: length of controller data in bytes
 			uint movieDataSize = r.ReadUInt32();
-			// 018 4-byte little-endian unsigned int: offset to the savestate inside file
-			uint savestateOffset = r.ReadUInt32();
+			/*
+			018 4-byte little-endian unsigned int: offset to the savestate inside file
+			The savestate offset is <header_size + length_of_metadata_in_bytes + padding>. The savestate offset should be
+			4-byte aligned. At the savestate offset there is a savestate file. The savestate exists even if the movie is
+			reset-based.
+			*/
+			r.ReadUInt32();
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
@@ -374,28 +390,115 @@ namespace BizHawk.MultiClient
 			r.ReadByte();
 			string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
-			// Advance to first byte of input data
-			// byte[] throwaway = new byte[firstFrameOffset];
-			// r.Read(throwaway, 0, (int)firstFrameOffset);
+			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
-			// moviedatasize stuff
-			// read frame data
-			// TODO: special commands like fds disk switch, etc, and power/reset
-			// TODO: use stringbuilder class for speed
-			// string ButtonLookup = "RLDUSsBARLDUSsBARLDUSsBARLDUSsBA"; //TODO: This assumes input data is the same in fcm as bizhawk, which it isn't
-			// string frame = "|0|"; //TODO: read reset command rather than hard code it off
-			for (int frame = 0; frame < frameCount; frame++)
+			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			bool fourscore = false;
+			int frame = 1;
+			while (frame <= frameCount)
 			{
-				/*
-				byte joy = r.ReadByte();
-				// Read each byte of controller one data
-				frame += "|";
-				r.ReadBytes(3); //Lose remaining controllers for now
-				m.AppendFrame("Test");
-				*/
+				byte update = r.ReadByte();
+				SimpleController controllers = new SimpleController();
+				controllers.Type = new ControllerDefinition();
+				controllers.Type.Name = "NES Controller";
+				if ((int)(update & 0x128) != 0)
+				{
+					// Control update: 1aabbbbb
+					bool reset = false;
+					int command = update & 0x1F;
+					/*
+					bbbbb:  
+					** 0     Do nothing
+					** 1     Reset
+					** 2     Power cycle
+					** 7     VS System Insert Coin
+					** 8     VS System Dipswitch 0 Toggle
+					** 24    FDS Insert
+					** 25    FDS Eject
+					** 26    FDS Select Side
+					*/
+					switch (command)
+					{
+						case 0:
+							break;
+						case 1:
+							reset = true;
+							controllers["Reset"] = true;
+							break;
+						case 2:
+							reset = true;
+							if (frame != 1)
+							{
+								warningMsg = "hard reset";
+							}
+							break;
+						case 7:
+							warningMsg = "VS System Insert Coin";
+							break;
+						case 8:
+							warningMsg = "VS System Dipswitch 0 Toggle";
+							break;
+						case 24:
+							warningMsg = "FDS Insert";
+							break;
+						case 25:
+							warningMsg = "FDS Eject";
+							break;
+						case 26:
+							warningMsg = "FDS Select Side";
+							break;
+						default:
+							warningMsg = "unknown";
+							break;
+					}
+					if (warningMsg != "")
+						warningMsg = "Unable to import " + warningMsg + " command at frame " + frame + ".";
+					/*
+					1 Even if the header says "movie begins from reset", the file still contains a quicksave, and the
+					quicksave is actually loaded. This flag can't therefore be trusted. To check if the movie actually begins
+					from reset, one must analyze the controller data and see if the first non-idle command in the file is a
+					Reset or Power Cycle type control command.
+					*/
+					if (!reset && frame == 1)
+					{
+						errorMsg = "Movies that begin with a savestate are not supported.";
+						r.Close();
+						fs.Close();
+						return null;
+					}
+				}
+				else
+				{
+					/*
+					 Controller update: 0aabbccc
+					 * bb: Gamepad number minus one (?)
+					*/
+					int player = ((update >> 3) & 3) + 1;
+					/*
+					 ccc:
+					 * 0      A
+					 * 1      B
+					 * 2      Select
+					 * 3      Start
+					 * 4      Up
+					 * 5      Down
+					 * 6      Left
+					 * 7      Right
+					*/
+					int button = update & 7;
+				}
+				// aa: Number of delta bytes to follow
+				int delta = (update >> 5) & 3;
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controllers);
+				string mnemonic = mg.GetControllersAsMnemonic();
+				while (false)
+					m.AppendFrame(mnemonic);
+				frame++;
 			}
-			// set 4 score flag if necessary
+			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 			r.Close();
+			fs.Close();
 			return m;
 		}
 
@@ -421,6 +524,8 @@ namespace BizHawk.MultiClient
 			if (signature != "FMV\x1A")
 			{
 				errorMsg = "This is not a valid .FMV file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			// 004 1-byte flags:
@@ -432,6 +537,8 @@ namespace BizHawk.MultiClient
 			if ((int)(flags & 0x80) != 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			// 005 1-byte flags:
@@ -483,6 +590,8 @@ namespace BizHawk.MultiClient
 			if (!controller1 && !controller2 && !FDS)
 			{
 				warningMsg = "No input recorded.";
+				r.Close();
+				fs.Close();
 				return m;
 			}
 			/*
@@ -503,23 +612,23 @@ namespace BizHawk.MultiClient
 			if (FDS)
 				bytesPerFrame++;
 			long frames = (fs.Length - 144) / bytesPerFrame;
-			for (long frame = 0; frame < frames; frame++)
+			/*
+			 * 01 Right
+			 * 02 Left
+			 * 04 Up
+			 * 08 Down
+			 * 10 B
+			 * 20 A
+			 * 40 Select
+			 * 80 Start
+			*/
+			string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
+			for (long frame = 1; frame <= frames; frame++)
 			{
 				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "NES Controller";
-				/*
-				 * 01 Right
-				 * 02 Left
-				 * 04 Up
-				 * 08 Down
-				 * 10 B
-				 * 20 A
-				 * 40 Select
-				 * 80 Start
-				*/
-				string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
 				/*
 				Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, and the FDS
 				data takes 1 byte. If all three exist, the frame is 3 bytes. For example, if the movie is a regular NES game
@@ -552,6 +661,8 @@ namespace BizHawk.MultiClient
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
+			r.Close();
+			fs.Close();
 			return m;
 		}
 
@@ -577,8 +688,12 @@ namespace BizHawk.MultiClient
 			if (signature != "NSS\x1A")
 			{
 				errorMsg = "This is not a valid .NMV file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
+			r.Close();
+			fs.Close();
 			return m;
 		}
 
@@ -614,6 +729,8 @@ namespace BizHawk.MultiClient
 			if (signature != "MMV\0")
 			{
 				errorMsg = "This is not a valid .MMV file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			// 0004: 4-byte little endian unsigned int: dega version
@@ -629,6 +746,8 @@ namespace BizHawk.MultiClient
 			if (reset == 0)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			// 0014: 4-byte little endian unsigned int: offset of state information
@@ -675,24 +794,24 @@ namespace BizHawk.MultiClient
 			// 00e4-00f3: binary: rom MD5 digest
 			string MD5 = BytesToString(r, 16, true);
 			m.Header.SetHeaderLine("MD5", MD5);
-			for (int frame = 0; frame < frameCount; frame++)
+			/*
+			 76543210
+			 * bit 0 (0x01): up
+			 * bit 1 (0x02): down
+			 * bit 2 (0x04): left
+			 * bit 3 (0x08): right
+			 * bit 4 (0x10): 1
+			 * bit 5 (0x20): 2
+			 * bit 6 (0x40): start (Master System)
+			 * bit 7 (0x80): start (Game Gear)
+			*/
+			string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
+			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "SMS Controller";
-				/*
-				 76543210
-				 * bit 0 (0x01): up
-				 * bit 1 (0x02): down
-				 * bit 2 (0x04): left
-				 * bit 3 (0x08): right
-				 * bit 4 (0x10): 1
-				 * bit 5 (0x20): 2
-				 * bit 6 (0x40): start (Master System)
-				 * bit 7 (0x80): start (Game Gear)
-				*/
-				string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
 				/*
 				Controller data is made up of one input packet per frame. Each packet currently consists of 2 bytes. The
 				first byte is for controller 1 and the second controller 2. The Game Gear only uses the controller 1 input
@@ -717,6 +836,8 @@ namespace BizHawk.MultiClient
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
+			r.Close();
+			fs.Close();
 			return m;
 		}
 
@@ -734,6 +855,8 @@ namespace BizHawk.MultiClient
 			if (signature.Substring(0, 3) != "SMV")
 			{
 				errorMsg = "This is not a valid .SMV file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 
@@ -750,6 +873,8 @@ namespace BizHawk.MultiClient
 				default:
 				{
 					errorMsg = "SMV version not recognized, 143, 151, and 152 are currently supported.";
+					r.Close();
+					fs.Close();
 					return null;
 				}
 			}
@@ -799,11 +924,11 @@ namespace BizHawk.MultiClient
 			//TODO: get extra rom info
 
 			r.BaseStream.Position = FrameDataOffset;
-			for (int x = 0; x < frameCount; x++)
+			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				//TODO: FF FF for all controllers = Reset
 				//string frame = "|0|";
-				for (int y = 0; y < numControllers; y++)
+				for (int controller = 1; controller <= numControllers; controller++)
 				{
 					ushort fd = r.ReadUInt16();
 				}
@@ -842,6 +967,8 @@ namespace BizHawk.MultiClient
 			if (signature != 0x56424D1A)
 			{
 				errorMsg = "This is not a valid .VBM file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 
@@ -865,6 +992,8 @@ namespace BizHawk.MultiClient
 			if (startfromquicksave & startfromsram)
 			{
 				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 
@@ -894,6 +1023,8 @@ namespace BizHawk.MultiClient
 			if (is_gb & is_gbc & is_gba & is_sgb)
 			{
 				errorMsg = "Not a valid .VBM platform type.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			//TODO: set platform in header
@@ -916,6 +1047,8 @@ namespace BizHawk.MultiClient
 			if ((flags & 0x08) != 0)
 			{
 				errorMsg = "Invalid .VBM file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
 			if ((flags & 0x04) != 0) rtcenable = true;
@@ -983,6 +1116,8 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			mg.SetSource(controllers);
 			m.AppendFrame(mg.GetControllersAsMnemonic());
+			r.Close();
+			fs.Close();
 			return m;
 		}
 
@@ -999,8 +1134,12 @@ namespace BizHawk.MultiClient
 			if (signature != "VirtuaNES MV")
 			{
 				errorMsg = "This is not a valid .VMV file.";
+				r.Close();
+				fs.Close();
 				return null;
 			}
+			r.Close();
+			fs.Close();
 			return m;
 		}
 	}
