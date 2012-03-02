@@ -22,22 +22,25 @@ namespace BizHawk.MultiClient
 
 		public Sound(IntPtr handle, DirectSound device)
 		{
-			device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
+			if (device != null)
+			{
+				device.SetCooperativeLevel(handle, CooperativeLevel.Priority);
 
-			var format = new WaveFormat();
-			format.SamplesPerSecond = 44100;
-			format.BitsPerSample = 16;
-			format.Channels = 2;
-			format.FormatTag = WaveFormatTag.Pcm;
-			format.BlockAlignment = 4;
-			format.AverageBytesPerSecond = format.SamplesPerSecond * format.Channels * (format.BitsPerSample / 8);
+				var format = new WaveFormat();
+				format.SamplesPerSecond = 44100;
+				format.BitsPerSample = 16;
+				format.Channels = 2;
+				format.FormatTag = WaveFormatTag.Pcm;
+				format.BlockAlignment = 4;
+				format.AverageBytesPerSecond = format.SamplesPerSecond * format.Channels * (format.BitsPerSample / 8);
 
-			var desc = new SoundBufferDescription();
-			desc.Format = format;
-			desc.Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume;
-			desc.SizeInBytes = BufferSize;
-			DSoundBuffer = new SecondarySoundBuffer(device, desc);
-			ChangeVolume(Global.Config.SoundVolume);
+				var desc = new SoundBufferDescription();
+				desc.Format = format;
+				desc.Flags = BufferFlags.GlobalFocus | BufferFlags.Software | BufferFlags.GetCurrentPosition2 | BufferFlags.ControlVolume;
+				desc.SizeInBytes = BufferSize;
+				DSoundBuffer = new SecondarySoundBuffer(device, desc);
+				ChangeVolume(Global.Config.SoundVolume);
+			}
 			SoundBuffer = new byte[BufferSize];
 
 			disposed = false;
@@ -47,7 +50,7 @@ namespace BizHawk.MultiClient
 		{
 			if (disposed) throw new ObjectDisposedException("Sound");
 			if (Global.Config.SoundEnabled == false) return;
-
+			if (DSoundBuffer == null) return;
 			if (IsPlaying)
 				return;
 
@@ -101,6 +104,8 @@ namespace BizHawk.MultiClient
 		int soundoffset;
 		int SNDDXGetAudioSpace()
 		{
+			if (DSoundBuffer == null) return 0;
+
 			int playcursor = DSoundBuffer.CurrentPlayPosition;
 			int writecursor = DSoundBuffer.CurrentWritePosition;
 
