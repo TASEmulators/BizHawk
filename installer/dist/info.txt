@@ -1,3 +1,4 @@
+Windows Imaging Component (.net 4.0 prerequisite for older OS)
 Visual C++ 2010 SP1 Runtime
 .Net Framework v4.0.30319
 DirectX Web Update
