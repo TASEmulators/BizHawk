@@ -19,8 +19,7 @@ namespace BizHawk.MultiClient
 			try { Global.DSound = new DirectSound(); }
 			catch
 			{
-				MessageBox.Show("Couldn't initialize DirectSound!", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 
 			try { Global.Direct3D = new Direct3D(); }
@@ -41,9 +40,9 @@ namespace BizHawk.MultiClient
 				else
 				{
 					var mf = new MainForm(args);
-                    var title = mf.Text;
-                    mf.Show();
-                    mf.Text = title;
+					var title = mf.Text;
+					mf.Show();
+					mf.Text = title;
 					mf.ProgramRunLoop();
 				}
 			}
