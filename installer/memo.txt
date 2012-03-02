@@ -1,0 +1,56 @@
+; -----------------------------------------------------------------------
+; MSVC Redistributable - required if the user does not already have it
+; Note: if your NSIS generates an error here it means you need to download the latest
+; visual studio redist package from microsoft.  Any redist 2008/SP1 or newer will do.
+;
+; IMPORTANT: Online references for how to detect the presence of the VS2008 redists LIE.
+; None of the methods are reliable, because the registry keys placed by the MSI installer
+; vary depending on operating system *and* MSI installer version (youch).
+;
+Section "Microsoft Visual C++ 2008 SP1 Redist"  SEC_CRT2008
+
+  SectionIn RO
+
+  ; Downloaded from:
+  ;  http://download.microsoft.com/download/d/d/9/dd9a82d0-52ef-40db-8dab-795376989c03/vcredist_x86.exe
+ 
+  SetOutPath "$TEMP"
+  File "dist\vcredist_2008_sp1_x86.exe"
+  DetailPrint "Running Visual C++ 2008 SP1 Redistributable Setup..."
+  ExecWait '"$TEMP\vcredist_2008_sp1_x86.exe" /qb'
+  DetailPrint "Finished Visual C++ 2008 SP1 Redistributable Setup"
+  
+  Delete "$TEMP\vcredist_2008_sp1_x86.exe"
+
+SectionEnd
+
+
+
+Section "Microsoft Visual C++ 2010 Redist" SEC_CRT2010
+
+  ;SectionIn RO
+
+  ; Detection made easy: Unlike previous redists, VC2010 now generates a platform
+  ; independent key for checking availability.
+  
+  ; Downloaded from:
+  ;   http://download.microsoft.com/download/5/B/C/5BC5DBB3-652D-4DCE-B14A-475AB85EEF6E/vcredist_x86.exe
+
+  ClearErrors
+  ReadRegDword $R0 HKLM "SOFTWARE\Microsoft\VisualStudio\10.0\VC\VCRedist\x86" "Installed"
+  IfErrors 0 +2
+  ;DetailPrint "Visual C++ 2010 Redistributable registry key was not found; assumed to be uninstalled."
+  ;StrCmp $R0 "1" 0 +3
+  ;  DetailPrint "Visual C++ 2010 Redistributable is already installed; skipping!"
+  ;  Goto done
+
+  SetOutPath "$TEMP"
+  File "dist\vcredist_2010_x86.exe"
+  DetailPrint "Running Visual C++ 2010 Redistributable Setup..."
+  ExecWait '"$TEMP\vcredist_2010_x86.exe" /qb'
+  DetailPrint "Finished Visual C++ 2010 Redistributable Setup"
+  
+  Delete "$TEMP\vcredist_2010_x86.exe"
+
+done:
+SectionEnd
