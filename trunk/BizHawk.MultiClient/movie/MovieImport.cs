@@ -369,9 +369,7 @@ namespace BizHawk.MultiClient
 			// 034 name of the ROM used - UTF8 encoded nul-terminated string.
 			List<byte> gameBytes = new List<byte>();
 			while (r.PeekChar() != 0)
-			{
 				gameBytes.Add(r.ReadByte());
-			}
 			// Advance past null byte.
 			r.ReadByte();
 			string gameName = System.Text.Encoding.UTF8.GetString(gameBytes.ToArray());
@@ -383,9 +381,7 @@ namespace BizHawk.MultiClient
 			*/
 			List<byte> authorBytes = new List<byte>();
 			while (r.PeekChar() != 0)
-			{
 				authorBytes.Add(r.ReadByte());
-			}
 			// Advance past null byte.
 			r.ReadByte();
 			string author = System.Text.Encoding.UTF8.GetString(authorBytes.ToArray());
@@ -401,13 +397,13 @@ namespace BizHawk.MultiClient
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "NES Controller";
-				if ((int)(update & 0x128) != 0)
+				if ((int)(update & 0x80) != 0)
 				{
 					// Control update: 1aabbbbb
 					bool reset = false;
 					int command = update & 0x1F;
 					/*
-					bbbbb:  
+					bbbbb:
 					** 0     Do nothing
 					** 1     Reset
 					** 2     Power cycle
@@ -486,14 +482,15 @@ namespace BizHawk.MultiClient
 					 * 7      Right
 					*/
 					int button = update & 7;
+					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
 				}
 				// aa: Number of delta bytes to follow
 				int delta = (update >> 5) & 3;
+				r.ReadBytes(delta);
 				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				string mnemonic = mg.GetControllersAsMnemonic();
-				while (false)
-					m.AppendFrame(mnemonic);
+				m.AppendFrame(mnemonic);
 				frame++;
 			}
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
