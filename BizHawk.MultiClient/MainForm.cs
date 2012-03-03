@@ -981,34 +981,38 @@ namespace BizHawk.MultiClient
 						{
 							case "PCE":
 							case "PCECD":
-								if (File.Exists(Global.Config.PathPCEBios) == false)
 								{
-									MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
-									return false;
+									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
+									if (File.Exists(biosPath) == false)
+									{
+										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
+										return false;
+									}
+
+									rom = new RomGame(new HawkFile(biosPath));
+
+									if (rom.GameInfo.Status == RomStatus.BadDump)
+										MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n" +
+											"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
+
+									else if (rom.GameInfo.NotInDatabase)
+										MessageBox.Show("The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
+
+									else if (rom.GameInfo["BIOS"] == false)
+										MessageBox.Show("The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
+
+									if (rom.GameInfo["SuperSysCard"])
+										game.AddOption("SuperSysCard");
+									if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
+										MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
+
+									if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
+									if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
+									if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
+
+									nextEmulator = new PCEngine(game, disc, rom.RomData);
+									break;
 								}
-								rom = new RomGame(new HawkFile(Global.Config.PathPCEBios));
-
-								if (rom.GameInfo.Status == RomStatus.BadDump)
-									MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n" +
-										"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
-
-								else if (rom.GameInfo.NotInDatabase)
-									MessageBox.Show("The PCE-CD System Card you have selected is not recognized in our database. That might mean it's a bad dump, or isn't the correct rom.");
-
-								else if (rom.GameInfo["BIOS"] == false)
-									MessageBox.Show("The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom.");
-
-								if (rom.GameInfo["SuperSysCard"])
-									game.AddOption("SuperSysCard");
-								if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
-									MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
-
-								if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
-								if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
-								if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
-
-								nextEmulator = new PCEngine(game, disc, rom.RomData);
-								break;
 						}
 					}
 					else
