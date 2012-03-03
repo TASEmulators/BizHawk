@@ -139,5 +139,10 @@ namespace BizHawk
 				}
             }
         }
+
+				private void btnAbout_Click(object sender, EventArgs e)
+				{
+					new About().ShowDialog();
+				}
 	}
 }

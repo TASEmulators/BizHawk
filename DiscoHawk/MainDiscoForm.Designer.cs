@@ -34,14 +34,14 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.lblMp3ExtractMagicArea = new System.Windows.Forms.Panel();
 			this.label2 = new System.Windows.Forms.Label();
+			this.btnAbout = new System.Windows.Forms.Button();
 			this.lblMagicDragArea.SuspendLayout();
 			this.lblMp3ExtractMagicArea.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ExitButton
 			// 
-			this.ExitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ExitButton.Location = new System.Drawing.Point(281, 316);
+			this.ExitButton.Location = new System.Drawing.Point(146, 245);
 			this.ExitButton.Name = "ExitButton";
 			this.ExitButton.Size = new System.Drawing.Size(75, 23);
 			this.ExitButton.TabIndex = 0;
@@ -54,7 +54,7 @@
 			this.lblMagicDragArea.AllowDrop = true;
 			this.lblMagicDragArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblMagicDragArea.Controls.Add(this.label1);
-			this.lblMagicDragArea.Location = new System.Drawing.Point(84, 12);
+			this.lblMagicDragArea.Location = new System.Drawing.Point(21, 12);
 			this.lblMagicDragArea.Name = "lblMagicDragArea";
 			this.lblMagicDragArea.Size = new System.Drawing.Size(200, 100);
 			this.lblMagicDragArea.TabIndex = 1;
@@ -75,7 +75,7 @@
 			this.lblMp3ExtractMagicArea.AllowDrop = true;
 			this.lblMp3ExtractMagicArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.lblMp3ExtractMagicArea.Controls.Add(this.label2);
-			this.lblMp3ExtractMagicArea.Location = new System.Drawing.Point(84, 167);
+			this.lblMp3ExtractMagicArea.Location = new System.Drawing.Point(21, 127);
 			this.lblMp3ExtractMagicArea.Name = "lblMp3ExtractMagicArea";
 			this.lblMp3ExtractMagicArea.Size = new System.Drawing.Size(200, 100);
 			this.lblMp3ExtractMagicArea.TabIndex = 2;
@@ -91,15 +91,29 @@
 			this.label2.TabIndex = 0;
 			this.label2.Text = "Drag cue here to extract audio\ntracks to MP3 for listening\npleasure!";
 			// 
+			// btnAbout
+			// 
+			this.btnAbout.Location = new System.Drawing.Point(21, 245);
+			this.btnAbout.Name = "btnAbout";
+			this.btnAbout.Size = new System.Drawing.Size(75, 23);
+			this.btnAbout.TabIndex = 3;
+			this.btnAbout.Text = "&About";
+			this.btnAbout.UseVisualStyleBackColor = true;
+			this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+			// 
 			// MainDiscoForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(368, 351);
+			this.ClientSize = new System.Drawing.Size(247, 285);
+			this.Controls.Add(this.btnAbout);
 			this.Controls.Add(this.lblMp3ExtractMagicArea);
 			this.Controls.Add(this.lblMagicDragArea);
 			this.Controls.Add(this.ExitButton);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "MainDiscoForm";
 			this.Text = "DiscoHawk";
 			this.Load += new System.EventHandler(this.MainDiscoForm_Load);
@@ -118,5 +132,6 @@
 		private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel lblMp3ExtractMagicArea;
         private System.Windows.Forms.Label label2;
+				private System.Windows.Forms.Button btnAbout;
 	}
 }

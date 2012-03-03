@@ -74,6 +74,12 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
     <Compile Include="AudioExtractor.cs" />
     <Compile Include="DiscoHawk.cs" />
     <Compile Include="DiscoHawkDialog.cs">
@@ -106,6 +112,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DiscoHawkDialog.resx">
       <DependentUpon>DiscoHawkDialog.cs</DependentUpon>
     </EmbeddedResource>
