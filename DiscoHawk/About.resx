@@ -126,7 +126,6 @@ BizHawk is a .net-based multi-system emulator brought to you by some of the rere
 
 To use, drag a .cue into the MAGIC area. DiscoHawk will dump a newly cleaned up cue+bin pair to the same directory as the original .cue, and call it _hawked.
 
-This is beta software. You are invited to report problems to our bug tracker or IRC. Problems consist of: crusty disc images that crash DiscoHawk or that cause DiscoHawk to produce a _hawked.cue which fails to serve your particular purposes (which we will need to be informed of, in case we are outputting wrongly.)
-</value>
+This is beta software. You are invited to report problems to our bug tracker or IRC. Problems consist of: crusty disc images that crash DiscoHawk or that cause DiscoHawk to produce a _hawked.cue which fails to serve your particular purposes (which we will need to be informed of, in case we are outputting wrongly.)</value>
   </data>
 </root>
