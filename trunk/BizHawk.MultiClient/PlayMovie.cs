@@ -52,7 +52,12 @@ namespace BizHawk.MultiClient
 		private void Run()
 		{
 			ListView.SelectedIndexCollection indexes = MovieView.SelectedIndices;
-			if (indexes.Count == 0) return;
+			if (indexes.Count == 0) 
+				return;
+			
+			//Import file if necessary
+
+			
 			Global.MainForm.StartNewMovie(MovieList[MovieView.SelectedIndices[0]], false);
 		}
 
@@ -264,10 +269,6 @@ namespace BizHawk.MultiClient
 				Directory.CreateDirectory(d);
 
 			foreach (string f in Directory.GetFiles(d, "*.tas"))
-				AddMovieToList(f);
-			foreach (string f in Directory.GetFiles(d, "*.fm2"))
-				AddMovieToList(f);
-			foreach (string f in Directory.GetFiles(d, "*.mc2"))
 				AddMovieToList(f);
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
