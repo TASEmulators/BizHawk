@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("BizHawk.Emulation")]
+[assembly: AssemblyTitle("DiscoHawk")]
 [assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
 [assembly: AssemblyCompany("BizHawk")]
 
@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("38dc7bf9-d86c-4217-acd8-36dc09f8ba57")]
+[assembly: Guid("0DE267F2-039C-44A3-8489-97A4D99649C2")]
 
 // Version information for an assembly consists of the following four values:
 //
