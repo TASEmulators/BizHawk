@@ -172,6 +172,9 @@ namespace BizHawk.MultiClient
 
 		public string GetControllersAsMnemonic()
 		{
+			if (Global.Emulator.SystemId == "NULL")
+				return "|.|";
+
 			StringBuilder input = new StringBuilder("|");
 
 			if (ControlType == "Gameboy Controller")
@@ -374,6 +377,8 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
+			if (Global.Emulator.SystemId == "NULL")
+				return;
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
 			MyBoolButtons.Clear();
