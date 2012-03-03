@@ -752,7 +752,14 @@ namespace BizHawk.MultiClient
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
-				LoadRom(CurrentlyOpenRom);
+				if (CurrentlyOpenRom == null)
+				{
+					OpenROM();
+					if (CurrentlyOpenRom == null)
+						return;
+				}
+				else
+					LoadRom(CurrentlyOpenRom);
 				string errorMsg = "";
 				string warningMsg = "";
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);

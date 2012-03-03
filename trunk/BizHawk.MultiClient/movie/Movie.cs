@@ -83,6 +83,8 @@ namespace BizHawk.MultiClient
 
 		public void ClearSaveRAM()
 		{
+			string x = PathManager.SaveRamPath(Global.Game);
+			
 			var file = new FileInfo(PathManager.SaveRamPath(Global.Game));
 			if (file.Exists) file.Delete();
 		}
