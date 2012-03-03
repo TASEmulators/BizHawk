@@ -2142,17 +2142,17 @@ namespace BizHawk.MultiClient
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 			ofd.Filter = FormatFilter(
-				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.gb;*.bin;*.gen;*.smd;*.rom;*.cue;*.exe;%ARCH%",
+				"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;*.exe;%ARCH%",
 				//"PSX Executables", "*.exe",
 				"Disc Images", "*.cue",
 				"NES", "*.nes;%ARCH%",
 				"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-				"Genesis", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 				"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
-				"Gameboy", "*.gb;%ARCH%",
 				"TI-83", "*.rom;%ARCH%",
 				"Archive Files", "%ARCH%",
 				"Savestate", "*.state",
+				"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
+				"Gameboy (experimental)", "*.gb;%ARCH%",
 				"All Files", "*.*");
 
 			ofd.RestoreDirectory = false;
