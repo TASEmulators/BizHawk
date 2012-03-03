@@ -2477,5 +2477,42 @@ namespace BizHawk.MultiClient
 			RamPoke r = new RamPoke();
 			r.Show();
 		}
+
+		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var ofd = new OpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Multiselect = true;
+			ofd.Filter = FormatFilter(
+				"Movie Files", "*.fm2;*.mc2;*.mmv;*.fmv;",
+				"FCEUX", "*.fm2",
+				"PCEjin", "*.mc2",
+				"Dega", "*mmv",
+				"Famtasia", "*fmv",
+				"All Files", "*.*");
+
+			ofd.RestoreDirectory = false;
+
+			Global.Sound.StopSound();
+			var result = ofd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return;
+			
+			foreach (string fn in ofd.FileNames)
+			{
+				var file = new FileInfo(fn);
+
+				string errorMsg = "";
+				string warningMsg = "";
+				Movie m = MovieImport.ImportFile(fn, out errorMsg, out warningMsg);
+				if (errorMsg.Length > 0)
+					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (warningMsg.Length > 0)
+					Global.RenderPanel.AddMessage(warningMsg);
+				else
+					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as .tas");
+			}
+		}
 	}
 }
