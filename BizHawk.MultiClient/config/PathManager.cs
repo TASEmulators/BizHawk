@@ -282,7 +282,10 @@ namespace BizHawk.MultiClient
 		{
 			string name = FilesystemSafeName(game);
 			if (Global.MainForm.MovieActive())
+			{
+				
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+			}
 
 			switch (game.System)
 			{
@@ -296,8 +299,8 @@ namespace BizHawk.MultiClient
 				case "GEN": return Path.Combine(MakeAbsolutePath(Global.Config.PathGenesisSaveRAM, "GEN"), name + ".SaveRAM");
 				case "NES": return Path.Combine(MakeAbsolutePath(Global.Config.PathNESSaveRAM, "NES"), name + ".SaveRAM");
 				case "TI83": return Path.Combine(MakeAbsolutePath(Global.Config.PathTI83SaveRAM, "TI83"), name + ".SaveRAM");
+				default: return Path.Combine(GetBasePathAbsolute(), name + ".SaveRAM");
 			}
-			return "";
 		}
 
 		public static string SaveStatePrefix(GameInfo game)
