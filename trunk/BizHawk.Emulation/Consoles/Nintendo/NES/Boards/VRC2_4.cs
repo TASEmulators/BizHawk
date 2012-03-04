@@ -84,7 +84,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				temp &= chr_bank_mask_1k;
 				chr_banks_1k[i] = (byte)temp;
 			}
-			//Console.WriteLine();
 		}
 
 		void SyncIRQ()

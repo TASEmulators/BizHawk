@@ -423,7 +423,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppur.install_latches();
 					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 
-					nes.board.AddressPPU(ppur.get_2007access());
+					//zero 03-mar-2012 - this broke chu chu rocket.
+					//its actually a terrible idea, so dont put it back.
+					//the address isnt observed by the board till it gets clocked by a read or write.
+					//nes.board.AddressPPU(ppur.get_2007access());
 				}
 				vtoggle ^= true;
 			}
