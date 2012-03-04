@@ -43,6 +43,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         void WriteCD(int addr, byte value)
         {
+            if (!TurboCD && !BramEnabled)
+                return; // flee if no turboCD hooked up
+
             switch (addr & 0x1FFF)
             {
                 case 0x1800: // SCSI Drive Control Line
@@ -184,6 +187,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         public byte ReadCD(int addr)
         {
+            if (!TurboCD && !BramEnabled)
+                return 0xFF; //bail if no TurboCD.
+
             byte returnValue = 0;
             short sample;
 
