@@ -2607,6 +2607,9 @@ namespace BizHawk.MultiClient
 			byte[] GifAnimation = {33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0};
 			MemoryStream MS = new MemoryStream();
 			BinaryReader BR = new BinaryReader(MS);
+			var fi = new FileInfo(filename);
+			if (fi.Directory.Exists == false)
+				fi.Directory.Create();
 			BinaryWriter BW = new BinaryWriter(new FileStream(filename, FileMode.Create));
 			images[0].Save(MS,ImageFormat.Gif);
 			byte[] B = MS.ToArray();
