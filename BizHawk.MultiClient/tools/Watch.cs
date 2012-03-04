@@ -267,10 +267,31 @@ namespace BizHawk.MultiClient
 								return String.Format("{0:X8}", value);
 						}
 					case asigned.SIGNED:
-						return ((sbyte)value).ToString();
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return ((sbyte)value).ToString();
+							case atype.WORD:
+								return ((short)value).ToString();
+							case atype.DWORD:
+								return ((int)value).ToString();
+						}
+						break;
+						
 					default:
 					case asigned.UNSIGNED:
-						return value.ToString();
+					switch (type)
+						{
+						default:
+							case atype.BYTE:
+								return ((byte)value).ToString();
+							case atype.WORD:
+								return ((ushort)value).ToString();
+							case atype.DWORD:
+								return ((uint)value).ToString();
+						}
+						break;
 				}
 			}
 		}
