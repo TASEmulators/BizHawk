@@ -622,7 +622,6 @@ namespace BizHawk.MultiClient
 			string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
 			for (long frame = 1; frame <= frames; frame++)
 			{
-				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "NES Controller";
@@ -640,7 +639,7 @@ namespace BizHawk.MultiClient
 						player++;
 					if (player != 3)
 					{
-						controllerstate = r.ReadByte();
+						byte controllerstate = r.ReadByte();
 						byte and = 0x1;
 						for (int button = 0; button < buttons.Length; button++)
 						{
@@ -648,9 +647,10 @@ namespace BizHawk.MultiClient
 							and <<= 1;
 						}
 					}
-					else if (!FDS)
+					else if (FDS)
 					{
 						// TODO: FDS data handling here.
+						byte command = r.ReadByte();
 					}
 					player++;
 				}
@@ -805,7 +805,6 @@ namespace BizHawk.MultiClient
 			string[] buttons = new string[6] { "Up", "Down", "Left", "Right", "B1", "B2" };
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
-				byte controllerstate;
 				SimpleController controllers = new SimpleController();
 				controllers.Type = new ControllerDefinition();
 				controllers.Type.Name = "SMS Controller";
@@ -816,7 +815,7 @@ namespace BizHawk.MultiClient
 				*/
 				for (int player = 1; player <= 2; player++)
 				{
-					controllerstate = r.ReadByte();
+					byte controllerstate = r.ReadByte();
 					byte and = 1;
 					for (int button = 0; button < buttons.Length; button++)
 					{
