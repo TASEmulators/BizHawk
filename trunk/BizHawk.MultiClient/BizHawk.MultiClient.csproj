@@ -123,6 +123,12 @@
     <Compile Include="config\AutofireConfig.Designer.cs">
       <DependentUpon>AutofireConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\GifAnimator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\GifAnimator.Designer.cs">
+      <DependentUpon>GifAnimator.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\InputConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -268,6 +274,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="config\GifAnimator.resx">
+      <DependentUpon>GifAnimator.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Gameboy\Debugger.resx">
       <DependentUpon>Debugger.cs</DependentUpon>
       <SubType>Designer</SubType>

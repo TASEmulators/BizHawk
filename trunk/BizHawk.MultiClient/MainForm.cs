@@ -2655,5 +2655,11 @@ namespace BizHawk.MultiClient
 
 		#endregion
 
+		private void animatedGIFConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GifAnimator g = new GifAnimator();
+			g.Show();
+		}
+
 	}
 }
