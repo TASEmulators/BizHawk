@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public int top = 8;
 			public int bottom = 231;
 			public int left = 0;
-			public int right = 256;
+			public int right = 255;
 
 			NES emu;
 			public MyVideoProvider(NES emu)
@@ -148,10 +148,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				bool useBackdrop = (backdrop & 0xFF000000) != 0;
 
 				//TODO - we could recalculate this on the fly (and invalidate/recalculate it when the palette is changed)
-				int width = right - left;
-				for (int x = left; x < right; x++)
+				int width = BufferWidth;
+				for (int x = left; x <= right; x++)
 				{
-					for (int y = top; y < bottom; y++)
+					for (int y = top; y <= bottom; y++)
 					{
 						short pixel = emu.ppu.xbuf[(y * 256) + x];
 						if ((pixel & 0x8000) != 0 && useBackdrop)
@@ -163,8 +163,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				return pixels;
 			}
-			public int BufferWidth { get { return right - left; } }
-			public int BufferHeight { get { return bottom - top; } }
+			public int BufferWidth { get { return right - left + 1; } }
+			public int BufferHeight { get { return bottom - top + 1; } }
 			public int BackgroundColor { get { return 0; } }
 		}
 
@@ -181,7 +181,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				videoProvider.left = 0;
-				videoProvider.right = 256;
+				videoProvider.right = 255;
 			}
 		}
 
