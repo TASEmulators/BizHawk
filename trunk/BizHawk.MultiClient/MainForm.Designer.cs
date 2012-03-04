@@ -107,6 +107,8 @@
 			this.screenshotF12ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.animatedGIFConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.makeAnimatedGIFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -259,7 +261,7 @@
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.animatedGIFConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.makeAnimatedGifAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -877,7 +879,9 @@
             this.screenshotF12ToolStripMenuItem,
             this.screenshotAsToolStripMenuItem,
             this.screenshotClipboardToolStripMenuItem,
-            this.animatedGIFConfigToolStripMenuItem});
+            this.animatedGIFConfigToolStripMenuItem,
+            this.makeAnimatedGIFToolStripMenuItem,
+            this.makeAnimatedGifAsToolStripMenuItem});
 			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
 			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.screenshotToolStripMenuItem.Text = "Screenshot";
@@ -903,6 +907,20 @@
 			this.screenshotClipboardToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.screenshotClipboardToolStripMenuItem.Text = "Screenshot -> Clipboard";
 			this.screenshotClipboardToolStripMenuItem.Click += new System.EventHandler(this.screenshotClipboardToolStripMenuItem_Click);
+			// 
+			// animatedGIFConfigToolStripMenuItem
+			// 
+			this.animatedGIFConfigToolStripMenuItem.Name = "animatedGIFConfigToolStripMenuItem";
+			this.animatedGIFConfigToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.animatedGIFConfigToolStripMenuItem.Text = "Animated GIF Config";
+			this.animatedGIFConfigToolStripMenuItem.Click += new System.EventHandler(this.animatedGIFConfigToolStripMenuItem_Click);
+			// 
+			// makeAnimatedGIFToolStripMenuItem
+			// 
+			this.makeAnimatedGIFToolStripMenuItem.Name = "makeAnimatedGIFToolStripMenuItem";
+			this.makeAnimatedGIFToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.makeAnimatedGIFToolStripMenuItem.Text = "Make Animated GIF";
+			this.makeAnimatedGIFToolStripMenuItem.Click += new System.EventHandler(this.makeAnimatedGIFToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator4
 			// 
@@ -2128,12 +2146,12 @@
 			this.showMenuToolStripMenuItem.Text = "Show Menu";
 			this.showMenuToolStripMenuItem.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// animatedGIFConfigToolStripMenuItem
+			// makeAnimatedGifAsToolStripMenuItem
 			// 
-			this.animatedGIFConfigToolStripMenuItem.Name = "animatedGIFConfigToolStripMenuItem";
-			this.animatedGIFConfigToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.animatedGIFConfigToolStripMenuItem.Text = "Animated GIF Config";
-			this.animatedGIFConfigToolStripMenuItem.Click += new System.EventHandler(this.animatedGIFConfigToolStripMenuItem_Click);
+			this.makeAnimatedGifAsToolStripMenuItem.Name = "makeAnimatedGifAsToolStripMenuItem";
+			this.makeAnimatedGifAsToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.makeAnimatedGifAsToolStripMenuItem.Text = "Make Animated Gif As..";
+			this.makeAnimatedGifAsToolStripMenuItem.Click += new System.EventHandler(this.makeAnimatedGifAsToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -2396,6 +2414,8 @@
 		private System.Windows.Forms.ToolStripMenuItem forumsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem screenshotClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem animatedGIFConfigToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem makeAnimatedGIFToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem makeAnimatedGifAsToolStripMenuItem;
     }
 }
 
