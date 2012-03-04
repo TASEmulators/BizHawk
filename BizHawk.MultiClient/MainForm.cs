@@ -2553,7 +2553,7 @@ namespace BizHawk.MultiClient
 		/// <param name="reversable">Flag for making the gif loop back and forth</param>
 		/// <param name="filename">location to save the file</param>
 		/// <returns>false if the parameters are incorrect, true if it completes</returns>
-		public bool makeAnimatedGif(int num_images, int frameskip, int gifSpeed, bool reversable, String filename)
+		public bool AnimatedGif(int num_images, int frameskip, int gifSpeed, bool reversable, String filename)
 		{
 			if (num_images < 1 || frameskip < 1 || gifSpeed == 0) return false;//Exits if settings are bad
 			#region declare/insantiate variables
@@ -2661,5 +2661,36 @@ namespace BizHawk.MultiClient
 			g.Show();
 		}
 
+		private void makeAnimatedGIFToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			makeAnimatedGif();
+		}
+
+		private void makeAnimatedGif()
+		{
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + "AGIF.{0:yyyy-MM-dd HH.mm.ss}.gif", DateTime.Now);
+			AnimatedGif(Global.Config.GifAnimatorNumFrames, Global.Config.GifAnimatorFrameSkip, Global.Config.GifAnimatorSpeed, Global.Config.GifAnimatorReversable, path);
+		}
+		private void makeAnimatedGif(string path)
+		{
+			AnimatedGif(Global.Config.GifAnimatorNumFrames, Global.Config.GifAnimatorFrameSkip, Global.Config.GifAnimatorSpeed, Global.Config.GifAnimatorReversable, path);
+		}
+
+		private void makeAnimatedGifAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + "AGIF.{0:yyyy-MM-dd HH.mm.ss}.gif", DateTime.Now);
+
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.InitialDirectory = Path.GetDirectoryName(path);
+			sfd.FileName = Path.GetFileName(path);
+			sfd.Filter = "GIF File (*.gif)|*.gif";
+
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return;
+			makeAnimatedGif(sfd.FileName);
+		}
 	}
 }

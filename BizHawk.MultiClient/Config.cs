@@ -465,6 +465,12 @@
 		//GB settings
 		public GBControllerTemplate GBController = new GBControllerTemplate();
 		public GBControllerTemplate GBAutoController = new GBControllerTemplate();
+
+		//GIF Animator Settings
+		public int GifAnimatorNumFrames;
+		public int GifAnimatorFrameSkip;
+		public int GifAnimatorSpeed;
+		public bool GifAnimatorReversable;
 	}
 
 	public class SMSControllerTemplate
