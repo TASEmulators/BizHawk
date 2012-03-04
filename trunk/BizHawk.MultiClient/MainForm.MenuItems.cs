@@ -322,7 +322,7 @@ namespace BizHawk.MultiClient
 
 		private void helpToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.thml");
+			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.html");
 		}
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
