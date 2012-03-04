@@ -84,42 +84,42 @@ PRG Setup:
 		{
 			switch (addr)
 			{
-				case 0x7EF6:
+				case 0x1EF6:
 					if (value.Bit(0))
 						SetMirrorType(EMirrorType.Vertical);
 					else
 						SetMirrorType(EMirrorType.Horizontal);
 					break;
 
-				case 0x7EF0:
+				case 0x1EF0:
 					chr_regs_2k[0] = value;
 					break;
-				case 0x7EF1:
+				case 0x1EF1:
 					chr_regs_2k[1] = value;
 					break;
-				case 0x7EF2:
+				case 0x1EF2:
 					chr_regs_2k[2] = value;
 					break;
-				case 0x7EF3:
+				case 0x1EF3:
 					chr_regs_2k[3] = value;
 					break;
-				case 0x7EF4:
+				case 0x1EF4:
 					chr_regs_2k[4] = value;
 					break;
-				case 0X7EF5:
+				case 0X1EF5:
 					chr_regs_2k[5] = value;
 					break;
 
-				case 0x7EFA: //PRG Reg 0
-				case 0x7EFB:
+				case 0x1EFA: //PRG Reg 0
+				case 0x1EFB:
 					prg_regs_8k[0] = value;
 					break;
-				case 0x7EFC: //PRG Reg 1
-				case 0x7EFD:
+				case 0x1EFC: //PRG Reg 1
+				case 0x1EFD:
 					prg_regs_8k[1] = value;
 					break;
-				case 0x7EFE: //PRG Reg 2
-				case 0x7EFF:
+				case 0x1EFE: //PRG Reg 2
+				case 0x1EFF:
 					prg_regs_8k[2] = value;
 					break;
 			}
