@@ -381,6 +381,19 @@ namespace BizHawk.MultiClient
 			TakeScreenshot();
 		}
 
+		private void forumsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
+		}
+
+		private void screenshotClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var img = MakeScreenshotImage())
+			{
+				System.Windows.Forms.Clipboard.SetImage(img);
+			}
+		}
+
 		private void savestate1toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
 		private void savestate2toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave2"); }
 		private void savestate3toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave3"); }
@@ -680,7 +693,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
-			MakeScreenshot(sfd.FileName);
+			TakeScreenshot(sfd.FileName);
 		}
 
 		private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
