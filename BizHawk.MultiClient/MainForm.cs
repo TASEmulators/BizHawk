@@ -1734,12 +1734,16 @@ namespace BizHawk.MultiClient
 			TAStudio1.UpdateValues();
 		}
 
-		private void MakeScreenshot(string path)
+		private unsafe Image MakeScreenshotImage()
 		{
 			var video = Global.Emulator.VideoProvider;
 			var image = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
 
+			//TODO - replace with BitmapBuffer
 			var framebuf = video.GetVideoBuffer();
+			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			int* ptr = (int*)bmpdata.Scan0.ToPointer();
+			int stride = bmpdata.Stride/4;
 			for (int y = 0; y < video.BufferHeight; y++)
 				for (int x = 0; x < video.BufferWidth; x++)
 				{
@@ -1752,21 +1756,28 @@ namespace BizHawk.MultiClient
 						else
 							col = Color.White.ToArgb();
 					}
-					image.SetPixel(x, y, Color.FromArgb(col));
+					ptr[y * stride + x] = col;
 				}
-
-			var f = new FileInfo(path);
-			if (f.Directory.Exists == false)
-				f.Directory.Create();
-
-			Global.RenderPanel.AddMessage(f.Name + " saved.");
-
-			image.Save(f.FullName, ImageFormat.Png);
+			image.UnlockBits(bmpdata);
+			return image;
 		}
 
 		private void TakeScreenshot()
 		{
-			MakeScreenshot(String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now));
+			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			TakeScreenshot(path);
+		}
+
+		private void TakeScreenshot(string path)
+		{
+			var fi = new FileInfo(path);
+			if (fi.Directory.Exists == false)
+				fi.Directory.Create();
+			using (var img = MakeScreenshotImage())
+			{
+				img.Save(fi.FullName, ImageFormat.Png);
+			}
+			Global.RenderPanel.AddMessage(fi.Name + " saved.");
 		}
 
 		public void SaveState(string name)
@@ -2519,9 +2530,5 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void forumsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
-		}
 	}
 }
