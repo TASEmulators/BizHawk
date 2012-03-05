@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		 *  Example Games:
 		 --------------------------
 		 SD Keiji - Blader
-		 Kyuukyoku Harikiri Stadium
+		
  
  
 		 Notes:
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			SetMirrorType(EMirrorType.Vertical);
-			chr_bank_mask = Cart.chr_size / 2 - 1;
+			chr_bank_mask = Cart.chr_size / 1 - 1;
 			prg_bank_mask = Cart.prg_size / 8 - 1;
 			prg_regs_8k[3] = 0xFF;
 			return true;
@@ -103,23 +103,69 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (addr)
 			{
 				case 0x1EF0:
-					chr_regs_1k[0] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[4] = (byte)(value / 2 * 2);
+						chr_regs_1k[5] = (byte)(value / 2 * 2 + 1);
+					}
+					else
+					{
+						chr_regs_1k[0] = (byte)(value / 2 * 2);
+						chr_regs_1k[1] = (byte)(value / 2 * 2 + 1);
+					}
 					break;
 				case 0x1EF1:
-					chr_regs_1k[1] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[6] = (byte)(value / 2 * 2);
+						chr_regs_1k[7] = (byte)(value / 2 * 2 + 1);
+					}
+					else
+					{
+						chr_regs_1k[2] = (byte)(value / 2 * 2);
+						chr_regs_1k[3] = (byte)(value / 2 * 2 + 1);
+					}
 					break;
 
 				case 0x1EF2:
-					chr_regs_1k[2] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[0] = value;
+					}
+					else
+					{
+						chr_regs_1k[4] = value;
+					}
 					break;
 				case 0x1EF3:
-					chr_regs_1k[3] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[1] = value;
+					}
+					else
+					{
+						chr_regs_1k[5] = value;
+					}
 					break;
 				case 0x1EF4:
-					chr_regs_1k[4] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[2] = value;
+					}
+					else
+					{
+						chr_regs_1k[6] = value;
+					}
 					break;
 				case 0X1EF5:
-					chr_regs_1k[5] = value;
+					if (ChrMode)
+					{
+						chr_regs_1k[3] = value;
+					}
+					else
+					{
+						chr_regs_1k[7] = value;
+					}
 					break; 
 
 				case 0x1EF6:
@@ -137,7 +183,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					prg_regs_8k[1] = (byte)(value >> 2);
 					break;
 				case 0x1EFC:
-					prg_regs_8k[1] = (byte)(value >> 2);
+					prg_regs_8k[2] = (byte)(value >> 2);
 					break;
 			}
 		}
@@ -154,12 +200,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override byte ReadPPU(int addr)
 		{
-			int bank_2k = addr >> 11;
-			int ofs = addr & ((1 << 11) - 1);
-			bank_2k = chr_regs_1k[bank_2k];
-			bank_2k &= chr_bank_mask;
-			addr = (bank_2k << 11) | ofs;
-			return VROM[addr];
+			if (addr < 0x2000)
+			{
+				int bank_1k = addr >> 10;
+				int ofs = addr & ((1 << 10) - 1);
+				bank_1k = chr_regs_1k[bank_1k];
+				bank_1k &= chr_bank_mask;
+				addr = (bank_1k << 10) | ofs;
+				return VROM[addr];
+			}
+			else return base.ReadPPU(addr);
 		}
 	}
 }
