@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	//Minelvaton Saga
 	//Taito Grand Prix - Eikou heno License
-
+	//Kyuukyoku Harikiri Stadium
 
 /*
 * Registers:
@@ -153,3 +153,20 @@ PRG Setup:
 		}
 	}
 }
+
+
+
+
+
+
+/*
+		 CHR Setup:
+		 ---------------------------
+ 
+						 $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
+					   +---------------+---------------+-------+-------+-------+-------+
+		 CHR Mode 0:   |    <$7EF0>    |    <$7EF1>    | $7EF2 | $7EF3 | $7EF4 | $7EF5 |
+					   +---------------+---------------+---------------+---------------+
+		 CHR Mode 1:   | $7EF2 | $7EF3 | $7EF4 | $7EF5 |    <$7EF0>    |    <$7EF1>    |
+					   +-------+-------+-------+-------+---------------+---------------+
+ */
