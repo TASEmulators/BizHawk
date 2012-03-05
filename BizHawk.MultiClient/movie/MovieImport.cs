@@ -401,7 +401,35 @@ namespace BizHawk.MultiClient
 			controllers.Type.Name = "NES Controller";
 			while (frame <= frameCount)
 			{
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controllers);
+				string mnemonic = mg.GetControllersAsMnemonic();
 				byte update = r.ReadByte();
+				// aa: Number of delta bytes to follow
+				int delta = (update >> 5) & 3;
+				int frames = 0;
+				/*
+				The delta byte(s) indicate the number of emulator frames between this update and the next update. It is
+				encoded in little-endian format and its size depends on the magnitude of the delta:
+				Delta of:      Number of bytes:
+				0              0
+				1-255          1
+				256-65535      2
+				65536-(2^24-1) 3
+				*/
+				for (int b = 0; b < delta; b++)
+					frames += r.ReadByte() * (int)Math.Pow(2, b * 8);
+				while (frames > 0)
+				{
+					m.AppendFrame(mnemonic);
+					if (controllers["Reset"])
+					{
+						controllers["Reset"] = false;
+						mnemonic = mg.GetControllersAsMnemonic();
+					}
+					frame++;
+					frames--;
+				}
 				if ((int)(update & 0x80) != 0)
 				{
 					// Control update: 1aabbbbb
@@ -492,34 +520,6 @@ namespace BizHawk.MultiClient
 					only when the state of the controller changes.
 					*/
 					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
-				}
-				MnemonicsGenerator mg = new MnemonicsGenerator();
-				mg.SetSource(controllers);
-				string mnemonic = mg.GetControllersAsMnemonic();
-				// aa: Number of delta bytes to follow
-				int delta = (update >> 5) & 3;
-				int frames = 0;
-				/*
-				The delta byte(s) indicate the number of emulator frames between this update and the next update. It is
-				encoded in little-endian format and its size depends on the magnitude of the delta:
-				Delta of:      Number of bytes:
-				0              0
-				1-255          1
-				256-65535      2
-				65536-(2^24-1) 3
-				*/
-				for (int b = 0; b < delta; b++)
-					frames += r.ReadByte() * (int)Math.Pow(2, b * 8);
-				while (frames > 0)
-				{
-					m.AppendFrame(mnemonic);
-					if (controllers["Reset"])
-					{
-						controllers["Reset"] = false;
-						mnemonic = mg.GetControllersAsMnemonic();
-					}
-					frame++;
-					frames--;
 				}
 			}
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
