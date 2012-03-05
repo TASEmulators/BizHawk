@@ -670,5 +670,10 @@ namespace BizHawk.MultiClient
 
 			this.LuaImp.LuaWait.WaitOne();
 		}
+
+		private void openToolStripButton_Click(object sender, EventArgs e)
+		{
+			OpenLuaFile();
+		}
 	}
 }
