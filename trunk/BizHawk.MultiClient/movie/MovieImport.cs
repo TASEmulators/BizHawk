@@ -333,6 +333,11 @@ namespace BizHawk.MultiClient
 			bool pal = false;
 			if ((int)(flags & 4) != 0)
 				pal = true;
+			/*
+			Starting with version 0.98.12 released on September 19, 2004, a PAL flag was added to the header but
+			unfortunately it is not reliable - the emulator does not take the PAL setting from the ROM, but from a user
+			preference. This means that this site cannot calculate movie lengths reliably.
+			*/
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			bool movieSyncHackOn = true;
 			if ((int)(flags & 16) != 0)
@@ -391,12 +396,12 @@ namespace BizHawk.MultiClient
 			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fourscore = false;
 			int frame = 1;
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "NES Controller";
 			while (frame <= frameCount)
 			{
 				byte update = r.ReadByte();
-				SimpleController controllers = new SimpleController();
-				controllers.Type = new ControllerDefinition();
-				controllers.Type.Name = "NES Controller";
 				if ((int)(update & 0x80) != 0)
 				{
 					// Control update: 1aabbbbb
@@ -418,8 +423,8 @@ namespace BizHawk.MultiClient
 						case 0:
 							break;
 						case 1:
-							reset = true;
-							controllers["Reset"] = true;
+							reset = !controllers["Reset"];
+							controllers["Reset"] = reset;
 							break;
 						case 2:
 							reset = true;
@@ -482,16 +487,40 @@ namespace BizHawk.MultiClient
 					 * 7      Right
 					*/
 					int button = update & 7;
+					/*
+					The controller update toggles the affected input. Controller update data is emitted to the movie file
+					only when the state of the controller changes.
+					*/
 					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
 				}
-				// aa: Number of delta bytes to follow
-				int delta = (update >> 5) & 3;
-				r.ReadBytes(delta);
 				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				string mnemonic = mg.GetControllersAsMnemonic();
-				m.AppendFrame(mnemonic);
-				frame++;
+				// aa: Number of delta bytes to follow
+				int delta = (update >> 5) & 3;
+				int frames = 0;
+				/*
+				The delta byte(s) indicate the number of emulator frames between this update and the next update. It is
+				encoded in little-endian format and its size depends on the magnitude of the delta:
+				Delta of:      Number of bytes:
+				0              0
+				1-255          1
+				256-65535      2
+				65536-(2^24-1) 3
+				*/
+				for (int b = 0; b < delta; b++)
+					frames += r.ReadByte() * (int)Math.Pow(2, b * 8);
+				while (frames > 0)
+				{
+					m.AppendFrame(mnemonic);
+					if (controllers["Reset"])
+					{
+						controllers["Reset"] = false;
+						mnemonic = mg.GetControllersAsMnemonic();
+					}
+					frame++;
+					frames--;
+				}
 			}
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 			r.Close();
