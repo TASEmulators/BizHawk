@@ -95,20 +95,20 @@ PRG Setup:
 					chr_regs_1k[0] = value;
 					break;
 				case 0x1EF1:
-					chr_regs_1k[1] = value;
+					chr_regs_1k[2] = value;
 					break;
 				
 				case 0x1EF2:
-					chr_regs_1k[2] = value;
-					break;
-				case 0x1EF3:
-					chr_regs_1k[3] = value;
-					break;
-				case 0x1EF4:
 					chr_regs_1k[4] = value;
 					break;
-				case 0X1EF5:
+				case 0x1EF3:
 					chr_regs_1k[5] = value;
+					break;
+				case 0x1EF4:
+					chr_regs_1k[6] = value;
+					break;
+				case 0X1EF5:
+					chr_regs_1k[7] = value;
 					break;
 
 				case 0x1EFA: //PRG Reg 0
