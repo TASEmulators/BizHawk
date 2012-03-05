@@ -45,20 +45,20 @@ PRG Setup:
 	class TAITO_X1_005 : NES.NESBoardBase
 	{
 		int prg_bank_mask, chr_bank_mask;
-		ByteBuffer chr_regs_2k = new ByteBuffer(6);
+		ByteBuffer chr_regs_1k = new ByteBuffer(8);
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
-			ser.Sync("chr_regs_2k", ref chr_regs_2k);
+			ser.Sync("chr_regs_1k", ref chr_regs_1k);
 			ser.Sync("prg_regs_8k", ref prg_regs_8k);
 		}
 
 		public override void Dispose()
 		{
 			base.Dispose();
-			chr_regs_2k.Dispose();
+			chr_regs_1k.Dispose();
 			prg_regs_8k.Dispose();
 		}
 
@@ -92,22 +92,23 @@ PRG Setup:
 					break;
 
 				case 0x1EF0:
-					chr_regs_2k[0] = value;
+					chr_regs_1k[0] = value;
 					break;
 				case 0x1EF1:
-					chr_regs_2k[1] = value;
+					chr_regs_1k[1] = value;
 					break;
+				
 				case 0x1EF2:
-					chr_regs_2k[2] = value;
+					chr_regs_1k[2] = value;
 					break;
 				case 0x1EF3:
-					chr_regs_2k[3] = value;
+					chr_regs_1k[3] = value;
 					break;
 				case 0x1EF4:
-					chr_regs_2k[4] = value;
+					chr_regs_1k[4] = value;
 					break;
 				case 0X1EF5:
-					chr_regs_2k[5] = value;
+					chr_regs_1k[5] = value;
 					break;
 
 				case 0x1EFA: //PRG Reg 0
@@ -139,7 +140,7 @@ PRG Setup:
 		{
 			int bank_2k = addr >> 11;
 			int ofs = addr & ((1 << 11) - 1);
-			bank_2k = chr_regs_2k[bank_2k];
+			bank_2k = chr_regs_1k[bank_2k];
 			bank_2k &= chr_bank_mask;
 			addr = (bank_2k << 11) | ofs;
 			return VROM[addr];
