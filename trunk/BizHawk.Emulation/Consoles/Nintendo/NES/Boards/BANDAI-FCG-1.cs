@@ -8,14 +8,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	/*
 		Example Games:
 	--------------------------
-	Dragon Ball - Dai Maou Jukkatsu      (016)
-	Dragon Ball Z Gaiden                 (016)
-	Dragon Ball Z 2                      (016)
-	Rokudenashi Blues                    (016)
-	Akuma-kun - Makai no Wana            (016)
-	Dragon Ball Z - Kyoushuu! Saiya Jin  (159)
-	SD Gundam Gaiden                     (159)
-	Magical Taruruuto Kun 1, 2           (159)
+	Dragon Ball - Dai Maou Jukkatsu      (016)   Garble graphics and unplayable (Works in FCEUX)
+	Dragon Ball Z Gaiden                 (016)   Works
+	Dragon Ball Z 2                      (016)   Works
+	Rokudenashi Blues                    (016)   Gray  (Gray in FCEUX as well, Nestopia plays it)
+	Akuma-kun - Makai no Wana            (016)   Works
+	Dragon Ball Z - Kyoushuu! Saiya Jin  (159)   Gray
+	SD Gundam Gaiden                     (159)   Gray
+	Magical Taruruuto Kun 1, 2           (159)   Gray
 	
 	PRG_ROM: 128KB
 	PRG_RAM: None

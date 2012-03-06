@@ -26,7 +26,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 011	Misc		Complete
 013	CPROM		Complete
 015	Multicart	Junk
-016	Bandai		Started doesn't work(+159) (probably needs eprom emulation)
+016	Bandai		Decent
 018	Jaleco*		Nothing
 019	Namcot106	Decent (but no sound) (+210)
 021	VRC4		Decent 
