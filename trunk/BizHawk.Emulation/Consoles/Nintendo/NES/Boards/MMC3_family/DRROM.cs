@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			BaseSetup();
-			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			SetMirroring(0, 1, 0, 1);
 
 			return true;
 		}
