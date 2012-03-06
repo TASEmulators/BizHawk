@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public partial class NES : IEmulator
 	{
 		//hardware/state
-		protected MOS6502 cpu;
+		public MOS6502 cpu;
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
