@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public struct PPUSTATUS
 			{
 				public int sl;
+				public bool rendering { get { return sl >= 0 && sl < 241; } }
 				public int cycle, end_cycle;
 			}
 
@@ -224,8 +225,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return (s << 0xC) | (par << 0x4) | fv;
 				}
 
-				public void increment2007(bool by32)
+				public void increment2007(bool rendering, bool by32)
 				{
+					//new knowledge as of 2010 - use this incrementing method while rendering is active (thanks, nemulator)
+					//http://nesdev.parodius.com/bbs/viewtopic.php?t=6401
+					if (rendering)
+					{
+						if (by32) increment_vs();
+						else increment_hsc();
+						return;
+					}
 
 					//If the VRAM address increment bit (2000.2) is clear (inc. amt. = 1), all the
 					//scroll counters are daisy-chained (in the order of HT, VT, H, V, FV) so that
@@ -458,9 +467,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppubus_write(addr, value);
 				}
 
-				ppur.increment2007(reg_2000.vram_incr32 != 0);
-				int newaddr = ppur.get_2007access() & 0x3FFF;
-				nes.board.AddressPPU(newaddr);
+				nes.board.AddressPPU(addr);
+
+				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 			}
 			byte read_2007()
 			{
@@ -479,11 +488,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ret = PALRAM[addr & 0x1F];
 				}
 
-				ppur.increment2007(reg_2000.vram_incr32 != 0);
-				
-				int newaddr = ppur.get_2007access() & 0x3FFF;
-				nes.board.AddressPPU(newaddr);
+				nes.board.AddressPPU(addr);
 
+				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+				
 				return ret;
 			}
 			//--------
