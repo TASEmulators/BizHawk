@@ -83,20 +83,6 @@ namespace BizHawk.MultiClient
 			return false;
 		}
 
-		/*
-		 Read bytes from a BinaryReader and translate them into a string for either the hexidecimal representation of the
-		 binary numbers or the UTF-8 string they represent.
-		*/
-		private static string BytesToString(BinaryReader r, int size, bool hexadecimal = false)
-		{
-			byte[] bytes = new byte[size];
-			for (int b = 0; b < size; b++)
-				bytes[b] = r.ReadByte();
-			if (hexadecimal)
-				return string.Concat(bytes.Select(b => string.Format("{0:x2}", b)));
-			return System.Text.Encoding.UTF8.GetString(bytes);
-		}
-
 		// Import a text-based movie format. This works for .FM2 and .MC2.
 		private static Movie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
@@ -302,7 +288,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
-			string signature = BytesToString(r, 4);
+			string signature = r.ReadStringFixedAscii(4);
 			if (signature != "FCM\x1A")
 			{
 				errorMsg = "This is not a valid .FCM file.";
@@ -350,7 +336,7 @@ namespace BizHawk.MultiClient
 			*/
 			m.Header.SetHeaderLine("PAL", pal.ToString());
 			bool movieSyncHackOn = ((flags & 16) != 0);
-			m.Header.SetHeaderLine("SyncHack", movieSyncHackOn.ToString());
+			m.Header.Comments.Add("SyncHack " + movieSyncHackOn.ToString());
 			/*
 			 009 1-byte flags: reserved, set to 0
 			 00A 1-byte flags: reserved, set to 0
@@ -374,8 +360,8 @@ namespace BizHawk.MultiClient
 			// 01C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// 020 16-byte md5sum of the ROM used
-			string MD5 = BytesToString(r, 16, true);
-			m.Header.SetHeaderLine("MD5", MD5);
+			byte[] MD5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
 			// 030 4-byte little-endian unsigned int: version of the emulator used
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " FCEU " + emuVersion.ToString());
@@ -553,7 +539,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
-			string signature = BytesToString(r, 4);
+			string signature = r.ReadStringFixedAscii(4);
 			if (signature != "FMV\x1A")
 			{
 				errorMsg = "This is not a valid .FMV file.";
@@ -604,10 +590,10 @@ namespace BizHawk.MultiClient
 			// 00E 2-byte little-endian unsigned int: unknown, set to 0000
 			r.ReadInt16();
 			// 010 64-byte zero-terminated emulator identifier string
-			string emuVersion = RemoveNull(BytesToString(r, 64));
+			string emuVersion = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
 			// 050 64-byte zero-terminated movie title string
-			string gameName = RemoveNull(BytesToString(r, 64));
+			string gameName = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			if (!controller1 && !controller2 && !FDS)
 			{
@@ -699,7 +685,7 @@ namespace BizHawk.MultiClient
             BinaryReader r = new BinaryReader(fs);
 
             // Check signature
-            string signature = BytesToString(r, 15);
+			string signature = r.ReadStringFixedAscii(15);
             if (signature != "Gens Movie TEST")
             {
                 errorMsg = "This is not a valid .GMV file.";
@@ -709,16 +695,16 @@ namespace BizHawk.MultiClient
             }
 
             // Retrieve ASCII encoded file format version (most recent is 'A')
-            string emuVersion = BytesToString(r, 1);
+			string emuVersion = r.ReadStringFixedAscii(1);
             m.Header.Comments.Add("emuOrigin Gens version " + emuVersion);
 
             uint rerecordCount = r.ReadUInt32();
             m.SetRerecords((int)rerecordCount);
 
             // ASCII-encoded controller config for player 1. '3' or '6'.
-            string player1Config = BytesToString(r, 1);
+			string player1Config = r.ReadStringFixedAscii(1);
             // ASCII-encoded controller config for player 2. '3' or '6'.
-            string player2Config = BytesToString(r, 1);
+			string player2Config = r.ReadStringFixedAscii(1);
 
             if (player1Config == "6" || player2Config == "6")
             {
@@ -746,7 +732,7 @@ namespace BizHawk.MultiClient
             r.ReadByte();
 
             // 40-byte zero-terminated ASCII movie name string
-            string movieName = RemoveNull(BytesToString(r, 40));
+			string movieName = RemoveNull(r.ReadStringFixedAscii(40));
 
             string[] stdButtons = new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
             string[] xyzButtons = new string[4] { "X", "Y", "Z", "Mode" };
@@ -834,7 +820,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
-			string signature = BytesToString(r, 4);
+			string signature = r.ReadStringFixedAscii(4);
 			if (signature != "NSS\x1A")
 			{
 				errorMsg = "This is not a valid .NMV file.";
@@ -875,7 +861,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
-			string signature = BytesToString(r, 4);
+			string signature = r.ReadStringFixedAscii(4);
 			if (signature != "MMV\0")
 			{
 				errorMsg = "This is not a valid .MMV file.";
@@ -907,7 +893,7 @@ namespace BizHawk.MultiClient
 			// 001c: 4-byte little endian unsigned int: size of input packet
 			r.ReadUInt32();
 			// 0020-005f: string: author info (UTF-8)
-			string author = RemoveNull(BytesToString(r, 64));
+			string author = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 0060: 4-byte little endian flags
 			byte flags = r.ReadByte();
@@ -933,11 +919,11 @@ namespace BizHawk.MultiClient
 			// bits 4-31: unused
 			r.ReadBytes(3);
 			// 0064-00e3: string: rom name (ASCII)
-			string gameName = RemoveNull(BytesToString(r, 128));
+			string gameName = RemoveNull(r.ReadStringFixedAscii(128));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 00e4-00f3: binary: rom MD5 digest
-			string MD5 = BytesToString(r, 16, true);
-			m.Header.SetHeaderLine("MD5", MD5);
+			byte[] MD5 = r.ReadBytes(16);
+			m.Header.SetHeaderLine("MD5", String.Format("{0:x8}", BizHawk.Util.BytesToHexString(MD5).ToLower()));
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1102,7 +1088,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
-			string signature = BytesToString(r, 4);
+			string signature = r.ReadStringFixedAscii(4);
 			if (signature != "VBM\x1A")
 			{
 				errorMsg = "This is not a valid .VBM file.";
@@ -1124,7 +1110,7 @@ namespace BizHawk.MultiClient
 			 recording time in Unix epoch format
 			*/
 			uint uid = r.ReadUInt32();
-			m.Header.SetHeaderLine(MovieHeader.GUID, uid.ToString());
+			m.Header.SetHeaderLine(MovieHeader.GUID, String.Format("{0:x8}", uid) + "-0000-0000-0000-000000000000");
 			// 00C 4-byte little-endian unsigned int: number of frames
 			uint frameCount = r.ReadUInt32();
 			// 010 4-byte little-endian unsigned int: rerecord count
@@ -1233,7 +1219,7 @@ namespace BizHawk.MultiClient
 			 024 12-byte character array: the internal game title of the ROM used while recording, not necessarily
 			 null-terminated (ASCII?)
 			*/
-			string gameName = RemoveNull(BytesToString(r, 12));
+			string gameName = RemoveNull(r.ReadStringFixedAscii(12));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
@@ -1250,10 +1236,10 @@ namespace BizHawk.MultiClient
 			// 03C 4-byte little-endian unsigned int: offset to the controller data inside file
 			uint firstFrameOffset = r.ReadUInt32();
 			// After the header is 192 bytes of text. The first 64 of these 192 bytes are for the author's name (or names).
-			string author = RemoveNull(BytesToString(r, 64));
+			string author = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// The following 128 bytes are for a description of the movie. Both parts must be null-terminated.
-			string movieDescription = RemoveNull(BytesToString(r, 128));
+			string movieDescription = RemoveNull(r.ReadStringFixedAscii(128));
 			m.Header.Comments.Add("comment " + movieDescription);
 			/*
 			 TODO: implement start data. There are no specifics on the googlecode page as to how long the SRAM or savestate
@@ -1338,7 +1324,7 @@ namespace BizHawk.MultiClient
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
-			string signature = BytesToString(r, 12);
+			string signature = r.ReadStringFixedAscii(12);
 			if (signature != "VirtuaNES MV")
 			{
 				errorMsg = "This is not a valid .VMV file.";
