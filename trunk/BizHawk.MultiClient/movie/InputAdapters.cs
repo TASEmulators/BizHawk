@@ -179,7 +179,7 @@ namespace BizHawk.MultiClient
 
 			if (ControlType == "Gameboy Controller")
 			{
-				input.Append(".|"); //TODO: reset goes here
+				input.Append("."); // TODO: reset goes here
 			}
 			if (ControlType == "NES Controller")
 			{
