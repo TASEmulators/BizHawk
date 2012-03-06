@@ -276,14 +276,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		/// <summary>
 		/// looks up from the bootgod DB
 		/// </summary>
-		CartInfo IdentifyFromBootGodDB(string hash_sha1)
+		CartInfo IdentifyFromBootGodDB(IEnumerable<string> hash_sha1)
 		{
 			BootGodDB.Initialize();
-			List<CartInfo> choices = BootGodDB.Instance.Identify(hash_sha1);
-			if (choices.Count == 0) return null;
-
-			//pick the first board for this hash arbitrarily. it probably doesn't make a difference
-			return choices[0];
+			foreach (var hash in hash_sha1)
+			{
+				List<CartInfo> choices = BootGodDB.Instance.Identify(hash);
+				//pick the first board for this hash arbitrarily. it probably doesn't make a difference
+				if (choices.Count != 0)
+					return choices[0];
+			}
+			return null;
 		}
 
 		/// <summary>
