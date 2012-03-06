@@ -404,30 +404,38 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				header->Cleanup();
 
 				//now that we know we have an iNES header, we can try to ignore it.
-				string hash_sha1;
-				string hash_md5;
-				using (var sha1 = System.Security.Cryptography.SHA1.Create())
-				{
-					sha1.TransformFinalBlock(file, 16, file.Length - 16);
-					hash_sha1 = "sha1:" + Util.BytesToHexString(sha1.Hash);
-				}
-				using (var md5 = System.Security.Cryptography.MD5.Create())
-				{
-					md5.TransformFinalBlock(file, 16, file.Length - 16);
-					hash_md5 = "md5:" + Util.BytesToHexString(md5.Hash);
-				}
+
+				List<string> hash_sha1_several = new List<string>();
+				string hash_sha1 = "sha1:" + Util.Hash_SHA1(file,16,file.Length - 16);
+				hash_sha1_several.Add(hash_sha1);
+				string hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
 
 				LoadWriteLine("Found iNES header:");
 				CartInfo iNesHeaderInfo = header->Analyze();
-				LoadWriteLine("Since this is iNES we can confidently parse PRG/CHR banks to hash.");
+				LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_md5);
 
+				if (iNesHeaderInfo.prg_size == 16)
+				{
+					//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
+					//so a correct hash will include only 8KB.
+					LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
+					var msTemp = new MemoryStream();
+					msTemp.Write(file, 16, 8 * 1024); //add prg
+					msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+					msTemp.Flush();
+					var bytes = msTemp.ToArray();
+					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
+					LoadWriteLine("PRG (8KB) + CHR hash: {0}", hash);
+					hash_sha1_several.Add(hash);
+				}
+
 				Type boardType = null;
 				CartInfo choice = null;
 				if (USE_DATABASE)
-					choice = IdentifyFromBootGodDB(hash_sha1);
+					choice = IdentifyFromBootGodDB(hash_sha1_several);
 				if (choice == null)
 				{
 					LoadWriteLine("Could not locate game in nescartdb");
@@ -547,7 +555,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if (choice.chr_size > 0)
 				{
 					board.VROM = new byte[choice.chr_size * 1024];
-					Array.Copy(file, 16 + board.ROM.Length, board.VROM, 0, board.VROM.Length);
+					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
+					Array.Copy(file, 16 + vrom_offset, board.VROM, 0, board.VROM.Length);
 				}
 
 				//create the vram and wram if necessary
