@@ -386,6 +386,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 		void LoadWriteLine(object arg) { LoadWriteLine("{0}", arg); }
 
+		class MyWriter : StringWriter
+		{
+			public MyWriter(TextWriter _loadReport)	
+			{
+				loadReport = _loadReport;
+			}
+			TextWriter loadReport;
+			public override void WriteLine(string format, params object[] arg)
+			{
+				Console.WriteLine(format, arg);
+				loadReport.WriteLine(format, arg);
+			}
+		}
+
 		public unsafe void Init(GameInfo gameInfo, byte[] rom)
 		{
 			LoadReport = new StringWriter();
@@ -411,7 +425,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				string hash_md5 = "md5:" + Util.Hash_MD5(file, 16, file.Length - 16);
 
 				LoadWriteLine("Found iNES header:");
-				CartInfo iNesHeaderInfo = header->Analyze();
+				CartInfo iNesHeaderInfo = header->Analyze(new MyWriter(LoadReport));
 				LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
@@ -428,7 +442,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					msTemp.Flush();
 					var bytes = msTemp.ToArray();
 					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
-					LoadWriteLine("PRG (8KB) + CHR hash: {0}", hash);
+					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 					hash_sha1_several.Add(hash);
 				}
 

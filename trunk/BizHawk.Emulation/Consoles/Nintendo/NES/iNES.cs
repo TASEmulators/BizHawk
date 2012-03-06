@@ -151,7 +151,7 @@ static string ClassifyTable = @"
 				}
 			}
 
-			public CartInfo Analyze()
+			public CartInfo Analyze(TextWriter report)
 			{
 				var ret = new CartInfo();
 				ret.game = new NESGameInfo();
@@ -170,9 +170,9 @@ static string ClassifyTable = @"
 
 				if(wram_size != 0 || flags9 != 0 || flags10 != 0 || zero11 != 0 || zero12 != 0 || zero13 != 0 || zero14 != 0 || zero15 != 0)
 				{
-					Console.WriteLine("Looks like you have an iNES 2.0 header, or some other kind of weird garbage.");
-					Console.WriteLine("We haven't bothered to support iNES 2.0.");
-					Console.WriteLine("We might, if we can find anyone who uses it. Let us know.");
+					report.WriteLine("Looks like you have an iNES 2.0 header, or some other kind of weird garbage.");
+					report.WriteLine("We haven't bothered to support iNES 2.0.");
+					report.WriteLine("We might, if we can find anyone who uses it. Let us know.");
 				}
 
 				ret.wram_size = (short)(wram_size * 8);
@@ -186,7 +186,7 @@ static string ClassifyTable = @"
 				//let's not put a lot of hacks in here. that's what the databases are for.
 				//for example of one not to add: videomation hack to change vram = 8 -> 16
 
-				Console.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}",ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring);
+				report.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}", ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring);
 
 				return ret;
 			}
