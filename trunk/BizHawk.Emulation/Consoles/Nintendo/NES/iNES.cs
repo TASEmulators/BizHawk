@@ -95,6 +95,8 @@ static string ClassifyTable = @"
 7	256	0	8	8	NES-AOROM; battletoads
 11	-1	-1	-1	-1	Discrete_74x377-FLEX; Bible Adventures (U) ?
 13	32	0	8	16	NES-CPROM; videomation
+44	-1	-1	-1	-1	MAPPER044
+49	-1	-1	-1	-1	MAPPER049
 65	-1	-1	-1	-1	IREM-H3001-FLEX; //Ai Sensei No Oshiete - Watashi No Hoshi (J).nes
 66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
 66	128	32	8	0	NES-GNROM; gumshoe
