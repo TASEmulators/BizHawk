@@ -188,7 +188,8 @@ static string ClassifyTable = @"
 				//let's not put a lot of hacks in here. that's what the databases are for.
 				//for example of one not to add: videomation hack to change vram = 8 -> 16
 
-				report.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}", ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring);
+				string mirror_memo = mirroring == 0 ? "horz" : (mirroring == 1 ? "vert" : "4screen");
+				report.WriteLine("map={0},pr={1},ch={2},wr={3},vr={4},ba={5},mir={6}({7})", ret.mapper, ret.prg_size, ret.chr_size, ret.wram_size, ret.vram_size, ret.wram_battery ? 1 : 0, mirroring, mirror_memo);
 
 				return ret;
 			}

@@ -429,7 +429,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
-				LoadWriteLine("headerless rom hash: {0}", hash_md5);
+				LoadWriteLine("headerless rom hash:  {0}", hash_md5);
 
 				if (iNesHeaderInfo.prg_size == 16)
 				{
@@ -444,6 +444,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					var hash = "sha1:" + Util.Hash_SHA1(bytes, 0, bytes.Length);
 					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
 					hash_sha1_several.Add(hash);
+					hash = "md5:" + Util.Hash_MD5(bytes, 0, bytes.Length);
+					LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
 				}
 
 				Type boardType = null;
