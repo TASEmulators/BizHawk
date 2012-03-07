@@ -275,8 +275,6 @@ namespace BizHawk.MultiClient
 			{
 				return;
 			}
-
-			Global.MainForm.LuaConsole1.WriteToOutputWindow(lua_input.ToString());
 			Global.RenderPanel.AddGUIText(lua_input.ToString(), x, y);
 		}
 
