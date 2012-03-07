@@ -31,7 +31,7 @@ namespace BizHawk.MultiClient
 
 		public void Close()
 		{
-			lua.Close();
+			lua = new Lua();
 			LuaKillThread();
 			LuaWait.Dispose();
 		}
