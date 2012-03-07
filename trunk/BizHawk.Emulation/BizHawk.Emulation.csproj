@@ -319,6 +319,9 @@
   <ItemGroup>
     <Folder Include="Consoles\PSX\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Consoles\Atari\docs\stella.pdf" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
