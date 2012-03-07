@@ -141,6 +141,7 @@
 		public int SaveSlot = 0; //currently selected savestate slot
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
+        public bool SkipLagFrame = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?

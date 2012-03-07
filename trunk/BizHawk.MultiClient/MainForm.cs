@@ -1562,6 +1562,11 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
+            if (Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Config.SkipLagFrame)
+            {
+                Global.Emulator.FrameAdvance(true);
+            }
+
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				//handle the initial trigger of a frame advance
@@ -1593,11 +1598,11 @@ namespace BizHawk.MultiClient
 				}
 				FrameAdvanceTimestamp = DateTime.MinValue;
 			}
-
-			if (!EmulatorPaused)
-			{
-				runFrame = true;
-			}
+            
+            if (!EmulatorPaused)
+            {
+                runFrame = true;
+            }
 
 			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
 			{
@@ -2704,5 +2709,10 @@ namespace BizHawk.MultiClient
 				return;
 			makeAnimatedGif(sfd.FileName);
 		}
+
+        private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Global.Config.SkipLagFrame ^= true;
+        }
 	}
 }
