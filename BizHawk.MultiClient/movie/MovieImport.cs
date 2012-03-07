@@ -323,9 +323,9 @@ namespace BizHawk.MultiClient
 			}
 			/*
 			 bit 2:
-             * if "0", NTSC timing
-             * if "1", PAL timing
-             * see notes below
+			 * if "0", NTSC timing
+			 * if "1", PAL timing
+			 * see notes below
 			*/
 			bool pal = ((flags & 4) != 0);
 			// other: reserved, set to 0
@@ -405,10 +405,10 @@ namespace BizHawk.MultiClient
 				/*
 				 The delta byte(s) indicate the number of emulator frames between this update and the next update. It is
 				 encoded in little-endian format and its size depends on the magnitude of the delta:
-				 Delta of:      Number of bytes:
-				 0              0
-				 1-255          1
-				 256-65535      2
+				 Delta of:	  Number of bytes:
+				 0			  0
+				 1-255		  1
+				 256-65535	  2
 				 65536-(2^24-1) 3
 				*/
 				for (int b = 0; b < delta; b++)
@@ -498,14 +498,14 @@ namespace BizHawk.MultiClient
 					int player = ((update >> 3) & 3) + 1;
 					/*
 					 ccc:
-					 * 0      A
-					 * 1      B
-					 * 2      Select
-					 * 3      Start
-					 * 4      Up
-					 * 5      Down
-					 * 6      Left
-					 * 7      Right
+					 * 0	  A
+					 * 1	  B
+					 * 2	  Select
+					 * 3	  Start
+					 * 4	  Up
+					 * 5	  Down
+					 * 6	  Left
+					 * 7	  Right
 					*/
 					int button = update & 7;
 					/*
@@ -681,132 +681,149 @@ namespace BizHawk.MultiClient
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
 
-            FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-            BinaryReader r = new BinaryReader(fs);
+			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+			BinaryReader r = new BinaryReader(fs);
 
-            // Check signature
+			// 000 16-byte signature and format version: "Gens Movie TEST9"
 			string signature = r.ReadStringFixedAscii(15);
-            if (signature != "Gens Movie TEST")
-            {
-                errorMsg = "This is not a valid .GMV file.";
-                r.Close();
-                fs.Close();
-                return null;
-            }
+			if (signature != "Gens Movie TEST")
+			{
+				errorMsg = "This is not a valid .GMV file.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
 
-            // Retrieve ASCII encoded file format version (most recent is 'A')
+			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string emuVersion = r.ReadStringFixedAscii(1);
-            m.Header.Comments.Add("emuOrigin Gens version " + emuVersion);
+			m.Header.Comments.Add(EMULATIONORIGIN + " Gens version " + emuVersion);
 
-            uint rerecordCount = r.ReadUInt32();
-            m.SetRerecords((int)rerecordCount);
+			// 010 4-byte little-endian unsigned int: rerecord count
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords((int)rerecordCount);
 
-            // ASCII-encoded controller config for player 1. '3' or '6'.
+			// 014 ASCII-encoded controller config for player 1. '3' or '6'.
 			string player1Config = r.ReadStringFixedAscii(1);
-            // ASCII-encoded controller config for player 2. '3' or '6'.
+			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
 			string player2Config = r.ReadStringFixedAscii(1);
 
-            if (player1Config == "6" || player2Config == "6")
-            {
-                errorMsg = "6 button controllers are not supported.";
-                r.Close();
-                fs.Close();
-                return null;
-            }
+			if (player1Config == "6" || player2Config == "6")
+			{
+				errorMsg = "6 button controllers are not supported.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
 
-            // Flags relevent only for version A and up
-            // Bit 7 (most significant): if "1", movie runs at 50 frames per second; if "0", movie runs at 60 frames per second
-            // bit 6: if "1", movie requires a savestate.
-            // bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
-            byte MovieFlags = r.ReadByte();
-            if (((MovieFlags >> 6) & 1) == 1)
-            {
-                errorMsg = "Movies that begin with a savestate are not supported.";
-                r.Close();
-                fs.Close();
-                return null;
-            }
-            bool twoPlayerMovie = ((MovieFlags >> 5) & 1) == 0;
+			// 016 special flags (Version A and up only)
+			byte MovieFlags = r.ReadByte();
+			/*
+			 bit 7 (most significant): if "1", movie runs at 50 frames per second; if "0", movie runs at 60 frames per second
+			*/
+			// bit 6: if "1", movie requires a savestate.
+			if (((MovieFlags >> 6) & 1) == 1)
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			// bit 5: if "1", movie is 3-player movie; if "0", movie is 2-player movie
+			bool twoPlayerMovie = ((MovieFlags >> 5) & 1) == 0;
 
-            // Unknown
-            r.ReadByte();
+			// Unknown.
+			r.ReadByte();
 
-            // 40-byte zero-terminated ASCII movie name string
+			// 018 40-byte zero-terminated ASCII movie name string
 			string movieName = RemoveNull(r.ReadStringFixedAscii(40));
 
-            string[] stdButtons = new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
-            string[] xyzButtons = new string[4] { "X", "Y", "Z", "Mode" };
-            int frame = 1;
-            SimpleController controllers = new SimpleController();
-            controllers.Type = new ControllerDefinition();
-            controllers.Type.Name = "Genesis 3-Button Controller";
+			/*
+			 040 frame data
+			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are left
+			 unpressed:
+			 * 0x01 Up
+			 * 0x02 Down
+			 * 0x04 Left
+			 * 0x08 Right
+			 * 0x10 A
+			 * 0x20 B
+			 * 0x40 C
+			 * 0x80 Start
+			*/
+			string[] stdButtons = new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" };
+			/*
+			 For XYZ-mode, each value is determined by OR-ing together values for whichever of the following are left
+			 unpressed:
+			 * 0x01 Controller 1 X
+			 * 0x02 Controller 1 Y
+			 * 0x04 Controller 1 Z
+			 * 0x08 Controller 1 Mode
+			 * 0x10 Controller 2 X
+			 * 0x20 Controller 2 Y
+			 * 0x40 Controller 2 Z
+			 * 0x80 Controller 2 Mode
+			*/
+			string[] xyzButtons = new string[4] { "X", "Y", "Z", "Mode" };
+			int frame = 1;
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "Genesis 3-Button Controller";
 
-            while (true)
-            {
-                // We are expecting three bytes per frame. If we get only 1 or 2, return with an error
-                byte controller1Data;
-                byte controller2Data;
-                byte starData;
+			while (true)
+			{
+				// Each frame consists of 3 bytes.
+				byte controller1Data;
+				byte controller2Data;
+				byte starData;
 
-                try
-                {
-                    controller1Data = r.ReadByte();
-                }
-                catch (EndOfStreamException)
-                {
-                    // Valid end of file reached
-                    break;
-                }
+				try
+				{
+					controller1Data = r.ReadByte();
+				}
+				catch (EndOfStreamException)
+				{
+					// Valid end of file reached.
+					break;
+				}
 
-                try
-                {
-                    controller2Data = r.ReadByte();
-                    starData = r.ReadByte();
-                }
-                catch (EndOfStreamException)
-                {
-                    errorMsg = "Unexpected end of file.";
-                    r.Close();
-                    fs.Close();
-                    return null;
-                }
+				try
+				{
+					controller2Data = r.ReadByte();
+					starData = r.ReadByte();
+				}
+				catch (EndOfStreamException)
+				{
+					errorMsg = "Unexpected end of file.";
+					r.Close();
+					fs.Close();
+					return null;
+				}
 
-                for (int i = 0; i < 8; i++)
-                {
-                    controllers["P1 " + stdButtons[i]] = ((controller1Data >> i) & 1) == 0;
-                    controllers["P2 " + stdButtons[i]] = ((controller2Data >> i) & 1) == 0;
-                }
+				for (int button = 0; button < stdButtons.Length; button++)
+				{
+					controllers["P1 " + stdButtons[button]] = ((controller1Data >> button) & 1) == 0;
+					controllers["P2 " + stdButtons[button]] = ((controller2Data >> button) & 1) == 0;
+				}
 
-                // For a three player movie, the third byte has the third player's data
-                if (!twoPlayerMovie)
-                {
-                    for (int i = 0; i < 8; i++)
-                    {
-                        controllers["P3 " + stdButtons[i]] = ((starData >> i) & 1) == 0;
-                    }
-                }
-                // Otherwise, the third byte has player 1 and 2's XYZM data, assuming they are 6 button controllers
-                else
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (player1Config == "6")
-                        {
-                            controllers["P1 " + xyzButtons[i]] = ((starData >> i) & 1) == 0;
-                        }
+				// * is controller 3 if a 3-player movie, or XYZ-mode if a 2-player movie.
+				if (!twoPlayerMovie)
+					for (int button = 0; button < stdButtons.Length; button++)
+						controllers["P3 " + stdButtons[button]] = ((starData >> button) & 1) == 0;
+				else
+					for (int i = 0; i < 4; i++)
+					{
+						if (player1Config == "6")
+							controllers["P1 " + xyzButtons[i]] = ((starData >> i) & 1) == 0;
 
-                        if (player2Config == "6")
-                        {
-                            controllers["P2 " + xyzButtons[i]] = ((starData >> (i+4)) & 1) == 0;
-                        }
-                    }
-                }
+						if (player2Config == "6")
+							controllers["P2 " + xyzButtons[i]] = ((starData >> (i+4)) & 1) == 0;
+					}
 
-                MnemonicsGenerator mg = new MnemonicsGenerator();
-                mg.SetSource(controllers);
-                m.AppendFrame(mg.GetControllersAsMnemonic());
-                frame++;
-            }
+				MnemonicsGenerator mg = new MnemonicsGenerator();
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
+				frame++;
+			}
 
 			return m;
 		}
