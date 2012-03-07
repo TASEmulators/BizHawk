@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
 		public static Controller TI83Controls;
 		public static Controller NESControls;
 		public static Controller GBControls;
+		public static Controller Atari2600Controls;
 		public static Controller NullControls;
 		public static CheatList CheatList;
 
@@ -31,6 +32,7 @@ namespace BizHawk.MultiClient
 		public static AutofireController AutofirePCEControls;
 		public static AutofireController AutofireGBControls;
 		public static AutofireController AutofireGenControls;
+		public static AutofireController AutofireAtari2600Controls;
 
 		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -80,7 +82,15 @@ namespace BizHawk.MultiClient
 					{"GRAPH", "G"}, {"TRACE", "t"}, {"ZOOM", "Z"}, {"WINDOW", "W"}, {"Y", "Y"}, {"2ND", "&"}, {"MODE", "O"},
 					{"DEL", "D"}, {"COMMA", ","}, {"SIN", "S"}
 				}
+			},
+			{
+				"Atari 2600 Basic Controller", new Dictionary<string,string>()
+				{	
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
+				}
 			}
+
+			
 		};
 		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>()
 		{
@@ -95,7 +105,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
 		{
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
-			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}
+			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 1}
 		};
 
 		/// <summary>

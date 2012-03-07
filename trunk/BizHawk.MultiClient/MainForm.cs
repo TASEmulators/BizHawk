@@ -651,17 +651,21 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
 			Global.GenControls = genControls;
 
-			var agenControls = new AutofireController(Genesis.GenesisController);
-			agbControls.Autofire = true;
-			genControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
-			genControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
-			genControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
-			genControls.BindMulti("P1 Down", Global.Config.GenesisAutoController[0].Down);
-			genControls.BindMulti("P1 A", Global.Config.GenesisAutoController[0].A);
-			genControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
-			genControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
-			genControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
-			Global.AutofireGenControls = agenControls;
+			var a2600Controls = new Controller(Atari2600.Atari2600ControllerDefinition);
+			a2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
+			a2600Controls.BindMulti("P1 Left", Global.Config.Atari2600Controller[0].Left);
+			a2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
+			a2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
+			a2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			Global.Atari2600Controls = a2600Controls;
+
+			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
+			autofireA2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
+			autofireA2600Controls.BindMulti("P1 Left", Global.Config.Atari2600Controller[0].Left);
+			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
+			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
+			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
@@ -842,6 +846,10 @@ namespace BizHawk.MultiClient
 				case "GG":
 					Global.ActiveController = Global.SMSControls;
 					Global.AutoFireController = Global.AutofireSMSControls;
+					break;
+				case "A26":
+					Global.ActiveController = Global.Atari2600Controls;
+					Global.AutoFireController = Global.AutofireAtari2600Controls;
 					break;
 				case "PCE":
 				case "PCECD":
@@ -1035,6 +1043,9 @@ namespace BizHawk.MultiClient
 								if (Global.Config.SmsAllowOverlock) game.AddOption("AllowOverclock");
 								if (Global.Config.SmsSpriteLimit) game.AddOption("SpriteLimit");
 								nextEmulator = new SMS(game, rom.RomData);
+								break;
+							case "A26":
+								nextEmulator = new Atari2600(game, rom.FileData);
 								break;
 							case "PCE":
 							case "PCECD":
