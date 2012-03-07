@@ -79,16 +79,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mirroring[3] = d;
 			}
 
-			protected void SetMirrorType(int pad_h, int pad_v)
+			public static EMirrorType CalculateMirrorType(int pad_h, int pad_v)
 			{
 				if (pad_h == 0)
 					if (pad_v == 0)
-						SetMirrorType(EMirrorType.OneScreenA);
-					else SetMirrorType(EMirrorType.Horizontal);
+						return EMirrorType.OneScreenA;
+					else return EMirrorType.Horizontal;
 				else
 					if (pad_v == 0)
-						SetMirrorType(EMirrorType.Vertical);
-					else SetMirrorType(EMirrorType.OneScreenB);
+						return EMirrorType.Vertical;
+					else return EMirrorType.OneScreenB;
+			}
+
+			protected void SetMirrorType(int pad_h, int pad_v)
+			{
+				SetMirrorType(CalculateMirrorType(pad_h, pad_v));
 			}
 
 			public void SetMirrorType(EMirrorType mirrorType)
