@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				byte old_value = value;
 				value &= ReadPRG(addr);
+				//Bible Adventures (Unl) (V1.3) [o1].nes will exercise this bus conflict, but not really test it. (works without bus conflict emulation
 				Debug.Assert(old_value == value, "Found a test case of Discrete_74x377 bus conflict. please report.");
 			}
 

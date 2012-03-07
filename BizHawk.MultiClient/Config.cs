@@ -21,6 +21,9 @@
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(true);
 
+			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
+			Atari2600AutoController[0] = new Atari2600ControllerTemplate(true);
+
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
 			NESAutoController[2] = new NESControllerTemplate(false);
@@ -440,15 +443,19 @@
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
 				
 		// PCEngine Settings
-        public bool PceSpriteLimit = false;
-        public bool PceEqualizeVolume = false;
-        public bool PceArcadeCardRewindHack = true;
+		public bool PceSpriteLimit = false;
+		public bool PceEqualizeVolume = false;
+		public bool PceArcadeCardRewindHack = true;
 		public PCEControllerTemplate[] PCEController = new PCEControllerTemplate[5];
 		public PCEControllerTemplate[] PCEAutoController = new PCEControllerTemplate[5];
 
 		// Genesis Settings
-        public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
-        public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
+		public GenControllerTemplate[] GenesisController = new GenControllerTemplate[1];
+		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
+
+		//Atari 2600 Settings
+		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[1];
+		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[1];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -657,6 +664,31 @@
 				B = "X, J1 B3";
 				C = "C, J1 B4";
 				Start = "Return, J1 B8";
+			}
+		}
+	}
+
+
+	public class Atari2600ControllerTemplate
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string Button = "";
+		public bool Enabled;
+
+		public Atari2600ControllerTemplate() { }
+		public Atari2600ControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				Button = "Z, J1 B1";
 			}
 		}
 	}
