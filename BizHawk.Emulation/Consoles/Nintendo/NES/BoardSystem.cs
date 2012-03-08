@@ -375,16 +375,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								state = 1;
 							}
 							break;
-						case 1:
-							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "cartridge")
-							{
-								currCart = new CartInfo();
-								currCart.game = currGame;
-								currCart.system = xmlreader.GetAttribute("system");
-								currCart.sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
-								state = 2;
-							}
-							break;
 						case 2:
 							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "board")
 							{
@@ -438,6 +428,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							}
 							break;
 						case 5:
+						case 1:
+							if (xmlreader.NodeType == XmlNodeType.Element && xmlreader.Name == "cartridge")
+							{
+								currCart = new CartInfo();
+								currCart.game = currGame;
+								currCart.system = xmlreader.GetAttribute("system");
+								currCart.sha1 = "sha1:" + xmlreader.GetAttribute("sha1");
+								state = 2;
+							}
 							if (xmlreader.NodeType == XmlNodeType.EndElement && xmlreader.Name == "game")
 							{
 								games.Add(currGame);
