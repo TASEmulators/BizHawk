@@ -370,7 +370,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								if (sl == 0 && ppur.status.cycle == 304)
 								{
 									runppu(1);
-									ppur.install_latches();
+									if (reg_2001.PPUON) ppur.install_latches();
 									runppu(1);
 									garbage_todo = 0;
 								}
@@ -378,7 +378,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								{
 									runppu(1);
 									//at 257: 3d world runner is ugly if we do this at 256
-									ppur.install_h_latches();
+									if (reg_2001.PPUON) ppur.install_h_latches();
 									runppu(1);
 									garbage_todo = 0;
 								}
@@ -421,11 +421,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					} //sprite pattern fetch loop
 
 					ppuphase = PPUPHASE.BG;
-
-					//so.. this is the end of hblank. latch horizontal scroll values
-					//do it cycle at 251
-					if (reg_2001.PPUON && sl != 0)
-						ppur.install_h_latches();
 
 					//I'm unclear of the reason why this particular access to memory is made.
 					//The nametable address that is accessed 2 times in a row here, is also the

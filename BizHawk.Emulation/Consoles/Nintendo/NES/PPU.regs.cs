@@ -1,4 +1,7 @@
-﻿//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM. 
+﻿//TODO - better sprite hit handling (be sure to test world runner)
+//http://nesdev.parodius.com/bbs/viewtopic.php?t=626
+
+//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM. 
 
 				//static const byte powerUpPalette[] =
 				//{
