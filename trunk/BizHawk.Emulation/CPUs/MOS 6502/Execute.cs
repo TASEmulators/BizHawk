@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x04: // NOP zp
+                        PC += 1;
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x05: // ORA zp
@@ -89,6 +90,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x0C: // NOP (addr)
+                        PC += 2;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x0D: // ORA addr
@@ -127,6 +129,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x14: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x15: // ORA zp,X
@@ -162,6 +165,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x1C: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x1D: // ORA addr,X*
@@ -288,6 +292,7 @@ FlagT = true;//this seems wrong
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x34: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x35: // AND zp,X
@@ -323,6 +328,7 @@ FlagT = true;//this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x3C: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x3D: // AND addr,X*
@@ -359,6 +365,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x44: // NOP zp
+                        PC += 1;
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x45: // EOR zp
@@ -432,6 +439,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x54: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x55: // EOR zp,X
@@ -468,6 +476,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x5C: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x5D: // EOR addr,X*
@@ -506,6 +515,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x64: // NOP zp
+                        PC += 1;
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
                     case 0x65: // ADC zp
@@ -593,6 +603,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0x74: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x75: // ADC zp,X
@@ -635,6 +646,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x7C: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0x7D: // ADC addr,X*
@@ -661,6 +673,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 7; TotalExecutedCycles += 7;
                         break;
                     case 0x80: // NOP #nn
+                        PC += 1;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x81: // STA (addr,X)
@@ -670,6 +683,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0x82: // NOP #nn
+                        PC += 1;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x84: // STY zp
@@ -692,6 +706,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x89: // NOP #nn
+                        PC += 1;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0x8A: // TXA
@@ -921,6 +936,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6;
                         break;
                     case 0xC2: // NOP #nn
+                        PC += 1;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0xC4: // CPY zp
@@ -1002,6 +1018,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 5;
                         break;
                     case 0xD4: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xD5: // CMP zp,X
@@ -1037,6 +1054,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0xDC: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xDD: // CMP addr,X*
@@ -1075,6 +1093,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
                     case 0xE2: // NOP #nn
+                        PC += 1;
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0xE4: // CPX zp
@@ -1163,6 +1182,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
                     case 0xF4: // NOP zp,X
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xF5: // SBC zp,X
@@ -1202,6 +1222,7 @@ FlagT = true;// this seems wrong
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
                     case 0xFC: // NOP (addr,X)
+                        PC += 1;
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
                     case 0xFD: // SBC addr,X*
