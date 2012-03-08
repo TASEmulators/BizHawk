@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WriteMemory(0x2004, db);
 				addr++;
 			}
-			cpu.PendingCycles -= 512;
+			cpu.PendingCycles -= 513;
 		}
 
 		/// <summary>
