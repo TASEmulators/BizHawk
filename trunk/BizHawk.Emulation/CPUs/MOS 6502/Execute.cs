@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 switch (opcode)
                 {
                     case 0x00: // BRK
-TriggerException(ExceptionType.BRK);
+                        TriggerException(ExceptionType.BRK);
                         break;
                     case 0x01: // ORA (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));
