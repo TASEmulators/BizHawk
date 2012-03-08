@@ -110,8 +110,8 @@ namespace BizHawk.MultiClient
 			isRunning = true;
 			try
 			{
-				if (LuaThread != null)
-					lua.DoFile(F);
+				//if (LuaThread != null)
+				//	lua.DoFile(F);
 			}
 			catch (Exception e)
 			{
