@@ -434,6 +434,7 @@ namespace HuC6280
         {
             var w = new StreamWriter(file, false);
             w.WriteLine("using System;");
+            w.WriteLine("using BizHawk.Emulation.Consoles.TurboGrafx;");
             w.WriteLine();
             w.WriteLine("// Do not modify this file directly! This is GENERATED code.");
             w.WriteLine("// Please open the CpuCoreGenerator solution and make your modifications there.");
@@ -530,7 +531,7 @@ namespace HuC6280
             w.WriteLine("                        }");
             w.WriteLine("                    }");
             w.WriteLine("                }");
-            w.WriteLine("                ThinkAction();");
+            w.WriteLine("                ThinkAction(delta);");
             w.WriteLine("            }");
             w.WriteLine("        }");
             w.WriteLine("    }");
