@@ -1854,7 +1854,10 @@ namespace BizHawk.MultiClient
 			if (file.Directory.Exists == false)
 				file.Directory.Create();
 
+			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+
 			if (result != DialogResult.OK)
 				return;
 
