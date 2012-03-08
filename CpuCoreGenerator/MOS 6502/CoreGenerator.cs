@@ -439,7 +439,7 @@ namespace M6502
                 case "BMI": Branch(op, w, "N", true); break;
                 case "BNE": Branch(op, w, "Z", false); break;
                 case "BPL": Branch(op, w, "N", false); break;
-                case "BRK": w.WriteLine("TriggerException(ExceptionType.BRK);"); break;
+                case "BRK": w.WriteLine(Spaces + "TriggerException(ExceptionType.BRK);"); break;
                 case "BVC": Branch(op, w, "V", false); break;
                 case "BVS": Branch(op, w, "V", true); break;
                 case "CLC": CLC(op, w); break;
