@@ -212,6 +212,11 @@ namespace M6502
 
         private void NOP(OpcodeInfo op, TextWriter w)
         {
+            // This code is quite insufficient, but at least, we have to increment program counter appropriately.
+            // For immediate addressing mode, it will be correct, and it will fix desyncs of "Puzznic (J)" and "Puzznic (U)".
+            // For other addressing modes, I don't know whether they access memory, so further investigation will be needed.
+            if (op.Size > 1)
+                w.WriteLine(Spaces+"PC += {0};", op.Size-1);
             w.WriteLine(Spaces+"PendingCycles -= {0}; TotalExecutedCycles += {0};", op.Cycles);
         }
 
