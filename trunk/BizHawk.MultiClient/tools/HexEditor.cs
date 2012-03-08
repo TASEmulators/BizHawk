@@ -17,6 +17,7 @@ namespace BizHawk.MultiClient
 		//Find text box - autohighlights matches, and shows total matches
 		//Users can customize background, & text colors
 		//Tool strip
+		//Increment/Decrement wrapping logic for 2 and 4 byte values
 		int defaultWidth;
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -876,6 +877,14 @@ namespace BizHawk.MultiClient
 				case Keys.End:
 					GoToAddress(Domain.Size - (Global.Config.HexEditorDataSize));
 					break;
+				case Keys.Add:
+					IncrementAddress();
+					UpdateValues();
+					break;
+				case Keys.Subtract:
+					DecrementAddress();
+					UpdateValues();
+					break;
 			}
 		}
 
@@ -1052,6 +1061,66 @@ namespace BizHawk.MultiClient
 				}
 			}
 			
+		}
+
+		private void IncrementAddress()
+		{
+			int address = GetHighlightedAddress();
+			byte value;
+			if (address >= 0)
+			{
+				switch (Global.Config.HexEditorDataSize)
+				{
+					default:
+					case 1: //TODO: some kind of logic here for 2 and 4, if value wraps, then next value up needs to increment
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value + 1));
+						break;
+					case 2:
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value + 1));
+						break;
+					case 4:
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value + 1));
+						break;
+				}
+			}
+		}
+
+		private void DecrementAddress()
+		{
+			int address = GetHighlightedAddress();
+			byte value;
+			if (address >= 0)
+			{
+				switch (Global.Config.HexEditorDataSize)
+				{
+					default:
+					case 1:
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value - 1));
+						break;
+					case 2: 
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value - 1));
+						break;
+					case 4:
+						value = Domain.PeekByte(address);
+						Domain.PokeByte(address, (byte)(value - 1));
+						break;
+				}
+			}
+		}
+
+		private void incrementToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			IncrementAddress();
+		}
+
+		private void decrementToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DecrementAddress();
 		}
 	}
 }

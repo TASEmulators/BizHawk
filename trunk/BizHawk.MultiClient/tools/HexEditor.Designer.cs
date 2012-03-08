@@ -60,6 +60,9 @@
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.incrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.decrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -84,27 +87,27 @@
             this.toolStripSeparator1,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// dumpToFileToolStripMenuItem
 			// 
 			this.dumpToFileToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.dumpToFileToolStripMenuItem.Name = "dumpToFileToolStripMenuItem";
-			this.dumpToFileToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.dumpToFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.dumpToFileToolStripMenuItem.Text = "&Dump to file...";
 			this.dumpToFileToolStripMenuItem.Click += new System.EventHandler(this.dumpToFileToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(151, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -120,14 +123,14 @@
             this.freezeAddressToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
 			// memoryDomainsToolStripMenuItem
 			// 
 			this.memoryDomainsToolStripMenuItem.Name = "memoryDomainsToolStripMenuItem";
-			this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.memoryDomainsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.memoryDomainsToolStripMenuItem.Text = "&Memory Domains";
 			this.memoryDomainsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.memoryDomainsToolStripMenuItem_DropDownOpened);
 			// 
@@ -138,47 +141,47 @@
             this.byteToolStripMenuItem1,
             this.byteToolStripMenuItem2});
 			this.dataSizeToolStripMenuItem.Name = "dataSizeToolStripMenuItem";
-			this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.dataSizeToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.dataSizeToolStripMenuItem.Text = "Data Size";
 			// 
 			// byteToolStripMenuItem
 			// 
 			this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-			this.byteToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+			this.byteToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
 			this.byteToolStripMenuItem.Text = "1 Byte";
 			this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
 			// 
 			// byteToolStripMenuItem1
 			// 
 			this.byteToolStripMenuItem1.Name = "byteToolStripMenuItem1";
-			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(106, 22);
 			this.byteToolStripMenuItem1.Text = "2 Byte";
 			this.byteToolStripMenuItem1.Click += new System.EventHandler(this.byteToolStripMenuItem1_Click);
 			// 
 			// byteToolStripMenuItem2
 			// 
 			this.byteToolStripMenuItem2.Name = "byteToolStripMenuItem2";
-			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(116, 22);
+			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(106, 22);
 			this.byteToolStripMenuItem2.Text = "4 Byte";
 			this.byteToolStripMenuItem2.Click += new System.EventHandler(this.byteToolStripMenuItem2_Click);
 			// 
 			// enToolStripMenuItem
 			// 
 			this.enToolStripMenuItem.Name = "enToolStripMenuItem";
-			this.enToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.enToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.enToolStripMenuItem.Text = "Big Endian";
 			this.enToolStripMenuItem.Click += new System.EventHandler(this.enToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(201, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
 			// 
 			// goToAddressToolStripMenuItem
 			// 
 			this.goToAddressToolStripMenuItem.Name = "goToAddressToolStripMenuItem";
 			this.goToAddressToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.goToAddressToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.goToAddressToolStripMenuItem.Text = "&Go to Address...";
 			this.goToAddressToolStripMenuItem.Click += new System.EventHandler(this.goToAddressToolStripMenuItem_Click);
 			// 
@@ -186,7 +189,7 @@
 			// 
 			this.addToRamWatchToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem1.Name = "addToRamWatchToolStripMenuItem1";
-			this.addToRamWatchToolStripMenuItem1.Size = new System.Drawing.Size(204, 22);
+			this.addToRamWatchToolStripMenuItem1.Size = new System.Drawing.Size(199, 22);
 			this.addToRamWatchToolStripMenuItem1.Text = "Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem1.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem1_Click);
 			// 
@@ -194,7 +197,7 @@
 			// 
 			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
-			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
 			// 
@@ -202,7 +205,7 @@
 			// 
 			this.unfreezeAllToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
 			this.unfreezeAllToolStripMenuItem.Name = "unfreezeAllToolStripMenuItem";
-			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(204, 22);
+			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
 			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
 			// 
@@ -214,33 +217,33 @@
             this.toolStripSeparator3,
             this.restoreWindowSizeToolStripMenuItem});
 			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.settingsToolStripMenuItem.Text = "&Settings";
 			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.settingsToolStripMenuItem_DropDownOpened);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowsSettingsToolStripMenuItem
 			// 
 			this.saveWindowsSettingsToolStripMenuItem.Name = "saveWindowsSettingsToolStripMenuItem";
-			this.saveWindowsSettingsToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			this.saveWindowsSettingsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.saveWindowsSettingsToolStripMenuItem.Text = "Save windows settings";
 			this.saveWindowsSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveWindowsSettingsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(191, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(189, 6);
 			// 
 			// restoreWindowSizeToolStripMenuItem
 			// 
 			this.restoreWindowSizeToolStripMenuItem.Name = "restoreWindowSizeToolStripMenuItem";
-			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
+			this.restoreWindowSizeToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
 			this.restoreWindowSizeToolStripMenuItem.Text = "&Restore Window Size";
 			this.restoreWindowSizeToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowSizeToolStripMenuItem_Click);
 			// 
@@ -250,15 +253,18 @@
             this.pokeToolStripMenuItem,
             this.freezeToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem,
-            this.unfreezeAllToolStripMenuItem1});
+            this.unfreezeAllToolStripMenuItem1,
+            this.toolStripSeparator4,
+            this.incrementToolStripMenuItem,
+            this.decrementToolStripMenuItem});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(176, 92);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(175, 164);
 			// 
 			// pokeToolStripMenuItem
 			// 
 			this.pokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeToolStripMenuItem.Name = "pokeToolStripMenuItem";
-			this.pokeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.pokeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.pokeToolStripMenuItem.Text = "&Poke";
 			this.pokeToolStripMenuItem.Click += new System.EventHandler(this.pokeToolStripMenuItem_Click);
 			// 
@@ -266,7 +272,7 @@
 			// 
 			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
-			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.freezeToolStripMenuItem.Text = "&Freeze";
 			this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
 			// 
@@ -274,7 +280,7 @@
 			// 
 			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
-			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
@@ -282,15 +288,15 @@
 			// 
 			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
 			this.unfreezeAllToolStripMenuItem1.Name = "unfreezeAllToolStripMenuItem1";
-			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
 			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
 			// 
 			// MemoryViewerBox
 			// 
-			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
 			this.MemoryViewerBox.Controls.Add(this.vScrollBar1);
 			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
@@ -305,8 +311,8 @@
 			// 
 			// vScrollBar1
 			// 
-			this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.vScrollBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.vScrollBar1.LargeChange = 16;
 			this.vScrollBar1.Location = new System.Drawing.Point(539, 8);
 			this.vScrollBar1.Name = "vScrollBar1";
@@ -328,6 +334,27 @@
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(171, 6);
+			// 
+			// incrementToolStripMenuItem
+			// 
+			this.incrementToolStripMenuItem.Name = "incrementToolStripMenuItem";
+			this.incrementToolStripMenuItem.ShortcutKeyDisplayString = "+";
+			this.incrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.incrementToolStripMenuItem.Text = "&Increment";
+			this.incrementToolStripMenuItem.Click += new System.EventHandler(this.incrementToolStripMenuItem_Click);
+			// 
+			// decrementToolStripMenuItem
+			// 
+			this.decrementToolStripMenuItem.Name = "decrementToolStripMenuItem";
+			this.decrementToolStripMenuItem.ShortcutKeyDisplayString = "-";
+			this.decrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.decrementToolStripMenuItem.Text = "&Decrement";
+			this.decrementToolStripMenuItem.Click += new System.EventHandler(this.decrementToolStripMenuItem_Click);
 			// 
 			// HexEditor
 			// 
@@ -389,5 +416,8 @@
 		private System.Windows.Forms.VScrollBar vScrollBar1;
 		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem unfreezeAllToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem incrementToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem decrementToolStripMenuItem;
     }
 }
