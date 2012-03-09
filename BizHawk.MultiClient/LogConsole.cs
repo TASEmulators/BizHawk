@@ -271,6 +271,7 @@ namespace BizHawk.MultiClient
 			if (NeedToRelease)
 			{
 				ReleaseConsole();
+				NeedToRelease = false;
 			}
 			else
 			{

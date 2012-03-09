@@ -75,7 +75,7 @@ namespace BizHawk.MultiClient
 			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
-				LogConsole.ShowConsole();
+				ShowConsole();
 				//PsxApi.StdioFixes();
 				displayLogWindowToolStripMenuItem.Checked = true;
 			}
@@ -2728,9 +2728,23 @@ namespace BizHawk.MultiClient
         {
             Global.Config.SkipLagFrame ^= true;
         }
+
+		private void ShowConsole()
+		{
+			LogConsole.ShowConsole();
+			logWindowAsConsoleToolStripMenuItem.Enabled = false;
+		}
+
+		private void HideConsole()
+		{
+			LogConsole.HideConsole();
+			logWindowAsConsoleToolStripMenuItem.Enabled = true;
+		}
+
 		public void notifyLogWindowClosing()
 		{
 			displayLogWindowToolStripMenuItem.Checked = false;
+			logWindowAsConsoleToolStripMenuItem.Enabled = true;
 		}
 	}
 }
