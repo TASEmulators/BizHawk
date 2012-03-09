@@ -204,6 +204,18 @@ namespace BizHawk.MultiClient
 					break;
 			}
 
+			if (IsFrozen(GetHighlightedAddress()))
+			{
+				freezeAddressToolStripMenuItem.Image = MultiClient.Properties.Resources.Unfreeze;
+				freezeAddressToolStripMenuItem.Text = "Un&freeze Address";
+			}
+			else
+			{
+				freezeAddressToolStripMenuItem.Image = MultiClient.Properties.Resources.Freeze;
+				freezeAddressToolStripMenuItem.Text = "&Freeze Address";
+			}
+			
+
 			if (GetHighlightedAddress() >= 0)
 			{
 				addToRamWatchToolStripMenuItem1.Enabled = true;
@@ -671,7 +683,7 @@ namespace BizHawk.MultiClient
 
 		private void freezeAddressToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FreezeAddress();
+			ToggleFreeze();
 		}
 
 		private void CheckDomainMenuItems()

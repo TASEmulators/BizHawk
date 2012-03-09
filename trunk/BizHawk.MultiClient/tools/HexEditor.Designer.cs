@@ -94,20 +94,20 @@
 			// 
 			this.dumpToFileToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.SaveAs;
 			this.dumpToFileToolStripMenuItem.Name = "dumpToFileToolStripMenuItem";
-			this.dumpToFileToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.dumpToFileToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.dumpToFileToolStripMenuItem.Text = "&Dump to file...";
 			this.dumpToFileToolStripMenuItem.Click += new System.EventHandler(this.dumpToFileToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(146, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -147,21 +147,21 @@
 			// byteToolStripMenuItem
 			// 
 			this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-			this.byteToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
+			this.byteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.byteToolStripMenuItem.Text = "1 Byte";
 			this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
 			// 
 			// byteToolStripMenuItem1
 			// 
 			this.byteToolStripMenuItem1.Name = "byteToolStripMenuItem1";
-			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(106, 22);
+			this.byteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.byteToolStripMenuItem1.Text = "2 Byte";
 			this.byteToolStripMenuItem1.Click += new System.EventHandler(this.byteToolStripMenuItem1_Click);
 			// 
 			// byteToolStripMenuItem2
 			// 
 			this.byteToolStripMenuItem2.Name = "byteToolStripMenuItem2";
-			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(106, 22);
+			this.byteToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
 			this.byteToolStripMenuItem2.Text = "4 Byte";
 			this.byteToolStripMenuItem2.Click += new System.EventHandler(this.byteToolStripMenuItem2_Click);
 			// 
@@ -198,6 +198,7 @@
 			// 
 			this.freezeAddressToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem.Name = "freezeAddressToolStripMenuItem";
+			this.freezeAddressToolStripMenuItem.ShortcutKeyDisplayString = "Space";
 			this.freezeAddressToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.freezeAddressToolStripMenuItem.Text = "&Freeze Address";
 			this.freezeAddressToolStripMenuItem.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem_Click);
