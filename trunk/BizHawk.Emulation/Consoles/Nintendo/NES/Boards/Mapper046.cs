@@ -50,7 +50,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			//TODO: High bits
-			return ROM[addr + ((prg_bank_32k_H << 1) + prg_bank_32k_L * 0x8000)];
+			int offset = (prg_bank_32k_H << 1) + prg_bank_32k_L;
+			return ROM[addr + (offset * 0x8000)];
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
