@@ -392,6 +392,7 @@ namespace BizHawk.MultiClient
 			{
 				System.Windows.Forms.Clipboard.SetImage(img);
 			}
+			Global.RenderPanel.AddMessage("Screenshot saved to clipboard.");
 		}
 
 		private void savestate1toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
