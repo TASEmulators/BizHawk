@@ -51,15 +51,5 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return (val & ~0x7) | scramble_table[val & 0x7];
 		}
 
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
-		}
-
-		public override void WriteWRAM(int addr, byte value)
-		{
-			base.WriteWRAM(addr, value);
-		}
-
 	}
 }

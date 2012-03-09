@@ -173,7 +173,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//wram enable/protect
 					wram_write_protect = value.Bit(6);
 					wram_enable = value.Bit(7);
-					Console.WriteLine("wram_write_protect={0},wram_enable={1}", wram_write_protect, wram_enable);
+					//Console.WriteLine("wram_write_protect={0},wram_enable={1}", wram_write_protect, wram_enable);
 					break;
 				case 0x4000: //$C000 - IRQ Reload value
 					irq_reload = value;
