@@ -106,6 +106,7 @@ static string ClassifyTable = @"
 79	-1	-1	-1	-1	AVE-NINA-06; Blackjack (U)
 113	-1	-1	-1	-1	AVE-NINA-06; ???
 115	-1	-1	-1	-1	MAPPER115
+182	-1	-1	-1	-1	MAPPER182
 232	-1	-1	-1	-1	CAMERICA-ALGQ; Quattro Adventure
 240	-1	-1	-1	-1	MAPPER240
 ";
