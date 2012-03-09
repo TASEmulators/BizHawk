@@ -177,18 +177,22 @@ namespace BizHawk.MultiClient
 
 			StringBuilder input = new StringBuilder("|");
 
-			if (ControlType == "Gameboy Controller")
+			if (
+				ControlType == "Genesis 3-Button Controller" || ControlType == "Gameboy Controller" ||
+				ControlType == "PC Engine Controller"
+			)
 			{
-				input.Append("."); // TODO: reset goes here
+				input.Append(".");
+				/*
+				 TODO:
+				 * Gameboy: reset goes here
+				 * PC Engine: some kind of command key, since reset isn't used (adelikat: unimplmented command was
+				*/
 			}
 			if (ControlType == "NES Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
 					Global.Emulator.IsLagFrame ? Global.COMMANDS[ControlType]["Lag"] : ".");
-			}
-			if (ControlType == "PC Engine Controller")
-			{
-				input.Append("."); //TODO: some kind of command key, since reset isn't used (adelikat: unimplmented command was
 			}
 			if (ControlType != "SMS Controller" && ControlType != "TI83 Controller")
 			{
