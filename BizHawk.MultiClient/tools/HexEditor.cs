@@ -552,6 +552,73 @@ namespace BizHawk.MultiClient
 				return -1; //Negative = no address highlighted
 		}
 
+		private bool IsFrozen(int address)
+		{
+			return Global.CheatList.IsActiveCheat(Domain, address);
+		}
+
+		private void ToggleFreeze()
+		{
+			int address = GetHighlightedAddress();
+			if (IsFrozen(address))
+			{
+				UnFreezeAddress();
+			}
+			else
+			{
+				FreezeAddress();
+			}
+		}
+
+		private void UnFreezeAddress()
+		{
+			int address = GetHighlightedAddress();
+			if (address >= 0)
+			{
+				Cheat c = new Cheat();
+				c.address = address;
+				c.value = Domain.PeekByte(address);
+				c.domain = Domain;
+				Global.MainForm.Cheats1.RemoveCheat(c);
+
+				switch (Global.Config.HexEditorDataSize)
+				{
+					default:
+					case 1:
+						break;
+					case 2:
+						Cheat c2 = new Cheat();
+						c2.address = address + 1;
+						c2.domain = Domain;
+						c2.value = Domain.PeekByte(address + 1);
+						c2.Enable();
+						Global.MainForm.Cheats1.RemoveCheat(c2);
+						break;
+					case 4:
+						Cheat c42 = new Cheat();
+						c42.address = address + 1;
+						c42.domain = Domain;
+						c42.value = Domain.PeekByte(address + 1);
+						c42.Enable();
+						Global.MainForm.Cheats1.RemoveCheat(c42);
+						Cheat c43 = new Cheat();
+						c43.address = address + 2;
+						c43.domain = Domain;
+						c43.value = Domain.PeekByte(address + 2);
+						c43.Enable();
+						Global.MainForm.Cheats1.RemoveCheat(c43);
+						Cheat c44 = new Cheat();
+						c44.address = address + 3;
+						c44.domain = Domain;
+						c44.value = Domain.PeekByte(address + 3);
+						c44.Enable();
+						Global.MainForm.Cheats1.RemoveCheat(c44);
+						break;
+				}
+			}
+			MemoryViewerBox.Refresh();
+		}
+
 		private void FreezeAddress()
 		{
 			int address = GetHighlightedAddress();
@@ -884,6 +951,9 @@ namespace BizHawk.MultiClient
 				case Keys.Subtract:
 					DecrementAddress();
 					UpdateValues();
+					break;
+				case Keys.Space:
+					ToggleFreeze();
 					break;
 			}
 		}
