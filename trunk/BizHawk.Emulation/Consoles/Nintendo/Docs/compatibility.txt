@@ -99,7 +99,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 184	Sunsoft-1	Complete
 185	Misc (J)	Complete
 189	MMC3Variant	Decent
-191	Pirate		Junk (mmc3 variant)
+*191 Pirate		Minimal (mmc3 variant) - No known game uses this (extant dumps of Sugoro Quest use mapper 4). So this isn't tested.
 192	Pirate		Junk (mmc3 variant)
 193	Unlicensed	Junk - Started
 194	Pirate		Junk
