@@ -269,5 +269,28 @@ namespace BizHawk.MultiClient
 			UpdateValues();
 			NameTableView.Refresh();
 		}
+
+		private void saveImageClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NameTableView.ScreenshotToClipboard();
+		}
+
+		private void NESNameTableViewer_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.C:
+					if (e.Modifiers == Keys.Control)
+					{
+						NameTableView.ScreenshotToClipboard();
+					}
+					break;
+			}
+		}
+
+		private void screenshotToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			NameTableView.ScreenshotToClipboard();
+		}
 	}
 }

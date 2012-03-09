@@ -30,7 +30,14 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.refreshImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,22 +65,17 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.screenshotAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.refreshImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveImageClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.screenshotToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NameTableView = new BizHawk.MultiClient.NameTableViewer();
 			this.groupBox1.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
-			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -84,6 +86,29 @@
 			this.groupBox1.Size = new System.Drawing.Size(545, 513);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.screenshotAsToolStripMenuItem,
+            this.saveImageClipboardToolStripMenuItem,
+            this.refreshImageToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(248, 70);
+			// 
+			// screenshotAsToolStripMenuItem
+			// 
+			this.screenshotAsToolStripMenuItem.Name = "screenshotAsToolStripMenuItem";
+			this.screenshotAsToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+			this.screenshotAsToolStripMenuItem.Text = "&Save Image...";
+			this.screenshotAsToolStripMenuItem.Click += new System.EventHandler(this.screenshotAsToolStripMenuItem_Click);
+			// 
+			// refreshImageToolStripMenuItem
+			// 
+			this.refreshImageToolStripMenuItem.Name = "refreshImageToolStripMenuItem";
+			this.refreshImageToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+			this.refreshImageToolStripMenuItem.Text = "&Refresh Image";
+			this.refreshImageToolStripMenuItem.Click += new System.EventHandler(this.refreshImageToolStripMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -96,6 +121,37 @@
 			this.menuStrip1.TabIndex = 1;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.screenshotToolStripMenuItem,
+            this.screenshotToClipboardToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.exitToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "&File";
+			// 
+			// screenshotToolStripMenuItem
+			// 
+			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
+			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.screenshotToolStripMenuItem.Text = "Save Screenshot As...";
+			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(240, 6);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -103,28 +159,28 @@
             this.saveWindowPositionToolStripMenuItem,
             this.toolStripSeparator1});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
 			this.optionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.optionsToolStripMenuItem_DropDownOpened);
 			// 
 			// autoloadToolStripMenuItem
 			// 
 			this.autoloadToolStripMenuItem.Name = "autoloadToolStripMenuItem";
-			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.autoloadToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save Window Position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(187, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(188, 6);
 			// 
 			// txtScanline
 			// 
@@ -358,62 +414,26 @@
 			this.RefreshRate.Minimum = 1;
 			this.RefreshRate.Name = "RefreshRate";
 			this.RefreshRate.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.RefreshRate.Size = new System.Drawing.Size(42, 136);
+			this.RefreshRate.Size = new System.Drawing.Size(45, 136);
 			this.RefreshRate.TabIndex = 0;
 			this.RefreshRate.TickFrequency = 4;
 			this.RefreshRate.Value = 1;
 			// 
-			// fileToolStripMenuItem
+			// saveImageClipboardToolStripMenuItem
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.screenshotToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.exitToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
-			this.fileToolStripMenuItem.Text = "&File";
+			this.saveImageClipboardToolStripMenuItem.Name = "saveImageClipboardToolStripMenuItem";
+			this.saveImageClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+			this.saveImageClipboardToolStripMenuItem.Size = new System.Drawing.Size(247, 22);
+			this.saveImageClipboardToolStripMenuItem.Text = "&Copy Image to clipboard";
+			this.saveImageClipboardToolStripMenuItem.Click += new System.EventHandler(this.saveImageClipboardToolStripMenuItem_Click);
 			// 
-			// screenshotToolStripMenuItem
+			// screenshotToClipboardToolStripMenuItem
 			// 
-			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
-			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-			this.screenshotToolStripMenuItem.Text = "Save Screenshot As...";
-			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.screenshotToolStripMenuItem_Click);
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(190, 6);
-			// 
-			// contextMenuStrip1
-			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.screenshotAsToolStripMenuItem,
-            this.refreshImageToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(157, 48);
-			// 
-			// screenshotAsToolStripMenuItem
-			// 
-			this.screenshotAsToolStripMenuItem.Name = "screenshotAsToolStripMenuItem";
-			this.screenshotAsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.screenshotAsToolStripMenuItem.Text = "&Save Image...";
-			this.screenshotAsToolStripMenuItem.Click += new System.EventHandler(this.screenshotAsToolStripMenuItem_Click);
-			// 
-			// refreshImageToolStripMenuItem
-			// 
-			this.refreshImageToolStripMenuItem.Name = "refreshImageToolStripMenuItem";
-			this.refreshImageToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.refreshImageToolStripMenuItem.Text = "&Refresh Image";
-			this.refreshImageToolStripMenuItem.Click += new System.EventHandler(this.refreshImageToolStripMenuItem_Click);
+			this.screenshotToClipboardToolStripMenuItem.Name = "screenshotToClipboardToolStripMenuItem";
+			this.screenshotToClipboardToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+			this.screenshotToClipboardToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+			this.screenshotToClipboardToolStripMenuItem.Text = "Screenshot to &Clipboard";
+			this.screenshotToClipboardToolStripMenuItem.Click += new System.EventHandler(this.screenshotToClipboardToolStripMenuItem_Click);
 			// 
 			// NameTableView
 			// 
@@ -423,6 +443,7 @@
 			this.NameTableView.Name = "NameTableView";
 			this.NameTableView.Size = new System.Drawing.Size(512, 480);
 			this.NameTableView.TabIndex = 0;
+			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
 			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
 			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
 			// 
@@ -444,7 +465,9 @@
 			this.Text = "NES Nametable Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
 			this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NESNameTableViewer_KeyDown);
 			this.groupBox1.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -456,7 +479,6 @@
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
-			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -501,5 +523,7 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem screenshotAsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem refreshImageToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveImageClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem screenshotToClipboardToolStripMenuItem;
 	}
 }
