@@ -20,8 +20,8 @@ namespace BizHawk.MultiClient
 
 	public partial class MainForm : Form
 	{
-		public bool INTERIM = false;
-		public const string EMUVERSION = "BizHawk v1.0.0";
+		public bool INTERIM = true;
+		public const string EMUVERSION = "BizHawk v1.0.2 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
