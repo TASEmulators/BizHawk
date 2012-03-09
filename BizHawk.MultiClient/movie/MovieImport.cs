@@ -11,7 +11,7 @@ namespace BizHawk.MultiClient
 {
 	public static class MovieImport
 	{
-		public const string EMULATIONORIGIN = "emuVersion";
+		public const string EMULATIONORIGIN = "emuOrigin";
 		public const string MOVIEORIGIN = "MovieOrigin";
 
 		// Attempt to import another type of movie file into a movie object.
