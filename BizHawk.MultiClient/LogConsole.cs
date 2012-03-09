@@ -274,13 +274,26 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				window.Close();
 				logStream.Close();
 				logStream = null;
 				Log.HACK_LOG_STREAM = null;
+				window.Close();
 				window = null;
 			}
+		}
 
+		public static void notifyLogWindowClosing()
+		{
+			Console.SetOut(TextWriter.Null);
+			ConsoleVisible = false;
+			if(logStream != null) logStream.Close();
+			Log.HACK_LOG_STREAM = null;
+		}
+
+		public static void SaveConfigSettings()
+		{
+			if (window != null && window.IsHandleCreated)
+				window.SaveConfigSettings();
 		}
 	}
 }
