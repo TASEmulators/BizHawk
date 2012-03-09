@@ -632,5 +632,35 @@ namespace BizHawk.MultiClient
 		{
 			SpriteView.Refresh();
 		}
+
+		private void imageToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SpriteView.ScreenshotToClipboard();
+		}
+
+		private void imageToClipboardToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			PatternView.ScreenshotToClipboard();
+		}
+
+		private void imageToClipboardToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			PaletteView.ScreenshotToClipboard();
+		}
+
+		private void savePaletteToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PaletteView.ScreenshotToClipboard();
+		}
+
+		private void copyPatternToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PatternView.ScreenshotToClipboard();
+		}
+
+		private void copySpriteToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SpriteView.ScreenshotToClipboard();
+		}
 	}
 }

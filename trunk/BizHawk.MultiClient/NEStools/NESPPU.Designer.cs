@@ -33,7 +33,13 @@
 			this.PatternGroup = new System.Windows.Forms.GroupBox();
 			this.Table1PaletteLabel = new System.Windows.Forms.Label();
 			this.Table0PaletteLabel = new System.Windows.Forms.Label();
+			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.saveImageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PalettesGroup = new System.Windows.Forms.GroupBox();
+			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DetailsBox = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.Value5Label = new System.Windows.Forms.Label();
@@ -45,6 +51,10 @@
 			this.ValueLabel = new System.Windows.Forms.Label();
 			this.AddressLabel = new System.Windows.Forms.Label();
 			this.SpriteViewerBox = new System.Windows.Forms.GroupBox();
+			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.saveImageToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.refreshToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -52,9 +62,12 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.RefreshRate = new System.Windows.Forms.TrackBar();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoLoadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveWindowPositionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.savePaletteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.savePatternScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveSpriteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.patternToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.table0PaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table0P0 = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,36 +87,30 @@
 			this.Table1P5 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table1P6 = new System.Windows.Forms.ToolStripMenuItem();
 			this.Table1P7 = new System.Windows.Forms.ToolStripMenuItem();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.savePaletteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.savePatternScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveSpriteScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PaletteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.saveImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PatternContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.saveImageToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.refreshToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoLoadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveWindowPositionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageToClipboardToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageToClipboardToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.SpriteView = new BizHawk.MultiClient.SpriteViewer();
 			this.PaletteView = new BizHawk.MultiClient.PaletteViewer();
 			this.PatternView = new BizHawk.MultiClient.PatternViewer();
-			this.SpriteContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.saveImageToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.refreshToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.savePaletteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.copyPatternToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copySpriteToClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PatternGroup.SuspendLayout();
+			this.PatternContext.SuspendLayout();
 			this.PalettesGroup.SuspendLayout();
+			this.PaletteContext.SuspendLayout();
 			this.DetailsBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).BeginInit();
 			this.SpriteViewerBox.SuspendLayout();
+			this.SpriteContext.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
 			this.menuStrip1.SuspendLayout();
-			this.PaletteContext.SuspendLayout();
-			this.PatternContext.SuspendLayout();
-			this.SpriteContext.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// PatternGroup
@@ -136,6 +143,29 @@
 			this.Table0PaletteLabel.TabIndex = 1;
 			this.Table0PaletteLabel.Text = "Palette: 0";
 			// 
+			// PatternContext
+			// 
+			this.PatternContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem1,
+            this.imageToClipboardToolStripMenuItem1,
+            this.refreshToolStripMenuItem1});
+			this.PatternContext.Name = "PatternContext";
+			this.PatternContext.Size = new System.Drawing.Size(177, 70);
+			// 
+			// saveImageToolStripMenuItem1
+			// 
+			this.saveImageToolStripMenuItem1.Name = "saveImageToolStripMenuItem1";
+			this.saveImageToolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
+			this.saveImageToolStripMenuItem1.Text = "&Save Image...";
+			this.saveImageToolStripMenuItem1.Click += new System.EventHandler(this.saveImageToolStripMenuItem1_Click);
+			// 
+			// refreshToolStripMenuItem1
+			// 
+			this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
+			this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
+			this.refreshToolStripMenuItem1.Text = "&Refresh";
+			this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
+			// 
 			// PalettesGroup
 			// 
 			this.PalettesGroup.Controls.Add(this.PaletteView);
@@ -145,6 +175,29 @@
 			this.PalettesGroup.TabIndex = 1;
 			this.PalettesGroup.TabStop = false;
 			this.PalettesGroup.Text = "Palettes";
+			// 
+			// PaletteContext
+			// 
+			this.PaletteContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem,
+            this.imageToClipboardToolStripMenuItem2,
+            this.refreshToolStripMenuItem});
+			this.PaletteContext.Name = "PaletteContext";
+			this.PaletteContext.Size = new System.Drawing.Size(177, 70);
+			// 
+			// saveImageToolStripMenuItem
+			// 
+			this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
+			this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.saveImageToolStripMenuItem.Text = "&Save Image...";
+			this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
+			// 
+			// refreshToolStripMenuItem
+			// 
+			this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+			this.refreshToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.refreshToolStripMenuItem.Text = "&Refresh";
+			this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
 			// 
 			// DetailsBox
 			// 
@@ -254,6 +307,36 @@
 			this.SpriteViewerBox.TabStop = false;
 			this.SpriteViewerBox.Text = "Sprites";
 			// 
+			// SpriteContext
+			// 
+			this.SpriteContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveImageToolStripMenuItem2,
+            this.imageToClipboardToolStripMenuItem,
+            this.refreshToolStripMenuItem2});
+			this.SpriteContext.Name = "SpriteContext";
+			this.SpriteContext.Size = new System.Drawing.Size(177, 70);
+			// 
+			// saveImageToolStripMenuItem2
+			// 
+			this.saveImageToolStripMenuItem2.Name = "saveImageToolStripMenuItem2";
+			this.saveImageToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
+			this.saveImageToolStripMenuItem2.Text = "&Save Image...";
+			this.saveImageToolStripMenuItem2.Click += new System.EventHandler(this.saveImageToolStripMenuItem2_Click);
+			// 
+			// imageToClipboardToolStripMenuItem
+			// 
+			this.imageToClipboardToolStripMenuItem.Name = "imageToClipboardToolStripMenuItem";
+			this.imageToClipboardToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+			this.imageToClipboardToolStripMenuItem.Text = "Image to &Clipboard";
+			this.imageToClipboardToolStripMenuItem.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem_Click);
+			// 
+			// refreshToolStripMenuItem2
+			// 
+			this.refreshToolStripMenuItem2.Name = "refreshToolStripMenuItem2";
+			this.refreshToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
+			this.refreshToolStripMenuItem2.Text = "&Refresh";
+			this.refreshToolStripMenuItem2.Click += new System.EventHandler(this.refreshToolStripMenuItem2_Click);
+			// 
 			// txtScanline
 			// 
 			this.txtScanline.Location = new System.Drawing.Point(7, 16);
@@ -328,29 +411,52 @@
 			this.menuStrip1.TabIndex = 10;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
-			// settingsToolStripMenuItem
+			// fileToolStripMenuItem
 			// 
-			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.autoLoadToolStripMenuItem1,
-            this.saveWindowPositionToolStripMenuItem1});
-			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(58, 20);
-			this.settingsToolStripMenuItem.Text = "&Settings";
-			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolStripDropDownButton1_DropDownOpened);
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.savePaletteScreenshotToolStripMenuItem,
+            this.savePatternScreenshotToolStripMenuItem,
+            this.saveSpriteScreenshotToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.savePaletteToClipboardToolStripMenuItem,
+            this.copyPatternToClipboardToolStripMenuItem,
+            this.copySpriteToClipboardToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.exitToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "&File";
 			// 
-			// autoLoadToolStripMenuItem1
+			// savePaletteScreenshotToolStripMenuItem
 			// 
-			this.autoLoadToolStripMenuItem1.Name = "autoLoadToolStripMenuItem1";
-			this.autoLoadToolStripMenuItem1.Size = new System.Drawing.Size(190, 22);
-			this.autoLoadToolStripMenuItem1.Text = "Auto-load";
-			this.autoLoadToolStripMenuItem1.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
+			this.savePaletteScreenshotToolStripMenuItem.Name = "savePaletteScreenshotToolStripMenuItem";
+			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
+			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.savePaletteScreenshotToolStripMenuItem_Click);
 			// 
-			// saveWindowPositionToolStripMenuItem1
+			// savePatternScreenshotToolStripMenuItem
 			// 
-			this.saveWindowPositionToolStripMenuItem1.Name = "saveWindowPositionToolStripMenuItem1";
-			this.saveWindowPositionToolStripMenuItem1.Size = new System.Drawing.Size(190, 22);
-			this.saveWindowPositionToolStripMenuItem1.Text = "Save Window Position";
-			this.saveWindowPositionToolStripMenuItem1.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
+			this.savePatternScreenshotToolStripMenuItem.Name = "savePatternScreenshotToolStripMenuItem";
+			this.savePatternScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePatternScreenshotToolStripMenuItem.Text = "Save Pattern Screenshot...";
+			// 
+			// saveSpriteScreenshotToolStripMenuItem
+			// 
+			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
+			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(209, 6);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.exitToolStripMenuItem.Text = "E&xit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// patternToolStripMenuItem
 			// 
@@ -358,7 +464,7 @@
             this.table0PaletteToolStripMenuItem,
             this.table1PaletteToolStripMenuItem1});
 			this.patternToolStripMenuItem.Name = "patternToolStripMenuItem";
-			this.patternToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+			this.patternToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
 			this.patternToolStripMenuItem.Text = "&Pattern";
 			this.patternToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolStripDropDownButton2_DropDownOpened);
 			// 
@@ -374,62 +480,62 @@
             this.Table0P6,
             this.Table0P7});
 			this.table0PaletteToolStripMenuItem.Name = "table0PaletteToolStripMenuItem";
-			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+			this.table0PaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.table0PaletteToolStripMenuItem.Text = "Table 0 Palette";
 			// 
 			// Table0P0
 			// 
 			this.Table0P0.Name = "Table0P0";
-			this.Table0P0.Size = new System.Drawing.Size(91, 22);
+			this.Table0P0.Size = new System.Drawing.Size(80, 22);
 			this.Table0P0.Text = "0";
 			this.Table0P0.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P1
 			// 
 			this.Table0P1.Name = "Table0P1";
-			this.Table0P1.Size = new System.Drawing.Size(91, 22);
+			this.Table0P1.Size = new System.Drawing.Size(80, 22);
 			this.Table0P1.Text = "1";
 			this.Table0P1.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P2
 			// 
 			this.Table0P2.Name = "Table0P2";
-			this.Table0P2.Size = new System.Drawing.Size(91, 22);
+			this.Table0P2.Size = new System.Drawing.Size(80, 22);
 			this.Table0P2.Text = "2";
 			this.Table0P2.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P3
 			// 
 			this.Table0P3.Name = "Table0P3";
-			this.Table0P3.Size = new System.Drawing.Size(91, 22);
+			this.Table0P3.Size = new System.Drawing.Size(80, 22);
 			this.Table0P3.Text = "3";
 			this.Table0P3.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P4
 			// 
 			this.Table0P4.Name = "Table0P4";
-			this.Table0P4.Size = new System.Drawing.Size(91, 22);
+			this.Table0P4.Size = new System.Drawing.Size(80, 22);
 			this.Table0P4.Text = "4";
 			this.Table0P4.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P5
 			// 
 			this.Table0P5.Name = "Table0P5";
-			this.Table0P5.Size = new System.Drawing.Size(91, 22);
+			this.Table0P5.Size = new System.Drawing.Size(80, 22);
 			this.Table0P5.Text = "5";
 			this.Table0P5.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P6
 			// 
 			this.Table0P6.Name = "Table0P6";
-			this.Table0P6.Size = new System.Drawing.Size(91, 22);
+			this.Table0P6.Size = new System.Drawing.Size(80, 22);
 			this.Table0P6.Text = "6";
 			this.Table0P6.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table0P7
 			// 
 			this.Table0P7.Name = "Table0P7";
-			this.Table0P7.Size = new System.Drawing.Size(91, 22);
+			this.Table0P7.Size = new System.Drawing.Size(80, 22);
 			this.Table0P7.Text = "7";
 			this.Table0P7.Click += new System.EventHandler(this.Palette_Click);
 			// 
@@ -445,151 +551,102 @@
             this.Table1P6,
             this.Table1P7});
 			this.table1PaletteToolStripMenuItem1.Name = "table1PaletteToolStripMenuItem1";
-			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+			this.table1PaletteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.table1PaletteToolStripMenuItem1.Text = "Table 1 Palette";
 			// 
 			// Table1P0
 			// 
 			this.Table1P0.Name = "Table1P0";
-			this.Table1P0.Size = new System.Drawing.Size(91, 22);
+			this.Table1P0.Size = new System.Drawing.Size(80, 22);
 			this.Table1P0.Text = "0";
 			this.Table1P0.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P1
 			// 
 			this.Table1P1.Name = "Table1P1";
-			this.Table1P1.Size = new System.Drawing.Size(91, 22);
+			this.Table1P1.Size = new System.Drawing.Size(80, 22);
 			this.Table1P1.Text = "1";
 			this.Table1P1.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P2
 			// 
 			this.Table1P2.Name = "Table1P2";
-			this.Table1P2.Size = new System.Drawing.Size(91, 22);
+			this.Table1P2.Size = new System.Drawing.Size(80, 22);
 			this.Table1P2.Text = "2";
 			this.Table1P2.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P3
 			// 
 			this.Table1P3.Name = "Table1P3";
-			this.Table1P3.Size = new System.Drawing.Size(91, 22);
+			this.Table1P3.Size = new System.Drawing.Size(80, 22);
 			this.Table1P3.Text = "3";
 			this.Table1P3.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P4
 			// 
 			this.Table1P4.Name = "Table1P4";
-			this.Table1P4.Size = new System.Drawing.Size(91, 22);
+			this.Table1P4.Size = new System.Drawing.Size(80, 22);
 			this.Table1P4.Text = "4";
 			this.Table1P4.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P5
 			// 
 			this.Table1P5.Name = "Table1P5";
-			this.Table1P5.Size = new System.Drawing.Size(91, 22);
+			this.Table1P5.Size = new System.Drawing.Size(80, 22);
 			this.Table1P5.Text = "5";
 			this.Table1P5.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P6
 			// 
 			this.Table1P6.Name = "Table1P6";
-			this.Table1P6.Size = new System.Drawing.Size(91, 22);
+			this.Table1P6.Size = new System.Drawing.Size(80, 22);
 			this.Table1P6.Text = "6";
 			this.Table1P6.Click += new System.EventHandler(this.Palette_Click);
 			// 
 			// Table1P7
 			// 
 			this.Table1P7.Name = "Table1P7";
-			this.Table1P7.Size = new System.Drawing.Size(91, 22);
+			this.Table1P7.Size = new System.Drawing.Size(80, 22);
 			this.Table1P7.Text = "7";
 			this.Table1P7.Click += new System.EventHandler(this.Palette_Click);
 			// 
-			// fileToolStripMenuItem
+			// settingsToolStripMenuItem
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.savePaletteScreenshotToolStripMenuItem,
-            this.savePatternScreenshotToolStripMenuItem,
-            this.saveSpriteScreenshotToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
-			this.fileToolStripMenuItem.Text = "&File";
+			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.autoLoadToolStripMenuItem1,
+            this.saveWindowPositionToolStripMenuItem1});
+			this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+			this.settingsToolStripMenuItem.Text = "&Settings";
+			this.settingsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.toolStripDropDownButton1_DropDownOpened);
 			// 
-			// savePaletteScreenshotToolStripMenuItem
+			// autoLoadToolStripMenuItem1
 			// 
-			this.savePaletteScreenshotToolStripMenuItem.Name = "savePaletteScreenshotToolStripMenuItem";
-			this.savePaletteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.savePaletteScreenshotToolStripMenuItem.Text = "Save Palette Screenshot...";
-			this.savePaletteScreenshotToolStripMenuItem.Click += new System.EventHandler(this.savePaletteScreenshotToolStripMenuItem_Click);
+			this.autoLoadToolStripMenuItem1.Name = "autoLoadToolStripMenuItem1";
+			this.autoLoadToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.autoLoadToolStripMenuItem1.Text = "Auto-load";
+			this.autoLoadToolStripMenuItem1.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
-			// savePatternScreenshotToolStripMenuItem
+			// saveWindowPositionToolStripMenuItem1
 			// 
-			this.savePatternScreenshotToolStripMenuItem.Name = "savePatternScreenshotToolStripMenuItem";
-			this.savePatternScreenshotToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.savePatternScreenshotToolStripMenuItem.Text = "Save Pattern Screenshot...";
+			this.saveWindowPositionToolStripMenuItem1.Name = "saveWindowPositionToolStripMenuItem1";
+			this.saveWindowPositionToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
+			this.saveWindowPositionToolStripMenuItem1.Text = "Save Window Position";
+			this.saveWindowPositionToolStripMenuItem1.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
-			// saveSpriteScreenshotToolStripMenuItem
+			// imageToClipboardToolStripMenuItem1
 			// 
-			this.saveSpriteScreenshotToolStripMenuItem.Name = "saveSpriteScreenshotToolStripMenuItem";
-			this.saveSpriteScreenshotToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.saveSpriteScreenshotToolStripMenuItem.Text = "Save Sprite Screenshot...";
+			this.imageToClipboardToolStripMenuItem1.Name = "imageToClipboardToolStripMenuItem1";
+			this.imageToClipboardToolStripMenuItem1.Size = new System.Drawing.Size(176, 22);
+			this.imageToClipboardToolStripMenuItem1.Text = "Image to &Clipboard";
+			this.imageToClipboardToolStripMenuItem1.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem1_Click);
 			// 
-			// toolStripSeparator1
+			// imageToClipboardToolStripMenuItem2
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
-			// 
-			// exitToolStripMenuItem
-			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-			// 
-			// PaletteContext
-			// 
-			this.PaletteContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageToolStripMenuItem,
-            this.refreshToolStripMenuItem});
-			this.PaletteContext.Name = "PaletteContext";
-			this.PaletteContext.Size = new System.Drawing.Size(155, 48);
-			// 
-			// saveImageToolStripMenuItem
-			// 
-			this.saveImageToolStripMenuItem.Name = "saveImageToolStripMenuItem";
-			this.saveImageToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.saveImageToolStripMenuItem.Text = "&Save Image...";
-			this.saveImageToolStripMenuItem.Click += new System.EventHandler(this.saveImageToolStripMenuItem_Click);
-			// 
-			// refreshToolStripMenuItem
-			// 
-			this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-			this.refreshToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
-			this.refreshToolStripMenuItem.Text = "&Refresh";
-			this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
-			// 
-			// PatternContext
-			// 
-			this.PatternContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageToolStripMenuItem1,
-            this.refreshToolStripMenuItem1});
-			this.PatternContext.Name = "PatternContext";
-			this.PatternContext.Size = new System.Drawing.Size(155, 48);
-			// 
-			// saveImageToolStripMenuItem1
-			// 
-			this.saveImageToolStripMenuItem1.Name = "saveImageToolStripMenuItem1";
-			this.saveImageToolStripMenuItem1.Size = new System.Drawing.Size(154, 22);
-			this.saveImageToolStripMenuItem1.Text = "&Save Image...";
-			this.saveImageToolStripMenuItem1.Click += new System.EventHandler(this.saveImageToolStripMenuItem1_Click);
-			// 
-			// refreshToolStripMenuItem1
-			// 
-			this.refreshToolStripMenuItem1.Name = "refreshToolStripMenuItem1";
-			this.refreshToolStripMenuItem1.Size = new System.Drawing.Size(154, 22);
-			this.refreshToolStripMenuItem1.Text = "&Refresh";
-			this.refreshToolStripMenuItem1.Click += new System.EventHandler(this.refreshToolStripMenuItem1_Click);
+			this.imageToClipboardToolStripMenuItem2.Name = "imageToClipboardToolStripMenuItem2";
+			this.imageToClipboardToolStripMenuItem2.Size = new System.Drawing.Size(176, 22);
+			this.imageToClipboardToolStripMenuItem2.Text = "Image to &Clipboard";
+			this.imageToClipboardToolStripMenuItem2.Click += new System.EventHandler(this.imageToClipboardToolStripMenuItem2_Click);
 			// 
 			// SpriteView
 			// 
@@ -630,27 +687,31 @@
 			this.PatternView.MouseLeave += new System.EventHandler(this.PatternView_MouseLeave);
 			this.PatternView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.PatternView_MouseMove);
 			// 
-			// SpriteContext
+			// savePaletteToClipboardToolStripMenuItem
 			// 
-			this.SpriteContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveImageToolStripMenuItem2,
-            this.refreshToolStripMenuItem2});
-			this.SpriteContext.Name = "SpriteContext";
-			this.SpriteContext.Size = new System.Drawing.Size(155, 48);
+			this.savePaletteToClipboardToolStripMenuItem.Name = "savePaletteToClipboardToolStripMenuItem";
+			this.savePaletteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.savePaletteToClipboardToolStripMenuItem.Text = "Copy Palette to Clipboard";
+			this.savePaletteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.savePaletteToClipboardToolStripMenuItem_Click);
 			// 
-			// saveImageToolStripMenuItem2
+			// toolStripSeparator2
 			// 
-			this.saveImageToolStripMenuItem2.Name = "saveImageToolStripMenuItem2";
-			this.saveImageToolStripMenuItem2.Size = new System.Drawing.Size(154, 22);
-			this.saveImageToolStripMenuItem2.Text = "&Save Image...";
-			this.saveImageToolStripMenuItem2.Click += new System.EventHandler(this.saveImageToolStripMenuItem2_Click);
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(209, 6);
 			// 
-			// refreshToolStripMenuItem2
+			// copyPatternToClipboardToolStripMenuItem
 			// 
-			this.refreshToolStripMenuItem2.Name = "refreshToolStripMenuItem2";
-			this.refreshToolStripMenuItem2.Size = new System.Drawing.Size(154, 22);
-			this.refreshToolStripMenuItem2.Text = "&Refresh";
-			this.refreshToolStripMenuItem2.Click += new System.EventHandler(this.refreshToolStripMenuItem2_Click);
+			this.copyPatternToClipboardToolStripMenuItem.Name = "copyPatternToClipboardToolStripMenuItem";
+			this.copyPatternToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copyPatternToClipboardToolStripMenuItem.Text = "Copy Pattern to Clipboard";
+			this.copyPatternToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copyPatternToClipboardToolStripMenuItem_Click);
+			// 
+			// copySpriteToClipboardToolStripMenuItem
+			// 
+			this.copySpriteToClipboardToolStripMenuItem.Name = "copySpriteToClipboardToolStripMenuItem";
+			this.copySpriteToClipboardToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+			this.copySpriteToClipboardToolStripMenuItem.Text = "Copy Sprite to Clipboard";
+			this.copySpriteToClipboardToolStripMenuItem.Click += new System.EventHandler(this.copySpriteToClipboardToolStripMenuItem_Click);
 			// 
 			// NESPPU
 			// 
@@ -675,11 +736,14 @@
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.NESPPU_MouseClick);
 			this.PatternGroup.ResumeLayout(false);
 			this.PatternGroup.PerformLayout();
+			this.PatternContext.ResumeLayout(false);
 			this.PalettesGroup.ResumeLayout(false);
+			this.PaletteContext.ResumeLayout(false);
 			this.DetailsBox.ResumeLayout(false);
 			this.DetailsBox.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ZoomBox)).EndInit();
 			this.SpriteViewerBox.ResumeLayout(false);
+			this.SpriteContext.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -687,9 +751,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.PaletteContext.ResumeLayout(false);
-			this.PatternContext.ResumeLayout(false);
-			this.SpriteContext.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -759,5 +820,12 @@
 		private System.Windows.Forms.ContextMenuStrip SpriteContext;
 		private System.Windows.Forms.ToolStripMenuItem saveImageToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem imageToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem imageToClipboardToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem imageToClipboardToolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem savePaletteToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyPatternToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copySpriteToClipboardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
