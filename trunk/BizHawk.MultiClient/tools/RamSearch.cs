@@ -1381,7 +1381,10 @@ namespace BizHawk.MultiClient
 				string temp = "";
 
 				if (!append)
+				{
 					list.Clear();  //Wipe existing list and read from file
+					prevList.Clear();
+				}
 
 				while ((s = sr.ReadLine()) != null)
 				{
