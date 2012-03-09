@@ -439,8 +439,7 @@ namespace BizHawk.MultiClient
 								break;
 							// Reset
 							case 1:
-								reset = !controllers["Reset"];
-								controllers["Reset"] = reset;
+								reset = controllers["Reset"] = true;
 								break;
 							// Power cycle
 							case 2:
