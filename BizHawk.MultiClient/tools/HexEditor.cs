@@ -541,7 +541,7 @@ namespace BizHawk.MultiClient
 
 		private void freezeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			FreezeAddress();
+			ToggleFreeze();
 		}
 
 		public int GetHighlightedAddress()
@@ -1191,6 +1191,20 @@ namespace BizHawk.MultiClient
 		private void decrementToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DecrementAddress();
+		}
+
+		private void ViewerContextMenuStrip_Opening(object sender, CancelEventArgs e)
+		{
+			if (IsFrozen(GetHighlightedAddress()))
+			{
+				ViewerContextMenuStrip.Items[1].Text = "Un&freeze";
+				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Unfreeze;
+			}
+			else
+			{
+				ViewerContextMenuStrip.Items[1].Text = "&Freeze";
+				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Freeze;
+			}
 		}
 	}
 }
