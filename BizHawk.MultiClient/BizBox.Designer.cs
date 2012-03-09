@@ -36,8 +36,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
+			this.VersionLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -111,23 +110,14 @@
 			this.label4.TabIndex = 6;
 			this.label4.Text = "A multi-Platform Emulator";
 			// 
-			// label5
+			// VersionLabel
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(201, 56);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(60, 13);
-			this.label5.TabIndex = 7;
-			this.label5.Text = "Version 1.0";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(267, 56);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(124, 13);
-			this.label6.TabIndex = 8;
-			this.label6.Text = "Released March 3, 2012";
+			this.VersionLabel.AutoSize = true;
+			this.VersionLabel.Location = new System.Drawing.Point(201, 56);
+			this.VersionLabel.Name = "VersionLabel";
+			this.VersionLabel.Size = new System.Drawing.Size(189, 13);
+			this.VersionLabel.TabIndex = 7;
+			this.VersionLabel.Text = "Version 1.0.1 Released March 9, 2012";
 			// 
 			// BizBox
 			// 
@@ -135,8 +125,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(477, 192);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.label5);
+			this.Controls.Add(this.VersionLabel);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
@@ -164,7 +153,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label VersionLabel;
 	}
 }
