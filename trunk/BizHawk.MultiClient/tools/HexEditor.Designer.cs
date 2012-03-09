@@ -57,12 +57,12 @@
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
-			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
-			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.incrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.decrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
+			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
+			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -259,6 +259,7 @@
             this.decrementToolStripMenuItem});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
 			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(175, 164);
+			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// pokeToolStripMenuItem
 			// 
@@ -291,6 +292,27 @@
 			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
 			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(171, 6);
+			// 
+			// incrementToolStripMenuItem
+			// 
+			this.incrementToolStripMenuItem.Name = "incrementToolStripMenuItem";
+			this.incrementToolStripMenuItem.ShortcutKeyDisplayString = "+";
+			this.incrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.incrementToolStripMenuItem.Text = "&Increment";
+			this.incrementToolStripMenuItem.Click += new System.EventHandler(this.incrementToolStripMenuItem_Click);
+			// 
+			// decrementToolStripMenuItem
+			// 
+			this.decrementToolStripMenuItem.Name = "decrementToolStripMenuItem";
+			this.decrementToolStripMenuItem.ShortcutKeyDisplayString = "-";
+			this.decrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.decrementToolStripMenuItem.Text = "&Decrement";
+			this.decrementToolStripMenuItem.Click += new System.EventHandler(this.decrementToolStripMenuItem_Click);
 			// 
 			// MemoryViewerBox
 			// 
@@ -334,27 +356,6 @@
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(171, 6);
-			// 
-			// incrementToolStripMenuItem
-			// 
-			this.incrementToolStripMenuItem.Name = "incrementToolStripMenuItem";
-			this.incrementToolStripMenuItem.ShortcutKeyDisplayString = "+";
-			this.incrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-			this.incrementToolStripMenuItem.Text = "&Increment";
-			this.incrementToolStripMenuItem.Click += new System.EventHandler(this.incrementToolStripMenuItem_Click);
-			// 
-			// decrementToolStripMenuItem
-			// 
-			this.decrementToolStripMenuItem.Name = "decrementToolStripMenuItem";
-			this.decrementToolStripMenuItem.ShortcutKeyDisplayString = "-";
-			this.decrementToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-			this.decrementToolStripMenuItem.Text = "&Decrement";
-			this.decrementToolStripMenuItem.Click += new System.EventHandler(this.decrementToolStripMenuItem_Click);
 			// 
 			// HexEditor
 			// 
