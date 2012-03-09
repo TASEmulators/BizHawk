@@ -972,9 +972,9 @@ namespace BizHawk.MultiClient
 			Global.Config.ShowLogWindow ^= true;
 			displayLogWindowToolStripMenuItem.Checked = Global.Config.ShowLogWindow;
 			if (Global.Config.ShowLogWindow)
-				LogConsole.ShowConsole();
+				ShowConsole();
 			else
-				LogConsole.HideConsole();
+				HideConsole();
 		}
 
 		private void PauseStrip_Click(object sender, EventArgs e)
