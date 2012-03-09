@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	class Mapper046 : NES.NESBoardBase
 	{
 		//Rumblestation 15-in-1 (Unl).nes
-		//TODO: WHy does the gamedb entry fail?
 
 		/*
 			Regs at $6000-7FFF means no PRG-RAM.
@@ -43,8 +42,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				//TODO: High bits
-				return VROM[addr + (chr_bank_8k_L * 0x2000)];
+				return VROM[addr + (((chr_bank_8k_H << 3) + chr_bank_8k_L) * 0x2000)];
 			}
 			else return base.ReadPPU(addr);
 		}
@@ -52,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPRG(int addr)
 		{
 			//TODO: High bits
-			return ROM[addr + (prg_bank_32k_L * 0x8000)];
+			return ROM[addr + ((prg_bank_32k_H << 1) + prg_bank_32k_L * 0x8000)];
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -60,7 +58,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
-				case "MAPPER046":
+				case "Mapper046":
 					break;
 				default:
 					return false;
