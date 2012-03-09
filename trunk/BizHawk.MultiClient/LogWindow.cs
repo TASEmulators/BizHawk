@@ -36,11 +36,6 @@ namespace BizHawk.MultiClient
 			ShowDialog();
 		}
 
-		public void ShowConsole()
-		{
-			Show();
-		}
-
 		public void SetLogText(string str)
 		{
 			textBox1.Text = str;
