@@ -2243,9 +2243,9 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
-			if (!RamWatch1.IsDisposed)
+			if (RamWatch1.IsHandleCreated)
 				RamWatch1.SaveConfigSettings();
-			if (!RamSearch1.IsDisposed)
+			if (RamSearch1.IsHandleCreated)
 				RamSearch1.SaveConfigSettings();
 			if (!HexEditor1.IsDisposed)
 				HexEditor1.SaveConfigSettings();
