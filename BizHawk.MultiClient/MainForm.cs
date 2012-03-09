@@ -2528,12 +2528,11 @@ namespace BizHawk.MultiClient
 			ofd.Filter = FormatFilter(
 				"Movie Files", "*.fm2;*.mc2;*.mmv;*.fcm;*.fmv;*.gmv;*.mcm;",
 				"FCEUX", "*.fm2",
-				"PCEjin", "*.mc2",
+				"PCEjin/Mednafen", "*.mc2;*.mcm",
 				"Dega", "*.mmv",
 				"FCEU", "*.fcm",
 				"Famtasia", "*.fmv",
 				"Gens", "*.gmv",
-				"Mednafen", "*.mcm",
 				"All Files", "*.*");
 
 			ofd.RestoreDirectory = false;
