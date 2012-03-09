@@ -955,6 +955,15 @@ namespace BizHawk.MultiClient
 				case Keys.Space:
 					ToggleFreeze();
 					break;
+				case Keys.Delete:
+					if (e.Modifiers == Keys.Shift)
+						RemoveAllCheats();
+					else
+						UnFreezeAddress();
+					break;
+				case Keys.A:
+					AddToRamWatch();
+					break;
 			}
 		}
 
