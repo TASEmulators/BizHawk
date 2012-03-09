@@ -871,6 +871,7 @@ namespace BizHawk.MultiClient
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			bool success = false;
 
 			// Unless otherwise noted, all values are little-endian.
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -941,12 +942,12 @@ namespace BizHawk.MultiClient
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 
-			return m;
-
+			success = true;
 FAIL:
+			if(!success) m = null;
 			r.Close();
 			fs.Close();
-			return null;
+			return m;
 		}
 
 		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
