@@ -49,8 +49,8 @@ namespace BizHawk.MultiClient
 		bool SaveWindowPosition;
 		int Wndx = -1;
 		int Wndy = -1;
-		int Width = -1;
-		int Height = -1;
+		int Width_ = -1;
+		int Height_ = -1;
 		bool BigEndian;
 		int DataSize;
 
@@ -72,8 +72,8 @@ namespace BizHawk.MultiClient
 			SaveWindowPosition = Global.Config.SaveWindowPosition;
 			Wndx = Global.Config.HexEditorWndx;
 			Wndy = Global.Config.HexEditorWndy;
-			Width = Global.Config.HexEditorWidth;
-			Height = Global.Config.HexEditorHeight;
+			Width_ = Global.Config.HexEditorWidth;
+			Height_ = Global.Config.HexEditorHeight;
 			BigEndian = Global.Config.HexEditorBigEndian;
 			DataSize = Global.Config.HexEditorDataSize;
 		}
@@ -86,8 +86,8 @@ namespace BizHawk.MultiClient
 			{
 				Global.Config.HexEditorWndx = loaded ? this.Location.X : Wndx;
 				Global.Config.HexEditorWndy = loaded ? this.Location.Y : Wndy;
-				Global.Config.HexEditorWidth = loaded ? this.Right - this.Left : Width;
-				Global.Config.HexEditorHeight = loaded ? this.Bottom - this.Top : Height;
+				Global.Config.HexEditorWidth = loaded ? this.Right - this.Left : Width_;
+				Global.Config.HexEditorHeight = loaded ? this.Bottom - this.Top : Height_;
 			}
 			Global.Config.HexEditorBigEndian = BigEndian;
 			Global.Config.HexEditorDataSize = DataSize;
@@ -100,8 +100,8 @@ namespace BizHawk.MultiClient
 				if (Wndx >= 0 && Wndy >= 0)
 					this.Location = new Point(Wndx, Wndy);
 
-				if (Width >= 0 && Height >= 0)
-					this.Size = new System.Drawing.Size(Width, Height);
+				if (Width_ >= 0 && Height_ >= 0)
+					this.Size = new System.Drawing.Size(Width_, Height_);
 			}
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
