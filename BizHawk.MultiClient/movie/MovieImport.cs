@@ -388,6 +388,7 @@ namespace BizHawk.MultiClient
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
 			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
 			SimpleController controllers = new SimpleController();
@@ -457,14 +458,17 @@ namespace BizHawk.MultiClient
 								break;
 							// FDS Insert
 							case 24:
+								fds = true;
 								warningMsg = "FDS Insert";
 								break;
 							// FDS Eject
 							case 25:
+								fds = true;
 								warningMsg = "FDS Eject";
 								break;
 							// FDS Select Side
 							case 26:
+								fds = true;
 								warningMsg = "FDS Select Side";
 								break;
 							default:
@@ -514,6 +518,7 @@ namespace BizHawk.MultiClient
 					controllers["P" + player + " " + buttons[button]] = !controllers["P" + player + " " + buttons[button]];
 				}
 			}
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, fds ? "FDS" : "NES");
 			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
 			r.Close();
 			fs.Close();
