@@ -152,11 +152,11 @@ namespace BizHawk.MultiClient
 					item.Text = str;
 					{
 						int z = x;
-						item.Click += (o, ev) => SetMemoryDomain(z);
+						item.Click += (o, ev) => SetMemoryDomainNew(z);
 					}
 					if (x == 0)
 					{
-						SetMemoryDomain(x);
+						SetMemoryDomainNew(x);
 					}
 					memoryDomainsToolStripMenuItem.DropDownItems.Add(item);
 					domainMenuItems.Add(item);
@@ -172,6 +172,12 @@ namespace BizHawk.MultiClient
 			SetMemoryDomainMenu();  //Calls Start New Search
 		}
 
+		private void SetMemoryDomainNew(int pos)
+		{
+			SetMemoryDomain(pos);
+			StartNewSearch();
+		}
+
 		private void SetMemoryDomain(int pos)
 		{
 			if (pos < Global.Emulator.MemoryDomains.Count)  //Sanity check
@@ -179,7 +185,6 @@ namespace BizHawk.MultiClient
 				Domain = Global.Emulator.MemoryDomains[pos];
 			}
 			SetPlatformAndMemoryDomainLabel();
-			StartNewSearch();
 			addressFormatStr = "X" + GetNumDigits(Domain.Size - 1).ToString();
 		}
 
