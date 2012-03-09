@@ -2252,6 +2252,7 @@ namespace BizHawk.MultiClient
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
+			CloseForm(LuaConsole1);
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
