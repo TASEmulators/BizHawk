@@ -844,13 +844,13 @@ namespace BizHawk.MultiClient
 					for (int button = 0; button < stdButtons.Length; button++)
 						controllers["P3 " + stdButtons[button]] = ((starData >> button) & 1) == 0;
 				else
-					for (int i = 0; i < 4; i++)
+					for (int button = 0; button < 4; button++)
 					{
 						if (player1Config == "6")
-							controllers["P1 " + xyzButtons[i]] = ((starData >> i) & 1) == 0;
+							controllers["P1 " + xyzButtons[button]] = ((starData >> button) & 1) == 0;
 
 						if (player2Config == "6")
-							controllers["P2 " + xyzButtons[i]] = ((starData >> (i+4)) & 1) == 0;
+							controllers["P2 " + xyzButtons[button]] = ((starData >> (button + 4)) & 1) == 0;
 					}
 
 				MnemonicsGenerator mg = new MnemonicsGenerator();
