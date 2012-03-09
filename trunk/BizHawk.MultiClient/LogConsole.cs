@@ -274,8 +274,8 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				window.Dispose();
-				logStream.Dispose();
+				window.Close();
+				logStream.Close();
 				logStream = null;
 				Log.HACK_LOG_STREAM = null;
 				window = null;

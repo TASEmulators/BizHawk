@@ -2253,6 +2253,7 @@ namespace BizHawk.MultiClient
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
 			CloseForm(LuaConsole1);
+			if (Global.Config.ShowLogWindow) LogConsole.HideConsole();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
