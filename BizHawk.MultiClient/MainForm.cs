@@ -2243,13 +2243,21 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
-			if (RamWatch1.IsHandleCreated)
-				RamWatch1.SaveConfigSettings();
-			if (RamSearch1.IsHandleCreated)
-				RamSearch1.SaveConfigSettings();
-			if (!HexEditor1.IsDisposed)
-				HexEditor1.SaveConfigSettings();
+			CloseForm(RamWatch1);
+			CloseForm(RamSearch1);
+			CloseForm(HexEditor1);
+			CloseForm(NESNameTableViewer1);
+			CloseForm(NESPPU1);
+			CloseForm(NESDebug1);
+			CloseForm(Cheats1);
+			CloseForm(TI83KeyPad1);
+			CloseForm(TAStudio1);
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+		}
+
+		private void CloseForm(Form form)
+		{
+			if (form.IsHandleCreated) form.Close();
 		}
 
 		private void PreviousSlot()
