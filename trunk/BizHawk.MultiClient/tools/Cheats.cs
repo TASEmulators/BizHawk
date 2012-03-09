@@ -149,6 +149,18 @@ namespace BizHawk.MultiClient
 			CheatListView.Refresh();
 		}
 
+		public void RemoveCheat(Cheat c)
+		{
+			Changes();
+
+			Global.CheatList.RemoveCheat(c.domain, c.address);
+			
+			Global.RenderPanel.AddMessage("Cheat removed.");
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			DisplayCheatsList();
+			CheatListView.Refresh();
+		}
+
 		public void LoadCheatFromRecent(string file)
 		{
 			bool z = true;
