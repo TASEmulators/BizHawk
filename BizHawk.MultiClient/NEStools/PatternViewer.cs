@@ -69,5 +69,17 @@ namespace BizHawk.MultiClient
 
 			b.Save(file.FullName, i);
 		}
+
+		public void ScreenshotToClipboard()
+		{
+			Bitmap b = new Bitmap(Width, Height);
+			Rectangle rect = new Rectangle(new Point(0, 0), Size);
+			DrawToBitmap(b, rect);
+
+			using (var img = b)
+			{
+				System.Windows.Forms.Clipboard.SetImage(img);
+			}
+		}
 	}
 }
