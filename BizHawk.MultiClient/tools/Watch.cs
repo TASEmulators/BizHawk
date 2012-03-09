@@ -277,8 +277,6 @@ namespace BizHawk.MultiClient
 							case atype.DWORD:
 								return ((int)value).ToString();
 						}
-						break;
-						
 					default:
 					case asigned.UNSIGNED:
 					switch (type)
@@ -291,7 +289,6 @@ namespace BizHawk.MultiClient
 							case atype.DWORD:
 								return ((uint)value).ToString();
 						}
-						break;
 				}
 			}
 		}
