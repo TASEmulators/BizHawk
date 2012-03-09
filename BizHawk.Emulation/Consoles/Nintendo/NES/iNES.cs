@@ -105,6 +105,7 @@ static string ClassifyTable = @"
 71	-1	-1	-1	-1	CAMERICA-BF9093; Micro Machines (U)
 79	-1	-1	-1	-1	AVE-NINA-06; Blackjack (U)
 113	-1	-1	-1	-1	AVE-NINA-06; ???
+115	-1	-1	-1	-1	MAPPER115
 232	-1	-1	-1	-1	CAMERICA-ALGQ; Quattro Adventure
 240	-1	-1	-1	-1	MAPPER240
 ";
