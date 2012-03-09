@@ -2253,7 +2253,7 @@ namespace BizHawk.MultiClient
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
 			CloseForm(LuaConsole1);
-			if (Global.Config.ShowLogWindow) LogConsole.HideConsole();
+			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
@@ -2728,5 +2728,9 @@ namespace BizHawk.MultiClient
         {
             Global.Config.SkipLagFrame ^= true;
         }
+		public void notifyLogWindowClosing()
+		{
+			displayLogWindowToolStripMenuItem.Checked = false;
+		}
 	}
 }

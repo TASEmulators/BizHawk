@@ -19,7 +19,13 @@ namespace BizHawk.MultiClient
 		public LogWindow()
 		{
 			InitializeComponent();
-			Closing += (o, e) => SaveConfigSettings();
+			Closing += (o, e) =>
+			{
+				Global.Config.ShowLogWindow = false;
+				Global.MainForm.notifyLogWindowClosing();
+				LogConsole.notifyLogWindowClosing();
+				SaveConfigSettings();
+			};
 		}
 
 		public void ShowReport(string title, string report)
