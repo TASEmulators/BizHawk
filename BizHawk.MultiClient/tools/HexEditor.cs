@@ -58,8 +58,6 @@ namespace BizHawk.MultiClient
 		{
 			InitializeComponent();
 			AddressesLabel.BackColor = Color.Transparent;
-			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
-			defaultHeight = this.Size.Height;
 			LoadConfigSettings();
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
@@ -95,6 +93,8 @@ namespace BizHawk.MultiClient
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
+			defaultWidth = this.Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = this.Size.Height;
 			if (SaveWindowPosition)
 			{
 				if (Wndx >= 0 && Wndy >= 0)
