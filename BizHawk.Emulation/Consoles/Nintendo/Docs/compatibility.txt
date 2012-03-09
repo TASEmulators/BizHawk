@@ -40,7 +40,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 034	Misc		Complete
 044	Multicart	Complete
 045	Multicart	Junk
-046	Multicart	Junk
+046	Multicart	Complete
 047	MMC3Multi	Decent
 048	MMC3Variant	Decent
 049	Multicart	Complete
