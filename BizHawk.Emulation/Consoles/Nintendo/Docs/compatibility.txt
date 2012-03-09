@@ -95,12 +95,12 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 164	Pirate		Junk - Started
 165	Pirate		Junk
 180	Misc (J)	Complete (but we don't implement the crazy climber controller) 
-182	MMC3Variant	Nothing
+182	MMC3Variant	Decent
 184	Sunsoft-1	Complete
 185	Misc (J)	Complete
 189	MMC3Variant	Nothing
-191	Pirate		Junk
-192	Pirate		Junk
+191	Pirate		Junk (mmc3 variant)
+192	Pirate		Junk (mmc3 variant)
 193	Unlicensed	Junk - Started
 194	Pirate		Junk
 200	Multicart	Junk
