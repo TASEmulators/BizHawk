@@ -126,6 +126,15 @@ namespace BizHawk.MultiClient
 					);
 				else if (line.StartsWith("romFilename"))
 					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
+				else if (line.StartsWith("romChecksum"))
+				{
+					string md5_blob = ParseHeader(line, "romChecksum").Trim();
+					byte[] MD5 = DecodeBlob(md5_blob);
+					if (MD5 != null && MD5.Length == 16)
+						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
+					// else
+					//     TODO: We should give some warning, but setting warningMsg might affect input parsing...
+				}
 				else if (line.StartsWith("comment author"))
 					m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
 				else if (line.StartsWith("rerecordCount"))
@@ -267,6 +276,27 @@ namespace BizHawk.MultiClient
 			int x = line.LastIndexOf(headerName) + headerName.Length;
 			str = line.Substring(x + 1, line.Length - x - 1);
 			return str;
+		}
+
+		// Decode a blob used in FM2 (base64:..., 0x123456...)
+		private static byte[] DecodeBlob(string blob)
+		{
+			if (blob.Length < 2) return null;
+			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X')) // hex
+			{
+				return BizHawk.Util.HexStringToBytes(blob.Substring(2));
+			}
+			else{ // base64
+				if(!blob.StartsWith("base64:")) return null;
+				try
+				{
+					return Convert.FromBase64String(blob.Substring(7));
+				}
+				catch (FormatException)
+				{
+					return null;
+				}
+			}
 		}
 
 		// Remove the NULL characters from a string.
