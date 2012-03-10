@@ -124,7 +124,17 @@ namespace BizHawk
 		{
 			Frame++;
 			//cpu.Execute(228);
-			cpu.Execute(2000);
+			//cpu.Execute(2000);
+
+			tia.frameComplete = false;
+			while (tia.frameComplete == false)
+			{
+				tia.execute(1);
+				tia.execute(1);
+				tia.execute(1);
+
+				cpu.Execute(1);
+			}
 			//clear the framebuffer (hack code)
 			if (render == false) return;
 			/*

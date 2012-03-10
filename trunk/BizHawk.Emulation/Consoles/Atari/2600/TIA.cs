@@ -2,18 +2,27 @@
 using System.Globalization;
 using System.IO;
 using BizHawk.Emulation.CPUs.M6502;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {
-	// Emulates the M6532 RIOT Chip
+	// Emulates the TIA
 	public partial class TIA
 	{
 		MOS6502 Cpu;
 		UInt32 PF; // PlayField data
 		byte background; 
-		byte scanline;
 		UInt32 BKcolor, PFcolor;
 		int[] frameBuffer;
+		public bool frameComplete;
+
+		List<uint[]> scanlinesBuffer = new List<uint[]> ();
+		uint[] scanline = new uint[160];
+		int scanlinePos;
+
+		int drawClocksStart;
+		int drawLastUpdate;
+
 		UInt32[] palette = new UInt32[]{
 		  0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
 		  0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,
@@ -52,9 +61,75 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public TIA(MOS6502 cpu, int[] frameBuffer)
 		{
 			Cpu = cpu;
-			scanline = 0;
 			BKcolor = 0x00;
 			this.frameBuffer = frameBuffer;
+			scanlinePos = 0;
+			frameComplete = false;
+		}
+
+		public void execute(int cycles)
+		{
+			// Ignore cycles for now, just do one cycle (three color counts/pixels)
+
+			if (scanlinePos < 68)
+			{
+				scanlinePos ++;
+				// HBLANK
+				return;
+			}
+
+			UInt32 PFmask;
+
+			int pixelPos = scanlinePos - 68;
+
+			// First half of screen
+			if (pixelPos < 80)
+			{
+				PFmask = (UInt32)(1 << ((20-1) - (byte)((pixelPos % 80) / 4)));
+			}
+			// Second half
+			else
+			{
+				PFmask = (UInt32)(1 << ((byte)((pixelPos % 80) / 4)));
+			}
+
+			UInt32 color;
+			if ((PF & PFmask) != 0)
+			{
+				color = palette[PFcolor];
+			}
+			else
+			{
+				color = palette[BKcolor];
+			}
+			scanline[pixelPos]   = color;
+
+			scanlinePos++;
+			if (scanlinePos >= 228)
+			{
+				scanlinesBuffer.Add(scanline);
+				scanline = new uint[160];
+			}
+			scanlinePos %= 228;
+
+		}
+
+		public void outputFrame()
+		{
+			for (int row = 0; row < 262; row++)
+			{
+				for (int col = 0; col < 320; col++)
+				{
+					if (scanlinesBuffer.Count != null && scanlinesBuffer.Count > row)
+					{
+						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2]);
+					}
+					else
+					{
+						frameBuffer[row * 320 + col] = 0x000000;
+					}
+				}
+			}
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -75,6 +150,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((value & 0x02) != 0)
 				{
 					Console.WriteLine("TIA VSYNC On");
+					// Frame is complete, output to buffer
+					outputFrame();
+					scanlinesBuffer.Clear();
+					frameComplete = true;
+					scanlinePos = 0;
 				}
 				else
 				{
@@ -86,41 +166,20 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((value & 0x02) != 0)
 				{
 					Console.WriteLine("TIA Vblank On");
-					scanline = 0;
 				}
 				else
 				{
+					// With this, the electon beam will turn back on and scan lines will start again
 					Console.WriteLine("TIA Vblank Off");
 				}
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
-				for (int i = 0; i < 320; i++)
-				{
-					UInt32 PFmask;
-					if (i < 160)
-					{
-						PFmask = (UInt32)(1 << (20 - (byte)((i % 160) / 8)));
-					}
-					else
-					{
-						PFmask = (UInt32)(1 << ((byte)((i % 160) / 8)));
-					}
-					UInt32 color;
-					if ((PF & PFmask) != 0)
-					{
-						color = palette[PFcolor];
-					}
-					else
-					{
-						color = palette[BKcolor];
-					}
-					frameBuffer[scanline * 320 + i] = (int)color;
-				}
-				scanline++;
-				if (scanline >= 192) { scanline = 0; }
-
 				Console.WriteLine("TIA WSYNC");
+				while (scanlinePos > 0)
+				{
+					execute(1);
+				}
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
