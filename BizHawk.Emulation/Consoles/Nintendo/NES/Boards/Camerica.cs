@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
-				case "CAMERICA-ALGQ": //Linus Spacehead's Cosmic Crusade (U)
+				case "CAMERICA-ALGN": //Linus Spacehead's Cosmic Crusade (U)
 					AssertPrg(128,256); AssertChr(0); AssertWram(0); AssertVram(8);
 					break;
 				case "CAMERICA-BF9093": //Big Nose Freaks Out (U)
