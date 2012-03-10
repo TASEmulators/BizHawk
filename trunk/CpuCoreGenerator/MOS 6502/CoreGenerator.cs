@@ -651,10 +651,11 @@ namespace M6502
                 case AddrMode.IndirectX:   mstr = "string.Format(\"" + op.Instruction + " (${0:X2},X)\", ReadMemory(++pc))"; break;
                 case AddrMode.IndirectY:   mstr = "string.Format(\"" + op.Instruction + " (${0:X2}),Y\", ReadMemory(++pc))"; break;
                 case AddrMode.IndirectY_P: mstr = "string.Format(\"" + op.Instruction + " (${0:X2}),Y *\", ReadMemory(++pc))"; break;    
-                case AddrMode.Relative:    mstr = "string.Format(\"" + op.Instruction + " {0}\", (sbyte)ReadMemory(++pc))"; break;
+                case AddrMode.Relative:    mstr = "string.Format(\"" + op.Instruction + " ${0:X4}\", pc+2+(sbyte)ReadMemory(++pc))"; break;
                 default:                   mstr = @"""?"""; break;
             }
 
+            // BRK is 2-byte, but it is rarely used. So I don't care about it.
             w.Write("bytesToAdvance = {0}; ", op.Size);
             w.WriteLine("return " + mstr + ";");
         }

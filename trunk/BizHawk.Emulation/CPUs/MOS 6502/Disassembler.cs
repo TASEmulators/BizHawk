@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0x0C: bytesToAdvance = 3; return string.Format("NOP (${0:X4})", ReadWord(++pc));
                 case 0x0D: bytesToAdvance = 3; return string.Format("ORA ${0:X4}", ReadWord(++pc));
                 case 0x0E: bytesToAdvance = 3; return string.Format("ASL ${0:X4}", ReadWord(++pc));
-                case 0x10: bytesToAdvance = 2; return string.Format("BPL {0}", (sbyte)ReadMemory(++pc));
+                case 0x10: bytesToAdvance = 2; return string.Format("BPL ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0x11: bytesToAdvance = 2; return string.Format("ORA (${0:X2}),Y *", ReadMemory(++pc));
                 case 0x14: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0x15: bytesToAdvance = 2; return string.Format("ORA ${0:X2},X", ReadMemory(++pc));
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0x2C: bytesToAdvance = 3; return string.Format("BIT ${0:X4}", ReadWord(++pc));
                 case 0x2D: bytesToAdvance = 3; return string.Format("AND ${0:X4}", ReadWord(++pc));
                 case 0x2E: bytesToAdvance = 3; return string.Format("ROL ${0:X4}", ReadWord(++pc));
-                case 0x30: bytesToAdvance = 2; return string.Format("BMI {0}", (sbyte)ReadMemory(++pc));
+                case 0x30: bytesToAdvance = 2; return string.Format("BMI ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0x31: bytesToAdvance = 2; return string.Format("AND (${0:X2}),Y *", ReadMemory(++pc));
                 case 0x34: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0x35: bytesToAdvance = 2; return string.Format("AND ${0:X2},X", ReadMemory(++pc));
@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0x4C: bytesToAdvance = 3; return string.Format("JMP ${0:X4}", ReadWord(++pc));
                 case 0x4D: bytesToAdvance = 3; return string.Format("EOR ${0:X4}", ReadWord(++pc));
                 case 0x4E: bytesToAdvance = 3; return string.Format("LSR ${0:X4}", ReadWord(++pc));
-                case 0x50: bytesToAdvance = 2; return string.Format("BVC {0}", (sbyte)ReadMemory(++pc));
+                case 0x50: bytesToAdvance = 2; return string.Format("BVC ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0x51: bytesToAdvance = 2; return string.Format("EOR (${0:X2}),Y *", ReadMemory(++pc));
                 case 0x54: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0x55: bytesToAdvance = 2; return string.Format("EOR ${0:X2},X", ReadMemory(++pc));
@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0x6C: bytesToAdvance = 3; return string.Format("JMP (${0:X4})", ReadWord(++pc));
                 case 0x6D: bytesToAdvance = 3; return string.Format("ADC ${0:X4}", ReadWord(++pc));
                 case 0x6E: bytesToAdvance = 3; return string.Format("ROR ${0:X4}", ReadWord(++pc));
-                case 0x70: bytesToAdvance = 2; return string.Format("BVS {0}", (sbyte)ReadMemory(++pc));
+                case 0x70: bytesToAdvance = 2; return string.Format("BVS ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0x71: bytesToAdvance = 2; return string.Format("ADC (${0:X2}),Y *", ReadMemory(++pc));
                 case 0x74: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0x75: bytesToAdvance = 2; return string.Format("ADC ${0:X2},X", ReadMemory(++pc));
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0x8C: bytesToAdvance = 3; return string.Format("STY ${0:X4}", ReadWord(++pc));
                 case 0x8D: bytesToAdvance = 3; return string.Format("STA ${0:X4}", ReadWord(++pc));
                 case 0x8E: bytesToAdvance = 3; return string.Format("STX ${0:X4}", ReadWord(++pc));
-                case 0x90: bytesToAdvance = 2; return string.Format("BCC {0}", (sbyte)ReadMemory(++pc));
+                case 0x90: bytesToAdvance = 2; return string.Format("BCC ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0x91: bytesToAdvance = 2; return string.Format("STA (${0:X2}),Y", ReadMemory(++pc));
                 case 0x94: bytesToAdvance = 2; return string.Format("STY ${0:X2},X", ReadMemory(++pc));
                 case 0x95: bytesToAdvance = 2; return string.Format("STA ${0:X2},X", ReadMemory(++pc));
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0xAC: bytesToAdvance = 3; return string.Format("LDY ${0:X4}", ReadWord(++pc));
                 case 0xAD: bytesToAdvance = 3; return string.Format("LDA ${0:X4}", ReadWord(++pc));
                 case 0xAE: bytesToAdvance = 3; return string.Format("LDX ${0:X4}", ReadWord(++pc));
-                case 0xB0: bytesToAdvance = 2; return string.Format("BCS {0}", (sbyte)ReadMemory(++pc));
+                case 0xB0: bytesToAdvance = 2; return string.Format("BCS ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0xB1: bytesToAdvance = 2; return string.Format("LDA (${0:X2}),Y *", ReadMemory(++pc));
                 case 0xB4: bytesToAdvance = 2; return string.Format("LDY ${0:X2},X", ReadMemory(++pc));
                 case 0xB5: bytesToAdvance = 2; return string.Format("LDA ${0:X2},X", ReadMemory(++pc));
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0xCC: bytesToAdvance = 3; return string.Format("CPY ${0:X4}", ReadWord(++pc));
                 case 0xCD: bytesToAdvance = 3; return string.Format("CMP ${0:X4}", ReadWord(++pc));
                 case 0xCE: bytesToAdvance = 3; return string.Format("DEC ${0:X4}", ReadWord(++pc));
-                case 0xD0: bytesToAdvance = 2; return string.Format("BNE {0}", (sbyte)ReadMemory(++pc));
+                case 0xD0: bytesToAdvance = 2; return string.Format("BNE ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0xD1: bytesToAdvance = 2; return string.Format("CMP (${0:X2}),Y *", ReadMemory(++pc));
                 case 0xD4: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0xD5: bytesToAdvance = 2; return string.Format("CMP ${0:X2},X", ReadMemory(++pc));
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.CPUs.M6502
                 case 0xEC: bytesToAdvance = 3; return string.Format("CPX ${0:X4}", ReadWord(++pc));
                 case 0xED: bytesToAdvance = 3; return string.Format("SBC ${0:X4}", ReadWord(++pc));
                 case 0xEE: bytesToAdvance = 3; return string.Format("INC ${0:X4}", ReadWord(++pc));
-                case 0xF0: bytesToAdvance = 2; return string.Format("BEQ {0}", (sbyte)ReadMemory(++pc));
+                case 0xF0: bytesToAdvance = 2; return string.Format("BEQ ${0:X4}", pc+2+(sbyte)ReadMemory(++pc));
                 case 0xF1: bytesToAdvance = 2; return string.Format("SBC (${0:X2}),Y *", ReadMemory(++pc));
                 case 0xF4: bytesToAdvance = 2; return string.Format("NOP ${0:X2},X", ReadMemory(++pc));
                 case 0xF5: bytesToAdvance = 2; return string.Format("SBC ${0:X2},X", ReadMemory(++pc));
