@@ -10,11 +10,18 @@ namespace BizHawk.Emulation.Consoles.Atari
 	{
 		MOS6502 Cpu;
 		public byte[] ram;
+		public int timerStartValue;
+		public int timerFinishedCycles;
+		public int timerShift;
 
 		public M6532(MOS6502 cpu, byte[] ram)
 		{
 			Cpu = cpu;
 			this.ram = ram;
+
+			// Apparently this will break for some games (Solaris and H.E.R.O.). We shall see
+			timerFinishedCycles = 0;
+
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -30,7 +37,28 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else
 			{
 				maskedAddr = (ushort)(addr & 0x0007);
-				Console.WriteLine("6532 register read: " + maskedAddr.ToString("x"));
+				if (maskedAddr == 0x04 || maskedAddr == 0x06)
+				{
+					Console.WriteLine("6532 timer read: " + maskedAddr.ToString("x"));
+
+					// Calculate the current value on the timer
+					int timerCurrentValue = timerFinishedCycles - Cpu.TotalExecutedCycles;
+
+					// If the timer has not finished, shift the value down for the game
+					if (Cpu.TotalExecutedCycles < timerFinishedCycles)
+					{
+						return (byte)(((timerCurrentValue) >> timerShift) & 0xFF);
+					}
+					// Other wise, return the last 8 bits from how long ago it triggered
+					else
+					{
+						return (byte)(timerCurrentValue & 0xFF);
+					}
+				}
+				else
+				{
+					Console.WriteLine("6532 register read: " + maskedAddr.ToString("x"));
+				}
 			}
 
 			return 0x3A;
@@ -49,7 +77,23 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else
 			{
 				maskedAddr = (ushort)(addr & 0x0007);
-				Console.WriteLine("6532 register write: " + maskedAddr.ToString("x"));
+				if ((addr & 0x14) == 0x14)
+				{
+					int[] shift = new int[] {0,3,6,10};
+					timerShift = shift[addr & 0x03];
+
+					// Store the number of cycles for the timer
+					timerStartValue = value << timerShift;
+
+					// Calculate when the timer will be finished
+					timerFinishedCycles = timerStartValue + Cpu.TotalExecutedCycles;
+
+					Console.WriteLine("6532 timer write:  " + maskedAddr.ToString("x"));
+				}
+				else
+				{
+					Console.WriteLine("6532 register write: " + maskedAddr.ToString("x"));
+				}
 			}
 		}
 	}

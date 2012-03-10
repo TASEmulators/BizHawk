@@ -75,7 +75,7 @@ namespace BizHawk
 			// ROM data
 			else
 			{
-				Console.WriteLine("ROM read");
+				//Console.WriteLine("ROM read");
 				return rom[maskedAddr & 0x0FFF];
 			}
 		}
@@ -110,7 +110,7 @@ namespace BizHawk
 			cpu.WriteMemory = WriteMemory;
 
 			// Setup TIA
-			tia = new TIA(cpu);
+			tia = new TIA(cpu, frameBuffer);
 			// Setup 6532
 			m6532 = new M6532(cpu, ram);
 
@@ -124,10 +124,11 @@ namespace BizHawk
 		{
 			Frame++;
 			//cpu.Execute(228);
-			cpu.Execute(1);
+			cpu.Execute(2000);
 			//clear the framebuffer (hack code)
 			if (render == false) return;
-			for (int i = 0; i < 256 * 192; i++)
+			/*
+			for (int i = 0; i < 160 * 192; i++)
 			{
 				if (i < 64*256)
 					frameBuffer[i] = i % 256; //black
@@ -136,7 +137,7 @@ namespace BizHawk
 				if (i >= 128*256)
 					frameBuffer[i] = (i % 256) << 16; //black
 			}
-				
+				*/
 
 			//run one frame's worth of cpu cyclees (i.e. do the emulation!)
 			//this should generate the framebuffer as it goes.
