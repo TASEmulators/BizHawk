@@ -207,14 +207,14 @@ namespace BizHawk.MultiClient
 			"write_u24_be",
 			"write_u32_be",
 
-			"readbyte"
+			"readbyte",
 			//"readbytesigned",
 			//"readword",
 			//"readwordsigned",
 			//"readdword",
 			//"readdwordsigned",
 			//"readbyterange",
-			//"writebyte",
+			"writebyte",
 			//"writeword",
 			//"writedword",
 			//"registerwrite",
@@ -253,14 +253,14 @@ namespace BizHawk.MultiClient
 			"write_u24_be",
 			"write_u32_be",
 
-			"readbyte"
+			"readbyte",
 			//"readbytesigned",
 			//"readword",
 			//"readwordsigned",
 			//"readdword",
 			//"readdwordsigned",
 			//"readbyterange",
-			//"writebyte",
+			"writebyte",
 			//"writeword",
 			//"writedword",
 			//"registerwrite",
@@ -408,27 +408,17 @@ namespace BizHawk.MultiClient
 			return Global.Emulator.MemoryDomains[CurrentMemoryDomain].Name;
 		}
 
-		public string memory_readbyte(object lua_input)
+		public uint memory_readbyte(object lua_addr)
 		{
-
-			byte x;
-			if (lua_input.GetType() == typeof(string))
-			{
-				x = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(int.Parse((string)lua_input));
-				return x.ToString();
-			}
-			else
-			{
-				double y = (double)lua_input;
-				x = Global.Emulator.MemoryDomains[CurrentMemoryDomain].PeekByte(Convert.ToInt32(y));
-				return x.ToString();
-			}
-
+			int addr = LuaInt(lua_addr);
+			return M_R_U8(addr);
 		}
 
-		public void memory_writebyte(object lua_input)
+		public void memory_writebyte(object lua_addr, object lua_v)
 		{
-			Global.Emulator.MemoryDomains[CurrentMemoryDomain].PokeByte((int)lua_input, (byte)lua_input);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
+			M_W_U8(addr, v);
 		}
 
 		public int memory_read_s8(object lua_addr)
@@ -675,27 +665,17 @@ namespace BizHawk.MultiClient
 		//Main Memory library
 		//----------------------------------------------------
 
-		public string mainmemory_readbyte(object lua_input)
+		public uint mainmemory_readbyte(object lua_addr)
 		{
-
-			byte x;
-			if (lua_input.GetType() == typeof(string))
-			{
-				x = Global.Emulator.MainMemory.PeekByte(int.Parse((string)lua_input));
-				return x.ToString();
-			}
-			else
-			{
-				double y = (double)lua_input;
-				x = Global.Emulator.MainMemory.PeekByte(Convert.ToInt32(y));
-				return x.ToString();
-			}
-
+			int addr = LuaInt(lua_addr);
+			return MM_R_U8(addr);
 		}
 
-		public void mainmemory_writebyte(object lua_input)
+		public void mainmemory_writebyte(object lua_addr, object lua_v)
 		{
-			Global.Emulator.MainMemory.PokeByte((int)lua_input, (byte)lua_input);
+			int addr = LuaInt(lua_addr);
+			uint v = LuaUInt(lua_v);
+			MM_W_U8(addr, v);
 		}
 
 		public int mainmemory_read_s8(object lua_addr)
