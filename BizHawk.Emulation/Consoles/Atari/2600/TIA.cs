@@ -11,11 +11,22 @@ namespace BizHawk.Emulation.Consoles.Atari
 	{
 		MOS6502 Cpu;
 		UInt32 PF; // PlayField data
-		byte BKcolor, PFcolor, P0color;
-		byte grp0;
-		byte resetP0 = 0;
+		byte BKcolor, PFcolor;
 		bool PFpriority = false;
-		bool P0Reflect = false;
+		struct playerData
+		{
+			public byte grp;
+			public byte color;
+			public byte pos;
+			public byte HM;
+			public bool reflect;
+			public bool delay;
+			public byte nusiz;
+		};
+
+		playerData player0;
+		playerData player1;
+
 
 		int[] frameBuffer;
 		public bool frameComplete;
@@ -103,16 +114,16 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			
 			// Player 1
-			if (pixelPos >= resetP0 && pixelPos < (resetP0 + 8))
+			if (pixelPos >= player0.pos && pixelPos < (player0.pos + 8))
 			{
-				byte mask = (byte)(0x80 >> (pixelPos - resetP0));
-				if (P0Reflect)
+				byte mask = (byte)(0x80 >> (pixelPos - player0.pos));
+				if (player0.reflect)
 				{
 					mask = reverseBits(mask);
 				}
-				if ((grp0 & mask) != 0)
+				if ((player0.grp & mask) != 0)
 				{
-					color = palette[P0color];
+					color = palette[player0.color];
 				}
 			}
 
@@ -202,7 +213,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x06) // COLUP0
 			{
-				P0color = value;
+				player0.color = value;
 			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
@@ -225,14 +236,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x0B) // REFP0
 			{
-				if ((value & 0x04) != 0)
-				{
-					P0Reflect = true;
-				}
-				else
-				{
-					P0Reflect = false;
-				}
+				player0.reflect = ((value & 0x04) != 0);
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
@@ -248,11 +252,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				resetP0 = (byte)(scanlinePos - 68);
+				player0.pos = (byte)(scanlinePos - 68);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
-				grp0 = value;
+				player0.grp = value;
+			}
+			else if (maskedAddr == 0x1C) // GRP1
+			{
+				player1.grp = value;
 			}
 		}
 
