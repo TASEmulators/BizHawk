@@ -8,7 +8,7 @@ namespace BizHawk
 	{
 		public string SystemId { get { return "A26"; } }
 
-		private int[] frameBuffer = new int[256 * 192];
+		private int[] frameBuffer = new int[320 * 192];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -68,7 +68,7 @@ namespace BizHawk
 			return ms.ToArray();
 		}
 		public int[] GetVideoBuffer() { return frameBuffer; }
-		public int BufferWidth { get { return 256; } }
+		public int BufferWidth { get { return 320; } }
 		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples) { }
