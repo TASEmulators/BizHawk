@@ -6,13 +6,22 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
 	public partial class NESDebugger : Form
 	{
+		const int ADDR_MAX = 0xFFFF;
+		const int DISASM_LINE_COUNT = 100;
+
 		int defaultWidth;       //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
+		NES Nes;
+
+		int pc;
+		int addr;
+		List<string> lines = new List<string>();
 
 		public NESDebugger()
 		{
@@ -20,17 +29,54 @@ namespace BizHawk.MultiClient
 			DebugView.QueryItemText += new QueryItemTextHandler(DebugView_QueryItemText);
 			DebugView.QueryItemBkColor += new QueryItemBkColorHandler(DebugView_QueryItemBkColor);
 			DebugView.VirtualMode = true;
+			DebugView.ItemCount = ADDR_MAX + 1;
+			Activated += (o, e) => UpdateValues();
 			Closing += (o, e) => SaveConfigSettings();
 		}
 
 		public void Restart()
 		{
+			if (!(Global.Emulator is NES)) this.Close();
 			if (!this.IsHandleCreated || this.IsDisposed) return;
+			Nes = Global.Emulator as NES;
+		}
+
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+
+			addr = pc = Nes.cpu.PC;
+			UpdateDebugView();
+		}
+
+		private void UpdateDebugView()
+		{
+			DebugView.BlazingFast = true;
+			Disasm(DISASM_LINE_COUNT);
+			DebugView.ensureVisible(0xFFFF);
+			DebugView.ensureVisible(pc);
+			DebugView.Refresh();
+			DebugView.BlazingFast = false;
+		}
+
+		private void Disasm(int line_count)
+		{
+			lines.Clear();
+			int a = addr;
+			for (int i = 0; i < line_count; ++i)
+			{
+				int advance;
+				string line = Nes.cpu.Disassemble((ushort)a, out advance);
+				lines.Add(line);
+				a += advance;
+				if (a > ADDR_MAX) break;
+			}
 		}
 
 		private void NESDebugger_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
+			Nes = Global.Emulator as NES;
 		}
 
 		private void LoadConfigSettings()
@@ -63,6 +109,15 @@ namespace BizHawk.MultiClient
 		void DebugView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
+			if (column == 0)
+			{
+				text = String.Format("{0:X4}", index);
+			}
+			else if (column == 1)
+			{
+				if (addr <= index && index < addr+lines.Count)
+					text = lines[index-addr];
+			}
 		}
 
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
