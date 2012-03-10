@@ -11,17 +11,18 @@ namespace BizHawk.Emulation.Consoles.Atari
 	{
 		MOS6502 Cpu;
 		UInt32 PF; // PlayField data
-		byte background; 
-		UInt32 BKcolor, PFcolor;
+		byte BKcolor, PFcolor, P0color;
+		byte grp0;
+		byte resetP0 = 0;
+		bool PFpriority = false;
+		bool P0Reflect = false;
+
 		int[] frameBuffer;
 		public bool frameComplete;
 
 		List<uint[]> scanlinesBuffer = new List<uint[]> ();
 		uint[] scanline = new uint[160];
 		int scanlinePos;
-
-		int drawClocksStart;
-		int drawLastUpdate;
 
 		UInt32[] palette = new UInt32[]{
 		  0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
@@ -94,14 +95,32 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 
 			UInt32 color;
+			color = palette[BKcolor];
+
 			if ((PF & PFmask) != 0)
 			{
 				color = palette[PFcolor];
 			}
-			else
+			
+			// Player 1
+			if (pixelPos >= resetP0 && pixelPos < (resetP0 + 8))
 			{
-				color = palette[BKcolor];
+				byte mask = (byte)(0x80 >> (pixelPos - resetP0));
+				if (P0Reflect)
+				{
+					mask = reverseBits(mask);
+				}
+				if ((grp0 & mask) != 0)
+				{
+					color = palette[P0color];
+				}
 			}
+
+			if ((PF & PFmask) != 0 && PFpriority == true)
+			{
+				color = palette[PFcolor];
+			}
+
 			scanline[pixelPos]   = color;
 
 			scanlinePos++;
@@ -120,7 +139,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				for (int col = 0; col < 320; col++)
 				{
-					if (scanlinesBuffer.Count != null && scanlinesBuffer.Count > row)
+					if (scanlinesBuffer.Count > row)
 					{
 						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2]);
 					}
@@ -181,6 +200,40 @@ namespace BizHawk.Emulation.Consoles.Atari
 					execute(1);
 				}
 			}
+			else if (maskedAddr == 0x06) // COLUP0
+			{
+				P0color = value;
+			}
+			else if (maskedAddr == 0x08) // COLUPF
+			{
+				PFcolor = value;
+			}
+			else if (maskedAddr == 0x09) // COLUBK
+			{
+				BKcolor = value;
+			}
+			else if (maskedAddr == 0x0A) // CTRLPF
+			{
+				if ((value & 0x04) != 0)
+				{
+					PFpriority = true;
+				}
+				else
+				{
+					PFpriority = false;
+				}
+			}
+			else if (maskedAddr == 0x0B) // REFP0
+			{
+				if ((value & 0x04) != 0)
+				{
+					P0Reflect = true;
+				}
+				else
+				{
+					P0Reflect = false;
+				}
+			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
 				PF = (UInt32)((PF & 0x0FFFF) + ((reverseBits(value) & 0x0F) << 16));
@@ -193,15 +246,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				PF = (UInt32)((PF & 0xFFF00) + reverseBits(value));
 			}
-			else if (maskedAddr == 0x08) // COLUPF
+			else if (maskedAddr == 0x10) // RESP0
 			{
-				PFcolor = (UInt32)(value);
+				resetP0 = (byte)(scanlinePos - 68);
 			}
-			else if (maskedAddr == 0x09) // COLUBK
+			else if (maskedAddr == 0x1B) // GRP0
 			{
-				BKcolor = (UInt32)(value);
+				grp0 = value;
 			}
-
 		}
 
 		public byte reverseBits(byte value)
