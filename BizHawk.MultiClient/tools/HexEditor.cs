@@ -1000,8 +1000,9 @@ namespace BizHawk.MultiClient
 					else
 						UnFreezeAddress();
 					break;
-				case Keys.A:
-					AddToRamWatch();
+				case Keys.W:
+					if (e.Modifiers == Keys.Control)
+						AddToRamWatch();
 					break;
 			}
 		}
