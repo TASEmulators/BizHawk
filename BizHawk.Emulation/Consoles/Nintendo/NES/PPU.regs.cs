@@ -494,7 +494,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				nes.board.AddressPPU(addr);
 
-				nes.LogLine("read 2007");
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 				
 				return ret;
