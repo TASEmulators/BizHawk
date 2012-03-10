@@ -316,6 +316,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Properties\svnrev.cs" />
     <Compile Include="RecordMovie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -735,5 +736,8 @@
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
