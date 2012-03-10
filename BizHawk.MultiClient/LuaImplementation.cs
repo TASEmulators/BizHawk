@@ -323,21 +323,9 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		public void gui_text(object luaX, object luaY, object lua_input)
+		public void gui_text(object luaX, object luaY, object luaStr)
 		{
-			int x = 0;
-			int y = 0;
-
-			try //adelikat:  This crap might not be necessary, need to test for a more elegant solution
-			{
-				x = int.Parse(luaX.ToString());
-				y = int.Parse(luaY.ToString());
-			}
-			catch
-			{
-				return;
-			}
-			Global.RenderPanel.AddGUIText(lua_input.ToString(), x, y);
+			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY));
 		}
 
 		//----------------------------------------------------
