@@ -682,6 +682,7 @@
     <None Include="images\console32x32.png" />
     <None Include="images\console16x16.png" />
     <None Include="images\Import.png" />
+    <None Include="images\atari_controller.png" />
     <Content Include="images\logo.ico" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
