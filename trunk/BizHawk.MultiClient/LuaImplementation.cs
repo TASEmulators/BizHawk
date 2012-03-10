@@ -176,7 +176,6 @@ namespace BizHawk.MultiClient
 			"usememorydomain",
 			"getmemorydomainlist",
 			"getcurrentmemorydomain",
-
 			"read_s8",
 			"read_u8",
 			"read_s16_le",
@@ -191,7 +190,6 @@ namespace BizHawk.MultiClient
 			"read_u16_be",
 			"read_u24_be",
 			"read_u32_be",
-
 			"write_s8",
 			"write_u8",
 			"write_s16_le",
@@ -206,19 +204,10 @@ namespace BizHawk.MultiClient
 			"write_u16_be",
 			"write_u24_be",
 			"write_u32_be",
-
 			"readbyte",
-			//"readbytesigned",
-			//"readword",
-			//"readwordsigned",
-			//"readdword",
-			//"readdwordsigned",
-			//"readbyterange",
-			"writebyte",
-			//"writeword",
-			//"writedword",
+			"writebyte"
 			//"registerwrite",
-			//"registerread",
+			//"registerread"
 		};
 
 		public static string[] MainMemoryFunctions = new string[]
@@ -237,7 +226,6 @@ namespace BizHawk.MultiClient
 			"read_u16_be",
 			"read_u24_be",
 			"read_u32_be",
-
 			"write_s8",
 			"write_u8",
 			"write_s16_le",
@@ -252,19 +240,10 @@ namespace BizHawk.MultiClient
 			"write_u16_be",
 			"write_u24_be",
 			"write_u32_be",
-
 			"readbyte",
-			//"readbytesigned",
-			//"readword",
-			//"readwordsigned",
-			//"readdword",
-			//"readdwordsigned",
-			//"readbyterange",
-			"writebyte",
-			//"writeword",
-			//"writedword",
+			"writebyte"
 			//"registerwrite",
-			//"registerread",
+			//"registerread"
 		};
 
 		public static string[] SaveStateFunctions = new string[] {
