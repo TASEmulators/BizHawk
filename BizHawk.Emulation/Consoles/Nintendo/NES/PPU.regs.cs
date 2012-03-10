@@ -230,12 +230,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void increment2007(bool rendering, bool by32)
 				{
-					//new knowledge as of 2010 - use this incrementing method while rendering is active (thanks, nemulator)
-					//http://nesdev.parodius.com/bbs/viewtopic.php?t=6401
 					if (rendering)
 					{
-						if (by32) increment_vs();
-						else increment_hsc();
+						//don't do this:
+						//if (by32) increment_vs();
+						//else increment_hsc();
+						//do this instead:
+						increment_vs(); //yes, even if we're moving by 32
 						return;
 					}
 
@@ -493,6 +494,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				nes.board.AddressPPU(addr);
 
+				nes.LogLine("read 2007");
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 				
 				return ret;
