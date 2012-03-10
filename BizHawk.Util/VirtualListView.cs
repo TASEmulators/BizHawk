@@ -201,6 +201,7 @@ namespace BizHawk
 
 	internal enum WindowsMessage : uint {
 		WM_ERASEBKGND = 0x0014,
+		WM_SCROLL = 0x115,
 		WM_LBUTTONDOWN = 0x0201,
 		WM_LBUTTONUP = 0x0202,
 		WM_LBUTTONDBLCLK = 0x0203,
@@ -507,6 +508,16 @@ namespace BizHawk
 					break;
 			}
 		}
+		
+		/// <summary>
+		/// Event to be fired whenever the control scrolls
+		/// </summary>
+		public event ScrollEventHandler Scroll;
+		protected virtual void OnScroll(ScrollEventArgs e)
+		{
+			ScrollEventHandler handler = this.Scroll;
+			if (handler != null) handler(this, e);
+		}
 
 		protected override void WndProc(ref System.Windows.Forms.Message m) {
 			NMHDR nm1;
@@ -535,6 +546,12 @@ namespace BizHawk
 							break;
 					}
 					break;
+
+				case (int)WindowsMessage.WM_SCROLL:
+					//http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
+					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
+					break;
+
 
 				//obscure message loop flakiness when exceptions are thrown from the message loop...
 				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
