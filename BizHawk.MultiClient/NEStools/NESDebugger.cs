@@ -19,9 +19,15 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		NES Nes;
 
+		private struct DisasmOp
+		{
+			public int size;
+			public string mnemonic;
+			public DisasmOp(int s, string m) { size = s; mnemonic = m; }
+		}
 		int pc;
 		int addr;
-		List<string> lines = new List<string>();
+		List<DisasmOp> lines = new List<DisasmOp>();
 
 		public NESDebugger()
 		{
@@ -67,7 +73,7 @@ namespace BizHawk.MultiClient
 			{
 				int advance;
 				string line = Nes.cpu.Disassemble((ushort)a, out advance);
-				lines.Add(line);
+				lines.Add(new DisasmOp(advance, line));
 				a += advance;
 				if (a > ADDR_MAX) break;
 			}
@@ -111,12 +117,18 @@ namespace BizHawk.MultiClient
 			text = "";
 			if (column == 0)
 			{
-				text = String.Format("{0:X4}", index);
+				if (addr <= index && index < addr+lines.Count)
+				{
+					int a = addr;
+					for (int i = 0; i < index-addr; ++i)
+						a += lines[i].size;
+					text = String.Format("{0:X4}", a);
+				}
 			}
 			else if (column == 1)
 			{
 				if (addr <= index && index < addr+lines.Count)
-					text = lines[index-addr];
+					text = lines[index-addr].mnemonic;
 			}
 		}
 
