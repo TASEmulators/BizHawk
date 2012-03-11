@@ -34,6 +34,8 @@ namespace BizHawk.MultiClient
 			Global.Config.PCEDispBG1 = DispBG1.Checked;
 			Global.Config.PCEDispOBJ2 = DispOBJ2.Checked;
 			Global.Config.PCEDispBG2 = DispBG2.Checked;
+
+			this.Close();
 		}
 	}
 }

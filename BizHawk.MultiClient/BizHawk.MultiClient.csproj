@@ -303,6 +303,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -333,6 +336,12 @@
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="SavestateManager.cs" />
+    <Compile Include="SMStools\SMSGraphicsConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SMStools\SMSGraphicsConfig.Designer.cs">
+      <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Throttle.cs" />
     <Compile Include="config\HotkeyWindow.cs">
       <SubType>Form</SubType>
