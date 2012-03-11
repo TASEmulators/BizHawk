@@ -107,7 +107,7 @@ namespace BizHawk.MultiClient
 		private void SetColorBox()
 		{
 			int color = BGColorDialog.Color.ToArgb();
-			BackGroundColorNumber.Text = String.Format("#{0:X8}", color).Substring(2,6);
+			BackGroundColorNumber.Text = String.Format("{0:X8}", color).Substring(2,6);
 			BackgroundColorPanel.BackColor = BGColorDialog.Color;
 		}
 
