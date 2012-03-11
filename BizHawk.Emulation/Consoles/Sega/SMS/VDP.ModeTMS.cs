@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 			unchecked((int)0xFFFFFFFF)
 		};
 
-        void RenderBackgroundM0()
+        void RenderBackgroundM0(bool show)
         {
             if (DisplayOn == false)
             {
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             int FrameBufferOffset = ScanLine*256;
             int PatternNameOffset = TmsPatternNameTableBase + (yc*32);
             int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
- 
+
             for (int xc=0; xc<32; xc++)
             {
                 int pn = VRAM[PatternNameOffset++];
@@ -49,19 +49,19 @@ namespace BizHawk.Emulation.Consoles.Sega
                 int bgIndex = colorEntry & 0x0F;
                 int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
                 int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
-                
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x20) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x10) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x08) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x02) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x01) > 0) ? fgColor : bgColor;
+
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x80) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x40) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x20) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x10) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x08) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x04) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x02) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x01) > 0) ? fgColor : bgColor) : 0;
             }
         }
 
-        void RenderBackgroundM2()
+        void RenderBackgroundM2(bool show)
         {
             if (DisplayOn == false)
             {
@@ -86,19 +86,19 @@ namespace BizHawk.Emulation.Consoles.Sega
                 int bgIndex = colorEntry & 0x0F;
                 int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
                 int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
-                
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x20) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x10) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x08) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x02) > 0) ? fgColor : bgColor;
-                FrameBuffer[FrameBufferOffset++] = ((pv & 0x01) > 0) ? fgColor : bgColor;
+
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x80) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x40) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x20) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x10) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x08) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x04) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x02) > 0) ? fgColor : bgColor) : 0;
+                FrameBuffer[FrameBufferOffset++] = show ? (((pv & 0x01) > 0) ? fgColor : bgColor) : 0;
             }
         }
 
-        void RenderTmsSprites()
+        void RenderTmsSprites(bool show)
         {
             if (DisplayOn == false) return;
 
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                         if (Color != 0 && ScanlinePriorityBuffer[x+xp] == 0)
                         {
                             ScanlinePriorityBuffer[x + xp] = 1;
-                            FrameBuffer[(ScanLine*256) + x + xp] = PaletteTMS9918[Color & 0x0F];
+                            if (show) FrameBuffer[(ScanLine*256) + x + xp] = PaletteTMS9918[Color & 0x0F];
                         }
                     }
                 }

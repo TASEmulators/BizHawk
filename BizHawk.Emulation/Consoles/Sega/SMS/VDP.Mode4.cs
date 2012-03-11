@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 {
     public partial class VDP
     {
-        internal void RenderBackgroundCurrentLine()
+        internal void RenderBackgroundCurrentLine(bool show)
         {
             if (DisplayOn == false)
             {
@@ -58,14 +58,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 
                 if (HFlip == false)
                 {
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase] : Palette[BackdropColor];
 
                     if (Priority)
                     {
@@ -80,14 +80,14 @@ namespace BizHawk.Emulation.Consoles.Sega
                 }
                 else // Flipped Horizontally
                 {
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase];
-                    FrameBuffer[(ScanLine * 256) + horzOffset++] = Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 7] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 6] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 5] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 4] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 3] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 2] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 1] + PaletteBase] : Palette[BackdropColor];
+                    FrameBuffer[(ScanLine * 256) + horzOffset++] = show ? Palette[PatternBuffer[(tileNo * 64) + (yOfs * 8) + 0] + PaletteBase] : Palette[BackdropColor];
 
                     if (Priority)
                     {
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        internal void RenderSpritesCurrentLine()
+        internal void RenderSpritesCurrentLine(bool show)
         {
             if (DisplayOn == false) return;
             int SpriteBase = SpriteAttributeTableBase;
@@ -149,7 +149,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             StatusByte |= 0x20; // Set Collision bit
                         else if (ScanlinePriorityBuffer[x + xs] == 0)
                         {
-                            FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
+                            if (show) FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
                             SpriteCollisionBuffer[x + xs] = 1;
                         }
                     }
@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             }
         }
 
-        internal void RenderSpritesCurrentLineDoubleSize()
+        internal void RenderSpritesCurrentLineDoubleSize(bool show)
         {
             if (DisplayOn == false) return;
             int SpriteBase = SpriteAttributeTableBase;
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                             StatusByte |= 0x20; // Set Collision bit
                         else
                         {
-                            FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
+                            if (show) FrameBuffer[(ys + y) * 256 + x + xs] = Palette[(color + 16)];
                             SpriteCollisionBuffer[x + xs] = 1;
                         }
                     }
