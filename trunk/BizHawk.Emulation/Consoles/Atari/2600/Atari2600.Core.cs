@@ -138,6 +138,10 @@ namespace BizHawk
 				{
 					Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
 				}
+				if (cpu.PendingCycles < 0)
+				{
+					Console.WriteLine("------------Something went wrong------------");
+				}
 				
 			}
 			//clear the framebuffer (hack code)
