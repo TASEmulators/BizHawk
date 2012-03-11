@@ -738,6 +738,13 @@ namespace BizHawk.MultiClient
 			SyncCoreInputComm();
 		}
 
+		private void smsGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SMSGraphicsConfig g = new SMSGraphicsConfig();
+			g.ShowDialog();
+			SyncCoreInputComm();
+		}
+
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)

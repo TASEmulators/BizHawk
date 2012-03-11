@@ -816,15 +816,17 @@ namespace BizHawk.MultiClient
 			switch (system)
 			{
 				case "TI83":
-					tI83ToolStripMenuItem.Visible = true;
 					NESToolStripMenuItem.Visible = false;
+					tI83ToolStripMenuItem.Visible = true;
 					pCEToolStripMenuItem.Visible = false;
+					sMSToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
 					tI83ToolStripMenuItem.Visible = false;
 					pCEToolStripMenuItem.Visible = false;
+					sMSToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
 				case "PCE":
@@ -833,18 +835,29 @@ namespace BizHawk.MultiClient
 					NESToolStripMenuItem.Visible = false;
 					tI83ToolStripMenuItem.Visible = false;
 					pCEToolStripMenuItem.Visible = true;
+					sMSToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = false;
+					break;
+				case "SMS":
+				case "SG":
+					tI83ToolStripMenuItem.Visible = false;
+					NESToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = false;
+					sMSToolStripMenuItem.Visible = true;
 					gBToolStripMenuItem.Visible = false;
 					break;
 				case "GB":
 					NESToolStripMenuItem.Visible = false;
 					tI83ToolStripMenuItem.Visible = false;
 					pCEToolStripMenuItem.Visible = false;
+					sMSToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = true;
 					break;
 				default:
 					tI83ToolStripMenuItem.Visible = false;
 					NESToolStripMenuItem.Visible = false;
 					pCEToolStripMenuItem.Visible = false;
+					sMSToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
 			}

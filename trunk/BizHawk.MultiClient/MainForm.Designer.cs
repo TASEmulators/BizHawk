@@ -265,6 +265,8 @@
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -281,6 +283,7 @@
             this.toolsToolStripMenuItem,
             this.NESToolStripMenuItem,
             this.pCEToolStripMenuItem,
+            this.sMSToolStripMenuItem,
             this.tI83ToolStripMenuItem,
             this.gBToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -2181,6 +2184,21 @@
 			this.showMenuToolStripMenuItem.Text = "Show Menu";
 			this.showMenuToolStripMenuItem.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
+			// sMSToolStripMenuItem
+			// 
+			this.sMSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.smsGraphicsSettingsToolStripMenuItem});
+			this.sMSToolStripMenuItem.Name = "sMSToolStripMenuItem";
+			this.sMSToolStripMenuItem.Size = new System.Drawing.Size(40, 16);
+			this.sMSToolStripMenuItem.Text = "&SMS";
+			// 
+			// smsGraphicsSettingsToolStripMenuItem
+			// 
+			this.smsGraphicsSettingsToolStripMenuItem.Name = "smsGraphicsSettingsToolStripMenuItem";
+			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.smsGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
+			this.smsGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.smsGraphicsSettingsToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2447,6 +2465,8 @@
 		private System.Windows.Forms.ToolStripMenuItem pceAlwaysPerformSpriteLimitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pceAlwaysEqualizeVolumesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pceArcadeCardRewindEnableHackToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sMSToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsGraphicsSettingsToolStripMenuItem;
     }
 }
 
