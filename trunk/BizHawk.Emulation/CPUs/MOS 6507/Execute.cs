@@ -38,7 +38,9 @@ namespace BizHawk.Emulation.CPUs.M6507
                 if(debug) Console.WriteLine(State());
 
                 ushort this_pc = PC;
-                byte opcode = ReadMemory(PC++);
+                byte opcode = ReadMemory(PC);
+				if (PendingCycles < CycTable[opcode]) { break; }
+				PC++;
                 switch (opcode)
                 {
                     case 0x00: // BRK

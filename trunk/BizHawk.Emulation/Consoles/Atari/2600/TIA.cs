@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.CPUs.M6507;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Consoles.Atari
@@ -9,10 +9,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 	// Emulates the TIA
 	public partial class TIA
 	{
-		MOS6502 Cpu;
+		MOS6507 Cpu;
 		UInt32 PF; // PlayField data
 		byte BKcolor, PFcolor;
 		bool PFpriority = false;
+
 		struct playerData
 		{
 			public byte grp;
@@ -23,9 +24,22 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool delay;
 			public byte nusiz;
 		};
+		struct ballMissileData
+		{
+			public bool enabled;
+			public byte pos;
+			public byte HM;
+			public byte size;
+			public bool reset;
+			public bool delay;
+		};
+
+		ballMissileData ball;
 
 		playerData player0;
 		playerData player1;
+
+		bool vblankEnabled = false;
 
 
 		int[] frameBuffer;
@@ -33,7 +47,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		List<uint[]> scanlinesBuffer = new List<uint[]> ();
 		uint[] scanline = new uint[160];
-		int scanlinePos;
+		public int scanlinePos;
+
+		int[] hmove = new int[] { 0,-1,-2,-3,-4,-5,-6,-7,-8,7,6,5,4,3,2,1 };
 
 		UInt32[] palette = new UInt32[]{
 		  0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
@@ -70,7 +86,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		  0xbb9f47, 0, 0xd2b656, 0, 0xe8cc63, 0, 0xfce070, 0
 		};
 
-		public TIA(MOS6502 cpu, int[] frameBuffer)
+		public TIA(MOS6507 cpu, int[] frameBuffer)
 		{
 			Cpu = cpu;
 			BKcolor = 0x00;
@@ -112,8 +128,28 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				color = palette[PFcolor];
 			}
-			
+
+			// Ball
+			if (ball.enabled && pixelPos >= ball.pos && pixelPos < (ball.pos + (1 << ball.size)))
+			{
+				color = palette[PFcolor];
+			}
+
 			// Player 1
+			if (pixelPos >= player1.pos && pixelPos < (player1.pos + 8))
+			{
+				byte mask = (byte)(0x80 >> (pixelPos - player1.pos));
+				if (player1.reflect)
+				{
+					mask = reverseBits(mask);
+				}
+				if ((player1.grp & mask) != 0)
+				{
+					color = palette[player1.color];
+				}
+			}
+			
+			// Player 0
 			if (pixelPos >= player0.pos && pixelPos < (player0.pos + 8))
 			{
 				byte mask = (byte)(0x80 >> (pixelPos - player0.pos));
@@ -132,6 +168,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 				color = palette[PFcolor];
 			}
 
+			if (vblankEnabled)
+			{
+				color = 0x000000;
+			}
 			scanline[pixelPos]   = color;
 
 			scanlinePos++;
@@ -193,13 +233,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x01)
 			{
+				vblankEnabled = (value & 0x02) != 0;
 				if ((value & 0x02) != 0)
 				{
 					Console.WriteLine("TIA Vblank On");
 				}
 				else
 				{
-					// With this, the electon beam will turn back on and scan lines will start again
 					Console.WriteLine("TIA Vblank Off");
 				}
 			}
@@ -215,6 +255,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player0.color = value;
 			}
+			else if (maskedAddr == 0x07) // COLUP1
+			{
+				player1.color = value;
+			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
 				PFcolor = value;
@@ -225,18 +269,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x0A) // CTRLPF
 			{
-				if ((value & 0x04) != 0)
-				{
-					PFpriority = true;
-				}
-				else
-				{
-					PFpriority = false;
-				}
+				PFpriority = (value & 0x04) != 0;
+
+				ball.size = (byte)((value & 0x30) >> 4);
 			}
 			else if (maskedAddr == 0x0B) // REFP0
 			{
 				player0.reflect = ((value & 0x04) != 0);
+			}
+			else if (maskedAddr == 0x0C) // REFP1
+			{
+				player1.reflect = ((value & 0x04) != 0);
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
@@ -252,7 +295,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				player0.pos = (byte)(scanlinePos - 68);
+				player0.pos = (byte)(scanlinePos - 68 + 5);
+			}
+			else if (maskedAddr == 0x11) // RESP1
+			{
+				player1.pos = (byte)(scanlinePos - 68 + 5);
+			}
+			else if (maskedAddr == 0x14) // RESBL
+			{
+				ball.pos = (byte)(scanlinePos - 68 + 4);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
@@ -261,6 +312,33 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x1C) // GRP1
 			{
 				player1.grp = value;
+			}
+			else if (maskedAddr == 0x1F) // ENABL
+			{
+				ball.enabled = (value & 0x02) != 0;
+			}
+			else if (maskedAddr == 0x20) // HMP0
+			{
+				player0.HM = (byte)((value & 0xF0) >> 4);
+			}
+			else if (maskedAddr == 0x21) // HMP1
+			{
+				player1.HM = (byte)((value & 0xF0) >> 4);
+			}
+			else if (maskedAddr == 0x24) // HMBL
+			{
+				ball.HM = (byte)((value & 0xF0) >> 4);
+			}
+			else if (maskedAddr == 0x2A) // HMOVE
+			{
+				player0.pos = (byte)(player0.pos + hmove[player0.HM]);
+				player1.pos = (byte)(player1.pos + hmove[player1.HM]);
+				ball.pos = (byte)(ball.pos + hmove[ball.HM]);
+
+				player0.HM = 0;
+				player1.HM = 0;
+				ball.HM = 0;
+
 			}
 		}
 

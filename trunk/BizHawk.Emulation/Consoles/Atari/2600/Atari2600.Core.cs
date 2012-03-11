@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.CPUs.M6507;
 using BizHawk.Emulation.Consoles.Atari;
 
 namespace BizHawk
@@ -9,7 +9,7 @@ namespace BizHawk
 	partial class Atari2600
 	{
 		public byte[] rom;
-		public MOS6502 cpu;
+		public MOS6507 cpu;
 		public M6532 m6532;
 		public TIA tia;
 
@@ -104,7 +104,7 @@ namespace BizHawk
 
 		public void HardReset()
 		{
-			cpu = new Emulation.CPUs.M6502.MOS6502();
+			cpu = new MOS6507();
 			cpu.debug = true;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
@@ -134,6 +134,11 @@ namespace BizHawk
 				tia.execute(1);
 
 				cpu.Execute(1);
+				if (cpu.PendingCycles <= 0)
+				{
+					Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
+				}
+				
 			}
 			//clear the framebuffer (hack code)
 			if (render == false) return;
