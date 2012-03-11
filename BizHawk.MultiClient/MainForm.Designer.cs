@@ -123,10 +123,6 @@
 			this.overclockWhenKnownSafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pCEngineToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pceAlwaysPerformSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pceAlwaysEqualizeVolumesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pceArcadeCardRewindEnableHackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.x1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -217,6 +213,9 @@
 			this.graphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pCEToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
+			this.pceAlwaysPerformSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pceAlwaysEqualizeVolumesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pceArcadeCardRewindEnableHackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pceGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tI83ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keypadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -956,8 +955,7 @@
             this.powerToolStripMenuItem,
             this.resetToolStripMenuItem,
             this.toolStripSeparator8,
-            this.sega8bitToolStripMenuItem,
-            this.pCEngineToolStripMenuItem});
+            this.sega8bitToolStripMenuItem});
 			this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
 			this.emulationToolStripMenuItem.Size = new System.Drawing.Size(67, 16);
 			this.emulationToolStripMenuItem.Text = "&Emulation";
@@ -1033,37 +1031,6 @@
 			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
 			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite Limit";
 			this.smsSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.smsSpriteLimitToolStripMenuItem_Click);
-			// 
-			// pCEngineToolStripMenuItem
-			// 
-			this.pCEngineToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pceAlwaysPerformSpriteLimitToolStripMenuItem,
-            this.pceAlwaysEqualizeVolumesToolStripMenuItem,
-            this.pceArcadeCardRewindEnableHackToolStripMenuItem});
-			this.pCEngineToolStripMenuItem.Name = "pCEngineToolStripMenuItem";
-			this.pCEngineToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.pCEngineToolStripMenuItem.Text = "PC Engine";
-			// 
-			// pceAlwaysPerformSpriteLimitToolStripMenuItem
-			// 
-			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Name = "pceAlwaysPerformSpriteLimitToolStripMenuItem";
-			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Text = "Always Perform Sprite Limit";
-			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.pceAlwaysPerformSpriteLimitToolStripMenuItem_Click);
-			// 
-			// pceAlwaysEqualizeVolumesToolStripMenuItem
-			// 
-			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Name = "pceAlwaysEqualizeVolumesToolStripMenuItem";
-			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Text = "Always Equalize Volumes (PCE-CD)";
-			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Click += new System.EventHandler(this.pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click);
-			// 
-			// pceArcadeCardRewindEnableHackToolStripMenuItem
-			// 
-			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Name = "pceArcadeCardRewindEnableHackToolStripMenuItem";
-			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Text = "Arcade Card Rewind-Enable Hack";
-			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Click += new System.EventHandler(this.pceArcadeCardRewindEnableHackToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1767,20 +1734,45 @@
 			// 
 			this.pCEToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator25,
+            this.pceAlwaysPerformSpriteLimitToolStripMenuItem,
+            this.pceAlwaysEqualizeVolumesToolStripMenuItem,
+            this.pceArcadeCardRewindEnableHackToolStripMenuItem,
             this.pceGraphicsSettingsToolStripMenuItem});
 			this.pCEToolStripMenuItem.Name = "pCEToolStripMenuItem";
 			this.pCEToolStripMenuItem.Size = new System.Drawing.Size(39, 16);
 			this.pCEToolStripMenuItem.Text = "&PCE";
+			this.pCEToolStripMenuItem.DropDownOpened += new System.EventHandler(this.pCEToolStripMenuItem_DropDownOpened);
 			// 
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(158, 6);
+			this.toolStripSeparator25.Size = new System.Drawing.Size(254, 6);
+			// 
+			// pceAlwaysPerformSpriteLimitToolStripMenuItem
+			// 
+			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Name = "pceAlwaysPerformSpriteLimitToolStripMenuItem";
+			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Text = "Always Perform Sprite Limit";
+			this.pceAlwaysPerformSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.pceAlwaysPerformSpriteLimitToolStripMenuItem_Click);
+			// 
+			// pceAlwaysEqualizeVolumesToolStripMenuItem
+			// 
+			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Name = "pceAlwaysEqualizeVolumesToolStripMenuItem";
+			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Text = "Always Equalize Volumes (PCE-CD)";
+			this.pceAlwaysEqualizeVolumesToolStripMenuItem.Click += new System.EventHandler(this.pceAlwayEqualizeVolumesLimitToolStripMenuItem_Click);
+			// 
+			// pceArcadeCardRewindEnableHackToolStripMenuItem
+			// 
+			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Name = "pceArcadeCardRewindEnableHackToolStripMenuItem";
+			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Text = "Arcade Card Rewind-Enable Hack";
+			this.pceArcadeCardRewindEnableHackToolStripMenuItem.Click += new System.EventHandler(this.pceArcadeCardRewindEnableHackToolStripMenuItem_Click);
 			// 
 			// pceGraphicsSettingsToolStripMenuItem
 			// 
 			this.pceGraphicsSettingsToolStripMenuItem.Name = "pceGraphicsSettingsToolStripMenuItem";
-			this.pceGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.pceGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
 			this.pceGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
 			this.pceGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.pceGraphicsSettingsToolStripMenuItem_Click);
 			// 
@@ -2434,11 +2426,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveScreenshotWithSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoLoadLastSlotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
-        private System.Windows.Forms.ToolStripMenuItem smsSpriteLimitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pCEngineToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pceAlwaysPerformSpriteLimitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pceAlwaysEqualizeVolumesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pceArcadeCardRewindEnableHackToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsSpriteLimitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
@@ -2456,6 +2444,9 @@
 		private System.Windows.Forms.ToolStripMenuItem pCEToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private System.Windows.Forms.ToolStripMenuItem pceGraphicsSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pceAlwaysPerformSpriteLimitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pceAlwaysEqualizeVolumesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pceArcadeCardRewindEnableHackToolStripMenuItem;
     }
 }
 
