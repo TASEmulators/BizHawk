@@ -147,13 +147,13 @@ namespace BizHawk.MultiClient
 		{
 			"output",
 			"clear",
-			"getluafunctionslist"
+			"getluafunctionslist",
 		};
 
 		public static string[] GuiFunctions = new string[]
 		{
 			"text",
-			"alert"
+			"alert",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -166,10 +166,10 @@ namespace BizHawk.MultiClient
 			"framecount",
 			"lagcount",
 			"islagged",
-			"getsystemid"
+			"getsystemid",
 			//"registerbefore",
 			//"registerafter",
-			//"register"
+			//"register",
 		};
 		
 		public static string[] MemoryFunctions = new string[]
@@ -206,9 +206,9 @@ namespace BizHawk.MultiClient
 			"write_u24_be",
 			"write_u32_be",
 			"readbyte",
-			"writebyte"
+			"writebyte",
 			//"registerwrite",
-			//"registerread"
+			//"registerread",
 		};
 
 		public static string[] MainMemoryFunctions = new string[]
@@ -242,27 +242,27 @@ namespace BizHawk.MultiClient
 			"write_u24_be",
 			"write_u32_be",
 			"readbyte",
-			"writebyte"
+			"writebyte",
 			//"registerwrite",
-			//"registerread"
+			//"registerread",
 		};
 
 		public static string[] SaveStateFunctions = new string[] {
 			"saveslot",
 			"loadslot",
 			"save",
-			"load"
+			"load",
 		};
 
 		public static string[] MovieFunctions = new string[] {
 			"mode",
 			"rerecordcount",
-			"stop"
+			"stop",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
-			"set"
-			//"get"
+			"set",
+			//"get",
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
@@ -274,7 +274,7 @@ namespace BizHawk.MultiClient
 			"openrampoke",
 			"openhexeditor",
 			"opentasstudio",
-			"opencheats"
+			"opencheats",
 		};
 
 		/****************************************************/
