@@ -117,17 +117,17 @@ namespace BizHawk.MultiClient
 			FrameBufferResized();
 		}
 
-		private void enableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
+		private void smsEnableFMChipToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsEnableFM ^= true;
 		}
 
-		private void overclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
+		private void smsOverclockWhenKnownSafeToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsAllowOverlock ^= true;
 		}
 
-		private void forceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
+		private void smsForceStereoSeparationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SmsForceStereoSeparation ^= true;
 		}
@@ -1353,10 +1353,6 @@ namespace BizHawk.MultiClient
 			powerToolStripMenuItem.Enabled = !IsNullEmulator();
 			resetToolStripMenuItem.Enabled = Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset");
 
-			enableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
-			overclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
-			forceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
-			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
 			pauseToolStripMenuItem.Checked = EmulatorPaused;
 			if (didMenuPause) pauseToolStripMenuItem.Checked = wasPaused;
 
@@ -1370,6 +1366,14 @@ namespace BizHawk.MultiClient
 			pceAlwaysPerformSpriteLimitToolStripMenuItem.Checked = Global.Config.PceSpriteLimit;
 			pceAlwaysEqualizeVolumesToolStripMenuItem.Checked = Global.Config.PceEqualizeVolume;
 			pceArcadeCardRewindEnableHackToolStripMenuItem.Checked = Global.Config.PceArcadeCardRewindHack;
+		}
+
+		private void sMSToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			smsEnableFMChipToolStripMenuItem.Checked = Global.Config.SmsEnableFM;
+			smsOverclockWhenKnownSafeToolStripMenuItem.Checked = Global.Config.SmsAllowOverlock;
+			smsForceStereoSeparationToolStripMenuItem.Checked = Global.Config.SmsForceStereoSeparation;
+			smsSpriteLimitToolStripMenuItem.Checked = Global.Config.SmsSpriteLimit;
 		}
 
 		protected override void OnClosed(EventArgs e)
