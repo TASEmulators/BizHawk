@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 		void Render(IVideoProvider video);
 		bool Resized { get; set; }
 		void AddMessage(string msg);
-		void AddGUIText(string msg, int x, int y);
+		void AddGUIText(string msg, int x, int y, bool alert);
 		void ClearGUIText();
 		string FPS { get; set; }
 		string MT { get; set; }
@@ -144,7 +144,7 @@ namespace BizHawk.MultiClient
 		}
 		RetainedViewportPanel backingControl;
 		public void AddMessage(string msg) { }
-		public void AddGUIText(string msg, int x, int y) { }
+		public void AddGUIText(string msg, int x, int y, bool alert) { }
 		public void ClearGUIText() { }
 	}
 
@@ -477,9 +477,9 @@ namespace BizHawk.MultiClient
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y)
+		public void AddGUIText(string message, int x, int y, bool alert)
 		{
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y });
+			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Alert = alert });
 		}
 
 		public void ClearGUIText()
@@ -505,8 +505,13 @@ namespace BizHawk.MultiClient
 					GUITextList[x].X + 2, GUITextList[x].Y + 2, Color.Black);
 				MessageFont.DrawString(null, GUITextList[x].Message,
 					GUITextList[x].X + 1, GUITextList[x].Y + 1, Color.Gray);
-				MessageFont.DrawString(null, GUITextList[x].Message,
-					GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.MessagesColor));
+
+				if (GUITextList[x].Alert)
+					MessageFont.DrawString(null, GUITextList[x].Message,
+						GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.AlertMessageColor));
+				else
+					MessageFont.DrawString(null, GUITextList[x].Message,
+						GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 		}
 
@@ -554,5 +559,6 @@ namespace BizHawk.MultiClient
 		public DateTime ExpireAt;
 		public int X;
 		public int Y;
+		public bool Alert;
 	}
 }

@@ -78,8 +78,9 @@ namespace BizHawk.MultiClient
 				Global.RenderPanel.ClearGUIText();
 				for (int x = 0; x < watchList.Count; x++)
 				{
+					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
 					Global.RenderPanel.AddGUIText(watchList[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)));
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)), alert);
 				}
 			}
 
