@@ -304,7 +304,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void gui_text(object luaX, object luaY, object luaStr)
 		{
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY));
+			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false);
 		}
 
 		//----------------------------------------------------
