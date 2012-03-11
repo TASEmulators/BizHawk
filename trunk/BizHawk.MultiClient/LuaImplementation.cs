@@ -170,6 +170,7 @@ namespace BizHawk.MultiClient
 			//"registerbefore",
 			//"registerafter",
 			//"register",
+			"setrenderplanes",
 		};
 		
 		public static string[] MemoryFunctions = new string[]
@@ -355,6 +356,16 @@ namespace BizHawk.MultiClient
 		public string emu_getsystemid()
 		{
 			return Global.Emulator.SystemId;
+		}
+
+		// TODO: variable arguments
+		public void emu_setrenderplanes(object lua_p0, object lua_p1)
+		{
+			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
+			{
+				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p0;
+				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p1;
+			}
 		}
 
 		//----------------------------------------------------
