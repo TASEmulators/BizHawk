@@ -486,16 +486,16 @@ namespace BizHawk.MultiClient
 
 		private void loadStateToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot0;
-			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot1;
-			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot2;
-			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot3;
-			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot4;
-			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot5;
-			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot6;
-			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot7;
-			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
-			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
+			loadstate1toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot1;
+			loadstate2toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot2;
+			loadstate3toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot3;
+			loadstate4toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot4;
+			loadstate5toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot5;
+			loadstate6toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot6;
+			loadstate7toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot7;
+			loadstate8toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot8;
+			loadstate9toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot9;
+			loadstate0toolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadSlot0;
 			loadNamedStateToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LoadNamedState;
 
 			autoLoadLastSlotToolStripMenuItem.Checked = Global.Config.AutoLoadLastSaveSlot;
