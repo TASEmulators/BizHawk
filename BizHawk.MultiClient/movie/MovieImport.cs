@@ -205,38 +205,37 @@ namespace BizHawk.MultiClient
 				}
 				else if (line[0] == '|')
 				{
-					// Handle a frame of input.
-					ArrayList frame = new ArrayList();
 					// Split up the sections of the frame.
 					string[] sections = line.Split('|');
-					// Get the first invalid command warning message that arises.
-					if (Path.GetExtension(path).ToUpper() == ".FM2" && warningMsg == "" && sections[1].Length != 0)
+					if (Path.GetExtension(path).ToUpper() == ".FM2" && sections[1].Length != 0)
 					{
-						switch (sections[1][0])
+						controllers["Reset"] = (sections[1][0] == '1');
+						// Get the first invalid command warning message that arises.
+						if (warningMsg == "")
 						{
-							case '0':
-								break;
-							case '1':
-								controllers["Reset"] = true;
-								break;
-							case '2':
-								if (m.Length() != 0)
-								{
-									warningMsg = "hard reset";
-								}
-								break;
-							case '4':
-								warningMsg = "FDS Insert";
-								break;
-							case '8':
-								warningMsg = "FDS Select Side";
-								break;
-							default:
-								warningMsg = "unknown";
-								break;
+							switch (sections[1][0])
+							{
+								case '0':
+									break;
+								case '1':
+									break;
+								case '2':
+									if (m.Length() != 0)
+										warningMsg = "hard reset";
+									break;
+								case '4':
+									warningMsg = "FDS Insert";
+									break;
+								case '8':
+									warningMsg = "FDS Select Side";
+									break;
+								default:
+									warningMsg = "unknown";
+									break;
+							}
+							if (warningMsg != "")
+								warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
 						}
-						if (warningMsg != "")
-							warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
 					}
 					/*
 					 Skip the first two sections of the split, which consist of everything before the starting | and the
@@ -282,13 +281,15 @@ namespace BizHawk.MultiClient
 		// Decode a blob used in FM2 (base64:..., 0x123456...)
 		private static byte[] DecodeBlob(string blob)
 		{
-			if (blob.Length < 2) return null;
-			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X')) // hex
-			{
+			if (blob.Length < 2)
+				return null;
+			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
+				// hex
 				return BizHawk.Util.HexStringToBytes(blob.Substring(2));
-			}
-			else{ // base64
-				if(!blob.StartsWith("base64:")) return null;
+			else {
+				// base64
+				if(!blob.StartsWith("base64:"))
+					return null;
 				try
 				{
 					return Convert.FromBase64String(blob.Substring(7));
@@ -442,6 +443,7 @@ namespace BizHawk.MultiClient
 				*/
 				for (int b = 0; b < delta; b++)
 					frames += r.ReadByte() * (int)Math.Pow(2, b * 8);
+				frame += frames;
 				while (frames > 0)
 				{
 					m.AppendFrame(mnemonic);
@@ -450,7 +452,6 @@ namespace BizHawk.MultiClient
 						controllers["Reset"] = false;
 						mnemonic = mg.GetControllersAsMnemonic();
 					}
-					frame++;
 					frames--;
 				}
 				if (((update >> 7) & 1) == 1)
@@ -459,6 +460,7 @@ namespace BizHawk.MultiClient
 					bool reset = false;
 					int command = update & 0x1F;
 					// bbbbb:
+					controllers["Reset"] = (command == 1);
 					if (warningMsg == "")
 					{
 						switch (command)
@@ -468,7 +470,7 @@ namespace BizHawk.MultiClient
 								break;
 							// Reset
 							case 1:
-								reset = controllers["Reset"] = true;
+								reset = true;
 								break;
 							// Power cycle
 							case 2:
@@ -888,9 +890,9 @@ namespace BizHawk.MultiClient
 			{
 				for (int player = 1; player <= INPUT_PORT_COUNT; ++player)
 				{
-					byte pad = input[1+2*(player-1)];
-					for(int i = 0; i < 8; ++i)
-						controllers["P" + player + " " + CTRL_BUTTONS[i]] = (pad&(1<<i)) != 0;
+					byte pad = input[1 + 2 * (player - 1)];
+					for (int button = 0; button < CTRL_BUTTONS.Length; button++)
+						controllers["P" + player + " " + CTRL_BUTTONS[button]] = (pad & (1 << button)) != 0;
 				}
 				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
