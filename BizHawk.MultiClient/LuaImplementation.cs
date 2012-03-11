@@ -133,6 +133,33 @@ namespace BizHawk.MultiClient
 			LuaThread.Start(File);
 		}
 
+		private int LuaInt(object lua_arg)
+		{
+			return Convert.ToInt32((double)lua_arg);
+		}
+
+		private uint LuaUInt(object lua_arg)
+		{
+			return Convert.ToUInt32((double)lua_arg);
+		}
+
+		/**
+		 * LuaInterface requires the exact match of parameter count,
+		 * except optional parameters. So, if you want to support
+		 * variable arguments, declare them as optional and pass
+		 * them to this method.
+		 */
+		private object[] LuaVarArgs(params object[] lua_args)
+		{
+			int n = lua_args.Length;
+			int trim = 0;
+			for (int i = n-1; i >= 0; --i)
+				if (lua_args[i] == null) ++trim;
+			object[] lua_result = new object[n-trim];
+			Array.Copy(lua_args, lua_result, n-trim);
+			return lua_result;
+		}
+
 
 		public void print(string s)
 		{
@@ -358,18 +385,26 @@ namespace BizHawk.MultiClient
 			return Global.Emulator.SystemId;
 		}
 
-		// TODO: variable arguments
-		public void emu_setrenderplanes(object lua_p0, object lua_p1)
+		// For now, it accepts arguments up to 5.
+		public void emu_setrenderplanes(
+			object lua_p0, object lua_p1 = null, object lua_p2 = null,
+			object lua_p3 = null, object lua_p4 = null)
+		{
+			emu_setrenderplanes_do(LuaVarArgs(lua_p0, lua_p1, lua_p2, lua_p3, lua_p4));
+		}
+
+		// TODO: error handling for argument count mismatch
+		private void emu_setrenderplanes_do(object[] lua_p)
 		{
 			if (Global.Emulator is BizHawk.Emulation.Consoles.Nintendo.NES)
 			{
-				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p0;
-				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p1;
+				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
+				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
 			else if(Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				Global.CoreInputComm.PCE_ShowOBJ = Global.Config.PCEDispSprites = (bool)lua_p0;
-				Global.CoreInputComm.PCE_ShowBG = Global.Config.PCEDispBackground = (bool)lua_p1;
+				Global.CoreInputComm.PCE_ShowOBJ = Global.Config.PCEDispSprites = (bool)lua_p[0];
+				Global.CoreInputComm.PCE_ShowBG = Global.Config.PCEDispBackground = (bool)lua_p[1];
 			}
 		}
 
@@ -925,16 +960,6 @@ namespace BizHawk.MultiClient
 			s <<= 8*(4-size);
 			s >>= 8*(4-size);
 			return s;
-		}
-
-		private int LuaInt(object lua_arg)
-		{
-			return Convert.ToInt32((double)lua_arg);
-		}
-
-		private uint LuaUInt(object lua_arg)
-		{
-			return Convert.ToUInt32((double)lua_arg);
 		}
 
 		//----------------------------------------------------
