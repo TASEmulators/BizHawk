@@ -296,6 +296,7 @@
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		// PCE Graphics settings
 		public bool PCEDispBG1 = true;
 		public bool PCEDispOBJ1= true;
 		public bool PCEDispBG2 = true;
