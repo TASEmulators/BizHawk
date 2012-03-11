@@ -259,5 +259,122 @@ namespace BizHawk.Emulation.CPUs.M6507
 		/*0xE0*/ 2,6,3,8,3,3,5,5,2,2,2,2,4,4,6,6,
 		/*0xF0*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
 		};
+
+		public byte cyclesRequired(byte opcode)
+		{
+			byte cycles = CycTable[opcode];
+
+			sbyte rel8;
+			ushort value16, temp16;
+
+
+			// Handle opcodes with variable cycle counts
+			rel8 = (sbyte)ReadMemory((ushort)(PC + 1));
+			value16 = (ushort)(PC + 2 + rel8);
+			switch (opcode)
+			{
+				case 0x10: // BPL +/-rel
+					if (FlagN == false)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0x30: // BMI +/-rel
+					
+					if (FlagN == true)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0x50: // BVC +/-rel
+					if (FlagV == false)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0x70: // BVS +/-rel
+					if (FlagV == true)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0x90: // BCC +/-rel
+					if (FlagC == false)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0xB0: // BCS +/-rel
+					if (FlagC == true)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0xD0: // BNE +/-rel
+					if (FlagZ == false)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0xF0: // BEQ +/-rel
+					if (FlagZ == true)
+					{
+						cycles++;
+						if (((PC+2) & 0xFF00) != (value16 & 0xFF00))
+						{ cycles++; }
+					}
+					break;
+				case 0x1D: // ORA addr,X*
+				case 0x3D: // AND addr,X*
+				case 0x5D: // EOR addr,X*
+				case 0x7D: // ADC addr,X*
+				case 0xBC: // LDY addr,X*
+				case 0xBD: // LDA addr,X*
+				case 0xDD: // CMP addr,X*
+				case 0xFD: // SBC addr,X*
+					temp16 = ReadWord((ushort)(PC + 1));
+					if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00))
+					{ cycles++; }
+					break;
+				case 0x11: // ORA (addr),Y*
+				case 0x31: // AND (addr),Y*
+				case 0x51: // EOR (addr),Y*
+				case 0x71: // ADC (addr),Y*
+				case 0xB1: // LDA (addr),Y*
+				case 0xD1: // CMP (addr),Y*
+				case 0xF1: // SBC (addr),Y*
+					temp16 = ReadWordPageWrap(ReadMemory((ushort)(PC + 1)));
+					if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00))
+					{ cycles++; }
+					break;
+				case 0x19: // ORA addr,Y*
+				case 0x39: // AND addr,Y*
+				case 0x59: // EOR addr,Y*
+				case 0x79: // ADC addr,Y*
+				case 0xB9: // LDA addr,Y*
+				case 0xBE: // LDX addr,Y*
+				case 0xD9: // CMP addr,Y*
+				case 0xF9: // SBC addr,Y*
+					temp16 = ReadWord((ushort)(PC + 1));
+					if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00))
+					{ cycles++; }
+					break;
+			}
+			return cycles;
+		}
     }
 }

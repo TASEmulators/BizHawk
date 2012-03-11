@@ -35,11 +35,11 @@ namespace BizHawk.Emulation.CPUs.M6507
                     FlagI = true;
                     SEI_Pending = false;
                 }
-                if(debug) Console.WriteLine(State());
 
                 ushort this_pc = PC;
                 byte opcode = ReadMemory(PC);
-				if (PendingCycles < CycTable[opcode]) { break; }
+				if (PendingCycles < cyclesRequired(opcode)) { break; }
+				if (debug) Console.WriteLine(State());
 				PC++;
                 switch (opcode)
                 {
