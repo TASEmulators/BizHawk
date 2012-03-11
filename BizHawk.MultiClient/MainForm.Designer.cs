@@ -117,12 +117,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.powerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.sega8bitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.enableFMChipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.overclockWhenKnownSafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.forceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.windowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.x1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -217,6 +211,12 @@
 			this.pceAlwaysEqualizeVolumesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pceArcadeCardRewindEnableHackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pceGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsEnableFMChipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsOverclockWhenKnownSafeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsForceStereoSeparationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsSpriteLimitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.tI83ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.keypadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
@@ -265,8 +265,6 @@
 			this.screenshotToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.closeROMToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.showMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.sMSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.smsGraphicsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.StatusSlot0.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -956,9 +954,7 @@
             this.pauseToolStripMenuItem,
             this.toolStripSeparator1,
             this.powerToolStripMenuItem,
-            this.resetToolStripMenuItem,
-            this.toolStripSeparator8,
-            this.sega8bitToolStripMenuItem});
+            this.resetToolStripMenuItem});
 			this.emulationToolStripMenuItem.Name = "emulationToolStripMenuItem";
 			this.emulationToolStripMenuItem.Size = new System.Drawing.Size(67, 16);
 			this.emulationToolStripMenuItem.Text = "&Emulation";
@@ -968,72 +964,28 @@
 			// 
 			this.pauseToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
 			this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pauseToolStripMenuItem.Text = "&Pause";
 			this.pauseToolStripMenuItem.Click += new System.EventHandler(this.pauseToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// powerToolStripMenuItem
 			// 
 			this.powerToolStripMenuItem.Name = "powerToolStripMenuItem";
-			this.powerToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.powerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.powerToolStripMenuItem.Text = "Power Cycle";
 			this.powerToolStripMenuItem.Click += new System.EventHandler(this.powerToolStripMenuItem_Click);
 			// 
 			// resetToolStripMenuItem
 			// 
 			this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-			this.resetToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.resetToolStripMenuItem.Text = "&Reset";
 			this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(131, 6);
-			// 
-			// sega8bitToolStripMenuItem
-			// 
-			this.sega8bitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableFMChipToolStripMenuItem,
-            this.overclockWhenKnownSafeToolStripMenuItem,
-            this.forceStereoSeparationToolStripMenuItem,
-            this.smsSpriteLimitToolStripMenuItem});
-			this.sega8bitToolStripMenuItem.Name = "sega8bitToolStripMenuItem";
-			this.sega8bitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.sega8bitToolStripMenuItem.Text = "Sega 8-bit";
-			// 
-			// enableFMChipToolStripMenuItem
-			// 
-			this.enableFMChipToolStripMenuItem.Name = "enableFMChipToolStripMenuItem";
-			this.enableFMChipToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.enableFMChipToolStripMenuItem.Text = "Enable FM Chip";
-			this.enableFMChipToolStripMenuItem.Click += new System.EventHandler(this.enableFMChipToolStripMenuItem_Click);
-			// 
-			// overclockWhenKnownSafeToolStripMenuItem
-			// 
-			this.overclockWhenKnownSafeToolStripMenuItem.Name = "overclockWhenKnownSafeToolStripMenuItem";
-			this.overclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.overclockWhenKnownSafeToolStripMenuItem.Text = "Overclock when Known Safe";
-			this.overclockWhenKnownSafeToolStripMenuItem.Click += new System.EventHandler(this.overclockWhenKnownSafeToolStripMenuItem_Click);
-			// 
-			// forceStereoSeparationToolStripMenuItem
-			// 
-			this.forceStereoSeparationToolStripMenuItem.Name = "forceStereoSeparationToolStripMenuItem";
-			this.forceStereoSeparationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.forceStereoSeparationToolStripMenuItem.Text = "Force Stereo Separation";
-			this.forceStereoSeparationToolStripMenuItem.Click += new System.EventHandler(this.forceStereoSeparationToolStripMenuItem_Click);
-			// 
-			// smsSpriteLimitToolStripMenuItem
-			// 
-			this.smsSpriteLimitToolStripMenuItem.Name = "smsSpriteLimitToolStripMenuItem";
-			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite Limit";
-			this.smsSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.smsSpriteLimitToolStripMenuItem_Click);
 			// 
 			// viewToolStripMenuItem
 			// 
@@ -1779,6 +1731,54 @@
 			this.pceGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
 			this.pceGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.pceGraphicsSettingsToolStripMenuItem_Click);
 			// 
+			// sMSToolStripMenuItem
+			// 
+			this.sMSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.smsEnableFMChipToolStripMenuItem,
+            this.smsOverclockWhenKnownSafeToolStripMenuItem,
+            this.smsForceStereoSeparationToolStripMenuItem,
+            this.smsSpriteLimitToolStripMenuItem,
+            this.smsGraphicsSettingsToolStripMenuItem});
+			this.sMSToolStripMenuItem.Name = "sMSToolStripMenuItem";
+			this.sMSToolStripMenuItem.Size = new System.Drawing.Size(40, 16);
+			this.sMSToolStripMenuItem.Text = "&SMS";
+			this.sMSToolStripMenuItem.DropDownOpened += new System.EventHandler(this.sMSToolStripMenuItem_DropDownOpened);
+			// 
+			// smsEnableFMChipToolStripMenuItem
+			// 
+			this.smsEnableFMChipToolStripMenuItem.Name = "smsEnableFMChipToolStripMenuItem";
+			this.smsEnableFMChipToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.smsEnableFMChipToolStripMenuItem.Text = "Enable FM Chip";
+			this.smsEnableFMChipToolStripMenuItem.Click += new System.EventHandler(this.smsEnableFMChipToolStripMenuItem_Click);
+			// 
+			// smsOverclockWhenKnownSafeToolStripMenuItem
+			// 
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Name = "smsOverclockWhenKnownSafeToolStripMenuItem";
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Text = "Overclock when Known Safe";
+			this.smsOverclockWhenKnownSafeToolStripMenuItem.Click += new System.EventHandler(this.smsOverclockWhenKnownSafeToolStripMenuItem_Click);
+			// 
+			// smsForceStereoSeparationToolStripMenuItem
+			// 
+			this.smsForceStereoSeparationToolStripMenuItem.Name = "smsForceStereoSeparationToolStripMenuItem";
+			this.smsForceStereoSeparationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.smsForceStereoSeparationToolStripMenuItem.Text = "Force Stereo Separation";
+			this.smsForceStereoSeparationToolStripMenuItem.Click += new System.EventHandler(this.smsForceStereoSeparationToolStripMenuItem_Click);
+			// 
+			// smsSpriteLimitToolStripMenuItem
+			// 
+			this.smsSpriteLimitToolStripMenuItem.Name = "smsSpriteLimitToolStripMenuItem";
+			this.smsSpriteLimitToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.smsSpriteLimitToolStripMenuItem.Text = "Sprite Limit";
+			this.smsSpriteLimitToolStripMenuItem.Click += new System.EventHandler(this.smsSpriteLimitToolStripMenuItem_Click);
+			// 
+			// smsGraphicsSettingsToolStripMenuItem
+			// 
+			this.smsGraphicsSettingsToolStripMenuItem.Name = "smsGraphicsSettingsToolStripMenuItem";
+			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.smsGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
+			this.smsGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.smsGraphicsSettingsToolStripMenuItem_Click);
+			// 
 			// tI83ToolStripMenuItem
 			// 
 			this.tI83ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2184,21 +2184,6 @@
 			this.showMenuToolStripMenuItem.Text = "Show Menu";
 			this.showMenuToolStripMenuItem.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
-			// sMSToolStripMenuItem
-			// 
-			this.sMSToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.smsGraphicsSettingsToolStripMenuItem});
-			this.sMSToolStripMenuItem.Name = "sMSToolStripMenuItem";
-			this.sMSToolStripMenuItem.Size = new System.Drawing.Size(40, 16);
-			this.sMSToolStripMenuItem.Text = "&SMS";
-			// 
-			// smsGraphicsSettingsToolStripMenuItem
-			// 
-			this.smsGraphicsSettingsToolStripMenuItem.Name = "smsGraphicsSettingsToolStripMenuItem";
-			this.smsGraphicsSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.smsGraphicsSettingsToolStripMenuItem.Text = "Graphics Settings";
-			this.smsGraphicsSettingsToolStripMenuItem.Click += new System.EventHandler(this.smsGraphicsSettingsToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
@@ -2311,18 +2296,13 @@
         private System.Windows.Forms.ToolStripMenuItem x3MenuItem;
         private System.Windows.Forms.ToolStripMenuItem x4MenuItem;
         private System.Windows.Forms.ToolStripMenuItem x5MenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mzMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripMenuItem sega8bitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enableFMChipToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem overclockWhenKnownSafeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem mzMenuItem;
         private System.Windows.Forms.ToolStripMenuItem movieToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem recordMovieToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem playMovieToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem playFromBeginningToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem forceStereoSeparationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem playFromBeginningToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
         private System.Windows.Forms.ToolStripMenuItem gUIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseWhenMenuActivatedToolStripMenuItem;
@@ -2444,7 +2424,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveScreenshotWithSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoLoadLastSlotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
-		private System.Windows.Forms.ToolStripMenuItem smsSpriteLimitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
@@ -2467,6 +2446,10 @@
 		private System.Windows.Forms.ToolStripMenuItem pceArcadeCardRewindEnableHackToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem sMSToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem smsGraphicsSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsEnableFMChipToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsOverclockWhenKnownSafeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsForceStereoSeparationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem smsSpriteLimitToolStripMenuItem;
     }
 }
 
