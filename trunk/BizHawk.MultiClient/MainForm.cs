@@ -816,21 +816,33 @@ namespace BizHawk.MultiClient
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					NESToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
 					tI83ToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = false;
+					gBToolStripMenuItem.Visible = false;
+					break;
+				case "PCE":
+				case "PCECD":
+				case "SGX":
+					NESToolStripMenuItem.Visible = false;
+					tI83ToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = true;
 					gBToolStripMenuItem.Visible = false;
 					break;
 				case "GB":
 					NESToolStripMenuItem.Visible = false;
 					tI83ToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = true;
 					break;
 				default:
 					tI83ToolStripMenuItem.Visible = false;
 					NESToolStripMenuItem.Visible = false;
+					pCEToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = false;
 					break;
 			}

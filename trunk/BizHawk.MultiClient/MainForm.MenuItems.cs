@@ -731,6 +731,13 @@ namespace BizHawk.MultiClient
 			SyncCoreInputComm();
 		}
 
+		private void pceGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			PCEGraphicsConfig g = new PCEGraphicsConfig();
+			g.ShowDialog();
+			SyncCoreInputComm();
+		}
+
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
 		{
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
