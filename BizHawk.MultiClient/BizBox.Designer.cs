@@ -37,13 +37,16 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.VersionLabel = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(390, 157);
+			this.OK.Location = new System.Drawing.Point(390, 180);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 0;
@@ -64,7 +67,7 @@
 			// linkLabel1
 			// 
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(198, 130);
+			this.linkLabel1.Location = new System.Drawing.Point(198, 179);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(180, 13);
 			this.linkLabel1.TabIndex = 2;
@@ -75,7 +78,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(198, 89);
+			this.label1.Location = new System.Drawing.Point(198, 84);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(46, 13);
 			this.label1.TabIndex = 3;
@@ -84,7 +87,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(198, 108);
+			this.label2.Location = new System.Drawing.Point(198, 98);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(129, 13);
 			this.label2.TabIndex = 4;
@@ -119,12 +122,42 @@
 			this.VersionLabel.TabIndex = 7;
 			this.VersionLabel.Text = "Version 1.0.1 Released March 9, 2012";
 			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(198, 125);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(66, 13);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "Contributers:";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(198, 139);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(223, 13);
+			this.label6.TabIndex = 9;
+			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1, ";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(198, 153);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(91, 13);
+			this.label7.TabIndex = 10;
+			this.label7.Text = "Deign, Brandon E";
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(477, 192);
+			this.ClientSize = new System.Drawing.Size(477, 215);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.label5);
 			this.Controls.Add(this.VersionLabel);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
@@ -154,5 +187,8 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label VersionLabel;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
 	}
 }
