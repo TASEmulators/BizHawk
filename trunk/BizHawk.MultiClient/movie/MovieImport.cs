@@ -890,10 +890,7 @@ namespace BizHawk.MultiClient
 				{
 					byte pad = input[1+2*(player-1)];
 					for(int i = 0; i < 8; ++i)
-					{
-						if ((pad & (1 << i)) != 0)
-							controllers["P" + player + " " + CTRL_BUTTONS[i]] = true;
-					}
+						controllers["P" + player + " " + CTRL_BUTTONS[i]] = (pad&(1<<i)) != 0;
 				}
 				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
