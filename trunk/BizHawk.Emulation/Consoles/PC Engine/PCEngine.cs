@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 			Controller = NullController.GetNullController();
 			Cpu = new HuC6280();
 			VCE = new VCE();
-			VDC1 = new VDC(Cpu, VCE);
+			VDC1 = new VDC(this, Cpu, VCE);
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
 			else if (SuperGrafx)
 			{
-				VDC2 = new VDC(Cpu, VCE);
+				VDC2 = new VDC(this, Cpu, VCE);
 				VPC = new VPC(VDC1, VDC2, VCE, Cpu);
 				Ram = new byte[0x8000];
 				Cpu.ReadMemory21 = ReadMemorySGX;
