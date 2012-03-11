@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		struct playerData
 		{
 			public byte grp;
+			public byte dgrp;
 			public byte color;
 			public byte pos;
 			public byte HM;
@@ -38,6 +39,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		playerData player0;
 		playerData player1;
+
+		byte player0copies = 0;
+		byte player0copy1 = 0;
+		byte player0copy2 = 0;
+		byte player1copies = 0;
+		byte player1copy1 = 0;
+		byte player1copy2 = 0;
+
 
 		bool vblankEnabled = false;
 
@@ -143,7 +152,40 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					mask = reverseBits(mask);
 				}
-				if ((player1.grp & mask) != 0)
+
+				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
+				{
+					color = palette[player1.color];
+				}
+			}
+
+			byte pos = (byte)(player1.pos + player1copy1);
+			// Player copy 1
+			if (player1copies >= 1 && pixelPos >= pos && pixelPos < (pos + 8))
+			{
+				byte mask = (byte)(0x80 >> (pixelPos - pos));
+				if (player1.reflect)
+				{
+					mask = reverseBits(mask);
+				}
+
+				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
+				{
+					color = palette[player1.color];
+				}
+			}
+
+			pos = (byte)(player1.pos + player1copy2);
+			// Player copy 2
+			if (player1copies >=2 && pixelPos >= pos && pixelPos < (pos + 8))
+			{
+				byte mask = (byte)(0x80 >> (pixelPos - pos));
+				if (player1.reflect)
+				{
+					mask = reverseBits(mask);
+				}
+
+				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
 				{
 					color = palette[player1.color];
 				}
@@ -157,7 +199,39 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					mask = reverseBits(mask);
 				}
-				if ((player0.grp & mask) != 0)
+				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
+				{
+					color = palette[player0.color];
+				}
+			}
+
+			pos = (byte)(player0.pos + player0copy1);
+			// Player copy 1
+			if (player0copies >= 1 && pixelPos >= pos && pixelPos < (pos + 8))
+			{
+				byte mask = (byte)(0x80 >> (pixelPos - pos));
+				if (player0.reflect)
+				{
+					mask = reverseBits(mask);
+				}
+
+				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
+				{
+					color = palette[player0.color];
+				}
+			}
+
+			pos = (byte)(player0.pos + player0copy2);
+			// Player copy 1
+			if (player0copies >= 2 && pixelPos >= pos && pixelPos < (pos + 8))
+			{
+				byte mask = (byte)(0x80 >> (pixelPos - pos));
+				if (player0.reflect)
+				{
+					mask = reverseBits(mask);
+				}
+
+				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
 				{
 					color = palette[player0.color];
 				}
@@ -251,6 +325,44 @@ namespace BizHawk.Emulation.Consoles.Atari
 					execute(1);
 				}
 			}
+			else if (maskedAddr == 0x04) // NUSIZ0
+			{
+				byte size = (byte)(value & 0x07);
+				switch (size)
+				{
+					case 0x00:
+						player0copies = 0;
+						break;
+					case 0x02:
+						player0copies = 1;
+						player0copy1 = 32;
+						break;
+					case 0x03:
+						player0copies = 2;
+						player0copy1 = 16;
+						player0copy2 = 32;
+						break;
+				}
+			}
+			else if (maskedAddr == 0x05) // NUSIZ1
+			{
+				byte size = (byte)(value & 0x07);
+				switch (size)
+				{
+					case 0x00:
+						player1copies = 0;
+						break;
+					case 0x02:
+						player1copies = 1;
+						player1copy1 = 32;
+						break;
+					case 0x03:
+						player1copies = 2;
+						player1copy1 = 16;
+						player1copy2 = 32;
+						break;
+				}
+			}
 			else if (maskedAddr == 0x06) // COLUP0
 			{
 				player0.color = value;
@@ -308,10 +420,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x1B) // GRP0
 			{
 				player0.grp = value;
+				player1.dgrp = player1.grp;
 			}
 			else if (maskedAddr == 0x1C) // GRP1
 			{
 				player1.grp = value;
+				player0.dgrp = player0.grp;
 			}
 			else if (maskedAddr == 0x1F) // ENABL
 			{
@@ -328,6 +442,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x24) // HMBL
 			{
 				ball.HM = (byte)((value & 0xF0) >> 4);
+			}
+			else if (maskedAddr == 0x25) // VDELP0
+			{
+				player0.delay = (value & 0x01) != 0;
+			}
+			else if (maskedAddr == 0x26) // VDELP1
+			{
+				player1.delay = (value & 0x01) != 0;
 			}
 			else if (maskedAddr == 0x2A) // HMOVE
 			{
