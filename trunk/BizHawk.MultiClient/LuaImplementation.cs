@@ -152,7 +152,8 @@ namespace BizHawk.MultiClient
 
 		public static string[] GuiFunctions = new string[]
 		{
-			"text"
+			"text",
+			"alert"
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -305,6 +306,11 @@ namespace BizHawk.MultiClient
 		public void gui_text(object luaX, object luaY, object luaStr)
 		{
 			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false);
+		}
+
+		public void gui_alert(object luaX, object luaY, object luaStr)
+		{
+			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), true);
 		}
 
 		//----------------------------------------------------
