@@ -403,8 +403,13 @@ namespace BizHawk.MultiClient
 			}
 			else if(Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
 			{
-				Global.CoreInputComm.PCE_ShowOBJ = Global.Config.PCEDispSprites = (bool)lua_p[0];
-				Global.CoreInputComm.PCE_ShowBG = Global.Config.PCEDispBackground = (bool)lua_p[1];
+				Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
+				Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
+				if (lua_p.Length > 2)
+				{
+					Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
+					Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
+				}
 			}
 		}
 

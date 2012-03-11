@@ -252,8 +252,10 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.NES_UnlimitedSprites = Global.Config.NESAllowMoreThanEightSprites;
 			Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground;
 			Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites;
-			Global.CoreInputComm.PCE_ShowBG = Global.Config.PCEDispBackground;
-			Global.CoreInputComm.PCE_ShowOBJ = Global.Config.PCEDispSprites;
+			Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1;
+			Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
+			Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2;
+			Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
 		}
 
 		void SyncPresentationMode()
