@@ -256,6 +256,8 @@ namespace BizHawk.MultiClient
 			Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1;
 			Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2;
 			Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2;
+			Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG;
+			Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ;
 		}
 
 		void SyncPresentationMode()

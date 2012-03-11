@@ -302,6 +302,10 @@
 		public bool PCEDispBG2 = true;
 		public bool PCEDispOBJ2= true;
 
+		// SMS Graphics settings
+		public bool SMSDispBG = true;
+		public bool SMSDispOBJ = true;
+
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
 		public bool GBDebuggerSaveWindowPosition = true;

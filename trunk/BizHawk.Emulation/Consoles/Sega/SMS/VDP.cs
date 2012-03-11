@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Consoles.Sega
         bool VIntPending;
         bool HIntPending;
 
+        SMS Sms;
         VdpMode mode;
         DisplayType DisplayType = DisplayType.NTSC;
         Z80A Cpu;
@@ -73,8 +74,9 @@ namespace BizHawk.Emulation.Consoles.Sega
         static readonly byte[] SMSPalXlatTable = { 0, 85, 170, 255 };
         static readonly byte[] GGPalXlatTable = { 0, 17, 34, 51, 68, 85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255 };
 
-        public VDP(Z80A cpu, VdpMode mode, DisplayType displayType)
+        public VDP(SMS sms, Z80A cpu, VdpMode mode, DisplayType displayType)
         {
+            Sms = sms;
             Cpu = cpu;
             this.mode = mode;
             if (mode == VdpMode.SMS) CRAM = new byte[32];
@@ -370,28 +372,28 @@ namespace BizHawk.Emulation.Consoles.Sega
                     return;
                 }
 
-                RenderBackgroundCurrentLine();
+                RenderBackgroundCurrentLine(Sms.CoreInputComm.SMS_ShowBG);
 
                 if (EnableDoubledSprites)
-                    RenderSpritesCurrentLineDoubleSize();
+                    RenderSpritesCurrentLineDoubleSize(Sms.CoreInputComm.SMS_ShowOBJ);
                 else
-                    RenderSpritesCurrentLine();
+                    RenderSpritesCurrentLine(Sms.CoreInputComm.SMS_ShowOBJ);
             }
-            else if (TmsMode == 2) 
-            {
-                if (render == false) 
-                    return;
-
-                RenderBackgroundM2();
-                RenderTmsSprites();
-            } 
-            else if (TmsMode == 0) 
+            else if (TmsMode == 2)
             {
                 if (render == false)
                     return;
 
-                RenderBackgroundM0();
-                RenderTmsSprites();
+                RenderBackgroundM2(Sms.CoreInputComm.SMS_ShowBG);
+                RenderTmsSprites(Sms.CoreInputComm.SMS_ShowOBJ);
+            }
+            else if (TmsMode == 0)
+            {
+                if (render == false)
+                    return;
+
+                RenderBackgroundM0(Sms.CoreInputComm.SMS_ShowBG);
+                RenderTmsSprites(Sms.CoreInputComm.SMS_ShowOBJ);
             }
         }
 

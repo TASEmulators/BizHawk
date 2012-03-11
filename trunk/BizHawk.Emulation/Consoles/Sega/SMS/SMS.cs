@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             Cpu.ReadHardware = ReadPort;
             Cpu.WriteHardware = WritePort;
 
-            Vdp = new VDP(Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+            Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
             PSG = new SN76489();
             YM2413 = new YM2413();
             SoundMixer = new SoundMixer(YM2413, PSG);
