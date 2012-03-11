@@ -507,7 +507,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 				(addr, value) => Ram[addr & 0x1FFF] = value);
 			domains.Add(MainMemoryDomain);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x2F0000, Endian.Little,
+			var SystemBusDomain = new MemoryDomain("System Bus", 0x200000, Endian.Little,
 				addr => Cpu.ReadMemory21(addr),
 				(addr, value) => Cpu.WriteMemory21(addr, value));
 			domains.Add(SystemBusDomain);
