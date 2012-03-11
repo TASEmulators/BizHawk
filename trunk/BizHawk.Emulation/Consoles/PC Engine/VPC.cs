@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
     public sealed class VPC : IVideoProvider
     {
+        PCEngine PCE;
         public VDC VDC1;
         public VDC VDC2;
         public VCE VCE;
@@ -26,8 +27,9 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public int PriorityModeSlot2 { get { return Registers[1] & 0x0F; } }
         public int PriorityModeSlot3 { get { return (Registers[1] >> 4) & 0x0F; } }
 
-        public VPC(VDC vdc1, VDC vdc2, VCE vce, HuC6280 cpu)
+        public VPC(PCEngine pce, VDC vdc1, VDC vdc2, VCE vce, HuC6280 cpu)
         {
+            PCE = pce;
             VDC1 = vdc1;
             VDC2 = vdc2;
             VCE = vce;
@@ -265,16 +267,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             switch (EffectivePriorityMode)
             {
                 case 0:
-                    RenderBackgroundScanline(VDC1, 12);
-                    RenderBackgroundScanline(VDC2, 2);
-                    RenderSpritesScanline(VDC1, 11, 14);
-                    RenderSpritesScanline(VDC2, 1, 3);
+                    RenderBackgroundScanline(VDC1, 12, PCE.CoreInputComm.PCE_ShowBG1);
+                    RenderBackgroundScanline(VDC2, 2, PCE.CoreInputComm.PCE_ShowBG2);
+                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreInputComm.PCE_ShowOBJ1);
+                    RenderSpritesScanline(VDC2, 1, 3, PCE.CoreInputComm.PCE_ShowOBJ2);
                     break;
                 case 1:
-                    RenderBackgroundScanline(VDC1, 12);
-                    RenderBackgroundScanline(VDC2, 2);
-                    RenderSpritesScanline(VDC1, 11, 14);
-                    RenderSpritesScanline(VDC2, 1, 13);
+                    RenderBackgroundScanline(VDC1, 12, PCE.CoreInputComm.PCE_ShowBG1);
+                    RenderBackgroundScanline(VDC2, 2, PCE.CoreInputComm.PCE_ShowBG2);
+                    RenderSpritesScanline(VDC1, 11, 14, PCE.CoreInputComm.PCE_ShowOBJ1);
+                    RenderSpritesScanline(VDC2, 1, 13, PCE.CoreInputComm.PCE_ShowOBJ2);
                     break;
             }
         }
@@ -289,7 +291,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[0];
         }
 
-        void RenderBackgroundScanline(VDC vdc, byte priority)
+        void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
         {
             if (vdc.BackgroundEnabled == false)
                 return;
@@ -312,7 +314,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
                 if (c != 0)
                 {
-                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + x] = VCE.Palette[paletteBase + c];
+                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + x] = show ? VCE.Palette[paletteBase + c] : VCE.Palette[0];
                     PriorityBuffer[x] = priority;
                 }
             }
@@ -320,7 +322,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         static byte[] heightTable = { 16, 32, 64, 64 };
 
-        void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority)
+        void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority, bool show)
         {
             if (vdc.SpritesEnabled == false)
                 return;
@@ -426,7 +428,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    if (show) FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -445,7 +447,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    if (show) FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -467,7 +469,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 byte myPriority = priority ? highPriority : lowPriority;
                                 if (PriorityBuffer[xs] < myPriority)
                                 {
-                                    FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                    if (show) FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                     PriorityBuffer[xs] = myPriority;
                                 }
                             }
@@ -485,7 +487,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                     byte myPriority = priority ? highPriority : lowPriority;
                                     if (PriorityBuffer[xs] < myPriority)
                                     {
-                                        FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
+                                        if (show) FrameBuffer[(vdc.ActiveLine * FrameWidth) + xs] = VCE.Palette[paletteBase + pixel];
                                         PriorityBuffer[xs] = myPriority;
                                     }
                                 }
