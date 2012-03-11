@@ -296,6 +296,9 @@
 		public int NESTopLine = 8;
 		public int NESBottomLine = 231;
 
+		public bool PCEDispBackground = true;
+		public bool PCEDispSprites = true;
+
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
 		public bool GBDebuggerSaveWindowPosition = true;

@@ -84,14 +84,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         public const byte StatusSprite0Collision    = 0x01;
 
         const int VramSize = 0x8000;
-        
+
+        PCEngine pce;
         HuC6280 cpu;
         VCE vce;
 
         public int MultiResHack = 0;
 
-        public VDC(HuC6280 cpu, VCE vce)
+        public VDC(PCEngine pce, HuC6280 cpu, VCE vce)
         {
+            this.pce = pce;
             this.cpu = cpu;
             this.vce = vce;
 

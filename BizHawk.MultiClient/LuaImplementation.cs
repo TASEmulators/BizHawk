@@ -366,6 +366,11 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p0;
 				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p1;
 			}
+			else if(Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
+			{
+				Global.CoreInputComm.PCE_ShowOBJ = Global.Config.PCEDispSprites = (bool)lua_p0;
+				Global.CoreInputComm.PCE_ShowBG = Global.Config.PCEDispBackground = (bool)lua_p1;
+			}
 		}
 
 		//----------------------------------------------------

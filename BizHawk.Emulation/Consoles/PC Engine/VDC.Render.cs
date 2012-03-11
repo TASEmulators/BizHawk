@@ -108,11 +108,11 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             if (ActiveLine >= FrameHeight)
                 return;
 
-            RenderBackgroundScanline();
-            RenderSpritesScanline();
+            RenderBackgroundScanline(pce.CoreInputComm.PCE_ShowBG);
+            RenderSpritesScanline(pce.CoreInputComm.PCE_ShowOBJ);
         }
 
-        void RenderBackgroundScanline()
+        void RenderBackgroundScanline(bool show)
         {
             Array.Clear(PriorityBuffer, 0, FrameWidth);
 
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[0];
                 else
                 {
-                    FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[paletteBase + c];
+                    FrameBuffer[(ActiveLine * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
                     PriorityBuffer[x] = 1;
                 }
             }
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
 
         byte[] heightTable = { 16, 32, 64, 64 };
 
-        public void RenderSpritesScanline()
+        public void RenderSpritesScanline(bool show)
         {
             if (SpritesEnabled == false)
                 return;
@@ -274,7 +274,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
-                                if (priority || PriorityBuffer[xs] == 0)
+                                if ((priority || PriorityBuffer[xs] == 0) && show)
                                     FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
                         }
@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
-                                if (priority || PriorityBuffer[xs] == 0)
+                                if ((priority || PriorityBuffer[xs] == 0) && show)
                                     FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
 
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                             if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                             {
                                 InterSpritePriorityBuffer[xs] = 1;
-                                if (priority || PriorityBuffer[xs] == 0)
+                                if ((priority || PriorityBuffer[xs] == 0) && show)
                                     FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                             }
                         }
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                                 if (pixel != 0 && InterSpritePriorityBuffer[xs] == 0)
                                 {
                                     InterSpritePriorityBuffer[xs] = 1;
-                                    if (priority || PriorityBuffer[xs] == 0)
+                                    if ((priority || PriorityBuffer[xs] == 0) && show)
                                         FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
                                 }
                             }
