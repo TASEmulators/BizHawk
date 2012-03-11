@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6502;
+using BizHawk.Emulation.CPUs.M6507;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the M6532 RIOT Chip
 	public partial class M6532
 	{
-		MOS6502 Cpu;
+		MOS6507 Cpu;
 		public byte[] ram;
 		public int timerStartValue;
 		public int timerFinishedCycles;
 		public int timerShift;
 
-		public M6532(MOS6502 cpu, byte[] ram)
+		public M6532(MOS6507 cpu, byte[] ram)
 		{
 			Cpu = cpu;
 			this.ram = ram;
