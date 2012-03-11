@@ -401,7 +401,7 @@ namespace BizHawk.MultiClient
 				Global.CoreInputComm.NES_ShowOBJ = Global.Config.NESDispSprites = (bool)lua_p[0];
 				Global.CoreInputComm.NES_ShowBG = Global.Config.NESDispBackground = (bool)lua_p[1];
 			}
-			else if(Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
+			else if (Global.Emulator is BizHawk.Emulation.Consoles.TurboGrafx.PCEngine)
 			{
 				Global.CoreInputComm.PCE_ShowOBJ1 = Global.Config.PCEDispOBJ1 = (bool)lua_p[0];
 				Global.CoreInputComm.PCE_ShowBG1 = Global.Config.PCEDispBG1 = (bool)lua_p[1];
@@ -410,6 +410,11 @@ namespace BizHawk.MultiClient
 					Global.CoreInputComm.PCE_ShowOBJ2 = Global.Config.PCEDispOBJ2 = (bool)lua_p[2];
 					Global.CoreInputComm.PCE_ShowBG2 = Global.Config.PCEDispBG2 = (bool)lua_p[3];
 				}
+			}
+			else if (Global.Emulator is BizHawk.Emulation.Consoles.Sega.SMS)
+			{
+				Global.CoreInputComm.SMS_ShowOBJ = Global.Config.SMSDispOBJ = (bool)lua_p[0];
+				Global.CoreInputComm.SMS_ShowBG = Global.Config.SMSDispBG = (bool)lua_p[1];
 			}
 		}
 
