@@ -13,11 +13,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public int timerStartValue;
 		public int timerFinishedCycles;
 		public int timerShift;
+		Atari2600 core;
 
-		public M6532(MOS6507 cpu, byte[] ram)
+
+		public M6532(MOS6507 cpu, byte[] ram, Atari2600 core)
 		{
 			Cpu = cpu;
 			this.ram = ram;
+			this.core = core;
 
 			// Apparently this will break for some games (Solaris and H.E.R.O.). We shall see
 			timerFinishedCycles = 0;
@@ -60,7 +63,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 					Console.WriteLine("6532 register read: " + maskedAddr.ToString("x"));
 					if (maskedAddr == 0x00) // SWCHA
 					{
-						return 0xFF;
+						return core.ReadControls1();
+						//return 0xFF;
 					}
 					else if (maskedAddr == 0x01) // SWACNT
 					{

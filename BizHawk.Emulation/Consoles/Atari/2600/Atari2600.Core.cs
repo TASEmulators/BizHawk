@@ -54,7 +54,6 @@ namespace BizHawk
 		//     registers
 		// else
 		//   ROM
-					
 		public byte ReadMemory(ushort addr)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x1FFF);
@@ -112,7 +111,7 @@ namespace BizHawk
 			// Setup TIA
 			tia = new TIA(cpu, frameBuffer);
 			// Setup 6532
-			m6532 = new M6532(cpu, ram);
+			m6532 = new M6532(cpu, ram, this);
 
 			//setup the system state here. for instance..
 			// Read from the reset vector for where to start
@@ -160,6 +159,17 @@ namespace BizHawk
 
 			//run one frame's worth of cpu cyclees (i.e. do the emulation!)
 			//this should generate the framebuffer as it goes.
+		}
+
+		public byte ReadControls1()
+		{
+			byte value = 0xFF;
+
+			if (Controller["P1 Up"]) value &= 0xEF;
+			if (Controller["P1 Down"]) value &= 0xDF;
+			if (Controller["P1 Left"]) value &= 0xBF;
+			if (Controller["P1 Right"]) value &= 0x7F;
+			return value;
 		}
 	}
 }

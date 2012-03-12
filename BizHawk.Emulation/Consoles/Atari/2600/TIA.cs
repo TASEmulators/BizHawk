@@ -408,11 +408,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x0B) // REFP0
 			{
-				player0.reflect = ((value & 0x04) != 0);
+				player0.reflect = ((value & 0x08) != 0);
 			}
 			else if (maskedAddr == 0x0C) // REFP1
 			{
-				player1.reflect = ((value & 0x04) != 0);
+				player1.reflect = ((value & 0x08) != 0);
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
