@@ -13,6 +13,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 		UInt32 PF; // PlayField data
 		byte BKcolor, PFcolor;
 		bool PFpriority = false;
+		bool PFreflect = false;
+
+		bool hmoveHappened = false;
 
 		struct playerData
 		{
@@ -127,11 +130,19 @@ namespace BizHawk.Emulation.Consoles.Atari
 			// Second half
 			else
 			{
-				PFmask = (UInt32)(1 << ((byte)((pixelPos % 80) / 4)));
+				if (PFreflect)
+				{
+					PFmask = (UInt32)(1 << ((byte)((pixelPos % 80) / 4)));
+				}
+				else
+				{
+					PFmask = (UInt32)(1 << ((20 - 1) - (byte)((pixelPos % 80) / 4)));
+				}
 			}
 
 			UInt32 color;
 			color = palette[BKcolor];
+
 
 			if ((PF & PFmask) != 0)
 			{
@@ -245,6 +256,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			if (vblankEnabled)
 			{
 				color = 0x000000;
+			}
+
+			if (hmoveHappened && pixelPos >= 0 && pixelPos < 8)
+			{
+				color = 0x000000;
+			}
+			if (pixelPos >= 8)
+			{
+				hmoveHappened = false;
 			}
 			scanline[pixelPos]   = color;
 
@@ -382,6 +402,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x0A) // CTRLPF
 			{
 				PFpriority = (value & 0x04) != 0;
+				PFreflect = (value & 0x01) != 0;
 
 				ball.size = (byte)((value & 0x30) >> 4);
 			}
@@ -461,6 +482,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				player1.HM = 0;
 				ball.HM = 0;
 
+				hmoveHappened = true;
 			}
 		}
 
