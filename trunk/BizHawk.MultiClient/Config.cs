@@ -1,4 +1,6 @@
-﻿namespace BizHawk.MultiClient
+﻿using System.IO;
+
+namespace BizHawk.MultiClient
 {
 	public class Config
 	{
@@ -46,71 +48,71 @@
 		public string LastRomPath = ".";
 		public string BasePath = ".";
 
-		public string BaseNES = ".\\NES";
+		public string BaseNES = Path.Combine(".", "NES");
 		public string PathNESROMs = ".";
-		public string PathNESSavestates = ".\\State";
-		public string PathNESSaveRAM = ".\\SaveRAM";
-		public string PathNESScreenshots = ".\\Screenshots";
-		public string PathNESCheats = ".\\Cheats";
-		public string PathNESPalette = ".\\Palettes";
+		public string PathNESSavestates = Path.Combine(".", "State");
+		public string PathNESSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathNESScreenshots = Path.Combine(".", "Screenshots");
+		public string PathNESCheats = Path.Combine(".", "Cheats");
+		public string PathNESPalette = Path.Combine(".", "Palettes");
 
-		public string BaseSMS = ".\\SMS";
+		public string BaseSMS = Path.Combine(".", "SMS");
 		public string PathSMSROMs = ".";
-		public string PathSMSSavestates = ".\\State";
-		public string PathSMSSaveRAM = ".\\SaveRAM";
-		public string PathSMSScreenshots = ".\\Screenshots";
-		public string PathSMSCheats = ".\\Cheats";
+		public string PathSMSSavestates = Path.Combine(".", "State");
+		public string PathSMSSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathSMSScreenshots = Path.Combine(".", "Screenshots");
+		public string PathSMSCheats = Path.Combine(".", "Cheats");
 
-		public string BaseGG = ".\\Game Gear";
+		public string BaseGG = Path.Combine(".", "Game Gear");
 		public string PathGGROMs = ".";
-		public string PathGGSavestates = ".\\State";
-		public string PathGGSaveRAM = ".\\SaveRAM";
-		public string PathGGScreenshots = ".\\Screenshots";
-		public string PathGGCheats = ".\\Cheats";
+		public string PathGGSavestates = Path.Combine(".", "State");
+		public string PathGGSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathGGScreenshots = Path.Combine(".", "Screenshots");
+		public string PathGGCheats = Path.Combine(".", "Cheats");
 
-		public string BaseSG = ".\\SG-1000";
+		public string BaseSG = Path.Combine(".", "SG-1000");
 		public string PathSGROMs = ".";
-		public string PathSGSavestates = ".\\State";
-		public string PathSGSaveRAM = ".\\SaveRAM";
-		public string PathSGScreenshots = ".\\Screenshots";
-		public string PathSGCheats = ".\\Cheats";
+		public string PathSGSavestates = Path.Combine(".", "State");
+		public string PathSGSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathSGScreenshots = Path.Combine(".", "Screenshots");
+		public string PathSGCheats = Path.Combine(".", "Cheats");
 
-		public string BaseGenesis = ".\\Genesis";
+		public string BaseGenesis = Path.Combine(".", "Genesis");
 		public string PathGenesisROMs = ".";
-		public string PathGenesisSavestates = ".\\State";
-		public string PathGenesisSaveRAM = ".\\SaveRAM";
-		public string PathGenesisScreenshots = ".\\Screenshots";
-		public string PathGenesisCheats = ".\\Cheats";
+		public string PathGenesisSavestates = Path.Combine(".", "State");
+		public string PathGenesisSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathGenesisScreenshots = Path.Combine(".", "Screenshots");
+		public string PathGenesisCheats = Path.Combine(".", "Cheats");
 
-		public string BasePCE = ".\\PC Engine";
+		public string BasePCE = Path.Combine(".", "PC Engine");
 		public string PathPCEROMs = ".";
-		public string PathPCESavestates = ".\\State";
-		public string PathPCESaveRAM = ".\\SaveRAM";
-		public string PathPCEScreenshots = ".\\Screenshots";
-		public string PathPCECheats = ".\\Cheats";
+		public string PathPCESavestates = Path.Combine(".", "State");
+		public string PathPCESaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathPCEScreenshots = Path.Combine(".", "Screenshots");
+		public string PathPCECheats = Path.Combine(".", "Cheats");
 
-		public string BaseGameboy = ".\\Gameboy";
+		public string BaseGameboy = Path.Combine(".", "Gameboy");
 		public string PathGBROMs = ".";
-		public string PathGBSavestates = ".\\State";
-		public string PathGBSaveRAM = ".\\SaveRAM";
-		public string PathGBScreenshots = ".\\Screenshots";
-		public string PathGBCheats = ".\\Cheats";
+		public string PathGBSavestates = Path.Combine(".", "State");
+		public string PathGBSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathGBScreenshots = Path.Combine(".", "Screenshots");
+		public string PathGBCheats = Path.Combine(".", "Cheats");
 
-		public string BaseTI83 = ".\\TI83";
+		public string BaseTI83 = Path.Combine(".", "TI83");
 		public string PathTI83ROMs = ".";
-		public string PathTI83Savestates = ".\\State";
-		public string PathTI83SaveRAM = ".\\SaveRAM";
-		public string PathTI83Screenshots = ".\\Screenshots";
-		public string PathTI83Cheats = ".\\Cheats";
+		public string PathTI83Savestates = Path.Combine(".", "State");
+		public string PathTI83SaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
+		public string PathTI83Cheats = Path.Combine(".", "Cheats");
 
-		public string MoviesPath = ".\\Movies";
-		public string LuaPath = ".\\Lua";
+		public string MoviesPath = Path.Combine(".", "Movies");
+		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
 
 
 		//BIOS Paths
-		public string PathPCEBios = ".\\PCECDBios.pce"; //TODO: better default filename
+		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
 
 		public string FFMpegPath = "%exe%/ffmpeg.exe";
 
