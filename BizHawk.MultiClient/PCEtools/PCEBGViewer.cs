@@ -110,5 +110,10 @@ namespace BizHawk.MultiClient
 		{
 			Generate();
 		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 	}
 }
