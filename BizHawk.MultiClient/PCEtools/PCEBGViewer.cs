@@ -18,24 +18,32 @@ namespace BizHawk.MultiClient
 		public PCEBGViewer()
 		{
 			InitializeComponent();
+			vdcComboBox.Items.Add("VDC1");
+			vdcComboBox.Items.Add("VDC2");
+			vdcComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+			vdcComboBox.SelectedIndex = 0;
 			Activated += (o, e) => Generate();
 		}
 
-		private unsafe void Generate()
+		public unsafe void Generate()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (pce == null) return;
 
-			int width = 8 * pce.VDC1.BatWidth;
-			int height = 8 * pce.VDC1.BatHeight;
+			if (Global.Emulator.Frame % 20 != 0) return; // TODO: just a makeshift. hard-coded 3fps
+
+			VDC vdc = vdcComboBox.SelectedIndex == 0 ? pce.VDC1 : pce.VDC2;
+
+			int width = 8 * vdc.BatWidth;
+			int height = 8 * vdc.BatHeight;
 			BitmapData buf = canvas.bat.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, canvas.bat.PixelFormat);
 			int pitch = buf.Stride / 4;
 			int* begin = (int*)buf.Scan0.ToPointer();
 			int* p = begin;
 
 			// TODO: this does not clear background, why?
-			for (int i = 0; i < pitch * buf.Height; ++i, ++p)
-				*p = canvas.BackColor.ToArgb();
+			//for (int i = 0; i < pitch * buf.Height; ++i, ++p)
+			//	*p = canvas.BackColor.ToArgb();
 
 			p = begin;
 			for (int y = 0; y < height; ++y)
@@ -46,11 +54,11 @@ namespace BizHawk.MultiClient
 				{
 					int xTile = x / 8;
 					int xOfs = x % 8;
-					int tileNo = pce.VDC1.VRAM[(ushort)(((yTile * pce.VDC1.BatWidth) + xTile))] & 0x07FF;
-					int paletteNo = pce.VDC1.VRAM[(ushort)(((yTile * pce.VDC1.BatWidth) + xTile))] >> 12;
+					int tileNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] & 0x07FF;
+					int paletteNo = vdc.VRAM[(ushort)(((yTile * vdc.BatWidth) + xTile))] >> 12;
 					int paletteBase = paletteNo * 16;
 
-					byte c = pce.VDC1.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
+					byte c = vdc.PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 					if (c == 0)
 						*p = pce.VCE.Palette[0];
 					else
@@ -67,13 +75,15 @@ namespace BizHawk.MultiClient
 
 		public void Restart()
 		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is PCEngine))
 			{
 				this.Close();
 				return;
 			}
-			else
-			    pce = Global.Emulator as PCEngine;
+			pce = Global.Emulator as PCEngine;
+			vdcComboBox.SelectedIndex = 0;
+			vdcComboBox.Enabled = pce.SystemId == "SGX";
 		}
 
 		public void UpdateValues()
@@ -87,11 +97,18 @@ namespace BizHawk.MultiClient
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
 			pce = Global.Emulator as PCEngine;
+			vdcComboBox.SelectedIndex = 0;
+			vdcComboBox.Enabled = pce.SystemId == "SGX";
 		}
 
 		private void PCEBGViewer_FormClosed(object sender, FormClosedEventArgs e)
 		{
 
+		}
+
+		private void vdcComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Generate();
 		}
 	}
 }
