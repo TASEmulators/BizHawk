@@ -154,6 +154,7 @@
     <Content Include="discohawk.ico" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"$(SolutionDir)subwcrev.sh" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
 </Project>
