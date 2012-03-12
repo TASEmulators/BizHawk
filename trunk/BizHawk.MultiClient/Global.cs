@@ -1,15 +1,19 @@
 ﻿using BizHawk.DiscSystem;
 using System.Collections.Generic;
+#if WINDOWS
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
+#endif
 
 namespace BizHawk.MultiClient
 {
 	public static class Global
 	{
 		public static MainForm MainForm;
+#if WINDOWS
 		public static DirectSound DSound;
 		public static Direct3D Direct3D;
+#endif
 		public static Sound Sound;
 		public static IRenderer RenderPanel;
 		public static Config Config;

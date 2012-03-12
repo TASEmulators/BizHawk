@@ -1,12 +1,15 @@
 ﻿using System;
 using BizHawk.Emulation.Sound;
+#if WINDOWS
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
+#endif
 
 using BizHawk.Emulation.Consoles.Nintendo;
 
 namespace BizHawk.MultiClient
 {
+#if WINDOWS
 	public class Sound : IDisposable
 	{
 		public bool Muted = false;
@@ -192,4 +195,65 @@ namespace BizHawk.MultiClient
 			}
 		}
 	}
+#else
+	// Dummy implementation for non-Windows platforms for now.
+	public class Sound
+	{
+		public bool Muted = false;
+		public bool needDiscard;
+
+		public Sound()
+		{
+		}
+
+		public void StartSound()
+		{
+		}
+
+		public bool IsPlaying = false;
+
+		public void StopSound()
+		{
+		}
+
+		public void Dispose()
+		{
+		}
+
+		int SNDDXGetAudioSpace()
+		{
+			return 0;
+		}
+
+		public void UpdateSound(ISoundProvider soundProvider)
+		{
+			soundProvider.DiscardSamples();
+		}
+
+		/// <summary>
+		/// Range: 0-100
+		/// </summary>
+		/// <param name="vol"></param>
+		public void ChangeVolume(int vol)
+		{
+			Global.Config.SoundVolume = vol;
+			UpdateSoundSettings();
+		}
+
+		/// <summary>
+		/// Uses Global.Config.SoundEnabled, this just notifies the object to read it
+		/// </summary>
+		public void UpdateSoundSettings()
+		{
+			if (Global.Emulator is NES)
+			{
+				NES n = Global.Emulator as NES;
+				if (Global.Config.SoundEnabled == false)
+					n.SoundOn = false;
+				else
+					n.SoundOn = true;
+			}
+		}
+	}
+#endif
 }

@@ -35,13 +35,14 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
+    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>output\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -53,8 +54,6 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>output\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -66,11 +65,11 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT' ">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\LuaInterface.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Newtonsoft.Json.dll</HintPath>
@@ -86,11 +85,11 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
+    <Reference Include="System.Deployment" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="SlimDX, Version=2.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9">
+    <Reference Include="SlimDX, Version=2.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9" Condition=" '$(OS)' == 'Windows_NT' ">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\SlimDX.dll</HintPath>
     </Reference>
@@ -166,7 +165,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="HawkFile.cs" />
     <Compile Include="Input\ControllerBinding.cs" />
-    <Compile Include="Input\GamePad.cs" />
+    <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -185,8 +184,8 @@
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\InputAdapters.cs" />
-    <Compile Include="Input\Keyboard.cs" />
-    <Compile Include="LuaImplementation.cs" />
+    <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="LuaImplementation.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -373,18 +372,18 @@
     <Compile Include="tools\HexEditor.Designer.cs">
       <DependentUpon>HexEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaConsole.cs">
+    <Compile Include="tools\LuaConsole.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaConsole.Designer.cs">
+    <Compile Include="tools\LuaConsole.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\LuaFiles.cs" />
-    <Compile Include="tools\LuaText.cs" />
-    <Compile Include="tools\LuaWindow.cs">
+    <Compile Include="tools\LuaFiles.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="tools\LuaText.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="tools\LuaWindow.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="tools\LuaWindow.Designer.cs">
+    <Compile Include="tools\LuaWindow.Designer.cs" Condition=" '$(OS)' == 'Windows_NT' ">
       <DependentUpon>LuaWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\MemoryViewer.cs">
