@@ -1802,6 +1802,7 @@ namespace BizHawk.MultiClient
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
+			PCEBGViewer1.Generate(); // TODO: just a makeshift. PCE core should provide callbacks.
 			TAStudio1.UpdateValues();
 		}
 
