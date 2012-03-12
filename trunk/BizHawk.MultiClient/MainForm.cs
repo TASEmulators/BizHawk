@@ -59,6 +59,7 @@ namespace BizHawk.MultiClient
 		public NESNameTableViewer NESNameTableViewer1 = new NESNameTableViewer();
 		public NESPPU NESPPU1 = new NESPPU();
 		public NESDebugger NESDebug1 = new NESDebugger();
+		public PCEBGViewer PCEBGViewer1 = new PCEBGViewer();
 		public Cheats Cheats1 = new Cheats();
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
@@ -1175,6 +1176,7 @@ namespace BizHawk.MultiClient
 				NESPPU1.Restart();
 				NESNameTableViewer1.Restart();
 				NESDebug1.Restart();
+				PCEBGViewer1.Restart();
 				TI83KeyPad1.Restart();
 				TAStudio1.Restart();
 				Cheats1.Restart();
@@ -1799,6 +1801,7 @@ namespace BizHawk.MultiClient
 			HexEditor1.UpdateValues();
 			NESNameTableViewer1.UpdateValues();
 			NESPPU1.UpdateValues();
+			PCEBGViewer1.UpdateValues();
 			TAStudio1.UpdateValues();
 		}
 
@@ -2076,6 +2079,17 @@ namespace BizHawk.MultiClient
 				NESDebug1.Focus();
 		}
 
+		public void LoadPCEBGViewer()
+		{
+			if (!PCEBGViewer1.IsHandleCreated || PCEBGViewer1.IsDisposed)
+			{
+				PCEBGViewer1 = new PCEBGViewer();
+				PCEBGViewer1.Show();
+			}
+			else
+				PCEBGViewer1.Focus();
+		}
+
 		public void LoadTI83KeyPad()
 		{
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
@@ -2272,6 +2286,7 @@ namespace BizHawk.MultiClient
 			NESPPU1.Restart();
 			NESNameTableViewer1.Restart();
 			NESDebug1.Restart();
+			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
 			ToolBox1.Restart();
@@ -2302,6 +2317,7 @@ namespace BizHawk.MultiClient
 			CloseForm(NESNameTableViewer1);
 			CloseForm(NESPPU1);
 			CloseForm(NESDebug1);
+			CloseForm(PCEBGViewer1);
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);

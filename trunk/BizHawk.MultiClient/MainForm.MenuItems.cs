@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Gameboy;
+using System.Drawing.Imaging;
 
 namespace BizHawk.MultiClient
 {
@@ -1446,6 +1447,11 @@ namespace BizHawk.MultiClient
 		private void showMenuToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ShowHideMenu();
+		}
+
+		private void justatestToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadPCEBGViewer();
 		}
 	}
 }
