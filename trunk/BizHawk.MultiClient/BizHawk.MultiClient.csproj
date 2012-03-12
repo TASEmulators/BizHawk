@@ -132,7 +132,7 @@
     <Compile Include="config\InputConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\InputConfig.designer.cs">
+    <Compile Include="config\InputConfig.Designer.cs">
       <DependentUpon>InputConfig.cs</DependentUpon>
     </Compile>
     <Compile Include="config\InputWidget.cs">
@@ -236,7 +236,7 @@
     <Compile Include="NEStools\NESGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NEStools\NESGameGenie.designer.cs">
+    <Compile Include="NEStools\NESGameGenie.Designer.cs">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
     </Compile>
     <Compile Include="NEStools\NESGraphicsConfig.cs">
@@ -624,7 +624,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config\ControllerImages\NESController.PNG" />
+    <Content Include="config\ControllerImages\NESController.png" />
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
     <None Include="images\Debugger.png" />
