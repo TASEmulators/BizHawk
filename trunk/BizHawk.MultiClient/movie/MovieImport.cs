@@ -90,7 +90,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileInfo file = new FileInfo(path);
 			StreamReader sr = file.OpenText();
 			string[] buttons = new string[] { };
@@ -116,6 +116,7 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = controller;
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			int lineNum = 0;
 			string line = "";
 			while ((line = sr.ReadLine()) != null)
@@ -170,16 +171,7 @@ namespace BizHawk.MultiClient
 				}
 				else if (line.StartsWith("palFlag"))
 				{
-					bool pal;
-					// Try to parse the PAL setting as a bool, defaulting to false if it fails.
-					try
-					{
-						pal = Convert.ToBoolean(int.Parse(ParseHeader(line, "palFlag")));
-					}
-					catch
-					{
-						pal = false;
-					}
+					bool pal = (ParseHeader(line, "palFlag") == "1");
 					m.Header.SetHeaderLine("PAL", pal.ToString());
 				}
 				else if (line.StartsWith("fourscore"))
@@ -257,7 +249,6 @@ namespace BizHawk.MultiClient
 								);
 					}
 					// Convert the data for the controllers to a mnemonic and add it as a frame.
-					MnemonicsGenerator mg = new MnemonicsGenerator();
 					mg.SetSource(controllers);
 					m.AppendFrame(mg.GetControllersAsMnemonic());
 				}
@@ -316,7 +307,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 43 4D 1A "FCM\x1A"
@@ -419,13 +410,13 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "NES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
 			int frame = 1;
 			while (frame <= frameCount)
 			{
-				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				string mnemonic = mg.GetControllersAsMnemonic();
 				byte update = r.ReadByte();
@@ -529,6 +520,8 @@ namespace BizHawk.MultiClient
 					 * bb: Gamepad number minus one (?)
 					*/
 					int player = ((update >> 3) & 3) + 1;
+					if (player > 2)
+						fourscore = true;
 					/*
 					 ccc:
 					 * 0	  A
@@ -569,7 +562,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 46 4D 56 1A "FMV\x1A"
@@ -626,6 +619,7 @@ namespace BizHawk.MultiClient
 			// 010 64-byte zero-terminated emulator identifier string
 			string emuVersion = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.Comments.Add(EMULATIONORIGIN + " Famtasia version " + emuVersion);
+			m.Header.Comments.Add(MOVIEORIGIN + " .FMV");
 			// 050 64-byte zero-terminated movie title string
 			string description = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.Comments.Add(COMMENT + " " + description);
@@ -645,6 +639,7 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "NES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 * 01 Right
 			 * 02 Left
@@ -695,7 +690,6 @@ namespace BizHawk.MultiClient
 					}
 					player++;
 				}
-				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -709,7 +703,7 @@ namespace BizHawk.MultiClient
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 16-byte signature and format version: "Gens Movie TEST9"
@@ -724,6 +718,7 @@ namespace BizHawk.MultiClient
 			// 00F ASCII-encoded GMV file format version. The most recent is 'A'. (?)
 			string version = r.ReadStringFixedAscii(1);
 			m.Header.Comments.Add(MOVIEORIGIN + " .GMV version " + version);
+			m.Header.Comments.Add(EMULATIONORIGIN + " Gens");
 			// 010 4-byte little-endian unsigned int: rerecord count
 			uint rerecordCount = r.ReadUInt32();
 			m.SetRerecords((int)rerecordCount);
@@ -759,6 +754,7 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "Genesis 3-Button Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 040 frame data
 			 For controller bytes, each value is determined by OR-ing together values for whichever of the following are left
@@ -807,7 +803,6 @@ namespace BizHawk.MultiClient
 								controllers["P2 " + other[button]] = (((controllerState >> (button + 4)) & 1) == 0);
 						}
 				}
-				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -830,7 +825,7 @@ namespace BizHawk.MultiClient
 
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			bool success = false;
 
 			// Unless otherwise noted, all values are little-endian.
@@ -883,6 +878,7 @@ namespace BizHawk.MultiClient
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = CTRL_TYPE_PCE;
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			//   For PCE, BizHawk does not have any control command. So I ignore any command.
 			for (byte[] input = r.ReadBytes(INPUT_SIZE_PCE);
 			     input.Length == INPUT_SIZE_PCE; 
@@ -894,7 +890,6 @@ namespace BizHawk.MultiClient
 					for (int button = 0; button < CTRL_BUTTONS.Length; button++)
 						controllers["P" + player + " " + CTRL_BUTTONS[button]] = (pad & (1 << button)) != 0;
 				}
-				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -922,7 +917,7 @@ FAIL:
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 0000: 4-byte signature: "MMV\0"
@@ -937,6 +932,7 @@ FAIL:
 			// 0004: 4-byte little endian unsigned int: dega version
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Dega version " + emuVersion.ToString());
+			m.Header.Comments.Add(MOVIEORIGIN + " .MMV");
 			// 0008: 4-byte little endian unsigned int: frame count
 			uint frameCount = r.ReadUInt32();
 			// 000c: 4-byte little endian unsigned int: rerecord count
@@ -992,6 +988,7 @@ FAIL:
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "SMS Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1022,7 +1019,6 @@ FAIL:
 							(((controllerState >> 7) & 1) == 1 && gamegear)
 						);
 				}
-				MnemonicsGenerator mg = new MnemonicsGenerator();
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -1036,7 +1032,7 @@ FAIL:
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 4E 53 53 1A "NSS\x1A"
@@ -1048,6 +1044,8 @@ FAIL:
 				fs.Close();
 				return null;
 			}
+			m.Header.Comments.Add(EMULATIONORIGIN + " Nintendulator");
+			m.Header.Comments.Add(MOVIEORIGIN + " .NMV");
 			r.Close();
 			fs.Close();
 			return m;
@@ -1073,7 +1071,6 @@ FAIL:
 			}
 
 			uint version = r.ReadUInt32();
-
 			switch (version)
 			{
 				case 1:
@@ -1095,8 +1092,7 @@ FAIL:
 		// SMV 1.43 file format: http://code.google.com/p/snes9x-rr/wiki/SMV143
 		private static Movie ImportSMV143(BinaryReader r, string path)
 		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
-
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			uint GUID = r.ReadUInt32();
 			m.Header.SetHeaderLine(MovieHeader.GUID, GUID.ToString()); //TODO: format to hex string
 			m.SetRerecords((int)r.ReadUInt32());
@@ -1143,29 +1139,35 @@ FAIL:
 					ushort fd = r.ReadUInt16();
 				}
 			}
+			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.43");
+			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			return m;
 		}
 
 		// SMV 1.51 file format: http://code.google.com/p/snes9x-rr/wiki/SMV151
 		private static Movie ImportSMV151(BinaryReader r, string path)
 		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
+			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.51");
+			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			return m;
 		}
 
 		private static Movie ImportSMV152(BinaryReader r, string path)
 		{
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			uint GUID = r.ReadUInt32();
+			m.Header.Comments.Add(EMULATIONORIGIN + " Snes9x version 1.52");
+			m.Header.Comments.Add(MOVIEORIGIN + " .SMV");
 			return m;
 		}
 
-		//VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
+		// VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 		private static Movie ImportVBM(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 4-byte signature: 56 42 4D 1A "VBM\x1A"
@@ -1215,7 +1217,7 @@ FAIL:
 				fs.Close();
 				return null;
 			}
-			//015 1-byte flags: controller flags
+			// 015 1-byte flags: controller flags
 			flags = r.ReadByte();
 			// TODO: Handle the additional controllers.
 			int players = 0;
@@ -1305,6 +1307,7 @@ FAIL:
 			// 030 1-byte unsigned char: minor version/revision number of current VBM version, the latest is "1"
 			byte minorVersion = r.ReadByte();
 			m.Header.Comments.Add(MOVIEORIGIN + " .VBM version " + majorVersion + "." + minorVersion);
+			m.Header.Comments.Add(EMULATIONORIGIN + " Visual Boy Advance");
 			/*
 			 031 1-byte unsigned char: the internal CRC of the ROM used while recording
 			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a calculated
@@ -1365,9 +1368,6 @@ FAIL:
 				ushort controllerState = r.ReadUInt16();
 				for (int button = 0; button < buttons.Length; button++)
 					controllers[buttons[button]] = (((controllerState >> button) & 1) == 1);
-				MnemonicsGenerator mg = new MnemonicsGenerator();
-				mg.SetSource(controllers);
-				m.AppendFrame(mg.GetControllersAsMnemonic());
 				// TODO: Handle the other buttons.
 				if (warningMsg == "")
 				{
@@ -1393,7 +1393,7 @@ FAIL:
 		{
 			errorMsg = "";
 			warningMsg = "";
-			Movie m = new Movie(Path.ChangeExtension(path, ".tas"), MOVIEMODE.PLAY);
+			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
 			// 000 12-byte signature: "VirtuaNES MV"
@@ -1404,6 +1404,93 @@ FAIL:
 				r.Close();
 				fs.Close();
 				return null;
+			}
+			// 00C 2-byte little-endian integer: movie version 0x0400
+			ushort version = r.ReadUInt16();
+			m.Header.Comments.Add(MOVIEORIGIN + " .VMV version " + version);
+			m.Header.Comments.Add(EMULATIONORIGIN + " VirtuaNES");
+			// 00E 2-byte little-endian integer: record version
+			ushort recordVersion = r.ReadUInt16();
+			m.Header.Comments.Add(COMMENT + " Record version " + recordVersion);
+			// 010 4-byte flags (control byte)
+			uint flags = r.ReadUInt32();
+			// bit 0: controller 1 in use
+			bool controller1 = ((flags & 1) == 1);
+			// bit 1: controller 2 in use
+			bool controller2 = (((flags >> 1) & 1) == 1);
+			// bit 2: controller 3 in use
+			bool controller3 = (((flags >> 2) & 1) == 1);
+			// bit 3: controller 4 in use
+			bool controller4 = (((flags >> 3) & 1) == 1);
+			bool fourscore = (controller3 || controller4);
+			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
+			/*
+			 bit 6: 1=reset-based, 0=savestate-based (movie version <= 0x300 is always savestate-based)
+			 If the movie version is < 0x400, or the "from-reset" flag is not set, a savestate is loaded from the movie.
+			 Otherwise, the savestate is ignored.
+			*/
+			if (version < 0x400 || ((flags >> 6) & 1) == 0)
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			/*
+			 bit 7: disable rerecording
+			 Other bits: reserved, set to 0
+			*/
+			/*
+			 014 DWORD   Ext0;                   // ROM:program CRC  FDS:program ID
+			 018 WORD    Ext1;                   // ROM:unused,0     FDS:maker ID
+			 01A WORD    Ext2;                   // ROM:unused,0     FDS:disk no.
+			*/
+			r.ReadUInt64();
+			// 01C 4-byte little-endian integer: rerecord count
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords((int)rerecordCount);
+			/*
+			020 BYTE    RenderMethod
+			0=POST_ALL,1=PRE_ALL
+			2=POST_RENDER,3=PRE_RENDER
+			4=TILE_RENDER
+			021 BYTE    IRQtype                 // IRQ type
+			022 BYTE    FrameIRQ                // FrameIRQ not allowed
+			*/
+			r.ReadBytes(3);
+			// 023 1-byte flag: 0=NTSC (60 Hz), 1=PAL (50 Hz)
+			bool pal = (r.ReadByte() == 1);
+			m.Header.SetHeaderLine("PAL", pal.ToString());
+			/*
+			 024 8-bytes: reserved, set to 0
+			 02C 4-byte little-endian integer: save state start offset
+			 030 4-byte little-endian integer: save state end offset
+			 034 4-byte little-endian integer: movie data offset
+			*/
+			r.ReadBytes(20);
+			// 038 4-byte little-endian integer: movie frame count
+			uint frameCount = r.ReadUInt32();
+			// 03C 4-byte little-endian integer: CRC (CRC excluding this data(to prevent cheating))
+			r.ReadUInt32();
+			if (!controller1 && !controller2 && !controller3 && !controller4)
+			{
+				warningMsg = "No input recorded.";
+				r.Close();
+				fs.Close();
+				return m;
+			}
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "NES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			/*
+			 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
+			 becomes the controller data.
+			*/
+			for (int frame = 1; frame <= frameCount; frame++)
+			{
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
 			r.Close();
 			fs.Close();
