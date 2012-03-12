@@ -58,6 +58,22 @@ namespace BizHawk.Emulation.Consoles.Atari
 				else
 				{
 					Console.WriteLine("6532 register read: " + maskedAddr.ToString("x"));
+					if (maskedAddr == 0x00) // SWCHA
+					{
+						return 0xFF;
+					}
+					else if (maskedAddr == 0x01) // SWACNT
+					{
+						
+					}
+					else if (maskedAddr == 0x02) // SWCHB
+					{
+						return 0x3F;
+					}
+					else if (maskedAddr == 0x03) // SWBCNT
+					{
+
+					}
 				}
 			}
 
