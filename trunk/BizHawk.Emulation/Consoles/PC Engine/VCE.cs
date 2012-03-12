@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             writer.WriteLine("[VCE]");
             writer.WriteLine("VceAddress {0:X4}", VceAddress);
-            writer.WriteLine("CR {0}", DotClock);
+            writer.WriteLine("CR {0}", CR);
             writer.Write("VceData ");
             VceData.SaveAsHex(writer);
             writer.WriteLine("[/VCE]\n");
