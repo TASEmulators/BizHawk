@@ -309,6 +309,16 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.WriteLine("RegisterLatch {0:X2}", RegisterLatch);
             writer.WriteLine("ReadBuffer {0:X4}", ReadBuffer);
             writer.WriteLine("StatusByte {0:X2}", StatusByte);
+
+            writer.WriteLine("DmaRequested {0}", DmaRequested);
+            writer.WriteLine("SatDmaRequested {0}", SatDmaRequested);
+            writer.WriteLine("SatDmaPerformed {0}", SatDmaPerformed);
+
+            writer.WriteLine("ScanLine {0}", ScanLine);
+            writer.WriteLine("BackgroundY {0}", BackgroundY);
+            writer.WriteLine("RCRCounter {0}", RCRCounter);
+            writer.WriteLine("ActiveLine {0}", ActiveLine);
+
             writer.WriteLine("[/VDC"+vdcNo+"]\n");
         }
 
@@ -331,6 +341,23 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                     ReadBuffer = ushort.Parse(args[1], NumberStyles.HexNumber);
                 else if (args[0] == "StatusByte")
                     StatusByte = byte.Parse(args[1], NumberStyles.HexNumber);
+
+                else if (args[0] == "DmaRequested")
+                    DmaRequested = bool.Parse(args[1]);
+                else if (args[0] == "SatDmaRequested")
+                    SatDmaRequested = bool.Parse(args[1]);
+                else if (args[0] == "SatDmaPerformed")
+                    SatDmaPerformed = bool.Parse(args[1]);
+
+                else if (args[0] == "ScanLine")
+                    ScanLine = int.Parse(args[1]);
+                else if (args[0] == "BackgroundY")
+                    BackgroundY = int.Parse(args[1]);
+                else if (args[0] == "RCRCounter")
+                    RCRCounter = int.Parse(args[1]);
+                else if (args[0] == "ActiveLine")
+                    ActiveLine = int.Parse(args[1]);
+
                 else
                     Console.WriteLine("Skipping unrecognized identifier " + args[0]);
             }
@@ -356,6 +383,15 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             writer.Write(RegisterLatch);
             writer.Write(ReadBuffer);
             writer.Write(StatusByte);
+
+            writer.Write(DmaRequested);
+            writer.Write(SatDmaRequested);
+            writer.Write(SatDmaPerformed);
+
+            writer.Write(ScanLine);
+            writer.Write(BackgroundY);
+            writer.Write(RCRCounter);
+            writer.Write(ActiveLine);
         }
 
         public void LoadStateBinary(BinaryReader reader)
@@ -373,6 +409,15 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
             RegisterLatch = reader.ReadByte();
             ReadBuffer = reader.ReadUInt16();
             StatusByte = reader.ReadByte();
+
+            DmaRequested = reader.ReadBoolean();
+            SatDmaRequested = reader.ReadBoolean();
+            SatDmaPerformed = reader.ReadBoolean();
+
+            ScanLine = reader.ReadInt32();
+            BackgroundY = reader.ReadInt32();
+            RCRCounter = reader.ReadInt32();
+            ActiveLine = reader.ReadInt32();
 
             CompleteMSBWrite(HDR);
             CompleteMSBWrite(VDW);
