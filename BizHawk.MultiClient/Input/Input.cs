@@ -3,7 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
+#if WINDOWS
 using SlimDX.DirectInput;
+#endif
 
 namespace BizHawk.MultiClient
 {
@@ -54,15 +56,19 @@ namespace BizHawk.MultiClient
 
 		private Input()
 		{
+#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc);
 			UpdateThread.IsBackground = true;
 			UpdateThread.Start();
+#endif
 		}
 
 		public static void Initialize()
 		{
+#if WINDOWS
 			KeyInput.Initialize();
 			GamePad.Initialize();
+#endif
 			Instance = new Input();
 		}
 
@@ -192,6 +198,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+#if WINDOWS
 		void UpdateThreadProc()
 		{
 			for (; ; )
@@ -241,7 +248,7 @@ namespace BizHawk.MultiClient
 				Thread.Sleep(10);
 			}
 		}
-
+#endif
 
 		public void Update()
 		{

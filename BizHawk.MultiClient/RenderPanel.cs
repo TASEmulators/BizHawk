@@ -7,13 +7,16 @@ using System.IO;
 using System.Threading;
 using System.Text;
 using System.Windows.Forms;
+#if WINDOWS
 using SlimDX;
 using SlimDX.Direct3D9;
 using Font = SlimDX.Direct3D9.Font;
+#endif
 using BizHawk.Core;
 
 namespace BizHawk.MultiClient
 {
+#if WINDOWS
 	public class ImageTexture : IDisposable
 	{
 		public Device GraphicsDevice;
@@ -105,6 +108,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 	}
+#endif
 
 	public interface IRenderer : IDisposable
 	{
@@ -148,7 +152,7 @@ namespace BizHawk.MultiClient
 		public void ClearGUIText() { }
 	}
 
-
+#if WINDOWS
 	public class Direct3DRenderPanel : IRenderer
 	{
 		public Color BackgroundColor { get; set; }
@@ -546,6 +550,7 @@ namespace BizHawk.MultiClient
 				return "";
 		}
 	}
+#endif
 
 	class UIMessage
 	{

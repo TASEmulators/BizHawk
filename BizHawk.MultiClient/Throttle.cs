@@ -102,6 +102,7 @@ namespace BizHawk.MultiClient
 
 		static ulong GetCurTime()
 		{
+#if WINDOWS
 			if (tmethod == 1)
 			{
 				ulong tmp;
@@ -110,13 +111,15 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				return (ulong)GetTickCount();
+#endif
+				return (ulong)Environment.TickCount;
+#if WINDOWS
 			}
+#endif
 		}
 
-		[DllImport("kernel32.dll")]
-		static extern uint GetTickCount();
 
+#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern bool QueryPerformanceCounter(out ulong lpPerformanceCount);
 
@@ -129,15 +132,15 @@ namespace BizHawk.MultiClient
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		static extern uint timeBeginPeriod(uint uMilliseconds);
 
-		[DllImport("kernel32.dll")]
-		static extern bool SwitchToThread();
-
 		static int tmethod;
+#endif
+
 		static ulong afsfreq;
 		static ulong tfreq;
 
 		static Throttle()
 		{
+#if WINDOWS
 			timeBeginPeriod(1);
 			tmethod = 0;
 			if (QueryPerformanceFrequency(out afsfreq))
@@ -145,6 +148,9 @@ namespace BizHawk.MultiClient
 			else
 				afsfreq = 1000;
 			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
+#else
+			afsfreq = 1000;
+#endif
 			tfreq = afsfreq << 16;
 		}
 
@@ -323,7 +329,7 @@ namespace BizHawk.MultiClient
 				}
 				else if (sleepy > 0) // spin for <1 millisecond waits
 				{
-					SwitchToThread(); // limit to other threads on the same CPU core for other short waits
+					Thread.Yield(); // limit to other threads on the same CPU core for other short waits
 				}
 				goto waiter;
 			}

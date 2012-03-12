@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+#if WINDOWS
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
+#endif
 
 namespace BizHawk.MultiClient
 {
@@ -16,6 +18,7 @@ namespace BizHawk.MultiClient
 
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 
+#if WINDOWS
 			try { Global.DSound = new DirectSound(); }
 			catch
 			{
@@ -29,9 +32,11 @@ namespace BizHawk.MultiClient
 				if (!Global.Config.DisplayGDI)
 					DisplayDirect3DError();
 			}
+#endif
 
 			try
 			{
+#if WINDOWS
 				if (Global.Config.SingleInstanceMode)
 				{
 					SingleInstanceController controller = new SingleInstanceController(args);
@@ -39,17 +44,21 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
+#endif
 					var mf = new MainForm(args);
 					var title = mf.Text;
 					mf.Show();
 					mf.Text = title;
 					mf.ProgramRunLoop();
+#if WINDOWS
 				}
+#endif 
 			}
 			catch (Exception e)
 			{
 				MessageBox.Show(e.ToString(), "Oh, no, a terrible thing happened!\n\n" + e.ToString());
 			}
+#if WINDOWS
 			finally
 			{
 				if (Global.DSound != null && Global.DSound.Disposed == false)
@@ -57,9 +66,10 @@ namespace BizHawk.MultiClient
 				if (Global.Direct3D != null && Global.Direct3D.Disposed == false)
 					Global.Direct3D.Dispose();
 			}
-
+#endif
 		}
 
+#if WINDOWS
 		public class SingleInstanceController : WindowsFormsApplicationBase
 		{
 			MainForm mf;
@@ -92,5 +102,6 @@ namespace BizHawk.MultiClient
 		{
 			MessageBox.Show("Failure to initialize Direct3D, reverting to GDI+ display method. Change the option in Config > GUI or install DirectX web update.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
+#endif
 	}
 }

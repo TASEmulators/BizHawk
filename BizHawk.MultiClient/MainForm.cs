@@ -63,7 +63,9 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+#if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
+#endif
 
 		public MainForm(string[] args)
 		{
@@ -139,7 +141,11 @@ namespace BizHawk.MultiClient
 			Global.Emulator = new NullEmulator();
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
+#if WINDOWS
 			Global.Sound = new Sound(Handle, Global.DSound);
+#else
+			Global.Sound = new Sound();
+#endif
 			Global.Sound.StartSound();
 			RewireInputChain();
 			//TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
@@ -262,10 +268,12 @@ namespace BizHawk.MultiClient
 
 		void SyncPresentationMode()
 		{
+#if WINDOWS
 			bool gdi = Global.Config.DisplayGDI;
 
 			if (Global.Direct3D == null)
 				gdi = true;
+#endif
 
 			if (renderTarget != null)
 			{
@@ -276,19 +284,26 @@ namespace BizHawk.MultiClient
 			if (retainedPanel != null) retainedPanel.Dispose();
 			if (Global.RenderPanel != null) Global.RenderPanel.Dispose();
 
+#if WINDOWS
 			if (gdi)
+#endif
 				renderTarget = retainedPanel = new RetainedViewportPanel();
+#if WINDOWS
 			else renderTarget = new ViewportPanel();
+#endif
 			Controls.Add(renderTarget);
 			Controls.SetChildIndex(renderTarget, 0);
 
 			renderTarget.Dock = DockStyle.Fill;
 			renderTarget.BackColor = Color.Black;
 
+#if WINDOWS
 			if (gdi)
 			{
+#endif
 				Global.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
 				retainedPanel.ActivateThreaded();
+#if WINDOWS
 			}
 			else
 			{
@@ -306,6 +321,7 @@ namespace BizHawk.MultiClient
 					SyncPresentationMode();
 				}
 			}
+#endif
 		}
 
 		void SyncThrottle()
@@ -1163,7 +1179,9 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
+#if WINDOWS
 				LuaConsole1.Restart();
+#endif
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
@@ -1648,6 +1666,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.RenderPanel.ClearGUIText();
 				//client input-related duties
+#if WINDOWS
 				if (LuaConsole1.IsRunning())
 				{
 					LuaConsole1.WaitOne();
@@ -1657,6 +1676,7 @@ namespace BizHawk.MultiClient
 				{
 					Global.MainForm.MainWait.Set();
 				}
+#endif
 
 				runloop_fps++;
 				bool ff = Global.ClientControls["Fast Forward"];
@@ -2255,7 +2275,9 @@ namespace BizHawk.MultiClient
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
 			ToolBox1.Restart();
+#if WINDOWS
 			LuaConsole1.Restart();
+#endif
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 			HandlePlatformMenus();
 			StateSlots.Clear();
@@ -2283,7 +2305,9 @@ namespace BizHawk.MultiClient
 			CloseForm(Cheats1);
 			CloseForm(TI83KeyPad1);
 			CloseForm(TAStudio1);
+#if WINDOWS
 			CloseForm(LuaConsole1);
+#endif
 			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
@@ -2537,6 +2561,7 @@ namespace BizHawk.MultiClient
 
 		public void OpenLuaConsole()
 		{
+#if WINDOWS
 			if (!LuaConsole1.IsHandleCreated || LuaConsole1.IsDisposed)
 			{
 				LuaConsole1 = new LuaConsole();
@@ -2544,6 +2569,9 @@ namespace BizHawk.MultiClient
 			}
 			else
 				LuaConsole1.Focus();
+#else
+			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
 		}
 
 		public void OpenGameboyDebugger()
