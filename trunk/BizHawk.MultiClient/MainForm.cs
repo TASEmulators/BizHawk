@@ -1678,7 +1678,7 @@ namespace BizHawk.MultiClient
 				}
 #endif
 
-				runloop_fps++;
+				runloop_fps++; 
 				bool ff = Global.ClientControls["Fast Forward"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
