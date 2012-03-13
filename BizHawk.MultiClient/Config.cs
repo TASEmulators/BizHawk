@@ -304,6 +304,12 @@ namespace BizHawk.MultiClient
 		public bool PCEDispBG2 = true;
 		public bool PCEDispOBJ2= true;
 
+		// PCE BG Viewer settings
+		public bool PCEBGViewerSaveWIndowPosition = true;
+		public bool PCEBGViewerAutoload = false;
+		public int PCEBGViewerWndx = -1;
+		public int PCEBGViewerWndy = -1;
+
 		// SMS Graphics settings
 		public bool SMSDispBG = true;
 		public bool SMSDispOBJ = true;

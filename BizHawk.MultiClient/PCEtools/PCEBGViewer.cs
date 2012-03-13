@@ -15,6 +15,9 @@ namespace BizHawk.MultiClient
 	{
 		PCEngine pce;
 
+		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
+		int defaultHeight;
+
 		public PCEBGViewer()
 		{
 			InitializeComponent();
@@ -23,6 +26,7 @@ namespace BizHawk.MultiClient
 			vdcComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
 			vdcComboBox.SelectedIndex = 0;
 			Activated += (o, e) => Generate();
+			Closing += (o, e) => SaveConfigSettings();
 		}
 
 		public unsafe void Generate()
@@ -94,11 +98,27 @@ namespace BizHawk.MultiClient
 			
 		}
 
+		private void SaveConfigSettings()
+		{
+			Global.Config.PCEBGViewerWndx = this.Location.X;
+			Global.Config.PCEBGViewerWndy = this.Location.Y;
+		}
+
+		private void LoadConfigSettings()
+		{
+			defaultWidth = Size.Width;     //Save these first so that the user can restore to its original size
+			defaultHeight = Size.Height;
+
+			if (Global.Config.PCEBGViewerSaveWIndowPosition && Global.Config.PCEBGViewerWndx >= 0 && Global.Config.PCEBGViewerWndy >= 0)
+				Location = new Point(Global.Config.PCEBGViewerWndx, Global.Config.PCEBGViewerWndy);
+		}
+
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
 			pce = Global.Emulator as PCEngine;
 			vdcComboBox.SelectedIndex = 0;
 			vdcComboBox.Enabled = pce.SystemId == "SGX";
+			LoadConfigSettings();
 		}
 
 		private void PCEBGViewer_FormClosed(object sender, FormClosedEventArgs e)
@@ -114,6 +134,22 @@ namespace BizHawk.MultiClient
 		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.Close();
+		}
+
+		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PCEBGViewerSaveWIndowPosition ^= true;
+		}
+
+		private void autoloadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.PCEBGViewerAutoload ^= true;
+		}
+
+		private void optionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.PCEBGViewerSaveWIndowPosition;
+			autoloadToolStripMenuItem.Checked = Global.Config.PCEBGViewerAutoload;
 		}
 	}
 }
