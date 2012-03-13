@@ -99,7 +99,7 @@ namespace M6502
             w.WriteLine(Spaces + "value16 = (ushort) (" + reg + " - value8);");
             w.WriteLine(Spaces + "FlagC = (" + reg + " >= value8);");
             w.WriteLine(Spaces + SetNZ("(byte)value16"));
-            w.WriteLine(Spaces + "PendingCycles -= {0};", op.Cycles);
+            w.WriteLine(Spaces + "PendingCycles -= {0};  TotalExecutedCycles += {0};", op.Cycles);
         }
 
         private void DEC(OpcodeInfo op, TextWriter w)
