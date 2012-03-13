@@ -1673,12 +1673,8 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 				if (LuaConsole1.IsRunning())
 				{
-					LuaConsole1.WaitOne();
-				}
-
-				if (LuaConsole1.IsRunning())
-				{
-					Global.MainForm.MainWait.Set();
+                    Global.MainForm.MainWait.Set();
+                    LuaConsole1.WaitOne();
 				}
 #endif
 
