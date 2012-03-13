@@ -651,17 +651,15 @@ namespace BizHawk.MultiClient
 			 * 80 Start
 			*/
 			string[] buttons = new string[8] { "Right", "Left", "Up", "Down", "B", "A", "Select", "Start" };
+			bool[] masks = new bool[3] { controller1, controller2, FDS };
 			/*
 			 The file has no terminator byte or frame count. The number of frames is the <filesize minus 144> divided by
 			 <number of bytes per frame>.
 			*/
 			int bytesPerFrame = 0;
-			if (controller1)
-				bytesPerFrame++;
-			if (controller2)
-				bytesPerFrame++;
-			if (FDS)
-				bytesPerFrame++;
+			for (int player = 1; player <= masks.Length; player++)
+				if (masks[player - 1])
+					bytesPerFrame++;
 			long frames = (fs.Length - 144) / bytesPerFrame;
 			for (long frame = 1; frame <= frames; frame++)
 			{
@@ -670,25 +668,18 @@ namespace BizHawk.MultiClient
 				 data takes 1 byte. If all three exist, the frame is 3 bytes. For example, if the movie is a regular NES game
 				 with only controller 1 data, a frame is 1 byte.
 				*/
-				int player = 1;
-				while (player <= 3)
+				for (int player = 1; player <= masks.Length; player++)
 				{
-					if (player == 1 && !controller1)
-						player++;
-					if (player == 2 && !controller2)
-						player++;
+					if (!masks[player - 1])
+						continue;
+					byte controllerState = r.ReadByte();
 					if (player != 3)
-					{
-						byte controllerState = r.ReadByte();
 						for (int button = 0; button < buttons.Length; button++)
 							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
-					}
-					else if (FDS)
+					else
 					{
 						// TODO: FDS data handling here.
-						byte command = r.ReadByte();
 					}
-					player++;
 				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
@@ -1465,9 +1456,10 @@ FAIL:
 			 024 8-bytes: reserved, set to 0
 			 02C 4-byte little-endian integer: save state start offset
 			 030 4-byte little-endian integer: save state end offset
-			 034 4-byte little-endian integer: movie data offset
 			*/
-			r.ReadBytes(20);
+			r.ReadBytes(16);
+			// 034 4-byte little-endian integer: movie data offset
+			uint firstFrameOffset = r.ReadUInt32();
 			// 038 4-byte little-endian integer: movie frame count
 			uint frameCount = r.ReadUInt32();
 			// 03C 4-byte little-endian integer: CRC (CRC excluding this data(to prevent cheating))
@@ -1479,16 +1471,40 @@ FAIL:
 				fs.Close();
 				return m;
 			}
+			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
 			controllers.Type.Name = "NES Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			/*
-			 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
-			 becomes the controller data.
+			 * 01 A
+			 * 02 B
+			 * 04 Select
+			 * 08 Start
+			 * 10 Up
+			 * 20 Down
+			 * 40 Left
+			 * 80 Right
 			*/
+			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			bool[] masks = new bool[4] {controller1, controller2, controller3, controller4};
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
+				/*
+				 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
+				 becomes the controller data.
+				 Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, controller 3
+				 takes 1 byte, and controller 4 takes 1 byte. If all four exist, the frame is 4 bytes. For example, if the
+				 movie only has controller 1 data, a frame is 1 byte.
+				*/
+				for (int player = 1; player <= masks.Length; player++)
+				{
+					if (!masks[player - 1])
+						continue;
+					byte controllerState = r.ReadByte();
+					for (int button = 0; button < buttons.Length; button++)
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
