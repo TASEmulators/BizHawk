@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "NES-CNROM": //adventure island
 				case "HVC-CNROM":
-					AssertPrg(16, 32); AssertChr(8,16,24,32);
+					AssertPrg(16, 32); AssertChr(8,16,32,64);
 					break;
 				case "KONAMI-CNROM": //gradius (J)
 					AssertPrg(32); AssertChr(32);
