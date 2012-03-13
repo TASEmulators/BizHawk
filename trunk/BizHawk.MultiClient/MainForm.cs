@@ -234,6 +234,8 @@ namespace BizHawk.MultiClient
 				LoadTAStudio();
 			if (Global.Config.AutoLoadLuaConsole)
 				OpenLuaConsole();
+			if (Global.Config.PCEBGViewerAutoload && Global.Emulator is PCEngine)
+				LoadPCEBGViewer();
 
 			if (Global.Config.MainWndx >= 0 && Global.Config.MainWndy >= 0 && Global.Config.SaveWindowPosition)
 				this.Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
