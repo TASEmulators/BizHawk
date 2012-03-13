@@ -115,7 +115,10 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show("Exception caught. " + e.ToString());
+                if (LuaThread.ThreadState.ToString() != "AbortRequested")
+                {
+                    MessageBox.Show("Exception caught. " + e.ToString());
+                }
 			}
 			isRunning = false;
 			LuaWait.Set();
