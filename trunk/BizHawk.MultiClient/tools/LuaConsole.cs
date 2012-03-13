@@ -90,6 +90,13 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 		}
 
+        private void StopScript(int x)
+        {
+            luaList[x].Enabled = false;
+            LuaImp.Close();
+            LuaImp = new LuaImplementation(this);
+        }
+
 		private void StopAllScripts()
 		{
 			for (int x = 0; x < luaList.Count; x++)
@@ -220,10 +227,14 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < luaList.Count; x++)
 			{
-				if (luaList[x].Enabled)
-				{
-					LuaImp.DoLuaFile(luaList[x].Name);
-				}
+                if (luaList[x].Enabled)
+                {
+                    LuaImp.DoLuaFile(luaList[x].Path);
+                }
+                else
+                {
+                    StopScript(x);
+                }
 			}
 		}
 
