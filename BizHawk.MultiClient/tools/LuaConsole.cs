@@ -261,7 +261,8 @@ namespace BizHawk.MultiClient
 
 		private void LuaListView_DoubleClick(object sender, EventArgs e)
 		{
-			Toggle();
+            MessageBox.Show("");
+			//Toggle();
 		}
 
 		private void LuaListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -686,5 +687,10 @@ namespace BizHawk.MultiClient
 		{
 			OpenLuaFile();
 		}
+
+        private void LuaListView_ItemActivate(object sender, EventArgs e)
+        {
+            Toggle();
+        }
 	}
 }
