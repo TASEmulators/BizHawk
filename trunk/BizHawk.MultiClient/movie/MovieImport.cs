@@ -138,8 +138,8 @@ namespace BizHawk.MultiClient
 					byte[] MD5 = DecodeBlob(md5_blob);
 					if (MD5 != null && MD5.Length == 16)
 						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
-					// else
-					//     TODO: We should give some warning, but setting warningMsg might affect input parsing...
+					else
+						warningMsg = "Bad ROM checksum.";
 				}
 				else if (line.StartsWith("comment author"))
 					m.Header.SetHeaderLine(MovieHeader.AUTHOR, ParseHeader(line, "comment author"));
@@ -677,9 +677,7 @@ namespace BizHawk.MultiClient
 						for (int button = 0; button < buttons.Length; button++)
 							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
 					else
-					{
-						// TODO: FDS data handling here.
-					}
+						warningMsg = "FDS commands not properly supported.";
 				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
@@ -872,7 +870,7 @@ namespace BizHawk.MultiClient
 			MnemonicsGenerator mg = new MnemonicsGenerator();
 			//   For PCE, BizHawk does not have any control command. So I ignore any command.
 			for (byte[] input = r.ReadBytes(INPUT_SIZE_PCE);
-			     input.Length == INPUT_SIZE_PCE; 
+			     input.Length == INPUT_SIZE_PCE;
 			     input = r.ReadBytes(INPUT_SIZE_PCE))
 			{
 				for (int player = 1; player <= INPUT_PORT_COUNT; ++player)
@@ -1035,8 +1033,197 @@ FAIL:
 				fs.Close();
 				return null;
 			}
-			m.Header.Comments.Add(EMULATIONORIGIN + " Nintendulator");
+			// 004 4-byte version string (example "0960")
+			string emuVersion = r.ReadStringFixedAscii(4);
+			m.Header.Comments.Add(EMULATIONORIGIN + " Nintendulator version " + emuVersion);
 			m.Header.Comments.Add(MOVIEORIGIN + " .NMV");
+			// 008 4-byte file size, not including the 16-byte header
+			r.ReadUInt32();
+			/*
+			 00C 4-byte file type string
+			 * "NSAV" - standard savestate
+			 * "NREC" - savestate saved during movie recording
+			 * "NMOV" - standalone movie file
+			*/
+			string type = r.ReadStringFixedAscii(4);
+			if (type != "NMOV")
+			{
+				errorMsg = "Movies that begin with a savestate are not supported.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			/*
+			 Individual blocks begin with an 8-byte header, consisting of a 4-byte signature and a 4-byte length (which does
+			 not include the length of the block header).
+			 The final block in the file is of type "NMOV"
+			*/
+			string header = r.ReadStringFixedAscii(4);
+			if (header != "NMOV")
+			{
+				errorMsg = "This is not a valid .NMV file.";
+				r.Close();
+				fs.Close();
+				return null;
+			}
+			r.ReadUInt32();
+			// 000 1-byte controller #1 type (see below)
+			byte controller1 = r.ReadByte();
+			// 001 1-byte controller #2 type (or four-score mask, see below)
+			byte controller2 = r.ReadByte();
+			/*
+			 Controller data is variant, depending on which controllers are attached at the time of recording. The following
+			 controllers are implemented:
+			 * 0 - Unconnected
+			 * 1 - Standard Controller (1 byte)
+			 * 2 - Zapper (3 bytes)
+			 * 3 - Arkanoid Paddle (2 bytes)
+			 * 4 - Power Pad (2 bytes)
+			 * 5 - Four-Score (special)
+			 * 6 - SNES controller (2 bytes) - A/B become B/Y, adds A/X and L/R shoulder buttons
+			 * 7 - Vs Unisystem Zapper (3 bytes)
+			*/
+			bool fourscore = (controller1 == 5);
+			m.Header.SetHeaderLine(MovieHeader.FOURSCORE, fourscore.ToString());
+			bool[] masks = new bool[5] { false, false, false, false, false };
+			if (fourscore)
+			{
+				/*
+				 When a Four-Score is indicated for Controller #1, the Controller #2 byte becomes a bit mask to indicate
+				 which ports on the Four-Score have controllers connected to them. Each connected controller stores 1 byte
+				 per frame. Nintendulator's Four-Score recording is seemingly broken.
+				*/
+				for (int controller = 1; controller < masks.Length; controller++)
+					masks[controller - 1] = (((controller2 >> (controller - 1)) & 1) == 1);
+				warningMsg = "Nintendulator's Four Score recording is seemingly broken.";
+			}
+			else
+			{
+				byte[] types = new byte[2] { controller1, controller2 };
+				for (int controller = 1; controller <= types.Length; controller++)
+				{
+					masks[controller - 1] = (types[controller - 1] == 1);
+					// Get the first unsupported controller warning message that arises.
+					if (warningMsg == "")
+					{
+						switch (types[controller - 1])
+						{
+							case 0:
+								break;
+							case 2:
+								warningMsg = "Zapper";
+								break;
+							case 3:
+								warningMsg = "Arkanoid Paddle";
+								break;
+							case 4:
+								warningMsg = "Power Pad";
+								break;
+							case 5:
+								warningMsg = "A Four Score in the second controller port is invalid.";
+								continue;
+							case 6:
+								warningMsg = "SNES controller";
+								break;
+							case 7:
+								warningMsg = "Vs Unisystem Zapper";
+								break;
+						}
+						if (warningMsg != "")
+							warningMsg = warningMsg + " is not properly supported.";
+					}
+				}
+			}
+			// 002 1-byte expansion port controller type
+			byte expansion = r.ReadByte();
+			/*
+			 The expansion port can potentially have an additional controller connected. The following expansion controllers
+			 are implemented:
+			 * 0 - Unconnected
+			 * 1 - Famicom 4-player adapter (2 bytes)
+			 * 2 - Famicom Arkanoid paddle (2 bytes)
+			 * 3 - Family Basic Keyboard (currently does not support demo recording)
+			 * 4 - Alternate keyboard layout (currently does not support demo recording)
+			 * 5 - Family Trainer (2 bytes)
+			 * 6 - Oeka Kids writing tablet (3 bytes)
+			*/
+			string[] expansions = new string[7] {
+				"Unconnected", "Famicom 4-player adapter", "Famicom Arkanoid paddle", "Family Basic Keyboard",
+				"Alternate keyboard layout", "Family Trainer", "Oeka Kids writing tablet"
+			};
+			if (expansion != 0 && warningMsg == "")
+				warningMsg = "Expansion port is not properly supported. This movie uses " + expansions[expansion] + ".";
+			// 003 1-byte number of bytes per frame, plus flags
+			byte data = r.ReadByte();
+			int bytesPerFrame = data & 0xF;
+			int bytes = 0;
+			for (int controller = 1; controller < masks.Length; controller++)
+				if (masks[controller - 1])
+					bytes++;
+			/*
+			 Depending on the mapper used by the game in question, an additional byte of data may be stored during each
+			 frame. This is most frequently used for FDS games (storing either the disk number or 0xFF to eject) or VS
+			 Unisystem coin/DIP switch toggles (limited to 1 action per frame). This byte exists if the bytes per frame do
+			 not match up with the amount of bytes the controllers take up.
+			*/
+			if (bytes != bytesPerFrame)
+				masks[4] = true;
+			// bit 6: Game Genie active
+			/*
+			 bit 7: Framerate
+			 * if "0", NTSC timing
+			 * if "1", PAL timing
+			*/
+			bool pal = (((data >> 7) & 1) == 1);
+			m.Header.SetHeaderLine("PAL", pal.ToString());
+			// 004 4-byte little-endian unsigned int: rerecord count
+			uint rerecordCount = r.ReadUInt32();
+			m.SetRerecords((int)rerecordCount);
+			/*
+			 008 4-byte little-endian unsigned int: length of movie description
+			 00C (variable) null-terminated UTF-8 text, movie description (currently not implemented)
+			*/
+			string movieDescription = RemoveNull(r.ReadStringFixedAscii((int)r.ReadUInt32()));
+			m.Header.Comments.Add(COMMENT + " " + movieDescription);
+			// ... 4-byte little-endian unsigned int: length of controller data in bytes
+			uint length = r.ReadUInt32();
+			// ... (variable) controller data
+			SimpleController controllers = new SimpleController();
+			controllers.Type = new ControllerDefinition();
+			controllers.Type.Name = "NES Controller";
+			MnemonicsGenerator mg = new MnemonicsGenerator();
+			/*
+			 Standard controllers store data in the following format:
+			 * 01: A
+			 * 02: B
+			 * 04: Select
+			 * 08: Start
+			 * 10: Up
+			 * 20: Down
+			 * 40: Left
+			 * 80: Right
+			 Other controllers store data in their own formats, and are beyond the scope of this document.
+			*/
+			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
+			// The controller data contains <number_of_bytes> / <bytes_per_frame> frames.
+			long frames = length / bytesPerFrame;
+			for (int frame = 1; frame <= frames; frame++)
+			{
+				// Controller update data is emitted to the movie file during every frame.
+				for (int player = 1; player <= masks.Length; player++)
+				{
+					if (!masks[player - 1])
+						continue;
+					byte controllerState = r.ReadByte();
+					if (player != 5)
+						for (int button = 0; button < buttons.Length; button++)
+							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
+					else if (warningMsg == "")
+						warningMsg = "Extra input not properly supported.";
+				}
+				mg.SetSource(controllers);
+				m.AppendFrame(mg.GetControllersAsMnemonic());
+			}
 			r.Close();
 			fs.Close();
 			return m;
@@ -1203,7 +1390,7 @@ FAIL:
 				errorMsg = "Movies that begin with a save are not supported.";
 				// (If both bits 0 and 1 are "1", the movie file is invalid)
 				if (startfromquicksave && startfromsram)
-					errorMsg = "The movie file is invalid.";
+					errorMsg = "This is not a valid .VBM file.";
 				r.Close();
 				fs.Close();
 				return null;
@@ -1492,7 +1679,7 @@ FAIL:
 			{
 				/*
 				 For the other control bytes, if a key from 1P to 4P (whichever one) is entirely ON, the following 4 bytes
-				 becomes the controller data.
+				 becomes the controller data (TODO: Figure out what this means).
 				 Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, controller 3
 				 takes 1 byte, and controller 4 takes 1 byte. If all four exist, the frame is 4 bytes. For example, if the
 				 movie only has controller 1 data, a frame is 1 byte.
@@ -1501,6 +1688,7 @@ FAIL:
 				{
 					if (!masks[player - 1])
 						continue;
+					// TODO: Check for commands: Lines 207-239 of Nesmock.
 					byte controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
