@@ -9,11 +9,16 @@ namespace BizHawk.Emulation.Consoles.Atari
 	// Emulates the TIA
 	public partial class TIA
 	{
-		MOS6507 Cpu;
+		Atari2600 core;
+
 		UInt32 PF; // PlayField data
 		byte BKcolor, PFcolor;
 		bool PFpriority = false;
 		bool PFreflect = false;
+		bool PFscore = false;
+		bool inpt_latching = false;
+
+		bool inpt4 = false;
 
 		bool hmoveHappened = false;
 
@@ -50,6 +55,18 @@ namespace BizHawk.Emulation.Consoles.Atari
 		byte player1copy1 = 0;
 		byte player1copy2 = 0;
 
+		byte P0_collisions = 0;
+		byte P1_collisions = 0;
+		byte M0_collisions = 0;
+		byte M1_collisions = 0;
+		byte BL_collisions = 0;
+
+		const byte COLP0 = 0x01;
+		const byte COLP1 = 0x02;
+		const byte COLM0 = 0x04;
+		const byte COLM1 = 0x08;
+		const byte COLPF = 0x10;
+		const byte COLBL = 0x20;
 
 		bool vblankEnabled = false;
 
@@ -98,9 +115,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 		  0xbb9f47, 0, 0xd2b656, 0, 0xe8cc63, 0, 0xfce070, 0
 		};
 
-		public TIA(MOS6507 cpu, int[] frameBuffer)
+		public TIA(Atari2600 core, int[] frameBuffer)
 		{
-			Cpu = cpu;
+			this.core = core;
 			BKcolor = 0x00;
 			this.frameBuffer = frameBuffer;
 			scanlinePos = 0;
@@ -142,17 +159,30 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 			UInt32 color;
 			color = palette[BKcolor];
-
+			byte collisions = 0;
 
 			if ((PF & PFmask) != 0)
 			{
 				color = palette[PFcolor];
+				if (PFscore)
+				{
+					if (pixelPos < 80)
+					{
+						color = palette[player0.color];
+					}
+					else
+					{
+						color = palette[player1.color];
+					}
+				}
+				collisions |= COLPF;
 			}
 
 			// Ball
 			if (ball.enabled && pixelPos >= ball.pos && pixelPos < (ball.pos + (1 << ball.size)))
 			{
 				color = palette[PFcolor];
+				collisions |= COLBL;
 			}
 
 			// Player 1
@@ -167,6 +197,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
 				{
 					color = palette[player1.color];
+					collisions |= COLP1;
 				}
 			}
 
@@ -183,6 +214,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
 				{
 					color = palette[player1.color];
+					collisions |= COLP1;
 				}
 			}
 
@@ -199,6 +231,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player1.grp & mask) != 0 && !player1.delay) || ((player1.dgrp & mask) != 0 && player1.delay))
 				{
 					color = palette[player1.color];
+					collisions |= COLP1;
 				}
 			}
 			
@@ -213,6 +246,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
 				{
 					color = palette[player0.color];
+					collisions |= COLP0;
 				}
 			}
 
@@ -229,6 +263,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
 				{
 					color = palette[player0.color];
+					collisions |= COLP0;
 				}
 			}
 
@@ -245,18 +280,37 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if (((player0.grp & mask) != 0 && !player0.delay) || ((player0.dgrp & mask) != 0 && player0.delay))
 				{
 					color = palette[player0.color];
+					collisions |= COLP0;
 				}
 			}
 
 			if ((PF & PFmask) != 0 && PFpriority == true)
 			{
 				color = palette[PFcolor];
+				if (PFscore)
+				{
+					if (pixelPos < 80)
+					{
+						color = palette[player0.color];
+					}
+					else
+					{
+						color = palette[player1.color];
+					}
+				}
+				collisions |= COLPF;
 			}
 
 			if (vblankEnabled)
 			{
 				color = 0x000000;
 			}
+
+			P0_collisions |= (((collisions & COLP0) != 0) ? collisions : P0_collisions);
+			P1_collisions |= (((collisions & COLP1) != 0) ? collisions : P1_collisions);
+			M0_collisions |= (((collisions & COLM0) != 0) ? collisions : M0_collisions);
+			M1_collisions |= (((collisions & COLM1) != 0) ? collisions : M1_collisions);
+			BL_collisions |= (((collisions & COLBL) != 0) ? collisions : BL_collisions);
 
 			if (hmoveHappened && pixelPos >= 0 && pixelPos < 8)
 			{
@@ -298,10 +352,34 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public byte ReadMemory(ushort addr)
 		{
-			ushort maskedAddr = (ushort)(addr & 0x3f);
+			ushort maskedAddr = (ushort)(addr & 0x000F);
 			Console.WriteLine("TIA read:  " + maskedAddr.ToString("x"));
+			if (maskedAddr == 0x02) // CXP0FB
+			{
+				return (byte)((((P0_collisions & COLPF) != 0) ? 0x80 : 0x00) | (((P0_collisions & COLBL) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x07) // CXPPMM
+			{
+				return (byte)((((P0_collisions & COLP1) != 0) ? 0x80 : 0x00) | (((M0_collisions & COLM1) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x0C) // INPT4
+			{
+				if (inpt_latching)
+				{
+					if (inpt4 == true)
+					{
+						inpt4 = ((core.ReadControls1() & 0x08) != 0);
+					}
+				}
+				else
+				{
+					inpt4 = ((core.ReadControls1() & 0x08) != 0);
+				}
+				return (byte)(inpt4 ? 0x80 : 0x00); 
 
-			return 0x3A;
+			}
+
+			return 0x80;
 		}
 
 		public void WriteMemory(ushort addr, byte value)
@@ -336,6 +414,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					Console.WriteLine("TIA Vblank Off");
 				}
+				inpt_latching = (value & 0x40) != 0;
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
@@ -352,6 +431,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					case 0x00:
 						player0copies = 0;
+						break;
+					case 0x01:
+						player0copies = 1;
+						player0copy1 = 16;
 						break;
 					case 0x02:
 						player0copies = 1;
@@ -372,6 +455,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 					case 0x00:
 						player1copies = 0;
 						break;
+					case 0x01:
+						player1copies = 1;
+						player1copy1 = 16;
+						break;
 					case 0x02:
 						player1copies = 1;
 						player1copy1 = 32;
@@ -385,24 +472,25 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x06) // COLUP0
 			{
-				player0.color = value;
+				player0.color = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x07) // COLUP1
 			{
-				player1.color = value;
+				player1.color = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
-				PFcolor = value;
+				PFcolor = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x09) // COLUBK
 			{
-				BKcolor = value;
+				BKcolor = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x0A) // CTRLPF
 			{
 				PFpriority = (value & 0x04) != 0;
 				PFreflect = (value & 0x01) != 0;
+				PFscore = (value & 0x02) != 0;
 
 				ball.size = (byte)((value & 0x30) >> 4);
 			}
@@ -483,6 +571,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 				ball.HM = 0;
 
 				hmoveHappened = true;
+			}
+			else if (maskedAddr == 0x2C) // CXCLR
+			{
+				P0_collisions = 0;
+				P1_collisions = 0;
+				M0_collisions = 0;
+				M1_collisions = 0;
+				BL_collisions = 0;
 			}
 		}
 
