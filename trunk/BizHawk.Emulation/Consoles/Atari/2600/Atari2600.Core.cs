@@ -109,7 +109,7 @@ namespace BizHawk
 			cpu.WriteMemory = WriteMemory;
 
 			// Setup TIA
-			tia = new TIA(cpu, frameBuffer);
+			tia = new TIA(this, frameBuffer);
 			// Setup 6532
 			m6532 = new M6532(cpu, ram, this);
 
@@ -169,6 +169,7 @@ namespace BizHawk
 			if (Controller["P1 Down"]) value &= 0xDF;
 			if (Controller["P1 Left"]) value &= 0xBF;
 			if (Controller["P1 Right"]) value &= 0x7F;
+			if (Controller["P1 Button"]) value &= 0xF7;
 			return value;
 		}
 	}
