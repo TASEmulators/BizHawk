@@ -2610,13 +2610,16 @@ namespace BizHawk.MultiClient
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			ofd.Multiselect = true;
 			ofd.Filter = FormatFilter(
-				"Movie Files", "*.fm2;*.mc2;*.mmv;*.fcm;*.fmv;*.gmv;*.mcm;",
+				"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.fcm;*.fmv;*.vmv;*.nmv;*.gmv;*.vbm;",
 				"FCEUX", "*.fm2",
 				"PCEjin/Mednafen", "*.mc2;*.mcm",
 				"Dega", "*.mmv",
 				"FCEU", "*.fcm",
 				"Famtasia", "*.fmv",
+				"VirtuaNES", "*.vmv",
+				"Nintendulator", "*.nmv",
 				"Gens", "*.gmv",
+				"Visual Boy Advance", "*.vbm",
 				"All Files", "*.*");
 
 			ofd.RestoreDirectory = false;
