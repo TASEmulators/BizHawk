@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.CPUs.M6507
             sbyte rel8;
             byte value8, temp8;
             ushort value16, temp16;
-            int temp;
+			int temp, hi, lo;
 
             PendingCycles += cycles;
             while (PendingCycles > 0)
@@ -506,10 +506,26 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x61: // ADC (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+                            hi = (A & 0xF0) + (value8 & 0xF0);
+                            if (lo > 0x09) {
+                                hi += 0x10;
+                                lo += 0x06;
+                            }
+                            if (hi > 0x90) hi += 0x60;
+                            FlagV = (~(A^value8) & (A^hi) & 0x80) != 0;
+                            FlagC = hi > 0xFF;
+                            A = (byte) ((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
@@ -519,10 +535,27 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x65: // ADC zp
                         value8 = ReadMemory(ReadMemory(PC++));
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
@@ -542,10 +575,27 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x69: // ADC #nn
                         value8 = ReadMemory(PC++);
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
@@ -562,10 +612,27 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x6D: // ADC addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -594,10 +661,27 @@ FlagT = true;// this seems wrong
                         value8 = ReadMemory((ushort)(temp16+Y));
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
@@ -607,10 +691,27 @@ FlagT = true;// this seems wrong
                         break;
                     case 0x75: // ADC zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -634,10 +735,27 @@ FlagT = true;// this seems wrong
                         if ((temp16 & 0xFF00) != ((temp16 + Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -654,10 +772,27 @@ FlagT = true;// this seems wrong
                         if ((temp16 & 0xFF00) != ((temp16 + X) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
-                        temp = value8 + A + (FlagC ? 1 : 0);
-                        FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp > 0xFF;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) + (value8 & 0x0F) + (FlagC ? 1 : 0);
+							hi = (A & 0xF0) + (value8 & 0xF0);
+							if (lo > 0x09)
+							{
+								hi += 0x10;
+								lo += 0x06;
+							}
+							if (hi > 0x90) hi += 0x60;
+							FlagV = (~(A ^ value8) & (A ^ hi) & 0x80) != 0;
+							FlagC = hi > 0xFF;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+						}
+						else
+						{
+							temp = value8 + A + (FlagC ? 1 : 0);
+							FlagV = (~(A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp > 0xFF;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -1085,9 +1220,24 @@ FlagT = true;// this seems wrong
                     case 0xE1: // SBC (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 6; TotalExecutedCycles += 6;
                         break;
@@ -1105,9 +1255,24 @@ FlagT = true;// this seems wrong
                     case 0xE5: // SBC zp
                         value8 = ReadMemory(ReadMemory(PC++));
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 3; TotalExecutedCycles += 3;
                         break;
@@ -1125,9 +1290,24 @@ FlagT = true;// this seems wrong
                     case 0xE9: // SBC #nn
                         value8 = ReadMemory(PC++);
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 2; TotalExecutedCycles += 2;
                         break;
@@ -1144,9 +1324,24 @@ FlagT = true;// this seems wrong
                     case 0xED: // SBC addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -1174,9 +1369,24 @@ FlagT = true;// this seems wrong
                         if ((temp16 & 0xFF00) != ((temp16+Y) & 0xFF00)) 
                             { PendingCycles--; TotalExecutedCycles++; }
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 5; TotalExecutedCycles += 5;
                         break;
@@ -1187,9 +1397,24 @@ FlagT = true;// this seems wrong
                     case 0xF5: // SBC zp,X
                         value8 = ReadMemory((byte)(ReadMemory(PC++)+X));
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -1211,9 +1436,24 @@ FlagT = true;// this seems wrong
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
@@ -1231,9 +1471,24 @@ FlagT = true;// this seems wrong
                             { PendingCycles--; TotalExecutedCycles++; }
                         PC += 2;
                         temp = A - value8 - (FlagC?0:1);
-                        FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
-                        FlagC = temp >= 0;
-                        A = (byte)temp;
+						if (FlagD)
+						{
+							lo = (A & 0x0F) - (value8 & 0x0F) - (FlagC ? 0 : 1);
+							hi = (A & 0xF0) - (value8 & 0xF0);
+							if ((lo & 0xF0) != 0) lo -= 0x06;
+							if ((lo & 0x80) != 0) hi -= 0x10;
+							if ((hi & 0x0F00) != 0) hi -= 0x60;
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = (hi & 0xFF00) == 0;
+							A = (byte)((lo & 0x0F) | (hi & 0xF0));
+							PendingCycles--;
+						}
+						else
+						{
+							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
+							FlagC = temp >= 0;
+							A = (byte)temp;
+						}
                         P = (byte)((P & 0x7D) | TableNZ[A]);
                         PendingCycles -= 4; TotalExecutedCycles += 4;
                         break;
