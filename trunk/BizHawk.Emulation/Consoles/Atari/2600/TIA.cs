@@ -445,6 +445,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 						player0copy1 = 16;
 						player0copy2 = 32;
 						break;
+					case 0x06:
+						player0copies = 2;
+						player0copy1 = 32;
+						player0copy2 = 64;
+						break;
 				}
 			}
 			else if (maskedAddr == 0x05) // NUSIZ1
@@ -467,6 +472,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 						player1copies = 2;
 						player1copy1 = 16;
 						player1copy2 = 32;
+						break;
+					case 0x06:
+						player1copies = 2;
+						player1copy1 = 32;
+						player1copy2 = 64;
 						break;
 				}
 			}
