@@ -13,6 +13,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public int timerStartValue;
 		public int timerFinishedCycles;
 		public int timerShift;
+
+		bool interruptEnabled = false;
+		bool interruptTriggered = false;
+
 		Atari2600 core;
 
 
@@ -47,6 +51,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 					// Calculate the current value on the timer
 					int timerCurrentValue = timerFinishedCycles - Cpu.TotalExecutedCycles;
 
+					interruptTriggered = false;
+
 					// If the timer has not finished, shift the value down for the game
 					if (Cpu.TotalExecutedCycles < timerFinishedCycles)
 					{
@@ -55,6 +61,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					// Other wise, return the last 8 bits from how long ago it triggered
 					else
 					{
+						interruptTriggered = true;
 						return (byte)(timerCurrentValue & 0xFF);
 					}
 				}
@@ -77,6 +84,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 					else if (maskedAddr == 0x03) // SWBCNT
 					{
 
+					}
+					else if (maskedAddr == 0x05) // interrupt
+					{
+						if ((timerFinishedCycles - Cpu.TotalExecutedCycles >= 0)|| (interruptEnabled && interruptTriggered))
+						{
+							return 0x00;
+						}
+						else
+						{
+							return 0x80;
+						}
 					}
 				}
 			}
@@ -109,6 +127,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 					timerFinishedCycles = timerStartValue + Cpu.TotalExecutedCycles;
 
 					Console.WriteLine("6532 timer write:  " + maskedAddr.ToString("x"));
+
+					interruptEnabled = ((addr & 0x08) != 0);
 				}
 				else
 				{
