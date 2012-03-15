@@ -47,7 +47,6 @@ namespace BizHawk
 			hnd = GCHandle.Alloc(arr, GCHandleType.Pinned);
 			ptr = hnd.AddrOfPinnedObject().ToPointer();
 			byteptr = (byte*)ptr;
-			Util.memset(byteptr, 0, len*itemsize);
 		}
 		public CBuffer(int amt, int itemsize)
 		{

@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//this gets called once after each cpu instruction executes.
 			//anything that needs to happen at instruction granularity can get checked here
 			//to save having to check it at ppu cycle granularity
-			public void PostCpuInstruction(int todo)
+			public void PostCpuInstructionOne()
 			{
 				if (NMI_PendingInstructions > 0)
 				{
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						ppur.status.cycle = 0;
 
 					//might not actually run a cpu cycle if there are none to be run right now
-					nes.RunCpu(1);
+					nes.RunCpuOne();
 
 					if (Reg2002_vblank_active_pending)
 					{
@@ -160,7 +160,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//hack
 			public bool PAL = false;
 			bool SPRITELIMIT = true;
-
 	
 		}
 	}
