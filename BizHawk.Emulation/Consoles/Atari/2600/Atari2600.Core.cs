@@ -13,6 +13,8 @@ namespace BizHawk
 		public M6532 m6532;
 		public TIA tia;
 
+		bool resetSignal;
+
 		// The Atari 2600 memory mapper looks something like this...usually
 
 		// N/A  Page #  
@@ -122,6 +124,13 @@ namespace BizHawk
 		public void FrameAdvance(bool render)
 		{
 			Frame++;
+			if (resetSignal)
+			{
+				//cpu.PC = cpu.ReadWord(MOS6507.ResetVector);
+				m6532.resetOccured = true;
+				//m6532.swchb &= 0xFE;
+				//cpu.FlagI = true;
+			}
 			//cpu.Execute(228);
 			//cpu.Execute(2000);
 
@@ -143,6 +152,7 @@ namespace BizHawk
 				}
 				
 			}
+			resetSignal = Controller["Reset"];
 			//clear the framebuffer (hack code)
 			if (render == false) return;
 			/*
