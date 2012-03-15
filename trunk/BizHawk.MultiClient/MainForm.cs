@@ -1114,6 +1114,7 @@ namespace BizHawk.MultiClient
 							case "NES":
 								{
 									NES nes = new NES(game, rom.FileData);
+									nes.SoundOn = Global.Config.SoundEnabled;
 									nes.FirstDrawLine = Global.Config.NESTopLine;
 									nes.LastDrawLine = Global.Config.NESBottomLine;
 									nes.SetClipLeftAndRight(Global.Config.NESClipLeftAndRight);
