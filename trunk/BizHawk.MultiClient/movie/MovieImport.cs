@@ -677,7 +677,7 @@ namespace BizHawk.MultiClient
 						for (int button = 0; button < buttons.Length; button++)
 							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
 					else
-						warningMsg = "FDS commands not properly supported.";
+						warningMsg = "FDS commands are not properly supported.";
 				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
@@ -836,41 +836,76 @@ namespace BizHawk.MultiClient
 			uint rerecordCount = r.ReadUInt32();
 			m.SetRerecords((int)rerecordCount);
 			// 074 5-byte     Console indicator (pce, ngp, pcfx, wswan)
-			string console = RemoveNull(r.ReadStringFixedAscii(5));
-			// TODO: Support other compatible consoles.
-			if (console != "pce")
+			string platform = RemoveNull(r.ReadStringFixedAscii(5));
+			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>()
 			{
-				errorMsg = "Only PCE movies are supported.";
+				{
+					/*
+					 Normally, NES receives from 5 input ports, where the first 4 have a length of 1 byte, and the last has a
+					 length of 0. For the sake of simplicity, it is interpreted as 4 ports of 1 byte length for re-recording.
+					*/
+					"nes", new Dictionary<string, object>
+					{
+						{"name", "NES"}, {"ports", 4}, {"bytesPerPort", 1},
+						{"buttons", new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" }}
+					}
+				},
+				{
+					"pce", new Dictionary<string, object>
+					{
+						{"name", "PC Engine"}, {"ports", 5}, {"bytesPerPort", 2},
+						{"buttons", new string[8] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" }}
+					}
+				}
+			};
+			if (!platforms.ContainsKey(platform))
+			{
+				errorMsg = "Platform " + platform + " not supported.";
 				r.Close();
 				fs.Close();
 				return null;
 			}
-			string platform = "PCE";
-			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
+			string name = (string)platforms[platform]["name"];
+			m.Header.SetHeaderLine(MovieHeader.PLATFORM, name);
 			// 079 32-byte    Author name
 			string author = RemoveNull(r.ReadStringFixedAscii(32));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
 			// 099 103-byte   Padding 0s
 			r.ReadBytes(103);
+			// TODO: Verify if NTSC/PAL mode used for the movie can be detected or not.
 			// 100 variable   Input data
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = "PC Engine Controller";
+			controllers.Type.Name = name + " Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			string[] buttons = new string[8] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" };
-			long frameCount = (fs.Length - 256) / 11;
+			int bytes = 256;
+			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
+			if (platform == "nes")
+			{
+				// Power-on.
+				r.ReadByte();
+				bytes++;
+			}
+			string[] buttons = (string[])platforms[platform]["buttons"];
+			int ports = (int)platforms[platform]["ports"];
+			int bytesPerPort = (int)platforms[platform]["bytesPerPort"];
+			// Frame Size (with Control Byte)
+			int size = (ports * bytesPerPort) + 1;
+			long frameCount = (fs.Length - bytes) / size;
 			for (int frame = 1; frame <= frameCount; frame++)
 			{
-				for (int player = 1; player <= 5; ++player)
+				for (int player = 1; player <= ports; player++)
 				{
-					// Discard the first byte.
-					r.ReadByte();
+					if (bytesPerPort == 2)
+						// Discard the first byte.
+						r.ReadByte();
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
-						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) != 0);
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
 				}
-				// TODO: Handle control byte.
 				r.ReadByte();
+				if (platform == "nes" && warningMsg == "")
+					warningMsg = "Control commands are not properly supported.";
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
@@ -1207,7 +1242,7 @@ namespace BizHawk.MultiClient
 						for (int button = 0; button < buttons.Length; button++)
 							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) == 1);
 					else if (warningMsg == "")
-						warningMsg = "Extra input not properly supported.";
+						warningMsg = "Extra input is not properly supported.";
 				}
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
