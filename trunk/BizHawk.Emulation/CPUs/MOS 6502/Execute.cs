@@ -926,14 +926,14 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 2;
+                        PendingCycles -= 2;  TotalExecutedCycles += 2;
                         break;
                     case 0xC1: // CMP (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 6;
+                        PendingCycles -= 6;  TotalExecutedCycles += 6;
                         break;
                     case 0xC2: // NOP #nn
                         PC += 1;
@@ -944,14 +944,14 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 3;
+                        PendingCycles -= 3;  TotalExecutedCycles += 3;
                         break;
                     case 0xC5: // CMP zp
                         value8 = ReadMemory(ReadMemory(PC++));
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 3;
+                        PendingCycles -= 3;  TotalExecutedCycles += 3;
                         break;
                     case 0xC6: // DEC zp
                         value16 = ReadMemory(PC++);
@@ -969,7 +969,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 2;
+                        PendingCycles -= 2;  TotalExecutedCycles += 2;
                         break;
                     case 0xCA: // DEX
                         P = (byte)((P & 0x7D) | TableNZ[--X]);
@@ -980,14 +980,14 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (Y - value8);
                         FlagC = (Y >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xCD: // CMP addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xCE: // DEC addr
                         value16 = ReadWord(PC); PC += 2;
@@ -1015,7 +1015,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 5;
+                        PendingCycles -= 5;  TotalExecutedCycles += 5;
                         break;
                     case 0xD4: // NOP zp,X
                         PC += 1;
@@ -1026,7 +1026,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xD6: // DEC zp,X
                         value16 = (byte)(ReadMemory(PC++)+X);
@@ -1048,7 +1048,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xDA: // NOP
                         PendingCycles -= 2; TotalExecutedCycles += 2;
@@ -1066,7 +1066,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (A - value8);
                         FlagC = (A >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xDE: // DEC addr,X
                         value16 = (ushort)(ReadWord(PC)+X);
@@ -1081,7 +1081,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 2;
+                        PendingCycles -= 2;  TotalExecutedCycles += 2;
                         break;
                     case 0xE1: // SBC (addr,X)
                         value8 = ReadMemory(ReadWordPageWrap((byte)(ReadMemory(PC++)+X)));
@@ -1101,7 +1101,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 3;
+                        PendingCycles -= 3;  TotalExecutedCycles += 3;
                         break;
                     case 0xE5: // SBC zp
                         value8 = ReadMemory(ReadMemory(PC++));
@@ -1140,7 +1140,7 @@ FlagT = true;// this seems wrong
                         value16 = (ushort) (X - value8);
                         FlagC = (X >= value8);
                         P = (byte)((P & 0x7D) | TableNZ[(byte)value16]);
-                        PendingCycles -= 4;
+                        PendingCycles -= 4;  TotalExecutedCycles += 4;
                         break;
                     case 0xED: // SBC addr
                         value8 = ReadMemory(ReadWord(PC)); PC += 2;
