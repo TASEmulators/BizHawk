@@ -71,7 +71,40 @@ namespace BizHawk
 		public int BufferWidth { get { return 320; } }
 		public int BufferHeight { get { return 262; } }
 		public int BackgroundColor { get { return 0; } }
-		public void GetSamples(short[] samples) { }
+		public void GetSamples(short[] samples) 
+		{
+			int freqDiv = 0;
+			byte myP4 = 0x00;
+
+			short[] moreSamples = new short[1000];
+			for (int i = 0; i < 1000; i++)
+			{
+				if (++freqDiv == (tia.audioFreqDiv * 2))
+				{
+					freqDiv = 0;
+					myP4 = (byte)(((myP4 & 0x0f) != 0) ? ((myP4 << 1) | ((((myP4 & 0x08) != 0) ? 1 : 0) ^ (((myP4 & 0x04) != 0) ? 1 : 0))) : 1);
+				}
+
+				moreSamples[i] = (short)(((myP4 & 0x08) != 0) ? 32767 : 0);
+
+			}
+
+			for (int i = 0; i < samples.Length/2; i++)
+			{
+				//samples[i] = 0;
+				if (tia.audioEnabled)
+				{
+					samples[i*2] = moreSamples[(int)(((double)moreSamples.Length / (double)(samples.Length/2)) * i)];
+					//samples[i * 2 + 1] = moreSamples[(int)((moreSamples.Length / (samples.Length / 2)) * i)];
+					//samples[i] = (short)(Math.Sin(((((32000.0 / (tia.audioFreqDiv+1)) / 60.0) * Math.PI) / samples.Length) * i) * MaxVolume + MaxVolume);
+				}
+				else
+				{
+					samples[i] = 0;
+				}
+			}
+			//samples = tia.samples; 
+		}
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
 		private IList<MemoryDomain> memoryDomains;
