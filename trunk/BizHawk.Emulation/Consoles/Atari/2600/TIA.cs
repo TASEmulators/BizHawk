@@ -11,6 +11,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 	{
 		Atari2600 core;
 
+		public bool audioEnabled = false;
+		public byte audioFreqDiv = 0;
+
 		UInt32 PF; // PlayField data
 		byte BKcolor, PFcolor;
 		bool PFpriority = false;
@@ -535,6 +538,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x14) // RESBL
 			{
 				ball.pos = (byte)(scanlinePos - 68 + 4);
+			}
+			else if (maskedAddr == 0x15) // AUDC0
+			{
+				audioEnabled = value != 0;
+			}
+			else if (maskedAddr == 0x17) // AUDF0
+			{
+				audioFreqDiv = (byte)(value + 1);
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
