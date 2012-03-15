@@ -38,6 +38,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "AVE-74*161":
 					AssertPrg(32); AssertChr(64);
 					break;
+				case "MAPPER3":
+					break;
 				default:
 					return false;
 
