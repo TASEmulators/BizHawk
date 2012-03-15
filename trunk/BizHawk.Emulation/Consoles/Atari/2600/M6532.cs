@@ -19,6 +19,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		Atari2600 core;
 
+		public byte swchb = 0x0B;
+
+		public bool resetOccured = false;
+
 
 		public M6532(MOS6507 cpu, byte[] ram, Atari2600 core)
 		{
@@ -79,7 +83,9 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 					else if (maskedAddr == 0x02) // SWCHB
 					{
-						return 0x3F;
+						bool temp = resetOccured;
+						resetOccured = false;
+						return (byte)(0x0A | (temp ? 0x00 : 0x01));
 					}
 					else if (maskedAddr == 0x03) // SWBCNT
 					{
@@ -129,6 +135,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 					Console.WriteLine("6532 timer write:  " + maskedAddr.ToString("x"));
 
 					interruptEnabled = ((addr & 0x08) != 0);
+				}
+				else if ((addr & 0x04) == 0 && (maskedAddr & 0x03) == 0x02)
+				{
+					swchb = value; 
 				}
 				else
 				{
