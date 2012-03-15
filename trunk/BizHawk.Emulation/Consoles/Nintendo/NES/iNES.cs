@@ -87,10 +87,12 @@ static string ClassifyTable = @"
 2	256	0	8	0	NES-UOROM; paperboy 2
 2	128	0	8	8	HVC-UNROM; JJ - Tobidase Daisakusen Part 2 (J)
 3	32	32	8	0	NES-CNROM; adventure island
+3	-1	-1	-1	-1	MAPPER3
 4	128	128	8	0	NES-TSROM; double dragon 2 (should be TL1ROM but maybe this will work)
 4	256	256	8	0	NES-TKROM; Aces - Iron Eagle 3 (J)
 4	512	128	8	0	NES-TKROM; Pool of radiance (J)
 4	-1	-1	-1	-1	TXROM-HOMEBREW; assorted homebrew junks (incl blargg's mmc3 tests)
+5	-1	-1	-1	-1	MAPPER5
 7	128	0	8	0	NES-ANROM; marble madness
 7	256	0	8	8	NES-AOROM; battletoads
 11	-1	-1	-1	-1	Discrete_74x377-FLEX; Bible Adventures (U) ?
