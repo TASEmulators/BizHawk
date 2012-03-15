@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	public partial class NES : IEmulator
 	{
 		//hardware/state
-		public MOS6502 cpu;
+		public MOS6502X cpu;
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
@@ -38,7 +38,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void HardReset()
 		{
-			cpu = new MOS6502();
+			cpu = new MOS6502X();
+			cpu.DummyReadMemory = ReadMemory;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
 			ppu = new PPU(this);
@@ -86,34 +87,31 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				islag = false;
 		}
 
-		protected void RunCpu(int ppu_cycles)
+		//PAL:
+		//0 15 30 45 60 -> 12 27 42 57 -> 9 24 39 54 -> 6 21 36 51 -> 3 18 33 48 -> 0
+		//sequence of ppu clocks per cpu clock: 4,3,3,3,3
+		//NTSC:
+		//sequence of ppu clocks per cpu clock: 3
+		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
+		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
+		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
+		public void DmaTimingHack(int amount)
 		{
-			//not being used right now. maybe needed later.
-			//Timestamp += ppu_cycles;
-
-			int cycles = ppu_cycles;
-			if (ppu.PAL)
-			    cycles *= 15;
-			else
-				cycles <<= 4;
-
-
-			//tricky logic to try to run one instruction at a time
-			cpu_accumulate += cycles;
-			int cpu_cycles = cpu_accumulate / 48;
-			for (; ; )
+			cpu_deadcounter += amount;
+		}
+		protected void RunCpuOne()
+		{
+			cpu_stepcounter++;
+			if (cpu_stepcounter == cpu_sequence_NTSC[cpu_step])
 			{
-				if (cpu_cycles == 0) break;
-				int need_cpu = -cpu.PendingCycles + 1;
-				if (cpu_cycles < need_cpu) break;
-				if (need_cpu == 0) need_cpu = 1;
-				int todo = need_cpu;
-				cpu_cycles -= todo;
-				cpu_accumulate -= 48*todo;
-				cpu.Execute(todo);
-				if (SoundOn)
-					apu.Run(todo);
-				ppu.PostCpuInstruction(todo);
+				cpu_step++;
+				cpu_step &= 31;
+				cpu_stepcounter = 0;
+				if (cpu_deadcounter == 0)
+					cpu.ExecuteOne();
+				else cpu_deadcounter--;
+				if (SoundOn) apu.RunOne(); //THIS ISNT SAFE!!!!!!!!!
+				ppu.PostCpuInstructionOne();
 			}
 		}
 
@@ -195,7 +193,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WriteMemory(0x2004, db);
 				addr++;
 			}
-			cpu.PendingCycles -= 513;
+			DmaTimingHack(513);
 		}
 
 		/// <summary>
@@ -224,18 +222,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return palette_compiled[pixel];
 		}
 
+		public byte DummyReadMemory(ushort addr) { return 0; }
+
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;
 			if (addr < 0x0800) ret = ram[addr];
+			else if(addr >= 0x8000) ret = board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
 			else if (addr < 0x1000) ret = ram[addr - 0x0800];
 			else if (addr < 0x1800) ret = ram[addr - 0x1000];
 			else if (addr < 0x2000) ret = ram[addr - 0x1800];
 			else if (addr < 0x4000) ret = ReadPPUReg(addr & 7);
 			else if (addr < 0x4020) ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
 			else if (addr < 0x6000) ret = board.ReadEXP(addr - 0x4000);
-			else if (addr < 0x8000) ret = board.ReadWRAM(addr - 0x6000);
-			else ret = board.ReadPRG(addr - 0x8000);
+			else ret = board.ReadWRAM(addr - 0x6000);
 			
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
