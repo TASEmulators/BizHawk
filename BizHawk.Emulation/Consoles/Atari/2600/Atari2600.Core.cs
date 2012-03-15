@@ -11,7 +11,7 @@ namespace BizHawk
 		public byte[] rom;
 		public MOS6507 cpu;
 		public M6532 m6532;
-		public TIA tia;
+		public oldTIA tia;
 
 		bool resetSignal;
 
@@ -111,7 +111,7 @@ namespace BizHawk
 			cpu.WriteMemory = WriteMemory;
 
 			// Setup TIA
-			tia = new TIA(this, frameBuffer);
+			tia = new oldTIA(this, frameBuffer);
 			// Setup 6532
 			m6532 = new M6532(cpu, ram, this);
 
