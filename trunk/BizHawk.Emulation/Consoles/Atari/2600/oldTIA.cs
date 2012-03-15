@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Consoles.Atari
 {
 	// Emulates the TIA
-	public partial class TIA
+	public partial class oldTIA
 	{
 		Atari2600 core;
 
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		  0xbb9f47, 0, 0xd2b656, 0, 0xe8cc63, 0, 0xfce070, 0
 		};
 
-		public TIA(Atari2600 core, int[] frameBuffer)
+		public oldTIA(Atari2600 core, int[] frameBuffer)
 		{
 			this.core = core;
 			BKcolor = 0x00;

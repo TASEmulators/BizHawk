@@ -78,8 +78,11 @@
     <Compile Include="Buffer.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs" />
-    <Compile Include="Consoles\Atari\2600\TIA.cs" />
+    <Compile Include="Consoles\Atari\2600\oldTIA.cs" />
     <Compile Include="Consoles\Atari\2600\M6532.cs" />
+    <Compile Include="Consoles\Atari\2600\TIA.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
