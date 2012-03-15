@@ -134,8 +134,8 @@ namespace BizHawk.MultiClient
 					m.Header.SetHeaderLine(MovieHeader.GAMENAME, ParseHeader(line, "romFilename"));
 				else if (line.StartsWith("romChecksum"))
 				{
-					string md5_blob = ParseHeader(line, "romChecksum").Trim();
-					byte[] MD5 = DecodeBlob(md5_blob);
+					string blob = ParseHeader(line, "romChecksum").Trim();
+					byte[] MD5 = DecodeBlob(blob);
 					if (MD5 != null && MD5.Length == 16)
 						m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
 					else
@@ -660,8 +660,8 @@ namespace BizHawk.MultiClient
 			for (int player = 1; player <= masks.Length; player++)
 				if (masks[player - 1])
 					bytesPerFrame++;
-			long frames = (fs.Length - 144) / bytesPerFrame;
-			for (long frame = 1; frame <= frames; frame++)
+			long frameCount = (fs.Length - 144) / bytesPerFrame;
+			for (long frame = 1; frame <= frameCount; frame++)
 			{
 				/*
 				 Each frame consists of 1 or more bytes. Controller 1 takes 1 byte, controller 2 takes 1 byte, and the FDS
@@ -772,8 +772,8 @@ namespace BizHawk.MultiClient
 			*/
 			string[] other = new string[4] { "X", "Y", "Z", "Mode" };
 			// The file has no terminator byte or frame count. The number of frames is the <filesize minus 64> divided by 3.
-			long frames = (fs.Length - 64) / 3;
-			for (long frame = 1; frame <= frames; frame++)
+			long frameCount = (fs.Length - 64) / 3;
+			for (long frame = 1; frame <= frameCount; frame++)
 			{
 				// Each frame consists of 3 bytes.
 				for (int player = 1; player <= 3; player++)
@@ -798,94 +798,82 @@ namespace BizHawk.MultiClient
 			return m;
 		}
 
-		// MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
-		//   Mednafen-rr switched to MC2 from r261, so see r260 for details.
+		/*
+		 MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
+		 Mednafen-rr switched to MC2 from r261, so see r260 for details.
+		*/
 		private static Movie ImportMCM(string path, out string errorMsg, out string warningMsg)
 		{
-			const string SIGNATURE = "MDFNMOVI";
-			const int MOVIE_VERSION = 1;
-			const string CONSOLE_PCE = "pce";
-			const string CTRL_TYPE_PCE = "PC Engine Controller";
-			string[] CTRL_BUTTONS = {
-				"B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left"
-			};
-			const int INPUT_SIZE_PCE = 11;
-			const int INPUT_PORT_COUNT = 5;
-
 			errorMsg = "";
 			warningMsg = "";
 			Movie m = new Movie(path + ".tas", MOVIEMODE.PLAY);
-			bool success = false;
-
-			// Unless otherwise noted, all values are little-endian.
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
-			// 000 8-byte signature: 4D 44 46 4E 4D 4F 56 49 "MDFNMOVI"
-			string signature = r.ReadStringFixedAscii(SIGNATURE.Length);
-			if (signature != SIGNATURE)
+			// 000 8-byte    "MDFNMOVI" signature
+			string signature = r.ReadStringFixedAscii(8);
+			if (signature != "MDFNMOVI")
 			{
 				errorMsg = "This is not a valid .MCM file.";
-				goto FAIL;
+				r.Close();
+				fs.Close();
+				return null;
 			}
-			// 008 uint32: emulator version, current is 0x0000080A
+			// 008 uint32     Mednafen Version (Current is 0A 08)
 			uint emuVersion = r.ReadUInt32();
 			m.Header.Comments.Add(EMULATIONORIGIN + " Mednafen " + emuVersion.ToString());
-			// 00C uint32: movie format version, must be 1
+			// 00C uint32     Movie Format Version (Current is 01)
 			uint version = r.ReadUInt32();
-			if (version != MOVIE_VERSION)
-			{
-				errorMsg = ".MCM movie version must always be 1.";
-				goto FAIL;
-			}
 			m.Header.Comments.Add(MOVIEORIGIN + " .MCM version " + version);
-			// 010 32-byte (actually, 16-byte) md5sum of the ROM used
+			// 010 32-byte    MD5 of the ROM used
 			byte[] MD5 = r.ReadBytes(16);
-			r.ReadBytes(16); // discard
+			// Discard the second 16 bytes.
+			r.ReadBytes(16);
 			m.Header.SetHeaderLine("MD5", BizHawk.Util.BytesToHexString(MD5).ToLower());
-			// 030 64-byte filename of ROM used (with extension)
+			// 030 64-byte    Filename of the ROM used (with extension)
 			string gameName = RemoveNull(r.ReadStringFixedAscii(64));
 			m.Header.SetHeaderLine(MovieHeader.GAMENAME, gameName);
-			// 070 uint32: re-record count
+			// 070 uint32     Re-record Count
 			uint rerecordCount = r.ReadUInt32();
 			m.SetRerecords((int)rerecordCount);
-			// 074 5-byte console indicator (pce, ngp, pcfx, wswan)
+			// 074 5-byte     Console indicator (pce, ngp, pcfx, wswan)
 			string console = RemoveNull(r.ReadStringFixedAscii(5));
-			if (console != CONSOLE_PCE) // for now, bizhawk does not support ngp, pcfx, wswan
+			// TODO: Support other compatible consoles.
+			if (console != "pce")
 			{
 				errorMsg = "Only PCE movies are supported.";
-				goto FAIL;
+				r.Close();
+				fs.Close();
+				return null;
 			}
 			string platform = "PCE";
 			m.Header.SetHeaderLine(MovieHeader.PLATFORM, platform);
-			// 079 32-byte author name
+			// 079 32-byte    Author name
 			string author = RemoveNull(r.ReadStringFixedAscii(32));
 			m.Header.SetHeaderLine(MovieHeader.AUTHOR, author);
-			// 099 103-byte padding 0s
-			r.ReadBytes(103); // discard
-
-			// 100 variable: input data
+			// 099 103-byte   Padding 0s
+			r.ReadBytes(103);
+			// 100 variable   Input data
 			SimpleController controllers = new SimpleController();
 			controllers.Type = new ControllerDefinition();
-			controllers.Type.Name = CTRL_TYPE_PCE;
+			controllers.Type.Name = "PC Engine Controller";
 			MnemonicsGenerator mg = new MnemonicsGenerator();
-			//   For PCE, BizHawk does not have any control command. So I ignore any command.
-			for (byte[] input = r.ReadBytes(INPUT_SIZE_PCE);
-			     input.Length == INPUT_SIZE_PCE;
-			     input = r.ReadBytes(INPUT_SIZE_PCE))
+			string[] buttons = new string[8] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" };
+			long frameCount = (fs.Length - 256) / 11;
+			for (int frame = 1; frame <= frameCount; frame++)
 			{
-				for (int player = 1; player <= INPUT_PORT_COUNT; ++player)
+				for (int player = 1; player <= 5; ++player)
 				{
-					byte pad = input[1 + 2 * (player - 1)];
-					for (int button = 0; button < CTRL_BUTTONS.Length; button++)
-						controllers["P" + player + " " + CTRL_BUTTONS[button]] = (pad & (1 << button)) != 0;
+					// Discard the first byte.
+					r.ReadByte();
+					ushort controllerState = r.ReadByte();
+					for (int button = 0; button < buttons.Length; button++)
+						controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 1) != 0);
 				}
+				// TODO: Handle control byte.
+				r.ReadByte();
 				mg.SetSource(controllers);
 				m.AppendFrame(mg.GetControllersAsMnemonic());
 			}
-
-			success = true;
-FAIL:
-			if(!success) m = null;
 			r.Close();
 			fs.Close();
 			return m;
@@ -1206,8 +1194,8 @@ FAIL:
 			*/
 			string[] buttons = new string[8] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			// The controller data contains <number_of_bytes> / <bytes_per_frame> frames.
-			long frames = length / bytesPerFrame;
-			for (int frame = 1; frame <= frames; frame++)
+			long frameCount = length / bytesPerFrame;
+			for (int frame = 1; frame <= frameCount; frame++)
 			{
 				// Controller update data is emitted to the movie file during every frame.
 				for (int player = 1; player <= masks.Length; player++)
