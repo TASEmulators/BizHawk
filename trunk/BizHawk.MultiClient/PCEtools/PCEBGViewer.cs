@@ -14,17 +14,13 @@ namespace BizHawk.MultiClient
 	public partial class PCEBGViewer : Form
 	{
 		PCEngine pce;
-
+		int VDCtype = 0;
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 
 		public PCEBGViewer()
 		{
 			InitializeComponent();
-			vdcComboBox.Items.Add("VDC1");
-			vdcComboBox.Items.Add("VDC2");
-			vdcComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
-			vdcComboBox.SelectedIndex = 0;
 			Activated += (o, e) => Generate();
 			Closing += (o, e) => SaveConfigSettings();
 		}
@@ -36,7 +32,7 @@ namespace BizHawk.MultiClient
 
 			if (Global.Emulator.Frame % 20 != 0) return; // TODO: just a makeshift. hard-coded 3fps
 
-			VDC vdc = vdcComboBox.SelectedIndex == 0 ? pce.VDC1 : pce.VDC2;
+			VDC vdc = VDCtype == 0 ? pce.VDC1 : pce.VDC2;
 
 			int width = 8 * vdc.BatWidth;
 			int height = 8 * vdc.BatHeight;
@@ -86,16 +82,12 @@ namespace BizHawk.MultiClient
 				return;
 			}
 			pce = Global.Emulator as PCEngine;
-			vdcComboBox.SelectedIndex = 0;
-			vdcComboBox.Enabled = pce.SystemId == "SGX";
 		}
 
 		public void UpdateValues()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			if (!(Global.Emulator is PCEngine)) return;
-
-			
 		}
 
 		private void SaveConfigSettings()
@@ -116,8 +108,6 @@ namespace BizHawk.MultiClient
 		private void PCEBGViewer_Load(object sender, EventArgs e)
 		{
 			pce = Global.Emulator as PCEngine;
-			vdcComboBox.SelectedIndex = 0;
-			vdcComboBox.Enabled = pce.SystemId == "SGX";
 			LoadConfigSettings();
 		}
 
@@ -150,6 +140,37 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.PCEBGViewerSaveWIndowPosition;
 			autoloadToolStripMenuItem.Checked = Global.Config.PCEBGViewerAutoload;
+		}
+
+		private void vDC1ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			VDCtype = 0;
+		}
+
+		private void vCD2ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			VDCtype = 1;
+		}
+
+		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (pce.SystemId == "SGX")
+				vCD2ToolStripMenuItem.Enabled = true;
+			else
+				vCD2ToolStripMenuItem.Enabled = false;
+			
+			switch (VDCtype)
+			{
+				default:
+				case 0:
+					vDC1ToolStripMenuItem.Checked = true;
+					vCD2ToolStripMenuItem.Checked = false;
+					break;
+				case 1:
+					vDC1ToolStripMenuItem.Checked = false;
+					vCD2ToolStripMenuItem.Checked = true;
+					break;
+			}
 		}
 	}
 }
