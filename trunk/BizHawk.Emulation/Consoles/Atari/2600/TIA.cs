@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		static byte CXM0 = 0x04;
 		static byte CXM1 = 0x08;
 		static byte CXPF = 0x10;
+		static byte CXBL = 0x10;
 
 		struct playerData
 		{
@@ -27,6 +28,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte color;
 			public byte hPosCnt;
 			public byte scanCnt;
+			public byte scanStrchCnt;
 			public byte HM;
 			public bool reflect;
 			public bool delay;
@@ -35,6 +37,152 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool drawing;
 			public byte resetCnt;
 			public byte collisions;
+
+			public bool tick()
+			{
+				bool result = false;
+				if (scanCnt < 8)
+				{
+					// Make the mask to check the graphic
+					byte playerMask = (byte)(1 << (8 - 1 - scanCnt));
+
+					// Reflect it if needed
+					if (reflect)
+					{
+						playerMask = (byte)reverseBits(playerMask, 8);
+					}
+
+					// Check the graphic (depending on delay)
+					if (!delay)
+					{
+						if ((grp & playerMask) != 0)
+						{
+							result = true;
+						}
+					}
+					else
+					{
+						if ((dgrp & playerMask) != 0)
+						{
+							result = true;
+						}
+					}
+
+					// Increment counter
+					// When this reaches 8, we've run out of pixel
+
+					// If we're drawing a stretched player, only incrememnt the
+					// counter every 2 or 4 clocks
+
+					// Double size player
+					if ((nusiz & 0x07) == 0x05)
+					{
+						scanStrchCnt++;
+						scanStrchCnt %= 2;
+					}
+					// Quad size player
+					else if ((nusiz & 0x07) == 0x07)
+					{
+						scanStrchCnt++;
+						scanStrchCnt %= 4;
+					}
+					// Single size player
+					else
+					{
+						scanStrchCnt = 0;
+					}
+
+					if (scanStrchCnt == 0)
+					{
+						scanCnt++;
+					}
+
+				}
+
+				// At counter position 0 we should start drawing, a pixel late
+				// Set the scan counter at 0, and at the next pixel the graphic will start drawing
+				if (hPosCnt == 0 && !reset)
+				{
+					scanCnt = 0;
+					if ((nusiz & 0x07) == 0x05 || (nusiz & 0x07) == 0x07)
+					{
+						scanStrchCnt = 0;
+					}
+				}
+
+				if (hPosCnt == 16 && ((nusiz & 0x07) == 0x01 || ((nusiz & 0x07) == 0x03)))
+				{
+					scanCnt = 0;
+				}
+
+				if (hPosCnt == 32 && ((nusiz & 0x07) == 0x02 || ((nusiz & 0x07) == 0x03) || ((nusiz & 0x07) == 0x06)))
+				{
+					scanCnt = 0;
+				}
+
+				if (hPosCnt == 64 && ((nusiz & 0x07) == 0x04 || ((nusiz & 0x07) == 0x06)))
+				{
+					scanCnt = 0;
+				}
+
+				// Reset is no longer in effect
+				reset = false;
+				// Increment the counter
+				hPosCnt++;
+				// Counter loops at 160 
+				hPosCnt %= 160;
+
+				if (resetCnt < 4)
+				{
+					resetCnt++;
+				}
+
+				if (resetCnt == 4)
+				{
+					hPosCnt = 0;
+					reset = true;
+					resetCnt++;
+				}
+
+				return result;
+			}
+		};
+
+		struct ballData
+		{
+			public bool enabled;
+			public bool denabled;
+			public bool delay;
+			public byte size;
+			public byte HM;
+			public byte hPosCnt;
+			
+			public byte collisions;
+
+			public bool tick()
+			{
+				bool result = false;
+				if (hPosCnt < (1 << size))
+				{
+					if (!delay && enabled)
+					{
+						// Draw the ball!
+						result = true;
+					}
+					else if (delay && denabled)
+					{
+						// Draw the ball!
+						result = true;
+					}
+				}
+
+				// Increment the counter
+				hPosCnt++;
+				// Counter loops at 160 
+				hPosCnt %= 160;
+
+				return result;
+			}
 		};
 
 		struct playfieldData
@@ -47,21 +195,35 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool priority;
 		};
 
+		struct hmoveData
+		{
+			public bool hmoveEnabled;
+			public bool hmoveJustStarted;
+			public bool lateHBlankReset;
+
+			public bool player0Latch;
+			public bool player1Latch;
+			public bool missile0Latch;
+			public bool missile1Latch;
+			public bool ballLatch;
+
+			public byte hmoveCnt;
+
+			public byte player0Cnt;
+			public byte player1Cnt;
+			public byte missile0Cnt;
+			public byte missile1Cnt;
+			public byte ballCnt;
+		};
+
 		playerData player0;
 		playerData player1;
 		playfieldData playField;
+		hmoveData hmove;
+		ballData ball;
+
 
 		bool vblankEnabled = false;
-		bool hmoveEnabled = false;
-		bool hmoveJustStarted = false;
-		byte hmoveCnt = 0;
-		bool lateHBlankReset = false;
-
-		bool player0HmoveLatch = false;
-		byte player0HmoveCnt = 0;
-
-		bool player1HmoveLatch = false;
-		byte player1HmoveCnt = 0;
 
 		List<uint[]> scanlinesBuffer = new List<uint[]>();
 		uint[] scanline = new uint[160];
@@ -118,7 +280,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 			// ---- Things that happen only in the drawing section ----
 			// TODO: Remove this magic number (17). It depends on the HMOVE
-			if ((hsyncCnt / 4) >= (lateHBlankReset ? 19 : 17))
+			if ((hsyncCnt / 4) >= (hmove.lateHBlankReset ? 19 : 17))
 			{
 				// TODO: Remove this magic number
 				if ((hsyncCnt / 4) >= 37)
@@ -149,163 +311,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 
 				// ---- Player 0 ----
-
-				// If the scan counter is 0-7, we should draw that pixel!
-				if (player0.scanCnt < 8)
-				{
-					// Make the mask to check the graphic
-					byte playerMask = (byte)(1 << (8 - 1 - player0.scanCnt));
-
-					// Reflect it if needed
-					if (player0.reflect)
-					{
-						playerMask = (byte)reverseBits(playerMask, 8);
-					}
-
-					// Check the graphic (depending on delay)
-					if (!player0.delay)
-					{
-						if ((player0.grp & playerMask) != 0)
-						{
-							collisions |= CXP0;
-						}
-					}
-					else
-					{
-						if ((player0.dgrp & playerMask) != 0)
-						{
-							collisions |= CXP0;
-						}
-					}
-
-					// Increment counter
-					// When this reaches 8, we've run out of pixel
-					// TODO: Implement multi-size graphics by changing how often this gets increased
-					player0.scanCnt++;
-				}
-
-				// At counter position 0 we should start drawing, a pixel late
-				// Set the scan counter at 0, and at the next pixel the graphic will start drawing
-				if (player0.hPosCnt == 0 && !player0.reset)
-				{
-					player0.scanCnt = 0;
-				}
-
-				if (player0.hPosCnt == 16 && ((player0.nusiz & 0x07) == 0x01 || ((player0.nusiz & 0x07) == 0x03)))
-				{
-					player0.scanCnt = 0;
-				}
-
-				if (player0.hPosCnt == 32 && ((player0.nusiz & 0x07) == 0x02 || ((player0.nusiz & 0x07) == 0x03) || ((player0.nusiz & 0x07) == 0x06)))
-				{
-					player0.scanCnt = 0;
-				}
-
-				if (player0.hPosCnt == 64 && ((player0.nusiz & 0x07) == 0x04 || ((player0.nusiz & 0x07) == 0x06)))
-				{
-					player0.scanCnt = 0;
-				}
-
-				// Reset is no longer in effect
-				player0.reset = false;
-				// Increment the counter
-				player0.hPosCnt++;
-				// Counter loops at 160 
-				player0.hPosCnt %= 160;
-
-				if (player0.resetCnt < 4)
-				{
-					player0.resetCnt++;
-				}
-
-				if (player0.resetCnt == 4)
-				{
-					player0.hPosCnt = 0;
-					player0.reset = true;
-					player0.resetCnt++;
-				}
-
-				// ---- END Player 0 ----
-
+				collisions |= (byte)(player0.tick() ? CXP0 : 0x00);
 
 				// ---- Player 1 ----
+				collisions |= (byte)(player1.tick() ? CXP1 : 0x00);
 
-				// If the scan counter is 0-7, we should draw that pixel!
-				if (player1.scanCnt < 8)
-				{
-					// Make the mask to check the graphic
-					byte playerMask = (byte)(1 << (8 - 1 - player1.scanCnt));
-
-					// Reflect it if needed
-					if (player1.reflect)
-					{
-						playerMask = (byte)reverseBits(playerMask, 8);
-					}
-
-					// Check the graphic (depending on delay)
-					if (!player1.delay)
-					{
-						if ((player1.grp & playerMask) != 0)
-						{
-							collisions |= CXP1;
-						}
-					}
-					else
-					{
-						if ((player1.dgrp & playerMask) != 0)
-						{
-							collisions |= CXP1;
-						}
-					}
-
-					// Increment counter
-					// When this reaches 8, we've run out of pixel
-					// TODO: Implement multi-size graphics by changing how often this gets increased
-					player1.scanCnt++;
-				}
-
-				// At counter position 0 we should start drawing, a pixel late
-				// Set the scan counter at 0, and at the next pixel the graphic will start drawing
-				if (player1.hPosCnt == 0 && !player1.reset)
-				{
-					player1.scanCnt = 0;
-				}
-
-				if (player1.hPosCnt == 16 && ((player1.nusiz & 0x07) == 0x01 || ((player1.nusiz & 0x07) == 0x03)))
-				{
-					player1.scanCnt = 0;
-				}
-
-				if (player1.hPosCnt == 32 && ((player1.nusiz & 0x07) == 0x02 || ((player1.nusiz & 0x07) == 0x03) || ((player1.nusiz & 0x07) == 0x06)))
-				{
-					player1.scanCnt = 0;
-				}
-
-				if (player1.hPosCnt == 64 && ((player1.nusiz & 0x07) == 0x04 || ((player1.nusiz & 0x07) == 0x06)))
-				{
-					player1.scanCnt = 0;
-				}
-
-				// Reset is no longer in effect
-				player1.reset = false;
-				// Increment the counter
-				player1.hPosCnt++;
-				// Counter loops at 160 
-				player1.hPosCnt %= 160;
-
-				if (player1.resetCnt < 4)
-				{
-					player1.resetCnt++;
-				}
-
-				if (player1.resetCnt == 4)
-				{
-					player1.hPosCnt = 0;
-					player1.reset = true;
-					player1.resetCnt++;
-				}
-
-				// ---- END Player 1 ----
+				// ---- Ball ----
+				collisions |= (byte)(ball.tick() ? CXBL : 0x00);
 
 
 				// Pick the pixel color from collisions
@@ -328,6 +340,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 					{
 						pixelColor = palette[playField.pfColor];
 					}
+				}
+
+				if ((collisions & CXBL) != 0)
+				{
+					ball.collisions |= collisions;
+					pixelColor = palette[playField.pfColor];
 				}
 
 				if ((collisions & CXP1) != 0)
@@ -376,79 +394,94 @@ namespace BizHawk.Emulation.Consoles.Atari
 			// ---- Things that happen every time ----
 
 			// Handle HMOVE
-			if (hmoveEnabled)
+			if (hmove.hmoveEnabled)
 			{
 				// On the first time, set the latches and counters
-				if (hmoveJustStarted)
+				if (hmove.hmoveJustStarted)
 				{
-					player0HmoveLatch = true;
-					player0HmoveCnt = 0;
+					hmove.player0Latch = true;
+					hmove.player0Cnt = 0;
 
-					player1HmoveLatch = true;
-					player1HmoveCnt = 0;
+					hmove.player1Latch = true;
+					hmove.player1Cnt = 0;
 
-					hmoveCnt = 0;
+					hmove.ballLatch = true;
+					hmove.ballCnt = 0;
 
-					hmoveCnt++;
-					hmoveJustStarted = false;
-					lateHBlankReset = true;
+					hmove.hmoveCnt = 0;
+
+					hmove.hmoveCnt++;
+					hmove.hmoveJustStarted = false;
+					hmove.lateHBlankReset = true;
 				}
 				else
 				{
 					// Actually do stuff only evey 4 pulses
-					if (hmoveCnt == 0)
+					if (hmove.hmoveCnt == 0)
 					{
 						// If the latch is still set
-						if (player0HmoveLatch)
+						if (hmove.player0Latch)
 						{
 							// If the move counter still has a bit in common with the HM register
-							//if (((15-player0HmoveCnt) ^ ((player0.HM & 0x07) | ((~(player0.HM & 0x08)) & 0x08))) != 0x0F)
-							if (((15-player0HmoveCnt) ^ ((player0.HM & 0x07) | ((~(player0.HM & 0x08)) & 0x08))) != 0x0F)
-							//if (((15 - player0HmoveCnt) ^ (player0.HM & 0x0F) ) != 0x0F)
+							if (((15 - hmove.player0Cnt) ^ ((player0.HM & 0x07) | ((~(player0.HM & 0x08)) & 0x08))) != 0x0F)
 							{
-								// Shift the player left one pixel
-								player0.hPosCnt++;
+								// "Clock-Stuffing"
+								player0.tick();
 
 								// Increase by 1, max of 15
-								player0HmoveCnt++;
-								player0HmoveCnt %= 16;
+								hmove.player0Cnt++;
+								hmove.player0Cnt %= 16;
 							}
 							else
 							{
-								player0HmoveLatch = false;
-								//hmoveEnabled = false;
+								hmove.player0Latch = false;
 							}
 						}
 
-						if (player1HmoveLatch)
+						if (hmove.player1Latch)
 						{
 							// If the move counter still has a bit in common with the HM register
-							//if (((15-player0HmoveCnt) ^ ((player0.HM & 0x07) | ((~(player0.HM & 0x08)) & 0x08))) != 0x0F)
-							if (((15 - player1HmoveCnt) ^ ((player1.HM & 0x07) | ((~(player1.HM & 0x08)) & 0x08))) != 0x0F)
-							//if (((15 - player0HmoveCnt) ^ (player0.HM & 0x0F) ) != 0x0F)
+							if (((15 - hmove.player1Cnt) ^ ((player1.HM & 0x07) | ((~(player1.HM & 0x08)) & 0x08))) != 0x0F)
 							{
-								// Shift the player left one pixel
-								player1.hPosCnt++;
+								// "Clock-Stuffing"
+								player1.tick();
 
 								// Increase by 1, max of 15
-								player1HmoveCnt++;
-								player1HmoveCnt %= 16;
+								hmove.player1Cnt++;
+								hmove.player1Cnt %= 16;
 							}
 							else
 							{
-								player1HmoveLatch = false;
-								//hmoveEnabled = false;
+								hmove.player1Latch = false;
 							}
 						}
 
-						if (!player0HmoveLatch && !player1HmoveLatch)
+						if (hmove.ballLatch)
 						{
-							hmoveEnabled = false;
+							// If the move counter still has a bit in common with the HM register
+							if (((15 - hmove.ballCnt) ^ ((ball.HM & 0x07) | ((~(ball.HM & 0x08)) & 0x08))) != 0x0F)
+							{
+								// "Clock-Stuffing"
+								ball.tick();
+
+								// Increase by 1, max of 15
+								hmove.ballCnt++;
+								hmove.ballCnt %= 16;
+							}
+							else
+							{
+								hmove.ballLatch = false;
+							}
+						}
+
+						if (!hmove.player0Latch && !hmove.player1Latch && !hmove.ballLatch)
+						{
+							hmove.hmoveEnabled = false;
 						}
 					}
-					hmoveJustStarted = false;
-					hmoveCnt++;
-					hmoveCnt %= 4;
+					hmove.hmoveJustStarted = false;
+					hmove.hmoveCnt++;
+					hmove.hmoveCnt %= 4;
 				}
 				
 			}
@@ -460,7 +493,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			// End of the line? Add it to the buffer!
 			if (hsyncCnt == 0)
 			{
-				lateHBlankReset = false;
+				hmove.lateHBlankReset = false;
 				scanlinesBuffer.Add(scanline);
 				scanline = new uint[160];
 			}
@@ -551,6 +584,8 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				playField.reflect = (value & 0x01) != 0;
 				playField.priority = (value & 0x04) != 0;
+
+				ball.size = (byte)((value & 0x30) >> 4);
 			}
 			else if (maskedAddr == 0x0B) // REFP0
 			{
@@ -574,19 +609,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				//player0.hPosCnt = 0;
-				//player0.reset = true;
 				player0.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				//player1.hPosCnt = 0;
-				//player1.reset = true;
 				player1.resetCnt = 0;
 			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
-
+				ball.hPosCnt = 160-4;
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
@@ -608,21 +639,19 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x1F) // ENABL
 			{
-
+				ball.enabled = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x20) // HMP0
 			{
 				player0.HM = (byte)((value & 0xF0) >> 4);
-				//player0.HM = 0x00;
 			}
 			else if (maskedAddr == 0x21) // HMP1
 			{
 				player1.HM = (byte)((value & 0xF0) >> 4);
-				//player1.HM = 0x00;
 			}
 			else if (maskedAddr == 0x24) // HMBL
 			{
-
+				ball.HM = (byte)((value & 0xF0) >> 4);
 			}
 			else if (maskedAddr == 0x25) // VDELP0
 			{
@@ -634,13 +663,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x2A) // HMOVE
 			{
-				hmoveEnabled = true;
-				hmoveJustStarted = true;
+				hmove.hmoveEnabled = true;
+				hmove.hmoveJustStarted = true;
 			}
 			else if (maskedAddr == 0x2B) // HMCLR
 			{
 				player0.HM = 0;
 				player1.HM = 0;
+				ball.HM = 0;
 			}
 			else if (maskedAddr == 0x2C) // CXCLR
 			{
@@ -648,7 +678,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 		}
 
-		int reverseBits(int value, int bits)
+		static int reverseBits(int value, int bits)
 		{
 			int result = 0;
 			for (int i = 0; i < bits; i++)
