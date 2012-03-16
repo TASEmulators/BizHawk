@@ -11,7 +11,7 @@ namespace BizHawk
 		public byte[] rom;
 		public MOS6507 cpu;
 		public M6532 m6532;
-		public oldTIA tia;
+		public TIA tia;
 
 		bool resetSignal;
 
@@ -111,7 +111,8 @@ namespace BizHawk
 			cpu.WriteMemory = WriteMemory;
 
 			// Setup TIA
-			tia = new oldTIA(this, frameBuffer);
+			//tia = new TIA(this, frameBuffer);
+			tia = new TIA(this);
 			// Setup 6532
 			m6532 = new M6532(cpu, ram, this);
 
@@ -144,7 +145,7 @@ namespace BizHawk
 				cpu.Execute(1);
 				if (cpu.PendingCycles <= 0)
 				{
-					Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
+					//Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
 				}
 				if (cpu.PendingCycles < 0)
 				{
