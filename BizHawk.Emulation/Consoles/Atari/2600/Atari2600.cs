@@ -8,7 +8,7 @@ namespace BizHawk
 	{
 		public string SystemId { get { return "A26"; } }
 
-		private int[] frameBuffer = new int[320 * 262];
+		public int[] frameBuffer = new int[320 * 262];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
@@ -73,6 +73,7 @@ namespace BizHawk
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples) 
 		{
+			/*
 			int freqDiv = 0;
 			byte myP4 = 0x00;
 
@@ -104,6 +105,7 @@ namespace BizHawk
 				}
 			}
 			//samples = tia.samples; 
+			 * */
 		}
 		public void DiscardSamples() { }
 		public int MaxVolume { get; set; }
