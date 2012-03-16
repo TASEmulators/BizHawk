@@ -1616,10 +1616,10 @@ namespace BizHawk.MultiClient
 			double frameAdvanceTimestampDelta = (now - FrameAdvanceTimestamp).TotalMilliseconds;
 			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
 
-            if (Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Config.SkipLagFrame)
-            {
-                Global.Emulator.FrameAdvance(true);
-            }
+			if (Global.Emulator.IsLagFrame && frameProgressTimeElapsed && Global.Config.SkipLagFrame)
+			{
+				Global.Emulator.FrameAdvance(true);
+			}
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
@@ -1652,11 +1652,11 @@ namespace BizHawk.MultiClient
 				}
 				FrameAdvanceTimestamp = DateTime.MinValue;
 			}
-            
-            if (!EmulatorPaused)
-            {
-                runFrame = true;
-            }
+
+			if (!EmulatorPaused)
+			{
+				runFrame = true;
+			}
 
 			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
 			{
@@ -1674,8 +1674,8 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 				if (LuaConsole1.IsRunning())
 				{
-                    Global.MainForm.MainWait.Set();
-                    LuaConsole1.WaitOne();
+					Global.MainForm.MainWait.Set();
+					LuaConsole1.WaitOne();
 				}
 #endif
 
@@ -1782,6 +1782,7 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController.IncrementStarts();
 				}
 
+				PressFrameAdvance = false;
 			}
 
 			if (genSound)
