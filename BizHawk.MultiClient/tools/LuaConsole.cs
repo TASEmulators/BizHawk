@@ -597,7 +597,9 @@ namespace BizHawk.MultiClient
 
 		private void luaFunctionsListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show(LuaImp.LuaLibraryList);
+			Global.Sound.StopSound();
+			new LuaFunctionList().ShowDialog();
+			Global.Sound.StartSound();
 		}
 
 		private bool LoadLuaSession(string path)

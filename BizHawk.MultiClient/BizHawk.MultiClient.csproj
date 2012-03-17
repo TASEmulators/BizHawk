@@ -78,6 +78,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -317,6 +318,9 @@
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\LuaFunctionList.resx">
+      <DependentUpon>LuaFunctionList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -373,6 +377,12 @@
     </Compile>
     <Compile Include="tools\Cheats.Designer.cs">
       <DependentUpon>Cheats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\LuaFunctionList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\LuaFunctionList.Designer.cs">
+      <DependentUpon>LuaFunctionList.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\MemoryPulse.cs" />
     <Compile Include="tools\VirtualPad.cs">
