@@ -20,6 +20,7 @@ namespace BizHawk.MultiClient
 		//TODO: restore column width on restore default settings
 		//TODO: load scripts from recent scripts menu
 		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
+		//Stop all scripts should be grayed if all lua scripts are disabled
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -27,7 +28,7 @@ namespace BizHawk.MultiClient
 		List<LuaFiles> luaList = new List<LuaFiles>();
 		public LuaImplementation LuaImp;
 		string lastLuaFile = "";
-		bool changes = true; //TODO
+		bool changes = false;
 
 		private List<LuaFiles> GetLuaFileList()
 		{
@@ -89,6 +90,7 @@ namespace BizHawk.MultiClient
 			luaList[x].Enabled = false;
 			LuaImp.Close();
 			LuaImp = new LuaImplementation(this);
+			changes = true;
 		}
 
 		private void StopAllScripts()
@@ -97,6 +99,7 @@ namespace BizHawk.MultiClient
 				luaList[x].Enabled = false;
 			LuaImp.Close();
 			LuaImp = new LuaImplementation(this);
+			changes = true;
 		}
 
 		public void Restart()
@@ -168,6 +171,7 @@ namespace BizHawk.MultiClient
 			LuaListView.Refresh();
 			Global.Config.RecentLua.Add(path);
 			LuaImp.DoLuaFile(path);
+			changes = true;
 		}
 
 		private void OpenLuaFile()
@@ -215,6 +219,7 @@ namespace BizHawk.MultiClient
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
 			RunLuaScripts();
+			changes = true;
 		}
 
 		private void RunLuaScripts()
@@ -297,12 +302,18 @@ namespace BizHawk.MultiClient
 
 		private void NewLuaSession(bool suppressAsk)
 		{
-			//TODO: ask save
-			StopAllScripts();
-			ClearOutput();
-			luaList.Clear();
-			DisplayLuaList();
-			UpdateNumberOfScripts();
+			bool result = true;
+			if (changes) result = AskSave();
+
+			if (result == true || suppressAsk)
+			{
+				StopAllScripts();
+				ClearOutput();
+				luaList.Clear();
+				DisplayLuaList();
+				UpdateNumberOfScripts();
+				changes = false;
+			}
 		}
 
 		private void turnOffAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -328,7 +339,7 @@ namespace BizHawk.MultiClient
 		private void RemoveScript()
 		{
 			if (luaList.Count == 0) return;
-			//Changes();
+			changes = true;
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
 			if (indexes.Count > 0)
 			{
@@ -368,6 +379,7 @@ namespace BizHawk.MultiClient
 				luaList.Add(f);
 			DisplayLuaList();
 			LuaListView.Refresh();
+			changes = true;
 		}
 
 		private void insertSeperatorToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -752,7 +764,8 @@ namespace BizHawk.MultiClient
 				SaveSession(file.FullName);
 				currentSessionFile = file.FullName;
 				AddText('\n' + Path.GetFileName(currentSessionFile) + " saved.");
-				//Global.Config.Recent.RecentWatches.Add(file.FullName);
+				Global.Config.RecentLuaSession.Add(file.FullName);
+				changes = false;
 			}
 		}
 
@@ -784,7 +797,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSessionFile, "") == 0) // || !changes) //TODO: changes
+			if (string.Compare(currentSessionFile, "") == 0 || !changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}
@@ -872,6 +885,16 @@ namespace BizHawk.MultiClient
 					return false;
 			}
 			return true;
+		}
+
+		private void moveUpToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			MoveUp();
+		}
+
+		private void moveDownToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			MoveDown();
 		}
 	}
 }

@@ -371,6 +371,7 @@
 			this.moveUpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
 			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.moveUpToolStripMenuItem.Text = "Move &Up";
+			this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click_1);
 			// 
 			// moveDownToolStripMenuItem
 			// 
@@ -379,6 +380,7 @@
 			this.moveDownToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
 			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.moveDownToolStripMenuItem.Text = "Move &Down";
+			this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click_1);
 			// 
 			// selectAllToolStripMenuItem
 			// 
