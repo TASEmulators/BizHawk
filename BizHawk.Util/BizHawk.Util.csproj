@@ -129,6 +129,7 @@
     <Compile Include="ToolStripEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Util.cs" />
     <Compile Include="ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>

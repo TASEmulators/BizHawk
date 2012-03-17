@@ -592,8 +592,11 @@ namespace BizHawk.MultiClient
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
 				return;
 
-			OutputBox.Text += message;
-			OutputBox.Refresh();
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.Text += message;
+				OutputBox.Refresh();
+			});
 		}
 
 		public void ClearOutputWindow()
@@ -601,8 +604,11 @@ namespace BizHawk.MultiClient
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
 				return;
 
-			OutputBox.Text = "";
-			OutputBox.Refresh();
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.Text = "";
+				OutputBox.Refresh();
+			});
 		}
 
 		private void openToolStripMenuItem_Click_1(object sender, EventArgs e)
@@ -694,12 +700,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void WaitOne()
+		public bool WaitOne(int timeout)
 		{
 			if (!this.IsHandleCreated || this.IsDisposed)
-				return;
+				return true;
 
-			this.LuaImp.LuaWait.WaitOne();
+			return this.LuaImp.LuaWait.WaitOne(timeout);
 		}
 
 		private void openToolStripButton_Click(object sender, EventArgs e)
