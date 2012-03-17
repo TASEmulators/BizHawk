@@ -15,7 +15,7 @@ namespace BizHawk.MultiClient
 	{
 		Lua lua = new Lua();
 		LuaConsole Caller;
-		public String LuaLibraryList = "";
+		public string LuaLibraryList = "";
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private Thread LuaThread;
