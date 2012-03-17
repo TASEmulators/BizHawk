@@ -90,12 +90,12 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 		}
 
-        private void StopScript(int x)
-        {
-            luaList[x].Enabled = false;
-            LuaImp.Close();
-            LuaImp = new LuaImplementation(this);
-        }
+		private void StopScript(int x)
+		{
+			luaList[x].Enabled = false;
+			LuaImp.Close();
+			LuaImp = new LuaImplementation(this);
+		}
 
 		private void StopAllScripts()
 		{
@@ -152,8 +152,8 @@ namespace BizHawk.MultiClient
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
 			ofd.Filter = filter;
 			ofd.RestoreDirectory = true;
-			
-			
+
+
 			if (!Directory.Exists(ofd.InitialDirectory))
 				Directory.CreateDirectory(ofd.InitialDirectory);
 
@@ -172,7 +172,7 @@ namespace BizHawk.MultiClient
 			luaList.Add(l);
 			LuaListView.ItemCount = luaList.Count;
 			LuaListView.Refresh();
-			Global.Config.RecentLua.Add(path);            
+			Global.Config.RecentLua.Add(path);
 			LuaImp.DoLuaFile(path);
 		}
 
@@ -227,14 +227,14 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < luaList.Count; x++)
 			{
-                if (luaList[x].Enabled)
-                {
-                    LuaImp.DoLuaFile(luaList[x].Path);
-                }
-                else
-                {
-                    StopScript(x);
-                }
+				if (luaList[x].Enabled)
+				{
+					LuaImp.DoLuaFile(luaList[x].Path);
+				}
+				else
+				{
+					StopScript(x);
+				}
 			}
 		}
 
@@ -261,7 +261,7 @@ namespace BizHawk.MultiClient
 
 		private void LuaListView_DoubleClick(object sender, EventArgs e)
 		{
-            MessageBox.Show("");
+			MessageBox.Show("");
 			//Toggle();
 		}
 
@@ -519,7 +519,7 @@ namespace BizHawk.MultiClient
 		private void EditScript()
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count == 0) 
+			if (indexes.Count == 0)
 				return;
 			System.Diagnostics.Process.Start(luaList[indexes[0]].Path);
 		}
@@ -585,7 +585,7 @@ namespace BizHawk.MultiClient
 		{
 			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
 				return;
-			
+
 			OutputBox.Text = "";
 			OutputBox.Refresh();
 		}
@@ -690,9 +690,14 @@ namespace BizHawk.MultiClient
 			OpenLuaFile();
 		}
 
-        private void LuaListView_ItemActivate(object sender, EventArgs e)
-        {
-            Toggle();
-        }
+		private void LuaListView_ItemActivate(object sender, EventArgs e)
+		{
+			Toggle();
+		}
+
+		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			OutputBox.Text = "";
+		}
 	}
 }
