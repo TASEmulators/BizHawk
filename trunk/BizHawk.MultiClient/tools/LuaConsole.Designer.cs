@@ -107,7 +107,8 @@
             this.toolStripSeparator4,
             this.stopAllScriptsToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 120);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 142);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// toggleScriptToolStripMenuItem
 			// 
@@ -240,18 +241,18 @@
 			// noneToolStripMenuItem1
 			// 
 			this.noneToolStripMenuItem1.Name = "noneToolStripMenuItem1";
-			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
 			this.noneToolStripMenuItem1.Text = "None";
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(100, 6);
 			// 
 			// clearToolStripMenuItem1
 			// 
 			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
 			this.clearToolStripMenuItem1.Text = "Clear";
 			// 
 			// recentToolStripMenuItem
@@ -313,6 +314,7 @@
 			this.scriptToolStripMenuItem.Name = "scriptToolStripMenuItem";
 			this.scriptToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
 			this.scriptToolStripMenuItem.Text = "&Script";
+			this.scriptToolStripMenuItem.DropDownOpened += new System.EventHandler(this.scriptToolStripMenuItem_DropDownOpened);
 			// 
 			// openToolStripMenuItem
 			// 
