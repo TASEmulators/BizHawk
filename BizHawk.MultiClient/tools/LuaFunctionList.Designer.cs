@@ -52,6 +52,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.FunctionBox.Location = new System.Drawing.Point(12, 12);
 			this.FunctionBox.Name = "FunctionBox";
+			this.FunctionBox.ReadOnly = true;
 			this.FunctionBox.Size = new System.Drawing.Size(237, 269);
 			this.FunctionBox.TabIndex = 1;
 			this.FunctionBox.Text = "";

@@ -13,14 +13,10 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
 	{
-		//track changes
 		//options - autoload session
 		//options - disable scripts on load
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
-		//TODO: load scripts from recent scripts menu
-		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
-		//Stop all scripts should be grayed if all lua scripts are disabled
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -895,6 +891,100 @@ namespace BizHawk.MultiClient
 		private void moveDownToolStripMenuItem_Click_1(object sender, EventArgs e)
 		{
 			MoveDown();
+		}
+
+		private void scriptToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bool luaRunning = false;
+			for (int i = 0; i < luaList.Count; i++)
+			{
+				if (luaList[i].Enabled)
+					luaRunning = true;
+			}
+
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				scriptToolStripMenuItem.DropDownItems[1].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[3].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[6].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[7].Enabled = true;
+
+				bool allSeparators = true;
+				for (int i = 0; i < indexes.Count; i++)
+				{
+					if (!luaList[indexes[i]].IsSeparator)
+						allSeparators = false;
+				}
+				if (allSeparators)
+					scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
+				else
+					scriptToolStripMenuItem.DropDownItems[2].Enabled = true;
+			}
+			else
+			{
+				scriptToolStripMenuItem.DropDownItems[1].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[6].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[7].Enabled = false;
+			}
+
+			if (luaList.Count > 0)
+				scriptToolStripMenuItem.DropDownItems[8].Enabled = true;
+			else
+				scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
+
+			if (luaRunning)
+				scriptToolStripMenuItem.DropDownItems[10].Enabled = true;
+			else
+				scriptToolStripMenuItem.DropDownItems[10].Enabled = false;
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			bool luaRunning = false;
+			for (int i = 0; i < luaList.Count; i++)
+			{
+				if (luaList[i].Enabled)
+					luaRunning = true;
+			}
+
+			if (indexes.Count > 0)
+			{
+				contextMenuStrip1.Items[0].Enabled = true;
+				contextMenuStrip1.Items[1].Enabled = true;
+				contextMenuStrip1.Items[2].Enabled = true;
+
+				bool allSeparators = true;
+				for (int i = 0; i < indexes.Count; i++)
+				{
+					if (!luaList[indexes[i]].IsSeparator)
+						allSeparators = false;
+				}
+				if (allSeparators)
+					contextMenuStrip1.Items[1].Enabled = false;
+				else
+					contextMenuStrip1.Items[1].Enabled = true;
+			}
+			else
+			{
+				contextMenuStrip1.Items[0].Enabled = false;
+				contextMenuStrip1.Items[1].Enabled = false;
+				contextMenuStrip1.Items[2].Enabled = false;
+			}
+
+			if (luaRunning)
+			{
+				contextMenuStrip1.Items[4].Visible = true;
+				contextMenuStrip1.Items[5].Visible = true;
+			}
+			else
+			{
+				contextMenuStrip1.Items[4].Visible = false;
+				contextMenuStrip1.Items[5].Visible = false;
+			}
 		}
 	}
 }
