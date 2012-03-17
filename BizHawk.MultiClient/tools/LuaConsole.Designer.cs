@@ -30,9 +30,6 @@
         {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
-			this.LuaListView = new BizHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toggleScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +76,8 @@
 			this.OutputBox = new System.Windows.Forms.RichTextBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
+			this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -88,47 +87,15 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
-			this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.LuaListView = new BizHawk.VirtualListView();
+			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// LuaListView
-			// 
-			this.LuaListView.CheckBoxes = true;
-			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script,
-            this.PathName});
-			this.LuaListView.ContextMenuStrip = this.contextMenuStrip1;
-			this.LuaListView.FullRowSelect = true;
-			this.LuaListView.GridLines = true;
-			this.LuaListView.HideSelection = false;
-			this.LuaListView.ItemCount = 0;
-			this.LuaListView.Location = new System.Drawing.Point(13, 71);
-			this.LuaListView.Name = "LuaListView";
-			this.LuaListView.selectedItem = -1;
-			this.LuaListView.Size = new System.Drawing.Size(291, 280);
-			this.LuaListView.TabIndex = 0;
-			this.LuaListView.UseCompatibleStateImageBehavior = false;
-			this.LuaListView.View = System.Windows.Forms.View.Details;
-			this.LuaListView.ItemActivate += new System.EventHandler(this.LuaListView_ItemActivate);
-			this.LuaListView.SelectedIndexChanged += new System.EventHandler(this.LuaListView_SelectedIndexChanged);
-			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
-			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
-			// 
-			// Script
-			// 
-			this.Script.Text = "Script";
-			this.Script.Width = 92;
-			// 
-			// PathName
-			// 
-			this.PathName.Text = "Path";
-			this.PathName.Width = 195;
 			// 
 			// contextMenuStrip1
 			// 
@@ -215,6 +182,7 @@
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
+			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.fileToolStripMenuItem_DropDownOpened);
 			// 
 			// newToolStripMenuItem
 			// 
@@ -271,18 +239,18 @@
 			// noneToolStripMenuItem1
 			// 
 			this.noneToolStripMenuItem1.Name = "noneToolStripMenuItem1";
-			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
+			this.noneToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.noneToolStripMenuItem1.Text = "None";
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(100, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
 			// 
 			// clearToolStripMenuItem1
 			// 
 			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
+			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.clearToolStripMenuItem1.Text = "Clear";
 			// 
 			// recentToolStripMenuItem
@@ -515,6 +483,20 @@
 			this.NumberOfScripts.TabIndex = 4;
 			this.NumberOfScripts.Text = " 0 Scripts     ";
 			// 
+			// contextMenuStrip2
+			// 
+			this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem2});
+			this.contextMenuStrip2.Name = "contextMenuStrip2";
+			this.contextMenuStrip2.Size = new System.Drawing.Size(102, 26);
+			// 
+			// clearToolStripMenuItem2
+			// 
+			this.clearToolStripMenuItem2.Name = "clearToolStripMenuItem2";
+			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(101, 22);
+			this.clearToolStripMenuItem2.Text = "&Clear";
+			this.clearToolStripMenuItem2.Click += new System.EventHandler(this.clearToolStripMenuItem2_Click);
+			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.ClickThrough = true;
@@ -608,19 +590,38 @@
 			this.toolStripButtonMoveDown.Text = "Move Down";
 			this.toolStripButtonMoveDown.Click += new System.EventHandler(this.toolStripButtonMoveDown_Click);
 			// 
-			// contextMenuStrip2
+			// LuaListView
 			// 
-			this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem2});
-			this.contextMenuStrip2.Name = "contextMenuStrip2";
-			this.contextMenuStrip2.Size = new System.Drawing.Size(102, 26);
+			this.LuaListView.CheckBoxes = true;
+			this.LuaListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Script,
+            this.PathName});
+			this.LuaListView.ContextMenuStrip = this.contextMenuStrip1;
+			this.LuaListView.FullRowSelect = true;
+			this.LuaListView.GridLines = true;
+			this.LuaListView.HideSelection = false;
+			this.LuaListView.ItemCount = 0;
+			this.LuaListView.Location = new System.Drawing.Point(13, 71);
+			this.LuaListView.Name = "LuaListView";
+			this.LuaListView.selectedItem = -1;
+			this.LuaListView.Size = new System.Drawing.Size(291, 280);
+			this.LuaListView.TabIndex = 0;
+			this.LuaListView.UseCompatibleStateImageBehavior = false;
+			this.LuaListView.View = System.Windows.Forms.View.Details;
+			this.LuaListView.ItemActivate += new System.EventHandler(this.LuaListView_ItemActivate);
+			this.LuaListView.SelectedIndexChanged += new System.EventHandler(this.LuaListView_SelectedIndexChanged);
+			this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
+			this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
 			// 
-			// clearToolStripMenuItem2
+			// Script
 			// 
-			this.clearToolStripMenuItem2.Name = "clearToolStripMenuItem2";
-			this.clearToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-			this.clearToolStripMenuItem2.Text = "&Clear";
-			this.clearToolStripMenuItem2.Click += new System.EventHandler(this.clearToolStripMenuItem2_Click);
+			this.Script.Text = "Script";
+			this.Script.Width = 92;
+			// 
+			// PathName
+			// 
+			this.PathName.Text = "Path";
+			this.PathName.Width = 195;
 			// 
 			// LuaConsole
 			// 
@@ -645,9 +646,9 @@
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
+			this.contextMenuStrip2.ResumeLayout(false);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			this.contextMenuStrip2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
