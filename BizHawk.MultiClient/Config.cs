@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 		public int SaveSlot = 0; //currently selected savestate slot
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
-        public bool SkipLagFrame = false;
+		public bool SkipLagFrame = false;
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
@@ -205,6 +205,7 @@ namespace BizHawk.MultiClient
 
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
+		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool AutoLoadLua = false;
 		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;

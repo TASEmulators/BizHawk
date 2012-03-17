@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 	public partial class LuaConsole : Form
 	{
 		//track changes
-		//recent session
 		//options - autoload session
 		//options - disable scripts on load
 		//TODO: remember column widths
@@ -488,6 +487,13 @@ namespace BizHawk.MultiClient
 				DisplayLuaList();
 				UpdateNumberOfScripts();
 			}
+			else if (Path.GetExtension(filePaths[0]) == (".luases"))
+			{
+				LoadLuaSession(filePaths[0]);
+				DisplayLuaList();
+				UpdateNumberOfScripts();
+				ClearOutput();
+			}
 		}
 
 		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
@@ -643,6 +649,7 @@ namespace BizHawk.MultiClient
 					luaList.Add(l);
 				}
 			}
+			Global.Config.RecentLuaSession.Add(path);
 			return true;
 		}
 
@@ -785,6 +792,86 @@ namespace BizHawk.MultiClient
 			{
 				saveToolStripMenuItem.Enabled = true;
 			}
+		}
+
+		private void recentSessionsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			//Clear out recent Cheats list
+			//repopulate it with an up to date list
+			recentSessionsToolStripMenuItem.DropDownItems.Clear();
+
+			if (Global.Config.RecentLuaSession.IsEmpty())
+			{
+				var none = new ToolStripMenuItem();
+				none.Enabled = false;
+				none.Text = "None";
+				recentSessionsToolStripMenuItem.DropDownItems.Add(none);
+			}
+			else
+			{
+				for (int x = 0; x < Global.Config.RecentLuaSession.Length(); x++)
+				{
+					string path = Global.Config.RecentLuaSession.GetRecentFileByPosition(x);
+					var item = new ToolStripMenuItem();
+					item.Text = path;
+					item.Click += (o, ev) => LoadSessionFromRecent(path);
+					recentSessionsToolStripMenuItem.DropDownItems.Add(item);
+				}
+			}
+
+			recentSessionsToolStripMenuItem.DropDownItems.Add("-");
+
+			var clearitem = new ToolStripMenuItem();
+			clearitem.Text = "&Clear";
+			clearitem.Click += (o, ev) => Global.Config.RecentLuaSession.Clear();
+			recentSessionsToolStripMenuItem.DropDownItems.Add(clearitem);
+		}
+
+		public void LoadSessionFromRecent(string file)
+		{
+			bool z = true;
+			if (changes) z = AskSave();
+
+			if (z)
+			{
+				bool r = LoadLuaSession(file);
+				if (!r)
+				{
+					DialogResult result = MessageBox.Show("Could not open " + file + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+					if (result == DialogResult.Yes)
+						Global.Config.RecentLuaSession.Remove(file);
+				}
+				RunLuaScripts();
+				DisplayLuaList();
+				UpdateNumberOfScripts();
+				ClearOutput();
+				changes = false;
+			}
+		}
+
+		public bool AskSave()
+		{
+			if (changes)
+			{
+				Global.Sound.StopSound();
+				DialogResult result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				Global.Sound.StartSound();
+				if (result == DialogResult.Yes)
+				{
+					if (string.Compare(currentSessionFile, "") == 0)
+					{
+						SaveAs();
+					}
+					else
+						SaveSession(currentSessionFile);
+					return true;
+				}
+				else if (result == DialogResult.No)
+					return true;
+				else if (result == DialogResult.Cancel)
+					return false;
+			}
+			return true;
 		}
 	}
 }
