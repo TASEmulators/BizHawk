@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		static byte CXM0 = 0x04;
 		static byte CXM1 = 0x08;
 		static byte CXPF = 0x10;
-		static byte CXBL = 0x10;
+		static byte CXBL = 0x20;
 
 		struct missileData
 		{
