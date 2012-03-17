@@ -21,8 +21,39 @@ namespace BizHawk.Emulation.Consoles.Atari
 		static byte CXPF = 0x10;
 		static byte CXBL = 0x10;
 
+		struct missileData
+		{
+			public bool enabled;
+			public bool resetToPlayer;
+			public byte hPosCnt;
+			public byte size;
+			public byte HM;
+			public byte collisions;
+
+			public bool tick()
+			{
+				bool result = false;
+				if (hPosCnt < (1 << size))
+				{
+					if (enabled && !resetToPlayer)
+					{
+						// Draw the missile
+						result = true;
+					}
+				}
+
+				// Increment the counter
+				hPosCnt++;
+				// Counter loops at 160 
+				hPosCnt %= 160;
+
+				return result;
+			}
+		}
+
 		struct playerData
 		{
+			public missileData missile;
 			public byte grp;
 			public byte dgrp;
 			public byte color;
@@ -34,7 +65,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool delay;
 			public byte nusiz;
 			public bool reset;
-			public bool drawing;
 			public byte resetCnt;
 			public byte collisions;
 
@@ -66,6 +96,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 						{
 							result = true;
 						}
+					}
+
+					// Reset missile, if desired
+					if (scanCnt == 0x04 && missile.resetToPlayer)
+					{
+						missile.hPosCnt = 0;
 					}
 
 					// Increment counter
@@ -200,12 +236,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool hmoveEnabled;
 			public bool hmoveJustStarted;
 			public bool lateHBlankReset;
+			public bool decCntEnabled;
 
 			public bool player0Latch;
 			public bool player1Latch;
 			public bool missile0Latch;
 			public bool missile1Latch;
 			public bool ballLatch;
+
+			public bool missile0inf;
+
+			public byte hmoveDelayCnt;
 
 			public byte hmoveCnt;
 
@@ -311,13 +352,19 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 
 				// ---- Player 0 ----
-				collisions |= (byte)(player0.tick() ? CXP0 : 0x00);
+				collisions |= (player0.tick() ? CXP0 : (byte)0x00);
+
+				// ---- Missile 0 ----
+				collisions |= (player0.missile.tick() ? CXM0 : (byte)0x00);
 
 				// ---- Player 1 ----
-				collisions |= (byte)(player1.tick() ? CXP1 : 0x00);
+				collisions |= (player1.tick() ? CXP1 : (byte)0x00);
+
+				// ---- Missile 0 ----
+				collisions |= (player1.missile.tick() ? CXM1 : (byte)0x00);
 
 				// ---- Ball ----
-				collisions |= (byte)(ball.tick() ? CXBL : 0x00);
+				collisions |= (ball.tick() ? CXBL : (byte)0x00);
 
 
 				// Pick the pixel color from collisions
@@ -348,10 +395,22 @@ namespace BizHawk.Emulation.Consoles.Atari
 					pixelColor = palette[playField.pfColor];
 				}
 
+				if ((collisions & CXM1) != 0)
+				{
+					player1.missile.collisions |= collisions;
+					pixelColor = palette[player1.color];
+				}
+
 				if ((collisions & CXP1) != 0)
 				{
 					player1.collisions |= collisions;
 					pixelColor = palette[player1.color];
+				}
+
+				if ((collisions & CXM0) != 0)
+				{
+					player0.missile.collisions |= collisions;
+					pixelColor = palette[player0.color];
 				}
 
 				if ((collisions & CXP0) != 0)
@@ -402,19 +461,28 @@ namespace BizHawk.Emulation.Consoles.Atari
 					hmove.player0Latch = true;
 					hmove.player0Cnt = 0;
 
+					hmove.missile0Latch = true;
+					hmove.missile0inf = false;
+					hmove.missile0Cnt = 0;
+
 					hmove.player1Latch = true;
 					hmove.player1Cnt = 0;
+
+					hmove.missile1Latch = true;
+					hmove.missile1Cnt = 0;
 
 					hmove.ballLatch = true;
 					hmove.ballCnt = 0;
 
 					hmove.hmoveCnt = 0;
 
-					hmove.hmoveCnt++;
+					//hmove.hmoveCnt++;
 					hmove.hmoveJustStarted = false;
 					hmove.lateHBlankReset = true;
+					hmove.decCntEnabled = false;
 				}
-				else
+
+				if (hmove.decCntEnabled)
 				{
 					// Actually do stuff only evey 4 pulses
 					if (hmove.hmoveCnt == 0)
@@ -438,6 +506,32 @@ namespace BizHawk.Emulation.Consoles.Atari
 							}
 						}
 
+						if (hmove.missile0Latch)
+						{
+							if (hmove.missile0Cnt == 15)
+							{ }
+
+							// If the move counter still has a bit in common with the HM register
+							if (hmove.missile0inf || ((15 - hmove.missile0Cnt) ^ ((player0.missile.HM & 0x07) | ((~(player0.missile.HM & 0x08)) & 0x08))) != 0x0F)
+							{
+								// "Clock-Stuffing"
+								player0.missile.tick();
+
+								// Increase by 1, max of 15
+								hmove.missile0Cnt++;
+								hmove.missile0Cnt %= 16;
+								if (hmove.missile0Cnt == 0)
+								{
+									hmove.missile0inf = true;
+								}
+							}
+							else
+							{
+								hmove.missile0Latch = false;
+								hmove.missile0Cnt = 0;
+							}
+						}
+
 						if (hmove.player1Latch)
 						{
 							// If the move counter still has a bit in common with the HM register
@@ -453,6 +547,24 @@ namespace BizHawk.Emulation.Consoles.Atari
 							else
 							{
 								hmove.player1Latch = false;
+							}
+						}
+
+						if (hmove.missile1Latch)
+						{
+							// If the move counter still has a bit in common with the HM register
+							if (((15 - hmove.missile1Cnt) ^ ((player1.missile.HM & 0x07) | ((~(player1.missile.HM & 0x08)) & 0x08))) != 0x0F)
+							{
+								// "Clock-Stuffing"
+								player1.missile.tick();
+
+								// Increase by 1, max of 15
+								hmove.missile1Cnt++;
+								hmove.missile1Cnt %= 16;
+							}
+							else
+							{
+								hmove.missile1Latch = false;
 							}
 						}
 
@@ -474,17 +586,32 @@ namespace BizHawk.Emulation.Consoles.Atari
 							}
 						}
 
-						if (!hmove.player0Latch && !hmove.player1Latch && !hmove.ballLatch)
+						if (!hmove.player0Latch && !hmove.player1Latch && !hmove.ballLatch && !hmove.missile0Latch && !hmove.missile1Latch)
 						{
 							hmove.hmoveEnabled = false;
+							hmove.decCntEnabled = false;
+							hmove.hmoveDelayCnt = 0;
 						}
 					}
-					hmove.hmoveJustStarted = false;
+					//hmove.hmoveJustStarted = false;
 					hmove.hmoveCnt++;
 					hmove.hmoveCnt %= 4;
 				}
-				
+
+				if (hmove.hmoveDelayCnt < 6)
+				{
+					hmove.hmoveDelayCnt++;
+				}
+
+				if (hmove.hmoveDelayCnt == 6)
+				{
+					hmove.hmoveDelayCnt++;
+					hmove.hmoveCnt = 0;
+					hmove.decCntEnabled = true;
+				}
 			}
+
+			
 
 			// Increment the hsync counter
 			hsyncCnt++;
@@ -522,6 +649,43 @@ namespace BizHawk.Emulation.Consoles.Atari
 		{
 			ushort maskedAddr = (ushort)(addr & 0x000F);
 			Console.WriteLine("TIA read:  " + maskedAddr.ToString("x"));
+			if (maskedAddr == 0x00) // CXM0P
+			{
+				return (byte)((((player0.missile.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXP0) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x01) // CXM1P
+			{
+				return (byte)((((player1.missile.collisions & CXP0) != 0) ? 0x80 : 0x00) | (((player1.missile.collisions & CXP1) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x02) // CXP0FB
+			{
+				return (byte)((((player0.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player0.collisions & CXBL) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x03) // CXP1FB
+			{
+				return (byte)((((player1.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player1.collisions & CXBL) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x04) // CXM0FB
+			{
+				return (byte)((((player0.missile.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXBL) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x05) // CXM1FB
+			{
+				return (byte)((((player1.missile.collisions & CXPF) != 0) ? 0x80 : 0x00) | (((player1.missile.collisions & CXBL) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x06) // CXBLPF
+			{
+				return (byte)(((ball.collisions & CXPF) != 0) ? 0x80 : 0x00);
+			}
+			else if (maskedAddr == 0x07) // CXPPMM
+			{
+				return (byte)((((player0.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXM1) != 0) ? 0x40 : 0x00));
+			}
+			else if (maskedAddr == 0x0C) // INPT4
+			{
+				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
+			}
+
 			return 0x00;
 		}
 
@@ -559,6 +723,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x04) // NUSIZ0
 			{
 				player0.nusiz = (byte)(value & 0x37);
+				player0.missile.size = (byte)((value & 0x30) >> 4);
 			}
 			else if (maskedAddr == 0x05) // NUSIZ1
 			{
@@ -615,6 +780,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player1.resetCnt = 0;
 			}
+			else if (maskedAddr == 0x12) // RESM0
+			{
+				player0.missile.hPosCnt = 160 - 4;
+			}
+			else if (maskedAddr == 0x13) // RESM1
+			{
+				player1.missile.hPosCnt = 160 - 4;
+			}
 			else if (maskedAddr == 0x14) // RESBL
 			{
 				ball.hPosCnt = 160-4;
@@ -636,6 +809,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player1.grp = value;
 				player0.dgrp = player0.grp;
+
+				// TODO: Find a game that uses this functionality and test it
+				ball.denabled = ball.enabled;
+			}
+			else if (maskedAddr == 0x1D) // ENAM0
+			{
+				player0.missile.enabled = (value & 0x02) != 0;
+			}
+			else if (maskedAddr == 0x1E) // ENAM1
+			{
+				player1.missile.enabled = (value & 0x02) != 0;
 			}
 			else if (maskedAddr == 0x1F) // ENABL
 			{
@@ -649,6 +833,14 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player1.HM = (byte)((value & 0xF0) >> 4);
 			}
+			else if (maskedAddr == 0x22) // HMM0
+			{
+				player0.missile.HM = (byte)((value & 0xF0) >> 4);
+			}
+			else if (maskedAddr == 0x23) // HMM1
+			{
+				player1.missile.HM = (byte)((value & 0xF0) >> 4);
+			}
 			else if (maskedAddr == 0x24) // HMBL
 			{
 				ball.HM = (byte)((value & 0xF0) >> 4);
@@ -661,20 +853,39 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player1.delay = (value & 0x01) != 0;
 			}
+			else if (maskedAddr == 0x27) // VDELBL
+			{
+				ball.delay = (value & 0x01) != 0;
+			}
+			else if (maskedAddr == 0x28) // RESMP0
+			{
+				player0.missile.resetToPlayer = (value & 0x02) != 0;
+			}
+			else if (maskedAddr == 0x29) // RESMP1
+			{
+				player1.missile.resetToPlayer = (value & 0x02) != 0;
+			}
 			else if (maskedAddr == 0x2A) // HMOVE
 			{
 				hmove.hmoveEnabled = true;
 				hmove.hmoveJustStarted = true;
+				hmove.hmoveDelayCnt = 0;
 			}
 			else if (maskedAddr == 0x2B) // HMCLR
 			{
 				player0.HM = 0;
+				player0.missile.HM = 0;
 				player1.HM = 0;
+				player1.missile.HM = 0;
 				ball.HM = 0;
 			}
 			else if (maskedAddr == 0x2C) // CXCLR
 			{
-
+				player0.collisions = 0;
+				player0.missile.collisions = 0;
+				player1.collisions = 0;
+				player1.missile.collisions = 0;
+				ball.collisions = 0;
 			}
 		}
 
