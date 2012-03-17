@@ -1675,7 +1675,13 @@ namespace BizHawk.MultiClient
 				if (LuaConsole1.IsRunning())
 				{
 					Global.MainForm.MainWait.Set();
-					LuaConsole1.WaitOne();
+					for (; ; )
+					{
+						//we need to run DoEvents in here so that we can use Control.Invoke to interact with the gui
+						//its all a godawful mess
+						if (LuaConsole1.WaitOne(10)) break;
+						Application.DoEvents();
+					}
 				}
 #endif
 
