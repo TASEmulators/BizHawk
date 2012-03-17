@@ -299,10 +299,10 @@ namespace BizHawk.MultiClient
 		{
 			//TODO: ask save
 			StopAllScripts();
+			ClearOutput();
 			luaList.Clear();
 			DisplayLuaList();
 			UpdateNumberOfScripts();
-
 		}
 
 		private void turnOffAllScriptsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -696,6 +696,11 @@ namespace BizHawk.MultiClient
 		}
 
 		private void clearToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			ClearOutput();
+		}
+
+		private void ClearOutput()
 		{
 			OutputBox.Text = "";
 		}
