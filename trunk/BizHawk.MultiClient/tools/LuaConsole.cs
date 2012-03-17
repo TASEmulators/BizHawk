@@ -13,27 +13,22 @@ namespace BizHawk.MultiClient
 {
 	public partial class LuaConsole : Form
 	{
-		//session file saving
 		//track changes
-		//new session
-		//open session
 		//recent session
-		//save/save as session
 		//options - autoload session
 		//options - disable scripts on load
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
 		//TODO: load scripts from recent scripts menu
 		//TODO: context menu & main menu - Edit is grayed out if seperator is highlighted
-		//Free lua object when toggling a lua script off?
-		//Fix up lua functions list display
 
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
-
+		string currentSessionFile = "";
 		List<LuaFiles> luaList = new List<LuaFiles>();
 		public LuaImplementation LuaImp;
 		string lastLuaFile = "";
+		bool changes = true; //TODO
 
 		private List<LuaFiles> GetLuaFileList()
 		{
@@ -282,12 +277,18 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (string.Compare(currentSessionFile, "") == 0) return;
 
+			if (changes)
+			{
+				SaveSession(currentSessionFile);
+				AddText('\n' + Path.GetFileName(currentSessionFile) + " saved.");
+			}
 		}
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+			SaveAs();
 		}
 
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -654,6 +655,7 @@ namespace BizHawk.MultiClient
 				RunLuaScripts();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
+				ClearOutput();
 			}
 		}
 
@@ -703,6 +705,86 @@ namespace BizHawk.MultiClient
 		private void ClearOutput()
 		{
 			OutputBox.Text = "";
+		}
+
+		private FileInfo GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			if (currentSessionFile.Length > 0)
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(currentSessionFile);
+				sfd.InitialDirectory = Path.GetDirectoryName(currentSessionFile);
+			}
+			else if (!(Global.Emulator is NullEmulator))
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+				
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
+			}
+			sfd.Filter = "Lua Session Files (*.luases)|*.luases|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
+
+		private void SaveAs()
+		{
+			var file = GetSaveFileFromUser();
+			if (file != null)
+			{
+				SaveSession(file.FullName);
+				currentSessionFile = file.FullName;
+				AddText('\n' + Path.GetFileName(currentSessionFile) + " saved.");
+				//Global.Config.Recent.RecentWatches.Add(file.FullName);
+			}
+		}
+
+		private bool SaveSession(string path)
+		{
+			var file = new FileInfo(path);
+
+			using (StreamWriter sw = new StreamWriter(path))
+			{
+				string str = "";
+				for (int i = 0; i < luaList.Count; i++)
+				{
+					if (!luaList[i].IsSeparator)
+					{
+						if (luaList[i].Enabled)
+							str += "1 ";
+						else
+							str += "0 ";
+
+						str += luaList[i].Path;
+					}
+				}
+				sw.WriteLine(str);
+			}
+
+			changes = false;
+			return true;
+		}
+
+		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			if (string.Compare(currentSessionFile, "") == 0) // || !changes) //TODO: changes
+			{
+				saveToolStripMenuItem.Enabled = false;
+			}
+			else
+			{
+				saveToolStripMenuItem.Enabled = true;
+			}
 		}
 	}
 }
