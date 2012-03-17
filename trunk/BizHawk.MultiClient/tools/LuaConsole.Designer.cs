@@ -235,6 +235,7 @@
 			this.recentSessionsToolStripMenuItem.Name = "recentSessionsToolStripMenuItem";
 			this.recentSessionsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
 			this.recentSessionsToolStripMenuItem.Text = "Recent Sessions";
+			this.recentSessionsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentSessionsToolStripMenuItem_DropDownOpened);
 			// 
 			// noneToolStripMenuItem1
 			// 
