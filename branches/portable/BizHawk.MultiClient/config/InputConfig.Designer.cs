@@ -205,7 +205,9 @@
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.DoubleBuffered = true;
+#if WINDOWS
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+#endif
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(418, 202);
