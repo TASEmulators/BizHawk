@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//render 241 scanlines (including 1 dummy at beginning)
 				for (int sl = 0; sl < 241; sl++)
 				{
+					ppur.status.cycle = 0;
+
 					//if (!reg_2001.PPUON)
 					//{
 					//    runppu(kLineTime);
@@ -442,8 +444,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{ }
 					else
 						runppu(1);
-					ppur.status.cycle = 0;
-				
 				} //scanline loop
 
 				ppur.status.sl = 241;
