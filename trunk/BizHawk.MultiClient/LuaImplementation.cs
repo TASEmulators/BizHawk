@@ -292,8 +292,8 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] JoypadFunctions = new string[] {
-			"set",
-			//"get",
+			//"set",
+			"get",
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
