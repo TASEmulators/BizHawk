@@ -334,6 +334,7 @@ namespace BizHawk.MultiClient
 
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
 
+			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
 			throttle.signal_unthrottle = unthrottled;
 			if (fastforward)
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
