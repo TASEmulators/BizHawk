@@ -287,8 +287,11 @@ namespace BizHawk.MultiClient
 
 		public static string[] MovieFunctions = new string[] {
 			"mode",
+			"isloaded",
 			"rerecordcount",
+			"length",
 			"stop",
+			//"rerecordcounting",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
@@ -1046,9 +1049,23 @@ namespace BizHawk.MultiClient
 		{
 			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
+		
 		public void movie_stop()
 		{
 			Global.MovieSession.Movie.StopMovie();
+		}
+
+		public bool movie_isloaded()
+		{
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
+				return false;
+			else
+				return true;
+		}
+
+		public int movie_length()
+		{
+			return Global.MovieSession.Movie.Length();
 		}
 
 		//----------------------------------------------------
