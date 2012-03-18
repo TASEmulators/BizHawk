@@ -291,6 +291,9 @@ namespace BizHawk.MultiClient
 			"rerecordcount",
 			"length",
 			"stop",
+			"filename",
+			"getreadonly",
+			"setreadonly",
 			//"rerecordcounting",
 		};
 
@@ -1066,6 +1069,30 @@ namespace BizHawk.MultiClient
 		public int movie_length()
 		{
 			return Global.MovieSession.Movie.Length();
+		}
+
+		public string movie_filename()
+		{
+			return Global.MovieSession.Movie.Filename;
+		}
+
+		public bool movie_getreadonly()
+		{
+			return Global.MainForm.ReadOnly;
+		}
+
+		public void movie_setreadonly(object lua_input)
+		{
+			int x = 0;
+			x++;
+			int y = x;
+
+			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
+				Global.MainForm.SetReadOnly(true);
+			else
+				Global.MainForm.SetReadOnly(false);
+
+
 		}
 
 		//----------------------------------------------------
