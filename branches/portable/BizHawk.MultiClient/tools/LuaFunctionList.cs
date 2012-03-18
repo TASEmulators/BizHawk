@@ -18,7 +18,9 @@ namespace BizHawk.MultiClient
 
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
+#if WINDOWS
 			FunctionBox.Text = Global.MainForm.LuaConsole1.LuaImp.LuaLibraryList;
+#endif
 		}
 
 		private void OK_Click(object sender, EventArgs e)

@@ -402,6 +402,7 @@ namespace BizHawk
 		/// <param name="index">Listview item's index.</param>
 		/// <param name="selected">Select the passed item?</param>
 		public void SelectItem(int index, bool selected) {
+#if Windows
 			IntPtr ptrItem = IntPtr.Zero;
 
 			try {
@@ -436,15 +437,18 @@ namespace BizHawk
 					Marshal.FreeHGlobal(ptrItem);
 				}
 			}
+#endif
 		}
 
 		private void SetVirtualItemCount() {
+#if WINDOWS
 			int result;
 			result = Win32.SendMessage(
 				this.Handle,
 				(int)ListViewMessages.LVM_SETITEMCOUNT,
 				itemCount,
 				0);
+#endif
 		}
 
 		protected void OnDispInfoNotice(ref Message m, bool useAnsi) {
@@ -490,6 +494,7 @@ namespace BizHawk
 		}
 
 		protected void OnCustomDrawNotice(ref System.Windows.Forms.Message m) {
+#if WINDOWS
 			NMLVCUSTOMDRAW cd = (NMLVCUSTOMDRAW)m.GetLParam(typeof(NMLVCUSTOMDRAW));
 			switch(cd.nmcd.dwDrawStage) {
 				case (int)CUSTOMDRAWDRAWSTAGEFLAGS.CDDS_ITEMPREPAINT:
@@ -507,6 +512,7 @@ namespace BizHawk
 					m.Result = new IntPtr((int)CUSTOMDRAWRETURNFLAGS.CDRF_DODEFAULT);
 					break;
 			}
+#endif
 		}
 		
 		/// <summary>
@@ -518,7 +524,7 @@ namespace BizHawk
 			ScrollEventHandler handler = this.Scroll;
 			if (handler != null) handler(this, e);
 		}
-
+#if WINDOWS
 		protected override void WndProc(ref System.Windows.Forms.Message m) {
 			NMHDR nm1;
 			bool messageProcessed = false;
@@ -579,6 +585,7 @@ namespace BizHawk
 				}
 			}
 		}
+#endif
 
 		public bool BlazingFast = false;
 
@@ -630,7 +637,9 @@ namespace BizHawk
 		}
 
 		public void ensureVisible(int index) {
+#if WINDOWS
 			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
+#endif
 		}
 
 		public void ensureVisible() {

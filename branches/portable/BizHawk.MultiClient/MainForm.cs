@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Threading;
 using System.Drawing;
@@ -73,7 +73,9 @@ namespace BizHawk.MultiClient
 			Global.MovieSession = new MovieSession();
 			Global.MovieSession.Movie = new Movie();
 			MainWait = new AutoResetEvent(false);
+#if WINDOWS
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
+#endif
 			InitializeComponent();
 			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
@@ -1151,6 +1153,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator = nextEmulator;
 				Global.Game = game;
 				SyncControls();
+				Global.Emulator.Controller = Global.ActiveController;
 
 				if (game.System == "NES")
 				{
@@ -2836,8 +2839,10 @@ namespace BizHawk.MultiClient
 
 		private void ShowConsole()
 		{
+#if WINDOWS
 			LogConsole.ShowConsole();
 			logWindowAsConsoleToolStripMenuItem.Enabled = false;
+#endif
 		}
 
 		private void HideConsole()

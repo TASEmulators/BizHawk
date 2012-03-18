@@ -26,7 +26,8 @@ public class ToolStripEx : ToolStrip
 			this.clickThrough = value;
 		}
 	}
-
+	
+#if WINDOWS
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
@@ -37,6 +38,7 @@ public class ToolStripEx : ToolStrip
 			m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
 		}
 	}
+#endif
 }
 
 /// <summary>
@@ -61,7 +63,8 @@ public class MenuStripEx : MenuStrip
 			this.clickThrough = value;
 		}
 	}
-
+	
+#if WINDOWS
 	protected override void WndProc(ref Message m)
 	{
 		base.WndProc(ref m);
@@ -72,6 +75,7 @@ public class MenuStripEx : MenuStrip
 			m.Result = (IntPtr)NativeConstants.MA_ACTIVATE;
 		}
 	}
+#endif
 }
 
 internal sealed class NativeConstants

@@ -57,11 +57,13 @@ namespace BizHawk.MultiClient
 			tooltip1.SetToolTip(this, "");
 		}
 
+#if WINDOWS
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
 			HideCaret(this.Handle);
 			base.OnMouseClick(e);
 		}
+#endif
 
 		private void InitializeBindings()
 		{
@@ -226,7 +228,8 @@ namespace BizHawk.MultiClient
 		{
 			e.Handled = true;
 		}
-
+		
+#if WINDOWS
 		protected override void WndProc(ref Message m)
 		{
 			switch (m.Msg)
@@ -257,9 +260,10 @@ namespace BizHawk.MultiClient
 					return;
 				}
 			}
-
+			
 			base.WndProc(ref m);
 		}
+#endif
 
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -273,7 +277,9 @@ namespace BizHawk.MultiClient
 		protected override void OnGotFocus(EventArgs e)
 		{
 			//base.OnGotFocus(e);
+#if WINDOWS
 			HideCaret(this.Handle);
+#endif
 			BackColor = HighlightedColor;
 		}
 

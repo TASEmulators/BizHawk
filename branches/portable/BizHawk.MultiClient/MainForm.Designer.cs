@@ -281,7 +281,9 @@
             this.configToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.NESToolStripMenuItem,
+#if WINDOWS //Todo: Figure out why this menu causes mono to blow up
             this.pCEToolStripMenuItem,
+#endif
             this.sMSToolStripMenuItem,
             this.tI83ToolStripMenuItem,
             this.gBToolStripMenuItem,

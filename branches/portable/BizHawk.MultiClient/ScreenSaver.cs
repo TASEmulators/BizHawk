@@ -33,7 +33,9 @@ namespace BizHawk.MultiClient
 		private static Int32 GetScreenSaverTimeout()
 		{
 			Int32 value = 0;
+#if WINDOWS
 			SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
+#endif
 			return value;
 		}
 
@@ -41,7 +43,9 @@ namespace BizHawk.MultiClient
 		private static void SetScreenSaverTimeout(Int32 Value)
 		{
 			int nullVar = 0;
+#if WINDOWS
 			SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, Value, ref nullVar, SPIF_SENDWININICHANGE);
+#endif
 		}
 	}
 }
