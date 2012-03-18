@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		IntBuffer b_banks_1k = new IntBuffer(8);
 		IntBuffer prg_banks_8k = new IntBuffer(4);
 		byte product_low, product_high;
+		int last_nt_read;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -54,7 +55,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("chr_mode", ref chr_mode);
 			ser.Sync("prg_mode", ref prg_mode);
 			ser.Sync("chr_reg_high", ref chr_reg_high);
-			ser.Sync("ab_mode", ref chr_reg_high);
+			ser.Sync("ab_mode", ref ab_mode);
 			ser.Sync("regs_a", ref regs_a);
 			ser.Sync("regs_b", ref regs_b);
 			ser.Sync("regs_prg", ref regs_prg);
@@ -62,6 +63,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("nt_fill_tile", ref nt_fill_tile);
 			ser.Sync("nt_fill_attrib", ref nt_fill_attrib);
 			ser.Sync("wram_bank", ref wram_bank);
+			ser.Sync("last_nt_read", ref last_nt_read);
 			ser.Sync("EXRAM", ref EXRAM, false);
 
 			if (ser.IsReader)
@@ -90,6 +92,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 					AssertPrg(128,256); AssertChr(128);
+					break;
+				case "NES-EKROM": //Gemfire (U)
+					AssertPrg(256); AssertChr(256);
 					break;
 				case "MAPPER5":
 					break;
@@ -139,12 +144,40 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			return (bank_8k << 13) | ofs;
 		}
 
+		//this could be handy, but probably not. I did it on accident.
+		//TileCoord ComputeTXTYFromPPUTiming(int visible_scanline, int cycle)
+		//{
+		//  int py = visible_scanline;
+		//  int px = cycle;
+		//  if (cycle > 260)
+		//  {
+		//    py++;
+		//    px -= 322;
+		//  }
+		//  else px += 16;
+		//  int tx = px / 8;
+		//  int ty = py / 8;
+		//  return new TileCoord(tx, ty);
+		//}
+
 		int MapCHR(int addr)
 		{
 			int bank_1k = addr >> 10;
 			int ofs = addr & ((1 << 10) - 1);
 
+			if (exram_mode == 1 && NES.ppu.ppuphase == Nintendo.NES.PPU.PPUPHASE.BG)
+			{
+				int exram_addr = last_nt_read;
+				int bank_4k = EXRAM[exram_addr] & 0x3F;
+				
+				bank_1k = bank_4k * 4;
+				bank_1k += chr_reg_high<<2;
+				ofs = addr & (4 * 1024 - 1);
+				goto MAPPED;
+			}
+
 			//wish this logic could be smaller..
+			//how does this KNOW that its in 8x16 sprites? the pattern of reads... emulate it that way..
 			if (NES.ppu.reg_2000.obj_size_16)
 			{
 				if (NES.ppu.ppuphase == NES.PPU.PPUPHASE.OBJ)
@@ -157,11 +190,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					bank_1k = a_banks_1k[bank_1k];
 				else
 					bank_1k = b_banks_1k[bank_1k];
-
-			//something like this..?
-			//bool special_sel = NES.ppu.reg_2000.obj_size_16 && NES.ppu.ppuphase == NES.PPU.PPUPHASE.OBJ;
-			//bool a_sel = special_sel || (!a_sel && ab_mode == 0);
-
+		
+			MAPPED:
 			bank_1k &= chr_bank_mask_1k;
 			addr = (bank_1k<<10)|ofs;
 			return addr;
@@ -177,6 +207,33 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else
 			{
 				addr -= 0x2000;
+				int nt_entry = addr & 0x3FF;
+				if (nt_entry < 0x3C0)
+				{
+					//track the last nametable entry read so that subsequent pattern and attribute reads will know which exram address to use
+					last_nt_read = nt_entry;
+				}
+				else
+				{
+					//attribute table
+					if (exram_mode == 1)
+					{
+						//attribute will be in the top 2 bits of the exram byte
+						int exram_addr = last_nt_read;
+						int attribute = EXRAM[exram_addr] >> 6;
+						//calculate tile address by getting x/y from last nametable
+						int tx = last_nt_read & 0x1F;
+						int ty = last_nt_read / 32;
+						//attribute table address is just these coords shifted
+						int atx = tx >> 1;
+						int aty = ty >> 1;
+						//figure out how we need to shift the attribute to fake out the ppu
+						int at_shift = ((aty & 1) << 1) + (atx & 1);
+						at_shift <<= 1;
+						attribute <<= at_shift;
+						return (byte)attribute;
+					}
+				}
 				int nt = addr >> 10;
 				int offset = addr & ((1<<10)-1);
 				nt = nt_modes[nt];
@@ -473,24 +530,28 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//MASTER LOGIC: something like this this might be enough to work, but i'll play with it later
 			//bank_1k >> (3 - chr_mode) << chr_mode | bank_1k & ( etc.etc.
 
+			//TODO - do these need to have the last arguments multiplied by 8,4,2 to map to the right banks?
 			switch (chr_mode)
 			{
 				case 0:
-					SetBank(a_banks_1k, 0, 8, regs_a[7]);
-					SetBank(b_banks_1k, 0, 8, regs_a[7]);
+					SetBank(a_banks_1k, 0, 8, regs_a[7] * 8);
+					SetBank(b_banks_1k, 0, 8, regs_b[3] * 8);
 					break;
 				case 1:
-					SetBank(a_banks_1k, 0, 4, regs_a[3]);
-					SetBank(a_banks_1k, 4, 4, regs_a[7]);
-					SetBank(b_banks_1k, 0, 4, regs_b[3]);
+					SetBank(a_banks_1k, 0, 4, regs_a[3] * 4);
+					SetBank(a_banks_1k, 4, 4, regs_a[7] * 4);
+					SetBank(b_banks_1k, 0, 4, regs_b[3] * 4);
+					SetBank(b_banks_1k, 4, 4, regs_b[3] * 4);
 					break;
 				case 2:
-					SetBank(a_banks_1k, 0, 2, regs_a[1]);
-					SetBank(a_banks_1k, 2, 2, regs_a[3]);
-					SetBank(a_banks_1k, 4, 2, regs_a[5]);
-					SetBank(a_banks_1k, 6, 2, regs_a[7]);
-					SetBank(b_banks_1k, 0, 2, regs_b[1]);
-					SetBank(b_banks_1k, 2, 2, regs_b[3]);
+					SetBank(a_banks_1k, 0, 2, regs_a[1] * 2);
+					SetBank(a_banks_1k, 2, 2, regs_a[3] * 2);
+					SetBank(a_banks_1k, 4, 2, regs_a[5] * 2);
+					SetBank(a_banks_1k, 6, 2, regs_a[7] * 2);
+					SetBank(b_banks_1k, 0, 2, regs_b[1] * 2);
+					SetBank(b_banks_1k, 2, 2, regs_b[3] * 2);
+					SetBank(b_banks_1k, 4, 2, regs_b[1] * 2);
+					SetBank(b_banks_1k, 6, 2, regs_b[3] * 2);
 					break;
 				case 3:
 					SetBank(a_banks_1k, 0, 1, regs_a[0]);
@@ -505,12 +566,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					SetBank(b_banks_1k, 1, 1, regs_b[1]);
 					SetBank(b_banks_1k, 2, 1, regs_b[2]);
 					SetBank(b_banks_1k, 3, 1, regs_b[3]);
+					SetBank(b_banks_1k, 4, 1, regs_b[0]);
+					SetBank(b_banks_1k, 5, 1, regs_b[1]);
+					SetBank(b_banks_1k, 6, 1, regs_b[2]);
+					SetBank(b_banks_1k, 7, 1, regs_b[3]);
 					break;
 			}
-			b_banks_1k[4] = b_banks_1k[0];
-			b_banks_1k[5] = b_banks_1k[1];
-			b_banks_1k[6] = b_banks_1k[2];
-			b_banks_1k[7] = b_banks_1k[3];
+
 
 		}
 
