@@ -329,6 +329,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "SxROM-JUNK":
 					break;
+				case "MAPPER1":
+					break;
 				default:
 					return false;
 			}

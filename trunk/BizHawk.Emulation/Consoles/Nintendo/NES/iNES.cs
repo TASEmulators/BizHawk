@@ -72,15 +72,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 //MAP PRG CHR WRAM VRAM BOARD
 static string ClassifyTable = @"
-0	16	0	8	8	NROM-HOMEBREW; some of blargg's test (sprite tests)
 0	16	8	8	0	NES-NROM-128; balloon fight, but its broken right now
 0	32	8	8	0	NES-NROM-256; super mario bros
+0	-1	-1	-1	-1	MAPPER0
 1	32	32	8	0	NES-SEROM; lolo
 1	128	0	8	0	NES-SNROM; zelda
 1	128	128	8	0	NES-SKROM; zelda 2
-1	32	0	8	8	NROM-HOMEBREW; instr_timing.nes
-1	64	0	8	8	NROM-HOMEBREW; instr_misc.nes
-1	80	0	8	8	NROM-HOMEBREW; blargg's cpu_interrupts.nes
+1	-1	-1	-1	-1	MAPPER1
 1	128	0	8	8	NES-SNROM; some of blargg's tests (apu) [TODO recheck as NROM-HOMEBREW]
 1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests) [TODO recheck as NROM-HOMEBREW]
 2	128	0	8	0	NES-UNROM; mega man
@@ -139,22 +137,27 @@ static string ClassifyTable = @"
 			{
 				fixed (iNES_HEADER* self = &this)
 				{
-					if (0 == Util.memcmp((char*)(self) + 0x7, "DiskDude", 8))
+					if (0 == Util.memcmp((byte*)(self) + 0x7, "DiskDude", 8))
 					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((char*)(self) + 0x7, "demiforce", 9))
+					if (0 == Util.memcmp((byte*)(self) + 0x7, "demiforce", 9))
 					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((char*)(self) + 0xA, "Ni03", 4))
+					if (0 == Util.memcmp((byte*)(self) + 0x8, "blargg", 6)) //found a test rom with this in there, mucking up the wram size
 					{
-						if (0 == Util.memcmp((char*)(self) + 0x7, "Dis", 3))
-							Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x8, 0, 6);
+					}
+
+					if (0 == Util.memcmp((byte*)(self) + 0xA, "Ni03", 4))
+					{
+						if (0 == Util.memcmp((byte*)(self) + 0x7, "Dis", 3))
+							Util.memset((byte*)(self) + 0x7, 0, 0x9);
 						else
-							Util.memset((char*)(self) + 0xA, 0, 0x6);
+							Util.memset((byte*)(self) + 0xA, 0, 0x6);
 					}
 				}
 			}

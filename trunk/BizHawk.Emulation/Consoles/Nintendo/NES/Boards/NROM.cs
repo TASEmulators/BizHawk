@@ -30,8 +30,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					AssertPrg(8, 16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
 					break;
 
-				case "NROM-HOMEBREW":
-					//whatever. who knows.
+				case "MAPPER0":
 					break;
 
 				default:
