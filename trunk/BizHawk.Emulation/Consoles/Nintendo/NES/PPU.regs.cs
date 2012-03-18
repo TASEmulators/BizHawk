@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				public int sl;
 				public bool rendering { get { return sl >= 0 && sl < 241; } }
-				public int cycle, end_cycle;
+				public int cycle;
 			}
 
 			//uses the internal counters concept at http://nesdev.icequake.net/PPU%20addressing.txt
@@ -94,7 +94,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("_ht", ref _ht);
 					ser.Sync("fh", ref fh);
 					ser.Sync("status.cycle", ref status.cycle);
-					ser.Sync("status.end_cycle", ref status.end_cycle);
+					int junk = 0;
+					ser.Sync("status.end_cycle", ref junk);
 					ser.Sync("status.sl", ref status.sl);
 				}
 
@@ -151,7 +152,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					fh = 0;
 					_fv = _v = _h = _vt = _ht = 0;
 					status.cycle = 0;
-					status.end_cycle = 341;
 					status.sl = 241;
 				}
 
