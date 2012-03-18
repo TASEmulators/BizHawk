@@ -1840,6 +1840,15 @@ namespace BizHawk.MultiClient
 			return image;
 		}
 
+		void TakeScreenshotToClipboard()
+		{
+			using (var img = MakeScreenshotImage())
+			{
+				System.Windows.Forms.Clipboard.SetImage(img);
+			}
+			Global.RenderPanel.AddMessage("Screenshot saved to clipboard.");
+		}
+
 		private void TakeScreenshot()
 		{
 			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
@@ -2850,5 +2859,6 @@ namespace BizHawk.MultiClient
 			displayLogWindowToolStripMenuItem.Checked = false;
 			logWindowAsConsoleToolStripMenuItem.Enabled = true;
 		}
+
 	}
 }

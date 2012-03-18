@@ -389,11 +389,7 @@ namespace BizHawk.MultiClient
 
 		private void screenshotClipboardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var img = MakeScreenshotImage())
-			{
-				System.Windows.Forms.Clipboard.SetImage(img);
-			}
-			Global.RenderPanel.AddMessage("Screenshot saved to clipboard.");
+			TakeScreenshotToClipboard();
 		}
 
 		private void savestate1toolStripMenuItem_Click(object sender, EventArgs e) { SaveState("QuickSave1"); }
@@ -826,6 +822,11 @@ namespace BizHawk.MultiClient
 			CloseROM();
 		}
 
+
+		private void screenshotToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TakeScreenshotToClipboard();
+		}
 
 		private void restartMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
