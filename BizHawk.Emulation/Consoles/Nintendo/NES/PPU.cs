@@ -147,8 +147,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < x; i++)
 				{
 					ppur.status.cycle++;
-					if (ppur.status.cycle == ppur.status.end_cycle)
-						ppur.status.cycle = 0;
 
 					//might not actually run a cpu cycle if there are none to be run right now
 					nes.RunCpuOne();
