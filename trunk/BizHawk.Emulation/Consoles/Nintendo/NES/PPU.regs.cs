@@ -330,8 +330,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				Reg2002_vblank_active = false;
 				PPUGenLatch = 0;
 				reg_2003 = 0;
-				OAM = new byte[0x100];
-				PALRAM = new byte[0x20];
 				vtoggle = false;
 				VRAMBuffer = 0;
 			}

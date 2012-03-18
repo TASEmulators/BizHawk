@@ -283,12 +283,13 @@ namespace BizHawk.Emulation.CPUs.M6502
 			//0x100
 			/*VOP_Fetch1*/ new Uop[] { Uop.Fetch1 },
 			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End },
+			/*VOP_RelativeStuff2*/ new Uop[] { Uop.RelBranch_Stage4, Uop.End },
 			//i assume these are dummy fetches.... maybe theyre just nops? supposedly these take 7 cycles so thats the only way i can make sense of it
 			//one of them might be the next instruction's fetch, and whatever fetch follows it.
 			//the interrupt would then take place if necessary, using a cached PC. but im not so sure about that.
 			/*VOP_NMI*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_NMI, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
 			/*VOP_IRQ*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_IRQ, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
-			/*VOP_RelativeStuff2*/ new Uop[] { Uop.RelBranch_Stage4, Uop.End },
+			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
 		};
 		
 		enum Uop
@@ -354,7 +355,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 			IncS, DecS,
 			PushPCL, PushPCH, PushPCH_B, PushP, PullP, PullPCL, PullPCH_NoInc, PushA, PullA_NoInc, PullP_NoInc,
-			PushP_BRK, PushP_NMI, PushP_IRQ,
+			PushP_BRK, PushP_NMI, PushP_IRQ, PushP_Reset, PushDummy,
 			FetchPCLVector, FetchPCHVector, //todo - may not need these ?? can reuse fetch2 and fetch3?
 
 			//[implied] and [accumulator]
@@ -388,9 +389,10 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 		const int VOP_Fetch1 = 256;
 		const int VOP_RelativeStuff = 257;
-		const int VOP_NMI = 258;
-		const int VOP_IRQ = 259;
-		const int VOP_RelativeStuff2 = 260;
+		const int VOP_RelativeStuff2 = 258;
+		const int VOP_NMI = 259;
+		const int VOP_IRQ = 260;
+		const int VOP_RESET = 261;
 
 		int opcode;
 		byte opcode2, opcode3; //opcode bytes.. theoretically redundant with the temp variables? who knows.
@@ -514,6 +516,14 @@ namespace BizHawk.Emulation.CPUs.M6502
 					WriteMemory((ushort)(S-- + 0x100), P);
 					FlagI = true; //is this right?
 					ea = NMIVector;
+					break;
+				case Uop.PushP_Reset:
+					ea = ResetVector;
+					S--;
+					FlagI = true;
+					break;
+				case Uop.PushDummy:
+					S--;
 					break;
 				case Uop.FetchPCLVector:
 					alu_temp = ReadMemory((ushort)ea);
@@ -1225,12 +1235,12 @@ namespace BizHawk.Emulation.CPUs.M6502
 					break;
 
 				case Uop.End_ISpecial:
-					opcode = 256;
+					opcode = VOP_Fetch1;
 					mi = 0;
 					goto RETRY;
 
 				case Uop.End:
-					opcode = 256;
+					opcode = VOP_Fetch1;
 					mi = 0;
 					iflag_pending = FlagI;
 					goto RETRY;

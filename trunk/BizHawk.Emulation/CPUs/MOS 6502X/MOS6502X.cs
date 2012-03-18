@@ -29,6 +29,14 @@ namespace BizHawk.Emulation.CPUs.M6502
 			iflag_pending = true;
 		}
 
+		public void NESSoftReset()
+		{
+			opcode = VOP_RESET;
+			mi = 0;
+			iflag_pending = true;
+			FlagI = true;
+		}
+
 		public string State()
 		{
 			int notused;
