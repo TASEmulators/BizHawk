@@ -1679,7 +1679,7 @@ namespace BizHawk.MultiClient
 					{
 						//we need to run DoEvents in here so that we can use Control.Invoke to interact with the gui
 						//its all a godawful mess
-						if (LuaConsole1.WaitOne(10)) break;
+						if (LuaConsole1.WaitOne(0)) break;
 						Application.DoEvents();
 					}
 				}
