@@ -1,0 +1,166 @@
+﻿//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb
+
+using System;
+using System.Globalization;
+using System.IO;
+using System.Collections.Generic;
+using BizHawk.Emulation.CPUs.M6502;
+
+
+namespace BizHawk.Emulation.Consoles.Nintendo
+{
+	partial class NES
+	{
+		public partial class PPU
+		{
+			public class DebugCallback
+			{
+				public int Scanline;
+				//public int Dot; //not supported
+				public Action Callback;
+			}
+
+			public DebugCallback NTViewCallback;
+			public DebugCallback PPUViewCallback;
+
+
+			//when the ppu issues a write it goes through here and into the game board
+			public void ppubus_write(int addr, byte value)
+			{
+				nes.board.AddressPPU(addr);
+				nes.board.WritePPU(addr, value);
+			}
+
+			//when the ppu issues a read it goes through here and into the game board
+			public byte ppubus_read(int addr, bool ppu)
+			{
+				//hardware doesnt touch the bus when the PPU is disabled
+				if (!reg_2001.PPUON && ppu)
+					return 0xFF;
+
+				nes.board.AddressPPU(addr);
+				
+				return nes.board.ReadPPU(addr);
+			}
+
+			//debug tools peek into the ppu through this
+			public byte ppubus_peek(int addr)
+			{
+				return nes.board.PeekPPU(addr);
+			}
+
+			public enum PPUPHASE
+			{
+				VBL, BG, OBJ
+			};
+			public PPUPHASE ppuphase;
+
+			NES nes;
+			public PPU(NES nes)
+			{
+				this.nes = nes;
+				Reset();
+			}
+
+			//state
+			int ppudead; //measured in frames
+			bool idleSynch;
+			int NMI_PendingInstructions;
+			byte PPUGenLatch;
+			bool vtoggle;
+			byte VRAMBuffer;
+			public byte[] OAM;
+			public byte[] PALRAM;
+
+			public void SyncState(Serializer ser)
+			{
+				byte temp8;
+
+				ser.Sync("ppudead", ref ppudead);
+				ser.Sync("idleSynch", ref idleSynch);
+				ser.Sync("NMI_PendingInstructions", ref NMI_PendingInstructions);
+				ser.Sync("PPUGenLatch", ref PPUGenLatch);
+				ser.Sync("vtoggle", ref vtoggle);
+				ser.Sync("VRAMBuffer", ref VRAMBuffer);
+
+				ser.Sync("OAM", ref OAM, false);
+				ser.Sync("PALRAM", ref PALRAM, false);
+
+				ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
+				ser.Sync("Reg2002_objhit", ref Reg2002_objhit);
+				ser.Sync("Reg2002_vblank_active", ref Reg2002_vblank_active);
+				ser.Sync("Reg2002_vblank_active_pending", ref Reg2002_vblank_active_pending);
+				ser.Sync("Reg2002_vblank_clear_pending", ref Reg2002_vblank_clear_pending);
+				ppur.SyncState(ser);
+				temp8 = reg_2000.Value; ser.Sync("reg_2000.Value", ref temp8); reg_2000.Value = temp8;
+				temp8 = reg_2001.Value; ser.Sync("reg_2001.Value", ref temp8); reg_2001.Value = temp8;
+				ser.Sync("reg_2003", ref reg_2003);
+
+				//don't sync framebuffer into binary (rewind) states
+				if(ser.IsText)
+					ser.Sync("xbuf", ref xbuf, false);
+			}
+
+			public void Reset()
+			{
+				regs_reset();
+				ppudead = 2;
+				idleSynch = true;
+			}
+
+			void TriggerNMI()
+			{
+				nes.cpu.NMI = true;
+			}
+
+			//this gets called once after each cpu instruction executes.
+			//anything that needs to happen at instruction granularity can get checked here
+			//to save having to check it at ppu cycle granularity
+			public void PostCpuInstructionOne()
+			{
+				if (NMI_PendingInstructions > 0)
+				{
+					NMI_PendingInstructions--;
+					if (NMI_PendingInstructions <= 0)
+					{
+						TriggerNMI();
+					}
+				}
+			}
+
+			void runppu(int x)
+			{
+				//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
+				for (int i = 0; i < x; i++)
+				{
+					ppur.status.cycle++;
+					if (ppur.status.cycle == ppur.status.end_cycle)
+						ppur.status.cycle = 0;
+
+					//might not actually run a cpu cycle if there are none to be run right now
+					nes.RunCpuOne();
+
+					if (Reg2002_vblank_active_pending)
+					{
+						if (Reg2002_vblank_active_pending)
+							Reg2002_vblank_active = 1;
+						Reg2002_vblank_active_pending = false;
+					}
+
+					if (Reg2002_vblank_clear_pending)
+					{
+						Reg2002_vblank_active = 0;
+						Reg2002_vblank_clear_pending = false;
+					}
+
+					nes.board.ClockPPU();
+				}
+			}
+
+			//hack
+			public bool PAL = false;
+			bool SPRITELIMIT = true;
+	
+		}
+	}
+}
