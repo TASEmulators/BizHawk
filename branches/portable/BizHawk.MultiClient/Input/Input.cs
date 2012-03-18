@@ -5,6 +5,8 @@ using System.Threading;
 using System.Windows.Forms;
 #if WINDOWS
 using SlimDX.DirectInput;
+#else
+using OpenTK.Input;
 #endif
 
 namespace BizHawk.MultiClient
@@ -56,18 +58,16 @@ namespace BizHawk.MultiClient
 
 		private Input()
 		{
-#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc);
 			UpdateThread.IsBackground = true;
 			UpdateThread.Start();
-#endif
 		}
 
 		public static void Initialize()
 		{
-#if WINDOWS
 			KeyInput.Initialize();
-			GamePad.Initialize();
+#if WINDOWS
+			GamePad.Initialize(); //Todo: Use OpenTK.Input.Gamepad on Mono
 #endif
 			Instance = new Input();
 		}
@@ -130,12 +130,15 @@ namespace BizHawk.MultiClient
 		WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
 		WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 
+#if WINDOWS
 		HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
+#else
+		HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight" });
+#endif
 		void HandleButton(string button, bool newState)
 		{
 			if (EnableIgnoreModifiers && IgnoreKeys.Contains(button)) return;
-			if (LastState[button] && newState) return;
-			if (!LastState[button] && !newState) return;
+			if (LastState[button] == newState) return;
 
 			var ie = new InputEvent();
 			ie.EventType = newState ? InputEventType.Press : InputEventType.Release;
@@ -198,19 +201,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-#if WINDOWS
+
 		void UpdateThreadProc()
 		{
 			for (; ; )
 			{
 				KeyInput.Update();
+#if WINDOWS
 				GamePad.UpdateAll();
+#endif
 
 				_Modifiers = KeyInput.GetModifierKeysAsKeys();
 				_NewEvents.Clear();
 
 				//analyze keys
+#if WINDOWS
 				var bleh = new HashSet<Key>();
+				
 				foreach(var k in KeyInput.State.PressedKeys)
 					bleh.Add(k);
 				foreach (var k in KeyInput.State.AllKeys)
@@ -218,7 +225,13 @@ namespace BizHawk.MultiClient
 						HandleButton(k.ToString(), true);
 					else
 						HandleButton(k.ToString(), false);
-
+#else
+				foreach(Key kb in Enum.GetValues(typeof(Key)))
+				{
+					HandleButton(kb.ToString(), KeyInput.IsPressed(kb));
+				}
+#endif
+#if WINDOWS
 				//analyze joysticks
 				for (int i = 0; i < GamePad.Devices.Count; i++)
 				{
@@ -232,7 +245,7 @@ namespace BizHawk.MultiClient
 					for (int b = 0; b < pad.Buttons.Length; b++)
 						HandleButton(jname + "B" + (b + 1), pad.Buttons[b]);
 				}
-
+#endif
 				bool swallow = !Global.MainForm.AllowInput;
 
 				foreach (var ie in _NewEvents)
@@ -248,7 +261,6 @@ namespace BizHawk.MultiClient
 				Thread.Sleep(10);
 			}
 		}
-#endif
 
 		public void Update()
 		{

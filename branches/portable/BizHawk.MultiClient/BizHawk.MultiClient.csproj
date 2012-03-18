@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,10 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BizHawk.MultiClient</RootNamespace>
     <AssemblyName>BizHawk.MultiClient</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>images\logo.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -34,7 +31,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
     <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -65,15 +61,7 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
-    <Reference Include="Newtonsoft.Json, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -90,9 +78,23 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="SlimDX, Version=2.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9" Condition=" '$(OS)' == 'Windows_NT' ">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="LuaInterface" Condition=" '$(OS)' == 'Windows_NT' ">
+      <HintPath>LuaInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT' ">
       <HintPath>..\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl">
+      <HintPath>..\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpCompress">
+      <HintPath>..\SharpCompress.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -185,7 +187,7 @@
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\InputAdapters.cs" />
-    <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Input\Keyboard.cs" />
     <Compile Include="LuaImplementation.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

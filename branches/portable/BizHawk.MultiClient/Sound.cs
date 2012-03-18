@@ -3,6 +3,9 @@ using BizHawk.Emulation.Sound;
 #if WINDOWS
 using SlimDX.DirectSound;
 using SlimDX.Multimedia;
+#else
+using OpenTK.Audio;
+using OpenTK.Audio.OpenAL;
 #endif
 
 using BizHawk.Emulation.Consoles.Nintendo;
@@ -201,23 +204,49 @@ namespace BizHawk.MultiClient
 	{
 		public bool Muted = false;
 		public bool needDiscard;
+		private AudioContext _audContext;
+		private int _audSource;
+		private const int BUFFER_SIZE = 735 * 2 * 2; // 1/60th of a second, 2 bytes per sample, 2 channels;
 
 		public Sound()
 		{
+			try
+			{
+				_audContext = new AudioContext();
+				_audSource = AL.GenSource();
+				//Buffer 6 frames worth of sound
+				//How large of a buffer we need seems to depend on the console
+				//For GameGear, 3 or 4 is usually fine. For NES I need 6 frames or it can get choppy.
+				for(int i=0; i<6; i++)
+				{
+					int buffer = AL.GenBuffer();
+					short[] samples = new short[BUFFER_SIZE>>1]; //Initialize with empty sound
+					AL.BufferData(buffer, ALFormat.Stereo16, samples, BUFFER_SIZE, 44100);
+					AL.SourceQueueBuffer(_audSource, buffer);
+				}
+			} 
+			catch( AudioException e)
+			{ 
+				System.Windows.Forms.MessageBox.Show("Unable to initalize sound. That's too bad.");
+			}
 		}
 
 		public void StartSound()
 		{
+			AL.SourcePlay(_audSource);
 		}
 
 		public bool IsPlaying = false;
 
 		public void StopSound()
 		{
+			AL.SourceStop(_audSource);
 		}
-
+		
 		public void Dispose()
 		{
+			//Todo: Should I delete the buffers?
+			AL.DeleteSource(_audSource);
 		}
 
 		int SNDDXGetAudioSpace()
@@ -227,7 +256,21 @@ namespace BizHawk.MultiClient
 
 		public void UpdateSound(ISoundProvider soundProvider)
 		{
-			soundProvider.DiscardSamples();
+			int amtToFill;
+			AL.GetSource(_audSource, ALGetSourcei.BuffersProcessed, out amtToFill);
+			for(int i=0; i<amtToFill; i++)
+			{
+				int buffer = AL.SourceUnqueueBuffer(_audSource);
+				short[] samples = new short[BUFFER_SIZE>>1];
+				soundProvider.GetSamples(samples);
+				
+				AL.BufferData(buffer, ALFormat.Stereo16, samples, BUFFER_SIZE, 44100);	
+				AL.SourceQueueBuffer(_audSource, buffer);
+			}
+			if(AL.GetSourceState(_audSource) != ALSourceState.Playing)
+			{
+				AL.SourcePlay(_audSource);
+			}
 		}
 
 		/// <summary>

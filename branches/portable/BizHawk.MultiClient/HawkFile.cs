@@ -112,7 +112,11 @@ namespace BizHawk.MultiClient
 		string rootPath;
 		string memberPath;
 		Stream rootStream, boundStream;
+#if WINDOWS
 		SevenZip.SevenZipExtractor extractor;
+#else
+		SharpCompress.Archive.IArchive extractor;
+#endif
 		List<ArchiveItem> archiveItems;
 
 		public HawkFile()
@@ -158,9 +162,9 @@ namespace BizHawk.MultiClient
 			else
 			{
 				autobind = autobind.ToUpperInvariant();
-				for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
+				for (int i = 0; i < archiveItems.Count; i++)
 				{
-					if (FixArchiveFilename(extractor.ArchiveFileNames[i]).ToUpperInvariant() == autobind)
+					if (archiveItems[i].name.ToUpperInvariant() == autobind)
 					{
 						BindArchiveMember(i);
 						return;
@@ -216,9 +220,25 @@ namespace BizHawk.MultiClient
 			if (boundStream != null) throw new InvalidOperationException("stream already bound!");
 
 			boundStream = new MemoryStream();
+#if WINDOWS
 			extractor.ExtractFile(archiveIndex, boundStream);
 			boundStream.Position = 0;
 			memberPath = FixArchiveFilename(extractor.ArchiveFileNames[archiveIndex]); //TODO - maybe go through our own list of names? maybe not, its indexes dont match..
+#else
+			int idx = -1;
+			var entries = extractor.Entries.GetEnumerator();
+			while(idx < archiveIndex && entries.MoveNext())
+			{
+				idx++;
+				if(idx == archiveIndex)
+				{
+					entries.Current.WriteTo(boundStream);
+					boundStream.Position = 0;
+					memberPath = FixArchiveFilename(entries.Current.FilePath);
+					break;
+				}
+			}
+#endif
 			Console.WriteLine("HawkFile bound " + CanonicalFullPath);
 
 			return this;
@@ -286,6 +306,7 @@ namespace BizHawk.MultiClient
 			}
 
 			var candidates = new List<int>();
+#if WINDOWS
 			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 			{
 				var e = extractor.ArchiveFileData[i];
@@ -302,6 +323,27 @@ namespace BizHawk.MultiClient
 					candidates.Add(i);
 				}
 			}
+#else
+			int idx = -1;
+			var entires = extractor.Entries.GetEnumerator();
+			while (entires.MoveNext())
+            {
+				idx++;
+				var e = entires.Current;
+				if(e.IsDirectory) continue;
+				var extension = Path.GetExtension(e.FilePath).ToUpperInvariant();
+				extension = extension.TrimStart('.');
+				if (extensions.Length == 0 || extension.In(extensions))
+				{
+					if (first)
+					{
+						BindArchiveMember(idx);
+						return this;
+					}
+					candidates.Add(idx);
+				}
+			}
+#endif
 			if (candidates.Count == 1)
 				BindArchiveMember(candidates[0]);
 			return this;
@@ -311,6 +353,7 @@ namespace BizHawk.MultiClient
 		void ScanArchive()
 		{
 			archiveItems = new List<ArchiveItem>();
+#if WINDOWS
 			for (int i = 0; i < extractor.ArchiveFileData.Count; i++)
 			{
 				var afd = extractor.ArchiveFileData[i];
@@ -321,17 +364,32 @@ namespace BizHawk.MultiClient
 				ai.index = i;
 				archiveItems.Add(ai);
 			}
+#else
+			int idx = -1;
+			var entries = extractor.Entries.GetEnumerator();
+			while (entries.MoveNext())
+            {
+				idx++;
+				if(entries.Current.IsDirectory) continue;
+				var ai = new ArchiveItem();
+				ai.name = FixArchiveFilename(entries.Current.FilePath);
+				ai.size = entries.Current.Size;
+				ai.index = idx;
+				archiveItems.Add(ai);
+			}
+#endif
 		}
 
 		private void AnalyzeArchive(string path)
 		{
-			SevenZip.FileChecker.ThrowExceptions = false;
 			int offset;
 			bool isExecutable;
 			foreach(string ext in NonArchiveExtensions)
 				if(Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower())
 					return;
-			
+
+#if WINDOWS			
+			SevenZip.FileChecker.ThrowExceptions = false;
 			if (SevenZip.FileChecker.CheckSignature(path, out offset, out isExecutable) != SevenZip.InArchiveFormat.None)
 			{
 				extractor = new SevenZip.SevenZipExtractor(path);
@@ -346,6 +404,27 @@ namespace BizHawk.MultiClient
 					archiveItems = null;
 				}
 			}
+#else
+			try
+			{
+				extractor = SharpCompress.Archive.ArchiveFactory.Open(path);
+				try
+				{
+					ScanArchive();
+				}
+				catch
+				{
+					extractor.Dispose();
+					extractor = null;
+					archiveItems = null;
+				}	
+			}
+			catch(Exception ex)
+			{
+				//Not an archive
+			}
+#endif
+			
 		}
 
 		public void Dispose()
