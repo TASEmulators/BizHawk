@@ -14,6 +14,8 @@ namespace BizHawk.MultiClient
 		int framesskipped;
 		public bool skipnextframe;
 
+		//if the emulator is paused then we dont need to behave as if unthrottled
+		public bool signal_paused;
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
 		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
@@ -64,9 +66,9 @@ namespace BizHawk.MultiClient
 				if (framestoskip < 1)
 					framestoskip += ffSkipRate;
 			}
-			else if ((/*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit) && allowSleep)
+			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit) && allowSleep)
 			{
-				SpeedThrottle();
+				SpeedThrottle(signal_paused);
 			}
 
 			if (cfg_autoframeskipenab && cfg_frameskiprate!=0)
@@ -303,7 +305,7 @@ namespace BizHawk.MultiClient
 		}
 
 
-		void SpeedThrottle()
+		void SpeedThrottle(bool paused)
 		{
 			AutoFrameSkip_BeforeThrottle();
 
@@ -322,7 +324,7 @@ namespace BizHawk.MultiClient
 					sleepy /= afsfreq;
 				else
 					sleepy = 0;
-				if (sleepy >= 10)
+				if (sleepy >= 10 || paused)
 				{
 					Thread.Sleep((int) (sleepy/2));
 						// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
