@@ -273,11 +273,13 @@ namespace BizHawk.MultiClient
 
 		void SyncPresentationMode()
 		{
-#if WINDOWS
 			bool gdi = Global.Config.DisplayGDI;
-
+#if WINDOWS
 			if (Global.Direct3D == null)
 				gdi = true;
+#else
+			if(OpenTK.Configuration.RunningOnMacOS)
+				gdi = true; //OpenTK on Mac OS X doesn't support OpenGL WinForms control right now. :-(
 #endif
 
 			if (renderTarget != null)
@@ -289,27 +291,39 @@ namespace BizHawk.MultiClient
 			if (retainedPanel != null) retainedPanel.Dispose();
 			if (Global.RenderPanel != null) Global.RenderPanel.Dispose();
 
+			try
+			{
+				if (gdi)
+					renderTarget = retainedPanel = new RetainedViewportPanel();
 #if WINDOWS
-			if (gdi)
+				else renderTarget = new ViewportPanel();
+#else
+				else
+				{
+					OpenGLRenderPanel glPanel = new OpenGLRenderPanel();
+					renderTarget = glPanel;
+					Global.RenderPanel = glPanel;
+				}
 #endif
-				renderTarget = retainedPanel = new RetainedViewportPanel();
-#if WINDOWS
-			else renderTarget = new ViewportPanel();
-#endif
+			}
+			catch
+			{
+				Global.Config.DisplayGDI = true;
+				SyncPresentationMode();
+				return;
+			}
 			Controls.Add(renderTarget);
 			Controls.SetChildIndex(renderTarget, 0);
 
 			renderTarget.Dock = DockStyle.Fill;
 			renderTarget.BackColor = Color.Black;
 
-#if WINDOWS
 			if (gdi)
 			{
-#endif
 				Global.RenderPanel = new SysdrawingRenderPanel(retainedPanel);
 				retainedPanel.ActivateThreaded();
-#if WINDOWS
 			}
+#if WINDOWS
 			else
 			{
 				try

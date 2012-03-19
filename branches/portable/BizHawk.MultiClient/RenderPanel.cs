@@ -11,6 +11,9 @@ using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
 using Font = SlimDX.Direct3D9.Font;
+#else
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
 #endif
 using BizHawk.Core;
 
@@ -132,8 +135,8 @@ namespace BizHawk.MultiClient
 			Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
 			int[] data = video.GetVideoBuffer();
 
-			Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
-			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 			//TODO - this is not very intelligent. no handling of pitch, for instance
 			Marshal.Copy(data, 0, bmpdata.Scan0, bmp.Width * bmp.Height);
@@ -549,6 +552,34 @@ namespace BizHawk.MultiClient
 			else
 				return "";
 		}
+	}
+#else
+	public class OpenGLRenderPanel : OpenTK.GLControl, IRenderer
+	{
+		public bool Resized { get; set; }
+		public string FPS { get; set; }
+		public string MT { get; set; }
+		public void Render(IVideoProvider video)
+		{
+			MakeCurrent();
+            int[] data = video.GetVideoBuffer();
+            int[] flipped = new int[data.Length]; //Cheap trick to avoid using a texture... for now.
+            int width = video.BufferWidth, height = video.BufferHeight;
+            for (int i = 0; i < height; i++)
+            {
+                Array.Copy(data, i*width, flipped, (width*(height-1-i)),width);
+            }
+            GL.PixelZoom(Width/width, Height/height);
+            GL.DrawPixels(video.BufferWidth, video.BufferHeight, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, flipped);
+            SwapBuffers();
+		}
+		public OpenGLRenderPanel() : base(new OpenTK.Graphics.GraphicsMode(new OpenTK.Graphics.ColorFormat(32),24),2,1,OpenTK.Graphics.GraphicsContextFlags.Default)
+		{
+			
+		}
+		public void AddMessage(string msg) { }
+		public void AddGUIText(string msg, int x, int y, bool alert) { }
+		public void ClearGUIText() { }
 	}
 #endif
 
