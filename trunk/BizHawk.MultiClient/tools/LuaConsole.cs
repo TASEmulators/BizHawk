@@ -14,7 +14,6 @@ namespace BizHawk.MultiClient
 	public partial class LuaConsole : Form
 	{
 		//options - autoload session
-		//options - disable scripts on load
 		//TODO: remember column widths
 		//TODO: restore column width on restore default settings
 
@@ -161,12 +160,17 @@ namespace BizHawk.MultiClient
 
 		private void LoadLuaFile(string path)
 		{
-			LuaFiles l = new LuaFiles("", path, true);
+			bool enabled = true;
+			if (Global.Config.DisableLuaScriptsOnLoad)
+				enabled = false;
+			LuaFiles l = new LuaFiles("", path, enabled);
 			luaList.Add(l);
 			LuaListView.ItemCount = luaList.Count;
 			LuaListView.Refresh();
 			Global.Config.RecentLua.Add(path);
-			LuaImp.DoLuaFile(path);
+
+			if (!Global.Config.DisableLuaScriptsOnLoad)
+				LuaImp.DoLuaFile(path);
 			changes = true;
 		}
 
@@ -195,6 +199,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
 			autoloadConsoleToolStripMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
+			disableScriptsOnLoadToolStripMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 		}
 
 		private void saveWindowPositionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -658,7 +663,11 @@ namespace BizHawk.MultiClient
 					s = s.Substring(2, s.Length - 2); //Get path
 
 					LuaFiles l = new LuaFiles(s);
-					l.Enabled = enabled;
+
+					if (!Global.Config.DisableLuaScriptsOnLoad)
+						l.Enabled = enabled;
+					else
+						l.Enabled = false;
 					luaList.Add(l);
 				}
 			}
@@ -990,6 +999,11 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[4].Visible = false;
 				contextMenuStrip1.Items[5].Visible = false;
 			}
+		}
+
+		private void disableScriptsOnLoadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisableLuaScriptsOnLoad ^= true;
 		}
 	}
 }
