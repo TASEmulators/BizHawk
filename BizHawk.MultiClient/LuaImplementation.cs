@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1099,15 +1100,25 @@ namespace BizHawk.MultiClient
 		//Joypad library
 		//----------------------------------------------------
 
+		public ControllerDefinition Type { get; set; }
+		string ControlType { get { return Type.Name; } }
+
 		//Currently sends all controllers, needs to control which ones it sends
 		public string joypad_get(object lua_input)
 		{
 			return Global.GetOutputControllersAsMnemonic();
 		}
 
-		public void joypad_set(object lua_input)
+		public void joypad_set(object button, object value)
 		{
-
+			if (button.GetType() != typeof(string) || value.GetType() != typeof(bool))
+			{
+				MessageBox.Show(
+					"Invalid parameter types " + button.GetType().ToString() + ", " + button.GetType().ToString() + "."
+				);
+				return;
+			}
+			Global.RenderPanel.AddMessage("Button: " + button + ", Value: " + value.ToString());
 		}
 
 		//----------------------------------------------------
