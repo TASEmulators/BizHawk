@@ -1121,7 +1121,7 @@ namespace BizHawk.MultiClient
 				);
 				return;
 			}
-			string result = "Button: " + button + ", Value: " + value.ToString();
+			Global.ClickyVirtualPadController.Click(button.ToString());
 		}
 
 		//----------------------------------------------------
