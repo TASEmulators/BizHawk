@@ -396,7 +396,7 @@ namespace BizHawk.MultiClient
 
 				//Note: here it will get flagged many times redundantly potentially, 
 				//but this avoids it being flagged falsely when the user did not select an index
-				//Changes();
+				changes = true;
 			}
 			List<int> i = new List<int>();
 			for (int z = 0; z < indexes.Count; z++)
@@ -405,7 +405,6 @@ namespace BizHawk.MultiClient
 			LuaListView.SelectedIndices.Clear();
 			for (int z = 0; z < i.Count; z++)
 				LuaListView.SelectItem(i[z], true);
-
 
 			DisplayLuaList();
 		}
@@ -429,7 +428,7 @@ namespace BizHawk.MultiClient
 
 				//Note: here it will get flagged many times redundantly potnetially, 
 				//but this avoids it being flagged falsely when the user did not select an index
-				//Changes();
+				changes = true;
 			}
 
 			List<int> i = new List<int>();
@@ -437,8 +436,8 @@ namespace BizHawk.MultiClient
 				i.Add(indexes[z] + 1);
 
 			LuaListView.SelectedIndices.Clear();
-			//for (int z = 0; z < i.Count; z++)
-			//CheatListView.SelectItem(i[z], true); //TODO
+			for (int z = 0; z < i.Count; z++)
+				LuaListView.SelectItem(i[z], true);
 
 			DisplayLuaList();
 		}
