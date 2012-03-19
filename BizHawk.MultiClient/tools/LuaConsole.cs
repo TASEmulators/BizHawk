@@ -489,7 +489,7 @@ namespace BizHawk.MultiClient
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == (".lua"))
+			if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
 			{
 				LoadLuaFile(filePaths[0]);
 				DisplayLuaList();
