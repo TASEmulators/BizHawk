@@ -220,6 +220,7 @@ namespace BizHawk.MultiClient
 		public int LuaConsoleWndy = -1;
 		public int LuaConsoleWidth = -1;
 		public int LuaConsoleHeight = -1;
+		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings
 		public bool AutoLoadRamWatch = false;
