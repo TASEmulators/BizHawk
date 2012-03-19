@@ -213,7 +213,7 @@ namespace BizHawk.MultiClient
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
-		public bool AutoLoadLua = false;
+		public bool AutoLoadLuaSession = false;
 		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;
 		public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
@@ -221,6 +221,7 @@ namespace BizHawk.MultiClient
 		public int LuaConsoleWidth = -1;
 		public int LuaConsoleHeight = -1;
 		public bool DisableLuaScriptsOnLoad = false;
+		
 
 		// RamWatch Settings
 		public bool AutoLoadRamWatch = false;
