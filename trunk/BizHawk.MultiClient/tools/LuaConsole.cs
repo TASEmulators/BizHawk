@@ -172,7 +172,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenLuaFile()
 		{
-			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|All Files|*.*");
+			var file = GetFileFromUser("Lua Scripts (*.lua)|*.lua|Text (*.text)|*.txt|All Files|*.*");
 			if (file != null)
 			{
 				LoadLuaFile(file.FullName);
