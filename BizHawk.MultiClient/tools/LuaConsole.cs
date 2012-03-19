@@ -78,6 +78,8 @@ namespace BizHawk.MultiClient
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
 			LoadConfigSettings();
+			if (Global.Config.AutoLoadLuaSession)
+				LoadSessionFromRecent(Global.Config.RecentLuaSession.GetRecentFileByPosition(0));
 		}
 
 		private void StopScript(int x)
@@ -199,6 +201,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.LuaConsoleSaveWindowPosition;
 			autoloadConsoleToolStripMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
+			autoloadSessionToolStripMenuItem.Checked = Global.Config.AutoLoadLuaSession;
 			disableScriptsOnLoadToolStripMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 		}
 
@@ -1004,6 +1007,11 @@ namespace BizHawk.MultiClient
 		private void disableScriptsOnLoadToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisableLuaScriptsOnLoad ^= true;
+		}
+
+		private void autoloadSessionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.AutoLoadLuaSession ^= true;
 		}
 	}
 }

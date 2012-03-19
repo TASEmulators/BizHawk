@@ -69,6 +69,7 @@
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.disableScriptsOnLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,6 +79,7 @@
 			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
+			this.autoloadSessionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -90,7 +92,6 @@
 			this.LuaListView = new BizHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.disableScriptsOnLoadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip2.SuspendLayout();
@@ -108,7 +109,7 @@
             this.toolStripSeparator4,
             this.stopAllScriptsToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 142);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 120);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// toggleScriptToolStripMenuItem
@@ -411,6 +412,7 @@
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveWindowPositionToolStripMenuItem,
             this.autoloadConsoleToolStripMenuItem,
+            this.autoloadSessionToolStripMenuItem,
             this.disableScriptsOnLoadToolStripMenuItem,
             this.toolStripSeparator5,
             this.restoreWindowSizeToolStripMenuItem});
@@ -432,6 +434,13 @@
 			this.autoloadConsoleToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.autoloadConsoleToolStripMenuItem.Text = "Autoload Console";
 			this.autoloadConsoleToolStripMenuItem.Click += new System.EventHandler(this.autoloadConsoleToolStripMenuItem_Click);
+			// 
+			// disableScriptsOnLoadToolStripMenuItem
+			// 
+			this.disableScriptsOnLoadToolStripMenuItem.Name = "disableScriptsOnLoadToolStripMenuItem";
+			this.disableScriptsOnLoadToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.disableScriptsOnLoadToolStripMenuItem.Text = "Disable Scripts on Load";
+			this.disableScriptsOnLoadToolStripMenuItem.Click += new System.EventHandler(this.disableScriptsOnLoadToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -503,6 +512,13 @@
 			this.NumberOfScripts.Size = new System.Drawing.Size(66, 13);
 			this.NumberOfScripts.TabIndex = 4;
 			this.NumberOfScripts.Text = " 0 Scripts     ";
+			// 
+			// autoloadSessionToolStripMenuItem
+			// 
+			this.autoloadSessionToolStripMenuItem.Name = "autoloadSessionToolStripMenuItem";
+			this.autoloadSessionToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.autoloadSessionToolStripMenuItem.Text = "Autoload Session";
+			this.autoloadSessionToolStripMenuItem.Click += new System.EventHandler(this.autoloadSessionToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -630,13 +646,6 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
-			// disableScriptsOnLoadToolStripMenuItem
-			// 
-			this.disableScriptsOnLoadToolStripMenuItem.Name = "disableScriptsOnLoadToolStripMenuItem";
-			this.disableScriptsOnLoadToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.disableScriptsOnLoadToolStripMenuItem.Text = "Disable Scripts on Load";
-			this.disableScriptsOnLoadToolStripMenuItem.Click += new System.EventHandler(this.disableScriptsOnLoadToolStripMenuItem_Click);
-			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -731,5 +740,6 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem disableScriptsOnLoadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
     }
 }
