@@ -105,6 +105,13 @@ namespace BizHawk.MultiClient
 		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
 		public string PathTI83Cheats = Path.Combine(".", "Cheats");
 
+		public string BaseAtari = Path.Combine(".", "Atari");
+		public string PathAtariROMs = ".";
+		public string PathAtariSavestates = Path.Combine(".", "State");
+		public string PathAtariSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathAtariScreenshots = Path.Combine(".", "Screenshots");
+		public string PathAtariCheats = Path.Combine(".", "Cheats");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
