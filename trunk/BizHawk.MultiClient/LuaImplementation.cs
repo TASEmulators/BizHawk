@@ -299,7 +299,7 @@ namespace BizHawk.MultiClient
 		};
 
 		public static string[] JoypadFunctions = new string[] {
-			//"set",
+			"set",
 			"get",
 		};
 
@@ -1100,13 +1100,16 @@ namespace BizHawk.MultiClient
 		//Joypad library
 		//----------------------------------------------------
 
-		public ControllerDefinition Type { get; set; }
-		string ControlType { get { return Type.Name; } }
-
 		//Currently sends all controllers, needs to control which ones it sends
-		public string joypad_get(object lua_input)
+		public LuaTable joypad_get()
 		{
-			return Global.GetOutputControllersAsMnemonic();
+			LuaTable buttons = new LuaTable(1, lua);
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+				buttons[button] = Global.ControllerOutput[button];
+			buttons["clear"] = null;
+			buttons["getluafunctionslist"] = null;
+			buttons["output"] = null;
+			return buttons;
 		}
 
 		public void joypad_set(object button, object value)
@@ -1118,7 +1121,7 @@ namespace BizHawk.MultiClient
 				);
 				return;
 			}
-			Global.RenderPanel.AddMessage("Button: " + button + ", Value: " + value.ToString());
+			string result = "Button: " + button + ", Value: " + value.ToString();
 		}
 
 		//----------------------------------------------------
