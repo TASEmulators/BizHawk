@@ -244,8 +244,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool missile1Latch;
 			public bool ballLatch;
 
-			public bool missile0inf;
-
 			public byte hmoveDelayCnt;
 
 			public byte hmoveCnt;
@@ -265,6 +263,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 
 		bool vblankEnabled = false;
+		bool vsyncEnabled = false;
 
 		List<uint[]> scanlinesBuffer = new List<uint[]>();
 		uint[] scanline = new uint[160];
@@ -462,7 +461,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 					hmove.player0Cnt = 0;
 
 					hmove.missile0Latch = true;
-					hmove.missile0inf = false;
 					hmove.missile0Cnt = 0;
 
 					hmove.player1Latch = true;
@@ -512,7 +510,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 							{ }
 
 							// If the move counter still has a bit in common with the HM register
-							if (hmove.missile0inf || ((15 - hmove.missile0Cnt) ^ ((player0.missile.HM & 0x07) | ((~(player0.missile.HM & 0x08)) & 0x08))) != 0x0F)
+							if (((15 - hmove.missile0Cnt) ^ ((player0.missile.HM & 0x07) | ((~(player0.missile.HM & 0x08)) & 0x08))) != 0x0F)
 							{
 								// "Clock-Stuffing"
 								player0.missile.tick();
@@ -520,10 +518,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 								// Increase by 1, max of 15
 								hmove.missile0Cnt++;
 								hmove.missile0Cnt %= 16;
-								if (hmove.missile0Cnt == 0)
-								{
-									hmove.missile0inf = true;
-								}
 							}
 							else
 							{
@@ -699,14 +693,24 @@ namespace BizHawk.Emulation.Consoles.Atari
 				if ((value & 0x02) != 0)
 				{
 					// Frame is complete, output to buffer
-					outputFrame();
-					scanlinesBuffer.Clear();
-					frameComplete = true;
-					hsyncCnt = 0;
+					vsyncEnabled = true;
 				}
 				else
 				{
+					// When VSYNC is disabled, this will be the first line of the new frame
 					Console.WriteLine("TIA VSYNC Off");
+
+					// write to frame buffer
+					outputFrame();
+					// Clear all from last frame
+					scanlinesBuffer.Clear();
+					//Frame is done
+					frameComplete = true;
+
+					vsyncEnabled = false;
+
+					// Do not reset hsync, since we're on the first line of the new frame
+					//hsyncCnt = 0;
 				}
 			}
 			else if (maskedAddr == 0x01) // VBLANK
