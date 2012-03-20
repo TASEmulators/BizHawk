@@ -97,7 +97,7 @@ namespace BizHawk.MultiClient
 			LuaImp.Close();
 			LuaImp = new LuaImplementation(this);
 			changes = true;
-            UpdateNumberOfScripts();
+			UpdateNumberOfScripts();
 		}
 
 		public void Restart()
@@ -163,35 +163,35 @@ namespace BizHawk.MultiClient
 
 		private void LoadLuaFile(string path)
 		{
-            if (LuaAlreadyInSession(path) == false)
-            {
-                bool enabled = true;
-                if (Global.Config.DisableLuaScriptsOnLoad)
-                    enabled = false;
-                LuaFiles l = new LuaFiles("", path, enabled);
-                luaList.Add(l);
-                LuaListView.ItemCount = luaList.Count;
-                LuaListView.Refresh();
-                Global.Config.RecentLua.Add(path);
+			if (LuaAlreadyInSession(path) == false)
+			{
+				bool enabled = true;
+				if (Global.Config.DisableLuaScriptsOnLoad)
+					enabled = false;
+				LuaFiles l = new LuaFiles("", path, enabled);
+				luaList.Add(l);
+				LuaListView.ItemCount = luaList.Count;
+				LuaListView.Refresh();
+				Global.Config.RecentLua.Add(path);
 
-                if (!Global.Config.DisableLuaScriptsOnLoad)
-                    LuaImp.DoLuaFile(path);
-                changes = true;
-            }
-            else
-            {
-                for (int i = 0; i < luaList.Count; i++)
-                {
-                    if (path == luaList[i].Path && luaList[i].Enabled == false)
-                    {
-                        luaList[i].Toggle();
-                        LuaListView.Refresh();
-                        RunLuaScripts();
-                        changes = true;
-                        break;
-                    }
-                }
-            }
+				if (!Global.Config.DisableLuaScriptsOnLoad)
+					LuaImp.DoLuaFile(path);
+				changes = true;
+			}
+			else
+			{
+				for (int i = 0; i < luaList.Count; i++)
+				{
+					if (path == luaList[i].Path && luaList[i].Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
+					{
+						luaList[i].Toggle();
+						LuaListView.Refresh();
+						RunLuaScripts();
+						changes = true;
+						break;
+					}
+				}
+			}
 		}
 
 		private void OpenLuaFile()
@@ -361,7 +361,7 @@ namespace BizHawk.MultiClient
 				indexes.Clear();
 				DisplayLuaList();
 			}
-            UpdateNumberOfScripts();
+			UpdateNumberOfScripts();
 		}
 
 		private void removeScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -499,24 +499,24 @@ namespace BizHawk.MultiClient
 		private void LoadLuaFromRecent(string path)
 		{
 			LoadLuaFile(path);
-            UpdateNumberOfScripts();
+			UpdateNumberOfScripts();
 		}
 
-        private bool LuaAlreadyInSession(string path)
-        {
-            bool Validated = false;
-            for (int i = 0; i < luaList.Count; i++)
-            {
-                if (path == luaList[i].Path)
-                {
-                    Validated = true;
-                    break;
-                }
-            }
-            return Validated;
-        }
+		private bool LuaAlreadyInSession(string path)
+		{
+			bool Validated = false;
+			for (int i = 0; i < luaList.Count; i++)
+			{
+				if (path == luaList[i].Path)
+				{
+					Validated = true;
+					break;
+				}
+			}
+			return Validated;
+		}
 
-        private void LuaConsole_DragDrop(object sender, DragEventArgs e)
+		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
@@ -614,7 +614,7 @@ namespace BizHawk.MultiClient
 
 		private void cutToolStripButton_Click(object sender, EventArgs e)
 		{
-            Toggle();
+			Toggle();
 			RemoveScript();
 		}
 
@@ -775,7 +775,7 @@ namespace BizHawk.MultiClient
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");
-				
+
 			}
 			else
 			{
