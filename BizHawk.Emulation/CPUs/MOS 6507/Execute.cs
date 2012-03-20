@@ -1230,7 +1230,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1265,7 +1264,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1300,7 +1298,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1334,7 +1331,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1379,7 +1375,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1407,7 +1402,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1446,7 +1440,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
@@ -1481,7 +1474,6 @@ FlagT = true;// this seems wrong
 							FlagV = ((A ^ value8) & (A ^ temp) & 0x80) != 0;
 							FlagC = (hi & 0xFF00) == 0;
 							A = (byte)((lo & 0x0F) | (hi & 0xF0));
-							PendingCycles--;
 						}
 						else
 						{
