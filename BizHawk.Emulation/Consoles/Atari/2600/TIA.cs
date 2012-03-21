@@ -642,7 +642,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public byte ReadMemory(ushort addr)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x000F);
-			Console.WriteLine("TIA read:  " + maskedAddr.ToString("x"));
 			if (maskedAddr == 0x00) // CXM0P
 			{
 				return (byte)((((player0.missile.collisions & CXP1) != 0) ? 0x80 : 0x00) | (((player0.missile.collisions & CXP0) != 0) ? 0x40 : 0x00));
@@ -686,7 +685,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public void WriteMemory(ushort addr, byte value)
 		{
 			ushort maskedAddr = (ushort)(addr & 0x3f);
-			Console.WriteLine("TIA write:  " + maskedAddr.ToString("x"));
 
 			if (maskedAddr == 0x00) // VSYNC
 			{
@@ -698,7 +696,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 				else
 				{
 					// When VSYNC is disabled, this will be the first line of the new frame
-					Console.WriteLine("TIA VSYNC Off");
 
 					// write to frame buffer
 					outputFrame();

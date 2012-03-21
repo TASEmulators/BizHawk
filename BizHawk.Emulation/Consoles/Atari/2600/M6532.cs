@@ -8,104 +8,118 @@ namespace BizHawk.Emulation.Consoles.Atari
 	// Emulates the M6532 RIOT Chip
 	public partial class M6532
 	{
-		MOS6507 Cpu;
-		public byte[] ram;
-		public int timerStartValue;
-		public int timerFinishedCycles;
-		public int timerShift;
-
-		bool interruptEnabled = false;
-		bool interruptTriggered = false;
-
 		Atari2600 core;
 
-		public byte swchb = 0x0B;
+		public int timerCyclesRemaining = 0;
+		public int timerShift = 0;
+
+		bool interruptEnabled = false;
+		bool interruptFlag = false;
+
+		public byte ddra = 0x00;
+		public byte ddrb = 0x00;
 
 		public bool resetOccured = false;
-		public int totalCycles = 0;
 
-		public M6532(MOS6507 cpu, byte[] ram, Atari2600 core)
+		public M6532(Atari2600 core)
 		{
-			Cpu = cpu;
-			this.ram = ram;
 			this.core = core;
 
-			// Apparently this will break for some games (Solaris and H.E.R.O.). We shall see
-			timerFinishedCycles = 0;
-
+			// Apparently starting the timer at 0 will break for some games (Solaris and H.E.R.O.). We shall see
+			timerCyclesRemaining = 0;
+			interruptEnabled = false;
+			interruptFlag = false;
 		}
 
 		public void tick()
 		{
-			totalCycles++;
+			timerCyclesRemaining--;
+			if (timerCyclesRemaining == 0 && interruptEnabled)
+			{
+				interruptFlag = true;
+			}
 		}
 
 		public byte ReadMemory(ushort addr)
 		{
-			ushort maskedAddr;
+			// Register Select (?)
+			bool RS = (addr & 0x0200) != 0;
 
-			if ((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+			if (!RS)
 			{
-				maskedAddr = (ushort)(addr & 0x007f);
-				Console.WriteLine("6532 ram read: " + maskedAddr.ToString("x"));
-				return ram[maskedAddr];
+				// Read Ram
+				ushort maskedAddr = (ushort)(addr & 0x007f);
+				return core.ram[maskedAddr];
 			}
 			else
 			{
-				maskedAddr = (ushort)(addr & 0x0007);
-				if (maskedAddr == 0x04 || maskedAddr == 0x06)
+				ushort registerAddr = (ushort)(addr & 0x0007);
+				if (registerAddr == 0x00)
 				{
-					Console.WriteLine("6532 timer read: " + maskedAddr.ToString("x"));
+					// Read Output reg A
+					// Combine readings from player 1 and player 2
+					byte temp = (byte)(core.ReadControls1() & 0xF0 | ((core.ReadControls2() >> 4) & 0x0F));
+					temp = (byte)(temp & ~ddra);
+					return temp;
+				}
+				else if (registerAddr == 0x01)
+				{
+					// Read DDRA
+					return ddra;
+				}
+				else if (registerAddr == 0x02)
+				{
+					// Read Output reg B
+					byte temp = core.ReadConsoleSwitches();
+					temp = (byte)(temp & ~ddrb);
+					return temp;
 
-					// Calculate the current value on the timer
-					int timerCurrentValue = timerFinishedCycles - totalCycles;
+					/*
+					// TODO: Rewrite this!
+					bool temp = resetOccured;
+					resetOccured = false;
+					return (byte)(0x0A | (temp ? 0x00 : 0x01));
+					 * */
+				}
+				else if (registerAddr == 0x03)
+				{
+					// Read DDRB
+					return ddrb;
+				}
+				else if ((registerAddr & 0x5) == 0x4)
+				{
+					// Bit 0x0080 contains interrupt enable/disable
+					interruptEnabled = (addr & 0x0080) != 0;
 
-					interruptTriggered = false;
-
-					// If the timer has not finished, shift the value down for the game
-					if (totalCycles < timerFinishedCycles)
+					// The interrupt flag will be reset whenever the Timer is access by a read or a write
+					// However, the reading of the timer at the same time the interrupt occurs will not reset the interrupt flag
+					// (M6532 Datasheet)
+					if (timerCyclesRemaining != 0)
 					{
-						return (byte)(((timerCurrentValue) >> timerShift) & 0xFF);
+						interruptFlag = false;
+					}	
+
+					// If there is still time on the timer (or its 0), return the lowest byte
+					if (timerCyclesRemaining >= 0)
+					{
+						return (byte)(((timerCyclesRemaining) >> timerShift) & 0xFF);
 					}
-					// Other wise, return the last 8 bits from how long ago it triggered
 					else
 					{
-						interruptTriggered = true;
-						return (byte)(timerCurrentValue & 0xFF);
+						return (byte)(timerCyclesRemaining & 0xFF);
 					}
-				}
-				else
-				{
-					Console.WriteLine("6532 register read: " + maskedAddr.ToString("x"));
-					if (maskedAddr == 0x00) // SWCHA
-					{
-						return core.ReadControls1();
-						//return 0xFF;
-					}
-					else if (maskedAddr == 0x01) // SWACNT
-					{
-						
-					}
-					else if (maskedAddr == 0x02) // SWCHB
-					{
-						bool temp = resetOccured;
-						resetOccured = false;
-						return (byte)(0x0A | (temp ? 0x00 : 0x01));
-					}
-					else if (maskedAddr == 0x03) // SWBCNT
-					{
 
-					}
-					else if (maskedAddr == 0x05) // interrupt
+				}
+				else if ((registerAddr & 0x5) == 0x5)
+				{
+					// Read interrupt flag
+					if (interruptEnabled && interruptFlag)
 					{
-						if ((timerFinishedCycles - totalCycles >= 0)|| (interruptEnabled && interruptTriggered))
-						{
-							return 0x00;
-						}
-						else
-						{
-							return 0x80;
-						}
+						return 0x00;
+					}
+					else
+					{
+						return 0x80;
 					}
 				}
 			}
@@ -115,39 +129,81 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			ushort maskedAddr;
+			// Register Select (?)
+			bool RS = (addr & 0x0200) != 0;
 
-			if ((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+			// If the RS bit is not set, this is a ram write
+			if (!RS)
 			{
-				maskedAddr = (ushort)(addr & 0x007f);
-				Console.WriteLine("6532 ram write: " + maskedAddr.ToString("x"));
-				ram[maskedAddr] = value;
+				ushort maskedAddr = (ushort)(addr & 0x007f);
+				core.ram[maskedAddr] = value;
 			}
 			else
 			{
-				maskedAddr = (ushort)(addr & 0x0007);
-				if ((addr & 0x14) == 0x14)
+				// If bit 0x0010 is set, and bit 0x0004 is set, this is a timer write
+				if ((addr & 0x0014) == 0x0014)
 				{
-					int[] shift = new int[] {0,3,6,10};
-					timerShift = shift[addr & 0x03];
+					ushort registerAddr = (ushort)(addr & 0x0007);
 
-					// Store the number of cycles for the timer
-					timerStartValue = value << timerShift;
+					// Bit 0x0080 contains interrupt enable/disable
+					interruptEnabled = (addr & 0x0080) != 0;
 
-					// Calculate when the timer will be finished
-					timerFinishedCycles = timerStartValue + totalCycles;
+					// The interrupt flag will be reset whenever the Timer is access by a read or a write
+					// (M6532 datasheet)
 
-					Console.WriteLine("6532 timer write:  " + maskedAddr.ToString("x"));
-
-					interruptEnabled = ((addr & 0x08) != 0);
+					if (registerAddr == 0x04)
+					{
+						// Write to Timer/1
+						timerShift = 0;
+						timerCyclesRemaining = value << timerShift;
+						interruptFlag = false;
+					}
+					else if (registerAddr == 0x05)
+					{
+						// Write to Timer/8
+						timerShift = 3;
+						timerCyclesRemaining = value << timerShift;
+						interruptFlag = false;
+					}
+					else if (registerAddr == 0x06)
+					{
+						// Write to Timer/64
+						timerShift = 6;
+						timerCyclesRemaining = value << timerShift;
+						interruptFlag = false;
+					}
+					else if (registerAddr == 0x07)
+					{
+						// Write to Timer/1024
+						timerShift = 10;
+						timerCyclesRemaining = value << timerShift;
+						interruptFlag = false;
+					}
 				}
-				else if ((addr & 0x04) == 0 && (maskedAddr & 0x03) == 0x02)
+				// If bit 0x0004 is not set, bit 0x0010 is ignored and
+				// these are register writes
+				else if ((addr & 0x0004) == 0)
 				{
-					swchb = value; 
-				}
-				else
-				{
-					Console.WriteLine("6532 register write: " + maskedAddr.ToString("x"));
+					ushort registerAddr = (ushort)(addr & 0x0007);
+
+					if (registerAddr == 0x00)
+					{
+						// Write Output reg A
+					}
+					else if (registerAddr == 0x01)
+					{
+						// Write DDRA
+						ddra = value;
+					}
+					else if (registerAddr == 0x02)
+					{
+						// Write Output reg B
+					}
+					else if (registerAddr == 0x03)
+					{
+						// Write DDRB
+						ddrb = value;
+					}
 				}
 			}
 		}
