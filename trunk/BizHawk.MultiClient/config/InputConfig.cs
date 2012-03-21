@@ -26,6 +26,7 @@ namespace BizHawk.MultiClient
 			"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS", 
 			"COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW",
 			"Y", "2nd", "MODE", "Del", ",", "SIN"}; //TODO: display shift / alpha names too, Also order these like on the calculator
+		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
 		private string CurSelectConsole;
@@ -61,6 +62,109 @@ namespace BizHawk.MultiClient
 			//    return oldmap.Substring(0, x + 2) + button;
 			//else
 			return button;
+		}
+
+		private void DoAtari()
+		{
+			Label TempLabel;
+			InputWidget TempTextBox;
+			this.Text = ControllerStr + "Atari";
+			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
+			int jpad = this.ControllComboBox.SelectedIndex;
+			string[] ButtonMappings = new string[AtariControlList.Length];
+
+			if (jpad < 1)
+			{
+				ButtonMappings[0] = Global.Config.Atari2600Controller[jpad].Up;
+				ButtonMappings[1] = Global.Config.Atari2600Controller[jpad].Down;
+				ButtonMappings[2] = Global.Config.Atari2600Controller[jpad].Left;
+				ButtonMappings[3] = Global.Config.Atari2600Controller[jpad].Right;
+				ButtonMappings[4] = Global.Config.Atari2600Controller[jpad].Button;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600Controller[jpad].Enabled;
+			}
+			else
+			{
+				ButtonMappings[0] = Global.Config.Atari2600AutoController[1 - jpad].Up;
+				ButtonMappings[1] = Global.Config.Atari2600AutoController[1 - jpad].Down;
+				ButtonMappings[2] = Global.Config.Atari2600AutoController[1 - jpad].Left;
+				ButtonMappings[3] = Global.Config.Atari2600AutoController[1 - jpad].Right;
+				ButtonMappings[4] = Global.Config.Atari2600AutoController[1 - jpad].Button;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600AutoController[1 - jpad].Enabled;
+			}
+
+			Changed = true;
+			Labels.Clear();
+			TextBoxes.Clear();
+
+			for (int i = 0; i < AtariControlList.Length; i++)
+			{
+				TempLabel = new Label();
+				TempLabel.Text = AtariControlList[i];
+				TempLabel.Location = new Point(8, 20 + (i * 24));
+				Labels.Add(TempLabel);
+				TempTextBox = new InputWidget();
+				TempTextBox.Location = new Point(48, 20 + (i * 24));
+				TextBoxes.Add(TempTextBox);
+				TempTextBox.SetBindings(ButtonMappings[i]);
+				ButtonsGroupBox.Controls.Add(TempTextBox);
+				ButtonsGroupBox.Controls.Add(TempLabel);
+			}
+			
+			Changed = true;
+		}
+
+		private void UpdateAtari(int prev)
+		{
+			ButtonsGroupBox.Controls.Clear();
+			InputWidget TempBox;
+			Label TempLabel;
+
+			if (prev < 1)
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.Atari2600Controller[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.Atari2600Controller[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.Atari2600Controller[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.Atari2600Controller[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.Atari2600Controller[prev].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Button);
+				TempBox.Dispose();
+
+				Global.Config.Atari2600Controller[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			else
+			{
+				TempBox = TextBoxes[0] as InputWidget;
+				Global.Config.Atari2600AutoController[prev - 1].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Up);
+				TempBox.Dispose();
+				TempBox = TextBoxes[1] as InputWidget;
+				Global.Config.Atari2600AutoController[prev - 1].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Down);
+				TempBox.Dispose();
+				TempBox = TextBoxes[2] as InputWidget;
+				Global.Config.Atari2600AutoController[prev - 1].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Left);
+				TempBox.Dispose();
+				TempBox = TextBoxes[3] as InputWidget;
+				Global.Config.Atari2600AutoController[prev - 1].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Right);
+				TempBox.Dispose();
+				TempBox = TextBoxes[4] as InputWidget;
+				Global.Config.Atari2600AutoController[prev - 1].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Button);
+				TempBox.Dispose();
+
+				Global.Config.Atari2600Controller[prev - 1].Enabled = IDX_CONTROLLERENABLED.Checked;
+			}
+			TempBox.Dispose();
+			for (int i = 0; i < AtariControlList.Length; i++)
+			{
+				TempLabel = Labels[i] as Label;
+				TempLabel.Dispose();
+			}
 		}
 
 		private void DoSMS()
@@ -860,6 +964,9 @@ namespace BizHawk.MultiClient
 
 		private void InputConfig_Load(object sender, EventArgs e)
 		{
+			if (Global.MainForm.INTERIM)
+				SystemComboBox.Items.Add("Atari"); //When Atari is ready, add this in the designer instead
+
 			AutoTab.Checked = Global.Config.InputConfigAutoTab;
 			SetAutoTab();
 			prevWidth = Size.Width;
@@ -890,6 +997,9 @@ namespace BizHawk.MultiClient
 						break;
 					case "NES":
 						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("NES");
+						break;
+					case "A26":
+						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Atari");
 						break;
 					default:
 						this.SystemComboBox.SelectedIndex = 0;
@@ -955,6 +1065,11 @@ namespace BizHawk.MultiClient
 					this.Width = prevWidth;
 					this.Height = prevHeight;
 					break;
+				case "Atari":
+					joypads = 1;
+					this.Width = prevWidth;
+					this.Height = prevHeight;
+					break;
 			}
 			ControllComboBox.Items.Clear();
 			for (int i = 0; i < joypads; i++)
@@ -997,6 +1112,9 @@ namespace BizHawk.MultiClient
 				case "NES":
 					DoNES();
 					break;
+				case "Atari":
+					DoAtari();
+					break;
 			}
 			CurSelectController = ControllComboBox.SelectedIndex;
 			SetFocus();
@@ -1022,6 +1140,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "NES":
 					UpdateNES(CurSelectController);
+					break;
+				case "Atari":
+					UpdateAtari(CurSelectController);
 					break;
 			}
 			Changed = false;
