@@ -822,7 +822,7 @@ namespace BizHawk.MultiClient
 						else
 							str += "0 ";
 
-						str += luaList[i].Path;
+						str += luaList[i].Path + "\n";
 					}
 				}
 				sw.WriteLine(str);

@@ -356,8 +356,8 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void emu_frameadvance()
 		{
-			LuaWait.Set();
 			Global.MainForm.MainWait.WaitOne();
+            LuaWait.Set();
 		}
 
 		public void emu_pause()
