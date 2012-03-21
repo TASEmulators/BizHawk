@@ -17,7 +17,7 @@ namespace BizHawk
 		public Atari2600(GameInfo game, byte[] rom)
 		{
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0, (a, v) => { }));
+			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
