@@ -719,9 +719,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
+				int count = 0;
 				while (hsyncCnt > 0)
 				{
+					count++;
 					execute(1);
+
+					// Add a cycle to the cpu every 3 TIA clocks (corrects timer error in M6532)
+					if (count % 3 == 0)
+					{
+						core.m6532.tick();
+					}
 				}
 			}
 			else if (maskedAddr == 0x04) // NUSIZ0

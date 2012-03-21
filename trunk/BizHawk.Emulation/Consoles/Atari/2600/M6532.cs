@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public byte swchb = 0x0B;
 
 		public bool resetOccured = false;
-
+		public int totalCycles = 0;
 
 		public M6532(MOS6507 cpu, byte[] ram, Atari2600 core)
 		{
@@ -33,6 +33,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 			// Apparently this will break for some games (Solaris and H.E.R.O.). We shall see
 			timerFinishedCycles = 0;
 
+		}
+
+		public void tick()
+		{
+			totalCycles++;
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -53,12 +58,12 @@ namespace BizHawk.Emulation.Consoles.Atari
 					Console.WriteLine("6532 timer read: " + maskedAddr.ToString("x"));
 
 					// Calculate the current value on the timer
-					int timerCurrentValue = timerFinishedCycles - Cpu.TotalExecutedCycles;
+					int timerCurrentValue = timerFinishedCycles - totalCycles;
 
 					interruptTriggered = false;
 
 					// If the timer has not finished, shift the value down for the game
-					if (Cpu.TotalExecutedCycles < timerFinishedCycles)
+					if (totalCycles < timerFinishedCycles)
 					{
 						return (byte)(((timerCurrentValue) >> timerShift) & 0xFF);
 					}
@@ -93,7 +98,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 					else if (maskedAddr == 0x05) // interrupt
 					{
-						if ((timerFinishedCycles - Cpu.TotalExecutedCycles >= 0)|| (interruptEnabled && interruptTriggered))
+						if ((timerFinishedCycles - totalCycles >= 0)|| (interruptEnabled && interruptTriggered))
 						{
 							return 0x00;
 						}
@@ -130,7 +135,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					timerStartValue = value << timerShift;
 
 					// Calculate when the timer will be finished
-					timerFinishedCycles = timerStartValue + Cpu.TotalExecutedCycles;
+					timerFinishedCycles = timerStartValue + totalCycles;
 
 					Console.WriteLine("6532 timer write:  " + maskedAddr.ToString("x"));
 
