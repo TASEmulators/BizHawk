@@ -27,18 +27,57 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool resetToPlayer;
 			public byte hPosCnt;
 			public byte size;
+			public byte number;
 			public byte HM;
 			public byte collisions;
 
 			public bool tick()
 			{
 				bool result = false;
+
+				// At hPosCnt == 0, start drawing the missile, if enabled
 				if (hPosCnt < (1 << size))
 				{
 					if (enabled && !resetToPlayer)
 					{
 						// Draw the missile
 						result = true;
+					}
+				}
+				
+				if ((number & 0x07) == 0x01 || ((number & 0x07) == 0x03))
+				{
+					if (hPosCnt >= 16 && hPosCnt <= (16 + (1 << size) - 1) )
+					{
+						if (enabled && !resetToPlayer)
+						{
+							// Draw the missile
+							result = true;
+						}
+					}
+				}
+
+				if (((number & 0x07) == 0x02 || ((number & 0x07) == 0x03) || ((number & 0x07) == 0x06)))
+				{
+					if (hPosCnt >= 32 && hPosCnt <= (32 + (1 << size) - 1) )
+					{
+						if (enabled && !resetToPlayer)
+						{
+							// Draw the missile
+							result = true;
+						}
+					}
+				}
+
+				if ((number & 0x07) == 0x04 || (number & 0x07) == 0x06)
+				{
+					if (hPosCnt >= 64 && hPosCnt <= (64 + (1 << size) - 1) )
+					{
+						if (enabled && !resetToPlayer)
+						{
+							// Draw the missile
+							result = true;
+						}
 					}
 				}
 
@@ -733,10 +772,13 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				player0.nusiz = (byte)(value & 0x37);
 				player0.missile.size = (byte)((value & 0x30) >> 4);
+				player0.missile.number = (byte)(value & 0x07);
 			}
 			else if (maskedAddr == 0x05) // NUSIZ1
 			{
 				player1.nusiz = (byte)(value & 0x37);
+				player1.missile.size = (byte)((value & 0x30) >> 4);
+				player1.missile.number = (byte)(value & 0x07);
 			}
 			else if (maskedAddr == 0x06) // COLUP0
 			{
