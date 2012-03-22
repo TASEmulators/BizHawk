@@ -34,7 +34,9 @@ namespace BizHawk
 			Name = "Atari 2600 Basic Controller",
 			BoolButtons =
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", "Reset"
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
+				"Reset",
 			}
 		};
 
