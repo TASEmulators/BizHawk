@@ -91,6 +91,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER033":
+					break;
 				case "TAITO-TC0190FMC":
 				case "TAITO-TC0350FMR":
 					AssertPrg(128); AssertChr(128,256); AssertWram(0); AssertVram(0);

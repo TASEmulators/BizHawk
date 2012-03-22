@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//contrary to expectations, some NROM games may have WRAM if theyve been identified through iNES. lame.
 			switch (Cart.board_type)
 			{
+				case "MAPPER000":
+					break;
+
 				case "HVC-NROM-256": //super mario bros.
 				case "NES-NROM-256": //10 yard fight
 				case "HVC-RROM": //balloon fight
@@ -28,9 +31,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "HVC-HROM": //Donkey Kong Jr. (J)
 				case "JALECO-JF-01": //Exerion (J)
 					AssertPrg(8, 16, 32); AssertChr(8); AssertVram(0); AssertWram(0, 8);
-					break;
-
-				case "MAPPER0":
 					break;
 
 				default:

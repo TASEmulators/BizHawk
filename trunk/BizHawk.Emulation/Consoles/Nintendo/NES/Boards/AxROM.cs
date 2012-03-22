@@ -21,6 +21,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER007":
+					bus_conflict = false;
+					break;
+
 				case "NES-ANROM": //marble madness
 					AssertPrg(128); AssertChr(0); AssertVram(8); AssertWram(0); 
 					bus_conflict = false;

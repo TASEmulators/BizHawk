@@ -18,6 +18,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER184":
+					break;
+
 				case "SUNSOFT-1":
 					//this will catch fantasy zone, which isn't emulated the same as the other SUNSOFT-1 boards
 					if (Cart.pcb == "SUNSOFT-4")

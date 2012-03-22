@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER068":
+					break;
 				case "SUNSOFT-4":
 					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
 					break;

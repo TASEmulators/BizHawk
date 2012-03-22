@@ -32,8 +32,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER071":
+					break;
 				case "CAMERICA-ALGN": //Linus Spacehead's Cosmic Crusade (U)
-					AssertPrg(128,256); AssertChr(0); AssertWram(0); AssertVram(8);
+					AssertPrg(128,256); AssertChr(0); AssertWram(0); 
+					AssertVram(8,16); //zero 22-mar-2012 - added 16 here as a hack to make micro machines (aladdin) load. should remove this after it is fixed in the DB
 					break;
 				case "CAMERICA-BF9093": //Big Nose Freaks Out (U)
 					AssertPrg(64,128,256); AssertChr(0); AssertWram(0); AssertVram(8);
@@ -116,6 +119,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER232":
+					break;
 				case "CAMERICA-ALGQ": //Quattro Adventure (U)
 				case "CAMERICA-9096": //Quattro Arcade (U)
 					AssertPrg(256); AssertChr(0); AssertWram(0); AssertVram(8);

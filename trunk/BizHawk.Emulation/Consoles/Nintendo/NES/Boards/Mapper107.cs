@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
-				case "Mapper107":
+				case "MAPPER107":
 					AssertPrg(128); AssertChr(64); AssertWram(8); AssertVram(0); AssertBattery(false);
 					break;
 				default:

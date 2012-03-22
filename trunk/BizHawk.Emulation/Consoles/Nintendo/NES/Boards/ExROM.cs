@@ -90,13 +90,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "MAPPER005":
+					break;
 				case "NES-ELROM": //Castlevania 3 - Dracula's Curse (U)
 					AssertPrg(128,256); AssertChr(128);
 					break;
 				case "NES-EKROM": //Gemfire (U)
 					AssertPrg(256); AssertChr(256);
-					break;
-				case "MAPPER5":
 					break;
 				default:
 					return false;

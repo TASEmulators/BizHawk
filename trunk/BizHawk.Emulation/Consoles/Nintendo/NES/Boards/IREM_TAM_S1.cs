@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER097":
+					break;
 				case "IREM-TAM-S1":
 					break;
 				default:

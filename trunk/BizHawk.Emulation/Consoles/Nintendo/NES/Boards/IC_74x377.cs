@@ -22,6 +22,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER011":
+					break;
+
 				case "Discrete_74x377-FLEX":
 					break;
 				case "COLORDREAMS-74*377":
