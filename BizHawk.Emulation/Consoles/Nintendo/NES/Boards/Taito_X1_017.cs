@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			base.SyncState(ser);
 			ser.Sync("prg_regs_8k", ref prg_regs_8k);
 			ser.Sync("chr_regs_1k", ref chr_regs_1k);
-			ser.Sync("ChrMOde", ref ChrMode);
+			ser.Sync("ChrMode", ref ChrMode);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -85,6 +85,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER082":
+					break;
 				case "TAITO-X1-017":
 					break;
 				default:

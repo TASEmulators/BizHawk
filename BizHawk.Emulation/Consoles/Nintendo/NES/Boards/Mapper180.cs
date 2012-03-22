@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER180":
+					break;
 				case "HVC-UNROM+74HC08":
 					break;
 				default:

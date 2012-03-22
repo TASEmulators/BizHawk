@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER152":
+					break;
 				case "TAITO-74*161/161/32":
 					break;
 				default:

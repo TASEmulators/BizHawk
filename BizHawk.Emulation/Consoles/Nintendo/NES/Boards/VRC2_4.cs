@@ -96,6 +96,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			fix_chr = (b) => b;
 			switch (Cart.board_type)
 			{
+				case "MAPPER021":
+				case "MAPPER022":
+				case "MAPPER023":
+				case "MAPPER025":
+					throw new InvalidOperationException("someone will need to bug me to set these up for failsafe mapping");
+
 				case "KONAMI-VRC-4":
 					AssertPrg(128,256); AssertChr(128,256); AssertVram(0); AssertWram(0,2,8);
 					type = 4;

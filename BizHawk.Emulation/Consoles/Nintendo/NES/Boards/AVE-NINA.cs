@@ -114,6 +114,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER079":
+					break;
+				case "MAPPER113":
+					break;
 				case "AVE-NINA-06": //Blackjack (U)
 				case "AVE-NINA-03": //F-15 City War (U)
 				case "AVE-MB-91": //Deathbots (U)

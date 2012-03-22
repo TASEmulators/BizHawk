@@ -67,6 +67,8 @@ PRG Setup:
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER080":
+					break;
 				case "TAITO-X1-005":
 					break;
 				default:

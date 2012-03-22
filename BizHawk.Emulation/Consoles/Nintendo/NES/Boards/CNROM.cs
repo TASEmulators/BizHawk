@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER003":
+					break;
+
 				case "NES-CNROM": //adventure island
 				case "HVC-CNROM":
 					AssertPrg(16, 32); AssertChr(8,16,32,64);
@@ -37,8 +40,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "AVE-74*161":
 					AssertPrg(32); AssertChr(64);
-					break;
-				case "MAPPER3":
 					break;
 				default:
 					return false;

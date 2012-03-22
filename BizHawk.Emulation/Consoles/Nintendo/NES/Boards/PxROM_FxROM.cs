@@ -41,6 +41,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER009":
+					break;
+				case "MAPPER010":
+					mmc4 = true;
+					break;
+
 				case "NES-PNROM": //punch-out!!
 				case "HVC-PEEOROM":
 					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0);

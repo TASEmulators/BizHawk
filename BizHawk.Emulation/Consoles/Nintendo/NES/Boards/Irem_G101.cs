@@ -41,6 +41,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER032":
+					break;
 				case "IREM-G101":
 					if (Cart.pcb == "UNAMED-IF-13")
 					{

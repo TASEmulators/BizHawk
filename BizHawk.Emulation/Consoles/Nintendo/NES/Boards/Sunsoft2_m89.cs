@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER089":
+					break;
 				case "SUNSOFT-2":
 					if (Cart.pcb != "SUNSOFT-3") return false;
 					break;

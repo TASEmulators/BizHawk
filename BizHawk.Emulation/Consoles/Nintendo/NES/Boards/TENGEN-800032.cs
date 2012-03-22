@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER064":
+					break;
 				case "TENGEN-800032":
 					AssertPrg(64,128); AssertChr(64,128); AssertVram(0); AssertWram(00);
 					break;

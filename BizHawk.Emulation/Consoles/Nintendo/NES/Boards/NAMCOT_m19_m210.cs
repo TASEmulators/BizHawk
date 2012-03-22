@@ -52,7 +52,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
-				//mapper 93:
+				case "MAPPER019":
+					break;
+				case "MAPPER210":
+					is210 = true;
+					break;
+
+				//mapper 19:
 				case "NAMCOT-163":
 					//final lap
 					//battle fleet

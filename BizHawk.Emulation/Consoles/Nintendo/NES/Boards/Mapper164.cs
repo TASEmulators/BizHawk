@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
-				case "Mapper164":
+				case "MAPPER164":
 					break;
 				default:
 					return false;
