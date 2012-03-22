@@ -24,7 +24,9 @@ namespace BizHawk.MultiClient
 			GenesisAutoController[0] = new GenControllerTemplate(true);
 
 			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
+			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[0] = new Atari2600ControllerTemplate(true);
+			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -483,8 +485,8 @@ namespace BizHawk.MultiClient
 		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
 
 		//Atari 2600 Settings
-		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[1];
-		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[1];
+		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
+		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
