@@ -1092,8 +1092,6 @@ namespace BizHawk.MultiClient
 				Global.MainForm.SetReadOnly(true);
 			else
 				Global.MainForm.SetReadOnly(false);
-
-
 		}
 
 		//----------------------------------------------------
