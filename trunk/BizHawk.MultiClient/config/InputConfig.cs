@@ -73,7 +73,7 @@ namespace BizHawk.MultiClient
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[AtariControlList.Length];
 
-			if (jpad < 1)
+			if (jpad < 2)
 			{
 				ButtonMappings[0] = Global.Config.Atari2600Controller[jpad].Up;
 				ButtonMappings[1] = Global.Config.Atari2600Controller[jpad].Down;
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 			InputWidget TempBox;
 			Label TempLabel;
 
-			if (prev < 1)
+			if (prev < 2)
 			{
 				TempBox = TextBoxes[0] as InputWidget;
 				Global.Config.Atari2600Controller[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Up);
