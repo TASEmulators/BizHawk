@@ -12,12 +12,14 @@ namespace BizHawk.MultiClient
 		public bool Enabled;
 		public bool IsSeparator;
 		public LuaInterface.Lua Thread;
+		public bool FrameWaiting;
 
 		public LuaFile(string path)
 		{
 			Name = "";
 			Path = path;
 			Enabled = true;
+			FrameWaiting = false;
 		}
 
 		public void Stop()

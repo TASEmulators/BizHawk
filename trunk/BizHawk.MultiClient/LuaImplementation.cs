@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private int CurrentMemoryDomain = 0; //Main memory by default
-		//List<Lua> runningThreads = new List<Lua>();
+		public bool FrameAdvanceRequested;
 		Lua currThread;
 
 		public LuaImplementation(LuaConsole passed)
@@ -141,11 +141,20 @@ namespace BizHawk.MultiClient
 			return lua_result;
 		}
 
-		public void ResumeScript(Lua script)
+		public class ResumeResult
+		{
+			public bool WaitForFrame;
+		}
+
+		public ResumeResult ResumeScript(Lua script)
 		{
 			currThread = script;
 			script.Resume(0);
 			currThread = null;
+			var result = new ResumeResult();
+			result.WaitForFrame = FrameAdvanceRequested;
+			FrameAdvanceRequested = false;
+			return result;
 		}
 
 		public void print(string s)
@@ -173,6 +182,7 @@ namespace BizHawk.MultiClient
 		public static string[] EmuFunctions = new string[]
 		{
 			"frameadvance",
+			"yield",
 			"pause",
 			"unpause",
 			"togglepause",
@@ -339,6 +349,12 @@ namespace BizHawk.MultiClient
 		//Emu library
 		//----------------------------------------------------
 		public void emu_frameadvance()
+		{
+			FrameAdvanceRequested = true;
+			currThread.Yield(0);
+		}
+
+		public void emu_yield()
 		{
 			currThread.Yield(0);
 		}

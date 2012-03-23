@@ -725,12 +725,24 @@ namespace BizHawk.MultiClient
 			OpenLuaSession();
 		}
 
-		public void ResumeScripts()
+		/// <summary>
+		/// resumes suspended coroutines
+		/// </summary>
+		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
+		public void ResumeScripts(bool includeFrameWaiters)
 		{
 			foreach (var s in luaList)
 			{
 				if (s.Enabled && s.Thread != null)
-					LuaImp.ResumeScript(s.Thread);
+				{
+					bool prohibit = false;
+					if (s.FrameWaiting && !includeFrameWaiters)
+						prohibit = true;
+
+					if (prohibit) continue;
+					var result = LuaImp.ResumeScript(s.Thread);
+					s.FrameWaiting = result.WaitForFrame;
+				}
 			}
 		}
 
