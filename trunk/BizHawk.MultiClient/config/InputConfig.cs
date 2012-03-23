@@ -72,8 +72,8 @@ namespace BizHawk.MultiClient
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
 			int jpad = this.ControllComboBox.SelectedIndex;
 			string[] ButtonMappings = new string[AtariControlList.Length];
-
-			if (jpad < 2)
+			int controllers = 2;
+			if (jpad < controllers)
 			{
 				ButtonMappings[0] = Global.Config.Atari2600Controller[jpad].Up;
 				ButtonMappings[1] = Global.Config.Atari2600Controller[jpad].Down;
@@ -84,12 +84,12 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
-				ButtonMappings[0] = Global.Config.Atari2600AutoController[1 - jpad].Up;
-				ButtonMappings[1] = Global.Config.Atari2600AutoController[1 - jpad].Down;
-				ButtonMappings[2] = Global.Config.Atari2600AutoController[1 - jpad].Left;
-				ButtonMappings[3] = Global.Config.Atari2600AutoController[1 - jpad].Right;
-				ButtonMappings[4] = Global.Config.Atari2600AutoController[1 - jpad].Button;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600AutoController[1 - jpad].Enabled;
+				ButtonMappings[0] = Global.Config.Atari2600AutoController[controllers - jpad].Up;
+				ButtonMappings[1] = Global.Config.Atari2600AutoController[controllers - jpad].Down;
+				ButtonMappings[2] = Global.Config.Atari2600AutoController[controllers - jpad].Left;
+				ButtonMappings[3] = Global.Config.Atari2600AutoController[controllers - jpad].Right;
+				ButtonMappings[4] = Global.Config.Atari2600AutoController[controllers - jpad].Button;
+				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600AutoController[controllers - jpad].Enabled;
 			}
 
 			Changed = true;
@@ -1066,7 +1066,7 @@ namespace BizHawk.MultiClient
 					this.Height = prevHeight;
 					break;
 				case "Atari":
-					joypads = 1;
+					joypads = 2;
 					this.Width = prevWidth;
 					this.Height = prevHeight;
 					break;
