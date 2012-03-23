@@ -20,16 +20,16 @@ namespace BizHawk.MultiClient
 		int defaultWidth;	//For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
 		string currentSessionFile = "";
-		List<LuaFiles> luaList = new List<LuaFiles>();
+		List<LuaFile> luaList = new List<LuaFile>();
 		public LuaImplementation LuaImp;
 		string lastLuaFile = "";
 		bool changes = false;
 
-		private List<LuaFiles> GetLuaFileList()
+		private List<LuaFile> GetLuaFileList()
 		{
-			List<LuaFiles> l = new List<LuaFiles>();
+			List<LuaFile> l = new List<LuaFile>();
 			for (int x = 0; x < luaList.Count; x++)
-				l.Add(new LuaFiles(luaList[x]));
+				l.Add(new LuaFile(luaList[x]));
 
 			return l;
 		}
@@ -84,9 +84,9 @@ namespace BizHawk.MultiClient
 
 		private void StopScript(int x)
 		{
-			luaList[x].Enabled = false;
-			LuaImp.Close();
-			LuaImp = new LuaImplementation(this);
+			luaList[x].Stop();
+			//LuaImp.Close();
+			//LuaImp = new LuaImplementation(this);
 			changes = true;
 		}
 
@@ -94,8 +94,8 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < luaList.Count; x++)
 				luaList[x].Enabled = false;
-			LuaImp.Close();
-			LuaImp = new LuaImplementation(this);
+			//LuaImp.Close();
+			//LuaImp = new LuaImplementation(this);
 			changes = true;
 			UpdateNumberOfScripts();
 		}
@@ -103,7 +103,7 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			StopAllScripts();
-			LuaImp = new LuaImplementation(this);
+			//LuaImp = new LuaImplementation(this);
 		}
 
 		private void SaveConfigSettings()
@@ -165,17 +165,18 @@ namespace BizHawk.MultiClient
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
-				bool enabled = true;
-				if (Global.Config.DisableLuaScriptsOnLoad)
-					enabled = false;
-				LuaFiles l = new LuaFiles("", path, enabled);
+				LuaFile l = new LuaFile("", path);
 				luaList.Add(l);
 				LuaListView.ItemCount = luaList.Count;
 				LuaListView.Refresh();
 				Global.Config.RecentLua.Add(path);
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
-					LuaImp.DoLuaFile(path);
+				{
+					l.Thread = LuaImp.SpawnCoroutine(path);
+					l.Enabled = true;
+				}
+				else l.Enabled = false;
 				changes = true;
 			}
 			else
@@ -235,12 +236,16 @@ namespace BizHawk.MultiClient
 			{
 				for (int x = 0; x < indexes.Count; x++)
 				{
-					luaList[indexes[x]].Toggle();
+					var item = luaList[indexes[x]];
+					item.Toggle();
+					if (item.Enabled && item.Thread == null)
+						item.Thread = LuaImp.SpawnCoroutine(item.Path);
+					else if (!item.Enabled && item.Thread != null)
+						item.Stop();
 				}
 			}
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
-			RunLuaScripts();
 			changes = true;
 		}
 
@@ -248,9 +253,9 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < luaList.Count; x++)
 			{
-				if (luaList[x].Enabled)
+				if (luaList[x].Enabled && luaList[x].Thread == null)
 				{
-					LuaImp.DoLuaFile(luaList[x].Path);
+					luaList[x].Thread = LuaImp.SpawnCoroutine(luaList[x].Path);
 				}
 				else
 				{
@@ -376,7 +381,7 @@ namespace BizHawk.MultiClient
 
 		private void InsertSeparator()
 		{
-			LuaFiles f = new LuaFiles(true);
+			LuaFile f = new LuaFile(true);
 			f.IsSeparator = true;
 
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
@@ -402,7 +407,7 @@ namespace BizHawk.MultiClient
 		private void MoveUp()
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			LuaFiles temp = new LuaFiles(false);
+			LuaFile temp = new LuaFile(false);
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
@@ -428,7 +433,7 @@ namespace BizHawk.MultiClient
 		private void MoveDown()
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			LuaFiles temp = new LuaFiles(false);
+			LuaFile temp = new LuaFile(false);
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
 			{
@@ -660,7 +665,7 @@ namespace BizHawk.MultiClient
 			if (file.Exists == false) return false;
 
 			StopAllScripts();
-			luaList = new List<LuaFiles>();
+			luaList = new List<LuaFile>();
 
 			using (StreamReader sr = file.OpenText())
 			{
@@ -689,7 +694,7 @@ namespace BizHawk.MultiClient
 
 					s = s.Substring(2, s.Length - 2); //Get path
 
-					LuaFiles l = new LuaFiles(s);
+					LuaFile l = new LuaFile(s);
 
 					if (!Global.Config.DisableLuaScriptsOnLoad)
 						l.Enabled = enabled;
@@ -722,22 +727,16 @@ namespace BizHawk.MultiClient
 
 		public void ResumeScripts()
 		{
-			LuaImp.ResumeScripts();
+			foreach (var s in luaList)
+			{
+				if (s.Enabled && s.Thread != null)
+					LuaImp.ResumeScript(s.Thread);
+			}
 		}
 
 		public bool IsRunning()
 		{
-			if (!this.IsHandleCreated || this.IsDisposed)
-			{
-				return false;
-			}
-			else
-			{
-				if (LuaImp.isRunning)
-					return true;
-				else
-					return false;
-			}
+			return true;
 		}
 
 		public bool WaitOne(int timeout)
