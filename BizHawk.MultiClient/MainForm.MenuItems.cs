@@ -859,8 +859,8 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[12].Visible = false;
 				contextMenuStrip1.Items[13].Visible = false;
 				contextMenuStrip1.Items[14].Visible = false;
-				contextMenuStrip1.Items[15].Visible = false;
-				contextMenuStrip1.Items[16].Visible = false;
+				contextMenuStrip1.Items[17].Visible = false;
+				contextMenuStrip1.Items[18].Visible = false;
 			}
 			else
 			{
@@ -909,8 +909,10 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[13].Visible = true;
 
 				contextMenuStrip1.Items[14].Visible = true;
+				
 				contextMenuStrip1.Items[15].Visible = true;
 				contextMenuStrip1.Items[16].Visible = true;
+				contextMenuStrip1.Items[17].Visible = true;
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)
@@ -949,14 +951,14 @@ namespace BizHawk.MultiClient
 
 			if (InFullscreen == true)
 			{
-				contextMenuStrip1.Items[17].Visible = true;
+				contextMenuStrip1.Items[18].Visible = true;
 				if (MainMenuStrip.Visible == true)
-					contextMenuStrip1.Items[17].Text = "Hide Menu";
+					contextMenuStrip1.Items[18].Text = "Hide Menu";
 				else
-					contextMenuStrip1.Items[17].Text = "Show Menu";
+					contextMenuStrip1.Items[18].Text = "Show Menu";
 			}
 			else
-				contextMenuStrip1.Items[17].Visible = false;
+				contextMenuStrip1.Items[18].Visible = false;
 		}
 
 
