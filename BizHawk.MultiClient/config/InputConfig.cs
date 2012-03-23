@@ -118,8 +118,8 @@ namespace BizHawk.MultiClient
 			ButtonsGroupBox.Controls.Clear();
 			InputWidget TempBox;
 			Label TempLabel;
-
-			if (prev < 2)
+			int controllers = 2;
+			if (prev < controllers)
 			{
 				TempBox = TextBoxes[0] as InputWidget;
 				Global.Config.Atari2600Controller[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Up);
@@ -142,22 +142,22 @@ namespace BizHawk.MultiClient
 			else
 			{
 				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - 1].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Up);
+				Global.Config.Atari2600AutoController[prev - controllers].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Up);
 				TempBox.Dispose();
 				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - 1].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Down);
+				Global.Config.Atari2600AutoController[prev - controllers].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Down);
 				TempBox.Dispose();
 				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - 1].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Left);
+				Global.Config.Atari2600AutoController[prev - controllers].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Left);
 				TempBox.Dispose();
 				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - 1].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Right);
+				Global.Config.Atari2600AutoController[prev - controllers].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Right);
 				TempBox.Dispose();
 				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - 1].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Button);
+				Global.Config.Atari2600AutoController[prev - controllers].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Button);
 				TempBox.Dispose();
 
-				Global.Config.Atari2600Controller[prev - 1].Enabled = IDX_CONTROLLERENABLED.Checked;
+				Global.Config.Atari2600AutoController[prev - controllers].Enabled = IDX_CONTROLLERENABLED.Checked;
 			}
 			TempBox.Dispose();
 			for (int i = 0; i < AtariControlList.Length; i++)
