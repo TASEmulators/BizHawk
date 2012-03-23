@@ -92,6 +92,7 @@ namespace BizHawk
 
 		public void HardReset()
 		{
+			_lagcount = 0;
 			cpu = new MOS6507();
 			//cpu.debug = true;
 			cpu.ReadMemory = ReadMemory;
@@ -111,8 +112,8 @@ namespace BizHawk
 
 		public void FrameAdvance(bool render)
 		{
-			Frame++;
-
+			_frame++;
+			_islag = true;
 			tia.frameComplete = false;
 			while (tia.frameComplete == false)
 			{
@@ -133,6 +134,8 @@ namespace BizHawk
 				
 			}
 
+			if (_islag)
+				LagCount++;
 			//if (render == false) return;
 		}
 
@@ -145,6 +148,7 @@ namespace BizHawk
 			if (Controller["P1 Left"]) value &= 0xBF;
 			if (Controller["P1 Right"]) value &= 0x7F;
 			if (Controller["P1 Button"]) value &= 0xF7;
+			_islag = false;
 			return value;
 		}
 
@@ -157,6 +161,7 @@ namespace BizHawk
 			if (Controller["P2 Left"]) value &= 0xBF;
 			if (Controller["P2 Right"]) value &= 0x7F;
 			if (Controller["P2 Button"]) value &= 0xF7;
+			_islag = false;
 			return value;
 		}
 
