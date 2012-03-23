@@ -20,7 +20,7 @@ namespace BizHawk.MultiClient
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private int CurrentMemoryDomain = 0; //Main memory by default
-		List<Lua> runningThreads = new List<Lua>();
+		//List<Lua> runningThreads = new List<Lua>();
 		Lua currThread;
 
 		public LuaImplementation(LuaConsole passed)
@@ -34,7 +34,6 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua = new Lua();
-			runningThreads.Clear();
 		}
 
 		public void LuaRegister(Lua lua)
@@ -105,13 +104,14 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
-		public void DoLuaFile(string File)
+		
+		public Lua SpawnCoroutine(string File)
 		{
 			var t = lua.NewThread();
-			runningThreads.Add(t);
 			LuaRegister(t);
 			var main = t.LoadFile(File);
 			t.Push(main); //push main function on to stack for subsequent resuming
+			return t;
 		}
 
 		private int LuaInt(object lua_arg)
@@ -141,14 +141,11 @@ namespace BizHawk.MultiClient
 			return lua_result;
 		}
 
-		public void ResumeScripts()
+		public void ResumeScript(Lua script)
 		{
-			foreach (var t in runningThreads)
-			{
-				currThread = t;
-				t.Resume(0);
-				currThread = null;
-			}
+			currThread = script;
+			script.Resume(0);
+			currThread = null;
 		}
 
 		public void print(string s)
