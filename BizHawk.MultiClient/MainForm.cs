@@ -372,6 +372,10 @@ namespace BizHawk.MultiClient
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
 
+#if WINDOWS
+				LuaConsole1.ResumeScripts(false);
+#endif
+
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
@@ -1682,11 +1686,9 @@ namespace BizHawk.MultiClient
 			{
 				Global.RenderPanel.ClearGUIText();
 				//client input-related duties
+
 #if WINDOWS
-				//if (LuaConsole1.IsRunning())
-				{
-					LuaConsole1.ResumeScripts();
-				}
+				LuaConsole1.ResumeScripts(true);
 #endif
 
 				runloop_fps++; 
