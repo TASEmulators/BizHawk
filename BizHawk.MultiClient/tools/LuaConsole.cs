@@ -720,6 +720,11 @@ namespace BizHawk.MultiClient
 			OpenLuaSession();
 		}
 
+		public void ResumeScripts()
+		{
+			LuaImp.ResumeScripts();
+		}
+
 		public bool IsRunning()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed)

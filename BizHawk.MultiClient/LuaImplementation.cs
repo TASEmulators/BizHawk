@@ -19,8 +19,9 @@ namespace BizHawk.MultiClient
 		public string LuaLibraryList = "";
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
-		private Thread LuaThread;
 		private int CurrentMemoryDomain = 0; //Main memory by default
+		List<Lua> runningThreads = new List<Lua>();
+		Lua currThread;
 
 		public LuaImplementation(LuaConsole passed)
 		{
@@ -33,8 +34,7 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua = new Lua();
-			LuaKillThread();
-			LuaWait.Dispose();
+			runningThreads.Clear();
 		}
 
 		public void LuaRegister(Lua lua)
@@ -105,36 +105,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
-		private void LuaThreadFunction(object File)
-		{
-			string F = File.ToString();
-			isRunning = true;
-			try
-			{
-				if (LuaThread != null)
-					lua.DoFile(F);
-			}
-			catch (Exception e)
-			{
-                if (LuaThread.ThreadState.ToString() != "AbortRequested")
-                {
-                    MessageBox.Show("Exception caught. " + e.ToString());
-                }
-			}
-			isRunning = false;
-			LuaWait.Set();
-		}
-
-		public void LuaKillThread()
-		{
-			if (LuaThread != null)
-				LuaThread.Abort();
-		}
-
 		public void DoLuaFile(string File)
 		{
-			LuaThread = new Thread(new ParameterizedThreadStart(LuaThreadFunction));
-			LuaThread.Start(File);
+			var t = lua.NewThread();
+			runningThreads.Add(t);
+			LuaRegister(t);
+			var main = t.LoadFile(File);
+			t.Push(main); //push main function on to stack for subsequent resuming
 		}
 
 		private int LuaInt(object lua_arg)
@@ -164,6 +141,15 @@ namespace BizHawk.MultiClient
 			return lua_result;
 		}
 
+		public void ResumeScripts()
+		{
+			foreach (var t in runningThreads)
+			{
+				currThread = t;
+				t.Resume(0);
+				currThread = null;
+			}
+		}
 
 		public void print(string s)
 		{
@@ -356,8 +342,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void emu_frameadvance()
 		{
-			Global.MainForm.MainWait.WaitOne();
-            LuaWait.Set();
+			currThread.Yield(0);
 		}
 
 		public void emu_pause()
