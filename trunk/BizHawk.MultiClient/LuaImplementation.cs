@@ -284,6 +284,7 @@ namespace BizHawk.MultiClient
 		public static string[] JoypadFunctions = new string[] {
 			"set",
 			"get",
+			"getimmediate"
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
@@ -1086,9 +1087,20 @@ namespace BizHawk.MultiClient
 			LuaTable buttons = new LuaTable(1, lua);
 			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 				buttons[button] = Global.ControllerOutput[button];
+			
+			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
 			buttons["output"] = null;
+			
+			return buttons;
+		}
+
+		public LuaTable joypad_getimmediate()
+		{
+			LuaTable buttons = new LuaTable(1, lua);
+			foreach (string button in Global.ActiveController.Type.BoolButtons)
+				buttons[button] = Global.ActiveController[button];
 			return buttons;
 		}
 
