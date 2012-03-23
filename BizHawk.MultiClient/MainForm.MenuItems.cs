@@ -842,88 +842,97 @@ namespace BizHawk.MultiClient
 			didMenuPause = true;
 			PauseEmulator();
 
+			foreach (ToolStripItem tsi in contextMenuStrip1.Items)
+			{
+				Console.WriteLine(tsi.Name);
+			}
+
+			//TODO - MUST refactor this to hide all and then view a set depending on the state
+
 			if (IsNullEmulator())
 			{
-				contextMenuStrip1.Items[0].Visible = true;
-				contextMenuStrip1.Items[1].Visible = true;
-				contextMenuStrip1.Items[2].Visible = false;
-				contextMenuStrip1.Items[3].Visible = false;
-				contextMenuStrip1.Items[4].Visible = false;
-				contextMenuStrip1.Items[5].Visible = false;
-				contextMenuStrip1.Items[6].Visible = false;
-				contextMenuStrip1.Items[7].Visible = false;
-				contextMenuStrip1.Items[8].Visible = false;
-				contextMenuStrip1.Items[9].Visible = false;
-				contextMenuStrip1.Items[10].Visible = false;
-				contextMenuStrip1.Items[11].Visible = false;
-				contextMenuStrip1.Items[12].Visible = false;
-				contextMenuStrip1.Items[13].Visible = false;
-				contextMenuStrip1.Items[14].Visible = false;
-				contextMenuStrip1.Items[17].Visible = false;
-				contextMenuStrip1.Items[18].Visible = false;
+				cmiOpenRom.Visible = true;
+				loadLastROMToolStripMenuItem.Visible = true;
+				toolStripSeparator_afterRomLoading.Visible = false;
+				recordMovieToolStripMenuItem1.Visible = false;
+				playMovieToolStripMenuItem1.Visible = false;
+				restartMovieToolStripMenuItem.Visible = false;
+				stopMovieToolStripMenuItem1.Visible = false;
+				loadLastMovieToolStripMenuItem.Visible = false;
+				makeMovieBackupToolStripMenuItem.Visible = false;
+				viewSubtitlesToolStripMenuItem.Visible = false;
+				viewCommentsToolStripMenuItem.Visible = false;
+				toolStripSeparator_afterMovie.Visible = false;
+				cmiAddSubtitle.Visible = false;
+				undoSavestateToolStripMenuItem.Visible = false;
+				cmiSeparator20.Visible = false;
+				cmiScreenshot.Visible = false;
+				cmiScreenshotClipboard.Visible = false;
+				cmiCloseRom.Visible = false;
+				cmiShowMenu.Visible = false;
 			}
 			else
 			{
-				contextMenuStrip1.Items[0].Visible = false;
-				contextMenuStrip1.Items[1].Visible = false;
-				contextMenuStrip1.Items[2].Visible = false;
+				cmiOpenRom.Visible = false;
+				loadLastROMToolStripMenuItem.Visible = false;
+				toolStripSeparator_afterRomLoading.Visible = false;
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 				{
-					contextMenuStrip1.Items[3].Visible = true;
-					contextMenuStrip1.Items[4].Visible = true;
-					contextMenuStrip1.Items[5].Visible = false;
-					contextMenuStrip1.Items[6].Visible = false;
-					contextMenuStrip1.Items[7].Visible = true;
-					contextMenuStrip1.Items[8].Visible = false;
-					contextMenuStrip1.Items[9].Visible = false;
-					contextMenuStrip1.Items[10].Visible = false;
-					contextMenuStrip1.Items[11].Visible = true;
-					contextMenuStrip1.Items[12].Visible = false;
+					recordMovieToolStripMenuItem1.Visible = true;
+					playMovieToolStripMenuItem1.Visible = true;
+					restartMovieToolStripMenuItem.Visible = false;
+					stopMovieToolStripMenuItem1.Visible = false;
+					loadLastMovieToolStripMenuItem.Visible = true;
+					makeMovieBackupToolStripMenuItem.Visible = false;
+					viewSubtitlesToolStripMenuItem.Visible = false;
+					viewCommentsToolStripMenuItem.Visible = false;
+					toolStripSeparator_afterMovie.Visible = true;
+					cmiAddSubtitle.Visible = false;
 				}
 				else
 				{
-					contextMenuStrip1.Items[3].Visible = false;
-					contextMenuStrip1.Items[4].Visible = false;
-					contextMenuStrip1.Items[5].Visible = true;
-					contextMenuStrip1.Items[6].Visible = true;
-					contextMenuStrip1.Items[7].Visible = false;
-					contextMenuStrip1.Items[8].Visible = true;
-					contextMenuStrip1.Items[9].Visible = true;
-					contextMenuStrip1.Items[10].Visible = true;
-					contextMenuStrip1.Items[11].Visible = true;
+					recordMovieToolStripMenuItem1.Visible = false;
+					playMovieToolStripMenuItem1.Visible = false;
+					restartMovieToolStripMenuItem.Visible = true;
+					stopMovieToolStripMenuItem1.Visible = true;
+					loadLastMovieToolStripMenuItem.Visible = false;
+					makeMovieBackupToolStripMenuItem.Visible = true;
+					viewSubtitlesToolStripMenuItem.Visible = true;
+					viewCommentsToolStripMenuItem.Visible = true;
+					toolStripSeparator_afterMovie.Visible = true;
 					if (ReadOnly == true)
 					{
-						contextMenuStrip1.Items[9].Text = "View Subtitles";
-						contextMenuStrip1.Items[10].Text = "View Comments";
-						contextMenuStrip1.Items[12].Visible = false;
+						viewSubtitlesToolStripMenuItem.Text = "View Subtitles";
+						viewCommentsToolStripMenuItem.Text = "View Comments";
+						cmiAddSubtitle.Visible = false;
 					}
 					else
 					{
-						contextMenuStrip1.Items[9].Text = "Edit Subtitles";
-						contextMenuStrip1.Items[10].Text = "Edit Comments";
-						contextMenuStrip1.Items[12].Visible = true;
+						viewSubtitlesToolStripMenuItem.Text = "Edit Subtitles";
+						viewCommentsToolStripMenuItem.Text = "Edit Comments";
+						cmiAddSubtitle.Visible = true;
 					}
 				}
 
-				contextMenuStrip1.Items[13].Visible = true;
+				undoSavestateToolStripMenuItem.Visible = true;
 
-				contextMenuStrip1.Items[14].Visible = true;
-				
-				contextMenuStrip1.Items[15].Visible = true;
-				contextMenuStrip1.Items[16].Visible = true;
-				contextMenuStrip1.Items[17].Visible = true;
+				cmiSeparator20.Visible = true;
+
+				cmiScreenshot.Visible = true;
+				cmiScreenshotClipboard.Visible = true;
+				cmiCloseRom.Visible = true;
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)
-				contextMenuStrip1.Items[1].Enabled = false;
+				loadLastROMToolStripMenuItem.Enabled = false;
 			else
-				contextMenuStrip1.Items[1].Enabled = true;
+				loadLastROMToolStripMenuItem.Enabled = true;
 
 			if (Global.Config.RecentMovies.Length() == 0)
-				contextMenuStrip1.Items[7].Enabled = false;
+				loadLastMovieToolStripMenuItem.Enabled = false;
 			else
-				contextMenuStrip1.Items[7].Enabled = true;
+				loadLastMovieToolStripMenuItem.Enabled = true;
 
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
@@ -931,34 +940,34 @@ namespace BizHawk.MultiClient
 			{
 				if (StateSlots.IsRedo(Global.Config.SaveSlot))
 				{
-					contextMenuStrip1.Items[13].Enabled = true;
-					contextMenuStrip1.Items[13].Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
-					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.redo;
+					undoSavestateToolStripMenuItem.Enabled = true;
+					undoSavestateToolStripMenuItem.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
+					undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.redo;
 				}
 				else
 				{
-					contextMenuStrip1.Items[13].Enabled = true;
-					contextMenuStrip1.Items[13].Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
-					contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+					undoSavestateToolStripMenuItem.Enabled = true;
+					undoSavestateToolStripMenuItem.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
+					undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.undo;
 				}
 			}
 			else
 			{
-				contextMenuStrip1.Items[13].Enabled = false;
-				contextMenuStrip1.Items[13].Text = "Undo Savestate";
-				contextMenuStrip1.Items[13].Image = BizHawk.MultiClient.Properties.Resources.undo;
+				undoSavestateToolStripMenuItem.Enabled = false;
+				undoSavestateToolStripMenuItem.Text = "Undo Savestate";
+				undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.undo;
 			}
 
 			if (InFullscreen == true)
 			{
-				contextMenuStrip1.Items[18].Visible = true;
+				cmiShowMenu.Visible = true;
 				if (MainMenuStrip.Visible == true)
-					contextMenuStrip1.Items[18].Text = "Hide Menu";
+					cmiShowMenu.Text = "Hide Menu";
 				else
-					contextMenuStrip1.Items[18].Text = "Show Menu";
+					cmiShowMenu.Text = "Show Menu";
 			}
 			else
-				contextMenuStrip1.Items[18].Visible = false;
+				cmiShowMenu.Visible = false;
 		}
 
 
