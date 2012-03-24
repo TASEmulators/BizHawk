@@ -1334,20 +1334,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public string lastKeyboard = "";
+
 		public void ProcessInput()
 		{
 			for (; ; )
 			{
 				//loop through all available events
 				var ie = Input.Instance.DequeueEvent();
-				if (ie == null) break;
+				if (ie == null) { break; }
 
 				//useful debugging:
 				//Console.WriteLine(ie);
 
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-				//look for client control bindings for this key
+				lastKeyboard += " " + ie.ToString();
+
+				//look for client cntrol bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
@@ -1423,7 +1427,7 @@ namespace BizHawk.MultiClient
 
 				case "Quick Save State":
 					if (!IsNullEmulator())
-						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+					SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Quick Load State":
@@ -1469,21 +1473,11 @@ namespace BizHawk.MultiClient
 				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
 				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
 				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0":
-					OnSelectSlot(0);
-					break;
-				case "SelectSlot1":
-					OnSelectSlot(1);
-					break;
-				case "SelectSlot2":
-					OnSelectSlot(2);
-					break;
-				case "SelectSlot3":
-					OnSelectSlot(3);
-					break;
-				case "SelectSlot4":
-					OnSelectSlot(4);
-					break;
+				case "SelectSlot0": OnSelectSlot(0); break;
+				case "SelectSlot1": OnSelectSlot(1); break;
+				case "SelectSlot2": OnSelectSlot(2); break;
+				case "SelectSlot3": OnSelectSlot(3); break;
+				case "SelectSlot4": OnSelectSlot(4); break;
 				case "SelectSlot5": OnSelectSlot(5); break;
 				case "SelectSlot6": OnSelectSlot(6); break;
 				case "SelectSlot7": OnSelectSlot(7); break;
@@ -1774,7 +1768,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				MemoryPulse.Pulse();
 				//=======================================
-
+				lastKeyboard = "";
 				if (CurrAviWriter != null)
 				{
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
