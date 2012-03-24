@@ -90,6 +90,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "movie." + MovieFunctions[i] + "\n";
 			}
 
+			lua.NewTable("input");
+			for (int i = 0; i < InputFunctions.Length; i++)
+			{
+				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
+				LuaLibraryList += "input." + InputFunctions[i] + "\n";
+			}
+
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
@@ -289,6 +296,10 @@ namespace BizHawk.MultiClient
 			"getreadonly",
 			"setreadonly",
 			//"rerecordcounting",
+		};
+
+		public static string[] InputFunctions = new string[] {
+			"get",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
@@ -1091,6 +1102,26 @@ namespace BizHawk.MultiClient
 				Global.MainForm.SetReadOnly(true);
 			else
 				Global.MainForm.SetReadOnly(false);
+		}
+
+		//----------------------------------------------------
+		//Input library
+		//----------------------------------------------------
+		public LuaTable input_get()
+		{
+			LuaTable keys = new LuaTable(1, lua);
+			string[] keystrings = Global.MainForm.lastKeyboard.Split(' ');
+
+			foreach (string keypress in keystrings)
+			{
+				if (keypress.Contains("Press:"))
+				{
+					string key = keypress.Replace("Press:", "");
+					keys[key] = key;
+				}
+			}
+
+			return keys;
 		}
 
 		//----------------------------------------------------
