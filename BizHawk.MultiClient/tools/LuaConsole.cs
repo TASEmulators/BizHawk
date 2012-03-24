@@ -1077,12 +1077,22 @@ namespace BizHawk.MultiClient
                     item.TogglePause();
                 }
             }
-            LuaListView.Refresh();
+            //LuaListView.Refresh();
             UpdateNumberOfScripts();
             changes = true;
         }
 
         private void pauseResumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TogglePause();
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            TogglePause();
+        }
+
+        private void resumePauseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TogglePause();
         }
