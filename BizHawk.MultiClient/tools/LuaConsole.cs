@@ -240,7 +240,8 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < indexes.Count; x++)
 				{
 					var item = luaList[indexes[x]];
-					item.Toggle();
+                    if(!item.IsSeparator)
+					    item.Toggle();
 					if (item.Enabled && item.Thread == null)
 						item.Thread = LuaImp.SpawnCoroutine(item.Path);
 					else if (!item.Enabled && item.Thread != null)
@@ -270,18 +271,25 @@ namespace BizHawk.MultiClient
 		private void UpdateNumberOfScripts()
 		{
 			string message = "";
-			int active = 0, paused = 0;
+			int active = 0, paused = 0, separators = 0;
 			for (int x = 0; x < luaList.Count; x++)
 			{
-                if (luaList[x].Enabled)
+                if (!luaList[x].IsSeparator)
                 {
-                    active++;
-                    if (luaList[x].Paused)
-                        paused++;
+                    if (luaList[x].Enabled)
+                    {
+                        active++;
+                        if (luaList[x].Paused)
+                            paused++;
+                    }
+                }
+                else
+                {
+                    separators++;
                 }
 			}
 
-			int L = luaList.Count;
+			int L = luaList.Count - separators;
 			if (L == 1)
 				message += L.ToString() + " script (" + active.ToString() + " active, " + paused.ToString() + " paused)";
 			else if (L == 0)
@@ -578,7 +586,16 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
 			if (indexes.Count == 0)
 				return;
-			System.Diagnostics.Process.Start(luaList[indexes[0]].Path);
+			    
+            if (indexes.Count > 0)
+            {
+                for (int x = 0; x < indexes.Count; x++)
+                {
+                    var item = luaList[indexes[x]];
+                    if (!item.IsSeparator)
+                        System.Diagnostics.Process.Start(luaList[indexes[x]].Path);
+                }
+            }
 		}
 
 		private void toggleScriptToolStripMenuItem_Click(object sender, EventArgs e)
@@ -970,9 +987,11 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				scriptToolStripMenuItem.DropDownItems[1].Enabled = true;
+                scriptToolStripMenuItem.DropDownItems[2].Enabled = true;
 				scriptToolStripMenuItem.DropDownItems[3].Enabled = true;
-				scriptToolStripMenuItem.DropDownItems[6].Enabled = true;
+                scriptToolStripMenuItem.DropDownItems[4].Enabled = true;
 				scriptToolStripMenuItem.DropDownItems[7].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[8].Enabled = true;
 
 				bool allSeparators = true;
 				for (int i = 0; i < indexes.Count; i++)
@@ -981,28 +1000,29 @@ namespace BizHawk.MultiClient
 						allSeparators = false;
 				}
 				if (allSeparators)
-					scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
+					scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
 				else
-					scriptToolStripMenuItem.DropDownItems[2].Enabled = true;
+					scriptToolStripMenuItem.DropDownItems[3].Enabled = true;
 			}
 			else
 			{
-				scriptToolStripMenuItem.DropDownItems[1].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[6].Enabled = false;
-				scriptToolStripMenuItem.DropDownItems[7].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[1].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[2].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[3].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[4].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[7].Enabled = false;
+                scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
 			}
 
 			if (luaList.Count > 0)
-				scriptToolStripMenuItem.DropDownItems[8].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[9].Enabled = true;
 			else
-				scriptToolStripMenuItem.DropDownItems[8].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[9].Enabled = false;
 
 			if (luaRunning)
-				scriptToolStripMenuItem.DropDownItems[10].Enabled = true;
+				scriptToolStripMenuItem.DropDownItems[11].Enabled = true;
 			else
-				scriptToolStripMenuItem.DropDownItems[10].Enabled = false;
+				scriptToolStripMenuItem.DropDownItems[11].Enabled = false;
 		}
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
@@ -1020,6 +1040,7 @@ namespace BizHawk.MultiClient
 				contextMenuStrip1.Items[0].Enabled = true;
 				contextMenuStrip1.Items[1].Enabled = true;
 				contextMenuStrip1.Items[2].Enabled = true;
+                contextMenuStrip1.Items[3].Enabled = true;
 
 				bool allSeparators = true;
 				for (int i = 0; i < indexes.Count; i++)
@@ -1028,26 +1049,27 @@ namespace BizHawk.MultiClient
 						allSeparators = false;
 				}
 				if (allSeparators)
-					contextMenuStrip1.Items[1].Enabled = false;
+					contextMenuStrip1.Items[2].Enabled = false;
 				else
-					contextMenuStrip1.Items[1].Enabled = true;
+					contextMenuStrip1.Items[2].Enabled = true;
 			}
 			else
 			{
 				contextMenuStrip1.Items[0].Enabled = false;
 				contextMenuStrip1.Items[1].Enabled = false;
 				contextMenuStrip1.Items[2].Enabled = false;
+                contextMenuStrip1.Items[3].Enabled = true;
 			}
 
 			if (luaRunning)
 			{
-				contextMenuStrip1.Items[4].Visible = true;
 				contextMenuStrip1.Items[5].Visible = true;
+				contextMenuStrip1.Items[6].Visible = true;
 			}
 			else
 			{
-				contextMenuStrip1.Items[4].Visible = false;
 				contextMenuStrip1.Items[5].Visible = false;
+				contextMenuStrip1.Items[6].Visible = false;
 			}
 		}
 
@@ -1074,10 +1096,11 @@ namespace BizHawk.MultiClient
                 for (int x = 0; x < indexes.Count; x++)
                 {
                     var item = luaList[indexes[x]];
-                    item.TogglePause();
+                    if(!item.IsSeparator)
+                        item.TogglePause();
                 }
             }
-            //LuaListView.Refresh();
+            LuaListView.Refresh();
             UpdateNumberOfScripts();
             changes = true;
         }

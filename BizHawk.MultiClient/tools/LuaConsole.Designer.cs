@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toggleScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.resumePauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.insertSeperatorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,6 +85,7 @@
             this.toolStrip1 = new ToolStripEx();
             this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.resumePauseButton1 = new System.Windows.Forms.ToolStripButton();
             this.EditToolstripButton = new System.Windows.Forms.ToolStripButton();
             this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSeparator = new System.Windows.Forms.ToolStripButton();
@@ -93,8 +95,6 @@
             this.LuaListView = new BizHawk.VirtualListView();
             this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
-            this.resumePauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -113,7 +113,7 @@
             this.toolStripSeparator4,
             this.stopAllScriptsToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(175, 164);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(175, 142);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // toggleScriptToolStripMenuItem
@@ -123,6 +123,14 @@
             this.toggleScriptToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.toggleScriptToolStripMenuItem.Text = "&Toggle";
             this.toggleScriptToolStripMenuItem.Click += new System.EventHandler(this.toggleScriptToolStripMenuItem_Click);
+            // 
+            // resumePauseToolStripMenuItem
+            // 
+            this.resumePauseToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+            this.resumePauseToolStripMenuItem.Name = "resumePauseToolStripMenuItem";
+            this.resumePauseToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.resumePauseToolStripMenuItem.Text = "Pause or Resume";
+            this.resumePauseToolStripMenuItem.Click += new System.EventHandler(this.resumePauseToolStripMenuItem_Click);
             // 
             // editScriptToolStripMenuItem
             // 
@@ -346,7 +354,7 @@
             this.pauseResumeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
             this.pauseResumeToolStripMenuItem.Name = "pauseResumeToolStripMenuItem";
             this.pauseResumeToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.pauseResumeToolStripMenuItem.Text = "Resume/Pause";
+            this.pauseResumeToolStripMenuItem.Text = "Pause or Resume";
             this.pauseResumeToolStripMenuItem.Click += new System.EventHandler(this.pauseResumeToolStripMenuItem_Click);
             // 
             // editToolStripMenuItem
@@ -527,11 +535,11 @@
             // NumberOfScripts
             // 
             this.NumberOfScripts.AutoSize = true;
-            this.NumberOfScripts.Location = new System.Drawing.Point(10, 53);
+            this.NumberOfScripts.Location = new System.Drawing.Point(12, 53);
             this.NumberOfScripts.Name = "NumberOfScripts";
-            this.NumberOfScripts.Size = new System.Drawing.Size(66, 13);
+            this.NumberOfScripts.Size = new System.Drawing.Size(56, 13);
             this.NumberOfScripts.TabIndex = 4;
-            this.NumberOfScripts.Text = " 0 Scripts     ";
+            this.NumberOfScripts.Text = "0 script     ";
             // 
             // toolStrip1
             // 
@@ -539,7 +547,7 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripButton,
             this.copyToolStripButton,
-            this.toolStripButton1,
+            this.resumePauseButton1,
             this.EditToolstripButton,
             this.cutToolStripButton,
             this.toolStripButtonSeparator,
@@ -571,6 +579,16 @@
             this.copyToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.copyToolStripButton.Text = "Toggle Script";
             this.copyToolStripButton.Click += new System.EventHandler(this.copyToolStripButton_Click);
+            // 
+            // resumePauseButton1
+            // 
+            this.resumePauseButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.resumePauseButton1.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
+            this.resumePauseButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.resumePauseButton1.Name = "resumePauseButton1";
+            this.resumePauseButton1.Size = new System.Drawing.Size(23, 22);
+            this.resumePauseButton1.Text = "Pause or Resume";
+            this.resumePauseButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
             // 
             // EditToolstripButton
             // 
@@ -657,24 +675,6 @@
             // 
             this.PathName.Text = "Path";
             this.PathName.Width = 195;
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButton1.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
-            this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButton1.Text = "toolStripButton1";
-            this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click_1);
-            // 
-            // resumePauseToolStripMenuItem
-            // 
-            this.resumePauseToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Pause;
-            this.resumePauseToolStripMenuItem.Name = "resumePauseToolStripMenuItem";
-            this.resumePauseToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.resumePauseToolStripMenuItem.Text = "Resume/Pause";
-            this.resumePauseToolStripMenuItem.Click += new System.EventHandler(this.resumePauseToolStripMenuItem_Click);
             // 
             // LuaConsole
             // 
@@ -772,7 +772,7 @@
 		private System.Windows.Forms.ToolStripMenuItem disableScriptsOnLoadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pauseResumeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private System.Windows.Forms.ToolStripButton resumePauseButton1;
         private System.Windows.Forms.ToolStripMenuItem resumePauseToolStripMenuItem;
     }
 }
