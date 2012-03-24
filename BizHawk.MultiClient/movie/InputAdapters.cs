@@ -82,6 +82,11 @@ namespace BizHawk.MultiClient
 		public float GetFloat(string name) { return 0.0f; } //TODO
 		public void UpdateControls(int frame) { }
 
+		public IEnumerable<KeyValuePair<string, bool>> BoolButtons()
+		{
+			foreach (var kvp in Buttons) yield return kvp;
+		}
+
 		public virtual void LatchFrom(IController source)
 		{
 			foreach (string button in source.Type.BoolButtons)
