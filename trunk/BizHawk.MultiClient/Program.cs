@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
+			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, new Config());
 
 #if WINDOWS
 			try { Global.DSound = new DirectSound(); }
