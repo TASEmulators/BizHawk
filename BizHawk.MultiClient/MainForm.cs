@@ -373,7 +373,7 @@ namespace BizHawk.MultiClient
 				Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
-				LuaConsole1.ResumeScripts(false);
+                LuaConsole1.ResumeScripts(false);
 #endif
 
 				Global.RenderPanel.ClearGUIText();

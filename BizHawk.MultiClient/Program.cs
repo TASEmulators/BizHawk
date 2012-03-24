@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.ToString(), "Oh, no, a terrible thing happened!\n\n" + e.ToString());
+                MessageBox.Show(e.ToString());
 			}
 #if WINDOWS
 			finally

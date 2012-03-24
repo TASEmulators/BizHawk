@@ -212,8 +212,8 @@
             // 
             this.openSessionToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
             this.openSessionToolStripMenuItem.Name = "openSessionToolStripMenuItem";
-            this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.O)));
+            this.openSessionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                        | System.Windows.Forms.Keys.O)));
             this.openSessionToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.openSessionToolStripMenuItem.Text = "&Open Session...";
             this.openSessionToolStripMenuItem.Click += new System.EventHandler(this.openSessionToolStripMenuItem_Click);
@@ -230,8 +230,8 @@
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
+            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                        | System.Windows.Forms.Keys.S)));
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(237, 22);
             this.saveAsToolStripMenuItem.Text = "Save Session &As...";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -721,7 +721,6 @@
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toggleToolStripMenuItem;
         public System.Windows.Forms.ColumnHeader Script;
-        private System.Windows.Forms.RichTextBox OutputBox;
         private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
@@ -774,5 +773,6 @@
         private System.Windows.Forms.ToolStripMenuItem pauseResumeToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton resumePauseButton1;
         private System.Windows.Forms.ToolStripMenuItem resumePauseToolStripMenuItem;
+        public System.Windows.Forms.RichTextBox OutputBox;
     }
 }
