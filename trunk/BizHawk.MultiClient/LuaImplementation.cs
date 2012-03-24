@@ -114,11 +114,24 @@ namespace BizHawk.MultiClient
 		
 		public Lua SpawnCoroutine(string File)
 		{
-			var t = lua.NewThread();
-			LuaRegister(t);
-			var main = t.LoadFile(File);
-			t.Push(main); //push main function on to stack for subsequent resuming
-			return t;
+            var t = lua.NewThread();
+            try
+            {
+                LuaRegister(t);
+                var main = t.LoadFile(File);
+                t.Push(main); //push main function on to stack for subsequent resuming
+            }
+            catch (Exception e)
+            {
+                    if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                    {
+                        //Create Code Here That Would Print Script Error In OutPut Box
+                        LuaConsole Lua = new LuaConsole();
+                        Lua.OutputBox.Text += e.Message;
+                    }
+                    else MessageBox.Show(e.ToString());
+            }
+            return t;
 		}
 
 		private int LuaInt(object lua_arg)
