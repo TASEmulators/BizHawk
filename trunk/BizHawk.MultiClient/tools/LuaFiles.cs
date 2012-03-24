@@ -10,6 +10,7 @@ namespace BizHawk.MultiClient
 		public string Name;
 		public string Path;
 		public bool Enabled;
+        public bool Paused;
 		public bool IsSeparator;
 		public LuaInterface.Lua Thread;
 		public bool FrameWaiting;
@@ -19,6 +20,7 @@ namespace BizHawk.MultiClient
 			Name = "";
 			Path = path;
 			Enabled = true;
+            Paused = false;
 			FrameWaiting = false;
 		}
 
@@ -48,12 +50,24 @@ namespace BizHawk.MultiClient
 			Name = l.Name;
 			Path = l.Path;
 			Enabled = l.Enabled;
+            Paused = l.Paused;
 			IsSeparator = l.IsSeparator;
 		}
 
 		public void Toggle()
 		{
 			Enabled ^= true;
+            if (Enabled)
+                Paused = false;
 		}
+
+        public void TogglePause()
+        {
+            Paused ^= true;
+            if (Paused)
+            {
+                Thread.Dispose();
+            }
+        }
 	}
 }
