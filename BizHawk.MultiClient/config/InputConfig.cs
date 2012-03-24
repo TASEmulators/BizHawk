@@ -5,12 +5,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.MultiClient
 {
-	//TODO: 
+	//TODO:
 	//Remove AppendMapping and TruncateMapping functions
 
 	public partial class InputConfig : Form
@@ -22,10 +23,24 @@ namespace BizHawk.MultiClient
 		public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
 		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", };
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
-		public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON", 
-			"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS", 
+		public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
+			"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS",
 			"COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW",
-			"Y", "2nd", "MODE", "Del", ",", "SIN"}; //TODO: display shift / alpha names too, Also order these like on the calculator
+			"Y", "2nd", "MODE", "Del", ",", "SIN" }; // TODO: display shift / alpha names too, Also order these like on the calculator
+		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
+		{
+			{"Genesis 3-Button", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", } },
+			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
+			{"PC Engine", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
+			{"SMS", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
+			{
+				// TODO: display shift / alpha names too, Also order these like on the calculator
+				"TI83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
+				"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN",
+				"VARS", "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH",
+				"TRACE", "ZOOM", "WINDOW", "Y", "2nd", "MODE", "Del", ",", "SIN" }
+			}
+		};
 		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
@@ -40,7 +55,6 @@ namespace BizHawk.MultiClient
 			Changed = false;
 		}
 
-
 		protected override void OnShown(EventArgs e)
 		{
 			Input.Instance.EnableIgnoreModifiers = true;
@@ -53,13 +67,12 @@ namespace BizHawk.MultiClient
 			Input.Instance.EnableIgnoreModifiers = false;
 		}
 
-
 		private string AppendButtonMapping(string button, string oldmap)
 		{
 			//adelikat: Another relic, remove this
 			//int x = oldmap.LastIndexOf(',');
 			//if (x != -1)
-			//    return oldmap.Substring(0, x + 2) + button;
+			//	return oldmap.Substring(0, x + 2) + button;
 			//else
 			return button;
 		}
@@ -201,7 +214,7 @@ namespace BizHawk.MultiClient
 				ButtonMappings[7] = Global.Config.SmsReset;
 				IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad - 2].Enabled;
 			}
-			
+
 			Changed = true;
 			Labels.Clear();
 			TextBoxes.Clear();
@@ -322,7 +335,7 @@ namespace BizHawk.MultiClient
 				ButtonMappings[7] = Global.Config.PCEAutoController[jpad - 5].Select;
 				IDX_CONTROLLERENABLED.Checked = Global.Config.PCEAutoController[jpad - 5].Enabled;
 			}
-			
+
 			Labels.Clear();
 			TextBoxes.Clear();
 			for (int i = 0; i < PCEControlList.Length; i++)
@@ -403,7 +416,7 @@ namespace BizHawk.MultiClient
 				TempBox.Dispose();
 				Global.Config.PCEAutoController[prev - 5].Enabled = IDX_CONTROLLERENABLED.Checked;
 			}
-			
+
 			for (int i = 0; i < PCEControlList.Length; i++)
 			{
 				TempLabel = Labels[i] as Label;
@@ -447,7 +460,6 @@ namespace BizHawk.MultiClient
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
 			Changed = true;
-			
 		}
 
 		private void UpdateGen(int prev)
@@ -842,48 +854,27 @@ namespace BizHawk.MultiClient
 			this.Text = ControllerStr + "NES";
 			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[NESControlList.Length];
-
-			if (jpad < 4)
+			NESControllerTemplate[] controller = Global.Config.NESController;
+			if (jpad > 3)
 			{
-				ButtonMappings[0] = Global.Config.NESController[jpad].Up;
-				ButtonMappings[1] = Global.Config.NESController[jpad].Down;
-				ButtonMappings[2] = Global.Config.NESController[jpad].Left;
-				ButtonMappings[3] = Global.Config.NESController[jpad].Right;
-				ButtonMappings[4] = Global.Config.NESController[jpad].A;
-				ButtonMappings[5] = Global.Config.NESController[jpad].B;
-				ButtonMappings[6] = Global.Config.NESController[jpad].Select;
-				ButtonMappings[7] = Global.Config.NESController[jpad].Start;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
+				jpad -= 4;
+				controller = Global.Config.NESAutoController;
 			}
-
-			else
-			{
-				ButtonMappings[0] = Global.Config.NESAutoController[jpad - 4].Up;
-				ButtonMappings[1] = Global.Config.NESAutoController[jpad - 4].Down;
-				ButtonMappings[2] = Global.Config.NESAutoController[jpad - 4].Left;
-				ButtonMappings[3] = Global.Config.NESAutoController[jpad - 4].Right;
-				ButtonMappings[4] = Global.Config.NESAutoController[jpad - 4].A;
-				ButtonMappings[5] = Global.Config.NESAutoController[jpad - 4].B;
-				ButtonMappings[6] = Global.Config.NESAutoController[jpad - 4].Select;
-				ButtonMappings[7] = Global.Config.NESAutoController[jpad - 4].Start;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad - 4].Enabled;
-			}
-			
-			
-			Changed = true;
+			IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
 			Labels.Clear();
 			TextBoxes.Clear();
-			for (int i = 0; i < NESControlList.Length; i++)
+			for (int button = 0; button < CONTROLS["NES"].Length; button++)
 			{
 				TempLabel = new Label();
-				TempLabel.Text = NESControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
+				TempLabel.Text = CONTROLS["NES"][button];
+				TempLabel.Location = new Point(8, 20 + (button * 24));
 				Labels.Add(TempLabel);
 				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
+				TempTextBox.Location = new Point(48, 20 + (button * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
+				TempTextBox.SetBindings(
+					(string)controller[jpad].GetType().GetField(CONTROLS["NES"][button]).GetValue(controller[jpad])
+				);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
@@ -1178,6 +1169,4 @@ namespace BizHawk.MultiClient
 			}
 		}
 	}
-
 }
-
