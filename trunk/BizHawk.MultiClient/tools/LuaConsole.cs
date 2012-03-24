@@ -757,7 +757,7 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var s in luaList)
 			{
-				if (s.Enabled && s.Thread != null)
+				if (s.Enabled && s.Thread != null && !s.Paused)
 				{
 					bool prohibit = false;
 					if (s.FrameWaiting && !includeFrameWaiters)
