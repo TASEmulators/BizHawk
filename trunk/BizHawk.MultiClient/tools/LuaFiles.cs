@@ -64,10 +64,6 @@ namespace BizHawk.MultiClient
         public void TogglePause()
         {
             Paused ^= true;
-            if (Paused)
-            {
-                Thread.Dispose();
-            }
         }
 	}
 }
