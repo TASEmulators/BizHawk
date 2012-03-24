@@ -852,19 +852,19 @@ namespace BizHawk.MultiClient
 			if (IsNullEmulator())
 			{
 				cmiOpenRom.Visible = true;
-				loadLastROMToolStripMenuItem.Visible = true;
+				cmiLoadLastRom.Visible = true;
 				toolStripSeparator_afterRomLoading.Visible = false;
-				recordMovieToolStripMenuItem1.Visible = false;
-				playMovieToolStripMenuItem1.Visible = false;
-				restartMovieToolStripMenuItem.Visible = false;
-				stopMovieToolStripMenuItem1.Visible = false;
-				loadLastMovieToolStripMenuItem.Visible = false;
-				makeMovieBackupToolStripMenuItem.Visible = false;
-				viewSubtitlesToolStripMenuItem.Visible = false;
-				viewCommentsToolStripMenuItem.Visible = false;
+				cmiRecordMovie.Visible = false;
+				cmiPlayMovie.Visible = false;
+				cmiRestartMovie.Visible = false;
+				cmiStopMovie.Visible = false;
+				cmiLoadLastMovie.Visible = false;
+				cmiMakeMovieBackup.Visible = false;
+				cmiViewSubtitles.Visible = false;
+				cmiViewComments.Visible = false;
 				toolStripSeparator_afterMovie.Visible = false;
 				cmiAddSubtitle.Visible = false;
-				undoSavestateToolStripMenuItem.Visible = false;
+				cmiUndoSavestate.Visible = false;
 				cmiSeparator20.Visible = false;
 				cmiScreenshot.Visible = false;
 				cmiScreenshotClipboard.Visible = false;
@@ -874,48 +874,48 @@ namespace BizHawk.MultiClient
 			else
 			{
 				cmiOpenRom.Visible = false;
-				loadLastROMToolStripMenuItem.Visible = false;
+				cmiLoadLastRom.Visible = false;
 				toolStripSeparator_afterRomLoading.Visible = false;
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
 				{
-					recordMovieToolStripMenuItem1.Visible = true;
-					playMovieToolStripMenuItem1.Visible = true;
-					restartMovieToolStripMenuItem.Visible = false;
-					stopMovieToolStripMenuItem1.Visible = false;
-					loadLastMovieToolStripMenuItem.Visible = true;
-					makeMovieBackupToolStripMenuItem.Visible = false;
-					viewSubtitlesToolStripMenuItem.Visible = false;
-					viewCommentsToolStripMenuItem.Visible = false;
+					cmiRecordMovie.Visible = true;
+					cmiPlayMovie.Visible = true;
+					cmiRestartMovie.Visible = false;
+					cmiStopMovie.Visible = false;
+					cmiLoadLastMovie.Visible = true;
+					cmiMakeMovieBackup.Visible = false;
+					cmiViewSubtitles.Visible = false;
+					cmiViewComments.Visible = false;
 					toolStripSeparator_afterMovie.Visible = true;
 					cmiAddSubtitle.Visible = false;
 				}
 				else
 				{
-					recordMovieToolStripMenuItem1.Visible = false;
-					playMovieToolStripMenuItem1.Visible = false;
-					restartMovieToolStripMenuItem.Visible = true;
-					stopMovieToolStripMenuItem1.Visible = true;
-					loadLastMovieToolStripMenuItem.Visible = false;
-					makeMovieBackupToolStripMenuItem.Visible = true;
-					viewSubtitlesToolStripMenuItem.Visible = true;
-					viewCommentsToolStripMenuItem.Visible = true;
+					cmiRecordMovie.Visible = false;
+					cmiPlayMovie.Visible = false;
+					cmiRestartMovie.Visible = true;
+					cmiStopMovie.Visible = true;
+					cmiLoadLastMovie.Visible = false;
+					cmiMakeMovieBackup.Visible = true;
+					cmiViewSubtitles.Visible = true;
+					cmiViewComments.Visible = true;
 					toolStripSeparator_afterMovie.Visible = true;
 					if (ReadOnly == true)
 					{
-						viewSubtitlesToolStripMenuItem.Text = "View Subtitles";
-						viewCommentsToolStripMenuItem.Text = "View Comments";
+						cmiViewSubtitles.Text = "View Subtitles";
+						cmiViewComments.Text = "View Comments";
 						cmiAddSubtitle.Visible = false;
 					}
 					else
 					{
-						viewSubtitlesToolStripMenuItem.Text = "Edit Subtitles";
-						viewCommentsToolStripMenuItem.Text = "Edit Comments";
+						cmiViewSubtitles.Text = "Edit Subtitles";
+						cmiViewComments.Text = "Edit Comments";
 						cmiAddSubtitle.Visible = true;
 					}
 				}
 
-				undoSavestateToolStripMenuItem.Visible = true;
+				cmiUndoSavestate.Visible = true;
 
 				cmiSeparator20.Visible = true;
 
@@ -925,14 +925,14 @@ namespace BizHawk.MultiClient
 			}
 
 			if (Global.Config.RecentRoms.Length() == 0)
-				loadLastROMToolStripMenuItem.Enabled = false;
+				cmiLoadLastRom.Enabled = false;
 			else
-				loadLastROMToolStripMenuItem.Enabled = true;
+				cmiLoadLastRom.Enabled = true;
 
 			if (Global.Config.RecentMovies.Length() == 0)
-				loadLastMovieToolStripMenuItem.Enabled = false;
+				cmiLoadLastMovie.Enabled = false;
 			else
-				loadLastMovieToolStripMenuItem.Enabled = true;
+				cmiLoadLastMovie.Enabled = true;
 
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State.bak";
 			var file = new FileInfo(path);
@@ -940,22 +940,22 @@ namespace BizHawk.MultiClient
 			{
 				if (StateSlots.IsRedo(Global.Config.SaveSlot))
 				{
-					undoSavestateToolStripMenuItem.Enabled = true;
-					undoSavestateToolStripMenuItem.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
-					undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.redo;
+					cmiUndoSavestate.Enabled = true;
+					cmiUndoSavestate.Text = "Redo Save to slot " + Global.Config.SaveSlot.ToString();
+					cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.redo;
 				}
 				else
 				{
-					undoSavestateToolStripMenuItem.Enabled = true;
-					undoSavestateToolStripMenuItem.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
-					undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.undo;
+					cmiUndoSavestate.Enabled = true;
+					cmiUndoSavestate.Text = "Undo Save to slot " + Global.Config.SaveSlot.ToString();
+					cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.undo;
 				}
 			}
 			else
 			{
-				undoSavestateToolStripMenuItem.Enabled = false;
-				undoSavestateToolStripMenuItem.Text = "Undo Savestate";
-				undoSavestateToolStripMenuItem.Image = BizHawk.MultiClient.Properties.Resources.undo;
+				cmiUndoSavestate.Enabled = false;
+				cmiUndoSavestate.Text = "Undo Savestate";
+				cmiUndoSavestate.Image = BizHawk.MultiClient.Properties.Resources.undo;
 			}
 
 			if (InFullscreen == true)

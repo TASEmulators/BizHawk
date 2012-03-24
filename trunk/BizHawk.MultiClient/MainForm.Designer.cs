@@ -249,19 +249,19 @@
 			this.CheatStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cmiOpenRom = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadLastROMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiLoadLastRom = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator_afterRomLoading = new System.Windows.Forms.ToolStripSeparator();
-			this.recordMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.playMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.restartMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.stopMovieToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadLastMovieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.makeMovieBackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewSubtitlesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewCommentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiRecordMovie = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiPlayMovie = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiRestartMovie = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiStopMovie = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiLoadLastMovie = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiMakeMovieBackup = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiViewSubtitles = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiViewComments = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator_afterMovie = new System.Windows.Forms.ToolStripSeparator();
 			this.cmiAddSubtitle = new System.Windows.Forms.ToolStripMenuItem();
-			this.undoSavestateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmiUndoSavestate = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiSeparator20 = new System.Windows.Forms.ToolStripSeparator();
 			this.cmiScreenshot = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmiScreenshotClipboard = new System.Windows.Forms.ToolStripMenuItem();
@@ -2042,19 +2042,19 @@
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmiOpenRom,
-            this.loadLastROMToolStripMenuItem,
+            this.cmiLoadLastRom,
             this.toolStripSeparator_afterRomLoading,
-            this.recordMovieToolStripMenuItem1,
-            this.playMovieToolStripMenuItem1,
-            this.restartMovieToolStripMenuItem,
-            this.stopMovieToolStripMenuItem1,
-            this.loadLastMovieToolStripMenuItem,
-            this.makeMovieBackupToolStripMenuItem,
-            this.viewSubtitlesToolStripMenuItem,
-            this.viewCommentsToolStripMenuItem,
-            this.toolStripSeparator_afterMovie,
+            this.cmiRecordMovie,
+            this.cmiPlayMovie,
+            this.cmiRestartMovie,
+            this.cmiStopMovie,
+            this.cmiLoadLastMovie,
+            this.cmiMakeMovieBackup,
+            this.cmiViewSubtitles,
             this.cmiAddSubtitle,
-            this.undoSavestateToolStripMenuItem,
+            this.cmiViewComments,
+            this.toolStripSeparator_afterMovie,
+            this.cmiUndoSavestate,
             this.cmiSeparator20,
             this.cmiScreenshot,
             this.cmiScreenshotClipboard,
@@ -2073,79 +2073,79 @@
 			this.cmiOpenRom.Text = "Open Rom";
 			this.cmiOpenRom.Click += new System.EventHandler(this.openRomToolStripMenuItem1_Click);
 			// 
-			// loadLastROMToolStripMenuItem
+			// cmiLoadLastRom
 			// 
-			this.loadLastROMToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
-			this.loadLastROMToolStripMenuItem.Name = "loadLastROMToolStripMenuItem";
-			this.loadLastROMToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.loadLastROMToolStripMenuItem.Text = "Load Last ROM";
-			this.loadLastROMToolStripMenuItem.Click += new System.EventHandler(this.loadLastROMToolStripMenuItem_Click);
+			this.cmiLoadLastRom.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.cmiLoadLastRom.Name = "cmiLoadLastRom";
+			this.cmiLoadLastRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastRom.Text = "Load Last ROM";
+			this.cmiLoadLastRom.Click += new System.EventHandler(this.loadLastROMToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterRomLoading
 			// 
 			this.toolStripSeparator_afterRomLoading.Name = "toolStripSeparator_afterRomLoading";
 			this.toolStripSeparator_afterRomLoading.Size = new System.Drawing.Size(188, 6);
 			// 
-			// recordMovieToolStripMenuItem1
+			// cmiRecordMovie
 			// 
-			this.recordMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
-			this.recordMovieToolStripMenuItem1.Name = "recordMovieToolStripMenuItem1";
-			this.recordMovieToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
-			this.recordMovieToolStripMenuItem1.Text = "Record Movie";
-			this.recordMovieToolStripMenuItem1.Click += new System.EventHandler(this.recordMovieToolStripMenuItem1_Click);
+			this.cmiRecordMovie.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
+			this.cmiRecordMovie.Name = "cmiRecordMovie";
+			this.cmiRecordMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRecordMovie.Text = "Record Movie";
+			this.cmiRecordMovie.Click += new System.EventHandler(this.recordMovieToolStripMenuItem1_Click);
 			// 
-			// playMovieToolStripMenuItem1
+			// cmiPlayMovie
 			// 
-			this.playMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
-			this.playMovieToolStripMenuItem1.Name = "playMovieToolStripMenuItem1";
-			this.playMovieToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
-			this.playMovieToolStripMenuItem1.Text = "Play Movie";
-			this.playMovieToolStripMenuItem1.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
+			this.cmiPlayMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
+			this.cmiPlayMovie.Name = "cmiPlayMovie";
+			this.cmiPlayMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiPlayMovie.Text = "Play Movie";
+			this.cmiPlayMovie.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
 			// 
-			// restartMovieToolStripMenuItem
+			// cmiRestartMovie
 			// 
-			this.restartMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
-			this.restartMovieToolStripMenuItem.Name = "restartMovieToolStripMenuItem";
-			this.restartMovieToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.restartMovieToolStripMenuItem.Text = "Restart Movie";
-			this.restartMovieToolStripMenuItem.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
+			this.cmiRestartMovie.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
+			this.cmiRestartMovie.Name = "cmiRestartMovie";
+			this.cmiRestartMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRestartMovie.Text = "Restart Movie";
+			this.cmiRestartMovie.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
 			// 
-			// stopMovieToolStripMenuItem1
+			// cmiStopMovie
 			// 
-			this.stopMovieToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
-			this.stopMovieToolStripMenuItem1.Name = "stopMovieToolStripMenuItem1";
-			this.stopMovieToolStripMenuItem1.Size = new System.Drawing.Size(191, 22);
-			this.stopMovieToolStripMenuItem1.Text = "Stop Movie";
-			this.stopMovieToolStripMenuItem1.Click += new System.EventHandler(this.stopMovieToolStripMenuItem1_Click);
+			this.cmiStopMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
+			this.cmiStopMovie.Name = "cmiStopMovie";
+			this.cmiStopMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiStopMovie.Text = "Stop Movie";
+			this.cmiStopMovie.Click += new System.EventHandler(this.stopMovieToolStripMenuItem1_Click);
 			// 
-			// loadLastMovieToolStripMenuItem
+			// cmiLoadLastMovie
 			// 
-			this.loadLastMovieToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
-			this.loadLastMovieToolStripMenuItem.Name = "loadLastMovieToolStripMenuItem";
-			this.loadLastMovieToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.loadLastMovieToolStripMenuItem.Text = "Load Last Movie";
-			this.loadLastMovieToolStripMenuItem.Click += new System.EventHandler(this.loadLastMovieToolStripMenuItem_Click);
+			this.cmiLoadLastMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
+			this.cmiLoadLastMovie.Name = "cmiLoadLastMovie";
+			this.cmiLoadLastMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastMovie.Text = "Load Last Movie";
+			this.cmiLoadLastMovie.Click += new System.EventHandler(this.loadLastMovieToolStripMenuItem_Click);
 			// 
-			// makeMovieBackupToolStripMenuItem
+			// cmiMakeMovieBackup
 			// 
-			this.makeMovieBackupToolStripMenuItem.Name = "makeMovieBackupToolStripMenuItem";
-			this.makeMovieBackupToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.makeMovieBackupToolStripMenuItem.Text = "Make Movie Backup";
-			this.makeMovieBackupToolStripMenuItem.Click += new System.EventHandler(this.makeMovieBackupToolStripMenuItem_Click);
+			this.cmiMakeMovieBackup.Name = "cmiMakeMovieBackup";
+			this.cmiMakeMovieBackup.Size = new System.Drawing.Size(191, 22);
+			this.cmiMakeMovieBackup.Text = "Make Movie Backup";
+			this.cmiMakeMovieBackup.Click += new System.EventHandler(this.makeMovieBackupToolStripMenuItem_Click);
 			// 
-			// viewSubtitlesToolStripMenuItem
+			// cmiViewSubtitles
 			// 
-			this.viewSubtitlesToolStripMenuItem.Name = "viewSubtitlesToolStripMenuItem";
-			this.viewSubtitlesToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.viewSubtitlesToolStripMenuItem.Text = "View Subtitles";
-			this.viewSubtitlesToolStripMenuItem.Click += new System.EventHandler(this.viewSubtitlesToolStripMenuItem_Click);
+			this.cmiViewSubtitles.Name = "cmiViewSubtitles";
+			this.cmiViewSubtitles.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewSubtitles.Text = "View Subtitles";
+			this.cmiViewSubtitles.Click += new System.EventHandler(this.viewSubtitlesToolStripMenuItem_Click);
 			// 
-			// viewCommentsToolStripMenuItem
+			// cmiViewComments
 			// 
-			this.viewCommentsToolStripMenuItem.Name = "viewCommentsToolStripMenuItem";
-			this.viewCommentsToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.viewCommentsToolStripMenuItem.Text = "View Comments";
-			this.viewCommentsToolStripMenuItem.Click += new System.EventHandler(this.viewCommentsToolStripMenuItem_Click);
+			this.cmiViewComments.Name = "cmiViewComments";
+			this.cmiViewComments.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewComments.Text = "View Comments";
+			this.cmiViewComments.Click += new System.EventHandler(this.viewCommentsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterMovie
 			// 
@@ -2159,13 +2159,13 @@
 			this.cmiAddSubtitle.Text = "Add Subtitle";
 			this.cmiAddSubtitle.Click += new System.EventHandler(this.AddSubtitleToolStripMenuItem_Click);
 			// 
-			// undoSavestateToolStripMenuItem
+			// cmiUndoSavestate
 			// 
-			this.undoSavestateToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
-			this.undoSavestateToolStripMenuItem.Name = "undoSavestateToolStripMenuItem";
-			this.undoSavestateToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.undoSavestateToolStripMenuItem.Text = "Undo Savestate";
-			this.undoSavestateToolStripMenuItem.Click += new System.EventHandler(this.undoSavestateToolStripMenuItem_Click);
+			this.cmiUndoSavestate.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
+			this.cmiUndoSavestate.Name = "cmiUndoSavestate";
+			this.cmiUndoSavestate.Size = new System.Drawing.Size(191, 22);
+			this.cmiUndoSavestate.Text = "Undo Savestate";
+			this.cmiUndoSavestate.Click += new System.EventHandler(this.undoSavestateToolStripMenuItem_Click);
 			// 
 			// cmiSeparator20
 			// 
@@ -2394,25 +2394,25 @@
 		private System.Windows.Forms.ToolStripMenuItem graphicsSettingsToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem cmiOpenRom;
-		private System.Windows.Forms.ToolStripMenuItem loadLastROMToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiLoadLastRom;
 		private System.Windows.Forms.ToolStripMenuItem enableContextMenuToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_afterRomLoading;
-		private System.Windows.Forms.ToolStripMenuItem recordMovieToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem playMovieToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem loadLastMovieToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiRecordMovie;
+		private System.Windows.Forms.ToolStripMenuItem cmiPlayMovie;
+		private System.Windows.Forms.ToolStripMenuItem cmiLoadLastMovie;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_afterMovie;
 		private System.Windows.Forms.ToolStripMenuItem cmiAddSubtitle;
-		private System.Windows.Forms.ToolStripMenuItem undoSavestateToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiUndoSavestate;
 		private System.Windows.Forms.ToolStripSeparator cmiSeparator20;
 		private System.Windows.Forms.ToolStripMenuItem cmiScreenshotClipboard;
 		private System.Windows.Forms.ToolStripMenuItem cmiCloseRom;
-		private System.Windows.Forms.ToolStripMenuItem makeMovieBackupToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiMakeMovieBackup;
 		private System.Windows.Forms.ToolStripMenuItem automaticallyBackupMoviesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem stopMovieToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem cmiStopMovie;
 		private System.Windows.Forms.ToolStripDropDownButton PauseStrip;
 		private System.Windows.Forms.ToolStripDropDownButton PlayRecordStatus;
 		private System.Windows.Forms.ToolStripDropDownButton DumpStatus;
-		private System.Windows.Forms.ToolStripMenuItem viewSubtitlesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiViewSubtitles;
 		private MenuStripEx menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem gBToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem debuggerToolStripMenuItem1;
@@ -2427,14 +2427,14 @@
 		private System.Windows.Forms.ToolStripStatusLabel StatusSlot8;
 		private System.Windows.Forms.ToolStripStatusLabel StatusSlot9;
 		private System.Windows.Forms.ToolStripStatusLabel StatusSlot10;
-		private System.Windows.Forms.ToolStripMenuItem viewCommentsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiViewComments;
         private System.Windows.Forms.ToolStripMenuItem displayLogWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem displaySubtitlesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem aVIWAVToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recordAVIToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopAVIToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel AVIStatusLabel;
-		private System.Windows.Forms.ToolStripMenuItem restartMovieToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem cmiRestartMovie;
 		private System.Windows.Forms.ToolStripMenuItem backupSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel CheatStatus;
 		private System.Windows.Forms.ToolStripMenuItem FreezeStatus;
