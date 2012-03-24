@@ -884,71 +884,23 @@ namespace BizHawk.MultiClient
 		private void UpdateNES(int prev)
 		{
 			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-
-			if (prev < 4)
+			NESControllerTemplate[] controller = Global.Config.NESController;
+			if (prev > 3)
 			{
-				Global.Config.NESController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.NESController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.NESController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.NESController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.NESController[prev].A = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].A);
-				TempBox.Dispose();
-				TempBox = TextBoxes[5] as InputWidget;
-				Global.Config.NESController[prev].B = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].B);
-				TempBox.Dispose();
-				TempBox = TextBoxes[6] as InputWidget;
-				Global.Config.NESController[prev].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Select);
-				TempBox.Dispose();
-				TempBox = TextBoxes[7] as InputWidget;
-				Global.Config.NESController[prev].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESController[prev].Start);
-				TempBox.Dispose();
-
-				Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+				prev -= 4;
+				controller = Global.Config.NESAutoController;
 			}
-			else
+			Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			for (int button = 0; button < CONTROLS["NES"].Length; button++)
 			{
-				Global.Config.NESAutoController[prev - 4].Up = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Up);
+				InputWidget TempBox = TextBoxes[button] as InputWidget;
+				FieldInfo buttonField = controller[prev].GetType().GetField(CONTROLS["NES"][button]);
+				buttonField.SetValue(
+					controller[prev],
+					AppendButtonMapping(TempBox.Text, (string)buttonField.GetValue(controller[prev]))
+				);
 				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].Down = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].Left = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].Right = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].A = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].A);
-				TempBox.Dispose();
-				TempBox = TextBoxes[5] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].B = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].B);
-				TempBox.Dispose();
-				TempBox = TextBoxes[6] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].Select = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Select);
-				TempBox.Dispose();
-				TempBox = TextBoxes[7] as InputWidget;
-				Global.Config.NESAutoController[prev - 4].Start = AppendButtonMapping(TempBox.Text, Global.Config.NESAutoController[prev - 4].Start);
-				TempBox.Dispose();
-
-				Global.Config.NESController[prev - 4].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-
-			TempBox.Dispose();
-			for (int i = 0; i < NESControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
+				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
 			}
 		}
