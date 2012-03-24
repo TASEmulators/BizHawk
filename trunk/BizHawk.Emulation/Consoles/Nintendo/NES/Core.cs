@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.DummyReadMemory = ReadMemory;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
+			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			apu = new APU(this);
 			ram = new byte[0x800];

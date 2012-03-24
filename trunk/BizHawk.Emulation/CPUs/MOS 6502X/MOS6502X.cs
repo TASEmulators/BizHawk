@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			Reset();
 		}
 
-		public bool BCD_Enabled = false;
+		public bool BCD_Enabled = true;
 		public bool debug = false;
 		public bool throw_unhandled;
 

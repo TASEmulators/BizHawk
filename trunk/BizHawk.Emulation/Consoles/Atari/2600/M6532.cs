@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6507;
 
 namespace BizHawk.Emulation.Consoles.Atari
 {

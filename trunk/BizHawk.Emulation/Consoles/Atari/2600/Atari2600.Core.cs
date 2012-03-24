@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6507;
+using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
 
 namespace BizHawk
@@ -9,7 +9,7 @@ namespace BizHawk
 	partial class Atari2600
 	{
 		public byte[] rom;
-		public MOS6507 cpu;
+		public MOS6502X cpu;
 		public M6532 m6532;
 		public TIA tia;
 
@@ -93,10 +93,11 @@ namespace BizHawk
 		public void HardReset()
 		{
 			_lagcount = 0;
-			cpu = new MOS6507();
+			cpu = new MOS6502X();
 			//cpu.debug = true;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
+			cpu.DummyReadMemory = ReadMemory;
 
 			// Setup TIA
 			//tia = new TIA(this, frameBuffer);
@@ -122,15 +123,15 @@ namespace BizHawk
 				tia.execute(1);
 
 				m6532.tick();
-				cpu.Execute(1);
-				if (cpu.PendingCycles <= 0)
-				{
-					//Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
-				}
-				if (cpu.PendingCycles < 0)
-				{
-					Console.WriteLine("------------Something went wrong------------");
-				}
+				cpu.ExecuteOne();
+				//if (cpu.PendingCycles <= 0)
+				//{
+				//  //Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
+				//}
+				//if (cpu.PendingCycles < 0)
+				//{
+				//  Console.WriteLine("------------Something went wrong------------");
+				//}
 				
 			}
 
