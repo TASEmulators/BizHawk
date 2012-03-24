@@ -1172,20 +1172,11 @@ namespace BizHawk.MultiClient
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
-            autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
+			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
 			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
 			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
-            frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
-		}
-
-		private void MainForm_Load(object sender, EventArgs e)
-		{
-			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
-
-			//Hide platform specific menus until an appropriate ROM is loaded
-			NESToolStripMenuItem.Visible = false;
-			tI83ToolStripMenuItem.Visible = false;
+			frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
 		}
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
