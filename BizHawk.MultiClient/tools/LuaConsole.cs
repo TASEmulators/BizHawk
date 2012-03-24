@@ -58,10 +58,12 @@ namespace BizHawk.MultiClient
 		{
 			if (column == 0)
 			{
-				if (luaList[index].IsSeparator)
-					color = this.BackColor;
-				else if (luaList[index].Enabled)
-					color = Color.LightCyan;
+                if (luaList[index].IsSeparator)
+                    color = this.BackColor;
+                else if (luaList[index].Enabled && !luaList[index].Paused)
+                    color = Color.LightCyan;
+                else if (luaList[index].Enabled && luaList[index].Paused)
+                    color = Color.IndianRed;
 			}
 		}
 
@@ -177,6 +179,7 @@ namespace BizHawk.MultiClient
 					l.Enabled = true;
 				}
 				else l.Enabled = false;
+                l.Paused = false;
 				changes = true;
 			}
 			else
@@ -267,20 +270,24 @@ namespace BizHawk.MultiClient
 		private void UpdateNumberOfScripts()
 		{
 			string message = "";
-			int active = 0;
+			int active = 0, paused = 0;
 			for (int x = 0; x < luaList.Count; x++)
 			{
-				if (luaList[x].Enabled)
-					active++;
+                if (luaList[x].Enabled)
+                {
+                    active++;
+                    if (luaList[x].Paused)
+                        paused++;
+                }
 			}
 
 			int L = luaList.Count;
 			if (L == 1)
-				message += L.ToString() + " script (" + active.ToString() + " active)";
+				message += L.ToString() + " script (" + active.ToString() + " active, " + paused.ToString() + " paused)";
 			else if (L == 0)
 				message += L.ToString() + " script";
 			else
-				message += L.ToString() + " scripts (" + active.ToString() + " active)";
+				message += L.ToString() + " scripts (" + active.ToString() + " active, " + paused.ToString() + " paused)";
 
 			NumberOfScripts.Text = message;
 		}
@@ -1053,5 +1060,31 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.AutoLoadLuaSession ^= true;
 		}
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            TogglePause();
+        }
+
+        private void TogglePause()
+        {
+            ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+            if (indexes.Count > 0)
+            {
+                for (int x = 0; x < indexes.Count; x++)
+                {
+                    var item = luaList[indexes[x]];
+                    item.TogglePause();
+                }
+            }
+            LuaListView.Refresh();
+            UpdateNumberOfScripts();
+            changes = true;
+        }
+
+        private void pauseResumeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TogglePause();
+        }
 	}
 }

@@ -92,6 +92,7 @@
             this.LuaListView = new BizHawk.VirtualListView();
             this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.pauseResumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip2.SuspendLayout();
@@ -272,18 +273,18 @@
             // noneToolStripMenuItem
             // 
             this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-            this.noneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.noneToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.noneToolStripMenuItem.Text = "None";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(100, 6);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             // 
             // toolStripSeparator1
@@ -304,6 +305,7 @@
             this.scriptToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.toggleToolStripMenuItem,
+            this.pauseResumeToolStripMenuItem,
             this.editToolStripMenuItem,
             this.removeScriptToolStripMenuItem1,
             this.insertSeparatorToolStripMenuItem,
@@ -644,6 +646,13 @@
             this.PathName.Text = "Path";
             this.PathName.Width = 195;
             // 
+            // pauseResumeToolStripMenuItem
+            // 
+            this.pauseResumeToolStripMenuItem.Name = "pauseResumeToolStripMenuItem";
+            this.pauseResumeToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.pauseResumeToolStripMenuItem.Text = "Resume/Pause";
+            this.pauseResumeToolStripMenuItem.Click += new System.EventHandler(this.pauseResumeToolStripMenuItem_Click);
+            // 
             // LuaConsole
             // 
             this.AllowDrop = true;
@@ -738,6 +747,7 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem disableScriptsOnLoadToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem autoloadSessionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pauseResumeToolStripMenuItem;
     }
 }
