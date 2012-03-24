@@ -2872,5 +2872,9 @@ namespace BizHawk.MultiClient
 			logWindowAsConsoleToolStripMenuItem.Enabled = true;
 		}
 
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+		}
 	}
 }
