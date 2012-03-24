@@ -1109,19 +1109,11 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public LuaTable input_get()
 		{
-			LuaTable keys = new LuaTable(1, lua);
-			string[] keystrings = Global.MainForm.lastKeyboard.Split(' ');
-
-			foreach (string keypress in keystrings)
-			{
-				if (keypress.Contains("Press:"))
-				{
-					string key = keypress.Replace("Press:", "");
-					keys[key] = key;
-				}
-			}
-
-			return keys;
+			LuaTable buttons = lua.NewTable();
+			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons())
+				if (kvp.Value)
+					buttons[kvp.Key] = true;
+			return buttons;
 		}
 
 		//----------------------------------------------------
@@ -1131,7 +1123,7 @@ namespace BizHawk.MultiClient
 		//Currently sends all controllers, needs to control which ones it sends
 		public LuaTable joypad_get()
 		{
-			LuaTable buttons = new LuaTable(1, lua);
+			LuaTable buttons = lua.NewTable();
 			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 				buttons[button] = Global.ControllerOutput[button];
 			
@@ -1145,7 +1137,7 @@ namespace BizHawk.MultiClient
 
 		public LuaTable joypad_getimmediate()
 		{
-			LuaTable buttons = new LuaTable(1, lua);
+			LuaTable buttons = lua.NewTable();
 			foreach (string button in Global.ActiveController.Type.BoolButtons)
 				buttons[button] = Global.ActiveController[button];
 			return buttons;

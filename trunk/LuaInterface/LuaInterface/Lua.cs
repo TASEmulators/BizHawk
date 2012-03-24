@@ -647,6 +647,14 @@ namespace LuaInterface
 			translator.push(luaState,val);
 			LuaDLL.lua_settable(luaState,-3);
 		}
+
+		//zero 24-mar-2012 added
+		public LuaTable NewTable()
+		{
+			NewTable("_TEMP_BIZHAWK_RULES_");
+			return GetTable("_TEMP_BIZHAWK_RULES_");
+		}
+
 		/*
 		 * Creates a new table as a global variable or as a field
 		 * inside an existing table

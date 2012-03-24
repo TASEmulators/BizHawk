@@ -16,7 +16,7 @@ namespace LuaInterface
     {
         //internal int _Reference;
         //private Lua _Interpreter;
-        public LuaTable(int reference, Lua interpreter)
+        internal LuaTable(int reference, Lua interpreter)
         {
             _Reference = reference;
             _Interpreter = interpreter;
