@@ -548,23 +548,34 @@ namespace BizHawk.MultiClient
 			return Validated;
 		}
 
-		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
-		{
-			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
-			{
-				LoadLuaFile(filePaths[0]);
-				DisplayLuaList();
-				UpdateNumberOfScripts();
-			}
-			else if (Path.GetExtension(filePaths[0]) == (".luases"))
-			{
-				LoadLuaSession(filePaths[0]);
-				DisplayLuaList();
-				UpdateNumberOfScripts();
-				//ClearOutput();
-			}
-		}
+        private void LuaConsole_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+            try
+            {
+                if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
+                {
+                    LoadLuaFile(filePaths[0]);
+                    DisplayLuaList();
+                    UpdateNumberOfScripts();
+                }
+                else if (Path.GetExtension(filePaths[0]) == (".luases"))
+                {
+                    LoadLuaSession(filePaths[0]);
+                    RunLuaScripts();
+                    DisplayLuaList();
+                    UpdateNumberOfScripts();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                {
+                    AddText(ex.Message);
+                }
+                else MessageBox.Show(ex.Message);
+            }
+        }
 
 		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
 		{
