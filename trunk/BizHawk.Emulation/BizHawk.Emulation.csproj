@@ -84,6 +84,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Consoles\Calculator\TI83.cs" />
+    <Compile Include="Consoles\Coleco\ColecoVision.Core.cs" />
+    <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
