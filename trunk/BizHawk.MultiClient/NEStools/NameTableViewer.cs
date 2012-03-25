@@ -74,7 +74,7 @@ namespace BizHawk.MultiClient
 			switch (Which)
 			{
 				case WhichNametable.NT_ALL:
-					e.Graphics.DrawImageUnscaled(nametables, 1, 1);
+					e.Graphics.DrawImageUnscaled(nametables, 0, 0);
 					break;
 				case WhichNametable.NT_2000:
 					e.Graphics.DrawImage(nametables, new Rectangle(0, 0, 512, 480), 0, 0, 256, 240, GraphicsUnit.Pixel);
@@ -102,7 +102,7 @@ namespace BizHawk.MultiClient
 		public void Screenshot()
 		{
 			var sfd = new SaveFileDialog();
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Patterns";
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Nametables";
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESScreenshots, "NES");
 			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
 
@@ -114,35 +114,35 @@ namespace BizHawk.MultiClient
 				return;
 
 			var file = new FileInfo(sfd.FileName);
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			ImageFormat i;
-			string extension = file.Extension.ToUpper();
-			switch (extension)
+			using (Bitmap b = new Bitmap(Width, Height))
 			{
-				default:
-				case ".PNG":
-					i = ImageFormat.Png;
-					break;
-				case ".BMP":
-					i = ImageFormat.Bmp;
-					break;
-			}
+				Rectangle rect = new Rectangle(new Point(0, 0), Size);
+				DrawToBitmap(b, rect);
 
-			b.Save(file.FullName, i);
+				ImageFormat i;
+				string extension = file.Extension.ToUpper();
+				switch (extension)
+				{
+					default:
+					case ".PNG":
+						i = ImageFormat.Png;
+						break;
+					case ".BMP":
+						i = ImageFormat.Bmp;
+						break;
+				}
+
+				b.Save(file.FullName, i);
+			}
 		}
 
 		public void ScreenshotToClipboard()
 		{
-			Bitmap b = new Bitmap(Width, Height);
-			Rectangle rect = new Rectangle(new Point(0, 0), Size);
-			DrawToBitmap(b, rect);
-
-			using (var img = b)
+			using(var b = new Bitmap(Width, Height))
 			{
-				System.Windows.Forms.Clipboard.SetImage(img);
+				Rectangle rect = new Rectangle(new Point(0, 0), Size);
+				DrawToBitmap(b, rect);
+				System.Windows.Forms.Clipboard.SetImage(b);
 			}
 		}
 	}

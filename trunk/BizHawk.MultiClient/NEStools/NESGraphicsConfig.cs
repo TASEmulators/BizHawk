@@ -116,5 +116,17 @@ namespace BizHawk.MultiClient
 			if (BGColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
+
+		private void btnAreaStandard_Click(object sender, EventArgs e)
+		{
+			FirstLineNumeric.Value = 8;
+			LastLineNumeric.Value = 231;
+		}
+
+		private void btnAreaFull_Click(object sender, EventArgs e)
+		{
+			FirstLineNumeric.Value = 0;
+			LastLineNumeric.Value = 239;
+		}
 	}
 }
