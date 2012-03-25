@@ -29,7 +29,7 @@ namespace BizHawk.MultiClient
 		{
 			{"Genesis 3-Button", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
-			{"PC Engine / SGX", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
+			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
 		};
 		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
 		{
-			{"NES", 4}, {"PC Engine / SGX", 5}, {"SMS / GG / SG-1000", 2}
+			{"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"SMS / GG / SG-1000", 2}
 		};
 		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
@@ -621,7 +621,7 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
@@ -646,7 +646,7 @@ namespace BizHawk.MultiClient
 				case "NES":
 					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
 					break;
 				case "SMS / GG / SG-1000":
@@ -674,7 +674,7 @@ namespace BizHawk.MultiClient
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
-					case "PC Engine / SGX":
+					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
@@ -713,7 +713,7 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
 					break;
@@ -735,7 +735,7 @@ namespace BizHawk.MultiClient
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					((PCEControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "SMS / GG / SG-1000":
@@ -757,7 +757,7 @@ namespace BizHawk.MultiClient
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
 						break;
 					}
-					case "PC Engine / SGX":
+					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
@@ -803,7 +803,7 @@ namespace BizHawk.MultiClient
 				Dictionary<string, string> systems = new Dictionary<string, string>()
 				{
 					{"A26", "Atari"}, {"GB", "Gameboy"}, {"GEN", "Sega Genesis"}, {"GG", "SMS / GG / SG-1000"}, {"NES", "NES"},
-					{"PCE", "PC Engine / SGX"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SGX"},
+					{"PCE", "PC Engine / SuperGrafx"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SuperGrafx"},
 					{"SMS", "SMS / GG / SG-1000"}, {"TI83", "TI-83"}
 				};
 				if (systems.ContainsKey(Global.Game.System))
@@ -843,7 +843,7 @@ namespace BizHawk.MultiClient
 					this.Width = prevWidth;
 					this.Height = prevHeight;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					joypads = 5;
 					this.Width = prevWidth;
 					this.Height = prevHeight;
@@ -900,7 +900,7 @@ namespace BizHawk.MultiClient
 			switch (SystemComboBox.SelectedItem.ToString())
 			{
 				case "NES":
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 				case "SMS / GG / SG-1000":
 					Do(SystemComboBox.SelectedItem.ToString());
 					break;
@@ -925,7 +925,7 @@ namespace BizHawk.MultiClient
 			switch (CurSelectConsole)
 			{
 				case "NES":
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 				case "SMS / GG / SG-1000":
 					Update(CurSelectController, CurSelectConsole);
 					break;
