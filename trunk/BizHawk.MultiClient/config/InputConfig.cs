@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
 			{"Atari", new string[5] { "Up", "Down", "Left", "Right", "Button" } },
+			{"Gameboy", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
 			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
@@ -84,78 +85,6 @@ namespace BizHawk.MultiClient
 			return button;
 		}
 
-		private void DoGameBoy()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Gameboy";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
-			string[] ButtonMappings = new string[NESControlList.Length];
-			ButtonMappings[0] = Global.Config.GameBoyController.Up;
-			ButtonMappings[1] = Global.Config.GameBoyController.Down;
-			ButtonMappings[2] = Global.Config.GameBoyController.Left;
-			ButtonMappings[3] = Global.Config.GameBoyController.Right;
-			ButtonMappings[4] = Global.Config.GameBoyController.A;
-			ButtonMappings[5] = Global.Config.GameBoyController.B;
-			ButtonMappings[6] = Global.Config.GameBoyController.Start;
-			ButtonMappings[7] = Global.Config.GameBoyController.Select;
-			IDX_CONTROLLERENABLED.Enabled = false;
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-			for (int i = 0; i < NESControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = NESControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			Changed = true;
-		}
-
-		private void UpdateGameBoy()
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.GameBoyController.Up = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.GameBoyController.Down = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.GameBoyController.Left = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.GameBoyController.Right = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.GameBoyController.A = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.A);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.GameBoyController.B = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.B);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.GameBoyController.Start = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Start);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.GameBoyController.Select = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Select);
-			TempBox.Dispose();
-			for (int i = 0; i < NESControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-			IDX_CONTROLLERENABLED.Enabled = true;
-		}
-
 		private void Do(string platform)
 		{
 			Label TempLabel;
@@ -171,10 +100,10 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.Atari2600Controller;
 					autoController = Global.Config.Atari2600AutoController;
 					break;
-				case "Sega Genesis":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
-					controller = Global.Config.GenesisController;
-					autoController = Global.Config.GenesisAutoController;
+				case "Gameboy":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
+					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
+					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
 					break;
 				case "NES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
@@ -185,6 +114,11 @@ namespace BizHawk.MultiClient
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
+					break;
+				case "Sega Genesis":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
 					break;
 				case "SMS / GG / SG-1000":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
@@ -210,14 +144,15 @@ namespace BizHawk.MultiClient
 				case "Atari":
 					IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
 					break;
-				case "Sega Genesis":
-					IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
-					break;
+				case "Gameboy":
 				case "NES":
 					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
 					break;
 				case "PC Engine / SuperGrafx":
 					IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
+					break;
+				case "Sega Genesis":
+					IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
 					break;
 				case "SMS / GG / SG-1000":
 					IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
@@ -251,12 +186,7 @@ namespace BizHawk.MultiClient
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
-					case "Sega Genesis":
-					{
-						GenControllerTemplate obj = (GenControllerTemplate)controller[jpad];
-						field = obj.GetType().GetField(fieldName).GetValue(obj);
-						break;
-					}
+					case "Gameboy":
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
@@ -266,6 +196,12 @@ namespace BizHawk.MultiClient
 					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
@@ -314,9 +250,9 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.Atari2600Controller;
 					autoController = Global.Config.Atari2600AutoController;
 					break;
-				case "Sega Genesis":
-					controller = Global.Config.GenesisController;
-					autoController = Global.Config.GenesisAutoController;
+				case "Gameboy":
+					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
+					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
 					break;
 				case "NES":
 					controller = Global.Config.NESController;
@@ -325,6 +261,10 @@ namespace BizHawk.MultiClient
 				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
+					break;
+				case "Sega Genesis":
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
 					break;
 				case "SMS / GG / SG-1000":
 					controller = Global.Config.SMSController;
@@ -347,14 +287,15 @@ namespace BizHawk.MultiClient
 				case "Atari":
 					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
-				case "Sega Genesis":
-					((GenControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
-					break;
+				case "Gameboy":
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "PC Engine / SuperGrafx":
 					((PCEControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "Sega Genesis":
+					((GenControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "SMS / GG / SG-1000":
 					((SMSControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
@@ -378,14 +319,7 @@ namespace BizHawk.MultiClient
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
 						break;
 					}
-					case "Sega Genesis":
-					{
-						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
-						FieldInfo buttonField = obj.GetType().GetField(fieldName);
-						field = buttonField.GetValue(obj);
-						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
-						break;
-					}
+					case "Gameboy":
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
@@ -397,6 +331,14 @@ namespace BizHawk.MultiClient
 					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
@@ -514,39 +456,13 @@ namespace BizHawk.MultiClient
 			{
 				UpdateAll();
 			}
-			switch (SystemComboBox.SelectedItem.ToString())
-			{
-				case "Atari":
-				case "NES":
-				case "PC Engine / SuperGrafx":
-				case "Sega Genesis":
-				case "SMS / GG / SG-1000":
-				case "TI-83":
-					Do(SystemComboBox.SelectedItem.ToString());
-					break;
-				case "Gameboy":
-					DoGameBoy();
-					break;
-			}
+			Do(SystemComboBox.SelectedItem.ToString());
 			CurSelectController = ControllComboBox.SelectedIndex;
 			SetFocus();
 		}
 		private void UpdateAll()
 		{
-			switch (CurSelectConsole)
-			{
-				case "Atari":
-				case "NES":
-				case "PC Engine / SuperGrafx":
-				case "Sega Genesis":
-				case "SMS / GG / SG-1000":
-				case "TI-83":
-					Update(CurSelectController, CurSelectConsole);
-					break;
-				case "Gameboy":
-					UpdateGameBoy();
-					break;
-			}
+			Update(CurSelectController, CurSelectConsole);
 			Changed = false;
 		}
 
