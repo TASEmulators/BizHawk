@@ -1335,8 +1335,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string lastKeyboard = "";
-
 		public void ProcessInput()
 		{
 			for (; ; )
@@ -1349,8 +1347,6 @@ namespace BizHawk.MultiClient
 				//Console.WriteLine(ie);
 
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
-
-				lastKeyboard += " " + ie.ToString();
 
 				//look for client cntrol bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
@@ -1768,7 +1764,6 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				MemoryPulse.Pulse();
 				//=======================================
-				lastKeyboard = "";
 				if (CurrAviWriter != null)
 				{
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
