@@ -47,6 +47,7 @@ namespace BizHawk.MultiClient
 		private string CurSelectConsole;
 		private int CurSelectController;
 		private bool Changed;
+
 		public InputConfig()
 		{
 			InitializeComponent();
@@ -847,58 +848,101 @@ namespace BizHawk.MultiClient
 			IDX_CONTROLLERENABLED.Enabled = true;
 		}
 
-		private void DoNES()
+		private void Do(string platform)
 		{
 			Label TempLabel;
 			InputWidget TempTextBox;
-			this.Text = ControllerStr + "NES";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			NESControllerTemplate[] controller = Global.Config.NESController;
-			if (jpad > 3)
+			this.Text = ControllerStr + platform;
+			object[] controller = null;
+			object[] mainController = null;
+			object[] autoController = null;
+			switch (platform)
 			{
-				jpad -= 4;
-				controller = Global.Config.NESAutoController;
+				case "NES":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					controller = Global.Config.NESController;
+					mainController = controller;
+					autoController = Global.Config.NESAutoController;
+					break;
+				default:
+					return;
 			}
-			IDX_CONTROLLERENABLED.Checked = Global.Config.NESController[jpad].Enabled;
+			int jpad = this.ControllComboBox.SelectedIndex;
+			if (jpad >= Global.PLAYERS[platform + " Controller"])
+			{
+				jpad -= Global.PLAYERS[platform + " Controller"];
+				controller = autoController;
+			}
+			switch (platform)
+			{
+				case "NES":
+					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
+					break;
+			}
 			Labels.Clear();
 			TextBoxes.Clear();
-			for (int button = 0; button < CONTROLS["NES"].Length; button++)
+			for (int button = 0; button < CONTROLS[platform].Length; button++)
 			{
 				TempLabel = new Label();
-				TempLabel.Text = CONTROLS["NES"][button];
+				TempLabel.Text = CONTROLS[platform][button];
 				TempLabel.Location = new Point(8, 20 + (button * 24));
 				Labels.Add(TempLabel);
 				TempTextBox = new InputWidget();
 				TempTextBox.Location = new Point(48, 20 + (button * 24));
 				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(
-					(string)controller[jpad].GetType().GetField(CONTROLS["NES"][button]).GetValue(controller[jpad])
-				);
+				object field = null;
+				string fieldName = CONTROLS[platform][button];
+				switch (platform)
+				{
+					case "NES":
+						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+				}
+				TempTextBox.SetBindings((string)field);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
 			}
 			Changed = true;
 		}
 
-		private void UpdateNES(int prev)
+		private void Update(int prev, string platform)
 		{
 			ButtonsGroupBox.Controls.Clear();
-			NESControllerTemplate[] controller = Global.Config.NESController;
-			if (prev > 3)
+			object[] controller = null;
+			object[] mainController = null;
+			object[] autoController = null;
+			switch (platform)
 			{
-				prev -= 4;
-				controller = Global.Config.NESAutoController;
+				case "NES":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
+					controller = Global.Config.NESController;
+					mainController = controller;
+					autoController = Global.Config.NESAutoController;
+					break;
+				default:
+					return;
+			}
+			if (prev >= Global.PLAYERS[platform + " Controller"])
+			{
+				prev -= Global.PLAYERS[platform + " Controller"];
+				controller = autoController;
 			}
 			Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
-			for (int button = 0; button < CONTROLS["NES"].Length; button++)
+			for (int button = 0; button < CONTROLS[platform].Length; button++)
 			{
 				InputWidget TempBox = TextBoxes[button] as InputWidget;
-				FieldInfo buttonField = controller[prev].GetType().GetField(CONTROLS["NES"][button]);
-				buttonField.SetValue(
-					controller[prev],
-					AppendButtonMapping(TempBox.Text, (string)buttonField.GetValue(controller[prev]))
-				);
+				object field = null;
+				string fieldName = CONTROLS[platform][button];
+				switch (platform)
+				{
+					case "NES":
+						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+				}
 				TempBox.Dispose();
 				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
@@ -1053,7 +1097,7 @@ namespace BizHawk.MultiClient
 					DoTI83();
 					break;
 				case "NES":
-					DoNES();
+					Do("NES");
 					break;
 				case "Atari":
 					DoAtari();
@@ -1082,7 +1126,7 @@ namespace BizHawk.MultiClient
 					UpdateTI83();
 					break;
 				case "NES":
-					UpdateNES(CurSelectController);
+					Update(CurSelectController, "NES");
 					break;
 				case "Atari":
 					UpdateAtari(CurSelectController);

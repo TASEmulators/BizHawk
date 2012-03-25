@@ -19,7 +19,7 @@ namespace BizHawk.MultiClient
 			NESController[3] = new NESControllerTemplate(false);
 			GameBoyController = new NESControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
-			
+
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(true);
 
@@ -118,7 +118,6 @@ namespace BizHawk.MultiClient
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
-
 
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
@@ -223,7 +222,6 @@ namespace BizHawk.MultiClient
 		public int LuaConsoleWidth = -1;
 		public int LuaConsoleHeight = -1;
 		public bool DisableLuaScriptsOnLoad = false;
-		
 
 		// RamWatch Settings
 		public bool AutoLoadRamWatch = false;
@@ -461,7 +459,7 @@ namespace BizHawk.MultiClient
 		public string AVIRecordBinding = "";
 		public string AVIStopBinding = "";
 		public string ToggleMenuBinding = "";
-		
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
@@ -472,7 +470,7 @@ namespace BizHawk.MultiClient
 		public string SmsPause = "V, J1 B8";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
-				
+
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
 		public bool PceEqualizeVolume = false;
@@ -698,7 +696,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 	}
-
 
 	public class Atari2600ControllerTemplate
 	{
