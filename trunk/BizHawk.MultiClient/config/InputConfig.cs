@@ -19,7 +19,6 @@ namespace BizHawk.MultiClient
 		int prevWidth;
 		int prevHeight;
 		const string ControllerStr = "Configure Controllers - ";
-		public static string[] SMSControlList = new string[] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" };
 		public static string[] PCEControlList = new string[] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" };
 		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", };
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
@@ -32,7 +31,7 @@ namespace BizHawk.MultiClient
 			{"Genesis 3-Button", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"PC Engine", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
-			{"SMS", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
+			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
 				"TI83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
@@ -40,6 +39,10 @@ namespace BizHawk.MultiClient
 				"VARS", "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH",
 				"TRACE", "ZOOM", "WINDOW", "Y", "2nd", "MODE", "Del", ",", "SIN" }
 			}
+		};
+		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
+		{
+			{"NES", 4}, {"SMS / GG / SG-1000", 2}
 		};
 		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
@@ -175,128 +178,6 @@ namespace BizHawk.MultiClient
 			}
 			TempBox.Dispose();
 			for (int i = 0; i < AtariControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-		}
-
-		private void DoSMS()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "SMS / GG / SG-1000";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
-
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[SMSControlList.Length];
-
-			if (jpad < 2)
-			{
-				ButtonMappings[0] = Global.Config.SMSController[jpad].Up;
-				ButtonMappings[1] = Global.Config.SMSController[jpad].Down;
-				ButtonMappings[2] = Global.Config.SMSController[jpad].Left;
-				ButtonMappings[3] = Global.Config.SMSController[jpad].Right;
-				ButtonMappings[4] = Global.Config.SMSController[jpad].B1;
-				ButtonMappings[5] = Global.Config.SMSController[jpad].B2;
-				ButtonMappings[6] = Global.Config.SmsPause;
-				ButtonMappings[7] = Global.Config.SmsReset;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad].Enabled;
-			}
-			else
-			{
-				ButtonMappings[0] = Global.Config.SMSAutoController[jpad - 2].Up;
-				ButtonMappings[1] = Global.Config.SMSAutoController[jpad - 2].Down;
-				ButtonMappings[2] = Global.Config.SMSAutoController[jpad - 2].Left;
-				ButtonMappings[3] = Global.Config.SMSAutoController[jpad - 2].Right;
-				ButtonMappings[4] = Global.Config.SMSAutoController[jpad - 2].B1;
-				ButtonMappings[5] = Global.Config.SMSAutoController[jpad - 2].B2;
-				ButtonMappings[6] = Global.Config.SmsPause;
-				ButtonMappings[7] = Global.Config.SmsReset;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.SMSController[jpad - 2].Enabled;
-			}
-
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-			for (int i = 0; i < SMSControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = SMSControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			Changed = true;
-		}
-
-		private void UpdateSMS(int prev)
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-
-			if (prev < 2)
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.SMSController[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.SMSController[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.SMSController[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.SMSController[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.SMSController[prev].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B1);
-				TempBox.Dispose();
-				TempBox = TextBoxes[5] as InputWidget;
-				Global.Config.SMSController[prev].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSController[prev].B2);
-				TempBox.Dispose();
-				TempBox = TextBoxes[6] as InputWidget;
-				Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
-				TempBox.Dispose();
-				TempBox = TextBoxes[7] as InputWidget;
-				Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
-				Global.Config.SMSController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			else
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].Up = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].Down = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].Left = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].Right = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].B1 = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].B1);
-				TempBox.Dispose();
-				TempBox = TextBoxes[5] as InputWidget;
-				Global.Config.SMSAutoController[prev - 2].B2 = AppendButtonMapping(TempBox.Text, Global.Config.SMSAutoController[prev - 2].B2);
-				TempBox.Dispose();
-				TempBox = TextBoxes[6] as InputWidget;
-				Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
-				TempBox.Dispose();
-				TempBox = TextBoxes[7] as InputWidget;
-				Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
-				Global.Config.SMSController[prev - 2].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			TempBox.Dispose();
-			for (int i = 0; i < SMSControlList.Length; i++)
 			{
 				TempLabel = Labels[i] as Label;
 				TempLabel.Dispose();
@@ -864,19 +745,28 @@ namespace BizHawk.MultiClient
 					mainController = controller;
 					autoController = Global.Config.NESAutoController;
 					break;
+				case "SMS / GG / SG-1000":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
+					controller = Global.Config.SMSController;
+					mainController = controller;
+					autoController = Global.Config.SMSAutoController;
+					break;
 				default:
 					return;
 			}
 			int jpad = this.ControllComboBox.SelectedIndex;
-			if (jpad >= Global.PLAYERS[platform + " Controller"])
+			if (jpad >= PADS[platform])
 			{
-				jpad -= Global.PLAYERS[platform + " Controller"];
+				jpad -= PADS[platform];
 				controller = autoController;
 			}
 			switch (platform)
 			{
 				case "NES":
 					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
+					break;
+				case "SMS / GG / SG-1000":
+					IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
 					break;
 			}
 			Labels.Clear();
@@ -895,9 +785,24 @@ namespace BizHawk.MultiClient
 				switch (platform)
 				{
 					case "NES":
+					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
+					}
+					case "SMS / GG / SG-1000":
+					{
+						if (button < 6)
+						{
+							SMSControllerTemplate obj = (SMSControllerTemplate)controller[jpad];
+							field = obj.GetType().GetField(fieldName).GetValue(obj);
+						}
+						else if (button == 6)
+							field = Global.Config.SmsPause;
+						else
+							field = Global.Config.SmsReset;
+						break;
+					}
 				}
 				TempTextBox.SetBindings((string)field);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
@@ -915,20 +820,32 @@ namespace BizHawk.MultiClient
 			switch (platform)
 			{
 				case "NES":
-					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 					controller = Global.Config.NESController;
 					mainController = controller;
 					autoController = Global.Config.NESAutoController;
 					break;
+				case "SMS / GG / SG-1000":
+					controller = Global.Config.SMSController;
+					mainController = controller;
+					autoController = Global.Config.SMSAutoController;
+					break;
 				default:
 					return;
 			}
-			if (prev >= Global.PLAYERS[platform + " Controller"])
+			if (prev >= PADS[platform])
 			{
-				prev -= Global.PLAYERS[platform + " Controller"];
+				prev -= PADS[platform];
 				controller = autoController;
 			}
-			Global.Config.NESController[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
+			switch (platform)
+			{
+				case "NES":
+					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "SMS / GG / SG-1000":
+					((SMSControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+			}
 			for (int button = 0; button < CONTROLS[platform].Length; button++)
 			{
 				InputWidget TempBox = TextBoxes[button] as InputWidget;
@@ -937,11 +854,28 @@ namespace BizHawk.MultiClient
 				switch (platform)
 				{
 					case "NES":
+					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
 						break;
+					}
+					case "SMS / GG / SG-1000":
+					{
+						if (button < 6)
+						{
+							SMSControllerTemplate obj = (SMSControllerTemplate)controller[prev];
+							FieldInfo buttonField = obj.GetType().GetField(fieldName);
+							field = buttonField.GetValue(obj);
+							buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						}
+						else if (button == 6)
+							Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
+						else
+							Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+						break;
+					}
 				}
 				TempBox.Dispose();
 				Label TempLabel = Labels[button] as Label;
@@ -1061,7 +995,7 @@ namespace BizHawk.MultiClient
 			switch (SystemComboBox.SelectedItem.ToString())
 			{
 				case "SMS / GG / SG-1000":
-					DoSMS();
+					Do(SystemComboBox.SelectedItem.ToString());
 					break;
 				case "PC Engine / SGX":
 					DoPCE();
@@ -1076,7 +1010,7 @@ namespace BizHawk.MultiClient
 					DoTI83();
 					break;
 				case "NES":
-					Do("NES");
+					Do(SystemComboBox.SelectedItem.ToString());
 					break;
 				case "Atari":
 					DoAtari();
@@ -1090,7 +1024,7 @@ namespace BizHawk.MultiClient
 			switch (CurSelectConsole)
 			{
 				case "SMS / GG / SG-1000":
-					UpdateSMS(CurSelectController);
+					Update(CurSelectController, CurSelectConsole);
 					break;
 				case "PC Engine / SGX":
 					UpdatePCE(CurSelectController);
@@ -1105,7 +1039,7 @@ namespace BizHawk.MultiClient
 					UpdateTI83();
 					break;
 				case "NES":
-					Update(CurSelectController, "NES");
+					Update(CurSelectController, CurSelectConsole);
 					break;
 				case "Atari":
 					UpdateAtari(CurSelectController);
