@@ -114,6 +114,7 @@ namespace BizHawk.MultiClient
 		
 		public Lua SpawnCoroutine(string File)
 		{
+            LuaConsole Luas = new LuaConsole();
             var t = lua.NewThread();
             LuaRegister(t);
             var main = t.LoadFile(File);

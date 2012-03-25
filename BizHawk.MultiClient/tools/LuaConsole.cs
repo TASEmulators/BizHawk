@@ -240,8 +240,10 @@ namespace BizHawk.MultiClient
 				for (int x = 0; x < indexes.Count; x++)
 				{
 					var item = luaList[indexes[x]];
-                    if(!item.IsSeparator)
-					    item.Toggle();
+                    if (!item.IsSeparator)
+                    {
+                        item.Toggle();
+                    }
 					if (item.Enabled && item.Thread == null)
 						item.Thread = LuaImp.SpawnCoroutine(item.Path);
 					else if (!item.Enabled && item.Thread != null)
@@ -253,7 +255,7 @@ namespace BizHawk.MultiClient
 			changes = true;
 		}
 
-		private void RunLuaScripts()
+		public void RunLuaScripts()
 		{
             for (int x = 0; x < luaList.Count; x++)
             {
@@ -384,15 +386,15 @@ namespace BizHawk.MultiClient
 			if (luaList.Count == 0) return;
 			changes = true;
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
-			if (indexes.Count > 0)
-			{
-				foreach (int index in indexes)
-				{
-					luaList.Remove(luaList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
-				}
-				indexes.Clear();
-				DisplayLuaList();
-			}
+            if (indexes.Count > 0)
+            {
+                foreach (int index in indexes)
+                {
+                    luaList.Remove(luaList[indexes[0]]); //index[0] used since each iteration will make this the correct list index
+                }
+                indexes.Clear();
+                DisplayLuaList();
+            }
 			UpdateNumberOfScripts();
 		}
 
@@ -666,7 +668,6 @@ namespace BizHawk.MultiClient
 
 		private void cutToolStripButton_Click(object sender, EventArgs e)
 		{
-			Toggle();
 			RemoveScript();
 		}
 
@@ -780,16 +781,23 @@ namespace BizHawk.MultiClient
 		{
 			foreach (var s in luaList)
 			{
-				if (s.Enabled && s.Thread != null && !s.Paused)
-				{
-					bool prohibit = false;
-					if (s.FrameWaiting && !includeFrameWaiters)
-						prohibit = true;
+                try
+                {
+                    if (s.Enabled && s.Thread != null && !s.Paused)
+                    {
+                        bool prohibit = false;
+                        if (s.FrameWaiting && !includeFrameWaiters)
+                            prohibit = true;
 
-					if (prohibit) continue;
-					var result = LuaImp.ResumeScript(s.Thread);
-					s.FrameWaiting = result.WaitForFrame;
-				}
+                        if (prohibit) continue;
+                        var result = LuaImp.ResumeScript(s.Thread);
+                        s.FrameWaiting = result.WaitForFrame;
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show("");
+                }
 			}
 		}
 
