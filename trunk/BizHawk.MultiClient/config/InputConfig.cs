@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
-				"TI83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
+				"TI-83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
 				"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN",
 				"VARS", "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH",
 				"TRACE", "ZOOM", "WINDOW", "Y", "2nd", "MODE", "Del", ",", "SIN" }
@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
 		};
 		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
 		{
-			{"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"SMS / GG / SG-1000", 2}
+			{"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"SMS / GG / SG-1000", 2}, {"TI-83", 1}
 		};
 		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
@@ -631,6 +631,10 @@ namespace BizHawk.MultiClient
 					controller = Global.Config.SMSController;
 					autoController = Global.Config.SMSAutoController;
 					break;
+				case "TI-83":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
+					controller = Global.Config.TI83Controller;
+					break;
 				default:
 					return;
 			}
@@ -651,6 +655,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "SMS / GG / SG-1000":
 					IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
+					break;
+				case "TI-83":
+					IDX_CONTROLLERENABLED.Checked = ((TI83ControllerTemplate)mainController[jpad]).Enabled;
 					break;
 			}
 			Labels.Clear();
@@ -691,6 +698,12 @@ namespace BizHawk.MultiClient
 							field = Global.Config.SmsPause;
 						else
 							field = Global.Config.SmsReset;
+						break;
+					}
+					case "TI-83":
+					{
+						TI83ControllerTemplate obj = (TI83ControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
 				}
@@ -862,8 +875,8 @@ namespace BizHawk.MultiClient
 					joypads = 1;
 					if (this.Width < 690)
 						this.Width = 690;
-					if (this.Height < 556)
-						this.Height = 556;
+					if (this.Height < 580)
+						this.Height = 580;
 					break;
 				case "NES":
 					joypads = 4;
