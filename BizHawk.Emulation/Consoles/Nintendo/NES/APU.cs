@@ -47,11 +47,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//4, 7, 14, 30, 60, 88, 118, 148, 188, 236, 354, 472, 708,  944, 1890, 3778 //PAL
 			};
 
-	
+
 			class PulseUnit
 			{
 				public PulseUnit(int unit) { this.unit = unit; }
-				public int unit; 
+				public int unit;
 
 				//reg0
 				int duty_cnt, env_loop, env_constant, env_cnt_value;
@@ -87,10 +87,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
+
 				public void WriteReg(int addr, byte val)
 				{
 					//Console.WriteLine("write pulse {0:X} {1:X}", addr, val);
-					switch(addr)
+					switch (addr)
 					{
 						case 0:
 							env_cnt_value = val & 0xF;
@@ -120,7 +121,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							//allow the lenctr_en to kill the len_cnt
 							set_lenctr_en(lenctr_en);
-							
+
 							//serves as a useful note-on diagnostic
 							//if(unit==1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
 							break;
@@ -163,7 +164,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						if (swp_divider_counter == 0)
 						{
 							swp_divider_counter = sweep_divider_cnt + 1;
-						
+
 							//divider was clocked: process sweep pitch bend
 							if (sweep_shiftcount != 0 && !swp_silence)
 							{
@@ -180,7 +181,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							sweep_reload = false;
 						}
 					}
-					
+
 					//env_loopdoubles as "halt length counter"
 					if (env_loop == 0 && len_cnt > 0)
 						len_cnt--;
@@ -196,7 +197,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					}
 					else
 					{
-						if(env_divider != 0) env_divider--;
+						if (env_divider != 0) env_divider--;
 						if (env_divider == 0)
 						{
 							env_divider = (env_cnt_value + 1);
@@ -219,7 +220,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					else env_output = env_counter;
 
 					if (timer_counter > 0) timer_counter--;
-					if (timer_counter == 0 && timer_raw_reload_value!=0)
+					if (timer_counter == 0 && timer_raw_reload_value != 0)
 					{
 						duty_step = (duty_step + 1) & 7;
 						duty_value = PULSE_DUTY[duty_cnt, duty_step] == 1;
@@ -233,8 +234,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						if (swp_silence)
 							sample = 0;
 
-						if (len_cnt==0) //length counter is 0
-						    sample = 0; //silenced
+						if (len_cnt == 0) //length counter is 0
+							sample = 0; //silenced
 					}
 					else
 						sample = 0; //duty cycle is 0, silenced.
@@ -297,13 +298,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						case 0:
 							env_cnt_value = val & 0xF;
 							env_constant = (val >> 4) & 1;
-							env_loop = (val>>5)&1;
+							env_loop = (val >> 5) & 1;
 							break;
 						case 1:
 							break;
 						case 2:
 							period_cnt = NOISE_TABLE[val & 0xF];
-							mode_cnt = (val>>7)&1;
+							mode_cnt = (val >> 7) & 1;
 							//Console.WriteLine("noise period: {0}, vol: {1}", (val & 0xF), env_cnt_value);
 							break;
 						case 3:
@@ -350,7 +351,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				public void clock_length_and_sweep()
 				{
-				
+
 					if (len_cnt > 0 && env_loop == 0)
 						len_cnt--;
 				}
@@ -373,10 +374,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						shift_register >>= 1;
 						shift_register &= ~(1 << 14);
 						shift_register |= (feedback << 14);
-						noise_bit = (shift_register & 1)!=0;
+						noise_bit = (shift_register & 1) != 0;
 					}
 
-					if (noise_bit || len_cnt==0) sample = 0;
+					if (noise_bit || len_cnt == 0) sample = 0;
 					else
 						sample = env_output;
 				}
@@ -463,21 +464,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//is clocked in frame counter.
 					if (en)
 					{
-						if(timer>0) timer--;
+						if (timer > 0) timer--;
 						if (timer == 0)
 						{
 							seq = (seq + 1) & 0x1F;
 							timer = timer_cnt_reload;
 						}
 						//if(CFG_DECLICK)
-						    //sample = TRIANGLE_TABLE[(seq+8)&0x1F];
+						//sample = TRIANGLE_TABLE[(seq+8)&0x1F];
 						//else
-							sample = TRIANGLE_TABLE[seq];
+						sample = TRIANGLE_TABLE[seq];
 					}
 
 				}
 
-				
+
 				public void clock_length_and_sweep()
 				{
 					//env_loopdoubles as "halt length counter"
@@ -487,7 +488,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void clock_linear_counter()
 				{
-				//	Console.WriteLine("linear_counter: {0}", linear_counter);
+					//	Console.WriteLine("linear_counter: {0}", linear_counter);
 					if (halt_flag == 1)
 					{
 						linear_counter = linear_counter_reload;
@@ -543,7 +544,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ser.Sync("irq_enabled", ref irq_enabled);
 					ser.Sync("loop_flag", ref loop_flag);
 					ser.Sync("timer_reload", ref timer_reload);
-					
+
 					ser.Sync("timer", ref timer);
 					ser.Sync("user_address", ref user_address);
 					ser.Sync("user_length", ref user_length);
@@ -597,7 +598,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						//apu.nes.LogLine("dmc out sample: {0}", out_deltacounter);
 					}
 
-					if (out_bits_remaining==0)
+					if (out_bits_remaining == 0)
 					{
 						out_bits_remaining = 7;
 						if (sample_length > 0)
@@ -619,7 +620,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public void set_lenctr_en(bool en)
 				{
-					if (!en) 
+					if (!en)
 						//disable playback
 						sample_length = 0;
 					else
@@ -688,12 +689,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public void SyncState(Serializer ser)
 			{
+				ser.Sync("irq_pending", ref irq_pending);
+				ser.Sync("dmc_irq", ref dmc_irq);
+				ser.Sync("pending_reg", ref pending_reg);
+				ser.Sync("pending_val", ref pending_val);
+
 				ser.Sync("sequencer_counter", ref sequencer_counter);
 				ser.Sync("sequencer_step", ref sequencer_step);
 				ser.Sync("sequencer_mode", ref sequencer_mode);
-				ser.Sync("sequencer_irq_inhibit", ref sequencer_irq_inhibit);
+				ser.Sync("sequencer_irq_inhibit;", ref sequencer_irq_inhibit);
 				ser.Sync("sequencer_irq", ref sequencer_irq);
-				ser.Sync("dmc_irq", ref dmc_irq);
+				ser.Sync("sequence_reset_pending", ref sequence_reset_pending);
+				ser.Sync("sequencer_irq_clear_pending", ref sequencer_irq_clear_pending);
+				ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
+	
 				pulse[0].SyncState(ser);
 				pulse[1].SyncState(ser);
 				triangle.SyncState(ser);
@@ -705,115 +714,153 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			TriangleUnit triangle = new TriangleUnit();
 			NoiseUnit noise = new NoiseUnit();
 			DMCUnit dmc;
-			bool sequencer_irq;
-			public bool dmc_irq;
+
+			bool irq_pending;
+			bool dmc_irq;
+			int pending_reg = -1;
+			byte pending_val = 0;
+
+			int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit;
+			bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_assert;
 
 			public void RunDMCFetch()
 			{
 				dmc.Fetch();
 			}
 
-			int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit;
 			void sequencer_reset()
 			{
 				sequencer_counter = 0;
 
 				if (sequencer_mode == 1)
 				{
-					sequencer_step = 5;
-					sequencer_check();
+					sequencer_step = 0;
+					QuarterFrame();
+					HalfFrame();
 				}
 				else
-					sequencer_step = 1;
+					sequencer_step = 0;
 			}
 
-			//21477272 master clock
-			//1789772 cpu clock (master / 12)
-			//240 apu clock (master / 89490) = (cpu / 7457)
+			//these figures are not valid for PAL. they must be recalculated with nintendulator's values above
+			//these values (the NTSC at least) are derived from nintendulator. they are all 2 higher than the specifications, due to some shortcoming in the emulation
+			//this is probably a hint that we're doing something a little wrong but making up for it with curcuitous chaos in other ways
+			static int[][] sequencer_lut = new int[][]{
+				new int[]{7458,14914,22372,29830},
+				new int[]{7458,14914,22372,29830,37282}
+			};
+
 			void sequencer_tick()
 			{
 				sequencer_counter++;
-				//this figure is not valid for PAL. it must be recalculated
-				if (sequencer_counter != 7457) return;
-				sequencer_counter = 0;
-				sequencer_step++;
+				if (sequence_reset_pending)
+				{
+					sequencer_reset();
+					sequence_reset_pending = false;
+				}
+				if (sequencer_lut[sequencer_mode][sequencer_step] != sequencer_counter)
+					return;
 				sequencer_check();
 			}
 
 			public void SyncIRQ()
 			{
-				nes.irq_apu = sequencer_irq | dmc_irq;
-				//if (nes.irq_apu) Console.WriteLine("apu irq");
-				nes.sync_irq();
+				irq_pending = sequencer_irq | dmc_irq;
 			}
 
 			void sequencer_check()
 			{
 				//Console.WriteLine("sequencer mode {0} step {1}", sequencer_mode, sequencer_step);
+				bool quarter, half, reset;
 				switch (sequencer_mode)
 				{
 					case 0: //4-step
-						pulse[0].clock_env();
-						pulse[1].clock_env();
-						triangle.clock_linear_counter();
-						noise.clock_env();
-						if (sequencer_step == 2 || sequencer_step == 4)
+						quarter = true;
+						half = (sequencer_step == 1 || sequencer_step == 3);
+						reset = sequencer_step == 3;
+						if (reset && sequencer_irq_inhibit == 0)
 						{
-							pulse[0].clock_length_and_sweep();
-							pulse[1].clock_length_and_sweep();
-							triangle.clock_length_and_sweep();
-							noise.clock_length_and_sweep();
-						}
-						if (sequencer_step == 4)
-						{
-							if (sequencer_irq_inhibit == 0)
-							{
-								sequencer_irq = true;
-								SyncIRQ();
-							}
-							sequencer_step = 1;
+							//Console.WriteLine("{0} {1,5} set irq_assert", nes.Frame, sequencer_counter);
+							sequencer_irq_assert = true;
 						}
 						break;
+
 					case 1: //5-step
-						if (sequencer_step != 4)
-						{
-							pulse[0].clock_env();
-							pulse[1].clock_env();
-							triangle.clock_linear_counter();
-							noise.clock_env();
-						}
-						if (sequencer_step == 2 || sequencer_step == 5)
-						{
-							pulse[0].clock_length_and_sweep();
-							pulse[1].clock_length_and_sweep();
-							triangle.clock_length_and_sweep();
-							noise.clock_length_and_sweep();
-						}
-						if (sequencer_step == 5)
-							sequencer_step = 1;
+						quarter = sequencer_step != 3;
+						half = (sequencer_step == 1 || sequencer_step == 4);
+						reset = sequencer_step == 4;
 						break;
+
+					default:
+						throw new InvalidOperationException();
 				}
+
+				if (reset)
+				{
+					sequencer_counter = 0;
+					sequencer_step = 0;
+				}
+				else sequencer_step++;
+
+				if (quarter) QuarterFrame();
+				if (half) HalfFrame();
 			}
 
+			void HalfFrame()
+			{
+				pulse[0].clock_length_and_sweep();
+				pulse[1].clock_length_and_sweep();
+				triangle.clock_length_and_sweep();
+				noise.clock_length_and_sweep();
+			}
+
+			void QuarterFrame()
+			{
+				pulse[0].clock_env();
+				pulse[1].clock_env();
+				triangle.clock_linear_counter();
+				noise.clock_env();
+			}
 
 			public void WriteReg(int addr, byte val)
+			{
+				pending_reg = addr;
+				pending_val = val;
+			}
+
+			void _WriteReg(int addr, byte val)
 			{
 				//Console.WriteLine("{0:X4} = {1:X2}", addr, val);
 				switch (addr)
 				{
-					case 0x4000: case 0x4001: case 0x4002: case 0x4003:
+					case 0x4000:
+					case 0x4001:
+					case 0x4002:
+					case 0x4003:
 						pulse[0].WriteReg(addr - 0x4000, val);
 						break;
-					case 0x4004: case 0x4005: case 0x4006: case 0x4007:
+					case 0x4004:
+					case 0x4005:
+					case 0x4006:
+					case 0x4007:
 						pulse[1].WriteReg(addr - 0x4004, val);
 						break;
-					case 0x4008: case 0x4009: case 0x400A: case 0x400B:
+					case 0x4008:
+					case 0x4009:
+					case 0x400A:
+					case 0x400B:
 						triangle.WriteReg(addr - 0x4008, val);
 						break;
-					case 0x400C: case 0x400D: case 0x400E: case 0x400F:
+					case 0x400C:
+					case 0x400D:
+					case 0x400E:
+					case 0x400F:
 						noise.WriteReg(addr - 0x400C, val);
 						break;
-					case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+					case 0x4010:
+					case 0x4011:
+					case 0x4012:
+					case 0x4013:
 						dmc.WriteReg(addr - 0x4010, val);
 						break;
 					case 0x4015:
@@ -824,14 +871,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 						dmc.set_lenctr_en(val.Bit(4));
 						break;
 					case 0x4017:
-						sequencer_mode = (val>>7)&1;
+						//Console.WriteLine("apu 4017 = {0:X2}", val);
+						sequencer_mode = (val >> 7) & 1;
 						sequencer_irq_inhibit = (val >> 6) & 1;
 						if (sequencer_irq_inhibit == 1)
 						{
-							sequencer_irq = false;
-							SyncIRQ();
+							sequencer_irq_clear_pending = true;
 						}
-						sequencer_reset();
+						sequence_reset_pending = true;
 						break;
 				}
 			}
@@ -841,29 +888,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				switch (addr)
 				{
 					case 0x4015:
-					{
-						//notice a missing bit here. should properly emulate with empty bus
-						//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
-						int dmc_nonzero = dmc.IsLenCntNonZero() ? 1 : 0;
-						int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
-						int tri_nonzero = triangle.IsLenCntNonZero() ? 1 : 0;
-						int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
-						int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
-						int ret = ((dmc_irq?1:0) << 7) | ((sequencer_irq?1:0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero<<2) | (pulse1_nonzero<<1) | (pulse0_nonzero);
-						sequencer_irq = false;
-						SyncIRQ();
-						return (byte)ret;
-					}
+						{
+							//notice a missing bit here. should properly emulate with empty bus
+							//if an interrupt flag was set at the same moment of the read, it will read back as 1 but it will not be cleared. 
+							int dmc_nonzero = dmc.IsLenCntNonZero() ? 1 : 0;
+							int noise_nonzero = noise.IsLenCntNonZero() ? 1 : 0;
+							int tri_nonzero = triangle.IsLenCntNonZero() ? 1 : 0;
+							int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
+							int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
+							int ret = ((dmc_irq ? 1 : 0) << 7) | ((sequencer_irq ? 1 : 0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero << 2) | (pulse1_nonzero << 1) | (pulse0_nonzero);
+							//Console.WriteLine("{0} {1,5} $4015 clear irq, was at {2}", nes.Frame, sequencer_counter, sequencer_irq);
+							sequencer_irq = false;
+							SyncIRQ();
+							return (byte)ret;
+						}
 					default:
 						//don't return 0xFF here or SMB will break
 						return 0x00;
 				}
-			}
-
-			public void Run(int cycles)
-			{
-				for (int i = 0; i < cycles; i++)
-					RunOne();
 			}
 
 			public void DiscardSamples()
@@ -871,6 +913,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				metaspu.buffer.clear();
 			}
 
+			int toggle = 0;
 			public void RunOne()
 			{
 				pulse[0].Run();
@@ -883,12 +926,42 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mix += pulse[0].sample;
 				mix += pulse[1].sample;
 				mix += triangle.sample;
-				mix += noise.sample>>1;
+				mix += noise.sample >> 1;
 				mix += dmc.sample;
 
 				EmitSample(mix);
 
+				//this (and the similar line below) is a crude hack
+				//we should be generating logic to suppress the $4015 clear when the assert signal is set instead
+				//be sure to test "apu_test" if you mess with this
+				sequencer_irq |= sequencer_irq_assert;
+
+				if (toggle == 0)
+				{
+					//handle sequencer irq clear signal
+					sequencer_irq_assert = false;
+					if (sequencer_irq_clear_pending)
+					{
+						//Console.WriteLine("{0} {1,5} $4017 clear irq (delayed)", nes.Frame, sequencer_counter);
+						sequencer_irq_clear_pending = false;
+						sequencer_irq = false;
+						SyncIRQ();
+					}
+
+					//handle writes from the odd clock cycle
+					if (pending_reg != -1) _WriteReg(pending_reg, pending_val);
+					pending_reg = -1;
+					toggle = 1;
+
+					//latch whatever irq logic we had and send to cpu
+					nes.irq_apu = irq_pending;
+				}
+				else toggle = 0;
+
 				sequencer_tick();
+				sequencer_irq |= sequencer_irq_assert;
+				SyncIRQ();
+
 				//since the units run concurrently, the APU frame sequencer is ran last because
 				//it can change the ouput values of the pulse/triangle channels
 				//we want the changes to affect it on the *next* cycle.
@@ -909,9 +982,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					samp = 0;
 				else
 					panic_sample = samp;
-				
+
 				int this_samp = samp;
-				const double kMixRate = 44100.0/1789772.0;
+				const double kMixRate = 44100.0 / 1789772.0;
 				const double kInvMixRate = (1 / kMixRate);
 				timer += kMixRate;
 				accumulate += samp;
@@ -922,7 +995,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				timer -= 1;
 				double ratio = (timer / kMixRate);
 				double fractional = (this_samp - last_hwsamp) * ratio;
-				double factional_remainder = (this_samp - last_hwsamp) * (1-ratio);
+				double factional_remainder = (this_samp - last_hwsamp) * (1 - ratio);
 				accumulate += fractional;
 
 				accumulate *= 436; //32768/(15*4) -- adjust later for other sound channels
@@ -936,7 +1009,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 
 			MetaspuSoundProvider metaspu = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-            public int MaxVolume { get; set; } // not supported
+			public int MaxVolume { get; set; } // not supported
 
 			void ISoundProvider.GetSamples(short[] samples)
 			{
@@ -954,14 +1027,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				//Console.WriteLine("a: {0} with todo: {1}",squeue.Count,samples.Length/2);
 
-				for (int i = 0; i < samples.Length/2; i++)
+				for (int i = 0; i < samples.Length / 2; i++)
 				{
 					int samp = 0;
 					if (squeue.Count != 0)
 						samp = squeue.Dequeue();
-					
-					samples[i*2+0] = (short)(samp);
-					samples[i*2+1] = (short)(samp);
+
+					samples[i * 2 + 0] = (short)(samp);
+					samples[i * 2 + 1] = (short)(samp);
 					//bw.Write((short)samp);
 				}
 			}
