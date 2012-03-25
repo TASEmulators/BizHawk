@@ -282,9 +282,7 @@
             this.configToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.NESToolStripMenuItem,
-#if WINDOWS //Todo: Figure out why this menu causes mono to blow up
             this.pCEToolStripMenuItem,
-#endif
             this.sMSToolStripMenuItem,
             this.tI83ToolStripMenuItem,
             this.gBToolStripMenuItem,
@@ -294,6 +292,7 @@
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(470, 21);
 			this.menuStrip1.TabIndex = 0;
+			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Table;
 			this.menuStrip1.Text = "menuStrip1";
 			this.menuStrip1.MenuActivate += new System.EventHandler(this.menuStrip1_MenuActivate);
 			this.menuStrip1.MenuDeactivate += new System.EventHandler(this.menuStrip1_MenuDeactivate);
