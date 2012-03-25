@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,8 +19,9 @@ namespace BizHawk.MultiClient
 		public string LuaLibraryList = "";
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
-		private Thread LuaThread;
 		private int CurrentMemoryDomain = 0; //Main memory by default
+		public bool FrameAdvanceRequested;
+		Lua currThread;
 
 		public LuaImplementation(LuaConsole passed)
 		{
@@ -32,8 +34,6 @@ namespace BizHawk.MultiClient
 		public void Close()
 		{
 			lua = new Lua();
-			LuaKillThread();
-			LuaWait.Dispose();
 		}
 
 		public void LuaRegister(Lua lua)
@@ -90,6 +90,13 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "movie." + MovieFunctions[i] + "\n";
 			}
 
+			lua.NewTable("input");
+			for (int i = 0; i < InputFunctions.Length; i++)
+			{
+				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
+				LuaLibraryList += "input." + InputFunctions[i] + "\n";
+			}
+
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
@@ -104,36 +111,27 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
-		private void LuaThreadFunction(object File)
+		
+		public Lua SpawnCoroutine(string File)
 		{
-			string F = File.ToString();
-			isRunning = true;
-			try
-			{
-				if (LuaThread != null)
-					lua.DoFile(F);
-			}
-			catch (Exception e)
-			{
-                if (LuaThread.ThreadState.ToString() != "AbortRequested")
-                {
-                    MessageBox.Show("Exception caught. " + e.ToString());
-                }
-			}
-			isRunning = false;
-			LuaWait.Set();
-		}
-
-		public void LuaKillThread()
-		{
-			if (LuaThread != null)
-				LuaThread.Abort();
-		}
-
-		public void DoLuaFile(string File)
-		{
-			LuaThread = new Thread(new ParameterizedThreadStart(LuaThreadFunction));
-			LuaThread.Start(File);
+            var t = lua.NewThread();
+            try
+            {
+                LuaRegister(t);
+                var main = t.LoadFile(File);
+                t.Push(main); //push main function on to stack for subsequent resuming
+            }
+            catch (Exception e)
+            {
+                    if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                    {
+                        //Create Code Here That Would Print Script Error In OutPut Box
+                        LuaConsole Lua = new LuaConsole();
+                        Lua.OutputBox.Text += e.Message;
+                    }
+                    else MessageBox.Show(e.ToString());
+            }
+            return t;
 		}
 
 		private int LuaInt(object lua_arg)
@@ -163,6 +161,21 @@ namespace BizHawk.MultiClient
 			return lua_result;
 		}
 
+		public class ResumeResult
+		{
+			public bool WaitForFrame;
+		}
+
+		public ResumeResult ResumeScript(Lua script)
+		{
+			currThread = script;
+			script.Resume(0);
+			currThread = null;
+			var result = new ResumeResult();
+			result.WaitForFrame = FrameAdvanceRequested;
+			FrameAdvanceRequested = false;
+			return result;
+		}
 
 		public void print(string s)
 		{
@@ -189,6 +202,7 @@ namespace BizHawk.MultiClient
 		public static string[] EmuFunctions = new string[]
 		{
 			"frameadvance",
+			"yield",
 			"pause",
 			"unpause",
 			"togglepause",
@@ -287,13 +301,24 @@ namespace BizHawk.MultiClient
 
 		public static string[] MovieFunctions = new string[] {
 			"mode",
+			"isloaded",
 			"rerecordcount",
+			"length",
 			"stop",
+			"filename",
+			"getreadonly",
+			"setreadonly",
+			//"rerecordcounting",
+		};
+
+		public static string[] InputFunctions = new string[] {
+			"get",
 		};
 
 		public static string[] JoypadFunctions = new string[] {
 			"set",
-			//"get",
+			"get",
+			"getimmediate"
 		};
 
 		public static string[] MultiClientFunctions = new string[] {
@@ -349,8 +374,13 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		public void emu_frameadvance()
 		{
-			LuaWait.Set();
-			Global.MainForm.MainWait.WaitOne();
+			FrameAdvanceRequested = true;
+			currThread.Yield(0);
+		}
+
+		public void emu_yield()
+		{
+			currThread.Yield(0);
 		}
 
 		public void emu_pause()
@@ -1020,7 +1050,9 @@ namespace BizHawk.MultiClient
 		{
 			if (lua_input.GetType() == typeof(string))
 			{
-				//
+				string path = lua_input.ToString();
+				var writer = new StreamWriter(path);
+				Global.MainForm.SaveStateFile(writer, path, true);
 			}
 		}
 
@@ -1044,9 +1076,57 @@ namespace BizHawk.MultiClient
 		{
 			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
+		
 		public void movie_stop()
 		{
 			Global.MovieSession.Movie.StopMovie();
+		}
+
+		public bool movie_isloaded()
+		{
+			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE)
+				return false;
+			else
+				return true;
+		}
+
+		public int movie_length()
+		{
+			return Global.MovieSession.Movie.Length();
+		}
+
+		public string movie_filename()
+		{
+			return Global.MovieSession.Movie.Filename;
+		}
+
+		public bool movie_getreadonly()
+		{
+			return Global.MainForm.ReadOnly;
+		}
+
+		public void movie_setreadonly(object lua_input)
+		{
+			int x = 0;
+			x++;
+			int y = x;
+
+			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
+				Global.MainForm.SetReadOnly(true);
+			else
+				Global.MainForm.SetReadOnly(false);
+		}
+
+		//----------------------------------------------------
+		//Input library
+		//----------------------------------------------------
+		public LuaTable input_get()
+		{
+			LuaTable buttons = lua.NewTable();
+			foreach (var kvp in Global.ControllerInputCoalescer.BoolButtons())
+				if (kvp.Value)
+					buttons[kvp.Key] = true;
+			return buttons;
 		}
 
 		//----------------------------------------------------
@@ -1054,14 +1134,38 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 
 		//Currently sends all controllers, needs to control which ones it sends
-		public string joypad_get(object lua_input)
+		public LuaTable joypad_get()
 		{
-			return Global.GetOutputControllersAsMnemonic();
+			LuaTable buttons = lua.NewTable();
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+				buttons[button] = Global.ControllerOutput[button];
+			
+			//zero 23-mar-2012 - wtf is this??????
+			buttons["clear"] = null;
+			buttons["getluafunctionslist"] = null;
+			buttons["output"] = null;
+			
+			return buttons;
 		}
 
-		public void joypad_set(object lua_input)
+		public LuaTable joypad_getimmediate()
 		{
+			LuaTable buttons = lua.NewTable();
+			foreach (string button in Global.ActiveController.Type.BoolButtons)
+				buttons[button] = Global.ActiveController[button];
+			return buttons;
+		}
 
+		public void joypad_set(object button, object value)
+		{
+			if (button.GetType() != typeof(string) || value.GetType() != typeof(bool))
+			{
+				MessageBox.Show(
+					"Invalid parameter types " + button.GetType().ToString() + ", " + button.GetType().ToString() + "."
+				);
+				return;
+			}
+			Global.ClickyVirtualPadController.Click(button.ToString());
 		}
 
 		//----------------------------------------------------

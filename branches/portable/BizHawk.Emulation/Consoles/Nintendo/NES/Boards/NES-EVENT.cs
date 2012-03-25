@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER105":
+					break;
 				case "NES-EVENT":
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;

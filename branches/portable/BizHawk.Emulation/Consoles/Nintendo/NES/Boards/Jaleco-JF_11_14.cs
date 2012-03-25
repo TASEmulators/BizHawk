@@ -32,6 +32,8 @@ Other chips used: Sunsoft-1
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER140":
+					break;
 				case "JALECO-JF-14":
 					break;
 				case "JALECO-JF-11":

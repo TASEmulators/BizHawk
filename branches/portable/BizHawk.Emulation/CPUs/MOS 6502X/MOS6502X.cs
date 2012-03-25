@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			Reset();
 		}
 
-		public bool BCD_Enabled = false;
+		public bool BCD_Enabled = true;
 		public bool debug = false;
 		public bool throw_unhandled;
 
@@ -27,6 +27,14 @@ namespace BizHawk.Emulation.CPUs.M6502
 			mi = 0;
 			opcode = 256;
 			iflag_pending = true;
+		}
+
+		public void NESSoftReset()
+		{
+			opcode = VOP_RESET;
+			mi = 0;
+			iflag_pending = true;
+			FlagI = true;
 		}
 
 		public string State()

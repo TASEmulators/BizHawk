@@ -97,11 +97,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				//NOTE:  Not having this here breaks a Super Donkey Kong game.
 				reg_2003 = 0;
 
-				//fceu/fceux had 12 here, but 15 was required to pass blargg's 05-nmi_timing.nes
-				const int delay = 15;
+				//this was repeatedly finetuned from the fceux days thrugh the old cpu core and into the new one to pass 05-nmi_timing.nes
+				//note that there is still some leniency. for instance, 4,2 will pass in addition to 3,3
+				const int delay = 6;
 				runppu(3);
 				bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
-				runppu(delay - 3);
+				runppu(3);
 				if (nmi_destiny) TriggerNMI();
 				if (PAL)
 					runppu(70 * (kLineTime) - delay);
@@ -116,9 +117,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				int oamslot=0;
 				int oamcount=0;
 
+				idleSynch ^= true;
+
 				//render 241 scanlines (including 1 dummy at beginning)
 				for (int sl = 0; sl < 241; sl++)
 				{
+					ppur.status.cycle = 0;
+
 					//if (!reg_2001.PPUON)
 					//{
 					//    runppu(kLineTime);
@@ -422,36 +427,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					ppuphase = PPUPHASE.BG;
 
-					//I'm unclear of the reason why this particular access to memory is made.
-					//The nametable address that is accessed 2 times in a row here, is also the
-					//same nametable address that points to the 3rd tile to be rendered on the
-					//screen (or basically, the first nametable address that will be accessed when
-					//the PPU is fetching background data on the next scanline).
-					//(not implemented yet)
-					if (sl == 0)
-					{
-						if (idleSynch && reg_2001.show_bg && !PAL)
-							ppur.status.end_cycle = 340;
-						else
-							ppur.status.end_cycle = 341;
-						idleSynch ^= true;
-					}
-					else
-						ppur.status.end_cycle = 341;
-
 					//fetch BG: two tiles for next line
 					for (int xt = 0; xt < 2; xt++)
 						Read_bgdata(ref bgdata[xt]);
 
-					runppu(kFetchTime * 2);
+					//this sequence is tuned to pass 10-even_odd_timing.nes
+					runppu(kFetchTime);
+					bool evenOddDestiny = reg_2001.show_bg;
+					runppu(kFetchTime);
 
 					//After memory access 170, the PPU simply rests for 4 cycles (or the
 					//equivelant of half a memory access cycle) before repeating the whole
 					//pixel/scanline rendering process. If the scanline being rendered is the very
 					//first one on every second frame, then this delay simply doesn't exist.
-					if (ppur.status.end_cycle == 341)
+					if (sl == 0 && idleSynch && evenOddDestiny && !PAL)
+					{ }
+					else
 						runppu(1);
-				
 				} //scanline loop
 
 				ppur.status.sl = 241;

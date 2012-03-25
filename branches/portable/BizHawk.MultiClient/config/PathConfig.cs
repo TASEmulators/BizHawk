@@ -105,12 +105,26 @@ namespace BizHawk.MultiClient
 			TI83ScreenshotsBox.Text = Global.Config.PathTI83Screenshots;
 			TI83CheatsBox.Text = Global.Config.PathTI83Cheats;
 
+			AtariBaseBox.Text = Global.Config.BaseAtari;
+			AtariROMsBox.Text = Global.Config.PathAtariROMs;
+			AtariSavestatesBox.Text = Global.Config.PathAtariSavestates;
+			AtariSaveRAMBox.Text = Global.Config.PathAtariSaveRAM;
+			AtariScreenshotsBox.Text = Global.Config.PathAtariScreenshots;
+			AtariCheatsBox.Text = Global.Config.PathAtariCheats;
+
 			MoviesBox.Text = Global.Config.MoviesPath;
 			LuaBox.Text = Global.Config.LuaPath;
 			WatchBox.Text = Global.Config.WatchPath;
 			AVIBox.Text = Global.Config.AVIPath;
 
 			PCEBiosBox.Text = Global.Config.PathPCEBios;
+
+			if (!Global.MainForm.INTERIM)
+			{
+				var TABPage1 = tabControl1.TabPages[8]; //Hide Atari
+				tabControl1.Controls.Remove(TABPage1);
+				
+			}
 		}
 
 		private void SaveSettings()
@@ -174,6 +188,13 @@ namespace BizHawk.MultiClient
 			Global.Config.PathTI83SaveRAM = TI83SaveRAMBox.Text;
 			Global.Config.PathTI83Screenshots = TI83ScreenshotsBox.Text;
 			Global.Config.PathTI83Cheats = TI83CheatsBox.Text;
+
+			Global.Config.BaseAtari = AtariBaseBox.Text;
+			Global.Config.PathAtariROMs = AtariROMsBox.Text;
+			Global.Config.PathAtariSavestates = AtariSavestatesBox.Text;
+			Global.Config.PathAtariSaveRAM = AtariSaveRAMBox.Text;
+			Global.Config.PathAtariScreenshots = AtariScreenshotsBox.Text;
+			Global.Config.PathAtariCheats = AtariCheatsBox.Text;
 
 			Global.Config.MoviesPath = MoviesBox.Text;
 			Global.Config.LuaPath = LuaBox.Text;
@@ -565,6 +586,36 @@ namespace BizHawk.MultiClient
 				return;
 
 			PCEBiosBox.Text = ofd.FileName;
+		}
+
+		private void BrowseAtariBase_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariBaseBox, AtariBaseDescription.Text);
+		}
+
+		private void BrowseAtariROMs_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariROMsBox, AtariROMsDescription.Text, "Atari");
+		}
+
+		private void BrowseAtariSavestates_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariSavestatesBox, AtariSavestatesDescription.Text, "Atari");
+		}
+
+		private void BrowseAtariSaveRAM_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariSaveRAMBox, AtariSaveRAMDescription.Text, "Atari");
+		}
+
+		private void BrowseAtariScreenshots_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariScreenshotsBox, AtariScreenshotsDescription.Text, "Atari");
+		}
+
+		private void AtariBrowseCheats_Click(object sender, EventArgs e)
+		{
+			BrowseFolder(AtariCheatsBox, AtariCheatsDescription.Text, "Atari");
 		}
 	}
 }

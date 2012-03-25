@@ -59,6 +59,19 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public PPU(NES nes)
 			{
 				this.nes = nes;
+
+				OAM = new byte[0x100];
+				PALRAM = new byte[0x20];
+
+				//power-up palette verified by blargg's power_up_palette test.
+				//he speculates that these may differ depending on the system tested..
+				//and I don't see why the ppu would waste any effort setting these.. 
+				//but for the sake of uniformity, we'll do it.
+				Array.Copy(new byte[] {
+					0x09,0x01,0x00,0x01,0x00,0x02,0x02,0x0D,0x08,0x10,0x08,0x24,0x00,0x00,0x04,0x2C,
+					0x09,0x01,0x34,0x03,0x00,0x04,0x00,0x14,0x08,0x3A,0x00,0x02,0x00,0x20,0x2C,0x08
+				}, PALRAM, 0x20);
+
 				Reset();
 			}
 
@@ -134,8 +147,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				for (int i = 0; i < x; i++)
 				{
 					ppur.status.cycle++;
-					if (ppur.status.cycle == ppur.status.end_cycle)
-						ppur.status.cycle = 0;
 
 					//might not actually run a cpu cycle if there are none to be run right now
 					nes.RunCpuOne();

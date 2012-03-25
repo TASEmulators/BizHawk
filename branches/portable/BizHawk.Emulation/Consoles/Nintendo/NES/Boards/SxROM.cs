@@ -268,6 +268,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER001":
+					break;
 				case "NES-SAROM": //dragon warrior
 					AssertPrg(64); AssertChr(16, 32, 64); AssertVram(0); AssertWram(8); 
 					break;

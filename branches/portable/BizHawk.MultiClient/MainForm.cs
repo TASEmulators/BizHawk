@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Threading;
 using System.Drawing;
@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "BizHawk v1.0.2 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
+		public const string EMUVERSION = "BizHawk v1.0.3 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -350,6 +350,7 @@ namespace BizHawk.MultiClient
 
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
 
+			throttle.signal_paused = EmulatorPaused || Global.Emulator is NullEmulator;
 			throttle.signal_unthrottle = unthrottled;
 			if (fastforward)
 				throttle.SetSpeedPercent(Global.Config.SpeedPercentAlternate);
@@ -387,6 +388,11 @@ namespace BizHawk.MultiClient
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 				Global.ClickyVirtualPadController.FrameTick();
 
+#if WINDOWS
+                LuaConsole1.ResumeScripts(false);
+#endif
+
+				Global.RenderPanel.ClearGUIText();
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
@@ -698,14 +704,24 @@ namespace BizHawk.MultiClient
 			a2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
 			a2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
 			a2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			a2600Controls.BindMulti("P2 Up", Global.Config.Atari2600Controller[1].Up);
+			a2600Controls.BindMulti("P2 Left", Global.Config.Atari2600Controller[1].Left);
+			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
+			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
+			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
 			Global.Atari2600Controls = a2600Controls;
 
 			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
-			autofireA2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
-			autofireA2600Controls.BindMulti("P1 Left", Global.Config.Atari2600Controller[0].Left);
-			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600Controller[0].Right);
-			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600Controller[0].Down);
-			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600Controller[0].Button);
+			autofireA2600Controls.BindMulti("P1 Up", Global.Config.Atari2600AutoController[0].Up);
+			autofireA2600Controls.BindMulti("P1 Left", Global.Config.Atari2600AutoController[0].Left);
+			autofireA2600Controls.BindMulti("P1 Right", Global.Config.Atari2600AutoController[0].Right);
+			autofireA2600Controls.BindMulti("P1 Down", Global.Config.Atari2600AutoController[0].Down);
+			autofireA2600Controls.BindMulti("P1 Button", Global.Config.Atari2600AutoController[0].Button);
+			autofireA2600Controls.BindMulti("P2 Up", Global.Config.Atari2600AutoController[1].Up);
+			autofireA2600Controls.BindMulti("P2 Left", Global.Config.Atari2600AutoController[1].Left);
+			autofireA2600Controls.BindMulti("P2 Right", Global.Config.Atari2600AutoController[1].Right);
+			autofireA2600Controls.BindMulti("P2 Down", Global.Config.Atari2600AutoController[1].Down);
+			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
 			var TI83Controls = new Controller(TI83.TI83Controller);
@@ -1336,20 +1352,24 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public string lastKeyboard = "";
+
 		public void ProcessInput()
 		{
 			for (; ; )
 			{
 				//loop through all available events
 				var ie = Input.Instance.DequeueEvent();
-				if (ie == null) break;
+				if (ie == null) { break; }
 
 				//useful debugging:
 				//Console.WriteLine(ie);
 
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
 
-				//look for client control bindings for this key
+				lastKeyboard += " " + ie.ToString();
+
+				//look for client cntrol bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
 				if (triggers.Count == 0)
 				{
@@ -1425,7 +1445,7 @@ namespace BizHawk.MultiClient
 
 				case "Quick Save State":
 					if (!IsNullEmulator())
-						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+					SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Quick Load State":
@@ -1471,21 +1491,11 @@ namespace BizHawk.MultiClient
 				case "LoadSlot7": if (!IsNullEmulator()) LoadState("QuickSave7"); break;
 				case "LoadSlot8": if (!IsNullEmulator()) LoadState("QuickSave8"); break;
 				case "LoadSlot9": if (!IsNullEmulator()) LoadState("QuickSave9"); break;
-				case "SelectSlot0":
-					OnSelectSlot(0);
-					break;
-				case "SelectSlot1":
-					OnSelectSlot(1);
-					break;
-				case "SelectSlot2":
-					OnSelectSlot(2);
-					break;
-				case "SelectSlot3":
-					OnSelectSlot(3);
-					break;
-				case "SelectSlot4":
-					OnSelectSlot(4);
-					break;
+				case "SelectSlot0": OnSelectSlot(0); break;
+				case "SelectSlot1": OnSelectSlot(1); break;
+				case "SelectSlot2": OnSelectSlot(2); break;
+				case "SelectSlot3": OnSelectSlot(3); break;
+				case "SelectSlot4": OnSelectSlot(4); break;
 				case "SelectSlot5": OnSelectSlot(5); break;
 				case "SelectSlot6": OnSelectSlot(6); break;
 				case "SelectSlot7": OnSelectSlot(7); break;
@@ -1686,20 +1696,10 @@ namespace BizHawk.MultiClient
 			bool genSound = false;
 			if (runFrame)
 			{
-				Global.RenderPanel.ClearGUIText();
 				//client input-related duties
+
 #if WINDOWS
-				if (LuaConsole1.IsRunning())
-				{
-					Global.MainForm.MainWait.Set();
-					for (; ; )
-					{
-						//we need to run DoEvents in here so that we can use Control.Invoke to interact with the gui
-						//its all a godawful mess
-						if (LuaConsole1.WaitOne(0)) break;
-						Application.DoEvents();
-					}
-				}
+				LuaConsole1.ResumeScripts(true);
 #endif
 
 				runloop_fps++; 
@@ -1785,7 +1785,7 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				MemoryPulse.Pulse();
 				//=======================================
-
+				lastKeyboard = "";
 				if (CurrAviWriter != null)
 				{
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
@@ -1857,6 +1857,15 @@ namespace BizHawk.MultiClient
 			return image;
 		}
 
+		void TakeScreenshotToClipboard()
+		{
+			using (var img = MakeScreenshotImage())
+			{
+				System.Windows.Forms.Clipboard.SetImage(img);
+			}
+			Global.RenderPanel.AddMessage("Screenshot saved to clipboard.");
+		}
+
 		private void TakeScreenshot()
 		{
 			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
@@ -1901,10 +1910,10 @@ namespace BizHawk.MultiClient
 			}
 
 			var writer = new StreamWriter(path);
-			SaveStateFile(writer, name);
+			SaveStateFile(writer, name, false);
 		}
 
-		private void SaveStateFile(StreamWriter writer, string name)
+		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
 		{
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
@@ -1918,8 +1927,14 @@ namespace BizHawk.MultiClient
 			}
 
 			writer.Close();
+
 			Global.RenderPanel.AddMessage("Saved state: " + name);
-			UpdateStatusSlots();
+
+			if (!fromLua)
+			{
+				
+				UpdateStatusSlots();
+			}
 		}
 
 		private void SaveStateAs()
@@ -1940,7 +1955,7 @@ namespace BizHawk.MultiClient
 				return;
 
 			var writer = new StreamWriter(sfd.FileName);
-			SaveStateFile(writer, sfd.FileName);
+			SaveStateFile(writer, sfd.FileName, false);
 		}
 
 		public void LoadStateFile(string path, string name)
@@ -2277,25 +2292,24 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;%ARCH%",
-					//"PSX Executables", "*.exe",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
 					"PC Engine", "*.pce;*.sgx;*.cue;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
-					"Atari 2600", "*.a26;*.bin;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
+					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 					"Gameboy (experimental)", "*.gb;%ARCH%",
+					"PSX Executables (experimental)", "*.exe",
 					"All Files", "*.*");
 			}
 			else
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;%ARCH%",
-					//"PSX Executables", "*.exe",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.cue;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
@@ -2869,6 +2883,11 @@ namespace BizHawk.MultiClient
 		{
 			displayLogWindowToolStripMenuItem.Checked = false;
 			logWindowAsConsoleToolStripMenuItem.Enabled = true;
+		}
+
+		private void MainForm_Load(object sender, EventArgs e)
+		{
+			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
 		}
 	}
 }

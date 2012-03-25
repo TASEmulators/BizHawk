@@ -19,12 +19,14 @@ namespace BizHawk.MultiClient
 			NESController[3] = new NESControllerTemplate(false);
 			GameBoyController = new NESControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
-			
+
 			GenesisController[0] = new GenControllerTemplate(true);
 			GenesisAutoController[0] = new GenControllerTemplate(true);
 
 			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
+			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[0] = new Atari2600ControllerTemplate(true);
+			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -105,11 +107,17 @@ namespace BizHawk.MultiClient
 		public string PathTI83Screenshots = Path.Combine(".", "Screenshots");
 		public string PathTI83Cheats = Path.Combine(".", "Cheats");
 
+		public string BaseAtari = Path.Combine(".", "Atari");
+		public string PathAtariROMs = ".";
+		public string PathAtariSavestates = Path.Combine(".", "State");
+		public string PathAtariSaveRAM = Path.Combine(".", "SaveRAM");
+		public string PathAtariScreenshots = Path.Combine(".", "Screenshots");
+		public string PathAtariCheats = Path.Combine(".", "Cheats");
+
 		public string MoviesPath = Path.Combine(".", "Movies");
 		public string LuaPath = Path.Combine(".", "Lua");
 		public string WatchPath = ".";
 		public string AVIPath = ".";
-
 
 		//BIOS Paths
 		public string PathPCEBios = Path.Combine(".", "PCECDBios.pce"); //TODO: better default filename
@@ -206,13 +214,14 @@ namespace BizHawk.MultiClient
 		// Lua Console
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
-		public bool AutoLoadLua = false;
+		public bool AutoLoadLuaSession = false;
 		public bool AutoLoadLuaConsole = false;
 		public bool LuaConsoleSaveWindowPosition = true;
 		public int LuaConsoleWndx = -1;   //Negative numbers will be ignored even with save window position set
 		public int LuaConsoleWndy = -1;
 		public int LuaConsoleWidth = -1;
 		public int LuaConsoleHeight = -1;
+		public bool DisableLuaScriptsOnLoad = false;
 
 		// RamWatch Settings
 		public bool AutoLoadRamWatch = false;
@@ -450,7 +459,7 @@ namespace BizHawk.MultiClient
 		public string AVIRecordBinding = "";
 		public string AVIStopBinding = "";
 		public string ToggleMenuBinding = "";
-		
+
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
@@ -461,7 +470,7 @@ namespace BizHawk.MultiClient
 		public string SmsPause = "V, J1 B8";
 		public SMSControllerTemplate[] SMSController = new SMSControllerTemplate[2];
 		public SMSControllerTemplate[] SMSAutoController = new SMSControllerTemplate[2];
-				
+
 		// PCEngine Settings
 		public bool PceSpriteLimit = false;
 		public bool PceEqualizeVolume = false;
@@ -474,8 +483,8 @@ namespace BizHawk.MultiClient
 		public GenControllerTemplate[] GenesisAutoController = new GenControllerTemplate[1];
 
 		//Atari 2600 Settings
-		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[1];
-		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[1];
+		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
+		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -687,7 +696,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 	}
-
 
 	public class Atari2600ControllerTemplate
 	{

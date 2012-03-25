@@ -17,7 +17,7 @@ namespace BizHawk
 		public Atari2600(GameInfo game, byte[] rom)
 		{
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 1, Endian.Little, addr => 0, (a, v) => { }));
+			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
@@ -26,7 +26,7 @@ namespace BizHawk
 		}
 		public void ResetFrameCounter()
 		{
-			Frame = 0;
+			_frame = 0;
 		}
 
 		public static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
@@ -34,7 +34,9 @@ namespace BizHawk
 			Name = "Atari 2600 Basic Controller",
 			BoolButtons =
 			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", "Reset"
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
+				"Reset",
 			}
 		};
 
@@ -42,14 +44,19 @@ namespace BizHawk
 		{
 			cpu.SyncState(ser);
 			ser.Sync("ram", ref ram, false);
+			ser.Sync("Lag", ref _lagcount);
+			ser.Sync("Frame", ref _frame);
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 		public IController Controller { get; set; }
 
-		public int Frame { get; set; }
-		public int LagCount { get { return 0; } set { return; } }
-		public bool IsLagFrame { get { return false; } }
+		public int Frame { get { return _frame; } set { _frame = value; } }
+		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public bool IsLagFrame { get { return _islag; } }
+		private bool _islag = true;
+		private int _lagcount = 0;
+		private int _frame = 0;
 
 		public byte[] SaveRam { get { return new byte[0]; } }
 		public bool DeterministicEmulation { get; set; }

@@ -29,7 +29,7 @@ mirroring - both
             //configure
 			switch (Cart.board_type)
 			{
-				case "Mapper242":
+				case "MAPPER242":
 					break;
 				default:
 					return false;

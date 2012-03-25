@@ -15,13 +15,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
+			holydiver = false;
+
 			switch (Cart.board_type)
 			{
+				case "MAPPER079":
+					break;
 				case "IREM-HOLYDIVER":
 					holydiver = true;
 					break;
 				case "JALECO-JF-16":
-					holydiver = false;
 					break;
 				default:
 					return false;

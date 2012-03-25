@@ -52,67 +52,71 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 			}
 
-//if a board is in here then it is either
-//1. bad dump (and we should have put it in the gamedb.txt instead)
-//2. not in bootgod's DB yet
-//3. homebrew/hacks
-//it is worth keeping around for homebrew's sake.
-//games not in bootgod's DB are probably bad dumps, but a lot of them are in goodNES. not sure what to do about those.
-//
-//but, in general it is very hard to know whether to put it in here or gamedb.txt. i keep going through various phases.
-//this should really just be a backstop for if we've been too lazy to put them all in gamedb.txt
-//it would really be sort of cool if we had every goodnes rom listed in gamedb.txt.
-
-//i think the philosophy is, we should have an iNES guess for everything we have examples of, as well as an overriding gamedb.txt entry
-//so when going on mass compatibility sweeps, we should enter in both at once even if it pollutes this with incomprehensible stuff.
-//but make sure you always put a test case with each of these to justify it!
-
-//one thing to keep in mind though: bad dumps should not ruin the assertions on board types. override them in gamedb.txt to the correct parameters.
-//or, if necessary, add a new hacky board type.
+//what to do about 034?
 
 //MAP PRG CHR WRAM VRAM BOARD
 static string ClassifyTable = @"
-0	16	0	8	8	NROM-HOMEBREW; some of blargg's test (sprite tests)
-0	16	8	8	0	NES-NROM-128; balloon fight, but its broken right now
-0	32	8	8	0	NES-NROM-256; super mario bros
-1	32	32	8	0	NES-SEROM; lolo
-1	128	0	8	0	NES-SNROM; zelda
-1	128	128	8	0	NES-SKROM; zelda 2
-1	32	0	8	8	NROM-HOMEBREW; instr_timing.nes
-1	64	0	8	8	NROM-HOMEBREW; instr_misc.nes
-1	80	0	8	8	NROM-HOMEBREW; blargg's cpu_interrupts.nes
-1	128	0	8	8	NES-SNROM; some of blargg's tests (apu) [TODO recheck as NROM-HOMEBREW]
-1	256	0	8	8	NES-SNROM; some of blargg's test (cpu tests) [TODO recheck as NROM-HOMEBREW]
-2	128	0	8	0	NES-UNROM; mega man
-2	256	0	8	0	NES-UOROM; paperboy 2
-2	128	0	8	8	HVC-UNROM; JJ - Tobidase Daisakusen Part 2 (J)
-3	32	32	8	0	NES-CNROM; adventure island
-3	-1	-1	-1	-1	MAPPER3
-4	128	128	8	0	NES-TSROM; double dragon 2 (should be TL1ROM but maybe this will work)
-4	256	256	8	0	NES-TKROM; Aces - Iron Eagle 3 (J)
-4	512	128	8	0	NES-TKROM; Pool of radiance (J)
-4	-1	-1	-1	-1	TXROM-HOMEBREW; assorted homebrew junks (incl blargg's mmc3 tests)
-5	-1	-1	-1	-1	MAPPER5
-7	128	0	8	0	NES-ANROM; marble madness
-7	256	0	8	8	NES-AOROM; battletoads
-11	-1	-1	-1	-1	Discrete_74x377-FLEX; Bible Adventures (U) ?
-13	32	0	8	16	NES-CPROM; videomation
+0	-1	-1	-1	-1	MAPPER000
+1	-1	-1	-1	-1	MAPPER001
+2	-1	-1	-1	-1	MAPPER002
+3	-1	-1	-1	-1	MAPPER003
+4	-1	-1	-1	-1	MAPPER004
+5	-1	-1	-1	-1	MAPPER005
+7	-1	-1	-1	-1	MAPPER007
+9	-1	-1	-1	-1	MAPPER009
+10	-1	-1	-1	-1	MAPPER010
+11	-1	-1	-1	-1	MAPPER011
+13	-1	-1	-1	-1	MAPPER013
+19	-1	-1	-1	-1	MAPPER019
+21	-1	-1	-1	-1	MAPPER021
+22	-1	-1	-1	-1	MAPPER022
+23	-1	-1	-1	-1	MAPPER023
+23	-1	-1	-1	-1	MAPPER023
+25	-1	-1	-1	-1	MAPPER025
+26	-1	-1	-1	-1	MAPPER026
+32	-1	-1	-1	-1	MAPPER032
+33	-1	-1	-1	-1	MAPPER033
 44	-1	-1	-1	-1	MAPPER044
+46	-1	-1	-1	-1	MAPPER046
 49	-1	-1	-1	-1	MAPPER049
-65	-1	-1	-1	-1	IREM-H3001-FLEX; //Ai Sensei No Oshiete - Watashi No Hoshi (J).nes
-66	64	16	8	0	NES-MHROM; super mario bros / duck hunt
-66	128	32	8	0	NES-GNROM; gumshoe
-68	128	256	8	0	SUNSOFT-4; After Burner 2 (J)
-69	-1	-1	-1	-1	MAPPER069-FLEX; Gimmick! (J)
-71	-1	-1	-1	-1	CAMERICA-BF9093; Micro Machines (U)
-79	-1	-1	-1	-1	AVE-NINA-06; Blackjack (U)
-113	-1	-1	-1	-1	AVE-NINA-06; ???
+64	-1	-1	-1	-1	MAPPER064
+65	-1	-1	-1	-1	MAPPER065
+66	-1	-1	-1	-1	MAPPER066
+68	-1	-1	-1	-1	MAPPER068
+69	-1	-1	-1	-1	MAPPER069
+70	-1	-1	-1	-1	MAPPER070
+71	-1	-1	-1	-1	MAPPER071
+72	-1	-1	-1	-1	MAPPER072
+73	-1	-1	-1	-1	MAPPER073
+75	-1	-1	-1	-1	MAPPER075
+77	-1	-1	-1	-1	MAPPER077
+78	-1	-1	-1	-1	MAPPER078
+79	-1	-1	-1	-1	MAPPER079
+80	-1	-1	-1	-1	MAPPER080
+82	-1	-1	-1	-1	MAPPER082
+85	-1	-1	-1	-1	MAPPER085
+86	-1	-1	-1	-1	MAPPER086
+87	-1	-1	-1	-1	MAPPER087
+89	-1	-1	-1	-1	MAPPER089
+93	-1	-1	-1	-1	MAPPER093
+97	-1	-1	-1	-1	MAPPER097
+105	-1	-1	-1	-1	MAPPER105
+107	-1	-1	-1	-1	MAPPER107
+113	-1	-1	-1	-1	MAPPER113
 115	-1	-1	-1	-1	MAPPER115
+140	-1	-1	-1	-1	MAPPER140
+152	-1	-1	-1	-1	MAPPER152
+164	-1	-1	-1	-1	MAPPER164
+180	-1	-1	-1	-1	MAPPER180
 182	-1	-1	-1	-1	MAPPER182
+184	-1	-1	-1	-1	MAPPER184
 189	-1	-1	-1	-1	MAPPER189
 191	-1	-1	-1	-1	MAPPER191
-232	-1	-1	-1	-1	CAMERICA-ALGQ; Quattro Adventure
+193	-1	-1	-1	-1	MAPPER193
+210	-1	-1	-1	-1	MAPPER210
+232	-1	-1	-1	-1	MAPPER232
 240	-1	-1	-1	-1	MAPPER240
+242	-1	-1	-1	-1	MAPPER242
 ";
 }
 
@@ -139,22 +143,27 @@ static string ClassifyTable = @"
 			{
 				fixed (iNES_HEADER* self = &this)
 				{
-					if (0 == Util.memcmp((char*)(self) + 0x7, "DiskDude", 8))
+					if (0 == Util.memcmp((byte*)(self) + 0x7, "DiskDude", 8))
 					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((char*)(self) + 0x7, "demiforce", 9))
+					if (0 == Util.memcmp((byte*)(self) + 0x7, "demiforce", 9))
 					{
-						Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x7, 0, 0x9);
 					}
 
-					if (0 == Util.memcmp((char*)(self) + 0xA, "Ni03", 4))
+					if (0 == Util.memcmp((byte*)(self) + 0x8, "blargg", 6)) //found a test rom with this in there, mucking up the wram size
 					{
-						if (0 == Util.memcmp((char*)(self) + 0x7, "Dis", 3))
-							Util.memset((char*)(self) + 0x7, 0, 0x9);
+						Util.memset((byte*)(self) + 0x8, 0, 6);
+					}
+
+					if (0 == Util.memcmp((byte*)(self) + 0xA, "Ni03", 4))
+					{
+						if (0 == Util.memcmp((byte*)(self) + 0x7, "Dis", 3))
+							Util.memset((byte*)(self) + 0x7, 0, 0x9);
 						else
-							Util.memset((char*)(self) + 0xA, 0, 0x6);
+							Util.memset((byte*)(self) + 0xA, 0, 0x6);
 					}
 				}
 			}

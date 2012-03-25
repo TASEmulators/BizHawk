@@ -40,6 +40,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER075":
+					break;
 				case "KONAMI-VRC-1":
 					AssertPrg(128); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;

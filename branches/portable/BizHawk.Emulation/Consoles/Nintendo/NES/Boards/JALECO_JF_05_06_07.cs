@@ -25,6 +25,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER087":
+					break;
 				case "JALECO-JF-05":
 				case "JALECO-JF-06":
 					AssertPrg(16); AssertChr(16); AssertVram(0); AssertWram(0);

@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
-				case "MAPPER069-FLEX":
+				case "MAPPER069":
 					break;
 				case "SUNSOFT-FME-7": //Barcode World (J)
 					AssertPrg(128,256); AssertChr(256); AssertWram(0,8); AssertVram(0);

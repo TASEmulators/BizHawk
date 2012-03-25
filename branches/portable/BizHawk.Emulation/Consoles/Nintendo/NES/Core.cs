@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cpu.DummyReadMemory = ReadMemory;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
+			cpu.BCD_Enabled = false;
 			ppu = new PPU(this);
 			apu = new APU(this);
 			ram = new byte[0x800];
@@ -68,9 +69,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			lagged = true;
 			if (resetSignal)
 			{
-				cpu.PC = cpu.ReadWord(MOS6502.ResetVector);
-				apu.WriteReg(0x4015, 0);
-				cpu.FlagI = true;
+				cpu.NESSoftReset();
+				//need to study what happens to ppu and apu and stuff..
 			}
 
 			Controller.UpdateControls(Frame++);

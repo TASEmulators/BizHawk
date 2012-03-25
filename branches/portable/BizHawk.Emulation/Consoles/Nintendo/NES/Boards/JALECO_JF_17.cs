@@ -23,6 +23,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER072":
+					break;
 				case "JALECO-JF-17":
 					break;
 				default:

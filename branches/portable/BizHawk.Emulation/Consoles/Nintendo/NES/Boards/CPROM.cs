@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER013":
+					break;
+
 				case "NES-CPROM": //videomation
 					AssertPrg(32); AssertChr(0); AssertVram(16); AssertWram(0);
 					break;

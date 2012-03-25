@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BizHawk.Emulation.CPUs.M6507;
+using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
 
 namespace BizHawk
@@ -9,7 +9,7 @@ namespace BizHawk
 	partial class Atari2600
 	{
 		public byte[] rom;
-		public MOS6507 cpu;
+		public MOS6502X cpu;
 		public M6532 m6532;
 		public TIA tia;
 
@@ -58,45 +58,32 @@ namespace BizHawk
 		//   ROM
 		public byte ReadMemory(ushort addr)
 		{
-			ushort maskedAddr = (ushort)(addr & 0x1FFF);
-			ushort pageNum = (ushort)(maskedAddr >> 6);
-			if (pageNum < 0x40)
+			addr = (ushort)(addr & 0x1FFF);
+			if ((addr & 0x1080) == 0)
 			{
-				// if Page 0x02, or a mirror
-				if (pageNum % 4 > 1)
-				{
-					return m6532.ReadMemory(maskedAddr);
-				}
-				// if Page 0x01 or 0x02, or a mirror
-				else
-				{
-					return tia.ReadMemory(maskedAddr);
-				}
+				return tia.ReadMemory(addr);
 			}
-			// ROM data
+			else if ((addr & 0x1080) == 0x0080)
+			{
+				return m6532.ReadMemory(addr);
+			}
 			else
 			{
-				//Console.WriteLine("ROM read");
-				return rom[maskedAddr & 0x0FFF];
+				return rom[addr & 0x0FFF];
 			}
 		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			ushort maskedAddr = (ushort)(addr & 0x1FFF);
-			ushort pageNum = (ushort)(maskedAddr >> 6);
-			if (pageNum < 0x40)
+			addr = (ushort)(addr & 0x1FFF);
+			if ((addr & 0x1080) == 0)
 			{
-				if (pageNum % 4 > 1)
-				{
-					m6532.WriteMemory(maskedAddr, value);
-				}
-				else
-				{
-					tia.WriteMemory(maskedAddr, value);
-				}
+				tia.WriteMemory(addr, value);
 			}
-			// ROM data
+			else if ((addr & 0x1080) == 0x0080)
+			{
+				m6532.WriteMemory(addr, value);
+			}
 			else
 			{
 				Console.WriteLine("ROM write(?):  " + addr.ToString("x"));
@@ -105,16 +92,18 @@ namespace BizHawk
 
 		public void HardReset()
 		{
-			cpu = new MOS6507();
-			cpu.debug = true;
+			_lagcount = 0;
+			cpu = new MOS6502X();
+			//cpu.debug = true;
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
+			cpu.DummyReadMemory = ReadMemory;
 
 			// Setup TIA
 			//tia = new TIA(this, frameBuffer);
 			tia = new TIA(this);
 			// Setup 6532
-			m6532 = new M6532(cpu, ram, this);
+			m6532 = new M6532(this);
 
 			//setup the system state here. for instance..
 			// Read from the reset vector for where to start
@@ -124,17 +113,8 @@ namespace BizHawk
 
 		public void FrameAdvance(bool render)
 		{
-			Frame++;
-			if (resetSignal)
-			{
-				//cpu.PC = cpu.ReadWord(MOS6507.ResetVector);
-				m6532.resetOccured = true;
-				//m6532.swchb &= 0xFE;
-				//cpu.FlagI = true;
-			}
-			//cpu.Execute(228);
-			//cpu.Execute(2000);
-
+			_frame++;
+			_islag = true;
 			tia.frameComplete = false;
 			while (tia.frameComplete == false)
 			{
@@ -142,34 +122,22 @@ namespace BizHawk
 				tia.execute(1);
 				tia.execute(1);
 
-				cpu.Execute(1);
-				if (cpu.PendingCycles <= 0)
-				{
-					//Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
-				}
-				if (cpu.PendingCycles < 0)
-				{
-					Console.WriteLine("------------Something went wrong------------");
-				}
+				m6532.tick();
+				cpu.ExecuteOne();
+				//if (cpu.PendingCycles <= 0)
+				//{
+				//  //Console.WriteLine("Tia clocks: " + tia.scanlinePos + "    CPU pending: " + cpu.PendingCycles);
+				//}
+				//if (cpu.PendingCycles < 0)
+				//{
+				//  Console.WriteLine("------------Something went wrong------------");
+				//}
 				
 			}
-			resetSignal = Controller["Reset"];
-			//clear the framebuffer (hack code)
-			if (render == false) return;
-			/*
-			for (int i = 0; i < 160 * 192; i++)
-			{
-				if (i < 64*256)
-					frameBuffer[i] = i % 256; //black
-				if (i >= 64*256 && i < 128*256)
-					frameBuffer[i] = (i % 256) << 8; //black
-				if (i >= 128*256)
-					frameBuffer[i] = (i % 256) << 16; //black
-			}
-				*/
 
-			//run one frame's worth of cpu cyclees (i.e. do the emulation!)
-			//this should generate the framebuffer as it goes.
+			if (_islag)
+				LagCount++;
+			//if (render == false) return;
 		}
 
 		public byte ReadControls1()
@@ -181,7 +149,42 @@ namespace BizHawk
 			if (Controller["P1 Left"]) value &= 0xBF;
 			if (Controller["P1 Right"]) value &= 0x7F;
 			if (Controller["P1 Button"]) value &= 0xF7;
+			_islag = false;
 			return value;
 		}
+
+		public byte ReadControls2()
+		{
+			byte value = 0xFF;
+
+			if (Controller["P2 Up"]) value &= 0xEF;
+			if (Controller["P2 Down"]) value &= 0xDF;
+			if (Controller["P2 Left"]) value &= 0xBF;
+			if (Controller["P2 Right"]) value &= 0x7F;
+			if (Controller["P2 Button"]) value &= 0xF7;
+			_islag = false;
+			return value;
+		}
+
+		public byte ReadConsoleSwitches()
+		{
+			byte value = 0xFF;
+
+			bool select = false;
+			bool reset = Controller["Reset"];
+			bool bw = false;
+			bool p0difficulty = true;
+			bool p1difficulty = true;
+
+			if (reset) value &= 0xFE;
+			if (select) value &= 0xFD;
+			if (bw) value &= 0xF7;
+			if (p0difficulty) value &= 0xBF;
+			if (p1difficulty) value &= 0x7F;
+
+			return value;
+		}
+
+
 	}
 }
