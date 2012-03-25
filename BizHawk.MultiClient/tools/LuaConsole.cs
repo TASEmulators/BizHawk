@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
 
 		public void AddText(string s)
 		{
-			OutputBox.Text += s;
+			OutputBox.Text += s + "\n\n";
 		}
 
 		public LuaConsole()
@@ -255,17 +255,29 @@ namespace BizHawk.MultiClient
 
 		private void RunLuaScripts()
 		{
-			for (int x = 0; x < luaList.Count; x++)
-			{
-				if (luaList[x].Enabled && luaList[x].Thread == null)
-				{
-					luaList[x].Thread = LuaImp.SpawnCoroutine(luaList[x].Path);
-				}
-				else
-				{
-					StopScript(x);
-				}
-			}
+            for (int x = 0; x < luaList.Count; x++)
+            {
+                if (luaList[x].Enabled && luaList[x].Thread == null)
+                {
+                    try
+                    {
+                        luaList[x].Thread = LuaImp.SpawnCoroutine(luaList[x].Path);
+                    }
+                    catch (Exception e)
+                    {
+                        if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                        {
+                            luaList[x].Enabled = false;
+                            AddText(e.Message);
+                        }
+                        else MessageBox.Show(e.ToString());
+                    }
+                }
+                else
+                {
+                    StopScript(x);
+                }
+            }
 		}
 
 		private void UpdateNumberOfScripts()
@@ -338,8 +350,8 @@ namespace BizHawk.MultiClient
 
 			if (result == true || suppressAsk)
 			{
+                ClearOutput();
 				StopAllScripts();
-				ClearOutput();
 				luaList.Clear();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
@@ -550,7 +562,7 @@ namespace BizHawk.MultiClient
 				LoadLuaSession(filePaths[0]);
 				DisplayLuaList();
 				UpdateNumberOfScripts();
-				ClearOutput();
+				//ClearOutput();
 			}
 		}
 
@@ -654,7 +666,7 @@ namespace BizHawk.MultiClient
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text += message;
+				OutputBox.Text += message + "\n\n";
 				OutputBox.Refresh();
 			});
 		}
@@ -688,6 +700,7 @@ namespace BizHawk.MultiClient
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
 
+            ClearOutput();
 			StopAllScripts();
 			luaList = new List<LuaFile>();
 
@@ -740,7 +753,6 @@ namespace BizHawk.MultiClient
 				RunLuaScripts();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
-				ClearOutput();
 			}
 		}
 
@@ -748,7 +760,7 @@ namespace BizHawk.MultiClient
 		{
 			OpenLuaSession();
 		}
-
+                
 		/// <summary>
 		/// resumes suspended coroutines
 		/// </summary>
@@ -934,7 +946,7 @@ namespace BizHawk.MultiClient
 				RunLuaScripts();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
-				ClearOutput();
+				//ClearOutput();
 				changes = false;
 			}
 		}
