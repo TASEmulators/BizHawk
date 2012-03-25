@@ -95,6 +95,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				ser.Sync("PPUGenLatch", ref PPUGenLatch);
 				ser.Sync("vtoggle", ref vtoggle);
 				ser.Sync("VRAMBuffer", ref VRAMBuffer);
+				ser.Sync("ppu_addr_temp", ref ppu_addr_temp);
 
 				ser.Sync("OAM", ref OAM, false);
 				ser.Sync("PALRAM", ref PALRAM, false);

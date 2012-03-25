@@ -597,9 +597,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("cpu_accumulate", ref cpu_accumulate);
 			ser.Sync("_irq_apu", ref _irq_apu);
 			ser.Sync("_irq_cart", ref _irq_cart);
+			ser.Sync("sprdma_countdown", ref sprdma_countdown);
+			ser.Sync("cpu_step", ref cpu_step);
+			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
+			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
 			sync_irq();
-			//string inp = GetControllersAsMnemonic();  TODO sorry bout that
-			//ser.SyncFixedString("input", ref inp, 32);
 			board.SyncState(ser);
 			ppu.SyncState(ser);
 			apu.SyncState(ser);

@@ -27,39 +27,67 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public short[] xbuf = new short[256*240];
 
-			void Read_bgdata(ref BGDataRecord bgdata) {
-				int addr = ppur.get_ntread();
-				bgdata.nt = ppubus_read(addr, true);
-				runppu(kFetchTime);
-
-				addr = ppur.get_atread();
-				byte at = ppubus_read(addr, true);
-
-				//modify at to get appropriate palette shift
-				if((ppur.vt&2)!=0) at >>= 4;
-				if((ppur.ht&2)!=0) at >>= 2;
-				at &= 0x03;
-				at <<= 2;
-			
-				bgdata.at = at;
-
-				//horizontal scroll clocked at cycle 3 and then
-				//vertical scroll at 251
-				runppu(1);
-				if (reg_2001.PPUON)
+			int ppu_addr_temp;
+			void Read_bgdata(ref BGDataRecord bgdata)
+			{
+				for (int i = 0; i < 8; i++)
+					Read_bgdata(i,ref bgdata);
+			}
+			void Read_bgdata(int cycle, ref BGDataRecord bgdata)
+			{
+				switch (cycle)
 				{
-					ppur.increment_hsc();
-					if (ppur.status.cycle == 251)
-						ppur.increment_vs();
-				}
-				runppu(1);
+					case 0:
+						ppu_addr_temp = ppur.get_ntread();
+						bgdata.nt = ppubus_read(ppu_addr_temp, true);
+						runppu(1);
+						break;
+					case 1:
+						runppu(1);
+						break;
+					case 2:
+						{
+							ppu_addr_temp = ppur.get_atread();
+							byte at = ppubus_read(ppu_addr_temp, true);
 
-				addr = ppur.get_ptread(bgdata.nt);
-				bgdata.pt_0 = ppubus_read(addr, true);
-				runppu(kFetchTime);
-				addr |= 8;
-				bgdata.pt_1 = ppubus_read(addr, true);
-				runppu(kFetchTime);
+							//modify at to get appropriate palette shift
+							if ((ppur.vt & 2) != 0) at >>= 4;
+							if ((ppur.ht & 2) != 0) at >>= 2;
+							at &= 0x03;
+							at <<= 2;
+							bgdata.at = at;
+
+							//horizontal scroll clocked at cycle 3 and then
+							//vertical scroll at 251
+							runppu(1);
+							if (reg_2001.PPUON)
+							{
+								ppur.increment_hsc();
+								if (ppur.status.cycle == 251)
+									ppur.increment_vs();
+							}
+							break;
+						}
+					case 3:
+						runppu(1);
+						break;
+					case 4:
+						ppu_addr_temp = ppur.get_ptread(bgdata.nt);
+						bgdata.pt_0 = ppubus_read(ppu_addr_temp, true);
+						runppu(1);
+						break;
+					case 5:
+						runppu(1);
+						break;
+					case 6:
+						ppu_addr_temp |= 8;
+						bgdata.pt_1 = ppubus_read(ppu_addr_temp, true);
+						runppu(1);
+						break;
+					case 7:
+						runppu(1);
+						break;
+				} //switch(cycle)
 			}
 
 			unsafe struct TempOAM
@@ -124,12 +152,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				{
 					ppur.status.cycle = 0;
 
-					//if (!reg_2001.PPUON)
-					//{
-					//    runppu(kLineTime);
-					//    continue;
-					//}
-
 					ppur.status.sl = sl;
 
 					int yp = sl - 1;
@@ -150,12 +172,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//two of those tiles were read in the last scanline.
 					for (int xt = 0; xt < 32; xt++)
 					{
-						Read_bgdata(ref bgdata[xt + 2]);
-
 						//ok, we're also going to draw here.
 						//unless we're on the first dummy scanline
 						if (sl != 0)
 						{
+
+
 							int xstart = xt << 3;
 							oamcount = oamcounts[renderslot];
 							int target = (yp << 8) + xstart;
@@ -167,6 +189,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							for (int xp = 0; xp < 8; xp++, rasterpos++)
 							{
+								//process the current clock's worth of bg data fetching
+								//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
+								Read_bgdata(xp, ref bgdata[xt + 2]);
+
 								//bg pos is different from raster pos due to its offsetability.
 								//so adjust for that here
 								int bgpos = rasterpos + ppur.fh;
@@ -187,18 +213,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								}
 								else
 								{
+									if (!renderspritenow)
+									{
+										//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
+										int addr = ppur.get_2007access();
+										if ((addr & 0x3F00) == 0x3F00)
+										{
+											pixel = addr & 0x1F;
+										}
+									}
 									pixelcolor = PALRAM[pixel];
-									pixelcolor |= 0x8000;
+									pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
 								}
 
 								if (!nes.CoreInputComm.NES_ShowBG)
-									pixelcolor = 0x8000;
+									pixelcolor = 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
 
 								//look for a sprite to be drawn
 								bool havepixel = false;
 								for (int s = 0; s < oamcount; s++)
 								{
-									TempOAM *oam = &oams[(renderslot<<6)+s];
+									TempOAM* oam = &oams[(renderslot << 6) + s];
 									{
 										int x = oam->oam[3];
 										if (rasterpos >= x && rasterpos < x + 8)
@@ -241,7 +276,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 												if ((pixel & 3) != 0)
 												{
 													drawsprite = false;
-												}	
+												}
 											}
 
 											if (drawsprite && nes.CoreInputComm.NES_ShowOBJ)
@@ -258,12 +293,20 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 								}//oamcount loop
 
+
+								if (reg_2001.color_disable)
+									pixelcolor &= 0x30;
+
 								xbuf[target] = PaletteAdjustPixel(pixelcolor);
 
 								target++;
 
 							} //loop across 8 pixels
 						} //scanline != 0
+						else
+						{
+							Read_bgdata(ref bgdata[xt + 2]);
+						}
 					} //loop across 32 tiles
 
 

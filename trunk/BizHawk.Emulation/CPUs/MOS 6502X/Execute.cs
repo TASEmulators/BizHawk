@@ -1,5 +1,4 @@
 //http://nesdev.parodius.com/6502_cpu.txt
-//TODO - correct brk/irq/nmi interrupting and prioritization
 //TODO - rename unofficial NOPs as DOPs? (see immediate instr tests)
 using System;
 
@@ -9,7 +8,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 	{
 		static Uop[][] Microcode = new Uop[][]{
 			//0x00
-			/*BRK [implied]*/ new Uop[] { Uop.Fetch2, Uop.PushPCH, Uop.PushPCL, Uop.PushP_BRK, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
+			/*BRK [implied]*/ new Uop[] { Uop.Fetch2, Uop.PushPCH, Uop.PushPCL, Uop.PushP_BRK, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*ORA (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_ORA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
 			/*SLO* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
@@ -282,14 +281,16 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*ISB* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x100
 			/*VOP_Fetch1*/ new Uop[] { Uop.Fetch1 },
-			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End },
+			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End_BranchSpecial },
 			/*VOP_RelativeStuff2*/ new Uop[] { Uop.RelBranch_Stage4, Uop.End },
+			/*VOP_RelativeStuff2*/ new Uop[] { Uop.End_SuppressInterrupt },
 			//i assume these are dummy fetches.... maybe theyre just nops? supposedly these take 7 cycles so thats the only way i can make sense of it
 			//one of them might be the next instruction's fetch, and whatever fetch follows it.
 			//the interrupt would then take place if necessary, using a cached PC. but im not so sure about that.
-			/*VOP_NMI*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_NMI, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
-			/*VOP_IRQ*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_IRQ, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
-			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End },
+			/*VOP_NMI*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_NMI, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
+			/*VOP_IRQ*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_IRQ, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
+			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
+			/*VOP_Fetch1_NoInterrupt*/  new Uop[] { Uop.Fetch1_Real },
 		};
 		
 		enum Uop
@@ -297,7 +298,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			//sometimes i used this as a marker for unsupported instructions, but it is very inconsistent
 			Unsupported,
 
-			Fetch1, Fetch2, Fetch3, 
+			Fetch1, Fetch1_Real, Fetch2, Fetch3, 
 			//used by instructions with no second opcode byte (6502 fetches a byte anyway but won't increment PC for these)
 			FetchDummy,
 
@@ -385,49 +386,44 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 			End,
 			End_ISpecial, //same as end, but preserves the iflag set by the instruction
+			End_BranchSpecial,
+			End_SuppressInterrupt,
 		}
 
 		const int VOP_Fetch1 = 256;
 		const int VOP_RelativeStuff = 257;
 		const int VOP_RelativeStuff2 = 258;
-		const int VOP_NMI = 259;
-		const int VOP_IRQ = 260;
-		const int VOP_RESET = 261;
+		const int VOP_RelativeStuff3 = 259;
+		const int VOP_NMI = 260;
+		const int VOP_IRQ = 261;
+		const int VOP_RESET = 262;
+		const int VOP_Fetch1_NoInterrupt = 263;
 
+		//opcode bytes.. theoretically redundant with the temp variables? who knows.
 		int opcode;
-		byte opcode2, opcode3; //opcode bytes.. theoretically redundant with the temp variables? who knows.
+		byte opcode2, opcode3;
+
 		int ea, alu_temp; //cpu internal temp variables
 		int mi; //microcode index
-		//bool branch_taken; //only needed for the timing debug
 		bool iflag_pending; //iflag must be stored after it is checked in some cases (CLI and SEI).
+
+		//tracks whether an interrupt condition has popped up recently.
+		//not sure if this is real or not but it helps with the branch_irq_hack
+		bool interrupt_pending; 
+		bool branch_irq_hack; //see Uop.RelBranch_Stage3 for more details
+
+		bool Interrupted
+		{
+			get
+			{
+				return NMI || (IRQ && !FlagI);
+			}
+		}
 
 		void FetchDummy()
 		{
 			DummyReadMemory(PC);
 		}
-
-		////timing debug
-		//int ctr = 0;
-		//int realOpcode = 0;
-		//public static byte[] CycTable = new byte[]
-		//{                             
-		///*0x00*/ 7,6,2,8,3,3,5,5,3,2,2,2,4,4,6,6,
-		///*0x10*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		///*0x20*/ 6,6,2,8,3,3,5,5,4,2,2,2,4,4,6,6,
-		///*0x30*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		///*0x40*/ 6,6,2,8,3,3,5,5,3,2,2,2,3,4,6,6,
-		///*0x50*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		///*0x60*/ 6,6,2,8,3,3,5,5,4,2,2,2,5,4,6,6,
-		///*0x70*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		///*0x80*/ 2,6,2,6,3,3,3,3,2,2,2,2,4,4,4,4,
-		///*0x90*/ 2,6,2,6,4,4,4,4,2,5,2,5,5,5,5,5,
-		///*0xA0*/ 2,6,2,6,3,3,3,3,2,2,2,2,4,4,4,4,
-		///*0xB0*/ 2,5,2,5,4,4,4,4,2,4,2,4,4,4,4,4,
-		///*0xC0*/ 2,6,2,8,3,3,5,5,2,2,2,2,4,4,6,6,
-		///*0xD0*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		///*0xE0*/ 2,6,3,8,3,3,5,5,2,2,2,2,4,4,6,6,
-		///*0xF0*/ 2,5,2,8,4,4,6,6,2,4,2,7,4,4,7,7,
-		//};
 
 		public void Execute(int cycles)
 		{
@@ -445,6 +441,8 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 			TotalExecutedCycles++;
 
+			interrupt_pending |= Interrupted;
+
 		RETRY:
 			Uop uop = Microcode[opcode][mi];
 			switch (uop)
@@ -454,44 +452,34 @@ namespace BizHawk.Emulation.CPUs.M6502
 					{
 						bool my_iflag = FlagI;
 						FlagI = iflag_pending;
-						if (NMI)
+						if (!branch_irq_hack)
 						{
-							ea = NMIVector;
-							opcode = VOP_NMI;
-							NMI = false;
-							mi = 0;
-							goto RETRY;
+							interrupt_pending = false;
+							if (NMI)
+							{
+								ea = NMIVector;
+								opcode = VOP_NMI;
+								NMI = false;
+								mi = 0;
+								goto RETRY;
+							}
+							else if (IRQ && !my_iflag)
+							{
+								ea = IRQVector;
+								opcode = VOP_IRQ;
+								mi = 0;
+								goto RETRY;
+							}
 						}
-						else if (IRQ && !my_iflag)
-						{
-							ea = IRQVector;
-							opcode = VOP_IRQ;
-							mi = 0;
-							goto RETRY;
-						}
-#if TIMINGDEBUG
-						if (debug)
-						{
-							int ideal = CycTable[realOpcode] + (branch_taken ? 1 : 0);
-							int actual = TotalExecutedCycles - ctr;
-							Console.Write(" | ideal={0}", ideal);
-							Console.Write(" actual={0}", actual);
-							if (actual != ideal) Console.WriteLine(" !!!"); else Console.WriteLine();
-							Console.Write(State());
-						}
-						branch_taken = false;
-						opcode = ReadMemory(PC++);
-						realOpcode = opcode;
-						mi = -1;
-						ctr = TotalExecutedCycles;
-						break;
-#else
-						if(debug) Console.WriteLine(State());
-						opcode = ReadMemory(PC++);
-						mi = -1;
-						break;
-#endif
+						goto case Uop.Fetch1_Real;
 					}
+
+				case Uop.Fetch1_Real:
+					if (debug) Console.WriteLine(State());
+					branch_irq_hack = false;
+					opcode = ReadMemory(PC++);
+					mi = -1;
+					break;
 					
 				case Uop.Fetch2: opcode2 = ReadMemory(PC++); break;
 				case Uop.Fetch3: opcode3 = ReadMemory(PC++); break;
@@ -526,6 +514,16 @@ namespace BizHawk.Emulation.CPUs.M6502
 					S--;
 					break;
 				case Uop.FetchPCLVector:
+					if (ea == BRKVector && FlagB && NMI)
+					{
+						NMI = false;
+						ea = NMIVector;
+					}
+					if(ea == IRQVector && !FlagB && NMI)
+					{
+						NMI = false;
+						ea = NMIVector;
+					}
 					alu_temp = ReadMemory((ushort)ea);
 					break;
 				case Uop.FetchPCHVector:
@@ -652,17 +650,25 @@ namespace BizHawk.Emulation.CPUs.M6502
 						opcode = VOP_RelativeStuff;
 						mi = -1;
 					}
+
 					break;
 				case Uop.RelBranch_Stage3:
 					FetchDummy();
 					alu_temp = (byte)PC + (int)(sbyte)opcode2;
 					PC &= 0xFF00;
 					PC |= (ushort)((alu_temp&0xFF));
-					if(alu_temp.Bit(8))
+					if (alu_temp.Bit(8))
 					{
 						//we need to carry the add, and then we'll be ready to fetch the next instruction
 						opcode = VOP_RelativeStuff2;
 						mi = -1;
+					}
+					else
+					{
+						//to pass cpu_interrupts_v2/5-branch_delays_irq we need to handle a quirk here
+						//if we decide to interrupt in the next cycle, this condition will cause it to get deferred by one instruction
+						if(!interrupt_pending)
+							branch_irq_hack = true;
 					}
 					break;
 				case Uop.RelBranch_Stage4:
@@ -678,7 +684,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.JSR: PC = (ushort)((ReadMemory((ushort)(PC)) << 8) + opcode2); break;
 				case Uop.PullP: 
 					P = ReadMemory((ushort)(S++ + 0x100));
-					FlagT = true;
+					FlagT = true; //force T always to remain true
 					break;
 				case Uop.PullPCL:
 					PC &= 0xFF00;
@@ -968,7 +974,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 						P = ReadMemory((ushort)(S + 0x100));
 						iflag_pending = FlagI;
 						FlagI = my_iflag;
-						FlagT = true; //why?
+						FlagT = true; //force T always to remain true
 						break;
 					}
 
@@ -1239,11 +1245,18 @@ namespace BizHawk.Emulation.CPUs.M6502
 					mi = 0;
 					goto RETRY;
 
+				case Uop.End_SuppressInterrupt:
+					opcode = VOP_Fetch1_NoInterrupt;
+					mi = 0;
+					goto RETRY;
+
 				case Uop.End:
 					opcode = VOP_Fetch1;
 					mi = 0;
 					iflag_pending = FlagI;
 					goto RETRY;
+				case Uop.End_BranchSpecial:
+					goto case Uop.End;
 			}
 
 			mi++;
