@@ -573,7 +573,7 @@ namespace BizHawk.MultiClient
             GL.DrawPixels(video.BufferWidth, video.BufferHeight, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, flipped);
             SwapBuffers();
 		}
-		public OpenGLRenderPanel() : base(new OpenTK.Graphics.GraphicsMode(new OpenTK.Graphics.ColorFormat(32),24),2,1,OpenTK.Graphics.GraphicsContextFlags.Default)
+		public OpenGLRenderPanel() : base(OpenTK.Graphics.GraphicsMode.Default,2,1,OpenTK.Graphics.GraphicsContextFlags.Default)
 		{
 			
 		}
