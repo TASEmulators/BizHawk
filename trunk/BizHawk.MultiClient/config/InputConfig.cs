@@ -22,6 +22,7 @@ namespace BizHawk.MultiClient
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
+			{"Atari", new string[5] { "Up", "Down", "Left", "Right", "Button" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
 			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
@@ -47,7 +48,6 @@ namespace BizHawk.MultiClient
 			{"Atari", 2}, {"Gameboy", 1}, {"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"Sega Genesis", 1}, {"SMS / GG / SG-1000", 2},
 			{"TI-83", 1}
 		};
-		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
 		private string CurSelectConsole;
@@ -82,109 +82,6 @@ namespace BizHawk.MultiClient
 			//	return oldmap.Substring(0, x + 2) + button;
 			//else
 			return button;
-		}
-
-		private void DoAtari()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Atari";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[AtariControlList.Length];
-			int controllers = 2;
-			if (jpad < controllers)
-			{
-				ButtonMappings[0] = Global.Config.Atari2600Controller[jpad].Up;
-				ButtonMappings[1] = Global.Config.Atari2600Controller[jpad].Down;
-				ButtonMappings[2] = Global.Config.Atari2600Controller[jpad].Left;
-				ButtonMappings[3] = Global.Config.Atari2600Controller[jpad].Right;
-				ButtonMappings[4] = Global.Config.Atari2600Controller[jpad].Button;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600Controller[jpad].Enabled;
-			}
-			else
-			{
-				ButtonMappings[0] = Global.Config.Atari2600AutoController[controllers - jpad].Up;
-				ButtonMappings[1] = Global.Config.Atari2600AutoController[controllers - jpad].Down;
-				ButtonMappings[2] = Global.Config.Atari2600AutoController[controllers - jpad].Left;
-				ButtonMappings[3] = Global.Config.Atari2600AutoController[controllers - jpad].Right;
-				ButtonMappings[4] = Global.Config.Atari2600AutoController[controllers - jpad].Button;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600AutoController[controllers - jpad].Enabled;
-			}
-
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-
-			for (int i = 0; i < AtariControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = AtariControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			
-			Changed = true;
-		}
-
-		private void UpdateAtari(int prev)
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			int controllers = 2;
-			if (prev < controllers)
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Button);
-				TempBox.Dispose();
-
-				Global.Config.Atari2600Controller[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			else
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Button);
-				TempBox.Dispose();
-
-				Global.Config.Atari2600AutoController[prev - controllers].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			TempBox.Dispose();
-			for (int i = 0; i < AtariControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
 		}
 
 		private void DoGameBoy()
@@ -269,6 +166,11 @@ namespace BizHawk.MultiClient
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "Atari":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
+					controller = Global.Config.Atari2600Controller;
+					autoController = Global.Config.Atari2600AutoController;
+					break;
 				case "Sega Genesis":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
 					controller = Global.Config.GenesisController;
@@ -305,6 +207,9 @@ namespace BizHawk.MultiClient
 			}
 			switch (platform)
 			{
+				case "Atari":
+					IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
+					break;
 				case "Sega Genesis":
 					IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
 					break;
@@ -340,6 +245,12 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "Atari":
+					{
+						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
 					case "Sega Genesis":
 					{
 						GenControllerTemplate obj = (GenControllerTemplate)controller[jpad];
@@ -399,6 +310,10 @@ namespace BizHawk.MultiClient
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "Atari":
+					controller = Global.Config.Atari2600Controller;
+					autoController = Global.Config.Atari2600AutoController;
+					break;
 				case "Sega Genesis":
 					controller = Global.Config.GenesisController;
 					autoController = Global.Config.GenesisAutoController;
@@ -429,6 +344,9 @@ namespace BizHawk.MultiClient
 			}
 			switch (platform)
 			{
+				case "Atari":
+					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
 				case "Sega Genesis":
 					((GenControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
@@ -452,6 +370,14 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "Atari":
+					{
+						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
 					case "Sega Genesis":
 					{
 						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
@@ -590,6 +516,7 @@ namespace BizHawk.MultiClient
 			}
 			switch (SystemComboBox.SelectedItem.ToString())
 			{
+				case "Atari":
 				case "NES":
 				case "PC Engine / SuperGrafx":
 				case "Sega Genesis":
@@ -600,9 +527,6 @@ namespace BizHawk.MultiClient
 				case "Gameboy":
 					DoGameBoy();
 					break;
-				case "Atari":
-					DoAtari();
-					break;
 			}
 			CurSelectController = ControllComboBox.SelectedIndex;
 			SetFocus();
@@ -611,6 +535,7 @@ namespace BizHawk.MultiClient
 		{
 			switch (CurSelectConsole)
 			{
+				case "Atari":
 				case "NES":
 				case "PC Engine / SuperGrafx":
 				case "Sega Genesis":
@@ -620,9 +545,6 @@ namespace BizHawk.MultiClient
 					break;
 				case "Gameboy":
 					UpdateGameBoy();
-					break;
-				case "Atari":
-					UpdateAtari(CurSelectController);
 					break;
 			}
 			Changed = false;
