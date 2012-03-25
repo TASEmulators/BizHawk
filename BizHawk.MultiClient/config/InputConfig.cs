@@ -19,13 +19,12 @@ namespace BizHawk.MultiClient
 		int prevWidth;
 		int prevHeight;
 		const string ControllerStr = "Configure Controllers - ";
-		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", };
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
-			{"Genesis 3-Button", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
+			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
@@ -45,7 +44,8 @@ namespace BizHawk.MultiClient
 
 		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
 		{
-			{"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"SMS / GG / SG-1000", 2}, {"TI-83", 1}
+			{"Atari", 2}, {"Gameboy", 1}, {"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"Sega Genesis", 1}, {"SMS / GG / SG-1000", 2},
+			{"TI-83", 1}
 		};
 		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
@@ -187,83 +187,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void DoGen()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Sega Genesis";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[GenesisControlList.Length];
-			ButtonMappings[0] = Global.Config.GenesisController[0].Up;
-			ButtonMappings[1] = Global.Config.GenesisController[0].Down;
-			ButtonMappings[2] = Global.Config.GenesisController[0].Left;
-			ButtonMappings[3] = Global.Config.GenesisController[0].Right;
-			ButtonMappings[4] = Global.Config.GenesisController[0].A;
-			ButtonMappings[5] = Global.Config.GenesisController[0].B;
-			ButtonMappings[6] = Global.Config.GenesisController[0].C;
-			ButtonMappings[7] = Global.Config.GenesisController[0].Start;
-
-			IDX_CONTROLLERENABLED.Checked = Global.Config.GenesisController[0].Enabled;
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-
-			for (int i = 0; i < GenesisControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = GenesisControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			Changed = true;
-		}
-
-		private void UpdateGen(int prev)
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.GenesisController[0].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.GenesisController[0].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.GenesisController[0].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.GenesisController[0].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.GenesisController[0].A = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.GenesisController[0].B = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.GenesisController[0].C = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.GenesisController[0].Start = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
-			TempBox.Dispose();
-			Global.Config.GenesisController[0].Enabled = IDX_CONTROLLERENABLED.Checked;
-
-			for (int i = 0; i < GenesisControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-		}
-
 		private void DoGameBoy()
 		{
 			Label TempLabel;
@@ -346,6 +269,11 @@ namespace BizHawk.MultiClient
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "Sega Genesis":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
+					break;
 				case "NES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 					controller = Global.Config.NESController;
@@ -377,6 +305,9 @@ namespace BizHawk.MultiClient
 			}
 			switch (platform)
 			{
+				case "Sega Genesis":
+					IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
+					break;
 				case "NES":
 					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
 					break;
@@ -409,6 +340,12 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
@@ -462,6 +399,10 @@ namespace BizHawk.MultiClient
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "Sega Genesis":
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
+					break;
 				case "NES":
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
@@ -488,6 +429,9 @@ namespace BizHawk.MultiClient
 			}
 			switch (platform)
 			{
+				case "Sega Genesis":
+					((GenControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
@@ -508,6 +452,14 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
@@ -602,46 +554,18 @@ namespace BizHawk.MultiClient
 			{
 				UpdateAll();
 			}
-			int joypads = 0;
-			switch (this.SystemComboBox.SelectedItem.ToString())
+			int joypads = PADS[this.SystemComboBox.SelectedItem.ToString()];
+			if (this.SystemComboBox.SelectedItem.ToString() != "TI-83")
 			{
-				case "SMS / GG / SG-1000":
-					joypads = 2;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "PC Engine / SuperGrafx":
-					joypads = 5;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Gameboy":
-					joypads = 1;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Sega Genesis":
-					joypads = 8;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "TI-83":
-					joypads = 1;
-					if (this.Width < 700)
-						this.Width = 700;
-					if (this.Height < 580)
-						this.Height = 580;
-					break;
-				case "NES":
-					joypads = 4;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Atari":
-					joypads = 2;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
+				this.Width = prevWidth;
+				this.Height = prevHeight;
+			}
+			else
+			{
+				if (this.Width < 700)
+					this.Width = 700;
+				if (this.Height < 580)
+					this.Height = 580;
 			}
 			ControllComboBox.Items.Clear();
 			for (int i = 0; i < joypads; i++)
@@ -668,15 +592,13 @@ namespace BizHawk.MultiClient
 			{
 				case "NES":
 				case "PC Engine / SuperGrafx":
+				case "Sega Genesis":
 				case "SMS / GG / SG-1000":
 				case "TI-83":
 					Do(SystemComboBox.SelectedItem.ToString());
 					break;
 				case "Gameboy":
 					DoGameBoy();
-					break;
-				case "Sega Genesis":
-					DoGen();
 					break;
 				case "Atari":
 					DoAtari();
@@ -691,15 +613,13 @@ namespace BizHawk.MultiClient
 			{
 				case "NES":
 				case "PC Engine / SuperGrafx":
+				case "Sega Genesis":
 				case "SMS / GG / SG-1000":
 				case "TI-83":
 					Update(CurSelectController, CurSelectConsole);
 					break;
 				case "Gameboy":
 					UpdateGameBoy();
-					break;
-				case "Sega Genesis":
-					//UpdateGenesis();
 					break;
 				case "Atari":
 					UpdateAtari(CurSelectController);

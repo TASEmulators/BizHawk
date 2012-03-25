@@ -21,11 +21,11 @@ namespace BizHawk.MultiClient
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
 			GenesisController[0] = new GenControllerTemplate(true);
-			GenesisAutoController[0] = new GenControllerTemplate(true);
+			GenesisAutoController[0] = new GenControllerTemplate(false);
 
 			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
 			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[0] = new Atari2600ControllerTemplate(true);
+			Atari2600AutoController[0] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 			PCEAutoController[3] = new PCEControllerTemplate(false);
 			PCEAutoController[4] = new PCEControllerTemplate(false);
 
-			GameBoyAutoController = new NESControllerTemplate(true);
+			GameBoyAutoController = new NESControllerTemplate(false);
 		}
 
 		// Directories
