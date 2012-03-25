@@ -962,36 +962,15 @@ namespace BizHawk.MultiClient
 
 			if (Global.Game != null)
 			{
-				switch (Global.Game.System)
+				Dictionary<string, string> systems = new Dictionary<string, string>()
 				{
-					case "SMS":
-					case "SG":
-					case "GG":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("SMS / GG / SG-1000");
-						break;
-					case "PCE":
-					case "SGX":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("PC Engine / SGX");
-						break;
-					case "GB":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Gameboy");
-						break;
-					case "GEN":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Sega Genesis");
-						break;
-					case "TI83":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("TI-83");
-						break;
-					case "NES":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("NES");
-						break;
-					case "A26":
-						this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf("Atari");
-						break;
-					default:
-						this.SystemComboBox.SelectedIndex = 0;
-						break;
-				}
+					{"A26", "Atari"}, {"GB", "Gameboy"}, {"GEN", "Sega Genesis"}, {"GG", "SMS / GG / SG-1000"}, {"NES", "NES"},
+					{"SGX", "PC Engine / SGX"}, {"TI83", "TI-83"}
+				};
+				if (systems.ContainsKey(Global.Game.System))
+					this.SystemComboBox.SelectedIndex = SystemComboBox.Items.IndexOf(systems[Global.Game.System]);
+				else
+					this.SystemComboBox.SelectedIndex = 0;
 			}
 		}
 
