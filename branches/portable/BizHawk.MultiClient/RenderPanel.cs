@@ -569,7 +569,7 @@ namespace BizHawk.MultiClient
             {
                 Array.Copy(data, i*width, flipped, (width*(height-1-i)),width);
             }
-            GL.PixelZoom(Width/width, Height/height);
+            GL.PixelZoom(Width*1.0f/width, Height*1.0f/height);
             GL.DrawPixels(video.BufferWidth, video.BufferHeight, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, flipped);
             SwapBuffers();
 		}
