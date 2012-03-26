@@ -82,6 +82,7 @@
 			this.clearToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NumberOfScripts = new System.Windows.Forms.Label();
+			this.OutputMessages = new System.Windows.Forms.Label();
 			this.toolStrip1 = new ToolStripEx();
 			this.openToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.copyToolStripButton = new System.Windows.Forms.ToolStripButton();
@@ -506,7 +507,7 @@
 			this.OutputBox.Location = new System.Drawing.Point(6, 17);
 			this.OutputBox.Name = "OutputBox";
 			this.OutputBox.ReadOnly = true;
-			this.OutputBox.Size = new System.Drawing.Size(246, 259);
+			this.OutputBox.Size = new System.Drawing.Size(246, 283);
 			this.OutputBox.TabIndex = 2;
 			this.OutputBox.Text = "";
 			// 
@@ -531,7 +532,7 @@
 			this.groupBox1.Controls.Add(this.OutputBox);
 			this.groupBox1.Location = new System.Drawing.Point(310, 71);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(258, 280);
+			this.groupBox1.Size = new System.Drawing.Size(258, 304);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
@@ -544,6 +545,16 @@
 			this.NumberOfScripts.Size = new System.Drawing.Size(56, 13);
 			this.NumberOfScripts.TabIndex = 4;
 			this.NumberOfScripts.Text = "0 script     ";
+			// 
+			// OutputMessages
+			// 
+			this.OutputMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.OutputMessages.AutoSize = true;
+			this.OutputMessages.Location = new System.Drawing.Point(13, 384);
+			this.OutputMessages.Name = "OutputMessages";
+			this.OutputMessages.Size = new System.Drawing.Size(106, 13);
+			this.OutputMessages.TabIndex = 6;
+			this.OutputMessages.Text = "                                 ";
 			// 
 			// toolStrip1
 			// 
@@ -666,7 +677,7 @@
 			this.LuaListView.Location = new System.Drawing.Point(13, 71);
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.selectedItem = -1;
-			this.LuaListView.Size = new System.Drawing.Size(291, 280);
+			this.LuaListView.Size = new System.Drawing.Size(291, 304);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.UseCompatibleStateImageBehavior = false;
 			this.LuaListView.View = System.Windows.Forms.View.Details;
@@ -688,7 +699,8 @@
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 366);
+			this.ClientSize = new System.Drawing.Size(584, 402);
+			this.Controls.Add(this.OutputMessages);
 			this.Controls.Add(this.toolStrip1);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.NumberOfScripts);
@@ -696,7 +708,7 @@
 			this.Controls.Add(this.LuaListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(356, 132);
+			this.MinimumSize = new System.Drawing.Size(400, 180);
 			this.Name = "LuaConsole";
 			this.Text = "Lua Console";
 			this.Load += new System.EventHandler(this.LuaConsole_Load);
@@ -781,5 +793,6 @@
         private System.Windows.Forms.ToolStripButton resumePauseButton1;
         private System.Windows.Forms.ToolStripMenuItem resumePauseToolStripMenuItem;
         public System.Windows.Forms.RichTextBox OutputBox;
+		private System.Windows.Forms.Label OutputMessages;
     }
 }
