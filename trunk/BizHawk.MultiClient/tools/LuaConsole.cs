@@ -471,6 +471,9 @@ namespace BizHawk.MultiClient
 		private void MoveUp()
 		{
 			ListView.SelectedIndexCollection indexes = LuaListView.SelectedIndices;
+			if (indexes[0] == 0)
+				return;
+
 			LuaFile temp = new LuaFile(false);
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
