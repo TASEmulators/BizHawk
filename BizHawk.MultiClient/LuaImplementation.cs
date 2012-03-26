@@ -347,14 +347,24 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		public void gui_text(object luaX, object luaY, object luaStr)
+		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
 		{
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false);
+			gui_text_implementation(LuaVarArgs(luaX, luaY, luaStr, anchor));
+		}
+  
+		private void gui_text_implementation(object[] parameters)
+		{
+			int anchor;
+			if (parameters.Length == 3)
+				anchor = 0;
+			else
+				anchor = LuaInt(parameters[3]);
+			Global.RenderPanel.AddGUIText(parameters[2].ToString(), LuaInt(parameters[0]), LuaInt(parameters[1]), false, anchor);
 		}
 
 		public void gui_alert(object luaX, object luaY, object luaStr)
 		{
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), true);
+			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), true, 0);
 		}
 
 		//----------------------------------------------------

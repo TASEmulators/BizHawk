@@ -115,7 +115,7 @@ namespace BizHawk.MultiClient
 		void Render(IVideoProvider video);
 		bool Resized { get; set; }
 		void AddMessage(string msg);
-		void AddGUIText(string msg, int x, int y, bool alert);
+		void AddGUIText(string msg, int x, int y, bool alert, int anchor);
 		void ClearGUIText();
 		string FPS { get; set; }
 		string MT { get; set; }
@@ -148,7 +148,7 @@ namespace BizHawk.MultiClient
 		}
 		RetainedViewportPanel backingControl;
 		public void AddMessage(string msg) { }
-		public void AddGUIText(string msg, int x, int y, bool alert) { }
+		public void AddGUIText(string msg, int x, int y, bool alert, int anchor) { }
 		public void ClearGUIText() { }
 	}
 
@@ -481,9 +481,9 @@ namespace BizHawk.MultiClient
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, bool alert)
+		public void AddGUIText(string message, int x, int y, bool alert, int anchor)
 		{
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Alert = alert });
+			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Alert = alert, Anchor = anchor});
 		}
 
 		public void ClearGUIText()
@@ -505,17 +505,20 @@ namespace BizHawk.MultiClient
 			}
 			for (int x = 0; x < GUITextList.Count; x++)
 			{
+				int posx = GetX(GUITextList[x].X, GUITextList[x].Anchor);
+				int posy = GetX(GUITextList[x].X, GUITextList[x].Anchor);
+
 				MessageFont.DrawString(null, GUITextList[x].Message,
-					GUITextList[x].X + 2, GUITextList[x].Y + 2, Color.Black);
+					posx + 2, posy + 2, Color.Black);
 				MessageFont.DrawString(null, GUITextList[x].Message,
-					GUITextList[x].X + 1, GUITextList[x].Y + 1, Color.Gray);
+					posx + 1, posy + 1, Color.Gray);
 
 				if (GUITextList[x].Alert)
 					MessageFont.DrawString(null, GUITextList[x].Message,
-						GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.AlertMessageColor));
+						posx, posy, Color.FromArgb(Global.Config.AlertMessageColor));
 				else
 					MessageFont.DrawString(null, GUITextList[x].Message,
-						GUITextList[x].X, GUITextList[x].Y, Color.FromArgb(Global.Config.MessagesColor));
+						posx, posy, Color.FromArgb(Global.Config.MessagesColor));
 			}
 		}
 
@@ -565,5 +568,6 @@ namespace BizHawk.MultiClient
 		public int X;
 		public int Y;
 		public bool Alert;
+		public int Anchor;
 	}
 }
