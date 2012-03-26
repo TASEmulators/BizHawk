@@ -270,6 +270,8 @@ namespace BizHawk.MultiClient
 		private void MoveUp()
 		{
 			ListView.SelectedIndexCollection indexes = CheatListView.SelectedIndices;
+			if (indexes[0] == 0)
+				return;
 			Cheat temp = new Cheat();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)
