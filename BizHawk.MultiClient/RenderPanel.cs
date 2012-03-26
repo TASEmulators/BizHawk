@@ -506,7 +506,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < GUITextList.Count; x++)
 			{
 				int posx = GetX(GUITextList[x].X, GUITextList[x].Anchor);
-				int posy = GetX(GUITextList[x].X, GUITextList[x].Anchor);
+				int posy = GetY(GUITextList[x].Y, GUITextList[x].Anchor);
 
 				MessageFont.DrawString(null, GUITextList[x].Message,
 					posx + 2, posy + 2, Color.Black);
