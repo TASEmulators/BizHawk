@@ -167,20 +167,32 @@ namespace BizHawk.MultiClient
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
-				LuaFile l = new LuaFile("", path);
-				luaList.Add(l);
-				LuaListView.ItemCount = luaList.Count;
-				LuaListView.Refresh();
-				Global.Config.RecentLua.Add(path);
+                    LuaFile l = new LuaFile("", path);
+                    luaList.Add(l);
+                    LuaListView.ItemCount = luaList.Count;
+                    LuaListView.Refresh();
+                    Global.Config.RecentLua.Add(path);
 
-				if (!Global.Config.DisableLuaScriptsOnLoad)
-				{
-					l.Thread = LuaImp.SpawnCoroutine(path);
-					l.Enabled = true;
-				}
-				else l.Enabled = false;
-                l.Paused = false;
-				changes = true;
+                    if (!Global.Config.DisableLuaScriptsOnLoad)
+                    {
+                        try
+                        {
+                            l.Thread = LuaImp.SpawnCoroutine(path);
+                            l.Enabled = true;
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                            {
+                                l.Enabled = false;
+                                AddText(e.Message);
+                            }
+                            else MessageBox.Show(e.ToString());
+                        }
+                    }
+                    else l.Enabled = false;
+                    l.Paused = false;
+                    changes = true;
 			}
 			else
 			{
@@ -189,8 +201,8 @@ namespace BizHawk.MultiClient
 					if (path == luaList[i].Path && luaList[i].Enabled == false && !Global.Config.DisableLuaScriptsOnLoad)
 					{
 						luaList[i].Toggle();
-						LuaListView.Refresh();
 						RunLuaScripts();
+                        LuaListView.Refresh();
 						changes = true;
 						break;
 					}
@@ -245,7 +257,19 @@ namespace BizHawk.MultiClient
                         item.Toggle();
                     }
 					if (item.Enabled && item.Thread == null)
-						item.Thread = LuaImp.SpawnCoroutine(item.Path);
+                        try
+                        {
+                            item.Thread = LuaImp.SpawnCoroutine(item.Path);
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+                            {
+                                item.Enabled = false;
+                                AddText(e.Message);
+                            }
+                            else MessageBox.Show(e.ToString());
+                        }
 					else if (!item.Enabled && item.Thread != null)
 						item.Stop();
 				}
