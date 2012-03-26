@@ -777,6 +777,8 @@ namespace BizHawk.MultiClient
 				}
 			}
 			Global.Config.RecentLuaSession.Add(path);
+            currentSessionFile = path;
+            changes = false;
 			return true;
 		}
 
@@ -929,7 +931,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSessionFile, "") == 0 || !changes)
+			if (string.Compare(currentSessionFile, "") == 0 || !changes || luaList.Count == 0)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}
@@ -990,6 +992,7 @@ namespace BizHawk.MultiClient
 				DisplayLuaList();
 				UpdateNumberOfScripts();
 				//ClearOutput();
+                currentSessionFile = file;
 				changes = false;
 			}
 		}
@@ -1157,7 +1160,6 @@ namespace BizHawk.MultiClient
             }
             LuaListView.Refresh();
             UpdateNumberOfScripts();
-            changes = true;
         }
 
         private void pauseResumeToolStripMenuItem_Click(object sender, EventArgs e)
