@@ -376,7 +376,6 @@ namespace BizHawk.MultiClient
                 LuaConsole1.ResumeScripts(false);
 #endif
 
-				Global.RenderPanel.ClearGUIText();
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
@@ -1676,7 +1675,7 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				//client input-related duties
-
+				Global.RenderPanel.ClearGUIText();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
