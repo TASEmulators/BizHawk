@@ -114,12 +114,12 @@ namespace BizHawk.MultiClient
 		
 		public Lua SpawnCoroutine(string File)
 		{
-            LuaConsole Luas = new LuaConsole();
-            var t = lua.NewThread();
-            LuaRegister(t);
-            var main = t.LoadFile(File);
-            t.Push(main); //push main function on to stack for subsequent resuming
-            return t;
+			LuaConsole Luas = new LuaConsole();
+			var t = lua.NewThread();
+			LuaRegister(t);
+			var main = t.LoadFile(File);
+			t.Push(main); //push main function on to stack for subsequent resuming
+			return t;
 		}
 
 		private int LuaInt(object lua_arg)
