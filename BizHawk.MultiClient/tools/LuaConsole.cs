@@ -360,11 +360,11 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSessionFile, "") == 0) return;
-
 			if (changes)
 			{
-				SaveSession(currentSessionFile);
+                if (string.Compare(currentSessionFile, "") == 0)
+                    SaveAs();
+                else SaveSession(currentSessionFile);
 				Changes(false);
 				OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
 			}
@@ -392,6 +392,7 @@ namespace BizHawk.MultiClient
 				luaList.Clear();
 				DisplayLuaList();
 				UpdateNumberOfScripts();
+                currentSessionFile = "";
 				Changes(false);
 			}
 		}
@@ -925,7 +926,7 @@ namespace BizHawk.MultiClient
 			{
 				SaveSession(file.FullName);
 				currentSessionFile = file.FullName;
-				AddText('\n' + Path.GetFileName(currentSessionFile) + " saved.");
+                OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
 				Global.Config.RecentLuaSession.Add(file.FullName);
 				Changes(false);
 			}
@@ -963,7 +964,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSessionFile, "") == 0 || !changes || luaList.Count == 0)
+			if (!changes || luaList.Count == 0)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}
@@ -1024,6 +1025,7 @@ namespace BizHawk.MultiClient
 				DisplayLuaList();
 				UpdateNumberOfScripts();
 				//ClearOutput();
+                LuaListView.Refresh();
 				currentSessionFile = file;
 				Changes(false);
 			}
