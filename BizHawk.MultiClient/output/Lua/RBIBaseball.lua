@@ -58,6 +58,12 @@ local topinningAddr = 0x0115
 --Outs display is wrong
 --Music on/off toggle
 
+console.output("RBI Baseball script");
+console.output("Written by adelikat");
+console.output("Description: Shows stats and information on screen and can even change a batter or pitcher's hand");
+console.output("\nHotkeys: ");
+console.output("Toggle Hand of player 2: \nH/J");
+console.output("Toggle Hand of player 1: \nK/L");
 while true do
 
 mainmemory.write_u8(0x0726, 0)	--Turn of inning music
@@ -65,7 +71,7 @@ mainmemory.write_u8(0x0727, 0)
 mainmemory.write_u8(0x0728, 0)
 mainmemory.write_u8(0x0729, 0)
 
-inningtb = memory.readbyte(topinningAddr);
+inningtb = mainmemory.read_u8(topinningAddr);
 i = input.get();
 
 --Switch P1 batter hands
@@ -106,60 +112,59 @@ if (i.J == true) then
 	end
 end
 	
-PitchingScreen = memory.readbyte(PitchingScreenAddr);
+PitchingScreen = mainmemory.read_u8(PitchingScreenAddr);
 
 -------------------------------------------------------
 if (PitchingScreen == 0x003E) then
-gui.text(186,24, "Toggle Hand\nH/J");
-gui.text(1,24, "Toggle Hand\nK/L");
 
-pitchtype = memory.readbyte(pitchtypeAddr);
+
+pitchtype = mainmemory.read_u8(pitchtypeAddr);
 
 --What the pitcher will pitch
 if (pitchtype == 0) then
-	gui.text(100,1,"Sinker!!");
+	gui.text(0,0,"Sinker!!", "bottomright");
 end
 if (pitchtype == 2) then
-	gui.text(100,1,"Fast Ball")
+	gui.text(0,0, "Fast Ball", "bottomright")
 end
 if (pitchtype == 1) then
-	gui.text(100,1,"Regular Pitch")
+	gui.text(0,0,"Regular Pitch", "bottomright")
 end
 
 --Top of Inning
 if (inningtb == 0) then
-	gui.text(186,1,"Health  " .. memory.readbyte(0x061D))
-	gui.text(186,128,"Drop    " .. memory.readbyte(0x0617) % 16)
-	gui.text(186,136,"CurveL  " .. memory.readbyte(0x061C) / 16)
-	gui.text(186,144,"CurveR  " .. memory.readbyte(0x061C) % 16)
-	gui.text(186,152,"Fast SP " .. memory.readbyte(0x061B))
-	gui.text(186,160,"Reg  SP " .. memory.readbyte(0x061A))
-	gui.text(186,168,"Sink SP " .. memory.readbyte(0x0619))
+	gui.text(0,0, "Health    " .. mainmemory.read_u8(0x061D), "topright")
+	gui.text(0,12,"Drop     " .. mainmemory.read_u8(0x0617) % 16, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x061C) / 16, "topright")
+	gui.text(0,36,"CurveR     " .. mainmemory.read_u8(0x061C) % 16, "topright")
+	gui.text(0,48,"Fast SP   " .. mainmemory.read_u8(0x061B), "topright")
+	gui.text(0,60,"Reg  SP   " .. mainmemory.read_u8(0x061A), "topright")
+	gui.text(0,72,"Sink SP   " .. mainmemory.read_u8(0x0619), "topright")
 	
-	P1currPower = memory.readbyte(P1currHitterPowerAddr) + (memory.readbyte(P1currHitterPowerAddr+1) * 256);
-	gui.text(1,176, "Power: " .. P1currPower);
-	P1currSpeed = memory.readbyte(P1currSpeedAddr);
-	gui.text(1,168, "Speed: " .. P1currSpeed);
-	P1currCt = memory.readbyte(P1currContactAddr);
-	gui.text(1,160, "Contact: " .. P1currCt);
+	P1currPower = mainmemory.read_u8(P1currHitterPowerAddr) + (mainmemory.read_u8(P1currHitterPowerAddr+1) * 256);
+	gui.text(0,108, "Power: " .. P1currPower, "topright");
+	P1currSpeed = mainmemory.read_u8(P1currSpeedAddr);
+	gui.text(0,120, "Speed: " .. P1currSpeed, "topright");
+	P1currCt = mainmemory.read_u8(P1currContactAddr);
+	gui.text(0,132, "Contact: " .. P1currCt, "topright");
 end
 
 --Bottom of Inning
 if (inningtb == 0x10) then
-	gui.text(1,1,"Health  " .. memory.readbyte(0x060D))
-	gui.text(1,128,"Drop    " .. memory.readbyte(0x0607) % 16)
-	gui.text(1,136,"CurveL  " .. memory.readbyte(0x060C) / 16)
-	gui.text(1,144,"CurveR  " .. memory.readbyte(0x060C) % 16)
-	gui.text(1,152,"Fast SP " .. memory.readbyte(0x060B))
-	gui.text(1,160,"Reg  SP " .. memory.readbyte(0x060A))
-	gui.text(1,168,"Sink SP " .. memory.readbyte(0x0609))
+	gui.text(0,0,"Health   " .. mainmemory.read_u8(0x060D), "topright")
+	gui.text(0,12,"Drop    " .. mainmemory.read_u8(0x0607) % 16, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x060C) / 16, "topright")
+	gui.text(0,36,"CurveR   " .. mainmemory.read_u8(0x060C) % 16, "topright")
+	gui.text(0,48,"Fast SP  " .. mainmemory.read_u8(0x060B), "topright")
+	gui.text(0,60,"Reg  SP  " .. mainmemory.read_u8(0x060A), "topright")
+	gui.text(0,72,"Sink SP  " .. mainmemory.read_u8(0x0609), "topright")
 
-	P2currPower = memory.readbyte(P2currHitterPowerAddr) + (memory.readbyte(P2currHitterPowerAddr+1) * 256);
-	gui.text(188,176, "Power: " .. P2currPower);
-	P2currSpeed = memory.readbyte(P2currSpeedAddr);
-	gui.text(188,168, "Speed: " .. P2currSpeed);
-	P2currCt = memory.readbyte(P2currContactAddr);
-	gui.text(188,160, "Contact: " .. P2currCt);
+	P2currPower = mainmemory.read_u8(P2currHitterPowerAddr) + (mainmemory.read_u8(P2currHitterPowerAddr+1) * 256);
+	gui.text(0,108, "Power: " .. P2currPower, "topright");
+	P2currSpeed = mainmemory.read_u8(P2currSpeedAddr);
+	gui.text(0,120, "Speed: " .. P2currSpeed, "topright");
+	P2currCt = mainmemory.read_u8(P2currContactAddr);
+	gui.text(0,132, "Contact: " .. P2currCt, "topright");
 end
 
 end
@@ -167,8 +172,8 @@ end
 
 if (PitchingScreen == 0x0036) then
 
-p1Outs = memory.readbyte(p1OutsAddr);
-gui.text(1,1, "Outs " .. p1Outs);
+p1Outs = mainmemory.read_u8(p1OutsAddr);
+gui.text(0,0, "Outs " .. p1Outs, "topright");
 
 end
 -------------------------------------------------------
