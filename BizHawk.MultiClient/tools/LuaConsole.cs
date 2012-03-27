@@ -759,34 +759,42 @@ namespace BizHawk.MultiClient
 				bool enabled = false;
 				string s = "";
 				string temp = "";
+                LuaFile l;
 
 				while ((s = sr.ReadLine()) != null)
 				{
 					//.luases 
 					if (s.Length < 3) continue;
+                    if (s.Substring(0, 3) == "---")
+                    {
+                        l = new LuaFile(true);
+                        l.IsSeparator = true;
+                    }
+                    else
+                    {
+                        temp = s.Substring(0, 1); //Get enabled flag
 
-					temp = s.Substring(0, 1); //Get enabled flag
+                        try
+                        {
+                            if (int.Parse(temp) == 0)
+                                enabled = false;
+                            else
+                                enabled = true;
+                        }
+                        catch
+                        {
+                            return false; //TODO: report an error?
+                        }
 
-					try
-					{
-						if (int.Parse(temp) == 0)
-							enabled = false;
-						else
-							enabled = true;
-					}
-					catch
-					{
-						return false; //TODO: report an error?
-					}
+                        s = s.Substring(2, s.Length - 2); //Get path
 
-					s = s.Substring(2, s.Length - 2); //Get path
+                        l = new LuaFile(s);
 
-					LuaFile l = new LuaFile(s);
-
-					if (!Global.Config.DisableLuaScriptsOnLoad)
-						l.Enabled = enabled;
-					else
-						l.Enabled = false;
+                        if (!Global.Config.DisableLuaScriptsOnLoad)
+                            l.Enabled = enabled;
+                        else
+                            l.Enabled = false;
+                    }
 					luaList.Add(l);
 				}
 			}
@@ -932,17 +940,21 @@ namespace BizHawk.MultiClient
 				string str = "";
 				for (int i = 0; i < luaList.Count; i++)
 				{
-					if (!luaList[i].IsSeparator)
-					{
-						if (luaList[i].Enabled)
-							str += "1 ";
-						else
-							str += "0 ";
+                    if (!luaList[i].IsSeparator)
+                    {
+                        if (luaList[i].Enabled)
+                            str += "1 ";
+                        else
+                            str += "0 ";
 
-						str += luaList[i].Path + "\n";
-					}
+                        str += luaList[i].Path + "\n";
+                    }
+                    else
+                    {
+                        str += "---\n";
+                    }
 				}
-				sw.WriteLine(str);
+                sw.Write(str);
 			}
 
 			Changes(false);
