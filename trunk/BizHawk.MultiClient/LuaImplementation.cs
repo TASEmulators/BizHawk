@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
 			}
 		}
-		
+
 		public Lua SpawnCoroutine(string File)
 		{
 			LuaConsole Luas = new LuaConsole();
@@ -142,10 +142,10 @@ namespace BizHawk.MultiClient
 		{
 			int n = lua_args.Length;
 			int trim = 0;
-			for (int i = n-1; i >= 0; --i)
+			for (int i = n - 1; i >= 0; --i)
 				if (lua_args[i] == null) ++trim;
-			object[] lua_result = new object[n-trim];
-			Array.Copy(lua_args, lua_result, n-trim);
+			object[] lua_result = new object[n - trim];
+			Array.Copy(lua_args, lua_result, n - trim);
 			return lua_result;
 		}
 
@@ -204,7 +204,7 @@ namespace BizHawk.MultiClient
 			//"register",
 			"setrenderplanes",
 		};
-		
+
 		public static string[] MemoryFunctions = new string[]
 		{
 			"usememorydomain",
@@ -351,25 +351,25 @@ namespace BizHawk.MultiClient
 		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
 		{
 			int a = 0;
-            if (anchor != null)
-            {
-                int x;
-                if (int.TryParse(anchor.ToString(), out x) == false)
-                {
-                    if (anchor.ToString().ToLower() == "topleft")
-                        a = 0;
-                    else if (anchor.ToString().ToLower() == "topright")
-                        a = 1;
-                    else if (anchor.ToString().ToLower() == "bottomleft")
-                        a = 2;
-                    else if (anchor.ToString().ToLower() == "bottomright")
-                        a = 3;
-                }
-                else
-                {
-                    a = LuaInt(anchor);
-                }
-            }
+			if (anchor != null)
+			{
+				int x;
+				if (int.TryParse(anchor.ToString(), out x) == false)
+				{
+					if (anchor.ToString().ToLower() == "topleft")
+						a = 0;
+					else if (anchor.ToString().ToLower() == "topright")
+						a = 1;
+					else if (anchor.ToString().ToLower() == "bottomleft")
+						a = 2;
+					else if (anchor.ToString().ToLower() == "bottomright")
+						a = 3;
+				}
+				else
+				{
+					a = LuaInt(anchor);
+				}
+			}
 			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false, a);
 		}
 
@@ -480,7 +480,7 @@ namespace BizHawk.MultiClient
 
 			return false;
 		}
-		
+
 		public string memory_getmemorydomainlist()
 		{
 			string list = "";
@@ -699,8 +699,8 @@ namespace BizHawk.MultiClient
 		private uint M_R_U_LE(int addr, int size)
 		{
 			uint v = 0;
-			for(int i = 0; i < size; ++i)
-				v |= M_R_U8(addr+i) << 8*i;
+			for (int i = 0; i < size; ++i)
+				v |= M_R_U8(addr + i) << 8 * i;
 			return v;
 		}
 
@@ -712,8 +712,8 @@ namespace BizHawk.MultiClient
 		private uint M_R_U_BE(int addr, int size)
 		{
 			uint v = 0;
-			for(int i = 0; i < size; ++i)
-				v |= M_R_U8(addr+i) << 8*(size-1-i);
+			for (int i = 0; i < size; ++i)
+				v |= M_R_U8(addr + i) << 8 * (size - 1 - i);
 			return v;
 		}
 
@@ -724,8 +724,8 @@ namespace BizHawk.MultiClient
 
 		private void M_W_U_LE(int addr, uint v, int size)
 		{
-			for(int i = 0; i < size; ++i)
-				M_W_U8(addr+i, (v>>(8*i)) & 0xFF);
+			for (int i = 0; i < size; ++i)
+				M_W_U8(addr + i, (v >> (8 * i)) & 0xFF);
 		}
 
 		private void M_W_S_BE(int addr, int v, int size)
@@ -735,8 +735,8 @@ namespace BizHawk.MultiClient
 
 		private void M_W_U_BE(int addr, uint v, int size)
 		{
-			for(int i = 0; i < size; ++i)
-				M_W_U8(addr+i, (v>>(8*(size-1-i))) & 0xFF);
+			for (int i = 0; i < size; ++i)
+				M_W_U8(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
 		}
 
 		private uint M_R_U8(int addr)
@@ -956,8 +956,8 @@ namespace BizHawk.MultiClient
 		private uint MM_R_U_LE(int addr, int size)
 		{
 			uint v = 0;
-			for(int i = 0; i < size; ++i)
-				v |= MM_R_U8(addr+i) << 8*i;
+			for (int i = 0; i < size; ++i)
+				v |= MM_R_U8(addr + i) << 8 * i;
 			return v;
 		}
 
@@ -969,8 +969,8 @@ namespace BizHawk.MultiClient
 		private uint MM_R_U_BE(int addr, int size)
 		{
 			uint v = 0;
-			for(int i = 0; i < size; ++i)
-				v |= MM_R_U8(addr+i) << 8*(size-1-i);
+			for (int i = 0; i < size; ++i)
+				v |= MM_R_U8(addr + i) << 8 * (size - 1 - i);
 			return v;
 		}
 
@@ -981,8 +981,8 @@ namespace BizHawk.MultiClient
 
 		private void MM_W_U_LE(int addr, uint v, int size)
 		{
-			for(int i = 0; i < size; ++i)
-				MM_W_U8(addr+i, (v>>(8*i)) & 0xFF);
+			for (int i = 0; i < size; ++i)
+				MM_W_U8(addr + i, (v >> (8 * i)) & 0xFF);
 		}
 
 		private void MM_W_S_BE(int addr, int v, int size)
@@ -992,8 +992,8 @@ namespace BizHawk.MultiClient
 
 		private void MM_W_U_BE(int addr, uint v, int size)
 		{
-			for(int i = 0; i < size; ++i)
-				MM_W_U8(addr+i, (v>>(8*(size-1-i))) & 0xFF);
+			for (int i = 0; i < size; ++i)
+				MM_W_U8(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
 		}
 
 		private uint MM_R_U8(int addr)
@@ -1009,8 +1009,8 @@ namespace BizHawk.MultiClient
 		private int U2S(uint u, int size)
 		{
 			int s = (int)u;
-			s <<= 8*(4-size);
-			s >>= 8*(4-size);
+			s <<= 8 * (4 - size);
+			s >>= 8 * (4 - size);
 			return s;
 		}
 
@@ -1033,7 +1033,7 @@ namespace BizHawk.MultiClient
 			if (x < 0 || x > 9)
 				return;
 
-			Global.MainForm.SaveState("QuickSave" + x.ToString()); 
+			Global.MainForm.SaveState("QuickSave" + x.ToString());
 		}
 
 		public void savestate_loadslot(object lua_input)
@@ -1085,7 +1085,7 @@ namespace BizHawk.MultiClient
 		{
 			return Global.MovieSession.Movie.Rerecords.ToString();
 		}
-		
+
 		public void movie_stop()
 		{
 			Global.MovieSession.Movie.StopMovie();
@@ -1126,18 +1126,19 @@ namespace BizHawk.MultiClient
 				Global.MainForm.SetReadOnly(false);
 		}
 
-        public LuaTable movie_getinput(object frame)
-        {
-            LuaTable input = lua.NewTable();
+		public LuaTable movie_getinput(object frame)
+		{
+			LuaTable input = lua.NewTable();
 
-            string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
+			string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
 
-            foreach (char c in s)
-                if (c.ToString() != "|" && c.ToString() != ".")
-                    input[c.ToString()] = true;
+			MovieControllerAdapter m = new MovieControllerAdapter();
+			m.SetControllersAsMnemonic(s);
+			foreach (string button in m.Type.BoolButtons)
+				input[button] = m[button];
 
-            return input;
-        }
+			return input;
+		}
 
 		//----------------------------------------------------
 		//Input library
@@ -1161,12 +1162,12 @@ namespace BizHawk.MultiClient
 			LuaTable buttons = lua.NewTable();
 			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
 				buttons[button] = Global.ControllerOutput[button];
-			
+
 			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
 			buttons["output"] = null;
-			
+
 			return buttons;
 		}
 
