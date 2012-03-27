@@ -35,7 +35,7 @@ namespace BizHawk.MultiClient
 				}
 				catch
 				{
-					Global.RenderPanel.AddMessage("error running function attached by lua function savestate.registersave");
+					Global.MainForm.LuaConsole1.WriteToOutputWindow("error running function attached by lua function savestate.registersave");
 				}
 			}
 		}
@@ -50,7 +50,7 @@ namespace BizHawk.MultiClient
 				}
 				catch
 				{
-					Global.RenderPanel.AddMessage("error running function attached by lua function savestate.registerload");
+					Global.MainForm.LuaConsole1.WriteToOutputWindow("error running function attached by lua function savestate.registerload");
 				}
 			}
 		}
