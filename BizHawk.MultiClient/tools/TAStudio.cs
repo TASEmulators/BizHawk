@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
 				string str = Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame);
-				if (Global.Config.TASUpdatePads)
+				if (Global.Config.TASUpdatePads == true && str != "")
 				{
 					switch (Global.Emulator.SystemId)
 					{
