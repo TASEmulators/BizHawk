@@ -319,31 +319,34 @@ namespace BizHawk.MultiClient
 			Device.Present(Present.DoNotWait);
 		}
 
-		private int GetX(int x, int anchor)
+		private int GetX(int x, int anchor, Font font, string message)
 		{
+			Rectangle rect = font.MeasureString(Sprite, message, new DrawTextFormat());
 			switch (anchor)
 			{
 				default:
-				case 0:
-				case 2:
+				case 0: //Top Left
+				case 2: //Bottom Left
 					return x;
-				case 1:
-				case 3:
-					return backingControl.Size.Width - Global.Emulator.VideoProvider.BufferWidth + x;
+				case 1: //Top Right
+				case 3: //Bottom Right
+					return backingControl.Width - x - rect.Width;
+					//return backingControl.Size.Width - Global.Emulator.VideoProvider.BufferWidth + x;
 			}
 		}
 
-		private int GetY(int y, int anchor)
+		private int GetY(int y, int anchor, Font font, string message)
 		{
+			Rectangle rect = font.MeasureString(Sprite, message, new DrawTextFormat());
 			switch (anchor)
 			{
 				default:
-				case 0:
-				case 1:
+				case 0: //Top Left
+				case 1: //Top Right
 					return y;
-				case 2:
-				case 3:
-					return backingControl.Size.Height - Global.Emulator.VideoProvider.BufferHeight + y;
+				case 2: //Bottom Left
+				case 3: //Bottom Right
+					return backingControl.Size.Height - y - rect.Height;
 			}
 		}
 
@@ -354,18 +357,20 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.DisplayFrameCounter)
 			{
-				int x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor);
-				int y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor);
-				MessageFont.DrawString(null, MakeFrameCounter(), x + 1,
+				string message = MakeFrameCounter();
+				int x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
+				int y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
+				MessageFont.DrawString(null, message, x + 1,
 					y + 1, Color.Black);
-				MessageFont.DrawString(null, MakeFrameCounter(), x,
+				MessageFont.DrawString(null, message, x,
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 			if (Global.Config.DisplayInput)
 			{
+				string input = MakeInputDisplay();
 				Color c;
-				int x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor);
-				int y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor);
+				int x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
+				int y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
 					c = Color.FromArgb(Global.Config.MovieInput);
@@ -373,7 +378,7 @@ namespace BizHawk.MultiClient
 				else
 					c = Color.FromArgb(Global.Config.MessagesColor);
 
-				string input = MakeInputDisplay();
+				
 				MessageFont.DrawString(null, input, x + 1, y + 1, Color.Black);
 				MessageFont.DrawString(null, input, x, y, c);
 			}
@@ -386,8 +391,8 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.DisplayFPS && FPS != null)
 			{
-				int x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor);
-				int y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor);
+				int x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
+				int y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
 				MessageFont.DrawString(null, FPS, x + 1,
 					y + 1, Color.Black);
 				MessageFont.DrawString(null, FPS, x,
@@ -396,10 +401,12 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisplayLagCounter)
 			{
-				int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor);
-				int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor);
+				string counter = MakeLagCounter();
+				
 				if (Global.Emulator.IsLagFrame)
 				{
+					int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
+					int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
 					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
 						Global.Config.DispLagy + 1, Color.Black);
 					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
@@ -407,20 +414,23 @@ namespace BizHawk.MultiClient
 				}
 				else
 				{
-					MessageFont.DrawString(null, MakeLagCounter(), x + 1,
+					int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
+					int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
+					MessageFont.DrawString(null, counter, x + 1,
 						y + 1, Color.Black);
-					MessageFont.DrawString(null, MakeLagCounter(), x,
+					MessageFont.DrawString(null, counter, x,
 						y, Color.FromArgb(Global.Config.MessagesColor));
 				}
 
 			}
 			if (Global.Config.DisplayRerecordCount)
 			{
-				int x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor);
-				int y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor);
-				MessageFont.DrawString(null, MakeRerecordCount(), x + 1,
+				string rerec = MakeRerecordCount();
+				int x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
+				int y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
+				MessageFont.DrawString(null, rerec, x + 1,
 					 y + 1, Color.Black);
-				MessageFont.DrawString(null, MakeRerecordCount(), x,
+				MessageFont.DrawString(null, rerec, x,
 					y, Color.FromArgb(Global.Config.MessagesColor));
 			}
 
@@ -505,8 +515,9 @@ namespace BizHawk.MultiClient
 			}
 			for (int x = 0; x < GUITextList.Count; x++)
 			{
-				int posx = GetX(GUITextList[x].X, GUITextList[x].Anchor);
-				int posy = GetY(GUITextList[x].Y, GUITextList[x].Anchor);
+
+				int posx = GetX(GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+				int posy = GetY(GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
 				MessageFont.DrawString(null, GUITextList[x].Message,
 					posx + 2, posy + 2, Color.Black);
