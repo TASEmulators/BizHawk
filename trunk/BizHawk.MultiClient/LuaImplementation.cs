@@ -22,6 +22,22 @@ namespace BizHawk.MultiClient
 		private int CurrentMemoryDomain = 0; //Main memory by default
 		public bool FrameAdvanceRequested;
 		Lua currThread;
+		LuaFunction savestate_registersavefunc;
+		
+		public void SavestateRegisterSave()
+		{
+			if (savestate_registersavefunc != null)
+			{
+				try
+				{
+					savestate_registersavefunc.Call();
+				}
+				catch
+				{
+					Global.RenderPanel.AddMessage("error running function attached by lua function savestate.registersave");
+				}
+			}
+		}
 
 		public LuaImplementation(LuaConsole passed)
 		{
@@ -285,6 +301,7 @@ namespace BizHawk.MultiClient
 			"loadslot",
 			"save",
 			"load",
+			"registersave",
 		};
 
 		public static string[] MovieFunctions = new string[] {
@@ -297,7 +314,7 @@ namespace BizHawk.MultiClient
 			"getreadonly",
 			"setreadonly",
 			//"rerecordcounting",
-            "getinput",
+			"getinput",
 		};
 
 		public static string[] InputFunctions = new string[] {
@@ -1071,6 +1088,11 @@ namespace BizHawk.MultiClient
 			{
 				Global.MainForm.LoadStateFile(lua_input.ToString(), Path.GetFileName(lua_input.ToString()));
 			}
+		}
+
+		public void savestate_registersave(LuaFunction luaf)
+		{
+			savestate_registersavefunc = luaf;
 		}
 
 		//----------------------------------------------------
