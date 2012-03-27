@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		public bool FrameAdvanceRequested;
 		Lua currThread;
 		LuaFunction savestate_registersavefunc;
+		LuaFunction savestate_registerloadfunc;
 		
 		public void SavestateRegisterSave()
 		{
@@ -35,6 +36,21 @@ namespace BizHawk.MultiClient
 				catch
 				{
 					Global.RenderPanel.AddMessage("error running function attached by lua function savestate.registersave");
+				}
+			}
+		}
+
+		public void SavestateRegisterLoad()
+		{
+			if (savestate_registerloadfunc != null)
+			{
+				try
+				{
+					savestate_registerloadfunc.Call();
+				}
+				catch
+				{
+					Global.RenderPanel.AddMessage("error running function attached by lua function savestate.registerload");
 				}
 			}
 		}
@@ -302,6 +318,7 @@ namespace BizHawk.MultiClient
 			"save",
 			"load",
 			"registersave",
+			"registerload",
 		};
 
 		public static string[] MovieFunctions = new string[] {
@@ -1093,6 +1110,11 @@ namespace BizHawk.MultiClient
 		public void savestate_registersave(LuaFunction luaf)
 		{
 			savestate_registersavefunc = luaf;
+		}
+
+		public void savestate_registerload(LuaFunction luaf)
+		{
+			savestate_registerloadfunc = luaf;
 		}
 
 		//----------------------------------------------------

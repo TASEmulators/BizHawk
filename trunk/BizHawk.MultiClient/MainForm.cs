@@ -1938,6 +1938,7 @@ namespace BizHawk.MultiClient
 
 		public void LoadStateFile(string path, string name)
 		{
+			LuaConsole1.LuaImp.SavestateRegisterLoad();
 			if (HandleMovieLoadState(path))
 			{
 				var reader = new StreamReader(path);
