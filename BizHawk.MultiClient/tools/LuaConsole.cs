@@ -609,7 +609,7 @@ namespace BizHawk.MultiClient
 			}
 			catch (Exception ex)
 			{
-				if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+				if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
 				{
 					AddText(ex.Message);
 				}
@@ -834,9 +834,15 @@ namespace BizHawk.MultiClient
 						s.FrameWaiting = result.WaitForFrame;
 					}
 				}
-				catch
+				catch (Exception ex)
 				{
-					MessageBox.Show("");
+                    if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
+                    {
+                        s.Enabled = false;
+                        AddText(ex.Message);
+                        UpdateNumberOfScripts();
+                    }
+                    else MessageBox.Show(ex.ToString());
 				}
 			}
 		}
