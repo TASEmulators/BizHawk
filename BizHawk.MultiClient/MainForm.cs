@@ -1892,6 +1892,7 @@ namespace BizHawk.MultiClient
 
 		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
 		{
+			LuaConsole1.LuaImp.SavestateRegisterSave();
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
 			if (Global.Config.SaveScreenshotWithStates)
