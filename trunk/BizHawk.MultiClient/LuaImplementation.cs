@@ -297,6 +297,7 @@ namespace BizHawk.MultiClient
 			"getreadonly",
 			"setreadonly",
 			//"rerecordcounting",
+            "getinput",
 		};
 
 		public static string[] InputFunctions = new string[] {
@@ -1124,6 +1125,19 @@ namespace BizHawk.MultiClient
 			else
 				Global.MainForm.SetReadOnly(false);
 		}
+
+        public LuaTable movie_getinput(object frame)
+        {
+            LuaTable input = lua.NewTable();
+
+            string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
+
+            foreach (char c in s)
+                if (c.ToString() != "|" && c.ToString() != ".")
+                    input[c.ToString()] = true;
+
+            return input;
+        }
 
 		//----------------------------------------------------
 		//Input library
