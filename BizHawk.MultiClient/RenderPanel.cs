@@ -331,7 +331,6 @@ namespace BizHawk.MultiClient
 				case 1: //Top Right
 				case 3: //Bottom Right
 					return backingControl.Width - x - rect.Width;
-					//return backingControl.Size.Width - Global.Emulator.VideoProvider.BufferWidth + x;
 			}
 		}
 
