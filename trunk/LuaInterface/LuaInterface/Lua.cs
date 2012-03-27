@@ -512,9 +512,15 @@ namespace LuaInterface
 
 
 
-				public void Resume(int narg)
+				public int Resume(int narg)
 				{
-					LuaDLL.lua_resume(luaState, narg);
+					int ret = LuaDLL.lua_resume(luaState, narg);
+					if (ret == 1 /*LUA_YIELD*/)
+						return 1; //yielded
+					if (ret == 0) //normal termination - what to do?
+						return 0;
+					//error. throw exception with error message (TBD - debug api to get call stack)
+					throw new LuaException(LuaDLL.lua_tostring(luaState, -1));
 				}
 				public void Yield(int nresults)
 				{
