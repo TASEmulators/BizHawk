@@ -350,8 +350,25 @@ namespace BizHawk.MultiClient
 		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
 		{
 			int a = 0;
-			if (anchor != null)
-				a = LuaInt(anchor);
+            if (anchor != null)
+            {
+                int x;
+                if (int.TryParse(anchor.ToString(), out x) == false)
+                {
+                    if (anchor.ToString().ToLower() == "topleft")
+                        a = 0;
+                    else if (anchor.ToString().ToLower() == "topright")
+                        a = 1;
+                    else if (anchor.ToString().ToLower() == "bottomleft")
+                        a = 2;
+                    else if (anchor.ToString().ToLower() == "bottomright")
+                        a = 3;
+                }
+                else
+                {
+                    a = LuaInt(anchor);
+                }
+            }
 			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false, a);
 		}
 
