@@ -836,13 +836,13 @@ namespace BizHawk.MultiClient
 				}
 				catch (Exception ex)
 				{
-                    if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
-                    {
-                        s.Enabled = false;
-                        AddText(ex.Message);
-                        UpdateNumberOfScripts();
-                    }
-                    else MessageBox.Show(ex.ToString());
+					if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
+					{
+						s.Enabled = false;
+						AddText(ex.ToString());
+						UpdateNumberOfScripts();
+					}
+					else MessageBox.Show(ex.ToString());
 				}
 			}
 		}

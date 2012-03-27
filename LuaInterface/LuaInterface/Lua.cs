@@ -75,7 +75,16 @@ namespace LuaInterface
         /// </summary>
         object luaLock = new object();
 
-		public Lua() 
+				internal Lua(bool newThread)
+				{
+					if (!newThread) init();
+				}
+
+				public Lua()
+				{
+					init();
+				}
+		void init()
 		{
 			luaState = LuaDLL.luaL_newstate();	// steffenj: Lua 5.1.1 API change (lua_open is gone)
 			//LuaDLL.luaopen_base(luaState);	// steffenj: luaopen_* no longer used
@@ -514,13 +523,15 @@ namespace LuaInterface
 
 				public int Resume(int narg)
 				{
+					int top = LuaDLL.lua_gettop(luaState);
 					int ret = LuaDLL.lua_resume(luaState, narg);
 					if (ret == 1 /*LUA_YIELD*/)
 						return 1; //yielded
 					if (ret == 0) //normal termination - what to do?
 						return 0;
 					//error. throw exception with error message (TBD - debug api to get call stack)
-					throw new LuaException(LuaDLL.lua_tostring(luaState, -1));
+					ThrowExceptionFromError(top);
+					return ret;
 				}
 				public void Yield(int nresults)
 				{
@@ -529,7 +540,8 @@ namespace LuaInterface
 
 				public Lua NewThread()
 				{
-					var lua = new Lua();
+					var lua = new Lua(true);
+					lua.translator = translator;
 					lua.luaState = LuaDLL.lua_newthread(luaState);
 					return lua;
 				}
