@@ -4,9 +4,9 @@
 local x = 0
 local y = 36
 
-local holds = 0
-local pressed = {}
-local presses = 0
+local holds
+local pressed
+local presses
 local states = {}
 
 function table.copy(t)
@@ -35,65 +35,44 @@ function load(slot)
 	holds = states[slot].holds
 	pressed = table.copy(states[slot].pressed)
 	presses = states[slot].presses
-	gui.text(x, y + 28, 'Data loaded from slot ' .. tostring(slot - 1))
+	console.output('Data loaded from slot ' .. tostring(slot - 1))
 	counts()
 end
 
-function parse()
+function record(buttons)
+	--Run through all of the pressed buttons.
+	for button, value in pairs(buttons) do
+		if value then
+			holds = holds + 1
+			--If in the previous frame the button was not pressed, increment.
+			if not pressed[button] then
+				presses = presses + 1
+			end
+		end
+		--Mark this button as pressed or not pressed.
+		pressed[button] = value
+	end
+end
+
+function frames()
 	--If there is an open, read-only TAS file, parse it for the initial data.
 	if not movie.isloaded() then
 		return false
 	end
-	local fh = io.open(movie.filename())
-	if not fh or movie.mode() == 'record' or movie.filename():match(
-	'.%.(%w+)$'
-	) ~= 'tas' then
-		return false
-	end
 	local frame = -1
-	local last = {}
-	local match = {
-		'Up', 'Down', 'Left', 'Right', 'Start', 'Select', 'B', 'A'
-	}
+	reset()
 	--Parse up until two frames before the current one.
 	while frame ~= emu.framecount() - 2 do
-		line = fh:read()
-		if not line then
-			break
-		end
-		--This is only a frame if it starts with a vertical bar.
-		if string.sub(line, 0, 1) == '|' then
-			frame = frame + 1
-			local player = -1
-			--Split up the sections by a vertical bar.
-			for section in string.gmatch(line, '[^|]+') do
-				player = player + 1
-				--Only deal with actual players.
-				if player ~= 0 then
-					local button = 0
-					--Run through all the buttons.
-					for text in string.gmatch(section, '.') do
-						button = button + 1
-						local name = 'P' .. player .. ' ' .. match[button]
-						local pressed = false
-						--Check if this button is pressed.
-						if text ~= ' ' and text ~= '.' then
-							holds = holds + 1
-							--If the button was not previously pressed,
-							--increment.
-							if not last[name] then
-								presses = presses + 1
-							end
-							pressed = true
-						end
-						----Mark this button as pressed or not pressed.
-						last[name] = pressed
-					end
-				end
-			end
-		end
+		record(movie.getinput(frame))
+		frame = frame + 1
 	end
 	return true
+end
+
+function reset()
+	holds = 0
+	pressed = {}
+	presses = 0
 end
 
 function save(slot)
@@ -106,14 +85,15 @@ function save(slot)
 	states[slot].holds = holds
 	states[slot].buttons = table.copy(buttons)
 	states[slot].presses = presses
-	gui.text(x, y + 28, 'Data saved to slot ' .. tostring(slot - 1))
+	console.output('Data saved to slot ' .. tostring(slot - 1))
 	counts()
 end
 
-if parse() then
-	gui.text(x, y + 28, 'Movie parsed for data')
+reset()
+if frames() then
+	console.output('Data loaded from frames')
 else
-	gui.text(x, y + 28, 'No movie parsed for data')
+	console.output('No data loaded from frames')
 end
 if savestate.registerload then
 	savestate.registerload(load)
@@ -127,19 +107,7 @@ while true do
 		pressed = {}
 		presses = 0
 	end
-	local buttons = joypad.get()
-	--Run through all of the pressed buttons.
-	for button, value in pairs(buttons) do
-		if value then
-			holds = holds + 1
-			--If in the previous frame the button was not pressed, increment.
-			if not pressed[button] then
-				presses = presses + 1
-			end
-		end
-		--Mark this button as pressed or not pressed.
-		pressed[button] = value
-	end
+	record(joypad.get())
 	counts()
 	emu.frameadvance()
 end
