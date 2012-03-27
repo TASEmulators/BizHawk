@@ -42,15 +42,15 @@
 			this.MovieCount = new System.Windows.Forms.Label();
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.IncludeSubDirectories = new System.Windows.Forms.CheckBox();
+			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
+			this.Scan = new System.Windows.Forms.Button();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.MatchGameNameCheckBox = new System.Windows.Forms.CheckBox();
 			this.MovieView = new BizHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ShowStateFiles = new System.Windows.Forms.CheckBox();
-			this.Scan = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.MatchGameNameCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -92,9 +92,9 @@
 			// 
 			// DetailsView
 			// 
-			this.DetailsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.DetailsView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.DetailsView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader6});
@@ -120,8 +120,8 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.button2);
 			this.groupBox1.Controls.Add(this.button1);
 			this.groupBox1.Controls.Add(this.DetailsView);
@@ -190,12 +190,48 @@
 			this.IncludeSubDirectories.UseVisualStyleBackColor = true;
 			this.IncludeSubDirectories.CheckedChanged += new System.EventHandler(this.IncludeSubDirectories_CheckedChanged);
 			// 
+			// ShowStateFiles
+			// 
+			this.ShowStateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ShowStateFiles.AutoSize = true;
+			this.ShowStateFiles.Location = new System.Drawing.Point(123, 358);
+			this.ShowStateFiles.Name = "ShowStateFiles";
+			this.ShowStateFiles.Size = new System.Drawing.Size(128, 17);
+			this.ShowStateFiles.TabIndex = 40;
+			this.ShowStateFiles.Text = "Show valid .state files";
+			this.ShowStateFiles.UseVisualStyleBackColor = true;
+			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
+			// 
+			// Scan
+			// 
+			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.Scan.Image = global::BizHawk.MultiClient.Properties.Resources.Scan;
+			this.Scan.Location = new System.Drawing.Point(49, 337);
+			this.Scan.Name = "Scan";
+			this.Scan.Size = new System.Drawing.Size(27, 23);
+			this.Scan.TabIndex = 30;
+			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
+			this.Scan.UseVisualStyleBackColor = true;
+			this.Scan.Click += new System.EventHandler(this.Scan_Click);
+			// 
+			// MatchGameNameCheckBox
+			// 
+			this.MatchGameNameCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.MatchGameNameCheckBox.AutoSize = true;
+			this.MatchGameNameCheckBox.Location = new System.Drawing.Point(260, 337);
+			this.MatchGameNameCheckBox.Name = "MatchGameNameCheckBox";
+			this.MatchGameNameCheckBox.Size = new System.Drawing.Size(150, 17);
+			this.MatchGameNameCheckBox.TabIndex = 56;
+			this.MatchGameNameCheckBox.Text = "Match current game name";
+			this.MatchGameNameCheckBox.UseVisualStyleBackColor = true;
+			this.MatchGameNameCheckBox.CheckedChanged += new System.EventHandler(this.MatchGameNameCheckBox_CheckedChanged);
+			// 
 			// MovieView
 			// 
 			this.MovieView.AllowDrop = true;
-			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
@@ -239,41 +275,6 @@
 			this.columnHeader4.Text = "Length";
 			this.columnHeader4.Width = 64;
 			// 
-			// ShowStateFiles
-			// 
-			this.ShowStateFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ShowStateFiles.AutoSize = true;
-			this.ShowStateFiles.Location = new System.Drawing.Point(123, 358);
-			this.ShowStateFiles.Name = "ShowStateFiles";
-			this.ShowStateFiles.Size = new System.Drawing.Size(128, 17);
-			this.ShowStateFiles.TabIndex = 40;
-			this.ShowStateFiles.Text = "Show valid .state files";
-			this.ShowStateFiles.UseVisualStyleBackColor = true;
-			this.ShowStateFiles.CheckedChanged += new System.EventHandler(this.ShowStateFiles_CheckedChanged);
-			// 
-			// Scan
-			// 
-			this.Scan.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.Scan.Image = global::BizHawk.MultiClient.Properties.Resources.Scan;
-			this.Scan.Location = new System.Drawing.Point(49, 337);
-			this.Scan.Name = "Scan";
-			this.Scan.Size = new System.Drawing.Size(27, 23);
-			this.Scan.TabIndex = 30;
-			this.toolTip1.SetToolTip(this.Scan, "Rescan Movie folder for movie files");
-			this.Scan.UseVisualStyleBackColor = true;
-			this.Scan.Click += new System.EventHandler(this.Scan_Click);
-			// 
-			// MatchGameNameCheckBox
-			// 
-			this.MatchGameNameCheckBox.AutoSize = true;
-			this.MatchGameNameCheckBox.Location = new System.Drawing.Point(260, 337);
-			this.MatchGameNameCheckBox.Name = "MatchGameNameCheckBox";
-			this.MatchGameNameCheckBox.Size = new System.Drawing.Size(150, 17);
-			this.MatchGameNameCheckBox.TabIndex = 56;
-			this.MatchGameNameCheckBox.Text = "Match current game name";
-			this.MatchGameNameCheckBox.UseVisualStyleBackColor = true;
-			this.MatchGameNameCheckBox.CheckedChanged += new System.EventHandler(this.MatchGameNameCheckBox_CheckedChanged);
-			// 
 			// PlayMovie
 			// 
 			this.AcceptButton = this.OK;
@@ -295,7 +296,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(531, 208);
+			this.MinimumSize = new System.Drawing.Size(547, 228);
 			this.Name = "PlayMovie";
 			this.Text = "Play Movie";
 			this.Load += new System.EventHandler(this.PlayMovie_Load);
