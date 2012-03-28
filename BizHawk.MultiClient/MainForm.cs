@@ -840,6 +840,7 @@ namespace BizHawk.MultiClient
 				case "NES": str += "NES"; break;
 				case "GB": str += "Game Boy"; break;
 			}
+			str += "Hawk";
 			if (INTERIM) str += " (interim)";
 			return str;
 		}
