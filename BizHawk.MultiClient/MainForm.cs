@@ -1888,11 +1888,11 @@ namespace BizHawk.MultiClient
 
 			var writer = new StreamWriter(path);
 			SaveStateFile(writer, name, false);
+			LuaConsole1.LuaImp.SavestateRegisterSave(name);
 		}
 
 		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
 		{
-			LuaConsole1.LuaImp.SavestateRegisterSave();
 			Global.Emulator.SaveStateText(writer);
 			HandleMovieSaveState(writer);
 			if (Global.Config.SaveScreenshotWithStates)
@@ -1938,7 +1938,6 @@ namespace BizHawk.MultiClient
 
 		public void LoadStateFile(string path, string name)
 		{
-			LuaConsole1.LuaImp.SavestateRegisterLoad();
 			if (HandleMovieLoadState(path))
 			{
 				var reader = new StreamReader(path);
@@ -1970,6 +1969,7 @@ namespace BizHawk.MultiClient
 				return;
 
 			LoadStateFile(path, name);
+			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 		}
 
 		private void LoadStateAs()

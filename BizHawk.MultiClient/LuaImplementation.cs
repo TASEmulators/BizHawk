@@ -25,13 +25,13 @@ namespace BizHawk.MultiClient
 		LuaFunction savestate_registersavefunc;
 		LuaFunction savestate_registerloadfunc;
 		
-		public void SavestateRegisterSave()
+		public void SavestateRegisterSave(string name)
 		{
 			if (savestate_registersavefunc != null)
 			{
 				try
 				{
-					savestate_registersavefunc.Call();
+					savestate_registersavefunc.Call(name);
 				}
 				catch (SystemException e)
 				{
@@ -41,7 +41,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void SavestateRegisterLoad()
+		public void SavestateRegisterLoad(string name)
 		{
 			if (savestate_registerloadfunc != null)
 			{
