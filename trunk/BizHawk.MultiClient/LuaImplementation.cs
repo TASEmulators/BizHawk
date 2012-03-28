@@ -1177,12 +1177,11 @@ namespace BizHawk.MultiClient
 			LuaTable input = lua.NewTable();
 
 			string s = Global.MovieSession.Movie.GetInputFrame(LuaInt(frame));
-
 			MovieControllerAdapter m = new MovieControllerAdapter();
 			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 			m.SetControllersAsMnemonic(s);
-			foreach (string button in m.Type.BoolButtons)
-				input[button] = m[button];
+            foreach (string button in m.Type.BoolButtons)
+                input[button] = m[button];
 
 			return input;
 		}
@@ -1204,11 +1203,15 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 
 		//Currently sends all controllers, needs to control which ones it sends
-		public LuaTable joypad_get()
+		public LuaTable joypad_get(object controller)
 		{
 			LuaTable buttons = lua.NewTable();
-			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-				buttons[button] = Global.ControllerOutput[button];
+            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+                if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                    buttons[button] = Global.ControllerOutput[button];
+
+            foreach (var asd in Global.ControllerOutput.Source.Type.FloatControls)
+                MessageBox.Show(asd);
 
 			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;

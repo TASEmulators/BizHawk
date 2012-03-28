@@ -72,7 +72,8 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-			ofd.Filter = "Movie files (*.tas)|*.TAS;*.ZIP;*.7z|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
+            //ofd.Filter = "Generic Movie Files (*.tas)|*.tas;*.zip;*.7z|" + Global.MainForm.GetMovieExtName() + "|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
+            ofd.Filter = "Generic Movie Files (*.tas)|*.tas;*.zip;*.7z|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
 
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();

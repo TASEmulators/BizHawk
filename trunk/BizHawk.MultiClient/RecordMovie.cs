@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 					var writer = new StreamWriter(temppath);
 					Global.Emulator.SaveStateText(writer);
 					writer.Close();
-
+                    
 					var file = new FileInfo(temppath);
 					using (StreamReader sr = file.OpenText())
 					{
@@ -110,8 +110,9 @@ namespace BizHawk.MultiClient
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = ".tas";
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			sfd.Filter = "Movie files (*.tas)|*.tas";
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + sfd.DefaultExt;
+			//sfd.Filter = "Generic Movie Files (*.tas)|*.tas|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+            sfd.Filter = "Generic Movie Files (*.tas)|*.tas|All Files (*.*)|*.*";
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
