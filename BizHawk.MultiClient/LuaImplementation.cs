@@ -1218,9 +1218,6 @@ namespace BizHawk.MultiClient
                 if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
                     buttons[button] = Global.ControllerOutput[button];
 
-            foreach (var asd in Global.ControllerOutput.Source.Type.FloatControls)
-                MessageBox.Show(asd);
-
 			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
