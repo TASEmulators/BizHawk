@@ -16,7 +16,7 @@ namespace BizHawk.MultiClient
 	{
 		Lua lua = new Lua();
 		LuaConsole Caller;
-		public string LuaLibraryList = "";
+		public List<string> LuaLibraryList = new List<string>();
 		public EventWaitHandle LuaWait;
 		public bool isRunning;
 		private int CurrentMemoryDomain = 0; //Main memory by default
@@ -60,7 +60,7 @@ namespace BizHawk.MultiClient
 		public LuaImplementation(LuaConsole passed)
 		{
 			LuaWait = new AutoResetEvent(false);
-			LuaLibraryList = "";
+			LuaLibraryList.Clear();
 			Caller = passed.get();
 			LuaRegister(lua);
 		}
@@ -79,71 +79,73 @@ namespace BizHawk.MultiClient
 			for (int i = 0; i < ConsoleFunctions.Length; i++)
 			{
 				lua.RegisterFunction("console." + ConsoleFunctions[i], this, this.GetType().GetMethod("console_" + ConsoleFunctions[i]));
-				LuaLibraryList += "console." + ConsoleFunctions[i] + "\n";
+				LuaLibraryList.Add("console." + ConsoleFunctions[i]);
 			}
 
 			lua.NewTable("gui");
 			for (int i = 0; i < GuiFunctions.Length; i++)
 			{
 				lua.RegisterFunction("gui." + GuiFunctions[i], this, this.GetType().GetMethod("gui_" + GuiFunctions[i]));
-				LuaLibraryList += "gui." + GuiFunctions[i] + "\n";
+				LuaLibraryList.Add("gui." + GuiFunctions[i]);
 			}
 
 			lua.NewTable("emu");
 			for (int i = 0; i < EmuFunctions.Length; i++)
 			{
 				lua.RegisterFunction("emu." + EmuFunctions[i], this, this.GetType().GetMethod("emu_" + EmuFunctions[i]));
-				LuaLibraryList += "emu." + EmuFunctions[i] + "\n";
+				LuaLibraryList.Add("emu." + EmuFunctions[i]);
 			}
 
 			lua.NewTable("memory");
 			for (int i = 0; i < MemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("memory." + MemoryFunctions[i], this, this.GetType().GetMethod("memory_" + MemoryFunctions[i]));
-				LuaLibraryList += "memory." + MemoryFunctions[i] + "\n";
+				LuaLibraryList.Add("memory." + MemoryFunctions[i]);
 			}
 
 			lua.NewTable("mainmemory");
 			for (int i = 0; i < MainMemoryFunctions.Length; i++)
 			{
 				lua.RegisterFunction("mainmemory." + MainMemoryFunctions[i], this, this.GetType().GetMethod("mainmemory_" + MainMemoryFunctions[i]));
-				LuaLibraryList += "mainmemory." + MainMemoryFunctions[i] + "\n";
+				LuaLibraryList.Add("mainmemory." + MainMemoryFunctions[i]);
 			}
 
 			lua.NewTable("savestate");
 			for (int i = 0; i < SaveStateFunctions.Length; i++)
 			{
 				lua.RegisterFunction("savestate." + SaveStateFunctions[i], this, this.GetType().GetMethod("savestate_" + SaveStateFunctions[i]));
-				LuaLibraryList += "savestate." + SaveStateFunctions[i] + "\n";
+				LuaLibraryList.Add("savestate." + SaveStateFunctions[i]);
 			}
 
 			lua.NewTable("movie");
 			for (int i = 0; i < MovieFunctions.Length; i++)
 			{
 				lua.RegisterFunction("movie." + MovieFunctions[i], this, this.GetType().GetMethod("movie_" + MovieFunctions[i]));
-				LuaLibraryList += "movie." + MovieFunctions[i] + "\n";
+				LuaLibraryList.Add("movie." + MovieFunctions[i]);
 			}
 
 			lua.NewTable("input");
 			for (int i = 0; i < InputFunctions.Length; i++)
 			{
 				lua.RegisterFunction("input." + InputFunctions[i], this, this.GetType().GetMethod("input_" + InputFunctions[i]));
-				LuaLibraryList += "input." + InputFunctions[i] + "\n";
+				LuaLibraryList.Add("input." + InputFunctions[i]);
 			}
 
 			lua.NewTable("joypad");
 			for (int i = 0; i < JoypadFunctions.Length; i++)
 			{
 				lua.RegisterFunction("joypad." + JoypadFunctions[i], this, this.GetType().GetMethod("joypad_" + JoypadFunctions[i]));
-				LuaLibraryList += "joypad." + JoypadFunctions[i] + "\n";
+				LuaLibraryList.Add("joypad." + JoypadFunctions[i]);
 			}
 
 			lua.NewTable("client");
 			for (int i = 0; i < MultiClientFunctions.Length; i++)
 			{
 				lua.RegisterFunction("client." + MultiClientFunctions[i], this, this.GetType().GetMethod("client_" + MultiClientFunctions[i]));
-				LuaLibraryList += "client." + MultiClientFunctions[i] + "\n";
+				LuaLibraryList.Add("client." + MultiClientFunctions[i]);
 			}
+
+			LuaLibraryList.Sort();
 		}
 
 		public Lua SpawnCoroutine(string File)
@@ -378,7 +380,13 @@ namespace BizHawk.MultiClient
 
 		public string console_getluafunctionslist()
 		{
-			return LuaLibraryList;
+			string list = "";
+			foreach (string l in LuaLibraryList)
+			{
+				list += l + "\n";
+			}
+
+			return list;
 		}
 
 		//----------------------------------------------------
