@@ -47,7 +47,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					savestate_registerloadfunc.Call();
+					savestate_registerloadfunc.Call(name);
 				}
 				catch (SystemException e)
 				{
