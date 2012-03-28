@@ -477,6 +477,8 @@ namespace BizHawk.MultiClient
 		private void InitControls()
 		{
 			var controls = new Controller(ClientControlsDef);
+			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
+			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
 			controls.BindMulti("Rewind", Global.Config.RewindBinding);
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
@@ -1411,6 +1413,12 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
+				case "IncreaseWindowSize":
+					IncreaseWindowSize();
+					break;
+				case "DecreaseWindowSize":
+					DecreaseWIndowSize();
+					break;
 				case "Record AVI":
 					RecordAVI();
 					break;
@@ -2865,6 +2873,56 @@ namespace BizHawk.MultiClient
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+		}
+
+		private void IncreaseWindowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 2:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 5;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 10;
+					break;
+				case 10:
+					return;
+			}
+			FrameBufferResized();
+		}
+
+		private void DecreaseWIndowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					return;
+				case 2:
+					Global.Config.TargetZoomFactor = 1;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 10:
+					Global.Config.TargetZoomFactor = 5;
+					return;
+			}
+			FrameBufferResized();
 		}
 	}
 }
