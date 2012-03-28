@@ -4,22 +4,32 @@
 local x = 0
 local y = 36
 
-local holds
-local pressed
-local presses
+local data = {}
+local registered = false
+local state = {}
 local states = {}
 
-function table.copy(t)
-	local t2 = {}
-	for k, v in pairs(t) do
-		t2[k] = v
+function deepcopy(object)
+	local lookup_table = {}
+	local function _copy(object)
+		if type(object) ~= "table" then
+			return object
+		elseif lookup_table[object] then
+			return lookup_table[object]
+		end
+		local new_table = {}
+		lookup_table[object] = new_table
+		for index, value in pairs(object) do
+			new_table[_copy(index)] = _copy(value)
+		end
+		return setmetatable(new_table, getmetatable(object))
 	end
-	return t2
+	return _copy(object)
 end
 
-function counts()
-	gui.text(x, y, 'Holds: ' .. holds)
-	gui.text(x, y + 14, 'Presses: ' .. presses)
+function counts(obj)
+	gui.text(x, y, 'Holds: ' .. obj.holds)
+	gui.text(x, y + 14, 'Presses: ' .. obj.presses)
 end
 
 function frames()
@@ -34,47 +44,52 @@ function frames()
 		record(movie.getinput(frame))
 	end
 	console.output('Data loaded from frames')
-	counts()
+	counts(data)
 end
 
 function load(name)
+	registered = true
+	state = {}
 	if not states[name] then
 		frames()
 		save(name)
 		return
 	end
-	holds = states[name].holds
-	pressed = table.copy(states[name].pressed)
-	presses = states[name].presses
+	data = deepcopy(states[name])
 	console.output('Data loaded from ' .. name)
-	counts()
+	--Show the data from before the state's frame.
+	local previous = states[name].previous
+	counts(previous)
 end
 
 function record(buttons)
 	for button, value in pairs(buttons) do
 		if value then
-			holds = holds + 1
-			if not pressed[button] then
-				presses = presses + 1
+			data.holds = data.holds + 1
+			if not data.pressed[button] then
+				data.presses = data.presses + 1
 			end
 		end
-		pressed[button] = value
+		data.pressed[button] = value
 	end
 end
 
 function reset()
-	holds = 0
-	pressed = {}
-	presses = 0
+	data.holds = 0
+	data.pressed = {}
+	data.presses = 0
 end
 
 function save(name)
-	states[name] = {}
-	states[name].holds = holds
-	states[name].pressed = table.copy(pressed)
-	states[name].presses = presses
+	registered = true
+	if next(state) == nil then
+		data.previous = deepcopy(data)
+		--Include the state's frame in the data.
+		record(joypad.get())
+		state = deepcopy(data)
+	end
+	states[name] = deepcopy(state)
 	console.output('Data saved to ' .. name)
-	counts()
 end
 
 reset()
@@ -90,7 +105,11 @@ while true do
 	if emu.framecount() == 0 then
 		reset()
 	end
-	record(joypad.get())
-	counts()
+	if not registered then
+		record(joypad.get())
+	end
+	registered = false
+	state = {}
+	counts(data)
 	emu.frameadvance()
 end
