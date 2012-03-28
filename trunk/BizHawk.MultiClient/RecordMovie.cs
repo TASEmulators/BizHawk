@@ -111,8 +111,8 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = ".tas";
 			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + sfd.DefaultExt;
-			//sfd.Filter = "Generic Movie Files (*.tas)|*.tas|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
-            sfd.Filter = "Generic Movie Files (*.tas)|*.tas|All Files (*.*)|*.*";
+			sfd.Filter = "Generic Movie Files (*.tas)|*.tas|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+            //sfd.Filter = "Generic Movie Files (*.tas)|*.tas|All Files (*.*)|*.*";
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
