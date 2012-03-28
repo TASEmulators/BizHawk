@@ -459,6 +459,8 @@ namespace BizHawk.MultiClient
 		public string AVIRecordBinding = "";
 		public string AVIStopBinding = "";
 		public string ToggleMenuBinding = "";
+		public string IncreaseWindowSize = "Alt+UpArrow";
+		public string DecreaseWindowSize = "Alt+DownArrow";
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;

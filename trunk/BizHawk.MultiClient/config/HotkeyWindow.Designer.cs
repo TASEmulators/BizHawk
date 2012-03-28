@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HotkeyWindow));
 			this.hotkeyTabs = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.label74 = new System.Windows.Forms.Label();
+			this.IDW_ToggleMenu = new BizHawk.MultiClient.InputWidget();
 			this.label73 = new System.Windows.Forms.Label();
 			this.label72 = new System.Windows.Forms.Label();
 			this.IDW_StopAVI = new BizHawk.MultiClient.InputWidget();
@@ -183,8 +185,10 @@
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.label38 = new System.Windows.Forms.Label();
 			this.AutoTabCheckBox = new System.Windows.Forms.CheckBox();
-			this.IDW_ToggleMenu = new BizHawk.MultiClient.InputWidget();
-			this.label74 = new System.Windows.Forms.Label();
+			this.IDW_IncreaseWindowSize = new BizHawk.MultiClient.InputWidget();
+			this.IDW_DecreaseWindowSize = new BizHawk.MultiClient.InputWidget();
+			this.label75 = new System.Windows.Forms.Label();
+			this.label76 = new System.Windows.Forms.Label();
 			this.hotkeyTabs.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -209,6 +213,10 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.label76);
+			this.tabPage1.Controls.Add(this.label75);
+			this.tabPage1.Controls.Add(this.IDW_DecreaseWindowSize);
+			this.tabPage1.Controls.Add(this.IDW_IncreaseWindowSize);
 			this.tabPage1.Controls.Add(this.label74);
 			this.tabPage1.Controls.Add(this.IDW_ToggleMenu);
 			this.tabPage1.Controls.Add(this.label73);
@@ -260,6 +268,24 @@
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
+			// 
+			// label74
+			// 
+			this.label74.AutoSize = true;
+			this.label74.Location = new System.Drawing.Point(408, 112);
+			this.label74.Name = "label74";
+			this.label74.Size = new System.Drawing.Size(70, 13);
+			this.label74.TabIndex = 99;
+			this.label74.Text = "Toggle Menu";
+			// 
+			// IDW_ToggleMenu
+			// 
+			this.IDW_ToggleMenu.AcceptsTab = true;
+			this.IDW_ToggleMenu.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_ToggleMenu.Location = new System.Drawing.Point(494, 106);
+			this.IDW_ToggleMenu.Name = "IDW_ToggleMenu";
+			this.IDW_ToggleMenu.Size = new System.Drawing.Size(100, 20);
+			this.IDW_ToggleMenu.TabIndex = 98;
 			// 
 			// label73
 			// 
@@ -1670,23 +1696,41 @@
 			this.AutoTabCheckBox.UseVisualStyleBackColor = true;
 			this.AutoTabCheckBox.CheckedChanged += new System.EventHandler(this.AutoTabCheckBox_CheckedChanged);
 			// 
-			// IDW_ToggleMenu
+			// IDW_IncreaseWindowSize
 			// 
-			this.IDW_ToggleMenu.AcceptsTab = true;
-			this.IDW_ToggleMenu.BackColor = System.Drawing.SystemColors.Window;
-			this.IDW_ToggleMenu.Location = new System.Drawing.Point(494, 106);
-			this.IDW_ToggleMenu.Name = "IDW_ToggleMenu";
-			this.IDW_ToggleMenu.Size = new System.Drawing.Size(100, 20);
-			this.IDW_ToggleMenu.TabIndex = 98;
+			this.IDW_IncreaseWindowSize.AcceptsTab = true;
+			this.IDW_IncreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_IncreaseWindowSize.Location = new System.Drawing.Point(494, 134);
+			this.IDW_IncreaseWindowSize.Name = "IDW_IncreaseWindowSize";
+			this.IDW_IncreaseWindowSize.Size = new System.Drawing.Size(100, 20);
+			this.IDW_IncreaseWindowSize.TabIndex = 100;
 			// 
-			// label74
+			// IDW_DecreaseWindowSize
 			// 
-			this.label74.AutoSize = true;
-			this.label74.Location = new System.Drawing.Point(408, 112);
-			this.label74.Name = "label74";
-			this.label74.Size = new System.Drawing.Size(70, 13);
-			this.label74.TabIndex = 99;
-			this.label74.Text = "Toggle Menu";
+			this.IDW_DecreaseWindowSize.AcceptsTab = true;
+			this.IDW_DecreaseWindowSize.BackColor = System.Drawing.SystemColors.Window;
+			this.IDW_DecreaseWindowSize.Location = new System.Drawing.Point(494, 158);
+			this.IDW_DecreaseWindowSize.Name = "IDW_DecreaseWindowSize";
+			this.IDW_DecreaseWindowSize.Size = new System.Drawing.Size(100, 20);
+			this.IDW_DecreaseWindowSize.TabIndex = 101;
+			// 
+			// label75
+			// 
+			this.label75.AutoSize = true;
+			this.label75.Location = new System.Drawing.Point(407, 134);
+			this.label75.Name = "label75";
+			this.label75.Size = new System.Drawing.Size(79, 13);
+			this.label75.TabIndex = 102;
+			this.label75.Text = "Larger Window";
+			// 
+			// label76
+			// 
+			this.label76.AutoSize = true;
+			this.label76.Location = new System.Drawing.Point(408, 157);
+			this.label76.Name = "label76";
+			this.label76.Size = new System.Drawing.Size(83, 13);
+			this.label76.TabIndex = 103;
+			this.label76.Text = "Smaller Window";
 			// 
 			// HotkeyWindow
 			// 
@@ -1879,5 +1923,9 @@
 		private InputWidget IDW_RecordAVI;
 		private System.Windows.Forms.Label label74;
 		private InputWidget IDW_ToggleMenu;
+		private System.Windows.Forms.Label label76;
+		private System.Windows.Forms.Label label75;
+		private InputWidget IDW_DecreaseWindowSize;
+		private InputWidget IDW_IncreaseWindowSize;
     }
 }

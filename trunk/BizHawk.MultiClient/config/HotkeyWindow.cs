@@ -92,6 +92,8 @@ namespace BizHawk.MultiClient.tools
 			IDW_RecordAVI.SetBindings(Global.Config.AVIRecordBinding);
 			IDW_StopAVI.SetBindings(Global.Config.AVIStopBinding);
 			IDW_ToggleMenu.SetBindings(Global.Config.ToggleMenuBinding);
+			IDW_IncreaseWindowSize.SetBindings(Global.Config.IncreaseWindowSize);
+			IDW_DecreaseWindowSize.SetBindings(Global.Config.DecreaseWindowSize);
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
@@ -191,6 +193,9 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.AVIRecordBinding = IDW_RecordAVI.Text;
 			Global.Config.AVIStopBinding = IDW_StopAVI.Text;
 			Global.Config.ToggleMenuBinding = IDW_ToggleMenu.Text;
+
+			Global.Config.IncreaseWindowSize = IDW_IncreaseWindowSize.Text;
+			Global.Config.DecreaseWindowSize = IDW_DecreaseWindowSize.Text;
 
 			this.DialogResult = DialogResult.OK;
 			this.Close();
