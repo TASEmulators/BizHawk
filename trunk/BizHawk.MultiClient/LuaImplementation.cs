@@ -1246,11 +1246,16 @@ namespace BizHawk.MultiClient
 			return buttons;
 		}
 
-		public void joypad_set(LuaTable buttons)
+        public void joypad_set(LuaTable buttons, object slot = null)
 		{
             foreach (var button in buttons.Keys)
-                if(Convert.ToBoolean(buttons[button]) == true)
-                    Global.ClickyVirtualPadController.Click(button.ToString());
+            {
+                if (Convert.ToBoolean(buttons[button]) == true)
+                    if (slot == null)
+                        Global.ClickyVirtualPadController.Click(button.ToString());
+                    else
+                        Global.ClickyVirtualPadController.Click("P" + slot.ToString() + " " + button.ToString());
+            }
 		}
 
 		//----------------------------------------------------
