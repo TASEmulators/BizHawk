@@ -310,8 +310,6 @@ namespace BizHawk.MultiClient
 			"write_u16_be",
 			"write_u24_be",
 			"write_u32_be",
-			"readbyte",
-			"writebyte",
 			//"registerwrite",
 			//"registerread",
 		};
