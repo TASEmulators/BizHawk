@@ -115,35 +115,21 @@ namespace BizHawk.MultiClient
 #else
 	public static class KeyInput
 	{
-		//Note: Code using KeyboardState is the "correct" implementation.
-		//However, Input.Keyboard is broken on Mac OS X 10.7 in the current version of OpenTK
-		//The deprecated KeyboardDevice code is being used until that's fixed in OpenTK
-		
 		private static OpenTK.Input.KeyboardState _kbState;
-		private static KeyboardDevice _oldKeyboard;
 		
 		public static void Initialize ()
 		{
-			if (OpenTK.Configuration.RunningOnMacOS) {
-				OpenTK.GameWindow gw = new OpenTK.GameWindow();
-				_oldKeyboard = gw.InputDriver.Keyboard[0];
-			} else {
-				_kbState = OpenTK.Input.Keyboard.GetState();
-			}
+			_kbState = OpenTK.Input.Keyboard.GetState();
 		}
 		
 		public static void Update ()
 		{
-			if (!OpenTK.Configuration.RunningOnMacOS)
-				_kbState = OpenTK.Input.Keyboard.GetState();
+			_kbState = OpenTK.Input.Keyboard.GetState();
 		}
 		
 		public static bool IsPressed (Key key)
 		{
-			if (OpenTK.Configuration.RunningOnMacOS)
-				return _oldKeyboard[key];
-			else
-				return _kbState.IsKeyDown(key);
+			return _kbState.IsKeyDown(key);
 		}
 		
 		public static bool ShiftModifier {
