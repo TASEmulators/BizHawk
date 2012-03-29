@@ -24,7 +24,7 @@ namespace BizHawk.MultiClient
 		Lua currThread;
 		LuaFunction savestate_registersavefunc;
 		LuaFunction savestate_registerloadfunc;
-		
+
 		public void SavestateRegisterSave(string name)
 		{
 			if (savestate_registersavefunc != null)
@@ -332,7 +332,8 @@ namespace BizHawk.MultiClient
 			"filename",
 			"getreadonly",
 			"setreadonly",
-			//"rerecordcounting",
+			"getrerecordcounting",
+			"setrerecordcounting",
 			"getinput",
 		};
 
@@ -1173,10 +1174,6 @@ namespace BizHawk.MultiClient
 
 		public void movie_setreadonly(object lua_input)
 		{
-			int x = 0;
-			x++;
-			int y = x;
-
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
 				Global.MainForm.SetReadOnly(true);
 			else
@@ -1191,12 +1188,24 @@ namespace BizHawk.MultiClient
 			MovieControllerAdapter m = new MovieControllerAdapter();
 			m.Type = Global.MovieSession.MovieControllerAdapter.Type;
 			m.SetControllersAsMnemonic(s);
-            foreach (string button in m.Type.BoolButtons)
-                input[button] = m[button];
+			foreach (string button in m.Type.BoolButtons)
+				input[button] = m[button];
 
 			return input;
 		}
 
+		public bool getrerecordcounting()
+		{
+			return Global.MovieSession.Movie.RerecordCounting;
+		}
+
+		public void setrerecordcounting(object lua_input)
+		{
+			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
+				Global.MovieSession.Movie.RerecordCounting = true;
+			else
+				Global.MovieSession.Movie.RerecordCounting = false;
+		}
 		//----------------------------------------------------
 		//Input library
 		//----------------------------------------------------
@@ -1217,9 +1226,9 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller)
 		{
 			LuaTable buttons = lua.NewTable();
-            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-                if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-                    buttons[button] = Global.ControllerOutput[button];
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+				if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+					buttons[button] = Global.ControllerOutput[button];
 
 			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
