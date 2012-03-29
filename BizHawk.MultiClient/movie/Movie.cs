@@ -21,6 +21,7 @@ namespace BizHawk.MultiClient
 		public MOVIEMODE Mode { get; private set; }
 		public int Rerecords { get; private set; }
 		private int Frames;
+		public bool RerecordCounting { get; set; }
 
 		private MovieLog Log = new MovieLog();
 		private int lastLog;
@@ -36,6 +37,7 @@ namespace BizHawk.MultiClient
 			this.Filename = filename;
 			IsText = true;
 			Frames = 0;
+			RerecordCounting = true;
 			StartsFromSavestate = false;
 			if (filename.Length > 0)
 				Loaded = true;
@@ -49,6 +51,7 @@ namespace BizHawk.MultiClient
 			Frames = 0;
 			StartsFromSavestate = false;
 			Loaded = false;
+			RerecordCounting = true;
 		}
 
 		public string SysID()
@@ -438,8 +441,11 @@ namespace BizHawk.MultiClient
 
 		public void IncrementRerecords()
 		{
-			Rerecords++;
-			Header.UpdateRerecordCount(Rerecords);
+			if (RerecordCounting)
+			{
+				Rerecords++;
+				Header.UpdateRerecordCount(Rerecords);
+			}
 		}
 
 		public void	SetRerecords(int value)
