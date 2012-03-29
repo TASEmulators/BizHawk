@@ -390,7 +390,7 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
+		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object anchor = null)
 		{
 			int a = 0;
 			if (anchor != null)
@@ -412,12 +412,17 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), false, a);
+			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, a);
 		}
 
-		public void gui_alert(object luaX, object luaY, object luaStr)
+		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
 		{
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), true, 0);
+			do_gui_text(luaX, luaY, luaStr, false, anchor);
+		}
+
+		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
+		{
+			do_gui_text(luaX, luaY, luaStr, true, anchor);
 		}
 
 		//----------------------------------------------------
