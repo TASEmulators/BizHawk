@@ -848,6 +848,7 @@ namespace BizHawk.MultiClient
 					if (ex is LuaInterface.LuaScriptException || ex is LuaInterface.LuaException)
 					{
 						s.Enabled = false;
+                        s.Thread = null;
 						AddText(ex.ToString());
 						UpdateNumberOfScripts();
 					}
