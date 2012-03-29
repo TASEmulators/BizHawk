@@ -17,6 +17,7 @@ namespace BizHawk
 		public Atari2600(GameInfo game, byte[] rom)
 		{
 			var domains = new List<MemoryDomain>(1);
+			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();

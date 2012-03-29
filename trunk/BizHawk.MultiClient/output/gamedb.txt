@@ -3,6 +3,7 @@
 #include gamedb_sega_8bit.txt
 #include gamedb_pce_hucards.txt
 #include gamedb_pce_cd.txt
+#include gamedb_a2600.txt
 
 ; ************ TI-83 ************
 
