@@ -1194,12 +1194,12 @@ namespace BizHawk.MultiClient
 			return input;
 		}
 
-		public bool getrerecordcounting()
+		public bool movie_getrerecordcounting()
 		{
 			return Global.MovieSession.Movie.RerecordCounting;
 		}
 
-		public void setrerecordcounting(object lua_input)
+		public void movie_setrerecordcounting(object lua_input)
 		{
 			if (lua_input.ToString().ToUpper() == "TRUE" || lua_input.ToString() == "1")
 				Global.MovieSession.Movie.RerecordCounting = true;
