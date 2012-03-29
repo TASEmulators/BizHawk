@@ -1226,9 +1226,10 @@ namespace BizHawk.MultiClient
 		public LuaTable joypad_get(object controller)
 		{
 			LuaTable buttons = lua.NewTable();
-			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-				if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-					buttons[button] = Global.ControllerOutput[button];
+            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+                if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+                    MessageBox.Show(button);
+                    //buttons[button] = Global.ControllerOutput[button];
 
 			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
@@ -1246,16 +1247,11 @@ namespace BizHawk.MultiClient
 			return buttons;
 		}
 
-		public void joypad_set(object button, object value)
+		public void joypad_set(object slot, LuaTable buttons)
 		{
-			if (button.GetType() != typeof(string) || value.GetType() != typeof(bool))
-			{
-				MessageBox.Show(
-					"Invalid parameter types " + button.GetType().ToString() + ", " + button.GetType().ToString() + "."
-				);
-				return;
-			}
-			Global.ClickyVirtualPadController.Click(button.ToString());
+            foreach (var button in buttons.Keys)
+                if(Convert.ToBoolean(buttons[button]) == true)
+                    Global.ClickyVirtualPadController.Click("P" + slot.ToString() + " " + button.ToString());
 		}
 
 		//----------------------------------------------------
