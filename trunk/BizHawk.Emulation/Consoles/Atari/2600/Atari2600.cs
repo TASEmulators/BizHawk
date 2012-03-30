@@ -7,22 +7,24 @@ namespace BizHawk
 	public partial class Atari2600 : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "A26"; } }
+		public GameInfo game;
 
 		public int[] frameBuffer = new int[320 * 262];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
-		public byte[] ram = new byte[128];
+
 		public Atari2600(GameInfo game, byte[] rom)
 		{
 			var domains = new List<MemoryDomain>(1);
-			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[addr & 127], (addr, value) => ram[addr & 127] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
+			this.game = game;
+			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
 		public void ResetFrameCounter()
@@ -47,6 +49,8 @@ namespace BizHawk
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
+			//TODO - you need to sync your m6532 and tia
+			mapper.SyncState(ser);
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
