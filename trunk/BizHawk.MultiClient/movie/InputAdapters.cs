@@ -197,6 +197,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "Atari 2600 Basic Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? "r" : ".");
+				input.Append(IsBasePressed("Select") ? "s" : ".");
 			}
 			if (ControlType == "NES Controller")
 			{
@@ -409,6 +410,8 @@ namespace BizHawk.MultiClient
 			if (ControlType == "Atari 2600 Basic Controller")
 			{
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
+				Force("Select", mnemonic[2] != '.' && mnemonic[2] != '0');
+				start = 4;
 			}
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
