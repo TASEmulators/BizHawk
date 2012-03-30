@@ -1,7 +1,5 @@
-1.0.1a:
-Hex Editor - "Add to Ram Watch" moved to Ctrl+W instead of A
-
-1.0.1:
+BizHawk 1.0.1:
+Release Date: 03/09/2012
 
 Multiclient:
 -Fixed reported 'sound jitter' when using the "Loadstate" As hotkey.
