@@ -1,5 +1,6 @@
 BizHawk 1.0.2
 Release Date: 03/18/2012
+SVN 1982
 Window Binary
 Release notes:
 Multiclient:
