@@ -694,6 +694,8 @@ namespace BizHawk.MultiClient
 			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
 			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
 			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			a2600Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
+			a2600Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
 			Global.Atari2600Controls = a2600Controls;
 
 			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);

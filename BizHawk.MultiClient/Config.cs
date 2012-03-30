@@ -27,6 +27,7 @@ namespace BizHawk.MultiClient
 			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[0] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
+			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -487,6 +488,7 @@ namespace BizHawk.MultiClient
 		//Atari 2600 Settings
 		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
 		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
+		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -719,6 +721,24 @@ namespace BizHawk.MultiClient
 				Left = "LeftArrow, J1 Left";
 				Right = "RightArrow, J1 Right";
 				Button = "Z, J1 B1";
+			}
+		}
+	}
+
+	public class Atari2600ConsoleButtonsTemplate
+	{
+		public string Reset = "";
+		public string Select = "";
+		public bool Enabled;
+
+		public Atari2600ConsoleButtonsTemplate() { }
+		public Atari2600ConsoleButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Reset = "";
+				Select = "";
 			}
 		}
 	}

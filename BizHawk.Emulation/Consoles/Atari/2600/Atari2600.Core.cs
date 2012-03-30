@@ -193,7 +193,7 @@ namespace BizHawk
 		{
 			byte value = 0xFF;
 
-			bool select = false;
+			bool select = Controller["Select"];
 			bool reset = Controller["Reset"];
 			bool bw = false;
 			bool p0difficulty = true;
