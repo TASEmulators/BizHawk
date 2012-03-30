@@ -50,6 +50,15 @@ namespace BizHawk.MultiClient
 
 			if (path.Length > 0)
 			{
+				FileInfo test = new FileInfo(path);
+				if (test.Exists)
+				{
+					var result = MessageBox.Show(path + " already exists, overwrite?", "Confirm overwrite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+					if (result == System.Windows.Forms.DialogResult.Cancel)
+						return;
+				}
+				
+				
 				MovieToRecord = new Movie(path, MOVIEMODE.RECORD);
 
 				//Header
