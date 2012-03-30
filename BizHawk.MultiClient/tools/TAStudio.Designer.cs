@@ -410,7 +410,7 @@
             // Frame
             // 
             this.Frame.Text = "Frame";
-            this.Frame.Width = 47;
+            this.Frame.Width = 60;
             // 
             // Log
             // 
