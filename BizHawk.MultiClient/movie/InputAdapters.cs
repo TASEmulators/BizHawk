@@ -194,7 +194,7 @@ namespace BizHawk.MultiClient
 				 * PC Engine: some kind of command key, since reset isn't used (adelikat: unimplmented command was
 				*/
 			}
-			if (ControlType == "NES Controller")
+			if (ControlType == "NES Controller" || ControlType == "Atari 2600 Basic Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
 					Global.Emulator.IsLagFrame ? Global.COMMANDS[ControlType]["Lag"] : ".");
