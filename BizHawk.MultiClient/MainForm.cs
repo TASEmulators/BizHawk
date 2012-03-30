@@ -373,7 +373,7 @@ namespace BizHawk.MultiClient
 				Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
-                LuaConsole1.ResumeScripts(false);
+				LuaConsole1.ResumeScripts(false);
 #endif
 
 				StepRunLoop_Core();
@@ -812,7 +812,8 @@ namespace BizHawk.MultiClient
 				else
 					StartNewMovie(m, false);
 				Global.RenderPanel.AddMessage(warningMsg);
-			} else
+			}
+			else
 				LoadRom(filePaths[0]);
 		}
 
@@ -839,50 +840,51 @@ namespace BizHawk.MultiClient
 				case "TI83": str += "TI-83"; break;
 				case "NES": str += "NES"; break;
 				case "GB": str += "Game Boy"; break;
+				case "A26": str += "Atari 2600"; break;
 			}
-			str += "Hawk";
+
 			if (INTERIM) str += " (interim)";
 			return str;
 		}
 
-        public string GetMovieExtName()
-        {
-            string str = "", system = Global.Game.System, ext = GetAlternateExt();
-            switch (system)
-            {
-                case "SG": str += "SG-1000"; break;
-                case "SMS": str += "Sega Master System"; break;
-                case "GG": str += "Game Gear"; break;
-                case "PCECD": str += "TurboGrafx-16 (CD)"; break;
-                case "PCE": str += "TurboGrafx-16"; break;
-                case "SGX": str += "SuperGrafx"; break;
-                case "GEN": str += "Genesis"; break;
-                case "TI83": str += "TI-83"; break;
-                case "NES": str += "NES"; break;
-                case "GB": str += "Game Boy"; break;
-            }
-            return str + " Movie File (*" + ext + ")|*" + ext;
-        }
+		public string GetMovieExtName()
+		{
+			string str = "", system = Global.Game.System, ext = GetAlternateExt();
+			switch (system)
+			{
+				case "SG": str += "SG-1000"; break;
+				case "SMS": str += "Sega Master System"; break;
+				case "GG": str += "Game Gear"; break;
+				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
+				case "PCE": str += "TurboGrafx-16"; break;
+				case "SGX": str += "SuperGrafx"; break;
+				case "GEN": str += "Genesis"; break;
+				case "TI83": str += "TI-83"; break;
+				case "NES": str += "NES"; break;
+				case "GB": str += "Game Boy"; break;
+			}
+			return str + " Movie File (*" + ext + ")|*" + ext;
+		}
 
-        private string GetAlternateExt()
-        {
-            string str = ".", system = Global.Game.System;
-            switch (system)
-            {
-                case "SG": str += "1000"; break;
-                case "SMS": str += "sms"; break;
-                case "GG": str += "gg"; break;
-                case "PCECD": str += "pcecd"; break;
-                case "PCE": str += "pce"; break;
-                case "SGX": str += "sgx"; break;
-                case "GEN": str += "gen"; break;
-                case "TI83": str += "ti83"; break;
-                case "NES": str += "nes"; break;
-                case "GB": str += "gb"; break;
-            }
+		private string GetAlternateExt()
+		{
+			string str = ".", system = Global.Game.System;
+			switch (system)
+			{
+				case "SG": str += "1000"; break;
+				case "SMS": str += "sms"; break;
+				case "GG": str += "gg"; break;
+				case "PCECD": str += "pcecd"; break;
+				case "PCE": str += "pce"; break;
+				case "SGX": str += "sgx"; break;
+				case "GEN": str += "gen"; break;
+				case "TI83": str += "ti83"; break;
+				case "NES": str += "nes"; break;
+				case "GB": str += "gb"; break;
+			}
 
-            return str + ".tas";
-        }
+			return str + ".tas";
+		}
 
 		private void HandlePlatformMenus()
 		{
@@ -1471,7 +1473,7 @@ namespace BizHawk.MultiClient
 
 				case "Quick Save State":
 					if (!IsNullEmulator())
-					SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Quick Load State":
@@ -1728,7 +1730,7 @@ namespace BizHawk.MultiClient
 				LuaConsole1.ResumeScripts(true);
 #endif
 
-				runloop_fps++; 
+				runloop_fps++;
 				bool ff = Global.ClientControls["Fast Forward"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
@@ -1861,9 +1863,9 @@ namespace BizHawk.MultiClient
 
 			//TODO - replace with BitmapBuffer
 			var framebuf = video.GetVideoBuffer();
-			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride/4;
+			int stride = bmpdata.Stride / 4;
 			for (int y = 0; y < video.BufferHeight; y++)
 				for (int x = 0; x < video.BufferWidth; x++)
 				{
@@ -1958,7 +1960,7 @@ namespace BizHawk.MultiClient
 
 			if (!fromLua)
 			{
-				
+
 				UpdateStatusSlots();
 			}
 		}
@@ -2715,7 +2717,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
-			
+
 			foreach (string fn in ofd.FileNames)
 			{
 				var file = new FileInfo(fn);
@@ -2764,13 +2766,13 @@ namespace BizHawk.MultiClient
 			#region Get the Images for the File
 			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
 			images.Add(MakeScreenshotImage());
-			while(images.Count < totalFrames)
+			while (images.Count < totalFrames)
 			{
 				tempImage = MakeScreenshotImage();
-				if(gifSpeed < 0)
+				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
-											   //of the image to the list
+				//of the image to the list
 
 				for (int j = 0; j < frameskip; j++)
 				{
@@ -2781,7 +2783,7 @@ namespace BizHawk.MultiClient
 					if (gifSpeed > 0)
 					{
 						speedTracker++;//Advance the frame counter for adding to the List of Images
-						if (speedTracker == Math.Max(gifSpeed,frameskip))
+						if (speedTracker == Math.Max(gifSpeed, frameskip))
 						{
 							images.Add(tempImage);
 							speedTracker = 0;
@@ -2798,14 +2800,14 @@ namespace BizHawk.MultiClient
 			 * Modified to work with the BizHawk Project
 			 */
 			#region make gif file
-			byte[] GifAnimation = {33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0};
+			byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 			MemoryStream MS = new MemoryStream();
 			BinaryReader BR = new BinaryReader(MS);
 			var fi = new FileInfo(filename);
 			if (fi.Directory.Exists == false)
 				fi.Directory.Create();
 			BinaryWriter BW = new BinaryWriter(new FileStream(filename, FileMode.Create));
-			images[0].Save(MS,ImageFormat.Gif);
+			images[0].Save(MS, ImageFormat.Gif);
 			byte[] B = MS.ToArray();
 			B[10] = (byte)(B[10] & 0X78); //No global color table.
 			BW.Write(B, 0, 13);
@@ -2838,7 +2840,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteGifImg(byte[] B, BinaryWriter BW)
 		{
-			byte[] Delay = {0, 0};
+			byte[] Delay = { 0, 0 };
 			B[785] = Delay[0];
 			B[786] = Delay[1];
 			B[798] = (byte)(B[798] | 0X87);
@@ -2887,10 +2889,10 @@ namespace BizHawk.MultiClient
 			makeAnimatedGif(sfd.FileName);
 		}
 
-        private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.SkipLagFrame ^= true;
-        }
+		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SkipLagFrame ^= true;
+		}
 
 		private void ShowConsole()
 		{
