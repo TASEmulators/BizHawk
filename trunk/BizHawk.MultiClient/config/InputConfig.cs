@@ -301,13 +301,20 @@ namespace BizHawk.MultiClient
 					return;
 			}
 			mainController = controller;
-			if (prev >= PADS[platform])
+			if (platform == "AtariConsoleButtons")
+			{
+				prev = 0;
+			}
+			else if (prev >= PADS[platform])
 			{
 				prev -= PADS[platform];
 				controller = autoController;
 			}
 			switch (platform)
 			{
+				case "AtariConsoleButtons":
+					((Atari2600ConsoleButtonsTemplate)mainController[0]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
 				case "Atari":
 					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
@@ -402,9 +409,6 @@ namespace BizHawk.MultiClient
 				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
 			}
-
-			/*hacky add atari controller stuff*/
-
 		}
 
 		private void InputConfig_Load(object sender, EventArgs e)
