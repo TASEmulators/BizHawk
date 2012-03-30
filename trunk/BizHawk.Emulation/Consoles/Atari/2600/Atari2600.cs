@@ -49,7 +49,8 @@ namespace BizHawk
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
-			//TODO - you need to sync your m6532 and tia
+			tia.SyncState(ser);
+			m6532.SyncState(ser);
 			mapper.SyncState(ser);
 		}
 

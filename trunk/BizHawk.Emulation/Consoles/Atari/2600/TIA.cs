@@ -87,6 +87,17 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				return result;
 			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("enabled", ref enabled);
+				ser.Sync("resetToPlayer", ref resetToPlayer);
+				ser.Sync("hPosCnt", ref hPosCnt);
+				ser.Sync("size", ref size);
+				ser.Sync("number", ref number);
+				ser.Sync("HM", ref HM);
+				ser.Sync("collisions", ref collisions);
+			}
 		}
 
 		struct playerData
@@ -220,6 +231,24 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				return result;
 			}
+
+			public void SyncState(Serializer ser)
+			{
+				missile.SyncState(ser);
+				ser.Sync("grp", ref grp);
+				ser.Sync("dgrp", ref dgrp);
+				ser.Sync("color", ref color);
+				ser.Sync("hPosCnt", ref hPosCnt);
+				ser.Sync("scanCnt", ref scanCnt);
+				ser.Sync("scanStrchCnt", ref scanStrchCnt);
+				ser.Sync("HM", ref HM);
+				ser.Sync("reflect", ref reflect);
+				ser.Sync("delay", ref delay);
+				ser.Sync("nusiz", ref nusiz);
+				ser.Sync("reset", ref reset);
+				ser.Sync("resetCnt", ref resetCnt);
+				ser.Sync("collisions", ref collisions);
+			}
 		};
 
 		struct ballData
@@ -257,6 +286,18 @@ namespace BizHawk.Emulation.Consoles.Atari
 
 				return result;
 			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("enabled", ref enabled);
+				ser.Sync("denabled", ref denabled);
+				ser.Sync("delay", ref delay);
+				ser.Sync("size", ref size);
+				ser.Sync("HM", ref HM);
+				ser.Sync("hPosCnt", ref hPosCnt);
+				ser.Sync("collisions", ref collisions);
+			}
+
 		};
 
 		struct playfieldData
@@ -267,6 +308,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public bool reflect;
 			public bool score;
 			public bool priority;
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("grp", ref grp);
+				ser.Sync("pfColor", ref pfColor);
+				ser.Sync("bkColor", ref bkColor);
+				ser.Sync("reflect", ref reflect);
+				ser.Sync("score", ref score);
+				ser.Sync("priority", ref priority);
+			}
 		};
 
 		struct hmoveData
@@ -291,6 +341,26 @@ namespace BizHawk.Emulation.Consoles.Atari
 			public byte missile0Cnt;
 			public byte missile1Cnt;
 			public byte ballCnt;
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("hmoveEnabled", ref hmoveEnabled);
+				ser.Sync("hmoveJustStarted", ref hmoveJustStarted);
+				ser.Sync("lateHBlankReset", ref lateHBlankReset);
+				ser.Sync("decCntEnabled", ref decCntEnabled);
+				ser.Sync("player0Latch", ref player0Latch);
+				ser.Sync("player1Latch", ref player1Latch);
+				ser.Sync("missile0Latch", ref missile0Latch);
+				ser.Sync("missile1Latch", ref missile1Latch);
+				ser.Sync("ballLatch", ref ballLatch);
+				ser.Sync("hmoveDelayCnt", ref hmoveDelayCnt);
+				ser.Sync("hmoveCnt", ref hmoveCnt);
+				ser.Sync("player0Cnt", ref player0Cnt);
+				ser.Sync("player1Cnt", ref player1Cnt);
+				ser.Sync("missile0Cnt", ref missile0Cnt);
+				ser.Sync("missile1Cnt", ref missile1Cnt);
+				ser.Sync("ballCnt", ref ballCnt);
+			}
 		};
 
 		playerData player0;
@@ -949,5 +1019,15 @@ namespace BizHawk.Emulation.Consoles.Atari
 			return result;
 		}
 
+		public void SyncState(Serializer ser)
+		{
+			ball.SyncState(ser);
+			hmove.SyncState(ser);
+			ser.Sync("hsyncCnt", ref hsyncCnt);
+			player0.SyncState(ser);
+			player1.SyncState(ser);
+			playField.SyncState(ser);
+			//ser.Sync("scanline", ref scanline);
+		}
 	}
 }

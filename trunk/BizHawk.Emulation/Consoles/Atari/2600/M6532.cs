@@ -18,8 +18,6 @@ namespace BizHawk.Emulation.Consoles.Atari
 		public byte ddra = 0x00;
 		public byte ddrb = 0x00;
 
-		public bool resetOccured = false;
-
 		public M6532(Atari2600 core)
 		{
 			this.core = core;
@@ -205,6 +203,16 @@ namespace BizHawk.Emulation.Consoles.Atari
 					}
 				}
 			}
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("ddra", ref ddra);
+			ser.Sync("ddrb", ref ddrb);
+			ser.Sync("interruptEnabled", ref interruptEnabled);
+			ser.Sync("interruptFlag", ref interruptFlag);
+			ser.Sync("timerCyclesRemaining", ref timerCyclesRemaining);
+			ser.Sync("timerShift", ref timerShift);
 		}
 	}
 }
