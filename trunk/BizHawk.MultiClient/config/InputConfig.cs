@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
 			{"Atari", new string[5] { "Up", "Down", "Left", "Right", "Button" } },
+			{"AtariConsoleButtons", new string[2] { "Reset", "Select" } },
 			{"Gameboy", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
@@ -134,32 +135,46 @@ namespace BizHawk.MultiClient
 			}
 			mainController = controller;
 			int jpad = this.ControllComboBox.SelectedIndex;
-			if (jpad >= PADS[platform])
+			if (jpad >= PADS[platform] * 2) //Not joypad or auto-joypad, must be special category (adelikat: I know this is hacky but so is the rest of this file)
 			{
-				jpad -= PADS[platform];
-				controller = autoController;
+				switch (platform)
+				{
+					case "Atari":
+						IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600ConsoleButtons[0].Enabled;
+						controller = Global.Config.Atari2600ConsoleButtons;
+						break;
+				}
+				platform += "ConsoleButtons";
 			}
-			switch (platform)
+			else
 			{
-				case "Atari":
-					IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "Gameboy":
-				case "NES":
-					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "PC Engine / SuperGrafx":
-					IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "Sega Genesis":
-					IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "SMS / GG / SG-1000":
-					IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "TI-83":
-					IDX_CONTROLLERENABLED.Checked = ((TI83ControllerTemplate)mainController[jpad]).Enabled;
-					break;
+				if (jpad >= PADS[platform])
+				{
+					jpad -= PADS[platform];
+					controller = autoController;
+				}
+				switch (platform)
+				{
+					case "Atari":
+						IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "Gameboy":
+					case "NES":
+						IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "PC Engine / SuperGrafx":
+						IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "Sega Genesis":
+						IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "SMS / GG / SG-1000":
+						IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "TI-83":
+						IDX_CONTROLLERENABLED.Checked = ((TI83ControllerTemplate)mainController[jpad]).Enabled;
+						break;
+				}
 			}
 			Labels.Clear();
 			TextBoxes.Clear();
@@ -180,6 +195,10 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "AtariConsoleButtons":
+						Atari2600ConsoleButtonsTemplate o = (Atari2600ConsoleButtonsTemplate)controller[0];
+						field = o.GetType().GetField(fieldName).GetValue(o);
+						break;
 					case "Atari":
 					{
 						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[jpad];
@@ -240,12 +259,17 @@ namespace BizHawk.MultiClient
 
 		private void Update(int prev, string platform)
 		{
+			if (platform == "Atari" && prev == 4) //adelikat: very hacky  I know
+				platform += "ConsoleButtons";
 			ButtonsGroupBox.Controls.Clear();
 			object[] controller = null;
 			object[] mainController = null;
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "AtariConsoleButtons":
+					controller = Global.Config.Atari2600ConsoleButtons;
+					break;
 				case "Atari":
 					controller = Global.Config.Atari2600Controller;
 					autoController = Global.Config.Atari2600AutoController;
@@ -311,6 +335,12 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "AtariConsoleButtons":
+						Atari2600ConsoleButtonsTemplate o = (Atari2600ConsoleButtonsTemplate)controller[0];
+						FieldInfo buttonF = o.GetType().GetField(fieldName);
+						field = buttonF.GetValue(o);
+						buttonF.SetValue(o, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
 					case "Atari":
 					{
 						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[prev];
@@ -372,6 +402,9 @@ namespace BizHawk.MultiClient
 				Label TempLabel = Labels[button] as Label;
 				TempLabel.Dispose();
 			}
+
+			/*hacky add atari controller stuff*/
+
 		}
 
 		private void InputConfig_Load(object sender, EventArgs e)
@@ -444,6 +477,10 @@ namespace BizHawk.MultiClient
 			{
 				if (this.SystemComboBox.SelectedItem.ToString() != "TI-83")
 					ControllComboBox.Items.Add(string.Format("Autofire Joypad {0}", i + 1));
+			}
+			if (this.SystemComboBox.SelectedItem.ToString() == "Atari")
+			{
+				ControllComboBox.Items.Add("Console");
 			}
 			ControllComboBox.SelectedIndex = 0;
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
