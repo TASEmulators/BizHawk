@@ -194,7 +194,11 @@ namespace BizHawk.MultiClient
 				 * PC Engine: some kind of command key, since reset isn't used (adelikat: unimplmented command was
 				*/
 			}
-			if (ControlType == "NES Controller" || ControlType == "Atari 2600 Basic Controller")
+			if (ControlType == "Atari 2600 Basic Controller")
+			{
+				input.Append(IsBasePressed("Reset") ? "r" : ".");
+			}
+			if (ControlType == "NES Controller")
 			{
 				input.Append(IsBasePressed("Reset") ? Global.COMMANDS[ControlType]["Reset"] :
 					Global.Emulator.IsLagFrame ? Global.COMMANDS[ControlType]["Lag"] : ".");
@@ -401,6 +405,10 @@ namespace BizHawk.MultiClient
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{
 				start = 1;
+			}
+			if (ControlType == "Atari 2600 Basic Controller")
+			{
+				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
 			}
 			for (int player = 1; player <= Global.PLAYERS[ControlType]; player++)
 			{
