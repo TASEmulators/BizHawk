@@ -46,8 +46,12 @@ namespace BizHawk.Core
 			if (threadPaint != null)
 			{
 				killSignal = true;
-				ewh.Set();
-				ewh.WaitOne();
+				threadPaint.Abort();
+				lock(ewh)
+				{
+					ewh.Set();
+					ewh.WaitOne();
+				}
 			}
 			CleanupDisposeQueue();
 		}
@@ -73,11 +77,14 @@ namespace BizHawk.Core
 		{
 			for (; ; )
 			{
-				ewh.WaitOne();
-				if (killSignal)
+				lock(ewh)
 				{
-					ewh.Set();
-					return;
+					ewh.WaitOne();
+					if (killSignal)
+					{
+						ewh.Set();
+						return;
+					}
 				}
 
 				DoPaint();

@@ -62,6 +62,12 @@ namespace BizHawk.MultiClient
 			UpdateThread.IsBackground = true;
 			UpdateThread.Start();
 		}
+		
+		public void Dispose(){
+			if(UpdateThread != null && UpdateThread.IsAlive){
+				UpdateThread.Abort();
+			}
+		}
 
 		public static void Initialize()
 		{

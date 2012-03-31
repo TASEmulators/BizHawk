@@ -135,6 +135,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Win32.cs" />
+    <Compile Include="IOpenFileDialog.cs" />
+    <Compile Include="HawkUIFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="7z\arch\Test.bzip2.7z" />

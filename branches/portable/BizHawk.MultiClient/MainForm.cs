@@ -127,6 +127,11 @@ namespace BizHawk.MultiClient
 				Global.MovieSession.Movie.StopMovie();
 				SaveConfig();
 			};
+			
+			Closed += (o, e) =>
+			{
+				Input.Instance.Dispose();
+			};
 
 			ResizeBegin += (o, e) =>
 			{
@@ -2047,7 +2052,7 @@ namespace BizHawk.MultiClient
 
 		private void LoadStateAs()
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.SaveStatePrefix(Global.Game);
 			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
@@ -2336,7 +2341,7 @@ namespace BizHawk.MultiClient
 
 		private void OpenROM()
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			//"Rom Files|*.NES;*.SMS;*.GG;*.SG;*.PCE;*.SGX;*.GB;*.BIN;*.SMD;*.ROM;*.ZIP;*.7z|NES (*.NES)|*.NES|Master System|*.SMS;*.GG;*.SG;*.ZIP;*.7z|PC Engine|*.PCE;*.SGX;*.ZIP;*.7z|Gameboy|*.GB;*.ZIP;*.7z|TI-83|*.rom|Archive Files|*.zip;*.7z|Savestate|*.state|All Files|*.*";
 
@@ -2717,7 +2722,7 @@ namespace BizHawk.MultiClient
 
 		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			ofd.Multiselect = true;
 			ofd.Filter = FormatFilter(
