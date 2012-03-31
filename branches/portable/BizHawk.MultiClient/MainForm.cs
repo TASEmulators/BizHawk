@@ -1957,7 +1957,9 @@ namespace BizHawk.MultiClient
 
 			var writer = new StreamWriter(path);
 			SaveStateFile(writer, name, false);
+#if WINDOWS
 			LuaConsole1.LuaImp.SavestateRegisterSave(name);
+#endif
 		}
 
 		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
@@ -2038,7 +2040,9 @@ namespace BizHawk.MultiClient
 				return;
 
 			LoadStateFile(path, name);
+#if WINDOWS
 			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
+#endif
 		}
 
 		private void LoadStateAs()

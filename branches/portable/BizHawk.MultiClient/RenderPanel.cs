@@ -591,7 +591,7 @@ namespace BizHawk.MultiClient
 			
 		}
 		public void AddMessage(string msg) { }
-		public void AddGUIText(string msg, int x, int y, bool alert) { }
+		public void AddGUIText(string msg, int x, int y, bool alert, int anchor) { }
 		public void ClearGUIText() { }
 	}
 #endif
