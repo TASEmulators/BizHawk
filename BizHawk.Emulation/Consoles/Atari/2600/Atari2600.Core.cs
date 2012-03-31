@@ -113,6 +113,23 @@ namespace BizHawk
 				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
 				case "F6": mapper = new mF6(); break;
+				case "F4": mapper = new mF4(); break;
+				case "FE": mapper = new mFE(); break;
+				case "E0": mapper = new mE0(); break;
+				case "3F": mapper = new m3F(); break;
+				case "FA": mapper = new mFA(); break;
+				case "E7": mapper = new mE7(); break;
+				case "F0": mapper = new mF0(); break;
+				case "UA": mapper = new mUA(); break;
+				//Homebrew mappers
+				case "3Fe": mapper = new m3Fe(); break;
+				case "3E": mapper = new m3E(); break;
+				case "0840": mapper = new m0840(); break;
+				case "MC": mapper = new mMC(); break;
+				case "EF": mapper = new mEF(); break;
+				case "X07": mapper = new mX07(); break;
+				case "4A50": mapper = new m4A50(); break;
+
 				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
 			}
 			mapper.core = this;
