@@ -215,7 +215,7 @@ namespace BizHawk.MultiClient
 			List<int> TAS = new List<int>();
 			for (int x = 0; x < Indexes.Count; x++)
 			{
-				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == ".TAS")
+				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
 					TAS.Add(x);
 			}
 			if (TAS.Count == 1)
