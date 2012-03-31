@@ -36,8 +36,8 @@ namespace BizHawk.MultiClient
 					path = path.Insert(0, "\\");
 				path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + path;
 
-				if (path[path.Length - 4] != '.') //If no file extension, add .tas
-					path += ".tas";
+				if (path[path.Length - 4] != '.') //If no file extension, add movie extension
+					path += "." + Global.Config.MovieExtension;
 				return path;
 			}
 			else
@@ -118,10 +118,9 @@ namespace BizHawk.MultiClient
 		{
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-			sfd.DefaultExt = ".tas";
+			sfd.DefaultExt = "." + Global.Config.MovieExtension;
 			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + sfd.DefaultExt;
-			sfd.Filter = "Generic Movie Files (*.tas)|*.tas|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
-            //sfd.Filter = "Generic Movie Files (*.tas)|*.tas|All Files (*.*)|*.*";
+			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension +  "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
 
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
