@@ -772,7 +772,7 @@ namespace BizHawk.MultiClient
 
 		private bool IsValidMovieExtension(string ext)
 		{
-			return (ext.ToUpper() == ".TAS");
+			return (ext.ToUpper() == "." + Global.Config.MovieExtension);
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)
