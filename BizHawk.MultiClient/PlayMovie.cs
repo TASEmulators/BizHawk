@@ -72,8 +72,7 @@ namespace BizHawk.MultiClient
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-            ofd.Filter = "Generic Movie Files (*.tas)|*.tas;*.zip;*.7z|" + Global.MainForm.GetMovieExtName() + "|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
-            //ofd.Filter = "Generic Movie Files (*.tas)|*.tas;*.zip;*.7z|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
+			ofd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + ";*.zip;*.7z|" + Global.MainForm.GetMovieExtName() + "|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
 
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
@@ -269,7 +268,7 @@ namespace BizHawk.MultiClient
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
 
-			foreach (string f in Directory.GetFiles(d, "*.tas"))
+			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
 				AddMovieToList(f);
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
@@ -282,7 +281,7 @@ namespace BizHawk.MultiClient
 				string[] subs = Directory.GetDirectories(d);
 				foreach (string dir in subs)
 				{
-					foreach (string f in Directory.GetFiles(dir, "*.tas"))
+					foreach (string f in Directory.GetFiles(dir, "*." + Global.Config.MovieExtension))
 						AddMovieToList(f);
 					if (Global.Config.PlayMovie_ShowStateFiles)
 					{
@@ -370,7 +369,7 @@ namespace BizHawk.MultiClient
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			foreach (string path in filePaths)
 			{
-				if (Path.GetExtension(path) == ".tas")
+				if (Path.GetExtension(path) == "." + Global.Config.MovieExtension)
 					AddMovieToList(path);
 			}
 		}

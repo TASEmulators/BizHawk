@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 
 		//Movie header object - to have the main project header data
 		//List<string> MacroFiles - list of .macro files (simply log files)
-		//List<string> TimeLines - list of .tas files
+		//List<string> TimeLines - list of movie files
 		//List<string> Bookmarks - list of savestate files
 
 		public TAStudio()

@@ -885,7 +885,7 @@ namespace BizHawk.MultiClient
 				case "GB": str += "gb"; break;
 			}
 
-			return str + ".tas";
+			return str + "." + Global.Config.MovieExtension;
 		}
 
 		private void HandlePlatformMenus()
@@ -2732,7 +2732,7 @@ namespace BizHawk.MultiClient
 				if (warningMsg.Length > 0)
 					Global.RenderPanel.AddMessage(warningMsg);
 				else
-					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as .tas");
+					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
 			}
 		}
 
