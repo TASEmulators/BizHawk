@@ -96,6 +96,8 @@ namespace BizHawk.Emulation.CPUs.M6502
 			ser.Sync("alu_temp", ref alu_temp);
 			ser.Sync("mi", ref mi);
 			ser.Sync("iflag_pending", ref iflag_pending);
+			ser.Sync("interrupt_pending", ref interrupt_pending);
+			ser.Sync("branch_irq_hack", ref branch_irq_hack);
 			ser.EndSection();
 		}
 

@@ -80,7 +80,7 @@ namespace BizHawk.MultiClient
 				{
 					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
 					Global.RenderPanel.AddGUIText(watchList[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)), alert);
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)), alert, 0);
 				}
 			}
 
@@ -517,6 +517,8 @@ namespace BizHawk.MultiClient
 			if (WatchListView.SelectedIndices.Count == 0)
 				return;
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
+			if (indexes[0] == 0)
+				return;
 			Watch temp = new Watch();
 			if (indexes.Count == 0) return;
 			foreach (int index in indexes)

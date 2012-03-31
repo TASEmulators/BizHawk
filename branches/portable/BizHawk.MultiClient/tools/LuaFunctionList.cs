@@ -19,7 +19,12 @@ namespace BizHawk.MultiClient
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
 #if WINDOWS
-			FunctionBox.Text = Global.MainForm.LuaConsole1.LuaImp.LuaLibraryList;
+			FunctionBox.Text = "";
+
+			foreach (string l in Global.MainForm.LuaConsole1.LuaImp.LuaLibraryList)
+			{
+				FunctionBox.Text += l + "\n";
+			}
 #endif
 		}
 

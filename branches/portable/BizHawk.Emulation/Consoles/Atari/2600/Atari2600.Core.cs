@@ -12,6 +12,8 @@ namespace BizHawk
 		public MOS6502X cpu;
 		public M6532 m6532;
 		public TIA tia;
+		public byte[] ram = new byte[128];
+		public MapperBase mapper;
 
 		bool resetSignal;
 
@@ -56,7 +58,7 @@ namespace BizHawk
 		//     registers
 		// else
 		//   ROM
-		public byte ReadMemory(ushort addr)
+		public byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
@@ -73,7 +75,7 @@ namespace BizHawk
 			}
 		}
 
-		public void WriteMemory(ushort addr, byte value)
+		public void BaseWriteMemory(ushort addr, byte value)
 		{
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
@@ -90,8 +92,28 @@ namespace BizHawk
 			}
 		}
 
+		public byte ReadMemory(ushort addr)
+		{
+			return mapper.ReadMemory((ushort)(addr&0x1FFF));
+		}
+
+		public void WriteMemory(ushort addr, byte value)
+		{
+			mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
+		}
+
 		public void HardReset()
 		{
+			//regenerate mapper here to make sure its state is entirely clean
+			switch (game.GetOptionsDict()["m"])
+			{
+				case "4K": mapper = new m4K(); break;
+				case "2K": mapper = new m2K(); break;
+				case "F8": mapper = new mF8(); break;
+				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
+			}
+			mapper.core = this;
+
 			_lagcount = 0;
 			cpu = new MOS6502X();
 			//cpu.debug = true;
@@ -107,8 +129,9 @@ namespace BizHawk
 
 			//setup the system state here. for instance..
 			// Read from the reset vector for where to start
-			cpu.PC = (ushort)(ReadMemory(0xFFFC) + (ReadMemory(0xFFFD) << 8)); //set the initial PC
+			cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); //set the initial PC
 			//cpu.PC = 0x0000; //set the initial PC
+
 		}
 
 		public void FrameAdvance(bool render)
@@ -170,7 +193,7 @@ namespace BizHawk
 		{
 			byte value = 0xFF;
 
-			bool select = false;
+			bool select = Controller["Select"];
 			bool reset = Controller["Reset"];
 			bool bw = false;
 			bool p0difficulty = true;
@@ -184,7 +207,13 @@ namespace BizHawk
 
 			return value;
 		}
+	}
 
-
+	public class MapperBase
+	{
+		public Atari2600 core;
+		public virtual byte ReadMemory(ushort addr) { return core.BaseReadMemory(addr); }
+		public virtual void WriteMemory(ushort addr, byte value) { core.BaseWriteMemory(addr, value); }
+		public virtual void SyncState(Serializer ser) { }
 	}
 }

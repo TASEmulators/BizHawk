@@ -21,7 +21,7 @@ namespace BizHawk.MultiClient
 	public partial class MainForm : Form
 	{
 		public bool INTERIM = true;
-		public const string EMUVERSION = "BizHawk v1.0.3 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
+		public const string EMUVERSION = "BizHawk v1.0.4 interim"; //TODO: Get rid of this, only the movie object uses it, maybe it can use assembly info
 		private Control renderTarget;
 		private RetainedViewportPanel retainedPanel;
 		public string CurrentlyOpenRom;
@@ -389,10 +389,9 @@ namespace BizHawk.MultiClient
 				Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
-                LuaConsole1.ResumeScripts(false);
+				LuaConsole1.ResumeScripts(false);
 #endif
 
-				Global.RenderPanel.ClearGUIText();
 				StepRunLoop_Core();
 				//if(!IsNullEmulator())
 				StepRunLoop_Throttle();
@@ -494,6 +493,8 @@ namespace BizHawk.MultiClient
 		private void InitControls()
 		{
 			var controls = new Controller(ClientControlsDef);
+			controls.BindMulti("IncreaseWindowSize", Global.Config.IncreaseWindowSize);
+			controls.BindMulti("DecreaseWindowSize", Global.Config.DecreaseWindowSize);
 			controls.BindMulti("Fast Forward", Global.Config.FastForwardBinding);
 			controls.BindMulti("Rewind", Global.Config.RewindBinding);
 			controls.BindMulti("Hard Reset", Global.Config.HardResetBinding);
@@ -709,6 +710,8 @@ namespace BizHawk.MultiClient
 			a2600Controls.BindMulti("P2 Right", Global.Config.Atari2600Controller[1].Right);
 			a2600Controls.BindMulti("P2 Down", Global.Config.Atari2600Controller[1].Down);
 			a2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
+			a2600Controls.BindMulti("Reset", Global.Config.Atari2600ConsoleButtons[0].Reset);
+			a2600Controls.BindMulti("Select", Global.Config.Atari2600ConsoleButtons[0].Select);
 			Global.Atari2600Controls = a2600Controls;
 
 			var autofireA2600Controls = new AutofireController(Atari2600.Atari2600ControllerDefinition);
@@ -827,7 +830,8 @@ namespace BizHawk.MultiClient
 				else
 					StartNewMovie(m, false);
 				Global.RenderPanel.AddMessage(warningMsg);
-			} else
+			}
+			else
 				LoadRom(filePaths[0]);
 		}
 
@@ -854,9 +858,50 @@ namespace BizHawk.MultiClient
 				case "TI83": str += "TI-83"; break;
 				case "NES": str += "NES"; break;
 				case "GB": str += "Game Boy"; break;
+				case "A26": str += "Atari 2600"; break;
 			}
+
 			if (INTERIM) str += " (interim)";
 			return str;
+		}
+
+		public string GetMovieExtName()
+		{
+			string str = "", system = Global.Game.System, ext = GetAlternateExt();
+			switch (system)
+			{
+				case "SG": str += "SG-1000"; break;
+				case "SMS": str += "Sega Master System"; break;
+				case "GG": str += "Game Gear"; break;
+				case "PCECD": str += "TurboGrafx-16 (CD)"; break;
+				case "PCE": str += "TurboGrafx-16"; break;
+				case "SGX": str += "SuperGrafx"; break;
+				case "GEN": str += "Genesis"; break;
+				case "TI83": str += "TI-83"; break;
+				case "NES": str += "NES"; break;
+				case "GB": str += "Game Boy"; break;
+			}
+			return str + " Movie File (*" + ext + ")|*" + ext;
+		}
+
+		private string GetAlternateExt()
+		{
+			string str = ".", system = Global.Game.System;
+			switch (system)
+			{
+				case "SG": str += "1000"; break;
+				case "SMS": str += "sms"; break;
+				case "GG": str += "gg"; break;
+				case "PCECD": str += "pcecd"; break;
+				case "PCE": str += "pce"; break;
+				case "SGX": str += "sgx"; break;
+				case "GEN": str += "gen"; break;
+				case "TI83": str += "ti83"; break;
+				case "NES": str += "nes"; break;
+				case "GB": str += "gb"; break;
+			}
+
+			return str + "." + Global.Config.MovieExtension;
 		}
 
 		private void HandlePlatformMenus()
@@ -1352,8 +1397,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string lastKeyboard = "";
-
 		public void ProcessInput()
 		{
 			for (; ; )
@@ -1366,8 +1409,6 @@ namespace BizHawk.MultiClient
 				//Console.WriteLine(ie);
 
 				//TODO - wonder what happens if we pop up something interactive as a response to one of these hotkeys? may need to purge further processing
-
-				lastKeyboard += " " + ie.ToString();
 
 				//look for client cntrol bindings for this key
 				var triggers = Global.ClientControls.SearchBindings(ie.LogicalButton.ToString());
@@ -1433,6 +1474,12 @@ namespace BizHawk.MultiClient
 			{
 				default:
 					return false;
+				case "IncreaseWindowSize":
+					IncreaseWindowSize();
+					break;
+				case "DecreaseWindowSize":
+					DecreaseWIndowSize();
+					break;
 				case "Record AVI":
 					RecordAVI();
 					break;
@@ -1445,7 +1492,7 @@ namespace BizHawk.MultiClient
 
 				case "Quick Save State":
 					if (!IsNullEmulator())
-					SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
+						SaveState("QuickSave" + Global.Config.SaveSlot.ToString());
 					break;
 
 				case "Quick Load State":
@@ -1697,12 +1744,12 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				//client input-related duties
-
+				Global.RenderPanel.ClearGUIText();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
 
-				runloop_fps++; 
+				runloop_fps++;
 				bool ff = Global.ClientControls["Fast Forward"];
 				bool updateFpsString = (runloop_last_ff != ff);
 				runloop_last_ff = ff;
@@ -1785,7 +1832,6 @@ namespace BizHawk.MultiClient
 				Global.Emulator.FrameAdvance(!throttle.skipnextframe);
 				MemoryPulse.Pulse();
 				//=======================================
-				lastKeyboard = "";
 				if (CurrAviWriter != null)
 				{
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
@@ -1836,9 +1882,9 @@ namespace BizHawk.MultiClient
 
 			//TODO - replace with BitmapBuffer
 			var framebuf = video.GetVideoBuffer();
-			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var bmpdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* ptr = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride/4;
+			int stride = bmpdata.Stride / 4;
 			for (int y = 0; y < video.BufferHeight; y++)
 				for (int x = 0; x < video.BufferWidth; x++)
 				{
@@ -1911,6 +1957,7 @@ namespace BizHawk.MultiClient
 
 			var writer = new StreamWriter(path);
 			SaveStateFile(writer, name, false);
+			LuaConsole1.LuaImp.SavestateRegisterSave(name);
 		}
 
 		public void SaveStateFile(StreamWriter writer, string name, bool fromLua)
@@ -1932,7 +1979,7 @@ namespace BizHawk.MultiClient
 
 			if (!fromLua)
 			{
-				
+
 				UpdateStatusSlots();
 			}
 		}
@@ -1991,6 +2038,7 @@ namespace BizHawk.MultiClient
 				return;
 
 			LoadStateFile(path, name);
+			LuaConsole1.LuaImp.SavestateRegisterLoad(name);
 		}
 
 		private void LoadStateAs()
@@ -2688,7 +2736,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 			if (result != DialogResult.OK)
 				return;
-			
+
 			foreach (string fn in ofd.FileNames)
 			{
 				var file = new FileInfo(fn);
@@ -2701,7 +2749,7 @@ namespace BizHawk.MultiClient
 				if (warningMsg.Length > 0)
 					Global.RenderPanel.AddMessage(warningMsg);
 				else
-					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as .tas");
+					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
 			}
 		}
 
@@ -2737,13 +2785,13 @@ namespace BizHawk.MultiClient
 			#region Get the Images for the File
 			int totalFrames = (gifSpeed > 0 ? num_images : (num_images * (gifSpeed * -1)));
 			images.Add(MakeScreenshotImage());
-			while(images.Count < totalFrames)
+			while (images.Count < totalFrames)
 			{
 				tempImage = MakeScreenshotImage();
-				if(gifSpeed < 0)
+				if (gifSpeed < 0)
 					for (speedTracker = 0; speedTracker > gifSpeed; speedTracker--)
 						images.Add(tempImage); //If the speed of the animation is to be slowed down, then add that many copies
-											   //of the image to the list
+				//of the image to the list
 
 				for (int j = 0; j < frameskip; j++)
 				{
@@ -2754,7 +2802,7 @@ namespace BizHawk.MultiClient
 					if (gifSpeed > 0)
 					{
 						speedTracker++;//Advance the frame counter for adding to the List of Images
-						if (speedTracker == Math.Max(gifSpeed,frameskip))
+						if (speedTracker == Math.Max(gifSpeed, frameskip))
 						{
 							images.Add(tempImage);
 							speedTracker = 0;
@@ -2771,14 +2819,14 @@ namespace BizHawk.MultiClient
 			 * Modified to work with the BizHawk Project
 			 */
 			#region make gif file
-			byte[] GifAnimation = {33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0};
+			byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
 			MemoryStream MS = new MemoryStream();
 			BinaryReader BR = new BinaryReader(MS);
 			var fi = new FileInfo(filename);
 			if (fi.Directory.Exists == false)
 				fi.Directory.Create();
 			BinaryWriter BW = new BinaryWriter(new FileStream(filename, FileMode.Create));
-			images[0].Save(MS,ImageFormat.Gif);
+			images[0].Save(MS, ImageFormat.Gif);
 			byte[] B = MS.ToArray();
 			B[10] = (byte)(B[10] & 0X78); //No global color table.
 			BW.Write(B, 0, 13);
@@ -2811,7 +2859,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteGifImg(byte[] B, BinaryWriter BW)
 		{
-			byte[] Delay = {0, 0};
+			byte[] Delay = { 0, 0 };
 			B[785] = Delay[0];
 			B[786] = Delay[1];
 			B[798] = (byte)(B[798] | 0X87);
@@ -2860,10 +2908,10 @@ namespace BizHawk.MultiClient
 			makeAnimatedGif(sfd.FileName);
 		}
 
-        private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Global.Config.SkipLagFrame ^= true;
-        }
+		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SkipLagFrame ^= true;
+		}
 
 		private void ShowConsole()
 		{
@@ -2888,6 +2936,56 @@ namespace BizHawk.MultiClient
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Text = "BizHawk" + (INTERIM ? " (interim) " : "");
+		}
+
+		private void IncreaseWindowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 2:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 5;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 10;
+					break;
+				case 10:
+					return;
+			}
+			FrameBufferResized();
+		}
+
+		private void DecreaseWIndowSize()
+		{
+			switch (Global.Config.TargetZoomFactor)
+			{
+				case 1:
+					return;
+				case 2:
+					Global.Config.TargetZoomFactor = 1;
+					break;
+				case 3:
+					Global.Config.TargetZoomFactor = 2;
+					break;
+				case 4:
+					Global.Config.TargetZoomFactor = 3;
+					break;
+				case 5:
+					Global.Config.TargetZoomFactor = 4;
+					break;
+				case 10:
+					Global.Config.TargetZoomFactor = 5;
+					return;
+			}
+			FrameBufferResized();
 		}
 	}
 }

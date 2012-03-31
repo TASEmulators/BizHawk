@@ -44,6 +44,7 @@
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox5 = new BizHawk.MultiClient.MyViewportPanel();
+			this.Close = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
@@ -82,7 +83,7 @@
 			// 
 			this.label3.AutoSize = true;
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label3.Location = new System.Drawing.Point(225, 449);
+			this.label3.Location = new System.Drawing.Point(164, 423);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(311, 39);
 			this.label3.TabIndex = 3;
@@ -185,11 +186,24 @@
 			this.pictureBox5.TabIndex = 15;
 			this.pictureBox5.TabStop = false;
 			// 
+			// Close
+			// 
+			this.Close.Location = new System.Drawing.Point(424, 462);
+			this.Close.Name = "Close";
+			this.Close.Size = new System.Drawing.Size(75, 23);
+			this.Close.TabIndex = 18;
+			this.Close.Text = "&Close";
+			this.Close.UseVisualStyleBackColor = true;
+			this.Close.Click += new System.EventHandler(this.Close_Click);
+			this.Close.MouseEnter += new System.EventHandler(this.Close_MouseEnter);
+			// 
 			// AboutBox
 			// 
+			this.AcceptButton = this.Close;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(519, 497);
+			this.ClientSize = new System.Drawing.Size(511, 486);
+			this.Controls.Add(this.Close);
 			this.Controls.Add(this.pictureBox5);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.pictureBox3);
@@ -241,5 +255,6 @@
 		private System.Windows.Forms.PictureBox pictureBox4;
 		private System.Windows.Forms.PictureBox pictureBox3;
 		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.Button Close;
 	}
 }

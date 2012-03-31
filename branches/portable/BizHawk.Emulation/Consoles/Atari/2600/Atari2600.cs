@@ -7,13 +7,14 @@ namespace BizHawk
 	public partial class Atari2600 : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "A26"; } }
+		public GameInfo game;
 
 		public int[] frameBuffer = new int[320 * 262];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
-		public byte[] ram = new byte[128];
+
 		public Atari2600(GameInfo game, byte[] rom)
 		{
 			var domains = new List<MemoryDomain>(1);
@@ -22,6 +23,8 @@ namespace BizHawk
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
+			this.game = game;
+			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
 			HardReset();
 		}
 		public void ResetFrameCounter()
@@ -36,7 +39,7 @@ namespace BizHawk
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
-				"Reset",
+				"Reset", "Select"
 			}
 		};
 
@@ -46,6 +49,9 @@ namespace BizHawk
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
+			tia.SyncState(ser);
+			m6532.SyncState(ser);
+			mapper.SyncState(ser);
 		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }

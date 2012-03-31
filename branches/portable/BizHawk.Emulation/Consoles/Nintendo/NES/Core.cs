@@ -23,7 +23,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		INESBoard board; //the board hardware that is currently driving things
 		public bool SoundOn = true;
-		bool _irq_apu, _irq_cart;
+		int sprdma_countdown; //used to 
+		bool _irq_apu, _irq_cart; //various irq signals that get merged to the cpu irq pin
+
+		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; sync_irq(); } }
 		public bool irq_cart { get { return _irq_cart; } set { _irq_cart = value; sync_irq(); } }
 		void sync_irq()
@@ -95,10 +98,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
-		public void DmaTimingHack(int amount)
-		{
-			cpu_deadcounter += amount;
-		}
 		protected void RunCpuOne()
 		{
 			cpu_stepcounter++;
@@ -107,10 +106,24 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cpu_step++;
 				cpu_step &= 31;
 				cpu_stepcounter = 0;
-				if (cpu_deadcounter == 0)
+
+				if (sprdma_countdown > 0)
+				{
+					sprdma_countdown--;
+					if (sprdma_countdown == 0)
+					{
+						//its weird that this is 514.. normally itd be 512 (and people would say its wrong) or 513 (and people would say its right)
+						//but 514 passes test 4-irq_and_dma
+						cpu_deadcounter = 514;
+					}
+				}
+
+				if(cpu_deadcounter>0)
+					cpu_deadcounter--;
+				else
 					cpu.ExecuteOne();
-				else cpu_deadcounter--;
-				if (SoundOn) apu.RunOne(); //THIS ISNT SAFE!!!!!!!!!
+
+				if (SoundOn) apu.RunOne(); //THIS ISNT SAFE!!!!!!!!! SOUND MUST ALWAYS RUN!!!!
 				ppu.PostCpuInstructionOne();
 			}
 		}
@@ -176,10 +189,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			//read joystick port
 			//many todos here
-            lagged = false;
+			lagged = false;
 			byte ret;
 			if(addr == 0x4016)
-                ret = ports[0].Read();
+				ret = ports[0].Read();
 			else ret = ports[1].Read();
 			return ret;
 		}
@@ -193,7 +206,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				WriteMemory(0x2004, db);
 				addr++;
 			}
-			DmaTimingHack(513);
+			//schedule a sprite dma event for beginning 1 cycle in the future.
+			//this receives 2 because thats just the way it works out.
+			sprdma_countdown = 2;
 		}
 
 		/// <summary>

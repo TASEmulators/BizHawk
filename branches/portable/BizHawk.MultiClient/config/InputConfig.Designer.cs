@@ -71,9 +71,9 @@
 			// 
 			// ButtonsGroupBox
 			// 
-			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
 			this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 268);
@@ -83,8 +83,8 @@
 			// 
 			// ControllerImage
 			// 
-			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ControllerImage.Location = new System.Drawing.Point(259, 84);
 			this.ControllerImage.Name = "ControllerImage";
@@ -95,8 +95,8 @@
 			// 
 			// ControllerSelectGroupBox
 			// 
-			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
 			this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
 			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 28);
@@ -148,7 +148,7 @@
             "Gameboy",
             "SMS / GG / SG-1000",
             "Sega Genesis",
-            "PC Engine / SGX",
+            "PC Engine / SuperGrafx",
             "TI-83"});
 			this.SystemComboBox.Location = new System.Drawing.Point(6, 19);
 			this.SystemComboBox.Name = "SystemComboBox";

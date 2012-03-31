@@ -19,31 +19,37 @@ namespace BizHawk.MultiClient
 		int prevWidth;
 		int prevHeight;
 		const string ControllerStr = "Configure Controllers - ";
-		public static string[] GenesisControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", };
 		public static string[] NESControlList = new string[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" };
-		public static string[] TI83ControlList = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
-			"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN", "VARS",
-			"COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM", "WINDOW",
-			"Y", "2nd", "MODE", "Del", ",", "SIN" }; // TODO: display shift / alpha names too, Also order these like on the calculator
 		public static readonly Dictionary<string, string[]> CONTROLS = new Dictionary<string, string[]>()
 		{
-			{"Genesis 3-Button", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start", } },
+			{"Atari", new string[5] { "Up", "Down", "Left", "Right", "Button" } },
+			{"AtariConsoleButtons", new string[2] { "Reset", "Select" } },
+			{"Gameboy", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
 			{"NES", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" } },
-			{"PC Engine / SGX", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
+			{"PC Engine / SuperGrafx", new string[8] { "Up", "Down", "Left", "Right", "I", "II", "Run", "Select" } },
+			{"Sega Genesis", new string[8] { "Up", "Down", "Left", "Right", "A", "B", "C", "Start" } },
 			{"SMS / GG / SG-1000", new string[8] { "Up", "Down", "Left", "Right", "B1", "B2", "Pause", "Reset" } },
 			{
 				// TODO: display shift / alpha names too, Also order these like on the calculator
-				"TI83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
+				"TI-83", new string[50] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "ON",
 				"ENTER", "Up", "Down", "Left", "Right", "+", "-", "Multiply", "Divide", "CLEAR", "^", "-", "(", ")", "TAN",
 				"VARS", "COS", "PRGM", "STAT", "Matrix", "X", "STO->", "LN", "LOG", "^2", "^-1", "MATH", "ALPHA", "GRAPH",
 				"TRACE", "ZOOM", "WINDOW", "Y", "2nd", "MODE", "Del", ",", "SIN" }
 			}
 		};
+
+		public static readonly string[] TI83CONTROLS = new string[50] {
+			"_0", "_1", "_2", "_3", "_4", "_5", "_6", "_7", "_8", "_9", "DOT", "ON", "ENTER", "UP", "DOWN", "LEFT", "RIGHT",
+			"PLUS", "MINUS", "MULTIPLY", "DIVIDE", "CLEAR", "EXP", "DASH", "PARAOPEN", "PARACLOSE", "TAN", "VARS", "COS",
+			"PRGM", "STAT", "MATRIX", "X", "STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA", "GRAPH", "TRACE", "ZOOM",
+			"WINDOW", "Y", "SECOND", "MODE", "DEL", "COMMA", "SIN"
+		};
+
 		public static readonly Dictionary<string, int> PADS = new Dictionary<string, int>()
 		{
-			{"NES", 4}, {"PC Engine / SGX", 5}, {"SMS / GG / SG-1000", 2}
+			{"Atari", 2}, {"Gameboy", 1}, {"NES", 4}, {"PC Engine / SuperGrafx", 5}, {"Sega Genesis", 1}, {"SMS / GG / SG-1000", 2},
+			{"TI-83", 1}
 		};
-		public static string[] AtariControlList = new string[] { "Up", "Down", "Left", "Right", "Button" };
 		private ArrayList Labels;
 		private ArrayList TextBoxes;
 		private string CurSelectConsole;
@@ -80,532 +86,6 @@ namespace BizHawk.MultiClient
 			return button;
 		}
 
-		private void DoAtari()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Atari";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[AtariControlList.Length];
-			int controllers = 2;
-			if (jpad < controllers)
-			{
-				ButtonMappings[0] = Global.Config.Atari2600Controller[jpad].Up;
-				ButtonMappings[1] = Global.Config.Atari2600Controller[jpad].Down;
-				ButtonMappings[2] = Global.Config.Atari2600Controller[jpad].Left;
-				ButtonMappings[3] = Global.Config.Atari2600Controller[jpad].Right;
-				ButtonMappings[4] = Global.Config.Atari2600Controller[jpad].Button;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600Controller[jpad].Enabled;
-			}
-			else
-			{
-				ButtonMappings[0] = Global.Config.Atari2600AutoController[controllers - jpad].Up;
-				ButtonMappings[1] = Global.Config.Atari2600AutoController[controllers - jpad].Down;
-				ButtonMappings[2] = Global.Config.Atari2600AutoController[controllers - jpad].Left;
-				ButtonMappings[3] = Global.Config.Atari2600AutoController[controllers - jpad].Right;
-				ButtonMappings[4] = Global.Config.Atari2600AutoController[controllers - jpad].Button;
-				IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600AutoController[controllers - jpad].Enabled;
-			}
-
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-
-			for (int i = 0; i < AtariControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = AtariControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			
-			Changed = true;
-		}
-
-		private void UpdateAtari(int prev)
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			int controllers = 2;
-			if (prev < controllers)
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.Atari2600Controller[prev].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600Controller[prev].Button);
-				TempBox.Dispose();
-
-				Global.Config.Atari2600Controller[prev].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			else
-			{
-				TempBox = TextBoxes[0] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Up = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Up);
-				TempBox.Dispose();
-				TempBox = TextBoxes[1] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Down = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Down);
-				TempBox.Dispose();
-				TempBox = TextBoxes[2] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Left = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Left);
-				TempBox.Dispose();
-				TempBox = TextBoxes[3] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Right = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Right);
-				TempBox.Dispose();
-				TempBox = TextBoxes[4] as InputWidget;
-				Global.Config.Atari2600AutoController[prev - controllers].Button = AppendButtonMapping(TempBox.Text, Global.Config.Atari2600AutoController[prev - 1].Button);
-				TempBox.Dispose();
-
-				Global.Config.Atari2600AutoController[prev - controllers].Enabled = IDX_CONTROLLERENABLED.Checked;
-			}
-			TempBox.Dispose();
-			for (int i = 0; i < AtariControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-		}
-
-		private void DoGen()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Sega Genesis";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[GenesisControlList.Length];
-			ButtonMappings[0] = Global.Config.GenesisController[0].Up;
-			ButtonMappings[1] = Global.Config.GenesisController[0].Down;
-			ButtonMappings[2] = Global.Config.GenesisController[0].Left;
-			ButtonMappings[3] = Global.Config.GenesisController[0].Right;
-			ButtonMappings[4] = Global.Config.GenesisController[0].A;
-			ButtonMappings[5] = Global.Config.GenesisController[0].B;
-			ButtonMappings[6] = Global.Config.GenesisController[0].C;
-			ButtonMappings[7] = Global.Config.GenesisController[0].Start;
-
-			IDX_CONTROLLERENABLED.Checked = Global.Config.GenesisController[0].Enabled;
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-
-			for (int i = 0; i < GenesisControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = GenesisControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			Changed = true;
-		}
-
-		private void UpdateGen(int prev)
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.GenesisController[0].Up = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.GenesisController[0].Down = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.GenesisController[0].Left = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.GenesisController[0].Right = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.GenesisController[0].A = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].I);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.GenesisController[0].B = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].II);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.GenesisController[0].C = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Run);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.GenesisController[0].Start = AppendButtonMapping(TempBox.Text, Global.Config.PCEController[prev].Select);
-			TempBox.Dispose();
-			Global.Config.GenesisController[0].Enabled = IDX_CONTROLLERENABLED.Checked;
-
-			for (int i = 0; i < GenesisControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-		}
-
-		private void DoTI83()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "TI-83";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
-			int jpad = this.ControllComboBox.SelectedIndex;
-			string[] ButtonMappings = new string[TI83ControlList.Length];
-			ButtonMappings[0] = Global.Config.TI83Controller[jpad]._0;
-			ButtonMappings[1] = Global.Config.TI83Controller[jpad]._1;
-			ButtonMappings[2] = Global.Config.TI83Controller[jpad]._2;
-			ButtonMappings[3] = Global.Config.TI83Controller[jpad]._3;
-			ButtonMappings[4] = Global.Config.TI83Controller[jpad]._4;
-			ButtonMappings[5] = Global.Config.TI83Controller[jpad]._5;
-			ButtonMappings[6] = Global.Config.TI83Controller[jpad]._6;
-			ButtonMappings[7] = Global.Config.TI83Controller[jpad]._7;
-			ButtonMappings[8] = Global.Config.TI83Controller[jpad]._8;
-			ButtonMappings[9] = Global.Config.TI83Controller[jpad]._9;
-			ButtonMappings[10] = Global.Config.TI83Controller[jpad].DOT;
-			ButtonMappings[11] = Global.Config.TI83Controller[jpad].ON;
-			ButtonMappings[12] = Global.Config.TI83Controller[jpad].ENTER;
-			ButtonMappings[13] = Global.Config.TI83Controller[jpad].UP;
-			ButtonMappings[14] = Global.Config.TI83Controller[jpad].DOWN;
-			ButtonMappings[15] = Global.Config.TI83Controller[jpad].LEFT;
-			ButtonMappings[16] = Global.Config.TI83Controller[jpad].RIGHT;
-			ButtonMappings[17] = Global.Config.TI83Controller[jpad].PLUS;
-			ButtonMappings[18] = Global.Config.TI83Controller[jpad].MINUS;
-			ButtonMappings[19] = Global.Config.TI83Controller[jpad].MULTIPLY;
-			ButtonMappings[20] = Global.Config.TI83Controller[jpad].DIVIDE;
-			ButtonMappings[21] = Global.Config.TI83Controller[jpad].CLEAR;
-			ButtonMappings[22] = Global.Config.TI83Controller[jpad].EXP;
-			ButtonMappings[23] = Global.Config.TI83Controller[jpad].DASH;
-			ButtonMappings[24] = Global.Config.TI83Controller[jpad].PARACLOSE;
-			ButtonMappings[25] = Global.Config.TI83Controller[jpad].PARAOPEN;
-			ButtonMappings[26] = Global.Config.TI83Controller[jpad].TAN;
-			ButtonMappings[27] = Global.Config.TI83Controller[jpad].VARS;
-			ButtonMappings[28] = Global.Config.TI83Controller[jpad].COS;
-			ButtonMappings[29] = Global.Config.TI83Controller[jpad].PRGM;
-			ButtonMappings[30] = Global.Config.TI83Controller[jpad].STAT;
-			ButtonMappings[31] = Global.Config.TI83Controller[jpad].MATRIX;
-			ButtonMappings[32] = Global.Config.TI83Controller[jpad].X;
-			ButtonMappings[33] = Global.Config.TI83Controller[jpad].STO;
-			ButtonMappings[34] = Global.Config.TI83Controller[jpad].LN;
-			ButtonMappings[35] = Global.Config.TI83Controller[jpad].LOG;
-			ButtonMappings[36] = Global.Config.TI83Controller[jpad].SQUARED;
-			ButtonMappings[37] = Global.Config.TI83Controller[jpad].NEG1;
-			ButtonMappings[38] = Global.Config.TI83Controller[jpad].MATH;
-			ButtonMappings[39] = Global.Config.TI83Controller[jpad].ALPHA;
-			ButtonMappings[40] = Global.Config.TI83Controller[jpad].GRAPH;
-			ButtonMappings[41] = Global.Config.TI83Controller[jpad].TRACE;
-			ButtonMappings[42] = Global.Config.TI83Controller[jpad].ZOOM;
-			ButtonMappings[43] = Global.Config.TI83Controller[jpad].WINDOW;
-			ButtonMappings[44] = Global.Config.TI83Controller[jpad].Y;
-			ButtonMappings[45] = Global.Config.TI83Controller[jpad].SECOND;
-			ButtonMappings[46] = Global.Config.TI83Controller[jpad].MODE;
-			ButtonMappings[47] = Global.Config.TI83Controller[jpad].DEL;
-			ButtonMappings[48] = Global.Config.TI83Controller[jpad].COMMA;
-			ButtonMappings[49] = Global.Config.TI83Controller[jpad].SIN;
-			IDX_CONTROLLERENABLED.Checked = Global.Config.TI83Controller[jpad].Enabled;
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-
-			//NOTE: Uses a hard coded 50 buttons (but it isn't likely that a TI-83 will magically get more buttons
-			for (int i = 0; i < 17; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = TI83ControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			int c = 0;
-			for (int i = 17; i < 34; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = TI83ControlList[i];
-				TempLabel.Location = new Point(150, 20 + (c * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(190, 20 + (c * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-				c++;
-			}
-			c = 0;
-			for (int i = 34; i < 50; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = TI83ControlList[i];
-				TempLabel.Location = new Point(292, 20 + (c * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(348, 20 + (c * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-				c++;
-			}
-			Changed = true;
-		}
-
-		private void UpdateTI83()
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.TI83Controller[0]._0 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._0);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.TI83Controller[0]._1 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._1);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.TI83Controller[0]._2 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._2);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.TI83Controller[0]._3 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._3);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.TI83Controller[0]._4 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._4);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.TI83Controller[0]._5 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._5);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.TI83Controller[0]._6 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._6);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.TI83Controller[0]._7 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._7);
-			TempBox.Dispose();
-			TempBox = TextBoxes[8] as InputWidget;
-			Global.Config.TI83Controller[0]._8 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._8);
-			TempBox.Dispose();
-			TempBox = TextBoxes[9] as InputWidget;
-			Global.Config.TI83Controller[0]._9 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0]._9);
-			TempBox.Dispose();
-			TempBox = TextBoxes[10] as InputWidget;
-			Global.Config.TI83Controller[0].DOT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DOT);
-			TempBox.Dispose();
-			TempBox = TextBoxes[11] as InputWidget;
-			Global.Config.TI83Controller[0].ON = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].ON);
-			TempBox.Dispose();
-			TempBox = TextBoxes[12] as InputWidget;
-			Global.Config.TI83Controller[0].ENTER = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].ENTER);
-			TempBox.Dispose();
-			TempBox = TextBoxes[13] as InputWidget;
-			Global.Config.TI83Controller[0].UP = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].UP);
-			TempBox.Dispose();
-			TempBox = TextBoxes[14] as InputWidget;
-			Global.Config.TI83Controller[0].DOWN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DOWN);
-			TempBox.Dispose();
-			TempBox = TextBoxes[15] as InputWidget;
-			Global.Config.TI83Controller[0].LEFT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].LEFT);
-			TempBox.Dispose();
-			TempBox = TextBoxes[16] as InputWidget;
-			Global.Config.TI83Controller[0].RIGHT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].RIGHT);
-			TempBox.Dispose();
-			TempBox = TextBoxes[17] as InputWidget;
-			Global.Config.TI83Controller[0].PLUS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].PLUS);
-			TempBox.Dispose();
-			TempBox = TextBoxes[18] as InputWidget;
-			Global.Config.TI83Controller[0].MINUS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MINUS);
-			TempBox.Dispose();
-			TempBox = TextBoxes[19] as InputWidget;
-			Global.Config.TI83Controller[0].MULTIPLY = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MULTIPLY);
-			TempBox.Dispose();
-			TempBox = TextBoxes[20] as InputWidget;
-			Global.Config.TI83Controller[0].DIVIDE = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DIVIDE);
-			TempBox.Dispose();
-			TempBox = TextBoxes[21] as InputWidget;
-			Global.Config.TI83Controller[0].CLEAR = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].CLEAR);
-			TempBox.Dispose();
-			TempBox = TextBoxes[22] as InputWidget;
-			Global.Config.TI83Controller[0].EXP = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].EXP);
-			TempBox.Dispose();
-			TempBox = TextBoxes[23] as InputWidget;
-			Global.Config.TI83Controller[0].DASH = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DASH);
-			TempBox.Dispose();
-			TempBox = TextBoxes[24] as InputWidget;
-			Global.Config.TI83Controller[0].PARACLOSE = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].PARACLOSE);
-			TempBox.Dispose();
-			TempBox = TextBoxes[25] as InputWidget;
-			Global.Config.TI83Controller[0].PARAOPEN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].PARAOPEN);
-			TempBox.Dispose();
-			TempBox = TextBoxes[26] as InputWidget;
-			Global.Config.TI83Controller[0].TAN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].TAN);
-			TempBox.Dispose();
-			TempBox = TextBoxes[27] as InputWidget;
-			Global.Config.TI83Controller[0].VARS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].VARS);
-			TempBox.Dispose();
-			TempBox = TextBoxes[28] as InputWidget;
-			Global.Config.TI83Controller[0].COS = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].COS);
-			TempBox.Dispose();
-			TempBox = TextBoxes[29] as InputWidget;
-			Global.Config.TI83Controller[0].PRGM = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].PRGM);
-			TempBox.Dispose();
-			TempBox = TextBoxes[30] as InputWidget;
-			Global.Config.TI83Controller[0].STAT = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].STAT);
-			TempBox.Dispose();
-			TempBox = TextBoxes[31] as InputWidget;
-			Global.Config.TI83Controller[0].MATRIX = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MATRIX);
-			TempBox.Dispose();
-			TempBox = TextBoxes[32] as InputWidget;
-			Global.Config.TI83Controller[0].X = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].X);
-			TempBox.Dispose();
-			TempBox = TextBoxes[33] as InputWidget;
-			Global.Config.TI83Controller[0].STO = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].STO);
-			TempBox.Dispose();
-			TempBox = TextBoxes[34] as InputWidget;
-			Global.Config.TI83Controller[0].LN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].LN);
-			TempBox.Dispose();
-			TempBox = TextBoxes[35] as InputWidget;
-			Global.Config.TI83Controller[0].LOG = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].LOG);
-			TempBox.Dispose();
-			TempBox = TextBoxes[36] as InputWidget;
-			Global.Config.TI83Controller[0].SQUARED = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].SQUARED);
-			TempBox.Dispose();
-			TempBox = TextBoxes[37] as InputWidget;
-			Global.Config.TI83Controller[0].NEG1 = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].NEG1);
-			TempBox.Dispose();
-			TempBox = TextBoxes[38] as InputWidget;
-			Global.Config.TI83Controller[0].MATH = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MATH);
-			TempBox.Dispose();
-			TempBox = TextBoxes[39] as InputWidget;
-			Global.Config.TI83Controller[0].ALPHA = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].ALPHA);
-			TempBox.Dispose();
-			TempBox = TextBoxes[40] as InputWidget;
-			Global.Config.TI83Controller[0].GRAPH = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].GRAPH);
-			TempBox.Dispose();
-			TempBox = TextBoxes[41] as InputWidget;
-			Global.Config.TI83Controller[0].TRACE = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].TRACE);
-			TempBox.Dispose();
-			TempBox = TextBoxes[42] as InputWidget;
-			Global.Config.TI83Controller[0].ZOOM = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].ZOOM);
-			TempBox.Dispose();
-			TempBox = TextBoxes[43] as InputWidget;
-			Global.Config.TI83Controller[0].WINDOW = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].WINDOW);
-			TempBox.Dispose();
-			TempBox = TextBoxes[44] as InputWidget;
-			Global.Config.TI83Controller[0].Y = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].Y);
-			TempBox.Dispose();
-			TempBox = TextBoxes[45] as InputWidget;
-			Global.Config.TI83Controller[0].SECOND = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].SECOND);
-			TempBox.Dispose();
-			TempBox = TextBoxes[46] as InputWidget;
-			Global.Config.TI83Controller[0].MODE = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].MODE);
-			TempBox.Dispose();
-			TempBox = TextBoxes[47] as InputWidget;
-			Global.Config.TI83Controller[0].DEL = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].DEL);
-			TempBox.Dispose();
-			TempBox = TextBoxes[48] as InputWidget;
-			Global.Config.TI83Controller[0].COMMA = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].COMMA);
-			TempBox.Dispose();
-			TempBox = TextBoxes[49] as InputWidget;
-			Global.Config.TI83Controller[0].SIN = AppendButtonMapping(TempBox.Text, Global.Config.TI83Controller[0].SIN);
-			TempBox.Dispose();
-
-			for (int i = 0; i < TI83ControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-			IDX_CONTROLLERENABLED.Enabled = true;
-		}
-
-		private void DoGameBoy()
-		{
-			Label TempLabel;
-			InputWidget TempTextBox;
-			this.Text = ControllerStr + "Gameboy";
-			ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
-			string[] ButtonMappings = new string[NESControlList.Length];
-			ButtonMappings[0] = Global.Config.GameBoyController.Up;
-			ButtonMappings[1] = Global.Config.GameBoyController.Down;
-			ButtonMappings[2] = Global.Config.GameBoyController.Left;
-			ButtonMappings[3] = Global.Config.GameBoyController.Right;
-			ButtonMappings[4] = Global.Config.GameBoyController.A;
-			ButtonMappings[5] = Global.Config.GameBoyController.B;
-			ButtonMappings[6] = Global.Config.GameBoyController.Start;
-			ButtonMappings[7] = Global.Config.GameBoyController.Select;
-			IDX_CONTROLLERENABLED.Enabled = false;
-			Changed = true;
-			Labels.Clear();
-			TextBoxes.Clear();
-			for (int i = 0; i < NESControlList.Length; i++)
-			{
-				TempLabel = new Label();
-				TempLabel.Text = NESControlList[i];
-				TempLabel.Location = new Point(8, 20 + (i * 24));
-				Labels.Add(TempLabel);
-				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (i * 24));
-				TextBoxes.Add(TempTextBox);
-				TempTextBox.SetBindings(ButtonMappings[i]);
-				ButtonsGroupBox.Controls.Add(TempTextBox);
-				ButtonsGroupBox.Controls.Add(TempLabel);
-			}
-			Changed = true;
-		}
-
-		private void UpdateGameBoy()
-		{
-			ButtonsGroupBox.Controls.Clear();
-			InputWidget TempBox;
-			Label TempLabel;
-			TempBox = TextBoxes[0] as InputWidget;
-			Global.Config.GameBoyController.Up = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Up);
-			TempBox.Dispose();
-			TempBox = TextBoxes[1] as InputWidget;
-			Global.Config.GameBoyController.Down = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Down);
-			TempBox.Dispose();
-			TempBox = TextBoxes[2] as InputWidget;
-			Global.Config.GameBoyController.Left = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Left);
-			TempBox.Dispose();
-			TempBox = TextBoxes[3] as InputWidget;
-			Global.Config.GameBoyController.Right = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Right);
-			TempBox.Dispose();
-			TempBox = TextBoxes[4] as InputWidget;
-			Global.Config.GameBoyController.A = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.A);
-			TempBox.Dispose();
-			TempBox = TextBoxes[5] as InputWidget;
-			Global.Config.GameBoyController.B = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.B);
-			TempBox.Dispose();
-			TempBox = TextBoxes[6] as InputWidget;
-			Global.Config.GameBoyController.Start = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Start);
-			TempBox.Dispose();
-			TempBox = TextBoxes[7] as InputWidget;
-			Global.Config.GameBoyController.Select = AppendButtonMapping(TempBox.Text, Global.Config.GameBoyController.Select);
-			TempBox.Dispose();
-			for (int i = 0; i < NESControlList.Length; i++)
-			{
-				TempLabel = Labels[i] as Label;
-				TempLabel.Dispose();
-			}
-			IDX_CONTROLLERENABLED.Enabled = true;
-		}
-
 		private void Do(string platform)
 		{
 			Label TempLabel;
@@ -616,67 +96,131 @@ namespace BizHawk.MultiClient
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "Atari":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.atari_controller;
+					controller = Global.Config.Atari2600Controller;
+					autoController = Global.Config.Atari2600AutoController;
+					break;
+				case "Gameboy":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
+					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
+					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					break;
 				case "NES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.PCEngineController;
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
+					break;
+				case "Sega Genesis":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GENController;
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
 					break;
 				case "SMS / GG / SG-1000":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.SMSController;
 					controller = Global.Config.SMSController;
 					autoController = Global.Config.SMSAutoController;
 					break;
+				case "TI-83":
+					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.TI83CalculatorCrop;
+					controller = Global.Config.TI83Controller;
+					break;
 				default:
 					return;
 			}
 			mainController = controller;
 			int jpad = this.ControllComboBox.SelectedIndex;
-			if (jpad >= PADS[platform])
+			if (jpad >= PADS[platform] * 2) //Not joypad or auto-joypad, must be special category (adelikat: I know this is hacky but so is the rest of this file)
 			{
-				jpad -= PADS[platform];
-				controller = autoController;
+				switch (platform)
+				{
+					case "Atari":
+						IDX_CONTROLLERENABLED.Checked = Global.Config.Atari2600ConsoleButtons[0].Enabled;
+						controller = Global.Config.Atari2600ConsoleButtons;
+						break;
+				}
+				platform += "ConsoleButtons";
 			}
-			switch (platform)
+			else
 			{
-				case "NES":
-					IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "PC Engine / SGX":
-					IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
-					break;
-				case "SMS / GG / SG-1000":
-					IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
-					break;
+				if (jpad >= PADS[platform])
+				{
+					jpad -= PADS[platform];
+					controller = autoController;
+				}
+				switch (platform)
+				{
+					case "Atari":
+						IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "Gameboy":
+					case "NES":
+						IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "PC Engine / SuperGrafx":
+						IDX_CONTROLLERENABLED.Checked = ((PCEControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "Sega Genesis":
+						IDX_CONTROLLERENABLED.Checked = ((GenControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "SMS / GG / SG-1000":
+						IDX_CONTROLLERENABLED.Checked = ((SMSControllerTemplate)mainController[jpad]).Enabled;
+						break;
+					case "TI-83":
+						IDX_CONTROLLERENABLED.Checked = ((TI83ControllerTemplate)mainController[jpad]).Enabled;
+						break;
+				}
 			}
 			Labels.Clear();
 			TextBoxes.Clear();
+			int row = 0;
+			int col = 0;
 			for (int button = 0; button < CONTROLS[platform].Length; button++)
 			{
 				TempLabel = new Label();
 				TempLabel.Text = CONTROLS[platform][button];
-				TempLabel.Location = new Point(8, 20 + (button * 24));
+				int xoffset = (col * 156);
+				int yoffset = (row * 24);
+				TempLabel.Location = new Point(8 + xoffset, 20 + yoffset);
 				Labels.Add(TempLabel);
 				TempTextBox = new InputWidget();
-				TempTextBox.Location = new Point(48, 20 + (button * 24));
+				TempTextBox.Location = new Point(64 + xoffset, 20 + yoffset);
 				TextBoxes.Add(TempTextBox);
 				object field = null;
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "AtariConsoleButtons":
+						Atari2600ConsoleButtonsTemplate o = (Atari2600ConsoleButtonsTemplate)controller[0];
+						field = o.GetType().GetField(fieldName).GetValue(o);
+						break;
+					case "Atari":
+					{
+						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
+					case "Gameboy":
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
-					case "PC Engine / SGX":
+					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[jpad];
 						field = obj.GetType().GetField(fieldName).GetValue(obj);
 						break;
 					}
@@ -693,53 +237,102 @@ namespace BizHawk.MultiClient
 							field = Global.Config.SmsReset;
 						break;
 					}
+					case "TI-83":
+					{
+						TI83ControllerTemplate obj = (TI83ControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(TI83CONTROLS[button]).GetValue(obj);
+						break;
+					}
 				}
 				TempTextBox.SetBindings((string)field);
 				ButtonsGroupBox.Controls.Add(TempTextBox);
 				ButtonsGroupBox.Controls.Add(TempLabel);
+				row++;
+				if (row > 16)
+				{
+					row = 0;
+					col++;
+				}
 			}
 			Changed = true;
 		}
 
 		private void Update(int prev, string platform)
 		{
+			if (platform == "Atari" && prev == 4) //adelikat: very hacky  I know
+				platform += "ConsoleButtons";
 			ButtonsGroupBox.Controls.Clear();
 			object[] controller = null;
 			object[] mainController = null;
 			object[] autoController = null;
 			switch (platform)
 			{
+				case "AtariConsoleButtons":
+					controller = Global.Config.Atari2600ConsoleButtons;
+					break;
+				case "Atari":
+					controller = Global.Config.Atari2600Controller;
+					autoController = Global.Config.Atari2600AutoController;
+					break;
+				case "Gameboy":
+					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
+					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					break;
 				case "NES":
 					controller = Global.Config.NESController;
 					autoController = Global.Config.NESAutoController;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					controller = Global.Config.PCEController;
 					autoController = Global.Config.PCEAutoController;
+					break;
+				case "Sega Genesis":
+					controller = Global.Config.GenesisController;
+					autoController = Global.Config.GenesisAutoController;
 					break;
 				case "SMS / GG / SG-1000":
 					controller = Global.Config.SMSController;
 					autoController = Global.Config.SMSAutoController;
 					break;
+				case "TI-83":
+					controller = Global.Config.TI83Controller;
+					break;
 				default:
 					return;
 			}
 			mainController = controller;
-			if (prev >= PADS[platform])
+			if (platform == "AtariConsoleButtons")
+			{
+				prev = 0;
+			}
+			else if (prev >= PADS[platform])
 			{
 				prev -= PADS[platform];
 				controller = autoController;
 			}
 			switch (platform)
 			{
+				case "AtariConsoleButtons":
+					((Atari2600ConsoleButtonsTemplate)mainController[0]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "Atari":
+					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "Gameboy":
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
-				case "PC Engine / SGX":
+				case "PC Engine / SuperGrafx":
 					((PCEControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "Sega Genesis":
+					((GenControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "SMS / GG / SG-1000":
 					((SMSControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
+				case "TI-83":
+					((TI83ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 			}
 			for (int button = 0; button < CONTROLS[platform].Length; button++)
@@ -749,6 +342,21 @@ namespace BizHawk.MultiClient
 				string fieldName = CONTROLS[platform][button];
 				switch (platform)
 				{
+					case "AtariConsoleButtons":
+						Atari2600ConsoleButtonsTemplate o = (Atari2600ConsoleButtonsTemplate)controller[0];
+						FieldInfo buttonF = o.GetType().GetField(fieldName);
+						field = buttonF.GetValue(o);
+						buttonF.SetValue(o, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					case "Atari":
+					{
+						Atari2600ControllerTemplate obj = (Atari2600ControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
+					case "Gameboy":
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];
@@ -757,9 +365,17 @@ namespace BizHawk.MultiClient
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
 						break;
 					}
-					case "PC Engine / SGX":
+					case "PC Engine / SuperGrafx":
 					{
 						PCEControllerTemplate obj = (PCEControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
+					case "Sega Genesis":
+					{
+						GenControllerTemplate obj = (GenControllerTemplate)controller[prev];
 						FieldInfo buttonField = obj.GetType().GetField(fieldName);
 						field = buttonField.GetValue(obj);
 						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
@@ -778,6 +394,14 @@ namespace BizHawk.MultiClient
 							Global.Config.SmsPause = AppendButtonMapping(TempBox.Text, Global.Config.SmsPause);
 						else
 							Global.Config.SmsReset = AppendButtonMapping(TempBox.Text, Global.Config.SmsReset);
+						break;
+					}
+					case "TI-83":
+					{
+						TI83ControllerTemplate obj = (TI83ControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(TI83CONTROLS[button]);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
 						break;
 					}
 				}
@@ -803,7 +427,7 @@ namespace BizHawk.MultiClient
 				Dictionary<string, string> systems = new Dictionary<string, string>()
 				{
 					{"A26", "Atari"}, {"GB", "Gameboy"}, {"GEN", "Sega Genesis"}, {"GG", "SMS / GG / SG-1000"}, {"NES", "NES"},
-					{"PCE", "PC Engine / SGX"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SGX"},
+					{"PCE", "PC Engine / SuperGrafx"}, {"SG", "SMS / GG / SG-1000"}, {"SGX", "PC Engine / SuperGrafx"},
 					{"SMS", "SMS / GG / SG-1000"}, {"TI83", "TI-83"}
 				};
 				if (systems.ContainsKey(Global.Game.System))
@@ -835,46 +459,18 @@ namespace BizHawk.MultiClient
 			{
 				UpdateAll();
 			}
-			int joypads = 0;
-			switch (this.SystemComboBox.SelectedItem.ToString())
+			int joypads = PADS[this.SystemComboBox.SelectedItem.ToString()];
+			if (this.SystemComboBox.SelectedItem.ToString() != "TI-83")
 			{
-				case "SMS / GG / SG-1000":
-					joypads = 2;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "PC Engine / SGX":
-					joypads = 5;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Gameboy":
-					joypads = 1;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Sega Genesis":
-					joypads = 8;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "TI-83":
-					joypads = 1;
-					if (this.Width < 690)
-						this.Width = 690;
-					if (this.Height < 556)
-						this.Height = 556;
-					break;
-				case "NES":
-					joypads = 4;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
-				case "Atari":
-					joypads = 2;
-					this.Width = prevWidth;
-					this.Height = prevHeight;
-					break;
+				this.Width = prevWidth;
+				this.Height = prevHeight;
+			}
+			else
+			{
+				if (this.Width < 700)
+					this.Width = 700;
+				if (this.Height < 580)
+					this.Height = 580;
 			}
 			ControllComboBox.Items.Clear();
 			for (int i = 0; i < joypads; i++)
@@ -885,6 +481,10 @@ namespace BizHawk.MultiClient
 			{
 				if (this.SystemComboBox.SelectedItem.ToString() != "TI-83")
 					ControllComboBox.Items.Add(string.Format("Autofire Joypad {0}", i + 1));
+			}
+			if (this.SystemComboBox.SelectedItem.ToString() == "Atari")
+			{
+				ControllComboBox.Items.Add("Console");
 			}
 			ControllComboBox.SelectedIndex = 0;
 			CurSelectConsole = this.SystemComboBox.SelectedItem.ToString();
@@ -897,51 +497,13 @@ namespace BizHawk.MultiClient
 			{
 				UpdateAll();
 			}
-			switch (SystemComboBox.SelectedItem.ToString())
-			{
-				case "NES":
-				case "PC Engine / SGX":
-				case "SMS / GG / SG-1000":
-					Do(SystemComboBox.SelectedItem.ToString());
-					break;
-				case "Gameboy":
-					DoGameBoy();
-					break;
-				case "Sega Genesis":
-					DoGen();
-					break;
-				case "TI-83":
-					DoTI83();
-					break;
-				case "Atari":
-					DoAtari();
-					break;
-			}
+			Do(SystemComboBox.SelectedItem.ToString());
 			CurSelectController = ControllComboBox.SelectedIndex;
 			SetFocus();
 		}
 		private void UpdateAll()
 		{
-			switch (CurSelectConsole)
-			{
-				case "NES":
-				case "PC Engine / SGX":
-				case "SMS / GG / SG-1000":
-					Update(CurSelectController, CurSelectConsole);
-					break;
-				case "Gameboy":
-					UpdateGameBoy();
-					break;
-				case "Sega Genesis":
-					//UpdateGenesis();
-					break;
-				case "TI-83":
-					UpdateTI83();
-					break;
-				case "Atari":
-					UpdateAtari(CurSelectController);
-					break;
-			}
+			Update(CurSelectController, CurSelectConsole);
 			Changed = false;
 		}
 

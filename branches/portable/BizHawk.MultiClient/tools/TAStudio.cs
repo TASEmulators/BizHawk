@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 
 		//Movie header object - to have the main project header data
 		//List<string> MacroFiles - list of .macro files (simply log files)
-		//List<string> TimeLines - list of .tas files
+		//List<string> TimeLines - list of movie files
 		//List<string> Bookmarks - list of savestate files
 
 		public TAStudio()
@@ -56,7 +56,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
 				string str = Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame);
-				if (Global.Config.TASUpdatePads)
+				if (Global.Config.TASUpdatePads == true && str != "")
 				{
 					switch (Global.Emulator.SystemId)
 					{

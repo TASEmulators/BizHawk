@@ -21,12 +21,13 @@ namespace BizHawk.MultiClient
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
 			GenesisController[0] = new GenControllerTemplate(true);
-			GenesisAutoController[0] = new GenControllerTemplate(true);
+			GenesisAutoController[0] = new GenControllerTemplate(false);
 
 			Atari2600Controller[0] = new Atari2600ControllerTemplate(true);
 			Atari2600Controller[1] = new Atari2600ControllerTemplate(false);
-			Atari2600AutoController[0] = new Atari2600ControllerTemplate(true);
+			Atari2600AutoController[0] = new Atari2600ControllerTemplate(false);
 			Atari2600AutoController[1] = new Atari2600ControllerTemplate(false);
+			Atari2600ConsoleButtons[0] = new Atari2600ConsoleButtonsTemplate(true);
 
 			NESAutoController[0] = new NESControllerTemplate(false);
 			NESAutoController[1] = new NESControllerTemplate(false);
@@ -42,7 +43,7 @@ namespace BizHawk.MultiClient
 			PCEAutoController[3] = new PCEControllerTemplate(false);
 			PCEAutoController[4] = new PCEControllerTemplate(false);
 
-			GameBoyAutoController = new NESControllerTemplate(true);
+			GameBoyAutoController = new NESControllerTemplate(false);
 		}
 
 		// Directories
@@ -152,6 +153,7 @@ namespace BizHawk.MultiClient
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
+		public string MovieExtension = "bkm";
 
 		// Run-Control settings
 		public int FrameProgressDelayMs = 500; //how long until a frame advance hold turns into a frame progress?
@@ -459,6 +461,8 @@ namespace BizHawk.MultiClient
 		public string AVIRecordBinding = "";
 		public string AVIStopBinding = "";
 		public string ToggleMenuBinding = "";
+		public string IncreaseWindowSize = "Alt+UpArrow";
+		public string DecreaseWindowSize = "Alt+DownArrow";
 
 		// SMS / GameGear Settings
 		public bool SmsEnableFM = true;
@@ -485,6 +489,7 @@ namespace BizHawk.MultiClient
 		//Atari 2600 Settings
 		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
 		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
+		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
@@ -717,6 +722,24 @@ namespace BizHawk.MultiClient
 				Left = "LeftArrow, J1 Left";
 				Right = "RightArrow, J1 Right";
 				Button = "Z, J1 B1";
+			}
+		}
+	}
+
+	public class Atari2600ConsoleButtonsTemplate
+	{
+		public string Reset = "";
+		public string Select = "";
+		public bool Enabled;
+
+		public Atari2600ConsoleButtonsTemplate() { }
+		public Atari2600ConsoleButtonsTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Reset = "";
+				Select = "";
 			}
 		}
 	}

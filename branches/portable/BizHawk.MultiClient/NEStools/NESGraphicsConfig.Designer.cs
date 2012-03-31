@@ -52,6 +52,8 @@
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
+			this.btnAreaStandard = new System.Windows.Forms.Button();
+			this.btnAreaFull = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).BeginInit();
@@ -94,13 +96,13 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.AutoLoadPalette);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.PalettePath);
 			this.groupBox1.Controls.Add(this.BrowsePalette);
-			this.groupBox1.Location = new System.Drawing.Point(12, 24);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(352, 95);
 			this.groupBox1.TabIndex = 3;
@@ -130,8 +132,8 @@
 			// 
 			// PalettePath
 			// 
-			this.PalettePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.PalettePath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.PalettePath.Location = new System.Drawing.Point(6, 40);
 			this.PalettePath.Name = "PalettePath";
 			this.PalettePath.Size = new System.Drawing.Size(259, 20);
@@ -150,17 +152,19 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.btnAreaFull);
+			this.groupBox2.Controls.Add(this.btnAreaStandard);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.LastLineNumeric);
 			this.groupBox2.Controls.Add(this.FirstLineNumeric);
 			this.groupBox2.Controls.Add(this.ClipLeftAndRightCheckBox);
 			this.groupBox2.Controls.Add(this.AllowMoreSprites);
-			this.groupBox2.Location = new System.Drawing.Point(12, 125);
+			this.groupBox2.Location = new System.Drawing.Point(12, 113);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(352, 88);
+			this.groupBox2.Size = new System.Drawing.Size(352, 134);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
@@ -229,8 +233,8 @@
 			// 
 			// groupBox3
 			// 
-			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox3.Controls.Add(this.checkUseBackdropColor);
 			this.groupBox3.Controls.Add(this.ChangeBGColor);
 			this.groupBox3.Controls.Add(this.BackGroundColorNumber);
@@ -238,9 +242,9 @@
 			this.groupBox3.Controls.Add(this.groupBox4);
 			this.groupBox3.Controls.Add(this.DispBackground);
 			this.groupBox3.Controls.Add(this.DispSprites);
-			this.groupBox3.Location = new System.Drawing.Point(12, 223);
+			this.groupBox3.Location = new System.Drawing.Point(12, 253);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(352, 128);
+			this.groupBox3.Size = new System.Drawing.Size(352, 113);
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "BG and Sprites";
@@ -250,7 +254,7 @@
 			this.checkUseBackdropColor.AutoSize = true;
 			this.checkUseBackdropColor.Checked = true;
 			this.checkUseBackdropColor.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkUseBackdropColor.Location = new System.Drawing.Point(170, 100);
+			this.checkUseBackdropColor.Location = new System.Drawing.Point(169, 85);
 			this.checkUseBackdropColor.Name = "checkUseBackdropColor";
 			this.checkUseBackdropColor.Size = new System.Drawing.Size(59, 17);
 			this.checkUseBackdropColor.TabIndex = 36;
@@ -259,7 +263,7 @@
 			// 
 			// ChangeBGColor
 			// 
-			this.ChangeBGColor.Location = new System.Drawing.Point(112, 98);
+			this.ChangeBGColor.Location = new System.Drawing.Point(111, 83);
 			this.ChangeBGColor.Name = "ChangeBGColor";
 			this.ChangeBGColor.Size = new System.Drawing.Size(52, 23);
 			this.ChangeBGColor.TabIndex = 35;
@@ -269,7 +273,7 @@
 			// 
 			// BackGroundColorNumber
 			// 
-			this.BackGroundColorNumber.Location = new System.Drawing.Point(47, 100);
+			this.BackGroundColorNumber.Location = new System.Drawing.Point(46, 85);
 			this.BackGroundColorNumber.MaxLength = 8;
 			this.BackGroundColorNumber.Name = "BackGroundColorNumber";
 			this.BackGroundColorNumber.ReadOnly = true;
@@ -279,7 +283,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 79);
+			this.label2.Location = new System.Drawing.Point(8, 64);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(178, 13);
 			this.label2.TabIndex = 3;
@@ -288,7 +292,7 @@
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.BackgroundColorPanel);
-			this.groupBox4.Location = new System.Drawing.Point(9, 94);
+			this.groupBox4.Location = new System.Drawing.Point(8, 79);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(28, 28);
 			this.groupBox4.TabIndex = 2;
@@ -306,7 +310,7 @@
 			this.DispBackground.AutoSize = true;
 			this.DispBackground.Checked = true;
 			this.DispBackground.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.DispBackground.Location = new System.Drawing.Point(9, 42);
+			this.DispBackground.Location = new System.Drawing.Point(7, 42);
 			this.DispBackground.Name = "DispBackground";
 			this.DispBackground.Size = new System.Drawing.Size(78, 17);
 			this.DispBackground.TabIndex = 30;
@@ -318,12 +322,32 @@
 			this.DispSprites.AutoSize = true;
 			this.DispSprites.Checked = true;
 			this.DispSprites.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.DispSprites.Location = new System.Drawing.Point(9, 19);
+			this.DispSprites.Location = new System.Drawing.Point(7, 19);
 			this.DispSprites.Name = "DispSprites";
 			this.DispSprites.Size = new System.Drawing.Size(95, 17);
 			this.DispSprites.TabIndex = 25;
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
+			// 
+			// btnAreaStandard
+			// 
+			this.btnAreaStandard.Location = new System.Drawing.Point(12, 71);
+			this.btnAreaStandard.Name = "btnAreaStandard";
+			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaStandard.TabIndex = 25;
+			this.btnAreaStandard.Text = "Standard [8,231]";
+			this.btnAreaStandard.UseVisualStyleBackColor = true;
+			this.btnAreaStandard.Click += new System.EventHandler(this.btnAreaStandard_Click);
+			// 
+			// btnAreaFull
+			// 
+			this.btnAreaFull.Location = new System.Drawing.Point(12, 99);
+			this.btnAreaFull.Name = "btnAreaFull";
+			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaFull.TabIndex = 26;
+			this.btnAreaFull.Text = "Full [0,239]";
+			this.btnAreaFull.UseVisualStyleBackColor = true;
+			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
 			// 
 			// NESGraphicsConfig
 			// 
@@ -385,5 +409,7 @@
 		private System.Windows.Forms.NumericUpDown LastLineNumeric;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Button btnAreaFull;
+		private System.Windows.Forms.Button btnAreaStandard;
 	}
 }

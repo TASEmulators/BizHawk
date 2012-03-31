@@ -171,6 +171,22 @@ namespace BizHawk.MultiClient
         {
 
         }
+
+		private void Close_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
+
+		private void Close_MouseEnter(object sender, EventArgs e)
+		{
+			int width = Width;
+			int height = Height;
+			Random r = new Random();
+			width = r.Next(1, Width - Close.Width);
+			height = r.Next(1, Height - Close.Height);
+			Close.Location = new Point(width, height);
+			Close.BringToFront();
+		}
 	}
 
 	class MyViewportPanel : Control
