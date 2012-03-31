@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
+using BizHawk.Emulation.Consoles.Atari._2600;
 
 namespace BizHawk
 {
@@ -109,7 +110,9 @@ namespace BizHawk
 			{
 				case "4K": mapper = new m4K(); break;
 				case "2K": mapper = new m2K(); break;
+				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
+				case "F6": mapper = new mF6(); break;
 				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
 			}
 			mapper.core = this;
