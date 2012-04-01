@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk", "BizHawk.csproj", "{707E6CD2-0968-4254-A1FD-DEE7843C7C50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Emulation", "..\BizHawk.Emulation\BizHawk.Emulation.csproj", "{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.MultiClient", "..\BizHawk.MultiClient\BizHawk.MultiClient.csproj", "{DD448B37-BA3F-4544-9754-5406E8094723}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Util", "..\BizHawk.Util\BizHawk.Util.csproj", "{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscoHawk", "..\DiscoHawk\DiscoHawk.csproj", "{C4366030-6D03-424B-AE53-F4F43BB217C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Debug|x86.Build.0 = Debug|Any CPU
+		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{197D4314-8A9F-49BA-977D-54ACEFAEB6BA}.Release|x86.Build.0 = Release|Any CPU
+		{707E6CD2-0968-4254-A1FD-DEE7843C7C50}.Debug|x86.ActiveCfg = Debug|x86
+		{707E6CD2-0968-4254-A1FD-DEE7843C7C50}.Debug|x86.Build.0 = Debug|x86
+		{707E6CD2-0968-4254-A1FD-DEE7843C7C50}.Release|x86.ActiveCfg = Release|x86
+		{707E6CD2-0968-4254-A1FD-DEE7843C7C50}.Release|x86.Build.0 = Release|x86
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4366030-6D03-424B-AE53-F4F43BB217C3}.Release|x86.Build.0 = Release|Any CPU
+		{DD448B37-BA3F-4544-9754-5406E8094723}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DD448B37-BA3F-4544-9754-5406E8094723}.Debug|x86.Build.0 = Debug|Any CPU
+		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|x86.ActiveCfg = Release|Any CPU
+		{DD448B37-BA3F-4544-9754-5406E8094723}.Release|x86.Build.0 = Release|Any CPU
+		{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE135301-08B3-4EFC-A61C-1C53E1C65CB9}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = BizHawk.csproj
+	EndGlobalSection
+EndGlobal
