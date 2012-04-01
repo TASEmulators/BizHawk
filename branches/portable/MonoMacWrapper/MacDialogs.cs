@@ -75,6 +75,10 @@ namespace MonoMacWrapper
 			{
 				return _openPanel.Filename;
 			}
+			set
+			{
+				//Can't set a pre-selected file
+			}
 		}
 
 		public string[] FileNames 

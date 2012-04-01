@@ -2,12 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleIconFile</key>
+	<string>BizHawk.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.tasvideos.BizHawk</string>
 	<key>CFBundleName</key>
 	<string>BizHawk</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>1.0.3</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.6</string>
 	<key>NSMainNibFile</key>
