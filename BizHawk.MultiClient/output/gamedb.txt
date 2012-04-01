@@ -99,5 +99,9 @@ sha1:6DF9AECF5787C0833B0F05A9A83D0E58A6153977		Rumblestation 15-in-1 (Unl)	NES		
 sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC	H	Peek-A-Boo Poker (Unl)	NES		board=NES-CNROM;PRG=32;CHR=24;WRAM=0
 sha1:39294394A0631708F58397371CE14075AE1FB7E6	H	Peek-A-Boo Poker (Panesian)	NES		board=NES-CNROM;PRG=32;CHR=64;WRAM=0
 
+;these are from the 2002 konami collection and castlevania at least has a published TAS. presumably these are good, as they came from a PC game
+sha1:EC652EE1660E527098102E26A36A8B9B7BB3943F		Castlevania (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
+sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
+
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt
