@@ -4,6 +4,9 @@
 local x = 0
 local y = 36
 
+--You can blacklist buttons from being recorded here.
+local blacklist = {'Lag', 'Pause', 'Reset'}
+
 local data = {}
 local registered = false
 local state = {}
@@ -12,7 +15,7 @@ local states = {}
 function deepcopy(object)
 	local lookup_table = {}
 	local function _copy(object)
-		if type(object) ~= "table" then
+		if type(object) ~= 'table' then
 			return object
 		elseif lookup_table[object] then
 			return lookup_table[object]
@@ -64,7 +67,13 @@ end
 
 function record(buttons)
 	for button, value in pairs(buttons) do
-		if value then
+		local blacklisted = false
+		for index, name in pairs(blacklist) do
+			if name == button then
+				blacklisted = true
+			end
+		end
+		if value and not blacklisted then
 			data.holds = data.holds + 1
 			if not data.pressed[button] then
 				data.presses = data.presses + 1
