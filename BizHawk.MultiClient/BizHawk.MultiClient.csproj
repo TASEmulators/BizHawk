@@ -462,6 +462,12 @@
     <Compile Include="tools\ToolBox.Designer.cs">
       <DependentUpon>ToolBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\VirtualPadA26.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="tools\VirtualPadA26Control.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\VirtualPadNES.cs">
       <SubType>Component</SubType>
     </Compile>
