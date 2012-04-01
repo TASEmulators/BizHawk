@@ -153,7 +153,7 @@ namespace BizHawk.MultiClient
 
 		private FileInfo GetFileFromUser(string filter)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (lastLuaFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(lastLuaFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.LuaPath, "");

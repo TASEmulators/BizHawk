@@ -29,11 +29,11 @@ namespace BizHawk.MultiClient
 			if (RecordBox.Text.Length == 0)
 				return "";
 			string path = RecordBox.Text;
-			int x = path.LastIndexOf('\\');
-			if (path.LastIndexOf('\\') == -1)
+			int x = path.LastIndexOf(Path.DirectorySeparatorChar);
+			if (path.LastIndexOf(Path.DirectorySeparatorChar) == -1)
 			{
-				if (path[0] != '\\')
-					path = path.Insert(0, "\\");
+				if (path[0] != Path.DirectorySeparatorChar)
+					path = path.Insert(0, ""+Path.DirectorySeparatorChar);
 				path = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "") + path;
 
 				if (path[path.Length - 4] != '.') //If no file extension, add movie extension

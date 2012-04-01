@@ -463,7 +463,7 @@ namespace BizHawk.MultiClient
 
 		private FileInfo GetFileFromUser()
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (Global.CheatList.currentCheatFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(Global.CheatList.currentCheatFile);
 			ofd.InitialDirectory = Global.CheatList.GetCheatsPath();

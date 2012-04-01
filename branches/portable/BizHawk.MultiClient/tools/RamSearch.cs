@@ -1502,7 +1502,7 @@ namespace BizHawk.MultiClient
 
 		private FileInfo GetFileFromUser()
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			if (currentSearchFile.Length > 0)
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");

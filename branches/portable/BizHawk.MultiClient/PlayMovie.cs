@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 
 		private void BrowseMovies_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			ofd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + ";*.zip;*.7z|" + Global.MainForm.GetMovieExtName() + "|Savestates|*.state|Archive Files|*.zip;*.7z|All Files|*.*";
 

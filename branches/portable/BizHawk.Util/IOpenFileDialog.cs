@@ -9,7 +9,7 @@ namespace BizHawk
 		bool RestoreDirectory {get;set;}
 		bool Multiselect {get; set;}
 		System.Windows.Forms.DialogResult ShowDialog();
-		string FileName {get;}
+		string FileName {get; set;}
 		string[] FileNames {get;}
 	}
 }

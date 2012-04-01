@@ -606,6 +606,7 @@ namespace BizHawk.DiscSystem
 									done = true;
 								}
 								break;
+							case '/':
 							case '\\':
 								index++;
 								break;

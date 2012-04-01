@@ -52,6 +52,7 @@ namespace BizHawk
 		public string FileName 
 		{
 			get { return _capsule.FileName; }
+			set { _capsule.FileName = value; }
 		}
 		public string[] FileNames
 		{

@@ -28,7 +28,7 @@ namespace BizHawk
 
 		private void btnAddDisc_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
+			var ofd = new OpenFileDialog(); //Todo: Replace with HawkUIFactory.CreateOpenFileDialog()
 			ofd.Filter = "CUE files (*.cue)|*.cue|ISO files (*.iso)|*.iso";
 			ofd.CheckFileExists = true;
 			ofd.CheckPathExists = true;

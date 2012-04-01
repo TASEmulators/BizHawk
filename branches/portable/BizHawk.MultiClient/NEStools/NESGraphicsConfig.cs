@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathNESPalette, "NES");
 			ofd.Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*";
 			ofd.RestoreDirectory = true;

@@ -573,7 +573,7 @@ namespace BizHawk.MultiClient
 
 		private void PCEBrowseBios_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog();
+			var ofd = HawkUIFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.PathPCEBios);
 			ofd.Filter = "PCE CD BIOS (*.pce)|*.pce|All Files|*.*";
 			ofd.FileName = Path.GetFileName(Global.Config.PathPCEBios);

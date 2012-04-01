@@ -45,7 +45,7 @@ namespace BizHawk.MultiClient
 				else
 				{
 					if (Global.Config.BasePath.Length == 2 &&
-						Global.Config.BasePath == ".\\")
+						Global.Config.BasePath == "."+Path.DirectorySeparatorChar)
 						return GetExeDirectoryAbsolute();
 					else
 					{
@@ -120,7 +120,6 @@ namespace BizHawk.MultiClient
 			{
 				if (system.Length > 0)
 				{
-
 					path = path.Remove(0, 1);
 					path = path.Insert(0, GetPlatformBase(system));
 				}
@@ -143,12 +142,12 @@ namespace BizHawk.MultiClient
 			if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
 			{
 				//C:\
-				if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
+				if (path.Length > 2 && path[1] == ':' && path[2] == Path.DirectorySeparatorChar)
 					return path;
 				else
 				{
 					//file:\ is an acceptable path as well, and what FileBrowserDialog returns
-					if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
+					if (path.Length >= 6 && path.Substring(0, 6) == "file:"+Path.DirectorySeparatorChar)
 						return path;
 					else
 						return GetExeDirectoryAbsolute(); //bad path
@@ -166,8 +165,8 @@ namespace BizHawk.MultiClient
 			int x = NumParentDirectories(path);
 			if (x > 0)
 			{
-				int y = HowMany(path, "..\\");
-				int z = HowMany(workingpath, "\\");
+				int y = HowMany(path, ".."+Path.DirectorySeparatorChar);
+				int z = HowMany(workingpath, Path.DirectorySeparatorChar);
 				if (y >= z)
 				{
 					//Return drive letter only, working path must be absolute?
@@ -180,10 +179,10 @@ namespace BizHawk.MultiClient
 		public static int NumParentDirectories(string path)
 		{
 			//determine the number of parent directories in path and return result
-			int x = HowMany(path, '\\');
+			int x = HowMany(path, Path.DirectorySeparatorChar);
 			if (x > 0)
 			{
-				return HowMany(path, "..\\");
+				return HowMany(path, ".."+Path.DirectorySeparatorChar);
 			}
 			return 0;
 		}

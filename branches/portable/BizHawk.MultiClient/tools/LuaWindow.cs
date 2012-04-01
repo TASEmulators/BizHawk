@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient.tools
 
         private FileInfo GetFileFromUser()
         {
-            var ofd = new OpenFileDialog();
+            var ofd = HawkUIFactory.CreateOpenFileDialog();
             if (IDT_SCRIPTFILE.Text.Length > 0)
                 ofd.FileName = Path.GetFileNameWithoutExtension(IDT_SCRIPTFILE.Text);
             ofd.InitialDirectory = Global.Config.LastRomPath;

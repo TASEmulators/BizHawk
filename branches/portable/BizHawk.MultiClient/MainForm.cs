@@ -75,6 +75,8 @@ namespace BizHawk.MultiClient
 			MainWait = new AutoResetEvent(false);
 #if WINDOWS
 			Icon = BizHawk.MultiClient.Properties.Resources.logo;
+#else
+			Icon = Icon.FromHandle(BizHawk.MultiClient.Properties.Resources.corphawk.GetHicon());
 #endif
 			InitializeComponent();
 			Global.Game = GameInfo.GetNullGame();

@@ -1434,7 +1434,7 @@ namespace SevenZip
 #endif
             }
             int commonRootLength = directory.Length;
-            if (directory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            if (directory.EndsWith(""+Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
             {
                 directory = directory.Substring(0, directory.Length - 1);
             }
@@ -1446,7 +1446,7 @@ namespace SevenZip
             {
                 var upperRoot = Path.GetDirectoryName(directory);
                 commonRootLength = upperRoot.Length +
-                    (upperRoot.EndsWith("\\", StringComparison.OrdinalIgnoreCase) ? 0 : 1);
+                    (upperRoot.EndsWith(""+Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ? 0 : 1);
             }
             _directoryCompress = true;
             CompressFilesEncrypted(archiveStream, commonRootLength, password, files.ToArray());
