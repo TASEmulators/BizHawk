@@ -1229,6 +1229,12 @@ namespace BizHawk.MultiClient
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
+                if (Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+                {
+#if WINDOWS
+                    LuaConsole1.Restart();
+#endif
+                }
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
@@ -1252,9 +1258,6 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
-#if WINDOWS
-				LuaConsole1.Restart();
-#endif
 
 				if (Global.Config.LoadCheatFileByGame)
 				{
