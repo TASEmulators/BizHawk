@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 		public override byte ReadMemory(ushort addr)
 		{
-			if (addr == 0x0220)
+			if (addr == 0x1FF0)
 				Increment();
 			
 			if (addr < 0x1000) return base.ReadMemory(addr);
