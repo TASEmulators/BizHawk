@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			Address(addr);
 			if (addr < 0x1000) 
 				base.WriteMemory(addr, value);
-			if (addr < 0x10FF) 
+			else if (addr < 0x1100) 
 				aux_ram[addr & 0xFF] = value;
 		}
 
