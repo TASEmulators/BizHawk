@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 		int toggle1 = 0;
 		int toggle2 = 0;
 		int toggle3 = 0;
-		int toggle4 = 0;
 		
 		public override byte ReadMemory(ushort addr)
 		{
@@ -34,7 +33,6 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			ser.Sync("toggle1", ref toggle1);
 			ser.Sync("toggle2", ref toggle2);
 			ser.Sync("toggle3", ref toggle3);
-			ser.Sync("toggle4", ref toggle4);
 		}
 
 		void Address(ushort addr)
@@ -67,53 +65,53 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 					break;
 
 				case 0x1FE8:
-					toggle1 = 0;
+					toggle2 = 0;
 					break;
 				case 0x1FE9:
-					toggle1 = 1;
+					toggle2 = 1;
 					break;
 				case 0x1FEA:
-					toggle1 = 2;
+					toggle2 = 2;
 					break;
 				case 0x1FEB:
-					toggle1 = 3;
+					toggle2 = 3;
 					break;
 				case 0x1FEC:
-					toggle1 = 4;
+					toggle2 = 4;
 					break;
 				case 0x1FED:
-					toggle1 = 5;
+					toggle2 = 5;
 					break;
 				case 0x1FEE:
-					toggle1 = 6;
+					toggle2 = 6;
 					break;
 				case 0x1FEF:
-					toggle1 = 7;
+					toggle2 = 7;
 					break;
 
 				case 0x1FF0:
-					toggle1 = 0;
+					toggle3 = 0;
 					break;
 				case 0x1FF1:
-					toggle1 = 1;
+					toggle3 = 1;
 					break;
 				case 0x1FF2:
-					toggle1 = 2;
+					toggle3 = 2;
 					break;
 				case 0x1FF3:
-					toggle1 = 3;
+					toggle3 = 3;
 					break;
 				case 0x1FF4:
-					toggle1 = 4;
+					toggle3 = 4;
 					break;
 				case 0x1FF5:
-					toggle1 = 5;
+					toggle3 = 5;
 					break;
 				case 0x1FF6:
-					toggle1 = 6;
+					toggle3 = 6;
 					break;
 				case 0x1FF7:
-					toggle1 = 7;
+					toggle3 = 7;
 					break;
 			}
 		}
