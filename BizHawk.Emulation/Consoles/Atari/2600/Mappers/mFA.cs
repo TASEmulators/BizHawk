@@ -16,9 +16,11 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 	accessing 1FF8, 1FF9, and 1FFA.   There's also 256 bytes of RAM mapped into 1000-11FF.
 	The write port is at 1000-10FF, and the read port is 1100-11FF.
 	 */
+
 	class mFA : MapperBase 
 	{
 		int toggle = 0;
+		ByteBuffer aux_ram = new ByteBuffer(256);
 
 		public override byte ReadMemory(ushort addr)
 		{
@@ -26,23 +28,27 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 
 			if (addr < 0x1000) 
 				return base.ReadMemory(addr);
-			else if (addr < 0x10FF)
+			else if (addr < 0x1100)
  				return 0xFF;
-			else if (addr < 0x11FF)
-				return core.BaseReadMemory(addr);
+			else if (addr < 0x1200)
+				return aux_ram[addr & 0xFF];
 			else
-				return core.rom[toggle * 4 * 1024 + (addr & 0xFFF)];
+				return core.rom[(toggle * 4 * 1024) + (addr & 0xFFF)];
 		}
 		public override void WriteMemory(ushort addr, byte value)
 		{
 			Address(addr);
-			if (addr < 0x1000) base.WriteMemory(addr, value);
+			if (addr < 0x1000) 
+				base.WriteMemory(addr, value);
+			if (addr < 0x10FF) 
+				aux_ram[addr & 0xFF] = value;
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("toggle", ref toggle);
+			ser.Sync("ram", ref aux_ram);
 		}
 
 		void Address(ushort addr)
