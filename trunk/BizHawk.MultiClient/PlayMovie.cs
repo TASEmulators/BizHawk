@@ -267,8 +267,12 @@ namespace BizHawk.MultiClient
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
-
+			string extension = "*." + Global.Config.MovieExtension;
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
+				AddMovieToList(f);
+			foreach (string f in Directory.GetFiles(d, "*.tas"))
+				AddMovieToList(f);
+			foreach (string f in Directory.GetFiles(d, "*.bkm"))
 				AddMovieToList(f);
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
