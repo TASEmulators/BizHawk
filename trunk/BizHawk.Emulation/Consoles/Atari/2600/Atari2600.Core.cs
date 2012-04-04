@@ -165,7 +165,7 @@ namespace BizHawk
 				tia.execute(1);
 				tia.execute(1);
 
-				m6532.tick();
+				m6532.timer.tick();
 				cpu.ExecuteOne();
 				//if (cpu.PendingCycles <= 0)
 				//{

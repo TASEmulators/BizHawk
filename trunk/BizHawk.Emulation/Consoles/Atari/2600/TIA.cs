@@ -879,7 +879,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					// Add a cycle to the cpu every 3 TIA clocks (corrects timer error in M6532)
 					if (count % 3 == 0)
 					{
-						core.m6532.tick();
+						core.m6532.timer.tick();
 					}
 				}
 			}
