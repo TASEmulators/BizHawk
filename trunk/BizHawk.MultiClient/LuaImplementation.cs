@@ -221,6 +221,7 @@ namespace BizHawk.MultiClient
 		{
 			"text",
 			"alert",
+            "cleartext",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -425,6 +426,11 @@ namespace BizHawk.MultiClient
 		{
 			do_gui_text(luaX, luaY, luaStr, true, anchor);
 		}
+
+        public void gui_cleartext()
+        {
+            Global.RenderPanel.ClearGUIText();
+        }
 
 		//----------------------------------------------------
 		//Emu library
