@@ -9,32 +9,60 @@ namespace BizHawk.Emulation.Consoles.Atari
 	{
 		Atari2600 core;
 
-		public int timerCyclesRemaining = 0;
-		public int timerShift = 0;
-
-		bool interruptEnabled = false;
-		bool interruptFlag = false;
-
 		public byte ddra = 0x00;
 		public byte ddrb = 0x00;
+
+		public struct timerData
+		{
+			public int prescalerCount;
+			public byte prescalerShift;
+
+			public byte value;
+
+			public bool interruptEnabled;
+			public bool interruptFlag;
+			 
+			public void tick()
+			{
+				if (prescalerCount == 0)
+				{
+					value--;
+					prescalerCount = 1 << prescalerShift;
+				}
+
+				prescalerCount--;
+				if (prescalerCount == 0)
+				{
+					if (value == 0)
+					{
+						interruptFlag = true;
+						prescalerShift = 0;
+					}
+				}
+			}
+
+			public void SyncState(Serializer ser)
+			{
+				ser.Sync("prescalerCount", ref prescalerCount);
+				ser.Sync("prescalerShift", ref prescalerShift);
+				ser.Sync("value", ref value);
+				ser.Sync("interruptEnabled", ref interruptEnabled);
+				ser.Sync("interruptFlag", ref interruptFlag);
+			}
+
+		};
+
+		public timerData timer;
 
 		public M6532(Atari2600 core)
 		{
 			this.core = core;
 
-			// Apparently starting the timer at 0 will break for some games (Solaris and H.E.R.O.). We shall see
-			timerCyclesRemaining = 0;
-			interruptEnabled = false;
-			interruptFlag = false;
-		}
-
-		public void tick()
-		{
-			timerCyclesRemaining--;
-			if (timerCyclesRemaining == 0 && interruptEnabled)
-			{
-				interruptFlag = true;
-			}
+			// Apparently starting the timer at 0 will break for some games (Solaris and H.E.R.O.). To avoid that, we pick an
+			// arbitrary value to start with.
+			timer.value = 0x73;
+			timer.prescalerShift = 10;
+			timer.prescalerCount = 1 << timer.prescalerShift;
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -86,37 +114,28 @@ namespace BizHawk.Emulation.Consoles.Atari
 				else if ((registerAddr & 0x5) == 0x4)
 				{
 					// Bit 0x0080 contains interrupt enable/disable
-					interruptEnabled = (addr & 0x0080) != 0;
+					timer.interruptEnabled = (addr & 0x0080) != 0;
 
 					// The interrupt flag will be reset whenever the Timer is access by a read or a write
 					// However, the reading of the timer at the same time the interrupt occurs will not reset the interrupt flag
 					// (M6532 Datasheet)
-					if (timerCyclesRemaining != 0)
+					if (!(timer.prescalerCount == 0 && timer.value == 0))
 					{
-						interruptFlag = false;
-					}	
-
-					// If there is still time on the timer (or its 0), return the lowest byte
-					if (timerCyclesRemaining >= 0)
-					{
-						return (byte)(((timerCyclesRemaining) >> timerShift) & 0xFF);
-					}
-					else
-					{
-						return (byte)(timerCyclesRemaining & 0xFF);
+						timer.interruptFlag = false;
 					}
 
+					return timer.value;
 				}
 				else if ((registerAddr & 0x5) == 0x5)
 				{
 					// Read interrupt flag
-					if (interruptEnabled && interruptFlag)
+					if (timer.interruptEnabled && timer.interruptFlag)
 					{
-						return 0x00;
+						return 0x80;
 					}
 					else
 					{
-						return 0x80;
+						return 0x00;
 					}
 				}
 			}
@@ -143,7 +162,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 					ushort registerAddr = (ushort)(addr & 0x0007);
 
 					// Bit 0x0080 contains interrupt enable/disable
-					interruptEnabled = (addr & 0x0080) != 0;
+					timer.interruptEnabled = (addr & 0x0080) != 0;
 
 					// The interrupt flag will be reset whenever the Timer is access by a read or a write
 					// (M6532 datasheet)
@@ -151,30 +170,34 @@ namespace BizHawk.Emulation.Consoles.Atari
 					if (registerAddr == 0x04)
 					{
 						// Write to Timer/1
-						timerShift = 0;
-						timerCyclesRemaining = value << timerShift;
-						interruptFlag = false;
+						timer.prescalerShift = 0;
+						timer.value = value;
+						timer.prescalerCount = 1 << timer.prescalerShift;
+						timer.interruptFlag = false;
 					}
 					else if (registerAddr == 0x05)
 					{
 						// Write to Timer/8
-						timerShift = 3;
-						timerCyclesRemaining = value << timerShift;
-						interruptFlag = false;
+						timer.prescalerShift = 3;
+						timer.value = value;
+						timer.prescalerCount = 1 << timer.prescalerShift;
+						timer.interruptFlag = false;
 					}
 					else if (registerAddr == 0x06)
 					{
 						// Write to Timer/64
-						timerShift = 6;
-						timerCyclesRemaining = value << timerShift;
-						interruptFlag = false;
+						timer.prescalerShift = 6;
+						timer.value = value;
+						timer.prescalerCount = 1 << timer.prescalerShift;
+						timer.interruptFlag = false;
 					}
 					else if (registerAddr == 0x07)
 					{
 						// Write to Timer/1024
-						timerShift = 10;
-						timerCyclesRemaining = value << timerShift;
-						interruptFlag = false;
+						timer.prescalerShift = 10;
+						timer.value = value;
+						timer.prescalerCount = 1 << timer.prescalerShift;
+						timer.interruptFlag = false;
 					}
 				}
 				// If bit 0x0004 is not set, bit 0x0010 is ignored and
@@ -209,10 +232,7 @@ namespace BizHawk.Emulation.Consoles.Atari
 		{
 			ser.Sync("ddra", ref ddra);
 			ser.Sync("ddrb", ref ddrb);
-			ser.Sync("interruptEnabled", ref interruptEnabled);
-			ser.Sync("interruptFlag", ref interruptFlag);
-			ser.Sync("timerCyclesRemaining", ref timerCyclesRemaining);
-			ser.Sync("timerShift", ref timerShift);
+			timer.SyncState(ser);
 		}
 	}
 }
