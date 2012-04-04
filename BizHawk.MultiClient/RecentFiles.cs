@@ -80,6 +80,8 @@ namespace BizHawk.MultiClient
 
 		public string GetRecentFileByPosition(int position)
 		{
+			if (recentlist.Count == 0) 
+				return "";
 			return recentlist[position];
 		}
 	}
