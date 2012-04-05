@@ -1,9 +1,11 @@
-// #define LUA_BUILD_AS_DLL
+#define LUA_BUILD_AS_DLL
 #define LUA_LIB
 #define LUA_CORE
 #define lua_c
 #define luac_c
 #define loslib_c
+
+extern "C" {
 
 #include "lua.h"
 
@@ -33,9 +35,11 @@
 #include "ltable.c"
 #include "ltablib.c"
 #include "ltm.c"
-#include "lua.c"
+//#include "lua.c"
 // #include "luac.c"
 #include "lundump.c"
 #include "lvm.c"
 #include "lzio.c"
 // #include "print.c"
+
+}

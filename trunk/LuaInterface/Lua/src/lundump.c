@@ -73,6 +73,7 @@ static lua_Number LoadNumber(LoadState* S)
  return x;
 }
 
+#undef LoadString
 static TString* LoadString(LoadState* S)
 {
  size_t size;

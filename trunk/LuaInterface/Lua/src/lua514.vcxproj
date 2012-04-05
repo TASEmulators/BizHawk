@@ -94,8 +94,8 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>StdCall</CallingConvention>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <AdditionalDependencies>
@@ -136,7 +136,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LuaDLL.cpp" />
+    <ClCompile Include="LuaDLL.cpp">
+      <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</PreprocessToFile>
+    </ClCompile>
     <ClCompile Include="luaglue.cpp" />
   </ItemGroup>
   <ItemGroup>
