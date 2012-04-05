@@ -550,10 +550,26 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private bool IsStateFromAMovie(StreamReader reader)
+		{
+			while (true)
+			{
+				if (reader.ReadLine().Contains("GUID"))
+					break;
+				if (reader.EndOfStream)
+					return false;
+			}
+			return true;
+		}
+
 		public bool CheckTimeLines(string path, bool OnlyGUID)
 		{
 			//This function will compare the movie data to the savestate movie data to see if they match
 			var reader = new StreamReader(path);
+
+			if (!IsStateFromAMovie(reader))
+				return false;
+
 			MovieLog l = new MovieLog();
 			string line;
 			string GUID;
