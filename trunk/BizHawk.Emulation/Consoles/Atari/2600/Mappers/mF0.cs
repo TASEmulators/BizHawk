@@ -47,8 +47,7 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 		void Increment()
 		{
 			bank++;
-			if (bank > 15) 
-				bank = 0;
+			bank &= 0x0F;
 		}
 	}
 }

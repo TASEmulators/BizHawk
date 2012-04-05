@@ -113,7 +113,7 @@ namespace BizHawk
 				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
 				case "F6": mapper = new mF6(); break;
-				case "F4": mapper = new mF4(); break;
+				case "F4": case "F4SC": mapper = new mF4(); break;
 				case "FE": mapper = new mFE(); break;
 				case "E0": mapper = new mE0(); break;
 				case "3F": mapper = new m3F(); break;
