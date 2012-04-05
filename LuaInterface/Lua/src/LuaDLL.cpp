@@ -15,16 +15,19 @@ using namespace System::Security;
 #using <mscorlib.dll>
 #include <string.h>
 
-// #define LUA_BUILD_AS_DLL
+#define LUA_BUILD_AS_DLL
 #define LUA_LIB
 #define LUA_CORE
 #define lua_c
 #define luac_c
 #define loslib_c
 
+extern "C"
+{
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
+}
 
 // Not sure of the purpose of this, but I'm keeping it -kevinh
 static int tag = 0;

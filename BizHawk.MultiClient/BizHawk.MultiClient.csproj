@@ -158,6 +158,7 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisplayManager.cs" />
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
