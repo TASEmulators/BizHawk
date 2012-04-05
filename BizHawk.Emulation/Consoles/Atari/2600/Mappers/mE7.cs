@@ -55,7 +55,8 @@ namespace BizHawk.Emulation.Consoles.Atari._2600
 			}
 			else if (addr < 0x1800) return core.rom[toggle * 2 * 1024 + (addr & 0x7FF)];
 			else if (addr < 0x1A00) return rambank1[toggle * 256 + (addr & 0x255)];
-			else if (addr < 0x2000) return core.rom[14848 + (addr & 0x5FF)]; //Fixed to last 1.5K
+			else if (addr < 0x2000) 
+				return core.rom[14848 + (addr & 0x5FF)]; //Fixed to last 1.5K
 			else return base.ReadMemory(addr);
 		}
 		public override void WriteMemory(ushort addr, byte value)
