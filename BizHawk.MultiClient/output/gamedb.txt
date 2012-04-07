@@ -1,3 +1,12 @@
+;b - bad dump
+;v - bad dump (??)
+;t - translated rom
+;o - overdump (bad)
+;i - bios
+;d - homebrew
+;h - hack
+;u - unknown
+
 ;Hash	Status	Name	System ID	Notes	MetaData	Configurations
 
 #include gamedb_sega_8bit.txt
@@ -47,61 +56,60 @@ EA1BC9AB		Sword of Vermillion	GEN
 520644C0	V	Strider (Bad dump)	GEN
 
 ; ************ NES / Famicom ************
-;these games seem to be in goodNES but not bootgod's DB. maybe secretly bad dumps or unknown variants.
-sha1:22E6986903141495BA4589AC65982F3FB4D0E37B		Adventures of Lolo (U)	NES		board=NES-SEROM;PRG=32;CHR=32
-sha1:99C18C91F051BFBA6836A7B6B213C77569D83767		After Burner 2 (J)	NES		board=SUNSOFT-4;PRG=128;CHR=256;WRAM=8
-sha1:CF655333DCE649A3C7060E9989860F2FC74E473A		Demon Sword (U)	NES		board=NES-SL1ROM;PRG=128;CHR=128
-sha1:7786BA1FE8E7E9E542EEB13CF2A6E2A1AD7F696D		Metal Gear (U)	NES		board=KONAMI-UNROM;PRG=128
-sha1:894F20405286F5F75133CE4648300E2C67972B40		Solomon's Key (U)	NES		board=NES-CNROM;PRG=32;CHR=32
-sha1:0C53B06E1D13AE917536BB39010914EA3D111FF5	B	Thunder & Lightning (U)	NES		board=NES-GNROM;PRG=128;CHR=32
-sha1:9BDFF9A19265D84979F43F0F6E925A735DDEB38B		Wai Xing Zhan Shi (Ch)	NES		board=Mapper242;PRG=512;CHR=0;VRAM=8;WRAM=8
-sha1:91CECCFCAC90E417E9AEE80E8F7B560A20EB33CC		Ai Sensei No Oshiete - Watashi No Hoshi (J)	NES		board=IREM-G101;PRG=256;CHR=128;WRAM=8
-sha1:B6F6BD9D78CDD264A117D4B647AEE3309993E9A9		Mike Tyson's Punch-Out!! (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
-sha1:A0C4D4172A0037B7D9BA729A93E809978D0F10D2		Punch-Out!! (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
-sha1:D7E199373162966F3971D4C02EF2A03A13FE82D3		Tetris (U)	NES		board=SxROM-JUNK;PRG=32;CHR=128;WRAM=0;VRAM=0
-sha1:3F406EA2E41B5E725BB8DF31481D23F3CF6F1DBE		Famicom Wars (J)	NES		board=HVC-FJROM;PRG=128;CHR=64;WRAM=8;VRAM=0
-sha1:977286FDC76C34A618E2A2D0270641BC36CFE89C		Nintendo World Championships 1990	NES		board=NES-EVENT;PRG=256;CHR=0;WRAM=8;VRAM=8
 
-;and these are even labeled as bad in goodNES
+;games which might be good according to goodNES, but which are almost positively not according to bootgod, who has dumps with different hashes
+;these we tend to mark as Unknown, because maybe these are variants of the cart which bootgod didnt happen to dump, or maybe bootgod's is wrong (?)
+sha1:E80FF0B707B0D675FDBEF474E3FDB1A83E2B7C44	U	Mississippi Satsujin Jiken (J)	NES		board=JALECO-JF-11;PRG=128;CHR=32;PAD_H=1
+sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C	U	Mississippi Satsujin Jiken (Alt) (J)	NES		board=MAPPER066;PRG=128;CHR=32;PAD_H=1
+
+;possibly good roms for games which arent in bootgod's db yet, most likely due to obscurity or incompleteness at the present.
+;when they appear in bootgod's db then we can re-evaluate this category.
+sha1:91CECCFCAC90E417E9AEE80E8F7B560A20EB33CC		Ai Sensei No Oshiete - Watashi No Hoshi (J)	NES		board=IREM-G101;PRG=256;CHR=128;WRAM=8
+
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;this is every game from goodNES which is clearly labeled as bad. 
+;well, it isnt very game yet. but we should make it every game, if we can! it would be a lot of games though
 sha1:984ADAEB85403EEF1BA85CDCF310FAAECEB409A0	B	Adventures of Captain Comic, The (Bad Dump) (U)	NES		board=COLORDREAMS-74*377;PRG=64;CHR=64;WRAM=0;VRAM=0
 sha1:869111A86FD46872AD8B1BA0ED31B858FA15681F	B	Adventures of Lolo (Bad Dump) (U)	NES		board=NES-SEROM;PRG=32;CHR=32;WRAM=0;VRAM=0
 sha1:41BD74F739E008D476989C8296BB789EE57658F0	B	Adventures of Lolo (Bad Dump 2) (U)	NES		board=NES-SEROM;PRG=32;CHR=32;WRAM=0;VRAM=0
 sha1:10AF069B2AC5DB2FB10768349F4068CB3CDA0EC7	B	Airwolf (Bad Dump 1) (U)	NES		board=NES-SH1ROM;PRG=32;CHR=128
 sha1:DAD9D1D66018DFB3C30F48741EF188FEFA2B2F68	B	Airwolf (Bad Dump 2) (U)	NES		board=NES-SH1ROM;PRG=32;CHR=128
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
-;these roms are from goodNES but they are confusingly messed up somehow
-sha1:36405B87E66E18DC432690A5959D4529C14B1AEE	B	High Speed (U)	NES		board=NES-TQROM;PRG=128;CHR=64;VRAM=8;WRAM=0
-sha1:192C543866F1037276D2778046ABEDCA84868E26		Bio Senshi Dan - Increaser To No Tatakai (J)	NES		board=JALECO-JF-14;PRG=128;CHR=128
-sha1:E80FF0B707B0D675FDBEF474E3FDB1A83E2B7C44		Mississippi Satsujin Jiken (J)	NES		board=JALECO-JF-11;PRG=128;CHR=32;PAD_H=1
-sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C		Mississippi Satsujin Jiken (Alt) (J)	NES		board=GXROM_HACKY;PRG=128;CHR=32;PAD_H=1
-sha1:8C7D33753649A2BAF2EAAF8D5FFC2AE8E9316A13		Akira (J)	NES		board=TAITO-TC0190FMC;PRG=128;CHR=256;WRAM=0
-sha1:0AE47BD83202A5A2235B0BC16278F56D66038AB5		Deathbots (U)	NES		board=AVE-NINA-06;PRG=64;CHR=64;PAD_H=1;PAD_V=0
-
-;these roms are in goodNES but theyre junk
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;these roms are in goodNES but theyre junk. hacks, mostly. ideally we would put ever game from goodNES that was labeled as a hack in a list here.
 sha1:2EC29843A4DEB854DCB274EEE465C45820C305FC	H	Magical Taruruuto-kun - Fantastic World!! (J) (V1.1)	NES		board=BANDAI-FCG-1;PRG=128;CHR=128;WRAM=8
 sha1:111D38E2FB41D0B43753E18757D427A91B0DBCB9	H	Dragon Ball Z II - Gekishin Freeza!! (J)	NES		board=BANDAI-LZ93D50+24C02;PRG=256;CHR=256;WRAM=8
 sha1:A907E600CEDA175ECD115B406B28155397A4C1FA	H	Dragon Ball Z Gaiden - Saiya Jin Zetsumetsu Keikaku (CH)	NES		board=BANDAI-FCG-1;PRG=512;CHR=256;WRAM=8
 sha1:A13EAF0132905FBE3D0456BB075028A30C084D0E	H	Dragon Ball - Dai Maou Fukkatsu (J) [hFFE]	NES		board=BANDAI-FCG-1;PRG=128;CHR=128
 sha1:8885F4F00C0B73C156179BCEABA5381487DBEAAD	H	Spy vs Spy (J)	NES		board=HVC-CNROM-256K-01;PRG=32;CHR=8;WRAM=8
 sha1:8C676CC9BEF5B93C5A7630D12B8A5B2FEBCE3438	H	Rad Racket - Deluxe Tennis II	NES		board=NINA-06;PRG=32;CHR=32
-sha1:89C455E1793A1603BB977AD7215AB308B3586958	V	Moero!! Pro Yakyuu (Red)	NES		board=JALECO-JF-13;PRG=128;CHR=64;WRAM=8
-sha1:A906B9E67F0FFCFABB36C9B7140BC2CBA9E1F5A3		Space Shadow (J)	NES		board=BANDAI-74*161/161/32;PRG=64;CHR=128;WRAM=8
 sha1:A1D674D1C7C633A317CFD516EFB9A0350CD0E45E	H	Arkanoid II (J)	NES		board=TAITO-74*161/161/32;PRG=128;CHR=128;WRAM=8
 sha1:4D6117577CE301BB987C5C32FEEF7B132A21B046	H	Afro Man (Mega Man 3 Hack) (UNL)	NES		board=TXROM-HOMEBREW;PRG=256;CHR=128;WRAM=8
 sha1:7BD102770FE7766BF8430ACDB3C17EE51E30478C	H	Mike Tyson's Punch-Out!! (Hacked) (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
 sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
-;other assorted roms
-sha1:334DCB823B480957057C2B4C72686BE26823C12A	V	Fighting Hero (Unl)	NES		board=MAPPER193;PRG=128;CHR=256;WRAM=8
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;obscure and unlicensed roms which are not likely to be in bootgod's DB anytime soon but which are nonetheless "good" as far as things go
+;people like these games (especially vast quantities of chinese oddities) so its important to add them here as good
 sha1:D09EF8127C64CBE817B45DF33C4D43E7B441E381		Final Fantasy V (Unl)	NES		board=MAPPER164;PRG=512;CHR=0;WRAM=8;PRAM=8
 sha1:92D9695FEB774F60965A8303CFE3E6AAEE7B7B62		Magic Dragon (Unl)	NES		board=MAPPER107;PRG=128;CHR=64;WRAM=8;PAD_H=1
 sha1:6DF9AECF5787C0833B0F05A9A83D0E58A6153977		Rumblestation 15-in-1 (Unl)	NES		board=MAPPER046;PRG=1024;CHR=1024;WRAM=0
-sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC	H	Peek-A-Boo Poker (Unl)	NES		board=NES-CNROM;PRG=32;CHR=24;WRAM=0
-sha1:39294394A0631708F58397371CE14075AE1FB7E6	H	Peek-A-Boo Poker (Panesian)	NES		board=NES-CNROM;PRG=32;CHR=64;WRAM=0
+sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC		Peek-A-Boo Poker (Unl)	NES		board=NES-CNROM;PRG=32;CHR=24;WRAM=0
+sha1:39294394A0631708F58397371CE14075AE1FB7E6		Peek-A-Boo Poker (Panesian)	NES		board=NES-CNROM;PRG=32;CHR=64;WRAM=0
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;positively good roms which for one reason or another arent in bootgod's DB
+
+;probably missing due to obscurity
+sha1:977286FDC76C34A618E2A2D0270641BC36CFE89C		Nintendo World Championships 1990	NES		board=NES-EVENT;PRG=256;CHR=0;WRAM=8;VRAM=8
 
 ;these are from the 2002 konami collection and castlevania at least has a published TAS. presumably these are good, as they came from a PC game
 sha1:EC652EE1660E527098102E26A36A8B9B7BB3943F		Castlevania (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
 sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt
