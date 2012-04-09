@@ -35,8 +35,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt
 					AssertPrg(Cart.board_type == "NES-MHROM" ? 64 : 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
 					break;
-				case "GXROM_HACKY":
-					break;
 
 				default:
 					return false;
