@@ -125,3 +125,4 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 243	Misc		Nothing
 245	Pirate		Junk
 246	Misc (CN)	Nothing
+248 Misc (CN)	{{See 115}} 
