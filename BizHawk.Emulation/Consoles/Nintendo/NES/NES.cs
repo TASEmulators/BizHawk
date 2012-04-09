@@ -505,8 +505,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
 				if (choice.DB_GameInfo != null)
-					if (choice.DB_GameInfo.Status == RomStatus.BadDump)
-						choice.bad = true;
+						choice.bad = choice.DB_GameInfo.IsRomStatusBad();
 
 				LoadWriteLine("Final game detection results:");
 				LoadWriteLine(choice);

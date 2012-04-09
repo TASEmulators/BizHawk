@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case "NES-SEROM": //lolo
 				case "HVC-SEROM": //dr. mario
-					AssertPrg(32); AssertChr(32); AssertVram(0); AssertWram(0);
+					AssertPrg(32); AssertChr(16,32); AssertVram(0); AssertWram(0);
 					break;
 				case "NES-SFROM": //bubble bobble
 					AssertPrg(128, 256); AssertChr(16, 32, 64); AssertVram(0); AssertWram(0);
