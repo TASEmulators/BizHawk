@@ -10,6 +10,7 @@ namespace BizHawk
 		Homebrew,
 		TranslatedRom,
 		Hack,
+		Unknown,
 		BIOS,
 		Overdump,
 		NotInDatabase
@@ -17,6 +18,11 @@ namespace BizHawk
 
 	public class GameInfo
 	{
+		public bool IsRomStatusBad()
+		{
+			return Status == RomStatus.BadDump || Status == RomStatus.Overdump;
+		}
+
 		public string Name;
 		public string System;
 		public string Hash;
