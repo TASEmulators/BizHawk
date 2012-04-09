@@ -118,6 +118,7 @@ static string ClassifyTable = @"
 232	-1	-1	-1	-1	MAPPER232
 240	-1	-1	-1	-1	MAPPER240
 242	-1	-1	-1	-1	MAPPER242
+248	-1	-1	-1	-1	MAPPER248
 ";
 }
 
