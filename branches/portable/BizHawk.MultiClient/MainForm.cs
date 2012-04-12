@@ -34,6 +34,8 @@ namespace BizHawk.MultiClient
 		AviWriter CurrAviWriter = null;
 
 		//runloop control
+        private Thread runLoopThread;
+        public bool RunLoopBlocked { get; set; }
 		bool exit;
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
@@ -122,12 +124,19 @@ namespace BizHawk.MultiClient
 				DragDrop += FormDragDrop;
 			};
 
+            Shown += (o, e) =>
+            {
+                runLoopThread = new Thread(ProgramRunLoop);
+                runLoopThread.Start();
+            };
+
 			Closing += (o, e) =>
 			{
 				Global.CheatList.SaveSettings();
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
 				SaveConfig();
+                runLoopThread.Abort();
 			};
 			
 			Closed += (o, e) =>
@@ -386,29 +395,35 @@ namespace BizHawk.MultiClient
 
 			for (; ; )
 			{
-				Input.Instance.Update();
-				//handle events and dispatch as a hotkey action, or a hotkey button, or an input button
-				ProcessInput();
-				Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
-				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
-				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
-				Global.ClickyVirtualPadController.FrameTick();
+                if (!RunLoopBlocked)
+                {
+                    Input.Instance.Update();
+                    //handle events and dispatch as a hotkey action, or a hotkey button, or an input button
+                    ProcessInput();
+                    Global.ClientControls.LatchFromPhysical(Global.HotkeyCoalescer);
+                    Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+                    Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+                    Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+                    Global.ClickyVirtualPadController.FrameTick();
 
 #if WINDOWS
-				LuaConsole1.ResumeScripts(false);
+                    LuaConsole1.ResumeScripts(false);
 #endif
 
-				StepRunLoop_Core();
-				//if(!IsNullEmulator())
-				StepRunLoop_Throttle();
+                    StepRunLoop_Core();
+                    //if(!IsNullEmulator())
+                    StepRunLoop_Throttle();
 
-				Render();
+                    this.Invoke(() =>
+                    {
+                        Render();
+                    });
 
-				CheckMessages();
-				if (exit)
-					break;
-				Thread.Sleep(0);
+                    CheckMessages();
+                    if (exit)
+                        break;
+                }
+                Thread.Sleep(0);
 			}
 
 			Shutdown();
@@ -1064,11 +1079,17 @@ namespace BizHawk.MultiClient
 				if (file.IsArchive && !file.IsBound)
 				{
 					var ac = new ArchiveChooser(file);
-					if (ac.ShowDialog(this) == DialogResult.OK)
-					{
-						file.BindArchiveMember(ac.SelectedMemberIndex);
-					}
-					else return false;
+                    RunLoopBlocked = true;
+                    if (ac.ShowDialog(this) == DialogResult.OK)
+                    {
+                        file.BindArchiveMember(ac.SelectedMemberIndex);
+                        RunLoopBlocked = false;
+                    }
+                    else
+                    {
+                        RunLoopBlocked = false;
+                        return false;
+                    }
 				}
 
 				IEmulator nextEmulator = null;
@@ -2003,9 +2024,11 @@ namespace BizHawk.MultiClient
 			if (file.Directory.Exists == false)
 				file.Directory.Create();
 
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 
 			if (result != DialogResult.OK)
 				return;
@@ -2059,9 +2082,11 @@ namespace BizHawk.MultiClient
 			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 
 			if (result != DialogResult.OK)
 				return;
@@ -2381,9 +2406,11 @@ namespace BizHawk.MultiClient
 			}
 			ofd.RestoreDirectory = false;
 
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 			if (result != DialogResult.OK)
 				return;
 			var file = new FileInfo(ofd.FileName);
@@ -2623,9 +2650,11 @@ namespace BizHawk.MultiClient
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
 			}
 			sfd.Filter = "AVI (*.avi)|*.avi|All Files|*.*";
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 
 			if (result == DialogResult.Cancel)
 				return;
@@ -2742,9 +2771,11 @@ namespace BizHawk.MultiClient
 
 			ofd.RestoreDirectory = false;
 
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 			if (result != DialogResult.OK)
 				return;
 
@@ -2911,9 +2942,11 @@ namespace BizHawk.MultiClient
 			sfd.FileName = Path.GetFileName(path);
 			sfd.Filter = "GIF File (*.gif)|*.gif";
 
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 			if (result != DialogResult.OK)
 				return;
 			makeAnimatedGif(sfd.FileName);

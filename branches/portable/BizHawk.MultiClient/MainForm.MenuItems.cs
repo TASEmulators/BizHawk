@@ -95,8 +95,10 @@ namespace BizHawk.MultiClient
 
 		private void soundToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			SoundConfig s = new SoundConfig();
 			s.ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void zoomMenuItem_Click(object sender, EventArgs e)
@@ -292,6 +294,7 @@ namespace BizHawk.MultiClient
 
 		private void saveStateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			Global.Sound.StopSound();
 
 			var frm = new NameStateForm();
@@ -301,6 +304,7 @@ namespace BizHawk.MultiClient
 				SaveState(frm.Result);
 
 			Global.Sound.StartSound();
+            RunLoopBlocked = false;
 		}
 
 		private void powerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -328,14 +332,17 @@ namespace BizHawk.MultiClient
 
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			if (INTERIM)
 				new AboutBox().ShowDialog();
 			else
 				new BizBox().ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void controllersToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			InputConfig i = new InputConfig();
 			i.ShowDialog();
 			//re-initialize controls in case anything was changed
@@ -344,10 +351,12 @@ namespace BizHawk.MultiClient
 				InitControls();
 				SyncControls();
 			}
+            RunLoopBlocked = false;
 		}
 
 		private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			BizHawk.MultiClient.tools.HotkeyWindow h = new BizHawk.MultiClient.tools.HotkeyWindow();
 			h.ShowDialog();
 			if (h.DialogResult == DialogResult.OK)
@@ -355,6 +364,7 @@ namespace BizHawk.MultiClient
 				InitControls();
 				SyncControls();
 			}
+            RunLoopBlocked = false;
 		}
 
 		private void displayFPSToolStripMenuItem_Click(object sender, EventArgs e)
@@ -559,8 +569,10 @@ namespace BizHawk.MultiClient
 
 		private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			MessageConfig m = new MessageConfig();
 			m.ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void autoloadVirtualKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -583,8 +595,10 @@ namespace BizHawk.MultiClient
 
 		private void pathsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			PathConfig p = new PathConfig();
 			p.ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void displayRerecordCountToolStripMenuItem_Click(object sender, EventArgs e)
@@ -679,8 +693,9 @@ namespace BizHawk.MultiClient
 
 		private void screenshotAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			string path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
-
+            
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = Path.GetDirectoryName(path);
 			sfd.FileName = Path.GetFileName(path);
@@ -692,6 +707,7 @@ namespace BizHawk.MultiClient
 			if (result != DialogResult.OK)
 				return;
 			TakeScreenshot(sfd.FileName);
+            RunLoopBlocked = false;
 		}
 
 		private void runInBackgroundToolStripMenuItem_Click(object sender, EventArgs e)
@@ -723,23 +739,29 @@ namespace BizHawk.MultiClient
 
 		private void graphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			NESGraphicsConfig g = new NESGraphicsConfig();
 			g.ShowDialog();
 			SyncCoreInputComm();
+            RunLoopBlocked = false;
 		}
 
 		private void pceGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			PCEGraphicsConfig g = new PCEGraphicsConfig();
 			g.ShowDialog();
 			SyncCoreInputComm();
+            RunLoopBlocked = false;
 		}
 
 		private void smsGraphicsSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			SMSGraphicsConfig g = new SMSGraphicsConfig();
 			g.ShowDialog();
 			SyncCoreInputComm();
+            RunLoopBlocked = false;
 		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
@@ -784,6 +806,7 @@ namespace BizHawk.MultiClient
 
 		private void AddSubtitleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			SubtitleMaker s = new SubtitleMaker();
 			s.DisableFrame();
 			int index = -1;
@@ -810,6 +833,7 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.Subtitles.Remove(index);
 				Global.MovieSession.Movie.Subtitles.AddSubtitle(s.sub);
 			}
+            RunLoopBlocked = false;
 		}
 
 		private void screenshotToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1044,22 +1068,26 @@ namespace BizHawk.MultiClient
 
 		private void viewCommentsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
 
 			EditCommentsForm c = new EditCommentsForm();
 			c.ReadOnly = ReadOnly;
 			c.GetMovie(Global.MovieSession.Movie);
 			c.ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void viewSubtitlesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE) return;
 
 			EditSubtitlesForm s = new EditSubtitlesForm();
 			s.ReadOnly = ReadOnly;
 			s.GetMovie(Global.MovieSession.Movie);
 			s.ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1440,7 +1468,9 @@ namespace BizHawk.MultiClient
 
 		private void autofireToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            RunLoopBlocked = true;
 			new AutofireConfig().ShowDialog();
+            RunLoopBlocked = false;
 		}
 
 		private void autoLoadLastSlotToolStripMenuItem_Click(object sender, EventArgs e)

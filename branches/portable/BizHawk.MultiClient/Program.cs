@@ -47,9 +47,8 @@ namespace BizHawk.MultiClient
 #endif
 					var mf = new MainForm(args);
 					var title = mf.Text;
-					mf.Show();
 					mf.Text = title;
-					mf.ProgramRunLoop();
+                    Application.Run(mf);
 #if WINDOWS
 				}
 #endif 
@@ -93,8 +92,7 @@ namespace BizHawk.MultiClient
 
 				mf = new MainForm(cmdArgs);
 				MainForm = mf;
-				mf.Show();
-				mf.ProgramRunLoop();
+                Application.Run(mf);
 			}
 		}
 
