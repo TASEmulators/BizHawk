@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//configuration
 		public enum EMMC3Type
 		{
-			None, MMC3A, MMC3BSharp, MMC3BNonSharp, MMC3C
+			None, MMC3A, MMC3BSharp, MMC3BNonSharp, MMC3C, MMC6
 		}
 		EMMC3Type _mmc3type = EMMC3Type.None;
 		public EMMC3Type MMC3Type
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			set
 			{
 				_mmc3type = value;
-				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp);
+				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp || _mmc3type == EMMC3Type.MMC6);
 			}
 		}
 		bool oldIrqType;
@@ -281,12 +281,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (separator_counter > 0)
 				{
-					separator_counter = 12;
+					separator_counter = 15;
 				}
 				else
 				{
-					separator_counter = 12;
-					irq_countdown = 12;
+					separator_counter = 15;
+					irq_countdown = 6;
 				}
 			}
 
