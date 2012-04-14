@@ -35,6 +35,7 @@ namespace BizHawk.MultiClient
 
 		//runloop control
         private Thread runLoopThread;
+		private System.Timers.Timer renderTimer;
         public bool RunLoopBlocked { get; set; }
 		bool exit;
 		bool runloop_frameProgress;
@@ -128,6 +129,12 @@ namespace BizHawk.MultiClient
             {
                 runLoopThread = new Thread(ProgramRunLoop);
                 runLoopThread.Start();
+				renderTimer = new System.Timers.Timer();
+				renderTimer.SynchronizingObject = this;
+				renderTimer.AutoReset = false;
+				renderTimer.Interval = 1;
+				renderTimer.Elapsed += RunRenderTick;
+				renderTimer.Start();
             };
 
 			Closing += (o, e) =>
@@ -413,12 +420,7 @@ namespace BizHawk.MultiClient
                     StepRunLoop_Core();
                     //if(!IsNullEmulator())
                     StepRunLoop_Throttle();
-
-                    this.Invoke(() =>
-                    {
-                        Render();
-                    });
-
+					
                     CheckMessages();
                     if (exit)
                         break;
@@ -440,7 +442,6 @@ namespace BizHawk.MultiClient
 
 		void CheckMessages()
 		{
-			Application.DoEvents();
 			if (ActiveForm != null)
 				ScreenSaver.ResetTimerPeriodically();
 		}
@@ -448,23 +449,31 @@ namespace BizHawk.MultiClient
 		public void PauseEmulator()
 		{
 			EmulatorPaused = true;
-			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+			this.Invoke(() =>
+            {
+                PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+            });
 		}
 
 		public void UnpauseEmulator()
 		{
 			EmulatorPaused = false;
-			PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			this.Invoke(() =>
+            {
+				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			});
 		}
 
 		public void TogglePause()
 		{
 			EmulatorPaused ^= true;
-			if (EmulatorPaused)
-				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
-			else
-				PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
-
+			this.Invoke(() =>
+            {
+				if (EmulatorPaused)
+					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Pause;
+				else
+					PauseStrip.Image = BizHawk.MultiClient.Properties.Resources.Blank;
+			});
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -2251,6 +2260,13 @@ namespace BizHawk.MultiClient
 			Global.RenderPanel.Render(Global.Emulator.VideoProvider);
 		}
 
+		private void RunRenderTick(object sender, System.Timers.ElapsedEventArgs args)
+		{
+			Render();
+			if(retainedPanel != null) this.retainedPanel.Refresh();
+			renderTimer.Start();
+		}
+		
 		private void FrameBufferResized()
 		{
 			var video = Global.Emulator.VideoProvider;
