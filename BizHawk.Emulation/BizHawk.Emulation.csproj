@@ -147,6 +147,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper095.cs" />

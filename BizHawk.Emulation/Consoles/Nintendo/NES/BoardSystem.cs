@@ -312,6 +312,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			cart.DB_GameInfo = gi;
 			cart.game = game;
 			cart.board_type = dict["board"];
+			cart.prg_size = -1;
+			cart.vram_size = -1;
+			cart.wram_size = -1;
+			cart.chr_size = -1;
 			if (dict.ContainsKey("PRG"))
 				cart.prg_size = short.Parse(dict["PRG"]);
 			if (dict.ContainsKey("CHR"))
@@ -324,8 +328,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart.pad_h = byte.Parse(dict["PAD_H"]);
 			if (dict.ContainsKey("PAD_V"))
 				cart.pad_v = byte.Parse(dict["PAD_V"]);
-			if (dict.ContainsKey("bad"))
+			if (dict.ContainsKey("BAD"))
 				cart.bad = true;
+			if (dict.ContainsKey("MMC3"))
+				cart.chips.Add(dict["MMC3"]);
 
 			return cart;
 		}
