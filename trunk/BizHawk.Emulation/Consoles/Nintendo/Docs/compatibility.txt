@@ -23,6 +23,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 009	PxROM=MMC2	Complete
 010	MMC4		Complete
 011	Misc		Complete
+012 DBZ5		Decent (mmc3 variant)
 013	CPROM		Complete
 015	Multicart	Junk
 016	Bandai		Decent

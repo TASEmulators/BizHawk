@@ -441,7 +441,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					//the address isnt observed by the board till it gets clocked by a read or write.
 					//nes.board.AddressPPU(ppur.get_2007access());
 				}
+
 				vtoggle ^= true;
+
+				int addr = ppur.get_2007access() & 0x3FFF;
+				nes.board.AddressPPU(addr);
 			}
 			byte read_2006() { return PPUGenLatch; }
 
@@ -471,9 +475,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ppubus_write(addr, value);
 				}
 
-				nes.board.AddressPPU(addr);
-
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+
+				addr = ppur.get_2007access() & 0x3FFF;
+				nes.board.AddressPPU(addr);
 			}
 			byte read_2007()
 			{
@@ -492,9 +497,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					ret = PALRAM[addr & 0x1F];
 				}
 
-				nes.board.AddressPPU(addr);
-
 				ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+
+				addr = ppur.get_2007access() & 0x3FFF;
+				nes.board.AddressPPU(addr);
 				
 				return ret;
 			}

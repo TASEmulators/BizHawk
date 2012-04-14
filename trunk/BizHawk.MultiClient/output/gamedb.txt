@@ -119,5 +119,11 @@ sha1:EC652EE1660E527098102E26A36A8B9B7BB3943F		Castlevania (Konami Collection 20
 sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	NES		board=NES-UNROM;PRG=128;WRAM=0;VRAM=8;PAD_H=1
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;mmc3 homebrews that need chip specification
+sha1:35C157A921156E47FD3F6573D150F54108D0EDFC		Blargg's 5.MMC3_rev_A.nes	NES		board=MAPPER004;MMC3=MMC3A
+sha1:0E971E2CCAD1DEE51A0C305ED38FAFD2E6CA3B41		Blargg's 6.MMC3_rev_B.nes	NES		board=MAPPER004;MMC3=MMC3B
+;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+
 #include gamedb_neshomebrew.txt
 #include gamedb_user.txt

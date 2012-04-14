@@ -37,10 +37,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			prg_regs_8k[1] = 1;
 			prg_regs_8k[2] = 0xFE; //constant
 			prg_regs_8k[3] = 0xFF; //constant
-			prg_regs_8k[4+0] = 0xFE; //constant
-			prg_regs_8k[4+1] = 1;
-			prg_regs_8k[4+2] = 0;
-			prg_regs_8k[4+3] = 0xFF; //constant
+			prg_regs_8k[4 + 0] = 0xFE; //constant
+			prg_regs_8k[4 + 1] = 1;
+			prg_regs_8k[4 + 2] = 0;
+			prg_regs_8k[4 + 3] = 0xFF; //constant
 
 			chr_regs_1k[0] = 0;
 			chr_regs_1k[1] = 1;
@@ -119,9 +119,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public byte mirror;
 		int a12_old;
 		byte irq_reload, irq_counter;
-		protected bool irq_pending, irq_enable;
+		protected bool irq_pending, irq_enable, irq_reload_flag;
 		public bool wram_enable, wram_write_protect;
-		
+
 		//it really seems like these should be the same but i cant seem to unify them.
 		//theres no sense in delaying the IRQ, so its logic must be tied to the separator.
 		//the hint, of course, is that the countdown value is the same.
@@ -129,11 +129,35 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int separator_counter;
 		int irq_countdown;
 
+
+		//configuration
+		public enum EMMC3Type
+		{
+			None, MMC3A, MMC3BSharp, MMC3BNonSharp, MMC3C
+		}
+		EMMC3Type _mmc3type = EMMC3Type.None;
+		public EMMC3Type MMC3Type
+		{
+			get { return _mmc3type; }
+			set
+			{
+				_mmc3type = value;
+				oldIrqType = (_mmc3type == EMMC3Type.MMC3A || _mmc3type == EMMC3Type.MMC3BNonSharp);
+			}
+		}
+		bool oldIrqType;
+
+
 		public NES.NESBoardBase.EMirrorType MirrorType { get { return mirror == 0 ? NES.NESBoardBase.EMirrorType.Vertical : NES.NESBoardBase.EMirrorType.Horizontal; } }
 
 		public MMC3(NES.NESBoardBase board, int num_prg_banks)
 			: base(board)
 		{
+			if (board.Cart.chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
+			else if (board.Cart.chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
+			else if (board.Cart.chips.Contains("MMC3BNONSHARP")) MMC3Type = EMMC3Type.MMC3BNonSharp;
+			else if (board.Cart.chips.Contains("MMC3C")) MMC3Type = EMMC3Type.MMC3C;
+			else MMC3Type = EMMC3Type.MMC3C; //arbitrary choice. is it the best choice?
 		}
 
 		public override void SyncState(Serializer ser)
@@ -147,6 +171,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("separator_counter", ref separator_counter);
 			ser.Sync("irq_countdown", ref irq_countdown);
+			ser.Sync("irq_reload_flag", ref irq_reload_flag);
 			ser.Sync("wram_enable", ref wram_enable);
 			ser.Sync("wram_write_protect", ref wram_write_protect);
 		}
@@ -180,6 +205,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					break;
 				case 0x4001: //$C001 - IRQ Clear
 					irq_counter = 0;
+					if (oldIrqType)
+						irq_reload_flag = true;
 					break;
 				case 0x6000: //$E000 - IRQ Acknowledge / Disable
 					irq_enable = false;
@@ -206,23 +233,27 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		void ClockIRQ()
 		{
-			if (irq_counter == 0)
+			int last_irq_counter = irq_counter;
+			if (irq_reload_flag || irq_counter == 0)
 			{
 				irq_counter = irq_reload;
-
-				//TODO - MMC3 variant behaviour??? not sure
-				//was needed to pass 2-details.nes
-				if (irq_counter == 0)
-					IRQ_EQ_Pass();
 			}
 			else
 			{
 				irq_counter--;
-				if (irq_counter == 0)
-				{
-					IRQ_EQ_Pass();
-				}
 			}
+			if (irq_counter == 0)
+			{
+				if (oldIrqType)
+				{
+					if (last_irq_counter != 0 || irq_reload_flag)
+						IRQ_EQ_Pass();
+				}
+				else
+					IRQ_EQ_Pass();
+			}
+			
+			irq_reload_flag = false;
 		}
 
 		public virtual void ClockPPU()
@@ -250,12 +281,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				if (separator_counter > 0)
 				{
-					separator_counter = 15;
+					separator_counter = 12;
 				}
 				else
 				{
-					separator_counter = 15;
-					irq_countdown = 15;
+					separator_counter = 12;
+					irq_countdown = 12;
 				}
 			}
 
@@ -382,7 +413,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			wram_mask = (Cart.wram_size * 1024) - 1;
 
 			int num_prg_banks = Cart.prg_size / 8;
-			mapper = mmc3 = new MMC3(this,num_prg_banks);
+			mapper = mmc3 = new MMC3(this, num_prg_banks);
 
 			base.BaseSetup();
 			SetMirrorType(EMirrorType.Vertical);

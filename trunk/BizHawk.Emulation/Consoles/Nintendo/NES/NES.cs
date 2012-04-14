@@ -487,6 +487,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						origin = EDetectionOrigin.GameDB;
 						LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
+						//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
+						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
+						if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
+						if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
+						if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
 					}
 				}
 				else

@@ -11,116 +11,17 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	partial class NES
 	{
 		/// <summary>
-		/// attempts to classify a rom based on iNES header information
+		/// attempts to classify a rom based on iNES header information.
+		/// this used to be way more complex. but later, we changed to have a board class implement a "MAPPERXXX" virtual board type and all hacks will be in there
+		/// so theres nothing to do here but pick the board type corresponding to the cart
 		/// </summary>
 		static class iNESBoardDetector
 		{
 			public static string Detect(CartInfo cartInfo)
 			{
-				string key = string.Format("{0}	{1}	{2}	{3}	{4}", cartInfo.mapper, cartInfo.prg_size, cartInfo.chr_size, cartInfo.wram_size, cartInfo.vram_size);
-				string board;
-				Table.TryGetValue(key, out board);
-				if (board == null)
-				{
-					//if it didnt work, try again with a different wram size. because iNES is weird that way
-					key = string.Format("{0}	{1}	{2}	{3}	{4}", cartInfo.mapper, cartInfo.prg_size, cartInfo.chr_size, 8, cartInfo.vram_size);
-					if (!Table.TryGetValue(key, out board))
-					{
-						//if it still didnt work, look for one with empty keys, to detect purely based on mapper
-						key = string.Format("{0}	{1}	{2}	{3}	{4}", cartInfo.mapper, -1, -1, -1, -1);
-						Table.TryGetValue(key, out board);
-					}
-				}
-				return board;
+				return string.Format("MAPPER{0:d3}",cartInfo.mapper);
 			}
-
-			public static Dictionary<string, string> Table = new Dictionary<string, string>();
-			static iNESBoardDetector()
-			{
-				var sr = new StringReader(ClassifyTable);
-				string line;
-				while ((line = sr.ReadLine()) != null)
-				{
-					var parts = line.Split('\t');
-					if (parts.Length < 6) continue;
-					string key = parts[0] + "\t" + parts[1] + "\t" + parts[2] + "\t" + parts[3] + "\t" + parts[4];
-					string board = line.Replace(key, "");
-					board = board.TrimStart('\t');
-					if (board.IndexOf(';') != -1)
-						board = board.Substring(0, board.IndexOf(';'));
-					Table[key] = board;
-				}
-			}
-
-//what to do about 034?
-
-//MAP PRG CHR WRAM VRAM BOARD
-static string ClassifyTable = @"
-0	-1	-1	-1	-1	MAPPER000
-1	-1	-1	-1	-1	MAPPER001
-2	-1	-1	-1	-1	MAPPER002
-3	-1	-1	-1	-1	MAPPER003
-4	-1	-1	-1	-1	MAPPER004
-5	-1	-1	-1	-1	MAPPER005
-7	-1	-1	-1	-1	MAPPER007
-9	-1	-1	-1	-1	MAPPER009
-10	-1	-1	-1	-1	MAPPER010
-11	-1	-1	-1	-1	MAPPER011
-13	-1	-1	-1	-1	MAPPER013
-19	-1	-1	-1	-1	MAPPER019
-21	-1	-1	-1	-1	MAPPER021
-22	-1	-1	-1	-1	MAPPER022
-23	-1	-1	-1	-1	MAPPER023
-23	-1	-1	-1	-1	MAPPER023
-25	-1	-1	-1	-1	MAPPER025
-26	-1	-1	-1	-1	MAPPER026
-32	-1	-1	-1	-1	MAPPER032
-33	-1	-1	-1	-1	MAPPER033
-44	-1	-1	-1	-1	MAPPER044
-46	-1	-1	-1	-1	MAPPER046
-49	-1	-1	-1	-1	MAPPER049
-64	-1	-1	-1	-1	MAPPER064
-65	-1	-1	-1	-1	MAPPER065
-66	-1	-1	-1	-1	MAPPER066
-68	-1	-1	-1	-1	MAPPER068
-69	-1	-1	-1	-1	MAPPER069
-70	-1	-1	-1	-1	MAPPER070
-71	-1	-1	-1	-1	MAPPER071
-72	-1	-1	-1	-1	MAPPER072
-73	-1	-1	-1	-1	MAPPER073
-75	-1	-1	-1	-1	MAPPER075
-77	-1	-1	-1	-1	MAPPER077
-78	-1	-1	-1	-1	MAPPER078
-79	-1	-1	-1	-1	MAPPER079
-80	-1	-1	-1	-1	MAPPER080
-82	-1	-1	-1	-1	MAPPER082
-85	-1	-1	-1	-1	MAPPER085
-86	-1	-1	-1	-1	MAPPER086
-87	-1	-1	-1	-1	MAPPER087
-89	-1	-1	-1	-1	MAPPER089
-93	-1	-1	-1	-1	MAPPER093
-97	-1	-1	-1	-1	MAPPER097
-105	-1	-1	-1	-1	MAPPER105
-107	-1	-1	-1	-1	MAPPER107
-113	-1	-1	-1	-1	MAPPER113
-115	-1	-1	-1	-1	MAPPER115
-140	-1	-1	-1	-1	MAPPER140
-152	-1	-1	-1	-1	MAPPER152
-164	-1	-1	-1	-1	MAPPER164
-180	-1	-1	-1	-1	MAPPER180
-182	-1	-1	-1	-1	MAPPER182
-184	-1	-1	-1	-1	MAPPER184
-189	-1	-1	-1	-1	MAPPER189
-191	-1	-1	-1	-1	MAPPER191
-193	-1	-1	-1	-1	MAPPER193
-210	-1	-1	-1	-1	MAPPER210
-227	-1	-1	-1	-1	MAPPER227
-232	-1	-1	-1	-1	MAPPER232
-240	-1	-1	-1	-1	MAPPER240
-242	-1	-1	-1	-1	MAPPER242
-248	-1	-1	-1	-1	MAPPER248
-";
-}
+		}
 
 		unsafe struct iNES_HEADER
 		{
