@@ -73,5 +73,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="MacDialogs.cs" />
+    <Compile Include="AppDelegate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="MainMenu.xib" />
   </ItemGroup>
 </Project>
