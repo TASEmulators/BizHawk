@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (resetSignal)
 			{
 				cpu.NESSoftReset();
+				apu.NESSoftReset();
 				//need to study what happens to ppu and apu and stuff..
 			}
 

@@ -87,7 +87,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				public bool IsLenCntNonZero() { return len_cnt > 0; }
 
-
 				public void WriteReg(int addr, byte val)
 				{
 					//Console.WriteLine("write pulse {0:X} {1:X}", addr, val);
@@ -820,6 +819,13 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				pulse[1].clock_env();
 				triangle.clock_linear_counter();
 				noise.clock_env();
+			}
+
+			public void NESSoftReset()
+			{
+				//need to study what happens to apu and stuff..
+				sequencer_irq = false;
+				_WriteReg(0x4015, 0);
 			}
 
 			public void WriteReg(int addr, byte val)
