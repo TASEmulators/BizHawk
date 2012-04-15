@@ -13,19 +13,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public partial class NES : IEmulator
 	{
-		//Broken
-		//Bill and ted's excellent video game adventure (U) doesnt work until more detailed emulation exists (check 001.txt)
-		//AD&D Hillsfar (U).nes black screen
-
-		//As good as other Emus
-		//Knight Rider - very glitchy and seems to be a good timing case! (seems to run same as nintendulator and fceux now.. which may not be entirely accurate)
-		//Indiana Jones and the Temple of Doom 
-		//Air Wolf - big graphical glitch. seems to be a real bug, but it should never have been released with this. need to verify for sure that it is a real bug?
-
-		//Needs Testing again
-		//JJ - Tobidase Daisakusen Part 2 (J) - same as 3-D World Runner
-
-		//------
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
 
@@ -500,6 +487,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					{
 						origin = EDetectionOrigin.GameDB;
 						LoadWriteLine("Chose board from bizhawk gamedb: " + choice.board_type);
+						//gamedb entries that dont specify prg/chr sizes can infer it from the ines header
+						if (choice.prg_size == -1) choice.prg_size = iNesHeaderInfo.prg_size;
+						if (choice.chr_size == -1) choice.chr_size = iNesHeaderInfo.chr_size;
+						if (choice.vram_size == -1) choice.vram_size = iNesHeaderInfo.vram_size;
+						if (choice.wram_size == -1) choice.wram_size = iNesHeaderInfo.wram_size;
 					}
 				}
 				else
@@ -518,8 +510,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					throw new Exception("No class implements the necessary board type: " + choice.board_type);
 
 				if (choice.DB_GameInfo != null)
-					if (choice.DB_GameInfo.Status == RomStatus.BadDump)
-						choice.bad = true;
+						choice.bad = choice.DB_GameInfo.IsRomStatusBad();
 
 				LoadWriteLine("Final game detection results:");
 				LoadWriteLine(choice);

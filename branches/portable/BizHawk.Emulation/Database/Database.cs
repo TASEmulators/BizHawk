@@ -82,6 +82,7 @@ namespace BizHawk
 							case "I": Game.Status = RomStatus.BIOS; break;
 							case "D": Game.Status = RomStatus.Homebrew; break;
 							case "H": Game.Status = RomStatus.Hack; break;
+							case "U": Game.Status = RomStatus.Unknown; break;
 							default: Game.Status = RomStatus.GoodDump; break;
 						}
 						Game.Name = items[2];

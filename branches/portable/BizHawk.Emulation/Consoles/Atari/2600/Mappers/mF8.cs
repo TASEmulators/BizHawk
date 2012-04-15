@@ -33,7 +33,7 @@ namespace BizHawk
 			void Address(ushort addr)
 			{
 				if (addr == 0x1FF8) toggle = 0;
-				if (addr == 0x1FF9) toggle = 1;
+				else if (addr == 0x1FF9) toggle = 1;
 			}
 		}
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using BizHawk.Emulation.CPUs.M6502;
 using BizHawk.Emulation.Consoles.Atari;
+using BizHawk.Emulation.Consoles.Atari._2600;
 
 namespace BizHawk
 {
@@ -109,7 +110,26 @@ namespace BizHawk
 			{
 				case "4K": mapper = new m4K(); break;
 				case "2K": mapper = new m2K(); break;
+				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
+				case "F6": mapper = new mF6(); break;
+				case "F4": case "F4SC": mapper = new mF4(); break;
+				case "FE": mapper = new mFE(); break;
+				case "E0": mapper = new mE0(); break;
+				case "3F": mapper = new m3F(); break;
+				case "FA": mapper = new mFA(); break;
+				case "E7": mapper = new mE7(); break;
+				case "F0": mapper = new mF0(); break;
+				case "UA": mapper = new mUA(); break;
+				//Homebrew mappers
+				case "3Fe": mapper = new m3Fe(); break;
+				case "3E": mapper = new m3E(); break;
+				case "0840": mapper = new m0840(); break;
+				case "MC": mapper = new mMC(); break;
+				case "EF": mapper = new mEF(); break;
+				case "X07": mapper = new mX07(); break;
+				case "4A50": mapper = new m4A50(); break;
+
 				default: throw new InvalidOperationException("mapper not supported: " + game.GetOptionsDict()["m"]);
 			}
 			mapper.core = this;
@@ -145,7 +165,7 @@ namespace BizHawk
 				tia.execute(1);
 				tia.execute(1);
 
-				m6532.tick();
+				m6532.timer.tick();
 				cpu.ExecuteOne();
 				//if (cpu.PendingCycles <= 0)
 				//{

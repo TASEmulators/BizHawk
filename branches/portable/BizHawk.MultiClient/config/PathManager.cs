@@ -68,6 +68,8 @@ namespace BizHawk.MultiClient
 		{
 			switch (system)
 			{
+				case "A26":
+					return Global.Config.BaseAtari;
 				case "NES":
 					return Global.Config.BaseNES;
 				case "SG":
@@ -226,6 +228,9 @@ namespace BizHawk.MultiClient
 
 			switch (sysID)
 			{
+				case "A26":
+					path = PathManager.MakeAbsolutePath(Global.Config.PathAtariROMs, "A26");
+					break;
 				case "NES":
 					path = PathManager.MakeAbsolutePath(Global.Config.PathNESROMs, "NES");
 					break;
@@ -289,6 +294,7 @@ namespace BizHawk.MultiClient
 
 			switch (game.System)
 			{
+				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSaveRAM, "A26"), name + ".SaveRAM");
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSaveRAM, "SMS"), name + ".SaveRAM");
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSaveRAM, "GG"), name + ".SaveRAM");
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSaveRAM, "SG"), name + ".SaveRAM");
@@ -310,6 +316,7 @@ namespace BizHawk.MultiClient
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
 			switch (game.System)
 			{
+				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGSavestates, "GG"), name);
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGSavestates, "SG"), name);
@@ -329,6 +336,7 @@ namespace BizHawk.MultiClient
 			string name = FilesystemSafeName(game);
 			switch (game.System)
 			{
+				case "A26": return Path.Combine(MakeAbsolutePath(Global.Config.PathAtariScreenshots, "A26"), name);
 				case "SMS": return Path.Combine(MakeAbsolutePath(Global.Config.PathSMSScreenshots, "SMS"), name);
 				case "GG": return Path.Combine(MakeAbsolutePath(Global.Config.PathGGScreenshots, "GG"), name);
 				case "SG": return Path.Combine(MakeAbsolutePath(Global.Config.PathSGScreenshots, "SG"), name);

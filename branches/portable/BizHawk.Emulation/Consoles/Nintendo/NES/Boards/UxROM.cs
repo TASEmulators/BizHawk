@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			//configure
 			switch (Cart.board_type)
 			{
-				case "MAPPER2":
+				case "MAPPER002":
 					break;
 
 				case "NES-UNROM": //mega man

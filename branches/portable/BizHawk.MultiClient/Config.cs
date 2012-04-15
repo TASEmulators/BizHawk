@@ -378,7 +378,7 @@ namespace BizHawk.MultiClient
 		//Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = true;
 		public bool PlayMovie_ShowStateFiles = false;
-		public bool PlayMovie_MatchGameName = true;
+		public bool PlayMovie_MatchGameName = false;
 
 		//TI83
 		public bool TI83autoloadKeyPad = true;

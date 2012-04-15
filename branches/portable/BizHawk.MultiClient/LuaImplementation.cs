@@ -221,6 +221,7 @@ namespace BizHawk.MultiClient
 		{
 			"text",
 			"alert",
+            "cleartext",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -425,6 +426,11 @@ namespace BizHawk.MultiClient
 		{
 			do_gui_text(luaX, luaY, luaStr, true, anchor);
 		}
+
+        public void gui_cleartext()
+        {
+            Global.RenderPanel.ClearGUIText();
+        }
 
 		//----------------------------------------------------
 		//Emu library
@@ -1223,14 +1229,15 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 
 		//Currently sends all controllers, needs to control which ones it sends
-		public LuaTable joypad_get(object controller)
+		public LuaTable joypad_get(object controller = null)
 		{
 			LuaTable buttons = lua.NewTable();
-            foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
-                if (button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
-                    buttons[button] = Global.ControllerOutput[button];
+			foreach (string button in Global.ControllerOutput.Source.Type.BoolButtons)
+				if (controller == null)
+					buttons[button] = Global.ControllerOutput[button];
+				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + LuaInt(controller).ToString())
+					buttons[button.Substring(3)] = Global.ControllerOutput["P" + LuaInt(controller) + " " + button.Substring(3)];
 
-			//zero 23-mar-2012 - wtf is this??????
 			buttons["clear"] = null;
 			buttons["getluafunctionslist"] = null;
 			buttons["output"] = null;
@@ -1246,15 +1253,15 @@ namespace BizHawk.MultiClient
 			return buttons;
 		}
 
-        public void joypad_set(LuaTable buttons, object slot = null)
+		public void joypad_set(LuaTable buttons, object controller = null)
 		{
             foreach (var button in buttons.Keys)
             {
                 if (Convert.ToBoolean(buttons[button]) == true)
-                    if (slot == null)
+					if (controller == null)
                         Global.ClickyVirtualPadController.Click(button.ToString());
                     else
-                        Global.ClickyVirtualPadController.Click("P" + slot.ToString() + " " + button.ToString());
+						Global.ClickyVirtualPadController.Click("P" + controller.ToString() + " " + button.ToString());
             }
 		}
 

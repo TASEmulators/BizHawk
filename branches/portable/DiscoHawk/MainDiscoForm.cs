@@ -49,6 +49,7 @@ namespace BizHawk
 			prefs.OneBlobPerTrack = false; //TODO? checkCueProp_OneBlobPerTrack.Checked;
 			prefs.ReallyDumpBin = false;
 			prefs.SingleSession = true;
+			prefs.ExtensionAware = true;
 			return prefs;
 		}
 
@@ -60,10 +61,10 @@ namespace BizHawk
 			{
 				foreach (var file in files)
 				{
-					Disc disc = Disc.FromCuePath(file, new CueBinPrefs());
+					var prefs = GetCuePrefs();
+					Disc disc = Disc.FromCuePath(file, prefs);
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
-					var prefs = GetCuePrefs();
 					prefs.ReallyDumpBin = true;
 					var cueBin = disc.DumpCueBin(baseName, GetCuePrefs());
 					Dump(cueBin, Path.GetDirectoryName(file), prefs);

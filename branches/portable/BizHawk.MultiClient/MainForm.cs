@@ -744,6 +744,17 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
 			Global.GenControls = genControls;
 
+            var agenControls = new AutofireController(Genesis.GenesisController);
+            agenControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
+            agenControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
+            agenControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
+            agenControls.BindMulti("P1 Down", Global.Config.GenesisAutoController[0].Down);
+            agenControls.BindMulti("P1 A", Global.Config.GenesisAutoController[0].A);
+            agenControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
+            agenControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
+            agenControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
+            Global.AutofireGenControls = agenControls;
+
 			var a2600Controls = new Controller(Atari2600.Atari2600ControllerDefinition);
 			a2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
 			a2600Controls.BindMulti("P1 Left", Global.Config.Atari2600Controller[0].Left);
@@ -833,7 +844,14 @@ namespace BizHawk.MultiClient
 
 		private bool IsValidMovieExtension(string ext)
 		{
-			return (ext.ToUpper() == ".TAS");
+			if (ext.ToUpper() == "." + Global.Config.MovieExtension)
+				return true;
+			else if (ext.ToUpper() == ".TAS")
+				return true;
+			else if (ext.ToUpper() == ".BKM")
+				return true;
+
+			return false;
 		}
 
 		private void FormDragDrop(object sender, DragEventArgs e)
@@ -1300,6 +1318,12 @@ namespace BizHawk.MultiClient
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
+                if (Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+                {
+#if WINDOWS
+                    LuaConsole1.Restart();
+#endif
+                }
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
@@ -1323,9 +1347,6 @@ namespace BizHawk.MultiClient
 				TAStudio1.Restart();
 				Cheats1.Restart();
 				ToolBox1.Restart();
-#if WINDOWS
-				LuaConsole1.Restart();
-#endif
 
 				if (Global.Config.LoadCheatFileByGame)
 				{

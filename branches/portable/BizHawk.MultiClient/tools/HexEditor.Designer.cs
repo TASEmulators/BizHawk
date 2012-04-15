@@ -261,14 +261,14 @@
             this.incrementToolStripMenuItem,
             this.decrementToolStripMenuItem});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(194, 142);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 142);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// pokeToolStripMenuItem
 			// 
 			this.pokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeToolStripMenuItem.Name = "pokeToolStripMenuItem";
-			this.pokeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.pokeToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.pokeToolStripMenuItem.Text = "&Poke";
 			this.pokeToolStripMenuItem.Click += new System.EventHandler(this.pokeToolStripMenuItem_Click);
 			// 
@@ -277,7 +277,7 @@
 			this.freezeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeToolStripMenuItem.Name = "freezeToolStripMenuItem";
 			this.freezeToolStripMenuItem.ShortcutKeyDisplayString = "Space";
-			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.freezeToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.freezeToolStripMenuItem.Text = "&Freeze";
 			this.freezeToolStripMenuItem.Click += new System.EventHandler(this.freezeToolStripMenuItem_Click);
 			// 
@@ -285,8 +285,8 @@
 			// 
 			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
-			this.addToRamWatchToolStripMenuItem.ShortcutKeyDisplayString = "A";
-			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.addToRamWatchToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
+			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "&Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
@@ -295,20 +295,20 @@
 			this.unfreezeAllToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Unfreeze;
 			this.unfreezeAllToolStripMenuItem1.Name = "unfreezeAllToolStripMenuItem1";
 			this.unfreezeAllToolStripMenuItem1.ShortcutKeyDisplayString = "Shift+Del";
-			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
+			this.unfreezeAllToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
 			this.unfreezeAllToolStripMenuItem1.Text = "&Unfreeze All";
 			this.unfreezeAllToolStripMenuItem1.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(216, 6);
 			// 
 			// incrementToolStripMenuItem
 			// 
 			this.incrementToolStripMenuItem.Name = "incrementToolStripMenuItem";
 			this.incrementToolStripMenuItem.ShortcutKeyDisplayString = "+";
-			this.incrementToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.incrementToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.incrementToolStripMenuItem.Text = "&Increment";
 			this.incrementToolStripMenuItem.Click += new System.EventHandler(this.incrementToolStripMenuItem_Click);
 			// 
@@ -316,7 +316,7 @@
 			// 
 			this.decrementToolStripMenuItem.Name = "decrementToolStripMenuItem";
 			this.decrementToolStripMenuItem.ShortcutKeyDisplayString = "-";
-			this.decrementToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.decrementToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.decrementToolStripMenuItem.Text = "&Decrement";
 			this.decrementToolStripMenuItem.Click += new System.EventHandler(this.decrementToolStripMenuItem_Click);
 			// 

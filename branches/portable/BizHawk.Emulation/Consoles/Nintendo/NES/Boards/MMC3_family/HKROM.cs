@@ -25,11 +25,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					Cart.wram_size = 1; //1K of wram is in the mmc6
 					Cart.wram_battery = true; //and its battery backed.
 					break;
+				case "MAPPER004_MMC6":
+					Cart.wram_size = 1; //1K of wram is in the mmc6
+					Cart.wram_battery = true; //and its battery backed.
+					break;
 				default:
 					return false;
 			}
 
 			BaseSetup();
+			mmc3.MMC3Type = MMC3.EMMC3Type.MMC6;
 
 			return true;
 		}

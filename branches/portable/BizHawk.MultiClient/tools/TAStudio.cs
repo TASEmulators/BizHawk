@@ -150,6 +150,22 @@ namespace BizHawk.MultiClient
 				case "NULL":
 				default:
 					break;
+				case "A26":
+					VirtualPadA26 ataripad1 = new VirtualPadA26();
+					ataripad1.Location = new Point(8, 19);
+					ataripad1.Controller = "P1";
+					VirtualPadA26 ataripad2 = new VirtualPadA26();
+					ataripad2.Location = new Point(188, 19);
+					ataripad2.Controller = "P2";
+					Pads.Add(ataripad1);
+					Pads.Add(ataripad2);
+					ControllerBox.Controls.Add(Pads[0]);
+					ControllerBox.Controls.Add(Pads[1]);
+					VirtualPadA26Control ataricontrols = new VirtualPadA26Control();
+					ataricontrols.Location = new Point(8, 109);
+					Pads.Add(ataricontrols);
+					ControllerBox.Controls.Add(Pads[2]);
+					break;
 				case "NES":
 					VirtualPadNES nespad1 = new VirtualPadNES();
 					nespad1.Location = new Point(8, 19);

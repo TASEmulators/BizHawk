@@ -215,7 +215,7 @@ namespace BizHawk.MultiClient
 			List<int> TAS = new List<int>();
 			for (int x = 0; x < Indexes.Count; x++)
 			{
-				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == ".TAS")
+				if (Path.GetExtension(MovieList[Indexes[x]].Filename).ToUpper() == "." + Global.Config.MovieExtension)
 					TAS.Add(x);
 			}
 			if (TAS.Count == 1)
@@ -267,8 +267,12 @@ namespace BizHawk.MultiClient
 			string d = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			if (!Directory.Exists(d))
 				Directory.CreateDirectory(d);
-
+			string extension = "*." + Global.Config.MovieExtension;
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
+				AddMovieToList(f);
+			foreach (string f in Directory.GetFiles(d, "*.tas"))
+				AddMovieToList(f);
+			foreach (string f in Directory.GetFiles(d, "*.bkm"))
 				AddMovieToList(f);
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
@@ -320,6 +324,16 @@ namespace BizHawk.MultiClient
 			{
 				ListViewItem item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
+
+				if (kvp.Key.ToString() == MovieHeader.SHA1)
+				{
+					if (kvp.Value.ToString() != Global.Game.Hash)
+					{
+						item.BackColor = Color.Pink;
+					}
+					
+				}
+
 				DetailsView.Items.Add(item);
 			}
 			if (MovieList[x].Header.Comments.Count > 0)
