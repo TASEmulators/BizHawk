@@ -124,7 +124,21 @@ namespace BizHawk.MultiClient
 		
 		public static void Update ()
 		{
-			_kbState = OpenTK.Input.Keyboard.GetState();
+			try
+			{
+				_kbState = OpenTK.Input.Keyboard.GetState();
+			}
+			catch
+			{
+				//OpenTK's keyboard class isn't thread safe.
+				//In rare cases (sometimes it takes up to 10 minutes to occur) it will 
+				//be updating the keyboard state when we call GetState() and choke.
+				//Until I fix OpenTK, it's fine to just swallow it because input continues working.
+				if(System.Diagnostics.Debugger.IsAttached)
+				{
+					System.Console.WriteLine("OpenTK Keyboard thread is angry.");
+				}
+			}
 		}
 		
 		public static bool IsPressed (Key key)

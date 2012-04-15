@@ -37,7 +37,7 @@ namespace BizHawk.MultiClient
         private Thread runLoopThread;
 		private System.Timers.Timer renderTimer;
         public bool RunLoopBlocked { get; set; }
-		bool exit;
+		public bool exit;
 		bool runloop_frameProgress;
 		DateTime FrameAdvanceTimestamp = DateTime.MinValue;
 		public bool EmulatorPaused;
@@ -82,6 +82,7 @@ namespace BizHawk.MultiClient
 			Icon = Icon.FromHandle(BizHawk.MultiClient.Properties.Resources.corphawk.GetHicon());
 #endif
 			InitializeComponent();
+
 			Global.Game = GameInfo.GetNullGame();
 			if (Global.Config.ShowLogWindow)
 			{
@@ -204,7 +205,9 @@ namespace BizHawk.MultiClient
 				LoadRom(cmdRom);
 				if (Global.Game == null)
 				{
+					RunLoopBlocked = true;
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
+					RunLoopBlocked = false;
 				}
 			}
 			else if (Global.Config.AutoLoadMostRecentRom && !Global.Config.RecentRoms.IsEmpty())
@@ -272,7 +275,11 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.StartPaused)
 				PauseEmulator();
-
+			
+			#if !WINDOWS
+			luaConsoleToolStripMenuItem.Visible = false;
+			#endif
+			
 			if (!INTERIM)
 			{
 				debuggerToolStripMenuItem.Enabled = false;
@@ -438,6 +445,9 @@ namespace BizHawk.MultiClient
 				CurrAviWriter.CloseFile();
 				CurrAviWriter = null;
 			}
+			renderTimer.Stop();
+			renderTimer.Dispose();
+			RunLoopBlocked = true;
 		}
 
 		void CheckMessages()
@@ -481,11 +491,13 @@ namespace BizHawk.MultiClient
 			bool r = LoadRom(rom);
 			if (!r)
 			{
+				RunLoopBlocked = true;
 				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Could not open " + rom + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 					Global.Config.RecentRoms.Remove(rom);
 				Global.Sound.StartSound();
+				RunLoopBlocked = false;
 			}
 		}
 
@@ -495,11 +507,13 @@ namespace BizHawk.MultiClient
 
 			if (!m.Loaded)
 			{
+				RunLoopBlocked = true;
 				Global.Sound.StopSound();
 				DialogResult result = MessageBox.Show("Could not open " + movie + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 					Global.Config.RecentMovies.Remove(movie);
 				Global.Sound.StartSound();
+				RunLoopBlocked = false;
 			}
 			else
 			{
@@ -857,7 +871,11 @@ namespace BizHawk.MultiClient
 				string warningMsg = "";
 				Movie m = MovieImport.ImportFile(filePaths[0], out errorMsg, out warningMsg);
 				if (errorMsg.Length > 0)
+				{
+					RunLoopBlocked = true;
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					RunLoopBlocked = false;
+				}
 				else
 					StartNewMovie(m, false);
 				Global.RenderPanel.AddMessage(warningMsg);
@@ -1158,12 +1176,15 @@ namespace BizHawk.MultiClient
 									string biosPath = PathManager.MakeAbsolutePath(Global.Config.PathPCEBios, "PCE");
 									if (File.Exists(biosPath) == false)
 									{
+										RunLoopBlocked = true;
 										MessageBox.Show("PCE-CD System Card not found. Please check the BIOS path in Config->Paths->PC Engine.");
+										RunLoopBlocked = false;
 										return false;
 									}
 
 									rom = new RomGame(new HawkFile(biosPath));
-
+							
+									RunLoopBlocked = true;
 									if (rom.GameInfo.Status == RomStatus.BadDump)
 										MessageBox.Show("The PCE-CD System Card you have selected is known to be a bad dump. This may cause problems playing PCE-CD games.\n\n" +
 											"It is recommended that you find a good dump of the system card. Sorry to be the bearer of bad news!");
@@ -1178,7 +1199,8 @@ namespace BizHawk.MultiClient
 										game.AddOption("SuperSysCard");
 									if ((game["NeedSuperSysCard"]) && game["SuperSysCard"] == false)
 										MessageBox.Show("This game requires a version 3.0 System card and won't run with the system card you've selected. Try selecting a 3.0 System Card in Config->Paths->PC Engine.");
-
+									RunLoopBlocked = false;
+							
 									if (Global.Config.PceSpriteLimit) game.AddOption("ForceSpriteLimit");
 									if (Global.Config.PceEqualizeVolume) game.AddOption("EqualizeVolumes");
 									if (Global.Config.PceArcadeCardRewindHack) game.AddOption("ArcadeRewindHack");
@@ -1254,7 +1276,9 @@ namespace BizHawk.MultiClient
 				}
 				catch (Exception ex)
 				{
+					RunLoopBlocked = true;
 					MessageBox.Show("Exception during loadgame:\n\n" + ex.ToString());
+					RunLoopBlocked = false;
 					return false;
 				}
 
@@ -1596,7 +1620,9 @@ namespace BizHawk.MultiClient
 				case "Ram Poke":
 					{
 						RamPoke r = new RamPoke();
+						RunLoopBlocked = true;
 						r.Show();
+						RunLoopBlocked = false;
 						break;
 					}
 				case "Hex Editor": LoadHexEditor(); break;
@@ -2144,7 +2170,9 @@ namespace BizHawk.MultiClient
 			if (!RamSearch1.IsHandleCreated || RamSearch1.IsDisposed)
 			{
 				RamSearch1 = new RamSearch();
+				RunLoopBlocked = true;
 				RamSearch1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				RamSearch1.Focus();
@@ -2153,7 +2181,9 @@ namespace BizHawk.MultiClient
 		public void LoadGameGenieEC()
 		{
 			NESGameGenie gg = new NESGameGenie();
+			RunLoopBlocked = true;
 			gg.Show();
+			RunLoopBlocked = false;
 		}
 
 		public void LoadHexEditor()
@@ -2161,7 +2191,9 @@ namespace BizHawk.MultiClient
 			if (!HexEditor1.IsHandleCreated || HexEditor1.IsDisposed)
 			{
 				HexEditor1 = new HexEditor();
+				RunLoopBlocked = true;
 				HexEditor1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				HexEditor1.Focus();
@@ -2172,7 +2204,9 @@ namespace BizHawk.MultiClient
 			if (!ToolBox1.IsHandleCreated || ToolBox1.IsDisposed)
 			{
 				ToolBox1 = new ToolBox();
+				RunLoopBlocked = true;
 				ToolBox1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				ToolBox1.Close();
@@ -2183,7 +2217,9 @@ namespace BizHawk.MultiClient
 			if (!NESPPU1.IsHandleCreated || NESPPU1.IsDisposed)
 			{
 				NESPPU1 = new NESPPU();
+				RunLoopBlocked = true;
 				NESPPU1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				NESPPU1.Focus();
@@ -2194,7 +2230,9 @@ namespace BizHawk.MultiClient
 			if (!NESNameTableViewer1.IsHandleCreated || NESNameTableViewer1.IsDisposed)
 			{
 				NESNameTableViewer1 = new NESNameTableViewer();
+				RunLoopBlocked = true;
 				NESNameTableViewer1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				NESNameTableViewer1.Focus();
@@ -2205,7 +2243,9 @@ namespace BizHawk.MultiClient
 			if (!NESDebug1.IsHandleCreated || NESDebug1.IsDisposed)
 			{
 				NESDebug1 = new NESDebugger();
+				RunLoopBlocked = true;
 				NESDebug1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				NESDebug1.Focus();
@@ -2216,7 +2256,9 @@ namespace BizHawk.MultiClient
 			if (!PCEBGViewer1.IsHandleCreated || PCEBGViewer1.IsDisposed)
 			{
 				PCEBGViewer1 = new PCEBGViewer();
+				RunLoopBlocked = true;
 				PCEBGViewer1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				PCEBGViewer1.Focus();
@@ -2227,7 +2269,9 @@ namespace BizHawk.MultiClient
 			if (!TI83KeyPad1.IsHandleCreated || TI83KeyPad1.IsDisposed)
 			{
 				TI83KeyPad1 = new TI83KeyPad();
+				RunLoopBlocked = true;
 				TI83KeyPad1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				TI83KeyPad1.Focus();
@@ -2238,7 +2282,9 @@ namespace BizHawk.MultiClient
 			if (!Cheats1.IsHandleCreated || Cheats1.IsDisposed)
 			{
 				Cheats1 = new Cheats();
+				RunLoopBlocked = true;
 				Cheats1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				Cheats1.Focus();
@@ -2568,7 +2614,9 @@ namespace BizHawk.MultiClient
 				RamWatch1 = new RamWatch();
 				if (Global.Config.AutoLoadRamWatch && Global.Config.RecentWatches.Length() > 0)
 					RamWatch1.LoadWatchFromRecent(Global.Config.RecentWatches.GetRecentFileByPosition(0));
+				RunLoopBlocked = true;
 				RamWatch1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				RamWatch1.Focus();
@@ -2579,7 +2627,9 @@ namespace BizHawk.MultiClient
 			if (!TAStudio1.IsHandleCreated || TAStudio1.IsDisposed)
 			{
 				TAStudio1 = new TAStudio();
+				RunLoopBlocked = true;
 				TAStudio1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				TAStudio1.Focus();
@@ -2743,12 +2793,16 @@ namespace BizHawk.MultiClient
 			if (!LuaConsole1.IsHandleCreated || LuaConsole1.IsDisposed)
 			{
 				LuaConsole1 = new LuaConsole();
+				RunLoopBlocked = true;
 				LuaConsole1.Show();
+				RunLoopBlocked = false;
 			}
 			else
 				LuaConsole1.Focus();
 #else
+			RunLoopBlocked = true;
 			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			RunLoopBlocked = false;
 #endif
 		}
 
@@ -2757,14 +2811,18 @@ namespace BizHawk.MultiClient
 			if (Global.Emulator is Gameboy)
 			{
 				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
+				RunLoopBlocked = true;
 				gbDebugger.Show();
+				RunLoopBlocked = false;
 			}
 		}
 
 		public void LoadRamPoke()
 		{
 			RamPoke r = new RamPoke();
+			RunLoopBlocked = true;
 			r.Show();
+			RunLoopBlocked = false;
 		}
 
 		private void importMovieToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2794,7 +2852,8 @@ namespace BizHawk.MultiClient
             RunLoopBlocked = false;
 			if (result != DialogResult.OK)
 				return;
-
+			
+			RunLoopBlocked = true;
 			foreach (string fn in ofd.FileNames)
 			{
 				var file = new FileInfo(fn);
@@ -2809,6 +2868,7 @@ namespace BizHawk.MultiClient
 				else
 					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
 			}
+			RunLoopBlocked = false;
 		}
 
 		#region Animaged Gifs
@@ -2931,7 +2991,9 @@ namespace BizHawk.MultiClient
 		private void animatedGIFConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GifAnimator g = new GifAnimator();
+			RunLoopBlocked = true;
 			g.Show();
+			RunLoopBlocked = false;
 		}
 
 		private void makeAnimatedGIFToolStripMenuItem_Click(object sender, EventArgs e)
