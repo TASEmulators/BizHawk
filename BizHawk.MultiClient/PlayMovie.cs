@@ -324,6 +324,16 @@ namespace BizHawk.MultiClient
 			{
 				ListViewItem item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
+
+				if (kvp.Key.ToString() == MovieHeader.SHA1)
+				{
+					if (kvp.Value.ToString() != Global.Game.Hash)
+					{
+						item.BackColor = Color.Pink;
+					}
+					
+				}
+
 				DetailsView.Items.Add(item);
 			}
 			if (MovieList[x].Header.Comments.Count > 0)
