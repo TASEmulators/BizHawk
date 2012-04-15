@@ -4,12 +4,14 @@ using MonoMac.Foundation;
 using MonoMac.AppKit;
 using BizHawk.MultiClient;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace MonoMacWrapper
 {
 	[MonoMac.Foundation.Register("AppDelegate")]
 	public class AppDelegate : NSApplicationDelegate
 	{
+		private System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter> _menuLookup;
 		private System.Threading.Thread _uiRunLoop;
 		private MainForm _mainWinForm;
 		public AppDelegate(){}
@@ -47,19 +49,23 @@ namespace MonoMacWrapper
 		
 		private void KeepThingsGoing()
 		{
-			while(true)
+			while(!_mainWinForm.exit)
 			{
 				NSApplication.SharedApplication.InvokeOnMainThread(()=>
 				{
 					if(_mainWinForm.Visible && !_mainWinForm.RunLoopBlocked)
 						Application.DoEvents();
 				});
-				System.Threading.Thread.Sleep(0);
+				System.Threading.Thread.Sleep(1);
 			}
+			while(_mainWinForm.RunLoopBlocked); //Wait to terminate until shutdown is complete
+			_mainWinForm.Dispose();
+			NSApplication.SharedApplication.Terminate(this);
 		}
 				
 		private void DoMenuExtraction()
 		{
+			_menuLookup = new System.Collections.Generic.Dictionary<ToolStripMenuItem, MenuItemAdapter>();
 			ExtractMenus(_mainWinForm.MainMenuStrip);
 		}
 		
@@ -68,11 +74,13 @@ namespace MonoMacWrapper
 			for(int i=0; i<menus.Items.Count; i++)
 			{
 				ToolStripMenuItem item = menus.Items[i] as ToolStripMenuItem;
-				NSMenuItem menuOption = new NSMenuItem(CleanMenuString(item.Text));
+				MenuItemAdapter menuOption = new MenuItemAdapter(item);
 				NSMenu dropDown = new NSMenu(CleanMenuString(item.Text));
 				menuOption.Submenu = dropDown;
 				NSApplication.SharedApplication.MainMenu.AddItem(menuOption);
+				_menuLookup.Add(item, menuOption);
 				menuOption.Hidden = !item.Visible;
+				item.VisibleChanged += HandleItemVisibleChanged;
 				menuOption.Enabled = item.Enabled;
 				ExtractSubmenu(item.DropDownItems, dropDown, i==0); //Skip last 2 options in first menu, redundant exit option
 			}
@@ -89,12 +97,18 @@ namespace MonoMacWrapper
 				{
 					ToolStripMenuItem menuItem = (ToolStripMenuItem)item;
 					MenuItemAdapter translated = new MenuItemAdapter(menuItem);
+					menuItem.CheckedChanged += HandleMenuItemCheckedChanged;
+					menuItem.EnabledChanged += HandleMenuItemEnabledChanged;
 					translated.Action = new MonoMac.ObjCRuntime.Selector("HandleMenu");
+					translated.State = menuItem.Checked ? NSCellStateValue.On : NSCellStateValue.Off;
+					if(menuItem.Image != null) translated.Image = ImageToCocoa(menuItem.Image);
 					destMenu.AddItem(translated);
+					_menuLookup.Add(menuItem, translated);
 					if(menuItem.DropDownItems.Count > 0)
 					{
 						NSMenu dropDown = new NSMenu(CleanMenuString(item.Text));
 						translated.Submenu = dropDown;
+						ExecuteDropDownOpened(menuItem);
 						ExtractSubmenu(menuItem.DropDownItems, dropDown, false);
 					}
 				}
@@ -103,6 +117,59 @@ namespace MonoMacWrapper
 					destMenu.AddItem(NSMenuItem.SeparatorItem);
 				}
 			}
+		}
+		
+		private void ExecuteDropDownOpened(ToolStripMenuItem item)
+		{
+			var dropDownOpeningKey = typeof(ToolStripDropDownItem).GetField("DropDownOpenedEvent", BindingFlags.Static | BindingFlags.NonPublic);
+			var eventProp = typeof(ToolStripDropDownItem).GetProperty("Events", BindingFlags.Instance | BindingFlags.NonPublic);
+	        if (eventProp != null && dropDownOpeningKey != null)
+			{
+				var dropDownOpeningValue = dropDownOpeningKey.GetValue(item);
+				var eventList = eventProp.GetValue(item, null) as System.ComponentModel.EventHandlerList;
+				if(eventList != null)
+				{
+					Delegate ddd = eventList[dropDownOpeningValue];
+					if(ddd!=null) ddd.DynamicInvoke(null, EventArgs.Empty);
+				}
+	        }
+		}
+		
+		private void HandleItemVisibleChanged(object sender, EventArgs e)
+		{
+			if(sender is ToolStripMenuItem && _menuLookup.ContainsKey((ToolStripMenuItem)sender))
+			{
+				MenuItemAdapter translated = _menuLookup[(ToolStripMenuItem)sender];
+				translated.Hidden = !translated.Hidden; 
+				//Can't actually look at Visible property because the entire menubar is hidden.
+				//Since the event only gets called when Visible is changed, we can assume it got flipped.
+			}
+		}
+
+		private void HandleMenuItemEnabledChanged(object sender, EventArgs e)
+		{
+			if(sender is ToolStripMenuItem && _menuLookup.ContainsKey((ToolStripMenuItem)sender))
+			{
+				MenuItemAdapter translated = _menuLookup[(ToolStripMenuItem)sender];
+				translated.Enabled = translated.HostMenu.Enabled;
+			}
+		}
+
+		private void HandleMenuItemCheckedChanged(object sender, EventArgs e)
+		{
+			if(sender is ToolStripMenuItem && _menuLookup.ContainsKey((ToolStripMenuItem)sender))
+			{
+				MenuItemAdapter translated = _menuLookup[(ToolStripMenuItem)sender];
+				translated.State = translated.HostMenu.Checked ? NSCellStateValue.On : NSCellStateValue.Off;
+			}
+		}
+		
+		private static NSImage ImageToCocoa(System.Drawing.Image input)
+		{
+			System.IO.MemoryStream ms = new System.IO.MemoryStream();
+			input.Save(ms,System.Drawing.Imaging.ImageFormat.Png);
+			ms.Position = 0;
+			return NSImage.FromStream(ms);
 		}
 		
 		private static string CleanMenuString(string text)
