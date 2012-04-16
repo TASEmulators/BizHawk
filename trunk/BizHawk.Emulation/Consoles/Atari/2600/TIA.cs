@@ -783,11 +783,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					if (scanlinesBuffer.Count > row)
 					{
-						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2]);
+						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2] | 0xFF000000);
 					}
 					else
 					{
-						frameBuffer[row * 320 + col] = 0x000000;
+						frameBuffer[row * 320 + col] = unchecked((int)0xFF000000);
 					}
 				}
 			}
