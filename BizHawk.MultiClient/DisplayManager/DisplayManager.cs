@@ -326,8 +326,8 @@ namespace BizHawk.MultiClient
 				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
 			else
 				s = new StringBuilder(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame - 1));
-			s.Replace(".", " ");
-			s.Replace("|", "");
+			s.Replace(".", " ").Replace("|", "").Replace("l", ""); //If l is ever a mnemonic this will squash it.
+			
 			return s.ToString();
 		}
 
