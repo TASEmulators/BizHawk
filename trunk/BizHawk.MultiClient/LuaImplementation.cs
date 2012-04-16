@@ -463,13 +463,20 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// draws a random rectangle for testing purposes
 		/// </summary>
-		public void gui_drawRectangle(object X, object Y, object width, object height)
+		public void gui_drawRectangle(object X, object Y, object width, object height, object line, object background = null)
 		{
 			using (var g = luaSurface.GetGraphics())
 			{
 				try
 				{
-					g.DrawRectangle(System.Drawing.Pens.Black, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					System.Drawing.Pen myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					g.DrawRectangle(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					if (background != null)
+					{
+						System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						g.FillRectangle(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					}
+					
 				}
 				catch(Exception e)
 				{
