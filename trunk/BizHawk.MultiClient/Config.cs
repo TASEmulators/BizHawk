@@ -169,7 +169,6 @@ namespace BizHawk.MultiClient
 		public int MessagesColor = -1;
 		public int AlertMessageColor = -65536;
 		public int LastInputColor = -23296;
-		public int MovieColor = -65536;
 		public int MovieInput = -8355712;
 		public bool DisplayFPS = false;
 		public int DispFPSx = 0;

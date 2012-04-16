@@ -37,7 +37,6 @@ namespace BizHawk.MultiClient
 
 		int MessageColor = Global.Config.MessagesColor;
 		int AlertColor = Global.Config.AlertMessageColor;
-		int MovieColor = Global.Config.MovieColor;
 		int MovieInput = Global.Config.MovieInput;
 		
 		int DispFPSanchor = Global.Config.DispFPSanchor;
@@ -63,7 +62,6 @@ namespace BizHawk.MultiClient
 			MessageColorDialog.Color = Color.FromArgb(MessageColor);
 			AlertColorDialog.Color = Color.FromArgb(AlertColor);
 			LInputColorDialog.Color = Color.FromArgb(LastInputColor);
-			MovieColorDialog.Color = Color.FromArgb(MovieColor);
 			MovieInputColorDialog.Color = Color.FromArgb(MovieInput);
 			SetColorBox();
 			SetPositionInfo();
@@ -97,10 +95,6 @@ namespace BizHawk.MultiClient
 			LastInputColor = LInputColorDialog.Color.ToArgb();
 			LInputColorPanel.BackColor = LInputColorDialog.Color;
 			LInputText.Text = String.Format("{0:X8}", LastInputColor);
-
-			MovieColor = MovieColorDialog.Color.ToArgb();
-			MovieColorPanel.BackColor = MovieColorDialog.Color;
-			MovieColorText.Text = String.Format("{0:X8}", MovieColor);
 
 			MovieInput = MovieInputColorDialog.Color.ToArgb();
 			MovieInputColor.BackColor = MovieInputColorDialog.Color;
@@ -205,9 +199,7 @@ namespace BizHawk.MultiClient
 			Global.Config.MessagesColor = MessageColor;
 			Global.Config.AlertMessageColor = AlertColor;
 			Global.Config.LastInputColor = LastInputColor;
-			Global.Config.MovieColor = MovieColor;
 			Global.Config.MovieInput = MovieInput;
-
 			Global.Config.DispFPSanchor = DispFPSanchor;
 			Global.Config.DispFrameanchor = DispFrameanchor;
 			Global.Config.DispLaganchor = DispLaganchor;
@@ -388,19 +380,16 @@ namespace BizHawk.MultiClient
 			Global.Config.MessagesColor = -1;
 			Global.Config.AlertMessageColor = -65536;
 			Global.Config.LastInputColor = -23296;
-			Global.Config.MovieColor = -65536;
 			Global.Config.MovieInput = -8355712;
 
 			MessageColor = Global.Config.MessagesColor;
 			AlertColor = Global.Config.AlertMessageColor;
 			LastInputColor = Global.Config.LastInputColor;
-			MovieColor = Global.Config.MovieColor;
 			MovieInput = Global.Config.MovieInput;
 
 			MessageColorDialog.Color = Color.FromArgb(MessageColor);
 			AlertColorDialog.Color = Color.FromArgb(AlertColor);
 			LInputColorDialog.Color = Color.FromArgb(LastInputColor);
-			MovieColorDialog.Color = Color.FromArgb(MovieColor);
 			MovieInputColorDialog.Color = Color.FromArgb(MovieInput);
 
 			Global.Config.DispFPSanchor = 0;
@@ -524,12 +513,6 @@ namespace BizHawk.MultiClient
 		private void LInputColorPanel_DoubleClick(object sender, EventArgs e)
 		{
 			if (LInputColorDialog.ShowDialog() == DialogResult.OK)
-				SetColorBox();
-		}
-
-		private void MovieColorPanel_DoubleClick(object sender, EventArgs e)
-		{
-			if (MovieColorDialog.ShowDialog() == DialogResult.OK)
 				SetColorBox();
 		}
 

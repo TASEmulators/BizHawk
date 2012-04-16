@@ -427,23 +427,19 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				g.DrawString("Play", MessageFont,Brushes.Black,
-					g.ClipBounds.Width-47,
-					0+1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MovieColor)))
-					g.DrawString("Play", MessageFont, brush,
-						g.ClipBounds.Width-48,
-						0);
+				
+				int r = (int)g.ClipBounds.Width;
+				Point[] p = { new Point(r - 20, 2), 
+								new Point(r - 4, 12), 
+								new Point(r - 20, 22) };
+				g.FillPolygon(new SolidBrush(Color.Red), p);
+				g.DrawPolygon(new Pen(new SolidBrush(Color.Pink)), p);
+
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 			{
-				g.DrawString("Record",AlertFont, Brushes.Black,
-					g.ClipBounds.Width-65,
-					0+1);
-				using(var brush = new SolidBrush(Color.FromArgb(Global.Config.MovieColor)))
-				g.DrawString("Record",AlertFont, brush,
-					g.ClipBounds.Width-64,
-					0);
+				g.FillEllipse(new SolidBrush(Color.Red), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
+				g.DrawEllipse(new Pen(new SolidBrush(Color.Pink)), new Rectangle((int)g.ClipBounds.Width - 22, 2, 20, 20));
 			}
 
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
