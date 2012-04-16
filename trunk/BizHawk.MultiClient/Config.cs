@@ -177,19 +177,19 @@ namespace BizHawk.MultiClient
 		public int DispFPSanchor = 0;	//0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
 		public int DispFrameCx = 0;
-		public int DispFrameCy = 12;
+		public int DispFrameCy = 14;
 		public int DispFrameanchor = 0;
 		public bool DisplayLagCounter = false;
 		public int DispLagx = 0;
-		public int DispLagy = 36;
+		public int DispLagy = 42;
 		public int DispLaganchor = 0;
 		public bool DisplayInput = false;
 		public int DispInpx = 0;
-		public int DispInpy = 24;
+		public int DispInpy = 28;
 		public int DispInpanchor = 0;
 		public bool DisplayRerecordCount = false;
 		public int DispRecx = 0;
-		public int DispRecy = 48;
+		public int DispRecy = 56;
 		public int DispRecanchor = 0;
 		public int DispMultix = 36;
 		public int DispMultiy = 0;
@@ -197,7 +197,7 @@ namespace BizHawk.MultiClient
 		public bool DisplayGDI = false;
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
-		public int DispRamWatchy = 60;
+		public int DispRamWatchy = 70;
 		public bool DisplayRamWatch = false;
 		public bool ShowMenuInFullscreen = false;
 
