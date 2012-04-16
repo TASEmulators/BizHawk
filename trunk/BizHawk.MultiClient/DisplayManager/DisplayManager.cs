@@ -448,14 +448,19 @@ namespace BizHawk.MultiClient
 
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
 			{
-				//TODO: implement multiple subtitles at once feature
-				Subtitle s = Global.MovieSession.Movie.Subtitles.GetSubtitle(Global.Emulator.Frame);
-				g.DrawString(s.Message, MessageFont, Brushes.Black,
-					s.X + 1, s.Y + 1);
-				using(var brush = new SolidBrush(Color.FromArgb((int)s.Color)))
-					g.DrawString(s.Message, MessageFont, brush,
-										s.X , s.Y );
+				
+				List<Subtitle> s = Global.MovieSession.Movie.Subtitles.GetSubtitles(Global.Emulator.Frame);
+				if (s == null) return;
+				for (int i = 0; i < s.Count; i++)
+				{
+					g.DrawString(s[i].Message, MessageFont, Brushes.Black,
+						s[i].X + 1, s[i].Y + 1);
+					using (var brush = new SolidBrush(Color.FromArgb((int)s[i].Color)))
+						g.DrawString(s[i].Message, MessageFont, brush,
+											s[i].X, s[i].Y);
+				}
 			}
+			 
 		}
 	}
 
