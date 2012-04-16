@@ -138,7 +138,7 @@ namespace BizHawk.MultiClient
 			//TODO: don't engage until new/open project
 			//
 			Engaged = true;
-			Global.RenderPanel.AddMessage("TAStudio engaged");
+			Global.OSD.AddMessage("TAStudio engaged");
 
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;

@@ -16,6 +16,8 @@ namespace BizHawk.MultiClient
 #endif
 		public static Sound Sound;
 		public static IRenderer RenderPanel;
+		public static OSDManager OSD = new OSDManager();
+		public static DisplayManager DisplayManager = new DisplayManager();
 		public static Config Config;
 		public static IEmulator Emulator;
 		public static CoreInputComm CoreInputComm;

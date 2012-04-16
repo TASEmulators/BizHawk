@@ -21,8 +21,8 @@ namespace BizHawk.MultiClient
                 {
                     RewindImpossible = true;
                     LastState = null;
-                    Global.RenderPanel.AddMessage("Rewind Disabled: State too large.");
-                    Global.RenderPanel.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
+                    Global.OSD.AddMessage("Rewind Disabled: State too large.");
+										Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
                 }
 				return;
 			}

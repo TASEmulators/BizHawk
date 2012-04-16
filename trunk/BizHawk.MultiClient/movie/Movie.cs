@@ -170,7 +170,7 @@ namespace BizHawk.MultiClient
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			Global.RenderPanel.AddMessage("Backup movie saved to " + BackupName);
+			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
 				WriteText(BackupName);
 			else
@@ -376,7 +376,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -385,7 +385,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					if (line[0] == '|')
 					{
@@ -607,7 +607,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 					}
-					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line.Contains("Frame "))
 				{
@@ -616,7 +616,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1]);
 					}
-					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;
