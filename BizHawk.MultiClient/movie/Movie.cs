@@ -341,7 +341,6 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Log.Length(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
-			//Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved"); //Debug
 		}
 
 		public void LoadLogFromSavestateText(string path)
@@ -357,7 +356,6 @@ namespace BizHawk.MultiClient
 					MakeBackup = false;
 				}
 				Log.Clear();
-				int i = 0; //TODO: Debug remove me
 				while (true)
 				{
 					string line = reader.ReadLine();
@@ -390,10 +388,8 @@ namespace BizHawk.MultiClient
 					if (line[0] == '|')
 					{
 						Log.AddFrame(line);
-						i++;
 					}
 				}
-				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			else
 			{
@@ -429,7 +425,6 @@ namespace BizHawk.MultiClient
 						i++;
 					}
 				}
-				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			if (stateFrame > 0 && stateFrame < Log.Length())
 			{
