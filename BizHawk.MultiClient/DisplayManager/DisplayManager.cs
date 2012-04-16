@@ -66,11 +66,13 @@ namespace BizHawk.MultiClient
 
 		public DisplaySurface(int width, int height)
 		{
-			Width = width;
-			Height = height;
 			//can't create a bitmap with zero dimensions, so for now, just bump it up to one
 			if (width == 0) width = 1;
-			if (height == 0) height = 1;
+			if (height == 0) height = 1; 
+			
+			Width = width;
+			Height = height;
+
 			bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 			Lock();
 		}
