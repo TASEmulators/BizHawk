@@ -463,12 +463,19 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// draws a random rectangle for testing purposes
 		/// </summary>
-		public void gui_drawRectangle()
+		public void gui_drawRectangle(object X, object Y, object width, object height)
 		{
-			var r = new Random((int)DateTime.Now.Ticks);
 			using (var g = luaSurface.GetGraphics())
 			{
-				g.DrawRectangle(System.Drawing.Pens.Black, new System.Drawing.Rectangle(r.Next(100), r.Next(100), 100, 100));
+				try
+				{
+					g.DrawRectangle(System.Drawing.Pens.Black, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+				}
+				catch(Exception e)
+				{
+					// need to stop the script from here
+					return;
+				}
 			}
 		}
 
