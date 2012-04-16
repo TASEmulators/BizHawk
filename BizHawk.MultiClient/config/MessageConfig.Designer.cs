@@ -49,10 +49,6 @@
 			this.MovieInputText = new System.Windows.Forms.TextBox();
 			this.label11 = new System.Windows.Forms.Label();
 			this.MovieInputColor = new System.Windows.Forms.Panel();
-			this.label10 = new System.Windows.Forms.Label();
-			this.MovieColorText = new System.Windows.Forms.TextBox();
-			this.label9 = new System.Windows.Forms.Label();
-			this.MovieColorPanel = new System.Windows.Forms.Panel();
 			this.LInputColorPanel = new System.Windows.Forms.Panel();
 			this.AlertColorPanel = new System.Windows.Forms.Panel();
 			this.ColorPanel = new System.Windows.Forms.Panel();
@@ -80,7 +76,6 @@
 			this.TL = new System.Windows.Forms.RadioButton();
 			this.AlertColorDialog = new System.Windows.Forms.ColorDialog();
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
-			this.MovieColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -280,10 +275,6 @@
 			this.groupBox2.Controls.Add(this.MovieInputText);
 			this.groupBox2.Controls.Add(this.label11);
 			this.groupBox2.Controls.Add(this.MovieInputColor);
-			this.groupBox2.Controls.Add(this.label10);
-			this.groupBox2.Controls.Add(this.MovieColorText);
-			this.groupBox2.Controls.Add(this.label9);
-			this.groupBox2.Controls.Add(this.MovieColorPanel);
 			this.groupBox2.Controls.Add(this.LInputColorPanel);
 			this.groupBox2.Controls.Add(this.AlertColorPanel);
 			this.groupBox2.Controls.Add(this.ColorPanel);
@@ -339,43 +330,6 @@
 			this.MovieInputColor.Size = new System.Drawing.Size(20, 20);
 			this.MovieInputColor.TabIndex = 9;
 			this.MovieInputColor.DoubleClick += new System.EventHandler(this.MovieInputColor_DoubleClick);
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(3, 214);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(86, 13);
-			this.label10.TabIndex = 21;
-			this.label10.Text = "Movie messages";
-			// 
-			// MovieColorText
-			// 
-			this.MovieColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.MovieColorText.Location = new System.Drawing.Point(45, 229);
-			this.MovieColorText.MaxLength = 8;
-			this.MovieColorText.Name = "MovieColorText";
-			this.MovieColorText.ReadOnly = true;
-			this.MovieColorText.Size = new System.Drawing.Size(59, 20);
-			this.MovieColorText.TabIndex = 20;
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(28, 234);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(18, 13);
-			this.label9.TabIndex = 19;
-			this.label9.Text = "0x";
-			// 
-			// MovieColorPanel
-			// 
-			this.MovieColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.MovieColorPanel.Location = new System.Drawing.Point(4, 229);
-			this.MovieColorPanel.Name = "MovieColorPanel";
-			this.MovieColorPanel.Size = new System.Drawing.Size(20, 20);
-			this.MovieColorPanel.TabIndex = 8;
-			this.MovieColorPanel.DoubleClick += new System.EventHandler(this.MovieColorPanel_DoubleClick);
 			// 
 			// LInputColorPanel
 			// 
@@ -723,11 +677,6 @@
 		private System.Windows.Forms.Label RerecLabel;
 		private System.Windows.Forms.RadioButton RerecordsRadio;
 		private System.Windows.Forms.Panel ColorPanel;
-		private System.Windows.Forms.TextBox MovieColorText;
-		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.Panel MovieColorPanel;
-		private System.Windows.Forms.ColorDialog MovieColorDialog;
-		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.TextBox MovieInputText;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Panel MovieInputColor;

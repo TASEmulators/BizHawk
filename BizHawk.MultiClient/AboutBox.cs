@@ -182,10 +182,10 @@ namespace BizHawk.MultiClient
 			int width = Width;
 			int height = Height;
 			Random r = new Random();
-			width = r.Next(1, Width - Close.Width);
-			height = r.Next(1, Height - Close.Height);
-			Close.Location = new Point(width, height);
-			Close.BringToFront();
+			width = r.Next(1, Width - CloseBtn.Width);
+			height = r.Next(1, Height - CloseBtn.Height);
+			CloseBtn.Location = new Point(width, height);
+			CloseBtn.BringToFront();
 		}
 	}
 

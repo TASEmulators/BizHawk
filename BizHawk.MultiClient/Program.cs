@@ -51,7 +51,6 @@ namespace BizHawk.MultiClient
 						mf.Show();
 						mf.Text = title;
 						mf.ProgramRunLoop();
-						int zzz = 9;
 					}
 #if WINDOWS
 				}
