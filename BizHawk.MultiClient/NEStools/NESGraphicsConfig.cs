@@ -76,7 +76,7 @@ namespace BizHawk.MultiClient
 					{
 						Global.Config.NESPaletteFile = palette.Name;
 						nes.SetPalette(NES.Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name)));
-						Global.RenderPanel.AddMessage("Palette file loaded: " + palette.Name);
+						Global.OSD.AddMessage("Palette file loaded: " + palette.Name);
 					}
 				}
 			}
@@ -84,7 +84,7 @@ namespace BizHawk.MultiClient
 			{
 				Global.Config.NESPaletteFile = "";
 				nes.SetPalette(NES.Palettes.FCEUX_Standard);
-				Global.RenderPanel.AddMessage("Standard Palette set");
+				Global.OSD.AddMessage("Standard Palette set");
 			}
 
 			Global.Config.NESTopLine = (int)FirstLineNumeric.Value;

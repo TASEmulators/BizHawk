@@ -638,6 +638,15 @@ namespace BizHawk
 				bptr[i] = (byte)val;
 		}
 
+		public static unsafe void memset32(void* ptr, int val, int len)
+		{
+			System.Diagnostics.Debug.Assert(len % 4 == 0);
+			int dwords = len / 4;
+			int* dwptr = (int*)ptr;
+			for (int i = 0; i < dwords; i++)
+				dwptr[i] = val;
+		}
+
 		public static byte[] ReadAllBytes(Stream stream)
 		{
 			const int BUFF_SIZE = 4096;

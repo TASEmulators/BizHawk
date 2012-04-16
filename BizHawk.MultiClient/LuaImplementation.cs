@@ -221,7 +221,10 @@ namespace BizHawk.MultiClient
 		{
 			"text",
 			"alert",
-            "cleartext",
+			"cleartext",
+			"drawNew",
+			"drawRectangle",
+			"drawFinish",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -414,7 +417,7 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, a);
+			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, a);
 		}
 
 		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
@@ -427,10 +430,48 @@ namespace BizHawk.MultiClient
 			do_gui_text(luaX, luaY, luaStr, true, anchor);
 		}
 
-        public void gui_cleartext()
-        {
-            Global.RenderPanel.ClearGUIText();
-        }
+		public void gui_cleartext()
+		{
+			Global.OSD.ClearGUIText();
+		}
+
+		DisplaySurface luaSurface;
+
+		/// <summary>
+		/// sets the current drawing context to a new surface.
+		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
+		/// could be more powerful.
+		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
+		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
+		/// </summary>
+		public void gui_drawNew()
+		{
+			luaSurface = Global.DisplayManager.GetLuaSurfaceNative();
+		}
+
+		/// <summary>
+		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
+		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
+		/// most notably, the client output [emulated] resolution 
+		/// </summary>
+		public void gui_drawFinish()
+		{
+			Global.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			luaSurface = null;
+		}
+
+		/// <summary>
+		/// draws a random rectangle for testing purposes
+		/// </summary>
+		public void gui_drawRectangle()
+		{
+			var r = new Random((int)DateTime.Now.Ticks);
+			using (var g = luaSurface.GetGraphics())
+			{
+				g.DrawRectangle(System.Drawing.Pens.Black, new System.Drawing.Rectangle(r.Next(100), r.Next(100), 100, 100));
+			}
+		}
+
 
 		//----------------------------------------------------
 		//Emu library

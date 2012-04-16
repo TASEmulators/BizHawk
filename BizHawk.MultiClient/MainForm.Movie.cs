@@ -94,7 +94,7 @@ namespace BizHawk.MultiClient
 				}
 				Global.MovieSession.Movie.StartPlayback();
 				SetMainformMovieInfo();
-				Global.RenderPanel.AddMessage("Replaying movie file in read-only mode");
+				Global.OSD.AddMessage("Replaying movie file in read-only mode");
 				Global.MainForm.ReadOnly = true;
 			}
 		}
@@ -111,7 +111,7 @@ namespace BizHawk.MultiClient
 			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
 			{
 				Global.MovieSession.Movie.StopMovie();
-				Global.RenderPanel.AddMessage(message);
+				Global.OSD.AddMessage(message);
 				SetMainformMovieInfo();
 				Global.MainForm.ReadOnly = true;
 			}

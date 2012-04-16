@@ -75,11 +75,11 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisplayRamWatch)
 			{
-				Global.RenderPanel.ClearGUIText();
+				Global.OSD.ClearGUIText();
 				for (int x = 0; x < watchList.Count; x++)
 				{
 					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
-					Global.RenderPanel.AddGUIText(watchList[x].ToString(),
+					Global.OSD.AddGUIText(watchList[x].ToString(),
 						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 12)), alert, 0);
 				}
 			}
@@ -1481,7 +1481,7 @@ namespace BizHawk.MultiClient
 			Global.Config.DisplayRamWatch ^= true;
 
 			if (!Global.Config.DisplayRamWatch)
-				Global.RenderPanel.ClearGUIText();
+				Global.OSD.ClearGUIText();
 			else
 				UpdateValues();
 		}
