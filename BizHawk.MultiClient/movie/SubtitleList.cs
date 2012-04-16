@@ -83,6 +83,22 @@ namespace BizHawk.MultiClient
 			return new Subtitle();
 		}
 
+		public List<Subtitle> GetSubtitles(int frame)
+		{
+			if (subs.Count == 0) 
+				return null;
+
+			List<Subtitle> s = new List<Subtitle>();
+
+			for (int x = 0; x < subs.Count; x++)
+			{
+				if (frame >= subs[x].Frame && frame <= subs[x].Frame + subs[x].Duration)
+					s.Add(subs[x]);
+			}
+
+			return s;
+		}
+
 		public int Count()
 		{
 			return subs.Count;
