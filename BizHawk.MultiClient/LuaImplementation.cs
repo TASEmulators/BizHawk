@@ -511,9 +511,31 @@ namespace BizHawk.MultiClient
 				
 			}
 		}
-		public void gui_drawLine()
+		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
 		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Pen myPen;
+					if (color == null)
+						color = "black";
 
+					if (color.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
+					}
+					g.DrawLine(myPen, LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
 		}
 
 		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
@@ -522,11 +544,27 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Pen myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					System.Drawing.Pen myPen;
+					if (line.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					}
 					g.DrawEllipse(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
-						System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						System.Drawing.SolidBrush myBrush;
+						if (background.GetType() == typeof(Double))
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+						}
+						else
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						}
 						g.FillEllipse(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
 
@@ -541,7 +579,17 @@ namespace BizHawk.MultiClient
 
 		public void gui_drawPolygon()
 		{
-
+			//this is a test
+			using (var g = luaSurface.GetGraphics())
+			{
+				System.Drawing.Point[] Points = new System.Drawing.Point[4];
+				Points[0] = new System.Drawing.Point(10, 10);
+				Points[1] = new System.Drawing.Point(100, 10);
+				Points[2] = new System.Drawing.Point(10, 100);
+				Points[3] = new System.Drawing.Point(100, 100);
+				g.DrawPolygon(System.Drawing.Pens.Black, Points);
+				g.FillPolygon(System.Drawing.Brushes.White, Points);
+			}
 		}
 
 		public void gui_drawBezier()
