@@ -230,6 +230,7 @@ namespace BizHawk.MultiClient
 			"drawEllipse",
 			"drawPolygon",
 			"drawBezier",
+			"drawPie",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -667,6 +668,45 @@ namespace BizHawk.MultiClient
 				}
 				catch (Exception e)
 				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Pen myPen;
+					if (line.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					}
+					g.DrawPie(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					if (background != null)
+					{
+						System.Drawing.SolidBrush myBrush;
+						if (background.GetType() == typeof(Double))
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+						}
+						else
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						}
+						g.FillPie(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					}
+
+				}
+				catch (Exception e)
+				{
+					// need to stop the script from here
 					return;
 				}
 			}
