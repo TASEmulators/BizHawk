@@ -413,6 +413,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 							//garbage nametable fetches + scroll resets
 							int garbage_todo = 2;
+							ppubus_read(ppur.get_ntread(),true);
 							if (reg_2001.PPUON)
 							{
 								if (sl == 0 && ppur.status.cycle == 304)
@@ -433,6 +434,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 							}
 							if (realSprite) runppu(garbage_todo);
 
+							ppubus_read(ppur.get_atread(), true); //at or nt?
 							if (realSprite) runppu(kFetchTime);
 
 							//TODO - fake sprites should not come through ppubus_read but rather peek it
