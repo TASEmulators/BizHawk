@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		bool irq_pending, irq_enable;
 		bool irq_mode;
 		bool irq_reload_pending;
+		int separator_counter;
 
 
 		public override void Dispose()
@@ -51,6 +52,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("irq_mode", ref irq_mode);
 			ser.Sync("irq_reload_pending", ref irq_reload_pending);
+			ser.Sync("separator_counter", ref separator_counter);
 
 			if (ser.IsReader)
 				Sync();
@@ -63,7 +65,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				case "MAPPER064":
 					break;
 				case "TENGEN-800032":
-					AssertPrg(64,128); AssertChr(64,128); AssertVram(0); AssertWram(00);
+					AssertPrg(64, 128); AssertChr(64, 128); AssertVram(0); AssertWram(00);
 					break;
 				default:
 					return false;
@@ -170,7 +172,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				case 0x4001:
 					irq_mode = value.Bit(0);
-					if(irq_mode) irq_countdown = 12;
+					if (irq_mode) irq_countdown = 12;
 					irq_reload_pending = true;
 					break;
 
@@ -241,18 +243,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public override void ClockPPU()
 		{
+			if (separator_counter > 0)
+				separator_counter--;
+
 			if (irq_countdown > 0)
 			{
-			    irq_countdown--;
-			    if (irq_countdown == 0)
-			    {
-			        ClockIRQ();
-					if (irq_mode)
-						irq_countdown = 12;
-			    }
+				irq_countdown--;
+				if (irq_countdown == 0)
+				{
+					ClockIRQ();
+				}
 			}
 		}
-
 
 		public override void AddressPPU(int addr)
 		{
@@ -260,8 +262,15 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			bool rising_edge = (a12 == 1 && a12_old == 0);
 			if (rising_edge)
 			{
-				//this number is totally guessed to make klax work
-				irq_countdown = 25;
+				if (separator_counter > 0)
+				{
+					separator_counter = 15;
+				}
+				else
+				{
+					separator_counter = 15;
+					irq_countdown = 11;
+				}
 			}
 
 			a12_old = a12;
