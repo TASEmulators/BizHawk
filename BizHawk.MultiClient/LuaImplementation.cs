@@ -471,11 +471,27 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Pen myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+                    System.Drawing.Pen myPen;
+                    if(line.GetType() == typeof(Double))
+                    {
+                        myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+                    }
+                    else
+                    {
+                        myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+                    }
 					g.DrawRectangle(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
-						System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+                        System.Drawing.SolidBrush myBrush;
+                        if (background.GetType() == typeof(Double))
+                        {
+                            myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+                        }
+                        else
+                        {
+                            myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+                        }
 						g.FillRectangle(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
 					
