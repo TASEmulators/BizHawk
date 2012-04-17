@@ -504,11 +504,28 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawPixel(object x, object Y, object color)
+		public void gui_drawPixel(object X, object Y, object color)
 		{
 			using (var g = luaSurface.GetGraphics())
 			{
-				
+				float x = LuaInt(X) + 0.1F;
+				System.Drawing.Pen myPen;
+				try
+				{
+					if (color.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
+					}
+					g.DrawLine(myPen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+				}
+				catch (Exception e)
+				{
+					return;
+				}
 			}
 		}
 		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
@@ -577,24 +594,82 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawPolygon()
+		public void gui_drawPolygon(LuaTable points, object line, object background = null)
 		{
 			//this is a test
 			using (var g = luaSurface.GetGraphics())
 			{
-				System.Drawing.Point[] Points = new System.Drawing.Point[4];
-				Points[0] = new System.Drawing.Point(10, 10);
-				Points[1] = new System.Drawing.Point(100, 10);
-				Points[2] = new System.Drawing.Point(10, 100);
-				Points[3] = new System.Drawing.Point(100, 100);
-				g.DrawPolygon(System.Drawing.Pens.Black, Points);
-				g.FillPolygon(System.Drawing.Brushes.White, Points);
+				try
+				{
+					System.Drawing.Point[] Points = new System.Drawing.Point[points.Values.Count];
+					int i = 0;
+					foreach (LuaTable point in points.Values)
+					{
+						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						i++;
+					}
+					System.Drawing.Pen myPen;
+					if (line.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					}
+					g.DrawPolygon(myPen, Points);
+					if (background != null)
+					{
+						System.Drawing.SolidBrush myBrush;
+						if (background.GetType() == typeof(Double))
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+						}
+						else
+						{
+							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						}
+						g.FillPolygon(myBrush, Points);
+					}
+				}
+				catch (Exception e)
+				{
+					return;
+				}
 			}
 		}
 
-		public void gui_drawBezier()
+		public void gui_drawBezier(LuaTable points, object color)
 		{
-
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Point[] Points = new System.Drawing.Point[4];
+					int i = 0;
+					foreach (LuaTable point in points.Values)
+					{
+						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						i++;
+						if (i >= 4)
+							break;
+					}
+					System.Drawing.Pen myPen;
+					if (color.GetType() == typeof(Double))
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+					}
+					else
+					{
+						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
+					}
+					g.DrawBezier(myPen, Points[0], Points[1], Points[2], Points[3]);
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
 		}
 
 		//----------------------------------------------------
