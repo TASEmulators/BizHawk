@@ -223,8 +223,13 @@ namespace BizHawk.MultiClient
 			"alert",
 			"cleartext",
 			"drawNew",
-			"drawRectangle",
 			"drawFinish",
+			"drawPixel",
+			"drawLine",
+			"drawRectangle",
+			"drawEllipse",
+			"drawPolygon",
+			"drawBezier",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -239,9 +244,6 @@ namespace BizHawk.MultiClient
 			"lagcount",
 			"islagged",
 			"getsystemid",
-			//"registerbefore",
-			//"registerafter",
-			//"register",
 			"setrenderplanes",
 		};
 
@@ -486,6 +488,50 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void gui_drawPixel(object x, object Y, object color)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				
+			}
+		}
+		public void gui_drawLine()
+		{
+
+		}
+
+		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Pen myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
+					g.DrawEllipse(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					if (background != null)
+					{
+						System.Drawing.SolidBrush myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
+						g.FillEllipse(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					}
+
+				}
+				catch (Exception e)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawPolygon()
+		{
+
+		}
+
+		public void gui_drawBezier()
+		{
+
+		}
 
 		//----------------------------------------------------
 		//Emu library
