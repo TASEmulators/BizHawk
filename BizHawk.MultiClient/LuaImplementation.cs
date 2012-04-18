@@ -6,6 +6,7 @@ using System.Text;
 using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
+using System.Drawing;
 using BizHawk.MultiClient.tools;
 using System.Threading;
 
@@ -167,6 +168,34 @@ namespace BizHawk.MultiClient
 		{
 			return Convert.ToUInt32((double)lua_arg);
 		}
+
+        public Pen GetPen(object color)
+        {
+            System.Drawing.Pen myPen;
+            if (color.GetType() == typeof(Double))
+            {
+                myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+            }
+            else
+            {
+                myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
+            }
+            return myPen;
+        }
+
+        public SolidBrush GetBrush(object color)
+        {
+            System.Drawing.SolidBrush myBrush;
+            if (color.GetType() == typeof(Double))
+            {
+                myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+            }
+            else
+            {
+                myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(color.ToString().ToLower()));
+            }
+            return myBrush;
+        }
 
 		/**
 		 * LuaInterface requires the exact match of parameter count,
@@ -472,28 +501,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-                    System.Drawing.Pen myPen;
-                    if(line.GetType() == typeof(Double))
-                    {
-                        myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-                    }
-                    else
-                    {
-                        myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
-                    }
-					g.DrawRectangle(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					g.DrawRectangle(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
-                        System.Drawing.SolidBrush myBrush;
-                        if (background.GetType() == typeof(Double))
-                        {
-                            myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-                        }
-                        else
-                        {
-                            myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
-                        }
-						g.FillRectangle(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+						g.FillRectangle(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
 					
 				}
@@ -510,18 +521,9 @@ namespace BizHawk.MultiClient
 			using (var g = luaSurface.GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
-				System.Drawing.Pen myPen;
 				try
 				{
-					if (color.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
-					}
-					g.DrawLine(myPen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+					g.DrawLine(GetPen(color), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception e)
 				{
@@ -535,19 +537,9 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Pen myPen;
-					if (color == null)
-						color = "black";
-
-					if (color.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
-					}
-					g.DrawLine(myPen, LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+                    if (color == null)
+                        color = "black";
+					g.DrawLine(GetPen(color), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception e)
 				{
@@ -562,28 +554,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Pen myPen;
-					if (line.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
-					}
-					g.DrawEllipse(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					g.DrawEllipse(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					if (background != null)
 					{
-						System.Drawing.SolidBrush myBrush;
-						if (background.GetType() == typeof(Double))
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-						}
-						else
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
-						}
-						g.FillEllipse(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+						g.FillEllipse(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
 					}
 
 				}
@@ -609,28 +583,11 @@ namespace BizHawk.MultiClient
 						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
 						i++;
 					}
-					System.Drawing.Pen myPen;
-					if (line.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
-					}
-					g.DrawPolygon(myPen, Points);
+					
+					g.DrawPolygon(GetPen(line), Points);
 					if (background != null)
 					{
-						System.Drawing.SolidBrush myBrush;
-						if (background.GetType() == typeof(Double))
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-						}
-						else
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
-						}
-						g.FillPolygon(myBrush, Points);
+						g.FillPolygon(GetBrush(background), Points);
 					}
 				}
 				catch (Exception e)
@@ -655,16 +612,7 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					System.Drawing.Pen myPen;
-					if (color.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
-					}
-					g.DrawBezier(myPen, Points[0], Points[1], Points[2], Points[3]);
+					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception e)
 				{
@@ -679,28 +627,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					System.Drawing.Pen myPen;
-					if (line.GetType() == typeof(Double))
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(line.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-					}
-					else
-					{
-						myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(line.ToString().ToLower()));
-					}
-					g.DrawPie(myPen, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					g.DrawPie(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 					if (background != null)
 					{
-						System.Drawing.SolidBrush myBrush;
-						if (background.GetType() == typeof(Double))
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(background.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
-						}
-						else
-						{
-							myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(background.ToString().ToLower()));
-						}
-						g.FillPie(myBrush, LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+						g.FillPie(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
 					}
 
 				}
