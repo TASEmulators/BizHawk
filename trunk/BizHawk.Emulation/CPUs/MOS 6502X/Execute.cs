@@ -1,5 +1,4 @@
 //http://nesdev.parodius.com/6502_cpu.txt
-//TODO - rename unofficial NOPs as DOPs? (see immediate instr tests)
 using System;
 
 namespace BizHawk.Emulation.CPUs.M6502
@@ -11,143 +10,143 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*BRK [implied]*/ new Uop[] { Uop.Fetch2, Uop.PushPCH, Uop.PushPCL, Uop.PushP_BRK, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*ORA (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_ORA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*SLO* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SLO* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_SLO, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*ORA zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_ORA, Uop.End },
 			/*ASL zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_ASL, Uop.ZP_RMW_Stage5, Uop.End },
-			/*SLO* zp [zero page] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Unsupported, Uop.End },
+			/*SLO* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_SLO, Uop.ZP_RMW_Stage5, Uop.End },
 			/*PHP [implied]*/ new Uop[] { Uop.FetchDummy, Uop.PushP, Uop.End },
 			/*ORA #nn [immediate]*/ new Uop[] { Uop.Imm_ORA, Uop.End },
 			/*ASL A [accumulator]*/ new Uop[] { Uop.Imp_ASL_A, Uop.End },
-			/*ANC** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*ANC** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_ANC, Uop.End },
 			/*NOP addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_NOP, Uop.End },
 			/*ORA addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_ORA, Uop.End },
 			/*ASL addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_ASL, Uop.Abs_RMW_Stage6, Uop.End },
-			/*SLO* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*SLO* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_SLO, Uop.Abs_RMW_Stage6, Uop.End },
 			//0x10
 			/*BPL +/-rel*/ new Uop[] { Uop.RelBranch_Stage2_BPL, Uop.End },
 			/*ORA (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_ORA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*RLA (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SLO (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_SLO, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*ORA zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_ORA, Uop.End },
 			/*ASL zp,X [zero page indexed RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_ASL, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*SLO* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*SLO* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_SLO, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*CLC [implied]*/ new Uop[] { Uop.Imp_CLC, Uop.End },
 			/*ORA addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ORA, Uop.End },
 			/*NOP 1A*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*SLO* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*SLO* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_SLO, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*ORA addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ORA, Uop.End },
 			/*ASL addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ASL, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*SLO* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*SLO* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_SLO, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x20
 			/*JSR*/ new Uop[] { Uop.Fetch2, Uop.NOP, Uop.PushPCH, Uop.PushPCL, Uop.JSR, Uop.End },
 			/*AND (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_AND, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*RLA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*RLA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_RLA, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*BIT zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_BIT, Uop.End },
 			/*AND zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_AND, Uop.End },
 			/*ROL zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_ROL, Uop.ZP_RMW_Stage5, Uop.End },
-			/*RLA* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_UNOFFICIAL, Uop.ZP_RMW_Stage5, Uop.End },
+			/*RLA* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_RLA, Uop.ZP_RMW_Stage5, Uop.End },
 			/*PLP [implied] */ new Uop[] { Uop.FetchDummy,  Uop.IncS, Uop.PullP_NoInc, Uop.End_ISpecial },
 			/*AND #nn [immediate]*/ new Uop[] { Uop.Imm_AND, Uop.End },
 			/*ROL A [accumulator]*/ new Uop[] { Uop.Imp_ROL_A, Uop.End },
-			/*ANC** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*ANC** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_ANC, Uop.End },
 			/*BIT addr [absolute]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_BIT, Uop.End },
 			/*AND addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_AND, Uop.End },
 			/*ROL addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_ROL, Uop.Abs_RMW_Stage6, Uop.End },
-			/*RLA* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*RLA* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_RLA, Uop.Abs_RMW_Stage6, Uop.End },
 			//0x30
 			/*BMI +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BMI, Uop.End },
 			/*AND (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_AND, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*RLA* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*RLA* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_RLA, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*AND zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_AND, Uop.End },
 			/*ROL zp,X [zero page indexed RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_ROL, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*RLA* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*RLA* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_RLA, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*SEC [implied]*/ new Uop[] { Uop.Imp_SEC, Uop.End },
 			/*AND addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_AND, Uop.End },
 			/*NOP 3A [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*RLA* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*RLA* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_RLA, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*AND addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_AND, Uop.End },
 			/*ROL addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ROL, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*RLA* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*RLA* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_RLA, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x40
 			/*RTI*/ new Uop[] { Uop.FetchDummy, Uop.IncS, Uop.PullP, Uop.PullPCL, Uop.PullPCH_NoInc, Uop.End },
 			/*EOR (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_EOR, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*SRE* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SRE* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_SRE, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*EOR zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_EOR, Uop.End },
 			/*LSR zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_LSR, Uop.ZP_RMW_Stage5, Uop.End },
-			/*SRE* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_UNOFFICIAL, Uop.ZP_RMW_Stage5, Uop.End },
+			/*SRE* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_SRE, Uop.ZP_RMW_Stage5, Uop.End },
 			/*PHA [implied]*/ new Uop[] { Uop.FetchDummy, Uop.PushA, Uop.End },
 			/*EOR #nn [immediate]*/ new Uop[] { Uop.Imm_EOR, Uop.End },
 			/*LSR A [accumulator]*/ new Uop[] { Uop.Imp_LSR_A, Uop.End },
-			/*ASR** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*ASR** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_ASR, Uop.End },
 			/*JMP addr [absolute]*/ new Uop[] { Uop.Fetch2, Uop.JMP_abs, Uop.End },
 			/*EOR addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_EOR, Uop.End },
 			/*LSR addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_LSR, Uop.Abs_RMW_Stage6, Uop.End },
-			/*SRE* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*SRE* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_SRE, Uop.Abs_RMW_Stage6, Uop.End },
 			//0x50
 			/*BVC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BVC, Uop.End },
 			/*EOR (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_EOR, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*SRE* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SRE* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_SRE, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*EOR zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_EOR, Uop.End },
 			/*LSR zp,X [zero page indexed RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_LSR, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*SRE* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*SRE* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_SRE, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*CLI [implied]*/ new Uop[] { Uop.Imp_CLI, Uop.End_ISpecial },
 			/*EOR addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_EOR, Uop.End },
 			/*NOP 5A [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*SRE* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*SRE* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_SRE, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*EOR addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_EOR, Uop.End },
 			/*LSR addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_LSR, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*SRE* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*SRE* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_SRE, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x60
 			/*RTS*/ new Uop[] { Uop.FetchDummy, Uop.IncS, Uop.PullPCL, Uop.PullPCH_NoInc, Uop.IncPC, Uop.End }, //can't fetch here because the PC isnt ready until the end of the last clock
 			/*ADC (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_ADC, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*RRA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*RRA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_RRA, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*ADC zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_ADC, Uop.End },
 			/*ROR zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_ROR, Uop.ZP_RMW_Stage5, Uop.End },
-			/*RRA* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_UNOFFICIAL, Uop.ZP_RMW_Stage5, Uop.End },
+			/*RRA* zp [zero page RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_RRA, Uop.ZP_RMW_Stage5, Uop.End },
 			/*PLA [implied]*/ new Uop[] { Uop.FetchDummy, Uop.IncS, Uop.PullA_NoInc, Uop.End },
 			/*ADC #nn [immediate]*/ new Uop[] { Uop.Imm_ADC, Uop.End },
 			/*ROR A [accumulator]*/ new Uop[] { Uop.Imp_ROR_A, Uop.End },
-			/*ARR** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*ARR** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_ARR, Uop.End },
 			/*JMP (addr) [absolute indirect JMP]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.AbsInd_JMP_Stage4, Uop.AbsInd_JMP_Stage5, Uop.End },
 			/*ADC addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_ADC, Uop.End },
 			/*ROR addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_ROR, Uop.Abs_RMW_Stage6, Uop.End },
-			/*RRA* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*RRA* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_RRA, Uop.Abs_RMW_Stage6, Uop.End },
 			//0x70
 			/*BVS +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BVS, Uop.End },
 			/*ADC (addr),Y [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_ADC, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*RRA* (addr),Y [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*RRA* (addr),Y [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_RRA, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*ADC zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_ADC, Uop.End },
 			/*ROR zp,X [zero page indexed RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_ROR, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*RRA* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*RRA* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_RRA, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*SEI [implied]*/ new Uop[] { Uop.Imp_SEI, Uop.End_ISpecial },
 			/*ADC addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ADC, Uop.End },
 			/*NOP 7A [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*RRA* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*RRA* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_RRA, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*ADC addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ADC, Uop.End },
 			/*ROR addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ROR, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*RRA* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*RRA* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_RRA, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x80
 			/*NOP #nn [immediate]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
 			/*STA (addr,X) [indexed indirect WRITE]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_WRITE_STA, Uop.End },
 			/*NOP #nn [immediate]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End }, //jams very rarely
-			/*SAX* (addr,X) [indexed indirect WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SAX* (addr,X) [indexed indirect WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_WRITE_SAX, Uop.End },
 			/*STY zp [zero page WRITE]*/ new Uop[] { Uop.Fetch2, Uop.ZP_WRITE_STY, Uop.End },
 			/*STA zp [zero page WRITE]*/ new Uop[] { Uop.Fetch2, Uop.ZP_WRITE_STA, Uop.End },
 			/*STX zp [zero page WRITE]*/ new Uop[] { Uop.Fetch2, Uop.ZP_WRITE_STX, Uop.End },
@@ -159,7 +158,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*STY addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STY, Uop.End },
 			/*STA addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STA, Uop.End },
 			/*STX addr [absolute WRITE]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_STX, Uop.End },
-			/*SAX* addr [absolute WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_Unofficial, Uop.End },
+			/*SAX* addr [absolute WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_WRITE_SAX, Uop.End },
 			//0x90
 			/*BCC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCC, Uop.End },
 			/*STA (addr),Y [indirect indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_STA, Uop.End },
@@ -168,20 +167,20 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*STY zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STY, Uop.End },
 			/*STA zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STA, Uop.End },
 			/*STX zp,Y [zero page indexed WRITE Y]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_WRITE_STX, Uop.End },
-			/*SAX* zp,Y [zero page indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_WRITE_UNOFFICIAL, Uop.End },
+			/*SAX* zp,Y [zero page indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_WRITE_SAX, Uop.End },
 			/*TYA [implied]*/ new Uop[] { Uop.Imp_TYA, Uop.End },
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
 			/*SHS* addr,X [absolute indexed READ? X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
-			/*SHY** [absolute indexed READ?] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.End },
+			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
-			/*SHX* addr,Y [absolute indexed WRITE? Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_Unofficial, Uop.End },
-			/*SHA* addr,Y [absolute indexed WRITE? Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_Unofficial, Uop.End },
+			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
+			/*SHA* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			//0xA0
 			/*LDY #nn [immediate]*/ new Uop[] { Uop.Imm_LDY, Uop.End },
 			/*LDA (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_LDA, Uop.End },
 			/*LDX #nn [immediate]*/ new Uop[] { Uop.Imm_LDX, Uop.End },
-			/*LAX* (addr,X) [indexed indirect READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*LAX* (addr,X) [indexed indirect READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_LAX, Uop.End },
 			/*LDY zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_LDY, Uop.End },
 			/*LDA zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_LDA, Uop.End },
 			/*LDX zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_LDX, Uop.End },
@@ -189,20 +188,20 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*TAY [implied]*/ new Uop[] { Uop.Imp_TAY, Uop.End },
 			/*LDA #nn [immediate]*/ new Uop[] { Uop.Imm_LDA, Uop.End },
 			/*TAX [implied]*/ new Uop[] { Uop.Imp_TAX, Uop.End },
-			/*LXA** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*LXA** (ATX) [immediate] [unofficial]*/ new Uop[] { Uop.Imm_LXA, Uop.End },
 			/*LDY addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_LDY, Uop.End },
 			/*LDA addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_LDA, Uop.End },
 			/*LDX addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_LDX, Uop.End },
-			/*LAX* addr [absolute READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_Unofficial, Uop.End },
+			/*LAX* addr [absolute READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_LAX, Uop.End },
 			//0xB0
 			/*BCS +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCS, Uop.End },
 			/*LDA (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_LDA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*LAX* (addr),Y* [indirect indexed READ Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*LAX* (addr),Y* [indirect indexed READ] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_LAX, Uop.End },
 			/*LDY zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_LDY, Uop.End },
 			/*LDA zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_LDA, Uop.End },
 			/*LDX zp,Y [zero page indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_READ_LDX, Uop.End },
-			/*LAX* zp,Y [zero page indexed READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_UNOFFICIAL, Uop.End },
+			/*LAX* zp,Y [zero page indexed READ] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_READ_LAX, Uop.End },
 			/*CLV [implied]*/ new Uop[] { Uop.Imp_CLV, Uop.End },
 			/*LDA addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*TSX [implied]*/ new Uop[] { Uop.Imp_TSX, Uop.End },
@@ -210,50 +209,50 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*LDY addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDY, Uop.End },
 			/*LDA addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*LDX addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDX, Uop.End },
-			/*LAX* addr,Y [absolute indexed READ?] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.End },
+			/*LAX* addr,Y [absolute indexed READ Y] [unofficial]*/  new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LAX, Uop.End },
 			//0xC0
 			/*CPY #nn [immediate]*/ new Uop[] { Uop.Imm_CPY, Uop.End },
 			/*CMP (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_CMP, Uop.End },
 			/*NOP #nn [immediate]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End }, //jams very rarely
-			/*DCP* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*DCP* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_DCP, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*CPY zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_CPY, Uop.End },
 			/*CMP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_CMP, Uop.End },
 			/*DEC zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_DEC, Uop.ZP_RMW_Stage5, Uop.End },
-			/*DCP* zp [zero page RMW] [unofficial]*/ new Uop[]  { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_UNOFFICIAL, Uop.ZP_RMW_Stage5, Uop.End },
+			/*DCP* zp [zero page RMW] [unofficial]*/ new Uop[]  { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_DCP, Uop.ZP_RMW_Stage5, Uop.End },
 			/*INY [implied]*/ new Uop[] { Uop.Imp_INY, Uop.End },
 			/*CMP #nn [immediate]*/ new Uop[] { Uop.Imm_CMP, Uop.End },
 			/*DEX  [implied]*/ new Uop[] { Uop.Imp_DEX, Uop.End },
-			/*SBX** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End },
+			/*AXS** [immediate] [unofficial]*/ new Uop[] { Uop.Imm_AXS, Uop.End },
 			/*CPY addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_CPY, Uop.End },
 			/*CMP addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_CMP, Uop.End },
 			/*DEC addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_DEC, Uop.Abs_RMW_Stage6, Uop.End },
-			/*DCP* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*DCP* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_DCP, Uop.Abs_RMW_Stage6, Uop.End },
 			//0xD0
 			/*BNE +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BNE, Uop.End },
 			/*CMP (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_CMP, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*DCP* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*DCP* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_DCP, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*CMP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_CMP, Uop.End },
 			/*DEC zp,X [zero page indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_DEC, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*DCP* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*DCP* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_DCP, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*CLD [implied]*/ new Uop[] { Uop.Imp_CLD, Uop.End },
 			/*CMP addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_CMP, Uop.End },
 			/*NOP DA [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*DCP* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*DCP* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_DCP, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*CMP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_CMP, Uop.End },
 			/*DEC addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_DEC, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*DCP* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*DCP* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_DCP, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0xE0
 			/*CPX #nn [immediate]*/ new Uop[] { Uop.Imm_CPX, Uop.End },
 			/*SBC (addr,X) [indirect indexed]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_SBC, Uop.End },
 			/*NOP #nn [immediate]*/ new Uop[] { Uop.Imm_Unsupported, Uop.End }, //jams very rarely
-			/*ISB* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*ISC* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_ISC, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*CPX zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_CPX, Uop.End },
 			/*SBC zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_SBC, Uop.End },
 			/*INC zp [zero page RMW]*/ new Uop[] { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_INC, Uop.ZP_RMW_Stage5, Uop.End },
-			/*ISB* zp [zero page RMW] [unofficial]*/ new Uop[]  { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_UNOFFICIAL, Uop.ZP_RMW_Stage5, Uop.End },
+			/*ISB* zp [zero page RMW] [unofficial]*/ new Uop[]  { Uop.Fetch2, Uop.ZP_RMW_Stage3, Uop.ZP_RMW_ISC, Uop.ZP_RMW_Stage5, Uop.End },
 			/*INX [implied]*/ new Uop[] { Uop.Imp_INX, Uop.End },
 			/*SBC #nn [immediate READ]*/ new Uop[] { Uop.Imm_SBC, Uop.End },
 			/*NOP EA [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End }, //nothing happened here.. but the last thing to happen was a fetch, so we can't pipeline the next fetch
@@ -261,24 +260,24 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*CPX addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_CPX, Uop.End },
 			/*SBC addr [absolute READ]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_READ_SBC, Uop.End },
 			/*INC addr [absolute RMW]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_INC, Uop.Abs_RMW_Stage6, Uop.End },
-			/*ISB* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_Unofficial, Uop.Abs_RMW_Stage6, Uop.End },
+			/*ISC* addr [absolute RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.Fetch3, Uop.Abs_RMW_Stage4, Uop.Abs_RMW_Stage5_ISC, Uop.Abs_RMW_Stage6, Uop.End },
 			//0xF0
 			/*BEQ +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BEQ, Uop.End },
 			/*SBC (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_SBC, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*ISB* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.End },
+			/*ISC* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_ISC, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*SBC zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_SBC, Uop.End },
 			/*INC zp,X [zero page indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_INC, Uop.ZpIdx_RMW_Stage6, Uop.End },
-			/*ISB* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_UNOFFICIAL, Uop.ZpIdx_RMW_Stage6, Uop.End },
+			/*ISC* zp,X [zero page indexed RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZpIdx_RMW_Stage4, Uop.ZP_RMW_ISC, Uop.ZpIdx_RMW_Stage6, Uop.End },
 			/*SED [implied]*/ new Uop[] { Uop.Imp_SED, Uop.End },
 			/*SBC addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_SBC, Uop.End },
 			/*NOP FA [implied]*/ new Uop[] { Uop.FetchDummy, Uop.End },
-			/*ISB* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*ISC* addr,Y [absolute indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ISC, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			/*NOP addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_NOP, Uop.End },
 			/*SBC addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_SBC, Uop.End },
 			/*INC addr,X [absolute indexed RMW X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_INC, Uop.AbsIdx_RMW_Stage7, Uop.End },
-			/*ISB* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_Unofficial, Uop.AbsIdx_RMW_Stage7, Uop.End },
+			/*ISC* addr,X [absolute indexed RMW X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X,  Uop.AbsIdx_Stage4, Uop.AbsIdx_RMW_Stage5, Uop.AbsIdx_RMW_Stage6_ISC, Uop.AbsIdx_RMW_Stage7, Uop.End },
 			//0x100
 			/*VOP_Fetch1*/ new Uop[] { Uop.Fetch1 },
 			/*VOP_RelativeStuff*/ new Uop[] { Uop.RelBranch_Stage3, Uop.End_BranchSpecial },
@@ -309,14 +308,14 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 			//[absolute WRITE]
 			Abs_WRITE_STA, Abs_WRITE_STX, Abs_WRITE_STY,
-			Abs_WRITE_Unofficial,
+			Abs_WRITE_SAX, //unofficials
 			//[absolute READ]
 			Abs_READ_BIT, Abs_READ_LDA, Abs_READ_LDY, Abs_READ_ORA, Abs_READ_LDX, Abs_READ_CMP, Abs_READ_ADC, Abs_READ_CPX, Abs_READ_SBC, Abs_READ_AND, Abs_READ_EOR, Abs_READ_CPY, Abs_READ_NOP,
-			Abs_READ_Unofficial,
+			Abs_READ_LAX, //unofficials
 			//[absolute RMW]
 			Abs_RMW_Stage4, Abs_RMW_Stage6,
 			Abs_RMW_Stage5_INC, Abs_RMW_Stage5_DEC, Abs_RMW_Stage5_LSR, Abs_RMW_Stage5_ROL, Abs_RMW_Stage5_ASL, Abs_RMW_Stage5_ROR, 
-			Abs_RMW_Stage5_Unofficial,
+			Abs_RMW_Stage5_SLO, Abs_RMW_Stage5_RLA, Abs_RMW_Stage5_SRE, Abs_RMW_Stage5_RRA, Abs_RMW_Stage5_DCP, Abs_RMW_Stage5_ISC, //unofficials
 
 			//[absolute JUMP]
 			JMP_abs,
@@ -326,33 +325,36 @@ namespace BizHawk.Emulation.CPUs.M6502
 			ZpIdx_RMW_Stage4, ZpIdx_RMW_Stage6,
 			//[zero page WRITE]
 			ZP_WRITE_STA, ZP_WRITE_STX, ZP_WRITE_STY, ZP_WRITE_SAX,
-			ZP_WRITE_UNOFFICIAL,
 			//[zero page RMW]
 			ZP_RMW_Stage3, ZP_RMW_Stage5,
 			ZP_RMW_DEC, ZP_RMW_INC, ZP_RMW_ASL, ZP_RMW_LSR, ZP_RMW_ROR, ZP_RMW_ROL,
-			ZP_RMW_UNOFFICIAL,
+			ZP_RMW_SLO, ZP_RMW_RLA, ZP_RMW_SRE, ZP_RMW_RRA, ZP_RMW_DCP, ZP_RMW_ISC,
 			//[zero page READ]
 			ZP_READ_EOR, ZP_READ_BIT, ZP_READ_ORA, ZP_READ_LDA, ZP_READ_LDY, ZP_READ_LDX, ZP_READ_CPX, ZP_READ_SBC, ZP_READ_CPY, ZP_READ_NOP, ZP_READ_ADC, ZP_READ_AND, ZP_READ_CMP, ZP_READ_LAX,
-			ZP_READ_UNOFFICIAL,
 
 			//[indexed indirect READ] (addr,X)
 			//[indexed indirect WRITE] (addr,X)
 			IdxInd_Stage3, IdxInd_Stage4, IdxInd_Stage5,
 			IdxInd_Stage6_READ_ORA, IdxInd_Stage6_READ_SBC, IdxInd_Stage6_READ_LDA, IdxInd_Stage6_READ_EOR, IdxInd_Stage6_READ_CMP, IdxInd_Stage6_READ_ADC, IdxInd_Stage6_READ_AND, 
-			IdxInd_Stage6_WRITE_STA,
+			IdxInd_Stage6_READ_LAX,
+			IdxInd_Stage6_WRITE_STA, IdxInd_Stage6_WRITE_SAX,
+			IdxInd_Stage6_RMW, //work happens in stage 7
+			IdxInd_Stage7_RMW_SLO, IdxInd_Stage7_RMW_RLA, IdxInd_Stage7_RMW_SRE, IdxInd_Stage7_RMW_RRA, IdxInd_Stage7_RMW_ISC, IdxInd_Stage7_RMW_DCP, //unofficials
+			IdxInd_Stage8_RMW,
 
 			//[absolute indexed]
 			AbsIdx_Stage3_X, AbsIdx_Stage3_Y, AbsIdx_Stage4,
 			//[absolute indexed WRITE]
-			AbsIdx_WRITE_Stage5_STA, 
-			AbsIdx_WRITE_Stage5_Unofficial,
+			AbsIdx_WRITE_Stage5_STA,
+			AbsIdx_WRITE_Stage5_SHY, AbsIdx_WRITE_Stage5_SHX, //unofficials
 			//[absolute indexed READ]
 			AbsIdx_READ_Stage4,
 			AbsIdx_READ_Stage5_LDA, AbsIdx_READ_Stage5_CMP, AbsIdx_READ_Stage5_SBC, AbsIdx_READ_Stage5_ADC, AbsIdx_READ_Stage5_EOR, AbsIdx_READ_Stage5_LDX, AbsIdx_READ_Stage5_AND, AbsIdx_READ_Stage5_ORA, AbsIdx_READ_Stage5_LDY, AbsIdx_READ_Stage5_NOP,
+			AbsIdx_READ_Stage5_LAX, //unofficials
 			//[absolute indexed RMW]
 			AbsIdx_RMW_Stage5, AbsIdx_RMW_Stage7,
 			AbsIdx_RMW_Stage6_ROR, AbsIdx_RMW_Stage6_DEC, AbsIdx_RMW_Stage6_INC, AbsIdx_RMW_Stage6_ASL, AbsIdx_RMW_Stage6_LSR, AbsIdx_RMW_Stage6_ROL,
-			AbsIdx_RMW_Stage6_Unofficial,
+			AbsIdx_RMW_Stage6_SLO, AbsIdx_RMW_Stage6_RLA, AbsIdx_RMW_Stage6_SRE, AbsIdx_RMW_Stage6_RRA, AbsIdx_RMW_Stage6_DCP, AbsIdx_RMW_Stage6_ISC, //unofficials
 
 			IncS, DecS,
 			PushPCL, PushPCH, PushPCH_B, PushP, PullP, PullPCL, PullPCH_NoInc, PushA, PullA_NoInc, PullP_NoInc,
@@ -366,7 +368,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			Imp_TSX, Imp_TXS, Imp_TAX, Imp_TAY, Imp_TYA, Imp_TXA, 
 			
 			//[immediate]
-			Imm_CMP, Imm_ADC, Imm_AND, Imm_SBC, Imm_ORA, Imm_EOR, Imm_CPY, Imm_CPX,
+			Imm_CMP, Imm_ADC, Imm_AND, Imm_SBC, Imm_ORA, Imm_EOR, Imm_CPY, Imm_CPX, Imm_ANC, Imm_ASR, Imm_ARR, Imm_LXA, Imm_AXS,
 			Imm_LDA, Imm_LDX, Imm_LDY,
 			Imm_Unsupported,
 
@@ -374,15 +376,20 @@ namespace BizHawk.Emulation.CPUs.M6502
 			NZ_X, NZ_Y, NZ_A,
 			RelBranch_Stage2_BNE, RelBranch_Stage2_BPL, RelBranch_Stage2_BCC, RelBranch_Stage2_BCS, RelBranch_Stage2_BEQ, RelBranch_Stage2_BMI, RelBranch_Stage2_BVC, RelBranch_Stage2_BVS,
 			RelBranch_Stage2, RelBranch_Stage3, RelBranch_Stage4,
-			_Eor, _Bit, _Cpx, _Cpy, _Cmp, _Adc, _Sbc, _Ora, _And, //alu-related sub-ops
+			_Eor, _Bit, _Cpx, _Cpy, _Cmp, _Adc, _Sbc, _Ora, _And, _Anc, _Asr, _Arr, _Lxa, _Axs, //alu-related sub-ops
 
 			//JMP (addr) 0x6C
 			AbsInd_JMP_Stage4, AbsInd_JMP_Stage5,
 
-			//[indirect indexed] (i.e. LDA (addr),Y	
+			//[indirect indexed] (i.e. LDA (addr),Y	)
 			IndIdx_Stage3, IndIdx_Stage4, IndIdx_READ_Stage5, IndIdx_WRITE_Stage5,
 			IndIdx_WRITE_Stage6_STA,
 			IndIdx_READ_Stage6_LDA, IndIdx_READ_Stage6_CMP, IndIdx_READ_Stage6_ORA, IndIdx_READ_Stage6_SBC, IndIdx_READ_Stage6_ADC, IndIdx_READ_Stage6_AND, IndIdx_READ_Stage6_EOR,
+			IndIdx_READ_Stage6_LAX,
+			IndIdx_RMW_Stage5,
+			IndIdx_RMW_Stage6, //just reads from effective address
+			IndIdx_RMW_Stage7_SLO, IndIdx_RMW_Stage7_RLA, IndIdx_RMW_Stage7_SRE, IndIdx_RMW_Stage7_RRA, IndIdx_RMW_Stage7_ISC, IndIdx_RMW_Stage7_DCP, //unofficials
+			IndIdx_RMW_Stage8,
 
 			End,
 			End_ISpecial, //same as end, but preserves the iflag set by the instruction
@@ -559,9 +566,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.Abs_WRITE_STA: WriteMemory((ushort)((opcode3 << 8) + opcode2), A); break;
 				case Uop.Abs_WRITE_STX: WriteMemory((ushort)((opcode3 << 8) + opcode2), X); break;
 				case Uop.Abs_WRITE_STY: WriteMemory((ushort)((opcode3 << 8) + opcode2), Y); break;
-				case Uop.Abs_WRITE_Unofficial: 
-					WriteMemory((ushort)((opcode3 << 8) + opcode2), 0); 
-					break;
+				case Uop.Abs_WRITE_SAX: WriteMemory((ushort)((opcode3 << 8) + opcode2), (byte)(X & A)); break;
 
 				case Uop.ZP_WRITE_STA: WriteMemory(opcode2, A); break;
 				case Uop.ZP_WRITE_STY: WriteMemory(opcode2, Y); break;
@@ -592,6 +597,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 						ea = (ushort)(ea + 0x100);
 					}
 					break;
+				case Uop.IndIdx_RMW_Stage5:
+					if (alu_temp.Bit(8))
+						ea = (ushort)(ea + 0x100);
+					ReadMemory((ushort)ea);
+					break;
 				case Uop.IndIdx_WRITE_Stage6_STA:
 					WriteMemory((ushort)ea, A);
 					break;
@@ -607,6 +617,9 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.IndIdx_READ_Stage6_EOR:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._Eor;
+				case Uop.IndIdx_READ_Stage6_LAX:
+					A = X = ReadMemory((ushort)ea);
+					goto case Uop.NZ_A;
 				case Uop.IndIdx_READ_Stage6_ADC:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._Adc;
@@ -616,6 +629,50 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.IndIdx_READ_Stage6_ORA:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._Ora;
+				case Uop.IndIdx_RMW_Stage6:
+					alu_temp = ReadMemory((ushort)ea);
+					break;
+				case Uop.IndIdx_RMW_Stage7_SLO:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 0x80) != 0;
+					alu_temp = value8 = (byte)((value8 << 1));
+					A |= value8;
+					goto case Uop.NZ_A;
+				case Uop.IndIdx_RMW_Stage7_SRE:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 1) != 0;
+					alu_temp = value8 = (byte)(value8 >> 1);
+					A ^= value8;
+					goto case Uop.NZ_A;
+				case Uop.IndIdx_RMW_Stage7_RRA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 >> 1) | ((P & 1) << 7));
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Adc;
+				case Uop.IndIdx_RMW_Stage7_ISC:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 + 1);
+					goto case Uop._Sbc;
+				case Uop.IndIdx_RMW_Stage7_DCP:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 - 1);
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Cmp;
+				case Uop.IndIdx_RMW_Stage7_RLA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 << 1) | (P & 1));
+					FlagC = (temp8 & 0x80) != 0;
+					A &= value8;
+					goto case Uop.NZ_A;
+				case Uop.IndIdx_RMW_Stage8:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					break;
 
 				case Uop.RelBranch_Stage2_BVS:
 					branch_taken = FlagV == true;
@@ -707,6 +764,11 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.Abs_READ_BIT:
 					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
 					goto case Uop._Bit;
+				case Uop.Abs_READ_LAX:
+					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+					A = ReadMemory((ushort)((opcode3 << 8) + opcode2));
+					X = A;
+					goto case Uop.NZ_A;
 				case Uop.Abs_READ_AND:
 					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
 					goto case Uop._And;
@@ -726,9 +788,6 @@ namespace BizHawk.Emulation.CPUs.M6502
 					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
 					goto case Uop._Cpy;
 				case Uop.Abs_READ_NOP:
-					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
-					break;
-				case Uop.Abs_READ_Unofficial:
 					alu_temp = ReadMemory((ushort)((opcode3 << 8) + opcode2));
 					break;
 				case Uop.Abs_READ_CPX:
@@ -753,9 +812,6 @@ namespace BizHawk.Emulation.CPUs.M6502
 					WriteMemory(opcode2, (byte)alu_temp);
 					break;
 
-				case Uop.ZP_READ_UNOFFICIAL:
-					alu_temp = ReadMemory(opcode2);
-					break;
 				case Uop.ZP_READ_EOR:
 					alu_temp = ReadMemory(opcode2);
 					goto case Uop._Eor;
@@ -833,6 +889,42 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop._Ora:
 					A |= (byte)alu_temp;
 					goto case Uop.NZ_A;
+				case Uop._Anc:
+					A &= (byte)alu_temp;
+					FlagC = A.Bit(7);
+					goto case Uop.NZ_A;
+				case Uop._Asr:
+					A &= (byte)alu_temp;
+					FlagC = A.Bit(0);
+					A >>= 1;
+					goto case Uop.NZ_A;
+				case Uop._Axs:
+					X &= A;
+					alu_temp = X - (byte)alu_temp;
+					X = (byte)alu_temp;
+					FlagC = !alu_temp.Bit(8);
+					goto case Uop.NZ_X;
+				case Uop._Arr:
+					{
+						A &= (byte)alu_temp;
+						bool temp = A.Bit(0);
+						A = (byte)((A >> 1) | (FlagC ? 0x80 : 0x00));
+						FlagC = temp;
+						if (A.Bit(5))
+							if (A.Bit(6))
+							{ FlagC = true; FlagV = false; }
+							else { FlagV = true; FlagC = false; }
+						else if (A.Bit(6))
+						{ FlagV = true; FlagC = true; }
+						else { FlagV = false; FlagC = false; }
+						FlagZ = (A == 0);
+						break;
+					}
+				case Uop._Lxa:
+					A |= 0xFF; //there is some debate about what this should be. it may depend on the 6502 variant. this is suggested by qeed's doc for the nes and passes blargg's instruction test
+					A &= (byte)alu_temp;
+					X = A;
+					goto case Uop.NZ_A;
 				case Uop._Sbc:
 					{
 						value8 = (byte)alu_temp;
@@ -890,6 +982,21 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.Imm_EOR:
 					alu_temp = ReadMemory(PC++);
 					goto case Uop._Eor;
+				case Uop.Imm_ANC:
+					alu_temp = ReadMemory(PC++);
+					goto case Uop._Anc;
+				case Uop.Imm_ASR:
+					alu_temp = ReadMemory(PC++);
+					goto case Uop._Asr;
+				case Uop.Imm_AXS:
+					alu_temp = ReadMemory(PC++);
+					goto case Uop._Axs;
+				case Uop.Imm_ARR:
+					alu_temp = ReadMemory(PC++);
+					goto case Uop._Arr;
+				case Uop.Imm_LXA:
+					alu_temp = ReadMemory(PC++);
+					goto case Uop._Lxa;
 				case Uop.Imm_ORA:
 					alu_temp = ReadMemory(PC++);
 					goto case Uop._Ora;
@@ -941,6 +1048,9 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.IdxInd_Stage6_READ_ORA:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._Ora;
+				case Uop.IdxInd_Stage6_READ_LAX:
+					A = X = ReadMemory((ushort)ea);
+					goto case Uop.NZ_A;
 				case Uop.IdxInd_Stage6_READ_CMP:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._Cmp;
@@ -958,6 +1068,56 @@ namespace BizHawk.Emulation.CPUs.M6502
 					goto case Uop._Sbc;
 				case Uop.IdxInd_Stage6_WRITE_STA:
 					WriteMemory((ushort)ea, A);
+					break;
+				case Uop.IdxInd_Stage6_WRITE_SAX:
+					alu_temp = A & X;
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					//flag writing skipped on purpose
+					break;
+				case Uop.IdxInd_Stage6_RMW:
+					alu_temp = ReadMemory((ushort)ea);
+					break;
+				case Uop.IdxInd_Stage7_RMW_SLO:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 0x80) != 0;
+					alu_temp = value8 = (byte)((value8 << 1));
+					A |= value8;
+					goto case Uop.NZ_A;
+				case Uop.IdxInd_Stage7_RMW_ISC:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 + 1);
+					goto case Uop._Sbc;
+				case Uop.IdxInd_Stage7_RMW_DCP:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 - 1);
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Cmp;
+				case Uop.IdxInd_Stage7_RMW_SRE:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 1) != 0;
+					alu_temp = value8 = (byte)(value8 >> 1);
+					A ^= value8;
+					goto case Uop.NZ_A;
+				case Uop.IdxInd_Stage7_RMW_RRA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 >> 1) | ((P & 1) << 7));
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Adc;
+				case Uop.IdxInd_Stage7_RMW_RLA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 << 1) | (P & 1));
+					FlagC = (temp8 & 0x80) != 0;
+					A &= value8;
+					goto case Uop.NZ_A;
+				case Uop.IdxInd_Stage8_RMW:
+					WriteMemory((ushort)ea, (byte)alu_temp);
 					break;
 
 				case Uop.PushP:
@@ -1031,6 +1191,25 @@ namespace BizHawk.Emulation.CPUs.M6502
 					alu_temp = value8 = (byte)(value8 << 1);
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
+				case Uop.ZP_RMW_SRE:
+					WriteMemory(opcode2, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 1) != 0;
+					alu_temp = value8 = (byte)(value8 >> 1);
+					A ^= value8;
+					goto case Uop.NZ_A;
+				case Uop.ZP_RMW_RRA:
+					WriteMemory(opcode2, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 >> 1) | ((P & 1) << 7));
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Adc;
+				case Uop.ZP_RMW_DCP:
+					WriteMemory(opcode2, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 - 1);
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Cmp;
 				case Uop.ZP_RMW_LSR:
 					WriteMemory(opcode2, (byte)alu_temp);
 					value8 = (byte)alu_temp;
@@ -1052,12 +1231,25 @@ namespace BizHawk.Emulation.CPUs.M6502
 					FlagC = (temp8 & 0x80) != 0;
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
-				case Uop.ZP_RMW_UNOFFICIAL:
+				case Uop.ZP_RMW_SLO:
 					WriteMemory(opcode2, (byte)alu_temp);
-					break;
-				case Uop.ZP_WRITE_UNOFFICIAL:
-					WriteMemory(opcode2, 0); //???
-					break;
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 0x80) != 0;
+					alu_temp = value8 = (byte)((value8 << 1));
+					A |= value8;
+					goto case Uop.NZ_A;
+				case Uop.ZP_RMW_ISC:
+					WriteMemory(opcode2, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)(value8 + 1);
+					goto case Uop._Sbc;
+				case Uop.ZP_RMW_RLA:
+					WriteMemory(opcode2, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 << 1) | (P & 1));
+					FlagC = (temp8 & 0x80) != 0;
+					A &= value8;
+					goto case Uop.NZ_A;
 
 				case Uop.AbsIdx_Stage3_Y:
 					opcode3 = ReadMemory(PC++);
@@ -1095,8 +1287,15 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.AbsIdx_WRITE_Stage5_STA: 
 					WriteMemory((ushort)ea, A); 
 					break;
-				case Uop.AbsIdx_WRITE_Stage5_Unofficial:
-					WriteMemory((ushort)ea, 0);
+				case Uop.AbsIdx_WRITE_Stage5_SHY:
+					alu_temp = Y & (ea>>8);
+					ea = (ea & 0xFF) | (alu_temp << 8); //"(the bank where the value is stored may be equal to the value stored)" -- more like IS.
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					break;
+				case Uop.AbsIdx_WRITE_Stage5_SHX:
+					alu_temp = X & (ea >> 8);
+					ea = (ea & 0xFF) | (alu_temp << 8); //"(the bank where the value is stored may be equal to the value stored)" -- more like IS.
+					WriteMemory((ushort)ea, (byte)alu_temp);
 					break;
 
 				case Uop.AbsIdx_RMW_Stage5:
@@ -1110,6 +1309,14 @@ namespace BizHawk.Emulation.CPUs.M6502
 					alu_temp = value8 = (byte)(alu_temp - 1);
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
+				case Uop.AbsIdx_RMW_Stage6_DCP:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					alu_temp = value8 = (byte)(alu_temp - 1);
+					goto case Uop._Cmp;
+				case Uop.AbsIdx_RMW_Stage6_ISC:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					alu_temp = value8 = (byte)(alu_temp + 1);
+					goto case Uop._Sbc;
 				case Uop.AbsIdx_RMW_Stage6_INC:
 					WriteMemory((ushort)ea, (byte)alu_temp);
 					alu_temp = value8 = (byte)(alu_temp + 1);
@@ -1129,9 +1336,33 @@ namespace BizHawk.Emulation.CPUs.M6502
 					alu_temp = value8 = (byte)(value8 >> 1);
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
-				case Uop.AbsIdx_RMW_Stage6_Unofficial:
+				case Uop.AbsIdx_RMW_Stage6_SLO:
 					WriteMemory((ushort)ea, (byte)alu_temp);
-					break;
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 0x80) != 0;
+					alu_temp = value8 = (byte)(value8 << 1);
+					A |= value8;
+					goto case Uop.NZ_A;
+				case Uop.AbsIdx_RMW_Stage6_SRE:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 1) != 0;
+					alu_temp = value8 = (byte)(value8 >> 1);
+					A ^= value8;
+					goto case Uop.NZ_A;
+				case Uop.AbsIdx_RMW_Stage6_RRA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 >> 1) | ((P & 1) << 7));
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Adc;
+				case Uop.AbsIdx_RMW_Stage6_RLA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 << 1) | (P & 1));
+					FlagC = (temp8 & 0x80) != 0;
+					A &= value8;
+					goto case Uop.NZ_A;
 				case Uop.AbsIdx_RMW_Stage6_ASL:
 					WriteMemory((ushort)ea, (byte)alu_temp);
 					value8 = (byte)alu_temp;
@@ -1153,6 +1384,10 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.AbsIdx_READ_Stage5_LDX:
 					X = ReadMemory((ushort)ea);
 					goto case Uop.NZ_X;
+				case Uop.AbsIdx_READ_Stage5_LAX:
+					A = ReadMemory((ushort)ea);
+					X = A;
+					goto case Uop.NZ_A;
 				case Uop.AbsIdx_READ_Stage5_LDY:
 					Y = ReadMemory((ushort)ea);
 					goto case Uop.NZ_Y;
@@ -1204,6 +1439,16 @@ namespace BizHawk.Emulation.CPUs.M6502
 					alu_temp = value8;
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
+				case Uop.Abs_RMW_Stage5_DCP:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)(alu_temp - 1);
+					alu_temp = value8;
+					goto case Uop._Cmp;
+				case Uop.Abs_RMW_Stage5_ISC:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)(alu_temp + 1);
+					alu_temp = value8;
+					goto case Uop._Sbc;
 				case Uop.Abs_RMW_Stage5_ASL:
 					WriteMemory((ushort)ea, (byte)alu_temp);
 					value8 = (byte)alu_temp;
@@ -1218,9 +1463,33 @@ namespace BizHawk.Emulation.CPUs.M6502
 					FlagC = (temp8 & 1) != 0;
 					P = (byte)((P & 0x7D) | TableNZ[value8]);
 					break;
-				case Uop.Abs_RMW_Stage5_Unofficial:
+				case Uop.Abs_RMW_Stage5_SLO:
 					WriteMemory((ushort)ea, (byte)alu_temp);
-					break;
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 0x80) != 0;
+					alu_temp = value8 = (byte)(value8 << 1);
+					A |= value8;
+					goto case Uop.NZ_A;
+				case Uop.Abs_RMW_Stage5_RLA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 << 1) | (P & 1));
+					FlagC = (temp8 & 0x80) != 0;
+					A &= value8;
+					goto case Uop.NZ_A;
+				case Uop.Abs_RMW_Stage5_SRE:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = (byte)alu_temp;
+					FlagC = (value8 & 1) != 0;
+					alu_temp = value8 = (byte)(value8 >> 1);
+					A ^= value8;
+					goto case Uop.NZ_A;
+				case Uop.Abs_RMW_Stage5_RRA:
+					WriteMemory((ushort)ea, (byte)alu_temp);
+					value8 = temp8 = (byte)alu_temp;
+					alu_temp = value8 = (byte)((value8 >> 1) | ((P & 1) << 7));
+					FlagC = (temp8 & 1) != 0;
+					goto case Uop._Adc;
 				case Uop.Abs_RMW_Stage5_ROL:
 					WriteMemory((ushort)ea, (byte)alu_temp);
 					value8 = temp8 = (byte)alu_temp;
