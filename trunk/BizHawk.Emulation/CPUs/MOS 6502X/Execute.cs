@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*BCC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCC, Uop.End },
 			/*STA (addr),Y [indirect indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_STA, Uop.End },
 			/*JAM*/ new Uop[] { Uop.End },
-			/*SHA** [indirect indexed RMW Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SHA** [indirect indexed WRITE] [unofficial] [not tested by blargg's instruction tests]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_SHA, Uop.End },
 			/*STY zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STY, Uop.End },
 			/*STA zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STA, Uop.End },
 			/*STX zp,Y [zero page indexed WRITE Y]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_Y, Uop.ZP_WRITE_STX, Uop.End },
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*TYA [implied]*/ new Uop[] { Uop.Imp_TYA, Uop.End },
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
-			/*SHS* addr,X [absolute indexed READ? X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*SHS* addr,X [absolute indexed WRITE X] [unofficial] [NOT IMPLEMENTED - TRICKY, AND NO TEST]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
 			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 			/*CLV [implied]*/ new Uop[] { Uop.Imp_CLV, Uop.End },
 			/*LDA addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*TSX [implied]*/ new Uop[] { Uop.Imp_TSX, Uop.End },
-			/*LAS* addr,X [absolute indexed READ? X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.End },
+			/*LAS* addr,X [absolute indexed READ X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ERROR, Uop.End },
 			/*LDY addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDY, Uop.End },
 			/*LDA addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*LDX addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDX, Uop.End },
@@ -347,10 +347,12 @@ namespace BizHawk.Emulation.CPUs.M6502
 			//[absolute indexed WRITE]
 			AbsIdx_WRITE_Stage5_STA,
 			AbsIdx_WRITE_Stage5_SHY, AbsIdx_WRITE_Stage5_SHX, //unofficials
+			AbsIdx_WRITE_Stage5_ERROR,
 			//[absolute indexed READ]
 			AbsIdx_READ_Stage4,
 			AbsIdx_READ_Stage5_LDA, AbsIdx_READ_Stage5_CMP, AbsIdx_READ_Stage5_SBC, AbsIdx_READ_Stage5_ADC, AbsIdx_READ_Stage5_EOR, AbsIdx_READ_Stage5_LDX, AbsIdx_READ_Stage5_AND, AbsIdx_READ_Stage5_ORA, AbsIdx_READ_Stage5_LDY, AbsIdx_READ_Stage5_NOP,
 			AbsIdx_READ_Stage5_LAX, //unofficials
+			AbsIdx_READ_Stage5_ERROR,
 			//[absolute indexed RMW]
 			AbsIdx_RMW_Stage5, AbsIdx_RMW_Stage7,
 			AbsIdx_RMW_Stage6_ROR, AbsIdx_RMW_Stage6_DEC, AbsIdx_RMW_Stage6_INC, AbsIdx_RMW_Stage6_ASL, AbsIdx_RMW_Stage6_LSR, AbsIdx_RMW_Stage6_ROL,
@@ -383,7 +385,7 @@ namespace BizHawk.Emulation.CPUs.M6502
 
 			//[indirect indexed] (i.e. LDA (addr),Y	)
 			IndIdx_Stage3, IndIdx_Stage4, IndIdx_READ_Stage5, IndIdx_WRITE_Stage5,
-			IndIdx_WRITE_Stage6_STA,
+			IndIdx_WRITE_Stage6_STA, IndIdx_WRITE_Stage6_SHA,
 			IndIdx_READ_Stage6_LDA, IndIdx_READ_Stage6_CMP, IndIdx_READ_Stage6_ORA, IndIdx_READ_Stage6_SBC, IndIdx_READ_Stage6_ADC, IndIdx_READ_Stage6_AND, IndIdx_READ_Stage6_EOR,
 			IndIdx_READ_Stage6_LAX,
 			IndIdx_RMW_Stage5,
@@ -604,6 +606,9 @@ namespace BizHawk.Emulation.CPUs.M6502
 					break;
 				case Uop.IndIdx_WRITE_Stage6_STA:
 					WriteMemory((ushort)ea, A);
+					break;
+				case Uop.IndIdx_WRITE_Stage6_SHA:
+					WriteMemory((ushort)ea, (byte)(A&X&7));
 					break;
 				case Uop.IndIdx_READ_Stage6_LDA:
 					A = ReadMemory((ushort)ea);
@@ -1297,6 +1302,10 @@ namespace BizHawk.Emulation.CPUs.M6502
 					ea = (ea & 0xFF) | (alu_temp << 8); //"(the bank where the value is stored may be equal to the value stored)" -- more like IS.
 					WriteMemory((ushort)ea, (byte)alu_temp);
 					break;
+				case Uop.AbsIdx_WRITE_Stage5_ERROR:
+					alu_temp = ReadMemory((ushort)ea);
+					//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
+					break;
 
 				case Uop.AbsIdx_RMW_Stage5:
 					alu_temp = ReadMemory((ushort)ea);
@@ -1412,6 +1421,10 @@ namespace BizHawk.Emulation.CPUs.M6502
 				case Uop.AbsIdx_READ_Stage5_AND:
 					alu_temp = ReadMemory((ushort)ea);
 					goto case Uop._And;
+				case Uop.AbsIdx_READ_Stage5_ERROR:
+					alu_temp = ReadMemory((ushort)ea);
+					//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
+					break;
 
 				case Uop.AbsInd_JMP_Stage4:
 					ea = (opcode3<<8)+opcode2;
