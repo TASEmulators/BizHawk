@@ -64,8 +64,8 @@ namespace BizHawk.DiscSystem
 			oInfo.RedirectStandardError = true;
 
 			Process proc = System.Diagnostics.Process.Start(oInfo);
-			proc.WaitForExit();
 			string result = proc.StandardError.ReadToEnd();
+			proc.WaitForExit();
 
 			return result;
 		}
