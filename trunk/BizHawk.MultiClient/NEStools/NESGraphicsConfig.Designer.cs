@@ -37,6 +37,8 @@
 			this.PalettePath = new System.Windows.Forms.TextBox();
 			this.BrowsePalette = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.btnAreaFull = new System.Windows.Forms.Button();
+			this.btnAreaStandard = new System.Windows.Forms.Button();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.LastLineNumeric = new System.Windows.Forms.NumericUpDown();
@@ -52,8 +54,6 @@
 			this.DispBackground = new System.Windows.Forms.CheckBox();
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
-			this.btnAreaStandard = new System.Windows.Forms.Button();
-			this.btnAreaFull = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LastLineNumeric)).BeginInit();
@@ -169,6 +169,26 @@
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
 			// 
+			// btnAreaFull
+			// 
+			this.btnAreaFull.Location = new System.Drawing.Point(12, 99);
+			this.btnAreaFull.Name = "btnAreaFull";
+			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaFull.TabIndex = 26;
+			this.btnAreaFull.Text = "Full [0,239]";
+			this.btnAreaFull.UseVisualStyleBackColor = true;
+			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
+			// 
+			// btnAreaStandard
+			// 
+			this.btnAreaStandard.Location = new System.Drawing.Point(12, 71);
+			this.btnAreaStandard.Name = "btnAreaStandard";
+			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
+			this.btnAreaStandard.TabIndex = 25;
+			this.btnAreaStandard.Text = "Standard [8,231]";
+			this.btnAreaStandard.UseVisualStyleBackColor = true;
+			this.btnAreaStandard.Click += new System.EventHandler(this.btnAreaStandard_Click);
+			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
@@ -191,7 +211,7 @@
 			// 
 			this.LastLineNumeric.Location = new System.Drawing.Point(59, 45);
 			this.LastLineNumeric.Maximum = new decimal(new int[] {
-            240,
+            239,
             0,
             0,
             0});
@@ -329,33 +349,13 @@
 			this.DispSprites.Text = "Display Sprites";
 			this.DispSprites.UseVisualStyleBackColor = true;
 			// 
-			// btnAreaStandard
-			// 
-			this.btnAreaStandard.Location = new System.Drawing.Point(12, 71);
-			this.btnAreaStandard.Name = "btnAreaStandard";
-			this.btnAreaStandard.Size = new System.Drawing.Size(94, 23);
-			this.btnAreaStandard.TabIndex = 25;
-			this.btnAreaStandard.Text = "Standard [8,231]";
-			this.btnAreaStandard.UseVisualStyleBackColor = true;
-			this.btnAreaStandard.Click += new System.EventHandler(this.btnAreaStandard_Click);
-			// 
-			// btnAreaFull
-			// 
-			this.btnAreaFull.Location = new System.Drawing.Point(12, 99);
-			this.btnAreaFull.Name = "btnAreaFull";
-			this.btnAreaFull.Size = new System.Drawing.Size(94, 23);
-			this.btnAreaFull.TabIndex = 26;
-			this.btnAreaFull.Text = "Full [0,239]";
-			this.btnAreaFull.UseVisualStyleBackColor = true;
-			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
-			// 
 			// NESGraphicsConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(381, 407);
+			this.ClientSize = new System.Drawing.Size(373, 396);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
