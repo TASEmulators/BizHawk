@@ -556,6 +556,11 @@ namespace BizHawk.MultiClient
 				}
 			}
 
+			public void ReleaseSurface(DisplaySurface surface)
+			{
+				lock (this) ReleasedSurfaces.Enqueue(surface);
+			}
+
 			/// <summary>
 			/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
 			/// </summary>
@@ -629,6 +634,9 @@ namespace BizHawk.MultiClient
 			suspendReplyEvent.WaitOne();
 		}
 
+
+		SwappableDisplaySurfaceSet nativeDisplaySurfaceSet = new SwappableDisplaySurfaceSet();
+
 		/// <summary>
 		/// internal display worker proc; runs through the multiply layered display pipeline 
 		/// </summary>
@@ -655,35 +663,36 @@ namespace BizHawk.MultiClient
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
-			using (var nativeBmp = new DisplaySurface(w,h))
+			var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
+			using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
 			{
-				using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
-				{
-					//scale the source bitmap to the desired size of the render panel
-					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-					g.InterpolationMode = InterpolationMode.NearestNeighbor;
-					g.CompositingMode = CompositingMode.SourceCopy;
-					g.CompositingQuality = CompositingQuality.HighSpeed;
-					g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
-					g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
+				//scale the source bitmap to the desired size of the render panel
+				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+				g.InterpolationMode = InterpolationMode.NearestNeighbor;
+				g.CompositingMode = CompositingMode.SourceCopy;
+				g.CompositingQuality = CompositingQuality.HighSpeed;
+				g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
+				g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
 
-					//switch to fancier composition for OSD overlays and such
-					g.CompositingMode = CompositingMode.SourceOver;
+				//switch to fancier composition for OSD overlays and such
+				g.CompositingMode = CompositingMode.SourceOver;
 
-					//apply a lua layer
-					var luaSurface = luaNativeSurfaceSet.GetCurrent();
-					if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
-					//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
+				//apply a lua layer
+				var luaSurface = luaNativeSurfaceSet.GetCurrent();
+				if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
+				//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
 
-					//draw the OSD at native resolution
-					Global.OSD.DrawScreenInfo(g);
-					Global.OSD.DrawMessages(g);
-					g.Clip.Dispose();
-				}
-
-				//send the native resolution image to the render panel
-				Global.RenderPanel.Render(nativeBmp);
+				//draw the OSD at native resolution
+				Global.OSD.DrawScreenInfo(g);
+				Global.OSD.DrawMessages(g);
+				g.Clip.Dispose();
 			}
+
+			//send the native resolution image to the render panel
+			Global.RenderPanel.Render(nativeBmp);
+
+			//release the native resolution image
+			nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
 		}
 
 		Thread displayThread;
