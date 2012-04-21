@@ -171,6 +171,7 @@
 			this.MinimumSize = new System.Drawing.Size(405, 219);
 			this.Name = "BizBox";
 			this.Text = " BizHawk";
+			this.Load += new System.EventHandler(this.BizBox_Load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();

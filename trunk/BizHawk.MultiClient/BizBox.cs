@@ -26,5 +26,10 @@ namespace BizHawk.MultiClient
 		{
 			this.Close();
 		}
+
+		private void BizBox_Load(object sender, EventArgs e)
+		{
+			Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
+		}
 	}
 }

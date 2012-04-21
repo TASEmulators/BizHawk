@@ -169,7 +169,7 @@ namespace BizHawk.MultiClient
 
         private void AboutBox_Load(object sender, EventArgs e)
         {
-
+			Text = "BizHawk Interim Build SVN r" + SubWCRev.SVN_REV;
         }
 
 		private void Close_Click(object sender, EventArgs e)
