@@ -123,6 +123,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.SaveSettings();
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
+				CloseTools();
 				SaveConfig();
 			};
 
@@ -2451,6 +2452,13 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
+			
+			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
+			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+		}
+
+		public void CloseTools()
+		{
 			CloseForm(RamWatch1);
 			CloseForm(RamSearch1);
 			CloseForm(HexEditor1);
@@ -2464,8 +2472,6 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
-			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
 		private void CloseForm(Form form)
