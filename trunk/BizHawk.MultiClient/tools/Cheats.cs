@@ -823,6 +823,8 @@ namespace BizHawk.MultiClient
 
 		public void DisableAllCheats()
 		{
+			if (Global.CheatList.cheatList.Count > 0)
+				Global.OSD.AddMessage("All cheats disabled.");
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
 				Global.CheatList.cheatList[x].Disable();
 			MemoryPulse.Clear();
