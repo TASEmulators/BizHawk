@@ -832,6 +832,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 			{
 				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
 			}
+			else if (maskedAddr == 0x0D) // INPT5
+			{
+				return (byte)((core.ReadControls2() & 0x08) != 0 ? 0x80 : 0x00);
+			}
 
 			return 0x00;
 		}
