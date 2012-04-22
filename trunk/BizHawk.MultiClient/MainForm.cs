@@ -2021,8 +2021,9 @@ namespace BizHawk.MultiClient
 
 		private void SaveStateAs()
 		{
+			if (IsNullEmulator()) return;
 			var sfd = new SaveFileDialog();
-			string path = PathManager.SaveStatePrefix(Global.Game);
+			string path = PathManager.GetSaveStatePath(Global.Game);
 			sfd.InitialDirectory = path;
 			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
 			var file = new FileInfo(path);
@@ -2078,8 +2079,9 @@ namespace BizHawk.MultiClient
 
 		private void LoadStateAs()
 		{
+			if (IsNullEmulator()) return;
 			var ofd = new OpenFileDialog();
-			ofd.InitialDirectory = PathManager.SaveStatePrefix(Global.Game);
+			ofd.InitialDirectory = PathManager.GetSaveStatePath(Global.Game);
 			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
 

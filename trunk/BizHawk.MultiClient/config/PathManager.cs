@@ -310,6 +310,25 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public static string GetSaveStatePath(GameInfo game)
+		{
+			switch (game.System)
+			{
+				default: return GetRomsPath(game.System);
+				case "A26": return MakeAbsolutePath(Global.Config.PathAtariSavestates, "A26");
+				case "SMS": return MakeAbsolutePath(Global.Config.PathSMSSavestates, "SMS");
+				case "GG": return MakeAbsolutePath(Global.Config.PathGGSavestates, "GG");
+				case "SG": return MakeAbsolutePath(Global.Config.PathSGSavestates, "SG");
+				case "SGX": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
+				case "PCE": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
+				case "PCECD": return MakeAbsolutePath(Global.Config.PathPCESavestates, "PCE");
+				case "GB": return MakeAbsolutePath(Global.Config.PathGBSavestates, "GB");
+				case "GEN": return MakeAbsolutePath(Global.Config.PathGenesisSavestates, "GEN");
+				case "NES": return MakeAbsolutePath(Global.Config.PathNESSavestates, "NES");
+				case "TI83": return MakeAbsolutePath(Global.Config.PathTI83Savestates, "TI83");
+			}
+		}
+
 		public static string SaveStatePrefix(GameInfo game)
 		{
 			string name = FilesystemSafeName(game);
