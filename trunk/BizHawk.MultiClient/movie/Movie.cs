@@ -562,9 +562,6 @@ namespace BizHawk.MultiClient
 			//This function will compare the movie data to the savestate movie data to see if they match
 			var reader = new StreamReader(path);
 
-			if (!IsStateFromAMovie(reader))
-				return false;
-
 			MovieLog l = new MovieLog();
 			string line;
 			string GUID;
@@ -572,6 +569,8 @@ namespace BizHawk.MultiClient
 			while (true)
 			{
 				line = reader.ReadLine();
+				if (line == null)
+					return false;
 				if (line.Trim() == "") continue;
 				else if (line.Contains("GUID"))
 				{
