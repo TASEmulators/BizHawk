@@ -70,6 +70,7 @@ namespace BizHawk.MultiClient.tools
 			IDW_HexEditor.SetBindings(Global.Config.HexEditor);
 			IDW_LuaConsole.SetBindings(Global.Config.LuaConsole);
 			IDW_Cheats.SetBindings(Global.Config.Cheats);
+			IDW_TASTudio.SetBindings(Global.Config.TASTudio);
 			IDW_OpenROM.SetBindings(Global.Config.OpenROM);
 			IDW_CloseROM.SetBindings(Global.Config.CloseROM);
 			IDW_DisplayFPS.SetBindings(Global.Config.FPSBinding);
@@ -170,6 +171,7 @@ namespace BizHawk.MultiClient.tools
 			Global.Config.HexEditor = IDW_HexEditor.Text;
 			Global.Config.LuaConsole = IDW_LuaConsole.Text;
 			Global.Config.Cheats = IDW_Cheats.Text;
+			Global.Config.TASTudio = IDW_TASTudio.Text;
 			Global.Config.OpenROM = IDW_OpenROM.Text;
 			Global.Config.CloseROM = IDW_CloseROM.Text;
 			Global.Config.FPSBinding = IDW_DisplayFPS.Text;
