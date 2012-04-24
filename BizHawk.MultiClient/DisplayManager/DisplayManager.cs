@@ -276,9 +276,9 @@ namespace BizHawk.MultiClient
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, bool alert, int anchor)
+		public void AddGUIText(string message, int x, int y, bool alert, Brush color, int anchor)
 		{
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Alert = alert, Anchor = anchor });
+			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Color = color, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
@@ -315,8 +315,7 @@ namespace BizHawk.MultiClient
 					using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
 						g.DrawString(GUITextList[x].Message, MessageFont, brush, posx,posy);
 				else
-					using (var brush = new SolidBrush(Color.FromArgb(Global.Config.MessagesColor)))
-						g.DrawString(GUITextList[x].Message, MessageFont, brush, posx, posy);
+					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].Color, posx, posy);
 			}
 		}
 
