@@ -276,9 +276,9 @@ namespace BizHawk.MultiClient
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
-		public void AddGUIText(string message, int x, int y, bool alert, Brush color, int anchor)
+        public void AddGUIText(string message, int x, int y, bool alert, Brush BackGround, Brush ForeColor, int anchor)
 		{
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Color = color, Alert = alert, Anchor = anchor });
+            GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, BackGround = BackGround, ForeColor = ForeColor, Alert = alert, Anchor = anchor });
 		}
 
 		public void ClearGUIText()
@@ -304,19 +304,25 @@ namespace BizHawk.MultiClient
 			}
 			for (int x = 0; x < GUITextList.Count; x++)
 			{
+                try
+                {
+				    float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+				    float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
-				float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-				float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
+				    g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx + 2, posy + 2);
+				    g.DrawString(GUITextList[x].Message, MessageFont, Brushes.Gray, posx + 1, posy + 1);
 
-				g.DrawString(GUITextList[x].Message, MessageFont, Brushes.Black, posx + 2, posy + 2);
-				g.DrawString(GUITextList[x].Message, MessageFont, Brushes.Gray, posx + 1, posy + 1);
-
-				if (GUITextList[x].Alert)
-					using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
-						g.DrawString(GUITextList[x].Message, MessageFont, brush, posx,posy);
-				else
-					g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].Color, posx, posy);
-			}
+				    if (GUITextList[x].Alert)
+					    using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
+						    g.DrawString(GUITextList[x].Message, MessageFont, brush, posx,posy);
+				    else
+                        g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx, posy);
+			    }
+                catch (Exception e)
+                {
+                    return;
+                }
+            }
 		}
 
 

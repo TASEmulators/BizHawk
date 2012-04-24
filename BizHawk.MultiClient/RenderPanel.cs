@@ -334,6 +334,7 @@ namespace BizHawk.MultiClient
 		public int Y;
 		public bool Alert;
 		public int Anchor;
-		public Brush Color;
+        public Brush ForeColor;
+		public Brush BackGround;
 	}
 }

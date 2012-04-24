@@ -427,8 +427,12 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object color, object anchor = null)
+		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null, object forecolor = null, object anchor = null)
 		{
+            if (forecolor == null)
+                forecolor = "black";
+            if (background == null)
+                background = "white";
 			int a = 0;
 			if (anchor != null)
 			{
@@ -449,12 +453,12 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetBrush(color), a);
+			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetBrush(background), GetBrush(forecolor), a);
 		}
 
-		public void gui_text(object luaX, object luaY, object luaStr, object color, object anchor = null)
+        public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null, object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, false, color, anchor);
+            do_gui_text(luaX, luaY, luaStr, false, background, forecolor, anchor);
 		}
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
