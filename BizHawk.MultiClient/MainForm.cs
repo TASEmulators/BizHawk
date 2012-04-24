@@ -546,6 +546,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
 			controls.BindMulti("Next Slot", Global.Config.NextSlot);
 			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
+			controls.BindMulti("TASTudio", Global.Config.TASTudio);
 			controls.BindMulti("Ram Search", Global.Config.RamSearch);
 			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
 			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
@@ -1597,43 +1598,23 @@ namespace BizHawk.MultiClient
 						break;
 					}
 				case "Hex Editor": LoadHexEditor(); break;
-				case "Lua Console":
-					{
-						OpenLuaConsole();
-						break;
-					}
+				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
-				case "Open ROM":
-					{
-						OpenROM();
-						break;
-					}
-
+				case "TASTudio": LoadTAStudio(); break;
+				case "Open ROM": OpenROM(); break;
 				case "Close ROM": CloseROM(); break;
-
 				case "Display FPS": ToggleFPS(); break;
-
 				case "Display FrameCounter": ToggleFrameCounter(); break;
 				case "Display LagCounter": ToggleLagCounter(); break;
 				case "Display Input": ToggleInputDisplay(); break;
 				case "Toggle Read Only": ToggleReadOnly(); break;
-				case "Play Movie":
-					{
-						PlayMovie();
-						break;
-					}
-				case "Record Movie":
-					{
-						RecordMovie();
-						break;
-					}
-
+				case "Play Movie": PlayMovie(); break;
+				case "Record Movie": RecordMovie(); break;
 				case "Stop Movie": StopMovie(); break;
 				case "Play Beginning": PlayMovieFromBeginning(); break;
 				case "Volume Up": VolumeUp(); break;
 				case "Volume Down": VolumeDown(); break;
 				case "Soft Reset": SoftReset(); break;
-
 				case "Toggle MultiTrack":
 					{
 						if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)

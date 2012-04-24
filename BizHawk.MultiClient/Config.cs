@@ -438,6 +438,7 @@ namespace BizHawk.MultiClient
 		public string HexEditor = "";
 		public string LuaConsole = "";
 		public string Cheats = "";
+		public string TASTudio = "";
 		public string OpenROM = "Ctrl+O";
 		public string CloseROM = "Ctrl+W";
 		public string FrameCounterBinding = "";
