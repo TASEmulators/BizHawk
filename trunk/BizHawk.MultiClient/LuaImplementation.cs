@@ -429,10 +429,13 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null, object forecolor = null, object anchor = null)
 		{
-            if (forecolor == null)
-                forecolor = "black";
-            if (background == null)
-                background = "white";
+			if (!alert)
+			{
+				if (forecolor == null)
+					forecolor = "black";
+				if (background == null)
+					background = "white";
+			}
 			int a = 0;
 			if (anchor != null)
 			{
@@ -463,7 +466,7 @@ namespace BizHawk.MultiClient
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, true, anchor);
+			do_gui_text(luaX, luaY, luaStr, true, null, null, anchor);
 		}
 
 		public void gui_cleartext()
