@@ -31,8 +31,8 @@ function deepcopy(object)
 end
 
 function counts(obj)
-	gui.text(x, y, 'Holds: ' .. obj.holds)
-	gui.text(x, y + 14, 'Presses: ' .. obj.presses)
+	gui.text(x, y, 'Pressed: ' .. obj.pressed)
+	gui.text(x, y + 14, 'Inputted: ' .. obj.inputted)
 end
 
 function frames()
@@ -74,19 +74,19 @@ function record(buttons)
 			end
 		end
 		if value and not blacklisted then
-			data.holds = data.holds + 1
-			if not data.pressed[button] then
-				data.presses = data.presses + 1
+			data.inputted = data.inputted + 1
+			if not data.buttons[button] then
+				data.pressed = data.pressed + 1
 			end
 		end
-		data.pressed[button] = value
+		data.buttons[button] = value
 	end
 end
 
 function reset()
-	data.holds = 0
-	data.pressed = {}
-	data.presses = 0
+	data.buttons = {}
+	data.pressed = 0
+	data.inputted = 0
 end
 
 function save(name)
