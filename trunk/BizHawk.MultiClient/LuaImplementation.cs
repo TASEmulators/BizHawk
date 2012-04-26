@@ -261,6 +261,7 @@ namespace BizHawk.MultiClient
 			"drawBezier",
 			"drawPie",
 			"drawIcon",
+			"drawImage",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -669,6 +670,28 @@ namespace BizHawk.MultiClient
 					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
 				}
 				catch(Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					Image img = Image.FromFile(Path.ToString());
+
+					if (width == null || width.GetType() != typeof(int))
+						width = img.Width.ToString();
+					if (height == null || height.GetType() != typeof(int))
+						height = img.Height.ToString();
+
+					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
+				}
+				catch (Exception e)
 				{
 					return;
 				}
