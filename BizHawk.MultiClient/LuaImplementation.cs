@@ -262,6 +262,7 @@ namespace BizHawk.MultiClient
 			"drawPie",
 			"drawIcon",
 			"drawImage",
+			"clearGraphics",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -476,7 +477,7 @@ namespace BizHawk.MultiClient
 			Global.OSD.ClearGUIText();
 		}
 
-		DisplaySurface luaSurface;
+		public DisplaySurface luaSurface;
 
 		/// <summary>
 		/// sets the current drawing context to a new surface.
@@ -696,6 +697,11 @@ namespace BizHawk.MultiClient
 					return;
 				}
 			}
+		}
+
+		public void gui_clearGraphics()
+		{
+			luaSurface.Clear();
 		}
 
 		//----------------------------------------------------

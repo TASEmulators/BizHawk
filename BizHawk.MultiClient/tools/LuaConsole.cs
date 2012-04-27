@@ -111,6 +111,7 @@ namespace BizHawk.MultiClient
 				luaList[x].Enabled = false;
 			Changes(true);
 			UpdateNumberOfScripts();
+			ClearDisplaySurface();
 		}
 
 		public void Restart()
@@ -286,7 +287,15 @@ namespace BizHawk.MultiClient
 			}
 			LuaListView.Refresh();
 			UpdateNumberOfScripts();
+			ClearDisplaySurface();
 			Changes(true);
+		}
+
+		public void ClearDisplaySurface()
+		{
+			LuaImp.gui_drawNew();
+			LuaImp.gui_clearGraphics();
+			LuaImp.gui_drawFinish();
 		}
 
 		public void RunLuaScripts()
@@ -431,6 +440,7 @@ namespace BizHawk.MultiClient
 				indexes.Clear();
 				DisplayLuaList();
 			}
+			ClearDisplaySurface();
 			UpdateNumberOfScripts();
 		}
 
