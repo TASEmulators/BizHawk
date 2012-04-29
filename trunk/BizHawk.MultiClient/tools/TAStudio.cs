@@ -394,5 +394,24 @@ namespace BizHawk.MultiClient
 		{
 
 		}
+
+		private void ClearVirtualPadHolds()
+		{
+			foreach (var controller in ControllerBox.Controls)
+			{
+				if (controller is VirtualPad)
+					((VirtualPad)controller).Clear();
+			}
+		}
+
+		private void clearVirtualPadsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearVirtualPadHolds();
+		}
+
+		private void clearToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			ClearVirtualPadHolds();
+		}
 	}
 }
