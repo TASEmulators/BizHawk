@@ -66,7 +66,7 @@ namespace BizHawk.MultiClient
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
 				if (Global.Game != null)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
