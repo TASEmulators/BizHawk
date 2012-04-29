@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 Z80Reset = (value & 1) == 0;
                 if (Z80Reset)
-                    SoundCPU.Reset();
+                    SoundCPU.SoftReset();
                 //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 Z80Reset = (value & 0x100) == 0;
                 if (Z80Reset)
-                    SoundCPU.Reset();
+                    SoundCPU.SoftReset();
                 //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
