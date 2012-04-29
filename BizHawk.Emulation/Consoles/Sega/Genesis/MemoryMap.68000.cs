@@ -139,7 +139,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x13:
                     case 0x15:
                     case 0x17:
-                        Console.WriteLine("!+!+!+  PSG WRITE => {0:X2}",value);
                         PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
                         return;
                 }

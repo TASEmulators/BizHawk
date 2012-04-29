@@ -291,6 +291,10 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\YM2612.IO.cs" />
+    <Compile Include="Sound\YM2612.Channel.cs" />
+    <Compile Include="Sound\YM2612.Operator.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Interfaces\IController.cs" />
