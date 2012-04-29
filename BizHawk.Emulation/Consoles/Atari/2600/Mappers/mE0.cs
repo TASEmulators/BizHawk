@@ -5,6 +5,27 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Atari._2600
 {
+	/*
+	E0 (Parker Bros)
+	-----
+
+	Parker Brothers used this, and it was used on one other game (Tooth Protectors).  It
+	uses 8K of ROM and can map 1K sections of it.
+
+	This mapper has 4 1K banks of ROM in the address space.  The address space is broken up
+	into the following locations:
+
+	1000-13FF : To select a 1K ROM bank here, access 1FE0-1FE7 (1FE0 = select first 1K, etc)
+	1400-17FF : To select a 1K ROM bank, access 1FE8-1FEF
+	1800-1BFF : To select a 1K ROM bank, access 1FF0-1FF7
+	1C00-1FFF : This is fixed to the last 1K ROM bank of the 8K
+
+	Like F8, F6, etc. accessing one of the locations indicated will perform the switch.
+
+	Example Games:
+		Frogger II - Threedeep! (1983) (Parker Bros)
+	*/
+
 	class mE0 : MapperBase 
 	{
 		int toggle1 = 0;

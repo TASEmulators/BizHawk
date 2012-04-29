@@ -5,6 +5,14 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Atari._2600
 {
+	/*
+	F4 (Atari style 32K)
+	-----
+
+	Again, this works like F8 and F6 except now there's 8 4K banks.  Selection is performed
+	by accessing 1FF4 through 1FFB.
+	*/
+
 	class mF4 :MapperBase 
 	{
 		int toggle = 0;
