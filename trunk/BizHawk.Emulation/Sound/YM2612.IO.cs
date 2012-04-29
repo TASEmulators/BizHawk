@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Sound
 {
-    // We process TIMER writes, and also track BUSY status, immediately when writes come in.
-    // All other writes are queued up with a timestamp, so that we can sift through them when 
-    // we're rendering audio for the frame.
+    // We process TIMER writes immediately when writes come in.
+    // All other writes are queued up with a timestamp, so that we  
+    // can sift through them when we're rendering audio for the frame.
     
     public partial class YM2612
     {
@@ -16,19 +16,6 @@ namespace BizHawk.Emulation.Sound
 
         Queue<QueuedCommand> commands = new Queue<QueuedCommand>();
 
-/*
-I might share a little quirk I discovered a few days ago, while I was working through a list of random tests unrelated to the envelope generator. I was running a test to check whether
-parts 1 and 2 had a separate address register, IE, whether you could write one address to $A00000 and another to $A00002, then write to each data port, and have the two writes go to two 
-different register addresses in each part. What I found was that not only do parts 1 and 2 not have a separate address register, they don't even have a separate data port. 
-
-It turns out that writing to an address register stores both the written address, and the part number of the address register you wrote to. You can then write to either the data port at
-$A00001, or the data port at $A00003, and the write will go to the register number you wrote, within the part of the address register you wrote to. This means you can, for example, write
-an address to $A00000, then write the data to $A00003, and the data will in fact be written to the part 1 register block, not the part 2 register block. 
-
-The simpler implementation would seem to be only storing the 8-bit address data that was written, and use the data port that received the write to determine which part to write to, but
-it isn't implemented this way. Writing to the address register stores 9 bits of data, indicating both the target register address, and the part number. I don't think any emulator does 
-this correctly right now.
-*/
         public byte ReadStatus(int clock)
         {
             UpdateTimers(clock);
@@ -76,7 +63,54 @@ this correctly right now.
                 Part2_WriteRegister(cmd.Register, cmd.Data);
         }
 
-        // information on TIMER is on pg 6
+        static void GetChanOpP1(byte value, out int channel, out int oper)
+        {
+            value &= 15;
+            switch (value)
+            {
+                case 0:  channel = 0; oper = 0; return;
+                case 4:  channel = 0; oper = 2; return;
+                case 8:  channel = 0; oper = 1; return;
+                case 12: channel = 0; oper = 3; return;
+
+                case 1:  channel = 1; oper = 0; return;
+                case 5:  channel = 1; oper = 2; return;
+                case 9:  channel = 1; oper = 1; return;
+                case 13: channel = 1; oper = 3; return;
+
+                case 2:  channel = 2; oper = 0; return;
+                case 6:  channel = 2; oper = 2; return;
+                case 10: channel = 2; oper = 1; return;
+                case 14: channel = 2; oper = 3; return;
+
+                default: channel = -1; oper = -1; return;
+            }
+        }
+
+        static void GetChanOpP2(byte value, out int channel, out int oper)
+        {
+            value &= 15;
+            switch (value)
+            {
+                case 0:  channel = 3; oper = 0; return;
+                case 4:  channel = 3; oper = 2; return;
+                case 8:  channel = 3; oper = 1; return;
+                case 12: channel = 3; oper = 3; return;
+
+                case 1:  channel = 4; oper = 0; return;
+                case 5:  channel = 4; oper = 2; return;
+                case 9:  channel = 4; oper = 1; return;
+                case 13: channel = 4; oper = 3; return;
+
+                case 2:  channel = 5; oper = 0; return;
+                case 6:  channel = 5; oper = 2; return;
+                case 10: channel = 5; oper = 1; return;
+                case 14: channel = 5; oper = 3; return;
+
+                default: channel = -1; oper = -1; return;
+            }
+        }
+
         void Part1_WriteRegister(byte register, byte value)
         {
             switch (register)
@@ -89,9 +123,24 @@ this correctly right now.
                 //case 0x28: Console.WriteLine("Operator Key On/Off Ctrl {0:X2}", value); break;
                 case 0x2A: DacValue = value; break;
                 case 0x2B: DacEnable = (value & 0x80) != 0; break;
-                case 0x2C: throw new Exception("something wrote to ym2612 port $2C!"); //http://forums.sonicretro.org/index.php?showtopic=28589
+                case 0x2C: throw new Exception("something wrote to ym2612 port $2C!"); break;//http://forums.sonicretro.org/index.php?showtopic=28589
 
-                // TODO bleh the situation with op2/op3 confusing
+                default:
+                    int chan, oper;
+                    GetChanOpP1(register, out chan, out oper);
+                    if (chan < 0) break; // abort if invalid port number
+                    switch (register & 0xF0)
+                    {
+                        case 0x30: Channels[chan].Operators[oper].Write_MUL_DT1(value); break;
+                        case 0x40: Channels[chan].Operators[oper].Write_TL(value); break;
+                        case 0x50: Channels[chan].Operators[oper].Write_AR_KS(value); break;
+                        case 0x60: Channels[chan].Operators[oper].Write_DR_AM(value); break;
+                        case 0x70: Channels[chan].Operators[oper].Write_SR(value); break;
+                        case 0x80: Channels[chan].Operators[oper].Write_RR_SL(value); break;
+                        case 0x90: Channels[chan].Operators[oper].Write_SSGEG(value); break;
+                    }
+                    break;
+
                 // "In MAME OPN emulation code register pairs for multi-frequency mode are A6A2, ACA8, AEAA, ADA9".
 
                 //D7 - operator, which frequency defined by A6A2 
@@ -101,13 +150,6 @@ this correctly right now.
                 //Where D7=op4, D6=op3, D5=op2, and D4=op1. That matches the YM2608 document. At least that's confirmed then. 
 
                 // PG4 has some info on frquency calculations
-
-                default:
-/*                    if (register >= 0x30 && register < 0xA0)
-                        Console.WriteLine("P1 FM Channel data write");
-                    else
-                        Console.WriteLine("P1 REG {0:X2} WRITE {1:X2}", register, value); */
-                    break;
             }
         }
 
@@ -115,10 +157,19 @@ this correctly right now.
         {
             // NOTE. Only first bank has multi-frequency CSM/Special mode. This mode can't work on CH6.
 
-            /*if (register >= 0x30 && register < 0xA0)
-                Console.WriteLine("P2 FM Channel data write");
-            else
-                Console.WriteLine("P2 REG {0:X2} WRITE {1:X2}", register, value);*/
+            int chan, oper;
+            GetChanOpP2(register, out chan, out oper);
+            if (chan < 0) return; // abort if invalid port number
+            switch (register & 0xF0)
+            {
+                case 0x30: Channels[chan].Operators[oper].Write_MUL_DT1(value); break;
+                case 0x40: Channels[chan].Operators[oper].Write_TL(value); break;
+                case 0x50: Channels[chan].Operators[oper].Write_AR_KS(value); break;
+                case 0x60: Channels[chan].Operators[oper].Write_DR_AM(value); break;
+                case 0x70: Channels[chan].Operators[oper].Write_SR(value); break;
+                case 0x80: Channels[chan].Operators[oper].Write_RR_SL(value); break;
+                case 0x90: Channels[chan].Operators[oper].Write_SSGEG(value); break;
+            }
         }
 
         public class QueuedCommand
