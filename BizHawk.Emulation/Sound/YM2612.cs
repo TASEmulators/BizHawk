@@ -19,10 +19,13 @@ namespace BizHawk.Emulation.Sound
             Channels[3] = new Channel();
             Channels[4] = new Channel();
             Channels[5] = new Channel();
+
+            InitTimers();
         }
 
         public void Reset()
         {
+            throw new Exception("something is resetting the ym2612");
         }
 
         public void BeginFrame(int clock)
