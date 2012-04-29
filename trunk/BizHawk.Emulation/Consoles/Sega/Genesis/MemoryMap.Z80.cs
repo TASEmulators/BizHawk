@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0x4000 && address < 0x6000)
             {
                 //Console.WriteLine(" === Z80 READS FM STATUS ===");
-                return YM2612.ReadStatus(); // TODO: more than 1 read port probably?
+                return YM2612.ReadStatus(SoundCPU.TotalExecutedCycles); // TODO: more than 1 read port probably?
             }
             if (address >= 0x8000)
             {
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             if (address >= 0x4000 && address < 0x6000)
             {
                 //Console.WriteLine(" === Z80 WRITES YM2612 {0:X4}:{1:X2} ===",address, value);
-                YM2612.Write(address & 3, value);
+                YM2612.Write(address & 3, value, SoundCPU.TotalExecutedCycles);
                 return;
             }
             if (address < 0x6100)
