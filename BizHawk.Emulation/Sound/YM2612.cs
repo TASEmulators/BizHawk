@@ -73,8 +73,8 @@ namespace BizHawk.Emulation.Sound
                 if (DacEnable)
                 {
                     short dacValue = (short)(((DacValue-80) * channelVolume) / 80);
-                    samples[pos] += dacValue;
-                    samples[pos + 1] += dacValue;
+                    if (Channels[5].LeftOutput) samples[pos] += dacValue;
+                    if (Channels[5].RightOutput) samples[pos + 1] += dacValue;
                 }
                 pos += 2;
             }

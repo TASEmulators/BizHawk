@@ -138,6 +138,8 @@ namespace BizHawk.Emulation.Sound
                         case 0x70: Channels[chan].Operators[oper].Write_SR(value); break;
                         case 0x80: Channels[chan].Operators[oper].Write_RR_SL(value); break;
                         case 0x90: Channels[chan].Operators[oper].Write_SSGEG(value); break;
+                        case 0xA0:
+                        case 0xB0: WriteHighBlockP1(register, value); break;
                     }
                     break;
 
@@ -169,6 +171,52 @@ namespace BizHawk.Emulation.Sound
                 case 0x70: Channels[chan].Operators[oper].Write_SR(value); break;
                 case 0x80: Channels[chan].Operators[oper].Write_RR_SL(value); break;
                 case 0x90: Channels[chan].Operators[oper].Write_SSGEG(value); break;
+                case 0xA0:
+                case 0xB0: WriteHighBlockP2(register, value); break;
+            }
+        }
+
+        void WriteHighBlockP1(byte register, byte value)
+        {
+            switch (register)
+            {
+                case 0xA0: Channels[0].WriteFrequencyLow(value); break;
+                case 0xA1: Channels[1].WriteFrequencyLow(value); break;
+                case 0xA2: Channels[2].WriteFrequencyLow(value); break;
+
+                case 0xA4: Channels[0].WriteFrequencyHigh(value); break;
+                case 0xA5: Channels[1].WriteFrequencyHigh(value); break;
+                case 0xA6: Channels[2].WriteFrequencyHigh(value); break;
+
+                case 0xB0: Channels[0].Write_Feedback_Algorithm(value); break;
+                case 0xB1: Channels[1].Write_Feedback_Algorithm(value); break;
+                case 0xB2: Channels[2].Write_Feedback_Algorithm(value); break;
+
+                case 0xB4: Channels[0].Write_Stereo_LfoSensitivy(value); break;
+                case 0xB5: Channels[1].Write_Stereo_LfoSensitivy(value); break;
+                case 0xB6: Channels[2].Write_Stereo_LfoSensitivy(value); break;
+            }
+        }
+
+        void WriteHighBlockP2(byte register, byte value)
+        {
+            switch (register)
+            {
+                case 0xA0: Channels[3].WriteFrequencyLow(value); break;
+                case 0xA1: Channels[4].WriteFrequencyLow(value); break;
+                case 0xA2: Channels[5].WriteFrequencyLow(value); break;
+
+                case 0xA4: Channels[3].WriteFrequencyHigh(value); break;
+                case 0xA5: Channels[4].WriteFrequencyHigh(value); break;
+                case 0xA6: Channels[5].WriteFrequencyHigh(value); break;
+
+                case 0xB0: Channels[3].Write_Feedback_Algorithm(value); break;
+                case 0xB1: Channels[4].Write_Feedback_Algorithm(value); break;
+                case 0xB2: Channels[5].Write_Feedback_Algorithm(value); break;
+
+                case 0xB4: Channels[3].Write_Stereo_LfoSensitivy(value); break;
+                case 0xB5: Channels[4].Write_Stereo_LfoSensitivy(value); break;
+                case 0xB6: Channels[5].Write_Stereo_LfoSensitivy(value); break;
             }
         }
 
