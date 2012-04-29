@@ -21,8 +21,9 @@ namespace BizHawk.Emulation.Sound
 
             public bool AM_AmplitudeModulation;
 
-            public int Frequency;
-
+            public int FrequencyNumber;
+            public int Block;
+            
             // Internal State
             public int PhaseCounter;
 
@@ -64,6 +65,12 @@ namespace BizHawk.Emulation.Sound
             public void Write_SSGEG(byte value)
             {
                 SSG_EG = value & 15;
+            }
+
+            public void UpdateFrequency(int frequencyNumber, int block)
+            {
+                FrequencyNumber = frequencyNumber;
+                Block = block;
             }
         }
     }
