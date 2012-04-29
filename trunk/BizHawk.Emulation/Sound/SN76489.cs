@@ -422,6 +422,9 @@ namespace BizHawk.Emulation.Sound
         public void GetSamples(short[] samples)
         {
             int elapsedCycles = frameStopTime - frameStartTime;
+            if (elapsedCycles == 0) 
+                elapsedCycles = 1; // hey it's better than diving by zero
+
             int start = 0;
             while (commands.Count > 0)
             {

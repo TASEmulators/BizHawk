@@ -31,12 +31,18 @@ this correctly right now.
 */
         public byte ReadStatus(int clock)
         {
-            // default status: not BUSY, both timers tripped
-            return 3;
+            UpdateTimers(clock);
+
+            byte retval = 0;
+            if (TimerATripped) retval |= 1;
+            if (TimerBTripped) retval |= 2;
+            return retval;
         }
 
         public void Write(int addr, byte value, int clock)
         {
+            UpdateTimers(clock);
+
             if (addr == 0)
             {
                 PartSelect = 1;
@@ -65,42 +71,22 @@ this correctly right now.
         void WriteCommand(QueuedCommand cmd)
         {
             if (cmd.Part == 1)
-                Part1_WriteRegister(cmd.Register, cmd.Data, 0); // TODO remove clock 0 ?
+                Part1_WriteRegister(cmd.Register, cmd.Data);
             else
                 Part2_WriteRegister(cmd.Register, cmd.Data);
         }
 
-        void WriteTimerA_MSB_24(byte value, int clock)
-        {
-            Console.WriteLine("Timer A (msb) {0:X2}", value);
-        }
-
-        void WriteTimerA_LSB_25(byte value, int clock)
-        {
-            Console.WriteLine("Timer A (lsb) {0:X2}", value);
-        }
-
-        void WriteTimerB_26(byte value, int clock)
-        {
-            Console.WriteLine("Timer B {0:X2}", value);
-        }
-
-        void WriteTimerControl_27(byte value, int clock)
-        {
-            Console.WriteLine("Timer control {0:X2}", value);
-        }
-
         // information on TIMER is on pg 6
-        void Part1_WriteRegister(byte register, byte value, int clock) // TODO remove clock?
+        void Part1_WriteRegister(byte register, byte value)
         {
             switch (register)
             {
-                case 0x22: Console.WriteLine("LFO Control {0:X2}", value); break;
+                //case 0x22: Console.WriteLine("LFO Control {0:X2}", value); break;
                 case 0x24: break; // Timer A MSB, handled immediately
                 case 0x25: break; // Timer A LSB, handled immediately
                 case 0x26: break; // Timer B, handled immediately
-                case 0x27: Console.WriteLine("$27: Ch3 Mode / Timer Control {0:X2}", value); break; // determines if CH3 has 1 frequency or 4 frequencies.
-                case 0x28: Console.WriteLine("Operator Key On/Off Ctrl {0:X2}", value); break;
+                //case 0x27: Console.WriteLine("$27: Ch3 Mode / Timer Control {0:X2}", value); break; // determines if CH3 has 1 frequency or 4 frequencies.
+                //case 0x28: Console.WriteLine("Operator Key On/Off Ctrl {0:X2}", value); break;
                 case 0x2A: DacValue = value; break;
                 case 0x2B: DacEnable = (value & 0x80) != 0; break;
                 case 0x2C: throw new Exception("something wrote to ym2612 port $2C!"); //http://forums.sonicretro.org/index.php?showtopic=28589
@@ -117,10 +103,11 @@ this correctly right now.
                 // PG4 has some info on frquency calculations
 
                 default:
-                    if (register >= 0x30 && register < 0xA0)
+/*                    if (register >= 0x30 && register < 0xA0)
                         Console.WriteLine("P1 FM Channel data write");
                     else
-                        Console.WriteLine("P1 REG {0:X2} WRITE {1:X2}", register, value); break;
+                        Console.WriteLine("P1 REG {0:X2} WRITE {1:X2}", register, value); */
+                    break;
             }
         }
 
@@ -128,10 +115,10 @@ this correctly right now.
         {
             // NOTE. Only first bank has multi-frequency CSM/Special mode. This mode can't work on CH6.
 
-            if (register >= 0x30 && register < 0xA0)
+            /*if (register >= 0x30 && register < 0xA0)
                 Console.WriteLine("P2 FM Channel data write");
             else
-                Console.WriteLine("P2 REG {0:X2} WRITE {1:X2}", register, value);
+                Console.WriteLine("P2 REG {0:X2} WRITE {1:X2}", register, value);*/
         }
 
         public class QueuedCommand

@@ -105,12 +105,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 					VDP.RenderLine();
 
 				MainCPU.ExecuteCycles(487); // 488??
-				if (Z80Runnable)
-				{
-					//Console.WriteLine("running z80");
-					SoundCPU.ExecuteCycles(228);
-					SoundCPU.Interrupt = false;
-				}
+                if (Z80Runnable)
+                {
+                    //Console.WriteLine("running z80");
+                    SoundCPU.ExecuteCycles(228);
+                    SoundCPU.Interrupt = false;
+                } else {
+                    SoundCPU.TotalExecutedCycles += 228; // I emulate the YM2612 synced to Z80 clock, for better or worse. Keep the timer going even if Z80 isn't running.
+                }
 
 				if (VDP.ScanLine == 224)
 				{
