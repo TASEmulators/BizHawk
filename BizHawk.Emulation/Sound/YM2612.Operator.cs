@@ -8,12 +8,12 @@ namespace BizHawk.Emulation.Sound
         {
             // External Settings
             public int TL_TotalLevel;
+            public int SL_SustainLevel;
             public int AR_AttackRate;
-            public int RS_RateScaling;
-            public int D1R_FirstDecayRate;
-            public int D2R_SecondDecayRate;
-            public int D1L_FirstDecayLevel;
+            public int DR_DecayRate;
+            public int SR_SustainRate;
             public int RR_ReleaseRate;
+            public int KS_KeyScale;
             public int SSG_EG;
 
             public int DT1_Detune;
@@ -24,7 +24,47 @@ namespace BizHawk.Emulation.Sound
             public int Frequency;
 
             // Internal State
-            // ...
+            public int PhaseCounter;
+
+            // I/O
+            public void Write_MUL_DT1(byte value)
+            {
+                MUL_Multiple = value & 15;
+                DT1_Detune = (value >> 4) & 7;
+            }
+
+            public void Write_TL(byte value)
+            {
+                TL_TotalLevel = value & 127;
+            }
+
+            public void Write_AR_KS(byte value)
+            {
+                AR_AttackRate = value & 31;
+                KS_KeyScale = value >> 6;
+            }
+
+            public void Write_DR_AM(byte value)
+            {
+                DR_DecayRate = value & 31;
+                AM_AmplitudeModulation = (value & 128) != 0;
+            }
+
+            public void Write_SR(byte value)
+            {
+                SR_SustainRate = value & 31;
+            }
+
+            public void Write_RR_SL(byte value)
+            {
+                RR_ReleaseRate = value & 15;
+                SL_SustainLevel = value >> 4;
+            }
+
+            public void Write_SSGEG(byte value)
+            {
+                SSG_EG = value & 15;
+            }
         }
     }
     //TODO "the shape of the waves of the envelope changes in a exponential when attacking it, and it changes in the straight line at other rates."
