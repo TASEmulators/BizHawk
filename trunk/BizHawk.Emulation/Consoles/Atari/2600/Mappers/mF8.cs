@@ -8,6 +8,23 @@ namespace BizHawk
 {
 	partial class Atari2600
 	{
+		/*
+		F8 (Atari style 8K)
+		-----
+
+		This is the fairly standard way 8K of cartridge ROM was implemented.  There are two
+		4K ROM banks, which get mapped into the 4K of cartridge space.  Accessing 1FF8 or
+		1FF9 selects one of the two 4K banks.  When one of these two addresses are accessed,
+		the banks switch spontaniously.
+
+		ANY kind of access will trigger the switching- reading or writing.  Usually games use
+		LDA or BIT on 1FF8/1FF9 to perform the switch.
+
+		When the switch occurs, the entire 4K ROM bank switches, including the code that is
+		reading the 1FF8/1FF9 location.  Usually, games put a small stub of code in BOTH banks
+		so when the switch occurs, the code won't crash.
+		*/
+
 		class mF8 : MapperBase
 		{
 			int toggle = 0;
