@@ -28,6 +28,11 @@ namespace BizHawk.Emulation.Sound
         public void BeginFrame(int clock)
         {
             frameStartClock = clock;
+            while (commands.Count > 0)
+            {
+                var cmd = commands.Dequeue();
+                WriteCommand(cmd);
+            }
         }
 
         public void EndFrame(int clock)
