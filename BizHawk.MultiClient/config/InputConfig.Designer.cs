@@ -71,9 +71,9 @@
 			// 
 			// ButtonsGroupBox
 			// 
-			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ButtonsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ButtonsGroupBox.Location = new System.Drawing.Point(12, 84);
 			this.ButtonsGroupBox.Name = "ButtonsGroupBox";
 			this.ButtonsGroupBox.Size = new System.Drawing.Size(241, 268);
@@ -83,8 +83,8 @@
 			// 
 			// ControllerImage
 			// 
-			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ControllerImage.Location = new System.Drawing.Point(259, 84);
 			this.ControllerImage.Name = "ControllerImage";
@@ -95,8 +95,8 @@
 			// 
 			// ControllerSelectGroupBox
 			// 
-			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerSelectGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerSelectGroupBox.Controls.Add(this.IDX_CONTROLLERENABLED);
 			this.ControllerSelectGroupBox.Controls.Add(this.ControllComboBox);
 			this.ControllerSelectGroupBox.Location = new System.Drawing.Point(13, 28);
@@ -111,12 +111,13 @@
 			this.IDX_CONTROLLERENABLED.AutoSize = true;
 			this.IDX_CONTROLLERENABLED.Checked = true;
 			this.IDX_CONTROLLERENABLED.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.IDX_CONTROLLERENABLED.Location = new System.Drawing.Point(143, 23);
+			this.IDX_CONTROLLERENABLED.Location = new System.Drawing.Point(169, 23);
 			this.IDX_CONTROLLERENABLED.Name = "IDX_CONTROLLERENABLED";
 			this.IDX_CONTROLLERENABLED.Size = new System.Drawing.Size(65, 17);
 			this.IDX_CONTROLLERENABLED.TabIndex = 1;
 			this.IDX_CONTROLLERENABLED.Text = "Enabled";
 			this.IDX_CONTROLLERENABLED.UseVisualStyleBackColor = true;
+			this.IDX_CONTROLLERENABLED.Visible = false;
 			// 
 			// ControllComboBox
 			// 
@@ -124,7 +125,7 @@
 			this.ControllComboBox.FormattingEnabled = true;
 			this.ControllComboBox.Location = new System.Drawing.Point(6, 19);
 			this.ControllComboBox.Name = "ControllComboBox";
-			this.ControllComboBox.Size = new System.Drawing.Size(110, 21);
+			this.ControllComboBox.Size = new System.Drawing.Size(157, 21);
 			this.ControllComboBox.TabIndex = 0;
 			this.ControllComboBox.SelectedIndexChanged += new System.EventHandler(this.ControllComboBox_SelectedIndexChanged);
 			// 
