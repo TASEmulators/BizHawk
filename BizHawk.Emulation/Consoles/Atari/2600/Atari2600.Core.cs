@@ -209,15 +209,20 @@ namespace BizHawk
 			return value;
 		}
 
+		private bool bw = false;
+		private bool p0difficulty = true;
+		private bool p1difficulty = true;
+
+		public void SetBw(bool setting) { bw = setting; }
+		public void SetP0Diff(bool setting) { p0difficulty = setting; }
+		public void SetP1Diff(bool setting) { p1difficulty = setting; }
+
 		public byte ReadConsoleSwitches()
 		{
 			byte value = 0xFF;
 
 			bool select = Controller["Select"];
 			bool reset = Controller["Reset"];
-			bool bw = false;
-			bool p0difficulty = true;
-			bool p1difficulty = true;
 
 			if (reset) value &= 0xFE;
 			if (select) value &= 0xFD;

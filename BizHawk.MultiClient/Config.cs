@@ -490,6 +490,9 @@ namespace BizHawk.MultiClient
 		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
 		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
 		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
+		public bool Atari2600_BW = false;
+		public bool Atari2600_LeftDifficulty = true;
+		public bool Atari2600_RightDifficulty = true;
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
