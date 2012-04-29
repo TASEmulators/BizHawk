@@ -183,7 +183,7 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[2]);
 					break;
 				case "SMS":
-				case "SG": //TODO: correct sys ID???
+				case "SG":
 				case "GG":
 					VirtualPadSMS smspad1 = new VirtualPadSMS();
 					smspad1.Location = new Point(8, 19);
