@@ -325,14 +325,34 @@ namespace BizHawk.MultiClient
 				ListViewItem item = new ListViewItem(kvp.Key);
 				item.SubItems.Add(kvp.Value);
 
-				if (kvp.Key.ToString() == MovieHeader.SHA1)
+				switch (kvp.Key.ToString())
 				{
-					if (kvp.Value.ToString() != Global.Game.Hash)
-					{
-						item.BackColor = Color.Pink;
-					}
-					
+					case MovieHeader.SHA1:
+						if (kvp.Value.ToString() != Global.Game.Hash)
+						{
+							item.BackColor = Color.Pink;
+						}
+						break;
+					case MovieHeader.MOVIEVERSION:
+						if (kvp.Value.ToString() != MovieHeader.MovieVersion)
+						{
+							item.BackColor = Color.Yellow;
+						}
+						break;
+					case MovieHeader.EMULATIONVERSION:
+						if (kvp.Value.ToString() != MainForm.EMUVERSION)
+						{
+							item.BackColor = Color.Yellow;
+						}
+						break;
+					case MovieHeader.PLATFORM:
+						if (kvp.Value.ToString() != Global.Game.System)
+						{
+							item.BackColor = Color.Pink;
+						}
+						break;
 				}
+				
 
 				DetailsView.Items.Add(item);
 			}
