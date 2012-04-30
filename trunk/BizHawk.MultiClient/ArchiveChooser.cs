@@ -21,8 +21,25 @@ namespace BizHawk.MultiClient
 				lvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				lvi.Text = Util.FormatFileSize(item.size);
 				lvi.SubItems[1].Text = item.name;
-				lvMembers.Items.Add(lvi);
+
+				if (IsVerifiedUSA(item.name))
+				{
+					lvMembers.Items.Insert(0, lvi);
+				}
+				else
+				{
+					lvMembers.Items.Add(lvi);
+				}
+				
 			}
+		}
+
+		private bool IsVerifiedUSA(string name)
+		{
+			if (name.Contains("(U)") && name.Contains("[!]"))
+				return true;
+			else
+				return false;
 		}
 
 		public int SelectedMemberIndex
