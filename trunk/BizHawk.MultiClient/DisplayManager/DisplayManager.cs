@@ -309,14 +309,14 @@ namespace BizHawk.MultiClient
 				    float posx = GetX(g, GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 				    float posy = GetY(g, GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
 
-				    g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx + 2, posy + 2);
+				    g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx + 2, posy + 2);
 				    g.DrawString(GUITextList[x].Message, MessageFont, Brushes.Gray, posx + 1, posy + 1);
 
 				    if (GUITextList[x].Alert)
 					    using(var brush = new SolidBrush(Color.FromArgb(Global.Config.AlertMessageColor)))
 						    g.DrawString(GUITextList[x].Message, MessageFont, brush, posx,posy);
 				    else
-                        g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].BackGround, posx, posy);
+                        g.DrawString(GUITextList[x].Message, MessageFont, GUITextList[x].ForeColor, posx, posy);
 			    }
                 catch (Exception e)
                 {
