@@ -435,9 +435,9 @@ namespace BizHawk.MultiClient
 			if (!alert)
 			{
 				if (forecolor == null)
-					forecolor = "black";
+					forecolor = "white";
 				if (background == null)
-					background = "white";
+					background = "black";
 			}
 			int a = 0;
 			if (anchor != null)

@@ -75,7 +75,6 @@ namespace BizHawk.MultiClient
 
 			if (Global.Config.DisplayRamWatch)
 			{
-				Global.OSD.ClearGUIText();
 				for (int x = 0; x < watchList.Count; x++)
 				{
 					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
