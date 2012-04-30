@@ -1748,7 +1748,9 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				//client input-related duties
+				
 				Global.OSD.ClearGUIText();
+				UpdateTools();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
@@ -1849,7 +1851,7 @@ namespace BizHawk.MultiClient
 					CurrAviWriter.AddSamples(temp);
 				}
 
-				UpdateTools();
+				
 
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{

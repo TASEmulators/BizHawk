@@ -73,7 +73,7 @@ while true do
     end
 
     if OppHitTimer > 0 then
-	    gui.text(0, 0, "Damage: " .. OppHitToDisplay, "bottomright")
+	    gui.text(0, 0, "Damage: " .. OppHitToDisplay, null, null, "bottomright")
     end
 
     
