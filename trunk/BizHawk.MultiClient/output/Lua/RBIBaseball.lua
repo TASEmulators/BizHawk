@@ -122,49 +122,49 @@ pitchtype = mainmemory.read_u8(pitchtypeAddr);
 
 --What the pitcher will pitch
 if (pitchtype == 0) then
-	gui.text(0,0,"Sinker!!", "bottomright");
+	gui.text(0,0,"Sinker!!", null, null, "bottomright");
 end
 if (pitchtype == 2) then
-	gui.text(0,0, "Fast Ball", "bottomright")
+	gui.text(0,0, "Fast Ball", null, null, "bottomright")
 end
 if (pitchtype == 1) then
-	gui.text(0,0,"Regular Pitch", "bottomright")
+	gui.text(0,0,"Regular Pitch", null, null, "bottomright")
 end
 
 --Top of Inning
 if (inningtb == 0) then
-	gui.text(0,0, "Health    " .. mainmemory.read_u8(0x061D), "topright")
-	gui.text(0,12,"Drop     " .. mainmemory.read_u8(0x0617) % 16, "topright")
-	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x061C) / 16, "topright")
-	gui.text(0,36,"CurveR     " .. mainmemory.read_u8(0x061C) % 16, "topright")
-	gui.text(0,48,"Fast SP   " .. mainmemory.read_u8(0x061B), "topright")
-	gui.text(0,60,"Reg  SP   " .. mainmemory.read_u8(0x061A), "topright")
-	gui.text(0,72,"Sink SP   " .. mainmemory.read_u8(0x0619), "topright")
+	gui.text(0,0, "Health    " .. mainmemory.read_u8(0x061D), null, null, "topright")
+	gui.text(0,12,"Drop     " .. mainmemory.read_u8(0x0617) % 16, null, null, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x061C) / 16, null, null, "topright")
+	gui.text(0,36,"CurveR     " .. mainmemory.read_u8(0x061C) % 16, null, null, "topright")
+	gui.text(0,48,"Fast SP   " .. mainmemory.read_u8(0x061B), null, null, "topright")
+	gui.text(0,60,"Reg  SP   " .. mainmemory.read_u8(0x061A), null, null, "topright")
+	gui.text(0,72,"Sink SP   " .. mainmemory.read_u8(0x0619), null, null, "topright")
 	
 	P1currPower = mainmemory.read_u8(P1currHitterPowerAddr) + (mainmemory.read_u8(P1currHitterPowerAddr+1) * 256);
-	gui.text(0,108, "Power: " .. P1currPower, "topright");
+	gui.text(0,108, "Power: " .. P1currPower, null, null, "topright");
 	P1currSpeed = mainmemory.read_u8(P1currSpeedAddr);
-	gui.text(0,120, "Speed: " .. P1currSpeed, "topright");
+	gui.text(0,120, "Speed: " .. P1currSpeed, null, null, "topright");
 	P1currCt = mainmemory.read_u8(P1currContactAddr);
-	gui.text(0,132, "Contact: " .. P1currCt, "topright");
+	gui.text(0,132, "Contact: " .. P1currCt, null, null, "topright");
 end
 
 --Bottom of Inning
 if (inningtb == 0x10) then
-	gui.text(0,0,"Health   " .. mainmemory.read_u8(0x060D), "topright")
-	gui.text(0,12,"Drop    " .. mainmemory.read_u8(0x0607) % 16, "topright")
-	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x060C) / 16, "topright")
-	gui.text(0,36,"CurveR   " .. mainmemory.read_u8(0x060C) % 16, "topright")
-	gui.text(0,48,"Fast SP  " .. mainmemory.read_u8(0x060B), "topright")
-	gui.text(0,60,"Reg  SP  " .. mainmemory.read_u8(0x060A), "topright")
-	gui.text(0,72,"Sink SP  " .. mainmemory.read_u8(0x0609), "topright")
+	gui.text(0,0,"Health   " .. mainmemory.read_u8(0x060D), null, null, "topright")
+	gui.text(0,12,"Drop    " .. mainmemory.read_u8(0x0607) % 16, null, null, "topright")
+	gui.text(0,24,"CurveL " .. mainmemory.read_u8(0x060C) / 16, null, null, "topright")
+	gui.text(0,36,"CurveR   " .. mainmemory.read_u8(0x060C) % 16, null, null, "topright")
+	gui.text(0,48,"Fast SP  " .. mainmemory.read_u8(0x060B), null, null, "topright")
+	gui.text(0,60,"Reg  SP  " .. mainmemory.read_u8(0x060A), null, null, "topright")
+	gui.text(0,72,"Sink SP  " .. mainmemory.read_u8(0x0609), null, null, "topright")
 
 	P2currPower = mainmemory.read_u8(P2currHitterPowerAddr) + (mainmemory.read_u8(P2currHitterPowerAddr+1) * 256);
-	gui.text(0,108, "Power: " .. P2currPower, "topright");
+	gui.text(0,108, "Power: " .. P2currPower, null, null, "topright");
 	P2currSpeed = mainmemory.read_u8(P2currSpeedAddr);
-	gui.text(0,120, "Speed: " .. P2currSpeed, "topright");
+	gui.text(0,120, "Speed: " .. P2currSpeed, null, null, "topright");
 	P2currCt = mainmemory.read_u8(P2currContactAddr);
-	gui.text(0,132, "Contact: " .. P2currCt, "topright");
+	gui.text(0,132, "Contact: " .. P2currCt, null, null, "topright");
 end
 
 end
@@ -173,7 +173,7 @@ end
 if (PitchingScreen == 0x0036) then
 
 p1Outs = mainmemory.read_u8(p1OutsAddr);
-gui.text(0,0, "Outs " .. p1Outs, "topright");
+gui.text(0,0, "Outs " .. p1Outs, null, null, "topright");
 
 end
 -------------------------------------------------------
