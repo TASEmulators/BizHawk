@@ -251,8 +251,6 @@ namespace BizHawk.MultiClient
 			"text",
 			"alert",
 			"cleartext",
-			"drawNew",
-			"drawFinish",
 			"drawPixel",
 			"drawLine",
 			"drawRectangle",
@@ -262,7 +260,6 @@ namespace BizHawk.MultiClient
 			"drawPie",
 			"drawIcon",
 			"drawImage",
-			"clearGraphics",
 		};
 
 		public static string[] EmuFunctions = new string[]
