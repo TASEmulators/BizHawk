@@ -842,6 +842,7 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
+                    LuaImp.gui_drawNew();
 					if (s.Enabled && s.Thread != null && !s.Paused)
 					{
 						bool prohibit = false;
@@ -852,6 +853,7 @@ namespace BizHawk.MultiClient
 						var result = LuaImp.ResumeScript(s.Thread);
 						s.FrameWaiting = result.WaitForFrame;
 					}
+                    LuaImp.gui_drawFinish();
 				}
 				catch (Exception ex)
 				{
