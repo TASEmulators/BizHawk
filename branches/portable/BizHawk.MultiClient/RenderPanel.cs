@@ -42,8 +42,11 @@ namespace BizHawk.MultiClient
 			GraphicsDevice = graphicsDevice;
 		}
 
-		public void SetImage(int[] data, int width, int height)
+		public unsafe void SetImage(DisplaySurface surface, int width, int height)
 		{
+			//this function fails if the width and height are zero
+			if (width == 0 || height == 0) return;
+
 			bool needsRecreating = false;
 			if (Texture == null)
 			{
@@ -75,13 +78,15 @@ namespace BizHawk.MultiClient
 				// Create a new texture instance.
 				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.Dynamic, Format.X8R8G8B8, Pool.Default);
 			}
+
 			// Copy the image data to the texture.
+			surface.Lock();
 			using (var Data = Texture.LockRectangle(0, new Rectangle(0, 0, imageWidth, imageHeight), LockFlags.None).Data)
 			{
 				if (imageWidth == textureWidth)
 				{
 					// Widths are the same, just dump the data across (easy!)
-					Data.WriteRange(data, 0, imageWidth * imageHeight);
+					Data.WriteRange(surface.PixelIntPtr, imageWidth * imageHeight * 4);
 				}
 				else
 				{
@@ -89,7 +94,8 @@ namespace BizHawk.MultiClient
 					long RowSeekOffset = 4 * (textureWidth - imageWidth);
 					for (int r = 0, s = 0; r < imageHeight; ++r, s += imageWidth)
 					{
-						Data.WriteRange(data, s, imageWidth);
+						IntPtr src = new IntPtr(((byte*)surface.PixelPtr + r*surface.Stride));
+						Data.WriteRange(src,imageWidth * 4);
 						Data.Seek(RowSeekOffset, SeekOrigin.Current);
 					}
 				}
@@ -115,33 +121,29 @@ namespace BizHawk.MultiClient
 
 	public interface IRenderer : IDisposable
 	{
-		void Render(IVideoProvider video);
+		void Render(DisplaySurface surface);
 		bool Resized { get; set; }
-		void AddMessage(string msg);
-		void AddGUIText(string msg, int x, int y, bool alert, int anchor);
-		void ClearGUIText();
-		string FPS { get; set; }
-		string MT { get; set; }
+		Size NativeSize { get; }
 	}
 
 	public class SysdrawingRenderPanel : IRenderer
 	{
 		public bool Resized { get; set; }
 		public void Dispose() { }
-		public string FPS { get; set; }
-		public string MT { get; set; }
-		public void Render(IVideoProvider video)
+		public void Render(DisplaySurface surface)
 		{
-			Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
-			int[] data = video.GetVideoBuffer();
+			//Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
+			//int[] data = video.GetVideoBuffer();
 
-			Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			//Bitmap bmp = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppArgb);
+			//BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
-			//TODO - this is not very intelligent. no handling of pitch, for instance
-			Marshal.Copy(data, 0, bmpdata.Scan0, bmp.Width * bmp.Height);
+			////TODO - this is not very intelligent. no handling of pitch, for instance
+			//Marshal.Copy(data, 0, bmpdata.Scan0, bmp.Width * bmp.Height);
 
-			bmp.UnlockBits(bmpdata);
+			//bmp.UnlockBits(bmpdata);
+
+			Bitmap bmp = (Bitmap)surface.PeekBitmap().Clone();
 
 			backingControl.SetBitmap(bmp);
 		}
@@ -150,9 +152,7 @@ namespace BizHawk.MultiClient
 			backingControl = control;
 		}
 		RetainedViewportPanel backingControl;
-		public void AddMessage(string msg) { }
-		public void AddGUIText(string msg, int x, int y, bool alert, int anchor) { }
-		public void ClearGUIText() { }
+		public Size NativeSize { get { return backingControl.ClientSize; } }
 	}
 
 #if WINDOWS
@@ -167,10 +167,10 @@ namespace BizHawk.MultiClient
 		private Control backingControl;
 		public ImageTexture Texture;
 		private Sprite Sprite;
-		private Font MessageFont;
-		private Font AlertFont;
+
 		private bool Vsync;
 
+		public Size NativeSize { get { return backingControl.ClientSize; } }
 
 		public Direct3DRenderPanel(Direct3D direct3D, Control control)
 		{
@@ -198,16 +198,7 @@ namespace BizHawk.MultiClient
 				Sprite.Dispose();
 				Sprite = null;
 			}
-			if (MessageFont != null)
-			{
-				MessageFont.Dispose();
-				MessageFont = null;
-			}
-            if (AlertFont != null)
-            {
-                AlertFont.Dispose();
-                AlertFont = null;
-            }
+
 			if (Device != null)
 			{
 				Device.Dispose();
@@ -244,27 +235,24 @@ namespace BizHawk.MultiClient
 			Device = new Device(d3d, 0, DeviceType.Hardware, backingControl.Handle, flags, pp);
 			Sprite = new Sprite(Device);
 			Texture = new ImageTexture(Device);
-			MessageFont = new Font(Device, 16, 0, FontWeight.Bold, 1, false, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
-			AlertFont = new Font(Device, 16, 0, FontWeight.ExtraBold, 1, true, CharacterSet.Default, Precision.Default, FontQuality.Default, PitchAndFamily.Default | PitchAndFamily.DontCare, "Courier");
-            // NOTE: if you add ANY objects, like new fonts, textures, etc, to this method
-            // ALSO add dispose code in DestroyDevice() or you will be responsible for VRAM memory leaks.
+
 		}
 
 		public void Render()
 		{
 			if (Device == null || Resized || Vsync != VsyncRequested)
-				CreateDevice();
+				backingControl.Invoke(() => CreateDevice());
 
 			Resized = false;
 			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
 			Device.Present(Present.DoNotWait);
 		}
 
-		public void Render(IVideoProvider video)
+		public void Render(DisplaySurface surface)
 		{
 			try
 			{
-				RenderExec(video);
+				RenderExec(surface);
 			}
 			catch (Direct3D9Exception)
 			{
@@ -278,33 +266,33 @@ namespace BizHawk.MultiClient
 
 				// lets try recovery!
 				DestroyDevice();
-				CreateDevice();
-				RenderExec(video);
+				backingControl.Invoke(() => CreateDevice());
+				RenderExec(surface);
 			}
 		}
 
-		private void RenderExec(IVideoProvider video)
+		private void RenderExec(DisplaySurface surface)
 		{
-			if (video == null)
+			if (surface == null)
 			{
 				Render();
 				return;
 			}
 
 			if (Device == null || Resized || Vsync != VsyncRequested)
-				CreateDevice();
+				backingControl.Invoke(() => CreateDevice());
 			Resized = false;
 
-			BackgroundColor = Color.FromArgb(video.BackgroundColor);
+			//TODO
+			//BackgroundColor = Color.FromArgb(video.BackgroundColor);
 
-			int[] data = video.GetVideoBuffer();
-			Texture.SetImage(data, video.BufferWidth, video.BufferHeight);
+			Texture.SetImage(surface, surface.Width, surface.Height);
 
 			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
 
 			// figure out scaling factor
-			float widthScale = (float)backingControl.Size.Width / video.BufferWidth;
-			float heightScale = (float)backingControl.Size.Height / video.BufferHeight;
+			float widthScale = (float)backingControl.Size.Width / surface.Width;
+			float heightScale = (float)backingControl.Size.Height / surface.Height;
 			float finalScale = Math.Min(widthScale, heightScale);
 
 			Device.BeginScene();
@@ -313,227 +301,13 @@ namespace BizHawk.MultiClient
 			Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
 			Device.SetSamplerState(1, SamplerState.MagFilter, TextureFilter.Point);
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
-			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, video.BufferWidth, video.BufferHeight), new Vector3(video.BufferWidth / 2f, video.BufferHeight / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
+			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
 			Sprite.End();
-
-			DrawMessages();
 
 			Device.EndScene();
 			Device.Present(Present.DoNotWait);
 		}
 
-		private int GetX(int x, int anchor, Font font, string message)
-		{
-			Rectangle rect = font.MeasureString(Sprite, message, new DrawTextFormat());
-			switch (anchor)
-			{
-				default:
-				case 0: //Top Left
-				case 2: //Bottom Left
-					return x;
-				case 1: //Top Right
-				case 3: //Bottom Right
-					return backingControl.Width - x - rect.Width;
-			}
-		}
-
-		private int GetY(int y, int anchor, Font font, string message)
-		{
-			Rectangle rect = font.MeasureString(Sprite, message, new DrawTextFormat());
-			switch (anchor)
-			{
-				default:
-				case 0: //Top Left
-				case 1: //Top Right
-					return y;
-				case 2: //Bottom Left
-				case 3: //Bottom Right
-					return backingControl.Size.Height - y - rect.Height;
-			}
-		}
-
-		/// <summary>
-		/// Display all screen info objects like fps, frame counter, lag counter, and input display
-		/// </summary>
-		public void DrawScreenInfo()
-		{
-			if (Global.Config.DisplayFrameCounter)
-			{
-				string message = MakeFrameCounter();
-				int x = GetX(Global.Config.DispFrameCx, Global.Config.DispFrameanchor, MessageFont, message);
-				int y = GetY(Global.Config.DispFrameCy, Global.Config.DispFrameanchor, MessageFont, message);
-				MessageFont.DrawString(null, message, x + 1,
-					y + 1, Color.Black);
-				MessageFont.DrawString(null, message, x,
-					y, Color.FromArgb(Global.Config.MessagesColor));
-			}
-			if (Global.Config.DisplayInput)
-			{
-				string input = MakeInputDisplay();
-				Color c;
-				int x = GetX(Global.Config.DispInpx, Global.Config.DispInpanchor, MessageFont, input);
-				int y = GetY(Global.Config.DispInpy, Global.Config.DispInpanchor, MessageFont, input);
-				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
-				{
-					c = Color.FromArgb(Global.Config.MovieInput);
-				}
-				else
-					c = Color.FromArgb(Global.Config.MessagesColor);
-
-				
-				MessageFont.DrawString(null, input, x + 1, y + 1, Color.Black);
-				MessageFont.DrawString(null, input, x, y, c);
-			}
-			if (Global.MovieSession.MultiTrack.IsActive)
-			{
-				MessageFont.DrawString(null, MT, Global.Config.DispFPSx + 1, //TODO: Multitrack position variables
-					Global.Config.DispFPSy + 1, Color.Black);
-				MessageFont.DrawString(null, MT, Global.Config.DispFPSx,
-					Global.Config.DispFPSy, Color.FromArgb(Global.Config.MessagesColor));
-			}
-			if (Global.Config.DisplayFPS && FPS != null)
-			{
-				int x = GetX(Global.Config.DispFPSx, Global.Config.DispFPSanchor, MessageFont, FPS);
-				int y = GetY(Global.Config.DispFPSy, Global.Config.DispFPSanchor, MessageFont, FPS);
-				MessageFont.DrawString(null, FPS, x + 1,
-					y + 1, Color.Black);
-				MessageFont.DrawString(null, FPS, x,
-					y, Color.FromArgb(Global.Config.MessagesColor));
-			}
-
-			if (Global.Config.DisplayLagCounter)
-			{
-				string counter = MakeLagCounter();
-				
-				if (Global.Emulator.IsLagFrame)
-				{
-					int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor, AlertFont, counter);
-					int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor, AlertFont, counter);
-					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx + 1,
-						Global.Config.DispLagy + 1, Color.Black);
-					AlertFont.DrawString(null, MakeLagCounter(), Global.Config.DispLagx,
-						Global.Config.DispLagy, Color.FromArgb(Global.Config.AlertMessageColor));
-				}
-				else
-				{
-					int x = GetX(Global.Config.DispLagx, Global.Config.DispLaganchor, MessageFont, counter);
-					int y = GetY(Global.Config.DispLagy, Global.Config.DispLaganchor, MessageFont, counter);
-					MessageFont.DrawString(null, counter, x + 1,
-						y + 1, Color.Black);
-					MessageFont.DrawString(null, counter, x,
-						y, Color.FromArgb(Global.Config.MessagesColor));
-				}
-
-			}
-			if (Global.Config.DisplayRerecordCount)
-			{
-				string rerec = MakeRerecordCount();
-				int x = GetX(Global.Config.DispRecx, Global.Config.DispRecanchor, MessageFont, rerec);
-				int y = GetY(Global.Config.DispRecy, Global.Config.DispRecanchor, MessageFont, rerec);
-				MessageFont.DrawString(null, rerec, x + 1,
-					 y + 1, Color.Black);
-				MessageFont.DrawString(null, rerec, x,
-					y, Color.FromArgb(Global.Config.MessagesColor));
-			}
-
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
-			{
-				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 47,
-					 0 + 1, Color.Black);
-				MessageFont.DrawString(null, "Play", backingControl.Size.Width - 48,
-					0, Color.FromArgb(Global.Config.MovieColor));
-			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-			{
-				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 65,
-						 0 + 1, Color.Black);
-				AlertFont.DrawString(null, "Record", backingControl.Size.Width - 64,
-					0, Color.FromArgb(Global.Config.MovieColor));
-			}
-
-			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE && Global.Config.DisplaySubtitles)
-			{
-				//TODO: implement multiple subtitles at once feature
-				Subtitle s = Global.MovieSession.Movie.Subtitles.GetSubtitle(Global.Emulator.Frame);
-				MessageFont.DrawString(null, s.Message, s.X + 1,
-							s.Y + 1, new Color4(Color.Black));
-				MessageFont.DrawString(null, s.Message, s.X,
-							s.Y, Color.FromArgb((int)s.Color));
-			}
-		}
-
-		private string MakeFrameCounter()
-		{
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
-			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString() + " (Finished)";
-			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
-			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString();
-			}
-			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
-				return Global.Emulator.Frame.ToString();
-			else
-			{
-				return Global.Emulator.Frame.ToString();
-			}
-		}
-
-		private string MakeLagCounter()
-		{
-			return Global.Emulator.LagCount.ToString();
-		}
-
-		private List<UIMessage> messages = new List<UIMessage>(5);
-		private List<UIDisplay> GUITextList = new List<UIDisplay>();
-
-		public void AddMessage(string message)
-		{
-			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
-		}
-
-		public void AddGUIText(string message, int x, int y, bool alert, int anchor)
-		{
-			GUITextList.Add(new UIDisplay { Message = message, X = x, Y = y, Alert = alert, Anchor = anchor});
-		}
-
-		public void ClearGUIText()
-		{
-			GUITextList.Clear();
-		}
-
-		private void DrawMessages()
-		{
-			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-			DrawScreenInfo();
-			int line = 1;
-			for (int i = messages.Count - 1; i >= 0; i--, line++)
-			{
-				int x = 3;
-				int y = backingControl.Size.Height - (line * 18);
-				MessageFont.DrawString(null, messages[i].Message, x + 2, y + 2, Color.Black);
-				MessageFont.DrawString(null, messages[i].Message, x, y, Color.FromArgb(Global.Config.MessagesColor));
-			}
-			for (int x = 0; x < GUITextList.Count; x++)
-			{
-
-				int posx = GetX(GUITextList[x].X, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-				int posy = GetY(GUITextList[x].Y, GUITextList[x].Anchor, MessageFont, GUITextList[x].Message);
-
-				MessageFont.DrawString(null, GUITextList[x].Message,
-					posx + 2, posy + 2, Color.Black);
-				MessageFont.DrawString(null, GUITextList[x].Message,
-					posx + 1, posy + 1, Color.Gray);
-
-				if (GUITextList[x].Alert)
-					MessageFont.DrawString(null, GUITextList[x].Message,
-						posx, posy, Color.FromArgb(Global.Config.AlertMessageColor));
-				else
-					MessageFont.DrawString(null, GUITextList[x].Message,
-						posx, posy, Color.FromArgb(Global.Config.MessagesColor));
-			}
-		}
 
 		private bool disposed;
 
@@ -546,26 +320,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public string MakeInputDisplay()
-		{
-			StringBuilder s;
-			if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
-				s = new StringBuilder(Global.GetOutputControllersAsMnemonic());
-			else
-				s = new StringBuilder(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame - 1));
-			s.Replace(".", " ");
-			s.Replace("|", "");
-			return s.ToString();
 		}
-
-		public string MakeRerecordCount()
-		{
-			if (Global.MovieSession.Movie.Mode != MOVIEMODE.INACTIVE)
-				return "Rerecord Count: " + Global.MovieSession.Movie.Rerecords.ToString();
-			else
-				return "";
-		}
-	}
 #else
 	public class OpenGLRenderPanel : OpenTK.GLControl, IRenderer
 	{
@@ -610,5 +365,7 @@ namespace BizHawk.MultiClient
 		public int Y;
 		public bool Alert;
 		public int Anchor;
+        public Brush ForeColor;
+		public Brush BackGround;
 	}
 }

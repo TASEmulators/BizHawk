@@ -169,7 +169,6 @@ namespace BizHawk.MultiClient
 		public int MessagesColor = -1;
 		public int AlertMessageColor = -65536;
 		public int LastInputColor = -23296;
-		public int MovieColor = -65536;
 		public int MovieInput = -8355712;
 		public bool DisplayFPS = false;
 		public int DispFPSx = 0;
@@ -177,19 +176,19 @@ namespace BizHawk.MultiClient
 		public int DispFPSanchor = 0;	//0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
 		public int DispFrameCx = 0;
-		public int DispFrameCy = 12;
+		public int DispFrameCy = 14;
 		public int DispFrameanchor = 0;
 		public bool DisplayLagCounter = false;
 		public int DispLagx = 0;
-		public int DispLagy = 36;
+		public int DispLagy = 42;
 		public int DispLaganchor = 0;
 		public bool DisplayInput = false;
 		public int DispInpx = 0;
-		public int DispInpy = 24;
+		public int DispInpy = 28;
 		public int DispInpanchor = 0;
 		public bool DisplayRerecordCount = false;
 		public int DispRecx = 0;
-		public int DispRecy = 48;
+		public int DispRecy = 56;
 		public int DispRecanchor = 0;
 		public int DispMultix = 36;
 		public int DispMultiy = 0;
@@ -197,7 +196,7 @@ namespace BizHawk.MultiClient
 		public bool DisplayGDI = false;
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
-		public int DispRamWatchy = 60;
+		public int DispRamWatchy = 70;
 		public bool DisplayRamWatch = false;
 		public bool ShowMenuInFullscreen = false;
 
@@ -439,6 +438,7 @@ namespace BizHawk.MultiClient
 		public string HexEditor = "";
 		public string LuaConsole = "";
 		public string Cheats = "";
+		public string TASTudio = "";
 		public string OpenROM = "Ctrl+O";
 		public string CloseROM = "Ctrl+W";
 		public string FrameCounterBinding = "";
@@ -490,6 +490,9 @@ namespace BizHawk.MultiClient
 		public Atari2600ControllerTemplate[] Atari2600Controller = new Atari2600ControllerTemplate[2];
 		public Atari2600ControllerTemplate[] Atari2600AutoController = new Atari2600ControllerTemplate[2];
 		public Atari2600ConsoleButtonsTemplate[] Atari2600ConsoleButtons = new Atari2600ConsoleButtonsTemplate[1];
+		public bool Atari2600_BW = false;
+		public bool Atari2600_LeftDifficulty = true;
+		public bool Atari2600_RightDifficulty = true;
 
 		//GameBoy Settings
 		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);

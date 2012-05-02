@@ -162,6 +162,8 @@
     <Compile Include="config\SoundConfig.Designer.cs">
       <DependentUpon>SoundConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="DisplayManager\DisplayManager.cs" />
+    <Compile Include="DisplayManager\Filters\Hq2x.cs" />
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -776,6 +778,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

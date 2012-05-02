@@ -169,7 +169,7 @@ namespace BizHawk.MultiClient
 
         private void AboutBox_Load(object sender, EventArgs e)
         {
-
+			Text = "BizHawk Interim Build SVN r" + SubWCRev.SVN_REV;
         }
 
 		private void Close_Click(object sender, EventArgs e)
@@ -182,10 +182,10 @@ namespace BizHawk.MultiClient
 			int width = Width;
 			int height = Height;
 			Random r = new Random();
-			width = r.Next(1, Width - Close.Width);
-			height = r.Next(1, Height - Close.Height);
-			Close.Location = new Point(width, height);
-			Close.BringToFront();
+			width = r.Next(1, Width - CloseBtn.Width);
+			height = r.Next(1, Height - CloseBtn.Height);
+			CloseBtn.Location = new Point(width, height);
+			CloseBtn.BringToFront();
 		}
 	}
 

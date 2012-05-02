@@ -63,8 +63,8 @@ namespace BizHawk.Emulation.Consoles.Sega
 			CoreOutputComm = new CoreOutputComm();
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
-			YM2612 = new YM2612();
-			PSG = new SN76489();
+            YM2612 = new YM2612() { MaxVolume = 23405 };
+            PSG = new SN76489() { MaxVolume = 4681 };
 			VDP = new GenVDP();
 			VDP.DmaReadFrom68000 = ReadWord;
 			SoundMixer = new SoundMixer(YM2612, PSG);
@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 
 			Frame++;
 			PSG.BeginFrame(SoundCPU.TotalExecutedCycles);
+            YM2612.BeginFrame(SoundCPU.TotalExecutedCycles);
 			for (VDP.ScanLine = 0; VDP.ScanLine < 262; VDP.ScanLine++)
 			{
 				//Log.Error("VDP","FRAME {0}, SCANLINE {1}", Frame, VDP.ScanLine);
@@ -104,12 +105,14 @@ namespace BizHawk.Emulation.Consoles.Sega
 					VDP.RenderLine();
 
 				MainCPU.ExecuteCycles(487); // 488??
-				if (Z80Runnable)
-				{
-					//Console.WriteLine("running z80");
-					SoundCPU.ExecuteCycles(228);
-					SoundCPU.Interrupt = false;
-				}
+                if (Z80Runnable)
+                {
+                    //Console.WriteLine("running z80");
+                    SoundCPU.ExecuteCycles(228);
+                    SoundCPU.Interrupt = false;
+                } else {
+                    SoundCPU.TotalExecutedCycles += 228; // I emulate the YM2612 synced to Z80 clock, for better or worse. Keep the timer going even if Z80 isn't running.
+                }
 
 				if (VDP.ScanLine == 224)
 				{
@@ -123,6 +126,7 @@ namespace BizHawk.Emulation.Consoles.Sega
 				}
 			}
 			PSG.EndFrame(SoundCPU.TotalExecutedCycles);
+            YM2612.EndFrame(SoundCPU.TotalExecutedCycles);
 
 			Controller.UpdateControls(Frame++);
 			if (lagged)

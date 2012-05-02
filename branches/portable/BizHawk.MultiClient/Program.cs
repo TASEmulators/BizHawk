@@ -45,17 +45,19 @@ namespace BizHawk.MultiClient
 				else
 				{
 #endif
-					var mf = new MainForm(args);
-					var title = mf.Text;
-					mf.Text = title;
-                    Application.Run(mf);
+					using (var mf = new MainForm(args))
+					{
+						var title = mf.Text;
+						mf.Text = title;
+						Application.Run(mf);
+					}
 #if WINDOWS
 				}
 #endif 
 			}
 			catch (Exception e)
 			{
-                MessageBox.Show(e.ToString());
+				MessageBox.Show(e.ToString());
 			}
 #if WINDOWS
 			finally

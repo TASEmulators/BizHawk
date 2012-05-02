@@ -143,6 +143,7 @@ namespace BizHawk.MultiClient
 				Global.CheatList.SaveSettings();
 				CloseGame();
 				Global.MovieSession.Movie.StopMovie();
+				CloseTools();
 				SaveConfig();
                 runLoopThread.Abort();
 			};
@@ -287,6 +288,22 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if(Global.DisplayManager != null) Global.DisplayManager.Dispose();
+			Global.DisplayManager = null;
+
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
 		void SyncCoreInputComm()
 		{
 			Global.CoreInputComm.NES_BackdropColor = Global.Config.NESBackgroundColor;
@@ -303,6 +320,8 @@ namespace BizHawk.MultiClient
 
 		void SyncPresentationMode()
 		{
+			Global.DisplayManager.Suspend();
+
 			bool gdi = Global.Config.DisplayGDI;
 #if WINDOWS
 			if (Global.Direct3D == null)
@@ -371,6 +390,8 @@ namespace BizHawk.MultiClient
 				}
 			}
 #endif
+
+			Global.DisplayManager.Resume();
 		}
 
 		void SyncThrottle()
@@ -392,14 +413,14 @@ namespace BizHawk.MultiClient
 		{
 			Global.Config.SpeedPercentAlternate = value;
 			SyncThrottle();
-			Global.RenderPanel.AddMessage("Alternate Speed: " + value + "%");
+			Global.OSD.AddMessage("Alternate Speed: " + value + "%");
 		}
 
 		void SetSpeedPercent(int value)
 		{
 			Global.Config.SpeedPercent = value;
 			SyncThrottle();
-			Global.RenderPanel.AddMessage("Speed: " + value + "%");
+			Global.OSD.AddMessage("Speed: " + value + "%");
 		}
 
 		public void ProgramRunLoop()
@@ -586,6 +607,7 @@ namespace BizHawk.MultiClient
 			controls.BindMulti("Previous Slot", Global.Config.PreviousSlot);
 			controls.BindMulti("Next Slot", Global.Config.NextSlot);
 			controls.BindMulti("Ram Watch", Global.Config.RamWatch);
+			controls.BindMulti("TASTudio", Global.Config.TASTudio);
 			controls.BindMulti("Ram Search", Global.Config.RamSearch);
 			controls.BindMulti("Ram Poke", Global.Config.RamPoke);
 			controls.BindMulti("Hex Editor", Global.Config.HexEditor);
@@ -896,7 +918,7 @@ namespace BizHawk.MultiClient
 				}
 				else
 					StartNewMovie(m, false);
-				Global.RenderPanel.AddMessage(warningMsg);
+				Global.OSD.AddMessage(warningMsg);
 			}
 			else
 				LoadRom(filePaths[0]);
@@ -976,52 +998,38 @@ namespace BizHawk.MultiClient
 			string system = "";
 			if (Global.Game != null)
 				system = Global.Game.System;
+
+			tI83ToolStripMenuItem.Visible = false;
+			NESToolStripMenuItem.Visible = false;
+			pCEToolStripMenuItem.Visible = false;
+			sMSToolStripMenuItem.Visible = false;
+			gBToolStripMenuItem.Visible = false;
+			atariToolStripMenuItem.Visible = false;
 			switch (system)
 			{
+					
 				case "TI83":
-					NESToolStripMenuItem.Visible = false;
 					tI83ToolStripMenuItem.Visible = true;
-					pCEToolStripMenuItem.Visible = false;
-					sMSToolStripMenuItem.Visible = false;
-					gBToolStripMenuItem.Visible = false;
 					break;
 				case "NES":
 					NESToolStripMenuItem.Visible = true;
-					tI83ToolStripMenuItem.Visible = false;
-					pCEToolStripMenuItem.Visible = false;
-					sMSToolStripMenuItem.Visible = false;
-					gBToolStripMenuItem.Visible = false;
 					break;
 				case "PCE":
 				case "PCECD":
 				case "SGX":
-					NESToolStripMenuItem.Visible = false;
-					tI83ToolStripMenuItem.Visible = false;
 					pCEToolStripMenuItem.Visible = true;
-					sMSToolStripMenuItem.Visible = false;
-					gBToolStripMenuItem.Visible = false;
 					break;
 				case "SMS":
 				case "SG":
-					tI83ToolStripMenuItem.Visible = false;
-					NESToolStripMenuItem.Visible = false;
-					pCEToolStripMenuItem.Visible = false;
 					sMSToolStripMenuItem.Visible = true;
-					gBToolStripMenuItem.Visible = false;
 					break;
 				case "GB":
-					NESToolStripMenuItem.Visible = false;
-					tI83ToolStripMenuItem.Visible = false;
-					pCEToolStripMenuItem.Visible = false;
-					sMSToolStripMenuItem.Visible = false;
 					gBToolStripMenuItem.Visible = true;
 					break;
+				case "A26":
+					atariToolStripMenuItem.Visible = true;
+					break;
 				default:
-					tI83ToolStripMenuItem.Visible = false;
-					NESToolStripMenuItem.Visible = false;
-					pCEToolStripMenuItem.Visible = false;
-					sMSToolStripMenuItem.Visible = false;
-					gBToolStripMenuItem.Visible = false;
 					break;
 			}
 		}
@@ -1250,6 +1258,9 @@ namespace BizHawk.MultiClient
 								break;
 							case "A26":
 								nextEmulator = new Atari2600(game, rom.FileData);
+								((Atari2600)nextEmulator).SetBw(Global.Config.Atari2600_BW);
+								((Atari2600)nextEmulator).SetP0Diff(Global.Config.Atari2600_LeftDifficulty);
+								((Atari2600)nextEmulator).SetP1Diff(Global.Config.Atari2600_RightDifficulty);
 								break;
 							case "PCE":
 							case "PCECD":
@@ -1318,12 +1329,16 @@ namespace BizHawk.MultiClient
 
 				Text = DisplayNameForSystem(game.System) + " - " + game.Name;
 				ResetRewindBuffer();
-                if (Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
+
+				//restarts the lua console if a different rom is loaded.
+				//im not really a fan of how this is done..
+				if (Global.Config.RecentRoms.IsEmpty() || Global.Config.RecentRoms.GetRecentFileByPosition(0) != file.CanonicalFullPath)
                 {
 #if WINDOWS
                     LuaConsole1.Restart();
 #endif
                 }
+
 				Global.Config.RecentRoms.Add(file.CanonicalFullPath);
 				if (File.Exists(PathManager.SaveRamPath(game)))
 					LoadSaveRam();
@@ -1351,7 +1366,7 @@ namespace BizHawk.MultiClient
 				if (Global.Config.LoadCheatFileByGame)
 				{
 					if (Global.CheatList.AttemptLoadCheatFile())
-						Global.RenderPanel.AddMessage("Cheats file loaded");
+						Global.OSD.AddMessage("Cheats file loaded");
 				}
 
 				CurrentlyOpenRom = file.CanonicalFullPath;
@@ -1402,6 +1417,11 @@ namespace BizHawk.MultiClient
 			{
 				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Hack;
 				annotation = "Hacked ROM";
+			}
+			else if (Global.Game.Status == RomStatus.Unknown)
+			{
+				DumpStatus.Image = BizHawk.MultiClient.Properties.Resources.Hack;
+				annotation = "Warning: ROM of Unknown Character";
 			}
 			else
 			{
@@ -1584,7 +1604,7 @@ namespace BizHawk.MultiClient
 
 				case "Unthrottle":
 					unthrottled ^= true;
-					Global.RenderPanel.AddMessage("Unthrottled: " + unthrottled);
+					Global.OSD.AddMessage("Unthrottled: " + unthrottled);
 					break;
 
 				case "Hard Reset":
@@ -1647,43 +1667,23 @@ namespace BizHawk.MultiClient
 						break;
 					}
 				case "Hex Editor": LoadHexEditor(); break;
-				case "Lua Console":
-					{
-						OpenLuaConsole();
-						break;
-					}
+				case "Lua Console": OpenLuaConsole(); break;
 				case "Cheats": LoadCheatsWindow(); break;
-				case "Open ROM":
-					{
-						OpenROM();
-						break;
-					}
-
+				case "TASTudio": LoadTAStudio(); break;
+				case "Open ROM": OpenROM(); break;
 				case "Close ROM": CloseROM(); break;
-
 				case "Display FPS": ToggleFPS(); break;
-
 				case "Display FrameCounter": ToggleFrameCounter(); break;
 				case "Display LagCounter": ToggleLagCounter(); break;
 				case "Display Input": ToggleInputDisplay(); break;
 				case "Toggle Read Only": ToggleReadOnly(); break;
-				case "Play Movie":
-					{
-						PlayMovie();
-						break;
-					}
-				case "Record Movie":
-					{
-						RecordMovie();
-						break;
-					}
-
+				case "Play Movie": PlayMovie(); break;
+				case "Record Movie": RecordMovie(); break;
 				case "Stop Movie": StopMovie(); break;
 				case "Play Beginning": PlayMovieFromBeginning(); break;
 				case "Volume Up": VolumeUp(); break;
 				case "Volume Down": VolumeDown(); break;
 				case "Soft Reset": SoftReset(); break;
-
 				case "Toggle MultiTrack":
 					{
 						if (Global.MovieSession.Movie.Mode > MOVIEMODE.INACTIVE)
@@ -1691,17 +1691,17 @@ namespace BizHawk.MultiClient
 							Global.MovieSession.MultiTrack.IsActive = !Global.MovieSession.MultiTrack.IsActive;
 							if (Global.MovieSession.MultiTrack.IsActive)
 							{
-								Global.RenderPanel.AddMessage("MultiTrack Enabled");
-								Global.RenderPanel.MT = "Recording None";
+								Global.OSD.AddMessage("MultiTrack Enabled");
+								Global.OSD.MT = "Recording None";
 							}
 							else
-								Global.RenderPanel.AddMessage("MultiTrack Disabled");
+								Global.OSD.AddMessage("MultiTrack Disabled");
 							Global.MovieSession.MultiTrack.RecordAll = false;
 							Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						}
 						else
 						{
-							Global.RenderPanel.AddMessage("MultiTrack cannot be enabled while not recording.");
+							Global.OSD.AddMessage("MultiTrack cannot be enabled while not recording.");
 						}
 						break;
 					}
@@ -1713,7 +1713,7 @@ namespace BizHawk.MultiClient
 						{
 							Global.MovieSession.MultiTrack.CurrentPlayer = 1;
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 						break;
 					}
 
@@ -1725,21 +1725,21 @@ namespace BizHawk.MultiClient
 						{
 							Global.MovieSession.MultiTrack.CurrentPlayer = 5;//TODO: Replace with console's maximum or current maximum players??!
 						}
-						Global.RenderPanel.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
+						Global.OSD.MT = "Recording Player " + Global.MovieSession.MultiTrack.CurrentPlayer.ToString();
 						break;
 					}
 				case "Record All":
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						Global.MovieSession.MultiTrack.RecordAll = true;
-						Global.RenderPanel.MT = "Recording All";
+						Global.OSD.MT = "Recording All";
 						break;
 					}
 				case "Record None":
 					{
 						Global.MovieSession.MultiTrack.CurrentPlayer = 0;
 						Global.MovieSession.MultiTrack.RecordAll = false;
-						Global.RenderPanel.MT = "Recording None";
+						Global.OSD.MT = "Recording None";
 						break;
 					}
 				case "Emulator Pause":
@@ -1828,7 +1828,9 @@ namespace BizHawk.MultiClient
 			if (runFrame)
 			{
 				//client input-related duties
-				Global.RenderPanel.ClearGUIText();
+				
+				Global.OSD.ClearGUIText();
+				UpdateTools();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
@@ -1850,8 +1852,9 @@ namespace BizHawk.MultiClient
 				{
 					string fps_string = runloop_last_fps + " fps";
 					if (ff) fps_string += " >>";
-					Global.RenderPanel.FPS = fps_string;
+					Global.OSD.FPS = fps_string;
 				}
+
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 				if (!runloop_frameadvance) genSound = true;
@@ -1928,7 +1931,7 @@ namespace BizHawk.MultiClient
 					CurrAviWriter.AddSamples(temp);
 				}
 
-				UpdateTools();
+
 
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
@@ -1993,7 +1996,7 @@ namespace BizHawk.MultiClient
 			{
 				System.Windows.Forms.Clipboard.SetImage(img);
 			}
-			Global.RenderPanel.AddMessage("Screenshot saved to clipboard.");
+			Global.OSD.AddMessage("Screenshot saved to clipboard.");
 		}
 
 		private void TakeScreenshot()
@@ -2018,7 +2021,7 @@ namespace BizHawk.MultiClient
 			{
 				img.Save(fi.FullName, ImageFormat.Png);
 			}
-			Global.RenderPanel.AddMessage(fi.Name + " saved.");
+			Global.OSD.AddMessage(fi.Name + " saved.");
 		}
 
 		public void SaveState(string name)
@@ -2061,7 +2064,7 @@ namespace BizHawk.MultiClient
 
 			writer.Close();
 
-			Global.RenderPanel.AddMessage("Saved state: " + name);
+			Global.OSD.AddMessage("Saved state: " + name);
 
 			if (!fromLua)
 			{
@@ -2072,8 +2075,9 @@ namespace BizHawk.MultiClient
 
 		private void SaveStateAs()
 		{
+			if (IsNullEmulator()) return;
 			var sfd = new SaveFileDialog();
-			string path = PathManager.SaveStatePrefix(Global.Game);
+			string path = PathManager.GetSaveStatePath(Global.Game);
 			sfd.InitialDirectory = path;
 			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
 			var file = new FileInfo(path);
@@ -2113,10 +2117,10 @@ namespace BizHawk.MultiClient
 
 				reader.Close();
 				UpdateTools();
-				Global.RenderPanel.AddMessage("Loaded state: " + name);
+				Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
-				Global.RenderPanel.AddMessage("Loadstate error!");
+				Global.OSD.AddMessage("Loadstate error!");
 		}
 
 		public void LoadState(string name)
@@ -2133,8 +2137,9 @@ namespace BizHawk.MultiClient
 
 		private void LoadStateAs()
 		{
+			if (IsNullEmulator()) return;
 			var ofd = BizHawk.HawkUIFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.SaveStatePrefix(Global.Game);
+			ofd.InitialDirectory = PathManager.GetSaveStatePath(Global.Game);
 			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
 			ofd.RestoreDirectory = true;
 
@@ -2155,7 +2160,7 @@ namespace BizHawk.MultiClient
 
 		private void SaveSlotSelectedMessage()
 		{
-			Global.RenderPanel.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
+			Global.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
 		}
 
 		private void UpdateAutoLoadRecentRom()
@@ -2324,7 +2329,7 @@ namespace BizHawk.MultiClient
 				FrameBufferResized();
 			}
 
-			Global.RenderPanel.Render(Global.Emulator.VideoProvider);
+			Global.DisplayManager.UpdateSource(Global.Emulator.VideoProvider);
 		}
 
 		private void RunRenderTick(object sender, System.Timers.ElapsedEventArgs args)
@@ -2538,6 +2543,13 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
+			
+			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
+			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+		}
+
+		public void CloseTools()
+		{
 			CloseForm(RamWatch1);
 			CloseForm(RamSearch1);
 			CloseForm(HexEditor1);
@@ -2551,8 +2563,6 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			CloseForm(LuaConsole1);
 #endif
-			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
 		private void CloseForm(Form form)
@@ -2608,13 +2618,13 @@ namespace BizHawk.MultiClient
 			{
 				ReadOnly ^= true;
 				if (ReadOnly)
-					Global.RenderPanel.AddMessage("Movie read-only mode");
+					Global.OSD.AddMessage("Movie read-only mode");
 				else
-					Global.RenderPanel.AddMessage("Movie read+write mode");
+					Global.OSD.AddMessage("Movie read+write mode");
 			}
 			else
 			{
-				Global.RenderPanel.AddMessage("No movie active");
+				Global.OSD.AddMessage("No movie active");
 			}
 
 		}
@@ -2623,9 +2633,9 @@ namespace BizHawk.MultiClient
 		{
 			ReadOnly = read_only;
 			if (ReadOnly)
-				Global.RenderPanel.AddMessage("Movie read-only mode");
+				Global.OSD.AddMessage("Movie read-only mode");
 			else
-				Global.RenderPanel.AddMessage("Movie read+write mode");
+				Global.OSD.AddMessage("Movie read+write mode");
 		}
 
 		public void LoadRamWatch()
@@ -2662,7 +2672,7 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SoundVolume > 100)
 				Global.Config.SoundVolume = 100;
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
-			Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+			Global.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
 
 		private void VolumeDown()
@@ -2671,7 +2681,7 @@ namespace BizHawk.MultiClient
 			if (Global.Config.SoundVolume < 0)
 				Global.Config.SoundVolume = 0;
 			Global.Sound.ChangeVolume(Global.Config.SoundVolume);
-			Global.RenderPanel.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
+			Global.OSD.AddMessage("Volume " + Global.Config.SoundVolume.ToString());
 		}
 
 		private void SoftReset()
@@ -2760,13 +2770,13 @@ namespace BizHawk.MultiClient
 
 				//commit the avi writing last, in case there were any errors earlier
 				CurrAviWriter = aw;
-				Global.RenderPanel.AddMessage("AVI capture started");
+				Global.OSD.AddMessage("AVI capture started");
 				AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.AVI;
 				AVIStatusLabel.ToolTipText = "AVI capture in progress";
 			}
 			catch
 			{
-				Global.RenderPanel.AddMessage("AVI capture failed!");
+				Global.OSD.AddMessage("AVI capture failed!");
 				aw.Dispose();
 				throw;
 			}
@@ -2777,7 +2787,7 @@ namespace BizHawk.MultiClient
 			if (CurrAviWriter == null) return;
 			CurrAviWriter.CloseFile();
 			CurrAviWriter = null;
-			Global.RenderPanel.AddMessage("AVI capture stopped");
+			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
 		}
@@ -2885,9 +2895,9 @@ namespace BizHawk.MultiClient
 				if (errorMsg.Length > 0)
 					MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				if (warningMsg.Length > 0)
-					Global.RenderPanel.AddMessage(warningMsg);
+					Global.OSD.AddMessage(warningMsg);
 				else
-					Global.RenderPanel.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
+					Global.OSD.AddMessage(Path.GetFileName(fn) + " imported as ." + Global.Config.MovieExtension);
 			}
 			RunLoopBlocked = false;
 		}
@@ -2936,7 +2946,7 @@ namespace BizHawk.MultiClient
 				{
 					StepRunLoop_Core();
 					Global.Emulator.FrameAdvance(true); //Frame advance
-					Global.RenderPanel.Render(Global.Emulator.VideoProvider);
+					//Global.RenderPanel.Render(Global.Emulator.VideoProvider);
 
 					if (gifSpeed > 0)
 					{
@@ -3129,6 +3139,52 @@ namespace BizHawk.MultiClient
 					return;
 			}
 			FrameBufferResized();
+		}
+
+		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_BW ^= true;
+				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_BW)
+					Global.OSD.AddMessage("Setting to Black and White Switch to On");
+				else
+					Global.OSD.AddMessage("Setting to Black and White Switch to Off");
+	}
+}
+
+		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_LeftDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
+				if(Global.Config.Atari2600_LeftDifficulty)
+					Global.OSD.AddMessage("Setting Left Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Left Difficulty to A");
+			}
+		}
+
+		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_RightDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_RightDifficulty)
+					Global.OSD.AddMessage("Setting Right Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Right Difficulty to A");
+			}
+		}
+
+		private void atariToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
+			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
+			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
 		}
 	}
 }

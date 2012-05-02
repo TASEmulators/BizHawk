@@ -6,6 +6,7 @@ using System.Text;
 using System.IO;
 using LuaInterface;
 using System.Windows.Forms;
+using System.Drawing;
 using BizHawk.MultiClient.tools;
 using System.Threading;
 
@@ -168,6 +169,34 @@ namespace BizHawk.MultiClient
 			return Convert.ToUInt32((double)lua_arg);
 		}
 
+        public Pen GetPen(object color)
+        {
+            System.Drawing.Pen myPen;
+            if (color.GetType() == typeof(Double))
+            {
+                myPen = new System.Drawing.Pen(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+            }
+            else
+            {
+                myPen = new System.Drawing.Pen(System.Drawing.Color.FromName(color.ToString().ToLower()));
+            }
+            return myPen;
+        }
+
+        public SolidBrush GetBrush(object color)
+        {
+            System.Drawing.SolidBrush myBrush;
+            if (color.GetType() == typeof(Double))
+            {
+                myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(int.Parse(long.Parse(color.ToString()).ToString("X"), System.Globalization.NumberStyles.HexNumber)));
+            }
+            else
+            {
+                myBrush = new System.Drawing.SolidBrush(System.Drawing.Color.FromName(color.ToString().ToLower()));
+            }
+            return myBrush;
+        }
+
 		/**
 		 * LuaInterface requires the exact match of parameter count,
 		 * except optional parameters. So, if you want to support
@@ -221,7 +250,16 @@ namespace BizHawk.MultiClient
 		{
 			"text",
 			"alert",
-            "cleartext",
+			"cleartext",
+			"drawPixel",
+			"drawLine",
+			"drawRectangle",
+			"drawEllipse",
+			"drawPolygon",
+			"drawBezier",
+			"drawPie",
+			"drawIcon",
+			"drawImage",
 		};
 
 		public static string[] EmuFunctions = new string[]
@@ -236,9 +274,6 @@ namespace BizHawk.MultiClient
 			"lagcount",
 			"islagged",
 			"getsystemid",
-			//"registerbefore",
-			//"registerafter",
-			//"register",
 			"setrenderplanes",
 		};
 
@@ -392,8 +427,15 @@ namespace BizHawk.MultiClient
 		//----------------------------------------------------
 		//Gui library
 		//----------------------------------------------------
-		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object anchor = null)
+		private void do_gui_text(object luaX, object luaY, object luaStr, bool alert, object background = null, object forecolor = null, object anchor = null)
 		{
+			if (!alert)
+			{
+				if (forecolor == null)
+					forecolor = "white";
+				if (background == null)
+					background = "black";
+			}
 			int a = 0;
 			if (anchor != null)
 			{
@@ -414,23 +456,250 @@ namespace BizHawk.MultiClient
 					a = LuaInt(anchor);
 				}
 			}
-			Global.RenderPanel.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, a);
+			Global.OSD.AddGUIText(luaStr.ToString(), LuaInt(luaX), LuaInt(luaY), alert, GetBrush(background), GetBrush(forecolor), a);
 		}
 
-		public void gui_text(object luaX, object luaY, object luaStr, object anchor = null)
+        public void gui_text(object luaX, object luaY, object luaStr, object background = null, object forecolor = null, object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, false, anchor);
+            do_gui_text(luaX, luaY, luaStr, false, background, forecolor, anchor);
 		}
 
 		public void gui_alert(object luaX, object luaY, object luaStr, object anchor = null)
 		{
-			do_gui_text(luaX, luaY, luaStr, true, anchor);
+			do_gui_text(luaX, luaY, luaStr, true, null, null, anchor);
 		}
 
-        public void gui_cleartext()
-        {
-            Global.RenderPanel.ClearGUIText();
-        }
+		public void gui_cleartext()
+		{
+			Global.OSD.ClearGUIText();
+		}
+
+		public DisplaySurface luaSurface;
+
+		/// <summary>
+		/// sets the current drawing context to a new surface.
+		/// you COULD pass these back to lua to use as a target in rendering jobs, instead of setting it as current here.
+		/// could be more powerful.
+		/// performance test may reveal that repeatedly calling GetGraphics could be slow.
+		/// we may want to make a class here in LuaImplementation that wraps a DisplaySurface and a Graphics which would be created once
+		/// </summary>
+		public void gui_drawNew()
+		{
+			luaSurface = Global.DisplayManager.GetLuaSurfaceNative();
+		}
+
+		/// <summary>
+		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
+		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
+		/// most notably, the client output [emulated] resolution 
+		/// </summary>
+		public void gui_drawFinish()
+		{
+			Global.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			luaSurface = null;
+		}
+
+		/// <summary>
+		/// draws a random rectangle for testing purposes
+		/// </summary>
+		public void gui_drawRectangle(object X, object Y, object width, object height, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					g.DrawRectangle(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					if (background != null)
+					{
+						g.FillRectangle(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					}
+					
+				}
+				catch(Exception e)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawPixel(object X, object Y, object color)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				float x = LuaInt(X) + 0.1F;
+				try
+				{
+					g.DrawLine(GetPen(color), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
+		}
+		public void gui_drawLine(object x1, object y1, object x2, object y2, object color = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+                    if (color == null)
+                        color = "black";
+					g.DrawLine(GetPen(color), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawEllipse(object X, object Y, object width, object height, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					g.DrawEllipse(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					if (background != null)
+					{
+						g.FillEllipse(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					}
+
+				}
+				catch (Exception e)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawPolygon(LuaTable points, object line, object background = null)
+		{
+			//this is a test
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Point[] Points = new System.Drawing.Point[points.Values.Count];
+					int i = 0;
+					foreach (LuaTable point in points.Values)
+					{
+						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						i++;
+					}
+					
+					g.DrawPolygon(GetPen(line), Points);
+					if (background != null)
+					{
+						g.FillPolygon(GetBrush(background), Points);
+					}
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawBezier(LuaTable points, object color)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					System.Drawing.Point[] Points = new System.Drawing.Point[4];
+					int i = 0;
+					foreach (LuaTable point in points.Values)
+					{
+						Points[i] = new System.Drawing.Point(LuaInt(point[1]), LuaInt(point[2]));
+						i++;
+						if (i >= 4)
+							break;
+					}
+					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawPie(object X, object Y, object width, object height, object startangle, object sweepangle, object line, object background = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					g.DrawPie(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					if (background != null)
+					{
+						g.FillPie(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height), LuaInt(startangle), LuaInt(sweepangle));
+					}
+
+				}
+				catch (Exception e)
+				{
+					// need to stop the script from here
+					return;
+				}
+			}
+		}
+
+		public void gui_drawIcon(object Path, object x, object y, object width = null, object height = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					Icon icon;
+					if (width != null && height != null)
+					{
+						icon = new Icon(Path.ToString(), LuaInt(width), LuaInt(height));
+					}
+					else
+					{
+						icon = new Icon(Path.ToString());
+					}
+						
+					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
+				}
+				catch(Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_drawImage(object Path, object x, object y, object width = null, object height = null)
+		{
+			using (var g = luaSurface.GetGraphics())
+			{
+				try
+				{
+					Image img = Image.FromFile(Path.ToString());
+
+					if (width == null || width.GetType() != typeof(int))
+						width = img.Width.ToString();
+					if (height == null || height.GetType() != typeof(int))
+						height = img.Height.ToString();
+
+					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
+				}
+				catch (Exception e)
+				{
+					return;
+				}
+			}
+		}
+
+		public void gui_clearGraphics()
+		{
+			luaSurface.Clear();
+		}
 
 		//----------------------------------------------------
 		//Emu library

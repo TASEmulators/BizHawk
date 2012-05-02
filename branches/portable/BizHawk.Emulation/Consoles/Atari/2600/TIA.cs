@@ -783,11 +783,11 @@ namespace BizHawk.Emulation.Consoles.Atari
 				{
 					if (scanlinesBuffer.Count > row)
 					{
-						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2]);
+						frameBuffer[row * 320 + col] = (int)(scanlinesBuffer[row][col / 2] | 0xFF000000);
 					}
 					else
 					{
-						frameBuffer[row * 320 + col] = 0x000000;
+						frameBuffer[row * 320 + col] = unchecked((int)0xFF000000);
 					}
 				}
 			}
@@ -831,6 +831,10 @@ namespace BizHawk.Emulation.Consoles.Atari
 			else if (maskedAddr == 0x0C) // INPT4
 			{
 				return (byte)((core.ReadControls1() & 0x08) != 0 ? 0x80 : 0x00);
+			}
+			else if (maskedAddr == 0x0D) // INPT5
+			{
+				return (byte)((core.ReadControls2() & 0x08) != 0 ? 0x80 : 0x00);
 			}
 
 			return 0x00;

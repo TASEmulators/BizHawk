@@ -112,7 +112,7 @@ namespace BizHawk
 				case "2K": mapper = new m2K(); break;
 				case "CV": mapper = new mCV(); break;
 				case "F8": mapper = new mF8(); break;
-				case "F6": mapper = new mF6(); break;
+				case "F6": case "F6SC": mapper = new mF6(); break;
 				case "F4": case "F4SC": mapper = new mF4(); break;
 				case "FE": mapper = new mFE(); break;
 				case "E0": mapper = new mE0(); break;
@@ -209,15 +209,20 @@ namespace BizHawk
 			return value;
 		}
 
+		private bool bw = false;
+		private bool p0difficulty = true;
+		private bool p1difficulty = true;
+
+		public void SetBw(bool setting) { bw = setting; }
+		public void SetP0Diff(bool setting) { p0difficulty = setting; }
+		public void SetP1Diff(bool setting) { p1difficulty = setting; }
+
 		public byte ReadConsoleSwitches()
 		{
 			byte value = 0xFF;
 
 			bool select = Controller["Select"];
 			bool reset = Controller["Reset"];
-			bool bw = false;
-			bool p0difficulty = true;
-			bool p1difficulty = true;
 
 			if (reset) value &= 0xFE;
 			if (select) value &= 0xFD;

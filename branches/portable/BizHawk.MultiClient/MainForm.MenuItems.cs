@@ -468,6 +468,7 @@ namespace BizHawk.MultiClient
 		private void forceGDIPPresentationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayGDI ^= true;
+			Global.DisplayManager.Suspend();
 			SyncPresentationMode();
 		}
 
@@ -1149,13 +1150,13 @@ namespace BizHawk.MultiClient
 		private void saveConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveConfig();
-			Global.RenderPanel.AddMessage("Saved settings");
+			Global.OSD.AddMessage("Saved settings");
 		}
 
 		private void loadConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath, Global.Config);
-			Global.RenderPanel.AddMessage("Saved loaded");
+			Global.OSD.AddMessage("Saved loaded");
 		}
 
 		private void frameSkipToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1444,7 +1445,7 @@ namespace BizHawk.MultiClient
 		{
 			string path = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + Global.Config.SaveSlot + ".State";
 			SwapBackupSavestate(path);
-			Global.RenderPanel.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
+			Global.OSD.AddMessage("Save slot " + Global.Config.SaveSlot.ToString() + " restored.");
 		}
 
 		private void FreezeStatus_Click(object sender, EventArgs e)

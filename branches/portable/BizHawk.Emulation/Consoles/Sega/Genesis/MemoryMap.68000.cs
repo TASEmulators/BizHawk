@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 Z80Reset = (value & 1) == 0;
                 if (Z80Reset)
-                    SoundCPU.Reset();
+                    SoundCPU.SoftReset();
                 //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }
@@ -139,7 +139,6 @@ namespace BizHawk.Emulation.Consoles.Sega
                     case 0x13:
                     case 0x15:
                     case 0x17:
-                        Console.WriteLine("!+!+!+  PSG WRITE => {0:X2}",value);
                         PSG.WritePsgData((byte) value, SoundCPU.TotalExecutedCycles);
                         return;
                 }
@@ -183,7 +182,7 @@ namespace BizHawk.Emulation.Consoles.Sega
             {
                 Z80Reset = (value & 0x100) == 0;
                 if (Z80Reset)
-                    SoundCPU.Reset();
+                    SoundCPU.SoftReset();
                 //Console.WriteLine("z80 reset: " + Z80Reset);
                 return;
             }

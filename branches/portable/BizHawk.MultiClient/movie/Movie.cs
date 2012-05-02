@@ -170,7 +170,7 @@ namespace BizHawk.MultiClient
 			Directory.CreateDirectory(new FileInfo(Filename).Directory.FullName);
 			string BackupName = Filename;
 			BackupName = BackupName.Insert(Filename.LastIndexOf("."), String.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
-			Global.RenderPanel.AddMessage("Backup movie saved to " + BackupName);
+			Global.OSD.AddMessage("Backup movie saved to " + BackupName);
 			if (IsText)
 				WriteText(BackupName);
 			else
@@ -341,7 +341,6 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < Log.Length(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
-			//Global.RenderPanel.AddMessage(Log.Length().ToString() + " frames saved"); //Debug
 		}
 
 		public void LoadLogFromSavestateText(string path)
@@ -357,7 +356,6 @@ namespace BizHawk.MultiClient
 					MakeBackup = false;
 				}
 				Log.Clear();
-				int i = 0; //TODO: Debug remove me
 				while (true)
 				{
 					string line = reader.ReadLine();
@@ -376,7 +374,7 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 						}
-						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					else if (line.Contains("Frame "))
 					{
@@ -385,15 +383,13 @@ namespace BizHawk.MultiClient
 						{
 							stateFrame = int.Parse(strs[1]);
 						}
-						catch { Global.RenderPanel.AddMessage("Savestate Frame failed to parse");  } //TODO: message?
+						catch { Global.OSD.AddMessage("Savestate Frame failed to parse"); } //TODO: message?
 					}
 					if (line[0] == '|')
 					{
 						Log.AddFrame(line);
-						i++;
 					}
 				}
-				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			else
 			{
@@ -429,7 +425,6 @@ namespace BizHawk.MultiClient
 						i++;
 					}
 				}
-				//Global.RenderPanel.AddMessage(i.ToString() + " input frames loaded."); //TODO: Remove debug
 			}
 			if (stateFrame > 0 && stateFrame < Log.Length())
 			{
@@ -567,9 +562,6 @@ namespace BizHawk.MultiClient
 			//This function will compare the movie data to the savestate movie data to see if they match
 			var reader = new StreamReader(path);
 
-			if (!IsStateFromAMovie(reader))
-				return false;
-
 			MovieLog l = new MovieLog();
 			string line;
 			string GUID;
@@ -577,6 +569,8 @@ namespace BizHawk.MultiClient
 			while (true)
 			{
 				line = reader.ReadLine();
+				if (line == null)
+					return false;
 				if (line.Trim() == "") continue;
 				else if (line.Contains("GUID"))
 				{
@@ -607,7 +601,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1], NumberStyles.HexNumber);
 					}
-					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line.Contains("Frame "))
 				{
@@ -616,7 +610,7 @@ namespace BizHawk.MultiClient
 					{
 						stateFrame = int.Parse(strs[1]);
 					}
-					catch { Global.RenderPanel.AddMessage("Savestate Frame number failed to parse"); }
+					catch { Global.OSD.AddMessage("Savestate Frame number failed to parse"); }
 				}
 				else if (line == "[Input]") continue;
 				else if (line == "[/Input]") break;

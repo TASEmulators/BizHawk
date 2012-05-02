@@ -138,7 +138,7 @@ namespace BizHawk.MultiClient
 			//TODO: don't engage until new/open project
 			//
 			Engaged = true;
-			Global.RenderPanel.AddMessage("TAStudio engaged");
+			Global.OSD.AddMessage("TAStudio engaged");
 
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
@@ -183,7 +183,7 @@ namespace BizHawk.MultiClient
 					ControllerBox.Controls.Add(Pads[2]);
 					break;
 				case "SMS":
-				case "SG": //TODO: correct sys ID???
+				case "SG":
 				case "GG":
 					VirtualPadSMS smspad1 = new VirtualPadSMS();
 					smspad1.Location = new Point(8, 19);
@@ -393,6 +393,25 @@ namespace BizHawk.MultiClient
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 
+		}
+
+		private void ClearVirtualPadHolds()
+		{
+			foreach (var controller in ControllerBox.Controls)
+			{
+				if (controller is VirtualPad)
+					((VirtualPad)controller).Clear();
+			}
+		}
+
+		private void clearVirtualPadsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearVirtualPadHolds();
+		}
+
+		private void clearToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			ClearVirtualPadHolds();
 		}
 	}
 }

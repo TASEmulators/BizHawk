@@ -1321,6 +1321,7 @@ sha1:dcd96913a1c840c8b57848986242eeb928bfd2ff		M.A.S.H. (1982) (20th Century Fox
 sha1:55ae319f11584f997b7b52000a1d98cdfaa07d5d		M.A.S.H. (CCE) (no logo) (PAL) [!]	A26		m=4K
 sha1:fbc075766313f04a808236189daa2bf49f584f44		M.A.S.H. (CCE)	A26		m=4K
 sha1:4c66b84ab0d25e46729bbcf23f985d59ca8520ad		Magicard (CommaVid)	A26		m=CV
+sha1:DA39A3EE5E6B4B0D3255BFEF95601890AFD80709		Magicard (CommaVid)	A26		m=CV
 sha1:cdc7e65d965a7a00adda1e8bedfbe6200e349497		Malagai (1983) (Answer Software)	A26		m=4K
 sha1:311bf43a479e9981c70f38573dbf614429d0a5b5		Mangia' (1983) (Spectravideo) (PAL) [!]	A26		m=4K
 sha1:6c7d1f27efb1e9514494e35cbf03acbf9ffdfe60		Many Blue Bars and Text Demo (PD)	A26		m=4K

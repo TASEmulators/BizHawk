@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					return 0xFF;
 
 				nes.board.AddressPPU(addr);
-				
 				return nes.board.ReadPPU(addr);
 			}
 

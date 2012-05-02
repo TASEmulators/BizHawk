@@ -5,6 +5,15 @@ using System.Text;
 
 namespace BizHawk.Emulation.Consoles.Atari._2600
 {
+	/*
+	F6 (Atari style 16K)
+	-----
+
+	This is a fairly standard 16K bankswitching method.  It works like F8, except there's
+	four 4K banks of ROM, selected by accessing 1FF6 through 1FF9.  These sequentially
+	select one of the 4 banks.  i.e. 1FF6 selects bank 0, 1FF7 selects bank 1, etc.
+	*/
+
 	class mF6 : MapperBase 
 	{
 		int toggle = 0;

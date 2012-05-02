@@ -56,14 +56,14 @@ end
 while true do
 --*****************************************************************************
     EnemyHP = mainmemory.read_u8(EHP)
-	gui.text(0,0,"Opponent: " .. EnemyHP, "topright")
+	gui.text(0,0,"Opponent: " .. EnemyHP, null, null, "topright")
 
     MacHP = mainmemory.read_u8(MHP)
-    gui.text(0,12,"Mac: " .. MacHP, "topright")
+    gui.text(0,12,"Mac: " .. MacHP, null, null, "topright")
 
     if IsOppDown() then
 	    OppWillGet = mainmemory.read_u8(OppWillGetUpWith)
-	    gui.text(0, 12, "Next health: " .. OppWillGet, "bottomright")
+	    gui.text(0, 12, "Next health: " .. OppWillGet, null, null, "bottomright")
     end
 
     if OppIsHit() then
@@ -73,7 +73,7 @@ while true do
     end
 
     if OppHitTimer > 0 then
-	    gui.text(0, 0, "Damage: " .. OppHitToDisplay, "bottomright")
+	    gui.text(0, 0, "Damage: " .. OppHitToDisplay, null, null, "bottomright")
     end
 
     

@@ -16,6 +16,8 @@ namespace BizHawk.MultiClient
 #endif
 		public static Sound Sound;
 		public static IRenderer RenderPanel;
+		public static OSDManager OSD = new OSDManager();
+		public static DisplayManager DisplayManager = new DisplayManager();
 		public static Config Config;
 		public static IEmulator Emulator;
 		public static CoreInputComm CoreInputComm;
@@ -108,7 +110,7 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
 		{
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
-			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 1}
+			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}
 		};
 
 		/// <summary>

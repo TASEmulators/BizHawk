@@ -6,7 +6,7 @@ using System.Text;
 namespace BizHawk.Emulation.Consoles.Atari._2600
 {
 	/*
-	* F0 (Megaboy)
+	F0 (Megaboy)
 	-----
 
 	This was used on one game, "megaboy".. Some kind of educational cartridge.  It supports

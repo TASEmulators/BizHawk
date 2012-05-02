@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 
 // This Z80 emulator is a modified version of Ben Ryves 'Brazil' emulator.
-// It is MIT licensed (not public domain). (See Licenses)
+// It is MIT licensed.
 
 namespace BizHawk.Emulation.CPUs.Z80 
 {
@@ -32,6 +32,15 @@ namespace BizHawk.Emulation.CPUs.Z80
 			ExpectedExecutedCycles = 0;
 			TotalExecutedCycles = 0;
 		}
+
+        /// <summary>
+        /// Reset the Z80 to its initial state, but don't modify cycle counters. For use where Z80 may be reset 
+        /// </summary>
+        public void SoftReset()
+        {
+            ResetRegisters();
+            ResetInterrupts();
+        }
 
         // Memory Access 
 

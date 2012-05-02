@@ -66,7 +66,7 @@ namespace BizHawk.MultiClient
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.EMULATIONVERSION, MainForm.EMUVERSION);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.MOVIEVERSION, MovieHeader.MovieVersion);
 				MovieToRecord.Header.SetHeaderLine(MovieHeader.GUID, MovieHeader.MakeGUID());
-				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Emulator.SystemId);
+				MovieToRecord.Header.SetHeaderLine(MovieHeader.PLATFORM, Global.Game.System);
 				if (Global.Game != null)
 				{
 					MovieToRecord.Header.SetHeaderLine(MovieHeader.GAMENAME, PathManager.FilesystemSafeName(Global.Game));
@@ -122,7 +122,7 @@ namespace BizHawk.MultiClient
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
 			sfd.DefaultExt = "." + Global.Config.MovieExtension;
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + sfd.DefaultExt;
+			sfd.FileName = RecordBox.Text;
 			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension +  "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
 
 			Global.Sound.StopSound();
@@ -136,6 +136,7 @@ namespace BizHawk.MultiClient
 
 		private void RecordMovie_Load(object sender, EventArgs e)
 		{
+			RecordBox.Text = Global.Game.Name;
 			StartFromCombo.SelectedIndex = 0;
 			DefaultAuthorCheckBox.Checked = Global.Config.UseDefaultAuthor;
 			if (Global.Config.UseDefaultAuthor)

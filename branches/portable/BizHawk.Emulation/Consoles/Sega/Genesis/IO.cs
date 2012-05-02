@@ -46,6 +46,7 @@
                     Log.Note("CPU", "^^^ IO Read 0: {0:X2}", value);
                     return value;
                 case 1: // Port A 
+					lagged = false;
                     ReadController(ref IOPorts[0].Data);
                     Log.Note("CPU", "^^^ IO Read 1: {0:X2}", IOPorts[0].Data);
                     return IOPorts[0].Data;

@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 		{
 			Changes();
 			Global.CheatList.Add(c);
-			Global.RenderPanel.AddMessage("Cheat added.");
+			Global.OSD.AddMessage("Cheat added.");
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
@@ -154,8 +154,8 @@ namespace BizHawk.MultiClient
 			Changes();
 
 			Global.CheatList.RemoveCheat(c.domain, c.address);
-			
-			Global.RenderPanel.AddMessage("Cheat removed.");
+
+			Global.OSD.AddMessage("Cheat removed.");
 			if (!this.IsHandleCreated || this.IsDisposed) return;
 			DisplayCheatsList();
 			CheatListView.Refresh();
@@ -823,6 +823,8 @@ namespace BizHawk.MultiClient
 
 		public void DisableAllCheats()
 		{
+			if (Global.CheatList.cheatList.Count > 0)
+				Global.OSD.AddMessage("All cheats disabled.");
 			for (int x = 0; x < Global.CheatList.cheatList.Count; x++)
 				Global.CheatList.cheatList[x].Disable();
 			MemoryPulse.Clear();
