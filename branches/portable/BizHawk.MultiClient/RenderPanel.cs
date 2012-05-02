@@ -327,18 +327,18 @@ namespace BizHawk.MultiClient
 		public bool Resized { get; set; }
 		public string FPS { get; set; }
 		public string MT { get; set; }
-		public void Render(IVideoProvider video)
+		public void Render(DisplaySurface surface)
 		{
 			MakeCurrent();
-            int[] data = video.GetVideoBuffer();
+            int[] data = surface.ToIntArray();
             int[] flipped = new int[data.Length]; //Cheap trick to avoid using a texture... for now.
-            int width = video.BufferWidth, height = video.BufferHeight;
+            int width = surface.Width, height = surface.Height;
             for (int i = 0; i < height; i++)
             {
                 Array.Copy(data, i*width, flipped, (width*(height-1-i)),width);
             }
             GL.PixelZoom(Width*1.0f/width, Height*1.0f/height);
-            GL.DrawPixels(video.BufferWidth, video.BufferHeight, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, flipped);
+            GL.DrawPixels(surface.Width, surface.Height, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, flipped);
             SwapBuffers();
 		}
 		public OpenGLRenderPanel() : base(OpenTK.Graphics.GraphicsMode.Default,2,1,OpenTK.Graphics.GraphicsContextFlags.Default)
@@ -348,6 +348,7 @@ namespace BizHawk.MultiClient
 		public void AddMessage(string msg) { }
 		public void AddGUIText(string msg, int x, int y, bool alert, int anchor) { }
 		public void ClearGUIText() { }
+		public Size NativeSize { get { return this.Size; } }
 	}
 #endif
 
