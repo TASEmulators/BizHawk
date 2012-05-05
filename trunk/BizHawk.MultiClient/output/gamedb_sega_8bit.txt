@@ -249,6 +249,7 @@ BDD034EE	T	Cyborg Hunter (IT)	SMS		FM
 FCEFD481	D	Damiana (v1)	SMS	Heliophobe; Y2Kode entry; accidentally has a very short level
 97F8DCC8	D	Damiana (v2)	SMS	Heliophobe; Y2Kode entry; v1 accidentally had a very short level
 AE4A28D7	 	Danan - The Jungle Fighter	SMS	
+61B3C657	D	Darc	SMS	2012 http://www.smspower.org/Homebrew/DARC-SMS	FM
 7CC2A20B	D	DCEvolution.net Intro	SMS	drHirudo/Void
 E2F7193E	 	Dead Angle	SMS	
 5EF8DBDA	B	Dead Angle (four bad bytes)	SMS	
@@ -552,6 +553,7 @@ F5C368F4	F	Lord of The Sword (h) [A]	SMS		FM
 3D87705B	F	Lord of the Sword (bad dump) (h)	SMS		FM
 F77517EB	V	Lord of the Sword (first 34 bytes missing)	SMS	SMS Checker doesn't know how to insert bytes	FM
 323F357F	 	Loretta no Shouzou (JP)	SMS	
+ED850911	D	Lost Raider	SMS	2012 http://www.smspower.org/Homebrew/LostRaider-SMS
 A1710F13	 	The Lucky Dime Caper - Starring Donald Duck	SMS	
 D79E51A8	T	The Lucky Dime Caper - Starring Donald Duck (BR)	SMS	
 7F6D0DF6	 	The Lucky Dime Caper - Starring Donald Duck [Proto]	SMS	
@@ -1356,6 +1358,7 @@ F3CA6676	 	Columns (JP)	GG
 2C758FC8	 	Cool Spot	GG	
 6CAA625B	 	Cosmic Spacehead	GG	
 03D28EAB	 	Crayon Shin Chan - Taiketsu! Tankam Panic!! (JP)	GG	
+46AD6257		Crazy Faces [Proto]	GG
 529C864E	 	Crystal Warriors	GG	
 F3925382	T	Crystal Warriors (FR) [v0.9x]	GG	Asmodeath
 3473200A	T	Crystal Warriors (FR) [v0.99]	GG	Asmodeath
