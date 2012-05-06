@@ -591,6 +591,18 @@ namespace BizHawk.MultiClient
 			return luaNativeSurfaceSet.AllocateSurface(currNativeWidth, currNativeHeight);
 		}
 
+		SwappableDisplaySurfaceSet luaEmuSurfaceSet = new SwappableDisplaySurfaceSet();
+		public void SetLuaSurfaceEmu(DisplaySurface surface) { luaEmuSurfaceSet.SetPending(surface); }
+		public DisplaySurface GetLuaEmuSurfaceEmu()
+		{
+			int width = 1, height = 1;
+			if (currentSourceSurface != null)
+				width = currentSourceSurface.Width;
+			if (currentSourceSurface != null)
+				height = currentSourceSurface.Height;
+			return luaEmuSurfaceSet.AllocateSurface(width, height);
+		}
+
 		int currNativeWidth, currNativeHeight;
 		EventWaitHandle wakeupEvent, suspendReplyEvent;
 		bool shutdownFlag, suspendFlag;
@@ -677,10 +689,14 @@ namespace BizHawk.MultiClient
 				g.CompositingMode = CompositingMode.SourceCopy;
 				g.CompositingQuality = CompositingQuality.HighSpeed;
 				g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
-				g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
 
 				//switch to fancier composition for OSD overlays and such
 				g.CompositingMode = CompositingMode.SourceOver;
+
+				//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
+				DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+				if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
+				g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
 
 				//apply a lua layer
 				var luaSurface = luaNativeSurfaceSet.GetCurrent();
