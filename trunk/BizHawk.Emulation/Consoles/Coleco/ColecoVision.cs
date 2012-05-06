@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using BizHawk.Emulation.CPUs.Z80;
+using BizHawk.Emulation.Sound;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.Emulation.Consoles.Coleco
 {
 	public partial class ColecoVision : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "Coleco"; } }
+		public GameInfo game;
 		public int[] frameBuffer = new int[256 * 192];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
@@ -16,14 +20,20 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public ISoundProvider SoundProvider { get { return this; } }
 		public byte[] ram = new byte[1024];
 
+		public DisplayType DisplayType { get; set; } //TOOD: delete me
+
 		public ColecoVision(GameInfo game, byte[] rom)
 		{
+			cpu = new Z80A();
+			Vdp = new VDP(this, cpu, VdpMode.SMS, DisplayType);
+
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[1023], (addr, value) => ram[addr & 1023] = value));
+			domains.Add(new MemoryDomain("Main RAM", 1024, Endian.Little, addr => ram[1023], (addr, value) => ram[addr & 1023] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
+			this.game = game;
 			HardReset();
 		}
 

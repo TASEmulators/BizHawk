@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		{
 			_lagcount = 0;
 			cpu = new Z80A();
+			Vdp = new VDP(this, cpu, VdpMode.SMS, DisplayType);
 			cpu.ReadMemory = ReadMemory;
 			cpu.WriteMemory = WriteMemory;
 		}
@@ -37,12 +38,29 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			_frame++;
 			_islag = true;
 
-			if (render == false) return;
-			for (int i = 0; i < 256 * 192; i++)
-				frameBuffer[i] = 0; //black
+			Vdp.ExecFrame(render);
+
+			//if (render == false) return;
+			//for (int i = 0; i < 256 * 192; i++)
+			//	frameBuffer[i] = 0; //black
 
 			if (_islag)
 				_lagcount++;
+		}
+
+		public byte ReadControls()
+		{
+			byte value = 0xFF;
+
+			if (Controller["P1 Up"]) value &= 0xFF; //TODO;
+			if (Controller["P1 Down"]) value &= 0xFF; //TODO;
+			if (Controller["P1 Left"]) value &= 0xFF; //TODO;
+			if (Controller["P1 Right"]) value &= 0xFF; //TODO;
+			//TODO: remaining buttons
+
+			_islag = false;
+			return value;
+
 		}
 	}
 }
