@@ -488,6 +488,11 @@ namespace BizHawk.MultiClient
 			luaSurface = Global.DisplayManager.GetLuaSurfaceNative();
 		}
 
+		public void gui_drawNewEmu()
+		{
+			luaSurface = Global.DisplayManager.GetLuaEmuSurfaceEmu();
+		}
+
 		/// <summary>
 		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
 		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
@@ -496,6 +501,12 @@ namespace BizHawk.MultiClient
 		public void gui_drawFinish()
 		{
 			Global.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			luaSurface = null;
+		}
+
+		public void gui_drawFinishEmu()
+		{
+			Global.DisplayManager.SetLuaSurfaceEmu(luaSurface);
 			luaSurface = null;
 		}
 
