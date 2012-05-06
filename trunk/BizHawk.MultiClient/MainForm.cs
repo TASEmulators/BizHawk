@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 
 		//avi/wav state
-		VideoWriter CurrAviWriter = null;
+		IVideoWriter CurrAviWriter = null;
 
 		//runloop control
 		bool exit;
@@ -2666,7 +2666,7 @@ namespace BizHawk.MultiClient
 
 			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
 			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
-			VideoWriter aw = new AviWriter();
+			IVideoWriter aw = new AviWriter();
 			try
 			{
 				aw.SetMovieParameters(fps, 0x01000000);
