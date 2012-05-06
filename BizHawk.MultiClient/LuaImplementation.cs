@@ -508,12 +508,13 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawRectangle(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					int int_x = LuaInt(X) * Global.Config.TargetZoomFactor;
+					int int_y = LuaInt(Y) * Global.Config.TargetZoomFactor;
+					int int_width = LuaInt(width) * Global.Config.TargetZoomFactor;
+					int int_height = LuaInt(height) * Global.Config.TargetZoomFactor;
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
 					if (background != null)
-					{
-						g.FillRectangle(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
-					}
-					
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 				}
 				catch(Exception e)
 				{

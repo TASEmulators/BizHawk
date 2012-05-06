@@ -167,17 +167,14 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 					oamcount = oamcounts[renderslot];
 
-					//the main scanline rendering loop:
-					//32 times, we will fetch a tile and then render 8 pixels.
-					//two of those tiles were read in the last scanline.
-					for (int xt = 0; xt < 32; xt++)
-					{
-						//ok, we're also going to draw here.
-						//unless we're on the first dummy scanline
-						if (sl != 0)
+					//ok, we're also going to draw here.
+					//unless we're on the first dummy scanline
+					if (sl != 0)
+						//the main scanline rendering loop:
+						//32 times, we will fetch a tile and then render 8 pixels.
+						//two of those tiles were read in the last scanline.
+						for (int xt = 0; xt < 32; xt++)
 						{
-
-
 							int xstart = xt << 3;
 							oamcount = oamcounts[renderslot];
 							int target = (yp << 8) + xstart;
@@ -267,7 +264,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 											{
 												Reg2002_objhit = true;
 											}
-
 											bool drawsprite = true;
 											//priority handling
 											if ((oam->oam[2] & 0x20) != 0)
@@ -278,7 +274,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 													drawsprite = false;
 												}
 											}
-
 											if (drawsprite && nes.CoreInputComm.NES_ShowOBJ)
 											{
 												//bring in the palette bits and palettize
@@ -287,13 +282,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 												pixelcolor = PALRAM[0x10 + spixel];
 											}
 										} //rasterpos in sprite range
-
 									} //c# fixed oam ptr
-
-
 								}//oamcount loop
-
-
 								if (reg_2001.color_disable)
 									pixelcolor &= 0x30;
 
@@ -302,24 +292,21 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 								target++;
 
 							} //loop across 8 pixels
-						} //scanline != 0
-						else
-						{
+						} //loop across 32 tiles
+					else
+						for (int xt = 0; xt < 32; xt++)
 							Read_bgdata(ref bgdata[xt + 2]);
-						}
-					} //loop across 32 tiles
-
 
 					//look for sprites (was supposed to run concurrent with bg rendering)
 					oamcounts[scanslot] = 0;
 					oamcount = 0;
 					int spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
-					for (int i = 0; i < 64; i++)
-						oams[(scanslot<<6)+i].present = 0;
+					int scanslot_lshift = scanslot << 6;
 
 					for (int i = 0; i < 64; i++)
 					{
+						oams[scanslot_lshift + i].present = 0;
 						int spr = i * 4;
 						{
 							if (yp >= OAM[spr] && yp < OAM[spr] + spriteHeight)
@@ -335,18 +322,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 										break;
 									}
 								}
-
 								//just copy some bytes into the internal sprite buffer
-								TempOAM* oam = &oams[(scanslot << 6) + oamcount];
+								TempOAM* oam = &oams[scanslot_lshift + oamcount];
 								{
 									for (int j = 0; j < 4; j++)
 										oam->oam[j] = OAM[spr + j];
 									oam->present = 1;
 								}
-
 								//note that we stuff the oam index into [6].
 								//i need to turn this into a struct so we can have fewer magic numbers
-								oams[(scanslot<<6)+oamcount].index = (byte)i;
+								oams[scanslot_lshift + oamcount].index = (byte)i;
 								oamcount++;
 							}
 						}
