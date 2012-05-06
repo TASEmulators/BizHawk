@@ -10,7 +10,7 @@ using BizHawk;
 
 namespace BizHawk.MultiClient
 {
-	class AviWriter : IDisposable
+	class AviWriter : VideoWriter
 	{
 		CodecToken currVideoCodecToken = null;
 		AviWriterSegment currSegment;
@@ -27,9 +27,12 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// sets the codec token to be used for video compression
 		/// </summary>
-		public void SetVideoCodecToken(CodecToken token)
+		public void SetVideoCodecToken(IDisposable token)
 		{
-			currVideoCodecToken = token;
+            if (token is CodecToken)
+                currVideoCodecToken = (CodecToken)token;
+            else
+                throw new ArgumentException("AviWriter only takes its own Codec Tokens!");
 		}
 
 		public static IEnumerator<string> CreateBasicNameProvider(string template)
@@ -192,7 +195,7 @@ namespace BizHawk.MultiClient
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when youre done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public static CodecToken AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastToken)
+		public IDisposable AcquireVideoCodecToken(IntPtr hwnd) //, CodecToken lastToken)
 		{
 			var temp_params = new Parameters();
 			temp_params.height = 256;
@@ -206,8 +209,8 @@ namespace BizHawk.MultiClient
 			string tempfile = Path.GetTempFileName();
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
-			temp.OpenFile(tempfile, temp_params, lastToken);
-			CodecToken token = temp.AcquireVideoCodecToken(hwnd);
+			temp.OpenFile(tempfile, temp_params, null); //lastToken);
+			CodecToken token = (CodecToken) temp.AcquireVideoCodecToken(hwnd);
 			temp.CloseFile();
 			File.Delete(tempfile);
 			return token;
@@ -469,7 +472,7 @@ namespace BizHawk.MultiClient
 			/// <summary>
 			/// Acquires a video codec configuration from the user
 			/// </summary>
-			public CodecToken AcquireVideoCodecToken(IntPtr hwnd)
+			public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
 			{
 				if (!IsOpen) throw new InvalidOperationException("File must be opened before acquiring a codec token (or else the stream formats wouldnt be known)");
 
