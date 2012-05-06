@@ -28,6 +28,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		{
 			_lagcount = 0;
 			cpu = new Z80A();
+			cpu.ReadMemory = ReadMemory;
+			cpu.WriteMemory = WriteMemory;
 		}
 
 		public void FrameAdvance(bool render)
@@ -35,8 +37,12 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			_frame++;
 			_islag = true;
 
+			if (render == false) return;
+			for (int i = 0; i < 256 * 192; i++)
+				frameBuffer[i] = 0; //black
 
-
+			if (_islag)
+				_lagcount++;
 		}
 	}
 }
