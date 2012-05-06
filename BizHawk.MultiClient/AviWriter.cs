@@ -10,7 +10,7 @@ using BizHawk;
 
 namespace BizHawk.MultiClient
 {
-	class AviWriter : VideoWriter
+	class AviWriter : IVideoWriter
 	{
 		CodecToken currVideoCodecToken = null;
 		AviWriterSegment currSegment;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BizHawk
 {
-    public interface VideoWriter : IDisposable
+    public interface IVideoWriter : IDisposable
     {
         /// <summary>
         /// sets the codec token to be used for video compression
