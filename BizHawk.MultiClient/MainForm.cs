@@ -12,6 +12,7 @@ using BizHawk.Emulation.Consoles.TurboGrafx;
 using BizHawk.Emulation.Consoles.Calculator;
 using BizHawk.Emulation.Consoles.Gameboy;
 using BizHawk.Emulation.Consoles.Nintendo;
+using BizHawk.Emulation.Consoles.Coleco;
 using BizHawk.MultiClient.tools;
 using System.Collections.Generic;
 
@@ -744,6 +745,28 @@ namespace BizHawk.MultiClient
 			autofireA2600Controls.BindMulti("P2 Button", Global.Config.Atari2600Controller[1].Button);
 			Global.AutofireAtari2600Controls = autofireA2600Controls;
 
+			var colecoControls = new Controller(ColecoVision.ColecoVisionControllerDefinition);
+			colecoControls.BindMulti("P1 Up", Global.Config.ColecoController.Up);
+			colecoControls.BindMulti("P1 Left", Global.Config.ColecoController.Left);
+			colecoControls.BindMulti("P1 Right", Global.Config.ColecoController.Right);
+			colecoControls.BindMulti("P1 Down", Global.Config.ColecoController.Down);
+			colecoControls.BindMulti("P1 L1", Global.Config.ColecoController.L1);
+			colecoControls.BindMulti("P1 L2", Global.Config.ColecoController.L2);
+			colecoControls.BindMulti("P1 R1", Global.Config.ColecoController.R1);
+			colecoControls.BindMulti("P1 R2", Global.Config.ColecoController.R2);
+			colecoControls.BindMulti("P1 Key1", Global.Config.ColecoController._1);
+			colecoControls.BindMulti("P1 Key2", Global.Config.ColecoController._2);
+			colecoControls.BindMulti("P1 Key3", Global.Config.ColecoController._3);
+			colecoControls.BindMulti("P1 Key4", Global.Config.ColecoController._4);
+			colecoControls.BindMulti("P1 Key5", Global.Config.ColecoController._5);
+			colecoControls.BindMulti("P1 Key6", Global.Config.ColecoController._6);
+			colecoControls.BindMulti("P1 Key7", Global.Config.ColecoController._7);
+			colecoControls.BindMulti("P1 Key8", Global.Config.ColecoController._8);
+			colecoControls.BindMulti("P1 Key9", Global.Config.ColecoController._9);
+			colecoControls.BindMulti("P1 Star", Global.Config.ColecoController.Star);
+			colecoControls.BindMulti("P1 Pound", Global.Config.ColecoController.Pound);
+			Global.ColecoControls = colecoControls;
+
 			var TI83Controls = new Controller(TI83.TI83Controller);
 			TI83Controls.BindMulti("0", Global.Config.TI83Controller[0]._0);
 			TI83Controls.BindMulti("1", Global.Config.TI83Controller[0]._1);
@@ -1010,6 +1033,9 @@ namespace BizHawk.MultiClient
 					break;
 				case "GB":
 					break;
+				case "COLV":
+					Global.ActiveController = Global.ColecoControls;
+					break;
 				default:
 					Global.ActiveController = Global.NullControls;
 					break;
@@ -1220,6 +1246,10 @@ namespace BizHawk.MultiClient
 							case "GB":
 								Gameboy gb = new Gameboy(game, rom.FileData);
 								nextEmulator = gb;
+								break;
+							case "COLV":
+								ColecoVision c = new ColecoVision(game, rom.FileData);
+								nextEmulator = c;
 								break;
 						}
 					}
@@ -2349,7 +2379,7 @@ namespace BizHawk.MultiClient
 			if (INTERIM)
 			{
 				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;%ARCH%",
+					"Rom Files", "*.nes;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.cue;*.exe;*.gg;*.gen;*.col;%ARCH%",
 					"Disc Images", "*.cue",
 					"NES", "*.nes;%ARCH%",
 					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
@@ -2360,6 +2390,7 @@ namespace BizHawk.MultiClient
 					"Atari 2600 (experimental)", "*.a26;*.bin;%ARCH%",
 					"Genesis (experimental)", "*.gen;*.smd;*.bin;*.cue;%ARCH%",
 					"Gameboy (experimental)", "*.gb;%ARCH%",
+					"Colecovision (very experimental)", "*.col;%ARCH%",
 					"PSX Executables (experimental)", "*.exe",
 					"All Files", "*.*");
 			}

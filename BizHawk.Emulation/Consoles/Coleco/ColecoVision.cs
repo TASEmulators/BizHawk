@@ -35,9 +35,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			BoolButtons = 
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right",
-				"P1 B1", "P1 B2", "P1 B3", "P1 B4",
+				"P1 L1", "P1 L2", "P1 R1", "P1 R2",
 				"P1 Key1", "P1 Key2", "P1 Key3", "P1 Key4", "P1 Key5",
-				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9" //adelikat: TODO: this was based on a picture, is this the right buttons?, semantics?, can there be multiple controllers?
+				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9", "P1 Star", "P1 Pound" //adelikat: TODO: can there be multiple controllers?
 			}
 		};
 

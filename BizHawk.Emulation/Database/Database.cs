@@ -138,6 +138,7 @@ namespace BizHawk
 				case ".SMD": Game.System = "GEN"; break;
 				case ".NES": Game.System = "NES"; break;
 				case ".A26": Game.System = "A26"; break;
+				case ".COL": Game.System = "COLV"; break;
 			}
 
 			Game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
