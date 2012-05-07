@@ -82,6 +82,7 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -174,6 +175,7 @@
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="JMDWriter.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
       <SubType>Form</SubType>
