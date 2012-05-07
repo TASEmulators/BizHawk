@@ -65,6 +65,9 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="LuaInterface, Version=2.0.0.16708, Culture=neutral, processorArchitecture=x86" Condition=" '$(OS)' == 'Windows_NT' ">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\LuaInterface.dll</HintPath>
