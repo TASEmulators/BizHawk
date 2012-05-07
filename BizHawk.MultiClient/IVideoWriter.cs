@@ -33,6 +33,7 @@ namespace BizHawk
         /// <summary>
         /// adds audio samples to the stream
         /// no attempt is made to sync this to the video
+        /// reccomendation: try not to have the size or pacing of the audio chunks be too "weird"
         /// </summary>
         void AddSamples(short[] samples);
 
@@ -62,6 +63,16 @@ namespace BizHawk
         /// set audio parameters.  cannot change later
         /// </summary>
         void SetAudioParameters(int sampleRate, int channels, int bits);
+
+        /// <summary>
+        /// set metadata parameters; should be called before opening file
+        /// ok to not set at all, if not applicable
+        /// </summary>
+        /// <param name="gameName">The name of the game loaded</param>
+        /// <param name="authors">Authors on movie file</param>
+        /// <param name="lengthMS">Length of movie file in milliseconds</param>
+        /// <param name="rerecords">Number of rerecords on movie file</param>
+        void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords);
 
     }
 }

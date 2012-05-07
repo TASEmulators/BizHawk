@@ -350,6 +350,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        /// <summary>
+        /// set metadata parameters; should be called before opening file
+        /// NYI
+        /// </summary>
+        public void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords)
+        {
+        }
+
 		unsafe class AviWriterSegment : IDisposable
 		{
 			static AviWriterSegment()
