@@ -181,7 +181,7 @@ namespace BizHawk.MultiClient
         public void OpenFile(string baseName)
         {
             string ext = Path.GetExtension(baseName);
-            if (ext == null || ext.ToLower() != "jmd")
+            if (ext == null || ext.ToLower() != ".jmd")
                 baseName = baseName + ".jmd";
 
             JMDfile = File.Open(baseName, FileMode.OpenOrCreate);
