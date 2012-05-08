@@ -175,6 +175,12 @@
     <Compile Include="Input\ControllerBinding.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
+    <Compile Include="JMDForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JMDForm.Designer.cs">
+      <DependentUpon>JMDForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="JMDWriter.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -304,6 +310,9 @@
     <EmbeddedResource Include="Gameboy\Debugger.resx">
       <DependentUpon>Debugger.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JMDForm.resx">
+      <DependentUpon>JMDForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

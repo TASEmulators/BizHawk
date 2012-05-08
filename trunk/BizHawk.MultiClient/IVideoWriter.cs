@@ -39,6 +39,7 @@ namespace BizHawk
 
         /// <summary>
         /// obtain a set of recording compression parameters
+        /// return null on user cancel
         /// </summary>
         /// <param name="hwnd">hwnd to attach to if the user is shown config dialog</param>
         /// <returns>codec token, dispose of it when you're done with it</returns>

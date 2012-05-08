@@ -2681,7 +2681,14 @@ namespace BizHawk.MultiClient
 				aw.SetMovieParameters(fps, 0x01000000);
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
-				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle); //, null);
+				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
+                if (token == null)
+                {
+                    Global.OSD.AddMessage("AVI capture canceled.");
+                    aw.Dispose();
+                    return;
+                }
+
 				aw.SetVideoCodecToken(token);
 				aw.OpenFile(sfd.FileName);
 

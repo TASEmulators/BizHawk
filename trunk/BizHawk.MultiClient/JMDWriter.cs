@@ -25,13 +25,13 @@ namespace BizHawk.MultiClient
             public int compressionlevel
             {
                 get;
-                private set;
+                set;
             }
 
             public int numthreads
             {
                 get;
-                private set;
+                set;
             }
 
             public CodecToken()
@@ -134,8 +134,19 @@ namespace BizHawk.MultiClient
         /// <returns>codec token, dispose of it when you're done with it</returns>
         public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
         {
-            // no user interaction for now
-            return new CodecToken();
+            CodecToken ret = new CodecToken();
+
+            int t = ret.numthreads;
+            // Deflater.DEFAULT_COMPRESSION is actually a magic value and is not in the range, so guestimate
+            int c = (Deflater.BEST_COMPRESSION + Deflater.NO_COMPRESSION) / 2;
+
+            if (!JMDForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, hwnd))
+                return null;
+
+            ret.numthreads = t;
+            ret.compressionlevel = c;
+
+            return ret;
         }
 
         /// <summary>
