@@ -33,6 +33,11 @@ namespace BizHawk.MultiClient
 
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
+        /// <summary>
+        /// an audio proxy used for dumping
+        /// </summary>
+        Emulation.Sound.Utilities.DualSound DumpProxy = null;
+
 
 		//runloop control
 		bool exit;
@@ -1874,8 +1879,9 @@ namespace BizHawk.MultiClient
 					//TODO - this will stray over time! have AviWriter keep an accumulation!
 					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
 					short[] temp = new short[samples * 2];
-					Global.Emulator.SoundProvider.GetSamples(temp);
-					genSound = false;
+					//Global.Emulator.SoundProvider.GetSamples(temp);
+                    DumpProxy.GetSamples(temp);
+                    //genSound = false;
 
 					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
 					CurrAviWriter.AddSamples(temp);
@@ -1891,10 +1897,16 @@ namespace BizHawk.MultiClient
 				PressFrameAdvance = false;
 			}
 
-			if (genSound)
-				Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
-			else
-				Global.Sound.UpdateSound(NullSound.SilenceProvider);
+            if (genSound)
+            {
+                // change audio path if dumping is occuring
+                if (DumpProxy != null)
+                    Global.Sound.UpdateSound(DumpProxy.secondpin);
+                else
+                    Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
+            }
+            else
+                Global.Sound.UpdateSound(NullSound.SilenceProvider);
 		}
 
 		/// <summary>
@@ -2704,16 +2716,23 @@ namespace BizHawk.MultiClient
 				aw.Dispose();
 				throw;
 			}
+            // buffersize here is entirely guess
+            DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
 		}
 
 		public void StopAVI()
 		{
-			if (CurrAviWriter == null) return;
+            if (CurrAviWriter == null)
+            {
+                DumpProxy = null;
+                return;
+            }
 			CurrAviWriter.CloseFile();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
+            DumpProxy = null; // return to normal sound output
 		}
 
 		private void SwapBackupSavestate(string path)
