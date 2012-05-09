@@ -13,7 +13,6 @@ namespace BizHawk.MultiClient
     {
         /// <summary>
         /// carries private compression information data
-        /// NYI
         /// </summary>
         class CodecToken : IDisposable
         {
@@ -21,7 +20,6 @@ namespace BizHawk.MultiClient
             {
             }
 
-            // get constants from Deflater
             public int compressionlevel
             {
                 get;
@@ -34,6 +32,9 @@ namespace BizHawk.MultiClient
                 set;
             }
 
+            /// <summary>
+            /// instantiates a CodecToken with default parameters
+            /// </summary>
             public CodecToken()
             {
                 compressionlevel = Deflater.DEFAULT_COMPRESSION;
@@ -41,6 +42,9 @@ namespace BizHawk.MultiClient
             }
         }
 
+        /// <summary>
+        /// stores compression parameters
+        /// </summary>
         CodecToken token;
         /// <summary>
         /// fps numerator, constant
@@ -113,6 +117,7 @@ namespace BizHawk.MultiClient
 
         public void Dispose()
         {
+            // we have no unmanaged resources
         }
 
 
@@ -137,7 +142,8 @@ namespace BizHawk.MultiClient
             CodecToken ret = new CodecToken();
 
             int t = ret.numthreads;
-            // Deflater.DEFAULT_COMPRESSION is actually a magic value and is not in the range, so guestimate
+            // Deflater.DEFAULT_COMPRESSION is actually a magic value and is not in the range NO_COMPRESSION..BEST_COMPRESSION
+            // so our default is just a guesstimate in the middle
             int c = (Deflater.BEST_COMPRESSION + Deflater.NO_COMPRESSION) / 2;
 
             if (!JMDForm.DoCompressionDlg(ref t, ref c, 1, 6, Deflater.NO_COMPRESSION, Deflater.BEST_COMPRESSION, hwnd))
@@ -168,7 +174,7 @@ namespace BizHawk.MultiClient
         /// <param name="height"></param>
         public void SetVideoParameters(int width, int height)
         {
-            // each frame is dumped with its resolution, so we don't care to store this or monitor it
+            // each frame is dumped independently with its own resolution tag, so we don't care to store this
         }
 
         /// <summary>
@@ -176,7 +182,8 @@ namespace BizHawk.MultiClient
         /// </summary>
         public void SetAudioParameters(int sampleRate, int channels, int bits)
         {
-            // these are pretty arbitrary
+            // the sampleRate limits are arbitrary, just to catch things which are probably silly-wrong
+            // if a larger range of sampling rates is needed, it should be supported
             if (sampleRate < 8000 || sampleRate > 96000 || channels < 1 || channels > 2 || bits != 16)
                 throw new ArgumentException("Audio parameters out of range!");
             audiosamplerate = sampleRate;
@@ -252,7 +259,7 @@ namespace BizHawk.MultiClient
             }
 
             // start up thread
-            // problem: since audio chunks and video frames both go through here, exactly how many worker gzips this
+            // problem: since audio chunks and video frames both go through here, exactly how many zlib workers
             // gives is not known without knowing how the emulator will chunk audio packets
             // this shouldn't affect results though, just performance
             threadQ = new System.Collections.Concurrent.BlockingCollection<Object>(token.numthreads * 2);
@@ -296,7 +303,6 @@ namespace BizHawk.MultiClient
             {
                 System.Windows.Forms.MessageBox.Show("JMD Worker Thread died:\n\n" + e.ToString());
                 return;
-
             }
         }
 
@@ -532,8 +538,6 @@ namespace BizHawk.MultiClient
             m.WriteByte((byte)(v.BufferWidth & 255));
             m.WriteByte((byte)(v.BufferHeight >> 8));
             m.WriteByte((byte)(v.BufferHeight & 255));
-            // NET 4.5 is needed for CompressionLevel?  what a pile of balls
-            //var g = new DeflateStream(m, CompressionMode.Compress, true);
             var g = new DeflaterOutputStream(m, new ICSharpCode.SharpZipLib.Zip.Compression.Deflater(token.compressionlevel));
             g.IsStreamOwner = false; // leave memory stream open so we can pick its contents
             g.Write(v.VideoBuffer, 0, v.VideoBuffer.Length);
@@ -582,24 +586,19 @@ namespace BizHawk.MultiClient
         /// <param name="source"></param>
         void AddFrameEx(byte[] source)
         {
-            // at this point, VideoCopy contains a gzipped bytestream
+            // at this point, VideoCopy contains a zlib compressed bytestream
             var j = new JMDPacket();
             j.stream = 0;
-            j.subtype = 1; // zlib compressed
+            j.subtype = 1; // zlib compressed, other possibility is 0 = uncompressed
             j.data = source;
             j.timestamp = timestampcalc(fpsnum, fpsden, (UInt64)totalframes);
             totalframes++;
             writevideo(j);
         }
 
-
-
-
-
-
-
         /// <summary>
         /// assemble JMDPacket and send to packetqueue
+        /// one audio packet is split up into many many JMD packets, since JMD requires only 2 samples (1 left, 1 right) per packet
         /// </summary>
         /// <param name="samples"></param>
         void AddSamplesEx(short[] samples)
