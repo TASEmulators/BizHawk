@@ -77,8 +77,9 @@ namespace BizHawk.MultiClient
                         return;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                System.Windows.Forms.MessageBox.Show("AVIFIL32 Thread died:\n\n" + e.ToString());
                 return;
             }
         }
