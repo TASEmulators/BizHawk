@@ -278,6 +278,10 @@ namespace BizHawk.MultiClient
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 
+		// Video dumping settings
+		public int JMDCompression = 3;
+		public int JMDThreads = 3;
+
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
 		public bool NESPPUSaveWindowPosition = true;
