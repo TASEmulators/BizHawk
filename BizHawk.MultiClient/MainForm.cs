@@ -1037,6 +1037,8 @@ namespace BizHawk.MultiClient
 					Global.AutoFireController = Global.AutofireNESControls;
 					break;
 				case "GB":
+					Global.ActiveController = Global.GBControls;
+					Global.AutoFireController = Global.AutofireGBControls;
 					break;
 				case "COLV":
 					Global.ActiveController = Global.ColecoControls;
@@ -1253,7 +1255,7 @@ namespace BizHawk.MultiClient
 								nextEmulator = gb;
 								break;
 							case "COLV":
-								ColecoVision c = new ColecoVision(game, rom.FileData);
+								SMS c = new SMS(game, rom.RomData);//new ColecoVision(game, rom.FileData);
 								nextEmulator = c;
 								break;
 						}
