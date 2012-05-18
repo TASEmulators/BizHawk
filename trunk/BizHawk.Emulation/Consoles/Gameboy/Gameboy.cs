@@ -704,12 +704,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		public void FrameAdvance(bool render)
 		{
 			Controller.UpdateControls(Frame++);
-			
-			//40960 is not the right number.
-			for (int i = 0; i < 40960; i++)
-			{
+
+			for (int i = 0; i < 70224; i++)
 				SingleStepInto();
-			}
 
 			//to make sure input is working
 			Console.WriteLine(Controller.IsPressed("Up"));
@@ -737,7 +734,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				RenderOBJLine(y, linebuf, true);
 				for (int x = 0; x < 160; x++)
 				{
-					int gray = linebuf[x]<<6;
+					int gray = (3 - linebuf[x]) << 6;
 					gray |= (gray << 8) | (gray << 16);
 					buf[i++] = unchecked(gray | (int)0xFF000000);
 				}
