@@ -678,26 +678,26 @@ namespace BizHawk.MultiClient
 			Global.AutofireNESControls = anesControls;
 
 			var gbControls = new Controller(Gameboy.GbController);
-			gbControls.BindMulti("Up", Global.Config.GBController.Up);
-			gbControls.BindMulti("Down", Global.Config.GBController.Down);
-			gbControls.BindMulti("Left", Global.Config.GBController.Left);
-			gbControls.BindMulti("Right", Global.Config.GBController.Right);
-			gbControls.BindMulti("A", Global.Config.GBController.A);
-			gbControls.BindMulti("B", Global.Config.GBController.B);
-			gbControls.BindMulti("Select", Global.Config.GBController.Select);
-			gbControls.BindMulti("Start", Global.Config.GBController.Start);
+			gbControls.BindMulti("Up", Global.Config.GBController[0].Up);
+			gbControls.BindMulti("Down", Global.Config.GBController[0].Down);
+			gbControls.BindMulti("Left", Global.Config.GBController[0].Left);
+			gbControls.BindMulti("Right", Global.Config.GBController[0].Right);
+			gbControls.BindMulti("A", Global.Config.GBController[0].A);
+			gbControls.BindMulti("B", Global.Config.GBController[0].B);
+			gbControls.BindMulti("Select", Global.Config.GBController[0].Select);
+			gbControls.BindMulti("Start", Global.Config.GBController[0].Start);
 			Global.GBControls = gbControls;
 
 			var agbControls = new AutofireController(Gameboy.GbController);
 			agbControls.Autofire = true;
-			agbControls.BindMulti("Up", Global.Config.GBAutoController.Up);
-			agbControls.BindMulti("Down", Global.Config.GBAutoController.Down);
-			agbControls.BindMulti("Left", Global.Config.GBAutoController.Left);
-			agbControls.BindMulti("Right", Global.Config.GBAutoController.Right);
-			agbControls.BindMulti("A", Global.Config.GBAutoController.A);
-			agbControls.BindMulti("B", Global.Config.GBAutoController.B);
-			agbControls.BindMulti("Select", Global.Config.GBAutoController.Select);
-			agbControls.BindMulti("Start", Global.Config.GBAutoController.Start);
+			agbControls.BindMulti("Up", Global.Config.GBAutoController[0].Up);
+			agbControls.BindMulti("Down", Global.Config.GBAutoController[0].Down);
+			agbControls.BindMulti("Left", Global.Config.GBAutoController[0].Left);
+			agbControls.BindMulti("Right", Global.Config.GBAutoController[0].Right);
+			agbControls.BindMulti("A", Global.Config.GBAutoController[0].A);
+			agbControls.BindMulti("B", Global.Config.GBAutoController[0].B);
+			agbControls.BindMulti("Select", Global.Config.GBAutoController[0].Select);
+			agbControls.BindMulti("Start", Global.Config.GBAutoController[0].Start);
 			Global.AutofireGBControls = agbControls;
 
 			var genControls = new Controller(Genesis.GenesisController);
