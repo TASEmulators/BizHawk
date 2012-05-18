@@ -10,18 +10,40 @@ namespace BizHawk.Emulation.Consoles.Coleco
 {
 	public partial class ColecoVision : IEmulator
 	{
-		public byte[] rom;
+		public byte[] rom = new byte[2048];
+		public byte[] expansion = new byte[0x4000];
+		public byte[] cartridgeslot = new byte[0xFFFF]; //TODO: how big should this be?
 		public Z80A cpu;
 		public VDP Vdp; //adelikat: Using the SMS one for now
 
 		public byte ReadMemory(ushort addr)
 		{
-			return 0xFF;
+			if (addr < 0x2000)
+			{
+				return rom[addr];
+			}
+			else if (addr >= 0x2000 && addr < 0x6000)
+			{
+				return expansion[addr];
+			}
+			else if (addr >= 0x6000 && addr < 0x8000)
+			{
+				return ram[addr & 1023];
+			}
+			else if (addr >= 0x8000)
+			{
+				return cartridgeslot[addr];
+			}
+
+			else return 0xFF;
 		}
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			return;
+			if (addr >= 0x6000 && addr < 0x8000)
+			{
+				ram[addr] = value;
+			}
 		}
 
 		public void HardReset()

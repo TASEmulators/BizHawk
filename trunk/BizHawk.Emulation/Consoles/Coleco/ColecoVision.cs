@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
-		public byte[] ram = new byte[1024];
+		public byte[] ram = new byte[2048];
 
 		public DisplayType DisplayType { get; set; } //TOOD: delete me
 
