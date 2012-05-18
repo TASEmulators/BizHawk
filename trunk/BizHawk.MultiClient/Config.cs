@@ -17,7 +17,8 @@ namespace BizHawk.MultiClient
 			NESController[1] = new NESControllerTemplate(false);
 			NESController[2] = new NESControllerTemplate(false);
 			NESController[3] = new NESControllerTemplate(false);
-			GameBoyController = new NESControllerTemplate(true);
+			GBController[0] = new GBControllerTemplate(true);
+			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
 			GenesisController[0] = new GenControllerTemplate(true);
@@ -43,7 +44,6 @@ namespace BizHawk.MultiClient
 			PCEAutoController[3] = new PCEControllerTemplate(false);
 			PCEAutoController[4] = new PCEControllerTemplate(false);
 
-			GameBoyAutoController = new NESControllerTemplate(false);
 			ColecoController = new ColecoVisionControllerTemplate(true);
 
 		}
@@ -503,10 +503,6 @@ namespace BizHawk.MultiClient
 		//ColecoVision
 		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
 
-		//GameBoy Settings
-		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
-		public NESControllerTemplate GameBoyAutoController = new NESControllerTemplate();
-
 		//NES settings
 		//public string NESReset = "Backspace";
 		public NESControllerTemplate[] NESController = new NESControllerTemplate[4];
@@ -516,8 +512,8 @@ namespace BizHawk.MultiClient
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
 		//GB settings
-		public GBControllerTemplate GBController = new GBControllerTemplate();
-		public GBControllerTemplate GBAutoController = new GBControllerTemplate();
+		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
+		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;

@@ -103,8 +103,8 @@ namespace BizHawk.MultiClient
 					break;
 				case "Gameboy":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
-					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
-					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					controller = Global.Config.GBController;
+					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
@@ -275,8 +275,8 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.Atari2600AutoController;
 					break;
 				case "Gameboy":
-					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
-					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					controller = Global.Config.GBController;
+					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
 					controller = Global.Config.NESController;
