@@ -734,8 +734,19 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 				RenderOBJLine(y, linebuf, true);
 				for (int x = 0; x < 160; x++)
 				{
-					int gray = (3 - linebuf[x]) << 6;
-					gray |= (gray << 8) | (gray << 16);
+					int gray = 0x000000;
+					switch (linebuf[x])
+					{
+						case 0:
+							gray = 0xFFFFFF;
+							break;
+						case 1:
+							gray = 0xC0C0C0;
+							break;
+						case 2:
+							gray = 0x606060;
+							break;
+					}
 					buf[i++] = unchecked(gray | (int)0xFF000000);
 				}
 			}
