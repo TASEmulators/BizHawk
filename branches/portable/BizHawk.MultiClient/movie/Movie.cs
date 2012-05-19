@@ -268,50 +268,41 @@ namespace BizHawk.MultiClient
 		/// Load Header information only for displaying file information in dialogs such as play movie
 		/// </summary>
 		/// <returns></returns>
-		public bool PreLoadText()
+		public bool PreLoadText(HawkFile file)
 		{
 			Loaded = false;
-			var file = new FileInfo(Filename);
-
-			if (file.Exists == false)
-				return false;
-			else
+			Header.Clear();
+			Log.Clear();
+			
+			StreamReader sr = new StreamReader(file.GetStream());
+			string str = "";
+			int length = 0;
+			while ((str = sr.ReadLine()) != null)
 			{
-				Header.Clear();
-				Log.Clear();
-			}
-
-			using (StreamReader sr = file.OpenText())
-			{
-				string str = "";
-				int length = 0;
-				while ((str = sr.ReadLine()) != null)
+				length += str.Length + 1;
+				if (str == "")
 				{
-					length += str.Length + 1;
-					if (str == "")
-					{
-						continue;
-					}
-					else if (Header.AddHeaderFromLine(str))
-						continue;
-
-					if (str.StartsWith("subtitle") || str.StartsWith("sub"))
-					{
-						Subtitles.AddSubtitle(str);
-					}
-					else if (str[0] == '|')
-					{
-						int line = str.Length + 1;
-						length -= line;
-						int lines = (int)file.Length - length;
-						this.Frames = lines / line;
-						break;
-					}
-					else
-						Header.Comments.Add(str);
+					continue;
 				}
-				sr.Close();
+				else if (Header.AddHeaderFromLine(str))
+					continue;
+
+				if (str.StartsWith("subtitle") || str.StartsWith("sub"))
+				{
+					Subtitles.AddSubtitle(str);
+				}
+				else if (str[0] == '|')
+				{
+					int line = str.Length + 1;
+					length -= line;
+					int lines = (int)sr.BaseStream.Length - length;
+					this.Frames = lines / line;
+					break;
+				}
+				else
+					Header.Comments.Add(str);
 			}
+			sr.BaseStream.Position = 0; //Reset stream for others to use
 
 			return true;
 		}

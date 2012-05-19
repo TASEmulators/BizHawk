@@ -72,14 +72,18 @@ namespace BizHawk.MultiClient
 
 		private void PlayMovie()
 		{
+			RunLoopBlocked = true;
 			PlayMovie p = new PlayMovie();
 			DialogResult d = p.ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		private void RecordMovie()
 		{
+			RunLoopBlocked = true;
 			RecordMovie r = new RecordMovie();
 			r.ShowDialog();
+			RunLoopBlocked = false;
 		}
 
 		public void PlayMovieFromBeginning()
