@@ -25,9 +25,13 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp -f -R &quot;${ProjectDir}/../BizHawk.MultiClient/output/&quot; &quot;${TargetDir}/BizHawk.app/Contents/Resources/&quot;" />
+        <Command type="AfterBuild" command="cp -f -R &quot;${ProjectDir}/../BizHawk.MultiClient/output/&quot; &quot;${TargetDir}/BizHawk.app/Contents/MonoBundle/&quot;" />
       </CustomCommands>
     </CustomCommands>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -39,9 +43,13 @@
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
-        <Command type="AfterBuild" command="cp -f -R &quot;${ProjectDir}/../BizHawk.MultiClient/output/&quot; &quot;${TargetDir}/BizHawk.app/Contents/Resources/&quot;" />
+        <Command type="AfterBuild" command="cp -f -R &quot;${ProjectDir}/../BizHawk.MultiClient/output/&quot; &quot;${TargetDir}/BizHawk.app/Contents/MonoBundle/&quot;" />
       </CustomCommands>
     </CustomCommands>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
