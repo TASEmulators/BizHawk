@@ -70,6 +70,7 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public Debugger GBDebugger = new Debugger();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -1924,6 +1925,7 @@ namespace BizHawk.MultiClient
 			PCEBGViewer1.UpdateValues();
 			PCEBGViewer1.Generate(); // TODO: just a makeshift. PCE core should provide callbacks.
 			TAStudio1.UpdateValues();
+			GBDebugger.UpdateValues();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2449,6 +2451,7 @@ namespace BizHawk.MultiClient
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
+			GBDebugger.Restart();
 			ToolBox1.Restart();
 #if WINDOWS
 			LuaConsole1.Restart();
@@ -2780,12 +2783,17 @@ namespace BizHawk.MultiClient
 #endif
 		}
 
-		public void OpenGameboyDebugger()
+		public void LoadGBDebugger()
 		{
 			if (Global.Emulator is Gameboy)
 			{
-				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
-				gbDebugger.Show();
+				if (!GBDebugger.IsHandleCreated || GBDebugger.IsDisposed)
+				{
+					GBDebugger.LoadCore(Global.Emulator as Gameboy);
+					GBDebugger.Show();
+				}
+				else
+					GBDebugger.Focus();
 			}
 		}
 

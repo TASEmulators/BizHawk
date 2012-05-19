@@ -1065,7 +1065,7 @@ namespace BizHawk.MultiClient
 
 		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.OpenGameboyDebugger();
+			Global.MainForm.LoadGBDebugger();
 		}
 
 		private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
