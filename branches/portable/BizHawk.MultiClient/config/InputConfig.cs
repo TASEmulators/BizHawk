@@ -103,8 +103,8 @@ namespace BizHawk.MultiClient
 					break;
 				case "Gameboy":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.GBController;
-					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
-					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					controller = Global.Config.GBController;
+					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
 					ControllerImage.Image = BizHawk.MultiClient.Properties.Resources.NESController;
@@ -159,6 +159,8 @@ namespace BizHawk.MultiClient
 						IDX_CONTROLLERENABLED.Checked = ((Atari2600ControllerTemplate)mainController[jpad]).Enabled;
 						break;
 					case "Gameboy":
+						IDX_CONTROLLERENABLED.Checked = ((GBControllerTemplate)mainController[jpad]).Enabled;
+						break;
 					case "NES":
 						IDX_CONTROLLERENABLED.Checked = ((NESControllerTemplate)mainController[jpad]).Enabled;
 						break;
@@ -206,6 +208,11 @@ namespace BizHawk.MultiClient
 						break;
 					}
 					case "Gameboy":
+					{
+						GBControllerTemplate obj = (GBControllerTemplate)controller[jpad];
+						field = obj.GetType().GetField(fieldName).GetValue(obj);
+						break;
+					}
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[jpad];
@@ -275,8 +282,8 @@ namespace BizHawk.MultiClient
 					autoController = Global.Config.Atari2600AutoController;
 					break;
 				case "Gameboy":
-					controller = new NESControllerTemplate[1] { Global.Config.GameBoyController };
-					autoController = new NESControllerTemplate[1] { Global.Config.GameBoyAutoController };
+					controller = Global.Config.GBController;
+					autoController = Global.Config.GBAutoController;
 					break;
 				case "NES":
 					controller = Global.Config.NESController;
@@ -319,6 +326,8 @@ namespace BizHawk.MultiClient
 					((Atari2600ControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
 				case "Gameboy":
+					((GBControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
+					break;
 				case "NES":
 					((NESControllerTemplate)mainController[prev]).Enabled = IDX_CONTROLLERENABLED.Checked;
 					break;
@@ -357,6 +366,13 @@ namespace BizHawk.MultiClient
 						break;
 					}
 					case "Gameboy":
+					{
+						GBControllerTemplate obj = (GBControllerTemplate)controller[prev];
+						FieldInfo buttonField = obj.GetType().GetField(fieldName);
+						field = buttonField.GetValue(obj);
+						buttonField.SetValue(obj, AppendButtonMapping(TempBox.Text, (string)field));
+						break;
+					}
 					case "NES":
 					{
 						NESControllerTemplate obj = (NESControllerTemplate)controller[prev];

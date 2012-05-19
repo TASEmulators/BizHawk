@@ -832,8 +832,8 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-                    LuaImp.gui_drawNew();
-                    //LuaImp.gui_clearGraphics();
+					LuaImp.gui_drawNewEmu();
+					//LuaImp.gui_clearGraphics();
 					if (s.Enabled && s.Thread != null && !s.Paused)
 					{
 						bool prohibit = false;
@@ -844,7 +844,7 @@ namespace BizHawk.MultiClient
 						var result = LuaImp.ResumeScript(s.Thread);
 						s.FrameWaiting = result.WaitForFrame;
 					}
-                    LuaImp.gui_drawFinish();
+					LuaImp.gui_drawFinishEmu();
 				}
 				catch (Exception ex)
 				{

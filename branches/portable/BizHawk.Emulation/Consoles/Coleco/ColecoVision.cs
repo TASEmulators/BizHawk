@@ -3,27 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using BizHawk.Emulation.CPUs.Z80;
+using BizHawk.Emulation.Sound;
+using BizHawk.Emulation.Consoles.Sega;
 
 namespace BizHawk.Emulation.Consoles.Coleco
 {
 	public partial class ColecoVision : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public string SystemId { get { return "Coleco"; } }
+		public GameInfo game;
 		public int[] frameBuffer = new int[256 * 192];
 		public CoreInputComm CoreInputComm { get; set; }
 		public CoreOutputComm CoreOutputComm { get; private set; }
 		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return this; } }
-		public byte[] ram = new byte[1024];
+		public byte[] ram = new byte[2048];
+
+		public DisplayType DisplayType { get; set; } //TOOD: delete me
 
 		public ColecoVision(GameInfo game, byte[] rom)
 		{
+			cpu = new Z80A();
+			Vdp = new VDP(this, cpu, VdpMode.SMS, DisplayType);
+
 			var domains = new List<MemoryDomain>(1);
-			domains.Add(new MemoryDomain("Main RAM", 128, Endian.Little, addr => ram[1023], (addr, value) => ram[addr & 1023] = value));
+			domains.Add(new MemoryDomain("Main RAM", 1024, Endian.Little, addr => ram[1023], (addr, value) => ram[addr & 1023] = value));
 			memoryDomains = domains.AsReadOnly();
 			CoreOutputComm = new CoreOutputComm();
 			CoreInputComm = new CoreInputComm();
 			this.rom = rom;
+			this.game = game;
 			HardReset();
 		}
 
@@ -35,9 +45,9 @@ namespace BizHawk.Emulation.Consoles.Coleco
 			BoolButtons = 
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right",
-				"P1 B1", "P1 B2", "P1 B3", "P1 B4",
+				"P1 L1", "P1 L2", "P1 R1", "P1 R2",
 				"P1 Key1", "P1 Key2", "P1 Key3", "P1 Key4", "P1 Key5",
-				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9" //adelikat: TODO: this was based on a picture, is this the right buttons?, semantics?, can there be multiple controllers?
+				"P1 Key6", "P1 Key7", "P1 Key8", "P1 Key9", "P1 Star", "P1 Pound" //adelikat: TODO: can there be multiple controllers?
 			}
 		};
 
@@ -77,8 +87,8 @@ namespace BizHawk.Emulation.Consoles.Coleco
 		}
 
 		public int[] GetVideoBuffer() { return frameBuffer; }
-		public int BufferWidth { get { return 320; } }
-		public int BufferHeight { get { return 262; } }
+		public int BufferWidth { get { return 256; } }
+		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 		public void GetSamples(short[] samples)
 		{

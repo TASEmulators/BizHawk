@@ -4,7 +4,7 @@ using BizHawk.Emulation.CPUs.Z80GB;
 
 namespace BizHawk.Emulation.Consoles.Gameboy
 {
-	public partial class Gameboy : IEmulator
+	public partial class Gameboy : IEmulator, IVideoProvider
 	{
 		
 		private int _lagcount = 0;
@@ -703,17 +703,13 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public void FrameAdvance(bool render)
 		{
-			lagged = true;
 			Controller.UpdateControls(Frame++);
-			Cpu.ExecuteCycles(4096);
 
-			if (lagged)
-			{
-				_lagcount++;
-				islag = true;
-			}
-			else
-				islag = false;
+			for (int i = 0; i < 70224; i++)
+				SingleStepInto();
+
+			//to make sure input is working
+			Console.WriteLine(Controller.IsPressed("Up"));
 		}
 
 		public CoreInputComm CoreInputComm { get; set; }
@@ -721,8 +717,45 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 
 		public IVideoProvider VideoProvider
 		{
-			get { return new NullEmulator(); }
+			get { return this; }
 		}
+
+		public int[] GetVideoBuffer() 
+		{
+			//TODO - these need to be run once per scanline and accumulated into a 160*144 byte buffer held by the core
+			//then, in the call to GetVideoBuffer(), it gets adapted to gray according to the palette and returned
+			//(i.e. no real GB logic happens during GetVideoBuffer())
+			int[] buf = new int[160 * 144];
+			var linebuf = new byte[160];
+			int i = 0;
+			for (int y = 0; y < 144; y++)
+			{
+				RenderBGLine(y, linebuf, true);
+				RenderOBJLine(y, linebuf, true);
+				for (int x = 0; x < 160; x++)
+				{
+					int gray = 0x000000;
+					switch (linebuf[x])
+					{
+						case 0:
+							gray = 0xFFFFFF;
+							break;
+						case 1:
+							gray = 0xC0C0C0;
+							break;
+						case 2:
+							gray = 0x606060;
+							break;
+					}
+					buf[i++] = unchecked(gray | (int)0xFF000000);
+				}
+			}
+			return buf;
+		}
+
+			public int BufferWidth { get { return 160; } }
+			public int BufferHeight { get { return 144; } }
+			public int BackgroundColor { get { return 0; } }
 
 		public ISoundProvider SoundProvider
 		{

@@ -30,6 +30,7 @@ namespace BizHawk.MultiClient
 		public static Controller GBControls;
 		public static Controller Atari2600Controls;
 		public static Controller NullControls;
+		public static Controller ColecoControls;
 		public static CheatList CheatList;
 
 		public static AutofireController AutofireNullControls;
@@ -94,6 +95,14 @@ namespace BizHawk.MultiClient
 				{	
 					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Button", "B"}
 				}
+			},
+			{
+				"ColecoVision Basic Controller", new Dictionary<string, string>()
+				{
+					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"L1", "l"}, {"L2", "L"}, {"R1", "r"}, {"R2", "R"}, //adelikat: These mnemonics are terrible but I can't think of anything better
+					{"Key1", "1"}, {"Key2", "2"}, {"Key3", "3"}, {"Key4", "4"}, {"Key5", "5"}, {"Key6", "6"}, {"Key7", "7"}, 
+					{"Key8", "8"}, {"Key9", "9"}, {"Star", "*"}, {"Pound", "#"}
+				}
 			}
 		};
 
@@ -110,7 +119,8 @@ namespace BizHawk.MultiClient
 		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>()
 		{
 			{"Gameboy Controller", 1}, {"Genesis 3-Button Controller", 2}, {"NES Controller", 4},
-			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2}
+			{"PC Engine Controller", 5}, {"SMS Controller", 2}, {"TI83 Controller", 1}, {"Atari 2600 Basic Controller", 2},
+			{"ColecoVision Basic Controller", 1}
 		};
 
 		/// <summary>

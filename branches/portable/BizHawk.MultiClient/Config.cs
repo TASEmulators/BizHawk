@@ -17,7 +17,8 @@ namespace BizHawk.MultiClient
 			NESController[1] = new NESControllerTemplate(false);
 			NESController[2] = new NESControllerTemplate(false);
 			NESController[3] = new NESControllerTemplate(false);
-			GameBoyController = new NESControllerTemplate(true);
+			GBController[0] = new GBControllerTemplate(true);
+			GBAutoController[0] = new GBControllerTemplate(true);
 			TI83Controller[0] = new TI83ControllerTemplate(true);
 
 			GenesisController[0] = new GenControllerTemplate(true);
@@ -43,7 +44,8 @@ namespace BizHawk.MultiClient
 			PCEAutoController[3] = new PCEControllerTemplate(false);
 			PCEAutoController[4] = new PCEControllerTemplate(false);
 
-			GameBoyAutoController = new NESControllerTemplate(false);
+			ColecoController = new ColecoVisionControllerTemplate(true);
+
 		}
 
 		// Directories
@@ -276,6 +278,10 @@ namespace BizHawk.MultiClient
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 
+		// Video dumping settings
+		public int JMDCompression = 3;
+		public int JMDThreads = 3;
+
 		// NESPPU Settings
 		public bool AutoLoadNESPPU = false;
 		public bool NESPPUSaveWindowPosition = true;
@@ -494,9 +500,8 @@ namespace BizHawk.MultiClient
 		public bool Atari2600_LeftDifficulty = true;
 		public bool Atari2600_RightDifficulty = true;
 
-		//GameBoy Settings
-		public NESControllerTemplate GameBoyController = new NESControllerTemplate(true);
-		public NESControllerTemplate GameBoyAutoController = new NESControllerTemplate();
+		//ColecoVision
+		public ColecoVisionControllerTemplate ColecoController = new ColecoVisionControllerTemplate(true);
 
 		//NES settings
 		//public string NESReset = "Backspace";
@@ -507,8 +512,8 @@ namespace BizHawk.MultiClient
 		public TI83ControllerTemplate[] TI83Controller = new TI83ControllerTemplate[1];
 
 		//GB settings
-		public GBControllerTemplate GBController = new GBControllerTemplate();
-		public GBControllerTemplate GBAutoController = new GBControllerTemplate();
+		public GBControllerTemplate[] GBController = new GBControllerTemplate[1];
+		public GBControllerTemplate[] GBAutoController = new GBControllerTemplate[1];
 
 		//GIF Animator Settings
 		public int GifAnimatorNumFrames;
@@ -743,6 +748,59 @@ namespace BizHawk.MultiClient
 				Enabled = true;
 				Reset = "";
 				Select = "";
+			}
+		}
+	}
+
+	public class ColecoVisionControllerTemplate
+	{
+		public string Up = "";
+		public string Down = "";
+		public string Left = "";
+		public string Right = "";
+		public string L1 = "";
+		public string L2 = "";
+		public string R1 = "";
+		public string R2 = "";
+		
+		public string _1 = "";
+		public string _2 = "";
+		public string _3 = "";
+		public string _4 = "";
+		public string _5 = "";
+		public string _6 = "";
+		public string _7 = "";
+		public string _8 = "";
+		public string _9 = "";
+		public string Star = "";
+		public string Pound = "";
+		public bool Enabled;
+
+		public ColecoVisionControllerTemplate() { }
+		public ColecoVisionControllerTemplate(bool defaults)
+		{
+			if (defaults)
+			{
+				Enabled = true;
+				Up = "UpArrow, J1 Up";
+				Down = "DownArrow, J1 Down";
+				Left = "LeftArrow, J1 Left";
+				Right = "RightArrow, J1 Right";
+				L1 = "Z, J1 B1";
+				L2 = "X, J1 B2";
+				R1 = "C, J1 B1";
+				R2 = "V, J1 B2";
+				_1 = "NumberPad1";
+				_2 = "NumberPad2";
+				_3 = "NumberPad3";
+				_4 = "NumberPad4";
+				_5 = "NumberPad5";
+				_6 = "NumberPad6";
+				_7 = "NumberPad7";
+				_8 = "NumberPad8";
+				_9 = "NumberPad9";
+				Pound = "NumberPadPeriod";
+				Star = "NumberPad0";
 			}
 		}
 	}

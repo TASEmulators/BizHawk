@@ -105,6 +105,10 @@
     <Compile Include="Consoles\Calculator\TI83.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.Core.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
+    <Compile Include="Consoles\Coleco\VDP.cs" />
+    <Compile Include="Consoles\Coleco\VDP.Mode4.cs" />
+    <Compile Include="Consoles\Coleco\VDP.ModeTMS.cs" />
+    <Compile Include="Consoles\Coleco\VDP.Tables.cs" />
     <Compile Include="Consoles\Nintendo\NES\APU.cs" />
     <Compile Include="Consoles\Nintendo\NES\BoardSystem.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\AVE-NINA.cs" />
@@ -290,6 +294,7 @@
     <Compile Include="Properties\svnrev.cs" />
     <Compile Include="QuickCollections.cs" />
     <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\Utilities\DualSound.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\YM2612.IO.cs" />
     <Compile Include="Sound\YM2612.Channel.cs" />

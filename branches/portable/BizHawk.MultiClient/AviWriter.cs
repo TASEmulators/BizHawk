@@ -10,7 +10,7 @@ using BizHawk;
 
 namespace BizHawk.MultiClient
 {
-	class AviWriter : IDisposable
+	class AviWriter : IVideoWriter
 	{
 		CodecToken currVideoCodecToken = null;
 		AviWriterSegment currSegment;
@@ -27,9 +27,12 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// sets the codec token to be used for video compression
 		/// </summary>
-		public void SetVideoCodecToken(CodecToken token)
+		public void SetVideoCodecToken(IDisposable token)
 		{
-			currVideoCodecToken = token;
+            if (token is CodecToken)
+                currVideoCodecToken = (CodecToken)token;
+            else
+                throw new ArgumentException("AviWriter only takes its own Codec Tokens!");
 		}
 
 		public static IEnumerator<string> CreateBasicNameProvider(string template)
@@ -52,6 +55,59 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void OpenFile(string baseName) { OpenFile(CreateBasicNameProvider(baseName)); }
 
+        // thread communication
+        // synchronized queue with custom messages
+        // it seems like there are 99999 ways to do everything in C#, so i'm sure this is not the best
+        System.Collections.Concurrent.BlockingCollection<Object> threadQ;
+        System.Threading.Thread workerT;
+
+        void threadproc()
+        {
+            try
+            {
+                while (true)
+                {
+                    Object o = threadQ.Take();
+                    if (o is IVideoProvider)
+                        AddFrameEx((IVideoProvider)o);
+                    else if (o is short[])
+                        AddSamplesEx((short[])o);
+                    else
+                        // anything else is assumed to be quit time
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                System.Windows.Forms.MessageBox.Show("AVIFIL32 Thread died:\n\n" + e.ToString());
+                return;
+            }
+        }
+
+        // we can't pass the IVideoProvider we get to another thread, because it doesn't actually keep a local copy of its data,
+        // instead grabbing it from the emu as needed.  this causes frame loss/dupping as a race condition
+        // instead we pass this
+        class VideoCopy : IVideoProvider
+        {
+            int[] vb;
+            int bw, bh, bc;
+            public int BufferWidth { get {return bw;} }
+            public int BufferHeight { get { return bh; } }
+            public int BackgroundColor { get { return bc; } }
+            public VideoCopy(IVideoProvider c)
+            {
+                vb = (int []) c.GetVideoBuffer().Clone ();
+                bw = c.BufferWidth;
+                bh = c.BufferHeight;
+                bc = c.BackgroundColor;
+            }
+            public int[] GetVideoBuffer()
+            {
+                return vb;
+            }
+        }
+
+
 		/// <summary>
 		/// opens an avi file for recording with the supplied enumerator used to name files.
 		/// set a video codec token first.
@@ -62,16 +118,29 @@ namespace BizHawk.MultiClient
 			this.nameProvider = nameProvider;
 			if (currVideoCodecToken == null)
 				throw new InvalidOperationException("Tried to start recording an AVI with no video codec token set");
+
+            threadQ = new System.Collections.Concurrent.BlockingCollection<Object>(30);
+            workerT = new System.Threading.Thread(new System.Threading.ThreadStart(threadproc));
+            workerT.Start();
 		}
 
 		public void CloseFile()
 		{
+            threadQ.Add(new Object ()); // acts as stop message
+            workerT.Join();
 			if (currSegment != null)
 				currSegment.Dispose();
 			currSegment = null;
 		}
 
-		public void AddFrame(IVideoProvider source)
+        public void AddFrame(IVideoProvider source)
+        {
+            if (!workerT.IsAlive)
+                // signal some sort of error?
+                return;           
+            threadQ.Add(new VideoCopy (source));
+        }
+		void AddFrameEx(IVideoProvider source)
 		{
 			SetVideoParameters(source.BufferWidth, source.BufferHeight);
 			ConsiderLengthSegment();
@@ -79,7 +148,16 @@ namespace BizHawk.MultiClient
 			currSegment.AddFrame(source);
 		}
 
-		public void AddSamples(short[] samples)
+        public void AddSamples(short[] samples)
+        {
+            if (!workerT.IsAlive)
+                // signal some sort of error?
+                return;
+            // as MainForm.cs is written now, samples is all ours (nothing else will use it for anything)
+            // but that's a bad assumption to make and could change in the future, so copy it since we're passing to another thread
+            threadQ.Add((short []) samples.Clone ());
+        }
+		void AddSamplesEx(short[] samples)
 		{
 			ConsiderLengthSegment();
 			if (currSegment == null) Segment();
@@ -118,7 +196,7 @@ namespace BizHawk.MultiClient
 		/// Acquires a video codec configuration from the user. you may save it for future use, but you must dispose of it when youre done with it.
 		/// returns null if the user canceled the dialog
 		/// </summary>
-		public static CodecToken AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastToken)
+		public IDisposable AcquireVideoCodecToken(IntPtr hwnd) //, CodecToken lastToken)
 		{
 			var temp_params = new Parameters();
 			temp_params.height = 256;
@@ -132,8 +210,8 @@ namespace BizHawk.MultiClient
 			string tempfile = Path.GetTempFileName();
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
-			temp.OpenFile(tempfile, temp_params, lastToken);
-			CodecToken token = temp.AcquireVideoCodecToken(hwnd);
+			temp.OpenFile(tempfile, temp_params, null); //lastToken);
+			CodecToken token = (CodecToken) temp.AcquireVideoCodecToken(hwnd);
 			temp.CloseFile();
 			File.Delete(tempfile);
 			return token;
@@ -273,6 +351,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+        /// <summary>
+        /// set metadata parameters; should be called before opening file
+        /// NYI
+        /// </summary>
+        public void SetMetaData(string gameName, string authors, UInt64 lengthMS, UInt64 rerecords)
+        {
+        }
+
 		unsafe class AviWriterSegment : IDisposable
 		{
 			static AviWriterSegment()
@@ -395,7 +481,7 @@ namespace BizHawk.MultiClient
 			/// <summary>
 			/// Acquires a video codec configuration from the user
 			/// </summary>
-			public CodecToken AcquireVideoCodecToken(IntPtr hwnd)
+			public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
 			{
 				if (!IsOpen) throw new InvalidOperationException("File must be opened before acquiring a codec token (or else the stream formats wouldnt be known)");
 

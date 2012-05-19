@@ -488,6 +488,11 @@ namespace BizHawk.MultiClient
 			luaSurface = Global.DisplayManager.GetLuaSurfaceNative();
 		}
 
+		public void gui_drawNewEmu()
+		{
+			luaSurface = Global.DisplayManager.GetLuaEmuSurfaceEmu();
+		}
+
 		/// <summary>
 		/// finishes the current drawing and submits it to the display manager (at native [host] resolution pre-osd)
 		/// you would probably want some way to specify which surface to set it to, when there are other surfaces.
@@ -496,6 +501,12 @@ namespace BizHawk.MultiClient
 		public void gui_drawFinish()
 		{
 			Global.DisplayManager.SetLuaSurfaceNativePreOSD(luaSurface);
+			luaSurface = null;
+		}
+
+		public void gui_drawFinishEmu()
+		{
+			Global.DisplayManager.SetLuaSurfaceEmu(luaSurface);
 			luaSurface = null;
 		}
 
@@ -508,12 +519,13 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-					g.DrawRectangle(GetPen(line), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
+					int int_x = LuaInt(X);
+					int int_y = LuaInt(Y);
+					int int_width = LuaInt(width);
+					int int_height = LuaInt(height);
+					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
 					if (background != null)
-					{
-						g.FillRectangle(GetBrush(background), LuaInt(X), LuaInt(Y), LuaInt(width), LuaInt(height));
-					}
-					
+						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 				}
 				catch(Exception e)
 				{
