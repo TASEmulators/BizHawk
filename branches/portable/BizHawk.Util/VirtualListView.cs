@@ -381,7 +381,8 @@ namespace BizHawk
 			// virtual listviews must be Details or List view with no sorting
 			View = View.Details;
 			Sorting = SortOrder.None;
-
+			RetrieveVirtualItem += (sender, e) => { e.Item = GetItem(e.ItemIndex); };
+			
 			ptrlvhti = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(LVHITTESTINFO)));
 
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -449,6 +450,7 @@ namespace BizHawk
 				itemCount,
 				0);
 #endif
+			this.VirtualListSize = itemCount;
 		}
 
 		protected void OnDispInfoNotice(ref Message m, bool useAnsi) {
@@ -588,11 +590,26 @@ namespace BizHawk
 #endif
 
 		public bool BlazingFast = false;
+		
+		protected override void OnRetrieveVirtualItem (RetrieveVirtualItemEventArgs e)
+		{
+			e.Item = GetItem(e.ItemIndex);
+		}
 
 		protected ListViewItem GetItem(int idx) {
 			ListViewItem item = null;
 			if(QueryItem != null) {
 				QueryItem(idx, out item);
+			}
+			else if(QueryItemText != null){
+				item = new ListViewItem();
+				for(int i=0; i<this.Columns.Count; i++)
+				{
+					string cheese = string.Empty;
+					QueryItemText(idx, i, out cheese);
+					if(i==0) item.Text = cheese;
+					else item.SubItems.Add(cheese);
+				}
 			}
 			if(item == null) {
 				throw new ArgumentException("cannot find item " + idx.ToString() + " via QueryItem event");
