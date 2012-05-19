@@ -312,7 +312,6 @@ namespace BizHawk.MultiClient
 
 		private void PauseButton_Click(object sender, EventArgs e)
 		{
-
 			Global.MainForm.TogglePause();
 		}
 

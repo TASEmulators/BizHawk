@@ -15,12 +15,16 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 {
 	public partial class Debugger : Form, Gameboy.IDebuggerAPI
 	{
-		readonly Gameboy gb;
-		public Debugger(Gameboy gb)
+		Gameboy gb;
+		public Debugger()
+		{
+			InitializeComponent();
+		}
+
+		public void LoadCore(Gameboy gb)
 		{
 			this.gb = gb;
 			gb.DebuggerAPI = this;
-			InitializeComponent();
 			Refresh();
 		}
 
@@ -76,13 +80,15 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		bool Running = false;
 		void DoRun()
 		{
-			Running = true;
-			gb.RunForever();
-			Running = false;
+			Global.MainForm.UnpauseEmulator();
+			//Running = true;
+			//gb.RunForever();
+			//Running = false;
 		}
 
 		void DoBreak()
 		{
+			Global.MainForm.PauseEmulator(); //adelikat: This is probably "rounding" the break to the nearest frame, but without it, break fails
 			gb.DebugBreak = true;
 		}
 
@@ -400,5 +406,24 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			autoloadToolStripMenuItem.Checked = Global.Config.AutoloadGBDebugger;
 		}
 
+		public void UpdateValues()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+			Refresh();
+		}
+
+		public void Restart()
+		{
+			if (!this.IsHandleCreated || this.IsDisposed) return;
+
+			if (Global.Emulator is Gameboy)
+			{
+				LoadCore(Global.Emulator as Gameboy);
+			}
+			else
+			{
+				this.Close();
+			}
+		}
 	}
 }
