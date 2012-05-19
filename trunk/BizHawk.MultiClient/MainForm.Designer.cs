@@ -217,6 +217,8 @@
 			this.rightDifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -270,6 +272,7 @@
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem,
             this.emulationToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.configToolStripMenuItem,
@@ -279,8 +282,7 @@
             this.sMSToolStripMenuItem,
             this.tI83ToolStripMenuItem,
             this.atariToolStripMenuItem,
-            this.gBToolStripMenuItem,
-            this.helpToolStripMenuItem});
+            this.gBToolStripMenuItem});
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -1851,18 +1853,33 @@
 			// gBToolStripMenuItem
 			// 
 			this.gBToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.debuggerToolStripMenuItem1});
+            this.debuggerToolStripMenuItem1,
+            this.toolStripSeparator8,
+            this.skipBIOSIntroToolStripMenuItem});
 			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
 			this.gBToolStripMenuItem.Size = new System.Drawing.Size(34, 19);
 			this.gBToolStripMenuItem.Text = "GB";
+			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
 			// debuggerToolStripMenuItem1
 			// 
 			this.debuggerToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
 			this.debuggerToolStripMenuItem1.Name = "debuggerToolStripMenuItem1";
-			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
+			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.debuggerToolStripMenuItem1.Text = "Debugger";
 			this.debuggerToolStripMenuItem1.Click += new System.EventHandler(this.debuggerToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+			// 
+			// skipBIOSIntroToolStripMenuItem
+			// 
+			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
+			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.skipBIOSIntroToolStripMenuItem.Text = "Skip BIOS Intro";
+			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOSIntroToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -1878,7 +1895,7 @@
 			// 
 			this.helpToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
 			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
+			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.helpToolStripMenuItem1.Text = "&Online Help...";
 			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
 			// 
@@ -1886,7 +1903,7 @@
 			// 
 			this.forumsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
 			this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-			this.forumsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.forumsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.forumsToolStripMenuItem.Text = "Forums...";
 			this.forumsToolStripMenuItem.Click += new System.EventHandler(this.forumsToolStripMenuItem_Click);
 			// 
@@ -1894,7 +1911,7 @@
 			// 
 			this.aboutToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CorpHawkSmall;
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
@@ -2087,7 +2104,7 @@
             this.cmiCloseRom,
             this.cmiShowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 396);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(204, 374);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2095,7 +2112,7 @@
 			// 
 			this.cmiOpenRom.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.cmiOpenRom.Name = "cmiOpenRom";
-			this.cmiOpenRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiOpenRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiOpenRom.Text = "Open Rom";
 			this.cmiOpenRom.Click += new System.EventHandler(this.openRomToolStripMenuItem1_Click);
 			// 
@@ -2103,20 +2120,20 @@
 			// 
 			this.cmiLoadLastRom.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.cmiLoadLastRom.Name = "cmiLoadLastRom";
-			this.cmiLoadLastRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiLoadLastRom.Text = "Load Last ROM";
 			this.cmiLoadLastRom.Click += new System.EventHandler(this.loadLastROMToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterRomLoading
 			// 
 			this.toolStripSeparator_afterRomLoading.Name = "toolStripSeparator_afterRomLoading";
-			this.toolStripSeparator_afterRomLoading.Size = new System.Drawing.Size(188, 6);
+			this.toolStripSeparator_afterRomLoading.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiRecordMovie
 			// 
 			this.cmiRecordMovie.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
 			this.cmiRecordMovie.Name = "cmiRecordMovie";
-			this.cmiRecordMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRecordMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiRecordMovie.Text = "Record Movie";
 			this.cmiRecordMovie.Click += new System.EventHandler(this.recordMovieToolStripMenuItem1_Click);
 			// 
@@ -2124,7 +2141,7 @@
 			// 
 			this.cmiPlayMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
 			this.cmiPlayMovie.Name = "cmiPlayMovie";
-			this.cmiPlayMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiPlayMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiPlayMovie.Text = "Play Movie";
 			this.cmiPlayMovie.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
 			// 
@@ -2132,7 +2149,7 @@
 			// 
 			this.cmiRestartMovie.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.cmiRestartMovie.Name = "cmiRestartMovie";
-			this.cmiRestartMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRestartMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiRestartMovie.Text = "Restart Movie";
 			this.cmiRestartMovie.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
 			// 
@@ -2140,7 +2157,7 @@
 			// 
 			this.cmiStopMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
 			this.cmiStopMovie.Name = "cmiStopMovie";
-			this.cmiStopMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiStopMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiStopMovie.Text = "Stop Movie";
 			this.cmiStopMovie.Click += new System.EventHandler(this.stopMovieToolStripMenuItem1_Click);
 			// 
@@ -2148,68 +2165,68 @@
 			// 
 			this.cmiLoadLastMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.cmiLoadLastMovie.Name = "cmiLoadLastMovie";
-			this.cmiLoadLastMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiLoadLastMovie.Text = "Load Last Movie";
 			this.cmiLoadLastMovie.Click += new System.EventHandler(this.loadLastMovieToolStripMenuItem_Click);
 			// 
 			// cmiMakeMovieBackup
 			// 
 			this.cmiMakeMovieBackup.Name = "cmiMakeMovieBackup";
-			this.cmiMakeMovieBackup.Size = new System.Drawing.Size(191, 22);
+			this.cmiMakeMovieBackup.Size = new System.Drawing.Size(203, 22);
 			this.cmiMakeMovieBackup.Text = "Make Movie Backup";
 			this.cmiMakeMovieBackup.Click += new System.EventHandler(this.makeMovieBackupToolStripMenuItem_Click);
 			// 
 			// cmiViewSubtitles
 			// 
 			this.cmiViewSubtitles.Name = "cmiViewSubtitles";
-			this.cmiViewSubtitles.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewSubtitles.Size = new System.Drawing.Size(203, 22);
 			this.cmiViewSubtitles.Text = "View Subtitles";
 			this.cmiViewSubtitles.Click += new System.EventHandler(this.viewSubtitlesToolStripMenuItem_Click);
 			// 
 			// cmiAddSubtitle
 			// 
 			this.cmiAddSubtitle.Name = "cmiAddSubtitle";
-			this.cmiAddSubtitle.Size = new System.Drawing.Size(191, 22);
+			this.cmiAddSubtitle.Size = new System.Drawing.Size(203, 22);
 			this.cmiAddSubtitle.Text = "Add Subtitle";
 			this.cmiAddSubtitle.Click += new System.EventHandler(this.AddSubtitleToolStripMenuItem_Click);
 			// 
 			// cmiViewComments
 			// 
 			this.cmiViewComments.Name = "cmiViewComments";
-			this.cmiViewComments.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewComments.Size = new System.Drawing.Size(203, 22);
 			this.cmiViewComments.Text = "View Comments";
 			this.cmiViewComments.Click += new System.EventHandler(this.viewCommentsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterMovie
 			// 
 			this.toolStripSeparator_afterMovie.Name = "toolStripSeparator_afterMovie";
-			this.toolStripSeparator_afterMovie.Size = new System.Drawing.Size(188, 6);
+			this.toolStripSeparator_afterMovie.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiUndoSavestate
 			// 
 			this.cmiUndoSavestate.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
 			this.cmiUndoSavestate.Name = "cmiUndoSavestate";
-			this.cmiUndoSavestate.Size = new System.Drawing.Size(191, 22);
+			this.cmiUndoSavestate.Size = new System.Drawing.Size(203, 22);
 			this.cmiUndoSavestate.Text = "Undo Savestate";
 			this.cmiUndoSavestate.Click += new System.EventHandler(this.undoSavestateToolStripMenuItem_Click);
 			// 
 			// cmiSeparator20
 			// 
 			this.cmiSeparator20.Name = "cmiSeparator20";
-			this.cmiSeparator20.Size = new System.Drawing.Size(188, 6);
+			this.cmiSeparator20.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiScreenshot
 			// 
 			this.cmiScreenshot.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
 			this.cmiScreenshot.Name = "cmiScreenshot";
-			this.cmiScreenshot.Size = new System.Drawing.Size(191, 22);
+			this.cmiScreenshot.Size = new System.Drawing.Size(203, 22);
 			this.cmiScreenshot.Text = "Screenshot";
 			// 
 			// cmiScreenshotClipboard
 			// 
 			this.cmiScreenshotClipboard.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
 			this.cmiScreenshotClipboard.Name = "cmiScreenshotClipboard";
-			this.cmiScreenshotClipboard.Size = new System.Drawing.Size(191, 22);
+			this.cmiScreenshotClipboard.Size = new System.Drawing.Size(203, 22);
 			this.cmiScreenshotClipboard.Text = "Screenshot -> Clipboard";
 			this.cmiScreenshotClipboard.Click += new System.EventHandler(this.screenshotToClipboardToolStripMenuItem_Click);
 			// 
@@ -2217,14 +2234,14 @@
 			// 
 			this.cmiCloseRom.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
 			this.cmiCloseRom.Name = "cmiCloseRom";
-			this.cmiCloseRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiCloseRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiCloseRom.Text = "Close ROM";
 			this.cmiCloseRom.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
 			// 
 			// cmiShowMenu
 			// 
 			this.cmiShowMenu.Name = "cmiShowMenu";
-			this.cmiShowMenu.Size = new System.Drawing.Size(191, 22);
+			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
@@ -2500,6 +2517,8 @@
 		private System.Windows.Forms.ToolStripMenuItem bWToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem p0DifficultyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rightDifficultyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem skipBIOSIntroToolStripMenuItem;
     }
 }
 

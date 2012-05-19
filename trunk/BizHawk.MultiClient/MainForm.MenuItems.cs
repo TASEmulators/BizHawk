@@ -1468,5 +1468,61 @@ namespace BizHawk.MultiClient
 		{
 			LoadPCEBGViewer();
 		}
+
+		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_BW ^= true;
+				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_BW)
+					Global.OSD.AddMessage("Setting to Black and White Switch to On");
+				else
+					Global.OSD.AddMessage("Setting to Black and White Switch to Off");
+			}
+		}
+
+		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_LeftDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_LeftDifficulty)
+					Global.OSD.AddMessage("Setting Left Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Left Difficulty to A");
+			}
+		}
+
+		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_RightDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_RightDifficulty)
+					Global.OSD.AddMessage("Setting Right Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Right Difficulty to A");
+			}
+		}
+
+		private void atariToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
+			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
+			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
+		}
+
+		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GameBoySkipBIOS ^= true;
+		}
+
+		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
+		}
 	}
 }

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 {
 	public partial class Gameboy : IEmulator, IVideoProvider
 	{
-		
+		private bool skipBIOS = false;
 		private int _lagcount = 0;
 		private bool lagged = true;
 		private bool islag = false;
@@ -265,8 +265,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		public Z80 Cpu;
 		public MemoryMapper Mapper;
 
-		public Gameboy(GameInfo game, byte[] rom)
+		public Gameboy(GameInfo game, byte[] rom, bool SkipBIOS)
 		{
+			skipBIOS = SkipBIOS;
 			CoreOutputComm = new CoreOutputComm();
 			CartType = (ECartType)rom[0x0147];
 			Mapper = new MemoryMapper(this);
@@ -281,7 +282,10 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		public void HardReset()
 		{
 			Cpu = new CPUs.Z80GB.Z80();
-			Cpu.ReadMemory = ReadMemoryBios;
+			if (skipBIOS)
+				Cpu.ReadMemory = ReadMemory;
+			else
+				Cpu.ReadMemory = ReadMemoryBios;
 			Cpu.WriteMemory = WriteMemory;
 			Cpu.Reset();
 
