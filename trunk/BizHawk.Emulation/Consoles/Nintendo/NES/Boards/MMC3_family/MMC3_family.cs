@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			ser.Sync("mirror", ref mirror);
-			ser.Sync("mirror", ref a12_old);
+			ser.Sync("a12_old", ref a12_old);
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_pending", ref irq_pending);
