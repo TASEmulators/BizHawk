@@ -101,6 +101,10 @@
 			this.makeAnimatedGifAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.emulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -219,10 +223,6 @@
 			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StatusSlot0 = new System.Windows.Forms.StatusStrip();
 			this.DumpStatus = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -272,7 +272,6 @@
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem,
             this.emulationToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.configToolStripMenuItem,
@@ -282,7 +281,8 @@
             this.sMSToolStripMenuItem,
             this.tI83ToolStripMenuItem,
             this.atariToolStripMenuItem,
-            this.gBToolStripMenuItem});
+            this.gBToolStripMenuItem,
+            this.helpToolStripMenuItem});
 			this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -945,6 +945,40 @@
 			this.exitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			// 
+			// helpToolStripMenuItem
+			// 
+			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpToolStripMenuItem1,
+            this.forumsToolStripMenuItem,
+            this.aboutToolStripMenuItem});
+			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 19);
+			this.helpToolStripMenuItem.Text = "&Help";
+			// 
+			// helpToolStripMenuItem1
+			// 
+			this.helpToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
+			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
+			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.helpToolStripMenuItem1.Text = "&Online Help...";
+			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
+			// 
+			// forumsToolStripMenuItem
+			// 
+			this.forumsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
+			this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
+			this.forumsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.forumsToolStripMenuItem.Text = "Forums...";
+			this.forumsToolStripMenuItem.Click += new System.EventHandler(this.forumsToolStripMenuItem_Click);
+			// 
+			// aboutToolStripMenuItem
+			// 
+			this.aboutToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CorpHawkSmall;
+			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.aboutToolStripMenuItem.Text = "&About";
+			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
 			// emulationToolStripMenuItem
 			// 
@@ -1880,40 +1914,6 @@
 			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.skipBIOSIntroToolStripMenuItem.Text = "Skip BIOS Intro";
 			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOSIntroToolStripMenuItem_Click);
-			// 
-			// helpToolStripMenuItem
-			// 
-			this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpToolStripMenuItem1,
-            this.forumsToolStripMenuItem,
-            this.aboutToolStripMenuItem});
-			this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-			this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 19);
-			this.helpToolStripMenuItem.Text = "&Help";
-			// 
-			// helpToolStripMenuItem1
-			// 
-			this.helpToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Help;
-			this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-			this.helpToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-			this.helpToolStripMenuItem1.Text = "&Online Help...";
-			this.helpToolStripMenuItem1.Click += new System.EventHandler(this.helpToolStripMenuItem1_Click);
-			// 
-			// forumsToolStripMenuItem
-			// 
-			this.forumsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TAStudio;
-			this.forumsToolStripMenuItem.Name = "forumsToolStripMenuItem";
-			this.forumsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.forumsToolStripMenuItem.Text = "Forums...";
-			this.forumsToolStripMenuItem.Click += new System.EventHandler(this.forumsToolStripMenuItem_Click);
-			// 
-			// aboutToolStripMenuItem
-			// 
-			this.aboutToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CorpHawkSmall;
-			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.aboutToolStripMenuItem.Text = "&About";
-			this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
 			// 
 			// StatusSlot0
 			// 
