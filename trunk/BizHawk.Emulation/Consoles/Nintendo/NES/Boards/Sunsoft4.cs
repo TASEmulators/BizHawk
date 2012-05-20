@@ -4,9 +4,9 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//AKA mapper 068
+	//AKA mapper 068 (and TENGEN-800042)
 
-	//After Burner 2
+	//After Burner & After Burner 2
 	//Maharaja
 
 	class Sunsoft4 : NES.NESBoardBase
@@ -44,6 +44,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			switch (Cart.board_type)
 			{
 				case "MAPPER068":
+					break;
+				case "TENGEN-800042":
+					AssertPrg(128); AssertChr(256); AssertVram(0); AssertWram(0);
 					break;
 				case "SUNSOFT-4":
 					AssertPrg(128); AssertChr(128,256); AssertVram(0); AssertWram(0,8); 
