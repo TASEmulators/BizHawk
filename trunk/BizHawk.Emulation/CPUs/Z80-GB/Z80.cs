@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 
         public Func<ushort, byte> ReadMemory;
         public Action<ushort, byte> WriteMemory;
+		private bool logging = false;
+		private TextWriter log = File.CreateText("log.txt");
 
         public void UnregisterMemoryMapper()
         {
@@ -143,5 +145,12 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 	        TotalExecutedCycles = reader.ReadInt32();
 	        PendingCycles = reader.ReadInt32();
         }
+
+		private void LogCPU()
+		{
+			if (!logging)
+				return;
+			SaveStateText(log);
+		}
     }
 }
