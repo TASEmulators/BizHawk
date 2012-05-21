@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.IO;
+using System.Globalization;
 
 namespace BizHawk.Emulation.CPUs.M68000
 {
@@ -129,7 +131,7 @@ namespace BizHawk.Emulation.CPUs.M68000
                 if (Interrupt > 0 && (Interrupt > InterruptMaskLevel || Interrupt > 7))
                 {
                     // TODO: Entering interrupt is not free. how many cycles does it take?
-                    Log.Error("CPU","****** ENTER INTERRUPT {0} *******", Interrupt);
+                    //Log.Error("CPU","****** ENTER INTERRUPT {0} *******", Interrupt);
                     short sr = (short) SR;                  // capture current SR.
                     S = true;                               // switch to supervisor mode, if not already in it.
                     A[7].s32 -= 4;                          // Push PC on stack
@@ -160,6 +162,83 @@ namespace BizHawk.Emulation.CPUs.M68000
             string c = string.Format("A0:{0:X8} A1:{1:X8} A2:{2:X8} A3:{3:X8} A4:{4:X8} A5:{5:X8} A6:{6:X8} A7:{7:X8} ", A[0].u32, A[1].u32, A[2].u32, A[3].u32, A[4].u32, A[5].u32, A[6].u32, A[7].u32);
             string d = string.Format("SR:{0:X4} Pending {1}", SR, PendingCycles);
             return a + b + c + d;
+        }
+
+        public void SaveStateText(TextWriter writer, string id)
+        {
+            writer.WriteLine("[{0}]", id);
+            writer.WriteLine("D0 {0:X8}", D[0].s32);
+            writer.WriteLine("D1 {0:X8}", D[1].s32);
+            writer.WriteLine("D2 {0:X8}", D[2].s32);
+            writer.WriteLine("D3 {0:X8}", D[3].s32);
+            writer.WriteLine("D4 {0:X8}", D[4].s32);
+            writer.WriteLine("D5 {0:X8}", D[5].s32);
+            writer.WriteLine("D6 {0:X8}", D[6].s32);
+            writer.WriteLine("D7 {0:X8}", D[7].s32);
+            writer.WriteLine();
+
+            writer.WriteLine("A0 {0:X8}", A[0].s32);
+            writer.WriteLine("A1 {0:X8}", A[1].s32);
+            writer.WriteLine("A2 {0:X8}", A[2].s32);
+            writer.WriteLine("A3 {0:X8}", A[3].s32);
+            writer.WriteLine("A4 {0:X8}", A[4].s32);
+            writer.WriteLine("A5 {0:X8}", A[5].s32);
+            writer.WriteLine("A6 {0:X8}", A[6].s32);
+            writer.WriteLine("A7 {0:X8}", A[7].s32);
+            writer.WriteLine();
+
+            writer.WriteLine("PC {0:X6}", PC);
+            writer.WriteLine("InterruptMaskLevel {0}", InterruptMaskLevel);
+            writer.WriteLine("USP {0:X8}", usp);
+            writer.WriteLine("SSP {0:X8}", ssp);
+            writer.WriteLine("S {0}", s);
+            writer.WriteLine("M {0}", m);
+            writer.WriteLine();
+
+            writer.WriteLine("TotalExecutedCycles {0}", TotalExecutedCycles);
+            writer.WriteLine("PendingCycles {0}", PendingCycles);
+            
+            writer.WriteLine("[/{0}]", id);
+        }
+
+        public void LoadStateText(TextReader reader, string id)
+        {
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[/"+id+"]") break;
+                else if (args[0] == "D0") D[0].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D1") D[1].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D2") D[2].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D3") D[3].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D4") D[4].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D5") D[5].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D6") D[6].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "D7") D[7].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+
+                else if (args[0] == "A0") A[0].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A1") A[1].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A2") A[2].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A3") A[3].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A4") A[4].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A5") A[5].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A6") A[6].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "A7") A[7].s32 = int.Parse(args[1], NumberStyles.HexNumber);
+                
+                else if (args[0] == "PC") PC = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "InterruptMaskLevel") InterruptMaskLevel = int.Parse(args[1]);
+                else if (args[0] == "USP") usp = int.Parse(args[1], NumberStyles.HexNumber);                
+                else if (args[0] == "SSP") ssp = int.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "S") s = bool.Parse(args[1]);
+                else if (args[0] == "M") m = bool.Parse(args[1]);
+
+                else if (args[0] == "TotalExecutedCycles") TotalExecutedCycles = int.Parse(args[1]);
+                else if (args[0] == "PendingCycles") PendingCycles = int.Parse(args[1]);
+
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+            }
         }
     }
 
