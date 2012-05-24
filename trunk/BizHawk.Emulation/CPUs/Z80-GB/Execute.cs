@@ -7,27 +7,27 @@ using System;
 + The following instructions were rewritten or substantially modified for Z80-GB. They should be
   treated with caution and checked further when the emulator is farther along.
 
-    ADD
-    ADC
-    SUB
-    SBC
-    AND
-    OR
-    XOR
-    CP
-    SWAP
-    DAA
-    RLCA
-    RLA
-    RRCA
-    RRA
-    RLC
-    RL
-    RRC
-    RR
-    SLA
-    SRA
-    SRL
+	ADD
+	ADC
+	SUB
+	SBC
+	AND
+	OR
+	XOR
+	CP
+	SWAP
+	DAA
+	RLCA
+	RLA
+	RRCA
+	RRA
+	RLC
+	RL
+	RRC
+	RR
+	SLA
+	SRA
+	SRL
 */
 
 namespace BizHawk.Emulation.CPUs.Z80GB
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 		public void ExecuteInstruction()
 		{
 			LogCPU();
-            byte TB; byte TB2; sbyte TSB; ushort TUS; int TI1; int TI2; int TIR;
+			byte TB; byte TB2; sbyte TSB; ushort TUS; int TI1; int TI2; int TIR;
 			while (RegPC.Word == 0x031A)
 				break;
 			byte op = ReadMemory(RegPC.Word++);
@@ -952,288 +952,288 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 					switch (op)
 					{
 						case 0x00: // RLC B
-                            RegAF.Low = (byte)((RegBC.High & 0x80) >> 3);
-                            RegBC.High = (byte)((RegBC.High >> 7) | (RegBC.High << 1));
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegBC.High & 0x80) >> 3);
+							RegBC.High = (byte)((RegBC.High >> 7) | (RegBC.High << 1));
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x01: // RLC C
-                            RegAF.Low = (byte)((RegBC.Low & 0x80) >> 3);
-                            RegBC.Low = (byte)((RegBC.Low >> 7) | (RegBC.Low << 1));
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegBC.Low & 0x80) >> 3);
+							RegBC.Low = (byte)((RegBC.Low >> 7) | (RegBC.Low << 1));
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x02: // RLC D
-                            RegAF.Low = (byte)((RegDE.High & 0x80) >> 3);
-                            RegDE.High = (byte)((RegDE.High >> 7) | (RegDE.High << 1));
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegDE.High & 0x80) >> 3);
+							RegDE.High = (byte)((RegDE.High >> 7) | (RegDE.High << 1));
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x03: // RLC E
-                            RegAF.Low = (byte)((RegDE.Low & 0x80) >> 3);
-                            RegDE.Low = (byte)((RegDE.Low >> 7) | (RegDE.Low << 1));
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegDE.Low & 0x80) >> 3);
+							RegDE.Low = (byte)((RegDE.Low >> 7) | (RegDE.Low << 1));
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x04: // RLC H
-                            RegAF.Low = (byte)((RegHL.High & 0x80) >> 3);
-                            RegHL.High = (byte)((RegHL.High >> 7) | (RegHL.High << 1));
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegHL.High & 0x80) >> 3);
+							RegHL.High = (byte)((RegHL.High >> 7) | (RegHL.High << 1));
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x05: // RLC L
-                            RegAF.Low = (byte)((RegHL.Low & 0x80) >> 3);
-                            RegHL.Low = (byte)((RegHL.Low >> 7) | (RegHL.Low << 1));
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegHL.Low & 0x80) >> 3);
+							RegHL.Low = (byte)((RegHL.Low >> 7) | (RegHL.Low << 1));
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x06: // RLC (HL)
-					        TB = ReadMemory(RegHL.Word);
-                            RegAF.Low = (byte)((TB & 0x80) >> 3);
-                            TB = (byte)((TB >> 7) | (TB << 1));
-                            if (TB == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB);
+							TB = ReadMemory(RegHL.Word);
+							RegAF.Low = (byte)((TB & 0x80) >> 3);
+							TB = (byte)((TB >> 7) | (TB << 1));
+							if (TB == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB);
 							break;
 						case 0x07: // RLC A
-                            RegAF.Low = (byte)((RegAF.High & 0x80) >> 3);
-                            RegAF.High = (byte)((RegAF.High >> 7) | (RegAF.High << 1));
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = (byte)((RegAF.High & 0x80) >> 3);
+							RegAF.High = (byte)((RegAF.High >> 7) | (RegAF.High << 1));
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x08: // RRC B
-                            RegBC.High = (byte)((RegBC.High << 7) | (RegBC.High >> 1));
-                            RegAF.Low = (byte)((RegBC.High & 0x80) >> 3);
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							RegBC.High = (byte)((RegBC.High << 7) | (RegBC.High >> 1));
+							RegAF.Low = (byte)((RegBC.High & 0x80) >> 3);
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x09: // RRC C
-                            RegBC.Low = (byte)((RegBC.Low << 7) | (RegBC.Low >> 1));
-                            RegAF.Low = (byte)((RegBC.Low & 0x80) >> 3);
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							RegBC.Low = (byte)((RegBC.Low << 7) | (RegBC.Low >> 1));
+							RegAF.Low = (byte)((RegBC.Low & 0x80) >> 3);
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x0A: // RRC D
-                            RegDE.High = (byte)((RegDE.High << 7) | (RegDE.High >> 1));
-                            RegAF.Low = (byte)((RegDE.High & 0x80) >> 3);
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							RegDE.High = (byte)((RegDE.High << 7) | (RegDE.High >> 1));
+							RegAF.Low = (byte)((RegDE.High & 0x80) >> 3);
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x0B: // RRC E
-                            RegDE.Low = (byte)((RegDE.Low << 7) | (RegDE.Low >> 1));
-                            RegAF.Low = (byte)((RegDE.Low & 0x80) >> 3);
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							RegDE.Low = (byte)((RegDE.Low << 7) | (RegDE.Low >> 1));
+							RegAF.Low = (byte)((RegDE.Low & 0x80) >> 3);
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x0C: // RRC H
-                            RegHL.High = (byte)((RegHL.High << 7) | (RegHL.High >> 1));
-                            RegAF.Low = (byte)((RegHL.High & 0x80) >> 3);
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							RegHL.High = (byte)((RegHL.High << 7) | (RegHL.High >> 1));
+							RegAF.Low = (byte)((RegHL.High & 0x80) >> 3);
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x0D: // RRC L
-                            RegHL.Low = (byte)((RegHL.Low << 7) | (RegHL.Low >> 1));
-                            RegAF.Low = (byte)((RegHL.Low & 0x80) >> 3);
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							RegHL.Low = (byte)((RegHL.Low << 7) | (RegHL.Low >> 1));
+							RegAF.Low = (byte)((RegHL.Low & 0x80) >> 3);
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x0E: // RRC (HL)
-					        TB = ReadMemory(RegHL.Word);
-                            TB = (byte)((TB << 7) | (TB >> 1));
-                            RegAF.Low = (byte)((TB & 0x80) >> 3);
-                            if (TB == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB);
+							TB = ReadMemory(RegHL.Word);
+							TB = (byte)((TB << 7) | (TB >> 1));
+							RegAF.Low = (byte)((TB & 0x80) >> 3);
+							if (TB == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB);
 							break;
 						case 0x0F: // RRC A
-                            RegAF.High = (byte)((RegAF.High << 7) | (RegAF.High >> 1));
-                            RegAF.Low = (byte)((RegAF.High & 0x80) >> 3);
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							RegAF.High = (byte)((RegAF.High << 7) | (RegAF.High >> 1));
+							RegAF.Low = (byte)((RegAF.High & 0x80) >> 3);
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x10: // RL B
-                            TB = (byte)((RegBC.High & 0x80) >> 3);
-                            RegBC.High = (byte)((RegBC.High << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegBC.High & 0x80) >> 3);
+							RegBC.High = (byte)((RegBC.High << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x11: // RL C
-                            TB = (byte)((RegBC.Low & 0x80) >> 3);
-                            RegBC.Low = (byte)((RegBC.Low << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegBC.Low & 0x80) >> 3);
+							RegBC.Low = (byte)((RegBC.Low << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x12: // RL D
-                            TB = (byte)((RegDE.High & 0x80) >> 3);
-                            RegDE.High = (byte)((RegDE.High << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegDE.High & 0x80) >> 3);
+							RegDE.High = (byte)((RegDE.High << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x13: // RL E
-                            TB = (byte)((RegDE.Low & 0x80) >> 3);
-                            RegDE.Low = (byte)((RegDE.Low << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegDE.Low & 0x80) >> 3);
+							RegDE.Low = (byte)((RegDE.Low << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x14: // RL H
-                            TB = (byte)((RegHL.High & 0x80) >> 3);
-                            RegHL.High = (byte)((RegHL.High << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegHL.High & 0x80) >> 3);
+							RegHL.High = (byte)((RegHL.High << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x15: // RL L
-                            TB = (byte)((RegHL.Low & 0x80) >> 3);
-                            RegHL.Low = (byte)((RegHL.Low << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegHL.Low & 0x80) >> 3);
+							RegHL.Low = (byte)((RegHL.Low << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x16: // RL (HL)
-					        TB2 = ReadMemory(RegHL.Word);
-                            TB = (byte)((TB2 & 0x80) >> 3);
-                            TB2 = (byte)((TB2 << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (TB2 == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB2);
+							TB2 = ReadMemory(RegHL.Word);
+							TB = (byte)((TB2 & 0x80) >> 3);
+							TB2 = (byte)((TB2 << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (TB2 == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB2);
 							break;
 						case 0x17: // RL A
-                            TB = (byte)((RegAF.High & 0x80) >> 3);
-                            RegAF.High = (byte)((RegAF.High << 1) | (FlagC ? 1 : 0));
-                            RegAF.Low = TB;
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegAF.High & 0x80) >> 3);
+							RegAF.High = (byte)((RegAF.High << 1) | (FlagC ? 1 : 0));
+							RegAF.Low = TB;
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x18: // RR B
-                            TB = (byte)((RegBC.High & 0x1) << 4);
-                            RegBC.High = (byte)((RegBC.High >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegBC.High & 0x1) << 4);
+							RegBC.High = (byte)((RegBC.High >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x19: // RR C
-                            TB = (byte)((RegBC.Low & 0x1) << 4);
-                            RegBC.Low = (byte)((RegBC.Low >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegBC.Low & 0x1) << 4);
+							RegBC.Low = (byte)((RegBC.Low >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x1A: // RR D
-                            TB = (byte)((RegDE.High & 0x1) << 4);
-                            RegDE.High = (byte)((RegDE.High >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegDE.High & 0x1) << 4);
+							RegDE.High = (byte)((RegDE.High >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x1B: // RR E
-                            TB = (byte)((RegDE.Low & 0x1) << 4);
-                            RegDE.Low = (byte)((RegDE.Low >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegDE.Low & 0x1) << 4);
+							RegDE.Low = (byte)((RegDE.Low >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x1C: // RR H
-                            TB = (byte)((RegHL.High & 0x1) << 4);
-                            RegHL.High = (byte)((RegHL.High >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegHL.High & 0x1) << 4);
+							RegHL.High = (byte)((RegHL.High >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x1D: // RR L
-                            TB = (byte)((RegHL.Low & 0x1) << 4);
-                            RegHL.Low = (byte)((RegHL.Low >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegHL.Low & 0x1) << 4);
+							RegHL.Low = (byte)((RegHL.Low >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x1E: // RR (HL)
-					        TB2 = ReadMemory(RegHL.Word);
-                            TB = (byte)((TB2 & 0x1) << 4);
-                            TB2 = (byte)((TB2 >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (TB2 == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB2);
+							TB2 = ReadMemory(RegHL.Word);
+							TB = (byte)((TB2 & 0x1) << 4);
+							TB2 = (byte)((TB2 >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (TB2 == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB2);
 							break;
 						case 0x1F: // RR A
-                            TB = (byte)((RegAF.High & 0x1) << 4);
-                            RegAF.High = (byte)((RegAF.High >> 1) | (FlagC ? 0x80 : 0));
-                            RegAF.Low = TB;
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							TB = (byte)((RegAF.High & 0x1) << 4);
+							RegAF.High = (byte)((RegAF.High >> 1) | (FlagC ? 0x80 : 0));
+							RegAF.Low = TB;
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x20: // SLA B
-					        RegAF.Low = 0;
-                            if ((RegBC.High & 0x80) != 0) RegAF.Low |= 0x10;
-					        RegBC.High <<= 1;
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegBC.High & 0x80) != 0) RegAF.Low |= 0x10;
+							RegBC.High <<= 1;
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x21: // SLA C
-					        RegAF.Low = 0;
-                            if ((RegBC.Low & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegBC.Low <<= 1;
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegBC.Low & 0x80) != 0) RegAF.Low |= 0x10;
+							RegBC.Low <<= 1;
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x22: // SLA D
-                            RegAF.Low = 0;
-                            if ((RegDE.High & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegDE.High <<= 1;
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.High & 0x80) != 0) RegAF.Low |= 0x10;
+							RegDE.High <<= 1;
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x23: // SLA E
-                            RegAF.Low = 0;
-                            if ((RegDE.Low & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegDE.Low <<= 1;
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.Low & 0x80) != 0) RegAF.Low |= 0x10;
+							RegDE.Low <<= 1;
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x24: // SLA H
-                            RegAF.Low = 0;
-                            if ((RegHL.High & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegHL.High <<= 1;
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.High & 0x80) != 0) RegAF.Low |= 0x10;
+							RegHL.High <<= 1;
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x25: // SLA L
-                            RegAF.Low = 0;
-                            if ((RegHL.Low & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegHL.Low <<= 1;
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.Low & 0x80) != 0) RegAF.Low |= 0x10;
+							RegHL.Low <<= 1;
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x26: // SLA (HL)
-					        TB = ReadMemory(RegHL.Word);
-                            RegAF.Low = 0;
-                            if ((TB & 0x80) != 0) RegAF.Low |= 0x10;
-                            TB <<= 1;
-                            if (TB == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB);
+							TB = ReadMemory(RegHL.Word);
+							RegAF.Low = 0;
+							if ((TB & 0x80) != 0) RegAF.Low |= 0x10;
+							TB <<= 1;
+							if (TB == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB);
 							break;
 						case 0x27: // SLA A
-                            RegAF.Low = 0;
-                            if ((RegAF.High & 0x80) != 0) RegAF.Low |= 0x10;
-                            RegAF.High <<= 1;
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegAF.High & 0x80) != 0) RegAF.Low |= 0x10;
+							RegAF.High <<= 1;
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x28: // SRA B
-                            RegAF.Low = 0;
-                            if ((RegBC.High & 1) != 0) RegAF.Low |= 0x10;
-					        RegBC.High = (byte) ((RegBC.High >> 1) | (RegBC.High & 0x80));
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
-                            break;
+							RegAF.Low = 0;
+							if ((RegBC.High & 1) != 0) RegAF.Low |= 0x10;
+							RegBC.High = (byte)((RegBC.High >> 1) | (RegBC.High & 0x80));
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
+							break;
 						case 0x29: // SRA C
-                            RegAF.Low = 0;
-                            if ((RegBC.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegBC.Low = (byte)((RegBC.Low >> 1) | (RegBC.Low & 0x80));
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegBC.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegBC.Low = (byte)((RegBC.Low >> 1) | (RegBC.Low & 0x80));
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x2A: // SRA D
-                            RegAF.Low = 0;
-                            if ((RegDE.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegDE.High = (byte)((RegDE.High >> 1) | (RegDE.High & 0x80));
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.High & 1) != 0) RegAF.Low |= 0x10;
+							RegDE.High = (byte)((RegDE.High >> 1) | (RegDE.High & 0x80));
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x2B: // SRA E
-                            RegAF.Low = 0;
-                            if ((RegDE.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegDE.Low = (byte)((RegDE.Low >> 1) | (RegDE.Low & 0x80));
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegDE.Low = (byte)((RegDE.Low >> 1) | (RegDE.Low & 0x80));
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x2C: // SRA H
-                            RegAF.Low = 0;
-                            if ((RegHL.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegHL.High = (byte)((RegHL.High >> 1) | (RegHL.High & 0x80));
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.High & 1) != 0) RegAF.Low |= 0x10;
+							RegHL.High = (byte)((RegHL.High >> 1) | (RegHL.High & 0x80));
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x2D: // SRA L
-                            RegAF.Low = 0;
-                            if ((RegHL.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegHL.Low = (byte)((RegHL.Low >> 1) | (RegHL.Low & 0x80));
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegHL.Low = (byte)((RegHL.Low >> 1) | (RegHL.Low & 0x80));
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x2E: // SRA (HL)
-					        TB = ReadMemory(RegHL.Word);
-                            RegAF.Low = 0;
-                            if ((TB & 1) != 0) RegAF.Low |= 0x10;
-                            TB = (byte)((TB >> 1) | (TB & 0x80));
-                            if (TB == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB);
+							TB = ReadMemory(RegHL.Word);
+							RegAF.Low = 0;
+							if ((TB & 1) != 0) RegAF.Low |= 0x10;
+							TB = (byte)((TB >> 1) | (TB & 0x80));
+							if (TB == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB);
 							break;
 						case 0x2F: // SRA A
-                            RegAF.Low = 0;
-                            if ((RegAF.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegAF.High = (byte)((RegAF.High >> 1) | (RegAF.High & 0x80));
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegAF.High & 1) != 0) RegAF.Low |= 0x10;
+							RegAF.High = (byte)((RegAF.High >> 1) | (RegAF.High & 0x80));
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x30: // SWAP B
 							RegBC.High = SwapTable[RegBC.High];
@@ -1269,54 +1269,54 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 							FlagZ = (RegAF.High == 0);
 							break;
 						case 0x38: // SRL B
-                            RegAF.Low = 0;
-                            if ((RegBC.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegBC.High >>= 1;
-                            if (RegBC.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegBC.High & 1) != 0) RegAF.Low |= 0x10;
+							RegBC.High >>= 1;
+							if (RegBC.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x39: // SRL C
-                            RegAF.Low = 0;
-                            if ((RegBC.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegBC.Low >>= 1;
-                            if (RegBC.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegBC.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegBC.Low >>= 1;
+							if (RegBC.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x3A: // SRL D
-                            RegAF.Low = 0;
-                            if ((RegDE.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegDE.High >>= 1;
-                            if (RegDE.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.High & 1) != 0) RegAF.Low |= 0x10;
+							RegDE.High >>= 1;
+							if (RegDE.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x3B: // SRL E
-                            RegAF.Low = 0;
-                            if ((RegDE.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegDE.Low >>= 1;
-                            if (RegDE.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegDE.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegDE.Low >>= 1;
+							if (RegDE.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x3C: // SRL H
-                            RegAF.Low = 0;
-                            if ((RegHL.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegHL.High >>= 1;
-                            if (RegHL.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.High & 1) != 0) RegAF.Low |= 0x10;
+							RegHL.High >>= 1;
+							if (RegHL.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x3D: // SRL L
-                            RegAF.Low = 0;
-                            if ((RegHL.Low & 1) != 0) RegAF.Low |= 0x10;
-                            RegHL.Low >>= 1;
-                            if (RegHL.Low == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegHL.Low & 1) != 0) RegAF.Low |= 0x10;
+							RegHL.Low >>= 1;
+							if (RegHL.Low == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x3E: // SRL (HL)
-					        TB = ReadMemory(RegHL.Word);
-                            RegAF.Low = 0;
-                            if ((TB & 1) != 0) RegAF.Low |= 0x10;
-                            TB >>= 1;
-                            if (TB == 0) RegAF.Low |= 0x80;
-					        WriteMemory(RegHL.Word, TB);
+							TB = ReadMemory(RegHL.Word);
+							RegAF.Low = 0;
+							if ((TB & 1) != 0) RegAF.Low |= 0x10;
+							TB >>= 1;
+							if (TB == 0) RegAF.Low |= 0x80;
+							WriteMemory(RegHL.Word, TB);
 							break;
 						case 0x3F: // SRL A
-                            RegAF.Low = 0;
-                            if ((RegAF.High & 1) != 0) RegAF.Low |= 0x10;
-                            RegAF.High >>= 1;
-                            if (RegAF.High == 0) RegAF.Low |= 0x80;
+							RegAF.Low = 0;
+							if ((RegAF.High & 1) != 0) RegAF.Low |= 0x10;
+							RegAF.High >>= 1;
+							if (RegAF.High == 0) RegAF.Low |= 0x80;
 							break;
 						case 0x40: // BIT 0, B
 							FlagZ = (RegBC.High & 0x01) == 0;
@@ -2247,7 +2247,7 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 
 		void CheckIrq()
 		{
-		    if (nonMaskableInterruptPending)
+			if (nonMaskableInterruptPending)
 			{
 				halted = false;
 

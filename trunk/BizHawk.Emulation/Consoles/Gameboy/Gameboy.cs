@@ -277,8 +277,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			HardReset();
 		}
 
-		public bool BootFromBios = true;
-
 		public void HardReset()
 		{
 			Cpu = new CPUs.Z80GB.Z80();
@@ -296,13 +294,13 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			{
 				case ESystemType.GB:
 				case ESystemType.SGB:
-					Cpu.RegisterAF = 0x01;
+					Cpu.RegisterA = 0x01;
 					break;
 				case ESystemType.GBP:
-					Cpu.RegisterAF = 0xFF;
+					Cpu.RegisterA = 0xFF;
 					break;
 				case ESystemType.GBC:
-					Cpu.RegisterAF = 0x11;
+					Cpu.RegisterA = 0x11;
 					break;
 				case ESystemType.GBA:
 					throw new NotImplementedException(); //decide what to do
@@ -315,8 +313,8 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			Cpu.RegisterDE = 0x00D8;
 			Cpu.RegisterHL = 0x014D;
 			Cpu.RegisterSP = 0xFFFE;
-			if (BootFromBios) Cpu.RegisterPC = 0x0000;
-			else Cpu.RegisterPC = 0x0100;
+			if (skipBIOS) Cpu.RegisterPC = 0x0100;
+			else Cpu.RegisterPC = 0x0000;
 
 			WRam = new byte[32 * 1024]; //GB has 4KB of WRam; GBC has 32KB of WRam 
 			SRam = new byte[8 * 1024]; //different carts may have different amounts of this
@@ -336,11 +334,11 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(1);
-			
+
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, Endian.Little,
 				addr => Cpu.ReadMemory((ushort)addr),
 				(addr, value) => Cpu.WriteMemory((ushort)addr, value));
-			
+
 			var WRAM0Domain = new MemoryDomain("WRAM Bank 0", 0x2000, Endian.Little,
 				addr => WRam[addr & 0x1FFF],
 				(addr, value) => WRam[addr & 0x1FFF] = value);
@@ -377,7 +375,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			domains.Add(OAMDomain);
 			domains.Add(HRAMDomain);
 			domains.Add(SystemBusDomain);
-			
+
 			memoryDomains = domains.AsReadOnly();
 		}
 
@@ -450,7 +448,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			switch (addr)
 			{
-				case 0xFF00: //REG_P1 - Register for reading joy pad info and determining system type.    (R/W)
+				case 0xFF00: //REG_P1 - Register for reading joy pad info and determining system type.	(R/W)
 					return Registers.Input.Read();
 				case 0xFF01: //REG_SB - Serial transfer data (R/W)
 					return 0xFF;
@@ -565,7 +563,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 		{
 			switch (addr)
 			{
-				case 0xFF00: //REG_P1 - Register for reading joy pad info and determining system type.    (R/W)
+				case 0xFF00: //REG_P1 - Register for reading joy pad info and determining system type.	(R/W)
 					Registers.Input.Write(value);
 					break;
 				case 0xFF01: //REG_SB - Serial transfer data (R/W)
@@ -724,7 +722,7 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			get { return this; }
 		}
 
-		public int[] GetVideoBuffer() 
+		public int[] GetVideoBuffer()
 		{
 			//TODO - these need to be run once per scanline and accumulated into a 160*144 byte buffer held by the core
 			//then, in the call to GetVideoBuffer(), it gets adapted to gray according to the palette and returned
@@ -757,9 +755,9 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 			return buf;
 		}
 
-			public int BufferWidth { get { return 160; } }
-			public int BufferHeight { get { return 144; } }
-			public int BackgroundColor { get { return 0; } }
+		public int BufferWidth { get { return 160; } }
+		public int BufferHeight { get { return 144; } }
+		public int BackgroundColor { get { return 0; } }
 
 		public ISoundProvider SoundProvider
 		{
