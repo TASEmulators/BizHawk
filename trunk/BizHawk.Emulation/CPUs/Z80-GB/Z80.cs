@@ -9,10 +9,15 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 {
 	public sealed partial class Z80
 	{
+		private bool logging = false;
+		private TextWriter log;
+
 		public Z80()
 		{
 			InitializeTables();
 			Reset();
+			if (logging)
+				log = File.CreateText("log.txt");
 		}
 
 		public void Reset()
@@ -27,8 +32,6 @@ namespace BizHawk.Emulation.CPUs.Z80GB
 
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
-		private bool logging = true;
-		private TextWriter log = File.CreateText("log.txt");
 
 		public void UnregisterMemoryMapper()
 		{
