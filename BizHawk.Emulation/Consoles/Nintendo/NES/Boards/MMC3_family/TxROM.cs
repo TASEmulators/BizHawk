@@ -26,19 +26,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 		}
 
-		public override byte ReadWRAM(int addr)
-		{
-			if (Cart.wram_size != 0)
-				return WRAM[addr & wram_mask];
-			else return 0xFF;
-		}
-
-		public override void WriteWRAM(int addr, byte value)
-		{
-			if (Cart.wram_size != 0)
-				WRAM[addr & wram_mask] = value;
-		}
-
 
 		public override void SyncState(Serializer ser)
 		{
