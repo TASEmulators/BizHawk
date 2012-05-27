@@ -83,6 +83,23 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				mirroring[3] = d;
 			}
 
+			protected void ApplyMemoryMapMask(int mask, ByteBuffer map)
+			{
+				byte bmask = (byte)mask;
+				for (int i = 0; i < map.len; i++)
+					map[i] &= bmask;
+			}
+
+			//make sure you have bank-masked the map 
+			protected int ApplyMemoryMap(int blockSizeBits, ByteBuffer map, int addr)
+			{
+				int bank = addr >> blockSizeBits;
+				int ofs = addr & ((1 << blockSizeBits) - 1);
+				bank = map[bank];
+				addr = (bank << blockSizeBits) | ofs;
+				return addr;
+			}
+
 			public static EMirrorType CalculateMirrorType(int pad_h, int pad_v)
 			{
 				if (pad_h == 0)
@@ -167,6 +184,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 			public virtual void AddressPPU(int addr) { }
 			public virtual byte PeekPPU(int addr) { return ReadPPU(addr); }
+
+			/// <summary>
+			/// reads PPU from a pattern table address. asserts addr lt 0x2000
+			/// This is just so that we can accelerate things a tiny bit by not checking against 0x2000 excessively
+			/// </summary>
+			protected virtual byte ReadPPUChr(int addr)
+			{
+				Debug.Assert(addr < 0x2000);
+				if (VROM != null)
+					return VROM[addr];
+				else return VRAM[addr];
+			}
 
 			public virtual byte ReadPPU(int addr)
 			{
