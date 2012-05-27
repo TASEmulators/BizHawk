@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//Mapper 164
 		//Final Fantasy V (Unl)
 
+		//state
 		int prg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -43,6 +44,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPPU(int addr)
 		{
 			return VROM[addr + (prg * 0x8000)];
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg", ref prg);
 		}
 	}
 }
