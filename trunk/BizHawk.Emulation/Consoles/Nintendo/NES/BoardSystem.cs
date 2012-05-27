@@ -14,8 +14,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		public interface INESBoard : IDisposable
 		{
+			//base class pre-configuration
 			void Create(NES nes);
+			//one-time inherited classes configuration 
 			bool Configure(NES.EDetectionOrigin origin);
+			//one-time base class configuration (which can take advantage of any information setup by the more-informed Configure() method)
+			void PostConfigure();
 			
 			//gets called once per PPU clock, for boards with complex behaviour which must be monitoring clock (i.e. mmc3 irq counter)
 			void ClockPPU();
@@ -132,9 +136,16 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				if(wram != null)
 					wram[addr] = value;
 			}
+
+			private int wram_mask;
+			public virtual void PostConfigure()
+			{
+				wram_mask = (Cart.wram_size * 1024) - 1;
+			}
+
 			public virtual byte ReadWRAM(int addr) {
 				if (wram != null)
-					return wram[addr];
+					return wram[addr & wram_mask];
 				else return 0xFF;
 			}
 
