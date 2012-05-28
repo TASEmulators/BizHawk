@@ -70,13 +70,13 @@ namespace BizHawk.MultiClient
 				return false;
 		}
 
-		private void PlayMovie()
+		public void PlayMovie()
 		{
 			PlayMovie p = new PlayMovie();
 			DialogResult d = p.ShowDialog();
 		}
 
-		private void RecordMovie()
+		public void RecordMovie()
 		{
 			RecordMovie r = new RecordMovie();
 			r.ShowDialog();
