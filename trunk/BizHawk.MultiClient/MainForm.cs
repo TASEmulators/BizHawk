@@ -1337,6 +1337,9 @@ namespace BizHawk.MultiClient
 				StateSlots.Clear();
 				UpdateStatusSlots();
 				UpdateDumpIcon();
+
+				LastState = Global.Emulator.SaveStateBinary();
+
 				return true;
 			}
 		}
