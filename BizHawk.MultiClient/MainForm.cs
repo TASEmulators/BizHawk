@@ -30,16 +30,16 @@ namespace BizHawk.MultiClient
 
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
-        public bool FastForward = false;
-        public bool TurboFastForward = false;
-        public bool StopOnEnd = false;
+		public bool FastForward = false;
+		public bool TurboFastForward = false;
+		public bool StopOnEnd = false;
 
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
-        /// <summary>
-        /// an audio proxy used for dumping
-        /// </summary>
-        Emulation.Sound.Utilities.DualSound DumpProxy = null;
+		/// <summary>
+		/// an audio proxy used for dumping
+		/// </summary>
+		Emulation.Sound.Utilities.DualSound DumpProxy = null;
 
 
 		//runloop control
@@ -272,7 +272,7 @@ namespace BizHawk.MultiClient
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if(Global.DisplayManager != null) Global.DisplayManager.Dispose();
+			if (Global.DisplayManager != null) Global.DisplayManager.Dispose();
 			Global.DisplayManager = null;
 
 			if (disposing && (components != null))
@@ -715,16 +715,16 @@ namespace BizHawk.MultiClient
 			genControls.BindMulti("P1 Start", Global.Config.GenesisController[0].Start);
 			Global.GenControls = genControls;
 
-            var agenControls = new AutofireController(Genesis.GenesisController);
-            agenControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
-            agenControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
-            agenControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
-            agenControls.BindMulti("P1 Down", Global.Config.GenesisAutoController[0].Down);
-            agenControls.BindMulti("P1 A", Global.Config.GenesisAutoController[0].A);
-            agenControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
-            agenControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
-            agenControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
-            Global.AutofireGenControls = agenControls;
+			var agenControls = new AutofireController(Genesis.GenesisController);
+			agenControls.BindMulti("P1 Up", Global.Config.GenesisAutoController[0].Up);
+			agenControls.BindMulti("P1 Left", Global.Config.GenesisAutoController[0].Left);
+			agenControls.BindMulti("P1 Right", Global.Config.GenesisAutoController[0].Right);
+			agenControls.BindMulti("P1 Down", Global.Config.GenesisAutoController[0].Down);
+			agenControls.BindMulti("P1 A", Global.Config.GenesisAutoController[0].A);
+			agenControls.BindMulti("P1 B", Global.Config.GenesisAutoController[0].B);
+			agenControls.BindMulti("P1 C", Global.Config.GenesisAutoController[0].C);
+			agenControls.BindMulti("P1 Start", Global.Config.GenesisAutoController[0].Start);
+			Global.AutofireGenControls = agenControls;
 
 			var a2600Controls = new Controller(Atari2600.Atari2600ControllerDefinition);
 			a2600Controls.BindMulti("P1 Up", Global.Config.Atari2600Controller[0].Up);
@@ -974,7 +974,7 @@ namespace BizHawk.MultiClient
 			atariToolStripMenuItem.Visible = false;
 			switch (system)
 			{
-					
+
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;
@@ -1777,29 +1777,29 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-            MOVIEMODE movieMode = Global.MovieSession.Movie.Mode;
+			MOVIEMODE movieMode = Global.MovieSession.Movie.Mode;
 			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
-                if (0 == RewindBuf.Count)
-                {
-                    runFrame = false;
-                }
-                else
-                {
-                    runFrame = true;
-                }
-                //Save this here and restore it later, we don't want to capture input when rewinding, even in record mode
-                movieMode = Global.MovieSession.Movie.Mode;
-                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+				if (0 == RewindBuf.Count)
+				{
+					runFrame = false;
+				}
+				else
+				{
+					runFrame = true;
+				}
+				//Save this here and restore it later, we don't want to capture input when rewinding, even in record mode
+				movieMode = Global.MovieSession.Movie.Mode;
+				Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 			}
 
 			bool genSound = false;
 			if (runFrame)
 			{
 				//client input-related duties
-				
+
 				Global.OSD.ClearGUIText();
 				UpdateToolsBefore();
 #if WINDOWS
@@ -1850,9 +1850,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 
-                //the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-                //this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-                session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+				//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+				session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
@@ -1863,7 +1863,7 @@ namespace BizHawk.MultiClient
 				{
 					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame && true == StopOnEnd)
 					{
-                        StopOnEnd = false;
+						StopOnEnd = false;
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
@@ -1896,14 +1896,14 @@ namespace BizHawk.MultiClient
 					int samples = (int)(44100 / Global.Emulator.CoreOutputComm.VsyncRate);
 					short[] temp = new short[samples * 2];
 					//Global.Emulator.SoundProvider.GetSamples(temp);
-                    DumpProxy.GetSamples(temp);
-                    //genSound = false;
+					DumpProxy.GetSamples(temp);
+					//genSound = false;
 
 					CurrAviWriter.AddFrame(Global.Emulator.VideoProvider);
 					CurrAviWriter.AddSamples(temp);
 				}
 
-				
+
 
 				if (Global.Emulator.IsLagFrame && Global.Config.AutofireLagFrames)
 				{
@@ -1911,26 +1911,26 @@ namespace BizHawk.MultiClient
 				}
 
 				PressFrameAdvance = false;
-                UpdateToolsAfter();
-            }
+				UpdateToolsAfter();
+			}
 
-            if (Global.ClientControls["Rewind"] || PressRewind)
-            {
-                UpdateToolsAfter();
-                Global.MovieSession.Movie.Mode = movieMode;
-                PressRewind = false;
-            }
+			if (Global.ClientControls["Rewind"] || PressRewind)
+			{
+				UpdateToolsAfter();
+				Global.MovieSession.Movie.Mode = movieMode;
+				PressRewind = false;
+			}
 
-            if (genSound)
-            {
-                // change audio path if dumping is occuring
-                if (DumpProxy != null)
-                    Global.Sound.UpdateSound(DumpProxy.secondpin);
-                else
-                    Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
-            }
-            else
-                Global.Sound.UpdateSound(NullSound.SilenceProvider);
+			if (genSound)
+			{
+				// change audio path if dumping is occuring
+				if (DumpProxy != null)
+					Global.Sound.UpdateSound(DumpProxy.secondpin);
+				else
+					Global.Sound.UpdateSound(Global.Emulator.SoundProvider);
+			}
+			else
+				Global.Sound.UpdateSound(NullSound.SilenceProvider);
 		}
 
 		/// <summary>
@@ -1951,12 +1951,12 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Update all tools that are frame dependent like Ram Search after processing
 		/// </summary>
-        public void UpdateToolsAfter()
-        {
-            //The other tool updates are earlier, TAStudio needs to be later so it can display the latest
-            //frame of execution in its list view.
-            TAStudio1.UpdateValues();
-        }
+		public void UpdateToolsAfter()
+		{
+			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
+			//frame of execution in its list view.
+			TAStudio1.UpdateValues();
+		}
 
 		private unsafe Image MakeScreenshotImage()
 		{
@@ -2108,9 +2108,9 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
-                UpdateToolsBefore();
-                UpdateToolsAfter();
-                Global.OSD.AddMessage("Loaded state: " + name);
+				UpdateToolsBefore();
+				UpdateToolsAfter();
+				Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
@@ -2505,7 +2505,7 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
-			
+
 			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
@@ -2594,16 +2594,10 @@ namespace BizHawk.MultiClient
 		public void SetReadOnly(bool read_only)
 		{
 			ReadOnly = read_only;
-            if (ReadOnly)
-            {
-                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
-                Global.OSD.AddMessage("Movie read-only mode");
-            }
-            else
-            {
-                Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
-                Global.OSD.AddMessage("Movie read+write mode");
-            }
+			if (ReadOnly)
+				Global.OSD.AddMessage("Movie read-only mode");
+			else
+				Global.OSD.AddMessage("Movie read+write mode");
 		}
 
 		public void LoadRamWatch()
@@ -2721,8 +2715,8 @@ namespace BizHawk.MultiClient
 			//TODO - cores should be able to specify exact values for these instead of relying on this to calculate them
 			int fps = (int)(Global.Emulator.CoreOutputComm.VsyncRate * 0x01000000);
 
-            IVideoWriter aw;
-            string ext = Path.GetExtension(sfd.FileName).ToLower();
+			IVideoWriter aw;
+			string ext = Path.GetExtension(sfd.FileName).ToLower();
 
 			if (ext == ".jmd")
 				aw = new JMDWriter();
@@ -2738,12 +2732,12 @@ namespace BizHawk.MultiClient
 				aw.SetVideoParameters(Global.Emulator.VideoProvider.BufferWidth, Global.Emulator.VideoProvider.BufferHeight);
 				aw.SetAudioParameters(44100, 2, 16);
 				var token = aw.AcquireVideoCodecToken(Global.MainForm.Handle);
-                if (token == null)
-                {
-                    Global.OSD.AddMessage("AVI capture canceled.");
-                    aw.Dispose();
-                    return;
-                }
+				if (token == null)
+				{
+					Global.OSD.AddMessage("AVI capture canceled.");
+					aw.Dispose();
+					return;
+				}
 
 				aw.SetVideoCodecToken(token);
 				aw.OpenFile(sfd.FileName);
@@ -2760,23 +2754,23 @@ namespace BizHawk.MultiClient
 				aw.Dispose();
 				throw;
 			}
-            // buffersize here is entirely guess
-            DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
+			// buffersize here is entirely guess
+			DumpProxy = new Emulation.Sound.Utilities.DualSound(Global.Emulator.SoundProvider, 8192);
 		}
 
 		public void StopAVI()
 		{
-            if (CurrAviWriter == null)
-            {
-                DumpProxy = null;
-                return;
-            }
+			if (CurrAviWriter == null)
+			{
+				DumpProxy = null;
+				return;
+			}
 			CurrAviWriter.CloseFile();
 			CurrAviWriter = null;
 			Global.OSD.AddMessage("AVI capture stopped");
 			AVIStatusLabel.Image = BizHawk.MultiClient.Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = "";
-            DumpProxy = null; // return to normal sound output
+			DumpProxy = null; // return to normal sound output
 		}
 
 		private void SwapBackupSavestate(string path)
