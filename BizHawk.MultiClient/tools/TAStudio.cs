@@ -323,15 +323,16 @@ namespace BizHawk.MultiClient
 
 		private void checkBox1_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.MainForm.SetReadOnly(ReadOnlyCheckBox.Checked);
 			if (ReadOnlyCheckBox.Checked)
 			{
+                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
 			}
 			else
 			{
-				ReadOnlyCheckBox.BackColor = Color.LightCoral;
+                Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+                ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
 			}
 		}

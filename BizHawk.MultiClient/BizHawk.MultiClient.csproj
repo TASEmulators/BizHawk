@@ -671,7 +671,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\ControllerImages\NESController.png" />
-    <None Include="Resources\TurboFastForward.png" />
+    <None Include="images\TurboFastForward.png" />
     <None Include="images\cheat.png" />
     <None Include="images\Cheats.ico" />
     <None Include="images\Debugger.png" />
@@ -791,7 +791,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
