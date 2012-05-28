@@ -23,6 +23,7 @@ namespace BizHawk.MultiClient
 		//PCE virtualpad
 		//Dynamic virtualpad system based on platform
 		//ensureVisible when recording
+        //Allow hotkeys when TAStudio has focus
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -102,7 +103,7 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index == Global.Emulator.Frame)
+			if (index < Global.MainForm.RewindBufferCount())
 				color = Color.LightGreen;
 			else if (Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
 				color = Color.Pink;
@@ -120,7 +121,7 @@ namespace BizHawk.MultiClient
 		private void DisplayList()
 		{
 			TASView.ItemCount = Global.MovieSession.Movie.Length();
-			TASView.ensureVisible(Global.Emulator.Frame);
+            TASView.ensureVisible(Global.Emulator.Frame-1);
 		}
 
 		public void Restart()
@@ -335,10 +336,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-			Global.MainForm.PlayMovieFromBeginning();
-		}
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
@@ -348,8 +345,15 @@ namespace BizHawk.MultiClient
 
 		private void FastForwardToEnd_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.StopOnEnd ^= true;
+            this.FastFowardToEnd.Checked ^= true;
+            Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
+            if (true == this.FastFowardToEnd.Checked)
+            {
+                this.FastForward.Checked = false;
+                this.TurboFastForward.Checked = false;
+            }
+        }
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -376,22 +380,28 @@ namespace BizHawk.MultiClient
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.RecordMovie();
+        }
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.PlayMovie();
+        }
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+            Global.MovieSession.Movie.WriteMovie();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            string fileName = Movie.SaveRecordingAs();
 
+            if ("" != fileName)
+            {
+                Global.MovieSession.Movie.UpdateFileName(fileName);
+                Global.MovieSession.Movie.WriteMovie();
+            }
 		}
 
 		private void ClearVirtualPadHolds()
@@ -412,5 +422,27 @@ namespace BizHawk.MultiClient
 		{
 			ClearVirtualPadHolds();
 		}
+
+        private void FastForward_Click(object sender, EventArgs e)
+        {
+            this.FastForward.Checked ^= true;
+            Global.MainForm.FastForward = this.FastForward.Checked;
+            if (true == this.FastForward.Checked)
+            {
+                this.TurboFastForward.Checked = false;
+                this.FastFowardToEnd.Checked = false;
+            }
+        }
+
+        private void TurboFastForward_Click(object sender, EventArgs e)
+        {
+            Global.MainForm.TurboFastForward ^= true;
+            this.TurboFastForward.Checked ^= true;
+            if (true == this.TurboFastForward.Checked)
+            {
+                this.FastForward.Checked = false;
+                this.FastFowardToEnd.Checked = false;
+            }
+        }
 	}
 }

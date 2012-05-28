@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 
 		public bool IsText { get; private set; }
 		public string Filename { get; private set; }
-		public MOVIEMODE Mode { get; private set; }
+		public MOVIEMODE Mode { get; set; }
 		public int Rerecords { get; private set; }
 		private int Frames;
 		public bool RerecordCounting { get; set; }
@@ -69,13 +69,18 @@ namespace BizHawk.MultiClient
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
 
-		public int Length()
-		{
-			if (Loaded)
-				return Log.Length();
-			else
-				return Frames;
-		}
+        public int Length()
+        {
+            if (Loaded)
+                return Log.Length();
+            else
+                return Frames;
+        }
+
+        public void UpdateFileName(string filename)
+        {
+            this.Filename = filename;
+        }
 
 		public void StopMovie()
 		{
@@ -104,6 +109,26 @@ namespace BizHawk.MultiClient
 			}
 			if(truncate) Log.Clear();
 		}
+
+        public static string SaveRecordingAs()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+            sfd.DefaultExt = "." + Global.Config.MovieExtension;
+            //sfd.FileName = RecordBox.Text;
+            sfd.FileName = Global.MovieSession.Movie.Filename;
+            sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+            return "";
+        }
+
 
 		public void StartPlayback()
 		{

@@ -30,6 +30,9 @@ namespace BizHawk.MultiClient
 
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
+        public bool FastForward = false;
+        public bool TurboFastForward = false;
+        public bool StopOnEnd = false;
 
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
@@ -357,7 +360,7 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
-			bool fastforward = Global.ClientControls["Fast Forward"];
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			Global.ForceNoVsync = unthrottled || fastforward;
 
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
@@ -1774,12 +1777,22 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
+            MOVIEMODE movieMode = Global.MovieSession.Movie.Mode;
+			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
-				runFrame = true;
-				PressRewind = false;
+                if (0 == RewindBuf.Count)
+                {
+                    runFrame = false;
+                }
+                else
+                {
+                    runFrame = true;
+                }
+                //Save this here and restore it later, we don't want to capture input when rewinding, even in record mode
+                movieMode = Global.MovieSession.Movie.Mode;
+                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 			}
 
 			bool genSound = false;
@@ -1788,7 +1801,7 @@ namespace BizHawk.MultiClient
 				//client input-related duties
 				
 				Global.OSD.ClearGUIText();
-				UpdateTools();
+				UpdateToolsBefore();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
@@ -1813,7 +1826,6 @@ namespace BizHawk.MultiClient
 					Global.OSD.FPS = fps_string;
 				}
 
-
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
@@ -1836,11 +1848,11 @@ namespace BizHawk.MultiClient
 					{
 						session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
-
-					//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
-					//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
-					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 				}
+
+                //the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
+                //this has been wired to Global.MovieOutputHardpoint in RewireInputChain
+                session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
@@ -1849,8 +1861,9 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame && true == StopOnEnd)
 					{
+                        StopOnEnd = false;
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
@@ -1898,7 +1911,15 @@ namespace BizHawk.MultiClient
 				}
 
 				PressFrameAdvance = false;
-			}
+                UpdateToolsAfter();
+            }
+
+            if (Global.ClientControls["Rewind"] || PressRewind)
+            {
+                UpdateToolsAfter();
+                Global.MovieSession.Movie.Mode = movieMode;
+                PressRewind = false;
+            }
 
             if (genSound)
             {
@@ -1913,9 +1934,9 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
-		/// Update all tools that are frame dependent like Ram Search
+		/// Update all tools that are frame dependent like Ram Search before processing
 		/// </summary>
-		public void UpdateTools()
+		public void UpdateToolsBefore()
 		{
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
@@ -1924,9 +1945,18 @@ namespace BizHawk.MultiClient
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
 			PCEBGViewer1.Generate(); // TODO: just a makeshift. PCE core should provide callbacks.
-			TAStudio1.UpdateValues();
 			GBDebugger.UpdateValues();
 		}
+
+		/// <summary>
+		/// Update all tools that are frame dependent like Ram Search after processing
+		/// </summary>
+        public void UpdateToolsAfter()
+        {
+            //The other tool updates are earlier, TAStudio needs to be later so it can display the latest
+            //frame of execution in its list view.
+            TAStudio1.UpdateValues();
+        }
 
 		private unsafe Image MakeScreenshotImage()
 		{
@@ -2078,8 +2108,9 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
-				UpdateTools();
-				Global.OSD.AddMessage("Loaded state: " + name);
+                UpdateToolsBefore();
+                UpdateToolsAfter();
+                Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
 				Global.OSD.AddMessage("Loadstate error!");
@@ -2563,10 +2594,16 @@ namespace BizHawk.MultiClient
 		public void SetReadOnly(bool read_only)
 		{
 			ReadOnly = read_only;
-			if (ReadOnly)
-				Global.OSD.AddMessage("Movie read-only mode");
-			else
-				Global.OSD.AddMessage("Movie read+write mode");
+            if (ReadOnly)
+            {
+                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+                Global.OSD.AddMessage("Movie read-only mode");
+            }
+            else
+            {
+                Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+                Global.OSD.AddMessage("Movie read+write mode");
+            }
 		}
 
 		public void LoadRamWatch()
