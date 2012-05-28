@@ -25,19 +25,6 @@ namespace BizHawk.MultiClient
 										Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
                 }
 
-                var ms = new MemoryStream();
-                var writer = new BinaryWriter(ms);
-                for (int i = 0; i < LastState.Length; i++)
-                {
-                    if (i == 254 || i == LastState.Length - 1)
-                    {
-                        writer.Write((byte)(i + 1));
-                        writer.Write((ushort) 0);
-                        writer.Write(LastState, 0, i + 1);
-                    }
-                }
-                RewindBuf.Push(ms);
-
 				return;
 			}
 
