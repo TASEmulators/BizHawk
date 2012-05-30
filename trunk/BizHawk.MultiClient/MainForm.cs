@@ -1780,7 +1780,7 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			MOVIEMODE movieMode = Global.MovieSession.Movie.Mode;
+			bool ReturnToRecording = Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD;
 			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
@@ -1793,9 +1793,9 @@ namespace BizHawk.MultiClient
 				{
 					runFrame = true;
 				}
-				//Save this here and restore it later, we don't want to capture input when rewinding, even in record mode
-				movieMode = Global.MovieSession.Movie.Mode;
-				Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+				//we don't want to capture input when rewinding, even in record mode
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 			}
 
 			bool genSound = false;
@@ -1920,7 +1920,8 @@ namespace BizHawk.MultiClient
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
-				Global.MovieSession.Movie.Mode = movieMode;
+				if (ReturnToRecording)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
 				PressRewind = false;
 			}
 
