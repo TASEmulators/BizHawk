@@ -188,11 +188,6 @@ namespace BizHawk.MultiClient
 			)
 			{
 				input.Append(".");
-				/*
-				 TODO:
-				 * Gameboy: reset goes here
-				 * PC Engine: some kind of command key, since reset isn't used (adelikat: unimplmented command was
-				*/
 			}
 			if (ControlType == "Atari 2600 Basic Controller")
 			{

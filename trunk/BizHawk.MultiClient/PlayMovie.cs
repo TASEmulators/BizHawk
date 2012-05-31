@@ -298,6 +298,7 @@ namespace BizHawk.MultiClient
 
 		private void PlayMovie_Load(object sender, EventArgs e)
 		{
+			
 			IncludeSubDirectories.Checked = Global.Config.PlayMovie_IncludeSubdir;
 			ShowStateFiles.Checked = Global.Config.PlayMovie_ShowStateFiles;
 			MatchGameNameCheckBox.Checked = Global.Config.PlayMovie_MatchGameName;
@@ -307,6 +308,7 @@ namespace BizHawk.MultiClient
 
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			toolTip1.SetToolTip(DetailsView, "");
 			DetailsView.Items.Clear();
 			if (MovieView.SelectedIndices.Count < 1)
 			{
@@ -331,6 +333,7 @@ namespace BizHawk.MultiClient
 						if (kvp.Value.ToString() != Global.Game.Hash)
 						{
 							item.BackColor = Color.Pink;
+							toolTip1.SetToolTip(DetailsView, "Current SHA1: " + Global.Game.Hash);
 						}
 						break;
 					case MovieHeader.MOVIEVERSION:
