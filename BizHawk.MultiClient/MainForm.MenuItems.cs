@@ -1239,8 +1239,10 @@ namespace BizHawk.MultiClient
 		{
 			if (IsNullEmulator())
 			{
+				movieToolStripMenuItem.Enabled = false;
+				AVIWAVToolStripMenuItem.Enabled = false;
+				screenshotToolStripMenuItem.Enabled = false;
 				closeROMToolStripMenuItem.Enabled = false;
-				screenshotF12ToolStripMenuItem.Enabled = false;
 				saveToCurrentSlotToolStripMenuItem.Enabled = false;
 				loadCurrentSlotToolStripMenuItem.Enabled = false;
 				loadNamedStateToolStripMenuItem.Enabled = false;
@@ -1268,8 +1270,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				movieToolStripMenuItem.Enabled = true;
+				AVIWAVToolStripMenuItem.Enabled = true;
+				screenshotToolStripMenuItem.Enabled = true;
 				closeROMToolStripMenuItem.Enabled = true;
-				screenshotF12ToolStripMenuItem.Enabled = true;
 				saveToCurrentSlotToolStripMenuItem.Enabled = true;
 				loadCurrentSlotToolStripMenuItem.Enabled = true;
 				loadNamedStateToolStripMenuItem.Enabled = true;

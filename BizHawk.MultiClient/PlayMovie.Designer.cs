@@ -105,6 +105,7 @@
 			this.DetailsView.Name = "DetailsView";
 			this.DetailsView.Size = new System.Drawing.Size(228, 242);
 			this.DetailsView.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.DetailsView, "Contains the header information for the selected movie");
 			this.DetailsView.UseCompatibleStateImageBehavior = false;
 			this.DetailsView.View = System.Windows.Forms.View.Details;
 			// 
