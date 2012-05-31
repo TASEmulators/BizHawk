@@ -1583,7 +1583,7 @@
 			this.IDW_TASTudio.Location = new System.Drawing.Point(87, 164);
 			this.IDW_TASTudio.Name = "IDW_TASTudio";
 			this.IDW_TASTudio.Size = new System.Drawing.Size(100, 20);
-			this.IDW_TASTudio.TabIndex = 83;
+			this.IDW_TASTudio.TabIndex = 82;
 			// 
 			// IDW_RamWatch
 			// 
@@ -1599,7 +1599,7 @@
 			this.IDW_TOOLBOX.Location = new System.Drawing.Point(87, 190);
 			this.IDW_TOOLBOX.Name = "IDW_TOOLBOX";
 			this.IDW_TOOLBOX.Size = new System.Drawing.Size(100, 20);
-			this.IDW_TOOLBOX.TabIndex = 82;
+			this.IDW_TOOLBOX.TabIndex = 83;
 			// 
 			// label46
 			// 

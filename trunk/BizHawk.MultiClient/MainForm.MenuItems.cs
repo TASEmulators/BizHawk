@@ -1164,21 +1164,29 @@ namespace BizHawk.MultiClient
 
 		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
 			pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
-			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
+			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
+			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
+			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
+		}
+
+		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
-			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
-			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
-			frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
+		}
+
+		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SkipLagFrame ^= true;
 		}
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
@@ -1408,7 +1416,7 @@ namespace BizHawk.MultiClient
 			Global.Config.BackupSavestates ^= true;
 		}
 
-        void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
+		void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoSavestates ^= true;
 		}

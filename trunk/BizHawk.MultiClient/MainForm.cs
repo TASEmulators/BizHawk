@@ -3035,11 +3035,6 @@ namespace BizHawk.MultiClient
 			makeAnimatedGif(sfd.FileName);
 		}
 
-		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SkipLagFrame ^= true;
-		}
-
 		private void ShowConsole()
 		{
 			LogConsole.ShowConsole();
