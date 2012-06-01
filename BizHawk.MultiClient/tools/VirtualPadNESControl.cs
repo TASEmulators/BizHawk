@@ -96,7 +96,7 @@ namespace BizHawk.MultiClient
 		public override void SetButtons(string buttons)
 		{
 			if (buttons.Length < 1) return;
-            if (buttons[0] == '.' || buttons[0] == 'l')
+			if (buttons[0] == '.' || buttons[0] == 'l' || buttons[0] == '0')
             {
                 B2.Checked = false;
             }

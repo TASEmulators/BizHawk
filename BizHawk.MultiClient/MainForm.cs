@@ -33,6 +33,7 @@ namespace BizHawk.MultiClient
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool StopOnEnd = false;
+		public bool UpdateFrame = false;
 
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
@@ -1797,6 +1798,12 @@ namespace BizHawk.MultiClient
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 			}
+			if (true == UpdateFrame)
+			{
+				runFrame = true;
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+			}
 
 			bool genSound = false;
 			if (runFrame)
@@ -1830,6 +1837,8 @@ namespace BizHawk.MultiClient
 				}
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
+				Global.MovieSession.Movie.CaptureState();
+
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
@@ -1924,6 +1933,12 @@ namespace BizHawk.MultiClient
 					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
 				PressRewind = false;
 			}
+			if (true == UpdateFrame)
+			{
+				if (ReturnToRecording)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				UpdateFrame = false;
+			}
 
 			if (genSound)
 			{
@@ -1960,6 +1975,7 @@ namespace BizHawk.MultiClient
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
 			TAStudio1.UpdateValues();
+			Global.MovieSession.Movie.CheckValidity();
 		}
 
 		private unsafe Image MakeScreenshotImage()

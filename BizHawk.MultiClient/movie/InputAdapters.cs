@@ -396,7 +396,7 @@ namespace BizHawk.MultiClient
 			if (ControlType == "NES Controller")
 			{
 				if (mnemonic.Length < 2) return;
-				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != 'r' && mnemonic[1] != 'l');
+				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0' && mnemonic[1] != 'l');
 			}
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller")
 			{

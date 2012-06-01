@@ -15,6 +15,9 @@ namespace BizHawk.MultiClient
 
 		List<string> MovieRecords = new List<string>();
 
+		private List<byte[]> StateList = new List<byte[]>();
+		private int StateLastValidIndex = -1;
+
 		public MovieLog()
 		{
 			//Should this class initialize with an empty string to MovieRecords so that first frame is index 1?
@@ -35,6 +38,16 @@ namespace BizHawk.MultiClient
 		{
 			MovieRecords.Add(frame);
 		}
+
+		public void AddState(byte[] state)
+		{
+			if (Global.Emulator.Frame >= StateList.Count)
+			{
+				StateList.Add(state);
+				StateLastValidIndex = Global.Emulator.Frame;
+			}
+		}
+
 		public void SetFrameAt(int frameNum, string frame)
 		{
 			if (MovieRecords.Count > frameNum)
@@ -45,6 +58,52 @@ namespace BizHawk.MultiClient
 		public void AddFrameAt(string frame, int frameNum)
 		{
 			MovieRecords.Insert(frameNum, frame);
+
+			if (frameNum <= StateList.Count - 1)
+			{
+				StateList.RemoveRange(frameNum, StateList.Count - frameNum);
+			}
+			if (StateLastValidIndex >= frameNum)
+			{
+				StateLastValidIndex = frameNum - 1;
+			}
+		}
+
+		public void CheckValidity()
+		{
+			byte[] state = Global.Emulator.SaveStateBinary();
+			if (Global.Emulator.Frame < StateList.Count && (null == StateList[Global.Emulator.Frame] || !state.SequenceEqual((byte[])StateList[Global.Emulator.Frame])))
+			{
+				StateLastValidIndex = Global.Emulator.Frame;
+			}
+		}
+
+		public int CapturedStateCount()
+		{
+			return StateList.Count;
+		}
+
+		public int LastValidState()
+		{
+			return StateLastValidIndex;
+		}
+
+		public byte[] GetState(int frame)
+		{
+			return StateList[frame];
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			MovieRecords.RemoveAt(frame);
+			if (frame < StateList.Count)
+			{
+				StateList.RemoveAt(frame);
+			}
+			if (StateLastValidIndex > frame)
+			{
+				StateLastValidIndex = frame;
+			}
 		}
 
 		public void Truncate(int frame)
