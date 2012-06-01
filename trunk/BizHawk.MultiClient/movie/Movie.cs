@@ -89,6 +89,39 @@ namespace BizHawk.MultiClient
 			Mode = MOVIEMODE.INACTIVE;
 		}
 
+		public void CaptureState()
+		{
+			byte[] state = Global.Emulator.SaveStateBinary();
+			Log.AddState(state);
+		}
+
+		public void RewindToFrame(int frame)
+		{
+			if (frame <= Global.Emulator.Frame)
+			{
+				//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				Global.MainForm.UpdateFrame = true;
+			}
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			RewindToFrame(frame);
+			Log.DeleteFrame(frame);
+			Global.MainForm.TAStudio1.UpdateValues();
+		}
+
+		public int LastValidState()
+		{
+			return Log.LastValidState();
+		}
+
+		public void CheckValidity()
+		{
+			Log.CheckValidity();
+		}
+
 		public void ClearSaveRAM()
 		{
 			string x = PathManager.SaveRamPath(Global.Game);
@@ -174,7 +207,9 @@ namespace BizHawk.MultiClient
 
 		public void InsertFrame(string record, int frame)
 		{
-			Log.SetFrameAt(frame, record);
+			Log.AddFrameAt(record,frame);
+
+			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
 		public void WriteMovie()

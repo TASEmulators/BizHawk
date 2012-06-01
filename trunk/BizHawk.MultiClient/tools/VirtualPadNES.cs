@@ -155,13 +155,13 @@ namespace BizHawk.MultiClient
 		public override string GetMnemonic()
 		{
 			StringBuilder input = new StringBuilder("");
-			input.Append(PR.Checked ? "R" : ".");
-			input.Append(PL.Checked ? "L" : ".");
-			input.Append(PD.Checked ? "D" : ".");
 			input.Append(PU.Checked ? "U" : ".");
+			input.Append(PD.Checked ? "D" : ".");
+			input.Append(PL.Checked ? "L" : ".");
+			input.Append(PR.Checked ? "R" : ".");
 
-			input.Append(B2.Checked ? "S" : ".");
 			input.Append(B1.Checked ? "s" : ".");
+			input.Append(B2.Checked ? "S" : ".");
 			input.Append(B3.Checked ? "B" : ".");
 			input.Append(B4.Checked ? "A" : ".");
 			input.Append("|");

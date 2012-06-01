@@ -23,7 +23,8 @@ namespace BizHawk.MultiClient
 		//PCE virtualpad
 		//Dynamic virtualpad system based on platform
 		//ensureVisible when recording
-        //Allow hotkeys when TAStudio has focus
+		//Allow hotkeys when TAStudio has focus
+		//Reduce the memory footprint with compression and or dropping frames and rerunning them when requested.
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -103,10 +104,14 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index < Global.MainForm.RewindBufferCount())
+			if (index <= Global.MovieSession.Movie.LastValidState())
 				color = Color.LightGreen;
 			else if (Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
 				color = Color.Pink;
+			if (index == Global.Emulator.Frame)
+			{
+				color = Color.LightBlue;
+			}
 		}
 
 		private void TASView_QueryItemText(int index, int column, out string text)
@@ -308,7 +313,7 @@ namespace BizHawk.MultiClient
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.PressRewind = true;
+			Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
@@ -445,5 +450,26 @@ namespace BizHawk.MultiClient
                 this.FastFowardToEnd.Checked = false;
             }
         }
+
+		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TASView_DoubleClick(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+		}
+
+		private void InsertOneFrame_Click(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(TASView.selectedItem), TASView.selectedItem);
+			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+		}
+
+		private void DeleteFrames_Click(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.DeleteFrame(TASView.selectedItem);
+		}
 	}
 }
