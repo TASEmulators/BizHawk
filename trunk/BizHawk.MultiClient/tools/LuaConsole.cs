@@ -362,9 +362,9 @@ namespace BizHawk.MultiClient
 		{
 			if (changes)
 			{
-                if (string.Compare(currentSessionFile, "") == 0)
-                    SaveAs();
-                else SaveSession(currentSessionFile);
+				if (string.Compare(currentSessionFile, "") == 0)
+					SaveAs();
+				else SaveSession(currentSessionFile);
 				Changes(false);
 				OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
 			}
@@ -968,7 +968,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!changes || luaList.Count == 0)
+			if (!changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}

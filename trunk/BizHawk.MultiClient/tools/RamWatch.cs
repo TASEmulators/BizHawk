@@ -629,9 +629,11 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentWatchFile, "") == 0) return;
-
-			if (changes)
+			if (string.Compare(currentWatchFile, "") == 0)
+			{
+				SaveAs();
+			}
+			else if (changes)
 			{
 				SaveWatchFile(currentWatchFile);
 				MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
@@ -741,7 +743,7 @@ namespace BizHawk.MultiClient
 			else
 				autoLoadToolStripMenuItem.Checked = false;
 
-			if (string.Compare(currentWatchFile, "") == 0 || !changes)
+			if (!changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}
@@ -862,6 +864,7 @@ namespace BizHawk.MultiClient
 
 		private void InsertSeparator()
 		{
+			Changes();
 			Watch w = new Watch();
 			w.type = atype.SEPARATOR;
 
