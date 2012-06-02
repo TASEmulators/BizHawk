@@ -62,6 +62,8 @@
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
+			this.gotoAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -257,9 +259,11 @@
             this.unfreezeAllToolStripMenuItem1,
             this.toolStripSeparator4,
             this.incrementToolStripMenuItem,
-            this.decrementToolStripMenuItem});
+            this.decrementToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.gotoAddressToolStripMenuItem1});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 142);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 170);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// freezeToolStripMenuItem
@@ -353,6 +357,19 @@
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			// 
+			// gotoAddressToolStripMenuItem1
+			// 
+			this.gotoAddressToolStripMenuItem1.Name = "gotoAddressToolStripMenuItem1";
+			this.gotoAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+G";
+			this.gotoAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+			this.gotoAddressToolStripMenuItem1.Text = "&Go to Addres...";
+			this.gotoAddressToolStripMenuItem1.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
+			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -415,5 +432,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem incrementToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem decrementToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
