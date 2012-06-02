@@ -139,6 +139,7 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.OutputLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -276,9 +277,9 @@
 			// SearchListView
 			// 
 			this.SearchListView.AllowColumnReorder = true;
-			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -335,16 +336,17 @@
             this.removeSelectedToolStripMenuItem1,
             this.addToRamWatchToolStripMenuItem,
             this.pokeAddressToolStripMenuItem1,
-            this.freezeAddressToolStripMenuItem1});
+            this.freezeAddressToolStripMenuItem1,
+            this.viewInHexEditorToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(176, 142);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(175, 186);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
 			// startNewSearchToolStripMenuItem
 			// 
 			this.startNewSearchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.startNewSearchToolStripMenuItem.Name = "startNewSearchToolStripMenuItem";
-			this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.startNewSearchToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.startNewSearchToolStripMenuItem.Text = "&Start New Search";
 			this.startNewSearchToolStripMenuItem.Click += new System.EventHandler(this.startNewSearchToolStripMenuItem_Click);
 			// 
@@ -352,20 +354,20 @@
 			// 
 			this.searchToolStripMenuItem2.Image = global::BizHawk.MultiClient.Properties.Resources.search;
 			this.searchToolStripMenuItem2.Name = "searchToolStripMenuItem2";
-			this.searchToolStripMenuItem2.Size = new System.Drawing.Size(175, 22);
+			this.searchToolStripMenuItem2.Size = new System.Drawing.Size(174, 22);
 			this.searchToolStripMenuItem2.Text = "&Search";
 			this.searchToolStripMenuItem2.Click += new System.EventHandler(this.searchToolStripMenuItem2_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(172, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(171, 6);
 			// 
 			// removeSelectedToolStripMenuItem1
 			// 
 			this.removeSelectedToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Delete;
 			this.removeSelectedToolStripMenuItem1.Name = "removeSelectedToolStripMenuItem1";
-			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.removeSelectedToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.removeSelectedToolStripMenuItem1.Text = "Remove Selected";
 			this.removeSelectedToolStripMenuItem1.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem1_Click);
 			// 
@@ -373,7 +375,7 @@
 			// 
 			this.addToRamWatchToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.FindHS;
 			this.addToRamWatchToolStripMenuItem.Name = "addToRamWatchToolStripMenuItem";
-			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+			this.addToRamWatchToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
 			this.addToRamWatchToolStripMenuItem.Text = "Add to Ram Watch";
 			this.addToRamWatchToolStripMenuItem.Click += new System.EventHandler(this.addToRamWatchToolStripMenuItem_Click);
 			// 
@@ -381,7 +383,7 @@
 			// 
 			this.pokeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
 			this.pokeAddressToolStripMenuItem1.Name = "pokeAddressToolStripMenuItem1";
-			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.pokeAddressToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.pokeAddressToolStripMenuItem1.Text = "Poke Address";
 			this.pokeAddressToolStripMenuItem1.Click += new System.EventHandler(this.pokeAddressToolStripMenuItem1_Click);
 			// 
@@ -389,7 +391,7 @@
 			// 
 			this.freezeAddressToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Freeze;
 			this.freezeAddressToolStripMenuItem1.Name = "freezeAddressToolStripMenuItem1";
-			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(175, 22);
+			this.freezeAddressToolStripMenuItem1.Size = new System.Drawing.Size(174, 22);
 			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
 			// 
@@ -457,8 +459,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-						| System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -1197,6 +1199,13 @@
 			this.OutputLabel.TabIndex = 9;
 			this.OutputLabel.Text = "                          ";
 			// 
+			// viewInHexEditorToolStripMenuItem
+			// 
+			this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
+			this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.viewInHexEditorToolStripMenuItem.Text = "View in Hex Editor";
+			this.viewInHexEditorToolStripMenuItem.Click += new System.EventHandler(this.viewInHexEditorToolStripMenuItem_Click);
+			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
@@ -1352,5 +1361,6 @@
 		private System.Windows.Forms.ToolStripButton RedotoolStripButton2;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
     }
 }
