@@ -76,6 +76,18 @@ namespace BizHawk.MultiClient
 				LittleEndianRadio.Checked = true;
 		}
 
+		public void SetEndian(Endian endian)
+		{
+			if (endian == Endian.Big)
+			{
+				BigEndianRadio.Checked = true;
+			}
+			else
+			{
+				LittleEndianRadio.Checked = true;
+			}
+		}
+
 		private void RamWatchNewWatch_Load(object sender, EventArgs e)
 		{
 			if (!customSetup)
@@ -83,14 +95,9 @@ namespace BizHawk.MultiClient
 				Watch w = new Watch();
 				SetTypeRadio(w.type);
 				SetSignedRadio(w.signed);
-
 				AddressBox.Text = "0000";
-
-				if (w.bigendian == true)
-					BigEndianRadio.Checked = true;
-				else
-					LittleEndianRadio.Checked = true;
 			}
+
 			if (location.X > 0 && location.Y > 0)
 				this.Location = location;
 		}

@@ -428,6 +428,7 @@ namespace BizHawk.MultiClient
 
 			RamWatchNewWatch r = new RamWatchNewWatch();
 			r.location = GetPromptPoint();
+			r.SetEndian(Domain.Endian);
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();

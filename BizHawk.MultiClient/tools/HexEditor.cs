@@ -258,6 +258,10 @@ namespace BizHawk.MultiClient
 		public void SetMemoryDomain(MemoryDomain d)
 		{
 			Domain = d;
+			if (d.Endian == Endian.Big)
+				BigEndian = true;
+			else
+				BigEndian = false;
 			maxRow = Domain.Size / 2;
 			SetUpScrollBar();
 			vScrollBar1.Value = 0;
