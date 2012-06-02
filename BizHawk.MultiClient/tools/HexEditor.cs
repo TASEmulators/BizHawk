@@ -1255,5 +1255,10 @@ namespace BizHawk.MultiClient
 				freezeToolStripMenuItem.Image = MultiClient.Properties.Resources.Freeze;
 			}
 		}
+
+		private void gotoAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GoToSpecifiedAddress();
+		}
 	}
 }
