@@ -471,10 +471,13 @@ namespace BizHawk.MultiClient
 			RamPoke p = new RamPoke();
 			Global.Sound.StartSound();
 
+			int x = indexes[0];
+			Watch bob = searchList[indexes[0]];
 			if (indexes.Count > 0)
 				p.SetWatchObject(searchList[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
+			UpdateValues();
 		}
 
 		private void PoketoolStripButton1_Click(object sender, EventArgs e)
