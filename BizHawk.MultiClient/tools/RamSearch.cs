@@ -2172,5 +2172,15 @@ namespace BizHawk.MultiClient
 		{
 			DoRedo();
 		}
+
+		private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes =SearchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
+			}
+		}
 	}
 }
