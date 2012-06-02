@@ -25,13 +25,15 @@ namespace BizHawk.MultiClient
 
 		public void SetWatchObject(Watch w, MemoryDomain d)
 		{
-			watch = w;
+			PopulateMemoryDomainComboBox();
+			watch = new Watch(w);
 			domain = d;
 		}
 
 		private void RamPoke_Load(object sender, EventArgs e)
 		{
-			PopulateMemoryDomainComboBox();
+			if (watch.address == 0)
+				PopulateMemoryDomainComboBox();
 			SetTypeRadio(watch.type);
 			SetSignedRadio(watch.signed);
 			if (watch.signed == asigned.HEX)

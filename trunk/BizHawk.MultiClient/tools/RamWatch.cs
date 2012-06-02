@@ -927,11 +927,13 @@ namespace BizHawk.MultiClient
 			ListView.SelectedIndexCollection indexes = WatchListView.SelectedIndices;
 			Global.Sound.StopSound();
 			RamPoke p = new RamPoke();
+			Global.Sound.StartSound();
 			if (indexes.Count > 0)
 				p.SetWatchObject(watchList[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
-			Global.Sound.StartSound();
+			UpdateValues();
+			
 		}
 
 		private void pokeAddressToolStripMenuItem_Click(object sender, EventArgs e)
