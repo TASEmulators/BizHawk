@@ -53,7 +53,6 @@
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.pokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -253,7 +252,6 @@
 			// ViewerContextMenuStrip
 			// 
 			this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pokeToolStripMenuItem,
             this.freezeToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem1,
@@ -263,14 +261,6 @@
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
 			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 142);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
-			// 
-			// pokeToolStripMenuItem
-			// 
-			this.pokeToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.poke;
-			this.pokeToolStripMenuItem.Name = "pokeToolStripMenuItem";
-			this.pokeToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-			this.pokeToolStripMenuItem.Text = "&Poke";
-			this.pokeToolStripMenuItem.Click += new System.EventHandler(this.pokeToolStripMenuItem_Click);
 			// 
 			// freezeToolStripMenuItem
 			// 
@@ -409,8 +399,7 @@
         private System.Windows.Forms.ToolStripMenuItem restoreWindowSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoloadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem enToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip ViewerContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem pokeToolStripMenuItem;
+		private System.Windows.Forms.ContextMenuStrip ViewerContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem freezeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addToRamWatchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

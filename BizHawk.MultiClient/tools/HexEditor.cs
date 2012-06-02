@@ -1246,13 +1246,13 @@ namespace BizHawk.MultiClient
 		{
 			if (IsFrozen(GetHighlightedAddress()))
 			{
-				ViewerContextMenuStrip.Items[1].Text = "Un&freeze";
-				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Unfreeze;
+				freezeToolStripMenuItem.Text = "Un&freeze";
+				freezeToolStripMenuItem.Image = MultiClient.Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				ViewerContextMenuStrip.Items[1].Text = "&Freeze";
-				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Freeze;
+				freezeToolStripMenuItem.Text = "&Freeze";
+				freezeToolStripMenuItem.Image = MultiClient.Properties.Resources.Freeze;
 			}
 		}
 	}
