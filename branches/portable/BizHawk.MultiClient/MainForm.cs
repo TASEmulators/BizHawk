@@ -1360,7 +1360,6 @@ namespace BizHawk.MultiClient
 				Global.Emulator = nextEmulator;
 				Global.Game = game;
 				SyncControls();
-				Global.Emulator.Controller = Global.ActiveController;
 
 				if (game.System == "NES")
 				{
