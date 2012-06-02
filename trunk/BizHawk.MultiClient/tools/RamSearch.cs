@@ -100,6 +100,18 @@ namespace BizHawk.MultiClient
 			SetMemoryDomainMenu();
 		}
 
+		private void SetEndian()
+		{
+			if (Domain.Endian == Endian.Big)
+			{
+				SetBigEndian();
+			}
+			else
+			{
+				SetLittleEndian();
+			}
+		}
+
 		private void LoadConfigSettings()
 		{
 			ColumnPositionSet();
@@ -111,16 +123,7 @@ namespace BizHawk.MultiClient
 			defaultPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
 			defaultChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
 
-			if (Domain.Endian == Endian.Big)
-			{
-				bigEndianToolStripMenuItem.Checked = true;
-				littleEndianToolStripMenuItem.Checked = false;
-			}
-			else
-			{
-				bigEndianToolStripMenuItem.Checked = false;
-				littleEndianToolStripMenuItem.Checked = true;
-			}
+			SetEndian();
 
 			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
 				this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
@@ -175,6 +178,7 @@ namespace BizHawk.MultiClient
 		private void SetMemoryDomainNew(int pos)
 		{
 			SetMemoryDomain(pos);
+			SetEndian();
 			StartNewSearch();
 		}
 
@@ -1218,16 +1222,26 @@ namespace BizHawk.MultiClient
 			SetSpecificValueBoxMaxLength();
 		}
 
-		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SetLittleEndian()
+		{
+			bigEndianToolStripMenuItem.Checked = false;
+			littleEndianToolStripMenuItem.Checked = true;
+		}
+
+		private void SetBigEndian()
 		{
 			bigEndianToolStripMenuItem.Checked = true;
 			littleEndianToolStripMenuItem.Checked = false;
 		}
 
+		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetBigEndian();
+		}
+
 		private void littleEndianToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bigEndianToolStripMenuItem.Checked = false;
-			littleEndianToolStripMenuItem.Checked = true;
+			SetLittleEndian();
 		}
 
 		private void AutoSearchCheckBox_CheckedChanged(object sender, EventArgs e)
