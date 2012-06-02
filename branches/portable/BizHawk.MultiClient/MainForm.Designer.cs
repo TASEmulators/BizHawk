@@ -89,7 +89,7 @@
 			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
 			this.bindSavestatesToMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.automaticallyBackupMoviesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.aVIWAVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AVIWAVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.recordAVIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.stopAVIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,10 +133,15 @@
 			this.soundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autofireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.enableRewindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.enableContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.backupSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.autoSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveScreenshotWithSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gUIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pauseWhenMenuActivatedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.startPausedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.frameAdvanceSkipLagFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.forceGDIPPresentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -144,12 +149,6 @@
 			this.runInBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.acceptBackgroundInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.singleInstanceModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
-			this.enableRewindToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.enableContextMenuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.backupSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.autoSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveScreenshotWithSavestatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.logWindowAsConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.frameSkipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -217,6 +216,8 @@
 			this.rightDifficultyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.debuggerToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.skipBIOSIntroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.forumsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -303,7 +304,7 @@
             this.saveSlotToolStripMenuItem,
             this.toolStripMenuItem2,
             this.movieToolStripMenuItem,
-            this.aVIWAVToolStripMenuItem,
+            this.AVIWAVToolStripMenuItem,
             this.screenshotToolStripMenuItem,
             this.toolStripSeparator4,
             this.exitToolStripMenuItem});
@@ -849,15 +850,15 @@
 			this.automaticallyBackupMoviesToolStripMenuItem.Text = "Automatically Backup Movies";
 			this.automaticallyBackupMoviesToolStripMenuItem.Click += new System.EventHandler(this.automaticallyBackupMoviesToolStripMenuItem_Click);
 			// 
-			// aVIWAVToolStripMenuItem
+			// AVIWAVToolStripMenuItem
 			// 
-			this.aVIWAVToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.AVIWAVToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.recordAVIToolStripMenuItem,
             this.stopAVIToolStripMenuItem});
-			this.aVIWAVToolStripMenuItem.Name = "aVIWAVToolStripMenuItem";
-			this.aVIWAVToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-			this.aVIWAVToolStripMenuItem.Text = "AVI/WAV";
-			this.aVIWAVToolStripMenuItem.DropDownOpened += new System.EventHandler(this.aVIWAVToolStripMenuItem_DropDownOpened);
+			this.AVIWAVToolStripMenuItem.Name = "AVIWAVToolStripMenuItem";
+			this.AVIWAVToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+			this.AVIWAVToolStripMenuItem.Text = "AVI/WAV";
+			this.AVIWAVToolStripMenuItem.DropDownOpened += new System.EventHandler(this.aVIWAVToolStripMenuItem_DropDownOpened);
 			// 
 			// recordAVIToolStripMenuItem
 			// 
@@ -1143,6 +1144,7 @@
             this.soundToolStripMenuItem,
             this.autofireToolStripMenuItem,
             this.toolStripSeparator9,
+            this.enableToolStripMenuItem,
             this.gUIToolStripMenuItem,
             this.frameSkipToolStripMenuItem,
             this.toolStripSeparator10,
@@ -1156,7 +1158,7 @@
 			// 
 			this.controllersToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.GameController;
 			this.controllersToolStripMenuItem.Name = "controllersToolStripMenuItem";
-			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.controllersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.controllersToolStripMenuItem.Text = "&Controllers...";
 			this.controllersToolStripMenuItem.Click += new System.EventHandler(this.controllersToolStripMenuItem_Click);
 			// 
@@ -1164,7 +1166,7 @@
 			// 
 			this.hotkeysToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.HotKeys;
 			this.hotkeysToolStripMenuItem.Name = "hotkeysToolStripMenuItem";
-			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.hotkeysToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.hotkeysToolStripMenuItem.Text = "&Hotkeys...";
 			this.hotkeysToolStripMenuItem.Click += new System.EventHandler(this.hotkeysToolStripMenuItem_Click);
 			// 
@@ -1172,7 +1174,7 @@
 			// 
 			this.messagesToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.MessageConfig;
 			this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.messagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.messagesToolStripMenuItem.Text = "&Messages...";
 			this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
 			// 
@@ -1180,7 +1182,7 @@
 			// 
 			this.pathsToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.CopyFolderHS;
 			this.pathsToolStripMenuItem.Name = "pathsToolStripMenuItem";
-			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.pathsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.pathsToolStripMenuItem.Text = "Paths...";
 			this.pathsToolStripMenuItem.Click += new System.EventHandler(this.pathsToolStripMenuItem_Click);
 			// 
@@ -1188,7 +1190,7 @@
 			// 
 			this.soundToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.AudioHS;
 			this.soundToolStripMenuItem.Name = "soundToolStripMenuItem";
-			this.soundToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.soundToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.soundToolStripMenuItem.Text = "&Sound...";
 			this.soundToolStripMenuItem.Click += new System.EventHandler(this.soundToolStripMenuItem_Click);
 			// 
@@ -1196,21 +1198,68 @@
 			// 
 			this.autofireToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Lightning;
 			this.autofireToolStripMenuItem.Name = "autofireToolStripMenuItem";
-			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.autofireToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.autofireToolStripMenuItem.Text = "&Autofire...";
 			this.autofireToolStripMenuItem.Click += new System.EventHandler(this.autofireToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(138, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(149, 6);
+			// 
+			// enableToolStripMenuItem
+			// 
+			this.enableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableRewindToolStripMenuItem,
+            this.enableContextMenuToolStripMenuItem,
+            this.backupSavestatesToolStripMenuItem,
+            this.autoSavestatesToolStripMenuItem,
+            this.saveScreenshotWithSavestatesToolStripMenuItem});
+			this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
+			this.enableToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.enableToolStripMenuItem.Text = "&Enable";
+			this.enableToolStripMenuItem.DropDownOpened += new System.EventHandler(this.enableToolStripMenuItem_DropDownOpened);
+			// 
+			// enableRewindToolStripMenuItem
+			// 
+			this.enableRewindToolStripMenuItem.Name = "enableRewindToolStripMenuItem";
+			this.enableRewindToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+			this.enableRewindToolStripMenuItem.Text = "&Enable Rewind";
+			this.enableRewindToolStripMenuItem.Click += new System.EventHandler(this.enableRewindToolStripMenuItem_Click);
+			// 
+			// enableContextMenuToolStripMenuItem
+			// 
+			this.enableContextMenuToolStripMenuItem.Name = "enableContextMenuToolStripMenuItem";
+			this.enableContextMenuToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+			this.enableContextMenuToolStripMenuItem.Text = "Enable Context Menu";
+			this.enableContextMenuToolStripMenuItem.Click += new System.EventHandler(this.enableContextMenuToolStripMenuItem_Click);
+			// 
+			// backupSavestatesToolStripMenuItem
+			// 
+			this.backupSavestatesToolStripMenuItem.Name = "backupSavestatesToolStripMenuItem";
+			this.backupSavestatesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+			this.backupSavestatesToolStripMenuItem.Text = "Backup Savestates";
+			this.backupSavestatesToolStripMenuItem.Click += new System.EventHandler(this.backupSavestatesToolStripMenuItem_Click);
+			// 
+			// autoSavestatesToolStripMenuItem
+			// 
+			this.autoSavestatesToolStripMenuItem.Name = "autoSavestatesToolStripMenuItem";
+			this.autoSavestatesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+			this.autoSavestatesToolStripMenuItem.Text = "Auto Savestates";
+			this.autoSavestatesToolStripMenuItem.Click += new System.EventHandler(this.autoSavestatesToolStripMenuItem_Click);
+			// 
+			// saveScreenshotWithSavestatesToolStripMenuItem
+			// 
+			this.saveScreenshotWithSavestatesToolStripMenuItem.Name = "saveScreenshotWithSavestatesToolStripMenuItem";
+			this.saveScreenshotWithSavestatesToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+			this.saveScreenshotWithSavestatesToolStripMenuItem.Text = "Save Screenshot with Savestates";
+			this.saveScreenshotWithSavestatesToolStripMenuItem.Click += new System.EventHandler(this.screenshotWithSavestatesToolStripMenuItem_Click);
 			// 
 			// gUIToolStripMenuItem
 			// 
 			this.gUIToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pauseWhenMenuActivatedToolStripMenuItem,
             this.startPausedToolStripMenuItem,
-            this.frameAdvanceSkipLagFramesToolStripMenuItem,
             this.toolStripSeparator22,
             this.saveWindowPositionToolStripMenuItem,
             this.forceGDIPPresentationToolStripMenuItem,
@@ -1218,137 +1267,83 @@
             this.runInBackgroundToolStripMenuItem,
             this.acceptBackgroundInputToolStripMenuItem,
             this.singleInstanceModeToolStripMenuItem,
-            this.toolStripSeparator24,
-            this.enableRewindToolStripMenuItem,
-            this.enableContextMenuToolStripMenuItem,
-            this.backupSavestatesToolStripMenuItem,
-            this.autoSavestatesToolStripMenuItem,
-            this.saveScreenshotWithSavestatesToolStripMenuItem,
             this.toolStripSeparator23,
             this.logWindowAsConsoleToolStripMenuItem});
 			this.gUIToolStripMenuItem.Name = "gUIToolStripMenuItem";
-			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.gUIToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.gUIToolStripMenuItem.Text = "GUI";
 			this.gUIToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gUIToolStripMenuItem_DropDownOpened);
 			// 
 			// pauseWhenMenuActivatedToolStripMenuItem
 			// 
 			this.pauseWhenMenuActivatedToolStripMenuItem.Name = "pauseWhenMenuActivatedToolStripMenuItem";
-			this.pauseWhenMenuActivatedToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.pauseWhenMenuActivatedToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.pauseWhenMenuActivatedToolStripMenuItem.Text = "Pause when menu activated";
 			this.pauseWhenMenuActivatedToolStripMenuItem.Click += new System.EventHandler(this.pauseWhenMenuActivatedToolStripMenuItem_Click);
 			// 
 			// startPausedToolStripMenuItem
 			// 
 			this.startPausedToolStripMenuItem.Name = "startPausedToolStripMenuItem";
-			this.startPausedToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.startPausedToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.startPausedToolStripMenuItem.Text = "Start paused";
 			this.startPausedToolStripMenuItem.Click += new System.EventHandler(this.startPausedToolStripMenuItem_Click);
-			// 
-			// frameAdvanceSkipLagFramesToolStripMenuItem
-			// 
-			this.frameAdvanceSkipLagFramesToolStripMenuItem.CheckOnClick = true;
-			this.frameAdvanceSkipLagFramesToolStripMenuItem.Name = "frameAdvanceSkipLagFramesToolStripMenuItem";
-			this.frameAdvanceSkipLagFramesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.frameAdvanceSkipLagFramesToolStripMenuItem.Text = "Frame Advance - Skip Lag Frames";
-			this.frameAdvanceSkipLagFramesToolStripMenuItem.Click += new System.EventHandler(this.frameAdvanceSkipLagFramesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator22
 			// 
 			this.toolStripSeparator22.Name = "toolStripSeparator22";
-			this.toolStripSeparator22.Size = new System.Drawing.Size(249, 6);
+			this.toolStripSeparator22.Size = new System.Drawing.Size(219, 6);
 			// 
 			// saveWindowPositionToolStripMenuItem
 			// 
 			this.saveWindowPositionToolStripMenuItem.Name = "saveWindowPositionToolStripMenuItem";
-			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.saveWindowPositionToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.saveWindowPositionToolStripMenuItem.Text = "Save window position";
 			this.saveWindowPositionToolStripMenuItem.Click += new System.EventHandler(this.saveWindowPositionToolStripMenuItem_Click);
 			// 
 			// forceGDIPPresentationToolStripMenuItem
 			// 
 			this.forceGDIPPresentationToolStripMenuItem.Name = "forceGDIPPresentationToolStripMenuItem";
-			this.forceGDIPPresentationToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.forceGDIPPresentationToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.forceGDIPPresentationToolStripMenuItem.Text = "Use GDI+ Display Method";
 			this.forceGDIPPresentationToolStripMenuItem.Click += new System.EventHandler(this.forceGDIPPresentationToolStripMenuItem_Click);
 			// 
 			// showMenuInFullScreenToolStripMenuItem
 			// 
 			this.showMenuInFullScreenToolStripMenuItem.Name = "showMenuInFullScreenToolStripMenuItem";
-			this.showMenuInFullScreenToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.showMenuInFullScreenToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.showMenuInFullScreenToolStripMenuItem.Text = "Show Menu in Full Screen";
 			this.showMenuInFullScreenToolStripMenuItem.Click += new System.EventHandler(this.showMenuInFullScreenToolStripMenuItem_Click);
 			// 
 			// runInBackgroundToolStripMenuItem
 			// 
 			this.runInBackgroundToolStripMenuItem.Name = "runInBackgroundToolStripMenuItem";
-			this.runInBackgroundToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.runInBackgroundToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.runInBackgroundToolStripMenuItem.Text = "Run in Background";
 			this.runInBackgroundToolStripMenuItem.Click += new System.EventHandler(this.runInBackgroundToolStripMenuItem_Click);
 			// 
 			// acceptBackgroundInputToolStripMenuItem
 			// 
 			this.acceptBackgroundInputToolStripMenuItem.Name = "acceptBackgroundInputToolStripMenuItem";
-			this.acceptBackgroundInputToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.acceptBackgroundInputToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.acceptBackgroundInputToolStripMenuItem.Text = "Accept Background Input";
 			this.acceptBackgroundInputToolStripMenuItem.Click += new System.EventHandler(this.acceptBackgroundInputToolStripMenuItem_Click);
 			// 
 			// singleInstanceModeToolStripMenuItem
 			// 
 			this.singleInstanceModeToolStripMenuItem.Name = "singleInstanceModeToolStripMenuItem";
-			this.singleInstanceModeToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.singleInstanceModeToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.singleInstanceModeToolStripMenuItem.Text = "Single Instance Mode";
 			this.singleInstanceModeToolStripMenuItem.Click += new System.EventHandler(this.singleInstanceModeToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator24
-			// 
-			this.toolStripSeparator24.Name = "toolStripSeparator24";
-			this.toolStripSeparator24.Size = new System.Drawing.Size(249, 6);
-			// 
-			// enableRewindToolStripMenuItem
-			// 
-			this.enableRewindToolStripMenuItem.Name = "enableRewindToolStripMenuItem";
-			this.enableRewindToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.enableRewindToolStripMenuItem.Text = "&Enable Rewind";
-			this.enableRewindToolStripMenuItem.Click += new System.EventHandler(this.enableRewindToolStripMenuItem_Click);
-			// 
-			// enableContextMenuToolStripMenuItem
-			// 
-			this.enableContextMenuToolStripMenuItem.Name = "enableContextMenuToolStripMenuItem";
-			this.enableContextMenuToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.enableContextMenuToolStripMenuItem.Text = "Enable Context Menu";
-			this.enableContextMenuToolStripMenuItem.Click += new System.EventHandler(this.enableContextMenuToolStripMenuItem_Click);
-			// 
-			// backupSavestatesToolStripMenuItem
-			// 
-			this.backupSavestatesToolStripMenuItem.Name = "backupSavestatesToolStripMenuItem";
-			this.backupSavestatesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.backupSavestatesToolStripMenuItem.Text = "Backup Savestates";
-			this.backupSavestatesToolStripMenuItem.Click += new System.EventHandler(this.backupSavestatesToolStripMenuItem_Click);
-			// 
-			// autoSavestatesToolStripMenuItem
-			// 
-			this.autoSavestatesToolStripMenuItem.Name = "autoSavestatesToolStripMenuItem";
-			this.autoSavestatesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.autoSavestatesToolStripMenuItem.Text = "Auto Savestates";
-			this.autoSavestatesToolStripMenuItem.Click += new System.EventHandler(this.autoSavestatesToolStripMenuItem_Click);
-			// 
-			// saveScreenshotWithSavestatesToolStripMenuItem
-			// 
-			this.saveScreenshotWithSavestatesToolStripMenuItem.Name = "saveScreenshotWithSavestatesToolStripMenuItem";
-			this.saveScreenshotWithSavestatesToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
-			this.saveScreenshotWithSavestatesToolStripMenuItem.Text = "Save Screenshot with Savestates";
-			this.saveScreenshotWithSavestatesToolStripMenuItem.Click += new System.EventHandler(this.screenshotWithSavestatesToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator23
 			// 
 			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(249, 6);
+			this.toolStripSeparator23.Size = new System.Drawing.Size(219, 6);
 			// 
 			// logWindowAsConsoleToolStripMenuItem
 			// 
 			this.logWindowAsConsoleToolStripMenuItem.Name = "logWindowAsConsoleToolStripMenuItem";
-			this.logWindowAsConsoleToolStripMenuItem.Size = new System.Drawing.Size(252, 22);
+			this.logWindowAsConsoleToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
 			this.logWindowAsConsoleToolStripMenuItem.Text = "Log Window as Console";
 			this.logWindowAsConsoleToolStripMenuItem.Click += new System.EventHandler(this.logWindowAsConsoleToolStripMenuItem_Click);
 			// 
@@ -1376,7 +1371,7 @@
             this.miSpeed150,
             this.miSpeed200});
 			this.frameSkipToolStripMenuItem.Name = "frameSkipToolStripMenuItem";
-			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.frameSkipToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.frameSkipToolStripMenuItem.Text = "Speed/Skip";
 			this.frameSkipToolStripMenuItem.DropDownOpened += new System.EventHandler(this.frameSkipToolStripMenuItem_DropDownOpened);
 			// 
@@ -1519,13 +1514,13 @@
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(138, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(149, 6);
 			// 
 			// saveConfigToolStripMenuItem
 			// 
 			this.saveConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.Save;
 			this.saveConfigToolStripMenuItem.Name = "saveConfigToolStripMenuItem";
-			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.saveConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveConfigToolStripMenuItem.Text = "Save Config";
 			this.saveConfigToolStripMenuItem.Click += new System.EventHandler(this.saveConfigToolStripMenuItem_Click);
 			// 
@@ -1533,7 +1528,7 @@
 			// 
 			this.loadConfigToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.LoadConfig;
 			this.loadConfigToolStripMenuItem.Name = "loadConfigToolStripMenuItem";
-			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.loadConfigToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.loadConfigToolStripMenuItem.Text = "Load Config";
 			// 
 			// toolsToolStripMenuItem
@@ -1852,18 +1847,33 @@
 			// gBToolStripMenuItem
 			// 
 			this.gBToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.debuggerToolStripMenuItem1});
+            this.debuggerToolStripMenuItem1,
+            this.toolStripSeparator8,
+            this.skipBIOSIntroToolStripMenuItem});
 			this.gBToolStripMenuItem.Name = "gBToolStripMenuItem";
 			this.gBToolStripMenuItem.Size = new System.Drawing.Size(34, 19);
 			this.gBToolStripMenuItem.Text = "GB";
+			this.gBToolStripMenuItem.DropDownOpened += new System.EventHandler(this.gBToolStripMenuItem_DropDownOpened);
 			// 
 			// debuggerToolStripMenuItem1
 			// 
 			this.debuggerToolStripMenuItem1.Image = global::BizHawk.MultiClient.Properties.Resources.Bug;
 			this.debuggerToolStripMenuItem1.Name = "debuggerToolStripMenuItem1";
-			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(126, 22);
+			this.debuggerToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.debuggerToolStripMenuItem1.Text = "Debugger";
 			this.debuggerToolStripMenuItem1.Click += new System.EventHandler(this.debuggerToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(149, 6);
+			// 
+			// skipBIOSIntroToolStripMenuItem
+			// 
+			this.skipBIOSIntroToolStripMenuItem.Name = "skipBIOSIntroToolStripMenuItem";
+			this.skipBIOSIntroToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.skipBIOSIntroToolStripMenuItem.Text = "Skip BIOS Intro";
+			this.skipBIOSIntroToolStripMenuItem.Click += new System.EventHandler(this.skipBIOSIntroToolStripMenuItem_Click);
 			// 
 			// helpToolStripMenuItem
 			// 
@@ -2088,7 +2098,7 @@
             this.cmiCloseRom,
             this.cmiShowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(192, 396);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(204, 374);
 			this.contextMenuStrip1.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuStrip1_Closing);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
 			// 
@@ -2096,7 +2106,7 @@
 			// 
 			this.cmiOpenRom.Image = global::BizHawk.MultiClient.Properties.Resources.OpenFile;
 			this.cmiOpenRom.Name = "cmiOpenRom";
-			this.cmiOpenRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiOpenRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiOpenRom.Text = "Open Rom";
 			this.cmiOpenRom.Click += new System.EventHandler(this.openRomToolStripMenuItem1_Click);
 			// 
@@ -2104,20 +2114,20 @@
 			// 
 			this.cmiLoadLastRom.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.cmiLoadLastRom.Name = "cmiLoadLastRom";
-			this.cmiLoadLastRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiLoadLastRom.Text = "Load Last ROM";
 			this.cmiLoadLastRom.Click += new System.EventHandler(this.loadLastROMToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterRomLoading
 			// 
 			this.toolStripSeparator_afterRomLoading.Name = "toolStripSeparator_afterRomLoading";
-			this.toolStripSeparator_afterRomLoading.Size = new System.Drawing.Size(188, 6);
+			this.toolStripSeparator_afterRomLoading.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiRecordMovie
 			// 
 			this.cmiRecordMovie.Image = global::BizHawk.MultiClient.Properties.Resources.RecordHS;
 			this.cmiRecordMovie.Name = "cmiRecordMovie";
-			this.cmiRecordMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRecordMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiRecordMovie.Text = "Record Movie";
 			this.cmiRecordMovie.Click += new System.EventHandler(this.recordMovieToolStripMenuItem1_Click);
 			// 
@@ -2125,7 +2135,7 @@
 			// 
 			this.cmiPlayMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Play;
 			this.cmiPlayMovie.Name = "cmiPlayMovie";
-			this.cmiPlayMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiPlayMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiPlayMovie.Text = "Play Movie";
 			this.cmiPlayMovie.Click += new System.EventHandler(this.playMovieToolStripMenuItem1_Click);
 			// 
@@ -2133,7 +2143,7 @@
 			// 
 			this.cmiRestartMovie.Image = global::BizHawk.MultiClient.Properties.Resources.restart;
 			this.cmiRestartMovie.Name = "cmiRestartMovie";
-			this.cmiRestartMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiRestartMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiRestartMovie.Text = "Restart Movie";
 			this.cmiRestartMovie.Click += new System.EventHandler(this.restartMovieToolStripMenuItem_Click);
 			// 
@@ -2141,7 +2151,7 @@
 			// 
 			this.cmiStopMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Stop;
 			this.cmiStopMovie.Name = "cmiStopMovie";
-			this.cmiStopMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiStopMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiStopMovie.Text = "Stop Movie";
 			this.cmiStopMovie.Click += new System.EventHandler(this.stopMovieToolStripMenuItem1_Click);
 			// 
@@ -2149,68 +2159,68 @@
 			// 
 			this.cmiLoadLastMovie.Image = global::BizHawk.MultiClient.Properties.Resources.Recent;
 			this.cmiLoadLastMovie.Name = "cmiLoadLastMovie";
-			this.cmiLoadLastMovie.Size = new System.Drawing.Size(191, 22);
+			this.cmiLoadLastMovie.Size = new System.Drawing.Size(203, 22);
 			this.cmiLoadLastMovie.Text = "Load Last Movie";
 			this.cmiLoadLastMovie.Click += new System.EventHandler(this.loadLastMovieToolStripMenuItem_Click);
 			// 
 			// cmiMakeMovieBackup
 			// 
 			this.cmiMakeMovieBackup.Name = "cmiMakeMovieBackup";
-			this.cmiMakeMovieBackup.Size = new System.Drawing.Size(191, 22);
+			this.cmiMakeMovieBackup.Size = new System.Drawing.Size(203, 22);
 			this.cmiMakeMovieBackup.Text = "Make Movie Backup";
 			this.cmiMakeMovieBackup.Click += new System.EventHandler(this.makeMovieBackupToolStripMenuItem_Click);
 			// 
 			// cmiViewSubtitles
 			// 
 			this.cmiViewSubtitles.Name = "cmiViewSubtitles";
-			this.cmiViewSubtitles.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewSubtitles.Size = new System.Drawing.Size(203, 22);
 			this.cmiViewSubtitles.Text = "View Subtitles";
 			this.cmiViewSubtitles.Click += new System.EventHandler(this.viewSubtitlesToolStripMenuItem_Click);
 			// 
 			// cmiAddSubtitle
 			// 
 			this.cmiAddSubtitle.Name = "cmiAddSubtitle";
-			this.cmiAddSubtitle.Size = new System.Drawing.Size(191, 22);
+			this.cmiAddSubtitle.Size = new System.Drawing.Size(203, 22);
 			this.cmiAddSubtitle.Text = "Add Subtitle";
 			this.cmiAddSubtitle.Click += new System.EventHandler(this.AddSubtitleToolStripMenuItem_Click);
 			// 
 			// cmiViewComments
 			// 
 			this.cmiViewComments.Name = "cmiViewComments";
-			this.cmiViewComments.Size = new System.Drawing.Size(191, 22);
+			this.cmiViewComments.Size = new System.Drawing.Size(203, 22);
 			this.cmiViewComments.Text = "View Comments";
 			this.cmiViewComments.Click += new System.EventHandler(this.viewCommentsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator_afterMovie
 			// 
 			this.toolStripSeparator_afterMovie.Name = "toolStripSeparator_afterMovie";
-			this.toolStripSeparator_afterMovie.Size = new System.Drawing.Size(188, 6);
+			this.toolStripSeparator_afterMovie.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiUndoSavestate
 			// 
 			this.cmiUndoSavestate.Image = global::BizHawk.MultiClient.Properties.Resources.undo;
 			this.cmiUndoSavestate.Name = "cmiUndoSavestate";
-			this.cmiUndoSavestate.Size = new System.Drawing.Size(191, 22);
+			this.cmiUndoSavestate.Size = new System.Drawing.Size(203, 22);
 			this.cmiUndoSavestate.Text = "Undo Savestate";
 			this.cmiUndoSavestate.Click += new System.EventHandler(this.undoSavestateToolStripMenuItem_Click);
 			// 
 			// cmiSeparator20
 			// 
 			this.cmiSeparator20.Name = "cmiSeparator20";
-			this.cmiSeparator20.Size = new System.Drawing.Size(188, 6);
+			this.cmiSeparator20.Size = new System.Drawing.Size(200, 6);
 			// 
 			// cmiScreenshot
 			// 
 			this.cmiScreenshot.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
 			this.cmiScreenshot.Name = "cmiScreenshot";
-			this.cmiScreenshot.Size = new System.Drawing.Size(191, 22);
+			this.cmiScreenshot.Size = new System.Drawing.Size(203, 22);
 			this.cmiScreenshot.Text = "Screenshot";
 			// 
 			// cmiScreenshotClipboard
 			// 
 			this.cmiScreenshotClipboard.Image = global::BizHawk.MultiClient.Properties.Resources.camera;
 			this.cmiScreenshotClipboard.Name = "cmiScreenshotClipboard";
-			this.cmiScreenshotClipboard.Size = new System.Drawing.Size(191, 22);
+			this.cmiScreenshotClipboard.Size = new System.Drawing.Size(203, 22);
 			this.cmiScreenshotClipboard.Text = "Screenshot -> Clipboard";
 			this.cmiScreenshotClipboard.Click += new System.EventHandler(this.screenshotToClipboardToolStripMenuItem_Click);
 			// 
@@ -2218,14 +2228,14 @@
 			// 
 			this.cmiCloseRom.Image = global::BizHawk.MultiClient.Properties.Resources.Close;
 			this.cmiCloseRom.Name = "cmiCloseRom";
-			this.cmiCloseRom.Size = new System.Drawing.Size(191, 22);
+			this.cmiCloseRom.Size = new System.Drawing.Size(203, 22);
 			this.cmiCloseRom.Text = "Close ROM";
 			this.cmiCloseRom.Click += new System.EventHandler(this.closeROMToolStripMenuItem1_Click);
 			// 
 			// cmiShowMenu
 			// 
 			this.cmiShowMenu.Name = "cmiShowMenu";
-			this.cmiShowMenu.Size = new System.Drawing.Size(191, 22);
+			this.cmiShowMenu.Size = new System.Drawing.Size(203, 22);
 			this.cmiShowMenu.Text = "Show Menu";
 			this.cmiShowMenu.Click += new System.EventHandler(this.showMenuToolStripMenuItem_Click);
 			// 
@@ -2381,8 +2391,7 @@
         private System.Windows.Forms.ToolStripMenuItem loadConfigToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NESToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pPUViewerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem gameGenieCodesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enableRewindToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem gameGenieCodesToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem cheatsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem forceGDIPPresentationToolStripMenuItem;
@@ -2413,8 +2422,7 @@
         private System.Windows.Forms.ToolStripMenuItem runInBackgroundToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem bindSavestatesToMoviesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem acceptBackgroundInputToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tAStudioToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem singleInstanceModeToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem tAStudioToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem displayStatusBarToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator17;
@@ -2422,7 +2430,6 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem cmiOpenRom;
 		private System.Windows.Forms.ToolStripMenuItem cmiLoadLastRom;
-		private System.Windows.Forms.ToolStripMenuItem enableContextMenuToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator_afterRomLoading;
 		private System.Windows.Forms.ToolStripMenuItem cmiRecordMovie;
 		private System.Windows.Forms.ToolStripMenuItem cmiPlayMovie;
@@ -2457,32 +2464,27 @@
 		private System.Windows.Forms.ToolStripMenuItem cmiViewComments;
         private System.Windows.Forms.ToolStripMenuItem displayLogWindowToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem displaySubtitlesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem aVIWAVToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AVIWAVToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recordAVIToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem stopAVIToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel AVIStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem cmiRestartMovie;
-		private System.Windows.Forms.ToolStripMenuItem backupSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel CheatStatus;
 		private System.Windows.Forms.ToolStripMenuItem FreezeStatus;
 		private System.Windows.Forms.ToolStripMenuItem autofireToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveScreenshotWithSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem autoLoadLastSlotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator21;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
 		private System.Windows.Forms.ToolStripMenuItem logWindowAsConsoleToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showMenuInFullScreenToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cmiShowMenu;
-        private System.Windows.Forms.ToolStripMenuItem autoSavestatesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem importMovieToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem forumsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem screenshotClipboardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem animatedGIFConfigToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem makeAnimatedGIFToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem makeAnimatedGifAsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem frameAdvanceSkipLagFramesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCEToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private System.Windows.Forms.ToolStripMenuItem pceGraphicsSettingsToolStripMenuItem;
@@ -2501,6 +2503,15 @@
 		private System.Windows.Forms.ToolStripMenuItem bWToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem p0DifficultyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem rightDifficultyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem skipBIOSIntroToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem enableRewindToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem enableContextMenuToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem backupSavestatesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem autoSavestatesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveScreenshotWithSavestatesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem singleInstanceModeToolStripMenuItem;
     }
 }
 

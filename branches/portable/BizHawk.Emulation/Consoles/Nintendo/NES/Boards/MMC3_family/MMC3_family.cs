@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			base.SyncState(ser);
 			ser.Sync("mirror", ref mirror);
-			ser.Sync("mirror", ref a12_old);
+			ser.Sync("a12_old", ref a12_old);
 			ser.Sync("irq_reload", ref irq_reload);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_pending", ref irq_pending);
@@ -392,9 +392,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 	public abstract class MMC3Board_Base : MMC3_Family_Board_Base
 	{
-		//configuration
-		protected int wram_mask;
-
 		//state
 		protected MMC3 mmc3;
 
@@ -410,8 +407,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		protected override void BaseSetup()
 		{
-			wram_mask = (Cart.wram_size * 1024) - 1;
-
 			int num_prg_banks = Cart.prg_size / 8;
 			mapper = mmc3 = new MMC3(this, num_prg_banks);
 

@@ -23,6 +23,8 @@ namespace BizHawk.MultiClient
 		//PCE virtualpad
 		//Dynamic virtualpad system based on platform
 		//ensureVisible when recording
+		//Allow hotkeys when TAStudio has focus
+		//Reduce the memory footprint with compression and or dropping frames and rerunning them when requested.
 
 		int defaultWidth;     //For saving the default size of the dialog, so the user can restore if desired
 		int defaultHeight;
@@ -102,10 +104,14 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index == Global.Emulator.Frame)
+			if (index <= Global.MovieSession.Movie.LastValidState())
 				color = Color.LightGreen;
 			else if (Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
 				color = Color.Pink;
+			if (index == Global.Emulator.Frame)
+			{
+				color = Color.LightBlue;
+			}
 		}
 
 		private void TASView_QueryItemText(int index, int column, out string text)
@@ -120,7 +126,7 @@ namespace BizHawk.MultiClient
 		private void DisplayList()
 		{
 			TASView.ItemCount = Global.MovieSession.Movie.Length();
-			TASView.ensureVisible(Global.Emulator.Frame);
+            TASView.ensureVisible(Global.Emulator.Frame-1);
 		}
 
 		public void Restart()
@@ -307,12 +313,11 @@ namespace BizHawk.MultiClient
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.PressRewind = true;
+			Global.MovieSession.Movie.RewindToFrame(Global.Emulator.Frame - 1);
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
 		{
-
 			Global.MainForm.TogglePause();
 		}
 
@@ -323,23 +328,20 @@ namespace BizHawk.MultiClient
 
 		private void checkBox1_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.MainForm.SetReadOnly(ReadOnlyCheckBox.Checked);
 			if (ReadOnlyCheckBox.Checked)
 			{
+                Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 				ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read-Only Mode");
 			}
 			else
 			{
-				ReadOnlyCheckBox.BackColor = Color.LightCoral;
+                Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+                ReadOnlyCheckBox.BackColor = Color.LightCoral;
 				toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Currently Read+Write Mode");
 			}
 		}
 
-		private void toolStripButton1_Click(object sender, EventArgs e)
-		{
-			Global.MainForm.PlayMovieFromBeginning();
-		}
 
 		private void RewindToBeginning_Click(object sender, EventArgs e)
 		{
@@ -349,8 +351,15 @@ namespace BizHawk.MultiClient
 
 		private void FastForwardToEnd_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.StopOnEnd ^= true;
+            this.FastFowardToEnd.Checked ^= true;
+            Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
+            if (true == this.FastFowardToEnd.Checked)
+            {
+                this.FastForward.Checked = false;
+                this.TurboFastForward.Checked = false;
+            }
+        }
 
 		private void editToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -377,22 +386,28 @@ namespace BizHawk.MultiClient
 
 		private void newProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.RecordMovie();
+        }
 
 		private void openProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
-		}
+            Global.MainForm.PlayMovie();
+        }
 
 		private void saveProjectToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-
+            Global.MovieSession.Movie.WriteMovie();
 		}
 
 		private void saveProjectAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+            string fileName = Movie.SaveRecordingAs();
 
+            if ("" != fileName)
+            {
+                Global.MovieSession.Movie.UpdateFileName(fileName);
+                Global.MovieSession.Movie.WriteMovie();
+            }
 		}
 
 		private void ClearVirtualPadHolds()
@@ -412,6 +427,49 @@ namespace BizHawk.MultiClient
 		private void clearToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			ClearVirtualPadHolds();
+		}
+
+        private void FastForward_Click(object sender, EventArgs e)
+        {
+            this.FastForward.Checked ^= true;
+            Global.MainForm.FastForward = this.FastForward.Checked;
+            if (true == this.FastForward.Checked)
+            {
+                this.TurboFastForward.Checked = false;
+                this.FastFowardToEnd.Checked = false;
+            }
+        }
+
+        private void TurboFastForward_Click(object sender, EventArgs e)
+        {
+            Global.MainForm.TurboFastForward ^= true;
+            this.TurboFastForward.Checked ^= true;
+            if (true == this.TurboFastForward.Checked)
+            {
+                this.FastForward.Checked = false;
+                this.FastFowardToEnd.Checked = false;
+            }
+        }
+
+		private void TASView_SelectedIndexChanged(object sender, EventArgs e)
+		{
+
+		}
+
+		private void TASView_DoubleClick(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+		}
+
+		private void InsertOneFrame_Click(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(TASView.selectedItem), TASView.selectedItem);
+			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
+		}
+
+		private void DeleteFrames_Click(object sender, EventArgs e)
+		{
+			Global.MovieSession.Movie.DeleteFrame(TASView.selectedItem);
 		}
 	}
 }

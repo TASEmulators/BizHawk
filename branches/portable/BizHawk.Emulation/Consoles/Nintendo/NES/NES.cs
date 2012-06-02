@@ -530,6 +530,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart = choice;
 				board.Create(this);
 				board.Configure(origin);
+				board.PostConfigure();
 
 				if (origin == EDetectionOrigin.BootGodDB)
 				{

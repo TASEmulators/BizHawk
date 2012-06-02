@@ -334,6 +334,7 @@ namespace BizHawk.MultiClient
 		//GB Debugger settings
 		public bool AutoloadGBDebugger = false;
 		public bool GBDebuggerSaveWindowPosition = true;
+		public bool GameBoySkipBIOS = true;
 
 		// Cheats Dialog
 		public bool AutoLoadCheats = false;

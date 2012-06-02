@@ -119,18 +119,11 @@ namespace BizHawk.MultiClient
 
 		private void button1_Click(object sender, EventArgs e)
 		{
-			SaveFileDialog sfd = new SaveFileDialog();
-			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
-			sfd.DefaultExt = "." + Global.Config.MovieExtension;
-			sfd.FileName = RecordBox.Text;
-			sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension +  "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+            string fileName = Movie.SaveRecordingAs();
 
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result == DialogResult.OK)
+			if ("" != fileName)
 			{
-				RecordBox.Text = sfd.FileName;
+				RecordBox.Text = fileName;
 			}
 		}
 

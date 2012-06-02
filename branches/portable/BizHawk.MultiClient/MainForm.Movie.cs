@@ -70,7 +70,7 @@ namespace BizHawk.MultiClient
 				return false;
 		}
 
-		private void PlayMovie()
+		public void PlayMovie()
 		{
 			RunLoopBlocked = true;
 			PlayMovie p = new PlayMovie();
@@ -78,7 +78,7 @@ namespace BizHawk.MultiClient
 			RunLoopBlocked = false;
 		}
 
-		private void RecordMovie()
+		public void RecordMovie()
 		{
 			RunLoopBlocked = true;
 			RecordMovie r = new RecordMovie();

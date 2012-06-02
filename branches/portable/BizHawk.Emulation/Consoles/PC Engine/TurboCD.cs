@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             if (!TurboCD && !BramEnabled)
                 return; // flee if no turboCD hooked up
+            if (!TurboCD && addr != 0x1FF807)
+                return; // only bram port available unless full TurobCD mode.
 
             switch (addr & 0x1FFF)
             {
@@ -189,6 +191,8 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
         {
             if (!TurboCD && !BramEnabled)
                 return 0xFF; //bail if no TurboCD.
+            if (!TurboCD && addr != 0x1FF803) // only allow access to $1803 unless full TurboCD mode.
+                return 0xFF;
 
             byte returnValue = 0;
             short sample;

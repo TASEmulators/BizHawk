@@ -133,7 +133,7 @@ namespace BizHawk.MultiClient
 
 		private void toolStripButton6_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.OpenGameboyDebugger();
+			Global.MainForm.LoadGBDebugger();
 		}
 	}
 }

@@ -543,6 +543,7 @@ namespace BizHawk.MultiClient
 			hexEditorToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.HexEditor;
 			luaConsoleToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.LuaConsole;
 			cheatsToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.Cheats;
+			tAStudioToolStripMenuItem.ShortcutKeyDisplayString = Global.Config.TASTudio;
 		}
 
 		private void saveSlotToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1093,7 +1094,7 @@ namespace BizHawk.MultiClient
 
 		private void debuggerToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
-			Global.MainForm.OpenGameboyDebugger();
+			Global.MainForm.LoadGBDebugger();
 		}
 
 		private void tAStudioToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1191,21 +1192,29 @@ namespace BizHawk.MultiClient
 
 		private void gUIToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
 			pauseWhenMenuActivatedToolStripMenuItem.Checked = Global.Config.PauseWhenMenuActivated;
-			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
-			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
+			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
+			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
+			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;
 			singleInstanceModeToolStripMenuItem.Checked = Global.Config.SingleInstanceMode;
+			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
+		}
+
+		private void enableToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			enableRewindToolStripMenuItem.Checked = Global.Config.RewindEnabled;
 			enableContextMenuToolStripMenuItem.Checked = Global.Config.ShowContextMenu;
 			backupSavestatesToolStripMenuItem.Checked = Global.Config.BackupSavestates;
 			autoSavestatesToolStripMenuItem.Checked = Global.Config.AutoSavestates;
 			saveScreenshotWithSavestatesToolStripMenuItem.Checked = Global.Config.SaveScreenshotWithStates;
-			logWindowAsConsoleToolStripMenuItem.Checked = Global.Config.WIN32_CONSOLE;
-			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
-			frameAdvanceSkipLagFramesToolStripMenuItem.Checked = Global.Config.SkipLagFrame;
+		}
+
+		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.SkipLagFrame ^= true;
 		}
 
 		private void menuStrip1_MenuActivate(object sender, EventArgs e)
@@ -1266,8 +1275,10 @@ namespace BizHawk.MultiClient
 		{
 			if (IsNullEmulator())
 			{
+				movieToolStripMenuItem.Enabled = false;
+				AVIWAVToolStripMenuItem.Enabled = false;
+				screenshotToolStripMenuItem.Enabled = false;
 				closeROMToolStripMenuItem.Enabled = false;
-				screenshotF12ToolStripMenuItem.Enabled = false;
 				saveToCurrentSlotToolStripMenuItem.Enabled = false;
 				loadCurrentSlotToolStripMenuItem.Enabled = false;
 				loadNamedStateToolStripMenuItem.Enabled = false;
@@ -1295,8 +1306,10 @@ namespace BizHawk.MultiClient
 			}
 			else
 			{
+				movieToolStripMenuItem.Enabled = true;
+				AVIWAVToolStripMenuItem.Enabled = true;
+				screenshotToolStripMenuItem.Enabled = true;
 				closeROMToolStripMenuItem.Enabled = true;
-				screenshotF12ToolStripMenuItem.Enabled = true;
 				saveToCurrentSlotToolStripMenuItem.Enabled = true;
 				loadCurrentSlotToolStripMenuItem.Enabled = true;
 				loadNamedStateToolStripMenuItem.Enabled = true;
@@ -1431,7 +1444,7 @@ namespace BizHawk.MultiClient
 			Global.Config.BackupSavestates ^= true;
 		}
 
-        void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
+		void autoSavestatesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoSavestates ^= true;
 		}
@@ -1497,6 +1510,62 @@ namespace BizHawk.MultiClient
 		private void justatestToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadPCEBGViewer();
+		}
+
+		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_BW ^= true;
+				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_BW)
+					Global.OSD.AddMessage("Setting to Black and White Switch to On");
+				else
+					Global.OSD.AddMessage("Setting to Black and White Switch to Off");
+			}
+		}
+
+		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_LeftDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_LeftDifficulty)
+					Global.OSD.AddMessage("Setting Left Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Left Difficulty to A");
+			}
+		}
+
+		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is Atari2600)
+			{
+				Global.Config.Atari2600_RightDifficulty ^= true;
+				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
+				if (Global.Config.Atari2600_RightDifficulty)
+					Global.OSD.AddMessage("Setting Right Difficulty to B");
+				else
+					Global.OSD.AddMessage("Setting Right Difficulty to A");
+			}
+		}
+
+		private void atariToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
+			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
+			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
+		}
+
+		private void skipBIOSIntroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GameBoySkipBIOS ^= true;
+		}
+
+		private void gBToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			skipBIOSIntroToolStripMenuItem.Checked = Global.Config.GameBoySkipBIOS;
 		}
 	}
 }

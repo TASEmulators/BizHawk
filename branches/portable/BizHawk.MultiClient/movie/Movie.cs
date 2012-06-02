@@ -18,7 +18,7 @@ namespace BizHawk.MultiClient
 
 		public bool IsText { get; private set; }
 		public string Filename { get; private set; }
-		public MOVIEMODE Mode { get; private set; }
+		public MOVIEMODE Mode { get; set; }
 		public int Rerecords { get; private set; }
 		private int Frames;
 		public bool RerecordCounting { get; set; }
@@ -69,19 +69,57 @@ namespace BizHawk.MultiClient
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
 
-		public int Length()
-		{
-			if (Loaded)
-				return Log.Length();
-			else
-				return Frames;
-		}
+        public int Length()
+        {
+            if (Loaded)
+                return Log.Length();
+            else
+                return Frames;
+        }
+
+        public void UpdateFileName(string filename)
+        {
+            this.Filename = filename;
+        }
 
 		public void StopMovie()
 		{
 			if (Mode == MOVIEMODE.RECORD)
 				WriteMovie();
 			Mode = MOVIEMODE.INACTIVE;
+		}
+
+		public void CaptureState()
+		{
+			byte[] state = Global.Emulator.SaveStateBinary();
+			Log.AddState(state);
+		}
+
+		public void RewindToFrame(int frame)
+		{
+			if (frame <= Global.Emulator.Frame)
+			{
+				//frame-1 because we need to go back an extra frame and then run a frame, otherwise the display doesn't get updated.
+				Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(Log.GetState(frame - 1))));
+				Global.MainForm.UpdateFrame = true;
+			}
+		}
+
+		public void DeleteFrame(int frame)
+		{
+			RewindToFrame(frame);
+			Log.DeleteFrame(frame);
+			Global.MainForm.TAStudio1.UpdateValues();
+		}
+
+		public int LastValidState()
+		{
+			return Log.LastValidState();
+		}
+
+		public void CheckValidity()
+		{
+			Log.CheckValidity();
 		}
 
 		public void ClearSaveRAM()
@@ -104,6 +142,26 @@ namespace BizHawk.MultiClient
 			}
 			if(truncate) Log.Clear();
 		}
+
+        public static string SaveRecordingAs()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.MoviesPath, "");
+            sfd.DefaultExt = "." + Global.Config.MovieExtension;
+            //sfd.FileName = RecordBox.Text;
+            sfd.FileName = Global.MovieSession.Movie.Filename;
+            sfd.Filter = "Generic Movie Files (*." + Global.Config.MovieExtension + ")|*." + Global.Config.MovieExtension + "|" + Global.MainForm.GetMovieExtName() + "|All Files (*.*)|*.*";
+
+            Global.Sound.StopSound();
+            var result = sfd.ShowDialog();
+            Global.Sound.StartSound();
+            if (result == DialogResult.OK)
+            {
+                return sfd.FileName;
+            }
+            return "";
+        }
+
 
 		public void StartPlayback()
 		{
@@ -149,7 +207,9 @@ namespace BizHawk.MultiClient
 
 		public void InsertFrame(string record, int frame)
 		{
-			Log.SetFrameAt(frame, record);
+			Log.AddFrameAt(record,frame);
+
+			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
 		public void WriteMovie()

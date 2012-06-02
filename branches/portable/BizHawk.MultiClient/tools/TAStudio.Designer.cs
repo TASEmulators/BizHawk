@@ -54,30 +54,32 @@
 			this.updatePadsOnMovePlaybackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.InsertOneFrame = new System.Windows.Forms.ToolStripMenuItem();
+			this.SelectAll = new System.Windows.Forms.ToolStripMenuItem();
+			this.ControllerBox = new System.Windows.Forms.GroupBox();
+			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.RewindToBeginning = new System.Windows.Forms.ToolStripButton();
 			this.RewindButton = new System.Windows.Forms.ToolStripButton();
 			this.PauseButton = new System.Windows.Forms.ToolStripButton();
 			this.FrameAdvanceButton = new System.Windows.Forms.ToolStripButton();
+			this.FastForward = new System.Windows.Forms.ToolStripButton();
+			this.TurboFastForward = new System.Windows.Forms.ToolStripButton();
 			this.FastFowardToEnd = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.StopButton = new System.Windows.Forms.ToolStripButton();
-			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.insertFrameToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.DeleteFrames = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
+			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -267,6 +269,69 @@
 			this.restoreWindowToolStripMenuItem.Text = "Restore Default Settings";
 			this.restoreWindowToolStripMenuItem.Click += new System.EventHandler(this.restoreWindowToolStripMenuItem_Click);
 			// 
+			// ReadOnlyCheckBox
+			// 
+			this.ReadOnlyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
+			this.ReadOnlyCheckBox.AutoSize = true;
+			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
+			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
+			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(12, 27);
+			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
+			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(22, 22);
+			this.ReadOnlyCheckBox.TabIndex = 3;
+			this.toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Read-only");
+			this.ReadOnlyCheckBox.UseVisualStyleBackColor = false;
+			this.ReadOnlyCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.InsertOneFrame,
+            this.DeleteFrames,
+            this.SelectAll});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(157, 70);
+			// 
+			// InsertOneFrame
+			// 
+			this.InsertOneFrame.Name = "InsertOneFrame";
+			this.InsertOneFrame.Size = new System.Drawing.Size(156, 22);
+			this.InsertOneFrame.Text = "Insert Frame";
+			this.InsertOneFrame.Click += new System.EventHandler(this.InsertOneFrame_Click);
+			// 
+			// SelectAll
+			// 
+			this.SelectAll.Enabled = false;
+			this.SelectAll.Name = "SelectAll";
+			this.SelectAll.Size = new System.Drawing.Size(156, 22);
+			this.SelectAll.Text = "Select All";
+			// 
+			// ControllerBox
+			// 
+			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControllerBox.ContextMenuStrip = this.ControllersContext;
+			this.ControllerBox.Location = new System.Drawing.Point(300, 55);
+			this.ControllerBox.Name = "ControllerBox";
+			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
+			this.ControllerBox.TabIndex = 4;
+			this.ControllerBox.TabStop = false;
+			this.ControllerBox.Text = "Controllers";
+			// 
+			// ControllersContext
+			// 
+			this.ControllersContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearToolStripMenuItem1});
+			this.ControllersContext.Name = "ControllersContext";
+			this.ControllersContext.Size = new System.Drawing.Size(136, 26);
+			// 
+			// clearToolStripMenuItem1
+			// 
+			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
+			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
+			this.clearToolStripMenuItem1.Text = "&Clear Holds";
+			this.clearToolStripMenuItem1.Click += new System.EventHandler(this.clearToolStripMenuItem1_Click);
+			// 
 			// toolStrip1
 			// 
 			this.toolStrip1.ClickThrough = true;
@@ -276,12 +341,14 @@
             this.RewindButton,
             this.PauseButton,
             this.FrameAdvanceButton,
+            this.FastForward,
+            this.TurboFastForward,
             this.FastFowardToEnd,
             this.toolStripSeparator6,
             this.StopButton});
 			this.toolStrip1.Location = new System.Drawing.Point(37, 27);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(156, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(202, 25);
 			this.toolStrip1.TabIndex = 0;
 			// 
 			// RewindToBeginning
@@ -328,10 +395,32 @@
 			this.FrameAdvanceButton.ToolTipText = "Frame Advance";
 			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
 			// 
+			// FastForward
+			// 
+			this.FastForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FastForward.Image = global::BizHawk.MultiClient.Properties.Resources.FastForward;
+			this.FastForward.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FastForward.Name = "FastForward";
+			this.FastForward.Size = new System.Drawing.Size(23, 22);
+			this.FastForward.Text = ">>";
+			this.FastForward.ToolTipText = "Fast Forward";
+			this.FastForward.Click += new System.EventHandler(this.FastForward_Click);
+			// 
+			// TurboFastForward
+			// 
+			this.TurboFastForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.TurboFastForward.Enabled = false;
+			this.TurboFastForward.Image = global::BizHawk.MultiClient.Properties.Resources.TurboFastForward;
+			this.TurboFastForward.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.TurboFastForward.Name = "TurboFastForward";
+			this.TurboFastForward.Size = new System.Drawing.Size(23, 22);
+			this.TurboFastForward.Text = ">>>";
+			this.TurboFastForward.ToolTipText = "Turbo Fast Forward";
+			this.TurboFastForward.Click += new System.EventHandler(this.TurboFastForward_Click);
+			// 
 			// FastFowardToEnd
 			// 
 			this.FastFowardToEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.FastFowardToEnd.Enabled = false;
 			this.FastFowardToEnd.Image = global::BizHawk.MultiClient.Properties.Resources.ForwardMore;
 			this.FastFowardToEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.FastFowardToEnd.Name = "FastFowardToEnd";
@@ -355,66 +444,15 @@
 			this.StopButton.Text = "Stop Movie";
 			this.StopButton.Click += new System.EventHandler(this.StopButton_Click);
 			// 
-			// ReadOnlyCheckBox
-			// 
-			this.ReadOnlyCheckBox.Appearance = System.Windows.Forms.Appearance.Button;
-			this.ReadOnlyCheckBox.AutoSize = true;
-			this.ReadOnlyCheckBox.BackColor = System.Drawing.SystemColors.Control;
-			this.ReadOnlyCheckBox.Image = global::BizHawk.MultiClient.Properties.Resources.ReadOnly;
-			this.ReadOnlyCheckBox.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(12, 27);
-			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
-			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(22, 22);
-			this.ReadOnlyCheckBox.TabIndex = 3;
-			this.toolTip1.SetToolTip(this.ReadOnlyCheckBox, "Read-only");
-			this.ReadOnlyCheckBox.UseVisualStyleBackColor = false;
-			this.ReadOnlyCheckBox.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-			// 
-			// contextMenuStrip1
-			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.insertFrameToolStripMenuItem1,
-            this.toolStripSeparator5,
-            this.selectAllToolStripMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(140, 54);
-			// 
-			// insertFrameToolStripMenuItem1
-			// 
-			this.insertFrameToolStripMenuItem1.Name = "insertFrameToolStripMenuItem1";
-			this.insertFrameToolStripMenuItem1.Size = new System.Drawing.Size(139, 22);
-			this.insertFrameToolStripMenuItem1.Text = "Insert Frame";
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(136, 6);
-			// 
-			// selectAllToolStripMenuItem
-			// 
-			this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-			this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-			this.selectAllToolStripMenuItem.Text = "Select All";
-			// 
-			// ControllerBox
-			// 
-			this.ControllerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ControllerBox.ContextMenuStrip = this.ControllersContext;
-			this.ControllerBox.Location = new System.Drawing.Point(300, 55);
-			this.ControllerBox.Name = "ControllerBox";
-			this.ControllerBox.Size = new System.Drawing.Size(367, 197);
-			this.ControllerBox.TabIndex = 4;
-			this.ControllerBox.TabStop = false;
-			this.ControllerBox.Text = "Controllers";
-			// 
 			// TASView
 			// 
-			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TASView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.TASView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Frame,
             this.Log});
+			this.TASView.ContextMenuStrip = this.contextMenuStrip1;
 			this.TASView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TASView.FullRowSelect = true;
 			this.TASView.GridLines = true;
@@ -426,6 +464,8 @@
 			this.TASView.TabIndex = 1;
 			this.TASView.UseCompatibleStateImageBehavior = false;
 			this.TASView.View = System.Windows.Forms.View.Details;
+			this.TASView.SelectedIndexChanged += new System.EventHandler(this.TASView_SelectedIndexChanged);
+			this.TASView.DoubleClick += new System.EventHandler(this.TASView_DoubleClick);
 			// 
 			// Frame
 			// 
@@ -436,19 +476,12 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// ControllersContext
+			// DeleteFrames
 			// 
-			this.ControllersContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearToolStripMenuItem1});
-			this.ControllersContext.Name = "ControllersContext";
-			this.ControllersContext.Size = new System.Drawing.Size(153, 48);
-			// 
-			// clearToolStripMenuItem1
-			// 
-			this.clearToolStripMenuItem1.Name = "clearToolStripMenuItem1";
-			this.clearToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-			this.clearToolStripMenuItem1.Text = "&Clear Holds";
-			this.clearToolStripMenuItem1.Click += new System.EventHandler(this.clearToolStripMenuItem1_Click);
+			this.DeleteFrames.Name = "DeleteFrames";
+			this.DeleteFrames.Size = new System.Drawing.Size(156, 22);
+			this.DeleteFrames.Text = "Delete Frame(s)";
+			this.DeleteFrames.Click += new System.EventHandler(this.DeleteFrames_Click);
 			// 
 			// TAStudio
 			// 
@@ -468,10 +501,10 @@
 			this.Load += new System.EventHandler(this.TAStudio_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.toolStrip1.ResumeLayout(false);
-			this.toolStrip1.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ControllersContext.ResumeLayout(false);
+			this.toolStrip1.ResumeLayout(false);
+			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -511,9 +544,8 @@
 		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem1;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-		private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem InsertOneFrame;
+		private System.Windows.Forms.ToolStripMenuItem SelectAll;
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripButton StopButton;
@@ -523,5 +555,8 @@
 		private System.Windows.Forms.ToolStripMenuItem clearVirtualPadsToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip ControllersContext;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripButton FastForward;
+        private System.Windows.Forms.ToolStripButton TurboFastForward;
+		private System.Windows.Forms.ToolStripMenuItem DeleteFrames;
     }
 }

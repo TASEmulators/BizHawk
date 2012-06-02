@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//configuration
 		protected int prg_mask, chr_mask;
-		protected int vram_mask, wram_mask;
+		protected int vram_mask;
 
 		//state
 		protected MMC1 mmc1;
@@ -244,24 +244,10 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else base.WritePPU(addr, value);
 		}
 
-		public override byte ReadWRAM(int addr)
-		{
-			if (Cart.wram_size != 0)
-				return WRAM[addr & wram_mask];
-			else return 0xFF;
-		}
-
-		public override void WriteWRAM(int addr, byte value)
-		{
-			if (Cart.wram_size != 0)
-				WRAM[addr & wram_mask] = value;
-		}
-
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
-
 		}
 	
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -345,7 +331,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			mmc1 = new MMC1(this);
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
-			wram_mask = (Cart.wram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
 			SetMirrorType(mmc1.mirror);
 		}

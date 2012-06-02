@@ -174,24 +174,56 @@ namespace BizHawk.Emulation.Consoles.Sega
 			}
 		}
 
-		public void SaveStateText(TextWriter writer)
-		{
-			throw new NotImplementedException();
-		}
+        public void SaveStateText(TextWriter writer)
+        {
+            writer.WriteLine("[MegaDrive]");
+            MainCPU.SaveStateText(writer, "Main68K");
+            SoundCPU.SaveStateText(writer);
+            PSG.SaveStateText(writer);
+            VDP.SaveStateText(writer);
 
-		public void LoadStateText(TextReader reader)
-		{
-			throw new NotImplementedException();
-		}
+            writer.Write("MainRAM ");
+            Ram.SaveAsHex(writer);
+            writer.Write("Z80RAM ");
+            Z80Ram.SaveAsHex(writer);
+            
+
+            writer.WriteLine("[/MegaDrive]");
+        }
+
+        public void LoadStateText(TextReader reader)
+        {
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[MegaDrive]") continue;
+                if (args[0] == "[/MegaDrive]") break;
+                if (args[0] == "MainRAM")
+                    Ram.ReadFromHex(args[1]);
+                else if (args[0] == "Z80RAM")
+                    Z80Ram.ReadFromHex(args[1]);
+                else if (args[0] == "[Main68K]")
+                    MainCPU.LoadStateText(reader, "Main68K");
+                else if (args[0] == "[Z80]")
+                    SoundCPU.LoadStateText(reader);
+                else if (args[0] == "[PSG]")
+                    PSG.LoadStateText(reader);
+                else if (args[0] == "[VDP]")
+                    VDP.LoadStateText(reader);
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+            }
+        }
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		public byte[] SaveStateBinary()

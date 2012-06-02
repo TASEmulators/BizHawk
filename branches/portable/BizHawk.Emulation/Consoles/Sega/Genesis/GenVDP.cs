@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Globalization;
 
 namespace BizHawk.Emulation.Consoles.Sega
 {
@@ -137,7 +139,7 @@ namespace BizHawk.Emulation.Consoles.Sega
                     VdpDataAddr += Registers[0x0F];
                     break;
                 default: 
-                    Console.WriteLine("VDP DATA WRITE WITH UNHANDLED CODE!!!");
+                    //Console.WriteLine("VDP DATA WRITE WITH UNHANDLED CODE!!!");
                     break;
             }
         }
@@ -325,6 +327,52 @@ namespace BizHawk.Emulation.Consoles.Sega
         public int BackgroundColor
         {
             get { return Palette[Registers[7] & 0x3F]; }
+        }
+
+        public void SaveStateText(TextWriter writer)
+        {
+            writer.WriteLine("[VDP]");
+
+            writer.Write("VRAM ");
+            VRAM.SaveAsHex(writer);
+            writer.Write("CRAM ");
+            CRAM.SaveAsHex(writer);
+            writer.Write("VSRAM ");
+            VSRAM.SaveAsHex(writer);
+            writer.Write("Registers ");
+            Registers.SaveAsHex(writer);
+
+            writer.WriteLine("ControlWordPending {0}", ControlWordPending);
+            writer.WriteLine("DmaFillModePending {0}", DmaFillModePending);
+            writer.WriteLine("VdpDataAddr {0:X4}", VdpDataAddr);
+            writer.WriteLine("VdpDataCode {0}", VdpDataCode);
+
+            writer.WriteLine("[/VDP]");
+        }
+
+        public void LoadStateText(TextReader reader)
+        {
+            while (true)
+            {
+                string[] args = reader.ReadLine().Split(' ');
+                if (args[0].Trim() == "") continue;
+                if (args[0] == "[/VDP]") break;
+                else if (args[0] == "VRAM")                 VRAM.ReadFromHex(args[1]);
+                else if (args[0] == "CRAM")                 CRAM.ReadFromHex(args[1]);
+                else if (args[0] == "VSRAM")                VSRAM.ReadFromHex(args[1]);
+                else if (args[0] == "Registers")            Registers.ReadFromHex(args[1]);
+                else if (args[0] == "ControlWordPending")   ControlWordPending = bool.Parse(args[1]);
+                else if (args[0] == "DmaFillModePending")   DmaFillModePending = bool.Parse(args[1]);
+                else if (args[0] == "VdpDataAddr")          VdpDataAddr = ushort.Parse(args[1], NumberStyles.HexNumber);
+                else if (args[0] == "VdpDataCode")          VdpDataCode = byte.Parse(args[1]);
+                else
+                    Console.WriteLine("Skipping unrecognized identifier " + args[0]);
+            }
+
+            for (int i = 0; i < CRAM.Length; i++)
+                ProcessPalette(i);
+            for (int i = 0; i < VRAM.Length; i++)
+                UpdatePatternBuffer(i);
         }
     }
 }

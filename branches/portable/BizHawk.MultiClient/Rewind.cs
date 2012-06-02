@@ -24,6 +24,7 @@ namespace BizHawk.MultiClient
                     Global.OSD.AddMessage("Rewind Disabled: State too large.");
 										Global.OSD.AddMessage("See 'Arcade Card Rewind Hack' in Emulation->PC Engine options.");
                 }
+
 				return;
 			}
 
@@ -162,7 +163,7 @@ namespace BizHawk.MultiClient
 		{
 			for (int i = 0; i < frames; i++)
 			{
-				if (RewindBuf.Count == 0)
+                if (RewindBuf.Count == 0 || (true == Global.MovieSession.Movie.Loaded && 0 == Global.MovieSession.Movie.Length()))
 					return;
 				if (LastState.Length < 0x10000)
 					Rewind64K();
@@ -177,5 +178,10 @@ namespace BizHawk.MultiClient
             RewindImpossible = false;
 			LastState = null;
 		}
+
+        public int RewindBufferCount()
+        {
+            return RewindBuf.Count;
+        }
 	}
 }

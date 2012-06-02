@@ -30,6 +30,10 @@ namespace BizHawk.MultiClient
 
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
+		public bool FastForward = false;
+		public bool TurboFastForward = false;
+		public bool StopOnEnd = false;
+		public bool UpdateFrame = false;
 
 		//avi/wav state
 		IVideoWriter CurrAviWriter = null;
@@ -73,6 +77,7 @@ namespace BizHawk.MultiClient
 		public ToolBox ToolBox1 = new ToolBox();
 		public TI83KeyPad TI83KeyPad1 = new TI83KeyPad();
 		public TAStudio TAStudio1 = new TAStudio();
+		public Debugger GBDebugger = new Debugger();
 #if WINDOWS
 		public LuaConsole LuaConsole1 = new LuaConsole();
 #endif
@@ -300,7 +305,7 @@ namespace BizHawk.MultiClient
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if(Global.DisplayManager != null) Global.DisplayManager.Dispose();
+			if (Global.DisplayManager != null) Global.DisplayManager.Dispose();
 			Global.DisplayManager = null;
 
 			if (disposing && (components != null))
@@ -402,7 +407,7 @@ namespace BizHawk.MultiClient
 
 		void SyncThrottle()
 		{
-			bool fastforward = Global.ClientControls["Fast Forward"];
+			bool fastforward = Global.ClientControls["Fast Forward"] || FastForward;
 			Global.ForceNoVsync = unthrottled || fastforward;
 
 			throttle.SetCoreFps(Global.Emulator.CoreOutputComm.VsyncRate);
@@ -1035,7 +1040,7 @@ namespace BizHawk.MultiClient
 			atariToolStripMenuItem.Visible = false;
 			switch (system)
 			{
-					
+
 				case "TI83":
 					tI83ToolStripMenuItem.Visible = true;
 					break;
@@ -1326,7 +1331,7 @@ namespace BizHawk.MultiClient
 								}
 								break;
 							case "GB":
-								Gameboy gb = new Gameboy(game, rom.FileData);
+								Gameboy gb = new Gameboy(game, rom.FileData, Global.Config.GameBoySkipBIOS);
 								nextEmulator = gb;
 								break;
 							case "COLV":
@@ -1411,6 +1416,9 @@ namespace BizHawk.MultiClient
 				StateSlots.Clear();
 				UpdateStatusSlots();
 				UpdateDumpIcon();
+
+				LastState = Global.Emulator.SaveStateBinary();
+
 				return true;
 			}
 		}
@@ -1853,21 +1861,37 @@ namespace BizHawk.MultiClient
 				runFrame = true;
 			}
 
-			if (Global.Config.RewindEnabled && Global.ClientControls["Rewind"] || PressRewind)
+			bool ReturnToRecording = Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD;
+			if (Global.Config.RewindEnabled && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				Rewind(1);
 				suppressCaptureRewind = true;
+				if (0 == RewindBuf.Count)
+				{
+					runFrame = false;
+				}
+				else
+				{
 				runFrame = true;
-				PressRewind = false;
+			}
+				//we don't want to capture input when rewinding, even in record mode
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
+			}
+			if (true == UpdateFrame)
+			{
+				runFrame = true;
+				if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.PLAY;
 			}
 
 			bool genSound = false;
 			if (runFrame)
 			{
 				//client input-related duties
-				
+
 				Global.OSD.ClearGUIText();
-				UpdateTools();
+				UpdateToolsBefore();
 #if WINDOWS
 				LuaConsole1.ResumeScripts(true);
 #endif
@@ -1892,8 +1916,9 @@ namespace BizHawk.MultiClient
 					Global.OSD.FPS = fps_string;
 				}
 
-
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
+				Global.MovieSession.Movie.CaptureState();
+
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
 					genSound = true;
@@ -1915,11 +1940,11 @@ namespace BizHawk.MultiClient
 					{
 						session.LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 					}
+				}
 
 					//the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 					//this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 					session.Movie.CommitFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
-				}
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.INACTIVE || Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
@@ -1928,8 +1953,9 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame && true == StopOnEnd)
 					{
+						StopOnEnd = false;
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
@@ -1977,6 +2003,21 @@ namespace BizHawk.MultiClient
 				}
 
 				PressFrameAdvance = false;
+				UpdateToolsAfter();
+			}
+
+			if (Global.ClientControls["Rewind"] || PressRewind)
+			{
+				UpdateToolsAfter();
+				if (ReturnToRecording)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				PressRewind = false;
+			}
+			if (true == UpdateFrame)
+			{
+				if (ReturnToRecording)
+					Global.MovieSession.Movie.Mode = MOVIEMODE.RECORD;
+				UpdateFrame = false;
 			}
 
             if (genSound)
@@ -1992,9 +2033,9 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
-		/// Update all tools that are frame dependent like Ram Search
+		/// Update all tools that are frame dependent like Ram Search before processing
 		/// </summary>
-		public void UpdateTools()
+		public void UpdateToolsBefore()
 		{
 			RamWatch1.UpdateValues();
 			RamSearch1.UpdateValues();
@@ -2003,7 +2044,18 @@ namespace BizHawk.MultiClient
 			NESPPU1.UpdateValues();
 			PCEBGViewer1.UpdateValues();
 			PCEBGViewer1.Generate(); // TODO: just a makeshift. PCE core should provide callbacks.
+			GBDebugger.UpdateValues();
+		}
+
+		/// <summary>
+		/// Update all tools that are frame dependent like Ram Search after processing
+		/// </summary>
+		public void UpdateToolsAfter()
+		{
+			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
+			//frame of execution in its list view.
 			TAStudio1.UpdateValues();
+			Global.MovieSession.Movie.CheckValidity();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2160,7 +2212,8 @@ namespace BizHawk.MultiClient
 				}
 
 				reader.Close();
-				UpdateTools();
+				UpdateToolsBefore();
+				UpdateToolsAfter();
 				Global.OSD.AddMessage("Loaded state: " + name);
 			}
 			else
@@ -2566,6 +2619,7 @@ namespace BizHawk.MultiClient
 			PCEBGViewer1.Restart();
 			TI83KeyPad1.Restart();
 			Cheats1.Restart();
+			GBDebugger.Restart();
 			ToolBox1.Restart();
 #if WINDOWS
 			LuaConsole1.Restart();
@@ -2588,7 +2642,7 @@ namespace BizHawk.MultiClient
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
-			
+
 			if (Global.Config.ShowLogWindow) LogConsole.SaveConfigSettings();
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
@@ -2907,15 +2961,20 @@ namespace BizHawk.MultiClient
 #endif
 		}
 
-		public void OpenGameboyDebugger()
+		public void LoadGBDebugger()
 		{
 			if (Global.Emulator is Gameboy)
 			{
-				Debugger gbDebugger = new Debugger(Global.Emulator as Gameboy);
-				RunLoopBlocked = true;
-				gbDebugger.Show();
-				RunLoopBlocked = false;
+				if (!GBDebugger.IsHandleCreated || GBDebugger.IsDisposed)
+				{
+					GBDebugger.LoadCore(Global.Emulator as Gameboy);
+					RunLoopBlocked = true;
+					GBDebugger.Show();
+					RunLoopBlocked = false;
 			}
+				else
+					GBDebugger.Focus();
+		}
 		}
 
 		public void LoadRamPoke()
@@ -3131,11 +3190,6 @@ namespace BizHawk.MultiClient
 			makeAnimatedGif(sfd.FileName);
 		}
 
-		private void frameAdvanceSkipLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SkipLagFrame ^= true;
-		}
-
 		private void ShowConsole()
 		{
 #if WINDOWS
@@ -3209,52 +3263,6 @@ namespace BizHawk.MultiClient
 					return;
 			}
 			FrameBufferResized();
-		}
-
-		private void bWToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_BW ^= true;
-				((Atari2600)Global.Emulator).SetBw(Global.Config.Atari2600_BW);
-				if (Global.Config.Atari2600_BW)
-					Global.OSD.AddMessage("Setting to Black and White Switch to On");
-				else
-					Global.OSD.AddMessage("Setting to Black and White Switch to Off");
-	}
-}
-
-		private void p0DifficultyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_LeftDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP0Diff(Global.Config.Atari2600_BW);
-				if(Global.Config.Atari2600_LeftDifficulty)
-					Global.OSD.AddMessage("Setting Left Difficulty to B");
-				else
-					Global.OSD.AddMessage("Setting Left Difficulty to A");
-			}
-		}
-
-		private void rightDifficultyToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			if (Global.Emulator is Atari2600)
-			{
-				Global.Config.Atari2600_RightDifficulty ^= true;
-				((Atari2600)Global.Emulator).SetP1Diff(Global.Config.Atari2600_BW);
-				if (Global.Config.Atari2600_RightDifficulty)
-					Global.OSD.AddMessage("Setting Right Difficulty to B");
-				else
-					Global.OSD.AddMessage("Setting Right Difficulty to A");
-			}
-		}
-
-		private void atariToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			bWToolStripMenuItem.Checked = Global.Config.Atari2600_BW;
-			p0DifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_LeftDifficulty;
-			rightDifficultyToolStripMenuItem.Checked = Global.Config.Atari2600_RightDifficulty;
 		}
 	}
 }
