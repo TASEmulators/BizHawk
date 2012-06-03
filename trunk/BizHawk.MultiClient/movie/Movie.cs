@@ -16,6 +16,9 @@ namespace BizHawk.MultiClient
 		public SubtitleList Subtitles = new SubtitleList();
 		public bool MakeBackup = true; //make backup before altering movie
 
+		//Remove this once the memory mangement issues with save states for tastudio has been solved.
+		public bool TastudioOn = false;
+
 		public bool IsText { get; private set; }
 		public string Filename { get; private set; }
 		public MOVIEMODE Mode { get; set; }
@@ -91,8 +94,16 @@ namespace BizHawk.MultiClient
 
 		public void CaptureState()
 		{
-			byte[] state = Global.Emulator.SaveStateBinary();
-			Log.AddState(state);
+			if (true == TastudioOn)
+			{
+				byte[] state = Global.Emulator.SaveStateBinary();
+				Log.AddState(state);
+			}
+		}
+
+		public void ClearStates()
+		{
+			Log.ClearStates();
 		}
 
 		public void RewindToFrame(int frame)

@@ -106,6 +106,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public void ClearStates()
+		{
+			StateList.Clear();
+			StateLastValidIndex = -1;
+		}
+
 		public void Truncate(int frame)
 		{
 			if (frame >= 0 && frame < Length())

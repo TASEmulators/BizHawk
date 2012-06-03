@@ -146,6 +146,10 @@ namespace BizHawk.MultiClient
 			Engaged = true;
 			Global.OSD.AddMessage("TAStudio engaged");
 
+			Global.MovieSession.Movie.TastudioOn = true;
+
+			Global.MainForm.StopOnEnd = false;
+
 			LoadConfigSettings();
 			ReadOnlyCheckBox.Checked = Global.MainForm.ReadOnly;
 			DisplayList();
@@ -351,7 +355,15 @@ namespace BizHawk.MultiClient
 
 		private void FastForwardToEnd_Click(object sender, EventArgs e)
 		{
-            Global.MainForm.StopOnEnd ^= true;
+			if (true == this.FastFowardToEnd.Checked)
+			{
+				Global.MainForm.StopOnEnd = false;
+			}
+			else
+			{
+				Global.MainForm.StopOnEnd = true;
+			}
+
             this.FastFowardToEnd.Checked ^= true;
             Global.MainForm.FastForward = this.FastFowardToEnd.Checked;
             if (true == this.FastFowardToEnd.Checked)
