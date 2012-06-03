@@ -1837,7 +1837,9 @@ namespace BizHawk.MultiClient
 				}
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
-				Global.MovieSession.Movie.CaptureState();
+
+
+				//Global.MovieSession.Movie.CaptureState();
 
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
