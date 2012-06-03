@@ -17,7 +17,14 @@
             {
                 components.Dispose();
             }
-            base.Dispose(disposing);
+
+			//Todo remove once save state log memory issues are fixed
+			Global.MovieSession.Movie.TastudioOn = false;
+			Global.MovieSession.Movie.ClearStates();
+
+			Global.MainForm.StopOnEnd = true;
+
+			base.Dispose(disposing);
         }
 
         #region Windows Form Designer generated code

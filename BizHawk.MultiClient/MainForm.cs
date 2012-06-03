@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
-		public bool StopOnEnd = false;
+		public bool StopOnEnd = true;
 		public bool UpdateFrame = false;
 
 		//avi/wav state
@@ -1838,8 +1838,7 @@ namespace BizHawk.MultiClient
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
 
-
-				//Global.MovieSession.Movie.CaptureState();
+				Global.MovieSession.Movie.CaptureState();
 
 				if (!runloop_frameadvance) genSound = true;
 				else if (!Global.Config.MuteFrameAdvance)
@@ -1875,15 +1874,18 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame && true == StopOnEnd)
+					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame+1 && true == StopOnEnd)
 					{
-						StopOnEnd = false;
+						if (true == Global.MovieSession.Movie.TastudioOn)
+						{
+							StopOnEnd = false;
+						}
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
-					if (Global.MovieSession.Movie.Length() > Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.Length() > Global.Emulator.Frame+1)
 					{
 						Global.MovieSession.Movie.StartPlayback();
 						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
