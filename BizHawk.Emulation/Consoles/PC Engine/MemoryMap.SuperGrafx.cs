@@ -30,7 +30,7 @@
                 if (addr >= 0x1FF000 &&
                     addr < 0x1FF400)         { IOBuffer = ReadInput(); return IOBuffer; }
                 if ((addr & ~1) == 0x1FF400) return IOBuffer;
-                if (addr == 0x1FF402)        { IOBuffer = (byte)(Cpu.IRQControlByte | (IOBuffer & 0xF8)); return IOBuffer; }
+                if (addr == 0x1FF402)        { IOBuffer = Cpu.IRQControlByte; return IOBuffer; }
                 if (addr == 0x1FF403)        { IOBuffer = (byte)(Cpu.ReadIrqStatus() | (IOBuffer & 0xF8)); return IOBuffer; }
             }
 
