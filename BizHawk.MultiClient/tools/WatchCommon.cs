@@ -66,8 +66,11 @@ namespace BizHawk.MultiClient
 					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
 					if (s.Length < 5) continue;
 
-					if (s.Substring(0, 6) == "Domain")
+					if (s.Length >= 6 && s.Substring(0, 6) == "Domain")
 						domain = s.Substring(7, s.Length - 7);
+
+					if (s.Length >= 8 && s.Substring(0, 8) == "SystemID")
+						continue;
 
 					z = HowMany(s, '\t');
 					if (z == 5)
@@ -82,19 +85,34 @@ namespace BizHawk.MultiClient
 					Watch w = new Watch();
 
 					temp = s.Substring(0, s.IndexOf('\t'));
-					w.address = int.Parse(temp, NumberStyles.HexNumber);
+					try
+					{
+						w.address = int.Parse(temp, NumberStyles.HexNumber);
+					}
+					catch
+					{
+						continue;
+					}
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y);   //Type
-					w.SetTypeByChar(s[0]);
+					if (!w.SetTypeByChar(s[0]))
+						continue;
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y);   //Signed
-					w.SetSignedByChar(s[0]);
+					if (!w.SetSignedByChar(s[0]))
+						continue;
 
 					y = s.IndexOf('\t') + 1;
 					s = s.Substring(y, s.Length - y);   //Endian
-					y = Int16.Parse(s[0].ToString());
+					try {
+						y = Int16.Parse(s[0].ToString());
+					}
+					catch
+					{
+						continue;
+					}
 					if (y == 0)
 						w.bigendian = false;
 					else
