@@ -851,7 +851,27 @@ namespace BizHawk.MultiClient
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
+
+			bool isLua = false;
+			foreach (string path in filePaths)
+			{
+				if (Path.GetExtension(path).ToUpper() == ".LUA")
+				{
+					OpenLuaConsole();
+					LuaConsole1.LoadLuaFile(path);
+					isLua = true;
+				}
+			}
+			if (isLua)
+				return;
+
+			if (Path.GetExtension(filePaths[0]).ToUpper() == ".LUASES")
+			{
+				OpenLuaConsole();
+				LuaConsole1.LoadLuaSession(filePaths[0]);
+			}
+
+			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
 				StartNewMovie(m, false);
