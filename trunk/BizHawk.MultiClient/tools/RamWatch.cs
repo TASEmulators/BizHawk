@@ -33,7 +33,7 @@ namespace BizHawk.MultiClient
 		string systemID = "NULL";
 		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
 		List<Watch> watchList = new List<Watch>();
-		string currentWatchFile = "";
+		string currentFile = "";
 		bool changes = false;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		string addressFormatStr = "{0:X4}  ";
@@ -44,8 +44,8 @@ namespace BizHawk.MultiClient
 		public void Restart()
 		{
 			if (!this.IsHandleCreated || this.IsDisposed) return;
-			if (currentWatchFile.Length > 0)
-				LoadWatchFile(currentWatchFile, false);
+			if (currentFile.Length > 0)
+				LoadWatchFile(currentFile, false);
 			else
 				NewWatchList(true);
 		}
@@ -228,17 +228,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
-		}
-
 		public bool AskSave()
 		{
 			if (changes)
@@ -248,12 +237,12 @@ namespace BizHawk.MultiClient
 				Global.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
-					if (string.Compare(currentWatchFile, "") == 0)
+					if (string.Compare(currentFile, "") == 0)
 					{
 						SaveAs();
 					}
 					else
-						SaveWatchFile(currentWatchFile);
+						SaveWatchFile(currentFile);
 					return true;
 				}
 				else if (result == DialogResult.No)
@@ -292,7 +281,7 @@ namespace BizHawk.MultiClient
 			{
 				watchList.Clear();
 				DisplayWatchList();
-				currentWatchFile = "";
+				currentFile = "";
 				changes = false;
 				MessageLabel.Text = "";
 				sortReverse = false;
@@ -302,116 +291,30 @@ namespace BizHawk.MultiClient
 
 		private bool SaveWatchFile(string path)
 		{
-			var file = new FileInfo(path);
-
-			using (StreamWriter sw = new StreamWriter(path))
-			{
-				string str = "Domain " + Domain.Name + "\n";
-
-				for (int x = 0; x < watchList.Count; x++)
-				{
-					str += string.Format("{0:X4}", watchList[x].address) + "\t";
-					str += watchList[x].GetTypeByChar().ToString() + "\t";
-					str += watchList[x].GetSignedByChar().ToString() + "\t";
-
-					if (watchList[x].bigendian == true)
-						str += "1\t";
-					else
-						str += "0\t";
-
-					str += watchList[x].notes + "\n";
-				}
-
-				sw.WriteLine(str);
-			}
-			changes = false;
-			return true;
-		}
-
-		private int GetDomainPos(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
-					return x;
-			}
-			return 0;
+			return WatchCommon.SaveWchFile(path, Domain.Name, watchList);
 		}
 
 		public bool LoadWatchFile(string path, bool append)
 		{
-			int y, z;
-			var file = new FileInfo(path);
-			if (file.Exists == false) return false;
+			string domain = "";
+			bool result = WatchCommon.LoadWatchFile(path, append, watchList, out domain);
 
-			using (StreamReader sr = file.OpenText())
+			if (result)
 			{
 				if (!append)
-					currentWatchFile = path;
-
-				int count = 0;
-				string s = "";
-				string temp = "";
-
-				if (append == false)
-					watchList.Clear();  //Wipe existing list and read from file
-
-				while ((s = sr.ReadLine()) != null)
 				{
-					//parse each line and add to watchList
-
-					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-					if (s.Length < 5) continue;
-
-					if (s.Substring(0, 6) == "Domain")
-						SetMemoryDomain(GetDomainPos(s.Substring(7, s.Length - 7)));
-
-					z = HowMany(s, '\t');
-					if (z == 5)
-					{
-						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
-						y = s.IndexOf('\t') + 1;
-						s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
-					}
-					else if (z != 4)
-						continue;   //If not 4, something is wrong with this line, ignore it
-					count++;
-					Watch w = new Watch();
-
-					temp = s.Substring(0, s.IndexOf('\t'));
-					w.address = int.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Type
-					w.SetTypeByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Signed
-					w.SetSignedByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Endian
-					y = Int16.Parse(s[0].ToString());
-					if (y == 0)
-						w.bigendian = false;
-					else
-						w.bigendian = true;
-
-					w.notes = s.Substring(2, s.Length - 2);   //User notes
-
-					watchList.Add(w);
+					currentFile = path;
 				}
-
-				Global.Config.RecentWatches.Add(file.FullName);
 				changes = false;
-				MessageLabel.Text = Path.GetFileName(file.FullName);
-				//Update the number of watches
-				WatchCountLabel.Text = count.ToString() + " watches";
-			}
+				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
+				WatchCountLabel.Text = watchList.Count.ToString() + " watches";
+				Global.Config.RecentWatches.Add(path);
+				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
+				return true;
 
-			return true;
+			}
+			else
+				return false;
 		}
 
 		private Point GetPromptPoint()
@@ -444,7 +347,7 @@ namespace BizHawk.MultiClient
 		void Changes()
 		{
 			changes = true;
-			MessageLabel.Text = Path.GetFileName(currentWatchFile) + " *";
+			MessageLabel.Text = Path.GetFileName(currentFile) + " *";
 		}
 
 		void EditWatchObject(int pos)
@@ -592,8 +495,8 @@ namespace BizHawk.MultiClient
 		private FileInfo GetFileFromUser()
 		{
 			var ofd = new OpenFileDialog();
-			if (currentWatchFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
@@ -629,54 +532,25 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentWatchFile, "") == 0)
+			if (string.Compare(currentFile, "") == 0)
 			{
 				SaveAs();
 			}
 			else if (changes)
 			{
-				SaveWatchFile(currentWatchFile);
-				MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
+				SaveWatchFile(currentFile);
+				MessageLabel.Text = Path.GetFileName(currentFile) + " saved.";
 			}
-		}
-
-		private FileInfo GetSaveFileFromUser()
-		{
-			var sfd = new SaveFileDialog();
-			if (currentWatchFile.Length > 0)
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentWatchFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentWatchFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
 		}
 
 		private void SaveAs()
 		{
-			var file = GetSaveFileFromUser();
+			var file = WatchCommon.GetSaveFileFromUser(currentFile);
 			if (file != null)
 			{
 				SaveWatchFile(file.FullName);
-				currentWatchFile = file.FullName;
-				MessageLabel.Text = Path.GetFileName(currentWatchFile) + " saved.";
+				currentFile = file.FullName;
+				MessageLabel.Text = Path.GetFileName(currentFile) + " saved.";
 				Global.Config.RecentWatches.Add(file.FullName);
 			}
 		}
@@ -852,9 +726,9 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripButton_Click(object sender, EventArgs e)
 		{
-			if (changes && currentWatchFile.Length > 0)
+			if (changes && currentFile.Length > 0)
 			{
-				SaveWatchFile(currentWatchFile);
+				SaveWatchFile(currentFile);
 			}
 			else
 			{

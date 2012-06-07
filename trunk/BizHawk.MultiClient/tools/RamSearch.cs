@@ -42,7 +42,7 @@ namespace BizHawk.MultiClient
 		int defaultValueWidth;
 		int defaultPrevWidth;
 		int defaultChangesWidth;
-		string currentSearchFile = "";
+		string currentFile = "";
 		string addressFormatStr = "{0:X4}  ";
 		bool sortReverse;
 		string sortedCol;
@@ -427,7 +427,7 @@ namespace BizHawk.MultiClient
 				ExludeRamWatchList();
 			MakePreviousList();
 			SetSpecificValueBoxMaxLength();
-			OutputLabel.Text = "New search started";
+			MessageLabel.Text = "New search started";
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
@@ -505,7 +505,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				SaveUndo();
-				OutputLabel.Text = MakeAddressString(indexes.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(indexes.Count) + " removed";
 				for (int x = 0; x < indexes.Count; x++)
 				{
 					searchList.Remove(searchList[indexes[x] - x]);
@@ -536,7 +536,7 @@ namespace BizHawk.MultiClient
 		{
 			if (undoList.Count > 0)
 			{
-				OutputLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
+				MessageLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
 				redoList = new List<Watch>(searchList);
 				searchList = new List<Watch>(undoList);
 				prevList = new List<Watch>(undoList);
@@ -564,7 +564,7 @@ namespace BizHawk.MultiClient
 		{
 			if (redoList.Count > 0)
 			{
-				OutputLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
 				undoList = new List<Watch>(searchList);
 				searchList = new List<Watch>(redoList);
 				prevList = new List<Watch>(redoList);
@@ -654,7 +654,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < searchList.Count; x++)
 				searchList[x].changecount = 0;
 			DisplaySearchList();
-			OutputLabel.Text = "Change counts cleared";
+			MessageLabel.Text = "Change counts cleared";
 		}
 
 		private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
@@ -690,13 +690,13 @@ namespace BizHawk.MultiClient
 			if (GenerateWeedOutList())
 			{
 				SaveUndo();
-				OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 				ReplaceSearchListWithWeedOutList();
 				if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
 				DisplaySearchList();
 			}
 			else
-				OutputLabel.Text = "Search failed.";
+				MessageLabel.Text = "Search failed.";
 		}
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
@@ -1282,69 +1282,18 @@ namespace BizHawk.MultiClient
 
 		private bool SaveSearchFile(string path)
 		{
-			var file = new FileInfo(path);
-
-			using (StreamWriter sw = new StreamWriter(path))
-			{
-				string str = "Domain " + Domain.Name + "\n";
-
-				for (int x = 0; x < searchList.Count; x++)
-				{
-					str += string.Format("{0:X4}", searchList[x].address) + "\t";
-					str += searchList[x].GetTypeByChar().ToString() + "\t";
-					str += searchList[x].GetSignedByChar().ToString() + "\t";
-
-					if (searchList[x].bigendian == true)
-						str += "1\t";
-					else
-						str += "0\t";
-
-					str += searchList[x].notes + "\n";
-				}
-
-				sw.WriteLine(str);
-			}
-			return true;
-		}
-
-		private FileInfo GetSaveFileFromUser()
-		{
-			var sfd = new SaveFileDialog();
-			if (currentSearchFile.Length > 0)
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentSearchFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-			    sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
+			return WatchCommon.SaveWchFile(path, Domain.Name, searchList);
 		}
 
 		public void SaveAs()
 		{
-			var file = GetSaveFileFromUser();
+			var file = WatchCommon.GetSaveFileFromUser(currentFile);
 			if (file != null)
 			{
 				SaveSearchFile(file.FullName);
-				currentSearchFile = file.FullName;
-				OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
-				Global.Config.RecentSearches.Add(currentSearchFile);
+				currentFile = file.FullName;
+				MessageLabel.Text = Path.GetFileName(currentFile) + " saved.";
+				Global.Config.RecentSearches.Add(currentFile);
 			}
 		}
 
@@ -1360,106 +1309,27 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		public int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
-		}
-
-		private int GetDomainPos(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
-					return x;
-			}
-			return 0;
-		}
-
 		bool LoadSearchFile(string path, bool append, bool truncate, List<Watch> list)
 		{
-			int y, z;
-			var file = new FileInfo(path);
-			if (file.Exists == false) return false;
+			string domain = "";
+			bool result = WatchCommon.LoadWatchFile(path, append, list, out domain);
 
-			using (StreamReader sr = file.OpenText())
+			if (result)
 			{
-				if (!append && !truncate)
-					currentSearchFile = path;
-
-				int count = 0;
-				string s = "";
-				string temp = "";
-
 				if (!append)
 				{
-					list.Clear();  //Wipe existing list and read from file
-					prevList.Clear();
+					currentFile = path;
 				}
 
-				while ((s = sr.ReadLine()) != null)
-				{
-					//parse each line and add to watchList
+				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
+				SetTotal();
+				Global.Config.RecentSearches.Add(path);
+				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
+				return true;
 
-					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-					if (s.Length < 5) continue;
-
-					if (s.Substring(0, 6) == "Domain")
-						SetMemoryDomain(GetDomainPos(s.Substring(7, s.Length - 7)));
-
-					z = HowMany(s, '\t');
-					if (z == 5)
-					{
-						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
-						y = s.IndexOf('\t') + 1;
-						s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
-					}
-					else if (z != 4)
-						continue;   //If not 4, something is wrong with this line, ignore it
-					count++;
-					Watch w = new Watch();
-
-					temp = s.Substring(0, s.IndexOf('\t'));
-					w.address = int.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Type
-					w.SetTypeByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Signed
-					w.SetSignedByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Endian
-					y = Int16.Parse(s[0].ToString());
-					if (y == 0)
-						w.bigendian = false;
-					else
-						w.bigendian = true;
-
-					//w.notes = s.Substring(2, s.Length - 2);   //User notes
-
-					list.Add(w);
-				}
-
-				if (!append && !truncate)
-				{
-					Global.Config.RecentSearches.Add(file.FullName);
-					OutputLabel.Text = Path.GetFileName(file.FullName);
-					//Update the number of watches
-					SetTotal();
-				}
 			}
-
-			return true;
+			else
+				return false;
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1520,13 +1390,13 @@ namespace BizHawk.MultiClient
 		private FileInfo GetFileFromUser()
 		{
 			var ofd = new OpenFileDialog();
-			if (currentSearchFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
-			if (currentSearchFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
@@ -1575,10 +1445,10 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSearchFile, "") == 0) 
+			if (string.Compare(currentFile, "") == 0) 
 				SaveAs();
 			else
-				SaveSearchFile(currentSearchFile);
+				SaveSearchFile(currentFile);
 		}
 
 		private void addSelectedToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1766,7 +1636,7 @@ namespace BizHawk.MultiClient
 					weededList.Add(searchList[x]);
 			}
 			SaveUndo();
-			OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+			MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 			ReplaceSearchListWithWeedOutList();
 			if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
 			DisplaySearchList();
