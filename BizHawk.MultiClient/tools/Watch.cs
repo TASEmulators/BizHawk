@@ -280,7 +280,7 @@ namespace BizHawk.MultiClient
 					default:
 					case asigned.UNSIGNED:
 					switch (type)
-						{
+					{
 						default:
 							case atype.BYTE:
 								return ((byte)value).ToString();
@@ -288,7 +288,7 @@ namespace BizHawk.MultiClient
 								return ((ushort)value).ToString();
 							case atype.DWORD:
 								return ((uint)value).ToString();
-						}
+					}
 				}
 			}
 		}
