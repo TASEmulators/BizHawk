@@ -64,7 +64,8 @@
 			this.ReadOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.InsertOneFrame = new System.Windows.Forms.ToolStripMenuItem();
+			this.Insert = new System.Windows.Forms.ToolStripMenuItem();
+			this.Delete = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.ControllerBox = new System.Windows.Forms.GroupBox();
 			this.ControllersContext = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -82,7 +83,6 @@
 			this.TASView = new BizHawk.VirtualListView();
 			this.Frame = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Log = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.DeleteFrames = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.ControllersContext.SuspendLayout();
@@ -294,18 +294,25 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.InsertOneFrame,
-            this.DeleteFrames,
+            this.Insert,
+            this.Delete,
             this.SelectAll});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
 			this.contextMenuStrip1.Size = new System.Drawing.Size(157, 70);
 			// 
-			// InsertOneFrame
+			// Insert
 			// 
-			this.InsertOneFrame.Name = "InsertOneFrame";
-			this.InsertOneFrame.Size = new System.Drawing.Size(156, 22);
-			this.InsertOneFrame.Text = "Insert Frame";
-			this.InsertOneFrame.Click += new System.EventHandler(this.InsertOneFrame_Click);
+			this.Insert.Name = "Insert";
+			this.Insert.Size = new System.Drawing.Size(156, 22);
+			this.Insert.Text = "Insert Frame(s)";
+			this.Insert.Click += new System.EventHandler(this.Insert_Click);
+			// 
+			// Delete
+			// 
+			this.Delete.Name = "Delete";
+			this.Delete.Size = new System.Drawing.Size(156, 22);
+			this.Delete.Text = "Delete Frame(s)";
+			this.Delete.Click += new System.EventHandler(this.Delete_Click);
 			// 
 			// SelectAll
 			// 
@@ -483,13 +490,6 @@
 			this.Log.Text = "Log";
 			this.Log.Width = 201;
 			// 
-			// DeleteFrames
-			// 
-			this.DeleteFrames.Name = "DeleteFrames";
-			this.DeleteFrames.Size = new System.Drawing.Size(156, 22);
-			this.DeleteFrames.Text = "Delete Frame(s)";
-			this.DeleteFrames.Click += new System.EventHandler(this.DeleteFrames_Click);
-			// 
 			// TAStudio
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -551,7 +551,7 @@
 		private System.Windows.Forms.ToolStripButton FastFowardToEnd;
 		private System.Windows.Forms.ToolStripMenuItem insertFrameToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem InsertOneFrame;
+		private System.Windows.Forms.ToolStripMenuItem Insert;
 		private System.Windows.Forms.ToolStripMenuItem SelectAll;
 		private System.Windows.Forms.GroupBox ControllerBox;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
@@ -564,6 +564,6 @@
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem1;
         private System.Windows.Forms.ToolStripButton FastForward;
         private System.Windows.Forms.ToolStripButton TurboFastForward;
-		private System.Windows.Forms.ToolStripMenuItem DeleteFrames;
+		private System.Windows.Forms.ToolStripMenuItem Delete;
     }
 }

@@ -104,9 +104,9 @@ namespace BizHawk.MultiClient
 
 		private void TASView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index <= Global.MovieSession.Movie.LastValidState())
+			if (index < Global.MovieSession.Movie.ValidStateCount())
 				color = Color.LightGreen;
-			else if (Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
+			else if ("" != Global.MovieSession.Movie.GetInputFrame(index) && Global.MovieSession.Movie.GetInputFrame(index)[1] == 'L')
 				color = Color.Pink;
 			if (index == Global.Emulator.Frame)
 			{
@@ -117,15 +117,25 @@ namespace BizHawk.MultiClient
 		private void TASView_QueryItemText(int index, int column, out string text)
 		{
 			text = "";
-			if (column == 0)
-				text = String.Format("{0:#,##0}", index);
-			if (column == 1)
-				text = Global.MovieSession.Movie.GetInputFrame(index);
+
+			//If this is just for an actual frame and not just the list view cursor at the end
+			if (Global.MovieSession.Movie.LogLength() != index)
+			{
+				if (column == 0)
+					text = String.Format("{0:#,##0}", index);
+				if (column == 1)
+					text = Global.MovieSession.Movie.GetInputFrame(index);
+			}
 		}
 
 		private void DisplayList()
 		{
-			TASView.ItemCount = Global.MovieSession.Movie.Length();
+			TASView.ItemCount = Global.MovieSession.Movie.LogLength();
+			if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame && Global.MovieSession.Movie.StateLength() == Global.Emulator.Frame)
+			{
+				//If we're at the end of the movie add one to show the cursor as a blank frame
+				TASView.ItemCount++;
+			}
             TASView.ensureVisible(Global.Emulator.Frame-1);
 		}
 
@@ -473,15 +483,23 @@ namespace BizHawk.MultiClient
 			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 		}
 
-		private void InsertOneFrame_Click(object sender, EventArgs e)
+		private void Insert_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(TASView.selectedItem), TASView.selectedItem);
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.InsertFrame(Global.MovieSession.Movie.GetInputFrame(list[index]), (int)list[index]);
+			}
 			Global.MovieSession.Movie.RewindToFrame(TASView.selectedItem);
 		}
 
-		private void DeleteFrames_Click(object sender, EventArgs e)
+		private void Delete_Click(object sender, EventArgs e)
 		{
-			Global.MovieSession.Movie.DeleteFrame(TASView.selectedItem);
+			ListView.SelectedIndexCollection list = TASView.SelectedIndices;
+			for (int index = 0; index < list.Count; index++)
+			{
+				Global.MovieSession.Movie.DeleteFrame(TASView.selectedItem);
+			}
 		}
 	}
 }
