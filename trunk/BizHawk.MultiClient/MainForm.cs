@@ -1894,7 +1894,7 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame+1 && true == StopOnEnd)
+					if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame + 1 && true == StopOnEnd)
 					{
 						if (true == Global.MovieSession.Movie.TastudioOn)
 						{
@@ -1905,7 +1905,7 @@ namespace BizHawk.MultiClient
 				}
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
-					if (Global.MovieSession.Movie.Length() > Global.Emulator.Frame+1)
+					if (Global.MovieSession.Movie.LogLength() > Global.Emulator.Frame + 1)
 					{
 						Global.MovieSession.Movie.StartPlayback();
 						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
@@ -1998,8 +1998,8 @@ namespace BizHawk.MultiClient
 		{
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-			TAStudio1.UpdateValues();
 			Global.MovieSession.Movie.CheckValidity();
+			TAStudio1.UpdateValues();
 		}
 
 		private unsafe Image MakeScreenshotImage()

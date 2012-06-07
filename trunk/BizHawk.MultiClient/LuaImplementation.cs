@@ -1445,7 +1445,7 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.Length();
+			return Global.MovieSession.Movie.LogLength();
 		}
 
 		public string movie_filename()

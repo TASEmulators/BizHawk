@@ -88,7 +88,7 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.FullName, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Length() == 0)
+						if (m.LogLength() == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							return;
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.CanonicalFullPath, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Length() > 0)
+						if (m.LogLength() > 0)
 						{
 							MovieList.Add(m);
 							sortReverse = false;
