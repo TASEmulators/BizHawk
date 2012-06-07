@@ -55,6 +55,7 @@
 			this.addToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pokeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +80,7 @@
 			this.copyValueToPrevToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearChangeCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.removeSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.exludeRamWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.excludeRamWatchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.addSelectedToRamWatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.pokeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,7 +93,7 @@
 			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alwaysExludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysExcludeRamSearchListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip1 = new ToolStripEx();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -139,7 +140,6 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -277,9 +277,9 @@
 			// SearchListView
 			// 
 			this.SearchListView.AllowColumnReorder = true;
-			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -395,6 +395,13 @@
 			this.freezeAddressToolStripMenuItem1.Text = "Freeze Address";
 			this.freezeAddressToolStripMenuItem1.Click += new System.EventHandler(this.freezeAddressToolStripMenuItem1_Click);
 			// 
+			// viewInHexEditorToolStripMenuItem
+			// 
+			this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
+			this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+			this.viewInHexEditorToolStripMenuItem.Text = "View in Hex Editor";
+			this.viewInHexEditorToolStripMenuItem.Click += new System.EventHandler(this.viewInHexEditorToolStripMenuItem_Click);
+			// 
 			// menuStrip1
 			// 
 			this.menuStrip1.ClickThrough = true;
@@ -459,8 +466,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+						| System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -539,7 +546,7 @@
             this.copyValueToPrevToolStripMenuItem,
             this.clearChangeCountsToolStripMenuItem,
             this.removeSelectedToolStripMenuItem,
-            this.exludeRamWatchListToolStripMenuItem,
+            this.excludeRamWatchListToolStripMenuItem,
             this.toolStripSeparator5,
             this.addSelectedToRamWatchToolStripMenuItem,
             this.pokeAddressToolStripMenuItem,
@@ -607,13 +614,13 @@
 			this.removeSelectedToolStripMenuItem.Text = "&Remove selected";
 			this.removeSelectedToolStripMenuItem.Click += new System.EventHandler(this.removeSelectedToolStripMenuItem_Click);
 			// 
-			// exludeRamWatchListToolStripMenuItem
+			// excludeRamWatchListToolStripMenuItem
 			// 
-			this.exludeRamWatchListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
-			this.exludeRamWatchListToolStripMenuItem.Name = "exludeRamWatchListToolStripMenuItem";
-			this.exludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.exludeRamWatchListToolStripMenuItem.Text = "Exlude Ram Watch List";
-			this.exludeRamWatchListToolStripMenuItem.Click += new System.EventHandler(this.exludeRamWatchListToolStripMenuItem_Click);
+			this.excludeRamWatchListToolStripMenuItem.Image = global::BizHawk.MultiClient.Properties.Resources.TruncateFromRW;
+			this.excludeRamWatchListToolStripMenuItem.Name = "excludeRamWatchListToolStripMenuItem";
+			this.excludeRamWatchListToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.excludeRamWatchListToolStripMenuItem.Text = "Exclude Ram Watch List";
+			this.excludeRamWatchListToolStripMenuItem.Click += new System.EventHandler(this.excludeRamWatchListToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
@@ -654,7 +661,7 @@
             this.restoreOriginalWindowSizeToolStripMenuItem,
             this.saveWindowPositionToolStripMenuItem,
             this.previewModeToolStripMenuItem,
-            this.alwaysExludeRamSearchListToolStripMenuItem});
+            this.alwaysExcludeRamSearchListToolStripMenuItem});
 			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
 			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
 			this.optionsToolStripMenuItem.Text = "&Options";
@@ -713,12 +720,12 @@
 			this.previewModeToolStripMenuItem.Text = "Preview Mode";
 			this.previewModeToolStripMenuItem.Click += new System.EventHandler(this.previewModeToolStripMenuItem_Click);
 			// 
-			// alwaysExludeRamSearchListToolStripMenuItem
+			// alwaysExcludeRamSearchListToolStripMenuItem
 			// 
-			this.alwaysExludeRamSearchListToolStripMenuItem.Name = "alwaysExludeRamSearchListToolStripMenuItem";
-			this.alwaysExludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.alwaysExludeRamSearchListToolStripMenuItem.Text = "Always Exclude Ram Search List";
-			this.alwaysExludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExludeRamSearchListToolStripMenuItem_Click);
+			this.alwaysExcludeRamSearchListToolStripMenuItem.Name = "alwaysExcludeRamSearchListToolStripMenuItem";
+			this.alwaysExcludeRamSearchListToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.alwaysExcludeRamSearchListToolStripMenuItem.Text = "Always Exclude Ram Search List";
+			this.alwaysExcludeRamSearchListToolStripMenuItem.Click += new System.EventHandler(this.alwaysExcludeRamSearchListToolStripMenuItem_Click);
 			// 
 			// toolStrip1
 			// 
@@ -1189,22 +1196,15 @@
 			this.MemDomainLabel.TabIndex = 8;
 			this.MemDomainLabel.Text = "Main Memory";
 			// 
-			// OutputLabel
+			// MessageLabel
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MessageLabel.AutoSize = true;
 			this.MessageLabel.Location = new System.Drawing.Point(9, 434);
-			this.MessageLabel.Name = "OutputLabel";
+			this.MessageLabel.Name = "MessageLabel";
 			this.MessageLabel.Size = new System.Drawing.Size(85, 13);
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
-			// 
-			// viewInHexEditorToolStripMenuItem
-			// 
-			this.viewInHexEditorToolStripMenuItem.Name = "viewInHexEditorToolStripMenuItem";
-			this.viewInHexEditorToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-			this.viewInHexEditorToolStripMenuItem.Text = "View in Hex Editor";
-			this.viewInHexEditorToolStripMenuItem.Click += new System.EventHandler(this.viewInHexEditorToolStripMenuItem_Click);
 			// 
 			// RamSearch
 			// 
@@ -1334,8 +1334,8 @@
         private System.Windows.Forms.ToolStripMenuItem TruncateFromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton TruncateFromFiletoolStripButton2;
         private System.Windows.Forms.ToolStripButton ExcludeRamWatchtoolStripButton2;
-        private System.Windows.Forms.ToolStripMenuItem exludeRamWatchListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem alwaysExludeRamSearchListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem excludeRamWatchListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem alwaysExcludeRamSearchListToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton SetCurrToPrevtoolStripButton2;
         private System.Windows.Forms.ToolStripMenuItem copyValueToPrevToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
