@@ -258,7 +258,7 @@ namespace BizHawk.MultiClient
 		public int RamSearchHeight = -1;
 		public int RamSearchPreviousAs = 0;
 		public bool RamSearchPreviewMode = true;
-		public bool AlwaysExludeRamWatch = false;
+		public bool AlwaysExcludeRamWatch = false;
 		public int RamSearchAddressWidth = -1;
 		public int RamSearchValueWidth = -1;
 		public int RamSearchPrevWidth = -1;

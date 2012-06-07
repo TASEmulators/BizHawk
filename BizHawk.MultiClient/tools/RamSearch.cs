@@ -423,8 +423,8 @@ namespace BizHawk.MultiClient
 				}
 
 			}
-			if (Global.Config.AlwaysExludeRamWatch)
-				ExludeRamWatchList();
+			if (Global.Config.AlwaysExcludeRamWatch)
+				ExcludeRamWatchList();
 			MakePreviousList();
 			SetSpecificValueBoxMaxLength();
 			MessageLabel.Text = "New search started";
@@ -1420,7 +1420,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
-			alwaysExludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExludeRamWatch;
+			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
 		}
 
 		private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1657,7 +1657,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Removes Ram Watch list from the search list
 		/// </summary>
-		private void ExludeRamWatchList()
+		private void ExcludeRamWatchList()
 		{
 			DoTruncate(Global.MainForm.RamWatch1.GetRamWatchList());
 		}
@@ -1667,19 +1667,19 @@ namespace BizHawk.MultiClient
 			TruncateFromFile();
 		}
 
-		private void exludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
+		private void excludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ExludeRamWatchList();
+			ExcludeRamWatchList();
 		}
 
 		private void ExcludeRamWatchtoolStripButton2_Click(object sender, EventArgs e)
 		{
-			ExludeRamWatchList();
+			ExcludeRamWatchList();
 		}
 
-		private void alwaysExludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
+		private void alwaysExcludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AlwaysExludeRamWatch ^= true;
+			Global.Config.AlwaysExcludeRamWatch ^= true;
 		}
 
 		private void CopyValueToPrev()
