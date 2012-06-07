@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			byte[] ROM { get; set; }
 			byte[] VROM { get; set; }
 			void SyncState(Serializer ser);
+
+			//mixes the board's custom audio into the supplied sample buffer
+			void ApplyCustomAudio(short[] samples);
 		};
 
 
@@ -245,6 +248,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			}
 			protected void AssertBattery(bool has_bat) { Assert(Cart.wram_battery == has_bat); }
 
+			public virtual void ApplyCustomAudio(short[] samples) { }
 		}
 
 		//this will be used to track classes that implement boards
@@ -372,6 +376,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				cart.bad = true;
 			if (dict.ContainsKey("MMC3"))
 				cart.chips.Add(dict["MMC3"]);
+			if (dict.ContainsKey("PCB"))
+				cart.pcb = dict["PCB"];
 
 			return cart;
 		}
