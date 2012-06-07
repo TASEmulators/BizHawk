@@ -616,31 +616,10 @@ namespace BizHawk.MultiClient
 			}
 			if (column == 2)
 			{
-				if (searchList[index].signed == asigned.UNSIGNED)
-				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-						text = searchList[index].prev.ToString();
-					else
-						text = prevList[index].value.ToString();
-				}
-				else if (searchList[index].signed == asigned.SIGNED)
-				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-						text = ((sbyte)searchList[index].prev).ToString();
-					else
-						text = ((sbyte)prevList[index].value).ToString();
-				}
-				else if (searchList[index].signed == asigned.HEX)
-				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-					{
-						text = searchList[index].PrevToString();
-					}
-					else
-					{
-						text = prevList[index].ValueToString();
-					}
-				}
+				if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
+					text = searchList[index].PrevToString();
+				else
+					text = prevList[index].ValueToString();
 			}
 			if (column == 3)
 			{
@@ -914,7 +893,20 @@ namespace BizHawk.MultiClient
 				case asigned.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
 					if (!i) return -99999999;
-					return (int)Int64.Parse(SpecificValueBox.Text);
+					int real = (int)Int64.Parse(SpecificValueBox.Text);
+					switch (GetDataSize())
+					{
+						case atype.BYTE:
+							real = (int)(byte)real;
+							break;
+						case atype.WORD:
+							real = (int)(ushort)real;
+							break;
+						case atype.DWORD:
+							real = (int)(uint)real;
+							break;
+					}
+					return real;
 				case asigned.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
 					if (!i) return -99999999;
@@ -1100,6 +1092,10 @@ namespace BizHawk.MultiClient
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Watch specificValue = new Watch();
+			specificValue.value = GetSpecificValue();
+			specificValue.signed = asigned.SIGNED;
+			SpecificValueBox.Text = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
@@ -1110,6 +1106,10 @@ namespace BizHawk.MultiClient
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Watch specificValue = new Watch();
+			specificValue.value = GetSpecificValue();
+			specificValue.signed = asigned.UNSIGNED;
+			SpecificValueBox.Text = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
@@ -1120,6 +1120,10 @@ namespace BizHawk.MultiClient
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Watch specificValue = new Watch();
+			specificValue.value = GetSpecificValue();
+			specificValue.signed = asigned.HEX;
+			SpecificValueBox.Text = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
