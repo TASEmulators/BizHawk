@@ -137,7 +137,7 @@
 			this.LessThanRadio = new System.Windows.Forms.RadioButton();
 			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
-			this.OutputLabel = new System.Windows.Forms.Label();
+			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.viewInHexEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
@@ -1191,13 +1191,13 @@
 			// 
 			// OutputLabel
 			// 
-			this.OutputLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OutputLabel.AutoSize = true;
-			this.OutputLabel.Location = new System.Drawing.Point(9, 434);
-			this.OutputLabel.Name = "OutputLabel";
-			this.OutputLabel.Size = new System.Drawing.Size(85, 13);
-			this.OutputLabel.TabIndex = 9;
-			this.OutputLabel.Text = "                          ";
+			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.MessageLabel.AutoSize = true;
+			this.MessageLabel.Location = new System.Drawing.Point(9, 434);
+			this.MessageLabel.Name = "OutputLabel";
+			this.MessageLabel.Size = new System.Drawing.Size(85, 13);
+			this.MessageLabel.TabIndex = 9;
+			this.MessageLabel.Text = "                          ";
 			// 
 			// viewInHexEditorToolStripMenuItem
 			// 
@@ -1215,7 +1215,7 @@
 			this.Controls.Add(this.toolStrip2);
 			this.Controls.Add(this.SearchtoolStrip1);
 			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.OutputLabel);
+			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.ComparisonBox);
 			this.Controls.Add(this.AutoSearchCheckBox);
@@ -1307,7 +1307,7 @@
         private System.Windows.Forms.ToolStripMenuItem saveWindowPositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.Label MemDomainLabel;
-        private System.Windows.Forms.Label OutputLabel;
+        private System.Windows.Forms.Label MessageLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
