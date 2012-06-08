@@ -12,7 +12,6 @@ using System.Globalization;
 namespace BizHawk.MultiClient
 {
 	//TODO:
-	//Sorting by Prev only does "Since prev frame", find a way to integrate the various prev options
 	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
 	//Go To Address (Ctrl+G) feature
 	
@@ -748,9 +747,7 @@ namespace BizHawk.MultiClient
 				if (pos < prevList.Count)
 					return prevList[pos].value;
 				else
-				{
 					return 0;
-				}
 			}
 		}
 
@@ -1522,11 +1519,6 @@ namespace BizHawk.MultiClient
 		{
 			switch (Global.Config.RamSearchPreviousAs)
 			{
-				case 0: //Since last Search
-					sinceLastSearchToolStripMenuItem.Checked = true;
-					originalValueToolStripMenuItem.Checked = false;
-					sinceLastFrameToolStripMenuItem.Checked = false;
-					break;
 				case 1: //Original value (since Start new search)
 					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = true;
@@ -1537,7 +1529,8 @@ namespace BizHawk.MultiClient
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = true;
 					break;
-				default://Default to last search
+				case 0: //Since last Search
+				default:
 					sinceLastSearchToolStripMenuItem.Checked = true;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = false;
@@ -2013,7 +2006,10 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			searchList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			if (columnName == "Prev" && Global.Config.RamSearchPreviousAs != 2)
+				prevList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			else
+				searchList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();
