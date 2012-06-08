@@ -12,7 +12,6 @@ using System.Globalization;
 namespace BizHawk.MultiClient
 {
 	//TODO:
-	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
 	//Go To Address (Ctrl+G) feature
 	
 	/// <summary>
@@ -23,9 +22,11 @@ namespace BizHawk.MultiClient
 		string systemID = "NULL";
 		List<Watch> searchList = new List<Watch>();
 		List<Watch> undoList = new List<Watch>();
+		List<Watch> undoPrevList = new List<Watch>();
 		List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
 		List<Watch> prevList = new List<Watch>();
 		List<Watch> redoList = new List<Watch>();
+		List<Watch> redoPrevList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -526,8 +527,11 @@ namespace BizHawk.MultiClient
 		private void SaveUndo()
 		{
 			undoList.Clear();
+			undoPrevList.Clear();
 			for (int x = 0; x < searchList.Count; x++)
 				undoList.Add(new Watch(searchList[x]));
+			for (int x = 0; x < prevList.Count; x++)
+				undoPrevList.Add(new Watch(prevList[x]));
 			UndotoolStripButton.Enabled = true;
 		}
 
@@ -537,8 +541,9 @@ namespace BizHawk.MultiClient
 			{
 				MessageLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
 				redoList = new List<Watch>(searchList);
+				redoPrevList = new List<Watch>(prevList);
 				searchList = new List<Watch>(undoList);
-				prevList = new List<Watch>(undoList);
+				prevList = new List<Watch>(undoPrevList);
 				ClearUndo();
 				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
@@ -550,12 +555,14 @@ namespace BizHawk.MultiClient
 		private void ClearUndo()
 		{
 			undoList.Clear();
+			undoPrevList.Clear();
 			UndotoolStripButton.Enabled = false;
 		}
 
 		private void ClearRedo()
 		{
 			redoList.Clear();
+			redoPrevList.Clear();
 			RedotoolStripButton2.Enabled = false;
 		}
 
@@ -565,8 +572,9 @@ namespace BizHawk.MultiClient
 			{
 				MessageLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
 				undoList = new List<Watch>(searchList);
+				undoPrevList = new List<Watch>(prevList);
 				searchList = new List<Watch>(redoList);
-				prevList = new List<Watch>(redoList);
+				prevList = new List<Watch>(redoPrevList);
 				ClearRedo();
 				UndotoolStripButton.Enabled = true;
 				DisplaySearchList();
@@ -1084,12 +1092,16 @@ namespace BizHawk.MultiClient
 				searchList[x].signed = s;
 			for (int x = 0; x < undoList.Count; x++)
 				undoList[x].signed = s;
+			for (int x = 0; x < undoPrevList.Count; x++)
+				undoPrevList[x].signed = s;
 			for (int x = 0; x < weededList.Count; x++)
 				weededList[x].signed = s;
 			for (int x = 0; x < prevList.Count; x++)
 				prevList[x].signed = s;
 			for (int x = 0; x < redoList.Count; x++)
 				redoList[x].signed = s;
+			for (int x = 0; x < redoPrevList.Count; x++)
+				redoPrevList[x].signed = s;
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
