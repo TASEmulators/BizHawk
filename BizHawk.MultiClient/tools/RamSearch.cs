@@ -897,14 +897,11 @@ namespace BizHawk.MultiClient
 					switch (GetDataSize())
 					{
 						case atype.BYTE:
-							real = (int)(byte)real;
-							break;
+							return (int)(byte)real;
 						case atype.WORD:
-							real = (int)(ushort)real;
-							break;
+							return (int)(ushort)real;
 						case atype.DWORD:
-							real = (int)(uint)real;
-							break;
+							return (int)(uint)real;
 					}
 					return real;
 				case asigned.HEX:
@@ -1088,6 +1085,14 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < searchList.Count; x++)
 				searchList[x].signed = s;
+			for (int x = 0; x < undoList.Count; x++)
+				undoList[x].signed = s;
+			for (int x = 0; x < weededList.Count; x++)
+				weededList[x].signed = s;
+			for (int x = 0; x < prevList.Count; x++)
+				prevList[x].signed = s;
+			for (int x = 0; x < redoList.Count; x++)
+				redoList[x].signed = s;
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
