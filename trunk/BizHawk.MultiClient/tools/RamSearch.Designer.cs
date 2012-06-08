@@ -109,12 +109,12 @@
 			this.byteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bytesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dWordToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DataTypetoolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
 			this.unsignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.signedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.includeMisalignedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EndiantoolSplitButton = new System.Windows.Forms.ToolStripSplitButton();
 			this.bigEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.littleEndianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -833,9 +833,9 @@
             this.DataSizetoolStripSplitButton1,
             this.DataTypetoolStripSplitButton1,
             this.EndiantoolSplitButton});
-			this.toolStrip2.Location = new System.Drawing.Point(240, 83);
+			this.toolStrip2.Location = new System.Drawing.Point(209, 83);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(217, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(248, 25);
 			this.toolStrip2.TabIndex = 10;
 			this.toolStrip2.TabStop = true;
 			// 
@@ -845,7 +845,9 @@
 			this.DataSizetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.byteToolStripMenuItem,
             this.bytesToolStripMenuItem,
-            this.dWordToolStripMenuItem1});
+            this.dWordToolStripMenuItem1,
+            this.toolStripSeparator3,
+            this.includeMisalignedToolStripMenuItem});
 			this.DataSizetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataSizetoolStripSplitButton1.Image")));
 			this.DataSizetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.DataSizetoolStripSplitButton1.Name = "DataSizetoolStripSplitButton1";
@@ -857,61 +859,23 @@
 			this.byteToolStripMenuItem.Checked = true;
 			this.byteToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.byteToolStripMenuItem.Name = "byteToolStripMenuItem";
-			this.byteToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+			this.byteToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.byteToolStripMenuItem.Text = "1 Byte";
 			this.byteToolStripMenuItem.Click += new System.EventHandler(this.byteToolStripMenuItem_Click);
 			// 
 			// bytesToolStripMenuItem
 			// 
 			this.bytesToolStripMenuItem.Name = "bytesToolStripMenuItem";
-			this.bytesToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+			this.bytesToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.bytesToolStripMenuItem.Text = "2 Bytes";
 			this.bytesToolStripMenuItem.Click += new System.EventHandler(this.bytesToolStripMenuItem_Click);
 			// 
 			// dWordToolStripMenuItem1
 			// 
 			this.dWordToolStripMenuItem1.Name = "dWordToolStripMenuItem1";
-			this.dWordToolStripMenuItem1.Size = new System.Drawing.Size(111, 22);
+			this.dWordToolStripMenuItem1.Size = new System.Drawing.Size(179, 22);
 			this.dWordToolStripMenuItem1.Text = "4 Bytes";
 			this.dWordToolStripMenuItem1.Click += new System.EventHandler(this.dWordToolStripMenuItem1_Click);
-			// 
-			// DataTypetoolStripSplitButton1
-			// 
-			this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.unsignedToolStripMenuItem,
-            this.signedToolStripMenuItem,
-            this.hexadecimalToolStripMenuItem,
-            this.toolStripSeparator3,
-            this.includeMisalignedToolStripMenuItem});
-			this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
-			this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.DataTypetoolStripSplitButton1.Name = "DataTypetoolStripSplitButton1";
-			this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(76, 22);
-			this.DataTypetoolStripSplitButton1.Text = "Data Type";
-			// 
-			// unsignedToolStripMenuItem
-			// 
-			this.unsignedToolStripMenuItem.Checked = true;
-			this.unsignedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
-			this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.unsignedToolStripMenuItem.Text = "Unsigned";
-			this.unsignedToolStripMenuItem.Click += new System.EventHandler(this.unsignedToolStripMenuItem_Click);
-			// 
-			// signedToolStripMenuItem
-			// 
-			this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
-			this.signedToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.signedToolStripMenuItem.Text = "Signed";
-			this.signedToolStripMenuItem.Click += new System.EventHandler(this.signedToolStripMenuItem_Click);
-			// 
-			// hexadecimalToolStripMenuItem
-			// 
-			this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
-			this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
-			this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
-			this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
@@ -923,7 +887,43 @@
 			this.includeMisalignedToolStripMenuItem.Name = "includeMisalignedToolStripMenuItem";
 			this.includeMisalignedToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.includeMisalignedToolStripMenuItem.Text = "Include mis-aligned";
-			this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click);
+			this.includeMisalignedToolStripMenuItem.Click += new System.EventHandler(this.includeMisalignedToolStripMenuItem_Click_1);
+			// 
+			// DataTypetoolStripSplitButton1
+			// 
+			this.DataTypetoolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.DataTypetoolStripSplitButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.unsignedToolStripMenuItem,
+            this.signedToolStripMenuItem,
+            this.hexadecimalToolStripMenuItem});
+			this.DataTypetoolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("DataTypetoolStripSplitButton1.Image")));
+			this.DataTypetoolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.DataTypetoolStripSplitButton1.Name = "DataTypetoolStripSplitButton1";
+			this.DataTypetoolStripSplitButton1.Size = new System.Drawing.Size(76, 22);
+			this.DataTypetoolStripSplitButton1.Text = "Data Type";
+			// 
+			// unsignedToolStripMenuItem
+			// 
+			this.unsignedToolStripMenuItem.Checked = true;
+			this.unsignedToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.unsignedToolStripMenuItem.Name = "unsignedToolStripMenuItem";
+			this.unsignedToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.unsignedToolStripMenuItem.Text = "Unsigned";
+			this.unsignedToolStripMenuItem.Click += new System.EventHandler(this.unsignedToolStripMenuItem_Click);
+			// 
+			// signedToolStripMenuItem
+			// 
+			this.signedToolStripMenuItem.Name = "signedToolStripMenuItem";
+			this.signedToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.signedToolStripMenuItem.Text = "Signed";
+			this.signedToolStripMenuItem.Click += new System.EventHandler(this.signedToolStripMenuItem_Click);
+			// 
+			// hexadecimalToolStripMenuItem
+			// 
+			this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
+			this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
+			this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
 			// 
 			// EndiantoolSplitButton
 			// 
@@ -1314,9 +1314,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem autoLoadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem includeMisalignedToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem appendFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem1;
@@ -1362,5 +1360,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripMenuItem includeMisalignedToolStripMenuItem;
     }
 }

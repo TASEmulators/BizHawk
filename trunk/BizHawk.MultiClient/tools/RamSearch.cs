@@ -389,9 +389,6 @@ namespace BizHawk.MultiClient
 					case atype.DWORD:
 						divisor = 4;
 						break;
-					default:
-						divisor = 1;
-						break;
 				}
 			}
 
@@ -1086,7 +1083,7 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private void ConvertListDataType(asigned s)
+		private void ConvertListsDataType(asigned s)
 		{
 			for (int x = 0; x < searchList.Count; x++)
 				searchList[x].signed = s;
@@ -1102,6 +1099,9 @@ namespace BizHawk.MultiClient
 				redoList[x].signed = s;
 			for (int x = 0; x < redoPrevList.Count; x++)
 				redoPrevList[x].signed = s;
+			SetSpecificValueBoxMaxLength();
+			MessageLabel.Text = "Data type converted";
+			DisplaySearchList();
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1113,9 +1113,7 @@ namespace BizHawk.MultiClient
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
-			ConvertListDataType(asigned.SIGNED);
-			SetSpecificValueBoxMaxLength();
-			DisplaySearchList();
+			ConvertListsDataType(asigned.SIGNED);
 		}
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1127,9 +1125,7 @@ namespace BizHawk.MultiClient
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
-			ConvertListDataType(asigned.UNSIGNED);
-			SetSpecificValueBoxMaxLength();
-			DisplaySearchList();
+			ConvertListsDataType(asigned.UNSIGNED);
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1141,9 +1137,7 @@ namespace BizHawk.MultiClient
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
-			ConvertListDataType(asigned.HEX);
-			SetSpecificValueBoxMaxLength();
-			DisplaySearchList();
+			ConvertListsDataType(asigned.HEX);
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1221,7 +1215,6 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
-			SetSpecificValueBoxMaxLength();
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1229,7 +1222,6 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
-			SetSpecificValueBoxMaxLength();
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1237,7 +1229,6 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
-			SetSpecificValueBoxMaxLength();
 		}
 
 		private void SetLittleEndian()
@@ -2085,6 +2076,11 @@ namespace BizHawk.MultiClient
 				Global.MainForm.LoadHexEditor();
 				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
 			}
+		}
+
+		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			includeMisalignedToolStripMenuItem.Checked ^= true;
 		}
 	}
 }
