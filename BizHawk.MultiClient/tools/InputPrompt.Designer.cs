@@ -49,6 +49,7 @@
 			this.PromptBox.Name = "PromptBox";
 			this.PromptBox.Size = new System.Drawing.Size(164, 20);
 			this.PromptBox.TabIndex = 1;
+			this.PromptBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PromptBox_KeyPress);
 			// 
 			// OK
 			// 
@@ -77,7 +78,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(233, 106);
+			this.ClientSize = new System.Drawing.Size(235, 106);
 			this.Controls.Add(this.Cancel);
 			this.Controls.Add(this.OK);
 			this.Controls.Add(this.PromptBox);

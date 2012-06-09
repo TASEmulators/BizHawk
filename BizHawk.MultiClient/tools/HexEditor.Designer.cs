@@ -47,6 +47,7 @@
 			this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,11 +60,11 @@
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.incrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.decrementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.gotoAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
-			this.gotoAddressToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -120,6 +121,7 @@
             this.enToolStripMenuItem,
             this.toolStripSeparator2,
             this.goToAddressToolStripMenuItem,
+            this.findToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem1,
             this.freezeAddressToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem});
@@ -213,6 +215,14 @@
 			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
 			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
 			// 
+			// findToolStripMenuItem
+			// 
+			this.findToolStripMenuItem.Name = "findToolStripMenuItem";
+			this.findToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+			this.findToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+			this.findToolStripMenuItem.Text = "&Find...";
+			this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
+			// 
 			// settingsToolStripMenuItem
 			// 
 			this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -263,7 +273,7 @@
             this.toolStripSeparator5,
             this.gotoAddressToolStripMenuItem1});
 			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 170);
+			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(220, 148);
 			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
 			// 
 			// freezeToolStripMenuItem
@@ -314,6 +324,19 @@
 			this.decrementToolStripMenuItem.Text = "&Decrement";
 			this.decrementToolStripMenuItem.Click += new System.EventHandler(this.decrementToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
+			// 
+			// gotoAddressToolStripMenuItem1
+			// 
+			this.gotoAddressToolStripMenuItem1.Name = "gotoAddressToolStripMenuItem1";
+			this.gotoAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+G";
+			this.gotoAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
+			this.gotoAddressToolStripMenuItem1.Text = "&Go to Addres...";
+			this.gotoAddressToolStripMenuItem1.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem1_Click);
+			// 
 			// MemoryViewerBox
 			// 
 			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -356,19 +379,6 @@
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
-			// 
-			// gotoAddressToolStripMenuItem1
-			// 
-			this.gotoAddressToolStripMenuItem1.Name = "gotoAddressToolStripMenuItem1";
-			this.gotoAddressToolStripMenuItem1.ShortcutKeyDisplayString = "Ctrl+G";
-			this.gotoAddressToolStripMenuItem1.Size = new System.Drawing.Size(219, 22);
-			this.gotoAddressToolStripMenuItem1.Text = "&Go to Addres...";
-			this.gotoAddressToolStripMenuItem1.Click += new System.EventHandler(this.gotoAddressToolStripMenuItem1_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
 			// 
 			// HexEditor
 			// 
@@ -434,5 +444,6 @@
 		private System.Windows.Forms.ToolStripMenuItem decrementToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
     }
 }
