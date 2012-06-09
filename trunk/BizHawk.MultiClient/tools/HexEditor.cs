@@ -1264,5 +1264,46 @@ namespace BizHawk.MultiClient
 		{
 			GoToSpecifiedAddress();
 		}
+
+		private void findToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InputPrompt prompt = new InputPrompt();
+			prompt.SetMessage("Enter a set of hex values to search for");
+			prompt.SetCasing(CharacterCasing.Upper);
+			prompt.HexOnly = true;
+			prompt.ShowDialog();
+			if (prompt.UserOK)
+			{
+				int found = 0;
+
+				string search = prompt.UserText.Replace(" ", "").ToUpper();
+
+				int numByte = search.Length / 2;
+				for (int i = 0; i < (Domain.Size - numByte); i++)
+				{
+					StringBuilder ramblock = new StringBuilder();
+					for (int j = 0; j < numByte; j++)
+					{
+						ramblock.Append(String.Format("{0:X2}", (int)Domain.PeekByte(i + j)));
+					}
+					string block = ramblock.ToString().ToUpper();
+					if (search == block)
+					{
+						found = i;
+						break;
+					}
+				}
+
+				if (found > 0)
+				{
+					GoToAddress(found);
+					
+				}
+				else
+				{
+					MessageBox.Show("Could not find the values: " + search);
+				}
+			}
+		}
 	}
 }
