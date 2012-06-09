@@ -651,10 +651,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.RamSearchPreviewMode)
 			{
-				if (GenerateWeedOutList())
-				{
-					//OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
-				}
+				GenerateWeedOutList();
 			}
 		}
 
