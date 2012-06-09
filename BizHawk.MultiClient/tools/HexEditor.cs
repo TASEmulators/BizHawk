@@ -169,25 +169,39 @@ namespace BizHawk.MultiClient
 					return Domain.PeekByte(addr);
 				case 2:
 					if (BigEndian)
-						return MakeWordBig(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 8;
+						value |= Domain.PeekByte(addr + 1);
+						return value;
+					}
 					else
-						return MakeWordLittle(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr);
+						value |= Domain.PeekByte(addr + 1) << 8;
+						return value;
+					}
 				case 4:
 					if (BigEndian)
-						return (MakeWordBig(addr) << 16) + MakeWordBig(addr + 2);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 24;
+						value |= Domain.PeekByte(addr + 1) << 16;
+						value |= Domain.PeekByte(addr + 2) << 8;
+						value |= Domain.PeekByte(addr + 3) << 0;
+						return value;
+					}
 					else
-						return (MakeWordLittle(addr) << 16) + MakeWordLittle(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 0;
+						value |= Domain.PeekByte(addr + 1) << 8;
+						value |= Domain.PeekByte(addr + 2) << 16;
+						value |= Domain.PeekByte(addr + 3) << 24;
+						return value;
+					}
 			}
-		}
-
-		private int MakeWordBig(int addr)
-		{
-			return (Domain.PeekByte(addr) << 8) + Domain.PeekByte(addr + 1);
-		}
-
-		private int MakeWordLittle(int addr) 
-		{ 
-			return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) << 8);
 		}
 
 		public void Restart()
