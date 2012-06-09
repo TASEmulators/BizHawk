@@ -2193,20 +2193,7 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			string previous = "Last Frame";
-			switch (Global.Config.RamSearchPreviousAs)
-			{
-				case 0:
-					previous = "Last Search";
-					break;
-				case 1:
-					previous = "Original";
-					break;
-				case 3:
-					previous = "Last Change";
-					break;
-			}
-			searchList.Sort((x, y) => x.CompareTo(y, columnName, previous) * (sortReverse ? -1 : 1));
+			searchList.Sort((x, y) => x.CompareTo(y, columnName, (prevDef)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();
