@@ -90,6 +90,7 @@
 			this.sinceLastSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.originalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sinceLastFrameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.restoreOriginalWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowPositionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.previewModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -140,7 +141,6 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -278,9 +278,9 @@
 			// SearchListView
 			// 
 			this.SearchListView.AllowColumnReorder = true;
-			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.SearchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.SearchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Value,
@@ -467,8 +467,8 @@
 			// saveAsToolStripMenuItem
 			// 
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-						| System.Windows.Forms.Keys.S)));
+			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
 			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
@@ -700,6 +700,13 @@
 			this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
 			this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
+			// 
+			// sinceLastChangeToolStripMenuItem
+			// 
+			this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
+			this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
+			this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
 			// 
 			// restoreOriginalWindowSizeToolStripMenuItem
 			// 
@@ -1009,6 +1016,7 @@
 			// 
 			// SpecificValueBox
 			// 
+			this.SpecificValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.SpecificValueBox.Enabled = false;
 			this.SpecificValueBox.Location = new System.Drawing.Point(135, 38);
 			this.SpecificValueBox.MaxLength = 9;
@@ -1207,13 +1215,6 @@
 			this.MessageLabel.Size = new System.Drawing.Size(85, 13);
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
-			// 
-			// sinceLastChangeToolStripMenuItem
-			// 
-			this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
-			this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
-			this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
 			// 
 			// RamSearch
 			// 
