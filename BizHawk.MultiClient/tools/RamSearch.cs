@@ -22,11 +22,8 @@ namespace BizHawk.MultiClient
 		string systemID = "NULL";
 		List<Watch> searchList = new List<Watch>();
 		List<Watch> undoList = new List<Watch>();
-		List<Watch> undoPrevList = new List<Watch>();
 		List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
-		List<Watch> prevList = new List<Watch>();
 		List<Watch> redoList = new List<Watch>();
-		List<Watch> redoPrevList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		MemoryDomain Domain = new MemoryDomain("NULL", 1, Endian.Little, addr => 0, (a, v) => { });
@@ -401,6 +398,8 @@ namespace BizHawk.MultiClient
 				searchList[x].signed = GetDataType();
 				searchList[x].PeekAddress(Domain);
 				searchList[x].prev = searchList[x].value;
+				searchList[x].original = searchList[x].value;
+				searchList[x].lastsearch = searchList[x].value;
 				if (includeMisalignedToolStripMenuItem.Checked)
 					count++;
 				else
@@ -422,20 +421,11 @@ namespace BizHawk.MultiClient
 			}
 			if (Global.Config.AlwaysExcludeRamWatch)
 				ExcludeRamWatchList();
-			MakePreviousList();
 			SetSpecificValueBoxMaxLength();
 			MessageLabel.Text = "New search started";
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
-		}
-
-		private void MakePreviousList()
-		{
-			prevList = new List<Watch>();
-
-			for (int x = 0; x < searchList.Count; x++)
-				prevList.Add(new Watch(searchList[x]));
 		}
 
 		private void DisplaySearchList()
@@ -524,11 +514,8 @@ namespace BizHawk.MultiClient
 		private void SaveUndo()
 		{
 			undoList.Clear();
-			undoPrevList.Clear();
 			for (int x = 0; x < searchList.Count; x++)
 				undoList.Add(new Watch(searchList[x]));
-			for (int x = 0; x < prevList.Count; x++)
-				undoPrevList.Add(new Watch(prevList[x]));
 			UndotoolStripButton.Enabled = true;
 		}
 
@@ -538,9 +525,7 @@ namespace BizHawk.MultiClient
 			{
 				MessageLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
 				redoList = new List<Watch>(searchList);
-				redoPrevList = new List<Watch>(prevList);
 				searchList = new List<Watch>(undoList);
-				prevList = new List<Watch>(undoPrevList);
 				ClearUndo();
 				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
@@ -552,14 +537,12 @@ namespace BizHawk.MultiClient
 		private void ClearUndo()
 		{
 			undoList.Clear();
-			undoPrevList.Clear();
 			UndotoolStripButton.Enabled = false;
 		}
 
 		private void ClearRedo()
 		{
 			redoList.Clear();
-			redoPrevList.Clear();
 			RedotoolStripButton2.Enabled = false;
 		}
 
@@ -569,9 +552,7 @@ namespace BizHawk.MultiClient
 			{
 				MessageLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
 				undoList = new List<Watch>(searchList);
-				undoPrevList = new List<Watch>(prevList);
 				searchList = new List<Watch>(redoList);
-				prevList = new List<Watch>(redoPrevList);
 				ClearRedo();
 				UndotoolStripButton.Enabled = true;
 				DisplaySearchList();
@@ -620,10 +601,19 @@ namespace BizHawk.MultiClient
 			}
 			if (column == 2)
 			{
-				if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-					text = searchList[index].PrevToString();
-				else
-					text = prevList[index].ValueToString();
+				switch (Global.Config.RamSearchPreviousAs)
+				{
+					case 0:
+						text = searchList[index].LastSearchToString();
+						break;
+					case 1:
+						text = searchList[index].OriginalToString();
+						break;
+					default:
+					case 2:
+						text = searchList[index].PrevToString();
+						break;
+				}
 			}
 			if (column == 3)
 			{
@@ -675,7 +665,7 @@ namespace BizHawk.MultiClient
 				SaveUndo();
 				MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 				ReplaceSearchListWithWeedOutList();
-				if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+				UpdateLastSearch();
 				DisplaySearchList();
 			}
 			else
@@ -745,14 +735,15 @@ namespace BizHawk.MultiClient
 
 		private int GetPreviousValue(int pos)
 		{
-			if (Global.Config.RamSearchPreviousAs == 2) //If Previous frame
-				return searchList[pos].prev;
-			else
+			switch (Global.Config.RamSearchPreviousAs)
 			{
-				if (pos < prevList.Count)
-					return prevList[pos].value;
-				else
-					return 0;
+				case 0:
+					return searchList[pos].lastsearch;
+				case 1:
+					return searchList[pos].original;
+				default:
+				case 2:
+					return searchList[pos].prev;
 			}
 		}
 
@@ -1089,18 +1080,11 @@ namespace BizHawk.MultiClient
 				searchList[x].signed = s;
 			for (int x = 0; x < undoList.Count; x++)
 				undoList[x].signed = s;
-			for (int x = 0; x < undoPrevList.Count; x++)
-				undoPrevList[x].signed = s;
 			for (int x = 0; x < weededList.Count; x++)
 				weededList[x].signed = s;
-			for (int x = 0; x < prevList.Count; x++)
-				prevList[x].signed = s;
 			for (int x = 0; x < redoList.Count; x++)
 				redoList[x].signed = s;
-			for (int x = 0; x < redoPrevList.Count; x++)
-				redoPrevList[x].signed = s;
 			SetSpecificValueBoxMaxLength();
-			MessageLabel.Text = "Data type converted";
 			DisplaySearchList();
 		}
 
@@ -1506,16 +1490,19 @@ namespace BizHawk.MultiClient
 		private void sinceLastSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 0;
+			DisplaySearchList();
 		}
 
 		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 2;
+			DisplaySearchList();
 		}
 
 		private void originalValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 1;
+			DisplaySearchList();
 		}
 
 		private void definePreviousValueToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1643,7 +1630,7 @@ namespace BizHawk.MultiClient
 			SaveUndo();
 			MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 			ReplaceSearchListWithWeedOutList();
-			if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+			UpdateLastSearch();
 			DisplaySearchList();
 		}
 
@@ -1691,11 +1678,18 @@ namespace BizHawk.MultiClient
 		{
 			for (int x = 0; x < searchList.Count; x++)
 			{
-				prevList[x].value = searchList[x].value;
+				searchList[x].lastsearch = searchList[x].value;
+				searchList[x].original = searchList[x].value;
 				searchList[x].prev = searchList[x].value;
 			}
 			DisplaySearchList();
 			DoPreview();
+		}
+
+		private void UpdateLastSearch()
+		{
+			for (int x = 0; x < searchList.Count; x++)
+				searchList[x].lastsearch = searchList[x].value;
 		}
 
 		private void SetCurrToPrevtoolStripButton2_Click(object sender, EventArgs e)
@@ -2009,10 +2003,17 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			if (columnName == "Prev" && Global.Config.RamSearchPreviousAs != 2)
-				prevList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
-			else
-				searchList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			string previous = "Last Frame";
+			switch (Global.Config.RamSearchPreviousAs)
+			{
+				case 0:
+					previous = "Last Search";
+					break;
+				case 1:
+					previous = "Original";
+					break;
+			}
+			searchList.Sort((x, y) => x.CompareTo(y, columnName, previous) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();
