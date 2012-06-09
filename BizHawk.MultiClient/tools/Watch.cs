@@ -145,20 +145,40 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				return ((domain.PeekByte(addr) << 8) +
-					domain.PeekByte(addr + 1));
+				int val = 0;
+				val |= domain.PeekByte(addr) << 8;
+				val |= domain.PeekByte(addr + 1);
+				return val;
 			}
 			else
 			{
-				return ((domain.PeekByte(addr) +
-					domain.PeekByte(addr + 1) << 8));
+				int val = 0;
+				val |= domain.PeekByte(addr);
+				val |= domain.PeekByte(addr + 1) << 8;
+				return val;
 			}
 		}
 
-		private void PeekDWord(MemoryDomain domain)
+		private int PeekDWord(MemoryDomain domain, int addr)
 		{
-			value = ((PeekWord(domain, address) << 16) +
-				PeekWord(domain, address + 2));
+			if (bigendian)
+			{
+				int val = 0;
+				val |= domain.PeekByte(addr) << 24;
+				val |= domain.PeekByte(addr + 1) << 16;
+				val |= domain.PeekByte(addr + 2) << 8;
+				val |= domain.PeekByte(addr + 3) << 0;
+				return val;
+			}
+			else
+			{
+				int val = 0;
+				val |= domain.PeekByte(addr) << 0;
+				val |= domain.PeekByte(addr + 1) << 8;
+				val |= domain.PeekByte(addr + 2) << 16;
+				val |= domain.PeekByte(addr + 3) << 24;
+				return val;
+			}
 		}
 
 		public void PeekAddress(MemoryDomain domain)
@@ -177,7 +197,7 @@ namespace BizHawk.MultiClient
 					value = PeekWord(domain, address);
 					break;
 				case atype.DWORD:
-					PeekDWord(domain);
+					value = PeekDWord(domain,address);
 					break;
 			}
 
@@ -197,13 +217,13 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				domain.PokeByte(address, (byte)(value >> 8));
-				domain.PokeByte(address + 1, (byte)(value & 256));
+				domain.PokeByte(address + 0, (byte)(value >> 8));
+				domain.PokeByte(address + 1, (byte)(value));
 			}
 			else
 			{
+				domain.PokeByte(address + 0, (byte)(value));
 				domain.PokeByte(address + 1, (byte)(value >> 8));
-				domain.PokeByte(address, (byte)(value & 256));
 			}
 		}
 
@@ -211,17 +231,17 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				domain.PokeByte(address, (byte)(value << 6));
-				domain.PokeByte(address + 1, (byte)(value << 4));
-				domain.PokeByte(address + 2, (byte)(value << 2));
+				domain.PokeByte(address + 0, (byte)(value << 24));
+				domain.PokeByte(address + 1, (byte)(value << 16));
+				domain.PokeByte(address + 2, (byte)(value << 8));
 				domain.PokeByte(address + 3, (byte)(value));
 			}
 			else
 			{
-				domain.PokeByte(address + 1, (byte)(value << 6));
-				domain.PokeByte(address, (byte)(value << 4));
-				domain.PokeByte(address + 3, (byte)(value << 2));
-				domain.PokeByte(address + 2, (byte)(value));
+				domain.PokeByte(address + 0, (byte)(value));
+				domain.PokeByte(address + 1, (byte)(value << 8));
+				domain.PokeByte(address + 2, (byte)(value << 16));
+				domain.PokeByte(address + 3, (byte)(value << 24));
 			}
 		}
 
