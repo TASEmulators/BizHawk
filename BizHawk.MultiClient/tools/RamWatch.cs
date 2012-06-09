@@ -88,8 +88,7 @@ namespace BizHawk.MultiClient
 			WatchListView.BlazingFast = true;
 			WatchListView.Refresh();
 			WatchListView.BlazingFast = false;
-
-			
+			WatchCountLabel.Text = watchList.Count.ToString() + " watches";			
 		}
 
 		public void AddWatch(Watch w)
@@ -307,7 +306,6 @@ namespace BizHawk.MultiClient
 				}
 				changes = false;
 				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
-				WatchCountLabel.Text = watchList.Count.ToString() + " watches";
 				Global.Config.RecentWatches.Add(path);
 				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
 				return true;
