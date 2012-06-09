@@ -88,7 +88,8 @@ namespace BizHawk.MultiClient
 			WatchListView.BlazingFast = true;
 			WatchListView.Refresh();
 			WatchListView.BlazingFast = false;
-			WatchCountLabel.Text = watchList.Count.ToString() + " watches";			
+
+			
 		}
 
 		public void AddWatch(Watch w)
@@ -280,6 +281,7 @@ namespace BizHawk.MultiClient
 			{
 				watchList.Clear();
 				DisplayWatchList();
+				UpdateWatchCount();
 				currentFile = "";
 				changes = false;
 				MessageLabel.Text = "";
@@ -291,6 +293,20 @@ namespace BizHawk.MultiClient
 		private bool SaveWatchFile(string path)
 		{
 			return WatchCommon.SaveWchFile(path, Domain.Name, watchList);
+		}
+
+		private void UpdateWatchCount()
+		{
+			int count = 0;
+			foreach (Watch w in watchList)
+			{
+				if (!(w.type == atype.SEPARATOR))
+				{
+					count++;
+				}
+			}
+
+			WatchCountLabel.Text = count.ToString() + (count == 1 ? " watch" : " watches");
 		}
 
 		public bool LoadWatchFile(string path, bool append)
@@ -306,6 +322,7 @@ namespace BizHawk.MultiClient
 				}
 				changes = false;
 				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
+				UpdateWatchCount();
 				Global.Config.RecentWatches.Add(path);
 				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
 				return true;
@@ -339,6 +356,7 @@ namespace BizHawk.MultiClient
 				watchList.Add(r.watch);
 				Changes();
 				DisplayWatchList();
+				UpdateWatchCount();
 			}
 		}
 
@@ -387,6 +405,7 @@ namespace BizHawk.MultiClient
 				DisplayWatchList();
 			}
 			UpdateValues();
+			UpdateWatchCount();
 		}
 
 		void DuplicateWatch()
@@ -411,6 +430,7 @@ namespace BizHawk.MultiClient
 				}
 			}
 			UpdateValues();
+			UpdateWatchCount();
 		}
 
 		void MoveUp()
