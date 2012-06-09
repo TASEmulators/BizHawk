@@ -1091,25 +1091,12 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Watch specificValue = new Watch();
-			specificValue.value = GetSpecificValue();
-			specificValue.signed = asigned.SIGNED;
-			SpecificValueBox.Text = specificValue.ValueToString();
-			unsignedToolStripMenuItem.Checked = false;
-			signedToolStripMenuItem.Checked = true;
-			hexadecimalToolStripMenuItem.Checked = false;
-			ConvertListsDataType(asigned.SIGNED);
-			sortReverse = false;
-			sortedCol = "";
-		}
-
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Watch specificValue = new Watch();
 			specificValue.value = GetSpecificValue();
 			specificValue.signed = asigned.UNSIGNED;
+			specificValue.type = GetDataSize();
 			SpecificValueBox.Text = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
@@ -1119,11 +1106,27 @@ namespace BizHawk.MultiClient
 			sortedCol = "";
 		}
 
+		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Watch specificValue = new Watch();
+			specificValue.value = GetSpecificValue();
+			specificValue.signed = asigned.SIGNED;
+			specificValue.type = GetDataSize();
+			SpecificValueBox.Text = specificValue.ValueToString();
+			unsignedToolStripMenuItem.Checked = false;
+			signedToolStripMenuItem.Checked = true;
+			hexadecimalToolStripMenuItem.Checked = false;
+			ConvertListsDataType(asigned.SIGNED);
+			sortReverse = false;
+			sortedCol = "";
+		}
+
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Watch specificValue = new Watch();
 			specificValue.value = GetSpecificValue();
 			specificValue.signed = asigned.HEX;
+			specificValue.type = GetDataSize();
 			SpecificValueBox.Text = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
