@@ -141,46 +141,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private int PeekWord(MemoryDomain domain, int addr)
-		{
-			if (bigendian)
-			{
-				int val = 0;
-				val |= domain.PeekByte(addr) << 8;
-				val |= domain.PeekByte(addr + 1);
-				return val;
-			}
-			else
-			{
-				int val = 0;
-				val |= domain.PeekByte(addr);
-				val |= domain.PeekByte(addr + 1) << 8;
-				return val;
-			}
-		}
-
-		private int PeekDWord(MemoryDomain domain, int addr)
-		{
-			if (bigendian)
-			{
-				int val = 0;
-				val |= domain.PeekByte(addr) << 24;
-				val |= domain.PeekByte(addr + 1) << 16;
-				val |= domain.PeekByte(addr + 2) << 8;
-				val |= domain.PeekByte(addr + 3) << 0;
-				return val;
-			}
-			else
-			{
-				int val = 0;
-				val |= domain.PeekByte(addr) << 0;
-				val |= domain.PeekByte(addr + 1) << 8;
-				val |= domain.PeekByte(addr + 2) << 16;
-				val |= domain.PeekByte(addr + 3) << 24;
-				return val;
-			}
-		}
-
 		public void PeekAddress(MemoryDomain domain)
 		{
 			if (type == atype.SEPARATOR)
@@ -194,10 +154,36 @@ namespace BizHawk.MultiClient
 					value = domain.PeekByte(address);
 					break;
 				case atype.WORD:
-					value = PeekWord(domain, address);
+					if (bigendian)
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 8;
+						value |= domain.PeekByte(address + 1);
+					}
+					else
+					{
+						value = 0;
+						value |= domain.PeekByte(address);
+						value |= domain.PeekByte(address + 1) << 8;
+					}
 					break;
 				case atype.DWORD:
-					value = PeekDWord(domain,address);
+					if (bigendian)
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 24;
+						value |= domain.PeekByte(address + 1) << 16;
+						value |= domain.PeekByte(address + 2) << 8;
+						value |= domain.PeekByte(address + 3) << 0;
+					}
+					else
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 0;
+						value |= domain.PeekByte(address + 1) << 8;
+						value |= domain.PeekByte(address + 2) << 16;
+						value |= domain.PeekByte(address + 3) << 24;
+					}
 					break;
 			}
 
