@@ -1271,15 +1271,40 @@ namespace BizHawk.MultiClient
 			prompt.SetMessage("Enter a set of hex values to search for");
 			prompt.SetCasing(CharacterCasing.Upper);
 			prompt.HexOnly = true;
+			if (addressHighlighted > 0)
+			{
+				string initial = String.Format(DigitFormatString, (int)MakeValue(addressHighlighted));
+				initial = initial.Trim();
+				prompt.SetInitialValue(initial);
+			}
 			prompt.ShowDialog();
+
+			
 			if (prompt.UserOK)
 			{
 				int found = 0;
 
 				string search = prompt.UserText.Replace(" ", "").ToUpper();
+				if (search.Length == 0)
+					return;
 
 				int numByte = search.Length / 2;
-				for (int i = 0; i < (Domain.Size - numByte); i++)
+				
+				int startByte = 0;
+				if (addressHighlighted == -1)
+				{
+					startByte = 0;
+				}
+				else if (addressHighlighted >= (Domain.Size - 1 - numByte))
+				{
+					startByte = 0;
+				}
+				else
+				{
+					startByte = addressHighlighted + DataSize;
+				}
+
+				for (int i = startByte; i < (Domain.Size - numByte); i++)
 				{
 					StringBuilder ramblock = new StringBuilder();
 					for (int j = 0; j < numByte; j++)
