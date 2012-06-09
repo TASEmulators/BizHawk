@@ -757,43 +757,97 @@ namespace BizHawk.MultiClient
 				case SOperator.LESS:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value < GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATER:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value > GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value <= GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value >= GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.EQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value != GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.DIFFBY:
@@ -801,66 +855,129 @@ namespace BizHawk.MultiClient
 					if (diff < 0) return false;
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == GetPreviousValue(x) + diff || searchList[x].value == GetPreviousValue(x) - diff)
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) - diff)
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) - diff)
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 			}
 			return true;
 		}
 
-		private bool DoSpecificValue()
+		private void ValidateSpecificValue(int? value)
 		{
-			int value = GetSpecificValue();
-			if (value < -99999999)
+			if (value == null)
 			{
 				MessageBox.Show("Missing or invalid value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				SpecificValueBox.Text = "0";
 				SpecificValueBox.Focus();
 				SpecificValueBox.SelectAll();
-				return false;
 			}
+		}
+		private bool DoSpecificValue()
+		{
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			if (value == null)
+				return false;
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value < value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATER:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value > value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value <= value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value >= value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.EQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value != value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.DIFFBY:
@@ -868,15 +985,23 @@ namespace BizHawk.MultiClient
 					if (diff < 0) return false;
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == value + diff || searchList[x].value == value - diff)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) - diff)
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) - diff)
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 			}
 			return true;
 		}
 
-		private int GetSpecificValue()
+		private int? GetSpecificValue()
 		{
 			if (SpecificValueBox.Text == "" || SpecificValueBox.Text == "-") return 0;
 			bool i = false;
@@ -884,11 +1009,13 @@ namespace BizHawk.MultiClient
 			{
 				case asigned.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
+					if (!i)
+						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
 				case asigned.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
+					if (!i)
+						return null;
 					int value = (int)Int64.Parse(SpecificValueBox.Text);
 					switch (GetDataSize())
 					{
@@ -902,10 +1029,11 @@ namespace BizHawk.MultiClient
 					return value;
 				case asigned.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
+					if (!i)
+						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
 			}
-			return -99999999; //What are the odds someone wants to search for this value?
+			return null;
 		}
 
 		private int GetSpecificAddress()
@@ -1094,13 +1222,16 @@ namespace BizHawk.MultiClient
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Watch specificValue = new Watch();
-			specificValue.value = GetSpecificValue();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
 			specificValue.signed = asigned.UNSIGNED;
 			specificValue.type = GetDataSize();
-			SpecificValueBox.Text = specificValue.ValueToString();
+			string converted = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
+			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.UNSIGNED);
 			sortReverse = false;
 			sortedCol = "";
@@ -1109,13 +1240,16 @@ namespace BizHawk.MultiClient
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Watch specificValue = new Watch();
-			specificValue.value = GetSpecificValue();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
 			specificValue.signed = asigned.SIGNED;
 			specificValue.type = GetDataSize();
-			SpecificValueBox.Text = specificValue.ValueToString();
+			string converted = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
+			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.SIGNED);
 			sortReverse = false;
 			sortedCol = "";
@@ -1124,13 +1258,16 @@ namespace BizHawk.MultiClient
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Watch specificValue = new Watch();
-			specificValue.value = GetSpecificValue();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
 			specificValue.signed = asigned.HEX;
 			specificValue.type = GetDataSize();
-			SpecificValueBox.Text = specificValue.ValueToString();
+			string converted = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
+			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.HEX);
 			sortReverse = false;
 			sortedCol = "";
