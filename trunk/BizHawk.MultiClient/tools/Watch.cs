@@ -23,6 +23,9 @@ namespace BizHawk.MultiClient
 			notes = "";
 			changecount = 0;
 			prev = 0;
+			original = 0;
+			lastchange = 0;
+			lastsearch = 0;
 		}
 
 		public Watch(Watch w)
@@ -35,6 +38,9 @@ namespace BizHawk.MultiClient
 			notes = w.notes;
 			changecount = w.changecount;
 			prev = w.prev;
+			original = w.original;
+			lastchange = w.lastchange;
+			lastsearch = w.lastsearch;
 		}
 
 		public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
@@ -47,10 +53,16 @@ namespace BizHawk.MultiClient
 			notes = Notes;
 			changecount = 0;
 			prev = 0;
+			original = value;
+			lastchange = 0;
+			lastsearch = value;
 		}
 		public int address { get; set; }
 		public int value { get; set; }         //Current value
 		public int prev { get; set; }
+		public int original { get; set; }
+		public int lastchange { get; set; }
+		public int lastsearch { get; set; }
 		public atype type { get; set; }        //Address type (byte, word, dword, etc
 		public asigned signed { get; set; }    //Signed/Unsigned?
 		public bool bigendian { get; set; }
@@ -177,7 +189,10 @@ namespace BizHawk.MultiClient
 			}
 
 			if (value != prev)
+			{
+				lastchange = prev;
 				changecount++;
+			}
 		}
 
 		private void PokeByte(MemoryDomain domain)
@@ -243,82 +258,79 @@ namespace BizHawk.MultiClient
 
 			StringBuilder str = new StringBuilder(notes);
 			str.Append(": ");
-			str.Append(ValueToString());
+			str.Append(ValToString(value));
 			return str.ToString();
+		}
+
+		public string ValToString(int val)
+		{
+			if (type == atype.SEPARATOR)
+				return "";
+			else
+			{
+				switch (signed)
+				{
+					case asigned.HEX:
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return String.Format("{0:X2}", val);
+							case atype.WORD:
+								return String.Format("{0:X4}", val);
+							case atype.DWORD:
+								return String.Format("{0:X8}", val);
+						}
+					case asigned.SIGNED:
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return ((sbyte)val).ToString();
+							case atype.WORD:
+								return ((short)val).ToString();
+							case atype.DWORD:
+								return ((int)val).ToString();
+						}
+					default:
+					case asigned.UNSIGNED:
+						switch (type)
+						{
+							default:
+							case atype.BYTE:
+								return ((byte)val).ToString();
+							case atype.WORD:
+								return ((ushort)val).ToString();
+							case atype.DWORD:
+								return ((uint)val).ToString();
+						}
+				}
+			}
 		}
 
 		public string ValueToString()
 		{
-			if (type == atype.SEPARATOR)
-				return "";
-			else
-			{
-				switch (signed)
-				{
-					case asigned.HEX:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return String.Format("{0:X2}", value);
-							case atype.WORD:
-								return String.Format("{0:X4}", value);
-							case atype.DWORD:
-								return String.Format("{0:X8}", value);
-						}
-					case asigned.SIGNED:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return ((sbyte)value).ToString();
-							case atype.WORD:
-								return ((short)value).ToString();
-							case atype.DWORD:
-								return ((int)value).ToString();
-						}
-					default:
-					case asigned.UNSIGNED:
-					switch (type)
-					{
-						default:
-							case atype.BYTE:
-								return ((byte)value).ToString();
-							case atype.WORD:
-								return ((ushort)value).ToString();
-							case atype.DWORD:
-								return ((uint)value).ToString();
-					}
-				}
-			}
+			return ValToString(value);
 		}
 
 		public string PrevToString()
 		{
-			if (type == atype.SEPARATOR)
-				return "";
-			else
-			{
-				switch (signed)
-				{
-					case asigned.HEX:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return String.Format("{0:X2}", prev);
-							case atype.WORD:
-								return String.Format("{0:X4}", prev);
-							case atype.DWORD:
-								return String.Format("{0:X8}", prev);
-						}
-					case asigned.SIGNED:
-						return ((sbyte)prev).ToString();
-					default:
-					case asigned.UNSIGNED:
-						return prev.ToString();
-				}
-			}
+			return ValToString(prev);
+		}
+
+		public string OriginalToString()
+		{
+			return ValToString(original);
+		}
+
+		public string LastChangeToString()
+		{
+			return ValToString(lastchange);
+		}
+
+		public string LastSearchToString()
+		{
+			return ValToString(lastsearch);
 		}
 
 		private int CompareAddress(Watch Other)
@@ -351,6 +363,36 @@ namespace BizHawk.MultiClient
 				return 0;
 		}
 
+		private int CompareOriginal(Watch Other)
+		{
+			if (this.original < Other.original)
+				return -1;
+			else if (this.original > Other.original)
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareLastChange(Watch Other)
+		{
+			if (this.lastchange < Other.lastchange)
+				return -1;
+			else if (this.lastchange > Other.lastchange)
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareLastSearch(Watch Other)
+		{
+			if (this.lastsearch < Other.lastsearch)
+				return -1;
+			else if (this.lastsearch > Other.lastsearch)
+				return 1;
+			else
+				return 0;
+		}
+
 		private int CompareChanges(Watch Other)
 		{
 			if (this.changecount < Other.changecount)
@@ -373,7 +415,7 @@ namespace BizHawk.MultiClient
 				return this.notes.CompareTo(Other.notes);
 		}
 
-		public int CompareTo(Watch Other, string parameter)
+		public int CompareTo(Watch Other, string parameter, string previous)
 		{
 			int compare = 0;
 			if (parameter == "Address")
@@ -387,7 +429,19 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							switch (previous)
+							{
+								case "Last Search":
+									compare = CompareLastSearch(Other);
+									break;
+								case "Original":
+									compare = CompareOriginal(Other);
+									break;
+								case "Last Frame":
+								default:
+									compare = ComparePrev(Other);
+									break;
+							}
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -406,7 +460,19 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							switch (previous)
+							{
+								case "Last Search":
+									compare = CompareLastSearch(Other);
+									break;
+								case "Original":
+									compare = CompareOriginal(Other);
+									break;
+								case "Last Frame":
+								default:
+									compare = ComparePrev(Other);
+									break;
+							}
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -416,7 +482,19 @@ namespace BizHawk.MultiClient
 
 			else if (parameter == "Prev")
 			{
-				compare = ComparePrev(Other);
+				switch (previous)
+				{
+					case "Last Search":
+						compare = CompareLastSearch(Other);
+						break;
+					case "Original":
+						compare = CompareOriginal(Other);
+						break;
+					case "Last Frame":
+					default:
+						compare = ComparePrev(Other);
+						break;
+				}
 				if (compare == 0)
 				{
 					compare = CompareAddress(Other);
@@ -444,7 +522,19 @@ namespace BizHawk.MultiClient
 						compare = CompareValue(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							switch (previous)
+							{
+								case "Last Search":
+									compare = CompareLastSearch(Other);
+									break;
+								case "Original":
+									compare = CompareOriginal(Other);
+									break;
+								case "Last Frame":
+								default:
+									compare = ComparePrev(Other);
+									break;
+							}
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -465,7 +555,19 @@ namespace BizHawk.MultiClient
 						{
 							compare = CompareChanges(Other);
 							if (compare == 0)
-								compare = ComparePrev(Other);
+								switch (previous)
+								{
+									case "Last Search":
+										compare = CompareLastSearch(Other);
+										break;
+									case "Original":
+										compare = CompareOriginal(Other);
+										break;
+									case "Last Frame":
+									default:
+										compare = ComparePrev(Other);
+										break;
+								}
 						}
 					}
 				}
