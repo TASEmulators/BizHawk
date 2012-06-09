@@ -244,27 +244,26 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public int IntegerVal(int val)
+		public uint UnsignedVal(int val)
 		{
-			if (signed == asigned.SIGNED)
-				switch (type)
-				{
-					case atype.BYTE:
-						return (int)(sbyte)val;
-					case atype.WORD:
-						return (int)(short)val;
-					default:
-					case atype.DWORD:
-						return val;
-				}
 			switch (type)
 			{
 				case atype.BYTE:
-					return (int)(byte)val;
+					return (uint)(byte)val;
 				case atype.WORD:
-					return (int)(ushort)val;
-				case atype.DWORD:
-					return (int)(uint)val;
+					return (uint)(ushort)val;
+			}
+			return (uint)val;
+		}
+
+		public int SignedVal(int val)
+		{
+			switch (type)
+			{
+				case atype.BYTE:
+					return (int)(sbyte)val;
+				case atype.WORD:
+					return (int)(short)val;
 			}
 			return val;
 		}
@@ -288,6 +287,11 @@ namespace BizHawk.MultiClient
 			{
 				switch (signed)
 				{
+					default:
+					case asigned.UNSIGNED:
+						return UnsignedVal(val).ToString();
+					case asigned.SIGNED:
+						return SignedVal(val).ToString();
 					case asigned.HEX:
 						switch (type)
 						{
@@ -299,10 +303,6 @@ namespace BizHawk.MultiClient
 							case atype.DWORD:
 								return String.Format("{0:X8}", val);
 						}
-					default:
-					case asigned.SIGNED:
-					case asigned.UNSIGNED:
-						return IntegerVal(val).ToString();
 				}
 			}
 		}
@@ -344,9 +344,18 @@ namespace BizHawk.MultiClient
 
 		private int CompareValue(Watch Other)
 		{
-			if (IntegerVal(this.value) < IntegerVal(Other.value))
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.value) < SignedVal(Other.value))
+					return -1;
+				else if (SignedVal(this.value) > SignedVal(Other.value))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.value) < UnsignedVal(Other.value))
 				return -1;
-			else if (IntegerVal(this.value) > IntegerVal(Other.value))
+			else if (UnsignedVal(this.value) > UnsignedVal(Other.value))
 				return 1;
 			else
 				return 0;
@@ -354,9 +363,18 @@ namespace BizHawk.MultiClient
 
 		private int ComparePrev(Watch Other)
 		{
-			if (IntegerVal(this.prev) < IntegerVal(Other.prev))
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.prev) < SignedVal(Other.prev))
+					return -1;
+				else if (SignedVal(this.prev) > SignedVal(Other.prev))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.prev) < UnsignedVal(Other.prev))
 				return -1;
-			else if (IntegerVal(this.prev) > IntegerVal(Other.prev))
+			else if (UnsignedVal(this.prev) > UnsignedVal(Other.prev))
 				return 1;
 			else
 				return 0;
@@ -364,9 +382,18 @@ namespace BizHawk.MultiClient
 
 		private int CompareOriginal(Watch Other)
 		{
-			if (IntegerVal(this.original) < IntegerVal(Other.original))
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.original) < SignedVal(Other.original))
+					return -1;
+				else if (SignedVal(this.original) > SignedVal(Other.original))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.original) < UnsignedVal(Other.original))
 				return -1;
-			else if (this.original > Other.original)
+			else if (UnsignedVal(this.original) > UnsignedVal(Other.original))
 				return 1;
 			else
 				return 0;
@@ -374,9 +401,18 @@ namespace BizHawk.MultiClient
 
 		private int CompareLastChange(Watch Other)
 		{
-			if (IntegerVal(this.lastchange) < IntegerVal(Other.lastchange))
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.lastchange) < SignedVal(Other.lastchange))
+					return -1;
+				else if (SignedVal(this.lastchange) > SignedVal(Other.lastchange))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.lastchange) < UnsignedVal(Other.lastchange))
 				return -1;
-			else if (this.lastchange > Other.lastchange)
+			else if (UnsignedVal(this.lastchange) > UnsignedVal(Other.lastchange))
 				return 1;
 			else
 				return 0;
@@ -384,9 +420,18 @@ namespace BizHawk.MultiClient
 
 		private int CompareLastSearch(Watch Other)
 		{
-			if (IntegerVal(this.lastsearch) < IntegerVal(Other.lastsearch))
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.lastsearch) < SignedVal(Other.lastsearch))
+					return -1;
+				else if (SignedVal(this.lastsearch) > SignedVal(Other.lastsearch))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.lastsearch) < UnsignedVal(Other.lastsearch))
 				return -1;
-			else if (this.lastsearch > Other.lastsearch)
+			else if (UnsignedVal(this.lastsearch) > UnsignedVal(Other.lastsearch))
 				return 1;
 			else
 				return 0;
