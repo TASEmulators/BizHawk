@@ -32,6 +32,11 @@ namespace BizHawk.MultiClient
 			PromptBox.CharacterCasing = casing;
 		}
 
+		public void SetInitialValue(string value)
+		{
+			PromptBox.Text = value;
+		}
+
 		private void InputPrompt_Load(object sender, EventArgs e)
 		{
 
