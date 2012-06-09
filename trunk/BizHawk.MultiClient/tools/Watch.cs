@@ -7,6 +7,7 @@ namespace BizHawk.MultiClient
 {
 	public enum atype { BYTE, WORD, DWORD, SEPARATOR };   //TODO: more custom types too like 12.4 and 24.12 fixed point
 	public enum asigned { SIGNED, UNSIGNED, HEX };
+	public enum prevDef { LASTSEARCH, ORIGINAL, LASTFRAME, LASTCHANGE };
 
 	/// <summary>
 	/// An object that represent a ram address and related properties
@@ -338,18 +339,18 @@ namespace BizHawk.MultiClient
 			return ValToString(lastsearch);
 		}
 
-		private int ComparePrevious(Watch Other, string previous)
+		private int ComparePrevious(Watch Other, prevDef previous)
 		{
 			switch (previous)
 			{
-				case "Last Search":
+				case prevDef.LASTSEARCH:
 					return CompareLastSearch(Other);
-				case "Original":
+				case prevDef.ORIGINAL:
 					return CompareOriginal(Other);
 				default:
-				case "Last Frame":
+				case prevDef.LASTFRAME:
 					return ComparePrev(Other);
-				case "Last Change":
+				case prevDef.LASTCHANGE:
 					return CompareLastChange(Other);
 			}
 		}
@@ -481,7 +482,7 @@ namespace BizHawk.MultiClient
 				return this.notes.CompareTo(Other.notes);
 		}
 
-		public int CompareTo(Watch Other, string parameter, string previous)
+		public int CompareTo(Watch Other, string parameter, prevDef previous)
 		{
 			int compare = 0;
 			if (parameter == "Address")
