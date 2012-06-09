@@ -399,6 +399,7 @@ namespace BizHawk.MultiClient
 				searchList[x].PeekAddress(Domain);
 				searchList[x].prev = searchList[x].value;
 				searchList[x].original = searchList[x].value;
+				searchList[x].lastchange = searchList[x].value;
 				searchList[x].lastsearch = searchList[x].value;
 				if (includeMisalignedToolStripMenuItem.Checked)
 					count++;
@@ -613,6 +614,9 @@ namespace BizHawk.MultiClient
 					case 2:
 						text = searchList[index].PrevToString();
 						break;
+					case 3:
+						text = searchList[index].LastChangeToString();
+						break;
 				}
 			}
 			if (column == 3)
@@ -741,6 +745,8 @@ namespace BizHawk.MultiClient
 				default:
 				case 2:
 					return searchList[pos].prev;
+				case 3:
+					return searchList[pos].lastchange;
 			}
 		}
 
@@ -883,17 +889,17 @@ namespace BizHawk.MultiClient
 				case asigned.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
 					if (!i) return -99999999;
-					int real = (int)Int64.Parse(SpecificValueBox.Text);
+					int value = (int)Int64.Parse(SpecificValueBox.Text);
 					switch (GetDataSize())
 					{
 						case atype.BYTE:
-							return (int)(byte)real;
+							return (int)(byte)value;
 						case atype.WORD:
-							return (int)(ushort)real;
+							return (int)(ushort)value;
 						case atype.DWORD:
-							return (int)(uint)real;
+							return (int)(uint)value;
 					}
-					return real;
+					return value;
 				case asigned.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
 					if (!i) return -99999999;
@@ -1095,6 +1101,8 @@ namespace BizHawk.MultiClient
 			signedToolStripMenuItem.Checked = true;
 			hexadecimalToolStripMenuItem.Checked = false;
 			ConvertListsDataType(asigned.SIGNED);
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1107,6 +1115,8 @@ namespace BizHawk.MultiClient
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
 			ConvertListsDataType(asigned.UNSIGNED);
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1119,6 +1129,8 @@ namespace BizHawk.MultiClient
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
 			ConvertListsDataType(asigned.HEX);
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1196,6 +1208,8 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1203,6 +1217,8 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1210,18 +1226,31 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
+			sortReverse = false;
+			sortedCol = "";
+		}
+
+		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			includeMisalignedToolStripMenuItem.Checked ^= true;
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void SetLittleEndian()
 		{
 			bigEndianToolStripMenuItem.Checked = false;
 			littleEndianToolStripMenuItem.Checked = true;
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void SetBigEndian()
 		{
 			bigEndianToolStripMenuItem.Checked = true;
 			littleEndianToolStripMenuItem.Checked = false;
+			sortReverse = false;
+			sortedCol = "";
 		}
 
 		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1487,18 +1516,32 @@ namespace BizHawk.MultiClient
 		private void sinceLastSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 0;
-			DisplaySearchList();
-		}
-
-		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 2;
+			sortReverse = false;
+			sortedCol = "";
 			DisplaySearchList();
 		}
 
 		private void originalValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 1;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
+		}
+
+		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviousAs = 2;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
+		}
+
+		private void sinceLastChangeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviousAs = 3;
+			sortReverse = false;
+			sortedCol = "";
 			DisplaySearchList();
 		}
 
@@ -1506,21 +1549,30 @@ namespace BizHawk.MultiClient
 		{
 			switch (Global.Config.RamSearchPreviousAs)
 			{
+				case 0: //Since last Search
+					sinceLastSearchToolStripMenuItem.Checked = true;
+					originalValueToolStripMenuItem.Checked = false;
+					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = false;
+					break;
 				case 1: //Original value (since Start new search)
 					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = true;
 					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = false;
 					break;
+				default:
 				case 2: //Since last Frame
 					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = true;
+					sinceLastChangeToolStripMenuItem.Checked = false;
 					break;
-				case 0: //Since last Search
-				default:
-					sinceLastSearchToolStripMenuItem.Checked = true;
+				case 3: //Since last Change
+					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = true;
 					break;
 			}
 		}
@@ -1678,6 +1730,7 @@ namespace BizHawk.MultiClient
 				searchList[x].lastsearch = searchList[x].value;
 				searchList[x].original = searchList[x].value;
 				searchList[x].prev = searchList[x].value;
+				searchList[x].lastchange = searchList[x].value;
 			}
 			DisplaySearchList();
 			DoPreview();
@@ -2009,6 +2062,9 @@ namespace BizHawk.MultiClient
 				case 1:
 					previous = "Original";
 					break;
+				case 3:
+					previous = "Last Change";
+					break;
 			}
 			searchList.Sort((x, y) => x.CompareTo(y, columnName, previous) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
@@ -2074,11 +2130,6 @@ namespace BizHawk.MultiClient
 				Global.MainForm.LoadHexEditor();
 				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
 			}
-		}
-
-		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
-		{
-			includeMisalignedToolStripMenuItem.Checked ^= true;
 		}
 	}
 }

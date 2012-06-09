@@ -140,6 +140,7 @@
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.sinceLastChangeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SearchtoolStrip1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -672,7 +673,8 @@
 			this.definePreviousValueToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.sinceLastSearchToolStripMenuItem,
             this.originalValueToolStripMenuItem,
-            this.sinceLastFrameToolStripMenuItem});
+            this.sinceLastFrameToolStripMenuItem,
+            this.sinceLastChangeToolStripMenuItem});
 			this.definePreviousValueToolStripMenuItem.Name = "definePreviousValueToolStripMenuItem";
 			this.definePreviousValueToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.definePreviousValueToolStripMenuItem.Text = "Define Previous Value As";
@@ -681,21 +683,21 @@
 			// sinceLastSearchToolStripMenuItem
 			// 
 			this.sinceLastSearchToolStripMenuItem.Name = "sinceLastSearchToolStripMenuItem";
-			this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.sinceLastSearchToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.sinceLastSearchToolStripMenuItem.Text = "Since last Search";
 			this.sinceLastSearchToolStripMenuItem.Click += new System.EventHandler(this.sinceLastSearchToolStripMenuItem_Click);
 			// 
 			// originalValueToolStripMenuItem
 			// 
 			this.originalValueToolStripMenuItem.Name = "originalValueToolStripMenuItem";
-			this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.originalValueToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.originalValueToolStripMenuItem.Text = "Original value";
 			this.originalValueToolStripMenuItem.Click += new System.EventHandler(this.originalValueToolStripMenuItem_Click);
 			// 
 			// sinceLastFrameToolStripMenuItem
 			// 
 			this.sinceLastFrameToolStripMenuItem.Name = "sinceLastFrameToolStripMenuItem";
-			this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.sinceLastFrameToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.sinceLastFrameToolStripMenuItem.Text = "Since last Frame";
 			this.sinceLastFrameToolStripMenuItem.Click += new System.EventHandler(this.sinceLastFrameToolStripMenuItem_Click);
 			// 
@@ -833,9 +835,9 @@
             this.DataSizetoolStripSplitButton1,
             this.DataTypetoolStripSplitButton1,
             this.EndiantoolSplitButton});
-			this.toolStrip2.Location = new System.Drawing.Point(209, 83);
+			this.toolStrip2.Location = new System.Drawing.Point(240, 83);
 			this.toolStrip2.Name = "toolStrip2";
-			this.toolStrip2.Size = new System.Drawing.Size(248, 25);
+			this.toolStrip2.Size = new System.Drawing.Size(217, 25);
 			this.toolStrip2.TabIndex = 10;
 			this.toolStrip2.TabStop = true;
 			// 
@@ -1206,6 +1208,13 @@
 			this.MessageLabel.TabIndex = 9;
 			this.MessageLabel.Text = "                          ";
 			// 
+			// sinceLastChangeToolStripMenuItem
+			// 
+			this.sinceLastChangeToolStripMenuItem.Name = "sinceLastChangeToolStripMenuItem";
+			this.sinceLastChangeToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.sinceLastChangeToolStripMenuItem.Text = "Since last Change";
+			this.sinceLastChangeToolStripMenuItem.Click += new System.EventHandler(this.sinceLastChangeToolStripMenuItem_Click);
+			// 
 			// RamSearch
 			// 
 			this.AllowDrop = true;
@@ -1362,5 +1371,6 @@
 		private System.Windows.Forms.ToolStripMenuItem viewInHexEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem includeMisalignedToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem sinceLastChangeToolStripMenuItem;
     }
 }

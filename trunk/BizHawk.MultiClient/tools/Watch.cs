@@ -244,6 +244,31 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public int IntegerVal(int val)
+		{
+			if (signed == asigned.SIGNED)
+				switch (type)
+				{
+					case atype.BYTE:
+						return (int)(sbyte)val;
+					case atype.WORD:
+						return (int)(short)val;
+					default:
+					case atype.DWORD:
+						return val;
+				}
+			switch (type)
+			{
+				case atype.BYTE:
+					return (int)(byte)val;
+				case atype.WORD:
+					return (int)(ushort)val;
+				case atype.DWORD:
+					return (int)(uint)val;
+			}
+			return val;
+		}
+
 		public override string ToString()
 		{
 			if (type == atype.SEPARATOR)
@@ -274,29 +299,10 @@ namespace BizHawk.MultiClient
 							case atype.DWORD:
 								return String.Format("{0:X8}", val);
 						}
-					case asigned.SIGNED:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return ((sbyte)val).ToString();
-							case atype.WORD:
-								return ((short)val).ToString();
-							case atype.DWORD:
-								return ((int)val).ToString();
-						}
 					default:
+					case asigned.SIGNED:
 					case asigned.UNSIGNED:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return ((byte)val).ToString();
-							case atype.WORD:
-								return ((ushort)val).ToString();
-							case atype.DWORD:
-								return ((uint)val).ToString();
-						}
+						return IntegerVal(val).ToString();
 				}
 			}
 		}
@@ -338,9 +344,9 @@ namespace BizHawk.MultiClient
 
 		private int CompareValue(Watch Other)
 		{
-			if (this.value < Other.value)
+			if (IntegerVal(this.value) < IntegerVal(Other.value))
 				return -1;
-			else if (this.value > Other.value)
+			else if (IntegerVal(this.value) > IntegerVal(Other.value))
 				return 1;
 			else
 				return 0;
@@ -348,9 +354,9 @@ namespace BizHawk.MultiClient
 
 		private int ComparePrev(Watch Other)
 		{
-			if (this.prev < Other.prev)
+			if (IntegerVal(this.prev) < IntegerVal(Other.prev))
 				return -1;
-			else if (this.prev > Other.prev)
+			else if (IntegerVal(this.prev) > IntegerVal(Other.prev))
 				return 1;
 			else
 				return 0;
@@ -358,7 +364,7 @@ namespace BizHawk.MultiClient
 
 		private int CompareOriginal(Watch Other)
 		{
-			if (this.original < Other.original)
+			if (IntegerVal(this.original) < IntegerVal(Other.original))
 				return -1;
 			else if (this.original > Other.original)
 				return 1;
@@ -368,7 +374,7 @@ namespace BizHawk.MultiClient
 
 		private int CompareLastChange(Watch Other)
 		{
-			if (this.lastchange < Other.lastchange)
+			if (IntegerVal(this.lastchange) < IntegerVal(Other.lastchange))
 				return -1;
 			else if (this.lastchange > Other.lastchange)
 				return 1;
@@ -378,7 +384,7 @@ namespace BizHawk.MultiClient
 
 		private int CompareLastSearch(Watch Other)
 		{
-			if (this.lastsearch < Other.lastsearch)
+			if (IntegerVal(this.lastsearch) < IntegerVal(Other.lastsearch))
 				return -1;
 			else if (this.lastsearch > Other.lastsearch)
 				return 1;
@@ -430,9 +436,12 @@ namespace BizHawk.MultiClient
 								case "Original":
 									compare = CompareOriginal(Other);
 									break;
-								case "Last Frame":
 								default:
+								case "Last Frame":
 									compare = ComparePrev(Other);
+									break;
+								case "Last Change":
+									compare = CompareLastChange(Other);
 									break;
 							}
 							if (compare == 0)
@@ -461,9 +470,12 @@ namespace BizHawk.MultiClient
 								case "Original":
 									compare = CompareOriginal(Other);
 									break;
-								case "Last Frame":
 								default:
+								case "Last Frame":
 									compare = ComparePrev(Other);
+									break;
+								case "Last Change":
+									compare = CompareLastChange(Other);
 									break;
 							}
 							if (compare == 0)
@@ -483,9 +495,12 @@ namespace BizHawk.MultiClient
 					case "Original":
 						compare = CompareOriginal(Other);
 						break;
-					case "Last Frame":
 					default:
+					case "Last Frame":
 						compare = ComparePrev(Other);
+						break;
+					case "Last Change":
+						compare = CompareLastChange(Other);
 						break;
 				}
 				if (compare == 0)
@@ -523,9 +538,12 @@ namespace BizHawk.MultiClient
 								case "Original":
 									compare = CompareOriginal(Other);
 									break;
-								case "Last Frame":
 								default:
+								case "Last Frame":
 									compare = ComparePrev(Other);
+									break;
+								case "Last Change":
+									compare = CompareLastChange(Other);
 									break;
 							}
 							if (compare == 0)
