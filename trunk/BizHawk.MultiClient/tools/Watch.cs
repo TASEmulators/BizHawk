@@ -141,30 +141,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void PeekByte(MemoryDomain domain)
-		{
-			value = domain.PeekByte(address);
-		}
-
 		private int PeekWord(MemoryDomain domain, int addr)
 		{
-			int temp = 0;
 			if (bigendian)
 			{
-				temp = ((domain.PeekByte(addr) * 256) +
+				return ((domain.PeekByte(addr) << 8) +
 					domain.PeekByte(addr + 1));
 			}
 			else
 			{
-				temp = ((domain.PeekByte(addr) +
-					domain.PeekByte(addr + 1) * 256));
+				return ((domain.PeekByte(addr) +
+					domain.PeekByte(addr + 1) << 8));
 			}
-			return temp;
 		}
 
 		private void PeekDWord(MemoryDomain domain)
 		{
-			value = ((PeekWord(domain, address) * 65536) +
+			value = ((PeekWord(domain, address) << 16) +
 				PeekWord(domain, address + 2));
 		}
 
@@ -178,7 +171,7 @@ namespace BizHawk.MultiClient
 			switch (type)
 			{
 				case atype.BYTE:
-					PeekByte(domain);
+					value = domain.PeekByte(address);
 					break;
 				case atype.WORD:
 					value = PeekWord(domain, address);
@@ -204,13 +197,13 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				domain.PokeByte(address, (byte)(value / 256));
-				domain.PokeByte(address + 1, (byte)(value % 256));
+				domain.PokeByte(address, (byte)(value >> 8));
+				domain.PokeByte(address + 1, (byte)(value & 256));
 			}
 			else
 			{
-				domain.PokeByte(address + 1, (byte)(value / 256));
-				domain.PokeByte(address, (byte)(value % 256));
+				domain.PokeByte(address + 1, (byte)(value >> 8));
+				domain.PokeByte(address, (byte)(value & 256));
 			}
 		}
 
