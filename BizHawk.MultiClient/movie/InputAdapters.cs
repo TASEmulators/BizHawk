@@ -177,7 +177,7 @@ namespace BizHawk.MultiClient
 
 		public string GetControllersAsMnemonic()
 		{
-			if (Global.Emulator.SystemId == "NULL")
+			if (Global.Emulator.SystemId == "NULL" || ControlType == "NULL Controller")
 				return "|.|";
 
 			StringBuilder input = new StringBuilder("|");
@@ -386,7 +386,7 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)
 		{
-			if (Global.Emulator.SystemId == "NULL")
+			if (Global.Emulator.SystemId == "NULL" || ControlType == "NULL Controller")
 				return;
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 
