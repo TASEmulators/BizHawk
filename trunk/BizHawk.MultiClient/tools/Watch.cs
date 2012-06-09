@@ -338,6 +338,22 @@ namespace BizHawk.MultiClient
 			return ValToString(lastsearch);
 		}
 
+		private int ComparePrevious(Watch Other, string previous)
+		{
+			switch (previous)
+			{
+				case "Last Search":
+					return CompareLastSearch(Other);
+				case "Original":
+					return CompareOriginal(Other);
+				default:
+				case "Last Frame":
+					return ComparePrev(Other);
+				case "Last Change":
+					return CompareLastChange(Other);
+			}
+		}
+
 		private int CompareAddress(Watch Other)
 		{
 			if (this.address < Other.address)
@@ -479,22 +495,7 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							switch (previous)
-							{
-								case "Last Search":
-									compare = CompareLastSearch(Other);
-									break;
-								case "Original":
-									compare = CompareOriginal(Other);
-									break;
-								default:
-								case "Last Frame":
-									compare = ComparePrev(Other);
-									break;
-								case "Last Change":
-									compare = CompareLastChange(Other);
-									break;
-							}
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -513,22 +514,7 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							switch (previous)
-							{
-								case "Last Search":
-									compare = CompareLastSearch(Other);
-									break;
-								case "Original":
-									compare = CompareOriginal(Other);
-									break;
-								default:
-								case "Last Frame":
-									compare = ComparePrev(Other);
-									break;
-								case "Last Change":
-									compare = CompareLastChange(Other);
-									break;
-							}
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -538,22 +524,7 @@ namespace BizHawk.MultiClient
 
 			else if (parameter == "Prev")
 			{
-				switch (previous)
-				{
-					case "Last Search":
-						compare = CompareLastSearch(Other);
-						break;
-					case "Original":
-						compare = CompareOriginal(Other);
-						break;
-					default:
-					case "Last Frame":
-						compare = ComparePrev(Other);
-						break;
-					case "Last Change":
-						compare = CompareLastChange(Other);
-						break;
-				}
+				compare = ComparePrevious(Other, previous);
 				if (compare == 0)
 				{
 					compare = CompareAddress(Other);
@@ -581,22 +552,7 @@ namespace BizHawk.MultiClient
 						compare = CompareValue(Other);
 						if (compare == 0)
 						{
-							switch (previous)
-							{
-								case "Last Search":
-									compare = CompareLastSearch(Other);
-									break;
-								case "Original":
-									compare = CompareOriginal(Other);
-									break;
-								default:
-								case "Last Frame":
-									compare = ComparePrev(Other);
-									break;
-								case "Last Change":
-									compare = CompareLastChange(Other);
-									break;
-							}
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -617,19 +573,7 @@ namespace BizHawk.MultiClient
 						{
 							compare = CompareChanges(Other);
 							if (compare == 0)
-								switch (previous)
-								{
-									case "Last Search":
-										compare = CompareLastSearch(Other);
-										break;
-									case "Original":
-										compare = CompareOriginal(Other);
-										break;
-									case "Last Frame":
-									default:
-										compare = ComparePrev(Other);
-										break;
-								}
+								compare = ComparePrevious(Other, previous);
 						}
 					}
 				}
