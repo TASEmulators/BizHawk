@@ -73,9 +73,6 @@ sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C	U	Mississippi Satsujin Jiken (Alt)
 ;when they appear in bootgod's db then we can re-evaluate this category.
 sha1:91CECCFCAC90E417E9AEE80E8F7B560A20EB33CC		Ai Sensei No Oshiete - Watashi No Hoshi (J)	NES		board=IREM-G101;PRG=256;CHR=128;WRAM=8
 
-;games which might be thought to be good according to goodnes, but arent really
-sha1:C87E7E6A68DD9C7E24652CD2C7D390A14E8ADF04	B	Lagrange Point	NES		board=KONAMI-VRC-7;PCB=352402
-
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;this is every game from goodNES which is clearly labeled as bad. 
 ;well, it isnt very game yet. but we should make it every game, if we can! it would be a lot of games though
