@@ -8,8 +8,79 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
+//using dx=SlimDX;
+//using d3d=SlimDX.Direct3D9;
+
 namespace BizHawk.MultiClient
 {
+	/// <summary>
+	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
+	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
+	/// </summary>
+	class SwappableDisplaySurfaceSet
+	{
+		DisplaySurface Pending, Current;
+		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
+
+		/// <summary>
+		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
+		/// </summary>
+		public DisplaySurface AllocateSurface(int width, int height, bool needsClear = true)
+		{
+			for (; ; )
+			{
+				DisplaySurface trial;
+				lock (this)
+				{
+					if (ReleasedSurfaces.Count == 0) break;
+					trial = ReleasedSurfaces.Dequeue();
+				}
+				if (trial.Width == width && trial.Height == height)
+				{
+					if (needsClear) trial.Clear();
+					return trial;
+				}
+				trial.Dispose();
+			}
+			return new DisplaySurface(width, height);
+		}
+
+		/// <summary>
+		/// sets the provided buffer as pending. takes control of the supplied buffer
+		/// </summary>
+		public void SetPending(DisplaySurface newPending)
+		{
+			lock (this)
+			{
+				if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
+				Pending = newPending;
+			}
+		}
+
+		public void ReleaseSurface(DisplaySurface surface)
+		{
+			lock (this) ReleasedSurfaces.Enqueue(surface);
+		}
+
+		/// <summary>
+		/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
+		/// </summary>
+		public DisplaySurface GetCurrent()
+		{
+			lock (this)
+			{
+				if (Pending != null)
+				{
+					if (Current != null) ReleasedSurfaces.Enqueue(Current);
+					Current = Pending;
+					Pending = null;
+				}
+			}
+			return Current;
+		}
+	}
+
+
 	public interface IDisplayFilter
 	{
 		/// <summary>
@@ -29,39 +100,106 @@ namespace BizHawk.MultiClient
 		public Size OutputSize;
 	}
 
-	public class DisplaySurface : IDisposable
+	interface IDisplayDriver
 	{
+
+	}
+
+	class Direct3DDisplayDriver : IDisplayDriver
+	{
+	}
+
+	public unsafe class DisplaySurface : IDisposable
+	{
+		Bitmap bmp;
+		BitmapData bmpdata;
+		int[] pixels;
+
+		public unsafe void Clear()
+		{
+			FromBitmap(false);
+			Util.memset(PixelPtr, 0, Stride * Height);
+		}
+
+		public Bitmap PeekBitmap()
+		{
+			ToBitmap();
+			return bmp;
+		}
+
 		/// <summary>
 		/// returns a Graphics object used to render to this surface. be sure to dispose it!
 		/// </summary>
 		public Graphics GetGraphics()
 		{
-			Unlock();
+			ToBitmap();
 			return Graphics.FromImage(bmp);
 		}
-		Bitmap bmp;
-		BitmapData bmpdata;
 
-		//TODO - lock and cache these
-		public unsafe int* PixelPtr { get { return (int*)bmpdata.Scan0.ToPointer(); } }
-		public IntPtr PixelIntPtr { get { return bmpdata.Scan0; } }
-		public int Stride { get { return bmpdata.Stride; } }
-		public int OffsetOf(int x, int y) { return y * Stride + x*4; }
-
-		public unsafe void Clear()
+		public unsafe void ToBitmap(bool copy=true)
 		{
-			Lock();
-			Util.memset32(PixelPtr, 0, Stride * Height);
+			if (isBitmap) return;
+			isBitmap = true;
+
+			if (bmp == null)
+			{
+				bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+			}
+
+			if (copy)
+			{
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+				int w = Width;
+				int h = Height;
+				int stride = bmpdata.Stride / 4;
+				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
+				for (int y = 0, i = 0; y < h; y++)
+					for (int x = 0; x < w; x++)
+						bmpbuf[y * stride + x] = pixels[i++];
+
+				bmp.UnlockBits(bmpdata);
+			}
+
 		}
 
-		/// <summary>
-		/// returns a bitmap which you can use but not hold onto.
-		/// we may remove this later, as managing a Bitmap just for this may be a drag. (probably not though)
-		/// </summary>
-		public Bitmap PeekBitmap()
+		public bool IsBitmap { get { return isBitmap; } }
+		bool isBitmap = false;
+
+		public unsafe void FromBitmap(bool copy=true)
 		{
-			Unlock();
-			return bmp;
+			if (!isBitmap) return;
+			isBitmap = false;
+
+			if (copy)
+			{
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+				int w = Width;
+				int h = Height;
+				int stride = bmpdata.Stride / 4;
+				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
+				for (int y = 0, i = 0; y < h; y++)
+					for (int x = 0; x < w; x++)
+						pixels[i++] = bmpbuf[y * stride + x];
+
+				bmp.UnlockBits(bmpdata);
+			}
+		}
+
+
+		public static DisplaySurface DisplaySurfaceWrappingBitmap(Bitmap bmp)
+		{
+			DisplaySurface ret = new DisplaySurface();
+			ret.Width = bmp.Width;
+			ret.Height = bmp.Height;
+			ret.bmp = bmp;
+			ret.isBitmap = true;
+			return ret;
+		}
+
+		private DisplaySurface() 
+		{
 		}
 
 		public DisplaySurface(int width, int height)
@@ -73,8 +211,27 @@ namespace BizHawk.MultiClient
 			Width = width;
 			Height = height;
 
-			bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			Lock();
+			pixels = new int[width * height];
+			LockPixels();
+		}
+
+		public int* PixelPtr { get { return (int*)ptr; } }
+		public IntPtr PixelIntPtr { get { return new IntPtr(ptr); } }
+		public int Stride { get { return Width*4; } }
+		public int OffsetOf(int x, int y) { return y * Stride + x*4; }
+
+		void* ptr;
+		GCHandle handle;
+		void LockPixels()
+		{
+			UnlockPixels();
+			handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
+			ptr = handle.AddrOfPinnedObject().ToPointer();
+		}
+
+		void UnlockPixels()
+		{
+			if(handle.IsAllocated) handle.Free();
 		}
 
 		/// <summary>
@@ -83,23 +240,27 @@ namespace BizHawk.MultiClient
 		/// <param name="xpad"></param>
 		/// <param name="ypad"></param>
 		/// <returns></returns>
-		public unsafe DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
+		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
 		{
-			Lock();
-			int new_width = Width + xpad0 + xpad1;
-			int new_height = Height + ypad0 + ypad1;
-			DisplaySurface ret = new DisplaySurface(new_width, new_height);
-			ret.Lock();
-			int* dptr = ret.PixelPtr;
-			int* sptr = PixelPtr;
-			int dstride = ret.Stride/4;
-			int sstride = Stride/4;
-			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width; x++)
-				{
-					dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
-				}
-			return ret;
+			//Lock();
+			//int new_width = Width + xpad0 + xpad1;
+			//int new_height = Height + ypad0 + ypad1;
+			//DisplaySurface ret = new DisplaySurface(new_width, new_height);
+			//ret.Lock();
+			//int* dptr = ret.PixelPtr;
+			//int* sptr = PixelPtr;
+			//int dstride = ret.Stride/4;
+			//int sstride = Stride/4;
+			//for (int y = 0; y < Height; y++)
+			//  for (int x = 0; x < Width; x++)
+			//  {
+			//    dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
+			//  }
+			//return ret;
+
+			//need to reimplement this
+			throw new NotSupportedException();
+			return null;
 		}
 
 		public int Width { get; private set; }
@@ -110,77 +271,17 @@ namespace BizHawk.MultiClient
 			if (bmp != null)
 				bmp.Dispose();
 			bmp = null;
+			UnlockPixels();
 		}
 
-		/// <summary>
-		/// copies out the buffer as an int array (hopefully you can do this with a pointer instead and save some time!)
-		/// </summary>
-		public unsafe int[] ToIntArray()
+		//public unsafe int[] ToIntArray() { }
+
+		public void AcceptIntArray(int[] newpixels)
 		{
-			Lock();
-
-			int w = bmp.Width;
-			int h = bmp.Height;
-			var ret = new int[bmp.Width * bmp.Height];
-			int* pData = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride / 4;
-			for (int y = 0, i = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					ret[i++] = pData[y * stride + x];
-
-			return ret;
-		}
-
-		public unsafe void SetFromIntArray(int[] pixels)
-		{
-			Lock();
-
-			if (Stride == Width * 4)
-			{
-				Marshal.Copy(pixels, 0, PixelIntPtr, Width * Height);
-				return;
-			}
-
-			int w = Width;
-			int h = Height;
-			int* pData = PixelPtr;
-			int stride = Stride / 4;
-			for (int y = 0, i = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					pData[y * stride + x] = pixels[i++];
-		}
-
-		/// <summary>
-		/// locks this surface so that it can be accessed by raw pointer
-		/// </summary>
-		public void Lock()
-		{
-			if (bmpdata != null) return;
-			var imageLockMode = ImageLockMode.ReadWrite;
-			bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), imageLockMode, PixelFormat.Format32bppArgb);
-		}
-
-		public bool IsLocked { get { return bmpdata != null; } }
-
-		public void Unlock()
-		{
-			if (bmpdata != null)
-				bmp.UnlockBits(bmpdata);
-			bmpdata = null;
-		}
-
-		public static unsafe DisplaySurface FromVideoProvider(IVideoProvider provider)
-		{
-			int w = provider.BufferWidth;
-			int h = provider.BufferHeight;
-			int[] buffer = provider.GetVideoBuffer();
-			var ret = new DisplaySurface(w,h);
-			int* pData = ret.PixelPtr;
-			int stride = ret.Stride / 4;
-			for (int y = 0, i=0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					pData[y * stride + x] = buffer[i++];
-			return ret;
+			FromBitmap(false);
+			UnlockPixels();
+			pixels = newpixels;
+			LockPixels();
 		}
 	}
 
@@ -249,11 +350,11 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString() + " (Finished)";
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString() + " (Finished)";
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 			{
-				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.Length().ToString();
+				return Global.Emulator.Frame.ToString() + "/" + Global.MovieSession.Movie.LogLength().ToString();
 			}
 			else if (Global.MovieSession.Movie.Mode == MOVIEMODE.RECORD)
 				return Global.Emulator.Frame.ToString();
@@ -492,13 +593,36 @@ namespace BizHawk.MultiClient
 			displayThread.Start();
 		}
 
+		volatile bool VsyncToggle = false;
+		volatile bool VsyncRequested = false;
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			VsyncRequested = Global.Config.DisplayVSync;
+
+			//needsclear = false because we're about to clobber the data with AcceptIntArray
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.SetFromIntArray(videoProvider.GetVideoBuffer());
+			newPendingSurface.AcceptIntArray((int[])videoProvider.GetVideoBuffer().Clone());
 			sourceSurfaceSet.SetPending(newPendingSurface);
 			wakeupEvent.Set();
+
+			if (VsyncRequested)
+			{
+				VsyncToggle = true;
+
+				for (; ; )
+				{
+					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+					if (!VsyncToggle) break;
+					Application.DoEvents();
+				}
+			}
+
+			//for(;;)
+			//{
+			//  if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+			//  Application.DoEvents();
+			//}
 		}
 
 		public bool Disposed { get; private set; }
@@ -507,6 +631,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Disposed) return;
 			shutdownFlag = true;
+			VsyncToggle = true;
 			while (shutdownFlag) Thread.Sleep(1);
 			wakeupEvent.Dispose();
 			Disposed = true;
@@ -517,72 +642,6 @@ namespace BizHawk.MultiClient
 		//the surface to use to render a lua layer at native resolution (under the OSD)
 		DisplaySurface luaNativeSurfacePreOSD;
 
-		/// <summary>
-		/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
-		/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
-		/// </summary>
-		class SwappableDisplaySurfaceSet
-		{
-			DisplaySurface Pending, Current;
-			Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
-
-			/// <summary>
-			/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
-			/// </summary>
-			public DisplaySurface AllocateSurface(int width, int height, bool needsClear=true)
-			{
-				for(;;) 
-				{
-					DisplaySurface trial;
-					lock (this)
-					{
-						if (ReleasedSurfaces.Count == 0) break;
-						trial = ReleasedSurfaces.Dequeue();
-					}
-					if (trial.Width == width && trial.Height == height)
-					{
-						if(needsClear) trial.Clear();
-						return trial;
-					}
-					trial.Dispose();
-				}
-				return new DisplaySurface(width, height);
-			}
-
-			/// <summary>
-			/// sets the provided buffer as pending. takes control of the supplied buffer
-			/// </summary>
-			public void SetPending(DisplaySurface newPending)
-			{
-				lock(this)
-				{
-					if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
-					Pending = newPending;
-				}
-			}
-
-			public void ReleaseSurface(DisplaySurface surface)
-			{
-				lock (this) ReleasedSurfaces.Enqueue(surface);
-			}
-
-			/// <summary>
-			/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
-			/// </summary>
-			public DisplaySurface GetCurrent()
-			{
-				lock(this)
-				{
-					if(Pending != null)
-					{
-						if (Current != null) ReleasedSurfaces.Enqueue(Current);
-						Current = Pending;
-						Pending = null;
-					}
-				}
-				return Current;
-			}
-		}
 
 		SwappableDisplaySurfaceSet luaNativeSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
@@ -613,7 +672,7 @@ namespace BizHawk.MultiClient
 				Display();
 
 				//wait until we receive something interesting, or just a little while anyway
-				wakeupEvent.WaitOne(10);
+				wakeupEvent.WaitOne(1);
 
 				if (suspendFlag)
 				{
@@ -680,40 +739,91 @@ namespace BizHawk.MultiClient
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
-			var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
-			using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+
+			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
+
+			//do we have anything to do?
+			bool complexComposite = false;
+			if (luaEmuSurface != null) complexComposite = true;
+			if (luaSurface != null) complexComposite = true;
+
+			if (!complexComposite)
 			{
-				//scale the source bitmap to the desired size of the render panel
-				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-				g.InterpolationMode = InterpolationMode.NearestNeighbor;
-				g.CompositingMode = CompositingMode.SourceCopy;
-				g.CompositingQuality = CompositingQuality.HighSpeed;
-				g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
+				if (Global.Config.SuppressGui)
+				{
+					Global.RenderPanel.Render(currentSourceSurface);
+				}
+				else
+				{
+					Global.RenderPanel.Render(currentSourceSurface);
+					var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
+					using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+					{
+						Global.OSD.DrawScreenInfo(g);
+						Global.OSD.DrawMessages(g);
+						//Thread.Sleep(1);
+					}
+					nativeBmp.FromBitmap();
+					Global.RenderPanel.RenderOverlay(nativeBmp);
+					//release the native resolution image
+					nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
+					//Global.RenderPanel.Present();
+				}
+			}
+			else
+			{
+				var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
+				using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+				{
+					//scale the source bitmap to the desired size of the render panel
+					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+					g.InterpolationMode = InterpolationMode.NearestNeighbor;
+					g.CompositingMode = CompositingMode.SourceCopy;
+					g.CompositingQuality = CompositingQuality.HighSpeed;
+					g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
 
-				//switch to fancier composition for OSD overlays and such
-				g.CompositingMode = CompositingMode.SourceOver;
+					//switch to fancier composition for OSD overlays and such
+					g.CompositingMode = CompositingMode.SourceOver;
 
-				//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
-				DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-				if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
-				g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
+					//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
+					if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
+					g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
 
-				//apply a lua layer
-				var luaSurface = luaNativeSurfaceSet.GetCurrent();
-				if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
-				//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
+					//apply a lua layer
+					if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
+					//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
 
-				//draw the OSD at native resolution
-				Global.OSD.DrawScreenInfo(g);
-				Global.OSD.DrawMessages(g);
-				g.Clip.Dispose();
+					//draw the OSD at native resolution
+					if (!Global.Config.SuppressGui)
+					{
+						Global.OSD.DrawScreenInfo(g);
+						Global.OSD.DrawMessages(g);
+					}
+					g.Clip.Dispose();
+				}
+
+				//send the native resolution image to the render panel
+				Global.RenderPanel.Render(nativeBmp);
+				//Global.RenderPanel.Present();
+
+				//release the native resolution image
+				nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
 			}
 
-			//send the native resolution image to the render panel
-			Global.RenderPanel.Render(nativeBmp);
+			Global.RenderPanel.Present();
 
-			//release the native resolution image
-			nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
+			if (VsyncRequested)
+			{
+				for (; ; )
+				{
+					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+					if (VsyncToggle) break;
+				}
+				VsyncToggle = false;
+			}
+
+
 		}
 
 		Thread displayThread;

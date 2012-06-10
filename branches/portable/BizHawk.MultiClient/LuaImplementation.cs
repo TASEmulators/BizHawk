@@ -151,9 +151,8 @@ namespace BizHawk.MultiClient
 
 		public Lua SpawnCoroutine(string File)
 		{
-			LuaConsole Luas = new LuaConsole();
 			var t = lua.NewThread();
-			LuaRegister(t);
+			//LuaRegister(t); //adelikat: Not sure why this was here but it was causing the entire luaimplmeentaiton to be duplicated each time, eventually resulting in crashes
 			var main = t.LoadFile(File);
 			t.Push(main); //push main function on to stack for subsequent resuming
 			return t;
@@ -527,7 +526,7 @@ namespace BizHawk.MultiClient
 					if (background != null)
 						g.FillRectangle(GetBrush(background), int_x, int_y, int_width, int_height);
 				}
-				catch(Exception e)
+				catch(Exception)
 				{
 					// need to stop the script from here
 					return;
@@ -544,7 +543,7 @@ namespace BizHawk.MultiClient
 				{
 					g.DrawLine(GetPen(color), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -560,7 +559,7 @@ namespace BizHawk.MultiClient
                         color = "black";
 					g.DrawLine(GetPen(color), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -580,7 +579,7 @@ namespace BizHawk.MultiClient
 					}
 
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					// need to stop the script from here
 					return;
@@ -609,7 +608,7 @@ namespace BizHawk.MultiClient
 						g.FillPolygon(GetBrush(background), Points);
 					}
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -633,7 +632,7 @@ namespace BizHawk.MultiClient
 					}
 					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -653,7 +652,7 @@ namespace BizHawk.MultiClient
 					}
 
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					// need to stop the script from here
 					return;
@@ -679,7 +678,7 @@ namespace BizHawk.MultiClient
 						
 					g.DrawIcon(icon, LuaInt(x), LuaInt(y));
 				}
-				catch(Exception e)
+				catch(Exception)
 				{
 					return;
 				}
@@ -701,7 +700,7 @@ namespace BizHawk.MultiClient
 
 					g.DrawImage(img, LuaInt(x), LuaInt(y), int.Parse(width.ToString()), int.Parse(height.ToString()));
 				}
-				catch (Exception e)
+				catch (Exception)
 				{
 					return;
 				}
@@ -1446,7 +1445,7 @@ namespace BizHawk.MultiClient
 
 		public int movie_length()
 		{
-			return Global.MovieSession.Movie.Length();
+			return Global.MovieSession.Movie.LogLength();
 		}
 
 		public string movie_filename()

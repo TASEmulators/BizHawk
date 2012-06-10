@@ -16,6 +16,9 @@ namespace BizHawk.MultiClient
 		public SubtitleList Subtitles = new SubtitleList();
 		public bool MakeBackup = true; //make backup before altering movie
 
+		//Remove this once the memory mangement issues with save states for tastudio has been solved.
+		public bool TastudioOn = false;
+
 		public bool IsText { get; private set; }
 		public string Filename { get; private set; }
 		public MOVIEMODE Mode { get; set; }
@@ -69,15 +72,23 @@ namespace BizHawk.MultiClient
 			return Header.GetHeaderLine(MovieHeader.GAMENAME);
 		}
 
-        public int Length()
-        {
-            if (Loaded)
-                return Log.Length();
-            else
-                return Frames;
-        }
+		public int LogLength()
+		{
+			if (Loaded)
+				return Log.MovieLength();
+			else
+				return Frames;
+		}
 
-        public void UpdateFileName(string filename)
+		public int StateLength()
+		{
+			if (Loaded)
+				return Log.StateLength();
+			else
+				return Frames;
+		}
+
+		public void UpdateFileName(string filename)
         {
             this.Filename = filename;
         }
@@ -91,8 +102,16 @@ namespace BizHawk.MultiClient
 
 		public void CaptureState()
 		{
-			byte[] state = Global.Emulator.SaveStateBinary();
-			Log.AddState(state);
+			if (true == TastudioOn)
+			{
+				byte[] state = Global.Emulator.SaveStateBinary();
+				Log.AddState(state);
+			}
+		}
+
+		public void ClearStates()
+		{
+			Log.ClearStates();
 		}
 
 		public void RewindToFrame(int frame)
@@ -112,9 +131,9 @@ namespace BizHawk.MultiClient
 			Global.MainForm.TAStudio1.UpdateValues();
 		}
 
-		public int LastValidState()
+		public int ValidStateCount()
 		{
-			return Log.LastValidState();
+			return Log.ValidStateCount();
 		}
 
 		public void CheckValidity()
@@ -135,7 +154,7 @@ namespace BizHawk.MultiClient
 		{
 			ClearSaveRAM();
 			Mode = MOVIEMODE.RECORD;
-			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
 			{
 				WriteBackup();
 				MakeBackup = false;
@@ -194,7 +213,7 @@ namespace BizHawk.MultiClient
 		public string GetInputFrame(int frame)
 		{
 			lastLog = frame;
-			if (frame < Log.Length())
+			if (frame < Log.MovieLength())
 				return Log.GetFrame(frame);
 			else
 				return "";
@@ -241,7 +260,7 @@ namespace BizHawk.MultiClient
 		private void WriteText(string file)
 		{
 			if (file.Length == 0) return;	//Nothing to write
-			int length = Log.Length();
+			int length = Log.MovieLength();
 
 			using (StreamWriter sw = new StreamWriter(file))
 			{
@@ -389,7 +408,7 @@ namespace BizHawk.MultiClient
 			writer.WriteLine("[Input]");
 			string s = MovieHeader.GUID + " " + Header.GetHeaderLine(MovieHeader.GUID);
 			writer.WriteLine(s);
-			for (int x = 0; x < Log.Length(); x++)
+			for (int x = 0; x < Log.MovieLength(); x++)
 				writer.WriteLine(Log.GetFrame(x));
 			writer.WriteLine("[/Input]");
 		}
@@ -401,7 +420,7 @@ namespace BizHawk.MultiClient
 			//We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Length() > 0)
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.MovieLength() > 0)
 				{
 					WriteBackup();
 					MakeBackup = false;
@@ -477,9 +496,9 @@ namespace BizHawk.MultiClient
 					}
 				}
 			}
-			if (stateFrame > 0 && stateFrame < Log.Length())
+			if (stateFrame > 0 && stateFrame < Log.MovieLength())
 			{
-				Log.Truncate(Global.Emulator.Frame);
+				Log.TruncateStates(Global.Emulator.Frame);
 			}
 			IncrementRerecords();
 			reader.Close();
@@ -514,7 +533,7 @@ namespace BizHawk.MultiClient
 			if (preLoad)
 				seconds = GetSeconds(Frames);
 			else
-				seconds = GetSeconds(Log.Length());
+				seconds = GetSeconds(Log.MovieLength());
 			int hours = ((int)seconds) / 3600;
 			int minutes = (((int)seconds) / 60) % 60;
 			double sec = seconds % 60;
@@ -677,7 +696,7 @@ namespace BizHawk.MultiClient
 				return true;
 			}
 
-			if (stateFrame > l.Length()) //stateFrame is greater than state input log, so movie finished mode
+			if (stateFrame > l.MovieLength()) //stateFrame is greater than state input log, so movie finished mode
 			{
 				if (Mode == MOVIEMODE.PLAY || Mode == MOVIEMODE.FINISHED)
 				{
@@ -690,13 +709,13 @@ namespace BizHawk.MultiClient
 
 			if (stateFrame == 0)
 			{
-				stateFrame = l.Length();  //In case the frame count failed to parse, revert to using the entire state input log
+				stateFrame = l.MovieLength();  //In case the frame count failed to parse, revert to using the entire state input log
 			}
-			if (Log.Length() < stateFrame)
+			if (Log.MovieLength() < stateFrame)
 			{
 				//Future event error
-					MessageBox.Show("The savestate is from frame " + l.Length().ToString() + " which is greater than the current movie length of " +
-					Log.Length().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("The savestate is from frame " + l.MovieLength().ToString() + " which is greater than the current movie length of " +
+					Log.MovieLength().ToString() + ".\nCan not load this savestate.", "Future event Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					reader.Close();
 					return false;
 			}

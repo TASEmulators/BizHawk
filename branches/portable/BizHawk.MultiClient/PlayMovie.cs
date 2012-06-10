@@ -88,14 +88,14 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.FullName, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Length() == 0)
+						if (m.LogLength() == 0)
 						{
 							MessageBox.Show("No input log detected in this savestate, aborting", "Can not load file", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 							return;
 						}
 					}
 
-					int x = AddMovieToList(ofd.FileName);
+					int x = AddMovieToList(ofd.FileName, true);
 					if (x > 0)
 					{
 						MovieView.SelectedIndices.Clear();
@@ -119,7 +119,7 @@ namespace BizHawk.MultiClient
 					{
 						Movie m = new Movie(file.CanonicalFullPath, MOVIEMODE.INACTIVE);
 						m.LoadMovie(); //State files will have to load everything unfortunately
-						if (m.Length() > 0)
+						if (m.LogLength() > 0)
 						{
 							MovieList.Add(m);
 							sortReverse = false;
@@ -132,7 +132,7 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private int AddMovieToList(string filename)
+		private int AddMovieToList(string filename, bool force)
 		{
 			using (var file = new HawkFile(filename))
 			{
@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 					int x = IsDuplicate(filename);
 					if (x == 0)
 					{
-						PreLoadMovieFile(file);
+						PreLoadMovieFile(file, force);
 						MovieView.ItemCount = MovieList.Count;
 						UpdateList();
 
@@ -164,7 +164,7 @@ namespace BizHawk.MultiClient
 			return 0;
 		}
 
-		private void PreLoadMovieFile(HawkFile path)
+		private void PreLoadMovieFile(HawkFile path, bool force)
 		{
 			Movie m = new Movie(path.CanonicalFullPath, MOVIEMODE.INACTIVE);
 			m.PreLoadText(path);
@@ -172,9 +172,9 @@ namespace BizHawk.MultiClient
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "NES");
 			else if (path.Extension == ".MC2")
 				m.Header.SetHeaderLine(MovieHeader.PLATFORM, "PCE");
-
+			//Don't do this from browse
 			if (m.Header.GetHeaderLine(MovieHeader.GAMENAME) == Global.Game.Name ||
-				Global.Config.PlayMovie_MatchGameName == false)
+				Global.Config.PlayMovie_MatchGameName == false || force)
 				MovieList.Add(m);
 		}
 
@@ -269,11 +269,11 @@ namespace BizHawk.MultiClient
 				Directory.CreateDirectory(d);
 			string extension = "*." + Global.Config.MovieExtension;
 			foreach (string f in Directory.GetFiles(d, "*." + Global.Config.MovieExtension))
-				AddMovieToList(f);
+				AddMovieToList(f, false);
 			foreach (string f in Directory.GetFiles(d, "*.tas"))
-				AddMovieToList(f);
+				AddMovieToList(f, false);
 			foreach (string f in Directory.GetFiles(d, "*.bkm"))
-				AddMovieToList(f);
+				AddMovieToList(f, false);
 			if (Global.Config.PlayMovie_ShowStateFiles)
 			{
 				foreach (string f in Directory.GetFiles(d, "*.state"))
@@ -286,7 +286,7 @@ namespace BizHawk.MultiClient
 				foreach (string dir in subs)
 				{
 					foreach (string f in Directory.GetFiles(dir, "*." + Global.Config.MovieExtension))
-						AddMovieToList(f);
+						AddMovieToList(f, false);
 					if (Global.Config.PlayMovie_ShowStateFiles)
 					{
 						foreach (string f in Directory.GetFiles(d, "*.state"))
@@ -407,7 +407,7 @@ namespace BizHawk.MultiClient
 			foreach (string path in filePaths)
 			{
 				if (Path.GetExtension(path) == "." + Global.Config.MovieExtension)
-					AddMovieToList(path);
+					AddMovieToList(path, true);
 			}
 		}
 

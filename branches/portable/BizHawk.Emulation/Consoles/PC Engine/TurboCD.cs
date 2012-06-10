@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Consoles.TurboGrafx
                 {
                     IntDataTransferReady = false;
                     IntDataTransferComplete = true;
+                    CDAudio.Stop();
                 };
         }
 

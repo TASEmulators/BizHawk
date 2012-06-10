@@ -12,8 +12,6 @@ using System.Globalization;
 namespace BizHawk.MultiClient
 {
 	//TODO:
-	//Sorting by Prev only does "Since prev frame", find a way to integrate the various prev options
-	//In DoUndo, prevList is set to searchList, instead how about a UndoPrev, so that undo restores both the current and previous values
 	//Go To Address (Ctrl+G) feature
 	
 	/// <summary>
@@ -25,7 +23,6 @@ namespace BizHawk.MultiClient
 		List<Watch> searchList = new List<Watch>();
 		List<Watch> undoList = new List<Watch>();
 		List<Watch> weededList = new List<Watch>();  //When addresses are weeded out, the new list goes here, before going into searchList
-		List<Watch> prevList = new List<Watch>();
 		List<Watch> redoList = new List<Watch>();
 		private bool IsAWeededList = false; //For deciding whether the weeded list is relevant (0 size could mean all were removed in a legit preview
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
@@ -42,7 +39,7 @@ namespace BizHawk.MultiClient
 		int defaultValueWidth;
 		int defaultPrevWidth;
 		int defaultChangesWidth;
-		string currentSearchFile = "";
+		string currentFile = "";
 		string addressFormatStr = "{0:X4}  ";
 		bool sortReverse;
 		string sortedCol;
@@ -100,6 +97,18 @@ namespace BizHawk.MultiClient
 			SetMemoryDomainMenu();
 		}
 
+		private void SetEndian()
+		{
+			if (Domain.Endian == Endian.Big)
+			{
+				SetBigEndian();
+			}
+			else
+			{
+				SetLittleEndian();
+			}
+		}
+
 		private void LoadConfigSettings()
 		{
 			ColumnPositionSet();
@@ -111,16 +120,7 @@ namespace BizHawk.MultiClient
 			defaultPrevWidth = SearchListView.Columns[Global.Config.RamSearchPrevIndex].Width;
 			defaultChangesWidth = SearchListView.Columns[Global.Config.RamSearchChangesIndex].Width;
 
-			if (Domain.Endian == Endian.Big)
-			{
-				bigEndianToolStripMenuItem.Checked = true;
-				littleEndianToolStripMenuItem.Checked = false;
-			}
-			else
-			{
-				bigEndianToolStripMenuItem.Checked = false;
-				littleEndianToolStripMenuItem.Checked = true;
-			}
+			SetEndian();
 
 			if (Global.Config.RamSearchSaveWindowPosition && Global.Config.RamSearchWndx >= 0 && Global.Config.RamSearchWndy >= 0)
 				this.Location = new Point(Global.Config.RamSearchWndx, Global.Config.RamSearchWndy);
@@ -175,6 +175,7 @@ namespace BizHawk.MultiClient
 		private void SetMemoryDomainNew(int pos)
 		{
 			SetMemoryDomain(pos);
+			SetEndian();
 			StartNewSearch();
 		}
 
@@ -385,9 +386,6 @@ namespace BizHawk.MultiClient
 					case atype.DWORD:
 						divisor = 4;
 						break;
-					default:
-						divisor = 1;
-						break;
 				}
 			}
 
@@ -400,6 +398,10 @@ namespace BizHawk.MultiClient
 				searchList[x].signed = GetDataType();
 				searchList[x].PeekAddress(Domain);
 				searchList[x].prev = searchList[x].value;
+				searchList[x].original = searchList[x].value;
+				searchList[x].lastchange = searchList[x].value;
+				searchList[x].lastsearch = searchList[x].value;
+				searchList[x].changecount = 0;
 				if (includeMisalignedToolStripMenuItem.Checked)
 					count++;
 				else
@@ -419,22 +421,13 @@ namespace BizHawk.MultiClient
 				}
 
 			}
-			if (Global.Config.AlwaysExludeRamWatch)
-				ExludeRamWatchList();
-			MakePreviousList();
+			if (Global.Config.AlwaysExcludeRamWatch)
+				ExcludeRamWatchList();
 			SetSpecificValueBoxMaxLength();
-			OutputLabel.Text = "New search started";
+			MessageLabel.Text = "New search started";
 			sortReverse = false;
 			sortedCol = "";
 			DisplaySearchList();
-		}
-
-		private void MakePreviousList()
-		{
-			prevList = new List<Watch>();
-
-			for (int x = 0; x < searchList.Count; x++)
-				prevList.Add(new Watch(searchList[x]));
 		}
 
 		private void DisplaySearchList()
@@ -471,10 +464,13 @@ namespace BizHawk.MultiClient
 			RamPoke p = new RamPoke();
 			Global.Sound.StartSound();
 
+			int x = indexes[0];
+			Watch bob = searchList[indexes[0]];
 			if (indexes.Count > 0)
 				p.SetWatchObject(searchList[indexes[0]], Domain);
 			p.location = GetPromptPoint();
 			p.ShowDialog();
+			UpdateValues();
 		}
 
 		private void PoketoolStripButton1_Click(object sender, EventArgs e)
@@ -498,7 +494,7 @@ namespace BizHawk.MultiClient
 			if (indexes.Count > 0)
 			{
 				SaveUndo();
-				OutputLabel.Text = MakeAddressString(indexes.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(indexes.Count) + " removed";
 				for (int x = 0; x < indexes.Count; x++)
 				{
 					searchList.Remove(searchList[indexes[x] - x]);
@@ -529,10 +525,9 @@ namespace BizHawk.MultiClient
 		{
 			if (undoList.Count > 0)
 			{
-				OutputLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
+				MessageLabel.Text = MakeAddressString(undoList.Count - searchList.Count) + " restored";
 				redoList = new List<Watch>(searchList);
 				searchList = new List<Watch>(undoList);
-				prevList = new List<Watch>(undoList);
 				ClearUndo();
 				RedotoolStripButton2.Enabled = true;
 				DisplaySearchList();
@@ -557,10 +552,9 @@ namespace BizHawk.MultiClient
 		{
 			if (redoList.Count > 0)
 			{
-				OutputLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(searchList.Count - redoList.Count) + " removed";
 				undoList = new List<Watch>(searchList);
 				searchList = new List<Watch>(redoList);
-				prevList = new List<Watch>(redoList);
 				ClearRedo();
 				UndotoolStripButton.Enabled = true;
 				DisplaySearchList();
@@ -609,30 +603,21 @@ namespace BizHawk.MultiClient
 			}
 			if (column == 2)
 			{
-				if (searchList[index].signed == asigned.UNSIGNED)
+				switch (Global.Config.RamSearchPreviousAs)
 				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-						text = searchList[index].prev.ToString();
-					else
-						text = prevList[index].value.ToString();
-				}
-				else if (searchList[index].signed == asigned.SIGNED)
-				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-						text = ((sbyte)searchList[index].prev).ToString();
-					else
-						text = ((sbyte)prevList[index].value).ToString();
-				}
-				else if (searchList[index].signed == asigned.HEX)
-				{
-					if (Global.Config.RamSearchPreviousAs == 2) //If prev frame
-					{
+					case 0:
+						text = searchList[index].LastSearchToString();
+						break;
+					case 1:
+						text = searchList[index].OriginalToString();
+						break;
+					default:
+					case 2:
 						text = searchList[index].PrevToString();
-					}
-					else
-					{
-						text = prevList[index].ValueToString();
-					}
+						break;
+					case 3:
+						text = searchList[index].LastChangeToString();
+						break;
 				}
 			}
 			if (column == 3)
@@ -647,7 +632,7 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < searchList.Count; x++)
 				searchList[x].changecount = 0;
 			DisplaySearchList();
-			OutputLabel.Text = "Change counts cleared";
+			MessageLabel.Text = "Change counts cleared";
 		}
 
 		private void ClearChangeCountstoolStripButton_Click(object sender, EventArgs e)
@@ -671,10 +656,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Global.Config.RamSearchPreviewMode)
 			{
-				if (GenerateWeedOutList())
-				{
-					//OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " would be removed";
-				}
+				GenerateWeedOutList();
 			}
 		}
 
@@ -683,13 +665,13 @@ namespace BizHawk.MultiClient
 			if (GenerateWeedOutList())
 			{
 				SaveUndo();
-				OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+				MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 				ReplaceSearchListWithWeedOutList();
-				if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+				UpdateLastSearch();
 				DisplaySearchList();
 			}
 			else
-				OutputLabel.Text = "Search failed.";
+				MessageLabel.Text = "Search failed.";
 		}
 
 		private void toolStripButton1_Click(object sender, EventArgs e)
@@ -755,16 +737,17 @@ namespace BizHawk.MultiClient
 
 		private int GetPreviousValue(int pos)
 		{
-			if (Global.Config.RamSearchPreviousAs == 2) //If Previous frame
-				return searchList[pos].prev;
-			else
+			switch (Global.Config.RamSearchPreviousAs)
 			{
-				if (pos < prevList.Count)
-					return prevList[pos].value;
-				else
-				{
-					return 0;
-				}
+				case 0:
+					return searchList[pos].lastsearch;
+				case 1:
+					return searchList[pos].original;
+				default:
+				case 2:
+					return searchList[pos].prev;
+				case 3:
+					return searchList[pos].lastchange;
 			}
 		}
 
@@ -775,43 +758,97 @@ namespace BizHawk.MultiClient
 				case SOperator.LESS:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value < GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATER:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value > GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value <= GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value >= GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.EQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value != GetPreviousValue(x))
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal(previous))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.DIFFBY:
@@ -819,66 +856,129 @@ namespace BizHawk.MultiClient
 					if (diff < 0) return false;
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == GetPreviousValue(x) + diff || searchList[x].value == GetPreviousValue(x) - diff)
-							weededList.Add(searchList[x]);
+						int previous = GetPreviousValue(x);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal(previous) - diff)
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal(previous) - diff)
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 			}
 			return true;
 		}
 
-		private bool DoSpecificValue()
+		private void ValidateSpecificValue(int? value)
 		{
-			int value = GetSpecificValue();
-			if (value < -99999999)
+			if (value == null)
 			{
 				MessageBox.Show("Missing or invalid value", "Invalid value", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				SpecificValueBox.Text = "0";
 				SpecificValueBox.Focus();
 				SpecificValueBox.SelectAll();
-				return false;
 			}
+		}
+		private bool DoSpecificValue()
+		{
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			if (value == null)
+				return false;
 			switch (GetOperator())
 			{
 				case SOperator.LESS:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value < value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) < searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) < searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATER:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value > value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) > searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) > searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.LESSEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value <= value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) <= searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) <= searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.GREATEREQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value >= value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) >= searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) >= searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.EQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.NOTEQUAL:
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value != value)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) != searchList[x].SignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) != searchList[x].UnsignedVal((int)value))
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 				case SOperator.DIFFBY:
@@ -886,15 +986,23 @@ namespace BizHawk.MultiClient
 					if (diff < 0) return false;
 					for (int x = 0; x < searchList.Count; x++)
 					{
-						if (searchList[x].value == value + diff || searchList[x].value == value - diff)
-							weededList.Add(searchList[x]);
+						if (searchList[x].signed == asigned.SIGNED)
+						{
+							if (searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) + diff || searchList[x].SignedVal(searchList[x].value) == searchList[x].SignedVal((int)value) - diff)
+								weededList.Add(searchList[x]);
+						}
+						else
+						{
+							if (searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) + diff || searchList[x].UnsignedVal(searchList[x].value) == searchList[x].UnsignedVal((int)value) - diff)
+								weededList.Add(searchList[x]);
+						}
 					}
 					break;
 			}
 			return true;
 		}
 
-		private int GetSpecificValue()
+		private int? GetSpecificValue()
 		{
 			if (SpecificValueBox.Text == "" || SpecificValueBox.Text == "-") return 0;
 			bool i = false;
@@ -902,18 +1010,31 @@ namespace BizHawk.MultiClient
 			{
 				case asigned.UNSIGNED:
 					i = InputValidate.IsValidUnsignedNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
+					if (!i)
+						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text); //Note: 64 to be safe since 4 byte values can be entered
 				case asigned.SIGNED:
 					i = InputValidate.IsValidSignedNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
-					return (int)Int64.Parse(SpecificValueBox.Text);
+					if (!i)
+						return null;
+					int value = (int)Int64.Parse(SpecificValueBox.Text);
+					switch (GetDataSize())
+					{
+						case atype.BYTE:
+							return (int)(byte)value;
+						case atype.WORD:
+							return (int)(ushort)value;
+						case atype.DWORD:
+							return (int)(uint)value;
+					}
+					return value;
 				case asigned.HEX:
 					i = InputValidate.IsValidHexNumber(SpecificValueBox.Text);
-					if (!i) return -99999999;
+					if (!i)
+						return null;
 					return (int)Int64.Parse(SpecificValueBox.Text, NumberStyles.HexNumber);
 			}
-			return -99999999; //What are the odds someone wants to search for this value?
+			return null;
 		}
 
 		private int GetSpecificAddress()
@@ -1085,40 +1206,113 @@ namespace BizHawk.MultiClient
 			return true;
 		}
 
-		private void ConvertListDataType(asigned s)
+		private void ConvertListsDataType(asigned s)
 		{
 			for (int x = 0; x < searchList.Count; x++)
 				searchList[x].signed = s;
+			for (int x = 0; x < undoList.Count; x++)
+				undoList[x].signed = s;
+			for (int x = 0; x < weededList.Count; x++)
+				weededList[x].signed = s;
+			for (int x = 0; x < redoList.Count; x++)
+				redoList[x].signed = s;
+			SetSpecificValueBoxMaxLength();
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
 		}
 
-		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ConvertListsDataSize(atype s, bool bigendian)
 		{
-			unsignedToolStripMenuItem.Checked = false;
-			signedToolStripMenuItem.Checked = true;
-			hexadecimalToolStripMenuItem.Checked = false;
-			ConvertListDataType(asigned.SIGNED);
+			ConvertDataSize(s, bigendian, ref searchList);
+			ConvertDataSize(s, bigendian, ref undoList);
+			ConvertDataSize(s, bigendian, ref weededList);
+			ConvertDataSize(s, bigendian, ref redoList);
 			SetSpecificValueBoxMaxLength();
+			sortReverse = false;
+			sortedCol = "";
 			DisplaySearchList();
+		}
+
+		private void ConvertDataSize(atype s, bool bigendian, ref List<Watch> list)
+		{
+			List<Watch> converted = new List<Watch>();
+			int divisor = 1;
+			if (!includeMisalignedToolStripMenuItem.Checked)
+			{
+				switch (s)
+				{
+					case atype.WORD:
+						divisor = 2;
+						break;
+					case atype.DWORD:
+						divisor = 4;
+						break;
+				}
+			}
+			for (int x = 0; x < list.Count; x++)
+				if (list[x].address % divisor == 0)
+				{
+					int changes = list[x].changecount;
+					list[x].type = s;
+					list[x].bigendian = GetBigEndian();
+					list[x].PeekAddress(Domain);
+					list[x].prev = list[x].value;
+					list[x].original = list[x].value;
+					list[x].lastchange = list[x].value;
+					list[x].lastsearch = list[x].value;
+					list[x].changecount = changes;
+					converted.Add(list[x]);
+				}
+			list = converted;
 		}
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Watch specificValue = new Watch();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
+			specificValue.signed = asigned.UNSIGNED;
+			specificValue.type = GetDataSize();
+			string converted = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = true;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = false;
-			ConvertListDataType(asigned.UNSIGNED);
-			SetSpecificValueBoxMaxLength();
-			DisplaySearchList();
+			SpecificValueBox.Text = converted;
+			ConvertListsDataType(asigned.UNSIGNED);
+		}
+
+		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Watch specificValue = new Watch();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
+			specificValue.signed = asigned.SIGNED;
+			specificValue.type = GetDataSize();
+			string converted = specificValue.ValueToString();
+			unsignedToolStripMenuItem.Checked = false;
+			signedToolStripMenuItem.Checked = true;
+			hexadecimalToolStripMenuItem.Checked = false;
+			SpecificValueBox.Text = converted;
+			ConvertListsDataType(asigned.SIGNED);
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			Watch specificValue = new Watch();
+			int? value = GetSpecificValue();
+			ValidateSpecificValue(value);
+			specificValue.value = (int)value;
+			specificValue.signed = asigned.HEX;
+			specificValue.type = GetDataSize();
+			string converted = specificValue.ValueToString();
 			unsignedToolStripMenuItem.Checked = false;
 			signedToolStripMenuItem.Checked = false;
 			hexadecimalToolStripMenuItem.Checked = true;
-			ConvertListDataType(asigned.HEX);
-			SetSpecificValueBoxMaxLength();
-			DisplaySearchList();
+			SpecificValueBox.Text = converted;
+			ConvertListsDataType(asigned.HEX);
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1196,7 +1390,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
-			SetSpecificValueBoxMaxLength();
+			ConvertListsDataSize(atype.BYTE, GetBigEndian());
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1204,7 +1398,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
-			SetSpecificValueBoxMaxLength();
+			ConvertListsDataSize(atype.WORD, GetBigEndian());
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1212,19 +1406,38 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
-			SetSpecificValueBoxMaxLength();
+			ConvertListsDataSize(atype.DWORD, GetBigEndian());
+		}
+
+		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			includeMisalignedToolStripMenuItem.Checked ^= true;
+			if (!includeMisalignedToolStripMenuItem.Checked)
+				ConvertListsDataSize(GetDataSize(), GetBigEndian());
+		}
+
+		private void SetLittleEndian()
+		{
+			bigEndianToolStripMenuItem.Checked = false;
+			littleEndianToolStripMenuItem.Checked = true;
+			ConvertListsDataSize(GetDataSize(), false);
+		}
+
+		private void SetBigEndian()
+		{
+			bigEndianToolStripMenuItem.Checked = true;
+			littleEndianToolStripMenuItem.Checked = false;
+			ConvertListsDataSize(GetDataSize(), true);
 		}
 
 		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bigEndianToolStripMenuItem.Checked = true;
-			littleEndianToolStripMenuItem.Checked = false;
+			SetBigEndian();
 		}
 
 		private void littleEndianToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			bigEndianToolStripMenuItem.Checked = false;
-			littleEndianToolStripMenuItem.Checked = true;
+			SetLittleEndian();
 		}
 
 		private void AutoSearchCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1265,69 +1478,18 @@ namespace BizHawk.MultiClient
 
 		private bool SaveSearchFile(string path)
 		{
-			var file = new FileInfo(path);
-
-			using (StreamWriter sw = new StreamWriter(path))
-			{
-				string str = "Domain " + Domain.Name + "\n";
-
-				for (int x = 0; x < searchList.Count; x++)
-				{
-					str += string.Format("{0:X4}", searchList[x].address) + "\t";
-					str += searchList[x].GetTypeByChar().ToString() + "\t";
-					str += searchList[x].GetSignedByChar().ToString() + "\t";
-
-					if (searchList[x].bigendian == true)
-						str += "1\t";
-					else
-						str += "0\t";
-
-					str += searchList[x].notes + "\n";
-				}
-
-				sw.WriteLine(str);
-			}
-			return true;
-		}
-
-		private FileInfo GetSaveFileFromUser()
-		{
-			var sfd = new SaveFileDialog();
-			if (currentSearchFile.Length > 0)
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentSearchFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-			    sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			else
-			{
-				sfd.FileName = "NULL";
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
-			}
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			Global.Sound.StopSound();
-			var result = sfd.ShowDialog();
-			Global.Sound.StartSound();
-			if (result != DialogResult.OK)
-				return null;
-			var file = new FileInfo(sfd.FileName);
-			return file;
+			return WatchCommon.SaveWchFile(path, Domain.Name, searchList);
 		}
 
 		public void SaveAs()
 		{
-			var file = GetSaveFileFromUser();
+			var file = WatchCommon.GetSaveFileFromUser(currentFile);
 			if (file != null)
 			{
 				SaveSearchFile(file.FullName);
-				currentSearchFile = file.FullName;
-				OutputLabel.Text = Path.GetFileName(currentSearchFile) + " saved.";
-				Global.Config.RecentSearches.Add(currentSearchFile);
+				currentFile = file.FullName;
+				MessageLabel.Text = Path.GetFileName(currentFile) + " saved.";
+				Global.Config.RecentSearches.Add(currentFile);
 			}
 		}
 
@@ -1343,106 +1505,27 @@ namespace BizHawk.MultiClient
 			DisplaySearchList();
 		}
 
-		public int HowMany(string str, char c)
-		{
-			int count = 0;
-			for (int x = 0; x < str.Length; x++)
-			{
-				if (str[x] == c)
-					count++;
-			}
-			return count;
-		}
-
-		private int GetDomainPos(string name)
-		{
-			//Attempts to find the memory domain by name, if it fails, it defaults to index 0
-			for (int x = 0; x < Global.Emulator.MemoryDomains.Count; x++)
-			{
-				if (Global.Emulator.MemoryDomains[x].Name == name)
-					return x;
-			}
-			return 0;
-		}
-
 		bool LoadSearchFile(string path, bool append, bool truncate, List<Watch> list)
 		{
-			int y, z;
-			var file = new FileInfo(path);
-			if (file.Exists == false) return false;
+			string domain = "";
+			bool result = WatchCommon.LoadWatchFile(path, append, list, out domain);
 
-			using (StreamReader sr = file.OpenText())
+			if (result)
 			{
-				if (!append && !truncate)
-					currentSearchFile = path;
-
-				int count = 0;
-				string s = "";
-				string temp = "";
-
 				if (!append)
 				{
-					list.Clear();  //Wipe existing list and read from file
-					prevList.Clear();
+					currentFile = path;
 				}
 
-				while ((s = sr.ReadLine()) != null)
-				{
-					//parse each line and add to watchList
+				MessageLabel.Text = Path.GetFileNameWithoutExtension(path);
+				SetTotal();
+				Global.Config.RecentSearches.Add(path);
+				SetMemoryDomain(WatchCommon.GetDomainPos(domain));
+				return true;
 
-					//.wch files from other emulators start with a number representing the number of watch, that line can be discarded here
-					//Any properly formatted line couldn't possibly be this short anyway, this also takes care of any garbage lines that might be in a file
-					if (s.Length < 5) continue;
-
-					if (s.Substring(0, 6) == "Domain")
-						SetMemoryDomain(GetDomainPos(s.Substring(7, s.Length - 7)));
-
-					z = HowMany(s, '\t');
-					if (z == 5)
-					{
-						//If 5, then this is a .wch file format made from another emulator, the first column (watch position) is not needed here
-						y = s.IndexOf('\t') + 1;
-						s = s.Substring(y, s.Length - y);   //5 digit value representing the watch position number
-					}
-					else if (z != 4)
-						continue;   //If not 4, something is wrong with this line, ignore it
-					count++;
-					Watch w = new Watch();
-
-					temp = s.Substring(0, s.IndexOf('\t'));
-					w.address = int.Parse(temp, NumberStyles.HexNumber);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Type
-					w.SetTypeByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Signed
-					w.SetSignedByChar(s[0]);
-
-					y = s.IndexOf('\t') + 1;
-					s = s.Substring(y, s.Length - y);   //Endian
-					y = Int16.Parse(s[0].ToString());
-					if (y == 0)
-						w.bigendian = false;
-					else
-						w.bigendian = true;
-
-					//w.notes = s.Substring(2, s.Length - 2);   //User notes
-
-					list.Add(w);
-				}
-
-				if (!append && !truncate)
-				{
-					Global.Config.RecentSearches.Add(file.FullName);
-					OutputLabel.Text = Path.GetFileName(file.FullName);
-					//Update the number of watches
-					SetTotal();
-				}
 			}
-
-			return true;
+			else
+				return false;
 		}
 
 		private void recentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1503,13 +1586,13 @@ namespace BizHawk.MultiClient
 		private FileInfo GetFileFromUser()
 		{
 			var ofd = HawkUIFactory.CreateOpenFileDialog();
-			if (currentSearchFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.WatchPath, "");
 			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
 			ofd.RestoreDirectory = true;
-			if (currentSearchFile.Length > 0)
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentSearchFile);
+			if (currentFile.Length > 0)
+				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 			Global.Sound.StopSound();
 			var result = ofd.ShowDialog();
 			Global.Sound.StartSound();
@@ -1533,7 +1616,7 @@ namespace BizHawk.MultiClient
 		{
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.RamSearchSaveWindowPosition;
 			previewModeToolStripMenuItem.Checked = Global.Config.RamSearchPreviewMode;
-			alwaysExludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExludeRamWatch;
+			alwaysExcludeRamSearchListToolStripMenuItem.Checked = Global.Config.AlwaysExcludeRamWatch;
 		}
 
 		private void searchToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1558,10 +1641,10 @@ namespace BizHawk.MultiClient
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.Compare(currentSearchFile, "") == 0) 
+			if (string.Compare(currentFile, "") == 0) 
 				SaveAs();
 			else
-				SaveSearchFile(currentSearchFile);
+				SaveSearchFile(currentFile);
 		}
 
 		private void addSelectedToRamWatchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1610,16 +1693,33 @@ namespace BizHawk.MultiClient
 		private void sinceLastSearchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 0;
-		}
-
-		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RamSearchPreviousAs = 2;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
 		}
 
 		private void originalValueToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RamSearchPreviousAs = 1;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
+		}
+
+		private void sinceLastFrameToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviousAs = 2;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
+		}
+
+		private void sinceLastChangeToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.RamSearchPreviousAs = 3;
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
 		}
 
 		private void definePreviousValueToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1630,21 +1730,26 @@ namespace BizHawk.MultiClient
 					sinceLastSearchToolStripMenuItem.Checked = true;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = false;
 					break;
 				case 1: //Original value (since Start new search)
 					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = true;
 					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = false;
 					break;
+				default:
 				case 2: //Since last Frame
 					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = true;
+					sinceLastChangeToolStripMenuItem.Checked = false;
 					break;
-				default://Default to last search
-					sinceLastSearchToolStripMenuItem.Checked = true;
+				case 3: //Since last Change
+					sinceLastSearchToolStripMenuItem.Checked = false;
 					originalValueToolStripMenuItem.Checked = false;
 					sinceLastFrameToolStripMenuItem.Checked = false;
+					sinceLastChangeToolStripMenuItem.Checked = true;
 					break;
 			}
 		}
@@ -1749,9 +1854,9 @@ namespace BizHawk.MultiClient
 					weededList.Add(searchList[x]);
 			}
 			SaveUndo();
-			OutputLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
+			MessageLabel.Text = MakeAddressString(searchList.Count - weededList.Count) + " removed";
 			ReplaceSearchListWithWeedOutList();
-			if (Global.Config.RamSearchPreviousAs != 1) MakePreviousList(); //1 = Original value
+			UpdateLastSearch();
 			DisplaySearchList();
 		}
 
@@ -1770,7 +1875,7 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// Removes Ram Watch list from the search list
 		/// </summary>
-		private void ExludeRamWatchList()
+		private void ExcludeRamWatchList()
 		{
 			DoTruncate(Global.MainForm.RamWatch1.GetRamWatchList());
 		}
@@ -1780,30 +1885,38 @@ namespace BizHawk.MultiClient
 			TruncateFromFile();
 		}
 
-		private void exludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
+		private void excludeRamWatchListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			ExludeRamWatchList();
+			ExcludeRamWatchList();
 		}
 
 		private void ExcludeRamWatchtoolStripButton2_Click(object sender, EventArgs e)
 		{
-			ExludeRamWatchList();
+			ExcludeRamWatchList();
 		}
 
-		private void alwaysExludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
+		private void alwaysExcludeRamSearchListToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.AlwaysExludeRamWatch ^= true;
+			Global.Config.AlwaysExcludeRamWatch ^= true;
 		}
 
 		private void CopyValueToPrev()
 		{
 			for (int x = 0; x < searchList.Count; x++)
 			{
-				prevList[x].value = searchList[x].value;
+				searchList[x].lastsearch = searchList[x].value;
+				searchList[x].original = searchList[x].value;
 				searchList[x].prev = searchList[x].value;
+				searchList[x].lastchange = searchList[x].value;
 			}
 			DisplaySearchList();
 			DoPreview();
+		}
+
+		private void UpdateLastSearch()
+		{
+			for (int x = 0; x < searchList.Count; x++)
+				searchList[x].lastsearch = searchList[x].value;
 		}
 
 		private void SetCurrToPrevtoolStripButton2_Click(object sender, EventArgs e)
@@ -2117,7 +2230,7 @@ namespace BizHawk.MultiClient
 			string columnName = SearchListView.Columns[columnToOrder].Text;
 			if (sortedCol.CompareTo(columnName) != 0)
 				sortReverse = false;
-			searchList.Sort((x, y) => x.CompareTo(y, columnName) * (sortReverse ? -1 : 1));
+			searchList.Sort((x, y) => x.CompareTo(y, columnName, (prevDef)Global.Config.RamSearchPreviousAs) * (sortReverse ? -1 : 1));
 			sortedCol = columnName;
 			sortReverse = !(sortReverse);
 			SearchListView.Refresh();
@@ -2171,6 +2284,16 @@ namespace BizHawk.MultiClient
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			DoRedo();
+		}
+
+		private void viewInHexEditorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ListView.SelectedIndexCollection indexes =SearchListView.SelectedIndices;
+			if (indexes.Count > 0)
+			{
+				Global.MainForm.LoadHexEditor();
+				Global.MainForm.HexEditor1.GoToAddress(searchList[indexes[0]].address);
+			}
 		}
 	}
 }

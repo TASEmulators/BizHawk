@@ -7,6 +7,7 @@ namespace BizHawk.MultiClient
 {
 	public enum atype { BYTE, WORD, DWORD, SEPARATOR };   //TODO: more custom types too like 12.4 and 24.12 fixed point
 	public enum asigned { SIGNED, UNSIGNED, HEX };
+	public enum prevDef { LASTSEARCH, ORIGINAL, LASTFRAME, LASTCHANGE };
 
 	/// <summary>
 	/// An object that represent a ram address and related properties
@@ -23,6 +24,9 @@ namespace BizHawk.MultiClient
 			notes = "";
 			changecount = 0;
 			prev = 0;
+			original = 0;
+			lastchange = 0;
+			lastsearch = 0;
 		}
 
 		public Watch(Watch w)
@@ -35,6 +39,9 @@ namespace BizHawk.MultiClient
 			notes = w.notes;
 			changecount = w.changecount;
 			prev = w.prev;
+			original = w.original;
+			lastchange = w.lastchange;
+			lastsearch = w.lastsearch;
 		}
 
 		public Watch(int Address, int Value, atype Type, asigned Signed, bool BigEndian, string Notes)
@@ -46,11 +53,17 @@ namespace BizHawk.MultiClient
 			bigendian = BigEndian;
 			notes = Notes;
 			changecount = 0;
-			prev = 0;
+			prev = Value;
+			original = Value;
+			lastchange = Value;
+			lastsearch = Value;
 		}
 		public int address { get; set; }
 		public int value { get; set; }         //Current value
 		public int prev { get; set; }
+		public int original { get; set; }
+		public int lastchange { get; set; }
+		public int lastsearch { get; set; }
 		public atype type { get; set; }        //Address type (byte, word, dword, etc
 		public asigned signed { get; set; }    //Signed/Unsigned?
 		public bool bigendian { get; set; }
@@ -129,33 +142,6 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		private void PeekByte(MemoryDomain domain)
-		{
-			value = domain.PeekByte(address);
-		}
-
-		private int PeekWord(MemoryDomain domain, int addr)
-		{
-			int temp = 0;
-			if (bigendian)
-			{
-				temp = ((domain.PeekByte(addr) * 256) +
-					domain.PeekByte(addr + 1));
-			}
-			else
-			{
-				temp = ((domain.PeekByte(addr) +
-					domain.PeekByte(addr + 1) * 256));
-			}
-			return temp;
-		}
-
-		private void PeekDWord(MemoryDomain domain)
-		{
-			value = ((PeekWord(domain, address) * 65536) +
-				PeekWord(domain, address + 2));
-		}
-
 		public void PeekAddress(MemoryDomain domain)
 		{
 			if (type == atype.SEPARATOR)
@@ -166,18 +152,47 @@ namespace BizHawk.MultiClient
 			switch (type)
 			{
 				case atype.BYTE:
-					PeekByte(domain);
+					value = domain.PeekByte(address);
 					break;
 				case atype.WORD:
-					value = PeekWord(domain, address);
+					if (bigendian)
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 8;
+						value |= domain.PeekByte(address + 1);
+					}
+					else
+					{
+						value = 0;
+						value |= domain.PeekByte(address);
+						value |= domain.PeekByte(address + 1) << 8;
+					}
 					break;
 				case atype.DWORD:
-					PeekDWord(domain);
+					if (bigendian)
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 24;
+						value |= domain.PeekByte(address + 1) << 16;
+						value |= domain.PeekByte(address + 2) << 8;
+						value |= domain.PeekByte(address + 3) << 0;
+					}
+					else
+					{
+						value = 0;
+						value |= domain.PeekByte(address) << 0;
+						value |= domain.PeekByte(address + 1) << 8;
+						value |= domain.PeekByte(address + 2) << 16;
+						value |= domain.PeekByte(address + 3) << 24;
+					}
 					break;
 			}
 
 			if (value != prev)
+			{
+				lastchange = prev;
 				changecount++;
+			}
 		}
 
 		private void PokeByte(MemoryDomain domain)
@@ -189,13 +204,13 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				domain.PokeByte(address, (byte)(value / 256));
-				domain.PokeByte(address + 1, (byte)(value % 256));
+				domain.PokeByte(address + 0, (byte)(value >> 8));
+				domain.PokeByte(address + 1, (byte)(value));
 			}
 			else
 			{
-				domain.PokeByte(address + 1, (byte)(value / 256));
-				domain.PokeByte(address, (byte)(value % 256));
+				domain.PokeByte(address + 0, (byte)(value));
+				domain.PokeByte(address + 1, (byte)(value >> 8));
 			}
 		}
 
@@ -203,17 +218,17 @@ namespace BizHawk.MultiClient
 		{
 			if (bigendian)
 			{
-				domain.PokeByte(address, (byte)(value << 6));
-				domain.PokeByte(address + 1, (byte)(value << 4));
-				domain.PokeByte(address + 2, (byte)(value << 2));
+				domain.PokeByte(address + 0, (byte)(value << 24));
+				domain.PokeByte(address + 1, (byte)(value << 16));
+				domain.PokeByte(address + 2, (byte)(value << 8));
 				domain.PokeByte(address + 3, (byte)(value));
 			}
 			else
 			{
-				domain.PokeByte(address + 1, (byte)(value << 6));
-				domain.PokeByte(address, (byte)(value << 4));
-				domain.PokeByte(address + 3, (byte)(value << 2));
-				domain.PokeByte(address + 2, (byte)(value));
+				domain.PokeByte(address + 0, (byte)(value));
+				domain.PokeByte(address + 1, (byte)(value << 8));
+				domain.PokeByte(address + 2, (byte)(value << 16));
+				domain.PokeByte(address + 3, (byte)(value << 24));
 			}
 		}
 
@@ -236,6 +251,30 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public uint UnsignedVal(int val)
+		{
+			switch (type)
+			{
+				case atype.BYTE:
+					return (uint)(byte)val;
+				case atype.WORD:
+					return (uint)(ushort)val;
+			}
+			return (uint)val;
+		}
+
+		public int SignedVal(int val)
+		{
+			switch (type)
+			{
+				case atype.BYTE:
+					return (int)(sbyte)val;
+				case atype.WORD:
+					return (int)(short)val;
+			}
+			return val;
+		}
+
 		public override string ToString()
 		{
 			if (type == atype.SEPARATOR)
@@ -243,11 +282,11 @@ namespace BizHawk.MultiClient
 
 			StringBuilder str = new StringBuilder(notes);
 			str.Append(": ");
-			str.Append(ValueToString());
+			str.Append(ValToString(value));
 			return str.ToString();
 		}
 
-		public string ValueToString()
+		public string ValToString(int val)
 		{
 			if (type == atype.SEPARATOR)
 				return "";
@@ -255,69 +294,64 @@ namespace BizHawk.MultiClient
 			{
 				switch (signed)
 				{
+					default:
+					case asigned.UNSIGNED:
+						return UnsignedVal(val).ToString();
+					case asigned.SIGNED:
+						return SignedVal(val).ToString();
 					case asigned.HEX:
 						switch (type)
 						{
 							default:
 							case atype.BYTE:
-								return String.Format("{0:X2}", value);
+								return String.Format("{0:X2}", val);
 							case atype.WORD:
-								return String.Format("{0:X4}", value);
+								return String.Format("{0:X4}", val);
 							case atype.DWORD:
-								return String.Format("{0:X8}", value);
-						}
-					case asigned.SIGNED:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return ((sbyte)value).ToString();
-							case atype.WORD:
-								return ((short)value).ToString();
-							case atype.DWORD:
-								return ((int)value).ToString();
-						}
-					default:
-					case asigned.UNSIGNED:
-					switch (type)
-						{
-						default:
-							case atype.BYTE:
-								return ((byte)value).ToString();
-							case atype.WORD:
-								return ((ushort)value).ToString();
-							case atype.DWORD:
-								return ((uint)value).ToString();
+								return String.Format("{0:X8}", val);
 						}
 				}
 			}
 		}
 
+		public string ValueToString()
+		{
+			return ValToString(value);
+		}
+
 		public string PrevToString()
 		{
-			if (type == atype.SEPARATOR)
-				return "";
-			else
+			return ValToString(prev);
+		}
+
+		public string OriginalToString()
+		{
+			return ValToString(original);
+		}
+
+		public string LastChangeToString()
+		{
+			return ValToString(lastchange);
+		}
+
+		public string LastSearchToString()
+		{
+			return ValToString(lastsearch);
+		}
+
+		private int ComparePrevious(Watch Other, prevDef previous)
+		{
+			switch (previous)
 			{
-				switch (signed)
-				{
-					case asigned.HEX:
-						switch (type)
-						{
-							default:
-							case atype.BYTE:
-								return String.Format("{0:X2}", prev);
-							case atype.WORD:
-								return String.Format("{0:X4}", prev);
-							case atype.DWORD:
-								return String.Format("{0:X8}", prev);
-						}
-					case asigned.SIGNED:
-						return ((sbyte)prev).ToString();
-					default:
-					case asigned.UNSIGNED:
-						return prev.ToString();
-				}
+				case prevDef.LASTSEARCH:
+					return CompareLastSearch(Other);
+				case prevDef.ORIGINAL:
+					return CompareOriginal(Other);
+				default:
+				case prevDef.LASTFRAME:
+					return ComparePrev(Other);
+				case prevDef.LASTCHANGE:
+					return CompareLastChange(Other);
 			}
 		}
 
@@ -333,9 +367,18 @@ namespace BizHawk.MultiClient
 
 		private int CompareValue(Watch Other)
 		{
-			if (this.value < Other.value)
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.value) < SignedVal(Other.value))
+					return -1;
+				else if (SignedVal(this.value) > SignedVal(Other.value))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.value) < UnsignedVal(Other.value))
 				return -1;
-			else if (this.value > Other.value)
+			else if (UnsignedVal(this.value) > UnsignedVal(Other.value))
 				return 1;
 			else
 				return 0;
@@ -343,9 +386,75 @@ namespace BizHawk.MultiClient
 
 		private int ComparePrev(Watch Other)
 		{
-			if (this.prev < Other.prev)
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.prev) < SignedVal(Other.prev))
+					return -1;
+				else if (SignedVal(this.prev) > SignedVal(Other.prev))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.prev) < UnsignedVal(Other.prev))
 				return -1;
-			else if (this.prev > Other.prev)
+			else if (UnsignedVal(this.prev) > UnsignedVal(Other.prev))
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareOriginal(Watch Other)
+		{
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.original) < SignedVal(Other.original))
+					return -1;
+				else if (SignedVal(this.original) > SignedVal(Other.original))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.original) < UnsignedVal(Other.original))
+				return -1;
+			else if (UnsignedVal(this.original) > UnsignedVal(Other.original))
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareLastChange(Watch Other)
+		{
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.lastchange) < SignedVal(Other.lastchange))
+					return -1;
+				else if (SignedVal(this.lastchange) > SignedVal(Other.lastchange))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.lastchange) < UnsignedVal(Other.lastchange))
+				return -1;
+			else if (UnsignedVal(this.lastchange) > UnsignedVal(Other.lastchange))
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareLastSearch(Watch Other)
+		{
+			if (signed == asigned.SIGNED)
+			{
+				if (SignedVal(this.lastsearch) < SignedVal(Other.lastsearch))
+					return -1;
+				else if (SignedVal(this.lastsearch) > SignedVal(Other.lastsearch))
+					return 1;
+				else
+					return 0;
+			}
+			if (UnsignedVal(this.lastsearch) < UnsignedVal(Other.lastsearch))
+				return -1;
+			else if (UnsignedVal(this.lastsearch) > UnsignedVal(Other.lastsearch))
 				return 1;
 			else
 				return 0;
@@ -373,7 +482,7 @@ namespace BizHawk.MultiClient
 				return this.notes.CompareTo(Other.notes);
 		}
 
-		public int CompareTo(Watch Other, string parameter)
+		public int CompareTo(Watch Other, string parameter, prevDef previous)
 		{
 			int compare = 0;
 			if (parameter == "Address")
@@ -387,7 +496,7 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -406,7 +515,7 @@ namespace BizHawk.MultiClient
 						compare = CompareChanges(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -416,7 +525,7 @@ namespace BizHawk.MultiClient
 
 			else if (parameter == "Prev")
 			{
-				compare = ComparePrev(Other);
+				compare = ComparePrevious(Other, previous);
 				if (compare == 0)
 				{
 					compare = CompareAddress(Other);
@@ -444,7 +553,7 @@ namespace BizHawk.MultiClient
 						compare = CompareValue(Other);
 						if (compare == 0)
 						{
-							compare = ComparePrev(Other);
+							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
 								compare = CompareNotes(Other);
 						}
@@ -465,7 +574,7 @@ namespace BizHawk.MultiClient
 						{
 							compare = CompareChanges(Other);
 							if (compare == 0)
-								compare = ComparePrev(Other);
+								compare = ComparePrevious(Other, previous);
 						}
 					}
 				}

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Drawing;
+using sysdrawing2d=System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
@@ -48,6 +49,10 @@ namespace BizHawk.MultiClient
 			if (width == 0 || height == 0) return;
 
 			bool needsRecreating = false;
+
+			//experiment: 
+			//needsRecreating = true;
+
 			if (Texture == null)
 			{
 				needsRecreating = true;
@@ -60,6 +65,8 @@ namespace BizHawk.MultiClient
 					needsRecreating = true;
 				}
 			}
+
+
 			// If we need to recreate the texture, do so.
 			if (needsRecreating)
 			{
@@ -76,12 +83,11 @@ namespace BizHawk.MultiClient
 				while (textureWidth < imageWidth) textureWidth <<= 1;
 				while (textureHeight < imageHeight) textureHeight <<= 1;
 				// Create a new texture instance.
-				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.Dynamic, Format.X8R8G8B8, Pool.Default);
+				Texture = new Texture(GraphicsDevice, textureWidth, textureHeight, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
 			}
 
 			// Copy the image data to the texture.
-			surface.Lock();
-			using (var Data = Texture.LockRectangle(0, new Rectangle(0, 0, imageWidth, imageHeight), LockFlags.None).Data)
+			using (var Data = Texture.LockRectangle(0, LockFlags.Discard | LockFlags.NoDirtyUpdate).Data)
 			{
 				if (imageWidth == textureWidth)
 				{
@@ -119,9 +125,13 @@ namespace BizHawk.MultiClient
 	}
 #endif
 
+
 	public interface IRenderer : IDisposable
 	{
+		void FastRenderAndPresent(DisplaySurface surface);
 		void Render(DisplaySurface surface);
+		void RenderOverlay(DisplaySurface surface);
+		void Present();
 		bool Resized { get; set; }
 		Size NativeSize { get; }
 	}
@@ -132,6 +142,7 @@ namespace BizHawk.MultiClient
 		public void Dispose() { }
 		public void Render(DisplaySurface surface)
 		{
+			backingControl.ReleaseCallback = RetainedViewportPanelDisposeCallback;
 			//Color BackgroundColor = Color.FromArgb(video.BackgroundColor);
 			//int[] data = video.GetVideoBuffer();
 
@@ -143,10 +154,57 @@ namespace BizHawk.MultiClient
 
 			//bmp.UnlockBits(bmpdata);
 
-			Bitmap bmp = (Bitmap)surface.PeekBitmap().Clone();
+			lock(this)
+				tempBuffer = surfaceSet.AllocateSurface(backingControl.Width, backingControl.Height, false);
 
-			backingControl.SetBitmap(bmp);
+			RenderInternal(surface, false);
 		}
+		SwappableDisplaySurfaceSet surfaceSet = new SwappableDisplaySurfaceSet();
+
+		DisplaySurface tempBuffer;
+
+		bool RetainedViewportPanelDisposeCallback(Bitmap bmp)
+		{
+			lock (this)
+			{
+				DisplaySurface tempSurface = DisplaySurface.DisplaySurfaceWrappingBitmap(bmp);
+				surfaceSet.ReleaseSurface(tempSurface);
+			}
+			return false;
+		}
+
+		void RenderInternal(DisplaySurface surface, bool transparent = false)
+		{
+			using (var g = Graphics.FromImage(tempBuffer.PeekBitmap()))
+			{
+				g.PixelOffsetMode = sysdrawing2d.PixelOffsetMode.HighSpeed;
+				g.InterpolationMode = sysdrawing2d.InterpolationMode.NearestNeighbor;
+				if (transparent) g.CompositingMode = sysdrawing2d.CompositingMode.SourceOver;
+				else g.CompositingMode = sysdrawing2d.CompositingMode.SourceCopy;
+				g.CompositingQuality = sysdrawing2d.CompositingQuality.HighSpeed;
+				if (backingControl.Width == surface.Width && backingControl.Height == surface.Height)
+					g.DrawImageUnscaled(surface.PeekBitmap(), 0, 0);
+				else
+					g.DrawImage(surface.PeekBitmap(), 0, 0, backingControl.Width, backingControl.Height);
+			}
+		}
+
+		public void FastRenderAndPresent(DisplaySurface surface)
+		{
+			backingControl.SetBitmap((Bitmap)surface.PeekBitmap().Clone());
+		}
+
+		public void RenderOverlay(DisplaySurface surface)
+		{
+			RenderInternal(surface, true);
+		}
+
+		public void Present()
+		{
+			backingControl.SetBitmap(tempBuffer.PeekBitmap());
+			tempBuffer = null;
+		}
+
 		public SysdrawingRenderPanel(RetainedViewportPanel control)
 		{
 			backingControl = control;
@@ -245,14 +303,30 @@ namespace BizHawk.MultiClient
 
 			Resized = false;
 			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
-			Device.Present(Present.DoNotWait);
+			Present();
+		}
+
+		public void FastRenderAndPresent(DisplaySurface surface)
+		{
+			Render(surface);
+			Present();
+		}
+
+		public void RenderOverlay(DisplaySurface surface)
+		{
+			RenderWrapper(() => RenderExec(surface, true));
 		}
 
 		public void Render(DisplaySurface surface)
 		{
+			RenderWrapper(() => RenderExec(surface, false));
+		}
+
+		public void RenderWrapper(Action todo)
+		{
 			try
 			{
-				RenderExec(surface);
+				todo();
 			}
 			catch (Direct3D9Exception)
 			{
@@ -267,11 +341,11 @@ namespace BizHawk.MultiClient
 				// lets try recovery!
 				DestroyDevice();
 				backingControl.Invoke(() => CreateDevice());
-				RenderExec(surface);
+				todo();
 			}
 		}
 
-		private void RenderExec(DisplaySurface surface)
+		private void RenderExec(DisplaySurface surface, bool overlay)
 		{
 			if (surface == null)
 			{
@@ -283,13 +357,18 @@ namespace BizHawk.MultiClient
 				backingControl.Invoke(() => CreateDevice());
 			Resized = false;
 
+
+
 			//TODO
 			//BackgroundColor = Color.FromArgb(video.BackgroundColor);
+			if (overlay)
+			{
+				//return;
+			}
 
 			Texture.SetImage(surface, surface.Width, surface.Height);
 
-			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
-
+			if(!overlay) Device.Clear(ClearFlags.Target, BackgroundColor, 0.0f, 0);
 			// figure out scaling factor
 			float widthScale = (float)backingControl.Size.Width / surface.Width;
 			float heightScale = (float)backingControl.Size.Height / surface.Height;
@@ -297,17 +376,27 @@ namespace BizHawk.MultiClient
 
 			Device.BeginScene();
 
-			Sprite.Begin(SpriteFlags.None);
+			SpriteFlags flags = SpriteFlags.None;
+			if (overlay) flags |= SpriteFlags.AlphaBlend;
+			Sprite.Begin(flags);
 			Device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-			Device.SetSamplerState(1, SamplerState.MagFilter, TextureFilter.Point);
+			Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
+			//if (overlay) Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			Sprite.End();
 
 			Device.EndScene();
-			Device.Present(Present.DoNotWait);
 		}
 
+		public void Present()
+		{
+			//Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
+			Device.Present(SlimDX.Direct3D9.Present.None);
+			vsyncEvent.Set();
+		}
+
+		public static EventWaitHandle vsyncEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 
 		private bool disposed;
 

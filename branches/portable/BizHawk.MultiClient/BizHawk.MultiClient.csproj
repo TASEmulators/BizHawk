@@ -168,6 +168,7 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="FFmpegWriter.cs" />
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -308,6 +309,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IVideoWriter.cs" />
+    <Compile Include="tools\HexColor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\HexColor.Designer.cs">
+      <DependentUpon>HexColor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\WatchCommon.cs" />
     <Compile Include="WavWriter.cs" />
     <EmbeddedResource Include="config\GifAnimator.resx">
       <DependentUpon>GifAnimator.cs</DependentUpon>
@@ -340,6 +348,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SMStools\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexColor.resx">
+      <DependentUpon>HexColor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\LuaFunctionList.resx">
       <DependentUpon>LuaFunctionList.cs</DependentUpon>
@@ -753,6 +764,7 @@
     <None Include="images\Import.png" />
     <None Include="images\atari_controller.png" />
     <Content Include="images\logo.ico" />
+    <None Include="images\Paste.png" />
     <Content Include="output\gamedb.txt" />
     <Content Include="output\gamedb_neshomebrew.txt" />
     <Content Include="output\gamedb_pce_cd.txt" />

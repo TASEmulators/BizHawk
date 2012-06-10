@@ -468,8 +468,12 @@ namespace BizHawk.MultiClient
 		private void forceGDIPPresentationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayGDI ^= true;
-			Global.DisplayManager.Suspend();
 			SyncPresentationMode();
+		}
+
+		private void miSuppressGuiLayer_Click(object sender, EventArgs e)
+		{
+			Global.Config.SuppressGui ^= true;
 		}
 
 		private void debuggerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1196,6 +1200,7 @@ namespace BizHawk.MultiClient
 			startPausedToolStripMenuItem.Checked = Global.Config.StartPaused;
 			saveWindowPositionToolStripMenuItem.Checked = Global.Config.SaveWindowPosition;
 			forceGDIPPresentationToolStripMenuItem.Checked = Global.Config.DisplayGDI;
+			miSuppressGuiLayer.Checked = Global.Config.SuppressGui;
 			showMenuInFullScreenToolStripMenuItem.Checked = Global.Config.ShowMenuInFullscreen;
 			runInBackgroundToolStripMenuItem.Checked = Global.Config.RunInBackground;
 			acceptBackgroundInputToolStripMenuItem.Checked = Global.Config.AcceptBackgroundInput;

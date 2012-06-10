@@ -519,6 +519,7 @@ namespace BizHawk.MultiClient
 
 		private void InsertSeparator()
 		{
+			Changes();
 			Cheat c = new Cheat();
 			c.address = -1;
 
@@ -806,7 +807,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (string.Compare(Global.CheatList.currentCheatFile, "") == 0 || !Global.CheatList.Changes)
+			if (!Global.CheatList.Changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}

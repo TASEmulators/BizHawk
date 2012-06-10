@@ -32,7 +32,7 @@ namespace BizHawk.MultiClient
 		public bool PressRewind = false;
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
-		public bool StopOnEnd = false;
+		public bool StopOnEnd = true;
 		public bool UpdateFrame = false;
 
 		//avi/wav state
@@ -912,7 +912,27 @@ namespace BizHawk.MultiClient
 		private void FormDragDrop(object sender, DragEventArgs e)
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
+
+			bool isLua = false;
+			foreach (string path in filePaths)
+			{
+				if (Path.GetExtension(path).ToUpper() == ".LUA")
+				{
+					OpenLuaConsole();
+					LuaConsole1.LoadLuaFile(path);
+					isLua = true;
+				}
+			}
+			if (isLua)
+				return;
+
+			if (Path.GetExtension(filePaths[0]).ToUpper() == ".LUASES")
+			{
+				OpenLuaConsole();
+				LuaConsole1.LoadLuaSession(filePaths[0]);
+			}
+
+			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);
 				StartNewMovie(m, false);
@@ -1916,6 +1936,7 @@ namespace BizHawk.MultiClient
 				}
 
 				if (!suppressCaptureRewind && Global.Config.RewindEnabled) CaptureRewindState();
+
 				Global.MovieSession.Movie.CaptureState();
 
 				if (!runloop_frameadvance) genSound = true;
@@ -1952,15 +1973,18 @@ namespace BizHawk.MultiClient
 
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.PLAY)
 				{
-					if (Global.MovieSession.Movie.Length() == Global.Emulator.Frame && true == StopOnEnd)
+					if (Global.MovieSession.Movie.LogLength() == Global.Emulator.Frame + 1 && true == StopOnEnd)
 					{
-						StopOnEnd = false;
+						if (true == Global.MovieSession.Movie.TastudioOn)
+						{
+							StopOnEnd = false;
+						}
 						Global.MovieSession.Movie.SetMovieFinished();
 					}
 				}
 				if (Global.MovieSession.Movie.Mode == MOVIEMODE.FINISHED)
 				{
-					if (Global.MovieSession.Movie.Length() > Global.Emulator.Frame)
+					if (Global.MovieSession.Movie.LogLength() > Global.Emulator.Frame + 1)
 					{
 						Global.MovieSession.Movie.StartPlayback();
 						//Global.MovieSession.MovieControllerAdapter.SetControllersAsMnemonic(Global.MovieSession.Movie.GetInputFrame(Global.Emulator.Frame));
@@ -2053,8 +2077,8 @@ namespace BizHawk.MultiClient
 		{
 			//The other tool updates are earlier, TAStudio needs to be later so it can display the latest
 			//frame of execution in its list view.
-			TAStudio1.UpdateValues();
 			Global.MovieSession.Movie.CheckValidity();
+			TAStudio1.UpdateValues();
 		}
 
 		private unsafe Image MakeScreenshotImage()
@@ -2844,7 +2868,7 @@ namespace BizHawk.MultiClient
 				sfd.FileName = "NULL";
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
 			}
-			sfd.Filter = "AVI (*.avi)|*.avi|JMD (*.jmd)|*.jmd|WAV (*.wav)|*.wav|All Files|*.*";
+			sfd.Filter = "AVI (*.avi)|*.avi|JMD (*.jmd)|*.jmd|WAV (*.wav)|*.wav|Matroska (*.mkv)|*.mkv|All Files|*.*";
             RunLoopBlocked = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -2866,6 +2890,8 @@ namespace BizHawk.MultiClient
 				aw = new AviWriter();
 			else if (ext == ".wav")
 				aw = new WavWriterV();
+			else if (ext == ".mkv")
+				aw = new FFmpegWriter();
 			else // hmm?
 				aw = new AviWriter();
 			try
@@ -3263,5 +3289,7 @@ namespace BizHawk.MultiClient
 			}
 			FrameBufferResized();
 		}
+
+
 	}
 }

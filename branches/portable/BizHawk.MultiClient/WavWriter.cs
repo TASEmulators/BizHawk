@@ -254,7 +254,7 @@ namespace BizHawk.MultiClient
 
 		public void OpenFile(string baseName)
 		{
-			wavwriter = new WavWriter(CreateStreamIterator (baseName), sampleRate, channels);
+			wavwriter = new WavWriter(CreateStreamIterator(baseName), sampleRate, channels);
 		}
 
 		public void CloseFile()

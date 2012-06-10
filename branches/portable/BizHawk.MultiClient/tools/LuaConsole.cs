@@ -173,7 +173,7 @@ namespace BizHawk.MultiClient
 			return file;
 		}
 
-		private void LoadLuaFile(string path)
+		public void LoadLuaFile(string path)
 		{
 			if (LuaAlreadyInSession(path) == false)
 			{
@@ -362,9 +362,9 @@ namespace BizHawk.MultiClient
 		{
 			if (changes)
 			{
-                if (string.Compare(currentSessionFile, "") == 0)
-                    SaveAs();
-                else SaveSession(currentSessionFile);
+				if (string.Compare(currentSessionFile, "") == 0)
+					SaveAs();
+				else SaveSession(currentSessionFile);
 				Changes(false);
 				OutputMessages.Text = Path.GetFileName(currentSessionFile) + " saved.";
 			}
@@ -594,18 +594,22 @@ namespace BizHawk.MultiClient
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			try
 			{
-				if (Path.GetExtension(filePaths[0]) == (".lua") || Path.GetExtension(filePaths[0]) == (".txt"))
+				foreach (string path in filePaths)
 				{
-					LoadLuaFile(filePaths[0]);
-					DisplayLuaList();
-					UpdateNumberOfScripts();
-				}
-				else if (Path.GetExtension(filePaths[0]) == (".luases"))
-				{
-					LoadLuaSession(filePaths[0]);
-					RunLuaScripts();
-					DisplayLuaList();
-					UpdateNumberOfScripts();
+					if (Path.GetExtension(path) == (".lua") || Path.GetExtension(path) == (".txt"))
+					{
+						LoadLuaFile(path);
+						DisplayLuaList();
+						UpdateNumberOfScripts();
+					}
+					else if (Path.GetExtension(path) == (".luases"))
+					{
+						LoadLuaSession(path);
+						RunLuaScripts();
+						DisplayLuaList();
+						UpdateNumberOfScripts();
+						return;
+					}
 				}
 			}
 			catch (Exception ex)
@@ -746,7 +750,7 @@ namespace BizHawk.MultiClient
 			Global.Sound.StartSound();
 		}
 
-		private bool LoadLuaSession(string path)
+		public bool LoadLuaSession(string path)
 		{
 			var file = new FileInfo(path);
 			if (file.Exists == false) return false;
@@ -760,42 +764,42 @@ namespace BizHawk.MultiClient
 				bool enabled = false;
 				string s = "";
 				string temp = "";
-                LuaFile l;
+				LuaFile l;
 
 				while ((s = sr.ReadLine()) != null)
 				{
 					//.luases 
 					if (s.Length < 3) continue;
-                    if (s.Substring(0, 3) == "---")
-                    {
-                        l = new LuaFile(true);
-                        l.IsSeparator = true;
-                    }
-                    else
-                    {
-                        temp = s.Substring(0, 1); //Get enabled flag
+					if (s.Substring(0, 3) == "---")
+					{
+						l = new LuaFile(true);
+						l.IsSeparator = true;
+					}
+					else
+					{
+						temp = s.Substring(0, 1); //Get enabled flag
 
-                        try
-                        {
-                            if (int.Parse(temp) == 0)
-                                enabled = false;
-                            else
-                                enabled = true;
-                        }
-                        catch
-                        {
-                            return false; //TODO: report an error?
-                        }
+						try
+						{
+							if (int.Parse(temp) == 0)
+								enabled = false;
+							else
+								enabled = true;
+						}
+						catch
+						{
+							return false; //TODO: report an error?
+						}
 
-                        s = s.Substring(2, s.Length - 2); //Get path
+						s = s.Substring(2, s.Length - 2); //Get path
 
-                        l = new LuaFile(s);
+						l = new LuaFile(s);
 
-                        if (!Global.Config.DisableLuaScriptsOnLoad)
-                            l.Enabled = enabled;
-                        else
-                            l.Enabled = false;
-                    }
+						if (!Global.Config.DisableLuaScriptsOnLoad)
+							l.Enabled = enabled;
+						else
+							l.Enabled = false;
+					}
 					luaList.Add(l);
 				}
 			}
@@ -968,7 +972,7 @@ namespace BizHawk.MultiClient
 
 		private void fileToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			if (!changes || luaList.Count == 0)
+			if (!changes)
 			{
 				saveToolStripMenuItem.Enabled = false;
 			}

@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		Func<int, int> remap;
 
 		//state
+		BizHawk.Emulation.Sound.YM2413 fm = new Sound.YM2413();
+
 		ByteBuffer prg_banks_8k = new ByteBuffer(4);
 		ByteBuffer chr_banks_1k = new ByteBuffer(8);
 		bool irq_mode;
@@ -31,6 +33,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			fm.SyncState(ser);
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_1k", ref chr_banks_1k);
 			ser.Sync("irq_mode", ref irq_mode);
@@ -65,7 +68,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				remap = (addr) => ((addr & 0xF000) | ((addr & 0x8) >> 3));
 			else if(Cart.pcb == "352402")
 				//lagrange point
-				remap = (addr) => ((addr & 0xF000) | ((addr & 0x10) >> 4));
+				remap = (addr) => ((addr & 0xF000) | ((addr & 0x30) >> 4));
 			else throw new Exception("Unknown PCB type for VRC7");
 
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
@@ -116,6 +119,18 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			else base.WritePPU(addr, value);
 		}
 
+		public override void ApplyCustomAudio(short[] samples)
+		{
+			short[] fmsamples = new short[samples.Length];
+			fm.GetSamples(fmsamples);
+			//naive mixing. need to study more
+			int len = samples.Length;
+			for (int i = 0; i < len; i++)
+			{
+				samples[i] = (short)((samples[i] >> 1) + (fmsamples[i] >> 1));
+			}
+		}
+
 		public override void WritePRG(int addr, byte value)
 		{
 			//Console.WriteLine("    mapping {0:X4} = {1:X2}", addr, value);
@@ -129,10 +144,11 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 				case 0x1001:
 					//sound address port
+					fm.RegisterLatch = value;
 					break;
 				case 0x1003:
 					//sound data port
-					//TODO - remap will break this
+					fm.Write(value);
 					break;
 
 					//a bit creepy to mask this for lagrange point which has no VROM, but the mask will be 0xFFFFFFFF so its OK

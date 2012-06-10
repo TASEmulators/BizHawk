@@ -44,7 +44,8 @@ namespace BizHawk.MultiClient
 		const int fontWidth = 7; //Width of 1 digits
 
 		bool loaded = false;
-                // Configurations
+		
+		// Configurations
 		bool AutoLoad;
 		bool SaveWindowPosition;
 		int Wndx = -1;
@@ -103,6 +104,21 @@ namespace BizHawk.MultiClient
 				if (Width_ >= 0 && Height_ >= 0)
 					this.Size = new System.Drawing.Size(Width_, Height_);
 			}
+
+			if (Global.Config.hexcustom)
+			{
+				menuStrip1.BackColor = Global.Config.hexmenubar;
+				MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
+				MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
+			}
+			else
+			{
+				Global.Config.hexmenubar = this.menuStrip1.BackColor;
+				Global.Config.hexbackgrnd = this.MemoryViewerBox.BackColor;
+				Global.Config.hexforegrnd = this.AddressesLabel.ForeColor;
+				Global.Config.hexcustom = true;
+			}
+
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 			UpdateValues();
@@ -169,25 +185,39 @@ namespace BizHawk.MultiClient
 					return Domain.PeekByte(addr);
 				case 2:
 					if (BigEndian)
-						return MakeWordBig(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 8;
+						value |= Domain.PeekByte(addr + 1);
+						return value;
+					}
 					else
-						return MakeWordLittle(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr);
+						value |= Domain.PeekByte(addr + 1) << 8;
+						return value;
+					}
 				case 4:
 					if (BigEndian)
-						return (MakeWordBig(addr) * 65536) + MakeWordBig(addr + 2);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 24;
+						value |= Domain.PeekByte(addr + 1) << 16;
+						value |= Domain.PeekByte(addr + 2) << 8;
+						value |= Domain.PeekByte(addr + 3) << 0;
+						return value;
+					}
 					else
-						return (MakeWordLittle(addr) * 65536) + MakeWordLittle(addr);
+					{
+						int value = 0;
+						value |= Domain.PeekByte(addr) << 0;
+						value |= Domain.PeekByte(addr + 1) << 8;
+						value |= Domain.PeekByte(addr + 2) << 16;
+						value |= Domain.PeekByte(addr + 3) << 24;
+						return value;
+					}
 			}
-		}
-
-		private int MakeWordBig(int addr)
-		{
-			return (Domain.PeekByte(addr) * 256) + Domain.PeekByte(addr + 1);
-		}
-
-		private int MakeWordLittle(int addr) 
-		{ 
-			return Domain.PeekByte(addr) + (Domain.PeekByte(addr + 1) * 256);
 		}
 
 		public void Restart()
@@ -258,6 +288,10 @@ namespace BizHawk.MultiClient
 		public void SetMemoryDomain(MemoryDomain d)
 		{
 			Domain = d;
+			if (d.Endian == Endian.Big)
+				BigEndian = true;
+			else
+				BigEndian = false;
 			maxRow = Domain.Size / 2;
 			SetUpScrollBar();
 			vScrollBar1.Value = 0;
@@ -421,7 +455,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
-            NumDigitsStr = "{0:X" + NumDigits.ToString() + "}  ";
+			NumDigitsStr = "{0:X" + NumDigits.ToString() + "}  ";
 		}
 
 		public void SetDataSize(int size)
@@ -731,10 +765,10 @@ namespace BizHawk.MultiClient
 
 		private void dumpToFileToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAs();
+			SaveAsText();
 		}
 
-		private void SaveAs()
+		private void SaveAsText()
 		{
 			var file = GetSaveFileFromUser();
 			if (file != null)
@@ -757,6 +791,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void SaveAsBinary()
+		{
+			var file = GetBinarySaveFileFromUser();
+			if (file != null)
+			{
+				using(BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
+				{
+					byte[] dump = new byte[Domain.Size];
+
+					for (int x = 0; x < Domain.Size; x++)
+					{
+						binWriter.Write(Domain.PeekByte(x));
+					}
+				}
+			}
+		}
+
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -770,6 +821,29 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
+
+		private FileInfo GetBinarySaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+
+			if (!(Global.Emulator is NullEmulator))
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			else
+				sfd.FileName = "MemoryDump";
+
+
+			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+
+			sfd.Filter = "Binary (*.bin)|*.bin|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -914,7 +988,7 @@ namespace BizHawk.MultiClient
 			}
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,8));
+				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,10));
 			}
 		}
 
@@ -1016,6 +1090,11 @@ namespace BizHawk.MultiClient
 				if (e.Control && e.KeyCode == Keys.P)
 					PokeAddress();
 				e.Handled = true;
+				return;
+			}
+
+			if (e.Control || e.Shift || e.Alt) //If user is pressing one of these, don't type into the hex editor
+			{
 				return;
 			}
 
@@ -1246,14 +1325,171 @@ namespace BizHawk.MultiClient
 		{
 			if (IsFrozen(GetHighlightedAddress()))
 			{
-				ViewerContextMenuStrip.Items[1].Text = "Un&freeze";
-				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Unfreeze;
+				freezeToolStripMenuItem.Text = "Un&freeze";
+				freezeToolStripMenuItem.Image = MultiClient.Properties.Resources.Unfreeze;
 			}
 			else
 			{
-				ViewerContextMenuStrip.Items[1].Text = "&Freeze";
-				ViewerContextMenuStrip.Items[1].Image = MultiClient.Properties.Resources.Freeze;
+				freezeToolStripMenuItem.Text = "&Freeze";
+				freezeToolStripMenuItem.Image = MultiClient.Properties.Resources.Freeze;
 			}
 		}
+
+		private void gotoAddressToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GoToSpecifiedAddress();
+		}
+
+		private string GetHighlightedValue()
+		{
+			if (addressHighlighted != -1)
+			{
+				return String.Format(DigitFormatString, (int)MakeValue(addressHighlighted)).Trim();
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		private void Find()
+		{
+			InputPrompt prompt = new InputPrompt();
+			prompt.SetMessage("Enter a set of hex values to search for");
+			prompt.SetCasing(CharacterCasing.Upper);
+			prompt.HexOnly = true;
+			if (addressHighlighted > 0)
+			{
+				prompt.SetInitialValue(GetHighlightedValue());
+			}
+			prompt.ShowDialog();
+
+
+			if (prompt.UserOK)
+			{
+				int found = 0;
+
+				string search = prompt.UserText.Replace(" ", "").ToUpper();
+				if (search.Length == 0)
+					return;
+
+				int numByte = search.Length / 2;
+
+				int startByte = 0;
+				if (addressHighlighted == -1)
+				{
+					startByte = 0;
+				}
+				else if (addressHighlighted >= (Domain.Size - 1 - numByte))
+				{
+					startByte = 0;
+				}
+				else
+				{
+					startByte = addressHighlighted + DataSize;
+				}
+
+				for (int i = startByte; i < (Domain.Size - numByte); i++)
+				{
+					StringBuilder ramblock = new StringBuilder();
+					for (int j = 0; j < numByte; j++)
+					{
+						ramblock.Append(String.Format("{0:X2}", (int)Domain.PeekByte(i + j)));
+					}
+					string block = ramblock.ToString().ToUpper();
+					if (search == block)
+					{
+						found = i;
+						break;
+					}
+				}
+
+				if (found > 0)
+				{
+					GoToAddress(found);
+
+				}
+				else
+				{
+					MessageBox.Show("Could not find the values: " + search);
+				}
+			}
+		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string value = GetHighlightedValue();
+			if (!String.IsNullOrWhiteSpace(value))
+			{
+				Clipboard.SetDataObject(value);
+			}
+		}
+
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			IDataObject iData = Clipboard.GetDataObject();
+
+			if (iData.GetDataPresent(DataFormats.Text))
+			{
+				string clipboardRaw = (String)iData.GetData(DataFormats.Text);
+				string hex = InputValidate.DoHexString(clipboardRaw);
+
+				int numBytes = hex.Length / 2;
+				for (int i = 0; i < numBytes; i++)
+				{
+					int value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
+					int address = addressHighlighted + i;
+					Domain.PokeByte(address, (byte)value);
+				}
+				UpdateValues();
+				
+			}
+			else
+			{
+				//Do nothing
+			}
+		}
+
+		private void findToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Find();
+		}
+
+		private void saveAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveAsBinary();
+		}
+
+		private void resetToDefaultToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.hexbackgrnd = Color.FromName("Control");
+			Global.Config.hexforegrnd = Color.FromName("ControlText");
+			Global.Config.hexmenubar = Color.FromName("Control");
+			MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
+			MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
+			menuStrip1.BackColor = Global.Config.hexmenubar;
+		}
+
+		private void setColorsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			HexColors_Form h = new HexColors_Form();
+			h.Show();
+		}
+
+		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			HexColors_Form h = new HexColors_Form();
+			h.ShowDialog();
+		}
+
+		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			this.MemoryViewerBox.BackColor = Color.FromName("Control");
+			Global.Config.hexbackgrnd = Color.FromName("Control");
+			this.MemoryViewerBox.ForeColor = Color.FromName("ControlText");
+			Global.Config.hexforegrnd = Color.FromName("ControlText");
+			this.menuStrip1.BackColor = Color.FromName("Control");
+			Global.Config.hexmenubar = Color.FromName("Control");
+		}
 	}
-}
+} 

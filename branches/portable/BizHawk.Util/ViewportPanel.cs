@@ -17,6 +17,8 @@ namespace BizHawk.Core
 		EventWaitHandle ewh;
 		volatile bool killSignal;
 
+		public Func<Bitmap,bool> ReleaseCallback;
+
 		/// <summary>
 		/// Turns this panel into multi-threaded mode.
 		/// This will sort of glitch out other gdi things on the system, but at least its fast...
@@ -96,7 +98,13 @@ namespace BizHawk.Core
 			lock (this)
 			{
 				while (DisposeQueue.Count > 0)
-					DisposeQueue.Dequeue().Dispose();
+				{
+					var bmp = DisposeQueue.Dequeue();
+					bool dispose = true;
+					if(ReleaseCallback != null)
+						dispose = ReleaseCallback(bmp);
+					if(dispose) bmp.Dispose();
+				}
 			}
 		}
 

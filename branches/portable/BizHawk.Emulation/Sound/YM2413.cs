@@ -22,6 +22,12 @@ namespace BizHawk.Emulation.Sound
 			opll = OPLL_new(3579545, 44100);
 		}
 
+				public void SyncState(Serializer ser)
+				{
+					//TODO !! MUCH BETTER-NESS!
+					ser.Sync("RegisterLatch", ref RegisterLatch);
+				}
+
 		public void Reset() 
         {
 			OPLL_reset(opll);

@@ -15,23 +15,26 @@ namespace BizHawk.MultiClient
 
 		List<string> MovieRecords = new List<string>();
 
-		private List<byte[]> StateList = new List<byte[]>();
-		private int StateLastValidIndex = -1;
+		private List<byte[]> StateRecords = new List<byte[]>();
 
 		public MovieLog()
 		{
-			//Should this class initialize with an empty string to MovieRecords so that first frame is index 1?
-			//MovieRecords.Add("");
 		}
 
-		public int Length()
+		public int MovieLength()
 		{
 			return MovieRecords.Count;
+		}
+
+		public int StateLength()
+		{
+			return StateRecords.Count;
 		}
 
 		public void Clear()
 		{
 			MovieRecords.Clear();
+			StateRecords.Clear();
 		}
 
 		public void AddFrame(string frame)
@@ -41,10 +44,9 @@ namespace BizHawk.MultiClient
 
 		public void AddState(byte[] state)
 		{
-			if (Global.Emulator.Frame >= StateList.Count)
+			if (Global.Emulator.Frame >= StateRecords.Count)
 			{
-				StateList.Add(state);
-				StateLastValidIndex = Global.Emulator.Frame;
+				StateRecords.Add(state);
 			}
 		}
 
@@ -59,57 +61,64 @@ namespace BizHawk.MultiClient
 		{
 			MovieRecords.Insert(frameNum, frame);
 
-			if (frameNum <= StateList.Count - 1)
+			if (frameNum <= StateRecords.Count - 1)
 			{
-				StateList.RemoveRange(frameNum, StateList.Count - frameNum);
-			}
-			if (StateLastValidIndex >= frameNum)
-			{
-				StateLastValidIndex = frameNum - 1;
+				StateRecords.RemoveRange(frameNum, StateRecords.Count - frameNum);
 			}
 		}
 
 		public void CheckValidity()
 		{
 			byte[] state = Global.Emulator.SaveStateBinary();
-			if (Global.Emulator.Frame < StateList.Count && (null == StateList[Global.Emulator.Frame] || !state.SequenceEqual((byte[])StateList[Global.Emulator.Frame])))
+			if (Global.Emulator.Frame < StateRecords.Count && !state.SequenceEqual((byte[])StateRecords[Global.Emulator.Frame]))
 			{
-				StateLastValidIndex = Global.Emulator.Frame;
+				TruncateStates(Global.Emulator.Frame);
 			}
 		}
 
 		public int CapturedStateCount()
 		{
-			return StateList.Count;
+			return StateRecords.Count;
 		}
 
-		public int LastValidState()
+		public int ValidStateCount()
 		{
-			return StateLastValidIndex;
+			return StateRecords.Count;
 		}
 
 		public byte[] GetState(int frame)
 		{
-			return StateList[frame];
+			return StateRecords[frame];
 		}
 
 		public void DeleteFrame(int frame)
 		{
 			MovieRecords.RemoveAt(frame);
-			if (frame < StateList.Count)
+			if (frame < StateRecords.Count)
 			{
-				StateList.RemoveAt(frame);
-			}
-			if (StateLastValidIndex > frame)
-			{
-				StateLastValidIndex = frame;
+				StateRecords.RemoveAt(frame);
 			}
 		}
 
-		public void Truncate(int frame)
+		public void ClearStates()
 		{
-			if (frame >= 0 && frame < Length())
-			{ MovieRecords.RemoveRange(frame, Length() - frame); }
+			StateRecords.Clear();
+		}
+
+		public void TruncateFrames(int frame)
+		{
+			if (frame >= 0 && frame < MovieLength())
+			{
+				MovieRecords.RemoveRange(frame, MovieLength() - frame);
+			}
+		}
+
+		public void TruncateStates(int frame)
+		{
+			if (frame >= 0 && frame < StateLength())
+			{
+				StateRecords.RemoveRange(frame, StateLength() - frame);
+			}
 		}
 
 		public string GetFrame(int frameCount) //Frame count is 0 based here, should it be?
@@ -127,7 +136,7 @@ namespace BizHawk.MultiClient
 
 		public void WriteText(StreamWriter sw)
 		{
-			int length = Length();
+			int length = MovieLength();
 			for (int x = 0; x < length; x++)
 			{
 				sw.WriteLine(GetFrame(x));

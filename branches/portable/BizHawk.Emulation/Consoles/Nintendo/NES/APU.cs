@@ -1026,6 +1026,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 				}
 				else
 					MyGetSamples(samples);
+
+				//mix in the cart's extra sound circuit
+				nes.board.ApplyCustomAudio(samples);
 			}
 
 			//static BinaryWriter bw = new BinaryWriter(new FileStream("d:\\out.raw",FileMode.Create,FileAccess.Write,FileShare.Read));
