@@ -3149,5 +3149,7 @@ namespace BizHawk.MultiClient
 			}
 			FrameBufferResized();
 		}
+
+
 	}
 }

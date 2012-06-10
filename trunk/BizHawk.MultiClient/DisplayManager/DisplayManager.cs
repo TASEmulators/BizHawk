@@ -8,8 +8,79 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
+//using dx=SlimDX;
+//using d3d=SlimDX.Direct3D9;
+
 namespace BizHawk.MultiClient
 {
+	/// <summary>
+	/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
+	/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
+	/// </summary>
+	class SwappableDisplaySurfaceSet
+	{
+		DisplaySurface Pending, Current;
+		Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
+
+		/// <summary>
+		/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
+		/// </summary>
+		public DisplaySurface AllocateSurface(int width, int height, bool needsClear = true)
+		{
+			for (; ; )
+			{
+				DisplaySurface trial;
+				lock (this)
+				{
+					if (ReleasedSurfaces.Count == 0) break;
+					trial = ReleasedSurfaces.Dequeue();
+				}
+				if (trial.Width == width && trial.Height == height)
+				{
+					if (needsClear) trial.Clear();
+					return trial;
+				}
+				trial.Dispose();
+			}
+			return new DisplaySurface(width, height);
+		}
+
+		/// <summary>
+		/// sets the provided buffer as pending. takes control of the supplied buffer
+		/// </summary>
+		public void SetPending(DisplaySurface newPending)
+		{
+			lock (this)
+			{
+				if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
+				Pending = newPending;
+			}
+		}
+
+		public void ReleaseSurface(DisplaySurface surface)
+		{
+			lock (this) ReleasedSurfaces.Enqueue(surface);
+		}
+
+		/// <summary>
+		/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
+		/// </summary>
+		public DisplaySurface GetCurrent()
+		{
+			lock (this)
+			{
+				if (Pending != null)
+				{
+					if (Current != null) ReleasedSurfaces.Enqueue(Current);
+					Current = Pending;
+					Pending = null;
+				}
+			}
+			return Current;
+		}
+	}
+
+
 	public interface IDisplayFilter
 	{
 		/// <summary>
@@ -27,6 +98,15 @@ namespace BizHawk.MultiClient
 	{
 		public bool Success;
 		public Size OutputSize;
+	}
+
+	interface IDisplayDriver
+	{
+
+	}
+
+	class Direct3DDisplayDriver : IDisplayDriver
+	{
 	}
 
 	public class DisplaySurface : IDisposable
@@ -62,6 +142,19 @@ namespace BizHawk.MultiClient
 		{
 			Unlock();
 			return bmp;
+		}
+
+		public static DisplaySurface DisplaySurfaceWrappingBitmap(Bitmap bmp)
+		{
+			DisplaySurface ret = new DisplaySurface();
+			ret.Width = bmp.Width;
+			ret.Height = bmp.Height;
+			ret.bmp = bmp;
+			return ret;
+		}
+
+		private DisplaySurface() 
+		{
 		}
 
 		public DisplaySurface(int width, int height)
@@ -517,72 +610,6 @@ namespace BizHawk.MultiClient
 		//the surface to use to render a lua layer at native resolution (under the OSD)
 		DisplaySurface luaNativeSurfacePreOSD;
 
-		/// <summary>
-		/// encapsulates thread-safe concept of pending/current display surfaces, reusing buffers where matching 
-		/// sizes are available and keeping them cleaned up when they dont seem like theyll need to be used anymore
-		/// </summary>
-		class SwappableDisplaySurfaceSet
-		{
-			DisplaySurface Pending, Current;
-			Queue<DisplaySurface> ReleasedSurfaces = new Queue<DisplaySurface>();
-
-			/// <summary>
-			/// retrieves a surface with the specified size, reusing an old buffer if available and clearing if requested
-			/// </summary>
-			public DisplaySurface AllocateSurface(int width, int height, bool needsClear=true)
-			{
-				for(;;) 
-				{
-					DisplaySurface trial;
-					lock (this)
-					{
-						if (ReleasedSurfaces.Count == 0) break;
-						trial = ReleasedSurfaces.Dequeue();
-					}
-					if (trial.Width == width && trial.Height == height)
-					{
-						if(needsClear) trial.Clear();
-						return trial;
-					}
-					trial.Dispose();
-				}
-				return new DisplaySurface(width, height);
-			}
-
-			/// <summary>
-			/// sets the provided buffer as pending. takes control of the supplied buffer
-			/// </summary>
-			public void SetPending(DisplaySurface newPending)
-			{
-				lock(this)
-				{
-					if (Pending != null) ReleasedSurfaces.Enqueue(Pending);
-					Pending = newPending;
-				}
-			}
-
-			public void ReleaseSurface(DisplaySurface surface)
-			{
-				lock (this) ReleasedSurfaces.Enqueue(surface);
-			}
-
-			/// <summary>
-			/// returns the current buffer, making the most recent pending buffer (if there is such) as the new current first.
-			/// </summary>
-			public DisplaySurface GetCurrent()
-			{
-				lock(this)
-				{
-					if(Pending != null)
-					{
-						if (Current != null) ReleasedSurfaces.Enqueue(Current);
-						Current = Pending;
-						Pending = null;
-					}
-				}
-				return Current;
-			}
-		}
 
 		SwappableDisplaySurfaceSet luaNativeSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void SetLuaSurfaceNativePreOSD(DisplaySurface surface) { luaNativeSurfaceSet.SetPending(surface); }
@@ -680,40 +707,76 @@ namespace BizHawk.MultiClient
 
 			int w = currNativeWidth;
 			int h = currNativeHeight;
-			var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
-			using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+
+			DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
+			DisplaySurface luaSurface = luaNativeSurfaceSet.GetCurrent();
+
+			//do we have anything to do?
+			bool complexComposite = false;
+			if (luaEmuSurface != null) complexComposite = true;
+			if (luaSurface != null) complexComposite = true;
+
+			if (!complexComposite)
 			{
-				//scale the source bitmap to the desired size of the render panel
-				g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-				g.InterpolationMode = InterpolationMode.NearestNeighbor;
-				g.CompositingMode = CompositingMode.SourceCopy;
-				g.CompositingQuality = CompositingQuality.HighSpeed;
-				g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
+				if (Global.Config.SuppressGui)
+				{
+					Global.RenderPanel.FastRenderAndPresent(currentSourceSurface);
+				}
+				else
+				{
+					Global.RenderPanel.Render(currentSourceSurface);
+					var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
+					using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+					{
+						Global.OSD.DrawScreenInfo(g);
+						Global.OSD.DrawMessages(g);
+					}
+					Global.RenderPanel.RenderOverlay(nativeBmp);
+					//release the native resolution image
+					nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
+					Global.RenderPanel.Present();
+				}
+			}
+			else
+			{
+				var nativeBmp = nativeDisplaySurfaceSet.AllocateSurface(w, h, true);
+				using (var g = Graphics.FromImage(nativeBmp.PeekBitmap()))
+				{
+					//scale the source bitmap to the desired size of the render panel
+					g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+					g.InterpolationMode = InterpolationMode.NearestNeighbor;
+					g.CompositingMode = CompositingMode.SourceCopy;
+					g.CompositingQuality = CompositingQuality.HighSpeed;
+					g.DrawImage(currentSourceSurface.PeekBitmap(), 0, 0, w, h);
 
-				//switch to fancier composition for OSD overlays and such
-				g.CompositingMode = CompositingMode.SourceOver;
+					//switch to fancier composition for OSD overlays and such
+					g.CompositingMode = CompositingMode.SourceOver;
 
-				//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
-				DisplaySurface luaEmuSurface = luaEmuSurfaceSet.GetCurrent();
-				if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
-				g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
+					//this could have been done onto the source surface earlier and then scaled only once but the whole composition system needs revising, soo..
+					if (luaEmuSurface != null) g.DrawImage(luaEmuSurface.PeekBitmap(), 0, 0, w, h);
+					g.Clip = new Region(new Rectangle(0, 0, nativeBmp.Width, nativeBmp.Height));
 
-				//apply a lua layer
-				var luaSurface = luaNativeSurfaceSet.GetCurrent();
-				if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
-				//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
+					//apply a lua layer
+					if (luaSurface != null) g.DrawImageUnscaled(luaSurface.PeekBitmap(), 0, 0);
+					//although we may want to change this if we want to fade out messages or have some other fancy alpha faded gui stuff
 
-				//draw the OSD at native resolution
-				Global.OSD.DrawScreenInfo(g);
-				Global.OSD.DrawMessages(g);
-				g.Clip.Dispose();
+					//draw the OSD at native resolution
+					if (!Global.Config.SuppressGui)
+					{
+						Global.OSD.DrawScreenInfo(g);
+						Global.OSD.DrawMessages(g);
+					}
+					g.Clip.Dispose();
+				}
+
+				//send the native resolution image to the render panel
+				Global.RenderPanel.Render(nativeBmp);
+				Global.RenderPanel.Present();
+
+				//release the native resolution image
+				nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
 			}
 
-			//send the native resolution image to the render panel
-			Global.RenderPanel.Render(nativeBmp);
-
-			//release the native resolution image
-			nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
 		}
 
 		Thread displayThread;
