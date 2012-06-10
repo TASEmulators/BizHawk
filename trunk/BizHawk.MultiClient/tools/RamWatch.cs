@@ -316,6 +316,10 @@ namespace BizHawk.MultiClient
 
 			if (result)
 			{
+				foreach (Watch w in watchList)
+				{
+					InitializeAddress(w);
+				}
 				if (!append)
 				{
 					currentFile = path;
@@ -341,7 +345,7 @@ namespace BizHawk.MultiClient
 			return q;
 		}
 
-		void AddNewWatch()
+		private void AddNewWatch()
 		{
 
 			RamWatchNewWatch r = new RamWatchNewWatch();
@@ -350,14 +354,20 @@ namespace BizHawk.MultiClient
 			Global.Sound.StopSound();
 			r.ShowDialog();
 			Global.Sound.StartSound();
-
 			if (r.userSelected == true)
 			{
+				InitializeAddress(r.watch);
 				watchList.Add(r.watch);
 				Changes();
-				DisplayWatchList();
 				UpdateWatchCount();
+				DisplayWatchList();
 			}
+		}
+
+		private void InitializeAddress(Watch w)
+		{
+			w.PeekAddress(Domain);
+			w.changecount = 0;
 		}
 
 		void Changes()
@@ -424,6 +434,7 @@ namespace BizHawk.MultiClient
 
 				if (r.userSelected == true)
 				{
+					InitializeAddress(r.watch);
 					Changes();
 					watchList.Add(r.watch);
 					DisplayWatchList();
