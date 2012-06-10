@@ -79,7 +79,7 @@ namespace BizHawk.MultiClient
 				{
 					bool alert = Global.CheatList.IsActiveCheat(Domain, watchList[x].address);
 					Global.OSD.AddGUIText(watchList[x].ToString(),
-						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Brushes.Black, Brushes.White, 0);
+						Global.Config.DispRamWatchx, (Global.Config.DispRamWatchy + (x * 14)), alert, Color.Black, Color.White, 0);
 				}
 			}
 
