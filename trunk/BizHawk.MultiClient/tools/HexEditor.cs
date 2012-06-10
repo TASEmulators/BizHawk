@@ -988,7 +988,7 @@ namespace BizHawk.MultiClient
 			}
 			if (HasNibbles())
 			{
-				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,8));
+				e.Graphics.DrawString(MakeNibbles(), new Font("Courier New", 8, FontStyle.Italic), Brushes.Black, new Point(8,10));
 			}
 		}
 
@@ -1479,7 +1479,7 @@ namespace BizHawk.MultiClient
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
-			h.Show();
+			h.ShowDialog();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1491,6 +1491,5 @@ namespace BizHawk.MultiClient
 			this.menuStrip1.BackColor = Color.FromName("Control");
 			Global.Config.hexmenubar = Color.FromName("Control");
 		}
-
 	}
 } 

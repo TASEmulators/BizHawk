@@ -55,6 +55,10 @@
 			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.customColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.setColorsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.resetToDefaultToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.restoreWindowSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,10 +77,6 @@
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
-			this.customColorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.setColorsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.resetToDefaultToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -297,6 +297,35 @@
 			this.autoloadToolStripMenuItem.Text = "Auto-load";
 			this.autoloadToolStripMenuItem.Click += new System.EventHandler(this.autoloadToolStripMenuItem_Click);
 			// 
+			// customColorsToolStripMenuItem
+			// 
+			this.customColorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.setColorsToolStripMenuItem1,
+            this.toolStripSeparator8,
+            this.resetToDefaultToolStripMenuItem1});
+			this.customColorsToolStripMenuItem.Name = "customColorsToolStripMenuItem";
+			this.customColorsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
+			this.customColorsToolStripMenuItem.Text = "Custom Colors";
+			// 
+			// setColorsToolStripMenuItem1
+			// 
+			this.setColorsToolStripMenuItem1.Name = "setColorsToolStripMenuItem1";
+			this.setColorsToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+			this.setColorsToolStripMenuItem1.Text = "Set Colors";
+			this.setColorsToolStripMenuItem1.Click += new System.EventHandler(this.setColorsToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(154, 6);
+			// 
+			// resetToDefaultToolStripMenuItem1
+			// 
+			this.resetToDefaultToolStripMenuItem1.Name = "resetToDefaultToolStripMenuItem1";
+			this.resetToDefaultToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
+			this.resetToDefaultToolStripMenuItem1.Text = "Reset to Default";
+			this.resetToDefaultToolStripMenuItem1.Click += new System.EventHandler(this.resetToDefaultToolStripMenuItem1_Click);
+			// 
 			// saveWindowsSettingsToolStripMenuItem
 			// 
 			this.saveWindowsSettingsToolStripMenuItem.Name = "saveWindowsSettingsToolStripMenuItem";
@@ -452,35 +481,6 @@
 			this.AddressesLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseClick);
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
-			// 
-			// customColorsToolStripMenuItem
-			// 
-			this.customColorsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.setColorsToolStripMenuItem1,
-            this.toolStripSeparator8,
-            this.resetToDefaultToolStripMenuItem1});
-			this.customColorsToolStripMenuItem.Name = "customColorsToolStripMenuItem";
-			this.customColorsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
-			this.customColorsToolStripMenuItem.Text = "Custom Colors";
-			// 
-			// setColorsToolStripMenuItem1
-			// 
-			this.setColorsToolStripMenuItem1.Name = "setColorsToolStripMenuItem1";
-			this.setColorsToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
-			this.setColorsToolStripMenuItem1.Text = "Set Colors";
-			this.setColorsToolStripMenuItem1.Click += new System.EventHandler(this.setColorsToolStripMenuItem1_Click);
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(154, 6);
-			// 
-			// resetToDefaultToolStripMenuItem1
-			// 
-			this.resetToDefaultToolStripMenuItem1.Name = "resetToDefaultToolStripMenuItem1";
-			this.resetToDefaultToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
-			this.resetToDefaultToolStripMenuItem1.Text = "Reset to Default";
-			this.resetToDefaultToolStripMenuItem1.Click += new System.EventHandler(this.resetToDefaultToolStripMenuItem1_Click);
 			// 
 			// HexEditor
 			// 
