@@ -552,16 +552,6 @@ namespace BizHawk
 					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
 					break;
 
-				case 0x100C:
-					{
-						base.WndProc(ref m);
-						int num = m.Result.ToInt32();
-						messageProcessed = true;
-						m.Result = new IntPtr(0);
-						break;
-					}
-
-
 				//obscure message loop flakiness when exceptions are thrown from the message loop...
 				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
 				//next time we run into this, debug it better.
@@ -569,6 +559,17 @@ namespace BizHawk
 				//    if (SelectedIndices.Count > 0 && SelectedIndices[0] >= VirtualListSize)
 				//        messageProcessed = true;
 				//    break;
+
+				//TRY THIS HACK INSTEAD TO FIX THE EXCEPTION
+				case 0x100C:
+					{
+						base.WndProc(ref m);
+						int num = m.Result.ToInt32();
+						messageProcessed = true;
+						m.Result = new IntPtr(-1);
+						break;
+					}
+
 				case (int)WindowsMessage.WM_ERASEBKGND:
 					if (BlazingFast)
 					{
