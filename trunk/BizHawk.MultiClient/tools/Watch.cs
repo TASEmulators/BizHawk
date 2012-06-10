@@ -54,9 +54,9 @@ namespace BizHawk.MultiClient
 			notes = Notes;
 			changecount = 0;
 			prev = Value;
-			original = value;
-			lastchange = 0;
-			lastsearch = value;
+			original = Value;
+			lastchange = Value;
+			lastsearch = Value;
 		}
 		public int address { get; set; }
 		public int value { get; set; }         //Current value
