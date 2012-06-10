@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Drawing;
 
 namespace BizHawk.MultiClient
 {
@@ -280,9 +281,12 @@ namespace BizHawk.MultiClient
 		public int HexEditorDataSize = 1;
 		//Hex Editor Colors
 		public bool hexcustom;
-		public System.Drawing.Color hexbackgrnd;
-		public System.Drawing.Color hexforegrnd;
-		public System.Drawing.Color hexmenubar;
+		public Color HexBackgrndColor;
+		public Color HexForegrndColor;
+		public Color HexMenubarColor;
+		public Color HexFreezeColor = Color.LightBlue;
+		public Color HexHighlightColor = Color.Pink;
+		public Color HexHighlightFreezeColor = Color.Violet;
 
 		// Video dumping settings
 		public int JMDCompression = 3;
