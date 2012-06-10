@@ -46,6 +46,10 @@ namespace BizHawk.MultiClient
 			if (width == 0 || height == 0) return;
 
 			bool needsRecreating = false;
+
+			//experiment: 
+			//needsRecreating = true;
+
 			if (Texture == null)
 			{
 				needsRecreating = true;
@@ -58,6 +62,8 @@ namespace BizHawk.MultiClient
 					needsRecreating = true;
 				}
 			}
+
+
 			// If we need to recreate the texture, do so.
 			if (needsRecreating)
 			{
@@ -78,7 +84,7 @@ namespace BizHawk.MultiClient
 			}
 
 			// Copy the image data to the texture.
-			using (var Data = Texture.LockRectangle(0, new Rectangle(0, 0, imageWidth, imageHeight), LockFlags.None).Data)
+			using (var Data = Texture.LockRectangle(0, LockFlags.Discard | LockFlags.NoDirtyUpdate).Data)
 			{
 				if (imageWidth == textureWidth)
 				{
@@ -348,13 +354,18 @@ namespace BizHawk.MultiClient
 				backingControl.Invoke(() => CreateDevice());
 			Resized = false;
 
+
+
 			//TODO
 			//BackgroundColor = Color.FromArgb(video.BackgroundColor);
+			if (overlay)
+			{
+				//return;
+			}
 
 			Texture.SetImage(surface, surface.Width, surface.Height);
 
 			if(!overlay) Device.Clear(ClearFlags.Target, BackgroundColor, 0.0f, 0);
-
 			// figure out scaling factor
 			float widthScale = (float)backingControl.Size.Width / surface.Width;
 			float heightScale = (float)backingControl.Size.Height / surface.Height;
@@ -369,7 +380,7 @@ namespace BizHawk.MultiClient
 			Device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
 			Sprite.Transform = Matrix.Scaling(finalScale, finalScale, 0f);
 			Sprite.Draw(Texture.Texture, new Rectangle(0, 0, surface.Width, surface.Height), new Vector3(surface.Width / 2f, surface.Height / 2f, 0), new Vector3(backingControl.Size.Width / 2f / finalScale, backingControl.Size.Height / 2f / finalScale, 0), Color.White);
-			if (overlay) Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			//if (overlay) Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			Sprite.End();
 
 			Device.EndScene();
@@ -379,8 +390,10 @@ namespace BizHawk.MultiClient
 		{
 			//Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
 			Device.Present(SlimDX.Direct3D9.Present.None);
+			vsyncEvent.Set();
 		}
 
+		public static EventWaitHandle vsyncEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
 
 		private bool disposed;
 
