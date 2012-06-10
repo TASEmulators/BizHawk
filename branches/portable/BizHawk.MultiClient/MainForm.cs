@@ -338,8 +338,8 @@ namespace BizHawk.MultiClient
 			if (Global.Direct3D == null)
 				gdi = true;
 #else
-			if(OpenTK.Configuration.RunningOnMacOS)
-				gdi = true; //OpenTK on Mac OS X doesn't support OpenGL WinForms control right now. :-(
+			//if(OpenTK.Configuration.RunningOnMacOS) //OpenTK on Mac OS X doesn't support OpenGL WinForms control right now. :-(
+				gdi = true; //I can't test OpenGL myself, so I'm not going to maintain it until I can
 #endif
 
 			if (renderTarget != null)
@@ -358,12 +358,13 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 				else renderTarget = new ViewportPanel();
 #else
-				else
+				/*else
 				{
 					OpenGLRenderPanel glPanel = new OpenGLRenderPanel();
 					renderTarget = glPanel;
 					Global.RenderPanel = glPanel;
-				}
+				}*/
+				//OpenGL disabled until I can maintain it again
 #endif
 			}
 			catch
@@ -913,6 +914,7 @@ namespace BizHawk.MultiClient
 		{
 			string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
+#if WINDOWS
 			bool isLua = false;
 			foreach (string path in filePaths)
 			{
@@ -925,13 +927,15 @@ namespace BizHawk.MultiClient
 			}
 			if (isLua)
 				return;
+#endif
 
 			if (Path.GetExtension(filePaths[0]).ToUpper() == ".LUASES")
 			{
+#if WINDOWS
 				OpenLuaConsole();
 				LuaConsole1.LoadLuaSession(filePaths[0]);
+#endif
 			}
-
 			else if (IsValidMovieExtension(Path.GetExtension(filePaths[0])))
 			{
 				Movie m = new Movie(filePaths[0], MOVIEMODE.PLAY);

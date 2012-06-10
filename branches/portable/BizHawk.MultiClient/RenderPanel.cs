@@ -410,7 +410,8 @@ namespace BizHawk.MultiClient
 		}
 
 		}
-#else
+#endif
+	/*
 	public class OpenGLRenderPanel : OpenTK.GLControl, IRenderer
 	{
 		public bool Resized { get; set; }
@@ -438,8 +439,7 @@ namespace BizHawk.MultiClient
 		public void AddGUIText(string msg, int x, int y, bool alert, int anchor) { }
 		public void ClearGUIText() { }
 		public Size NativeSize { get { return this.Size; } }
-	}
-#endif
+	}*/
 
 	class UIMessage
 	{
