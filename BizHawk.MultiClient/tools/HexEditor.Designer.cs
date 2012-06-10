@@ -35,6 +35,10 @@
 			this.dumpToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.findToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.memoryDomainsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dataSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,7 +51,6 @@
 			this.addToRamWatchToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.freezeAddressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.unfreezeAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.autoloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveWindowsSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -65,6 +68,7 @@
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
 			this.vScrollBar1 = new System.Windows.Forms.VScrollBar();
 			this.AddressesLabel = new System.Windows.Forms.Label();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuStrip1.SuspendLayout();
 			this.ViewerContextMenuStrip.SuspendLayout();
 			this.MemoryViewerBox.SuspendLayout();
@@ -74,6 +78,7 @@
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.settingsToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -113,6 +118,41 @@
 			this.exitToolStripMenuItem.Text = "E&xit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyToolStripMenuItem,
+            this.pasteToolStripMenuItem,
+            this.toolStripSeparator6,
+            this.findToolStripMenuItem1});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Text = "&Edit";
+			// 
+			// copyToolStripMenuItem
+			// 
+			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.copyToolStripMenuItem.Text = "&Copy";
+			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
+			// 
+			// pasteToolStripMenuItem
+			// 
+			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
+			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pasteToolStripMenuItem.Text = "&Paste";
+			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
+			// 
+			// findToolStripMenuItem1
+			// 
+			this.findToolStripMenuItem1.Name = "findToolStripMenuItem1";
+			this.findToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+			this.findToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.findToolStripMenuItem1.Text = "&Find...";
+			this.findToolStripMenuItem1.Click += new System.EventHandler(this.findToolStripMenuItem1_Click);
+			// 
 			// optionsToolStripMenuItem
 			// 
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -121,7 +161,6 @@
             this.enToolStripMenuItem,
             this.toolStripSeparator2,
             this.goToAddressToolStripMenuItem,
-            this.findToolStripMenuItem,
             this.addToRamWatchToolStripMenuItem1,
             this.freezeAddressToolStripMenuItem,
             this.unfreezeAllToolStripMenuItem});
@@ -214,14 +253,6 @@
 			this.unfreezeAllToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.unfreezeAllToolStripMenuItem.Text = "Unfreeze All";
 			this.unfreezeAllToolStripMenuItem.Click += new System.EventHandler(this.unfreezeAllToolStripMenuItem_Click);
-			// 
-			// findToolStripMenuItem
-			// 
-			this.findToolStripMenuItem.Name = "findToolStripMenuItem";
-			this.findToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.findToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
-			this.findToolStripMenuItem.Text = "&Find...";
-			this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
 			// 
 			// settingsToolStripMenuItem
 			// 
@@ -380,6 +411,11 @@
 			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
 			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
 			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+			// 
 			// HexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -444,6 +480,10 @@
 		private System.Windows.Forms.ToolStripMenuItem decrementToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gotoAddressToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-		private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem findToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
     }
 }

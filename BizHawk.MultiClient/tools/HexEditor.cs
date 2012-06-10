@@ -44,7 +44,8 @@ namespace BizHawk.MultiClient
 		const int fontWidth = 7; //Width of 1 digits
 
 		bool loaded = false;
-                // Configurations
+		
+		// Configurations
 		bool AutoLoad;
 		bool SaveWindowPosition;
 		int Wndx = -1;
@@ -1037,6 +1038,11 @@ namespace BizHawk.MultiClient
 				return;
 			}
 
+			if (e.Control || e.Shift || e.Alt) //If user is pressing one of these, don't type into the hex editor
+			{
+				return;
+			}
+
 			switch (DataSize)
 			{
 				default:
@@ -1279,7 +1285,19 @@ namespace BizHawk.MultiClient
 			GoToSpecifiedAddress();
 		}
 
-		private void findToolStripMenuItem_Click(object sender, EventArgs e)
+		private string GetHighlightedValue()
+		{
+			if (addressHighlighted != -1)
+			{
+				return String.Format(DigitFormatString, (int)MakeValue(addressHighlighted)).Trim();
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		private void Find()
 		{
 			InputPrompt prompt = new InputPrompt();
 			prompt.SetMessage("Enter a set of hex values to search for");
@@ -1287,13 +1305,11 @@ namespace BizHawk.MultiClient
 			prompt.HexOnly = true;
 			if (addressHighlighted > 0)
 			{
-				string initial = String.Format(DigitFormatString, (int)MakeValue(addressHighlighted));
-				initial = initial.Trim();
-				prompt.SetInitialValue(initial);
+				prompt.SetInitialValue(GetHighlightedValue());
 			}
 			prompt.ShowDialog();
 
-			
+
 			if (prompt.UserOK)
 			{
 				int found = 0;
@@ -1303,7 +1319,7 @@ namespace BizHawk.MultiClient
 					return;
 
 				int numByte = search.Length / 2;
-				
+
 				int startByte = 0;
 				if (addressHighlighted == -1)
 				{
@@ -1336,7 +1352,7 @@ namespace BizHawk.MultiClient
 				if (found > 0)
 				{
 					GoToAddress(found);
-					
+
 				}
 				else
 				{
@@ -1344,5 +1360,46 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			string value = GetHighlightedValue();
+			if (!String.IsNullOrWhiteSpace(value))
+			{
+				Clipboard.SetDataObject(value);
+			}
+		}
+
+		private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			IDataObject iData = Clipboard.GetDataObject();
+
+			if (iData.GetDataPresent(DataFormats.Text))
+			{
+				string clipboardRaw = (String)iData.GetData(DataFormats.Text);
+				string hex = InputValidate.DoHexString(clipboardRaw);
+
+				int numBytes = hex.Length / 2;
+				for (int i = 0; i < numBytes; i++)
+				{
+					int value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
+					int address = addressHighlighted + i;
+					Domain.PokeByte(address, (byte)value);
+				}
+				UpdateValues();
+				
+			}
+			else
+			{
+				//Do nothing
+			}
+		}
+
+		private void findToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			Find();
+		}
+
+		
 	}
 }
