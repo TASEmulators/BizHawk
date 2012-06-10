@@ -750,10 +750,10 @@ namespace BizHawk.MultiClient
 
 		private void dumpToFileToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveAs();
+			SaveAsText();
 		}
 
-		private void SaveAs()
+		private void SaveAsText()
 		{
 			var file = GetSaveFileFromUser();
 			if (file != null)
@@ -776,6 +776,23 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		private void SaveAsBinary()
+		{
+			var file = GetBinarySaveFileFromUser();
+			if (file != null)
+			{
+				using(BinaryWriter binWriter = new BinaryWriter(File.Open(file.FullName, FileMode.Create)))
+				{
+					byte[] dump = new byte[Domain.Size];
+
+					for (int x = 0; x < Domain.Size; x++)
+					{
+						binWriter.Write(Domain.PeekByte(x));
+					}
+				}
+			}
+		}
+
 		private FileInfo GetSaveFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
@@ -789,6 +806,29 @@ namespace BizHawk.MultiClient
 			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
 
 			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			Global.Sound.StopSound();
+			var result = sfd.ShowDialog();
+			Global.Sound.StartSound();
+			if (result != DialogResult.OK)
+				return null;
+			var file = new FileInfo(sfd.FileName);
+			return file;
+		}
+
+		private FileInfo GetBinarySaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+
+			if (!(Global.Emulator is NullEmulator))
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			else
+				sfd.FileName = "MemoryDump";
+
+
+			sfd.InitialDirectory = PathManager.GetPlatformBase(Global.Emulator.SystemId);
+
+			sfd.Filter = "Binary (*.bin)|*.bin|All Files|*.*";
 			sfd.RestoreDirectory = true;
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
@@ -1400,6 +1440,9 @@ namespace BizHawk.MultiClient
 			Find();
 		}
 
-		
+		private void saveAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SaveAsBinary();
+		}
 	}
 }
