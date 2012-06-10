@@ -146,7 +146,7 @@ namespace BizHawk.MultiClient
 		public bool InputConfigAutoTab = true;
 		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
-        public bool AutoSavestates = false;
+		public bool AutoSavestates = false;
 		public bool SaveScreenshotWithStates = true;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
@@ -278,6 +278,11 @@ namespace BizHawk.MultiClient
 		public int HexEditorHeight = -1;
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
+		//Hex Editor Colors
+		public bool hexcustom;
+		public System.Drawing.Color hexbackgrnd;
+		public System.Drawing.Color hexforegrnd;
+		public System.Drawing.Color hexmenubar;
 
 		// Video dumping settings
 		public int JMDCompression = 3;
@@ -476,7 +481,7 @@ namespace BizHawk.MultiClient
 		public bool SmsEnableFM = true;
 		public bool SmsAllowOverlock = false;
 		public bool SmsForceStereoSeparation = false;
-        public bool SmsSpriteLimit = false;
+		public bool SmsSpriteLimit = false;
 
 		public string SmsReset = "C";
 		public string SmsPause = "V, J1 B8";

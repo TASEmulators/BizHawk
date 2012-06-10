@@ -104,6 +104,21 @@ namespace BizHawk.MultiClient
 				if (Width_ >= 0 && Height_ >= 0)
 					this.Size = new System.Drawing.Size(Width_, Height_);
 			}
+
+			if (Global.Config.hexcustom)
+			{
+				menuStrip1.BackColor = Global.Config.hexmenubar;
+				MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
+				MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
+			}
+			else
+			{
+				Global.Config.hexmenubar = this.menuStrip1.BackColor;
+				Global.Config.hexbackgrnd = this.MemoryViewerBox.BackColor;
+				Global.Config.hexforegrnd = this.AddressesLabel.ForeColor;
+				Global.Config.hexcustom = true;
+			}
+
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 			UpdateValues();
@@ -440,7 +455,7 @@ namespace BizHawk.MultiClient
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
-            NumDigitsStr = "{0:X" + NumDigits.ToString() + "}  ";
+			NumDigitsStr = "{0:X" + NumDigits.ToString() + "}  ";
 		}
 
 		public void SetDataSize(int size)
@@ -1444,5 +1459,38 @@ namespace BizHawk.MultiClient
 		{
 			SaveAsBinary();
 		}
+
+		private void resetToDefaultToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.hexbackgrnd = Color.FromName("Control");
+			Global.Config.hexforegrnd = Color.FromName("ControlText");
+			Global.Config.hexmenubar = Color.FromName("Control");
+			MemoryViewerBox.BackColor = Global.Config.hexbackgrnd;
+			MemoryViewerBox.ForeColor = Global.Config.hexforegrnd;
+			menuStrip1.BackColor = Global.Config.hexmenubar;
+		}
+
+		private void setColorsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			HexColors_Form h = new HexColors_Form();
+			h.Show();
+		}
+
+		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			HexColors_Form h = new HexColors_Form();
+			h.Show();
+		}
+
+		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			this.MemoryViewerBox.BackColor = Color.FromName("Control");
+			Global.Config.hexbackgrnd = Color.FromName("Control");
+			this.MemoryViewerBox.ForeColor = Color.FromName("ControlText");
+			Global.Config.hexforegrnd = Color.FromName("ControlText");
+			this.menuStrip1.BackColor = Color.FromName("Control");
+			Global.Config.hexmenubar = Color.FromName("Control");
+		}
+
 	}
-}
+} 

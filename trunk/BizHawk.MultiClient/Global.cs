@@ -3,6 +3,7 @@ using System.Collections.Generic;
 #if WINDOWS
 using SlimDX.Direct3D9;
 using SlimDX.DirectSound;
+using System.Drawing;
 #endif
 
 namespace BizHawk.MultiClient
