@@ -593,14 +593,36 @@ namespace BizHawk.MultiClient
 			displayThread.Start();
 		}
 
+		volatile bool VsyncToggle = false;
+		volatile bool VsyncRequested = false;
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			VsyncRequested = Global.Config.DisplayVSync;
+
 			//needsclear = false because we're about to clobber the data with AcceptIntArray
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
 			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
 			sourceSurfaceSet.SetPending(newPendingSurface);
 			wakeupEvent.Set();
+
+			if (VsyncRequested)
+			{
+				VsyncToggle = true;
+
+				for (; ; )
+				{
+					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+					if (!VsyncToggle) break;
+					Application.DoEvents();
+				}
+			}
+
+			//for(;;)
+			//{
+			//  if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+			//  Application.DoEvents();
+			//}
 		}
 
 		public bool Disposed { get; private set; }
@@ -609,6 +631,7 @@ namespace BizHawk.MultiClient
 		{
 			if (Disposed) return;
 			shutdownFlag = true;
+			VsyncToggle = true;
 			while (shutdownFlag) Thread.Sleep(1);
 			wakeupEvent.Dispose();
 			Disposed = true;
@@ -649,7 +672,7 @@ namespace BizHawk.MultiClient
 				Display();
 
 				//wait until we receive something interesting, or just a little while anyway
-				wakeupEvent.WaitOne(10);
+				wakeupEvent.WaitOne(1);
 
 				if (suspendFlag)
 				{
@@ -729,7 +752,7 @@ namespace BizHawk.MultiClient
 			{
 				if (Global.Config.SuppressGui)
 				{
-					Global.RenderPanel.FastRenderAndPresent(currentSourceSurface);
+					Global.RenderPanel.Render(currentSourceSurface);
 				}
 				else
 				{
@@ -739,12 +762,13 @@ namespace BizHawk.MultiClient
 					{
 						Global.OSD.DrawScreenInfo(g);
 						Global.OSD.DrawMessages(g);
+						//Thread.Sleep(1);
 					}
 					nativeBmp.FromBitmap();
 					Global.RenderPanel.RenderOverlay(nativeBmp);
 					//release the native resolution image
 					nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
-					Global.RenderPanel.Present();
+					//Global.RenderPanel.Present();
 				}
 			}
 			else
@@ -781,11 +805,24 @@ namespace BizHawk.MultiClient
 
 				//send the native resolution image to the render panel
 				Global.RenderPanel.Render(nativeBmp);
-				Global.RenderPanel.Present();
+				//Global.RenderPanel.Present();
 
 				//release the native resolution image
 				nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
 			}
+
+			Global.RenderPanel.Present();
+
+			if (VsyncRequested)
+			{
+				for (; ; )
+				{
+					//if (Direct3DRenderPanel.vsyncEvent.WaitOne(1)) break;
+					if (VsyncToggle) break;
+				}
+				VsyncToggle = false;
+			}
+
 
 		}
 
