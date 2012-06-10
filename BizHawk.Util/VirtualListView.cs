@@ -552,6 +552,15 @@ namespace BizHawk
 					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), 0));
 					break;
 
+				case 0x100C:
+					{
+						base.WndProc(ref m);
+						int num = m.Result.ToInt32();
+						messageProcessed = true;
+						m.Result = new IntPtr(0);
+						break;
+					}
+
 
 				//obscure message loop flakiness when exceptions are thrown from the message loop...
 				//THIS BREAKS PROPER LISTVIEW FOCUS SELECTION (blue)
