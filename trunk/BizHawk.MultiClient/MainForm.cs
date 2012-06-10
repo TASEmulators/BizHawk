@@ -2748,7 +2748,7 @@ namespace BizHawk.MultiClient
 				sfd.FileName = "NULL";
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.AVIPath, "");
 			}
-			sfd.Filter = "AVI (*.avi)|*.avi|JMD (*.jmd)|*.jmd|WAV (*.wav)|*.wav|All Files|*.*";
+			sfd.Filter = "AVI (*.avi)|*.avi|JMD (*.jmd)|*.jmd|WAV (*.wav)|*.wav|Matroska (*.mkv)|*.mkv|All Files|*.*";
 			Global.Sound.StopSound();
 			var result = sfd.ShowDialog();
 			Global.Sound.StartSound();
@@ -2768,6 +2768,8 @@ namespace BizHawk.MultiClient
 				aw = new AviWriter();
 			else if (ext == ".wav")
 				aw = new WavWriterV();
+			else if (ext == ".mkv")
+				aw = new FFmpegWriter();
 			else // hmm?
 				aw = new AviWriter();
 			try
