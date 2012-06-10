@@ -401,6 +401,7 @@ namespace BizHawk.MultiClient
 				searchList[x].original = searchList[x].value;
 				searchList[x].lastchange = searchList[x].value;
 				searchList[x].lastsearch = searchList[x].value;
+				searchList[x].changecount = 0;
 				if (includeMisalignedToolStripMenuItem.Checked)
 					count++;
 				else
@@ -1216,7 +1217,54 @@ namespace BizHawk.MultiClient
 			for (int x = 0; x < redoList.Count; x++)
 				redoList[x].signed = s;
 			SetSpecificValueBoxMaxLength();
+			sortReverse = false;
+			sortedCol = "";
 			DisplaySearchList();
+		}
+
+		private void ConvertListsDataSize(atype s, bool bigendian)
+		{
+			ConvertDataSize(s, bigendian, ref searchList);
+			ConvertDataSize(s, bigendian, ref undoList);
+			ConvertDataSize(s, bigendian, ref weededList);
+			ConvertDataSize(s, bigendian, ref redoList);
+			SetSpecificValueBoxMaxLength();
+			sortReverse = false;
+			sortedCol = "";
+			DisplaySearchList();
+		}
+
+		private void ConvertDataSize(atype s, bool bigendian, ref List<Watch> list)
+		{
+			List<Watch> converted = new List<Watch>();
+			int divisor = 1;
+			if (!includeMisalignedToolStripMenuItem.Checked)
+			{
+				switch (s)
+				{
+					case atype.WORD:
+						divisor = 2;
+						break;
+					case atype.DWORD:
+						divisor = 4;
+						break;
+				}
+			}
+			for (int x = 0; x < list.Count; x++)
+				if (list[x].address % divisor == 0)
+				{
+					int changes = list[x].changecount;
+					list[x].type = s;
+					list[x].bigendian = GetBigEndian();
+					list[x].PeekAddress(Domain);
+					list[x].prev = list[x].value;
+					list[x].original = list[x].value;
+					list[x].lastchange = list[x].value;
+					list[x].lastsearch = list[x].value;
+					list[x].changecount = changes;
+					converted.Add(list[x]);
+				}
+			list = converted;
 		}
 
 		private void unsignedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1233,8 +1281,6 @@ namespace BizHawk.MultiClient
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.UNSIGNED);
-			sortReverse = false;
-			sortedCol = "";
 		}
 
 		private void signedToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1251,8 +1297,6 @@ namespace BizHawk.MultiClient
 			hexadecimalToolStripMenuItem.Checked = false;
 			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.SIGNED);
-			sortReverse = false;
-			sortedCol = "";
 		}
 
 		private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1269,8 +1313,6 @@ namespace BizHawk.MultiClient
 			hexadecimalToolStripMenuItem.Checked = true;
 			SpecificValueBox.Text = converted;
 			ConvertListsDataType(asigned.HEX);
-			sortReverse = false;
-			sortedCol = "";
 		}
 
 		private void SearchListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -1348,8 +1390,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = true;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = false;
-			sortReverse = false;
-			sortedCol = "";
+			ConvertListsDataSize(atype.BYTE, GetBigEndian());
 		}
 
 		private void bytesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1357,8 +1398,7 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = true;
 			dWordToolStripMenuItem1.Checked = false;
-			sortReverse = false;
-			sortedCol = "";
+			ConvertListsDataSize(atype.WORD, GetBigEndian());
 		}
 
 		private void dWordToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -1366,31 +1406,28 @@ namespace BizHawk.MultiClient
 			byteToolStripMenuItem.Checked = false;
 			bytesToolStripMenuItem.Checked = false;
 			dWordToolStripMenuItem1.Checked = true;
-			sortReverse = false;
-			sortedCol = "";
+			ConvertListsDataSize(atype.DWORD, GetBigEndian());
 		}
 
 		private void includeMisalignedToolStripMenuItem_Click_1(object sender, EventArgs e)
 		{
 			includeMisalignedToolStripMenuItem.Checked ^= true;
-			sortReverse = false;
-			sortedCol = "";
+			if (!includeMisalignedToolStripMenuItem.Checked)
+				ConvertListsDataSize(GetDataSize(), GetBigEndian());
 		}
 
 		private void SetLittleEndian()
 		{
 			bigEndianToolStripMenuItem.Checked = false;
 			littleEndianToolStripMenuItem.Checked = true;
-			sortReverse = false;
-			sortedCol = "";
+			ConvertListsDataSize(GetDataSize(), false);
 		}
 
 		private void SetBigEndian()
 		{
 			bigEndianToolStripMenuItem.Checked = true;
 			littleEndianToolStripMenuItem.Checked = false;
-			sortReverse = false;
-			sortedCol = "";
+			ConvertListsDataSize(GetDataSize(), true);
 		}
 
 		private void bigEndianToolStripMenuItem_Click(object sender, EventArgs e)
