@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\Filters\Hq2x.cs" />
+    <Compile Include="FFmpegWriter.cs" />
     <Compile Include="Gameboy\Debugger.cs">
       <SubType>Form</SubType>
     </Compile>
