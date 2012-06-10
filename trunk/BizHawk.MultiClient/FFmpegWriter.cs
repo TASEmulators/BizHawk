@@ -145,7 +145,7 @@ namespace BizHawk.MultiClient
 			while (stderr.Count > 0)
 			{
 				var foo = stderr.Dequeue();
-				System.Windows.Forms.MessageBox.Show(foo);
+				//System.Windows.Forms.MessageBox.Show(foo);
 				s.Append(foo);
 			}
 			return s.ToString();
