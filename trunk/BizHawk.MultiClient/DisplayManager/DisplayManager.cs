@@ -602,7 +602,7 @@ namespace BizHawk.MultiClient
 
 			//needsclear = false because we're about to clobber the data with AcceptIntArray
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
+			newPendingSurface.AcceptIntArray((int[])videoProvider.GetVideoBuffer().Clone());
 			sourceSurfaceSet.SetPending(newPendingSurface);
 			wakeupEvent.Set();
 
