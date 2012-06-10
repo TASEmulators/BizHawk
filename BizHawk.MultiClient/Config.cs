@@ -196,6 +196,7 @@ namespace BizHawk.MultiClient
 		public int DispMultiy = 0;
 		public int DispMultianchor = 0;
 		public bool DisplayGDI = false;
+		public bool SuppressGui = false;
 		public bool DisplayStatusBar = true;
 		public int DispRamWatchx = 0;
 		public int DispRamWatchy = 70;
