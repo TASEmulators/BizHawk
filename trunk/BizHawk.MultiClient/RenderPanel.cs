@@ -78,7 +78,6 @@ namespace BizHawk.MultiClient
 			}
 
 			// Copy the image data to the texture.
-			surface.Lock();
 			using (var Data = Texture.LockRectangle(0, new Rectangle(0, 0, imageWidth, imageHeight), LockFlags.None).Data)
 			{
 				if (imageWidth == textureWidth)
@@ -295,7 +294,7 @@ namespace BizHawk.MultiClient
 
 			Resized = false;
 			Device.Clear(ClearFlags.Target, BackgroundColor, 1.0f, 0);
-			Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
+			Present();
 		}
 
 		public void FastRenderAndPresent(DisplaySurface surface)
@@ -378,7 +377,8 @@ namespace BizHawk.MultiClient
 
 		public void Present()
 		{
-			Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
+			//Device.Present(SlimDX.Direct3D9.Present.DoNotWait);
+			Device.Present(SlimDX.Direct3D9.Present.None);
 		}
 
 

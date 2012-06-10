@@ -109,40 +109,84 @@ namespace BizHawk.MultiClient
 	{
 	}
 
-	public class DisplaySurface : IDisposable
+	public unsafe class DisplaySurface : IDisposable
 	{
+		Bitmap bmp;
+		BitmapData bmpdata;
+		int[] pixels;
+
+		public unsafe void Clear()
+		{
+			FromBitmap(false);
+			Util.memset(PixelPtr, 0, Stride * Height);
+		}
+
+		public Bitmap PeekBitmap()
+		{
+			ToBitmap();
+			return bmp;
+		}
+
 		/// <summary>
 		/// returns a Graphics object used to render to this surface. be sure to dispose it!
 		/// </summary>
 		public Graphics GetGraphics()
 		{
-			Unlock();
+			ToBitmap();
 			return Graphics.FromImage(bmp);
 		}
-		Bitmap bmp;
-		BitmapData bmpdata;
 
-		//TODO - lock and cache these
-		public unsafe int* PixelPtr { get { return (int*)bmpdata.Scan0.ToPointer(); } }
-		public IntPtr PixelIntPtr { get { return bmpdata.Scan0; } }
-		public int Stride { get { return bmpdata.Stride; } }
-		public int OffsetOf(int x, int y) { return y * Stride + x*4; }
-
-		public unsafe void Clear()
+		public unsafe void ToBitmap(bool copy=true)
 		{
-			Lock();
-			Util.memset32(PixelPtr, 0, Stride * Height);
+			if (isBitmap) return;
+			isBitmap = true;
+
+			if (bmp == null)
+			{
+				bmp = new Bitmap(Width, Height, PixelFormat.Format32bppArgb);
+			}
+
+			if (copy)
+			{
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+				int w = Width;
+				int h = Height;
+				int stride = bmpdata.Stride / 4;
+				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
+				for (int y = 0, i = 0; y < h; y++)
+					for (int x = 0; x < w; x++)
+						bmpbuf[y * stride + x] = pixels[i++];
+
+				bmp.UnlockBits(bmpdata);
+			}
+
 		}
 
-		/// <summary>
-		/// returns a bitmap which you can use but not hold onto.
-		/// we may remove this later, as managing a Bitmap just for this may be a drag. (probably not though)
-		/// </summary>
-		public Bitmap PeekBitmap()
+		public bool IsBitmap { get { return isBitmap; } }
+		bool isBitmap = false;
+
+		public unsafe void FromBitmap(bool copy=true)
 		{
-			Unlock();
-			return bmp;
+			if (!isBitmap) return;
+			isBitmap = false;
+
+			if (copy)
+			{
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+				int w = Width;
+				int h = Height;
+				int stride = bmpdata.Stride / 4;
+				int* bmpbuf = (int*)bmpdata.Scan0.ToPointer();
+				for (int y = 0, i = 0; y < h; y++)
+					for (int x = 0; x < w; x++)
+						pixels[i++] = bmpbuf[y * stride + x];
+
+				bmp.UnlockBits(bmpdata);
+			}
 		}
+
 
 		public static DisplaySurface DisplaySurfaceWrappingBitmap(Bitmap bmp)
 		{
@@ -150,6 +194,7 @@ namespace BizHawk.MultiClient
 			ret.Width = bmp.Width;
 			ret.Height = bmp.Height;
 			ret.bmp = bmp;
+			ret.isBitmap = true;
 			return ret;
 		}
 
@@ -166,8 +211,27 @@ namespace BizHawk.MultiClient
 			Width = width;
 			Height = height;
 
-			bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			Lock();
+			pixels = new int[width * height];
+			LockPixels();
+		}
+
+		public int* PixelPtr { get { return (int*)ptr; } }
+		public IntPtr PixelIntPtr { get { return new IntPtr(ptr); } }
+		public int Stride { get { return Width*4; } }
+		public int OffsetOf(int x, int y) { return y * Stride + x*4; }
+
+		void* ptr;
+		GCHandle handle;
+		void LockPixels()
+		{
+			UnlockPixels();
+			handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
+			ptr = handle.AddrOfPinnedObject().ToPointer();
+		}
+
+		void UnlockPixels()
+		{
+			if(handle.IsAllocated) handle.Free();
 		}
 
 		/// <summary>
@@ -176,23 +240,27 @@ namespace BizHawk.MultiClient
 		/// <param name="xpad"></param>
 		/// <param name="ypad"></param>
 		/// <returns></returns>
-		public unsafe DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
+		public DisplaySurface ToPaddedSurface(int xpad0, int ypad0, int xpad1, int ypad1)
 		{
-			Lock();
-			int new_width = Width + xpad0 + xpad1;
-			int new_height = Height + ypad0 + ypad1;
-			DisplaySurface ret = new DisplaySurface(new_width, new_height);
-			ret.Lock();
-			int* dptr = ret.PixelPtr;
-			int* sptr = PixelPtr;
-			int dstride = ret.Stride/4;
-			int sstride = Stride/4;
-			for (int y = 0; y < Height; y++)
-				for (int x = 0; x < Width; x++)
-				{
-					dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
-				}
-			return ret;
+			//Lock();
+			//int new_width = Width + xpad0 + xpad1;
+			//int new_height = Height + ypad0 + ypad1;
+			//DisplaySurface ret = new DisplaySurface(new_width, new_height);
+			//ret.Lock();
+			//int* dptr = ret.PixelPtr;
+			//int* sptr = PixelPtr;
+			//int dstride = ret.Stride/4;
+			//int sstride = Stride/4;
+			//for (int y = 0; y < Height; y++)
+			//  for (int x = 0; x < Width; x++)
+			//  {
+			//    dptr[(y + ypad0) * dstride + x + xpad0] = sptr[y * sstride + x];
+			//  }
+			//return ret;
+
+			//need to reimplement this
+			throw new NotSupportedException();
+			return null;
 		}
 
 		public int Width { get; private set; }
@@ -203,77 +271,17 @@ namespace BizHawk.MultiClient
 			if (bmp != null)
 				bmp.Dispose();
 			bmp = null;
+			UnlockPixels();
 		}
 
-		/// <summary>
-		/// copies out the buffer as an int array (hopefully you can do this with a pointer instead and save some time!)
-		/// </summary>
-		public unsafe int[] ToIntArray()
+		//public unsafe int[] ToIntArray() { }
+
+		public void AcceptIntArray(int[] newpixels)
 		{
-			Lock();
-
-			int w = bmp.Width;
-			int h = bmp.Height;
-			var ret = new int[bmp.Width * bmp.Height];
-			int* pData = (int*)bmpdata.Scan0.ToPointer();
-			int stride = bmpdata.Stride / 4;
-			for (int y = 0, i = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					ret[i++] = pData[y * stride + x];
-
-			return ret;
-		}
-
-		public unsafe void SetFromIntArray(int[] pixels)
-		{
-			Lock();
-
-			if (Stride == Width * 4)
-			{
-				Marshal.Copy(pixels, 0, PixelIntPtr, Width * Height);
-				return;
-			}
-
-			int w = Width;
-			int h = Height;
-			int* pData = PixelPtr;
-			int stride = Stride / 4;
-			for (int y = 0, i = 0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					pData[y * stride + x] = pixels[i++];
-		}
-
-		/// <summary>
-		/// locks this surface so that it can be accessed by raw pointer
-		/// </summary>
-		public void Lock()
-		{
-			if (bmpdata != null) return;
-			var imageLockMode = ImageLockMode.ReadWrite;
-			bmpdata = bmp.LockBits(new Rectangle(0, 0, Width, Height), imageLockMode, PixelFormat.Format32bppArgb);
-		}
-
-		public bool IsLocked { get { return bmpdata != null; } }
-
-		public void Unlock()
-		{
-			if (bmpdata != null)
-				bmp.UnlockBits(bmpdata);
-			bmpdata = null;
-		}
-
-		public static unsafe DisplaySurface FromVideoProvider(IVideoProvider provider)
-		{
-			int w = provider.BufferWidth;
-			int h = provider.BufferHeight;
-			int[] buffer = provider.GetVideoBuffer();
-			var ret = new DisplaySurface(w,h);
-			int* pData = ret.PixelPtr;
-			int stride = ret.Stride / 4;
-			for (int y = 0, i=0; y < h; y++)
-				for (int x = 0; x < w; x++)
-					pData[y * stride + x] = buffer[i++];
-			return ret;
+			FromBitmap(false);
+			UnlockPixels();
+			pixels = newpixels;
+			LockPixels();
 		}
 	}
 
@@ -588,8 +596,9 @@ namespace BizHawk.MultiClient
 		SwappableDisplaySurfaceSet sourceSurfaceSet = new SwappableDisplaySurfaceSet();
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			//needsclear = false because we're about to clobber the data with AcceptIntArray
 			var newPendingSurface = sourceSurfaceSet.AllocateSurface(videoProvider.BufferWidth, videoProvider.BufferHeight, false);
-			newPendingSurface.SetFromIntArray(videoProvider.GetVideoBuffer());
+			newPendingSurface.AcceptIntArray(videoProvider.GetVideoBuffer());
 			sourceSurfaceSet.SetPending(newPendingSurface);
 			wakeupEvent.Set();
 		}
@@ -731,6 +740,7 @@ namespace BizHawk.MultiClient
 						Global.OSD.DrawScreenInfo(g);
 						Global.OSD.DrawMessages(g);
 					}
+					nativeBmp.FromBitmap();
 					Global.RenderPanel.RenderOverlay(nativeBmp);
 					//release the native resolution image
 					nativeDisplaySurfaceSet.ReleaseSurface(nativeBmp);
