@@ -53,7 +53,7 @@ namespace BizHawk.MultiClient
 			bigendian = BigEndian;
 			notes = Notes;
 			changecount = 0;
-			prev = 0;
+			prev = Value;
 			original = value;
 			lastchange = 0;
 			lastsearch = value;
