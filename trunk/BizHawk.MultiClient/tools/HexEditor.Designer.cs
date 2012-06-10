@@ -362,7 +362,6 @@
 			this.resetToDefaultToolStripMenuItem.Name = "resetToDefaultToolStripMenuItem";
 			this.resetToDefaultToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.resetToDefaultToolStripMenuItem.Text = "Reset to Default";
-			this.resetToDefaultToolStripMenuItem.Click += new System.EventHandler(this.resetToDefaultToolStripMenuItem_Click);
 			// 
 			// ViewerContextMenuStrip
 			// 
