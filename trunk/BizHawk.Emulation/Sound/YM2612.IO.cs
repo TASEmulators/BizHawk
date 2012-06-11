@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Sound
                 //case 0x28: Console.WriteLine("Operator Key On/Off Ctrl {0:X2}", value); break;
                 case 0x2A: DacValue = value; break;
                 case 0x2B: DacEnable = (value & 0x80) != 0; break;
-                case 0x2C: throw new Exception("something wrote to ym2612 port $2C!"); break;//http://forums.sonicretro.org/index.php?showtopic=28589
+                case 0x2C: throw new Exception("something wrote to ym2612 port $2C!"); //http://forums.sonicretro.org/index.php?showtopic=28589
 
                 default:
                     int chan, oper;
