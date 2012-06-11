@@ -127,9 +127,11 @@ namespace Lua511
 	/*
 	 * Delegate for functions passed to Lua as function pointers
 	 */
+	[System::Runtime::InteropServices::UnmanagedFunctionPointer(CallingConvention::Cdecl)]
 	public delegate int LuaCSFunction(IntPtr luaState);
 
    // delegate for lua debug hook callback (by Reinhard Ostermeier)
+	[System::Runtime::InteropServices::UnmanagedFunctionPointer(CallingConvention::Cdecl)]
    public delegate void LuaHookFunction(IntPtr luaState, IntPtr luaDebug);
 
 
