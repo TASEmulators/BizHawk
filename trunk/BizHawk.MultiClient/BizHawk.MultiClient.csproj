@@ -281,6 +281,8 @@
     <Compile Include="NEStools\SpriteViewer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="NutMuxer.cs" />
+    <Compile Include="NutWriter.cs" />
     <Compile Include="PCEtools\PCEBGCanvas.cs">
       <SubType>Component</SubType>
     </Compile>
