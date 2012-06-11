@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		}
 
 
-		void ClockClock()
+		void ClockCPU()
 		{
 			if (!irq_enable) return;
 			if (irq_counter == 0)
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			if (clock_counter == 3)
 			{
 				clock_counter = 0;
-				ClockClock();
+				ClockCPU();
 			}
 		}
 	}
