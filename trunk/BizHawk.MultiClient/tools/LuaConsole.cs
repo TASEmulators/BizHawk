@@ -844,9 +844,11 @@ namespace BizHawk.MultiClient
 						if (s.FrameWaiting && !includeFrameWaiters)
 							prohibit = true;
 
-						if (prohibit) continue;
-						var result = LuaImp.ResumeScript(s.Thread);
-						s.FrameWaiting = result.WaitForFrame;
+						if (!prohibit)
+						{
+							var result = LuaImp.ResumeScript(s.Thread);
+							s.FrameWaiting = result.WaitForFrame;
+						}
 					}
 					LuaImp.gui_drawFinishEmu();
 				}
