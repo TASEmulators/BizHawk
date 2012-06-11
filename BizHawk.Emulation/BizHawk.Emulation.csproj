@@ -344,7 +344,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Consoles\Nintendo\Docs\compatibility.txt" />
-    <Content Include="Consoles\Nintendo\Docs\notes_for_disch.txt" />
+    <Content Include="Consoles\Nintendo\Docs\sunsoft.txt" />
     <Content Include="Consoles\Nintendo\Docs\test_status.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
     <Content Include="Consoles\Sega\Genesis\Compat.txt" />

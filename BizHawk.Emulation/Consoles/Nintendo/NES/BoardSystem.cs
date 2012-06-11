@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			{
 				this.NES = nes;
 			}
+
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
 
@@ -188,13 +189,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 			public virtual void AddressPPU(int addr) { }
 			public virtual byte PeekPPU(int addr) { return ReadPPU(addr); }
 
-			/// <summary>
-			/// reads PPU from a pattern table address. asserts addr lt 0x2000
-			/// This is just so that we can accelerate things a tiny bit by not checking against 0x2000 excessively
-			/// </summary>
 			protected virtual byte ReadPPUChr(int addr)
 			{
-				Debug.Assert(addr < 0x2000);
 				if (VROM != null)
 					return VROM[addr];
 				else return VRAM[addr];
