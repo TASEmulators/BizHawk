@@ -56,7 +56,7 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 066	GxROM		Complete
 067	Sunsoft-3	Complete
 068	Sunsoft-4	Complete
-069	FME7		Minimal
+069	FME7		Minimal (missing sound)
 070	Misc		Complete
 071	Camerica	Complete
 072	Misc (J)	Nothing
