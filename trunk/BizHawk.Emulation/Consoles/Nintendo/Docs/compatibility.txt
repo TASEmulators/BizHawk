@@ -52,14 +52,14 @@ Open bus and bus conflict emulation is not considered complete or thorough in an
 061	Multicart	Junk
 062	Multicart	Junk
 064	Tengen		Good
-065	Misc (J)	Nothing
+065	Misc (J)	Decent
 066	GxROM		Complete
 067	Sunsoft-3	Complete
 068	Sunsoft-4	Complete
 069	FME7		Minimal (missing sound)
 070	Misc		Complete
 071	Camerica	Complete
-072	Misc (J)	Nothing
+072	Misc (J)	Complete
 073	VRC3		Good
 074	Pirate (CN)	Junk
 075	VRC1		Complete	
