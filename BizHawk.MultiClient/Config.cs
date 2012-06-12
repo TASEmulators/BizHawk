@@ -280,7 +280,6 @@ namespace BizHawk.MultiClient
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 		//Hex Editor Colors
-		public bool hexcustom;
 		public Color HexBackgrndColor;
 		public Color HexForegrndColor;
 		public Color HexMenubarColor;
