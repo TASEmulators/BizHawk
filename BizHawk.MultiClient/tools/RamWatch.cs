@@ -367,6 +367,10 @@ namespace BizHawk.MultiClient
 		private void InitializeAddress(Watch w)
 		{
 			w.PeekAddress(Domain);
+			w.prev = w.value;
+			w.original = w.value;
+			w.lastchange = w.value;
+			w.lastsearch = w.value;
 			w.changecount = 0;
 		}
 
