@@ -517,10 +517,13 @@ namespace BizHawk.MultiClient
 					int int_y = LuaInt(Y);
 					int int_width = LuaInt(width);
 					int int_height = LuaInt(height);
-					g.DrawRectangle(GetPen(line), int_x, int_y, int_width, int_height);
-					if (background != null)
-						using(var brush = GetBrush(background))
-							g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+					using (var pen = GetPen(line))
+					{
+						g.DrawRectangle(pen, int_x, int_y, int_width, int_height);
+						if (background != null)
+							using (var brush = GetBrush(background))
+								g.FillRectangle(brush, int_x, int_y, int_width, int_height);
+					}
 				}
 				catch(Exception)
 				{
@@ -537,7 +540,8 @@ namespace BizHawk.MultiClient
 				float x = LuaInt(X) + 0.1F;
 				try
 				{
-					g.DrawLine(GetPen(color), LuaInt(X), LuaInt(Y), x, LuaInt(Y));
+					using(var pen = GetPen(color))
+						g.DrawLine(pen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
 				catch (Exception)
 				{
@@ -551,9 +555,10 @@ namespace BizHawk.MultiClient
 			{
 				try
 				{
-                    if (color == null)
-                        color = "black";
-					g.DrawLine(GetPen(color), LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
+					if (color == null)
+						color = "black";
+					using(var pen = GetPen(color))
+						g.DrawLine(pen, LuaInt(x1), LuaInt(y1), LuaInt(x2), LuaInt(y2));
 				}
 				catch (Exception)
 				{
@@ -634,7 +639,8 @@ namespace BizHawk.MultiClient
 						if (i >= 4)
 							break;
 					}
-					g.DrawBezier(GetPen(color), Points[0], Points[1], Points[2], Points[3]);
+					using(var pen = GetPen(color))
+						g.DrawBezier(pen, Points[0], Points[1], Points[2], Points[3]);
 				}
 				catch (Exception)
 				{
