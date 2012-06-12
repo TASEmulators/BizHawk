@@ -280,9 +280,9 @@ namespace BizHawk.MultiClient
 		public bool HexEditorBigEndian = false;
 		public int HexEditorDataSize = 1;
 		//Hex Editor Colors
-		public Color HexBackgrndColor;
-		public Color HexForegrndColor;
-		public Color HexMenubarColor;
+		public Color HexBackgrndColor = Color.FromName("Control");
+		public Color HexForegrndColor = Color.FromName("ControlText");
+		public Color HexMenubarColor = Color.FromName("Control");
 		public Color HexFreezeColor = Color.LightBlue;
 		public Color HexHighlightColor = Color.Pink;
 		public Color HexHighlightFreezeColor = Color.Violet;
