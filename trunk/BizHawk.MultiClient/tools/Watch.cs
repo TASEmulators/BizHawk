@@ -64,6 +64,10 @@ namespace BizHawk.MultiClient
 		public int original { get; set; }
 		public int lastchange { get; set; }
 		public int lastsearch { get; set; }
+		public int diffPrev { get { return value - prev; } }
+		public int diffOriginal { get { return value - original; } }
+		public int diffLastChange { get { return value - lastchange; } }
+		public int diffLastSearch { get { return value - lastsearch; } }
 		public atype type { get; set; }        //Address type (byte, word, dword, etc
 		public asigned signed { get; set; }    //Signed/Unsigned?
 		public bool bigendian { get; set; }
@@ -314,6 +318,14 @@ namespace BizHawk.MultiClient
 			}
 		}
 
+		public string DiffToString(int diff)
+		{
+			string converted = diff.ToString();
+			if (diff >= 0)
+				converted = "+" + converted;
+			return converted;
+		}
+
 		public string ValueToString()
 		{
 			return ValToString(value);
@@ -339,6 +351,26 @@ namespace BizHawk.MultiClient
 			return ValToString(lastsearch);
 		}
 
+		public string DiffPrevToString()
+		{
+			return DiffToString(prev);
+		}
+
+		public string DiffOriginalToString()
+		{
+			return DiffToString(original);
+		}
+
+		public string DiffLastChangeToString()
+		{
+			return DiffToString(lastchange);
+		}
+
+		public string DiffLastSearchToString()
+		{
+			return DiffToString(lastsearch);
+		}
+
 		private int ComparePrevious(Watch Other, prevDef previous)
 		{
 			switch (previous)
@@ -352,6 +384,22 @@ namespace BizHawk.MultiClient
 					return ComparePrev(Other);
 				case prevDef.LASTCHANGE:
 					return CompareLastChange(Other);
+			}
+		}
+
+		private int CompareDiff(Watch Other, prevDef previous)
+		{
+			switch (previous)
+			{
+				case prevDef.LASTSEARCH:
+					return CompareDiffLastSearch(Other);
+				case prevDef.ORIGINAL:
+					return CompareDiffOriginal(Other);
+				default:
+				case prevDef.LASTFRAME:
+					return CompareDiffPrev(Other);
+				case prevDef.LASTCHANGE:
+					return CompareDiffLastChange(Other);
 			}
 		}
 
@@ -460,6 +508,46 @@ namespace BizHawk.MultiClient
 				return 0;
 		}
 
+		private int CompareDiffPrev(Watch Other)
+		{
+			if (this.diffPrev < Other.diffPrev)
+				return -1;
+			else if (this.diffPrev > Other.diffPrev)
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareDiffOriginal(Watch Other)
+		{
+			if (this.diffOriginal < Other.diffOriginal)
+				return -1;
+			else if (this.diffOriginal > Other.diffOriginal)
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareDiffLastChange(Watch Other)
+		{
+			if (this.diffLastChange < Other.diffLastChange)
+				return -1;
+			else if (this.diffLastChange > Other.diffLastChange)
+				return 1;
+			else
+				return 0;
+		}
+
+		private int CompareDiffLastSearch(Watch Other)
+		{
+			if (this.diffLastSearch < Other.diffLastSearch)
+				return -1;
+			else if (this.diffLastSearch > Other.diffLastSearch)
+				return 1;
+			else
+				return 0;
+		}
+
 		private int CompareChanges(Watch Other)
 		{
 			if (this.changecount < Other.changecount)
@@ -498,7 +586,11 @@ namespace BizHawk.MultiClient
 						{
 							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
-								compare = CompareNotes(Other);
+							{
+								compare = CompareDiff(Other, previous);
+								if (compare == 0)
+									compare = CompareNotes(Other);
+							}
 						}
 					}
 				}
@@ -517,26 +609,11 @@ namespace BizHawk.MultiClient
 						{
 							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
-								compare = CompareNotes(Other);
-						}
-					}
-				}
-			}
-
-			else if (parameter == "Prev")
-			{
-				compare = ComparePrevious(Other, previous);
-				if (compare == 0)
-				{
-					compare = CompareAddress(Other);
-					if (compare == 0)
-					{
-						compare = CompareValue(Other);
-						if (compare == 0)
-						{
-							compare = CompareChanges(Other);
-							if (compare == 0)
-								compare = CompareNotes(Other);
+							{
+								compare = CompareDiff(Other, previous);
+								if (compare == 0)
+									compare = CompareNotes(Other);
+							}
 						}
 					}
 				}
@@ -555,7 +632,57 @@ namespace BizHawk.MultiClient
 						{
 							compare = ComparePrevious(Other, previous);
 							if (compare == 0)
-								compare = CompareNotes(Other);
+							{
+								compare = CompareDiff(Other, previous);
+								if (compare == 0)
+									compare = CompareNotes(Other);
+							}
+						}
+					}
+				}
+			}
+
+			else if (parameter == "Prev")
+			{
+				compare = ComparePrevious(Other, previous);
+				if (compare == 0)
+				{
+					compare = CompareAddress(Other);
+					if (compare == 0)
+					{
+						compare = CompareValue(Other);
+						if (compare == 0)
+						{
+							compare = CompareChanges(Other);
+							if (compare == 0)
+							{
+								compare = CompareDiff(Other, previous);
+								if (compare == 0)
+									compare = CompareNotes(Other);
+							}
+						}
+					}
+				}
+			}
+
+			else if (parameter == "Prev")
+			{
+				compare = CompareDiff(Other, previous);
+				if (compare == 0)
+				{
+					compare = CompareAddress(Other);
+					if (compare == 0)
+					{
+						compare = CompareValue(Other);
+						if (compare == 0)
+						{
+							compare = CompareChanges(Other);
+							if (compare == 0)
+							{
+								compare = ComparePrevious(Other, previous);
+								if (compare == 0)
+									compare = CompareNotes(Other);
+							}
 						}
 					}
 				}
@@ -574,7 +701,11 @@ namespace BizHawk.MultiClient
 						{
 							compare = CompareChanges(Other);
 							if (compare == 0)
+							{
 								compare = ComparePrevious(Other, previous);
+								if (compare == 0)
+									compare = CompareDiff(Other, previous);
+							}
 						}
 					}
 				}
