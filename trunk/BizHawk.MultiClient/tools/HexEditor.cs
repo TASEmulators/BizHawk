@@ -75,6 +75,10 @@ namespace BizHawk.MultiClient
 			Height_ = Global.Config.HexEditorHeight;
 			BigEndian = Global.Config.HexEditorBigEndian;
 			DataSize = Global.Config.HexEditorDataSize;
+			//Colors
+			menuStrip1.BackColor = Global.Config.HexMenubarColor;
+			MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
+			MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
 		}
 
 		public void SaveConfigSettings()
@@ -104,21 +108,6 @@ namespace BizHawk.MultiClient
 				if (Width_ >= 0 && Height_ >= 0)
 					this.Size = new System.Drawing.Size(Width_, Height_);
 			}
-
-			if (Global.Config.hexcustom)
-			{
-				menuStrip1.BackColor = Global.Config.HexMenubarColor;
-				MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
-				MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
-			}
-			else
-			{
-				Global.Config.HexMenubarColor = this.menuStrip1.BackColor;
-				Global.Config.HexBackgrndColor = this.MemoryViewerBox.BackColor;
-				Global.Config.HexForegrndColor = this.AddressesLabel.ForeColor;
-				Global.Config.hexcustom = true;
-			}
-
 			SetMemoryDomainMenu();
 			SetDataSize(DataSize);
 			UpdateValues();
@@ -1476,11 +1465,14 @@ namespace BizHawk.MultiClient
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			this.MemoryViewerBox.BackColor = Color.FromName("Control");
-			Global.Config.HexBackgrndColor = Color.FromName("Control");
 			this.MemoryViewerBox.ForeColor = Color.FromName("ControlText");
-			Global.Config.HexForegrndColor = Color.FromName("ControlText");
 			this.menuStrip1.BackColor = Color.FromName("Control");
 			Global.Config.HexMenubarColor = Color.FromName("Control");
+			Global.Config.HexForegrndColor = Color.FromName("ControlText");
+			Global.Config.HexBackgrndColor = Color.FromName("Control");
+			Global.Config.HexFreezeColor = Color.LightBlue;
+			Global.Config.HexHighlightColor = Color.Pink;
+			Global.Config.HexHighlightFreezeColor = Color.Violet;
 		}
 	}
 } 
