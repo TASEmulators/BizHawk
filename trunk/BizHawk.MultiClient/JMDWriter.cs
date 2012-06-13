@@ -602,7 +602,7 @@ namespace BizHawk.MultiClient
 			if (ext == null || ext.ToLower() != ".jmd")
 				baseName = baseName + ".jmd";
 
-			jmdfile = new JMDfile(File.Open(baseName, FileMode.OpenOrCreate), fpsnum, fpsden, audiosamplerate, audiochannels == 2);
+			jmdfile = new JMDfile(File.Open(baseName, FileMode.Create), fpsnum, fpsden, audiosamplerate, audiochannels == 2);
 
 
 			if (moviemetadata != null)
