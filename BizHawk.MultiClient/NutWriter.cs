@@ -51,7 +51,7 @@ namespace BizHawk.MultiClient
 
 		void startsegment()
 		{
-			var currentfile = System.IO.File.Open(String.Format("{0}_{1,4:D4}.nut", baseName, segment), System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write);
+			var currentfile = System.IO.File.Open(String.Format("{0}_{1,4:D4}.nut", baseName, segment), System.IO.FileMode.Create, System.IO.FileAccess.Write);
 			current = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, currentfile);
 		}
 
