@@ -22,7 +22,6 @@ namespace BizHawk.MultiClient
 		int defaultHeight;
 		List<ToolStripMenuItem> domainMenuItems = new List<ToolStripMenuItem>();
 		int RowsVisible = 0;
-		string Header = "";
 		int NumDigits = 4;
 		string NumDigitsStr = "{0:X4}  ";
 		string DigitFormatString = "{0:X2} ";
@@ -62,7 +61,8 @@ namespace BizHawk.MultiClient
 			LoadConfigSettings();
 			SetHeader();
 			Closing += (o, e) => SaveConfigSettings();
-			AddressesLabel.Font = new Font("Courier New", 8); ;
+			Header.Font = new Font("Courier New", 8);
+			AddressesLabel.Font = new Font("Courier New", 8);
 		}
 
 		private void LoadConfigSettings()
@@ -130,8 +130,6 @@ namespace BizHawk.MultiClient
 		{
 			StringBuilder rowStr = new StringBuilder("");
 			addrOffset = (NumDigits % 4) * 9;
-
-			rowStr.Append(Header + '\n');
 
 			for (int i = 0; i < RowsVisible; i++)
 			{
@@ -434,13 +432,13 @@ namespace BizHawk.MultiClient
 			switch (DataSize)
 			{
 				case 1:
-					Header = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header = "         0    2    4    6    8    A    C    E";
+					Header.Text = "         0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header = "             0        4        8        C";
+					Header.Text = "             0        4        8        C";
 					break;
 			}
 			NumDigits = GetNumDigits(Domain.Size);
