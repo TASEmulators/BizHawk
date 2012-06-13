@@ -1459,7 +1459,9 @@ namespace BizHawk.MultiClient
 		private void setColorsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			HexColors_Form h = new HexColors_Form();
+			Global.Sound.StopSound();
 			h.ShowDialog();
+			Global.Sound.StartSound();
 		}
 
 		private void resetToDefaultToolStripMenuItem1_Click(object sender, EventArgs e)
