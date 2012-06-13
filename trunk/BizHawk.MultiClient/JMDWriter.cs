@@ -764,5 +764,21 @@ namespace BizHawk.MultiClient
 			moviemetadata.lengthms = lengthMS;
 			moviemetadata.rerecords = rerecords;
 		}
+
+
+		public override string ToString()
+		{
+			return "JMD writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Writes a JPC-rr multidump file (JMD).  These can be read and further processed with jpc-streamtools.  One JMD file contains all audio (uncompressed) and video (compressed).";
+		}
+
+		public string DesiredExtension()
+		{
+			return "jmd";
+		}
 	}
 }

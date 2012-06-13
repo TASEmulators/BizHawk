@@ -268,5 +268,20 @@ namespace BizHawk.MultiClient
 		{
 			wavwriter.writesamples(samples);
 		}
+
+		public override string ToString()
+		{
+			return ".wav writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Writes a series of standard RIFF wav files containing uncompressed audio.  Does not write video.  Splits every 2G.";
+		}
+
+		public string DesiredExtension()
+		{
+			return "wav";
+		}
 	}
 }
