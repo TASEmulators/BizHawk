@@ -31,6 +31,7 @@ namespace BizHawk.MultiClient
 			if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				Global.Config.HexBackgrndColor = colorDialog1.Color;
+				Global.MainForm.HexEditor1.Header.BackColor = colorDialog1.Color;
 				Global.MainForm.HexEditor1.MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
 				this.HexBackgrnd.BackColor = colorDialog1.Color;
 			}
@@ -41,6 +42,7 @@ namespace BizHawk.MultiClient
 			if (colorDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				Global.Config.HexForegrndColor = colorDialog1.Color;
+				Global.MainForm.HexEditor1.Header.ForeColor = colorDialog1.Color;
 				Global.MainForm.HexEditor1.MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
 				this.HexForegrnd.BackColor = colorDialog1.Color;
 
