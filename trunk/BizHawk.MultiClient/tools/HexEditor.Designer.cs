@@ -570,6 +570,6 @@
 		private System.Windows.Forms.ToolStripMenuItem setColorsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem resetToDefaultToolStripMenuItem1;
-		private System.Windows.Forms.Label Header;
+		public System.Windows.Forms.Label Header;
     }
 }

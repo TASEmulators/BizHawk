@@ -79,6 +79,9 @@ namespace BizHawk.MultiClient
 			menuStrip1.BackColor = Global.Config.HexMenubarColor;
 			MemoryViewerBox.BackColor = Global.Config.HexBackgrndColor;
 			MemoryViewerBox.ForeColor = Global.Config.HexForegrndColor;
+			Header.BackColor = Global.Config.HexBackgrndColor;
+			Header.ForeColor = Global.Config.HexForegrndColor;
+
 		}
 
 		public void SaveConfigSettings()
@@ -1467,6 +1470,8 @@ namespace BizHawk.MultiClient
 			this.MemoryViewerBox.BackColor = Color.FromName("Control");
 			this.MemoryViewerBox.ForeColor = Color.FromName("ControlText");
 			this.menuStrip1.BackColor = Color.FromName("Control");
+			this.Header.BackColor = Color.FromName("Control");
+			this.Header.ForeColor = Color.FromName("ControlText");
 			Global.Config.HexMenubarColor = Color.FromName("Control");
 			Global.Config.HexForegrndColor = Color.FromName("ControlText");
 			Global.Config.HexBackgrndColor = Color.FromName("Control");
