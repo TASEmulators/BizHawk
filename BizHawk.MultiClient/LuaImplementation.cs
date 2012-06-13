@@ -533,13 +533,15 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public void gui_drawPixel(object X, object Y, object color)
+		public void gui_drawPixel(object X, object Y, object color = null)
 		{
 			using (var g = luaSurface.GetGraphics())
 			{
 				float x = LuaInt(X) + 0.1F;
 				try
 				{
+					if (color == null)
+						color = "black";
 					using(var pen = GetPen(color))
 						g.DrawLine(pen, LuaInt(X), LuaInt(Y), x, LuaInt(Y));
 				}
