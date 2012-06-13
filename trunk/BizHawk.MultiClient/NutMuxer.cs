@@ -13,7 +13,7 @@ namespace BizHawk.MultiClient
 	/// </summary>
 	class NutMuxer
 	{
-		/* TODO: timestamp sanitization (like JMDWriter) */
+		// this code isn't really any good for general purpose nut creation
 
 
 		/// <summary>
@@ -143,7 +143,7 @@ namespace BizHawk.MultiClient
 		/// seems to be different than standard CRC32?????
 		/// </summary>
 		/// <param name="buf"></param>
-		/// <returns></returns>
+		/// <returns>crc32, nut variant</returns>
 		static uint NutCRC32(byte[] buf)
 		{
 			uint crc = 0;
@@ -176,6 +176,11 @@ namespace BizHawk.MultiClient
 			StartCode startcode;
 			Stream underlying;
 
+			/// <summary>
+			/// create a new NutPacket
+			/// </summary>
+			/// <param name="startcode">startcode for this packet</param>
+			/// <param name="underlying">stream to write to</param>
 			public NutPacket(StartCode startcode, Stream underlying)
 			{
 				data = new MemoryStream();
@@ -306,13 +311,22 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		bool audiodone;
 
+		/// <summary>
+		/// video packets waiting to be written
+		/// </summary>
+		Queue<NutFrame> videoqueue;
+		/// <summary>
+		/// audio packets waiting to be written
+		/// </summary>
+		Queue<NutFrame> audioqueue;
+
 
 		/// <summary>
 		/// write out the main header
 		/// </summary>
 		void writemainheader()
 		{
-			// note: this tag not actually part of main headers
+			// note: this file starttag not actually part of main headers
 			var tmp = Encoding.ASCII.GetBytes("nut/multimedia container\0");
 			output.Write(tmp, 0, tmp.Length);
 
@@ -396,15 +410,120 @@ namespace BizHawk.MultiClient
 		}
 
 		/// <summary>
-		/// writes a syncpoint header with already coded universal timestamp
+		/// stores a single frame with syncpoint, in mux-ready form
+		/// used because reordering of audio and video can be needed for proper interleave
 		/// </summary>
-		void writesyncpoint(ulong global_key_pts)
+		class NutFrame
 		{
-			var header = new NutPacket(NutPacket.StartCode.Syncpoint, output);
-			WriteVarU(global_key_pts, header); // global_key_pts; file starts at time 0
-			WriteVarU(1, header); // back_ptr_div_16 ?????????????????????????????
-			header.Flush();
+			/// <summary>
+			/// data ready to be written to stream/disk
+			/// </summary>
+			byte[] data;
+
+			/// <summary>
+			/// presentation timestamp
+			/// </summary>
+			ulong pts;
+
+			/// <summary>
+			/// fraction of the specified timebase
+			/// </summary>
+			ulong ptsnum, ptsden;
+
+			/// <summary>
+			/// 
+			/// </summary>
+			/// <param name="payload">frame data</param>
+			/// <param name="pts">presentation timestamp</param>
+			/// <param name="ptsnum">numerator of timebase</param>
+			/// <param name="ptsden">denominator of timebase</param>
+			/// <param name="ptsindex">which timestamp base is used, assumed to be also stream number</param>
+			public NutFrame(byte[] payload, ulong pts, ulong ptsnum, ulong ptsden, int ptsindex)
+			{
+				this.pts = pts;
+				this.ptsnum = ptsnum;
+				this.ptsden = ptsden;
+
+				var frame = new MemoryStream();
+
+				// create syncpoint
+				var sync = new NutPacket(NutPacket.StartCode.Syncpoint, frame);
+				WriteVarU(pts * 2 + (ulong)ptsindex, sync); // global_key_pts
+				WriteVarU(1, sync); // back_ptr_div_16, this is wrong
+				sync.Flush();
+
+
+				var frameheader = new MemoryStream();
+				frameheader.WriteByte(0); // frame_code
+				// frame_flags = FLAG_CODED, so:
+				int flags = 0;
+				flags |= 1 << 0; // FLAG_KEY
+				if (payload.Length == 0)
+					flags |= 1 << 1; // FLAG_EOR
+				flags |= 1 << 3; // FLAG_CODED_PTS
+				flags |= 1 << 4; // FLAG_STREAM_ID
+				flags |= 1 << 5; // FLAG_SIZE_MSB
+				flags |= 1 << 6; // FLAG_CHECKSUM
+				WriteVarU(flags, frameheader);
+				WriteVarU(ptsindex, frameheader); // stream_id
+				WriteVarU(pts + 256, frameheader); // coded_pts = pts + 1 << msb_pts_shift
+				WriteVarU(payload.Length, frameheader); // data_size_msb
+
+				var frameheaderarr = frameheader.ToArray();
+				frame.Write(frameheaderarr, 0, frameheaderarr.Length);
+				WriteBE32(NutCRC32(frameheaderarr), frame); // checksum
+				frame.Write(payload, 0, payload.Length);
+
+				data = frame.ToArray();
+			}
+
+			/// <summary>
+			/// compare two NutFrames by pts
+			/// </summary>
+			/// <param name="lhs"></param>
+			/// <param name="rhs"></param>
+			/// <returns></returns>
+			public static bool operator <=(NutFrame lhs, NutFrame rhs)
+			{
+				BigInteger left = new BigInteger(lhs.pts);
+				left = left * lhs.ptsnum * rhs.ptsden;
+				BigInteger right = new BigInteger(rhs.pts);
+				right = right * rhs.ptsnum * lhs.ptsden;
+
+				return left <= right;
+			}
+			public static bool operator >=(NutFrame lhs, NutFrame rhs)
+			{
+				BigInteger left = new BigInteger(lhs.pts);
+				left = left * lhs.ptsnum * rhs.ptsden;
+				BigInteger right = new BigInteger(rhs.pts);
+				right = right * rhs.ptsnum * lhs.ptsden;
+
+				return left >= right;
+			}
+
+
+			static NutFrame()
+			{
+				dbg = new StreamWriter(".\\nutframe.txt", false);
+			}
+
+			static StreamWriter dbg;
+
+			/// <summary>
+			/// write out frame, with syncpoint and all headers
+			/// </summary>
+			/// <param name="dest"></param>
+			public void WriteData(Stream dest)
+			{
+				
+
+				dest.Write(data, 0, data.Length);
+				dbg.WriteLine(string.Format("{0},{1},{2}", pts, ptsnum, ptsden));
+			}
+
 		}
+
 
 		/// <summary>
 		/// write a video frame to the stream
@@ -416,37 +535,15 @@ namespace BizHawk.MultiClient
 				throw new Exception("Can't write data after end of relevance!");
 			if (data.Length == 0)
 				videodone = true;
-			writesyncpoint(videopts * 2 + 0);
-			writeframe(data, 0, videopts);
+			var f = new NutFrame(data, videopts, (ulong) avparams.fpsden, (ulong) avparams.fpsnum, 0);
 			videopts++;
+			videoqueue.Enqueue(f);
+			while (audioqueue.Count > 0 && f >= audioqueue.Peek())
+				audioqueue.Dequeue().WriteData(output);
 		}
 
 
 
-		void writeframe(byte[] data, int stream_id, ulong pts)
-		{
-			var frameheader = new MemoryStream();
-			frameheader.WriteByte(0); // frame_code
-			// frame_flags = FLAG_CODED, so:
-			int flags = 0;
-			flags |= 1 << 0; // FLAG_KEY
-			if (data.Length == 0)
-				flags |= 1 << 1; // FLAG_EOR
-			flags |= 1 << 3; // FLAG_CODED_PTS
-			flags |= 1 << 4; // FLAG_STREAM_ID
-			flags |= 1 << 5; // FLAG_SIZE_MSB
-			flags |= 1 << 6; // FLAG_CHECKSUM
-			WriteVarU(flags, frameheader);
-			WriteVarU(stream_id, frameheader); // stream_id
-			WriteVarU(pts + 256, frameheader); // coded_pts = pts + 1 << msb_pts_shift
-			WriteVarU(data.Length, frameheader); // data_size_msb
-
-			var frameheaderarr = frameheader.ToArray();
-			output.Write(frameheaderarr, 0, frameheaderarr.Length);
-			WriteBE32(NutCRC32(frameheaderarr), output); // checksum
-			output.Write(data, 0, data.Length);
-
-		}
 
 		/// <summary>
 		/// write an audio frame to the stream
@@ -461,9 +558,11 @@ namespace BizHawk.MultiClient
 			if (data.Length == 0)
 				audiodone = true;
 
-			writesyncpoint(audiopts * 2 + 1);
-			writeframe(data, 1, audiopts);
+			var f = new NutFrame(data, audiopts, 1, (ulong)avparams.samplerate, 1);
 			audiopts += (ulong)samples.Length / (ulong)avparams.channels;
+			audioqueue.Enqueue(f);
+			while (videoqueue.Count > 0 && f >= videoqueue.Peek())
+				videoqueue.Dequeue().WriteData(output);
 		}
 
 		/// <summary>
@@ -491,6 +590,9 @@ namespace BizHawk.MultiClient
 			audiopts = 0;
 			videopts = 0;
 
+			audioqueue = new Queue<NutFrame>();
+			videoqueue = new Queue<NutFrame>();
+
 			writemainheader();
 			writevideoheader();
 			writeaudioheader();
@@ -509,6 +611,20 @@ namespace BizHawk.MultiClient
 				writevideoframe(new byte[0]);
 			if (!audiodone)
 				writeaudioframe(new short[0]);
+
+			// flush any remaining queued packets
+
+			while (audioqueue.Count > 0 && videoqueue.Count > 0)
+			{
+				if (audioqueue.Peek() <= videoqueue.Peek())
+					audioqueue.Dequeue().WriteData(output);
+				else
+					videoqueue.Dequeue().WriteData(output);
+			}
+			while (audioqueue.Count > 0)
+				audioqueue.Dequeue().WriteData(output);
+			while (videoqueue.Count > 0)
+				videoqueue.Dequeue().WriteData(output);
 
 			output.Close();
 			output = null;

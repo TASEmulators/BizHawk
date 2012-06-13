@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net.Sockets;
-using System.Net;
 using System.Diagnostics;
 
 namespace BizHawk.MultiClient
 {
 	/// <summary>
-	/// uses tcp sockets to launch an external ffmpeg process and encode
+	/// uses pipes to launch an external ffmpeg process and encode
 	/// </summary>
-	class FFmpegWriter : WavWriterV, IVideoWriter
+	class FFmpegWriter : IVideoWriter
 	{
 		/// <summary>
 		/// handle to external ffmpeg process
@@ -43,11 +41,14 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		const int consolebuffer = 5;
 
-		public new void OpenFile(string baseName)
+		/// <summary>
+		/// muxer handle for the current segment
+		/// </summary>
+		NutMuxer muxer;
+
+		public void OpenFile(string baseName)
 		{
 			string s = System.IO.Path.GetFileNameWithoutExtension(baseName);
-
-			base.OpenFile(s + ".wav");
 
 			this.baseName = s;
 
@@ -67,11 +68,7 @@ namespace BizHawk.MultiClient
 
 			ffmpeg.StartInfo.Arguments = String.Format
 			(
-				"-y -f rawvideo -pix_fmt bgra -s {0}x{1} -r {2}/{3} -i - -vcodec libx264rgb -crf 0 \"{4}.mkv\"",
-				width,
-				height,
-				fpsnum,
-				fpsden,
+				"-y -f nut -i - -vcodec libx264rgb -acodec pcm_s16le -crf 0 \"{0}.mkv\"",
 				filename
 			);
 
@@ -90,6 +87,8 @@ namespace BizHawk.MultiClient
 
 			ffmpeg.Start();
 			ffmpeg.BeginErrorReadLine();
+
+			muxer = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, ffmpeg.StandardInput.BaseStream);
 		}
 
 		/// <summary>
@@ -112,21 +111,22 @@ namespace BizHawk.MultiClient
 		/// </summary>
 		void CloseFileSegment()
 		{
-			ffmpeg.StandardInput.Close();
+			muxer.Finish();
+			//ffmpeg.StandardInput.Close();
 
 			// how long should we wait here?
 			ffmpeg.WaitForExit(20000);
 			ffmpeg = null;
 			stderr = null;
 			commandline = null;
+			muxer = null;
 		}
 
 
-		public new void CloseFile()
+		public void CloseFile()
 		{
 			CloseFileSegment();
 			baseName = null;
-			base.CloseFile();
 		}
 
 		/// <summary>
@@ -152,7 +152,7 @@ namespace BizHawk.MultiClient
 		}
 
 
-		public new void AddFrame(IVideoProvider source)
+		public void AddFrame(IVideoProvider source)
 		{
 			if (source.BufferWidth != width || source.BufferHeight != height)
 				SetVideoParameters(source.BufferWidth, source.BufferHeight);
@@ -162,8 +162,11 @@ namespace BizHawk.MultiClient
 			var a = source.GetVideoBuffer();
 			var b = new byte[a.Length * sizeof (int)];
 			Buffer.BlockCopy(a, 0, b, 0, b.Length);
+
+			muxer.writevideoframe(b);
+
 			// have to do binary write!
-			ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
+			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
 
@@ -177,12 +180,12 @@ namespace BizHawk.MultiClient
 			}
 		}
 
-		public new IDisposable AcquireVideoCodecToken(IntPtr hwnd)
+		public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
 		{
 			return new FFmpegWriterToken();
 		}
 	
-		public new void SetVideoCodecToken(IDisposable token)
+		public void SetVideoCodecToken(IDisposable token)
 		{
 			// nyi
 		}
@@ -190,22 +193,22 @@ namespace BizHawk.MultiClient
 		/// <summary>
 		/// video params
 		/// </summary>
-		int fpsnum, fpsden, width, height;
+		int fpsnum, fpsden, width, height, sampleRate, channels;
 
-		public new void SetMovieParameters(int fpsnum, int fpsden)
+		public void SetMovieParameters(int fpsnum, int fpsden)
 		{
 			this.fpsnum = fpsnum;
 			this.fpsden = fpsden;
 		}
 
-		public new void SetVideoParameters(int width, int height)
+		public void SetVideoParameters(int width, int height)
 		{
 			this.width = width;
 			this.height = height;
 
-			/* ffmpeg theoretically supports variable resolution videos, but there's no way to
-			 * signal that metadata in a raw pipe.  so if we're currently in a segment,
-			 * start a new one */
+			/* ffmpeg theoretically supports variable resolution videos, but in practice that's not handled very well.
+			 * so we start a new segment.
+			 */
 			if (ffmpeg != null)
 			{
 				CloseFileSegment();
@@ -215,15 +218,28 @@ namespace BizHawk.MultiClient
 		}
 
 
-		public new void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
+		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
 		{
 			// can be implemented with ffmpeg "-metadata" parameter???
 			// nyi
 		}
 
-		public new void Dispose()
+		public void Dispose()
 		{
-			base.Dispose();
+		}
+
+
+		public void AddSamples(short[] samples)
+		{
+			muxer.writeaudioframe(samples);
+		}
+
+		public void SetAudioParameters(int sampleRate, int channels, int bits)
+		{
+			if (bits != 16)
+				throw new ArgumentOutOfRangeException("sampling depth must be 16 bits!");
+			this.sampleRate = sampleRate;
+			this.channels = channels;
 		}
 	}
 }
