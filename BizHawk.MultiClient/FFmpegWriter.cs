@@ -241,5 +241,22 @@ namespace BizHawk.MultiClient
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 		}
+
+
+		public override string ToString()
+		{
+			return "ffmpeg writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.";
+		}
+
+		public string DesiredExtension()
+		{
+			// this needs to interface with the codec token
+			return "mkv";
+		}
 	}
 }

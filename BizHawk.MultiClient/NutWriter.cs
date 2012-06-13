@@ -123,5 +123,21 @@ namespace BizHawk.MultiClient
 		public void Dispose()
 		{
 		}
+
+
+		public override string ToString()
+		{
+			return ".nut writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Writes a series of .nut files to disk, a container format which can be opened by ffmpeg.  All data is uncompressed.  Splits occur on resolution changes.  NOT RECCOMENDED FOR USE.";
+		}
+
+		public string DesiredExtension()
+		{
+			return "nut";
+		}
 	}
 }

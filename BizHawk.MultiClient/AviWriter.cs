@@ -652,6 +652,22 @@ namespace BizHawk.MultiClient
 
 			}
 		}
+
+
+		public override string ToString()
+		{
+			return "avi writer";
+		}
+
+		public string WriterDescription()
+		{
+			return "Uses the Microsoft AVIFIL32 system to write .avi files.  Audio is uncompressed; Video can be compressed with any installed VCM codec.  Splits on 2G and resolution change.";
+		}
+
+		public string DesiredExtension()
+		{
+			return "avi";
+		}
 	}
 }
 
