@@ -1412,5 +1412,17 @@ namespace BizHawk.MultiClient
 				}
 			}
 		}
+
+		private void showPreviousValueToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowPrevColumn ^= true;
+			SetPrevColumn(Global.Config.RamWatchShowPrevColumn);
+		}
+
+		private void showChangeCountsToolStripMenuItem_Click_1(object sender, EventArgs e)
+		{
+			Global.Config.RamWatchShowChangeColumn ^= true;
+			SetChangesColumn(Global.Config.RamWatchShowChangeColumn);
+		}
 	}
 }
