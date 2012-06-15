@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				int bank_1k = mapper.Get_CHRBank_1K(addr);
+				int bank_1k = mmc3.Get_CHRBank_1K(addr);
 				int use_ram = (bank_1k >> 6) & 1;
 				if (use_ram == 1)
 				{
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			if (addr < 0x2000)
 			{
-				int bank_1k = mapper.Get_CHRBank_1K(addr);
+				int bank_1k = mmc3.Get_CHRBank_1K(addr);
 				int use_ram = (bank_1k >> 6) & 1;
 				if (use_ram == 1)
 				{

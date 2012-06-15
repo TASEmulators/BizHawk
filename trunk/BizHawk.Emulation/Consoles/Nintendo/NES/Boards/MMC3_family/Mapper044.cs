@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		protected override int Get_PRGBank_8K(int addr)
 		{
-			int bank_8k = mapper.Get_PRGBank_8K(addr);
+			int bank_8k = mmc3.Get_PRGBank_8K(addr);
 			return (bank_8k & PRG_AND[block_select]) | PRG_OR[block_select];
 		}
 

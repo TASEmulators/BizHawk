@@ -4,8 +4,8 @@ using System.Diagnostics;
 
 namespace BizHawk.Emulation.Consoles.Nintendo
 {
-	//various japanese namcot 109 boards plus DEROM
-	public class Mapper206 : Namcot109Board_Base
+	//various japanese Namcot108 boards plus DEROM
+	public class Mapper206 : Namcot108Board_Base
 	{
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
