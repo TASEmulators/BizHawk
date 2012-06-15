@@ -169,6 +169,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper076.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper095.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />

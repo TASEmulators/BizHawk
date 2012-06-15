@@ -14,8 +14,6 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		//state
 		int reg_addr;
 		bool chr_mode, prg_mode;
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 		ByteBuffer regs = new ByteBuffer(8);
 
 		public byte mirror;
@@ -31,6 +29,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		int separator_counter;
 		int irq_countdown;
 
+		//volatile state
+		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		//configuration
 		public enum EMMC3Type
@@ -51,9 +52,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 
 		public void Dispose()
 		{
+			regs.Dispose();
 			chr_regs_1k.Dispose();
 			prg_regs_8k.Dispose();
-			regs.Dispose();
 		}
 
 		public NES.NESBoardBase.EMirrorType MirrorType { get { return mirror == 0 ? NES.NESBoardBase.EMirrorType.Vertical : NES.NESBoardBase.EMirrorType.Horizontal; } }
