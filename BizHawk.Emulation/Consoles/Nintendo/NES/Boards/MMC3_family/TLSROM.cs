@@ -41,12 +41,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000) return base.ReadPPU(addr);
-			else return base.ReadPPU(RewireNametable_Mapper095_and_TLSROM(addr, 7));
+			else return base.ReadPPU(RewireNametable_TLSROM(addr, 7));
 		}
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x2000) base.WritePPU(addr, value);
-			else base.WritePPU(RewireNametable_Mapper095_and_TLSROM(addr, 7), value);
+			else base.WritePPU(RewireNametable_TLSROM(addr, 7), value);
 		}
 
 	}
