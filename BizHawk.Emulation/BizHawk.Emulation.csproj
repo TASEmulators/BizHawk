@@ -154,23 +154,24 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\DRROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\HKROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper044.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper095.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper182.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper189.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper191.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper206.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3_family.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TVROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TxROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\DRROM.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper095.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Mapper206.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Namcot1xx\Namcot1xx.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\NAMCOT_m19_m210.cs">
       <SubType>Code</SubType>
     </Compile>
