@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Consoles.Gameboy
 	{
 		private bool skipBIOS = false;
 		private int _lagcount = 0;
-		private bool lagged = true;
 		private bool islag = false;
 
 		public interface IDebuggerAPI

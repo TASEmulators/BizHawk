@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Consoles.GB
 		private Z80 CPU;
 		private int lagCount = 0;
 		private bool isLagFrame = false;
-		private IList<MemoryDomain> memoryDomains;
+		private IList<MemoryDomain> memoryDomains = new List<MemoryDomain>();
 
 		public GB(GameInfo game, byte[] rom, bool skipBIOS)
 		{

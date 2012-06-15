@@ -11,11 +11,11 @@ namespace BizHawk.Emulation.Consoles.GB
 		private bool inBIOS = true;
 
 		// Memory regions (initialised at reset time)
-		private byte[] BIOS;
-		private byte[] ROM;
-		private byte[] WRAM;
-		private byte[] ERAM;
-		private byte[] ZRAM;
+		private byte[] BIOS = new byte[1];
+		private byte[] ROM = new byte[1];
+		private byte[] WRAM = new byte[1];
+		private byte[] ERAM = new byte[1];
+		private byte[] ZRAM = new byte[1];
 
 		public byte ReadMemory(ushort addr)
 		{
