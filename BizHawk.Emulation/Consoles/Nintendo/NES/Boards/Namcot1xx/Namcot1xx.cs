@@ -14,6 +14,9 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 	{
 		//state
 		int reg_addr;
+		ByteBuffer regs = new ByteBuffer(8);
+
+		//volatile state
 		ByteBuffer chr_regs_1k = new ByteBuffer(8);
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
@@ -22,23 +25,12 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		{
 			this.board = board;
 
-			prg_regs_8k[0] = 0;
-			prg_regs_8k[1] = 1;
-			prg_regs_8k[2] = 0xFE; //constant
-			prg_regs_8k[3] = 0xFF; //constant
-
-			chr_regs_1k[0] = 0;
-			chr_regs_1k[1] = 1;
-			chr_regs_1k[2] = 2;
-			chr_regs_1k[3] = 3;
-			chr_regs_1k[4] = 4;
-			chr_regs_1k[5] = 5;
-			chr_regs_1k[6] = 6;
-			chr_regs_1k[7] = 7;
+			Sync();
 		}
 
 		public void Dispose()
 		{
+			regs.Dispose();
 			chr_regs_1k.Dispose();
 			prg_regs_8k.Dispose();
 		}
@@ -46,8 +38,8 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 		public virtual void SyncState(Serializer ser)
 		{
 			ser.Sync("reg_addr", ref reg_addr);
-			ser.Sync("chr_regs_1k", ref chr_regs_1k);
-			ser.Sync("prg_regs_8k", ref prg_regs_8k);
+			ser.Sync("regs", ref regs);
+			Sync();
 		}
 
 		public virtual void WritePRG(int addr, byte value)
@@ -58,27 +50,32 @@ namespace BizHawk.Emulation.Consoles.Nintendo
 					reg_addr = (value & 7);
 					break;
 				case 0x0001: //$8001
-					switch (reg_addr)
-					{
-						//bottom bits of these chr regs are ignored
-						case 0: 
-							chr_regs_1k[0] = (byte)(value & ~1); 
-							chr_regs_1k[1] = (byte)(value | 1); 
-							break;
-						case 1: 
-							chr_regs_1k[2] = (byte)(value & ~1);
-							chr_regs_1k[3] = (byte)(value | 1);
-							break;
-
-						case 2: chr_regs_1k[4] = value; break;
-						case 3: chr_regs_1k[5] = value; break;
-						case 4: chr_regs_1k[6] = value; break;
-						case 5: chr_regs_1k[7] = value; break;
-						case 6: prg_regs_8k[0] = value; break;
-						case 7: prg_regs_8k[1] = value; break;
-					}
+					regs[reg_addr] = value;
+					Sync();
 					break;
 			}
+		}
+
+		void Sync()
+		{
+			prg_regs_8k[0] = regs[6];
+			prg_regs_8k[1] = regs[7];
+			prg_regs_8k[2] = 0xFE;
+			prg_regs_8k[3] = 0xFF;
+
+			byte r0_0 = (byte)(regs[0] & ~1);
+			byte r0_1 = (byte)(regs[0] | 1);
+			byte r1_0 = (byte)(regs[1] & ~1);
+			byte r1_1 = (byte)(regs[1] | 1);
+
+			chr_regs_1k[0] = r0_0;
+			chr_regs_1k[1] = r0_1;
+			chr_regs_1k[2] = r1_0;
+			chr_regs_1k[3] = r1_1;
+			chr_regs_1k[4] = regs[2];
+			chr_regs_1k[5] = regs[3];
+			chr_regs_1k[6] = regs[4];
+			chr_regs_1k[7] = regs[5];
 		}
 
 		public int Get_PRGBank_8K(int addr)
