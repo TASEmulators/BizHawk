@@ -12,7 +12,11 @@ namespace BizHawk.MultiClient
 	{
 		private void recordAVIToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+#if WINDOWS
 			RecordAVI();
+#else
+			MessageBox.Show ("AVI output is not supported on this platform. :-(");
+#endif
 		}
 
 		private void stopAVIToolStripMenuItem_Click(object sender, EventArgs e)
