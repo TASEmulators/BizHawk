@@ -145,9 +145,9 @@
 			this.label7.AutoSize = true;
 			this.label7.Location = new System.Drawing.Point(198, 153);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(190, 13);
+			this.label7.Size = new System.Drawing.Size(214, 13);
 			this.label7.TabIndex = 10;
-			this.label7.Text = "Deign, Brandon E, Pasky13, link_7777";
+			this.label7.Text = "Deign, Brandon E, Pasky13, link_7777, natt";
 			// 
 			// BizBox
 			// 
