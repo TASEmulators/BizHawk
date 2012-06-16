@@ -15,7 +15,9 @@ namespace BizHawk.MultiClient
 #if WINDOWS
 			RecordAVI();
 #else
+			RunLoopBlocked = true;
 			MessageBox.Show ("AVI output is not supported on this platform. :-(");
+			RunLoopBlocked = false;
 #endif
 		}
 
